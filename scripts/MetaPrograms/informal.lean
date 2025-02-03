@@ -29,25 +29,23 @@ inductive InformalDeclKind
   | def | lemma
 
 instance : ToString InformalDeclKind where
-  toString
-    | .def => "def"
-    | .lemma => "lemma"
+  toString | .def => "def" | .lemma => "lemma"
 
 structure InformalDecl extends Decl where
   kind : InformalDeclKind
   deps : Array Decl
 
 structure DepDecls where
-  private mk::
-  private decls : Std.HashMap Name Decl
+  private mk ::
+  private decls : NameMap Decl
   formalDecls : Array Decl
   /-- Pairs of informal declarations and their enclosing modules. -/
   informalModuleMap : Array (Name × Array InformalDecl)
 
-private abbrev DeclsM := StateRefT (Std.HashMap Name Decl) CoreM
+private abbrev DeclsM := StateRefT (NameMap Decl) CoreM
 
 private def Decl.ofName (name : Name) (module : Option Name := none) : DeclsM Decl := do
-  if let some decl := (← get).get? name then
+  if let some decl := (← get).find? name then
     return decl
   let env ← getEnv
   let decl : Decl := {
@@ -58,14 +56,14 @@ private def Decl.ofName (name : Name) (module : Option Name := none) : DeclsM De
   }
   modifyGet fun decls => (decl, decls.insert name decl)
 
-private unsafe def InformalDecl.ofName? (name module : Name) : DeclsM (Option InformalDecl) := do
+private unsafe def InformalDecl.ofName? (name module : Name) : OptionT DeclsM InformalDecl := do
   unless name.isInternalDetail do
     if let some const := (← getEnv).find? name then
       if Informal.isInformalDef const then
         return ← ofName .def (← evalConst InformalDefinition name).deps
       else if Informal.isInformalLemma const then
         return ← ofName .lemma (← evalConst InformalLemma name).deps
-  return none
+  .fail
 where
   ofName (kind : InformalDeclKind) (deps : List Name) : DeclsM InformalDecl :=
     return {← Decl.ofName name module with kind, deps := ← deps.toArray.mapM Decl.ofName}
@@ -73,7 +71,7 @@ where
 unsafe def DepDecls.ofRootModule (rootModule : Name) : CoreM DepDecls := do
   let (informalModuleMap, decls) ← getAllDecls.run ∅
 
-  let mut informalNames : Std.HashSet Name := ∅
+  let mut informalNames : NameSet := ∅
   for (_, informalDecls) in informalModuleMap do
     for {name, ..} in informalDecls do
       informalNames := informalNames.insert name
@@ -90,7 +88,7 @@ where
     imports.filterMapM fun {module, ..} => do
       if module.getRoot == rootModule then
         let ({constNames, ..}, _) ← readModuleData (← findOLean module)
-        let informalDecls ← constNames.filterMapM fun name => InformalDecl.ofName? name module
+        let informalDecls ← constNames.filterMapM (InformalDecl.ofName? · module)
         unless informalDecls.isEmpty do
           let informalDecls := informalDecls.qsort fun a b => a.lineNo < b.lineNo
           printInformalDecls module informalDecls
@@ -147,7 +145,7 @@ def mkDOT (depDecls : DepDecls) : IO Unit := do
     labeljust=\"l\";
     edge [arrowhead=vee];"
 
-  let mut clusters : Std.HashSet Name := ∅
+  let mut clusters : NameSet := ∅
   for (_, informalDecls) in depDecls.informalModuleMap do
     for {name, ..} in informalDecls do
       let cluster := name.getPrefix
@@ -175,7 +173,7 @@ def mkDOT (depDecls : DepDecls) : IO Unit := do
 
   println! "}"
 where
-  toNode (clusters : Std.HashSet Name) (decl : Decl) (shape color : String) : String :=
+  toNode (clusters : NameSet) (decl : Decl) (shape color : String) : String :=
     let {name, docString, ..} := decl
     let prefixName := if clusters.contains name then name else name.getPrefix
     let nodeStr := s!"\"{name}\"[label=\"{name}\", shape={shape}, style=filled, fillcolor={color},
