@@ -51,7 +51,7 @@ def leftContrJ (n1 : ℕ) : Fin ((n + n1).succ) := leftContrEquivSucc <| Fin.cas
 lemma leftContrJ_succAbove_leftContrI : (q.leftContrI n1).succAbove (q.leftContrJ n1)
     = leftContrEquivSuccSucc (Fin.castAdd n1 (q.i.succAbove q.j)) := by
   rw [leftContrI, leftContrJ]
-  rw [Fin.ext_iff]
+  ext
   simp only [Fin.succAbove, Nat.succ_eq_add_one, leftContrEquivSucc, RelIso.coe_fn_toEquiv,
     Fin.castOrderIso_apply, leftContrEquivSuccSucc, Fin.coe_cast, Fin.coe_castAdd]
   split_ifs
@@ -65,7 +65,7 @@ lemma leftContrJ_succAbove_leftContrI : (q.leftContrI n1).succAbove (q.leftContr
 lemma succAbove_leftContrJ_leftContrI_castAdd (x : Fin n) :
     (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.castAdd n1 x)) =
     leftContrEquivSuccSucc (Fin.castAdd n1 (q.i.succAbove (q.j.succAbove x))) := by
-  rw [Fin.ext_iff]
+  ext
   simp only [Fin.succAbove, leftContrJ, Nat.succ_eq_add_one, leftContrI, leftContrEquivSuccSucc,
     RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.coe_cast, Fin.coe_castAdd]
   split_ifs <;> rename_i h1 h2 h3 h4
@@ -76,7 +76,7 @@ lemma succAbove_leftContrJ_leftContrI_castAdd (x : Fin n) :
 lemma succAbove_leftContrJ_leftContrI_natAdd (x : Fin n1) :
     (q.leftContrI n1).succAbove ((q.leftContrJ n1).succAbove (Fin.natAdd n x)) =
     leftContrEquivSuccSucc (Fin.natAdd n.succ.succ x) := by
-  rw [Fin.ext_iff]
+  ext
   simp only [Fin.succAbove, leftContrJ, Nat.succ_eq_add_one, leftContrI, leftContrEquivSuccSucc,
     RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.coe_cast, Fin.coe_natAdd]
   split_ifs <;> rename_i h1 h2
@@ -172,7 +172,7 @@ lemma contrMap_prod_tprod_aux
 lemma contrMap_prod_tprod_aux_2 (p : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     CoeSort.coe (S.FD.obj { as := (OverColor.mk c).hom i }))
     (a : Fin n.succ.succ) (b : Fin (n + 1 + 1) ⊕ Fin n1)
-    (h : b = Sum.inl a) : p a = (S.FD.map (Discrete.eqToHom (by rw [h]; simp))).hom
+    (h : b = Sum.inl a) : p a = (S.FD.map (Discrete.eqToHom (by rw [h]; rfl))).hom
     ((lift.discreteSumEquiv' S.FD b)
     (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
   subst h
@@ -299,12 +299,6 @@ lemma contr_prod
     (Functor.LaxMonoidal.μ S.F _ ((OverColor.mk c1))) ≫
     S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom (t.tensor ⊗ₜ[S.k] t1.tensor) = _
   rw [contrMap_prod]
-  simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
-    Functor.const_obj_obj, Equiv.toFun_as_coe, Action.comp_hom, Equivalence.symm_inverse,
-    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.hom_comp, Function.comp_apply]
-  apply congrArg
-  apply congrArg
   rfl
 
 /-!
@@ -325,23 +319,22 @@ def rightContrJ (n1 : ℕ) : Fin ((n1 + n).succ) := Fin.natAdd n1 q.j
 lemma rightContrJ_succAbove_rightContrI : (q.rightContrI n1).succAbove (q.rightContrJ n1)
     = (Fin.natAdd n1 (q.i.succAbove q.j)) := by
   rw [rightContrI, rightContrJ]
-  rw [Fin.ext_iff]
+  ext
   simp only [Fin.succAbove, Nat.succ_eq_add_one, Fin.coe_natAdd]
   split_ifs
     <;> rename_i h1 h2
     <;> rw [Fin.lt_def] at h1 h2
-  · simp only [Fin.coe_castSucc, Fin.coe_natAdd]
+  · rfl
   · simp_all only [Fin.coe_castSucc, Fin.coe_natAdd, add_lt_add_iff_left, not_true_eq_false]
   · simp_all only [Fin.coe_castSucc, Fin.coe_natAdd, add_lt_add_iff_left, not_lt, Fin.val_succ,
     add_right_eq_self, one_ne_zero]
     omega
-  · simp only [Fin.val_succ, Fin.coe_natAdd]
-    omega
+  · rfl
 
 lemma succAbove_rightContrJ_rightContrI_castAdd (x : Fin n1) :
     (q.rightContrI n1).succAbove ((q.rightContrJ n1).succAbove (Fin.castAdd n x)) =
     (Fin.castAdd n.succ.succ x) := by
-  rw [Fin.ext_iff]
+  ext
   simp only [Fin.succAbove, rightContrJ, Nat.succ_eq_add_one, rightContrI, Fin.coe_castAdd]
   split_ifs <;> rename_i h1 h2
     <;> rw [Fin.lt_def] at h1 h2
@@ -351,7 +344,7 @@ lemma succAbove_rightContrJ_rightContrI_castAdd (x : Fin n1) :
 lemma succAbove_rightContrJ_rightContrI_natAdd (x : Fin n) :
     (q.rightContrI n1).succAbove ((q.rightContrJ n1).succAbove (Fin.natAdd n1 x)) =
     (Fin.natAdd n1 ((q.i.succAbove) (q.j.succAbove x))) := by
-  rw [Fin.ext_iff]
+  ext
   simp only [Fin.succAbove, rightContrJ, Nat.succ_eq_add_one, rightContrI, Fin.coe_natAdd]
   split_ifs <;> rename_i h1 h2 h3 h4
     <;> rw [Fin.lt_def] at h1 h2 h3 h4
@@ -453,7 +446,7 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
       simp only [Nat.add_eq, AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, equivToIso_homToEquiv,
         LinearEquiv.coe_coe]
       have hL (a : Fin n.succ.succ) {b : Fin n1 ⊕ Fin n.succ.succ}
-          (h : b = Sum.inr a) : q' a = (S.FD.map (Discrete.eqToHom (by rw [h]; simp))).hom
+          (h : b = Sum.inr a) : q' a = (S.FD.map (Discrete.eqToHom (by rw [h]; rfl))).hom
           ((lift.discreteSumEquiv' S.FD b)
           (HepLean.PiTensorProduct.elimPureTensor p q' b)) := by
         subst h
@@ -491,7 +484,6 @@ lemma prod_contrMap_tprod (p : (i : (𝟭 Type).obj (OverColor.mk c1).left) →
       Iso.refl_hom, Action.id_hom, Iso.refl_inv, instMonoidalCategoryStruct_tensorObj_hom,
       LinearEquiv.ofLinear_apply, Equiv.toFun_as_coe, equivToIso_mkIso_hom, Equiv.refl_symm,
       Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv, eqToIso.inv]
-    conv_rhs => repeat erw [ModuleCat.id_apply]
     simp only [Nat.succ_eq_add_one, Nat.add_eq, AddHom.toFun_eq_coe, LinearMap.coe_toAddHom,
       LinearEquiv.coe_coe]
     have h1 (l : (OverColor.mk c1).left ⊕ (OverColor.mk (c ∘ q.i.succAbove ∘ q.j.succAbove)).left)
@@ -546,12 +538,6 @@ lemma prod_contr (t1 : TensorTree S c1) (t : TensorTree S c) :
     (Functor.LaxMonoidal.μ S.F ((OverColor.mk c1)) _) ≫
     S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom (t1.tensor ⊗ₜ[S.k] t.tensor) = _
   rw [prod_contrMap]
-  simp only [Nat.succ_eq_add_one, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
-    Functor.const_obj_obj, Equiv.toFun_as_coe, Action.comp_hom, Equivalence.symm_inverse,
-    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    ModuleCat.hom_comp, Function.comp_apply]
-  apply congrArg
-  apply congrArg
   rfl
 
 end ContrPair
