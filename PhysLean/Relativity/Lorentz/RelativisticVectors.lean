@@ -5,7 +5,7 @@ Authors: Matteo Cipollina, Joseph Tooby-Smith
 -/
 
 import PhysLean.Relativity.Lorentz.Group.Basic
-import PhysLean.Relativity.Lorentz.RealVector.Basic
+import PhysLean.Relativity.Lorentz.Algebra.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
@@ -97,6 +97,7 @@ def minkowskiMatrixWithSignature (cfg : LorentzConfig) (d : ℕ) : Matrix (Sum U
         | MetricSignature.TimePositive => -1
     else 0
   η
+
 
 namespace LorentzPosition4Vector
 
@@ -225,24 +226,24 @@ instance : MulAction (LorentzGroup d) (LorentzPosition4Vector d) where
     exact h
 
 @[simp]
-lemma coe_add (x y : LorentzPosition4Vector d) : (x + y : ContrMod d) = x + y := by
+lemma coe_add (x y : LorentzPosition4Vector d) : (x + y : ContrMod d) = x.toLorentzVector + y.toLorentzVector := by
   rfl
 
 @[simp]
-lemma coe_smul (r : ℝ) (x : LorentzPosition4Vector d) : (r • x : ContrMod d) = r • x := by
+lemma coe_smul (r : ℝ) (x : LorentzPosition4Vector d) : (r • x : ContrMod d) = r • x.toLorentzVector := by
   rfl
 
 @[simp]
-lemma coe_neg (x: LorentzPosition4Vector d) : ((-x) : ContrMod d) = -x := by rfl
+lemma coe_neg (x: LorentzPosition4Vector d) : ((-x) : ContrMod d) = -x.toLorentzVector := by rfl
 
 @[simp]
-lemma coe_sub (x y : LorentzPosition4Vector d) : (x - y : ContrMod d) = x - y := by rfl
+lemma coe_sub (x y : LorentzPosition4Vector d) : (x - y : ContrMod d) = x.toLorentzVector - y.toLorentzVector := by rfl
 
 @[simp]
-lemma coe_nsmul (n : ℕ) (x: LorentzPosition4Vector d) : ((n • x) : ContrMod d) = n • x := by rfl
+lemma coe_nsmul (n : ℕ) (x: LorentzPosition4Vector d) : ((n • x) : ContrMod d) = n • x.toLorentzVector := by rfl
 
 @[simp]
-lemma coe_zsmul (z : ℤ) (x : LorentzPosition4Vector d) : ((z • x) : ContrMod d) = z • x := by rfl
+lemma coe_zsmul (z : ℤ) (x : LorentzPosition4Vector d) : ((z • x) : ContrMod d) = z • x.toLorentzVector := by rfl
 
 @[simp]
 lemma coe_zero : ((0 : LorentzPosition4Vector d) : ContrMod d) = 0 := rfl
@@ -881,16 +882,12 @@ lemma coe_fn_mk {α : Type*} {β : Type*} (f : α → β) : (fun x => f x) = f :
   rfl
 
 @[simp]
-lemma coe_add (x y : LorentzPosition4Vector d) : (x + y : ContrMod d) = x.toLorentzVector + y.toLorentzVector := by
-  -- Direct application of the coercion definition
-  simp only
-  -- This is trivial by definition of addition on LorentzPosition4Vector
+lemma coe_add' (x y : LorentzPosition4Vector d) : (x + y).toLorentzVector = x.toLorentzVector + y.toLorentzVector := by
+  rfl
 
 @[simp]
-lemma coe_smul (r : ℝ) (x : LorentzPosition4Vector d) : (r • x : ContrMod d) = r • x.toLorentzVector := by
-  -- Direct application of the coercion definition
-  simp only
-  -- This is trivial by definition of scalar multiplication on LorentzPosition4Vector
+lemma coe_smul' (r : ℝ) (x : LorentzPosition4Vector d) : (r • x).toLorentzVector = r • x.toLorentzVector := by
+  rfl
 
 /-- Adding ContMod vectors commutes with conversion to Fin1dℝ. -/
 @[simp]
