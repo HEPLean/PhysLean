@@ -361,6 +361,73 @@ def ContrSection {n : ℕ} {c : Fin n.succ.succ → S.C}
     Finset (Π k, Fin (S.repDim (c k))) :=
     {b' : Π k, Fin (S.repDim (c k)) | ∀ k, b' ((i.succAbove ∘ j.succAbove) k) = b k}
 
+/-- Given a `b` in `Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k))` and
+  an `x` in `Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))`, the corresponding
+  coordinate parameter in `(Π k, Fin (S.repDim (c k)))`. -/
+def liftToContrSection {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k)))
+    (x : Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))) :
+    (Π k, Fin (S.repDim (c k))) :=
+  let f1 := Fin.insertNthEquiv (fun k => Fin (S.repDim ((c ∘ i.succAbove) k))) j
+    ⟨x.2, b⟩
+  let f2 := Fin.insertNthEquiv (fun k => Fin (S.repDim (c k))) i ⟨x.1, f1⟩
+  f2
+
+lemma liftToContrSection_mem_ContrSection {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k)))
+    (x : Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))) :
+    liftToContrSection b x ∈ ContrSection b := by
+  simp [ContrSection, liftToContrSection]
+
+@[simp]
+lemma liftToContrSection_apply_self_fst {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k)))
+    (x : Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))) :
+    liftToContrSection b x i = x.1 := by
+  simp [liftToContrSection]
+
+@[simp]
+lemma liftToContrSection_apply_self_snd {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k)))
+    (x : Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))) :
+    liftToContrSection b x (i.succAbove j) = x.2 := by
+  simp [liftToContrSection]
+
+/-- The equivalence between `ContrSection b` and
+  `Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))`. -/
+def contrSectionEquiv {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k))) :
+    ContrSection b ≃ Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j))) where
+  toFun b' := ⟨b'.1 i, b'.1 (i.succAbove j)⟩
+  invFun x := ⟨liftToContrSection b x, liftToContrSection_mem_ContrSection b x⟩
+  left_inv b' := by
+    ext y
+    simp [liftToContrSection]
+    rcases Fin.eq_self_or_eq_succAbove i y with rfl | h
+    · simp
+    · obtain ⟨y, rfl⟩ := h
+      simp only [Fin.insertNth_apply_succAbove, Fin.insertNthEquiv_apply]
+      rcases Fin.eq_self_or_eq_succAbove j y with rfl | h
+      · simp
+      · obtain ⟨y, rfl⟩ := h
+        simp only [Fin.insertNth_apply_succAbove]
+        have h1 := b'.2
+        simp only [Nat.succ_eq_add_one, ContrSection, Function.comp_apply, Finset.mem_filter,
+          Finset.mem_univ, true_and] at h1
+        rw [h1]
+  right_inv x := by
+    simp
+
+instance {n : ℕ} {c : Fin n.succ.succ → S.C}
+    {i : Fin n.succ.succ} {j : Fin n.succ}
+    (b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k))) : Fintype (ContrSection b) :=
+    Fintype.ofEquiv _ (contrSectionEquiv b).symm
+
 end TensorBasis
 open TensorBasis
 

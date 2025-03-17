@@ -223,7 +223,7 @@ open FieldStatistic
 -/
 
 /-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
-  `𝓕.normalOrderList φs` is the list `φs` normal-ordered using ther
+  `𝓕.normalOrderList φs` is the list `φs` normal-ordered using the
   insertion sort algorithm. It puts creation operators on the left and annihilation operators on
   the right. For example:
 

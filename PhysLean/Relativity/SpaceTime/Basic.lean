@@ -13,12 +13,16 @@ This file introduce 4d Minkowski spacetime.
 
 -/
 
+/-- The type `Space d` representes `d` dimensional Euclidean space.
+  The default value of `d` is `3`. Thus `Space = Space 3`. -/
+abbrev Space (d : ℕ := 3) := EuclideanSpace ℝ (Fin d)
+
 noncomputable section
 
 TODO "SpaceTime should be refactored into a structure, or similar, to prevent casting."
 
 /-- The space-time -/
-def SpaceTime : Type := Fin 4 → ℝ
+def SpaceTime (d : ℕ := 3) : Type := Fin (d + 1) → ℝ
 
 /-- Give spacetime the structure of an additive commutative monoid. -/
 instance : AddCommMonoid SpaceTime := Pi.addCommMonoid

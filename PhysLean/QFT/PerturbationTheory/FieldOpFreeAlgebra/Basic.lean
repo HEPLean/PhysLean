@@ -41,7 +41,7 @@ abbrev FieldOpFreeAlgebra (𝓕 : FieldSpecification) : Type := FreeAlgebra ℂ 
 namespace FieldOpFreeAlgebra
 
 remark naming_convention := "
-  For mathematicial objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
+  For mathematical objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
   may be given to
   their names to indicate that they are related to the free algebra.
   This is to avoid confusion when working within the context of `FieldOpAlgebra` which is defined

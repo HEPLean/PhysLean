@@ -261,21 +261,8 @@ lemma μ_tmul_tprod_mk {X Y : Type} {cX : X → C} {cY : Y → C}
     (μ F (OverColor.mk cX) (OverColor.mk cY)).hom.hom
     (PiTensorProduct.tprod k p ⊗ₜ[k] PiTensorProduct.tprod k q)
     = (PiTensorProduct.tprod k) fun i =>
-    discreteSumEquiv' F i (PhysLean.PiTensorProduct.elimPureTensor p q i) := by
-  let q' : (i : (OverColor.mk cY).left) → (F.obj <| Discrete.mk ((OverColor.mk cY).hom i)) := q
-  let p' : (i : (OverColor.mk cX).left) → (F.obj <| Discrete.mk ((OverColor.mk cX).hom i)) := p
-  have h1 := μModEquiv_tmul_tprod F p' q'
-  simp only [Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
-    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    objObj'_V_carrier, mk_hom, Functor.id_obj, instMonoidalCategoryStruct_tensorObj_hom] at h1
-  erw [h1]
-  simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
-    instMonoidalCategoryStruct_tensorObj_hom, mk_hom, p', q']
-  apply congrArg
-  funext i
-  match i with
-  | Sum.inl i => rfl
-  | Sum.inr i => rfl
+    discreteSumEquiv' F i (PhysLean.PiTensorProduct.elimPureTensor p q i) :=
+  μModEquiv_tmul_tprod F _ _
 
 lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
     MonoidalCategory.whiskerRight (objMap' F f) (objObj' F Z) ≫ (μ F Y Z).hom =

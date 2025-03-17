@@ -248,7 +248,7 @@ lemma deriv_deriv_eigenfunction (n : ℕ) (x : ℝ) :
 -/
 
 /-- The `n`th eigenfunction satisfies the time-independent Schrodinger equation with
-  respect to the `n`th eigenvalue. That is to say for `Q` a harmonic scillator,
+  respect to the `n`th eigenvalue. That is to say for `Q` a harmonic oscillator,
 
   `Q.schrodingerOperator (Q.eigenfunction n) x = Q.eigenValue n * Q.eigenfunction n x`.
 

@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Basic
 import PhysLean.Meta.Informal.Basic
+import PhysLean.Meta.TODO.Basic
 /-!
 
 ## Informal definitions and lemmas
@@ -60,5 +61,12 @@ def noInformalDefs : CoreM Nat := do
   let imports ← allImports
   let x ← imports.mapM Imports.getUserConsts
   x.flatFilterSizeM fun c => return Informal.isInformalDef c
+
+/-- All informal results. -/
+def AllInformal : CoreM (Array ConstantInfo) := do
+  let imports ← allImports
+  let x ← (imports.mapM Imports.getUserConsts)
+  let y := x.flatten.filter fun c => Informal.isInformal c
+  return y
 
 end PhysLean

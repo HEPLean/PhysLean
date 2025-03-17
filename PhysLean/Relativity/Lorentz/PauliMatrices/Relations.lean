@@ -26,7 +26,6 @@ open TensorTree
 namespace PauliMatrix
 open Fermion
 open complexLorentzTensor
-/-
 
 /-- The statement that ` σᵥᵃᵇ σᵛᵃ'ᵇ' = 2 εᵃᵃ' εᵇᵇ'`. -/
 lemma pauliCo_contr_pauliContr : {σ_^^ | ν α β ⊗ σ^^^ | ν α' β' = 2 •ₜ εL | α α' ⊗ εR | β β'}ᵀ := by
@@ -58,7 +57,6 @@ lemma pauliCo_contr_pauliContr : {σ_^^ | ν α β ⊗ σ^^^ | ν α' β' = 2 �
       Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
       Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
     left
-    rw (transparency := .instances) [ofRat_tensorBasis_repr_apply]
     rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
   conv_lhs =>
     enter [2, x]
@@ -150,5 +148,5 @@ lemma auliContrDown_pauliContr_mul_add :
   simp only [tensorNode_tensor, ofRat_tensorBasis_repr_apply]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   decide +revert +kernel
--/
+
 end PauliMatrix

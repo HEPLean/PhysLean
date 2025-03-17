@@ -1,7 +1,9 @@
 import PhysLean.ClassicalMechanics.Basic
+import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
+import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.CondensedMatter.Basic
 import PhysLean.Cosmology.Basic
-import PhysLean.Electrodynamics.Basic
+import PhysLean.Electromagnetism.Basic
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
 import PhysLean.Mathematics.LinearMaps

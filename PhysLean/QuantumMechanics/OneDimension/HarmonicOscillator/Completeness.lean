@@ -14,7 +14,7 @@ Completeness of the eigenfunctions follows from Plancherel's theorem.
 The steps of this proof are:
 
 1. Prove that if `f` is orthogonal to all eigenvectors then the Fourier transform of
-  it muliplied by `exp(-c x^2)` for a `0<c` is zero.
+  it multiplied by `exp(-c x^2)` for a `0<c` is zero.
   Part of this is using the concept of `dominated_convergence`.
 2. Use 'Plancherel's theorem' to show that `f` is zero.
 
@@ -156,25 +156,21 @@ lemma orthogonal_physHermite_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (n : ℕ) : ∫ (x : ℝ), (physHermite n (x / Q.ξ)) * (f x * ↑(Real.exp (- x ^ 2 / (2 * Q.ξ ^ 2))))
     = 0 := by
   have h1 := Q.orthogonal_eigenfunction_of_mem_orthogonal f hf hOrth n
-  have h2 : (fun (x : ℝ) =>
-          (1 / ↑√(2 ^ n * ↑n !) * (1/ √(√Real.pi * Q.ξ)) : ℂ) *
-            (physHermite n (x/Q.ξ) * f x *
-            Real.exp (- x ^ 2 / (2 * Q.ξ^2))))
-    = fun x => Q.eigenfunction n x * f x := by
+  have h2 : (fun (x : ℝ) => (1 / ↑√(2 ^ n * ↑n !) * (1/ √(√Real.pi * Q.ξ)) : ℂ) *
+      (physHermite n (x/Q.ξ) * f x * Real.exp (- x ^ 2 / (2 * Q.ξ^2))))
+      = fun x => Q.eigenfunction n x * f x := by
     funext x
     simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
       neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
       Complex.ofReal_ofNat, eigenfunction_eq]
     ring
-  rw [← h2] at h1
-  rw [MeasureTheory.integral_mul_left] at h1
+  rw [← h2, MeasureTheory.integral_mul_left] at h1
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
     neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
     Complex.ofReal_ofNat, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
     Real.sqrt_eq_zero, cast_eq_zero, pow_eq_zero_iff', OfNat.ofNat_ne_zero, ne_eq, false_and,
     or_false, Real.sqrt_nonneg] at h1
-  have h0 : n ! ≠ 0 := by
-    exact factorial_ne_zero n
+  have h0 : n ! ≠ 0 := factorial_ne_zero n
   have h0' : ¬ (√Q.ξ = 0 ∨ √Real.pi = 0) := by
     simpa using And.intro (Real.sqrt_ne_zero'.mpr Q.ξ_pos) (Real.sqrt_ne_zero'.mpr Real.pi_pos)
   simp only [h0, h0', or_self, false_or] at h1
@@ -250,8 +246,7 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       (f x * Complex.exp (- x ^ 2 / (2 * Q.ξ^2))))) := by
       funext x
       ring
-    rw [h2] at h1
-    rw [MeasureTheory.integral_mul_left] at h1
+    rw [h2, MeasureTheory.integral_mul_left] at h1
     simp only [one_div, inv_pow, _root_.mul_eq_zero, inv_eq_zero, pow_eq_zero_iff',
       Complex.ofReal_eq_zero, ξ_ne_zero, ne_eq, false_and, false_or] at h1
     rw [← h1]
@@ -277,12 +272,12 @@ open Finset
   for any real `c`.
   The proof of this result relies on the expansion of `e ^ (I c x)`
   in terms of `x^r/r!` and using `orthogonal_power_of_mem_orthogonal`
-  along with integrablity conditions. -/
+  along with integrability conditions. -/
 lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (c : ℝ) : ∫ x : ℝ, Complex.exp (Complex.I * c * x) *
     (f x * Real.exp (- x^2 / (2 * Q.ξ^2))) = 0 := by
-  /- Rewriting the intergrand as a limit. -/
+  /- Rewriting the integrand as a limit. -/
   have h1 (y : ℝ) : Filter.Tendsto (fun n => ∑ r ∈ range n,
         (Complex.I * ↑c * ↑y) ^ r / r ! * (f y * Real.exp (- y^2 / (2 * Q.ξ^2))))
       Filter.atTop (nhds (Complex.exp (Complex.I * c * y) *
@@ -305,8 +300,8 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     haveI hi : CauSeq.IsComplete ℂ norm :=
       inferInstanceAs (CauSeq.IsComplete ℂ norm)
     exact CauSeq.tendsto_limit (Complex.exp' (Complex.I * c * y))
-  /- End of rewritting the intergrand as a limit. -/
-  /- Rewritting the integral as a limit using dominated_convergence -/
+  /- End of rewriting the integrand as a limit. -/
+  /- Rewriting the integral as a limit using dominated_convergence -/
   have h1' : Filter.Tendsto (fun n => ∫ y : ℝ, ∑ r ∈ range n,
       (Complex.I * ↑c * ↑y) ^ r / r ! * (f y * Real.exp (- y^2 / (2 * Q.ξ^2))))
       Filter.atTop (nhds (∫ y : ℝ, Complex.exp (Complex.I * c * y) *

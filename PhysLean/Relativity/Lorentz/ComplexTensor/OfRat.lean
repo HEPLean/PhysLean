@@ -27,8 +27,7 @@ variable (S : TensorSpecies)
   complex Lorentz tensors with rational coefficents with respect to the basis are of this
   form. -/
 noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
-    (f : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum) :
-    complexLorentzTensor.F.obj (OverColor.mk c) :=
+    (f : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum) : ℂT(c) :=
   (complexLorentzTensor.tensorBasis c).repr.symm <|
   (Finsupp.linearEquivFunOnFinite complexLorentzTensor.k complexLorentzTensor.k
   ((j : Fin n) → Fin (complexLorentzTensor.repDim (c j)))).symm <|
@@ -114,11 +113,13 @@ lemma prod_ofRat_ofRat {n n1 : ℕ} {c : Fin n → complexLorentzTensor.C}
   erw [ofRat_tensorBasis_repr_apply]
   simp
 
-lemma contr_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C} {i : Fin (n + 1 + 1)}
+open TensorSpecies.TensorBasis in
+lemma contr_ofRat_eq_sum_contrSection {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C}
+    {i : Fin (n + 1 + 1)}
     {j : Fin (n + 1)} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
     (f : (Π k, Fin (complexLorentzTensor.repDim (c k))) → RatComplexNum) :
   (contr i j h (tensorNode (ofRat f))).tensor = (tensorNode (ofRat (fun b =>
-    (∑ x : { x // x ∈ TensorSpecies.TensorBasis.ContrSection b },
+    (∑ x : TensorSpecies.TensorBasis.ContrSection b,
       f x.1 * if (x.1 i).1 = (x.1 (i.succAbove j)).1 then 1 else 0)))).tensor := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
@@ -132,6 +133,32 @@ lemma contr_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C} {i 
     rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
   rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
   erw [ofRat_tensorBasis_repr_apply]
+
+open TensorSpecies.TensorBasis in
+lemma contr_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C} {i : Fin (n + 1 + 1)}
+    {j : Fin (n + 1)} {h : c (i.succAbove j) = complexLorentzTensor.τ (c i)}
+    (f : (Π k, Fin (complexLorentzTensor.repDim (c k))) → RatComplexNum) :
+  (contr i j h (tensorNode (ofRat f))).tensor = (tensorNode (ofRat (fun b =>
+    (∑ x : Fin (complexLorentzTensor.repDim (c i)),
+      f (liftToContrSection b (x, Fin.cast (by simp [h]) x)))))).tensor := by
+  rw [contr_ofRat_eq_sum_contrSection]
+  congr
+  funext b
+  rw [← (contrSectionEquiv b).symm.sum_comp]
+  erw [Finset.sum_product]
+  congr
+  funext x
+  rw [Finset.sum_eq_single (Fin.cast (by simp [h]) x)]
+  · simp [contrSectionEquiv]
+  · intro y _ hy
+    rw [if_neg]
+    · simp
+    · simp only [Nat.succ_eq_add_one, contrSectionEquiv, Equiv.coe_fn_symm_mk,
+      liftToContrSection_apply_self_fst, liftToContrSection_apply_self_snd]
+      rw [@Fin.ne_iff_vne] at hy
+      simp only [Fin.coe_cast, ne_eq] at hy
+      exact fun a => hy ((Eq.symm a))
+  · simp
 
 lemma smul_nat_ofRat {c : Fin n → complexLorentzTensor.C} (n : ℕ)
     (f1 : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum) :

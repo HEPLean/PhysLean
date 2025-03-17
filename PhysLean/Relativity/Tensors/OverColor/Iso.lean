@@ -123,18 +123,10 @@ def fin2Iso {c : Fin 2 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1] := by
 
 /-- The isomorphism splitting a `mk c` for `c : Fin 3 → C` into the tensor product of
   a `Fin 1 → C` map `![c 0]` and a `Fin 2 → C` map `![c 1, c 2]`. -/
-def fin3Iso {c : Fin 3 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1, c 2] := by
-  let e1 : Fin 3 ≃ Fin 1 ⊕ Fin 2 := (finSumFinEquiv (n := 2)).symm
-  apply (equivToIso e1).trans
-  apply (mkSum _).trans
-  refine tensorIso (mkIso ?_) (mkIso ?_)
-  · funext x
-    fin_cases x
-    rfl
-  · funext x
-    fin_cases x
-    rfl
-    rfl
+def fin3Iso {c : Fin 3 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1, c 2] :=
+  (equivToIso (finSumFinEquiv (n := 2)).symm).trans <|
+  (mkSum _).trans <|
+  tensorIso (mkIso (List.ofFn_inj.mp rfl)) (mkIso (List.ofFn_inj.mp rfl))
 
 /-- The isomorphism splitting a `mk ![c1, c2, c3]` into the tensor product of
   a `Fin 1 → C` map `fun _ => c1` and a `Fin 2 → C` map `![c 1, c 2]`. -/

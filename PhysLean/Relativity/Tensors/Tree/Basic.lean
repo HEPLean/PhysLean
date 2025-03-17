@@ -493,14 +493,8 @@ lemma perm_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
     simp only [OverColor.mk_hom, Basis.repr_self, pb]
     rw [Finsupp.single_apply, Finsupp.single_apply]
     congr 1
-    simp only [eq_iff_iff, pb]
-    apply Iff.intro
-    · intro h
-      rw [← h]
-      simp only [Equiv.apply_symm_apply, pb]
-    · intro h
-      rw [h]
-      simp
+    exact eq_iff_iff.mpr <| Equiv.symm_apply_eq
+      (TensorBasis.congr (OverColor.Hom.toEquiv σ) (OverColor.Hom.toEquiv_comp_apply σ))
   · simp only [OverColor.mk_hom, map_zero, Finsupp.coe_zero, Pi.zero_apply, pb]
   · intro x y hx hy
     simp_all [pb]

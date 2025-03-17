@@ -334,9 +334,7 @@ lemma perm_action {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (g : S.G) (t : TensorTree S c) :
     (perm σ (action g t)).tensor = (action g (perm σ t)).tensor := by
   simp only [perm_tensor, action_tensor]
-  change (ModuleCat.ofHom ((S.F.obj (OverColor.mk c)).ρ g) ≫ (S.F.map σ).hom) t.tensor = _
-  erw [(S.F.map σ).comm g]
-  rfl
+  exact Rep.hom_comm_apply (S.F.map σ) g t.tensor
 
 /-- An `action` node can be moved through a `neg` node. -/
 lemma neg_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (t : TensorTree S c) :

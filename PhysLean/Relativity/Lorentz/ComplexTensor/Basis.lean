@@ -38,7 +38,7 @@ TODO "Replace basisVector in this file with TensorSpecies.tensorBasis.
 /-- Basis vectors for complex Lorentz tensors. -/
 def basisVector {n : ℕ} (c : Fin n → complexLorentzTensor.C)
     (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
-    complexLorentzTensor.F.obj (OverColor.mk c) :=
+    ℂT(c) :=
   PiTensorProduct.tprod ℂ (fun i => complexLorentzTensor.basis (c i) (b i))
 
 lemma basisVector_eq_tensorBasis {n : ℕ} (c : Fin n → complexLorentzTensor.C)

@@ -22,7 +22,7 @@ open MonoidalCategory
 
 /-- The structure `TensorSpecies` contains the necessary structure needed to define
   a system of tensors with index notation. Examples of `TensorSpecies` include real Lorentz tensors,
-  complex Lorentz tensors, and ordinary Euclidean tensors.-/
+  complex Lorentz tensors, and ordinary Euclidean tensors. -/
 structure TensorSpecies where
   /-- The commutative ring over which we want to consider the tensors to live in,
     usually `ℝ` or `ℂ`. -/

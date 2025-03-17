@@ -37,19 +37,19 @@ TODO "To increase the speed of these files `(vecNodeE complexLorentzTensor .up p
   This can be done by redefining bispinors in terms of actual tensors. "
 
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. -/
-def contrBispinorUp (p : complexContr) :=
-  {pauliCo | μ α β ⊗ (vecNodeE complexLorentzTensor .up p).tensor | μ}ᵀ.tensor
+def contrBispinorUp (p : ℂT[.up]) :=
+  {pauliCo | μ α β ⊗ p | μ}ᵀ.tensor
 
 /-- A bispinor `pₐₐ` created from a lorentz vector `p^μ`. -/
-def contrBispinorDown (p : complexContr) :=
+def contrBispinorDown (p : ℂT[.up]) :=
   {εL' | α α' ⊗ εR' | β β' ⊗ contrBispinorUp p | α β}ᵀ.tensor
 
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p_μ`. -/
-def coBispinorUp (p : complexCo) :=
-  {pauliContr | μ α β ⊗ (vecNodeE complexLorentzTensor .down p).tensor | μ}ᵀ.tensor
+def coBispinorUp (p : ℂT[.down]) :=
+  {pauliContr | μ α β ⊗ p | μ}ᵀ.tensor
 
 /-- A bispinor `pₐₐ` created from a lorentz vector `p_μ`. -/
-def coBispinorDown (p : complexCo) :=
+def coBispinorDown (p : ℂT[.down]) :=
   {εL' | α α' ⊗ εR' | β β' ⊗ coBispinorUp p | α β}ᵀ.tensor
 
 /-!
@@ -59,25 +59,23 @@ def coBispinorDown (p : complexCo) :=
 -/
 
 /-- The definitional tensor node relation for `contrBispinorUp`. -/
-lemma tensorNode_contrBispinorUp (p : complexContr) :
-    {contrBispinorUp p | α β}ᵀ.tensor = {pauliCo | μ α β ⊗
-      (vecNodeE complexLorentzTensor .up p).tensor | μ}ᵀ.tensor := by
+lemma tensorNode_contrBispinorUp (p : ℂT[.up]) :
+    {contrBispinorUp p | α β}ᵀ.tensor = {pauliCo | μ α β ⊗ p | μ}ᵀ.tensor := by
   rw [contrBispinorUp, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `contrBispinorDown`. -/
-lemma tensorNode_contrBispinorDown (p : complexContr) :
+lemma tensorNode_contrBispinorDown (p : ℂT[.up]) :
     {contrBispinorDown p | α β}ᵀ.tensor =
     {εL' | α α' ⊗ εR' | β β' ⊗ contrBispinorUp p | α β}ᵀ.tensor := by
   rw [contrBispinorDown, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `coBispinorUp`. -/
-lemma tensorNode_coBispinorUp (p : complexCo) :
-    {coBispinorUp p | α β}ᵀ.tensor = {pauliContr | μ α β ⊗
-    (vecNodeE complexLorentzTensor .down p).tensor | μ}ᵀ.tensor := by
+lemma tensorNode_coBispinorUp (p : ℂT[.down]) :
+    {coBispinorUp p | α β}ᵀ.tensor = {pauliContr | μ α β ⊗ p | μ}ᵀ.tensor := by
   rw [coBispinorUp, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `coBispinorDown`. -/
-lemma tensorNode_coBispinorDown (p : complexCo) :
+lemma tensorNode_coBispinorDown (p : ℂT[.down]) :
     {coBispinorDown p | α β}ᵀ.tensor =
     {εL' | α α' ⊗ εR' | β β' ⊗ coBispinorUp p | α β}ᵀ.tensor := by
   rw [coBispinorDown, tensorNode_tensor]
@@ -102,17 +100,16 @@ proof: expand `coBispinorDown` and use fact that metrics contract to the identit
 informal_lemma coBispinorUp_eq_metric_contr_coBispinorDown where
   deps := [``coBispinorUp, ``coBispinorDown, ``leftMetric, ``rightMetric]
 
-lemma contrBispinorDown_expand (p : complexContr) :
+lemma contrBispinorDown_expand (p : ℂT[.up]) :
     {contrBispinorDown p | α β}ᵀ.tensor =
     {εL' | α α' ⊗ εR' | β β' ⊗
-    (pauliCo | μ α β ⊗ (vecNodeE complexLorentzTensor .up p).tensor | μ)}ᵀ.tensor := by
+    (pauliCo | μ α β ⊗ p | μ)}ᵀ.tensor := by
   rw [tensorNode_contrBispinorDown p]
   rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_contrBispinorUp p]
 
-lemma coBispinorDown_expand (p : complexCo) :
+lemma coBispinorDown_expand (p : ℂT[.down]) :
     {coBispinorDown p | α β}ᵀ.tensor =
-    {εL' | α α' ⊗ εR' | β β' ⊗
-    (pauliContr | μ α β ⊗ (vecNodeE complexLorentzTensor .down p).tensor | μ)}ᵀ.tensor := by
+    {εL' | α α' ⊗ εR' | β β' ⊗ (pauliContr | μ α β ⊗ p | μ)}ᵀ.tensor := by
   rw [tensorNode_coBispinorDown p]
   rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_coBispinorUp p]
 

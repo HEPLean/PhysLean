@@ -64,7 +64,7 @@ unsafe def processAllFiles : IO Unit := do
   let tasks := files.map fun f =>
     ((IO.asTask $ IO.Process.run
     {cmd := "lake", args := #["exe", "free_simps", f.toString]}), f)
-  tasks.toList.enum.forM fun (n, (t, path)) => do
+  tasks.toList.zipIdx.forM fun ((t, path), n) => do
     let tn ← IO.wait (← t)
     match tn with
     | .ok x =>
@@ -87,7 +87,7 @@ unsafe def processFileArray (files : Array FilePath) : IO Unit := do
   let tasks := files.map fun f =>
     ((IO.asTask $ IO.Process.run
     {cmd := "lake", args := #["exe", "free_simps","-file", f.toString]}), f)
-  tasks.toList.enum.forM fun (n, (t, path)) => do
+  tasks.toList.zipIdx.forM fun ((t, path), n) => do
     let tn ← IO.wait (← t)
     match tn with
     | .ok x =>

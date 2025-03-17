@@ -126,19 +126,9 @@ instance (M : LorentzGroup d) : Invertible M.1 where
     rw [← coe_inv]
     exact (mem_iff_self_mul_dual.mp M.2)
 
-lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := by
-  trans Subtype.val (Λ⁻¹ * Λ)
-  · rw [← coe_inv]
-    rfl
-  · rw [inv_mul_cancel Λ]
-    rfl
+lemma subtype_inv_mul : (Subtype.val Λ)⁻¹ * (Subtype.val Λ) = 1 := inv_mul_of_invertible _
 
-lemma subtype_mul_inv : (Subtype.val Λ) * (Subtype.val Λ)⁻¹ = 1 := by
-  trans Subtype.val (Λ * Λ⁻¹)
-  · rw [← coe_inv]
-    rfl
-  · rw [mul_inv_cancel Λ]
-    rfl
+lemma subtype_mul_inv : (Subtype.val Λ) * (Subtype.val Λ)⁻¹ = 1 := mul_inv_of_invertible _
 
 @[simp]
 lemma mul_minkowskiMatrix_mul_transpose :
@@ -180,12 +170,7 @@ lemma transpose_inv : (transpose Λ)⁻¹ = transpose Λ⁻¹ := by
 lemma comm_minkowskiMatrix : Λ.1 * minkowskiMatrix = minkowskiMatrix * (transpose Λ⁻¹).1 := by
   conv_rhs => rw [← @mul_minkowskiMatrix_mul_transpose d Λ]
   rw [← transpose_inv, coe_inv, transpose_val]
-  rw [mul_assoc]
-  have h1 : ((Λ.1)ᵀ * (Λ.1)ᵀ⁻¹) = 1 := by
-    rw [← transpose_val]
-    simp only [subtype_mul_inv]
-  rw [h1]
-  simp
+  exact Eq.symm (mul_inv_cancel_right_of_invertible _ _)
 
 lemma minkowskiMatrix_comm : minkowskiMatrix * Λ.1 = (transpose Λ⁻¹).1 * minkowskiMatrix := by
   conv_rhs => rw [← @transpose_mul_minkowskiMatrix_mul_self d Λ]

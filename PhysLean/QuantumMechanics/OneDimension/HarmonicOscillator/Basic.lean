@@ -17,7 +17,7 @@ This file contains
 - the definition of the Schrodinger operator
 - the definition of eigenfunctions and eigenvalues of the Schrodinger operator in terms
   of Hermite polynomials
-- proof that eigenfunctions and eigenvalues are indeed egienfunctions and eigenvalues.
+- proof that eigenfunctions and eigenvalues are indeed eigenfunctions and eigenvalues.
 
 ## TODO
 - Show that Schrodinger operator is linear.
@@ -185,8 +185,8 @@ lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
     fun x => (Q.ℏ ^2 / (2 * Q.m)) * (- (deriv (deriv ψ) x) + (1/Q.ξ^2)^2 * x^2 * ψ x) := by
   funext x
   simp [schrodingerOperator_eq, ξ_sq, ξ_inverse, ξ_ne_zero, ξ_pos, ξ_abs, ← Complex.ofReal_pow]
-  have hm' := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
-  have hℏ' := Complex.ofReal_ne_zero.mpr Q.ℏ_ne_zero
+  have := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
+  have := Complex.ofReal_ne_zero.mpr Q.ℏ_ne_zero
   field_simp
   ring
 
@@ -194,16 +194,10 @@ lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
 lemma schrodingerOperator_parity (ψ : ℝ → ℂ) :
     Q.schrodingerOperator (parity ψ) = parity (Q.schrodingerOperator ψ) := by
   funext x
-  simp only [schrodingerOperator, parity, LinearMap.coe_mk, AddHom.coe_mk, one_div,
-    Complex.ofReal_neg, even_two, Even.neg_pow, add_left_inj, mul_eq_mul_left_iff, div_eq_zero_iff,
-    neg_eq_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
-    Complex.ofReal_eq_zero, _root_.mul_eq_zero, false_or]
-  left
-  have h1 (ψ : ℝ → ℂ) : (fun x => (deriv fun x => ψ (-x)) x) = fun x => - deriv ψ (-x) := by
+  have (ψ : ℝ → ℂ) : (fun x => (deriv fun x => ψ (-x)) x) = fun x => - deriv ψ (-x) := by
     funext x
     rw [← deriv_comp_neg]
-  change deriv (fun x=> (deriv fun x => ψ (-x)) x) x = _
-  simp [h1]
+  simp [schrodingerOperator, parity, this]
 
 end HarmonicOscillator
 end OneDimension

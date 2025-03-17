@@ -177,7 +177,7 @@ lemma eigenfunction_parity (n : ℕ) :
 
 -/
 
-/-- A simplification of the product of two eigen-functions. -/
+/-- A simplification of the product of two eigenfunctions. -/
 lemma eigenfunction_mul (n p : ℕ) :
     (Q.eigenfunction n x) * (Q.eigenfunction p x) =
     1/√(2 ^ n * n !) * 1/√(2 ^ p * p !) * (1/ (√Real.pi * Q.ξ)) * Complex.ofReal
@@ -252,7 +252,7 @@ lemma eigenfunction_normalized (n : ℕ) : ⟪HilbertSpace.mk (Q.eigenfunction_m
   field_simp
   ring
 
-/-- The eigen-functions of the quantum harmonic oscillator are orthogonal. -/
+/-- The eigenfunctions of the quantum harmonic oscillator are orthogonal. -/
 lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
     ⟪HilbertSpace.mk (Q.eigenfunction_memHS n),
       HilbertSpace.mk (Q.eigenfunction_memHS p)⟫_ℂ = 0 := by
