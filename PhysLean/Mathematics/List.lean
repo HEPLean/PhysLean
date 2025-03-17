@@ -217,7 +217,7 @@ lemma orderedInsertPos_take_eq_orderedInsert {I : Type} (le1 : I → I → Prop)
     exact Nat.le_of_lt_succ (orderedInsertPos_lt_length le1 r r0)
   · intro n h1 h2
     simp only [List.get_eq_getElem, List.getElem_take]
-    erw [orderedInsert_get_lt le1 r r0 n]
+    rw [orderedInsert_get_lt le1 r r0 n]
     rfl
     simp only [List.length_take, lt_inf_iff] at h1
     exact h1.1
@@ -379,9 +379,7 @@ lemma orderedInsertEquiv_fin_succ {I : Type} (le1 : I → I → Prop) [Decidable
     orderedInsertEquiv le1 r r0 n.succ = Fin.cast (List.orderedInsert_length le1 r r0).symm
     ((Fin.succAbove ⟨(orderedInsertPos le1 r r0), orderedInsertPos_lt_length le1 r r0⟩)
       ⟨n, n.isLt⟩) := by
-  simp only [List.length_cons, orderedInsertEquiv, Nat.succ_eq_add_one, OrderIso.toEquiv_symm,
-    Fin.symm_castOrderIso, Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
-    Fin.eta]
+  simp only [orderedInsertEquiv, Equiv.trans_apply]
   match r with
   | [] =>
     simp

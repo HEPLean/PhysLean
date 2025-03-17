@@ -260,7 +260,7 @@ macro_rules
   | `(ℂT[]) =>`((complexLorentzTensor.F.obj (OverColor.mk (vecEmpty))))
 
 /-- Complex Lorentz tensor. -/
-scoped[complexLorentzTensor]  notation "ℂT(" c ")" => complexLorentzTensor.F.obj (OverColor.mk c)
+scoped[complexLorentzTensor] notation "ℂT(" c ")" => complexLorentzTensor.F.obj (OverColor.mk c)
 
 /-- Color for complex Lorentz tensors is decidable. -/
 instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor

@@ -28,8 +28,8 @@ lemma contrMetricVal_expand_tmul : contrMetricVal =
     - complexContrBasis (Sum.inr 0) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 0)
     - complexContrBasis (Sum.inr 1) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 1)
     - complexContrBasis (Sum.inr 2) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 2) := by
-  simp only [Action.instMonoidalCategory_tensorObj_V, contrMetricVal, Fin.isValue]
-  erw [contrContrToMatrix_symm_expand_tmul]
+  simp only [contrMetricVal, Fin.isValue]
+  rw [contrContrToMatrix_symm_expand_tmul]
   simp only [map_apply, ofRealHom_eq_coe, coe_smul, Fintype.sum_sum_type, Finset.univ_unique,
     Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three, ne_eq, reduceCtorEq,
     not_false_eq_true, minkowskiMatrix.off_diag_zero, zero_smul, add_zero, zero_add, Sum.inr.injEq,
@@ -61,8 +61,8 @@ def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr wh
       (TensorProduct.map (complexContr.ρ M) (complexContr.ρ M)) (x • contrMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp only [Action.instMonoidalCategory_tensorObj_V, contrMetricVal]
-    erw [contrContrToMatrix_ρ_symm]
+    simp only [contrMetricVal]
+    rw [contrContrToMatrix_ρ_symm]
     apply congrArg
     simp only [LorentzGroup.toComplex_mul_minkowskiMatrix_mul_transpose]
 
@@ -80,8 +80,8 @@ lemma coMetricVal_expand_tmul : coMetricVal =
     - complexCoBasis (Sum.inr 0) ⊗ₜ[ℂ] complexCoBasis (Sum.inr 0)
     - complexCoBasis (Sum.inr 1) ⊗ₜ[ℂ] complexCoBasis (Sum.inr 1)
     - complexCoBasis (Sum.inr 2) ⊗ₜ[ℂ] complexCoBasis (Sum.inr 2) := by
-  simp only [Action.instMonoidalCategory_tensorObj_V, coMetricVal, Fin.isValue]
-  erw [coCoToMatrix_symm_expand_tmul]
+  simp only [coMetricVal, Fin.isValue]
+  rw [coCoToMatrix_symm_expand_tmul]
   simp only [map_apply, ofRealHom_eq_coe, coe_smul, Fintype.sum_sum_type, Finset.univ_unique,
     Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three, ne_eq, reduceCtorEq,
     not_false_eq_true, minkowskiMatrix.off_diag_zero, zero_smul, add_zero, zero_add, Sum.inr.injEq,
@@ -113,8 +113,8 @@ def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
       (TensorProduct.map (complexCo.ρ M) (complexCo.ρ M)) (x • coMetricVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp only [Action.instMonoidalCategory_tensorObj_V, coMetricVal]
-    erw [coCoToMatrix_ρ_symm]
+    simp only [coMetricVal]
+    rw [coCoToMatrix_ρ_symm]
     apply congrArg
     rw [LorentzGroup.toComplex_inv]
     simp only [lorentzGroupIsGroup_inv, SL2C.toLorentzGroup_apply_coe,
@@ -139,7 +139,7 @@ lemma contrCoContraction_apply_metric : (β_ complexContr complexCo).hom.hom
     coContrUnit.hom (1 : ℂ) := by
   rw [contrMetric_apply_one, coMetric_apply_one]
   rw [contrMetricVal_expand_tmul, coMetricVal_expand_tmul]
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
+  simp only [
     Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg, tmul_sub, sub_tmul]
   have h1 (x1 x2 : complexContr) (y1 y2 :complexCo) :
     (complexContr.V ◁ (λ_ complexCo.V).hom)
@@ -148,12 +148,12 @@ lemma contrCoContraction_apply_metric : (β_ complexContr complexCo).hom.hom
     ((α_ complexContr.V complexContr.V (complexCo.V ⊗ complexCo.V)).hom
     ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
       = x1 ⊗ₜ[ℂ] ((λ_ complexCo.V).hom ((contrCoContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
-  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [h1]
   repeat rw [contrCoContraction_basis']
   simp only [Fin.isValue, ↓reduceIte, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul,
     reduceCtorEq, zero_tmul, map_zero, tmul_zero, sub_zero, zero_sub, Sum.inr.injEq, one_ne_zero,
     Fin.reduceEq, sub_neg_eq_add, zero_ne_one, sub_self]
-  erw [coContrUnit_apply_one, coContrUnitVal_expand_tmul]
+  rw [coContrUnit_apply_one, coContrUnitVal_expand_tmul]
   rfl
 
 lemma coContrContraction_apply_metric : (β_ complexCo complexContr).hom.hom
@@ -165,8 +165,8 @@ lemma coContrContraction_apply_metric : (β_ complexCo complexContr).hom.hom
     contrCoUnit.hom (1 : ℂ) := by
   rw [coMetric_apply_one, contrMetric_apply_one]
   rw [coMetricVal_expand_tmul, contrMetricVal_expand_tmul]
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg, tmul_sub, sub_tmul]
+  simp only [Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg,
+    tmul_sub, sub_tmul]
   have h1 (x1 x2 : complexCo) (y1 y2 :complexContr) :
     (complexCo.V ◁ (λ_ complexContr.V).hom)
     ((complexCo.V ◁ coContrContraction.hom ▷ complexContr.V) (((complexCo.V ◁
@@ -174,12 +174,12 @@ lemma coContrContraction_apply_metric : (β_ complexCo complexContr).hom.hom
     ((α_ complexCo.V complexCo.V (complexContr.V ⊗ complexContr.V)).hom
     ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
       = x1 ⊗ₜ[ℂ] ((λ_ complexContr.V).hom ((coContrContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
-  repeat rw (config := { transparency := .instances }) [h1]
+  repeat rw [h1]
   repeat rw [coContrContraction_basis']
   simp only [Fin.isValue, ↓reduceIte, ModuleCat.MonoidalCategory.leftUnitor_hom_apply, one_smul,
     reduceCtorEq, zero_tmul, map_zero, tmul_zero, sub_zero, zero_sub, Sum.inr.injEq, one_ne_zero,
     Fin.reduceEq, sub_neg_eq_add, zero_ne_one, sub_self]
-  erw [contrCoUnit_apply_one, contrCoUnitVal_expand_tmul]
+  rw [contrCoUnit_apply_one, contrCoUnitVal_expand_tmul]
   rfl
 
 end Lorentz

@@ -42,8 +42,7 @@ lemma asTensor_expand_complexContrBasis : asTensor =
 /-- The expansion of the pauli matrix `σ₀` in terms of a basis of tensor product vectors. -/
 lemma leftRightToMatrix_σSA_inl_0_expand : leftRightToMatrix.symm (σSA (Sum.inl 0)) =
     leftBasis 0 ⊗ₜ rightBasis 0 + leftBasis 1 ⊗ₜ rightBasis 1 := by
-  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
-  erw [leftRightToMatrix_symm_expand_tmul]
+  rw [leftRightToMatrix_symm_expand_tmul]
   simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ0, of_apply, cons_val', empty_val',
     cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, one_smul, zero_smul,
     add_zero, head_fin_const, zero_add, CategoryTheory.Equivalence.symm_inverse,
@@ -52,8 +51,7 @@ lemma leftRightToMatrix_σSA_inl_0_expand : leftRightToMatrix.symm (σSA (Sum.in
   /-- The expansion of the pauli matrix `σ₁` in terms of a basis of tensor product vectors. -/
 lemma leftRightToMatrix_σSA_inr_0_expand : leftRightToMatrix.symm (σSA (Sum.inr 0)) =
     leftBasis 0 ⊗ₜ rightBasis 1 + leftBasis 1 ⊗ₜ rightBasis 0:= by
-  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
-  erw [leftRightToMatrix_symm_expand_tmul]
+  rw [leftRightToMatrix_symm_expand_tmul]
   simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ1, of_apply, cons_val', empty_val',
     cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, zero_smul, one_smul,
     zero_add, head_fin_const, add_zero, CategoryTheory.Equivalence.symm_inverse,
@@ -62,8 +60,7 @@ lemma leftRightToMatrix_σSA_inr_0_expand : leftRightToMatrix.symm (σSA (Sum.in
 /-- The expansion of the pauli matrix `σ₂` in terms of a basis of tensor product vectors. -/
 lemma leftRightToMatrix_σSA_inr_1_expand : leftRightToMatrix.symm (σSA (Sum.inr 1)) =
     -(I • leftBasis 0 ⊗ₜ[ℂ] rightBasis 1) + I • leftBasis 1 ⊗ₜ[ℂ] rightBasis 0 := by
-  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
-  erw [leftRightToMatrix_symm_expand_tmul]
+  rw [leftRightToMatrix_symm_expand_tmul]
   simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ2, of_apply, cons_val', empty_val',
     cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, zero_smul, neg_smul,
     zero_add, head_fin_const, add_zero]
@@ -71,8 +68,7 @@ lemma leftRightToMatrix_σSA_inr_1_expand : leftRightToMatrix.symm (σSA (Sum.in
 /-- The expansion of the pauli matrix `σ₃` in terms of a basis of tensor product vectors. -/
 lemma leftRightToMatrix_σSA_inr_2_expand : leftRightToMatrix.symm (σSA (Sum.inr 2)) =
     leftBasis 0 ⊗ₜ rightBasis 0 - leftBasis 1 ⊗ₜ rightBasis 1 := by
-  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue]
-  erw [leftRightToMatrix_symm_expand_tmul]
+  rw [leftRightToMatrix_symm_expand_tmul]
   simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ3, of_apply, cons_val', empty_val',
     cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, one_smul, zero_smul,
     add_zero, head_fin_const, neg_smul, zero_add, CategoryTheory.Equivalence.symm_inverse,

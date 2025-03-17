@@ -23,6 +23,10 @@ open HiggsField
 
 noncomputable section
 
+TODO "Within the definition of the 2HDM potential. The structure `Potential` should be
+  renamed to TwoHDM and moved out of the TwoHDM namespace.
+  Then `toFun` should be renamed to `potential`."
+
 /-- The parameters of the Two Higgs doublet model potential. -/
 structure Potential where
   /-- The parameter corresponding to `m₁₁²` in the 2HDM potential. -/

@@ -60,8 +60,8 @@ def contrCoUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexCo where
       (TensorProduct.map (complexContr.ρ M) (complexCo.ρ M)) (x • contrCoUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp only [Action.instMonoidalCategory_tensorObj_V, contrCoUnitVal]
-    erw [contrCoToMatrix_ρ_symm]
+    simp only [contrCoUnitVal]
+    rw [contrCoToMatrix_ρ_symm]
     apply congrArg
     simp
 
@@ -79,8 +79,8 @@ lemma coContrUnitVal_expand_tmul : coContrUnitVal =
     + complexCoBasis (Sum.inr 0) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 0)
     + complexCoBasis (Sum.inr 1) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 1)
     + complexCoBasis (Sum.inr 2) ⊗ₜ[ℂ] complexContrBasis (Sum.inr 2) := by
-  simp only [Action.instMonoidalCategory_tensorObj_V, coContrUnitVal, Fin.isValue]
-  erw [coContrToMatrix_symm_expand_tmul]
+  simp only [coContrUnitVal, Fin.isValue]
+  rw [coContrToMatrix_symm_expand_tmul]
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three, ne_eq, reduceCtorEq, not_false_eq_true, one_apply_ne,
     zero_smul, add_zero, one_apply_eq, one_smul, zero_add, Sum.inr.injEq, zero_ne_one, Fin.reduceEq,
@@ -110,8 +110,8 @@ def coContrUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexContr where
       (TensorProduct.map (complexCo.ρ M) (complexContr.ρ M)) (x • coContrUnitVal)
     simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
     apply congrArg
-    simp only [Action.instMonoidalCategory_tensorObj_V, coContrUnitVal]
-    erw [coContrToMatrix_ρ_symm]
+    simp only [coContrUnitVal]
+    rw [coContrToMatrix_ρ_symm]
     apply congrArg
     symm
     refine transpose_eq_one.mp ?h.h.h.a
@@ -153,7 +153,7 @@ lemma contr_contrCoUnit (x : complexCo) :
   repeat rw [coContrContraction_basis']
   simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
     CategoryTheory.Iso.trans_hom, ModuleCat.ofSelfIso_hom,
-    CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, ↓reduceIte,
+    CategoryTheory.Category.comp_id, ↓reduceIte,
     reduceCtorEq, zero_tmul, map_zero, smul_zero, add_zero, Sum.inr.injEq, one_ne_zero,
     Fin.reduceEq, zero_add, zero_ne_one]
   erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul, TensorProduct.lid_tmul,
