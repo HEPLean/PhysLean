@@ -1,9 +1,19 @@
+/-
+Copyright (c) 2025 Ammar Husain. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Ammar Husain
+-/
 import PhysLean.Mathematics.SpecialFunctions.PhyscisistsHermite
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import Mathlib.Algebra.Order.GroupWithZero.Unbundled
 import Mathlib.Analysis.Calculus.Deriv.Add
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
 import PhysLean.Meta.TODO.Basic
+/-!
+
+# The 1d QM system with general potential
+
+-/
 
 namespace QuantumMechanics
 
@@ -53,9 +63,9 @@ lemma momentum_linear (ℏ : ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
     rw [deriv_const_smul, deriv_const_smul]
     rw [mul_add]
     simp only [mul_comm, mul_assoc]
-    rw [<-mul_assoc,<-mul_assoc]
-    rw [<-mul_assoc a1 _ _]
-    rw [<-mul_assoc a2 _ _]
+    rw [← mul_assoc,← mul_assoc]
+    rw [← mul_assoc a1 _ _]
+    rw [← mul_assoc a2 _ _]
     rw [mul_assoc]
     rw [mul_assoc]
     rfl
