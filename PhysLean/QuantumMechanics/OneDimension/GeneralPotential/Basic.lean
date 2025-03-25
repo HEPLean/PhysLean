@@ -29,11 +29,11 @@ open MeasureTheory
 noncomputable def momentumOperator (ℏ : ℝ) (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun x => - Complex.I * ℏ * deriv ψ x
 
-private lemma fun_add {α : Type*} (f g : α → ℂ):
+private lemma fun_add {α : Type*} (f g : α → ℂ) :
   (fun x => f x) + (fun x => g x) = fun x => f x + g x := by
   rfl
 
-private lemma fun_smul (a1: ℂ) (f : ℝ → ℂ): (a1 • fun x => f x) = (fun x => a1*(f x)) := by
+private lemma fun_smul (a1: ℂ) (f : ℝ → ℂ) : (a1 • fun x => f x) = (fun x => a1*(f x)) := by
     rfl
 
 lemma momentumOperator_linear (ℏ : ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
@@ -50,17 +50,13 @@ lemma momentumOperator_linear (ℏ : ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   rw [h1,h2]
   rw [fun_add ((fun x => a1 * (-Complex.I * ↑ℏ * deriv ψ1 x))) _]
   ext x
-  have ha1ψ1_x: Differentiable ℝ (a1 •ψ1) := by
-    exact (hψ1_x).const_smul a1
-  have ha2ψ2_x: Differentiable ℝ (a2 •ψ2) := by
-    exact (hψ2_x).const_smul a2
-  have h: deriv ((a1 •ψ1) + (a2 •ψ2)) x = deriv (fun y => ((a1 •ψ1) y) + ((a2 •ψ2) y)) x := by
+  have h : deriv ((a1 •ψ1) + (a2 •ψ2)) x = deriv (fun y => ((a1 •ψ1) y) + ((a2 •ψ2) y)) x := by
     rfl
   rw [h]
   rw [deriv_add]
-  have ht1: deriv (a1 •ψ1) x = deriv (fun y => (a1 •ψ1 y)) x := by
+  have ht1 : deriv (a1 •ψ1) x = deriv (fun y => (a1 •ψ1 y)) x := by
     rfl
-  have ht2: deriv (a2 •ψ2) x = deriv (fun y => (a2 •ψ2 y)) x := by
+  have ht2 : deriv (a2 •ψ2) x = deriv (fun y => (a2 •ψ2 y)) x := by
     rfl
   rw [ht1,ht2]
   rw [deriv_const_smul, deriv_const_smul]
@@ -80,7 +76,7 @@ lemma momentumOperator_linear (ℏ : ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
 lemma momentumOperator_sq_linear (ℏ : ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
     (hψ1_x: Differentiable ℝ ψ1) (hψ2_x: Differentiable ℝ ψ2)
     (hψ1_xx: Differentiable ℝ (momentumOperator ℏ ψ1))
-    (hψ2_xx: Differentiable ℝ (momentumOperator ℏ ψ2)):
+    (hψ2_xx: Differentiable ℝ (momentumOperator ℏ ψ2)) :
     momentumOperator ℏ (momentumOperator ℏ ((a1 • ψ1) + (a2 • ψ2))) =
     a1 • (momentumOperator ℏ (momentumOperator ℏ ψ1)) +
     a2 • (momentumOperator ℏ (momentumOperator ℏ ψ2)) := by
@@ -100,7 +96,7 @@ noncomputable def positionOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
 noncomputable def potentialOperator (V : ℝ → ℝ) (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun x => V x * ψ x
 
-lemma potentialOperator_linear (V: ℝ → ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ):
+lemma potentialOperator_linear (V: ℝ → ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ) :
     potentialOperator V ((a1 • ψ1) + (a2 • ψ2)) =
     a1 • potentialOperator V ψ1 + a2 • potentialOperator V ψ2 := by
   unfold potentialOperator
@@ -130,6 +126,7 @@ structure GeneralPotential where
   m : ℝ
   /-- Reduced Planck's constant. -/
   ℏ : ℝ
+  /-- The potential. -/
   V : ℝ → ℝ
   hℏ : 0 < ℏ
   hm : 0 < m
@@ -145,24 +142,24 @@ variable (Q : GeneralPotential)
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun x => 1 / (2 * Q.m) * (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ) x) + (Q.V x) *  ψ x
 
-lemma eval_add (f g : ℝ → ℂ):
-  (f + g) x = f x + g x := by
+private lemma eval_add (f g : ℝ → ℂ) :
+    (f + g) x = f x + g x := by
   rfl
 
 lemma schrodingerOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
     (hψ1_x: Differentiable ℝ ψ1) (hψ2_x: Differentiable ℝ ψ2)
     (hψ1_xx: Differentiable ℝ (momentumOperator Q.ℏ ψ1))
-    (hψ2_xx: Differentiable ℝ (momentumOperator Q.ℏ ψ2)):
+    (hψ2_xx: Differentiable ℝ (momentumOperator Q.ℏ ψ2)) :
     schrodingerOperator Q ((a1 • ψ1) + (a2 • ψ2)) =
     a1 • schrodingerOperator Q ψ1 + a2 • schrodingerOperator Q ψ2 := by
   unfold schrodingerOperator
   rw [momentumOperator_sq_linear]
   rw [fun_smul a1 (fun x => 1 / (2 * Q.m) *
-    (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1) x) + (Q.V x) *  ψ1 x)]
+    (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1) x) + (Q.V x) * ψ1 x)]
   rw [fun_smul a2 (fun x => 1 / (2 * Q.m) *
-    (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2) x) + (Q.V x) *  ψ2 x)]
+    (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2) x) + (Q.V x) * ψ2 x)]
   rw [fun_add (fun x => a1*(1 / (2 * Q.m) *
-    (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1) x) + (Q.V x) *  ψ1 x)) _]
+    (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1) x) + (Q.V x) * ψ1 x)) _]
   ext x
   rw [eval_add, mul_add]
   rw [eval_add, mul_add]
@@ -201,9 +198,9 @@ lemma schrodingerOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   exact hψ2_xx
 
 /-- The proposition on `Q` corresponding to the condition that
-  `Q.V` is bounded from below.-/
+  `Q.V` is bounded from below. -/
 def Bounded : Prop :=
-  (∃ E, ∃ R, ∀ z < -R, E < Q.V z ) ∧ ∃ E, ∃ R, ∀ z > R, E < Q.V z
+  (∃ E, ∃ R, ∀ z < -R, E < Q.V z) ∧ ∃ E, ∃ R, ∀ z > R, E < Q.V z
 
 end GeneralPotential
 
