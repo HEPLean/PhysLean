@@ -64,19 +64,15 @@ lemma succsAbove_predAboveI {i x : Fin n.succ.succ} (h : i ≠ x) :
     omega
   · rename_i h1 h2
     simp only [Fin.succ_mk, Nat.succ_eq_add_one]
-    simp only [not_lt] at h1
-    rw [Fin.le_def] at h1
+    rw [not_lt, Fin.le_def] at h1
     omega
 
 lemma predAboveI_eq_iff {i x : Fin n.succ.succ} (h : i ≠ x) (y : Fin n.succ) :
     y = predAboveI i x ↔ i.succAbove y = x := by
-  apply Iff.intro
-  · intro h
-    subst h
+  apply Iff.intro <;> intro h
+  · subst h
     rw [succsAbove_predAboveI h]
-  · intro h
-    rw [← h]
-    simp
+  · simp [← h]
 
 lemma predAboveI_lt {i x : Fin n.succ.succ} (h : x.val < i.val) :
     predAboveI i x = ⟨x.val, by omega⟩ := by
@@ -92,13 +88,11 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
     (i.succAbove j).succAbove ((predAboveI (i.succAbove j) i).succAbove x) := by
   by_cases h1 : j.castSucc < i
   · have hx := Fin.succAbove_of_castSucc_lt _ _ h1
-    rw [hx]
-    rw [predAboveI_ge h1]
+    rw [hx, predAboveI_ge h1]
     by_cases hx1 : x.castSucc < j
-    · rw [Fin.succAbove_of_castSucc_lt _ _ hx1]
-      rw [Fin.succAbove_of_castSucc_lt _ _]
-      · nth_rewrite 2 [Fin.succAbove_of_castSucc_lt _ _]
-        · rw [Fin.succAbove_of_castSucc_lt _ _]
+    · rw [Fin.succAbove_of_castSucc_lt _ _ hx1, Fin.succAbove_of_castSucc_lt]
+      · nth_rewrite 2 [Fin.succAbove_of_castSucc_lt]
+        · rw [Fin.succAbove_of_castSucc_lt]
           exact hx1
         · rw [Fin.lt_def] at h1 hx1 ⊢
           simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc]
@@ -110,10 +104,10 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
       rw [Fin.succAbove_of_le_castSucc _ _ hx1]
       by_cases hx2 : x.succ.castSucc < i
       · rw [Fin.succAbove_of_castSucc_lt _ _ hx2]
-        nth_rewrite 2 [Fin.succAbove_of_castSucc_lt _ _]
+        nth_rewrite 2 [Fin.succAbove_of_castSucc_lt]
         · rw [Fin.succAbove_of_le_castSucc]
           · rfl
-          · exact hx1
+          · assumption
         · rw [Fin.lt_def] at hx2 ⊢
           simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ]
           omega
@@ -127,13 +121,11 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
           simp_all
   · simp only [Nat.succ_eq_add_one, not_lt] at h1
     have hx := Fin.succAbove_of_le_castSucc _ _ h1
-    rw [hx]
-    rw [predAboveI_lt (Nat.lt_add_one_of_le h1)]
+    rw [hx, predAboveI_lt (Nat.lt_add_one_of_le h1)]
     by_cases hx1 : j ≤ x.castSucc
-    · rw [Fin.succAbove_of_le_castSucc _ _ hx1]
-      rw [Fin.succAbove_of_le_castSucc _ _]
+    · rw [Fin.succAbove_of_le_castSucc _ _ hx1, Fin.succAbove_of_le_castSucc _ _]
       · nth_rewrite 2 [Fin.succAbove_of_le_castSucc _ _]
-        · rw [Fin.succAbove_of_le_castSucc _ _]
+        · rw [Fin.succAbove_of_le_castSucc]
           rw [Fin.le_def] at hx1 ⊢
           simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ, add_le_add_iff_right]
         · rw [Fin.le_def] at h1 hx1 ⊢
@@ -148,8 +140,8 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
       rw [Fin.succAbove_of_castSucc_lt _ _ hx1]
       by_cases hx2 : x.castSucc.castSucc < i
       · rw [Fin.succAbove_of_castSucc_lt _ _ hx2]
-        nth_rewrite 2 [Fin.succAbove_of_castSucc_lt _ _]
-        · rw [Fin.succAbove_of_castSucc_lt _ _]
+        nth_rewrite 2 [Fin.succAbove_of_castSucc_lt]
+        · rw [Fin.succAbove_of_castSucc_lt]
           rw [Fin.lt_def] at hx2 ⊢
           simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ]
           omega
@@ -166,7 +158,7 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
 
 /-- The equivalence between `Fin n.succ` and `Fin 1 ⊕ Fin n` extracting the
   `i`th component. -/
-def finExtractOne {n : ℕ} (i : Fin n.succ) : Fin n.succ ≃ Fin 1 ⊕ Fin n :=
+def finExtractOne {n : ℕ} (i : Fin (n + 1)) : Fin (n + 1) ≃ Fin 1 ⊕ Fin n :=
   (finCongr (by omega : n.succ = i + 1 + (n - i))).trans <|
   finSumFinEquiv.symm.trans <|
   (Equiv.sumCongr (finSumFinEquiv.symm.trans (Equiv.sumComm (Fin i) (Fin 1)))
@@ -179,8 +171,7 @@ lemma finExtractOne_apply_eq {n : ℕ} (i : Fin n.succ) :
     finExtractOne i i = Sum.inl 0 := by
   simp only [Nat.succ_eq_add_one, finExtractOne, Equiv.trans_apply, finCongr_apply,
     Equiv.sumCongr_apply, Equiv.coe_trans, Equiv.sumComm_apply, Equiv.coe_refl, Fin.isValue]
-  have h1 :
-      Fin.cast (finExtractOne.proof_1 i) i = Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ := by
+  have h1 : Fin.cast (finExtractOne.proof_1 i) i = Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ :=
     rfl
   rw [h1, finSumFinEquiv_symm_apply_castAdd]
   simp only [Nat.succ_eq_add_one, Sum.map_inl, Function.comp_apply, Fin.isValue]
@@ -240,7 +231,7 @@ lemma finExtractOne_symm_inl_apply {n : ℕ} (i : Fin n.succ) :
     (finExtractOne i).symm (Sum.inl 0) = i := by
   rfl
 
-lemma finExtractOne_apply_neq {n : ℕ} (i j : Fin n.succ.succ) (hij : i ≠ j) :
+lemma finExtractOne_apply_neq {n : ℕ} (i j : Fin (n + 1 + 1)) (hij : i ≠ j) :
     finExtractOne i j = Sum.inr (predAboveI i j) := by
   symm
   apply (Equiv.symm_apply_eq _).mp ?_
@@ -261,7 +252,7 @@ lemma finExtractOnPermHom_inv {m : ℕ} (i : Fin n.succ.succ)
   by_cases h : σ (i.succAbove x) < σ i
   · rw [predAboveI_lt h, Fin.succAbove_of_castSucc_lt]
     · simp
-    · simp_all [Fin.lt_def]
+    · simp_all
   have hσ : σ (i.succAbove x) ≠ σ i := by
     simp only [Nat.succ_eq_add_one, ne_eq, EmbeddingLike.apply_eq_iff_eq]
     exact Fin.succAbove_ne i x
@@ -283,10 +274,8 @@ def finExtractOnePerm {m : ℕ} (i : Fin n.succ.succ) (σ : Fin n.succ.succ ≃ 
     Fin n.succ ≃ Fin m.succ where
   toFun x := finExtractOnPermHom i σ x
   invFun x := finExtractOnPermHom (σ i) σ.symm x
-  left_inv x := by
-    simpa using congrFun (finExtractOnPermHom_inv i σ) x
-  right_inv x := by
-    simpa using congrFun (finExtractOnPermHom_inv (σ i) σ.symm) x
+  left_inv x := by simpa using congrFun (finExtractOnPermHom_inv i σ) x
+  right_inv x := by simpa using congrFun (finExtractOnPermHom_inv (σ i) σ.symm) x
 
 lemma finExtractOnePerm_equiv {n m : ℕ} (e : Fin n.succ.succ ≃ Fin m.succ.succ)
     (i : Fin n.succ.succ) :
@@ -320,9 +309,7 @@ def finExtractTwo {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
 @[simp]
 lemma finExtractTwo_apply_fst {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     finExtractTwo i j i = Sum.inl (Sum.inl 0) := by
-  simp only [Nat.succ_eq_add_one, finExtractTwo, Equiv.trans_apply, Equiv.sumCongr_apply,
-    Equiv.coe_refl, Fin.isValue]
-  simp [finExtractOne_apply_eq]
+  simp [finExtractTwo]
 
 lemma finExtractTwo_symm_inr {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     (finExtractTwo i j).symm ∘ Sum.inr = i.succAbove ∘ j.succAbove := by
@@ -333,14 +320,12 @@ lemma finExtractTwo_symm_inr {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
 @[simp]
 lemma finExtractTwo_symm_inr_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) (x : Fin n) :
     (finExtractTwo i j).symm (Sum.inr x) = i.succAbove (j.succAbove x) := by
-  rw [finExtractTwo]
-  simp
+  simp [finExtractTwo]
 
 @[simp]
 lemma finExtractTwo_symm_inl_inr_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     (finExtractTwo i j).symm (Sum.inl (Sum.inr 0)) = i.succAbove j := by
-  rw [finExtractTwo]
-  simp
+  simp [finExtractTwo]
 
 @[simp]
 lemma finExtractTwo_symm_inl_inl_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
@@ -349,8 +334,7 @@ lemma finExtractTwo_symm_inl_inl_apply {n : ℕ} (i : Fin n.succ.succ) (j : Fin 
 @[simp]
 lemma finExtractTwo_apply_snd {n : ℕ} (i : Fin n.succ.succ) (j : Fin n.succ) :
     finExtractTwo i j (i.succAbove j) = Sum.inl (Sum.inr 0) := by
-  rw [← Equiv.eq_symm_apply]
-  simp
+  simp [← Equiv.eq_symm_apply]
 
 /-- Takes two maps `Fin n → Fin n` and returns the equivalence they form. -/
 def finMapToEquiv (f1 : Fin n → Fin m) (f2 : Fin m → Fin n)
@@ -373,8 +357,7 @@ lemma finMapToEquiv_symm_apply {f1 : Fin n → Fin m} {f2 : Fin m → Fin n}
 
 lemma finMapToEquiv_symm_eq {f1 : Fin n → Fin m} {f2 : Fin m → Fin n}
     {h : ∀ x, f1 (f2 x) = x} {h' : ∀ x, f2 (f1 x) = x} :
-    (finMapToEquiv f1 f2 h h').symm = finMapToEquiv f2 f1 h' h := by
-  rfl
+    (finMapToEquiv f1 f2 h h').symm = finMapToEquiv f2 f1 h' h := rfl
 
 /-- Given an equivalence between `Fin n` and `Fin m`, the induced equivalence between
   `Fin n.succ` and `Fin m.succ` derived by `Fin.cons`. -/
@@ -383,18 +366,14 @@ def equivCons {n m : ℕ} (e : Fin n ≃ Fin m) : Fin n.succ ≃ Fin m.succ wher
   invFun := Fin.cons 0 (Fin.succ ∘ e.invFun)
   left_inv i := by
     rcases Fin.eq_zero_or_eq_succ i with hi | hi
-    · subst hi
-      simp
+    · simp [hi]
     · obtain ⟨j, hj⟩ := hi
-      subst hj
-      simp
+      simp [hj]
   right_inv i := by
     rcases Fin.eq_zero_or_eq_succ i with hi | hi
-    · subst hi
-      simp
+    · simp [hi]
     · obtain ⟨j, hj⟩ := hi
-      subst hj
-      simp
+      simp [hj]
 
 @[simp]
 lemma equivCons_zero {n m : ℕ} (e : Fin n ≃ Fin m) :
@@ -404,8 +383,7 @@ lemma equivCons_zero {n m : ℕ} (e : Fin n ≃ Fin m) :
 @[simp]
 lemma equivCons_trans {n m k : ℕ} (e : Fin n ≃ Fin m) (f : Fin m ≃ Fin k) :
     Fin.equivCons (e.trans f) = (Fin.equivCons e).trans (Fin.equivCons f) := by
-  refine Equiv.ext_iff.mpr ?_
-  intro x
+  refine Equiv.ext_iff.mpr fun x ↦ ?_
   simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.coe_trans,
     Equiv.invFun_as_coe, Equiv.coe_fn_mk, Equiv.trans_apply]
   match x with
@@ -415,8 +393,7 @@ lemma equivCons_trans {n m k : ℕ} (e : Fin n ≃ Fin m) (f : Fin m ≃ Fin k) 
 @[simp]
 lemma equivCons_castOrderIso {n m : ℕ} (h : n = m) :
     (Fin.equivCons (Fin.castOrderIso h).toEquiv) = (Fin.castOrderIso (by simp [h])).toEquiv := by
-  refine Equiv.ext_iff.mpr ?_
-  intro x
+  refine Equiv.ext_iff.mpr fun x ↦ ?_
   simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, RelIso.coe_fn_toEquiv,
     Equiv.invFun_as_coe, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, Equiv.coe_fn_mk,
     Fin.castOrderIso_apply]
@@ -430,8 +407,7 @@ lemma equivCons_symm_succ {n m : ℕ} (e : Fin n ≃ Fin m) (i : ℕ) (hi : i + 
   simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.invFun_as_coe,
     Equiv.coe_fn_symm_mk]
   have hi : ⟨i + 1, hi⟩ = Fin.succ ⟨i, Nat.succ_lt_succ_iff.mp hi⟩ := by rfl
-  rw [hi]
-  rw [Fin.cons_succ]
+  rw [hi, Fin.cons_succ]
   simp
 
 @[simp]
@@ -441,8 +417,7 @@ lemma equivCons_succ {n m : ℕ} (e : Fin n ≃ Fin m) (i : ℕ) (hi : i + 1 < n
     Equiv.coe_fn_symm_mk]
   have hi : ⟨i + 1, hi⟩ = Fin.succ ⟨i, Nat.succ_lt_succ_iff.mp hi⟩ := by rfl
   simp only [Equiv.coe_fn_mk]
-  rw [hi]
-  rw [Fin.cons_succ]
+  rw [hi, Fin.cons_succ]
   rfl
 
 end PhysLean.Fin

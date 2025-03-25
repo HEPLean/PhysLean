@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
 import PhysLean.Particles.StandardModel.HiggsBoson.GaugeAction
-import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Analysis.CStarAlgebra.Matrix
 /-!
 

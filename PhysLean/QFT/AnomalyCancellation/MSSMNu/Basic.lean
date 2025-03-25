@@ -138,7 +138,7 @@ def accGrav : MSSMCharges.Charges →ₗ[ℚ] ℚ where
     repeat rw [map_add]
     simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
       toSMSpecies_apply, reduceMul, Fin.isValue, mul_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
-    repeat erw [Finset.sum_add_distrib]
+    repeat rw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
@@ -146,9 +146,8 @@ def accGrav : MSSMCharges.Charges →ₗ[ℚ] ℚ where
     erw [Hd.map_smul, Hu.map_smul]
     simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
       reduceMul, Hd_apply, Fin.reduceFinMk, Hu_apply, eq_ratCast, Rat.cast_eq_id, id_eq]
-    repeat erw [Finset.sum_add_distrib]
-    repeat erw [← Finset.mul_sum]
-    --rw [show Rat.cast a = a from rfl]
+    repeat rw [Finset.sum_add_distrib]
+    repeat rw [← Finset.mul_sum]
     ring
 
 /-- Extensionality lemma for `accGrav`. -/

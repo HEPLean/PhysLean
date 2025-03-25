@@ -275,7 +275,7 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
   · have hx : norm (g 2) = -1 := by
       simp [h2, ← ofReal_inj, Fin.isValue, ofReal_neg, ofReal_one]
     have h3 := norm_nonneg (g 2)
-    simp_all
+    simp_all only [ofReal_neg, ofReal_one, Left.nonneg_neg_iff]
     have h4 : (0 : ℝ) < 1 := by norm_num
     exact False.elim (lt_iff_not_le.mp h4 h3)
   · have hx : [V]t = (g 2)⁻¹ • (conj ([V]u) ×₃ conj ([V]c)) := by

@@ -148,7 +148,7 @@ def perturbationTheory : Note where
     .h1 "Introduction",
     .name `FieldSpecification.wicks_theorem_context .incomplete,
     .p "In this note we walk through the important parts of the proof of the three versions of
-      Wick's theorem for field operators containing carrying both fermionic and bosonic statitics,
+      Wick's theorem for field operators containing carrying both fermionic and bosonic statistics,
       as it appears in PhysLean. Not every lemma or definition is covered here.
       The aim is to give just enough that the story can be understood.",
     .p "
@@ -302,11 +302,11 @@ def harmonicOscillator : Note where
      Lean 4, as part of the larger project PhysLean.
      What this means is that every definition and theorem in this note has been formally checked
      for mathematical correctness for by a computer. There are a number of
-     motivations for doing this which are dicussed <a href = 'https://heplean.com'>here</a>.",
+     motivations for doing this which are discussed <a href = 'https://heplean.com'>here</a>.",
     .p "Note that we do not give every definition and theorem which is part of
       the formalization.
      Our goal is give key aspects, in such a way that we hope this note will be useful
-     to newcomers to Lean or those intrested in simply intrested in learning about the
+     to newcomers to Lean or those simply intrested in learning about the
      quantum harmonic oscillator.",
     .h1 "Hilbert Space",
     .name ``QuantumMechanics.OneDimension.HilbertSpace .complete,

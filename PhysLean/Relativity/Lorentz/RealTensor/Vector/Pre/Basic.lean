@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Lorentz.RealVector.Modules
+import PhysLean.Relativity.Lorentz.RealTensor.Vector.Pre.Modules
 /-!
 
 # Real Lorentz vectors
@@ -25,6 +25,37 @@ open minkowskiMatrix
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
 def Contr (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of ContrMod.rep
 
+/-- The standard basis of contravariant Lorentz vectors. -/
+def contrBasis (d : ℕ := 3) : Basis (Fin 1 ⊕ Fin d) ℝ (Contr d) :=
+  Basis.ofEquivFun ContrMod.toFin1dℝEquiv
+
+@[simp]
+lemma contrBasis_ρ_apply {d : ℕ} (M : LorentzGroup d) (i j : Fin 1 ⊕ Fin d) :
+    (LinearMap.toMatrix (contrBasis d) (contrBasis d)) ((Contr d).ρ M) i j =
+    M.1 i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [contrBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change (M.1 *ᵥ (Pi.single j 1)) i = _
+  simp
+
+@[simp]
+lemma contrBasis_toFin1dℝ {d : ℕ} (i : Fin (1) ⊕ Fin d) :
+    (contrBasis d i).toFin1dℝ = Pi.single i 1 := by
+  simp only [ContrMod.toFin1dℝ, contrBasis, Basis.coe_ofEquivFun]
+  rfl
+
+/-- The standard basis of contravariant Lorentz vectors indexed by `Fin (1 + d)`. -/
+def contrBasisFin (d : ℕ := 3) : Basis (Fin (1 + d)) ℝ (Contr d) :=
+  Basis.reindex (contrBasis d) finSumFinEquiv
+
+@[simp]
+lemma contrBasisFin_toFin1dℝ {d : ℕ} (i : Fin (1 + d)) :
+    (contrBasisFin d i).toFin1dℝ = Pi.single (finSumFinEquiv.symm i) 1 := by
+  simp only [contrBasisFin, Basis.reindex_apply, contrBasis_toFin1dℝ, Basis.coe_ofEquivFun]
+
+lemma contrBasisFin_repr_apply {d : ℕ} (p : Contr d) (i : Fin (1 + d)) :
+    (contrBasisFin d).repr p i = p.val (finSumFinEquiv.symm i) := by rfl
+
 /-- The representation of contravariant Lorentz vectors forms a topological space, induced
   by its equivalence to `Fin 1 ⊕ Fin d → ℝ`. -/
 instance : TopologicalSpace (Contr d) := TopologicalSpace.induced
@@ -44,6 +75,34 @@ lemma contr_continuous {T : Type} [TopologicalSpace T] (f : Contr d → T)
 /-- The representation of `LorentzGroup d` on real vectors corresponding to covariant
   Lorentz vectors. In index notation these have an up index `ψⁱ`. -/
 def Co (d : ℕ) : Rep ℝ (LorentzGroup d) := Rep.of CoMod.rep
+
+/-- The standard basis of contravariant Lorentz vectors. -/
+def coBasis (d : ℕ := 3) : Basis (Fin 1 ⊕ Fin d) ℝ (Co d) :=
+  Basis.ofEquivFun CoMod.toFin1dℝEquiv
+
+@[simp]
+lemma coBasis_ρ_apply {d : ℕ} (M : LorentzGroup d) (i j : Fin 1 ⊕ Fin d) :
+    (LinearMap.toMatrix (coBasis d) (coBasis d)) ((Co d).ρ M) i j =
+    M⁻¹ᵀ i j := by
+  rw [LinearMap.toMatrix_apply]
+  simp only [coBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  change (_ *ᵥ (Pi.single j 1)) i = _
+  simp [LorentzGroup.transpose, ← LorentzGroup.coe_inv]
+
+@[simp]
+lemma coBasis_toFin1dℝ {d : ℕ} (i : Fin (1) ⊕ Fin d) :
+    (coBasis d i).toFin1dℝ = Pi.single i 1 := by
+  simp only [ContrMod.toFin1dℝ, coBasis, Basis.coe_ofEquivFun]
+  rfl
+
+/-- The standard basis of covaraitn Lorentz vectors indexed by `Fin (1 + d)`. -/
+def coBasisFin (d : ℕ := 3) : Basis (Fin (1 + d)) ℝ (Co d) :=
+  Basis.reindex (coBasis d) finSumFinEquiv
+
+@[simp]
+lemma coBasisFin_toFin1dℝ {d : ℕ} (i : Fin (1 + d)) :
+    (coBasisFin d i).toFin1dℝ = Pi.single (finSumFinEquiv.symm i) 1 := by
+  simp only [coBasisFin, Basis.reindex_apply, coBasis_toFin1dℝ, Basis.coe_ofEquivFun]
 
 open CategoryTheory.MonoidalCategory
 

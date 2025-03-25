@@ -48,7 +48,7 @@ def pairIso (c : C) : (pair F).obj (Discrete.mk c) ≅ (lift.obj F).obj (OverCol
 /-- The isomorphism between `F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2)` and
   `(lift.obj F).obj (OverColor.mk ![c1,c2])` formed by the tensor. -/
 def pairIsoSep {c1 c2 : C} : F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) ≅
-    (lift.obj F).obj (OverColor.mk ![c1,c2]) := by
+    (lift.obj F).obj (OverColor.mk (![c1 ,c2] : Fin 2 → C)) := by
   symm
   apply ((lift.obj F).mapIso fin2Iso).trans
   apply (Functor.Monoidal.μIso (lift.obj F).toFunctor _ _).symm.trans
@@ -67,8 +67,13 @@ def pairIsoSep {c1 c2 : C} : F.obj (Discrete.mk c1) ⊗ F.obj (Discrete.mk c2) �
     rfl
 
 lemma pairIsoSep_tmul {c1 c2 : C} (x : F.obj (Discrete.mk c1)) (y : F.obj (Discrete.mk c2)) :
-    (pairIsoSep F).hom.hom (x ⊗ₜ[k] y) =
+    ((pairIsoSep F).hom.hom :
+      (F.obj (Discrete.mk c1)).V ⊗ (F.obj (Discrete.mk c2)).V ⟶  _ ) (x ⊗ₜ[k] y) =
     PiTensorProduct.tprod k (Fin.cases x (Fin.cases y (fun i => Fin.elim0 i))) := by
+  conv_lhs =>
+    simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
+      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.instMonoidalCategory_tensorObj_V,
     pairIsoSep, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     forgetLiftApp, Iso.trans_symm, Iso.symm_symm_eq, Iso.trans_assoc, Iso.trans_hom, Iso.symm_hom,

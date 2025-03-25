@@ -4,10 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.SpaceTime.Basic
-import Mathlib.Tactic.Polyrith
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Instances.Real
-import PhysLean.Meta.Informal.Basic
 /-!
 
 # The Higgs field
@@ -87,14 +85,15 @@ TODO "Make `HiggsBundle` an associated bundle."
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
 /-- The instance of a smooth vector bundle with total space `HiggsBundle` and fiber `HiggsVec`. -/
-instance : ContMDiffVectorBundle ⊤ HiggsVec HiggsBundle SpaceTime.asSmoothManifold :=
+instance : ContMDiffVectorBundle ⊤ HiggsVec HiggsBundle (Lorentz.Vector.asSmoothManifold 3) :=
   Bundle.Trivial.contMDiffVectorBundle HiggsVec
 
 /-- The type `HiggsField` is defined such that elements are smooth sections of the trivial
   vector bundle `HiggsBundle`. Such elements are Higgs fields. Since `HiggsField` is
   trivial as a vector bundle, a Higgs field is equivalent to a smooth map
   from `SpaceTime` to `HiggsVec`. -/
-abbrev HiggsField : Type := ContMDiffSection SpaceTime.asSmoothManifold HiggsVec ⊤ HiggsBundle
+abbrev HiggsField : Type := ContMDiffSection
+  (Lorentz.Vector.asSmoothManifold 3) HiggsVec ⊤ HiggsBundle
 
 /-- Given a vector in `HiggsVec` the constant Higgs field with value equal to that
 section. -/

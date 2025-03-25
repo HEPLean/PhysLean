@@ -104,14 +104,12 @@ def pauliCoMap := ((Sum.elim ![Color.down, Color.down] ![Color.up, Color.upL, Co
 
 -/
 lemma pauliContr_ofRat : pauliContr = ofRat (fun b =>
-    if b = (fun | (0 : Fin 3) => 0 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 0 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 0 | 2 => 1) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 1 | 2 => 0) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 2 | 1 => 0 | 2 => 1) then ⟨0, -1⟩ else
-    if b = (fun | 0 => 2 | 1 => 1 | 2 => 0) then ⟨0, 1⟩ else
-    if b = (fun | 0 => 3 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 3 | 1 => 1 | 2 => 1) then ⟨-1, 0⟩ else 0) := by
+    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
+    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨1, 0⟩ else
+    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, -1⟩ else
+    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, 1⟩ else
+    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨1, 0⟩ else
+    if b 0 = 3 ∧ b 1 = 3 ∧ b 2 = 3 then ⟨-1, 0⟩ else 0) := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [pauliContr_tensorBasis]
@@ -120,24 +118,23 @@ lemma pauliContr_ofRat : pauliContr = ofRat (fun b =>
     head_cons]
   repeat rw [tensorBasis_eq_ofRat]
   simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
-    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
   simp only [Fin.isValue, ← map_add, ← map_sub]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
   decide +kernel
 
 lemma pauliCo_ofRat : pauliCo = ofRat (fun b =>
-    if b = (fun | (0 : Fin 3) => 0 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 0 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 0 | 2 => 1) then ⟨-1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 1 | 2 => 0) then ⟨-1, 0⟩ else
-    if b = (fun | 0 => 2 | 1 => 0 | 2 => 1) then ⟨0, 1⟩ else
-    if b = (fun | 0 => 2 | 1 => 1 | 2 => 0) then ⟨0, -1⟩ else
-    if b = (fun | 0 => 3 | 1 => 0 | 2 => 0) then ⟨-1, 0⟩ else
-    if b = (fun | 0 => 3 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else ⟨0, 0⟩) := by
+    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
+    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨-1, 0⟩ else
+    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, 1⟩ else
+    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, -1⟩ else
+    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨-1, 0⟩ else
+    if b 0 = 3 ∧ b 1 = 1 ∧ b 2 = 1 then ⟨1, 0⟩ else ⟨0, 0⟩) := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [pauliCo]
+  rw [TensorTree.perm_tensorBasis_repr_apply]
   rw [TensorTree.contr_tensorBasis_repr_apply]
   conv_lhs =>
     enter [2, x]
@@ -153,17 +150,16 @@ lemma pauliCo_ofRat : pauliCo = ofRat (fun b =>
   decide +kernel
 
 lemma pauliCoDown_ofRat : pauliCoDown = ofRat (fun b =>
-    if b = (fun | (0 : Fin 3) => 0 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 0 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 0 | 2 => 1) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 1 | 2 => 0) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 2 | 1 => 0 | 2 => 1) then ⟨0, -1⟩ else
-    if b = (fun | 0 => 2 | 1 => 1 | 2 => 0) then ⟨0, 1⟩ else
-    if b = (fun | 0 => 3 | 1 => 1 | 2 => 1) then ⟨-1, 0⟩ else
-    if b = (fun | 0 => 3 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else ⟨0, 0⟩) := by
+    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
+    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨1, 0⟩ else
+    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, -1⟩ else
+    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, 1⟩ else
+    if b 0 = 3 ∧ b 1 = 1 ∧ b 2 = 1 then ⟨-1, 0⟩ else
+    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨1, 0⟩ else ⟨0, 0⟩) := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [pauliCoDown]
+  rw [TensorTree.perm_tensorBasis_repr_apply]
   rw [TensorTree.contr_tensorBasis_repr_apply]
   conv_lhs =>
     enter [2, x]
@@ -191,17 +187,16 @@ lemma pauliCoDown_ofRat : pauliCoDown = ofRat (fun b =>
   decide +kernel
 
 lemma pauliContrDown_ofRat : pauliContrDown = ofRat (fun b =>
-    if b = (fun | (0 : Fin 3) => 0 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 0 | 1 => 0 | 2 => 0) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 0 | 2 => 1) then ⟨-1, 0⟩ else
-    if b = (fun | 0 => 1 | 1 => 1 | 2 => 0) then ⟨-1, 0⟩ else
-    if b = (fun | 0 => 2 | 1 => 0 | 2 => 1) then ⟨0, 1⟩ else
-    if b = (fun | 0 => 2 | 1 => 1 | 2 => 0) then ⟨0, -1⟩ else
-    if b = (fun | 0 => 3 | 1 => 1 | 2 => 1) then ⟨1, 0⟩ else
-    if b = (fun | 0 => 3 | 1 => 0 | 2 => 0) then ⟨-1, 0⟩ else 0) := by
+    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
+    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨-1, 0⟩ else
+    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, 1⟩ else
+    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, -1⟩ else
+    if b 0 = 3 ∧ b 1 = 1 ∧ b 2 = 1 then ⟨1, 0⟩ else
+    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨-1, 0⟩ else 0) := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [pauliContrDown]
+  rw [TensorTree.perm_tensorBasis_repr_apply]
   rw [TensorTree.contr_tensorBasis_repr_apply]
   conv_lhs =>
     enter [2, x]

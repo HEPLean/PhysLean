@@ -267,11 +267,9 @@ end monoidal
 /-- Make an object of `OverColor C` from a map `X → C`. -/
 def mk (f : X → C) : OverColor C := Over.mk f
 
-@[simp]
 lemma mk_hom (f : X → C) : (mk f).hom = f := rfl
 open MonoidalCategory
 
-@[simp]
 lemma mk_left (f : X → C) : (mk f).left = X := rfl
 
 lemma Hom.fin_ext {n : ℕ} {f g : Fin n → C} (σ σ' : OverColor.mk f ⟶ OverColor.mk g)

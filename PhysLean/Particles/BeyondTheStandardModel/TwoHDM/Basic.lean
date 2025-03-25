@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.StandardModel.HiggsBoson.Potential
-import PhysLean.Meta.TODO.Basic
 /-!
 
 # The Two Higgs Doublet Model
@@ -22,6 +21,10 @@ open ComplexConjugate
 open HiggsField
 
 noncomputable section
+
+TODO "Within the definition of the 2HDM potential. The structure `Potential` should be
+  renamed to TwoHDM and moved out of the TwoHDM namespace.
+  Then `toFun` should be renamed to `potential`."
 
 /-- The parameters of the Two Higgs doublet model potential. -/
 structure Potential where

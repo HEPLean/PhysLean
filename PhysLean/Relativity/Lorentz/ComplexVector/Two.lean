@@ -33,7 +33,7 @@ lemma contrContrToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 �
   simp only [Action.instMonoidalCategory_tensorObj_V, contrContrToMatrix, LinearEquiv.trans_symm,
     LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply complexContrBasis complexContrBasis i j]
     rfl
@@ -52,7 +52,7 @@ lemma coCoToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin
   simp only [Action.instMonoidalCategory_tensorObj_V, coCoToMatrix, LinearEquiv.trans_symm,
     LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply complexCoBasis complexCoBasis i j]
     rfl
@@ -71,7 +71,7 @@ lemma contrCoToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ 
   simp only [Action.instMonoidalCategory_tensorObj_V, contrCoToMatrix, LinearEquiv.trans_symm,
     LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply complexContrBasis complexCoBasis i j]
     rfl
@@ -90,7 +90,7 @@ lemma coContrToMatrix_symm_expand_tmul (M : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ 
   simp only [Action.instMonoidalCategory_tensorObj_V, coContrToMatrix, LinearEquiv.trans_symm,
     LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply complexCoBasis complexContrBasis i j]
     rfl
@@ -126,7 +126,7 @@ lemma contrContrToMatrix_ρ (v : (complexContr ⊗ complexContr).V) (M : SL(2,�
         ((LinearMap.toMatrix complexContrBasis complexContrBasis) (complexContr.ρ M))
         ((LinearMap.toMatrix complexContrBasis complexContrBasis) (complexContr.ρ M)) (i, j) k)
         * contrContrToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x, (∑ x1, LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1 *
       contrContrToMatrix v x1 x) * LorentzGroup.toComplex (SL2C.toLorentzGroup M) j x
@@ -168,7 +168,7 @@ lemma coCoToMatrix_ρ (v : (complexCo ⊗ complexCo).V) (M : SL(2,ℂ)) :
         ((LinearMap.toMatrix complexCoBasis complexCoBasis) (complexCo.ρ M))
         ((LinearMap.toMatrix complexCoBasis complexCoBasis) (complexCo.ρ M)) (i, j) k)
         * coCoToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x, (∑ x1, (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i *
       coCoToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x j
@@ -210,7 +210,7 @@ lemma contrCoToMatrix_ρ (v : (complexContr ⊗ complexCo).V) (M : SL(2,ℂ)) :
         ((LinearMap.toMatrix complexContrBasis complexContrBasis) (complexContr.ρ M))
         ((LinearMap.toMatrix complexCoBasis complexCoBasis) (complexCo.ρ M)) (i, j) k)
         * contrCoToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply]
   have h1 : ∑ x, (∑ x1, LorentzGroup.toComplex (SL2C.toLorentzGroup M) i x1 *
       contrCoToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x j
@@ -253,7 +253,7 @@ lemma coContrToMatrix_ρ (v : (complexCo ⊗ complexContr).V) (M : SL(2,ℂ)) :
         ((LinearMap.toMatrix complexCoBasis complexCoBasis) (complexCo.ρ M))
         ((LinearMap.toMatrix complexContrBasis complexContrBasis) (complexContr.ρ M)) (i, j) k)
         * coContrToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x, (∑ x1, (LorentzGroup.toComplex (SL2C.toLorentzGroup M))⁻¹ x1 i *
       coContrToMatrix v x1 x) * (LorentzGroup.toComplex (SL2C.toLorentzGroup M)) j x

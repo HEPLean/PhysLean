@@ -38,9 +38,11 @@ lemma leftLeftToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, leftLeftToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-    erw [Basis.tensorProduct_apply leftBasis leftBasis i j]
+    conv_lhs =>
+      enter [2]
+      erw [Basis.tensorProduct_apply leftBasis leftBasis i j]
     rfl
   · simp
 
@@ -56,7 +58,7 @@ lemma altLeftaltLeftToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, altLeftaltLeftToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply altLeftBasis altLeftBasis i j]
     rfl
@@ -74,7 +76,7 @@ lemma leftAltLeftToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, leftAltLeftToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply leftBasis altLeftBasis i j]
     rfl
@@ -92,7 +94,7 @@ lemma altLeftLeftToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, altLeftLeftToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply altLeftBasis leftBasis i j]
     rfl
@@ -110,7 +112,7 @@ lemma rightRightToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, rightRightToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply rightBasis rightBasis i j]
     rfl
@@ -129,7 +131,7 @@ lemma altRightAltRightToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ)
   simp only [Action.instMonoidalCategory_tensorObj_V, altRightAltRightToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply altRightBasis altRightBasis i j]
     rfl
@@ -147,7 +149,7 @@ lemma rightAltRightToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, rightAltRightToMatrix, LinearEquiv.trans_symm,
     LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply rightBasis altRightBasis i j]
     rfl
@@ -165,7 +167,7 @@ lemma altRightRightToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, altRightRightToMatrix, LinearEquiv.trans_symm,
     LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply altRightBasis rightBasis i j]
     rfl
@@ -183,7 +185,7 @@ lemma altLeftAltRightToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) 
   simp only [Action.instMonoidalCategory_tensorObj_V, altLeftAltRightToMatrix,
     LinearEquiv.trans_symm, LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply altLeftBasis altRightBasis i j]
     rfl
@@ -201,7 +203,7 @@ lemma leftRightToMatrix_symm_expand_tmul (M : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [Action.instMonoidalCategory_tensorObj_V, leftRightToMatrix, LinearEquiv.trans_symm,
     LinearEquiv.trans_apply, Basis.repr_symm_apply]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℂ (s := Finset.univ)]
-  · erw [Finset.sum_product]
+  · rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     erw [Basis.tensorProduct_apply leftBasis rightBasis i j]
     rfl
@@ -236,7 +238,7 @@ lemma leftLeftToMatrix_ρ (v : (leftHanded ⊗ leftHanded).V) (M : SL(2,ℂ)) :
         ((LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M))
         ((LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M)) (i, j) k)
         * leftLeftToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ j : Fin 2, M.1 i j * leftLeftToMatrix v j x) * M.1 j x
     = ∑ x : Fin 2, ∑ x1 : Fin 2, (M.1 i x1 * leftLeftToMatrix v x1 x) * M.1 j x := by
@@ -279,7 +281,7 @@ lemma altLeftaltLeftToMatrix_ρ (v : (altLeftHanded ⊗ altLeftHanded).V) (M : S
         ((LinearMap.toMatrix altLeftBasis altLeftBasis) (altLeftHanded.ρ M))
         ((LinearMap.toMatrix altLeftBasis altLeftBasis) (altLeftHanded.ρ M)) (i, j) k)
         * altLeftaltLeftToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1)⁻¹ x1 i * altLeftaltLeftToMatrix v x1 x) * (M.1)⁻¹ x j
     = ∑ x : Fin 2, ∑ x1 : Fin 2, ((M.1)⁻¹ x1 i * altLeftaltLeftToMatrix v x1 x) * (M.1)⁻¹ x j := by
@@ -319,7 +321,7 @@ lemma leftAltLeftToMatrix_ρ (v : (leftHanded ⊗ altLeftHanded).V) (M : SL(2,�
         ((LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M))
         ((LinearMap.toMatrix altLeftBasis altLeftBasis) (altLeftHanded.ρ M)) (i, j) k)
         * leftAltLeftToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, M.1 i x1 * leftAltLeftToMatrix v x1 x) * (M.1⁻¹) x j
     = ∑ x : Fin 2, ∑ x1 : Fin 2, (M.1 i x1 * leftAltLeftToMatrix v x1 x) * (M.1⁻¹) x j := by
@@ -360,7 +362,7 @@ lemma altLeftLeftToMatrix_ρ (v : (altLeftHanded ⊗ leftHanded).V) (M : SL(2,�
         ((LinearMap.toMatrix altLeftBasis altLeftBasis) (altLeftHanded.ρ M))
         ((LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M)) (i, j) k)
         * altLeftLeftToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1)⁻¹ x1 i * altLeftLeftToMatrix v x1 x) * M.1 j x
     = ∑ x : Fin 2, ∑ x1 : Fin 2, ((M.1)⁻¹ x1 i * altLeftLeftToMatrix v x1 x) * M.1 j x:= by
@@ -401,7 +403,7 @@ lemma rightRightToMatrix_ρ (v : (rightHanded ⊗ rightHanded).V) (M : SL(2,ℂ)
         ((LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M))
         ((LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M)) (i, j) k)
         * rightRightToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1.map star) i x1 * rightRightToMatrix v x1 x) *
       (M.1.map star) j x = ∑ x : Fin 2, ∑ x1 : Fin 2,
@@ -443,7 +445,7 @@ lemma altRightAltRightToMatrix_ρ (v : (altRightHanded ⊗ altRightHanded).V) (M
         ((LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M))
         ((LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M)) (i, j) k)
         * altRightAltRightToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (↑M)⁻¹ᴴ i x1 * altRightAltRightToMatrix v x1 x) *
       (↑M)⁻¹ᴴ j x = ∑ x : Fin 2, ∑ x1 : Fin 2,
@@ -484,7 +486,7 @@ lemma rightAltRightToMatrix_ρ (v : (rightHanded ⊗ altRightHanded).V) (M : SL(
         ((LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M))
         ((LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M)) (i, j) k)
         * rightAltRightToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1.map star) i x1 * rightAltRightToMatrix v x1 x)
       * (↑M)⁻¹ᴴ j x = ∑ x : Fin 2, ∑ x1 : Fin 2,
@@ -526,7 +528,7 @@ lemma altRightRightToMatrix_ρ (v : (altRightHanded ⊗ rightHanded).V) (M : SL(
         ((LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M))
         ((LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M)) (i, j) k)
         * altRightRightToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2,
       (↑M)⁻¹ᴴ i x1 * altRightRightToMatrix v x1 x) * (M.1.map star) j x
@@ -567,7 +569,7 @@ lemma altLeftAltRightToMatrix_ρ (v : (altLeftHanded ⊗ altRightHanded).V) (M :
         ((LinearMap.toMatrix altLeftBasis altLeftBasis) (altLeftHanded.ρ M))
         ((LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M)) (i, j) k)
         * altLeftAltRightToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply, Matrix.transpose_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, (M.1)⁻¹ x1 i * altLeftAltRightToMatrix v x1 x) *
       (M.1)⁻¹ᴴ j x = ∑ x : Fin 2, ∑ x1 : Fin 2,
@@ -607,7 +609,7 @@ lemma leftRightToMatrix_ρ (v : (leftHanded ⊗ rightHanded).V) (M : SL(2,ℂ)) 
         ((LinearMap.toMatrix leftBasis leftBasis) (leftHanded.ρ M))
         ((LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M)) (i, j) k)
         * leftRightToMatrix v k.1 k.2) = _
-  erw [Finset.sum_product]
+  rw [Fintype.sum_prod_type]
   simp_rw [kroneckerMap_apply, Matrix.mul_apply]
   have h1 : ∑ x : Fin 2, (∑ x1 : Fin 2, M.1 i x1 * leftRightToMatrix v x1 x) * (M.1)ᴴ x j
     = ∑ x : Fin 2, ∑ x1 : Fin 2, (M.1 i x1 * leftRightToMatrix v x1 x) * (M.1)ᴴ x j := by

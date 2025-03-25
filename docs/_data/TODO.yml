@@ -11,7 +11,7 @@
   githubLink: https://github.com/HEPLean/HepLean/blob/master/HepLean/AnomalyCancellation/Basic.lean#L18
   line: 18
 
-- content: "Derive an ACC system from a guage algebra and fermionic representations."
+- content: "Derive an ACC system from a gauge algebra and fermionic representations."
   file: HepLean.AnomalyCancellation.Basic
   githubLink: https://github.com/HEPLean/HepLean/blob/master/HepLean/AnomalyCancellation/Basic.lean#L17
   line: 17
@@ -103,7 +103,7 @@
   githubLink: https://github.com/HEPLean/HepLean/blob/master/HepLean/Lorentz/Group/Restricted.lean#L14
   line: 14
 
-- content: "Generalize the inclusion of rotations into LorentzGroup to abitary dimension."
+- content: "Generalize the inclusion of rotations into LorentzGroup to arbitrary dimension."
   file: HepLean.Lorentz.Group.Rotations
   githubLink: https://github.com/HEPLean/HepLean/blob/master/HepLean/Lorentz/Group/Rotations.lean#L14
   line: 14

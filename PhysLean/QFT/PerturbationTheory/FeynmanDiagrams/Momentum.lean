@@ -63,7 +63,7 @@ def euclidInnerAux (x : F.HalfEdgeMomenta) : F.HalfEdgeMomenta →ₗ[ℝ] ℝ w
   map_smul' c y :=
     show (∑ i, x i * (c * y i)) = c * ∑ i, x i * y i by
       rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl (fun _ _ => by ring)
+      exact Finset.sum_congr rfl (fun _ _ => by ring)
 
 lemma euclidInnerAux_symm (x y : F.HalfEdgeMomenta) :
     F.euclidInnerAux x y = F.euclidInnerAux y x := Finset.sum_congr rfl (fun _ _ => by ring)
@@ -149,8 +149,8 @@ the rank of this matrix.
   the map `F.𝓱𝓔To𝓔.hom`. -/
 def edgeToHalfEdgeMomenta : F.EdgeMomenta →ₗ[ℝ] F.HalfEdgeMomenta where
   toFun x := x ∘ F.𝓱𝓔To𝓔.hom
-  map_add' _ _ := by rfl
-  map_smul' _ _ := by rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 /-- The linear map from `F.VertexMomenta` to `F.HalfEdgeMomenta` induced by
   the map `F.𝓱𝓔To𝓥.hom`. -/

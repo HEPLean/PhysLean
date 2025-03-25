@@ -61,7 +61,7 @@ lemma leftMetric_antisymm : {εL | α α' = - (εL| α' α)}ᵀ := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, leftMetric_eq_ofRat, Fin.isValue, cons_val_zero,
     cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
     perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
-    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply]
   simp only [Fin.isValue, ← map_neg]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -74,7 +74,7 @@ lemma rightMetric_antisymm : {εR | β β' = - (εR| β' β)}ᵀ := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, rightMetric_eq_ofRat, Fin.isValue, cons_val_zero,
     cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
     perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
-    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply]
   simp only [Fin.isValue, ← map_neg]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -87,7 +87,7 @@ lemma altLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀ := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altLeftMetric_eq_ofRat, Fin.isValue, cons_val_zero,
     cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
     perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
-    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply]
   simp only [Fin.isValue, ← map_neg]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -100,7 +100,7 @@ lemma altRightMetric_antisymm : {εR' | α α' = - (εR' | α' α)}ᵀ := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altRightMetric_eq_ofRat, Fin.isValue,
     cons_val_zero, cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
     perm_tensorBasis_repr_apply, neg_tensorBasis_repr, OverColor.mk_hom,
-    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply, k_neg]
+    OverColor.equivToHomEq_toEquiv, Finsupp.coe_neg, Pi.neg_apply]
   simp only [Fin.isValue, ← map_neg]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -368,7 +368,7 @@ lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
   rw [add_tensor_eq_fst <| add_tensor_eq_snd <| smul_tensor_eq <| prod_basisVector_tree _ _]
   rw [add_tensor_eq_snd <| add_tensor_eq_fst <| smul_tensor_eq <| prod_basisVector_tree _ _]
   rw [add_tensor_eq_snd <| add_tensor_eq_snd <| prod_basisVector_tree _ _]
-  rw [← add_assoc]
+  rw [← TensorTree.add_assoc]
   simp only [add_tensor, smul_tensor, tensorNode_tensor]
   change _ = basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     +- basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)

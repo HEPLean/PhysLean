@@ -104,7 +104,7 @@ open BigOperators
 
 /-- A solution to the pure U(1) accs satisfies the linear ACCs. -/
 lemma pureU1_linear {n : ℕ} (S : (PureU1 n).LinSols) :
-    ∑ i, S.val i = 0 := by
+    ∑ (i : Fin n), S.val i = 0 := by
   have hS := S.linearSol
   simp only [succ_eq_add_one, PureU1_numberLinear, PureU1_linearACCs] at hS
   exact hS 0

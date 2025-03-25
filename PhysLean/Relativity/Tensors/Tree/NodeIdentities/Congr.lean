@@ -19,7 +19,7 @@ open TensorProduct
 
 namespace TensorTree
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
 /-!
 

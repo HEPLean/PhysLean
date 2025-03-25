@@ -25,10 +25,11 @@ noncomputable section
 namespace TensorSpecies
 
 /-- The unit of a tensor species in a `PiTensorProduct`. -/
-def unitTensor (S : TensorSpecies) (c : S.C) : S.F.obj (OverColor.mk ![S.τ c, c]) :=
-  (OverColor.Discrete.pairIsoSep S.FD).hom.hom ((S.unit.app (Discrete.mk c)).hom (1 : S.k))
+def unitTensor {k : Type} [CommRing k] (S : TensorSpecies k) (c : S.C) :
+    S.F.obj (OverColor.mk ![S.τ c, c]) :=
+  (OverColor.Discrete.pairIsoSep S.FD).hom.hom ((S.unit.app (Discrete.mk c)).hom (1 : k))
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 open TensorTree
 
 /-- The relation between two units of colors which are equal. -/
@@ -43,7 +44,7 @@ lemma unitTensor_congr {c c' : S.C} (h : c = c') : {S.unitTensor c | μ ν}ᵀ.t
   evaluated at `1`. -/
 lemma pairIsoSep_inv_unitTensor (c : S.C) :
     (Discrete.pairIsoSep S.FD).inv.hom (S.unitTensor c) =
-    (S.unit.app (Discrete.mk c)).hom (1 : S.k) := by
+    (S.unit.app (Discrete.mk c)).hom (1 : k) := by
   simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
     unitTensor, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V]
   erw [Discrete.rep_iso_inv_hom_apply]
@@ -71,15 +72,15 @@ lemma unitTensor_eq_dual_perm (c : S.C) : {S.unitTensor c | μ ν}ᵀ.tensor =
       Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_whiskerLeft_hom,
       LinearMap.coe_comp, Function.comp_apply, Fin.isValue]
     change (Discrete.pairIsoSep S.FD).hom.hom.hom
-      (((y ⊗ₜ[S.k] ((S.FD.map (Discrete.eqToHom _)).hom x)))) =
+      (((y ⊗ₜ[k] ((S.FD.map (Discrete.eqToHom _)).hom x)))) =
       ((S.F.map (equivToHomEq (finMapToEquiv ![1, 0] ![1, 0]) _)).hom.hom ∘ₗ
-      (Discrete.pairIsoSep S.FD).hom.hom.hom) (x ⊗ₜ[S.k] y)
+      (Discrete.pairIsoSep S.FD).hom.hom.hom) (x ⊗ₜ[k] y)
     rw [Discrete.pairIsoSep_tmul]
     conv_rhs =>
       simp [Discrete.pairIsoSep_tmul]
     change _ =
       (S.F.map (equivToHomEq (finMapToEquiv ![1, 0] ![1, 0]) _)).hom
-      ((Discrete.pairIsoSep S.FD).hom.hom (x ⊗ₜ[S.k] y))
+      ((Discrete.pairIsoSep S.FD).hom.hom (x ⊗ₜ[k] y))
     rw [Discrete.pairIsoSep_tmul]
     simp only [F_def, Nat.succ_eq_add_one, Nat.reduceAdd, mk_hom, Functor.id_obj, Fin.isValue]
     erw [OverColor.lift.map_tprod]
@@ -140,10 +141,12 @@ lemma unitTensor_contr_vec_eq_self {c1 : S.C} (x : S.F.obj (OverColor.mk ![S.τ 
     perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by fin_cases x; rfl))).tensor := by
   conv_lhs =>
     rw [contr_tensor_eq <| prod_comm _ _ _ _]
-    rw [perm_contr_congr 2 0 (by simp; decide) (by simp; decide)]
+    rw [perm_contr_congr 2 0 (by simp [mk_hom, mk_left]; decide)
+      (by simp [mk_hom, mk_left]; decide)]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| unitTensor_eq_dual_perm _]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_right _ _ _ _]
-    rw [perm_tensor_eq <| perm_contr_congr 1 0 (by simp; decide) (by simp; decide)]
+    rw [perm_tensor_eq <| perm_contr_congr 1 0 (by simp [mk_hom, mk_left]; decide)
+      (by simp [mk_hom, mk_left]; decide)]
     rw [perm_perm]
     rw [perm_tensor_eq <| contr_swap _ _]
     rw [perm_perm]

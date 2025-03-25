@@ -25,7 +25,7 @@ noncomputable section
 namespace TensorSpecies
 open TensorTree
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
 /-- Th map built contracting a 1-tensor with a 2-tensor using basic categorical constructions. -/
 def contrOneTwoLeft {c1 c2 : S.C}
@@ -40,14 +40,14 @@ def contrOneTwoLeft {c1 c2 : S.C}
 
 @[simp]
 lemma contrOneTwoLeft_smul_left {c1 c2 : S.C} (x : S.F.obj (OverColor.mk ![c1]))
-    (y : S.F.obj (OverColor.mk ![S.τ c1, c2])) (r : S.k) :
+    (y : S.F.obj (OverColor.mk ![S.τ c1, c2])) (r : k) :
     contrOneTwoLeft (r • x) y = r • contrOneTwoLeft x y := by
   simp only [contrOneTwoLeft]
   simp [map_smul, smul_tmul]
 
 @[simp]
 lemma contrOneTwoLeft_smul_right {c1 c2 : S.C} (x : S.F.obj (OverColor.mk ![c1]))
-    (y : S.F.obj (OverColor.mk ![S.τ c1, c2])) (r : S.k) :
+    (y : S.F.obj (OverColor.mk ![S.τ c1, c2])) (r : k) :
     contrOneTwoLeft x (r • y) = r • contrOneTwoLeft x y := by
   simp only [contrOneTwoLeft]
   simp [map_smul, smul_tmul]
@@ -66,19 +66,20 @@ lemma contrOneTwoLeft_add_right {c1 c2 : S.C} (x : S.F.obj (OverColor.mk ![c1]))
   simp only [contrOneTwoLeft]
   simp [map_add, add_tmul, tmul_add]
 
+@[simp]
 lemma contrOneTwoLeft_tprod_eq {c1 c2 : S.C}
     (fx : (i : (𝟭 Type).obj (OverColor.mk ![c1]).left) →
       (S.FD.obj { as := (OverColor.mk ![c1]).hom i }))
     (fy : (i : (𝟭 Type).obj (OverColor.mk ![S.τ c1, c2]).left)
       → (S.FD.obj { as := (OverColor.mk ![S.τ c1, c2]).hom i })) :
-    contrOneTwoLeft (PiTensorProduct.tprod S.k fx) (PiTensorProduct.tprod S.k fy) =
+    contrOneTwoLeft (PiTensorProduct.tprod k fx) (PiTensorProduct.tprod k fy) =
       ((S.tensorToVec c2).inv.hom
       (((S.contr.app (Discrete.mk c1)).hom (fx (0 : Fin 1) ⊗ₜ fy (0 : Fin 2)) •
       fy (1 : Fin 2)))) := by
   rw [contrOneTwoLeft]
   apply congrArg
   rw [Discrete.pairIsoSep_inv_tprod S.FD fy, tensorToVec, OverColor.forgetLiftAppCon]
-  change (S.contr.app { as := c1 }).hom (_ ⊗ₜ[S.k] fy (0 : Fin 2)) • fy (1 : Fin 2) = _
+  change (S.contr.app { as := c1 }).hom (_ ⊗ₜ[k] fy (0 : Fin 2)) • fy (1 : Fin 2) = _
   congr
   simp only [Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Nat.succ_eq_add_one, Nat.reduceAdd,
@@ -102,15 +103,15 @@ lemma contr_one_two_left_eq_contrOneTwoLeft_tprod {c1 c2 : S.C} (x : S.F.obj (Ov
       (S.FD.obj { as := (OverColor.mk ![c1]).hom i }))
     (fy : (i : (𝟭 Type).obj (OverColor.mk ![S.τ c1, c2]).left)
       → (S.FD.obj { as := (OverColor.mk ![S.τ c1, c2]).hom i }))
-    (hx : x = PiTensorProduct.tprod S.k fx)
-    (hy : y = PiTensorProduct.tprod S.k fy) :
+    (hx : x = PiTensorProduct.tprod k fx)
+    (hy : y = PiTensorProduct.tprod k fy) :
     {x | μ ⊗ y | μ ν}ᵀ.tensor =
     (S.F.mapIso (OverColor.mkIso (by funext x; fin_cases x; rfl))).hom.hom
     (contrOneTwoLeft x y) := by
   subst hx
   subst hy
   conv_rhs =>
-    rw [contrOneTwoLeft_tprod_eq]
+    erw [contrOneTwoLeft_tprod_eq]
     rw [tensorToVec_inv_apply_expand]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero, mk_left,
     Functor.id_obj, mk_hom, contr_tensor, prod_tensor, Action.instMonoidalCategory_tensorObj_V,
@@ -191,8 +192,9 @@ lemma contr_one_two_left_eq_contrOneTwoLeft {c1 c2 : S.C} (x : S.F.obj (OverColo
   rw [contrOneTwoLeft_smul_left]
   simp only [smul_tmul, tmul_smul, LinearMapClass.map_smul]
   apply congrArg
-  simpa using contr_one_two_left_eq_contrOneTwoLeft_tprod (PiTensorProduct.tprod S.k fx)
-    (PiTensorProduct.tprod S.k fy) fx fy
+  simpa [OverColor.mk_hom] using
+    contr_one_two_left_eq_contrOneTwoLeft_tprod (PiTensorProduct.tprod k fx)
+    (PiTensorProduct.tprod k fy) fx fy
 
 /-- Expanding `contrOneTwoLeft` as a tensor tree. -/
 lemma contrOneTwoLeft_tensorTree {c1 c2 : S.C} (x : S.F.obj (OverColor.mk ![c1]))
@@ -214,8 +216,8 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
     (y : S.F.obj (OverColor.mk ![(S.τ c), (S.τ c)]))
     (fy : (i : (𝟭 Type).obj (OverColor.mk ![S.τ c, S.τ c]).left) →
       (S.FD.obj { as := (OverColor.mk ![S.τ c, S.τ c]).hom i }))
-    (hx : x = PiTensorProduct.tprod S.k fx)
-    (hy : y = PiTensorProduct.tprod S.k fy) :
+    (hx : x = PiTensorProduct.tprod k fx)
+    (hy : y = PiTensorProduct.tprod k fy) :
     {x | μ ν ⊗ y| ν ρ}ᵀ.tensor = (S.F.map (OverColor.mkIso (by
       funext x
       fin_cases x <;> rfl)).hom).hom ((OverColor.Discrete.pairIsoSep S.FD).hom.hom
@@ -230,11 +232,11 @@ lemma contr_two_two_inner_tprod (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
     (OverColor.Discrete.pairIsoSep S.FD).inv.hom y))))))) := by
   subst hx
   subst hy
-  rw [Discrete.pairIsoSep_inv_tprod S.FD fx, Discrete.pairIsoSep_inv_tprod S.FD fy]
+  erw [Discrete.pairIsoSep_inv_tprod S.FD fx, Discrete.pairIsoSep_inv_tprod S.FD fy]
   change _ = (S.F.map (OverColor.mkIso _).hom).hom ((OverColor.Discrete.pairIsoSep S.FD).hom.hom
-    ((fx (0 : Fin 2) ⊗ₜ[S.k] (λ_ (S.FD.obj { as := S.τ c }).V).hom
+    ((fx (0 : Fin 2) ⊗ₜ[k] (λ_ (S.FD.obj { as := S.τ c }).V).hom
       ((S.contr.app { as := c }).hom (fx (1 : Fin 2)
-      ⊗ₜ[S.k] fy (0 : Fin 2)) ⊗ₜ[S.k] fy (1 : Fin 2)))))
+      ⊗ₜ[k] fy (0 : Fin 2)) ⊗ₜ[k] fy (1 : Fin 2)))))
   simp only [F_def, Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Monoidal.tensorUnit_obj,
@@ -318,8 +320,8 @@ lemma contr_two_two_inner (c : S.C) (x : S.F.obj (OverColor.mk ![c, c]))
   apply congrArg
   simp only [smul_tmul, tmul_smul, LinearMapClass.map_smul]
   apply congrArg
-  simpa using contr_two_two_inner_tprod c (PiTensorProduct.tprod S.k fx) fx
-    (PiTensorProduct.tprod S.k fy) fy
+  simpa using contr_two_two_inner_tprod c (PiTensorProduct.tprod k fx) fx
+    (PiTensorProduct.tprod k fy) fy
 
 end TensorSpecies
 

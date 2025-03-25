@@ -160,7 +160,8 @@ lemma basis_on_evenFst_other {k j : Fin n.succ} (h : k ≠ j) :
     simp_all
   · split
     · rename_i h1 h2
-      simp_all
+      simp_all only [succ_eq_add_one, ne_eq, Fin.natAdd_eq_addNat, Fin.cast_inj, neg_eq_zero,
+        one_ne_zero]
       rw [Fin.ext_iff] at h2
       simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_addNat] at h2
       omega
@@ -219,15 +220,19 @@ lemma basis!_evenShftSnd_eq_neg_evenShiftFst (j i : Fin n) :
   any_goals split
   any_goals split
   any_goals rfl
-  all_goals rename_i h1 h2
-  all_goals rw [Fin.ext_iff] at h1 h2
-  all_goals simp_all
+  all_goals
+    rename_i h1 h2
+    rw [Fin.ext_iff] at h1 h2
+    simp_all only [Fin.natAdd_eq_addNat, Fin.cast_inj, Fin.coe_cast, Fin.coe_natAdd,
+      Fin.coe_castAdd, add_right_inj, Fin.coe_addNat, add_right_eq_self]
   · subst h1
     exact Fin.elim0 i
-  all_goals rename_i h3
-  all_goals rw [Fin.ext_iff] at h3
-  all_goals simp_all
-  all_goals omega
+  all_goals
+    rename_i h3
+    rw [Fin.ext_iff] at h3
+    simp_all only [Fin.coe_natAdd, Fin.coe_castAdd, Fin.coe_addNat, not_true_eq_false]
+  all_goals
+    omega
 
 lemma basis_on_evenSnd_self (j : Fin n.succ) : basisAsCharges j (evenSnd j) = - 1 := by
   rw [basis_evenSnd_eq_neg_evenFst, basis_on_evenFst_self]

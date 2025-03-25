@@ -25,8 +25,7 @@ noncomputable section
 namespace complexLorentzTensor
 
 set_option maxRecDepth 5000 in
-lemma antiSymm_contr_symm {A : complexLorentzTensor.F.obj (OverColor.mk ![Color.up, Color.up])}
-    {S : complexLorentzTensor.F.obj (OverColor.mk ![Color.down, Color.down])}
+lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
     (hA : {A | μ ν = - (A | ν μ)}ᵀ) (hs : {S | μ ν = S | ν μ}ᵀ) :
     {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ := by
   conv =>

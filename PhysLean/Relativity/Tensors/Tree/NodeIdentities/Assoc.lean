@@ -22,7 +22,7 @@ open TensorProduct
 
 namespace TensorTree
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
 set_option maxRecDepth 2000 in
 /-- The associativity lemma for `t1 | μ ⊗ t2 | μ ν ⊗ t3 | ν σ`. -/

@@ -21,20 +21,20 @@ noncomputable section
 
 namespace TensorSpecies
 open TensorTree
-variable (S : TensorSpecies)
+variable {k : Type} [CommRing k] (S : TensorSpecies k)
 
 /-- The equivariant map from ` S.FD.obj (Discrete.mk c) ⊗ S.FD.obj (Discrete.mk c)` to
   the underlying field obtained by contracting. -/
 def contractSelfHom (c : S.C) : S.FD.obj (Discrete.mk c) ⊗ S.FD.obj (Discrete.mk c) ⟶
-    𝟙_ (Rep S.k S.G) :=
+    𝟙_ (Rep k S.G) :=
   (S.FD.obj (Discrete.mk c) ◁ (S.dualRepIsoDiscrete c).hom) ≫ S.contr.app (Discrete.mk c)
 
 open TensorProduct
 
 /-- The contraction of two vectors in a tensor species of the same color, as a linear
   map to the underlying field. -/
-def contractSelfField {S : TensorSpecies} {c : S.C} :
-    S.FD.obj (Discrete.mk c) ⊗[S.k] S.FD.obj (Discrete.mk c) →ₗ[S.k] S.k :=
+def contractSelfField {S : TensorSpecies k} {c : S.C} :
+    S.FD.obj (Discrete.mk c) ⊗[k] S.FD.obj (Discrete.mk c) →ₗ[k] k :=
   (S.contractSelfHom c).hom.hom
 
 /-- Notation for `coCoContract` acting on a tmul. -/
@@ -42,11 +42,11 @@ scoped[TensorSpecies] notation "⟪" ψ "," φ "⟫ₜₛ" => contractSelfField 
 
 /-- The map `contractSelfField` is equivariant with respect to the group action. -/
 @[simp]
-lemma contractSelfField_equivariant {S : TensorSpecies} {c : S.C} {g : S.G}
+lemma contractSelfField_equivariant {S : TensorSpecies k} {c : S.C} {g : S.G}
     (ψ : S.FD.obj (Discrete.mk c)) (φ : S.FD.obj (Discrete.mk c)) :
     ⟪(S.FD.obj (Discrete.mk c)).ρ g ψ, (S.FD.obj (Discrete.mk c)).ρ g φ⟫ₜₛ = ⟪ψ, φ⟫ₜₛ := by
   simpa using congrFun (congrArg (fun x => x.hom.toFun)
-    ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[S.k] φ)
+    ((S.contractSelfHom c).comm g)) (ψ ⊗ₜ[k] φ)
 
 /-- The contraction of two vectors of the same color is non-degenerate, i.e., `⟪ψ, φ⟫ₜₛ = 0` for all
 `φ` implies `ψ = 0`.
@@ -88,12 +88,12 @@ def IsNormZero {c : S.C} (ψ : S.FD.obj (Discrete.mk c)) : Prop := ⟪ψ, ψ⟫�
 
 /-- The zero vector has norm equal to zero. -/
 @[simp]
-lemma zero_isNormZero {c : S.C} : @IsNormZero S c 0 := by
+lemma zero_isNormZero {c : S.C} : @IsNormZero _ _ S c 0 := by
   simp only [IsNormZero, tmul_zero, map_zero]
 
 /-- If a vector is norm-zero, then any scalar multiple of that vector is also norm-zero. -/
 lemma smul_isNormZero_of_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)}
-    (h : S.IsNormZero ψ) (a : S.k) : S.IsNormZero (a • ψ) := by
+    (h : S.IsNormZero ψ) (a : k) : S.IsNormZero (a • ψ) := by
   simp only [IsNormZero, tmul_smul, map_smul, smul_tmul]
   rw [h]
   simp only [smul_eq_mul, mul_zero]

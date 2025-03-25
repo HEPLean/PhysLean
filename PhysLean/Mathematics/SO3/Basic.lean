@@ -60,8 +60,7 @@ lemma subtype_val_eq_toGL : (Subtype.val : SO3 → Matrix (Fin 3) (Fin 3) ℝ) =
 /-- The inclusion of `SO(3)` into `GL(3,ℝ)` is an injection. -/
 lemma toGL_injective : Function.Injective toGL := by
   refine fun A B h ↦ Subtype.eq ?_
-  rw [@Units.ext_iff] at h
-  simpa using h
+  rwa [@Units.ext_iff] at h
 
 /-- The inclusion of `SO(3)` into the monoid of matrices times the opposite of
   the monoid of matrices. -/
@@ -73,8 +72,7 @@ lemma toProd_eq_transpose : toProd A = (A.1, ⟨A.1ᵀ⟩) := rfl
 
 lemma toProd_injective : Function.Injective toProd := by
   intro A B h
-  rw [toProd_eq_transpose, toProd_eq_transpose] at h
-  rw [@Prod.mk.inj_iff] at h
+  rw [toProd_eq_transpose, toProd_eq_transpose, @Prod.mk.inj_iff] at h
   exact Subtype.eq h.1
 
 lemma toProd_continuous : Continuous toProd :=
@@ -99,21 +97,10 @@ lemma toGL_embedding : IsEmbedding toGL.toFun where
     intro s
     rw [TopologicalSpace.ext_iff.mp toProd_embedding.eq_induced s]
     rw [isOpen_induced_iff, isOpen_induced_iff]
-    apply Iff.intro ?_ ?_
-    · intro h
-      obtain ⟨U, hU1, hU2⟩ := h
-      rw [isOpen_induced_iff] at hU1
-      obtain ⟨V, hV1, hV2⟩ := hU1
-      use V
-      simp only [hV1, true_and]
-      rw [← hU2, ← hV2]
-      rfl
-    · intro h
-      obtain ⟨U, hU1, hU2⟩ := h
-      let t := (Units.embedProduct _) ⁻¹' U
-      use t
-      apply And.intro (isOpen_induced hU1)
-      exact hU2
+    constructor <;> intro h <;> obtain ⟨U, hU1, hU2⟩ := h
+    · rw [isOpen_induced_iff] at hU1
+      aesop
+    · exact ⟨(Units.embedProduct _) ⁻¹' U, And.intro (isOpen_induced hU1) hU2⟩
 
 /-- The instance of a topological group on `SO(3)`, defined through the embedding of `SO(3)`
   into `GL(n)`. -/
@@ -148,10 +135,7 @@ lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
 /-- For every matrix in `SO(3)`, the real number `1` is in its spectrum. -/
 @[simp]
 lemma one_in_spectrum (A : SO(3)) : 1 ∈ spectrum ℝ (A.1) := by
-  rw [spectrum.mem_iff]
-  simp only [_root_.map_one]
-  rw [Matrix.isUnit_iff_isUnit_det]
-  simp
+  simp [spectrum.mem_iff, _root_.map_one, Matrix.isUnit_iff_isUnit_det]
 
 noncomputable section action
 open Module
@@ -177,35 +161,24 @@ lemma exists_stationary_vec (A : SO(3)) :
   obtain ⟨v, hv⟩ := End.HasEigenvalue.exists_hasEigenvector $ one_is_eigenvalue A
   have hvn : ‖v‖ ≠ 0 := norm_ne_zero_iff.mpr hv.2
   use (1/‖v‖) • v
-  apply And.intro
+  constructor
   · rw [@orthonormal_iff_ite]
     intro v1 v2
-    have hv1 := v1.2
-    have hv2 := v2.2
-    simp_all only [one_div, Set.mem_singleton_iff]
-    have hveq : v1 = v2 := by
-      rw [@Subtype.ext_iff]
-      simp_all only
+    simp only [one_div, Set.mem_singleton_iff]
+    have hveq : v1 = v2 := by aesop
     subst hveq
-    simp only [Set.restrict_apply, PiLp.smul_apply, smul_eq_mul,
-      _root_.map_mul, map_inv₀, conj_trivial, ↓reduceIte]
-    rw [inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
+    rw [Set.restrict_apply, inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
     field_simp
     ring
-  · rw [_root_.map_smul, End.mem_eigenspace_iff.mp hv.1]
-    simp
+  · simp [End.mem_eigenspace_iff.mp hv.1]
 
 /-- For every element of `SO(3)` there exists a basis indexed by `Fin 3` under which the first
   element remains invariant. -/
 lemma exists_basis_preserved (A : SO(3)) :
     ∃ (b : OrthonormalBasis (Fin 3) ℝ (EuclideanSpace ℝ (Fin 3))), A.toEnd (b 0) = b 0 := by
   obtain ⟨v, hv⟩ := exists_stationary_vec A
-  have h3 : Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = Fintype.card (Fin 3) := by
-    simp_all only [toEnd_apply, finrank_euclideanSpace, Fintype.card_fin]
-  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq h3 hv.1
-  simp only [Fin.isValue, Set.mem_singleton_iff, forall_eq] at hb
-  use b
-  rw [hb, hv.2]
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by aesop) hv.1
+  aesop
 
 end action
 end SO3

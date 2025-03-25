@@ -19,7 +19,7 @@ open PhysLean.Fin
 
 namespace TensorTree
 
-variable {S : TensorSpecies} {n n' n2 : ℕ}
+variable {k : Type} [CommRing k] {S : TensorSpecies k} {n n' n2 : ℕ}
     {c : Fin n → S.C} {c' : Fin n' → S.C} (c2 : Fin n2 → S.C)
     (σ : OverColor.mk c ⟶ OverColor.mk c')
 
@@ -53,7 +53,7 @@ theorem prod_perm_left (t : TensorTree S c) (t2 : TensorTree S c2) :
   change (S.F.map (equivToIso finSumFinEquiv).hom).hom
     (((S.F.map (σ) ▷ S.F.obj (OverColor.mk c2)) ≫
     Functor.LaxMonoidal.μ S.F (OverColor.mk c') (OverColor.mk c2)).hom
-    (t.tensor ⊗ₜ[S.k] t2.tensor)) = _
+    (t.tensor ⊗ₜ[k] t2.tensor)) = _
   rw [Functor.LaxMonoidal.μ_natural_left]
   simp only [Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -73,7 +73,7 @@ theorem prod_perm_right (t2 : TensorTree S c2) (t : TensorTree S c) :
   change (S.F.map (equivToIso finSumFinEquiv).hom).hom
     (((S.F.obj (OverColor.mk c2) ◁ S.F.map σ) ≫
     Functor.LaxMonoidal.μ S.F (OverColor.mk c2) (OverColor.mk c')).hom
-    (t2.tensor ⊗ₜ[S.k] t.tensor)) = _
+    (t2.tensor ⊗ₜ[k] t.tensor)) = _
   rw [Functor.LaxMonoidal.μ_natural_right]
   simp only [Functor.id_obj, mk_hom, Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,

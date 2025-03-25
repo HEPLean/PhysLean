@@ -104,17 +104,13 @@ lemma map_add₂ (f : BiLinearSymm V) (S : V) (T1 T2 : V) :
 def toLinear₁ (f : BiLinearSymm V) (T : V) : V →ₗ[ℚ] ℚ where
   toFun S := f S T
   map_add' S1 S2 := map_add₁ f S1 S2 T
-  map_smul' a S := by
-    simp only [f.map_smul₁]
-    rfl
+  map_smul' a S := by simp [f.map_smul₁]
 
 lemma toLinear₁_apply (f : BiLinearSymm V) (S T : V) : f S T = f.toLinear₁ T S := rfl
 
 lemma map_sum₁ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V) :
     f (∑ i, S i) T = ∑ i, f (S i) T := by
-  rw [f.toLinear₁_apply]
-  rw [map_sum]
-  rfl
+  simp [f.toLinear₁_apply, map_sum]
 
 lemma map_sum₂ {n : ℕ} (f : BiLinearSymm V) (S : Fin n → V) (T : V) :
     f T (∑ i, S i) = ∑ i, f T (S i) := map_sum (f T) S Finset.univ
@@ -125,17 +121,14 @@ def toHomogeneousQuad {V : Type} [AddCommMonoid V] [Module ℚ V]
     (τ : BiLinearSymm V) : HomogeneousQuadratic V where
   toFun S := τ S S
   map_smul' a S := by
-    simp only
-    rw [τ.map_smul₁, τ.map_smul₂]
-    ring_nf
-    rfl
+    simp only [τ.map_smul₁, τ.map_smul₂, smul_eq_mul]
+    ring
 
 lemma toHomogeneousQuad_add {V : Type} [AddCommMonoid V] [Module ℚ V]
     (τ : BiLinearSymm V) (S T : V) :
     τ.toHomogeneousQuad (S + T) = τ.toHomogeneousQuad S +
     τ.toHomogeneousQuad T + 2 * τ S T := by
-  simp only [HomogeneousQuadratic, toHomogeneousQuad_apply, map_add]
-  rw [τ.map_add₁, τ.map_add₁, τ.swap T S]
+  simp only [HomogeneousQuadratic, toHomogeneousQuad_apply, τ.map_add₁, map_add, τ.swap T S]
   ring
 
 end BiLinearSymm
@@ -196,15 +189,8 @@ def mk₃ (f : V × V × V→ ℚ) (map_smul : ∀ a S T L, f (a • S, T, L) = 
       intro S1 S2 T
       simp only
       rw [swap₁, map_add, swap₁, swap₁ S2 S T])
-    (by
-      intro L T
-      exact swap₂ S L T)).toLinearMap
-  map_add' S1 S2 := by
-    apply LinearMap.ext
-    intro T
-    apply LinearMap.ext
-    intro S
-    exact map_add S1 S2 T S
+    (by exact fun L T ↦ swap₂ S L T)).toLinearMap
+  map_add' S1 S2 := LinearMap.ext fun T ↦ LinearMap.ext fun L => map_add S1 S2 T L
   map_smul' a S :=
     LinearMap.ext fun T => LinearMap.ext fun L => map_smul a S T L
   swap₁' := swap₁
@@ -257,16 +243,13 @@ lemma toLinear₁_apply (f : TriLinearSymm V) (S T L : V) : f S T L = f.toLinear
 
 lemma map_sum₁ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
     f (∑ i, S i) T L = ∑ i, f (S i) T L := by
-  rw [f.toLinear₁_apply]
-  rw [map_sum]
+  rw [f.toLinear₁_apply, map_sum]
   rfl
 
 lemma map_sum₂ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
     f T (∑ i, S i) L = ∑ i, f T (S i) L := by
   rw [swap₁, map_sum₁]
-  apply Fintype.sum_congr
-  intro i
-  rw [swap₁]
+  refine Fintype.sum_congr _ _ fun _ ↦ swap₁ f (S _) T L
 
 lemma map_sum₃ {n : ℕ} (f : TriLinearSymm V) (S : Fin n → V) (T : V) (L : V) :
     f T L (∑ i, S i) = ∑ i, f T L (S i) := map_sum ((f T) L) S Finset.univ
@@ -275,12 +258,9 @@ lemma map_sum₁₂₃ {n1 n2 n3 : ℕ} (f : TriLinearSymm V) (S : Fin n1 → V)
     (T : Fin n2 → V) (L : Fin n3 → V) :
     f (∑ i, S i) (∑ i, T i) (∑ i, L i) = ∑ i, ∑ k, ∑ l, f (S i) (T k) (L l) := by
   rw [map_sum₁]
-  apply Fintype.sum_congr
-  intro i
+  apply Fintype.sum_congr _ _ fun _ ↦ ?_
   rw [map_sum₂]
-  apply Fintype.sum_congr
-  intro i
-  rw [map_sum₃]
+  exact Fintype.sum_congr _ _ fun _ ↦ map_sum₃ f L (S _) (T _)
 
 /-- The homogenous cubic equation obtainable from a symmetric trilinear function. -/
 @[simps!]

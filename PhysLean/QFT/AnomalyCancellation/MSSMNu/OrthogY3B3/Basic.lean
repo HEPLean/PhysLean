@@ -119,7 +119,10 @@ lemma cube_proj_proj_Y₃ (T : MSSMACC.LinSols) :
     (dot Y₃.val B₃.val)^2 * cubeTriLin T.val T.val Y₃.val := by
   rw [proj_val]
   rw [cubeTriLin.map_add₁, cubeTriLin.map_add₂]
-  erw [lineY₃B₃_doublePoint]
+  conv_lhs =>
+    enter [1, 1]
+    change ((cubeTriLin (lineY₃B₃ _ _).val) (lineY₃B₃ _ _).val) _
+    rw [lineY₃B₃_doublePoint]
   rw [cubeTriLin.map_add₂]
   rw [cubeTriLin.swap₂]
   rw [cubeTriLin.map_add₁, cubeTriLin.map_smul₁, cubeTriLin.map_smul₃]

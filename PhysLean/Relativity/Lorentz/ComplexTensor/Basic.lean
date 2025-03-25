@@ -83,12 +83,10 @@ end complexLorentzTensor
 noncomputable section
 open complexLorentzTensor in
 /-- The tensor structure for complex Lorentz tensors. -/
-def complexLorentzTensor : TensorSpecies where
+def complexLorentzTensor : TensorSpecies ℂ where
   C := complexLorentzTensor.Color
   G := SL(2, ℂ)
   G_group := inferInstance
-  k := ℂ
-  k_commRing := inferInstance
   FD := Discrete.functor fun c =>
     match c with
     | Color.upL => Fermion.leftHanded
@@ -250,6 +248,18 @@ def complexLorentzTensor : TensorSpecies where
 
 namespace complexLorentzTensor
 
+/-- Complex Lorentz tensor. -/
+syntax (name := complexLorentzTensorSyntax) "ℂT[" term,* "]" : term
+
+macro_rules
+  | `(ℂT[$term:term, $terms:term,*]) =>
+    `((complexLorentzTensor.F.obj (OverColor.mk (vecCons $term ![$terms,*]))))
+  | `(ℂT[$term:term]) => `((complexLorentzTensor.F.obj (OverColor.mk (vecCons $term ![]))))
+  | `(ℂT[]) =>`((complexLorentzTensor.F.obj (OverColor.mk (vecEmpty))))
+
+/-- Complex Lorentz tensor. -/
+scoped[complexLorentzTensor] notation "ℂT(" c ")" => complexLorentzTensor.F.obj (OverColor.mk c)
+
 /-- Color for complex Lorentz tensors is decidable. -/
 instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor
 
@@ -277,24 +287,19 @@ instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
 instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
     Fintype (OverColor.mk c).left := Fin.fintype n
 
-instance : CharZero complexLorentzTensor.k := instCharZero
-
 /-- The equality of two maps in `OverColor C` from objects based on `Fin _` is decidable. -/
 instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C} (σ σ' : OverColor.mk c ⟶ OverColor.mk c1) :
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 
+TODO "The lemma `repDim_τ` should hold for any Tensor Species not just complex Lorentz
+  tensors."
 @[simp]
-lemma k_instSub : @HSub.hSub complexLorentzTensor.k complexLorentzTensor.k complexLorentzTensor.k
-    instHSub = @HSub.hSub ℂ ℂ ℂ instHSub := by rfl
-
-@[simp]
-lemma k_instAdd : @HAdd.hAdd complexLorentzTensor.k
-    complexLorentzTensor.k complexLorentzTensor.k instHAdd = @HAdd.hAdd ℂ ℂ ℂ instHAdd := by rfl
-
-@[simp]
-lemma k_neg : @Neg.neg complexLorentzTensor.k = @Neg.neg ℂ := by rfl
-
+lemma repDim_τ {c : complexLorentzTensor.C} :
+    complexLorentzTensor.repDim (complexLorentzTensor.τ c) = complexLorentzTensor.repDim c := by
+  cases c
+  all_goals
+    rfl
 end complexLorentzTensor
 end

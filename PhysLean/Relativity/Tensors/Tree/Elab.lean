@@ -22,7 +22,7 @@ import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
 - `{T | μ ν + T' | μ ν}ᵀ` is `addNode (tensorNode T) (perm _ (tensorNode T'))`, where
   here `_` will be the identity permutation so does nothing.
 - `{T | μ ν = T' | μ ν}ᵀ` is `(tensorNode T).tensor = (perm _ (tensorNode T')).tensor`.
-- If `a ∈ S.k` then `{a •ₜ T | μ ν}ᵀ` is `smulNode a (tensorNode T)`.
+- If `a ∈ k` then `{a •ₜ T | μ ν}ᵀ` is `smulNode a (tensorNode T)`.
 - If `g ∈ S.G` then `{g •ₐ T | μ ν}ᵀ` is `actionNode g (tensorNode T)`.
 - Suppose `T2` is a tensor `S.F (OverColor.mk ![c3])`.
   Then `{T | μ ν ⊗ T2 | σ}ᵀ` is `prodNode (tensorNode T1) (tensorNode T2)`.
@@ -491,7 +491,8 @@ elab_rules (kind:=tensorExprSyntax) : term
 -/
 
 /-
-variable {S : TensorSpecies} {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.F.obj (OverColor.mk c)}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
+  {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.F.obj (OverColor.mk c)}
 
 #check {t | α β}ᵀ
 -/

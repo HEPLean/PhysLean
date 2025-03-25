@@ -20,7 +20,7 @@ open PhysLean.Fin
 
 namespace TensorTree
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
 namespace ContrPair
 variable {n : ℕ} {c : Fin n.succ.succ → S.C} (q : ContrPair c)
@@ -76,7 +76,7 @@ def contrSwapHom : (OverColor.mk (c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbov
 
 @[simp]
 lemma contrSwapHom_toEquiv : Hom.toEquiv q.contrSwapHom = Equiv.refl (Fin n) := by
-  simp [contrSwapHom]
+  simp [contrSwapHom, OverColor.mk_left]
 
 @[simp]
 lemma contrSwapHom_hom_left_apply (x : Fin n) : q.contrSwapHom.hom.left x = x := by
@@ -103,7 +103,7 @@ lemma contrMap_swap : q.contrMap = q.swap.contrMap ≫ S.F.map q.contrSwapHom :=
     have h1' : ∀ {a a' b c b' c'} (haa' : a = a')
         (_ : b = (S.FD.map (Discrete.eqToHom (by rw [haa']))).hom b')
         (_ : c = (S.FD.map (Discrete.eqToHom (by rw [haa']))).hom c'),
-        (S.contr.app a).hom (b ⊗ₜ[S.k] c) = (S.contr.app a').hom (b' ⊗ₜ[S.k] c') := by
+        (S.contr.app a).hom (b ⊗ₜ[k] c) = (S.contr.app a').hom (b' ⊗ₜ[k] c') := by
       intro a a' b c b' c' haa' hbc hcc
       subst haa'
       simp_all

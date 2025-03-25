@@ -312,7 +312,7 @@ lemma isBounded_𝓵_nonneg (h : P.IsBounded) : 0 ≤ P.𝓵 := by
     · have hcm1 : ∃ φ x, P.toFun φ x = c - 1 := by
         rw [P.neg_𝓵_sol_exists_iff hl (c - 1)]
         apply Or.inr
-        simp_all
+        simp_all only [tsub_le_iff_right, true_and]
         linarith
       obtain ⟨φ, x, hφ⟩ := hcm1
       have hc2 := hc φ x
@@ -332,7 +332,7 @@ lemma isBounded_𝓵_nonneg (h : P.IsBounded) : 0 ≤ P.𝓵 := by
     · have hcm1 : ∃ φ x, P.toFun φ x = c - 1 := by
         rw [P.neg_𝓵_sol_exists_iff hl (c - 1)]
         apply Or.inl
-        simp_all
+        simp_all only [tsub_le_iff_right, zero_add, true_and]
         linarith
       obtain ⟨φ, x, hφ⟩ := hcm1
       have hc2 := hc φ x

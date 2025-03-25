@@ -12,18 +12,16 @@ import PhysLean.Meta.TODO.Basic
 
 open System
 
-TODO "Make this definition more functional in style. In other words, remove the for loop."
-
 /-- The recursive function underlying `allFilePaths`. -/
 partial def allFilePaths.go (prev : Array FilePath)
   (root : String) (path : FilePath) : IO (Array FilePath) := do
-  let mut r := prev
-  for entry in ← path.readDir do
+  let entries ← path.readDir
+  let result ← entries.foldlM (init := prev) fun acc entry => do
     if ← entry.path.isDir then
-      r ← go r (root ++ "/" ++ entry.fileName) entry.path
+      go acc (root ++ "/" ++ entry.fileName) entry.path
     else
-      r := r.push (root ++ "/" ++ entry.fileName)
-  pure r
+      pure (acc.push (root ++ "/" ++ entry.fileName))
+  pure result
 
 /-- Gets an array of all file paths in `PhysLean`. -/
 partial def allFilePaths : IO (Array FilePath) := do

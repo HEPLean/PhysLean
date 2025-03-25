@@ -4,10 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.StandardModel.HiggsBoson.Basic
-import Mathlib.RepresentationTheory.Basic
 import PhysLean.Particles.StandardModel.Basic
 import PhysLean.Particles.StandardModel.Representations
-import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
 
 # The action of the gauge group on the Higgs field

@@ -2,7 +2,7 @@
 title: "The Quantum Harmonic Oscillator in Lean 4"
 curators: Joseph Tooby-Smith
 parts:
-  
+
   - type: h1
     sectionNo: 1
     content: "Introduction"
@@ -17,13 +17,13 @@ parts:
      Lean 4, as part of the larger project PhysLean.
      What this means is that every definition and theorem in this note has been formally checked
      for mathematical correctness for by a computer. There are a number of
-     motivations for doing this which are dicussed <a href = 'https://heplean.com'>here</a>."
+     motivations for doing this which are discussed <a href = 'https://heplean.com'>here</a>."
 
   - type: p
     content: "Note that we do not give every definition and theorem which is part of
       the formalization.
      Our goal is give key aspects, in such a way that we hope this note will be useful
-     to newcomers to Lean or those intrested in simply intrested in learning about the
+     to newcomers to Lean or those simply interested in learning about the
      quantum harmonic oscillator."
 
   - type: h1
@@ -41,7 +41,7 @@ parts:
     docString: |
       The Hilbert space for a one dimensional quantum system is defined as
       the space of almost-everywhere equal equivalence classes of square integrable functions
-      from `ℝ` to `ℂ`. 
+      from `ℝ` to `ℂ`.
     declString: |
       noncomputable abbrev HilbertSpace := MeasureTheory.Lp (α := ℝ) ℂ 2
     declNo: "2.1"
@@ -56,7 +56,7 @@ parts:
     isThm: false
     docString: |
       The proposition `MemHS f` for a function `f : ℝ → ℂ` is defined
-      to be true if the function `f` can be lifted to the Hilbert space. 
+      to be true if the function `f` can be lifted to the Hilbert space.
     declString: |
       def MemHS (f : ℝ → ℂ) : Prop := Memℒp f 2 MeasureTheory.volume
     declNo: "2.2"
@@ -70,8 +70,8 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      A function `f` statisfies `MemHS f` if and only if it is almost everywhere
-      strongly measurable, and square integrable. 
+      A function `f` satisfies `MemHS f` if and only if it is almost everywhere
+      strongly measurable, and square integrable.
     declString: |
       lemma memHS_iff {f : ℝ → ℂ} : MemHS f ↔
           AEStronglyMeasurable f ∧ Integrable (fun x => ‖f x‖ ^ 2) := by
@@ -100,7 +100,7 @@ parts:
     isThm: false
     docString: |
       Given a function `f : ℝ → ℂ` such that `MemHS f` is true via `hf`, then `HilbertSpace.mk hf`
-      is the element of the `HilbertSpace` defined by `f`. 
+      is the element of the `HilbertSpace` defined by `f`.
     declString: |
       def mk {f : ℝ → ℂ} (hf : MemHS f) : HilbertSpace :=
         ⟨AEEqFun.mk f hf.1, (aeEqFun_mk_mem_iff f hf.1).mpr hf⟩
@@ -121,7 +121,7 @@ parts:
     docString: |
       A quantum harmonic oscillator specified by a three
       real parameters: the mass of the particle `m`, a value of Planck's constant `ℏ`, and
-      an angular frequency `ω`. All three of these parameters are assumed to be positive. 
+      an angular frequency `ω`. All three of these parameters are assumed to be positive.
     declString: |
       structure HarmonicOscillator where
         /-- The mass of the particle. -/
@@ -146,8 +146,8 @@ parts:
     docString: |
       For a harmonic oscillator, the Schrodinger Operator corresponding to it
       is defined as the function from `ℝ → ℂ` to `ℝ → ℂ` taking
-      
-      `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + 1/2 * m * ω^2 * x^2 * ψ`. 
+
+      `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + 1/2 * m * ω^2 * x^2 * ψ`.
     declString: |
       noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
         fun y => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) y) + 1/2 * Q.m * Q.ω^2 * y^2 * ψ y
@@ -168,11 +168,11 @@ parts:
     docString: |
       The Physicists Hermite polynomial are defined as polynomials over `ℤ` in `X` recursively
       with `physHermite 0 = 1` and
-      
+
       `physHermite (n + 1) = 2 • X * physHermite n - derivative (physHermite n)`.
-      
+
       This polynomial will often be cast as a function `ℝ → ℝ` by evaluating the polynomial at `X`.
-      
+
     declString: |
       noncomputable def physHermite : ℕ → Polynomial ℤ
         | 0 => 1
@@ -190,10 +190,10 @@ parts:
     docString: |
       The `n`th  eigenfunction of the Harmonic oscillator is defined as the function `ℝ → ℂ`
       taking `x : ℝ` to
-      
+
       `1/√(2^n n!) (m ω /(π ℏ))^(1/4) * physHermite n (√(m ω /ℏ) x) * e ^ (- m ω x^2/2ℏ)`.
-      
-      
+
+
     declString: |
       noncomputable def eigenfunction (n : ℕ) : ℝ → ℂ := fun x =>
         1/Real.sqrt (2 ^ n * n !) * Real.sqrt (Real.sqrt (Q.m * Q.ω / (Real.pi * Q.ℏ))) *
@@ -213,7 +213,7 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      The eigenfunctions are integrable. 
+      The eigenfunctions are integrable.
     declString: |
       lemma eigenfunction_integrable (n : ℕ) : MeasureTheory.Integrable (Q.eigenfunction n) := by
         rw [eigenfunction_eq]
@@ -244,7 +244,7 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      The eigenfunctions are real. 
+      The eigenfunctions are real.
     declString: |
       lemma eigenfunction_conj (n : ℕ) (x : ℝ) :
           (starRingEnd ℂ) (Q.eigenfunction n x) = Q.eigenfunction n x := by
@@ -262,7 +262,7 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      The eigenfunctions are almost everywhere strongly measurable. 
+      The eigenfunctions are almost everywhere strongly measurable.
     declString: |
       lemma eigenfunction_aeStronglyMeasurable (n : ℕ) :
           MeasureTheory.AEStronglyMeasurable (Q.eigenfunction n) :=
@@ -278,7 +278,7 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      The eigenfunctions are square integrable. 
+      The eigenfunctions are square integrable.
     declString: |
       lemma eigenfunction_square_integrable (n : ℕ) :
           MeasureTheory.Integrable (fun x => ‖Q.eigenfunction n x‖ ^ 2) := by
@@ -304,7 +304,7 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      The eigenfunctions are members of the Hilbert space. 
+      The eigenfunctions are members of the Hilbert space.
     declString: |
       lemma eigenfunction_memHS (n : ℕ) : MemHS (Q.eigenfunction n) := by
         rw [memHS_iff]
@@ -322,7 +322,7 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      The eigenfunctions are differentiable. 
+      The eigenfunctions are differentiable.
     declString: |
       lemma eigenfunction_differentiableAt (x : ℝ) (n : ℕ) :
           DifferentiableAt ℝ (Q.eigenfunction n) x := by
@@ -339,7 +339,7 @@ parts:
     isDef: false
     isThm: false
     docString: |
-      The eigenfunctions are orthonormal within the Hilbert space. 
+      The eigenfunctions are orthonormal within the Hilbert space.
     declString: |
       lemma eigenfunction_orthonormal :
           Orthonormal ℂ (fun n => HilbertSpace.mk (Q.eigenfunction_memHS n)) := by
@@ -365,7 +365,7 @@ parts:
     isDef: true
     isThm: false
     docString: |
-      The `n`th eigenvalues for a Harmonic oscillator is defined as `(n + 1/2) * ℏ * ω`. 
+      The `n`th eigenvalues for a Harmonic oscillator is defined as `(n + 1/2) * ℏ * ω`.
     declString: |
       noncomputable def eigenValue (n : ℕ) : ℝ := (n + 1/2) * Q.ℏ * Q.ω
     declNo: "5.1"
@@ -381,11 +381,11 @@ parts:
     docString: |
       The `n`th eigenfunction satisfies the time-independent Schrodinger equation with
       respect to the `n`th eigenvalue. That is to say for `Q` a harmonic scillator,
-      
+
       `Q.schrodingerOperator (Q.eigenfunction n) x =  Q.eigenValue n * Q.eigenfunction n x`.
-      
+
       The proof of this result is done by explicit calculation of derivatives.
-      
+
     declString: |
       theorem schrodingerOperator_eigenfunction (n : ℕ) :
           Q.schrodingerOperator (Q.eigenfunction n) x =
@@ -411,10 +411,10 @@ parts:
     docString: |
       If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
       to all `eigenfunction n` then it is orthogonal to
-      
+
       `x ^ r * e ^ (- m ω x ^ 2 / (2 ℏ))`
-      
-      the proof of this result relies on the fact that Hermite polynomials span polynomials. 
+
+      the proof of this result relies on the fact that Hermite polynomials span polynomials.
     declString: |
       lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
           (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
@@ -467,13 +467,13 @@ parts:
     docString: |
       If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
       to all `eigenfunction n` then it is orthogonal to
-      
+
       `e ^ (I c x) * e ^ (- m ω x ^ 2 / (2 ℏ))`
-      
+
       for any real `c`.
       The proof of this result relies on the expansion of `e ^ (I c x)`
       in terms of `x^r/r!` and using `orthogonal_power_of_mem_orthogonal`
-      along with integrablity conditions. 
+      along with integrability conditions.
     declString: |
       lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
           (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
@@ -645,12 +645,12 @@ parts:
     docString: |
       If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
       to all `eigenfunction n` then the fourier transform of
-      
+
       `f (x) * e ^ (- m ω x ^ 2 / (2 ℏ))`
-      
+
       is zero.
-      
-      The proof of this result relies on `orthogonal_exp_of_mem_orthogonal`. 
+
+      The proof of this result relies on `orthogonal_exp_of_mem_orthogonal`.
     declString: |
       lemma fourierIntegral_zero_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
           (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0) :
@@ -682,14 +682,14 @@ parts:
       Assuming Plancherel's theorem (which is not yet in Mathlib),
       the topological closure of the span of the eigenfunctions of the harmonic oscillator
       is the whole Hilbert space.
-      
+
       The proof of this result relies on `fourierIntegral_zero_of_mem_orthogonal`
       and Plancherel's theorem which together give us that the norm of
-      
+
       `f x * e ^ (- m * ω * x^2 / (2 * ℏ)`
-      
+
       is zero for `f` orthogonal to all eigenfunctions, and hence the norm of `f` is zero.
-      
+
     declString: |
       theorem eigenfunction_completeness
           (plancherel_theorem : ∀ {f : ℝ → ℂ} (hf : Integrable f volume) (_ : Memℒp f 2),

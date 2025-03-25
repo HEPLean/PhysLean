@@ -72,7 +72,7 @@ lemma coMetric_eq_ofRat : η' = ofRat fun f =>
   rw [coMetric_tensorBasis]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
-    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
   simp only [← map_sub, Fin.isValue]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -136,7 +136,7 @@ lemma contrMetric_eq_ofRat : η = ofRat fun f =>
   rw [contrMetric_tensorBasis]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
-    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
   simp only [← map_sub, Fin.isValue]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -189,8 +189,8 @@ lemma leftMetric_eq_ofRat : εL = ofRat fun f =>
     head_cons]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
-    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
-  simp only [Fin.isValue, k_neg, ← map_neg, k_instAdd, ← map_add]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+  simp only [Fin.isValue, ← map_neg, ← map_add]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
   with_unfolding_all decide
@@ -240,7 +240,7 @@ lemma altLeftMetric_eq_ofRat : εL' = ofRat fun f =>
     head_cons]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
-    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
   simp only [Fin.isValue, ← map_sub]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -293,8 +293,8 @@ lemma rightMetric_eq_ofRat : εR = ofRat fun f =>
     head_cons]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
-    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
-  simp only [Fin.isValue, k_neg, ← map_neg, k_instAdd, ← map_add]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+  simp only [Fin.isValue, ← map_neg, ← map_add]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
   with_unfolding_all decide
@@ -344,7 +344,7 @@ lemma altRightMetric_eq_ofRat : εR' = ofRat fun f =>
     head_cons]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, Finsupp.coe_sub, Pi.sub_apply,
-    ofRat_tensorBasis_repr_apply, k_instSub, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero, cons_val_one, head_cons]
   simp only [Fin.isValue, ← map_sub]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b

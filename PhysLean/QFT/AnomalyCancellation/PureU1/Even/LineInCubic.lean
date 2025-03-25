@@ -45,7 +45,14 @@ lemma lineInCubic_expand {S : (PureU1 (2 * n.succ)).LinSols} (h : LineInCubic S)
   simp only [TriLinearSymm.toCubic_add] at h1
   simp only [HomogeneousCubic.map_smul,
     accCubeTriLinSymm.map_smul₁, accCubeTriLinSymm.map_smul₂, accCubeTriLinSymm.map_smul₃] at h1
-  erw [P_accCube, P!_accCube] at h1
+  conv_lhs at h1 =>
+    enter [1, 1, 1, 2]
+    change accCube _ _
+    rw [P_accCube]
+  conv_lhs at h1 =>
+    enter [1, 1, 2, 2]
+    change accCube _ _
+    rw [P!_accCube]
   rw [← h1]
   ring
 

@@ -144,6 +144,11 @@ lemma mulVec_toFin1dℝ (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v 
     (M *ᵥ v).toFin1dℝ = M *ᵥ v.toFin1dℝ := by
   rfl
 
+@[simp]
+lemma mulVec_val (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
+    (M *ᵥ v).val = M *ᵥ v.val := by
+  rfl
+
 lemma mulVec_sub (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v w : ContrMod d) :
     M *ᵥ (v - w) = M *ᵥ v - M *ᵥ w := by
   simp only [mulVec, LinearMap.map_sub]

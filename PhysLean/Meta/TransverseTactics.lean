@@ -81,7 +81,7 @@ open transverseTactics in
 /-- Applies `visitTacticInfo` to each tactic in a file. -/
 unsafe def transverseTactics (file : FilePath)
   (visitTacticInfo : FilePath → ContextInfo → TacticInfo → MetaM Unit) : IO Unit := do
-  searchPathRef.set compile_time_search_path%
+  initSearchPath (← findSysroot)
   /- This is equivalent to `(IO.FS.readFile file).bind (fun fileContent => do ...)`. -/
   let fileContent ← IO.FS.readFile file
   enableInitializersExecution

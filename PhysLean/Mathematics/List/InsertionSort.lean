@@ -196,7 +196,7 @@ lemma takeWhile_orderedInsert' {α : Type} (r : α → α → Prop) [DecidableRe
     (List.takeWhile (fun c => !decide (r b c)) (List.orderedInsert r a l)).length =
     (List.takeWhile (fun c => !decide (r b c)) l).length
   | [] => by
-    simp only [List.orderedInsert, List.takeWhile_nil, List.length_nil, List.length_eq_zero,
+    simp only [List.orderedInsert, List.takeWhile_nil, List.length_nil, List.length_eq_zero_iff,
       List.takeWhile_eq_nil_iff, List.length_singleton, zero_lt_one, Fin.zero_eta, Fin.isValue,
       List.get_eq_getElem, Fin.val_eq_zero, List.getElem_cons_zero, Bool.not_eq_eq_eq_not,
       Bool.not_true, decide_eq_false_iff_not, Decidable.not_not, forall_const]
@@ -209,7 +209,8 @@ lemma takeWhile_orderedInsert' {α : Type} (r : α → α → Prop) [DecidableRe
     simp only [List.orderedInsert]
     by_cases h : r b c
     · simp only [h, decide_true, Bool.not_true, Bool.false_eq_true, not_false_eq_true,
-      List.takeWhile_cons_of_neg, List.length_nil, List.length_eq_zero, List.takeWhile_eq_nil_iff,
+      List.takeWhile_cons_of_neg, List.length_nil, List.length_eq_zero_iff,
+      List.takeWhile_eq_nil_iff,
       List.get_eq_getElem, Bool.not_eq_eq_eq_not, decide_eq_false_iff_not, Decidable.not_not]
       by_cases hac : r a c
       · simp [hac, hrba]

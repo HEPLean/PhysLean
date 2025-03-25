@@ -73,16 +73,7 @@ def toHalfEdge {𝓔 𝓥 : Type} : Over (P.HalfEdgeLabel × 𝓔 × 𝓥) ⥤ O
 @[simps!]
 def preimageType' {𝓥 : Type} (v : 𝓥) : Over 𝓥 ⥤ Type where
   obj := fun f => f.hom ⁻¹' {v}
-  map {f g} F := fun x =>
-    ⟨F.left x.1, by
-      have h := congrFun F.w x
-      simp only [Functor.const_obj_obj, Functor.id_obj, Functor.id_map, types_comp_apply,
-        CostructuredArrow.right_eq_id, Functor.const_obj_map, types_id_apply] at h
-      simp only [Functor.id_obj, Functor.const_obj_obj, Set.mem_preimage, Set.mem_singleton_iff]
-      obtain ⟨val, property⟩ := x
-      simp_all only
-      simp_all only [Functor.id_obj, Functor.const_obj_obj, Set.mem_preimage,
-        Set.mem_singleton_iff]⟩
+  map {f g} F := fun x => ⟨F.left x.1, by have h := congrFun F.w x; aesop⟩
 
 /-- The functor from `Over (P.HalfEdgeLabel × 𝓔 × 𝓥)` to
   `Over P.HalfEdgeLabel` induced by pull-back along insertion of `v : P.VertexLabel`.
@@ -565,11 +556,7 @@ lemma ext' {F G : FeynmanDiagram P} {f g : Hom F G} (h𝓔 : f.𝓔𝓞 = g.𝓔
     (h𝓥 : f.𝓥𝓞 = g.𝓥𝓞) (h𝓱𝓔 : f.𝓱𝓔 = g.𝓱𝓔) : f = g := by
   cases f
   cases g
-  subst h𝓔 h𝓥
-  simp_all only [mk.injEq, heq_eq_eq, true_and]
-  ext a : 2
-  simp only [𝓱𝓔] at h𝓱𝓔
-  exact congrFun h𝓱𝓔 a
+  aesop
 
 lemma ext {F G : FeynmanDiagram P} {f g : Hom F G} (h𝓔 : f.𝓔 = g.𝓔)
     (h𝓥 : f.𝓥 = g.𝓥) (h𝓱𝓔 : f.𝓱𝓔 = g.𝓱𝓔) : f = g :=
@@ -591,9 +578,7 @@ lemma cond_symm {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.�
   refine ⟨?_, ?_, fun x => ?_⟩
   · simpa using fun x => (h.1 (𝓔.symm x)).symm
   · simpa using fun x => (h.2.1 (𝓥.symm x)).symm
-  · have h1 := h.2.2 (𝓱𝓔.symm x)
-    simp only [Functor.const_obj_obj, Equiv.apply_symm_apply] at h1
-    exact (edgeVertexEquiv 𝓔 𝓥).apply_eq_iff_eq_symm_apply.mp (h1).symm
+  · have h1 := h.2.2 (𝓱𝓔.symm x); aesop
 
 /-- If `𝓔` is a map between the edges of one finite Feynman diagram and another Feynman diagram,
   then deciding whether `𝓔` from a morphism in `Over P.EdgeLabel` between the edge
@@ -657,14 +642,8 @@ def mkIso {F G : FeynmanDiagram P} (𝓔 : F.𝓔 ≃ G.𝓔) (𝓥 : F.𝓥 ≃
     (C : Hom.Cond 𝓔 𝓥 𝓱𝓔) : F ≅ G where
   hom := Hom.mk' 𝓔 𝓥 𝓱𝓔 C
   inv := Hom.mk' 𝓔.symm 𝓥.symm 𝓱𝓔.symm (Hom.cond_symm 𝓔 𝓥 𝓱𝓔 C)
-  hom_inv_id := by
-    apply Hom.ext
-    all_goals
-      aesop_cat
-  inv_hom_id := by
-    apply Hom.ext
-    all_goals
-      aesop_cat
+  hom_inv_id := by apply Hom.ext <;> aesop
+  inv_hom_id := by apply Hom.ext <;> aesop
 
 /-- The functor from Feynman diagrams to category over edge labels. -/
 def func𝓔𝓞 : FeynmanDiagram P ⥤ Over P.EdgeLabel where
@@ -781,10 +760,8 @@ def toSimpleGraph : SimpleGraph F.𝓥 where
     apply And.intro (Ne.symm h.1)
     obtain ⟨a, b, hab⟩ := h.2
     use b, a
-    simp_all only [AdjRelation, ne_eq, and_self]
-  loopless := by
-    intro x h
-    simp at h
+    simp_all
+  loopless := by intro x h; simp at h
 
 /-- The adjacency relation for a simple graph created by a finite Feynman diagram
   is a decidable relation. -/

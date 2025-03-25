@@ -91,7 +91,7 @@ lemma S₁₂_leq_one (V : Quotient CKMMatrixSetoid) : S₁₂ V ≤ 1 := by
   · have h3 : 0 < √(VudAbs V ^ 2 + VusAbs V ^ 2) := by
       have h2 := le_iff_eq_or_lt.mp (Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2))
       cases' h2 with h2 h2
-      simp_all
+      simp_all only [VudAbs, VusAbs, not_true_eq_false]
       exact h2
     left
     simp_all only [VudAbs, VusAbs, or_true, Real.sqrt_pos, true_and]
@@ -115,10 +115,10 @@ lemma S₂₃_leq_one (V : Quotient CKMMatrixSetoid) : S₂₃ V ≤ 1 := by
     · have h2 := le_iff_eq_or_lt.mp (Real.sqrt_nonneg (VudAbs V ^ 2 + VusAbs V ^ 2))
       have h3 : 0 < √(VudAbs V ^ 2 + VusAbs V ^ 2) := by
         cases' h2 with h2 h2
-        simp_all
+        simp_all only [VubAbs, VudAbs, VusAbs, not_true_eq_false]
         exact h2
       apply Or.inl
-      simp_all
+      simp_all only [VubAbs, VudAbs, VusAbs, or_true, Real.sqrt_pos, VcbAbs, true_and]
       rw [Real.le_sqrt (VAbs_ge_zero 1 2 V) (le_of_lt h3)]
       rw [VudAbs_sq_add_VusAbs_sq, ← VcbAbs_sq_add_VtbAbs_sq]
       simp only [Fin.isValue, VcbAbs, VtbAbs, le_add_iff_nonneg_right]
@@ -667,7 +667,7 @@ theorem exists_δ₁₃ (V : CKMMatrix) :
   obtain ⟨U, hU⟩ := fstRowThdColRealCond_holds_up_to_equiv V
   have hUV : ⟦U⟧ = ⟦V⟧ := (Quotient.eq.mpr (phaseShiftRelation_equiv.symm hU.1))
   by_cases ha : [V]ud ≠ 0 ∨ [V]us ≠ 0
-  · have haU : [U]ud ≠ 0 ∨ [U]us ≠ 0 := by -- should be much simplier
+  · have haU : [U]ud ≠ 0 ∨ [U]us ≠ 0 := by -- should be much simpler
       by_contra hn
       simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at hn
       have hna : VudAbs ⟦U⟧ = 0 ∧ VusAbs ⟦U⟧ =0 := by
@@ -681,7 +681,7 @@ theorem exists_δ₁₃ (V : CKMMatrix) :
     use (- arg ([U]ub))
     rw [← hUV]
     exact hU.1
-  · have haU : ¬ ([U]ud ≠ 0 ∨ [U]us ≠ 0) := by -- should be much simplier
+  · have haU : ¬ ([U]ud ≠ 0 ∨ [U]us ≠ 0) := by -- should be much simpler
       simp only [Fin.isValue, ne_eq, not_or, Decidable.not_not] at ha
       have h1 : VudAbs ⟦U⟧ = 0 ∧ VusAbs ⟦U⟧ = 0 := by
         rw [hUV]

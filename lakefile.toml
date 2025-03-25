@@ -6,12 +6,12 @@ defaultTargets = ["PhysLean"]
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "v4.17.0"
+rev = "v4.18.0-rc1"
 
 [[require]]
 name = "«doc-gen4»"
 git = "https://github.com/leanprover/doc-gen4"
-rev = "v4.17.0"
+rev = "v4.18.0-rc1"
 
 [[lean_lib]]
 name = "PhysLean"
@@ -45,8 +45,8 @@ name = "type_former_lint"
 srcDir = "scripts"
 
 [[lean_exe]]
-name = "hepLean_style_lint"
-srcDir = "scripts"
+name = "style_lint"
+srcDir = "scripts/MetaPrograms"
 
 [[lean_exe]]
 name = "find_TODOs"
@@ -97,7 +97,6 @@ srcDir = "scripts/MetaPrograms"
 name = "redundent_imports"
 supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
-
 
 # -- Optional inclusion of openAI_doc_check. Needs `llm` above.
 #[[lean_exe]]

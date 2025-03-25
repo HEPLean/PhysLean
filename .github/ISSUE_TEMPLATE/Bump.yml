@@ -1,0 +1,57 @@
+name: Bump Issue
+description: Issue used to bump the version of a Lean.
+title: "Bump to version: "
+body:
+- type: textarea
+  id: bump_details
+  attributes:
+    label: Version bump
+    description: Please do not modify this text.
+    value: |
+      This issue is a tracker issue for bumping PhysLean to new versions of Lean.
+      The checklist below should be used to ensure that the bump is done correctly.
+  validations:
+    required: true
+- type: checkboxes
+  id: basics
+  attributes:
+    label: Basics
+    description: Please check off these items as you complete them
+    options:
+      - label: Update mathlib rev in lakefile.toml.
+      - label: Update doc-gen4 rev in lakefile.toml.
+      - label: Run `rm -rf .lake; lake update`.
+      - label: Check `lean-toolchain` updates correctly.
+      - label: Update the `README.md` file.
+  validations:
+    required: false
+- type: checkboxes
+  id: build
+  attributes:
+    label: Build
+    description: Please check off these items as you complete them
+    options:
+      - label: Run `lake build` and fix any errors.
+  validations:
+    required: false
+- type: checkboxes
+  id: scripts
+  attributes:
+    label: Scripts
+    description: Please check off these items as you complete them
+    options:
+      - label: Ensure `lake exe style_lint` runs without errors.
+      - label: Ensure `lake exe TODO_to_yml mkFile` runs without errors.
+      - label: Ensure `lake exe stats mkHTML` runs without errors.
+      - label: Ensure `lake exe informal mkFile mkDot mkHTML` runs without errors.
+  validations:
+    required: false
+- type: checkboxes
+  id: afterwords
+  attributes:
+    label: Afterwards
+    description: Please check off these items as you complete them
+    options:
+      - label: Create a tag for the new version.
+  validations:
+    required: false

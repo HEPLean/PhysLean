@@ -60,15 +60,11 @@ lemma equiv_iff_sub_mem_ideal (x y : FieldOpFreeAlgebra 𝓕) :
 
 lemma equiv_iff_exists_add (x y : FieldOpFreeAlgebra 𝓕) :
     x ≈ y ↔ ∃ a, x = y + a ∧ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
-  apply Iff.intro
-  · intro h
-    rw [equiv_iff_sub_mem_ideal] at h
-    use x - y
-    simp [h]
-  · intro h
-    obtain ⟨a, rfl, ha⟩ := h
-    rw [equiv_iff_sub_mem_ideal]
-    simp [ha]
+  constructor <;> intro h
+  · rw [equiv_iff_sub_mem_ideal] at h
+    aesop
+  · obtain ⟨a, rfl, ha⟩ := h
+    simpa [equiv_iff_sub_mem_ideal]
 
 /-- For a field specification `𝓕`, `ι` is defined as the projection
 
@@ -77,17 +73,16 @@ lemma equiv_iff_exists_add (x y : FieldOpFreeAlgebra 𝓕) :
 taking each element of `𝓕.FieldOpFreeAlgebra` to its equivalence class in `FieldOpAlgebra 𝓕`. -/
 def ι : FieldOpFreeAlgebra 𝓕 →ₐ[ℂ] FieldOpAlgebra 𝓕 where
   toFun := (TwoSidedIdeal.span 𝓕.fieldOpIdealSet).ringCon.mk'
-  map_one' := by rfl
-  map_mul' x y := by rfl
-  map_zero' := by rfl
-  map_add' x y := by rfl
-  commutes' x := by rfl
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+  commutes' _ := rfl
 
 lemma ι_surjective : Function.Surjective (@ι 𝓕) := by
   intro x
   obtain ⟨x⟩ := x
-  use x
-  rfl
+  aesop
 
 lemma ι_apply (x : FieldOpFreeAlgebra 𝓕) : ι x = Quotient.mk _ x := rfl
 
@@ -102,31 +97,21 @@ lemma ι_of_mem_fieldOpIdealSet (x : FieldOpFreeAlgebra 𝓕) (hx : x ∈ 𝓕.f
 lemma ι_superCommuteF_of_create_create (φc φc' : 𝓕.CrAnFieldOp) (hφc : 𝓕 |>ᶜ φc = .create)
     (hφc' : 𝓕 |>ᶜ φc' = .create) : ι [ofCrAnOpF φc, ofCrAnOpF φc']ₛF = 0 := by
   apply ι_of_mem_fieldOpIdealSet
-  simp only [fieldOpIdealSet, exists_and_left, Set.mem_setOf_eq]
-  simp only [exists_prop]
-  right
-  left
-  use φc, φc', hφc, hφc'
+  simp only [fieldOpIdealSet]
+  aesop
 
 lemma ι_superCommuteF_of_annihilate_annihilate (φa φa' : 𝓕.CrAnFieldOp)
     (hφa : 𝓕 |>ᶜ φa = .annihilate) (hφa' : 𝓕 |>ᶜ φa' = .annihilate) :
     ι [ofCrAnOpF φa, ofCrAnOpF φa']ₛF = 0 := by
   apply ι_of_mem_fieldOpIdealSet
-  simp only [fieldOpIdealSet, exists_and_left, Set.mem_setOf_eq]
-  simp only [exists_prop]
-  right
-  right
-  left
-  use φa, φa', hφa, hφa'
+  simp only [fieldOpIdealSet]
+  aesop
 
 lemma ι_superCommuteF_of_diff_statistic {φ ψ : 𝓕.CrAnFieldOp}
     (h : (𝓕 |>ₛ φ) ≠ (𝓕 |>ₛ ψ)) : ι [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF = 0 := by
   apply ι_of_mem_fieldOpIdealSet
-  simp only [fieldOpIdealSet, exists_prop, exists_and_left, Set.mem_setOf_eq]
-  right
-  right
-  right
-  use φ, ψ
+  simp only [fieldOpIdealSet]
+  aesop
 
 lemma ι_superCommuteF_zero_of_fermionic (φ ψ : 𝓕.CrAnFieldOp)
     (h : [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF ∈ statisticSubmodule fermionic) :
@@ -144,8 +129,7 @@ lemma ι_superCommuteF_ofCrAnOpF_ofCrAnOpF_bosonic_or_zero (φ ψ : 𝓕.CrAnFie
   rcases superCommuteF_ofCrAnListF_ofCrAnListF_bosonic_or_fermionic [φ] [ψ] with h | h
   · simp_all [ofCrAnListF_singleton]
   · simp_all only [ofCrAnListF_singleton]
-    right
-    exact ι_superCommuteF_zero_of_fermionic _ _ h
+    exact Or.inr (ι_superCommuteF_zero_of_fermionic _ _ h)
 
 /-!
 
@@ -158,8 +142,7 @@ lemma ι_superCommuteF_ofCrAnOpF_superCommuteF_ofCrAnOpF_ofCrAnOpF (φ1 φ2 φ3 
     ι [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛF]ₛF = 0 := by
   apply ι_of_mem_fieldOpIdealSet
   simp only [fieldOpIdealSet, exists_prop, exists_and_left, Set.mem_setOf_eq]
-  left
-  use φ1, φ2, φ3
+  aesop
 
 lemma ι_superCommuteF_superCommuteF_ofCrAnOpF_ofCrAnOpF_ofCrAnOpF (φ1 φ2 φ3 : 𝓕.CrAnFieldOp) :
     ι [[ofCrAnOpF φ1, ofCrAnOpF φ2]ₛF, ofCrAnOpF φ3]ₛF = 0 := by
@@ -190,8 +173,7 @@ lemma ι_superCommuteF_superCommuteF_ofCrAnOpF_ofCrAnOpF_fieldOpFreeAlgebra (φ1
   have h1 : (ι.toLinearMap ∘ₗ superCommuteF [ofCrAnOpF φ1, ofCrAnOpF φ2]ₛF) = 0 := by
     apply (ofCrAnListFBasis.ext fun l ↦ ?_)
     simp [ι_superCommuteF_superCommuteF_ofCrAnOpF_ofCrAnOpF_ofCrAnListF]
-  rw [h1]
-  simp
+  aesop
 
 lemma ι_commute_fieldOpFreeAlgebra_superCommuteF_ofCrAnOpF_ofCrAnOpF (φ1 φ2 : 𝓕.CrAnFieldOp)
     (a : 𝓕.FieldOpFreeAlgebra) : ι a * ι [ofCrAnOpF φ1, ofCrAnOpF φ2]ₛF -
@@ -211,10 +193,8 @@ lemma ι_superCommuteF_ofCrAnOpF_ofCrAnOpF_mem_center (φ ψ : 𝓕.CrAnFieldOp)
   obtain ⟨a, rfl⟩ := ι_surjective a
   have h0 := ι_commute_fieldOpFreeAlgebra_superCommuteF_ofCrAnOpF_ofCrAnOpF φ ψ a
   trans ι ((superCommuteF (ofCrAnOpF φ)) (ofCrAnOpF ψ)) * ι a + 0
-  swap
-  simp only [add_zero]
-  rw [← h0]
-  abel
+  · simp [← h0]
+  · simp [add_zero]
 
 /-!
 
@@ -225,10 +205,7 @@ lemma ι_eq_zero_iff_mem_ideal (x : FieldOpFreeAlgebra 𝓕) :
     ι x = 0 ↔ x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
   rw [ι_apply]
   change ⟦x⟧ = ⟦0⟧ ↔ _
-  simp only [ringConGen, Quotient.eq]
-  rw [TwoSidedIdeal.mem_iff]
-  simp only
-  rfl
+  aesop
 
 lemma bosonicProjF_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕)
     (hx : x ∈ 𝓕.fieldOpIdealSet) :
@@ -324,8 +301,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProjF y).1
           simp [hby]
-        · use ↑(bosonicProjF b)
-          simp
+        · aesop
       · /- fermion, fermion, boson mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
         refine Set.mem_of_mem_of_subset ?_ AddSubgroup.subset_closure
@@ -337,8 +313,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
           simp [hby, hfy]
-        · use ↑(bosonicProjF b)
-          simp
+        · aesop
       apply TwoSidedIdeal.add_mem
       · /- boson, fermion, fermion mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
@@ -351,8 +326,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
           simp [hby, hfy]
-        · use ↑(fermionicProjF b)
-          simp
+        · aesop
       · /- fermion, boson, fermion mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
         refine Set.mem_of_mem_of_subset ?_ AddSubgroup.subset_closure
@@ -364,8 +338,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProjF y).1
           simp [hby, hfy]
-        · use ↑(fermionicProjF b)
-          simp
+        · aesop
     · simp only [hby, ZeroMemClass.coe_zero, mul_zero, zero_mul, zero_add, add_zero]
       apply TwoSidedIdeal.add_mem
       · /- fermion, fermion, boson mem-/
@@ -379,8 +352,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
           simp [hby, hfy]
-        · use ↑(bosonicProjF b)
-          simp
+        · aesop
       · /- boson, fermion, fermion mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
         refine Set.mem_of_mem_of_subset ?_ AddSubgroup.subset_closure
@@ -392,8 +364,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
           simp [hby, hfy]
-        · use ↑(fermionicProjF b)
-          simp
+        · aesop
     · simp only [hfy, ZeroMemClass.coe_zero, mul_zero, zero_mul, add_zero, zero_add]
       apply TwoSidedIdeal.add_mem
       · /- boson, boson, boson mem-/
@@ -407,8 +378,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProjF y).1
           simp [hby]
-        · use ↑(bosonicProjF b)
-          simp
+        · aesop
       · /- fermion, boson, fermion mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
         refine Set.mem_of_mem_of_subset ?_ AddSubgroup.subset_closure
@@ -420,8 +390,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProjF y).1
           simp [hby, hfy]
-        · use ↑(fermionicProjF b)
-          simp
+        · aesop
     · simp [hfy, hby]
   · simp [p]
   · intro x y hx hy hpx hpy
@@ -429,8 +398,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
     apply TwoSidedIdeal.add_mem
     · exact hpx
     · exact hpy
-  · intro x hx
-    simp [p]
+  · aesop
 
 lemma fermionicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
     (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
@@ -447,9 +415,7 @@ lemma ι_eq_zero_iff_ι_bosonicProjF_fermonicProj_zero (x : FieldOpFreeAlgebra �
   · intro h
     rw [ι_eq_zero_iff_mem_ideal] at h ⊢
     rw [ι_eq_zero_iff_mem_ideal]
-    apply And.intro
-    · exact bosonicProjF_mem_ideal x h
-    · exact fermionicProjF_mem_ideal x h
+    exact And.intro (bosonicProjF_mem_ideal x h) (fermionicProjF_mem_ideal x h)
   · intro h
     rw [← bosonicProjF_add_fermionicProjF x]
     simp_all
@@ -483,10 +449,7 @@ lemma ofFieldOpList_append (φs ψs : List 𝓕.FieldOp) :
 
 lemma ofFieldOpList_cons (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
     ofFieldOpList (φ :: φs) = ofFieldOp φ * ofFieldOpList φs := by
-  simp only [ofFieldOpList]
-  rw [ofFieldOpListF_cons]
-  simp only [map_mul]
-  rfl
+  aesop
 
 lemma ofFieldOpList_singleton (φ : 𝓕.FieldOp) :
     ofFieldOpList [φ] = ofFieldOp φ := by
@@ -503,8 +466,7 @@ lemma ofCrAnOp_eq_ι_ofCrAnOpF (φ : 𝓕.CrAnFieldOp) :
 lemma ofFieldOp_eq_sum (φ : 𝓕.FieldOp) :
     ofFieldOp φ = (∑ i : 𝓕.fieldOpToCrAnType φ, ofCrAnOp ⟨φ, i⟩) := by
   rw [ofFieldOp, ofFieldOpF]
-  simp only [map_sum]
-  rfl
+  aesop
 
 /-- For a field specification `𝓕` and a list `φs` of `𝓕.CrAnFieldOp`,
   `ofCrAnList φs` is defined as the element of
@@ -516,8 +478,7 @@ lemma ofCrAnList_eq_ι_ofCrAnListF (φs : List 𝓕.CrAnFieldOp) :
 
 lemma ofCrAnList_append (φs ψs : List 𝓕.CrAnFieldOp) :
     ofCrAnList (φs ++ ψs) = ofCrAnList φs * ofCrAnList ψs := by
-  simp only [ofCrAnList]
-  rw [ofCrAnListF_append]
+  simp only [ofCrAnList, ofCrAnListF_append]
   simp
 
 lemma ofCrAnList_singleton (φ : 𝓕.CrAnFieldOp) :
@@ -527,8 +488,7 @@ lemma ofCrAnList_singleton (φ : 𝓕.CrAnFieldOp) :
 lemma ofFieldOpList_eq_sum (φs : List 𝓕.FieldOp) :
     ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnList s.1 := by
   rw [ofFieldOpList, ofFieldOpListF_sum]
-  simp only [map_sum]
-  rfl
+  aesop
 
 remark notation_drop := "In doc-strings we will often drop explicit applications of `ofCrAnOp`,
 `ofCrAnList`, `ofFieldOp`, and `ofFieldOpList`"
@@ -594,7 +554,7 @@ That is, every field operator splits into its creation part plus its annihilatio
 lemma ofFieldOp_eq_crPart_add_anPart (φ : 𝓕.FieldOp) :
     ofFieldOp φ = crPart φ + anPart φ := by
   rw [ofFieldOp, crPart, anPart, ofFieldOpF_eq_crPartF_add_anPartF]
-  simp only [map_add]
+  simp [map_add]
 
 end FieldOpAlgebra
 end FieldSpecification

@@ -3,7 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.ContrMap
 import PhysLean.Relativity.Tensors.TensorSpecies.Basis
 /-!
 
@@ -28,11 +27,12 @@ open MonoidalCategory
 noncomputable section
 
 /-- A syntax tree for tensor expressions. -/
-inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Type where
+inductive TensorTree {k : Type} [CommRing k]
+    (S : TensorSpecies k) : {n : ℕ} → (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
   /-- A node corresponding to the scalar multiple of a tensor by a element of the field. -/
-  | smul {n : ℕ} {c : Fin n → S.C} : S.k → TensorTree S c → TensorTree S c
+  | smul {n : ℕ} {c : Fin n → S.C} : k → TensorTree S c → TensorTree S c
   /-- A node corresponding to negation of a tensor. -/
   | neg {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c
   /-- A node corresponding to the addition of two tensors. -/
@@ -55,7 +55,8 @@ inductive TensorTree (S : TensorSpecies) : {n : ℕ} → (Fin n → S.C) → Typ
 
 namespace TensorTree
 
-variable {S : TensorSpecies} {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
+  {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
 
 open MonoidalCategory
 open TensorProduct
@@ -73,7 +74,7 @@ def vecNode {c : S.C} (v : S.FD.obj (Discrete.mk c)) : TensorTree S ![c] :=
   (tensorNode ((OverColor.forgetLiftApp S.FD c).symm.hom.hom v))
 
 /-- The node `vecNode` of a tensor tree, with all arguments explicit. -/
-abbrev vecNodeE (S : TensorSpecies) (c1 : S.C)
+abbrev vecNodeE (S : TensorSpecies k) (c1 : S.C)
     (v : (S.FD.obj (Discrete.mk c1)).V) :
     TensorTree S ![c1] := vecNode v
 
@@ -84,7 +85,7 @@ def twoNode {c1 c2 : S.C} (t : (S.FD.obj (Discrete.mk c1) ⊗
   (tensorNode ((OverColor.Discrete.pairIsoSep S.FD).hom.hom t))
 
 /-- The node `twoNode` of a tensor tree, with all arguments explicit. -/
-abbrev twoNodeE (S : TensorSpecies) (c1 c2 : S.C)
+abbrev twoNodeE (S : TensorSpecies k) (c1 c2 : S.C)
     (v : (S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)).V) :
     TensorTree S ![c1, c2] := twoNode v
 
@@ -95,38 +96,38 @@ def threeNode {c1 c2 c3 : S.C} (t : (S.FD.obj (Discrete.mk c1) ⊗
   (tensorNode ((OverColor.Discrete.tripleIsoSep S.FD).hom.hom t))
 
 /-- The node `threeNode` of a tensor tree, with all arguments explicit. -/
-abbrev threeNodeE (S : TensorSpecies) (c1 c2 c3 : S.C)
+abbrev threeNodeE (S : TensorSpecies k) (c1 c2 c3 : S.C)
     (v : (S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)).V) :
     TensorTree S ![c1, c2, c3] := threeNode v
 
 /-- A general constant node. -/
-def constNode {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep S.k S.G) ⟶ S.F.obj (OverColor.mk c)) :
-    TensorTree S c := tensorNode (T.hom (1 : S.k))
+def constNode {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep k S.G) ⟶ S.F.obj (OverColor.mk c)) :
+    TensorTree S c := tensorNode (T.hom (1 : k))
 
 /-- A constant vector. -/
-def constVecNode {c : S.C} (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c)) :
-    TensorTree S ![c] := vecNode (v.hom (1 : S.k))
+def constVecNode {c : S.C} (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c)) :
+    TensorTree S ![c] := vecNode (v.hom (1 : k))
 
 /-- A constant two tensor (e.g. metric and unit). -/
 def constTwoNode {c1 c2 : S.C}
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
-    TensorTree S ![c1, c2] := twoNode (v.hom (1 : S.k))
+    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
+    TensorTree S ![c1, c2] := twoNode (v.hom (1 : k))
 
 /-- The node `constTwoNode` of a tensor tree, with all arguments explicit. -/
-abbrev constTwoNodeE (S : TensorSpecies) (c1 c2 : S.C)
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
+abbrev constTwoNodeE (S : TensorSpecies k) (c1 c2 : S.C)
+    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := constTwoNode v
 
 /-- A constant three tensor (e.g. Pauli matrices). -/
 def constThreeNode {c1 c2 c3 : S.C}
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
-  threeNode (v.hom (1 : S.k))
+  threeNode (v.hom (1 : k))
 
 /-- The node `constThreeNode` of a tensor tree, with all arguments explicit. -/
-abbrev constThreeNodeE (S : TensorSpecies) (c1 c2 c3 : S.C)
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+abbrev constThreeNodeE (S : TensorSpecies k) (c1 c2 c3 : S.C)
+    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
   constThreeNode v
 
@@ -162,8 +163,8 @@ def tensor {n : ℕ} {c : Fin n → S.C} : TensorTree S c → S.F.obj (OverColor
   | contr i j h t => (S.contrMap _ i j h).hom t.tensor
   | eval i e t => (S.evalMap i (Fin.ofNat' _ e)) t.tensor
 
-/-- Takes a tensor tree based on `Fin 0`, into the field `S.k`. -/
-def field {c : Fin 0 → S.C} (t : TensorTree S c) : S.k := S.castFin0ToField t.tensor
+/-- Takes a tensor tree based on `Fin 0`, into the field `k`. -/
+def field {c : Fin 0 → S.C} (t : TensorTree S c) : k := S.castFin0ToField t.tensor
 
 /-!
 
@@ -177,17 +178,17 @@ lemma tensorNode_tensor {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
 
 @[simp]
 lemma constTwoNode_tensor {c1 c2 : S.C}
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
+    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
     (constTwoNode v).tensor =
-    (OverColor.Discrete.pairIsoSep S.FD).hom.hom (v.hom (1 : S.k)) :=
+    (OverColor.Discrete.pairIsoSep S.FD).hom.hom (v.hom (1 : k)) :=
   rfl
 
 @[simp]
 lemma constThreeNode_tensor {c1 c2 c3 : S.C}
-    (v : 𝟙_ (Rep S.k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)) :
     (constThreeNode v).tensor =
-    (OverColor.Discrete.tripleIsoSep S.FD).hom.hom (v.hom (1 : S.k)) :=
+    (OverColor.Discrete.tripleIsoSep S.FD).hom.hom (v.hom (1 : k)) :=
   rfl
 
 lemma prod_tensor {c1 : Fin n → S.C} {c2 : Fin m → S.C} (t1 : TensorTree S c1)
@@ -209,7 +210,7 @@ lemma neg_tensor (t : TensorTree S c) : (neg t).tensor = - t.tensor := rfl
 lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) (t : TensorTree S c) :
     (eval i e t).tensor = (S.evalMap i (Fin.ofNat' (S.repDim (c i)) e)) t.tensor := rfl
 
-lemma smul_tensor {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
+lemma smul_tensor {c : Fin n → S.C} (a : k) (T : TensorTree S c) :
     (smul a T).tensor = a • T.tensor:= rfl
 
 lemma action_tensor {c : Fin n → S.C} (g : S.G) (T : TensorTree S c) :
@@ -273,7 +274,7 @@ lemma neg_tensor_eq {T1 T2 : TensorTree S c} (h : T1.tensor = T2.tensor) :
   simp only [neg_tensor]
   rw [h]
 
-lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : S.k} (h : T1.tensor = T2.tensor) :
+lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : k} (h : T1.tensor = T2.tensor) :
     (smul a T1).tensor = (smul a T2).tensor := by
   simp only [smul_tensor]
   rw [h]
@@ -283,7 +284,7 @@ lemma action_tensor_eq {T1 T2 : TensorTree S c} {g : S.G} (h : T1.tensor = T2.te
   simp only [action_tensor]
   rw [h]
 
-lemma smul_mul_eq {T1 : TensorTree S c} {a b : S.k} (h : a = b) :
+lemma smul_mul_eq {T1 : TensorTree S c} {a b : k} (h : a = b) :
     (smul a T1).tensor = (smul b T1).tensor := by
   rw [h]
 
@@ -316,23 +317,23 @@ lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
     (S.tensorBasis c1).repr t1.tensor (TensorBasis.prodEquiv b).2 := by
   simp only [prod_tensor]
   let P (t : S.F.obj (OverColor.mk c))
-      (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) (t1 : S.F.obj (OverColor.mk c1))
-      (ht1 : t1 ∈ Submodule.span S.k (Set.range (S.tensorBasis c1))) :
+      (ht : t ∈ Submodule.span k (Set.range (S.tensorBasis c))) (t1 : S.F.obj (OverColor.mk c1))
+      (ht1 : t1 ∈ Submodule.span k (Set.range (S.tensorBasis c1))) :
       Prop := ((S.tensorBasis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).repr
       ((ConcreteCategory.hom (S.F.map (OverColor.equivToIso finSumFinEquiv).hom).hom)
         ((ConcreteCategory.hom (Functor.LaxMonoidal.μ S.F (OverColor.mk c) (OverColor.mk c1)).hom)
-          (t ⊗ₜ[S.k] t1)))) b =
+          (t ⊗ₜ[k] t1)))) b =
     ((S.tensorBasis c).repr t) (TensorBasis.prodEquiv b).1 *
     ((S.tensorBasis c1).repr t1) (TensorBasis.prodEquiv b).2
   change P t.tensor (Basis.mem_span _ t.tensor) t1.tensor (Basis.mem_span _ t1.tensor)
   apply Submodule.span_induction
   · intro t1 ht1
     let Pt (t : S.F.obj (OverColor.mk c))
-      (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) := P t ht t1 (Basis.mem_span _ t1)
+      (ht : t ∈ Submodule.span k (Set.range (S.tensorBasis c))) := P t ht t1 (Basis.mem_span _ t1)
     change Pt t.tensor (Basis.mem_span _ t.tensor)
     apply Submodule.span_induction
     · intro t ht
-      simp at ht ht1
+      rw [Set.mem_range] at ht ht1
       obtain ⟨b1, rfl⟩ := ht
       obtain ⟨b2, rfl⟩ := ht1
       simp only [Function.comp_apply, Action.instMonoidalCategory_tensorObj_V,
@@ -343,7 +344,7 @@ lemma prod_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
         (TensorBasis.prodEquiv.symm (b1, b2))) b
       · congr 2
         rw [TensorBasis.tensorBasis_prod]
-        simp
+        simp [OverColor.mk_hom]
       simp only [Function.comp_apply, Basis.repr_self, Pt, P]
       rw [MonoidAlgebra.single_apply, MonoidAlgebra.single_apply, MonoidAlgebra.single_apply]
       obtain ⟨b, rfl⟩ := TensorBasis.prodEquiv.symm.surjective b
@@ -394,24 +395,27 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : 
     ∑ (b' : TensorBasis.ContrSection b),
     ((S.tensorBasis c).repr t.tensor b'.1) *
     S.castToField ((S.contr.app (Discrete.mk (c i))).hom
-    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h])
+    (S.basis (c i) (b'.1 i) ⊗ₜ[k] S.basis (S.τ (c i)) (Fin.cast (by rw [h])
     (b'.1 (i.succAbove j))))) := by
   simp only [contr_tensor]
   let P (t : S.F.obj (OverColor.mk c))
-      (ht : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) : Prop :=
+      (ht : t ∈ Submodule.span k (Set.range (S.tensorBasis c))) : Prop :=
       ((S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr
       ((ConcreteCategory.hom (S.contrMap c i j h).hom) t)) b =
       ∑ (b' : TensorBasis.ContrSection b),
     ((S.tensorBasis c).repr t b'.1) *
     S.castToField ((S.contr.app (Discrete.mk (c i))).hom
-    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k]
+    (S.basis (c i) (b'.1 i) ⊗ₜ[k]
     S.basis (S.τ (c i)) (Fin.cast (by rw [h]) (b'.1 (i.succAbove j)))))
   change P t.tensor (Basis.mem_span _ t.tensor)
   apply Submodule.span_induction
   · intro t ht
     simp only [Set.mem_range] at ht
     obtain ⟨b', rfl⟩ := ht
-    simp [P]
+    simp only [Function.comp_apply, Nat.succ_eq_add_one, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, Basis.repr_self, P]
     rw [TensorBasis.contrMap_tensorBasis]
     simp only [Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
       Nat.succ_eq_add_one, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -422,7 +426,8 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : 
     · rw [Finsupp.single_apply]
       rw [Finset.sum_eq_single ⟨b', hb⟩]
       rw [TensorBasis.ContrSection] at hb
-      simp at hb
+      simp only [Nat.succ_eq_add_one, Function.comp_apply, Finset.mem_filter, Finset.mem_univ,
+        true_and, P] at hb
       simp only [hb, ↓reduceIte, Finsupp.single_eq_same, one_mul, P]
       rfl
       intro b'' hb'' hbb''
@@ -448,10 +453,14 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : 
       simpa [TensorBasis.ContrSection] using hb
   · simp [P]
   · intro x y hx hy hP1 hP2
-    simp [P] at hP1 hP2 ⊢
+    simp only [Function.comp_apply, Nat.succ_eq_add_one, Monoidal.tensorUnit_obj,
+      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
+      Functor.comp_obj, Discrete.functor_obj_eq_as, map_add, Finsupp.coe_add, Pi.add_apply,
+      P] at hP1 hP2 ⊢
     rw [hP1, hP2]
     rw [← Finset.sum_add_distrib]
-    simp [add_mul]
+    simp only [add_mul, P]
   · intro x hx a hP
     simp [P] at hP ⊢
     rw [hP]
@@ -460,13 +469,13 @@ lemma contr_tensorBasis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : 
 
 lemma contr_tensorBasis_repr_apply_eq {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i : Fin (n + 1 + 1)}
     {j : Fin (n + 1)} {h : c (i.succAbove j) = S.τ (c i)} (t : TensorTree S c)
-    (b : Π k, Fin (S.repDim (c (i.succAbove (j.succAbove k))))) (a : S.k) :
+    (b : Π k, Fin (S.repDim (c (i.succAbove (j.succAbove k))))) (a : k) :
     (S.tensorBasis (c ∘ i.succAbove ∘ j.succAbove)).repr (contr i j h t).tensor b = a
     ↔
     ∑ (b' : TensorBasis.ContrSection b),
     ((S.tensorBasis c).repr t.tensor b'.1) *
     S.castToField ((S.contr.app (Discrete.mk (c i))).hom
-    (S.basis (c i) (b'.1 i) ⊗ₜ[S.k] S.basis (S.τ (c i)) (Fin.cast (by rw [h])
+    (S.basis (c i) (b'.1 i) ⊗ₜ[k] S.basis (S.τ (c i)) (Fin.cast (by rw [h])
     (b'.1 (i.succAbove j))))) = a := by
   rw [contr_tensorBasis_repr_apply]
 
@@ -477,9 +486,9 @@ lemma perm_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
     (S.tensorBasis c1).repr (perm σ t).tensor b =
     (S.tensorBasis c).repr t.tensor
     (TensorBasis.congr (OverColor.Hom.toEquiv σ) (OverColor.Hom.toEquiv_comp_apply σ) b) := by
-  simp [perm_tensor]
+  simp only [perm_tensor, OverColor.mk_hom]
   let pb (t : S.F.obj (OverColor.mk c))
-      (hc : t ∈ Submodule.span S.k (Set.range (S.tensorBasis c))) : Prop :=
+      (hc : t ∈ Submodule.span k (Set.range (S.tensorBasis c))) : Prop :=
       ((S.tensorBasis c1).repr
       ((ConcreteCategory.hom (S.F.map σ).hom) t)) b = (S.tensorBasis c).repr t
       (TensorBasis.congr (OverColor.Hom.toEquiv σ) (OverColor.Hom.toEquiv_comp_apply σ) b)
@@ -493,14 +502,8 @@ lemma perm_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
     simp only [OverColor.mk_hom, Basis.repr_self, pb]
     rw [Finsupp.single_apply, Finsupp.single_apply]
     congr 1
-    simp only [eq_iff_iff, pb]
-    apply Iff.intro
-    · intro h
-      rw [← h]
-      simp only [Equiv.apply_symm_apply, pb]
-    · intro h
-      rw [h]
-      simp
+    exact eq_iff_iff.mpr <| Equiv.symm_apply_eq
+      (TensorBasis.congr (OverColor.Hom.toEquiv σ) (OverColor.Hom.toEquiv_comp_apply σ))
   · simp only [OverColor.mk_hom, map_zero, Finsupp.coe_zero, Pi.zero_apply, pb]
   · intro x y hx hy
     simp_all [pb]
@@ -508,12 +511,12 @@ lemma perm_tensorBasis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m �
     simp_all [pb]
 
 @[simp]
-lemma smul_tensorBasis_repr {c : Fin n → S.C} (a : S.k) (T : TensorTree S c) :
+lemma smul_tensorBasis_repr {c : Fin n → S.C} (a : k) (T : TensorTree S c) :
     (S.tensorBasis c).repr (smul a T).tensor = a • (S.tensorBasis c).repr T.tensor := by
   rw [smul_tensor]
   simp
 
-lemma smul_tensorBasis_repr_apply {c : Fin n → S.C} (a : S.k) (T : TensorTree S c)
+lemma smul_tensorBasis_repr_apply {c : Fin n → S.C} (a : k) (T : TensorTree S c)
     (b : Π j, Fin (S.repDim (c j))) :
     (S.tensorBasis c).repr (smul a T).tensor b = a * (S.tensorBasis c).repr T.tensor b := by
   rw [smul_tensor]
@@ -524,6 +527,31 @@ lemma neg_tensorBasis_repr (t : TensorTree S c) :
     (S.tensorBasis c).repr (neg t).tensor = - (S.tensorBasis c).repr t.tensor := by
   rw [neg_tensor]
   simp
+
+lemma field_eq_repr {c : Fin 0 → S.C} (t : TensorTree S c) :
+    t.field = (S.tensorBasis c).repr t.tensor (fun j => Fin.elim0 j) := by
+  simp only [field]
+  have h1 (t : (S.F.obj (OverColor.mk c)).V) :
+      S.castFin0ToField t = ((S.tensorBasis c).repr t) fun j => j.elim0 := by
+    obtain ⟨t, rfl⟩ := (S.tensorBasis c).repr.symm.surjective t
+    simp only [Basis.repr_symm_apply, Basis.repr_linearCombination]
+    rw [@Finsupp.linearCombination_unique]
+    simp only [map_smul, smul_eq_mul]
+    trans t default * 1
+    · congr 1
+      · congr 1
+        exact Unique.default_eq default
+      · simp only [castFin0ToField, OverColor.mk_hom, OverColor.mk_left, Functor.id_obj,
+        tensorBasis, Basis.coe_ofRepr, LinearEquiv.trans_symm, LinearEquiv.symm_symm,
+        LinearEquiv.trans_apply, Finsupp.linearEquivFunOnFinite_single, LinearEquiv.coe_coe]
+        change (PiTensorProduct.isEmptyEquiv (Fin 0)) (S.fromCoordinates c
+          (Pi.single _ 1)) = _
+        simp [fromCoordinates, basisVector, OverColor.mk_hom, OverColor.mk_left]
+    · simp only [Fin.default_eq_zero, mul_one]
+      congr
+      funext j
+      exact Fin.elim0 j
+  exact h1 t.tensor
 
 /-!
 
@@ -542,7 +570,7 @@ lemma zero_smul {T1 : TensorTree S c} :
     (smul 0 T1).tensor = zeroTree.tensor := by
   simp only [smul_tensor, _root_.zero_smul, zeroTree_tensor]
 
-lemma smul_zero {a : S.k} : (smul a (zeroTree (c := c))).tensor = zeroTree.tensor := by
+lemma smul_zero {a : k} : (smul a (zeroTree (c := c))).tensor = zeroTree.tensor := by
   simp only [smul_tensor, zeroTree_tensor, _root_.smul_zero]
 
 lemma zero_add {T1 : TensorTree S c} : (add zeroTree T1).tensor = T1.tensor := by

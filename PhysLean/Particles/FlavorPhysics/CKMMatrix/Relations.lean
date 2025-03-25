@@ -330,7 +330,7 @@ lemma cs_of_ud_us_zero {V : CKMMatrix} (ha : ¬ ([V]ud ≠ 0 ∨ [V]us ≠ 0)) :
     rw [@abs_le]
     have h1 := VAbs_leq_one 1 0 ⟦V⟧
     have h0 := VAbs_ge_zero 1 0 ⟦V⟧
-    simp_all
+    simp_all only [ne_eq, not_or, Decidable.not_not, and_true, ge_iff_le]
     have hn : -1 ≤ (0 : ℝ) := by simp
     exact hn.trans h0
   · exact VAbs_ge_zero _ _ ⟦V⟧

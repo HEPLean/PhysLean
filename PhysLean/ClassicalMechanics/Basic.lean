@@ -7,15 +7,7 @@ Authors: Joseph Tooby-Smith
 
 # Classical mechanics
 
-This directory is currently a place holder.
+This file is currently a stub.
 Please feel free to contribute!
-
-Some directories which are NOT currently place holders are:
-- Mathematics
-- Meta
-- Particles
-- QFT
-- Quantum Mechanics
-- Relativity
 
 -/

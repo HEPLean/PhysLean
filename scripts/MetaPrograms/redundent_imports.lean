@@ -5,6 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Basic
 import ImportGraph.Imports
+import Mathlib.Lean.CoreM
+
 /-!
 
 # Extracting commands with no doc strings.
@@ -18,7 +20,7 @@ def Imports.RedundentImports (imp : Import) : MetaM UInt32 := do
   let x ← redundantImports (some imp.module)
   if x.isEmpty then return 0
   println! "\n"
-  println! (← Name.toFile imp.module)
+  println! (Name.toFilePath imp.module)
   println! x.toList
   return 0
 

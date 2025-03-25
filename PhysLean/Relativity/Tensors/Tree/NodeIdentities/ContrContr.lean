@@ -21,7 +21,7 @@ open PhysLean.Fin
 
 namespace TensorTree
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
 /-- A structure containing two pairs of indices (i, j) and (k, l) to be sequentially
   contracted in a tensor. -/
@@ -160,17 +160,17 @@ def contrSwapHom : (OverColor.mk ((c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbo
 lemma contrSwapHom_contrMapSnd_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     CoeSort.coe (S.FD.obj { as := (OverColor.mk c).hom i })) :
     ((lift.obj S.FD).map q.contrSwapHom).hom
-    (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod S.k) fun k =>
+    (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod k) fun k =>
     x (q.swap.i.succAbove (q.swap.j.succAbove k)))) = ((S.castToField
     ((S.contr.app { as := (c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) q.swap.k }).hom
-    (x (q.swap.i.succAbove (q.swap.j.succAbove q.swap.k)) ⊗ₜ[S.k]
+    (x (q.swap.i.succAbove (q.swap.j.succAbove q.swap.k)) ⊗ₜ[k]
     (S.FD.map (Discrete.eqToHom q.swap.hkl)).hom
     (x (q.swap.i.succAbove (q.swap.j.succAbove (q.swap.k.succAbove q.swap.l))))))) •
-    ((lift.obj S.FD).map q.contrSwapHom).hom ((PiTensorProduct.tprod S.k) fun k =>
+    ((lift.obj S.FD).map q.contrSwapHom).hom ((PiTensorProduct.tprod k) fun k =>
     x (q.swap.i.succAbove (q.swap.j.succAbove (q.swap.k.succAbove (q.swap.l.succAbove k)))))) := by
   rw [contrMapSnd,TensorSpecies.contrMap_tprod]
   change ((lift.obj S.FD).map q.contrSwapHom).hom
-    (_ • ((PiTensorProduct.tprod S.k) fun k =>
+    (_ • ((PiTensorProduct.tprod k) fun k =>
         x (q.swap.i.succAbove (q.swap.j.succAbove
         (q.swap.k.succAbove (q.swap.l.succAbove k)))) :
         S.F.obj (OverColor.mk ((c ∘ q.swap.i.succAbove ∘ q.swap.j.succAbove) ∘
@@ -180,10 +180,10 @@ lemma contrSwapHom_contrMapSnd_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).
 
 lemma contrSwapHom_tprod (x : (i : (𝟭 Type).obj (OverColor.mk c).left) →
     (S.FD.obj { as := (OverColor.mk c).hom i })) :
-    ((PiTensorProduct.tprod S.k)
+    ((PiTensorProduct.tprod k)
     fun k => x (q.i.succAbove (q.j.succAbove (q.k.succAbove (q.l.succAbove k))))) =
     ((lift.obj S.FD).map q.contrSwapHom).hom
-    ((PiTensorProduct.tprod S.k) fun k =>
+    ((PiTensorProduct.tprod k) fun k =>
       x (q.swap.i.succAbove (q.swap.j.succAbove (q.swap.k.succAbove (q.swap.l.succAbove k))))) := by
   rw [lift.map_tprod]
   apply congrArg
@@ -210,21 +210,21 @@ lemma contrMapFst_contrMapSnd_swap :
     map_smul]
   apply congrArg
   rw [contrMapFst, contrMapFst]
-  change q.contrMapSnd.hom ((S.contrMap c q.i q.j _).hom ((PiTensorProduct.tprod S.k) x)) =
+  change q.contrMapSnd.hom ((S.contrMap c q.i q.j _).hom ((PiTensorProduct.tprod k) x)) =
     (S.F.map q.contrSwapHom).hom
     (q.swap.contrMapSnd.hom ((S.contrMap c q.swap.i q.swap.j _).hom
-    ((PiTensorProduct.tprod S.k) x)))
+    ((PiTensorProduct.tprod k) x)))
   rw [TensorSpecies.contrMap_tprod, TensorSpecies.contrMap_tprod]
   simp only [Nat.succ_eq_add_one, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj, Discrete.functor_obj_eq_as,
     Function.comp_apply, map_smul]
   change _ •
-    q.contrMapSnd.hom ((PiTensorProduct.tprod S.k) fun k => x (q.i.succAbove (q.j.succAbove k))) =
+    q.contrMapSnd.hom ((PiTensorProduct.tprod k) fun k => x (q.i.succAbove (q.j.succAbove k))) =
     S.castToField
     _ •
     ((lift.obj S.FD).map q.contrSwapHom).hom
-      (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod S.k)
+      (q.swap.contrMapSnd.hom ((PiTensorProduct.tprod k)
       fun k => x (q.swap.i.succAbove (q.swap.j.succAbove k))))
   rw [contrMapSnd, TensorSpecies.contrMap_tprod, q.contrSwapHom_contrMapSnd_tprod]
   rw [smul_smul, smul_smul]
@@ -251,8 +251,8 @@ lemma contrMapFst_contrMapSnd_swap :
       have h' {a a' b b' : Fin n.succ.succ.succ.succ} (hab : c b = S.τ (c a))
           (hab' : c b' = S.τ (c a')) (ha : a = a') (hb : b= b') :
           (S.contr.app { as := c a }).hom
-          (x a ⊗ₜ[S.k] (S.FD.map (Discrete.eqToHom hab)).hom (x b)) =
-          (S.contr.app { as := c a' }).hom (x a' ⊗ₜ[S.k]
+          (x a ⊗ₜ[k] (S.FD.map (Discrete.eqToHom hab)).hom (x b)) =
+          (S.contr.app { as := c a' }).hom (x a' ⊗ₜ[k]
           (S.FD.map (Discrete.eqToHom hab')).hom (x b')) := by
         subst ha hb
         rfl

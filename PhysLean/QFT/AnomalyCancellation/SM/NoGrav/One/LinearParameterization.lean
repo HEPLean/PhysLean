@@ -319,7 +319,7 @@ lemma cube_w_zero (S : linearParametersQENeqZero) (h : accCube (bijection S).1.v
       rw [← hn]
       with_unfolding_all rfl
     nlinarith
-  simp_all
+  simp_all only [one_mul, neg_mul, mul_eq_zero, ne_eq, or_false]
   exact eq_neg_of_add_eq_zero_left h'
 
 lemma cube_w_v (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :

@@ -24,7 +24,7 @@ namespace RatComplexNum
 lemma ext {x y : RatComplexNum} (h1 : x.1 = y.1) (h2 : x.2 = y.2) : x = y := by
   cases x
   cases y
-  simp at h1 h2
+  simp only at h1 h2
   subst h1 h2
   rfl
 
@@ -223,7 +223,8 @@ noncomputable def toComplexNum : RatComplexNum →+* ℂ where
 
 @[simp]
 lemma I_mul_toComplexNum (a : RatComplexNum) : I * toComplexNum a = toComplexNum (⟨0, 1⟩ * a) := by
-  simp [toComplexNum]
+  simp only [toComplexNum, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk, mul_fst, zero_mul,
+    one_mul, zero_sub, Rat.cast_neg, mul_snd, zero_add]
   ring_nf
   simp only [I_sq, neg_mul, one_mul]
   ring
@@ -234,9 +235,10 @@ lemma ofNat_mul_toComplexNum (n : ℕ) (a : RatComplexNum) :
 
 lemma toComplexNum_injective : Function.Injective toComplexNum := by
   intro a b ha
-  simp [toComplexNum] at ha
-  rw [@Complex.ext_iff] at ha
-  simp at ha
+  simp only [toComplexNum, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk] at ha
+  rw [Complex.ext_iff] at ha
+  simp only [add_re, ratCast_re, mul_re, I_re, mul_zero, ratCast_im, I_im, mul_one, sub_self,
+    add_zero, Rat.cast_inj, add_im, mul_im, zero_add] at ha
   ext
   · exact ha.1
   · exact ha.2

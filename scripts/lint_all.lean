@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 
 def main (_: List String) : IO UInt32 := do
   println! "Style lint ... "
-  let styleLint ← IO.Process.output {cmd := "lake", args := #["exe", "hepLean_style_lint"]}
+  let styleLint ← IO.Process.output {cmd := "lake", args := #["exe", "style_lint"]}
   println! styleLint.stdout
   println! "Building ... "
   let build ← IO.Process.output {cmd := "lake", args := #["build"]}

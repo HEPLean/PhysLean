@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.LinearAlgebra.UnitaryGroup
-import Mathlib.Data.Complex.Exponential
 import Mathlib.Data.Complex.Trigonometric
 import Mathlib.Tactic.Polyrith
 /-!

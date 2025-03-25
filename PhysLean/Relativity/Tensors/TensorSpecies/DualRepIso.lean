@@ -19,7 +19,7 @@ noncomputable section
 
 namespace TensorSpecies
 open TensorTree
-variable (S : TensorSpecies)
+variable {k : Type} [CommRing k] (S : TensorSpecies k)
 
 /-- The morphism from `S.FD.obj (Discrete.mk c)` to `S.FD.obj (Discrete.mk (S.τ c))`
   defined by contracting with the metric. -/
@@ -107,7 +107,7 @@ lemma toDualRep_fromDualRep_tensorTree_metrics (c : S.C) (x : S.FD.obj (Discrete
   conv_lhs =>
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| tensorNode_of_tree _]
     rw [perm_tensor_eq <| contr_tensor_eq <| prod_perm_left _ _ _ _]
-    rw [perm_tensor_eq <| perm_contr_congr 0 0 (by simp) (by
+    rw [perm_tensor_eq <| perm_contr_congr 0 0 (by simp [OverColor.mk_left]) (by
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero,
         OverColor.mk_left, Functor.id_obj, OverColor.mk_hom, Equiv.refl_symm, Equiv.coe_refl,
         Function.comp_apply, id_eq, Fin.zero_eta, List.pmap.eq_1, Matrix.cons_val_zero,

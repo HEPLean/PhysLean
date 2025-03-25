@@ -19,7 +19,7 @@ open PhysLean.Fin
 
 namespace TensorTree
 
-variable {S : TensorSpecies} {n n2 : ℕ}
+variable {k : Type} [CommRing k] {S : TensorSpecies k} {n n2 : ℕ}
     (c : Fin n → S.C) (c2 : Fin n2 → S.C)
 
 /-- The permutation that arises when moving a commuting terms in a `prod` node.
@@ -49,7 +49,7 @@ theorem prod_comm (t : TensorTree S c) (t2 : TensorTree S c2) :
   nth_rewrite 2 [prod_tensor]
   change _ = (S.F.map (equivToIso finSumFinEquiv).hom ≫ S.F.map (braidPerm c c2)).hom
     ((Functor.LaxMonoidal.μ S.F (OverColor.mk c2) (OverColor.mk c)).hom
-    (t2.tensor ⊗ₜ[S.k] t.tensor))
+    (t2.tensor ⊗ₜ[k] t.tensor))
   rw [← S.F.map_comp]
   rw [finSumFinEquiv_comp_braidPerm]
   rw [S.F.map_comp]
@@ -63,14 +63,14 @@ theorem prod_comm (t : TensorTree S c) (t2 : TensorTree S c2) :
   apply congrArg
   change _ = (β_ (S.F.obj (OverColor.mk c2)) (S.F.obj (OverColor.mk c))).hom.hom
     ((inv (lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).hom).hom
-    ((lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).hom.hom (t2.tensor ⊗ₜ[S.k] t.tensor)))
+    ((lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).hom.hom (t2.tensor ⊗ₜ[k] t.tensor)))
   simp only [Action.instMonoidalCategory_tensorObj_V, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     lift.objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
     instMonoidalCategoryStruct_tensorObj_hom, mk_hom, IsIso.Iso.inv_hom]
   change _ = (β_ (S.F.obj (OverColor.mk c2)) (S.F.obj (OverColor.mk c))).hom.hom
     (((lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).hom ≫
-    (lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).inv).hom ((t2.tensor ⊗ₜ[S.k] t.tensor)))
+    (lift.μ S.FD (OverColor.mk c2) (OverColor.mk c)).inv).hom ((t2.tensor ⊗ₜ[k] t.tensor)))
   simp only [Action.instMonoidalCategory_tensorObj_V, Iso.hom_inv_id, Action.id_hom,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj, lift.objObj'_V_carrier, mk_hom,

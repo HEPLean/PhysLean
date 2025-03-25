@@ -6,9 +6,9 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdAssoc
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdComm
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdContr
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ContrContr
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ContrSwap
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.PermContr
+import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
+import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Basic
 /-!
 
 ## Metrics as complex Lorentz tensors

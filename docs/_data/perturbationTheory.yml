@@ -16,7 +16,7 @@ parts:
         In perturbative quantum field theory, Wick's theorem allows
         us to expand expectation values of time-ordered products of fields in terms of normal-orders
         and time contractions.
-        The theorem is used to simplify the calculation of scattering amplitudes, and is the precurser
+        The theorem is used to simplify the calculation of scattering amplitudes, and is the precursor
         to Feynman diagrams.
 
         There are actually three different versions of Wick's theorem used.
@@ -24,12 +24,12 @@ parts:
         PhysLean contains a formalization of all three of these theorems in complete generality for
         mixtures of bosonic and fermionic fields.
 
-        The statement of these theorems for bosons is simplier then when fermions are involved, since
+        The statement of these theorems for bosons is simpler then when fermions are involved, since
         one does not have to worry about the minus-signs picked up on exchanging fields.
 
   - type: p
     content: "In this note we walk through the important parts of the proof of the three versions of
-      Wick's theorem for field operators containing carrying both fermionic and bosonic statitics,
+      Wick's theorem for field operators containing carrying both fermionic and bosonic statistics,
       as it appears in PhysLean. Not every lemma or definition is covered here.
       The aim is to give just enough that the story can be understood."
 
@@ -289,7 +289,7 @@ parts:
     docString: |
       The type `CreateAnnihilate` is the type containing two elements `create` and `annihilate`.
       This type is used to specify if an operator is a creation, or annihilation, operator
-      or the sum thereof or integral thereover etc.
+      or the sum thereof or integral thereof etc.
     declString: |
       inductive CreateAnnihilate where
         | create : CreateAnnihilate
@@ -429,7 +429,7 @@ parts:
     link: "https://github.com/HEPLean/PhysLean/blob/master/PhysLean/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean#L43"
     content: |
 
-        For mathematicial objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
+        For mathematical objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
         may be given to
         their names to indicate that they are related to the free algebra.
         This is to avoid confusion when working within the context of `FieldOpAlgebra` which is defined
@@ -1225,7 +1225,7 @@ parts:
     isThm: false
     docString: |
       For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
-      `𝓕.normalOrderList φs` is the list `φs` normal-ordered using ther
+      `𝓕.normalOrderList φs` is the list `φs` normal-ordered using the
       insertion sort algorithm. It puts creation operators on the left and annihilation operators on
       the right. For example:
 

@@ -187,16 +187,16 @@ lemma fstRowThdColRealCond_shift_solution {V : CKMMatrix} (h1 : a + d = - arg [V
   have he : e = - arg [V]us - a := by
     linear_combination h2
   subst he
-  simp_all
+  simp_all only [add_sub_cancel, neg_sub, true_and]
   have hbf : b = - arg [V]cb - f := by
     linear_combination h3
   have hcf : c = - arg [V]tb - f := by
     linear_combination h4
   rw [hbf, hcf] at h5
-  simp_all
+  simp_all only [sub_add_cancel]
   ring_nf at h5
   have hf : f = τ - a - arg [V]ud - arg [V]us - arg [V]cb - arg [V]tb := by
-    linear_combination -(1 * h5)
+    linear_combination - (1 * h5)
   rw [hf] at hbf hcf
   ring_nf at hbf hcf
   subst hf hbf hcf

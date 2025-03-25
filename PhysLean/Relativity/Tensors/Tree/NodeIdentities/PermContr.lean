@@ -22,7 +22,7 @@ open PhysLean.Fin
 namespace TensorSpecies
 noncomputable section
 
-variable (S : TensorSpecies)
+variable {k : Type} [CommRing k] (S : TensorSpecies k)
 
 lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} (h : c1 (i.succAbove j) = S.τ (c1 i))
@@ -50,7 +50,7 @@ lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
       Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
       Functor.comp_obj, Discrete.functor_obj_eq_as, Function.comp_apply, CategoryStruct.comp,
       extractOne_homToEquiv, Action.Hom.comp_hom, LinearMap.coe_comp]
-    trans (S.F.map (extractTwoAux' i j σ)).hom (PiTensorProduct.tprod S.k (fun k =>
+    trans (S.F.map (extractTwoAux' i j σ)).hom (PiTensorProduct.tprod k (fun k =>
       match k with | Sum.inl 0 => x | Sum.inr 0 => (S.FD.map
       (eqToHom (by
         simp only [Nat.succ_eq_add_one, Discrete.functor_obj_eq_as, Function.comp_apply,
@@ -75,7 +75,7 @@ lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
       | Sum.inl 0 => rfl
       | Sum.inr 0 => rfl
     change _ = (S.contrFin1Fin1 c1 i j h).inv.hom
-      ((S.FD.map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i))).hom x ⊗ₜ[S.k]
+      ((S.FD.map (Discrete.eqToHom (Hom.toEquiv_comp_inv_apply σ i))).hom x ⊗ₜ[k]
       (S.FD.map (Discrete.eqToHom (congrArg S.τ (Hom.toEquiv_comp_inv_apply σ i)))).hom y)
     rw [contrFin1Fin1_inv_tmul]
     change ((lift.obj S.FD).map (extractTwoAux' i j σ)).hom _ = _
@@ -140,7 +140,7 @@ lemma contrIso_comm_aux_2 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
 lemma contrIso_comm_aux_3 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
-      ((Action.functorCategoryEquivalence (ModuleCat S.k) (MonCat.of S.G)).symm.inverse.map
+      ((Action.functorCategoryEquivalence (ModuleCat k) (MonCat.of S.G)).symm.inverse.map
                   (S.F.map (extractTwoAux i j σ))).app
               PUnit.unit ≫
             (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom
@@ -235,7 +235,7 @@ lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
   apply congrArg
   rw [contrIsoComm]
   rw [← tensor_comp]
-  have h1 : 𝟙_ (Rep S.k S.G) ◁ S.F.map (extractTwo i j σ) = 𝟙 _ ⊗ S.F.map (extractTwo i j σ) := by
+  have h1 : 𝟙_ (Rep k S.G) ◁ S.F.map (extractTwo i j σ) = 𝟙 _ ⊗ S.F.map (extractTwo i j σ) := by
     rfl
   rw [h1, ← tensor_comp, Category.id_comp]
   erw [Category.comp_id, Category.comp_id]
@@ -247,7 +247,7 @@ end TensorSpecies
 
 namespace TensorTree
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
 /-- Permuting indices, and then contracting is equivalent to contracting and then permuting,
   once care is taking about ensuring one is contracting the same indices. -/

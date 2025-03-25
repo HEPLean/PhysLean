@@ -204,7 +204,7 @@ lemma coContrUnit_eq_ofRat : δ' = ofRat fun f =>
   rw [coContrUnit_tensorBasis]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Finsupp.coe_add, Pi.add_apply,
-    ofRat_tensorBasis_repr_apply, k_instAdd, Fin.isValue, cons_val_zero]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero]
   simp only [← map_add, Fin.isValue]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -217,7 +217,7 @@ lemma contrCoUnit_eq_ofRat : δ = ofRat fun f =>
   rw [contrCoUnit_tensorBasis]
   repeat rw [tensorBasis_eq_ofRat]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Finsupp.coe_add, Pi.add_apply,
-    ofRat_tensorBasis_repr_apply, k_instAdd, Fin.isValue, cons_val_zero]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero]
   simp only [← map_add, Fin.isValue]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
@@ -230,7 +230,7 @@ lemma contrCoUnit_eq_ofRat : δ = ofRat fun f =>
     rw [altLeftLeftUnit_tensorBasis]
     repeat rw [tensorBasis_eq_ofRat]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Finsupp.coe_add, Pi.add_apply,
-    ofRat_tensorBasis_repr_apply, k_instAdd, Fin.isValue, cons_val_zero]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero]
     simp only [← map_add, Fin.isValue]
     apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
     revert b
@@ -243,7 +243,7 @@ lemma contrCoUnit_eq_ofRat : δ = ofRat fun f =>
     rw [leftAltLeftUnit_tensorBasis]
     repeat rw [tensorBasis_eq_ofRat]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Finsupp.coe_add, Pi.add_apply,
-    ofRat_tensorBasis_repr_apply, k_instAdd, Fin.isValue, cons_val_zero]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero]
     simp only [← map_add, Fin.isValue]
     apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
     revert b
@@ -256,7 +256,7 @@ lemma contrCoUnit_eq_ofRat : δ = ofRat fun f =>
     rw [altRightRightUnit_tensorBasis]
     repeat rw [tensorBasis_eq_ofRat]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Finsupp.coe_add, Pi.add_apply,
-    ofRat_tensorBasis_repr_apply, k_instAdd, Fin.isValue, cons_val_zero]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero]
     simp only [← map_add, Fin.isValue]
     apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
     revert b
@@ -269,7 +269,7 @@ lemma contrCoUnit_eq_ofRat : δ = ofRat fun f =>
     rw [rightAltRightUnit_tensorBasis]
     repeat rw [tensorBasis_eq_ofRat]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Finsupp.coe_add, Pi.add_apply,
-    ofRat_tensorBasis_repr_apply, k_instAdd, Fin.isValue, cons_val_zero]
+    ofRat_tensorBasis_repr_apply, Fin.isValue, cons_val_zero]
     simp only [← map_add, Fin.isValue]
     apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
     revert b

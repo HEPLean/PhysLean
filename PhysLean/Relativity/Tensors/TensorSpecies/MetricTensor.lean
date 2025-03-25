@@ -22,10 +22,11 @@ namespace TensorSpecies
 open TensorTree
 
 /-- The metric of a tensor species in a `PiTensorProduct`. -/
-def metricTensor (S : TensorSpecies) (c : S.C) : S.F.obj (OverColor.mk ![c, c]) :=
-  (OverColor.Discrete.pairIsoSep S.FD).hom.hom ((S.metric.app (Discrete.mk c)).hom (1 : S.k))
+def metricTensor {k : Type} [CommRing k] (S : TensorSpecies k)
+    (c : S.C) : S.F.obj (OverColor.mk ![c, c]) :=
+  (OverColor.Discrete.pairIsoSep S.FD).hom.hom ((S.metric.app (Discrete.mk c)).hom (1 : k))
 
-variable {S : TensorSpecies}
+variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
 lemma metricTensor_congr {c c' : S.C} (h : c = c') : {S.metricTensor c | μ ν}ᵀ.tensor =
     (perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by subst h; fin_cases x <;> rfl))
@@ -36,7 +37,7 @@ lemma metricTensor_congr {c c' : S.C} (h : c = c') : {S.metricTensor c | μ ν}�
 
 lemma pairIsoSep_inv_metricTensor (c : S.C) :
     (Discrete.pairIsoSep S.FD).inv.hom (S.metricTensor c) =
-    (S.metric.app (Discrete.mk c)).hom (1 : S.k) := by
+    (S.metric.app (Discrete.mk c)).hom (1 : k) := by
   simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
     metricTensor, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V]
   erw [Discrete.rep_iso_inv_hom_apply]
@@ -54,7 +55,7 @@ lemma contr_metric_braid_unit (c : S.C) : (((S.FD.obj (Discrete.mk c)) ◁
     (((OverColor.Discrete.pairIsoSep S.FD).inv.hom (S.metricTensor c) ⊗ₜ
     (OverColor.Discrete.pairIsoSep S.FD).inv.hom (S.metricTensor (S.τ c)))))))) =
     (β_ (S.FD.obj (Discrete.mk (S.τ c))) (S.FD.obj (Discrete.mk c))).hom.hom
-      ((S.unit.app (Discrete.mk c)).hom (1 : S.k)) := by
+      ((S.unit.app (Discrete.mk c)).hom (1 : k)) := by
   apply (β_ _ _).toLinearEquiv.toEquiv.injective
   rw [pairIsoSep_inv_metricTensor, pairIsoSep_inv_metricTensor]
   erw [S.contr_metric c]

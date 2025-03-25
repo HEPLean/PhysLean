@@ -90,22 +90,26 @@ lemma equivToIso_mkIso_inv {c1 c2 : X → C} (h : c1 = c2) :
     Hom.toEquiv (mkIso h).inv = Equiv.refl _ := by
   rfl
 
+TODO "In equivToHomEq the tactic `try {simp; decide}; try decide` can probably be made more
+  efficent."
+
 /-- The morphism from `mk c` to `mk c1` obtained by an equivalence and
   an equality lemma. -/
 def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y)
-    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : mk c ⟶ mk c1 :=
+    (h : ∀ x, c1 x = (c ∘ e.symm) x := by try {simp; decide}; try decide) : mk c ⟶ mk c1 :=
   (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
 
 @[simp]
 lemma equivToHomEq_hom_left {c : X → C} {c1 : Y → C} (e : X ≃ Y)
-    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : (equivToHomEq e h).hom.left =
+    (h : ∀ x, c1 x = (c ∘ e.symm) x) : (equivToHomEq e h).hom.left =
     e.toFun := by
   rfl
 
 @[simp]
 lemma equivToHomEq_toEquiv {c : X → C} {c1 : Y → C} (e : X ≃ Y)
-    (h : ∀ x, c1 x = (c ∘ e.symm) x := by decide) : Hom.toEquiv (equivToHomEq e h) = e := by
-    rfl
+    (h : ∀ x, c1 x = (c ∘ e.symm) x) :
+    Hom.toEquiv (equivToHomEq e h) = e := by
+  rfl
 
 /-- The isomorphism splitting a `mk c` for `Fin 2 → C` into the tensor product of
   the `Fin 1 → C` maps defined by `c 0` and `c 1`. -/
@@ -123,18 +127,10 @@ def fin2Iso {c : Fin 2 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1] := by
 
 /-- The isomorphism splitting a `mk c` for `c : Fin 3 → C` into the tensor product of
   a `Fin 1 → C` map `![c 0]` and a `Fin 2 → C` map `![c 1, c 2]`. -/
-def fin3Iso {c : Fin 3 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1, c 2] := by
-  let e1 : Fin 3 ≃ Fin 1 ⊕ Fin 2 := (finSumFinEquiv (n := 2)).symm
-  apply (equivToIso e1).trans
-  apply (mkSum _).trans
-  refine tensorIso (mkIso ?_) (mkIso ?_)
-  · funext x
-    fin_cases x
-    rfl
-  · funext x
-    fin_cases x
-    rfl
-    rfl
+def fin3Iso {c : Fin 3 → C} : mk c ≅ mk ![c 0] ⊗ mk ![c 1, c 2] :=
+  (equivToIso (finSumFinEquiv (n := 2)).symm).trans <|
+  (mkSum _).trans <|
+  tensorIso (mkIso (List.ofFn_inj.mp rfl)) (mkIso (List.ofFn_inj.mp rfl))
 
 /-- The isomorphism splitting a `mk ![c1, c2, c3]` into the tensor product of
   a `Fin 1 → C` map `fun _ => c1` and a `Fin 2 → C` map `![c 1, c 2]`. -/
@@ -282,7 +278,7 @@ lemma extractTwo_finExtractTwo_succ {n : ℕ} (i : Fin n.succ.succ.succ) (j : Fi
   simp only [Nat.succ_eq_add_one, Equiv.apply_symm_apply]
   match k with
   | Sum.inl (Sum.inl 0) =>
-    simp [-OverColor.mk_left]
+    simp
   | Sum.inl (Sum.inr 0) =>
     simp only [Fin.isValue, finExtractTwo_symm_inl_inr_apply, Sum.map_inl, id_eq]
     have h1 : ((Hom.toEquiv σ) (Fin.succAbove
