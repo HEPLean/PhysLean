@@ -176,15 +176,19 @@ lemma schrodingerOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   rw [<-add_assoc _ (a1 * (ψ1 x * ↑(Q.V x)) + a2 * (ψ2 x * ↑(Q.V x))) _]
   rw [add_comm _ (a1 * (ψ1 x * ↑(Q.V x)) + a2 * (ψ2 x * ↑(Q.V x)))]
   rw [add_assoc,add_assoc]
-  have ht1: 1 / (↑Q.m * 2) * (a1 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x = a1 * ((1 / (↑Q.m * 2)) * (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x) := by
-    have ht1_t: (a1 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x = a1*((momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x) := by
+  have ht1: 1 / (↑Q.m * 2) * (a1 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x =
+      a1 * ((1 / (↑Q.m * 2)) * (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x) := by
+    have ht1_t: (a1 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x =
+        a1*((momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1)) x) := by
       rfl
     rw [ht1_t]
     rw [<-mul_assoc]
     rw [mul_comm _ a1]
     rw [mul_assoc]
-  have ht2: 1 / (↑Q.m * 2) * (a2 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x = a2 * ((1 / (↑Q.m * 2)) * (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x) := by
-    have ht2_t: (a2 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x = a2*((momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x) := by
+  have ht2: 1 / (↑Q.m * 2) * (a2 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x =
+      a2 * ((1 / (↑Q.m * 2)) * (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x) := by
+    have ht2_t: (a2 • momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x =
+        a2 * ((momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x) := by
       rfl
     rw [ht2_t]
     rw [<-mul_assoc]
@@ -196,9 +200,13 @@ lemma schrodingerOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   exact hψ1_xx
   exact hψ2_xx
 
-structure BoundedPotential where
-  boundless: GeneralPotential
-  hbound_left: ∀ E,∃ R,∀z < -R, boundless.V z > E
-  hbound_right: ∀ E,∃ R,∀z > R, boundless.V z > E
+/-- The proposition on `Q` corresponding to the condition that
+  `Q.V` is bounded from below.-/
+def Bounded : Prop :=
+  (∃ E, ∃ R, ∀ z < -R, E < Q.V z ) ∧ ∃ E, ∃ R, ∀ z > R, E < Q.V z
 
-namespace BoundedPotential
+end GeneralPotential
+
+end OneDimension
+
+end QuantumMechanics

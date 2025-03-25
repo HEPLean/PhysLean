@@ -154,6 +154,7 @@ import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
 import PhysLean.QFT.PerturbationTheory.WickContraction.Uncontracted
 import PhysLean.QFT.PerturbationTheory.WickContraction.UncontractedList
 import PhysLean.QuantumMechanics.FiniteTarget.Basic
+import PhysLean.QuantumMechanics.OneDimension.GeneralPotential.Basic
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Completeness
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
