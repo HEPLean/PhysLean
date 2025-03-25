@@ -85,13 +85,13 @@ lemma momentum2_linear (ℏ : ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   exact hψ2_x
 
 /-- The position operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
-  `ψ` to `x ψ'`.
-
-  The notation `Xᵒᵖ` can be used for the momentum operator. -/
+  `ψ` to `x ψ'`. -/
 noncomputable def positionOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun x => x * ψ x
 
-noncomputable def V_operator (V: ℝ → ℝ) (ψ : ℝ → ℂ) : ℝ → ℂ :=
+/-- The potential operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
+  `ψ` to `V(x) ψ`. -/
+noncomputable def V_operator (V : ℝ → ℝ) (ψ : ℝ → ℂ) : ℝ → ℂ :=
   fun x => V x * ψ x
 
 lemma V_linear (V: ℝ → ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ):
