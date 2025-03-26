@@ -197,11 +197,6 @@ lemma schrodingerOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   exact hψ1_xx
   exact hψ2_xx
 
-/-- The proposition on `Q` corresponding to the condition that
-  `Q.V` is bounded from below. -/
-def Bounded : Prop :=
-  (∃ E, ∃ R, ∀ z < -R, E < Q.V z) ∧ ∃ E, ∃ R, ∀ z > R, E < Q.V z
-
 end GeneralPotential
 
 end OneDimension
