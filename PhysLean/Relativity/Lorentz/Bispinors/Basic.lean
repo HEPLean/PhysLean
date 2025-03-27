@@ -31,11 +31,6 @@ open PauliMatrix
 
 -/
 
-TODO "To increase the speed of these files `(vecNodeE complexLorentzTensor .up p).tensor | μ` is
-  written out expliclity. Notation should be introduced so that we can just write `p | μ` or
-  similar without slowing things down.
-  This can be done by redefining bispinors in terms of actual tensors. "
-
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. -/
 def contrBispinorUp (p : ℂT[.up]) :=
   {pauliCo | μ α β ⊗ p | μ}ᵀ.tensor
