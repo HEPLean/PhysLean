@@ -23,11 +23,12 @@ open OverColor.Discrete
 noncomputable section
 
 namespace complexLorentzTensor
-
-set_option maxRecDepth 5000 in
+open PhysLean.Fin
+/-
 lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
     (hA : {A | μ ν = - (A | ν μ)}ᵀ) (hs : {S | μ ν = S | ν μ}ᵀ) :
     {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ := by
+
   conv =>
     lhs
     rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| hA]
@@ -43,7 +44,7 @@ lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
     rw [perm_tensor_eq <| contr_tensor_eq <| neg_contr _]
     rw [perm_tensor_eq <| neg_contr _]
   apply perm_congr _ rfl
-  decide
+  decide-/
 
 end complexLorentzTensor
 

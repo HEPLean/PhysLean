@@ -95,6 +95,9 @@ instance : Group S.G := S.G_group
 /-- The field `repDim` of a `TensorSpecies` is non-zero for all colors. -/
 instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 
+@[simp]
+lemma τ_τ_apply (c : S.C) : S.τ (S.τ c) = c := S.τ_involution c
+
 lemma FD_map_basis {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
     (S.FD.map (Discrete.eqToHom h)).hom.hom (S.basis c i)
     = S.basis c1 (Fin.cast (by simp [h]) i) := by
@@ -153,6 +156,20 @@ lemma castFin0ToField_tprod {c : Fin 0 → S.C}
   simp only [castFin0ToField, mk_hom, Functor.id_obj, LinearEquiv.coe_coe]
   erw [PiTensorProduct.isEmptyEquiv_apply_tprod]
 
+/-!
+
+## Some properties of contractions
+
+-/
+
+lemma contr_congr (c c' : S.C) (h : c = c') (x : S.FD.obj (Discrete.mk c))
+      (y : S.FD.obj (Discrete.mk (S.τ c))) :
+    (S.contr.app { as := c }).hom (x ⊗ₜ[k] y) =
+    (S.contr.app { as := c' }).hom
+    ((S.FD.map (Discrete.eqToHom (by simp [h]))).hom x ⊗ₜ
+    (S.FD.map (Discrete.eqToHom (by simp [h]))).hom y) := by
+  subst h
+  simp
 /-!
 
 ## Evalutation of indices.

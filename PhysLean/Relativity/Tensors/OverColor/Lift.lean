@@ -58,6 +58,14 @@ def discreteFunctorMapEqIso {c1 c2 : Discrete C} (h : c1.as = c2.as) :
   (by rw [← ModuleCat.hom_id, ← ModuleCat.hom_comp, Action.inv_hom_hom])
   (by rw [← ModuleCat.hom_id, ← ModuleCat.hom_comp, Action.hom_inv_hom])
 
+lemma discreteFunctorMapEqIso_eq_action {c1 c2 : Discrete C} (h : c1.as = c2.as) :
+    discreteFunctorMapEqIso F h = ((Action.forget _ _).mapIso
+    (F.mapIso (Discrete.eqToIso (by simp [h])))).toLinearEquiv := by
+  ext x
+  simp only [discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
+    eqToIso.inv, LinearEquiv.ofLinear_apply, Action.forget_obj]
+  rfl
+
 lemma discreteFunctorMapEqIso_comm_ρ {c1 c2 : Discrete C} (h : c1.as = c2.as) (M : G)
     (x : F.obj c1) : discreteFunctorMapEqIso F h ((F.obj c1).ρ M x) =
     (F.obj c2).ρ M (discreteFunctorMapEqIso F h x) := by

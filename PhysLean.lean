@@ -232,12 +232,10 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.ContrMap
 import PhysLean.Relativity.Tensors.TensorSpecies.DualRepIso
 import PhysLean.Relativity.Tensors.TensorSpecies.MetricTensor
 import PhysLean.Relativity.Tensors.TensorSpecies.OfInt
-import PhysLean.Relativity.Tensors.TensorSpecies.Pure
 import PhysLean.Relativity.Tensors.TensorSpecies.UnitTensor
 import PhysLean.Relativity.Tensors.Tree.Basic
 import PhysLean.Relativity.Tensors.Tree.Dot
 import PhysLean.Relativity.Tensors.Tree.Elab
-import PhysLean.Relativity.Tensors.Tree.EquivalenceClass.Basic
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Assoc
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Basic
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Congr
