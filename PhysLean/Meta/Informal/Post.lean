@@ -46,6 +46,17 @@ unsafe def constantInfoToInformalDefinition (c : ConstantInfo) : CoreM InformalD
   | _ => panic!
     "Passed constantInfoToInformalDefinition a `ConstantInfo` that is not a `InformalDefinition`"
 
+/-- Gets the tag associated with an informal definition or lemma. -/
+unsafe def getTag (c : ConstantInfo) : CoreM String := do
+  if isInformalLemma c then
+    let i ← constantInfoToInformalLemma c
+    return i.tag
+  else if isInformalDef c then
+    let i ← constantInfoToInformalDefinition c
+    return i.tag
+  else
+    panic! "getTag: Not an informal lemma or definition"
+
 end Informal
 
 namespace PhysLean
@@ -68,5 +79,6 @@ def AllInformal : CoreM (Array ConstantInfo) := do
   let x ← (imports.mapM Imports.getUserConsts)
   let y := x.flatten.filter fun c => Informal.isInformal c
   return y
+
 
 end PhysLean

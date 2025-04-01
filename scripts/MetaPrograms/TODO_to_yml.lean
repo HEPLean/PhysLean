@@ -131,10 +131,12 @@ structure FullTODOInfo where
   isInformalDef : Bool
   isInformalLemma : Bool
   category : PhysLeanCategory
+  tag : String
 
 def FullTODOInfo.ofTODO (t : todoInfo) : FullTODOInfo :=
   {content := t.content, fileName := t.fileName, line := t.line, name := t.fileName,
-   isInformalDef := false, isInformalLemma := false, category := PhysLeanCategory.ofFileName t.fileName}
+   isInformalDef := false, isInformalLemma := false, category := PhysLeanCategory.ofFileName t.fileName,
+   tag := t.tag}
 
 unsafe def getTodoInfo : MetaM (Array FullTODOInfo) := do
   let env ← getEnv
@@ -142,8 +144,9 @@ unsafe def getTodoInfo : MetaM (Array FullTODOInfo) := do
   -- pure (todoInfo.qsort (fun x y => x.fileName.toString < y.fileName.toString)).toList
   pure (todoInfo.map FullTODOInfo.ofTODO)
 
-def informalTODO (x : ConstantInfo) : CoreM FullTODOInfo := do
+unsafe def informalTODO (x : ConstantInfo) : CoreM FullTODOInfo := do
   let name := x.name
+  let tag ← Informal.getTag x
   let lineNo ← Name.lineNumber name
   let docString ← Name.getDocString name
   let file ← Name.fileName name
@@ -151,9 +154,10 @@ def informalTODO (x : ConstantInfo) : CoreM FullTODOInfo := do
   let isInformalLemma := Informal.isInformalLemma x
   let category := PhysLeanCategory.ofFileName file
   return {content := docString, fileName := file, line := lineNo, name := name,
-          isInformalDef := isInformalDef, isInformalLemma := isInformalLemma, category := category}
+          isInformalDef := isInformalDef, isInformalLemma := isInformalLemma, category := category,
+          tag := tag}
 
-def allInformalTODO : CoreM (Array FullTODOInfo) := do
+unsafe def allInformalTODO : CoreM (Array FullTODOInfo) := do
   let x ← AllInformal
   x.mapM informalTODO
 
@@ -168,6 +172,7 @@ def FullTODOInfo.toYAML (todo : FullTODOInfo) : MetaM String := do
     isInformalLemma: {todo.isInformalLemma}
     category: {todo.category}
     name: {todo.name}
+    tag: {todo.tag}
     content: |
       {contentIndent}"
 
@@ -191,6 +196,11 @@ unsafe def categoriesToYML : MetaM String := do
 
 unsafe def todosToYAML : MetaM String := do
   let todos ← allTODOs
+  /- Check no dulicate tags-/
+  let tags := todos.map (fun x => x.tag)
+  if !tags.Nodup then
+    panic! "Duplicate tags found."
+  /- End of check. -/
   let todosYAML ← todos.mapM FullTODOInfo.toYAML
   return "TODOItem:\n" ++ String.intercalate "\n" todosYAML
 
