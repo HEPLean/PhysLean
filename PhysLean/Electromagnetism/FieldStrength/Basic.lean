@@ -452,11 +452,11 @@ lemma fromElectricMagneticField_repr (EM : ElectricField × MagneticField) (y : 
     fin_cases j <;>
     simp
 
-TODO "Define the dual field strength."
+TODO "6V2OU" "Define the dual field strength."
 
 end FieldStrength
 
-TODO "Show that the isomorphism between `ElectricField d × MagneticField d` and
+TODO "6V2O4" "Show that the isomorphism between `ElectricField d × MagneticField d` and
   `ElectricField d × MagneticField d` is equivariant with respect to the Lorentz group."
 
 end Electromagnetism

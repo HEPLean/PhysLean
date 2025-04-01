@@ -14,10 +14,10 @@ This file defines the basic structures for the anomaly cancellation conditions.
 It defines a module structure on the charges, and the solutions to the linear ACCs.
 
 -/
-TODO "Anomaly cancellation conditions can be derived formally from the gauge group
+TODO "6VZMW" "Anomaly cancellation conditions can be derived formally from the gauge group
   and fermionic representations using e.g. topological invariants. Include such a
   definition."
-TODO "Anomaly cancellation conditions can be defined using algebraic varieties.
+TODO "6VZM3" "Anomaly cancellation conditions can be defined using algebraic varieties.
   Link such an approach to the approach here."
 
 /-- A system of charges, specified by the number of charges. -/

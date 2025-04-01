@@ -11,10 +11,10 @@ import PhysLean.Meta.Informal.Basic
 This file is currently a stub.
 
 -/
-TODO "Add definition of the restricted Lorentz group."
-TODO "Prove that every member of the restricted Lorentz group is
+TODO "6VZNK" "Add definition of the restricted Lorentz group."
+TODO "6VZNP" "Prove that every member of the restricted Lorentz group is
   combiniation of a boost and a rotation."
-TODO "Prove restricted Lorentz group equivalent to connected component of identity
+TODO "6VZNU" "Prove restricted Lorentz group equivalent to connected component of identity
   of the Lorentz group."
 
 namespace LorentzGroup
@@ -22,5 +22,6 @@ namespace LorentzGroup
 /-- The subgroup of the Lorentz group consisting of elements which are proper and orthochronous. -/
 informal_definition Restricted where
   deps := [``LorentzGroup, ``IsProper, ``IsOrthochronous]
+  tag := "6VZN7"
 
 end LorentzGroup

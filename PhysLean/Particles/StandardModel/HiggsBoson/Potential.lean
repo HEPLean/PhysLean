@@ -362,6 +362,7 @@ non-positive, i.e., for `P : Potential` then `P.IsBounded` iff `P.μ2 ≤ 0`. Th
 `- P.μ2 * ‖φ‖_H^2 x` is bounded below iff `P.μ2 ≤ 0`. -/
 informal_lemma isBounded_iff_of_𝓵_zero where
   deps := [`StandardModel.HiggsField.Potential.IsBounded, `StandardModel.HiggsField.Potential]
+  tag := "6V2K5"
 
 /-!
 

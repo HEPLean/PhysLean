@@ -249,22 +249,27 @@ the `i`-th component of the color.
 -/
 informal_definition dualRepIso where
   deps := [``dualRepIsoDiscrete]
+  tag := "6V2D6"
 
 /-- Acting with `dualRepIso` on the fst component of a `unitTensor` returns a metric. -/
 informal_lemma dualRepIso_unitTensor_fst where
   deps := [``dualRepIso, ``unitTensor, ``metricTensor]
+  tag := "6V2EG"
 
 /-- Acting with `dualRepIso` on the snd component of a `unitTensor` returns a metric. -/
 informal_lemma dualRepIso_unitTensor_snd where
   deps := [``dualRepIso, ``unitTensor, ``metricTensor]
+  tag := "6V2EN"
 
 /-- Acting with `dualRepIso` on the fst component of a `metricTensor` returns a unitTensor. -/
 informal_lemma dualRepIso_metricTensor_fst where
   deps := [``dualRepIso, ``unitTensor, ``metricTensor]
+  tag := "6V2EV"
 
 /-- Acting with `dualRepIso` on the snd component of a `metricTensor` returns a unitTensor. -/
 informal_lemma dualRepIso_metricTensor_snd where
   deps := [``dualRepIso, ``unitTensor, ``metricTensor]
+  tag := "6V2E4"
 
 end TensorSpecies
 

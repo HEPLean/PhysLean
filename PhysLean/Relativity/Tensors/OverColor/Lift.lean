@@ -928,6 +928,7 @@ lemma forgetLiftAppCon_naturality_eqToHom_apply (c c1 : C) (h : c = c1)
 -/
 informal_definition forgetLift where
   deps := [``forget, ``lift]
+  tag := "6VZWS"
 
 end
 end OverColor

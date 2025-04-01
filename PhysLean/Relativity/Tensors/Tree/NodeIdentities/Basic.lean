@@ -24,19 +24,6 @@ namespace TensorTree
 
 variable {k : Type} [CommRing k] {S : TensorSpecies k}
 
-/-!
-
-## Equality of constructors.
-
--/
-
-/-- A `constVecNode` has equal tensor to the `vecNode` with the map evaluated at 1. -/
-informal_lemma constVecNode_eq_vecNode where
-  deps := [``constVecNode, ``vecNode]
-
-/-- A `constTwoNode` has equal tensor to the `twoNode` with the map evaluated at 1. -/
-informal_lemma constTwoNode_eq_twoNode where
-  deps := [``constTwoNode, ``twoNode]
 
 /-!
 

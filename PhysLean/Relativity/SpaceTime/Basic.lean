@@ -17,7 +17,7 @@ abbrev Space (d : ℕ := 3) := EuclideanSpace ℝ (Fin d)
 
 noncomputable section
 
-TODO "SpaceTime should be refactored into a structure, or similar, to prevent casting."
+TODO "6V2DR" "SpaceTime should be refactored into a structure, or similar, to prevent casting."
 
 /-- The space-time -/
 abbrev SpaceTime (d : ℕ := 3) := Lorentz.Vector d

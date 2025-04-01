@@ -293,7 +293,7 @@ instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 
-TODO "The lemma `repDim_τ` should hold for any Tensor Species not just complex Lorentz
+TODO "6V2BK" "The lemma `repDim_τ` should hold for any Tensor Species not just complex Lorentz
   tensors."
 @[simp]
 lemma repDim_τ {c : complexLorentzTensor.C} :

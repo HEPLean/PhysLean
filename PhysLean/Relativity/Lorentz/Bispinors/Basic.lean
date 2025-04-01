@@ -87,6 +87,7 @@ Proof: expand `contrBispinorDown` and use fact that metrics contract to the iden
 -/
 informal_lemma contrBispinorUp_eq_metric_contr_contrBispinorDown where
   deps := [``contrBispinorUp, ``contrBispinorDown, ``leftMetric, ``rightMetric]
+  tag := "6V2PV"
 
 /-- `{coBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ coBispinorDown p | α' β' }ᵀ`.
 
@@ -94,6 +95,7 @@ proof: expand `coBispinorDown` and use fact that metrics contract to the identit
 -/
 informal_lemma coBispinorUp_eq_metric_contr_coBispinorDown where
   deps := [``coBispinorUp, ``coBispinorDown, ``leftMetric, ``rightMetric]
+  tag := "6V2P6"
 
 lemma contrBispinorDown_expand (p : ℂT[.up]) :
     {contrBispinorDown p | α β}ᵀ.tensor =

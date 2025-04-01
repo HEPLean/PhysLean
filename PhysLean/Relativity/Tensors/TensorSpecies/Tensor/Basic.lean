@@ -510,7 +510,7 @@ lemma PermCond.comp {n n1 n2 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C}
     simp only [Function.comp_apply]
     rw [h.2, h2.2]
 
-TODO "Prove that if `σ` satifies `PermCond c c1 σ` then `PermCond.inv σ h`
+TODO "6VZ3C" "Prove that if `σ` satifies `PermCond c c1 σ` then `PermCond.inv σ h`
   satifies `PermCond c1 c (PermCond.inv σ h)`."
 
 lemma fin_cast_permCond (n n1 : ℕ) {c : Fin n → S.C} (h : n1 = n) :
@@ -624,7 +624,7 @@ And its interaction with
 
 -/
 
-TODO "Change products of tensors to use `Fin.append` rather then
+TODO "6VZ3N" "Change products of tensors to use `Fin.append` rather then
   `Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm`."
 
 /-- The equivalence between `ComponentIdx (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)` and
@@ -739,7 +739,7 @@ noncomputable def prodEquiv {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C} :
     S.F.obj (OverColor.mk (Sum.elim c c1)) ≃ₗ[k] S.Tensor (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) :=
   ((Action.forget _ _).mapIso (S.F.mapIso (OverColor.equivToIso finSumFinEquiv))).toLinearEquiv
 
-TODO "Determine in `prodEquiv_symm_pure` why in `rw (transparency := .instances) [h1]`
+TODO "6VZ3U" "Determine in `prodEquiv_symm_pure` why in `rw (transparency := .instances) [h1]`
   `(transparency := .instances)` is needed. As a first step adding this as a comment here."
 
 lemma prodEquiv_symm_pure {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C}

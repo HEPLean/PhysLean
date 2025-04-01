@@ -21,6 +21,8 @@ structure todoInfo where
   fileName : Name
   /-- The line from where the note came from. -/
   line : Nat
+  /-- The tag of the TODO item -/
+  tag : String
 
 /-- Environment extension to store `todo ...`. -/
 initialize todoExtension : SimplePersistentEnvExtension todoInfo (Array todoInfo) ←
@@ -31,14 +33,15 @@ initialize todoExtension : SimplePersistentEnvExtension todoInfo (Array todoInfo
   }
 
 /-- Syntax for the `TODO ...` command. -/
-syntax (name := todo_comment) "TODO " str : command
+syntax (name := todo_comment) "TODO " str str : command
 
 /-- Elaborator for the `TODO ...` command -/
 @[command_elab todo_comment]
 def elabTODO : Elab.Command.CommandElab := fun stx =>
   match stx with
-  | `(TODO $s) => do
+  | `(TODO $t $s) => do
     let str : String := s.getString
+    let tag : String := t.getString
     let pos := stx.getPos?
     match pos with
     | some pos => do
@@ -47,7 +50,7 @@ def elabTODO : Elab.Command.CommandElab := fun stx =>
       let filePos := fileMap.toPosition pos
       let line := filePos.line
       let modName := env.mainModule
-      let todoInfo : todoInfo := { content := str, fileName := modName, line := line }
+      let todoInfo : todoInfo := { content := str, fileName := modName, line := line, tag := tag }
       modifyEnv fun env => todoExtension.addEntry env todoInfo
     | none => throwError "Invalid syntax for `TODO` command"
   | _ => throwError "Invalid syntax for `TODO` command"

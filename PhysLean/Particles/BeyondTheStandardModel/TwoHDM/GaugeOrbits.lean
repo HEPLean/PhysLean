@@ -87,6 +87,7 @@ lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
 Higgs fields. -/
 informal_lemma prodMatrix_invariant where
   deps := [``prodMatrix, ``gaugeAction]
+  tag := "6V2VS"
 
 /-- Given any smooth map `f` from spacetime to 2-by-2 complex matrices landing on positive
 semi-definite matrices, there exist smooth Higgs fields `Φ1` and `Φ2` such that `f` is equal to
@@ -96,6 +97,7 @@ See https://arxiv.org/pdf/hep-ph/0605184
 -/
 informal_lemma prodMatrix_to_higgsField where
   deps := [``prodMatrix, ``HiggsField, ``prodMatrix_smooth]
+  tag := "6V2V2"
 
 end
 end TwoHDM

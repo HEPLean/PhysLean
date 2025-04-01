@@ -142,7 +142,7 @@ lemma one_over_ξ_sq : (1/Q.ξ)^2 = Q.m * Q.ω / Q.ℏ := by
   rw [one_over_ξ]
   refine Real.sq_sqrt (le_of_lt Q.m_mul_ω_div_ℏ_pos)
 
-TODO "The momentum operator should be moved to a more general file."
+TODO "6VZH3" "The momentum operator should be moved to a more general file."
 
 /-- The momentum operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
   `ψ` to `- i ℏ ψ'`.

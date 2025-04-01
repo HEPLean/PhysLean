@@ -31,7 +31,7 @@ structure InitialConditions where
   /-- The initial velocity of the harmonic oscillator. -/
   v₀ : ℝ
 
-TODO "Implement other initial conditions for the harmonic oscillator."
+TODO "6VZME" "Implement other initial conditions for the harmonic oscillator."
 
 @[ext]
 lemma InitialConditions.ext {IC₁ IC₂ : InitialConditions} (h1 : IC₁.x₀ = IC₂.x₀)
@@ -285,15 +285,16 @@ lemma sol_action (IC : InitialConditions) (t1 t2 : ℝ) :
       · field_simp
         ring
 
-TODO "For the classical harmonic oscillator find the time for which it returns to
+TODO "6VZI3" "For the classical harmonic oscillator find the time for which it returns to
   it's initial position and velocity."
 
-TODO "For the classical harmonic oscillator find the times for which it passes through zero."
+TODO "6VZJB" "For the classical harmonic oscillator find the times for
+  which it passes through zero."
 
-TODO "For the classical harmonic oscillator find the velocity when it passes through
+TODO "6VZJH" "For the classical harmonic oscillator find the velocity when it passes through
   zero."
 
-TODO "Show uniqueness of the solution for the classical harmonic oscillator."
+TODO "6VZJO" "Show uniqueness of the solution for the classical harmonic oscillator."
 
 end HarmonicOscillator
 

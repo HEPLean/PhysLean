@@ -92,12 +92,12 @@ lemma lagrangian_parity (x : ℝ → ℝ) (hx : Differentiable ℝ x) :
   · fun_prop
   · exact hx t
 
-TODO "Derive the force from the lagrangian of the classical harmonic oscillator"
+TODO "6VZGU" "Derive the force from the lagrangian of the classical harmonic oscillator"
 
-TODO "Derive the Euler-Lagraange equation for the classical harmonic oscillator
+TODO "6VZG4" "Derive the Euler-Lagraange equation for the classical harmonic oscillator
   from the lagrangian."
 
-TODO "Include damping into the classical harmonic oscillator."
+TODO "6VZHC" "Include damping into the classical harmonic oscillator."
 
 end HarmonicOscillator
 

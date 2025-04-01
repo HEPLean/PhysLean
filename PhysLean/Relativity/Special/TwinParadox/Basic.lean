@@ -47,7 +47,7 @@ def properTimeTwinB : ℝ := SpaceTime.properTime T.startPoint T.twinBMid +
 /-- The proper time of twin A minus the proper time of twin B. -/
 def ageGap : ℝ := T.properTimeTwinA - T.properTimeTwinB
 
-TODO "Find the conditions for which the age gap for the twin paradox is zero."
+TODO "6V2UQ" "Find the conditions for which the age gap for the twin paradox is zero."
 
 /-!
 

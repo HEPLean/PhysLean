@@ -11,7 +11,7 @@ import PhysLean.Particles.StandardModel.Representations
 # The action of the gauge group on the Higgs field
 
 -/
-TODO "Currently this only contains the action of the global gauge group. Generalize
+TODO "6V2LJ" "Currently this only contains the action of the global gauge group. Generalize
   to include the full action of the gauge group."
 noncomputable section
 
@@ -218,6 +218,7 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
 /-- There exists a `g` in `GaugeGroupI` such that `rep g φ = φ'` iff `‖φ‖ = ‖φ'‖`. -/
 informal_lemma guage_orbit where
   deps := [``rotate_fst_zero_snd_real]
+  tag := "6V2L2"
 
 /-- The Higgs boson breaks electroweak symmetry down to the electromagnetic force, i.e., the
 stability group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`, for non-zero `‖φ‖`, is the
@@ -226,6 +227,7 @@ stability group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`, for n
 -/
 informal_lemma stability_group_single where
   deps := [``StandardModel.HiggsVec, ``StandardModel.HiggsVec.rep]
+  tag := "6V2MD"
 
 /-- The subgroup of `gaugeGroup := SU(3) × SU(2) × U(1)` which preserves every `HiggsVec` by the
 action of `StandardModel.HiggsVec.rep` is given by `SU(3) × ℤ₆` where `ℤ₆` is the subgroup of
@@ -233,12 +235,13 @@ action of `StandardModel.HiggsVec.rep` is given by `SU(3) × ℤ₆` where `ℤ�
 -/
 informal_lemma stability_group where
   deps := [``HiggsVec, ``rep]
+  tag := "6V2MO"
 
 end HiggsVec
 
-TODO "Define the global gauge action on HiggsField."
-TODO "Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary)"
-TODO "Prove invariance of potential under global gauge action."
+TODO "6V2MV" "Define the global gauge action on HiggsField."
+TODO "6V2M3" "Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary)"
+TODO  "6V2NA" "Prove invariance of potential under global gauge action."
 
 namespace HiggsField
 
@@ -251,18 +254,21 @@ namespace HiggsField
 /-- The action of `gaugeTransformI` on `HiggsField` acting pointwise through `HiggsVec.rep`. -/
 informal_definition gaugeAction where
   deps := [``HiggsVec.rep, ``gaugeTransformI]
+  tag := "6V2NP"
 
 /-- There exists a `g` in `gaugeTransformI` such that `gaugeAction g φ = φ'` iff
 `φ(x)^† φ(x) = φ'(x)^† φ'(x)`.
 -/
 informal_lemma guage_orbit where
   deps := [``gaugeAction]
+  tag := "6V2NX"
 
 /-- For every smooth map `f` from `SpaceTime` to `ℝ` such that `f` is positive semidefinite, there
 exists a Higgs field `φ` such that `f = φ^† φ`.
 -/
 informal_lemma gauge_orbit_surject where
   deps := [``HiggsField, ``SpaceTime]
+  tag := "6V2OC"
 
 end HiggsField
 

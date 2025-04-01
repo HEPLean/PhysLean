@@ -118,7 +118,7 @@ noncomputable def evalT {n : ℕ} {c : Fin (n + 1) → S.C} (i : Fin (n + 1))
     Tensor S c →ₗ[k] Tensor S (c ∘ i.succAbove) :=
   PiTensorProduct.lift (Pure.evalPMultilinear i b)
 
-TODO "Add lemmas related to the interaction of evalT and permT, prodT and contrT."
+TODO "6VZ6G" "Add lemmas related to the interaction of evalT and permT, prodT and contrT."
 
 end Tensor
 

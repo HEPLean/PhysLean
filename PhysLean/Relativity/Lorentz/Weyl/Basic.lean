@@ -289,12 +289,14 @@ an element of `rightHandedWeyl` by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`
 -/
 informal_definition rightHandedWeylAltEquiv where
   deps := [``rightHanded, ``altRightHanded]
+  tag := "6VZR4"
 
 /-- The linear equivalence `rightHandedWeylAltEquiv` is equivariant with respect to the action of
 `SL(2,C)` on `rightHandedWeyl` and `altRightHandedWeyl`.
 -/
 informal_lemma rightHandedWeylAltEquiv_equivariant where
   deps := [``rightHandedWeylAltEquiv]
+  tag := "6VZSG"
 
 end
 

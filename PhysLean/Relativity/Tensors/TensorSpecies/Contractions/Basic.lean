@@ -56,11 +56,13 @@ unit in the tensor species.
 -/
 informal_lemma contractSelfField_non_degenerate where
   deps := [``contractSelfField]
+  tag := "6V2TI"
 
 /-- The contraction `⟪ψ, φ⟫ₜₛ` is related to the tensor tree
 `{ψ | μ ⊗ (S.dualRepIsoDiscrete c).hom φ | μ}ᵀ`. -/
 informal_lemma contractSelfField_tensorTree where
   deps := [``contractSelfField, ``TensorTree]
+  tag := "6V2TO"
 
 /-!
 

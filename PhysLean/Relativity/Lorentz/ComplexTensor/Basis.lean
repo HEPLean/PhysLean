@@ -32,7 +32,7 @@ open Fermion
 noncomputable section
 namespace complexLorentzTensor
 
-TODO "Replace basisVector in this file with TensorSpecies.tensorBasis.
+TODO "6V2C5" "Replace basisVector in this file with TensorSpecies.tensorBasis.
   All of the results here should be generalized to TensorSpecies.tensorBasis."
 
 /-- Basis vectors for complex Lorentz tensors. -/

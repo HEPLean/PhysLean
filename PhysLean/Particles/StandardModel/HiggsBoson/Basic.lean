@@ -78,7 +78,7 @@ end HiggsVec
 We also define the Higgs bundle.
 -/
 
-TODO "Make `HiggsBundle` an associated bundle."
+TODO "6V2IS" "Make `HiggsBundle` an associated bundle."
 
 /-- The `HiggsBundle` is defined as the trivial vector bundle with base `SpaceTime` and
   fiber `HiggsVec`. Thus as a manifold it corresponds to `ℝ⁴ × ℂ²`. -/
@@ -181,6 +181,7 @@ defined by `ofReal 0` is the constant zero-section of the bundle `HiggsBundle`.
 -/
 informal_lemma zero_is_zero_section where
   deps := [`StandardModel.HiggsField.zero]
+  tag := "6V2I5"
 
 end HiggsField
 

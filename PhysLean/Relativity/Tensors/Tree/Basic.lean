@@ -296,7 +296,7 @@ lemma eq_tensorNode_of_eq_tensor {T1 : TensorTree S c} {t : S.F.obj (OverColor.m
 ## Properties on basis.
 -/
 
-TODO "Fill in the other relationships between tensor trees and tensor basis."
+TODO "6VZ5Z" "Fill in the other relationships between tensor trees and tensor basis."
 open TensorSpecies
 
 lemma tensorNode_tensorBasis_repr {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :

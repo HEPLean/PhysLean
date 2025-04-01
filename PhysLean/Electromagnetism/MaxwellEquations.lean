@@ -20,7 +20,8 @@ structure EMSystem where
   /-- The permittivity. -/
   ε₀ : ℝ
 
-TODO "Charge density and current desnity should be generalized to signed measures, in such a way
+TODO "6V2UZ" "Charge density and current desnity should be generalized to signed measures,
+  in such a way
   that they are still easy to work with and can be integrated with with tensor notation.
   See here:
   https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/Maxwell's.20Equations"
@@ -70,7 +71,7 @@ def MaxwellEquations (E : ElectricField) (B : MagneticField) : Prop :=
   GaussLawElectric 𝓔 ρ E ∧ GaussLawMagnetic B ∧
   FaradayLaw E B ∧ AmpereLaw 𝓔 J E B
 
-TODO "Show that if the charge density is spherically symmetric,
+TODO "6V2VD" "Show that if the charge density is spherically symmetric,
   then the electric field is also spherically symmetric."
 
 end Electromagnetism

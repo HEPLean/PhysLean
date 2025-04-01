@@ -203,13 +203,13 @@ lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ Lor
   refine hn _ ?_ h1
   simpa using (FuturePointing.one_add_metric_non_zero u v)
 
-TODO "Make `toLorentz` the definition of a generalised boost. This will involve
+TODO "6VZKM" "Make `toLorentz` the definition of a generalised boost. This will involve
   refactoring this file."
 /-- A generalised boost as an element of the Lorentz Group. -/
 def toLorentz (u v : FuturePointing d) : LorentzGroup d :=
   ⟨toMatrix u v, toMatrix_in_lorentzGroup u v⟩
 
-TODO "Show that generalised boosts are in the restricted Lorentz group."
+TODO "6VZKU" "Show that generalised boosts are in the restricted Lorentz group."
 
 lemma toLorentz_continuous (u : FuturePointing d) : Continuous (toLorentz u) := by
   refine Continuous.subtype_mk ?_ (fun x => toMatrix_in_lorentzGroup u x)
