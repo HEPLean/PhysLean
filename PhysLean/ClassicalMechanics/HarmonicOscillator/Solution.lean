@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 /-!
 
-# The Classical Harmonic Oscillator
+# Solutions to the classical harmonic oscillator
 
 -/
 
@@ -296,6 +296,8 @@ TODO "6VZJH" "For the classical harmonic oscillator find the velocity when it pa
 
 TODO "6VZJO" "Show uniqueness of the solution for the classical harmonic oscillator."
 
+TODO "6YATB" "Show that the solution of the classical harmonic oscillator satisfies the
+  equation of motion."
 end HarmonicOscillator
 
 end ClassicalMechanics

@@ -6,9 +6,45 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Analysis.SpecialFunctions.Integrals
 import Mathlib.Analysis.SpecialFunctions.PolarCoord
 import PhysLean.Meta.TODO.Basic
+import PhysLean.Meta.Informal.Semiformal
+import PhysLean.Meta.Informal.Basic
 /-!
 
 # The Classical Harmonic Oscillator
+
+## Description
+
+The classical harmonic oscillator is a classical mechanics system.
+It physically corresponds to a particle of mass `m` attached to a spring providing a force of
+`- k x`.
+
+## Current status
+
+**Basic**
+
+The main components of the basic module (this module) are:
+- The structure  `HarmonicOscillator` containing the physical parameters of the system.
+- The definition of the lagrangian `lagrangian` of the system.
+
+**Solution**
+
+The main components of the `Solution` module are:
+- The structure `InitialConditions` containing the initial conditions of the system.
+- The definition `sol` which given a set of initial conditions is the solution
+  to the Harmonic Oscillator.
+- The energy `sol_energy` of each solution.
+- The action `sol_action` of each solution.
+
+## TODOs
+
+There are a number of TODOs related to the classical harmonic oscillator. These include:
+- 6VZGU: Deriving the force from the lagrangian.
+- 6VZG4: Deriving the Euler-Lagrange equations.
+- 6YATB: Show that the solutions satisfy the equations of motion (the Euler-Lagrange equations).
+- 6VZHC: Include damping into the harmonic oscillator.
+
+Note the item TODO 6YATB. In particular it is yet to be shown that the solutions satisfy
+the equation of motion.
 
 -/
 
@@ -92,12 +128,49 @@ lemma lagrangian_parity (x : ℝ → ℝ) (hx : Differentiable ℝ x) :
   · fun_prop
   · exact hx t
 
-TODO "6VZGU" "Derive the force from the lagrangian of the classical harmonic oscillator"
+/-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
+  is the potential energy. -/
+semiformal_result "6YBYP" force (S : HarmonicOscillator) (x : ℝ → ℝ) : ℝ → ℝ
 
-TODO "6VZG4" "Derive the Euler-Lagraange equation for the classical harmonic oscillator
-  from the lagrangian."
+/- This variable should be removed once the above `semiformal_result` is implemented. -/
+variable  (force : (S : HarmonicOscillator) → (x : ℝ → ℝ) → ℝ → ℝ)
 
-TODO "6VZHC" "Include damping into the classical harmonic oscillator."
+/-- The force on the classical harmonic oscillator is `- k x`. -/
+semiformal_result "6YB2U" force_is_linear (x : ℝ → ℝ) :
+  force S x = - S.k • x
+
+/-- The definition of the equation of motion for the classical harmonic oscillator
+  defined through the Euler-Lagrange equations.  -/
+semiformal_result"6YBEI" EquationOfMotion (x : ℝ → ℝ) : Prop
+
+/- This variable should be removed once the above `semiformal_result` is implemented. -/
+variable (EquationOfMotion : (x : ℝ → ℝ)  → Prop )
+
+/-- The definition of the equation of motion for the classical harmonic oscillator
+  defined through the Euler-Lagrange equations.  -/
+semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : ℝ → ℝ) :
+    EquationOfMotion x ↔ ∀ t, deriv x t = S.m * force S x t
+
+/-- The proposition on a trajectory which is true if that trajectory is an extrema of the
+  action.
+
+  semiformal implmentation notes:
+  - This is not expected to be easy to define. -/
+semiformal_result "6YBIG" ExtremaOfAction (x : ℝ → ℝ) : Prop
+
+/- This variable should be removed once the above `semiformal_result` is implemented. -/
+variable (ExtremaOfAction : (x : ℝ → ℝ)  → Prop )
+
+/-- A trajectory `x : ℝ → ℝ` satsifies the equation of motion if and only if
+  it is an extrema of the action.
+
+  Implementation note: This result depends on other semi-formal results which
+  will need defining before this.
+-/
+semiformal_result "6YBQH" equationOfMotion_iff_extremaOfAction (x : ℝ → ℝ) :
+  EquationOfMotion x ↔ ExtremaOfAction x
+
+TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
 
 end HarmonicOscillator
 
