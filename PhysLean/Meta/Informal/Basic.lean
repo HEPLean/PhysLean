@@ -19,12 +19,16 @@ Everything else about informal definitions and lemmas are in the `Informal.Post`
 structure InformalDefinition where
   /-- The names of top-level commands we expect this definition to depend on. -/
   deps : List Lean.Name
+  /-- The tag of the informal definition. This should be unique amongst informal results
+    and todo items. -/
   tag : String
 
 /-- The structure representing an informal lemma. -/
 structure InformalLemma where
   /-- The names of top-level commands we expect this lemma to depend on. -/
   deps : List Lean.Name
+  /-- The tag of the informal lemma. This should be unique amongst informal results
+    and todo items. -/
   tag : String
 
 namespace Informal
