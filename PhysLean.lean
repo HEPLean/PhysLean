@@ -22,6 +22,7 @@ import PhysLean.Meta.AllFilePaths
 import PhysLean.Meta.Basic
 import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.Post
+import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Notes.Basic
 import PhysLean.Meta.Notes.HTMLNote
 import PhysLean.Meta.Notes.NoteFile
