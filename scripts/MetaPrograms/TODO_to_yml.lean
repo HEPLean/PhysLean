@@ -7,6 +7,7 @@ import PhysLean.Meta.Basic
 import PhysLean.Meta.TODO.Basic
 import Mathlib.Lean.CoreM
 import PhysLean.Meta.Informal.Post
+import PhysLean.Meta.Informal.SemiFormal
 /-!
 
 # Turning TODOs into YAML
@@ -130,12 +131,14 @@ structure FullTODOInfo where
   line : Nat
   isInformalDef : Bool
   isInformalLemma : Bool
+  isSemiFormalResult : Bool
   category : PhysLeanCategory
   tag : String
 
 def FullTODOInfo.ofTODO (t : todoInfo) : FullTODOInfo :=
   {content := t.content, fileName := t.fileName, line := t.line, name := t.fileName,
-   isInformalDef := false, isInformalLemma := false, category := PhysLeanCategory.ofFileName t.fileName,
+   isInformalDef := false, isInformalLemma := false,
+   isSemiFormalResult := false, category := PhysLeanCategory.ofFileName t.fileName,
    tag := t.tag}
 
 unsafe def getTodoInfo : MetaM (Array FullTODOInfo) := do
@@ -154,12 +157,24 @@ unsafe def informalTODO (x : ConstantInfo) : CoreM FullTODOInfo := do
   let isInformalLemma := Informal.isInformalLemma x
   let category := PhysLeanCategory.ofFileName file
   return {content := docString, fileName := file, line := lineNo, name := name,
-          isInformalDef := isInformalDef, isInformalLemma := isInformalLemma, category := category,
+          isInformalDef := isInformalDef, isInformalLemma := isInformalLemma,
+          isSemiFormalResult := false, category := category,
           tag := tag}
 
 unsafe def allInformalTODO : CoreM (Array FullTODOInfo) := do
   let x ← AllInformal
   x.mapM informalTODO
+
+def FullTODOInfo.ofSemiFormal (t : WantedInfo) : FullTODOInfo :=
+  {content := t.content, fileName := t.fileName, line := t.line, name := t.name,
+   isInformalDef := false, isInformalLemma := false,
+   isSemiFormalResult := true, category := PhysLeanCategory.ofFileName t.fileName,
+   tag := t.tag}
+
+unsafe def allSemiInformal  : CoreM (Array FullTODOInfo) := do
+  let env ← getEnv
+  let semiInformalInfos := (wantedExtension.getState env)
+  pure (semiInformalInfos.map FullTODOInfo.ofSemiFormal)
 
 def FullTODOInfo.toYAML (todo : FullTODOInfo) : MetaM String := do
   let content := todo.content
@@ -170,6 +185,7 @@ def FullTODOInfo.toYAML (todo : FullTODOInfo) : MetaM String := do
     line: {todo.line}
     isInformalDef: {todo.isInformalDef}
     isInformalLemma: {todo.isInformalLemma}
+    isSemiFormalResult: {todo.isSemiFormalResult}
     category: {todo.category}
     name: {todo.name}
     tag: {todo.tag}
@@ -179,7 +195,8 @@ def FullTODOInfo.toYAML (todo : FullTODOInfo) : MetaM String := do
 unsafe def allTODOs : MetaM (List FullTODOInfo) := do
   let todos ← getTodoInfo
   let informalTODOs ← allInformalTODO
-  let all := todos ++ informalTODOs
+  let semiInformal ← allSemiInformal
+  let all := todos ++ informalTODOs ++ semiInformal
   return  (all.qsort (fun x y => x.fileName.toString < y.fileName.toString
     ∨ (x.fileName.toString = y.fileName.toString ∧ x.line < y.line))).toList
 

@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Geometry.Manifold.Instances.Real
 import PhysLean.Relativity.SpaceTime.Basic
 import PhysLean.Meta.Informal.Basic
+import PhysLean.Meta.Informal.SemiFormal
 /-!
 # The Standard Model
 
@@ -32,18 +33,14 @@ where `α` is a sixth complex root of unity.
 
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
-informal_definition gaugeGroupℤ₆SubGroup where
-  deps := [``GaugeGroupI]
-  tag := "6V2FZ"
+semiformal_result "6V2FZ" gaugeGroupℤ₆SubGroup [inst : Group GaugeGroupI] : Subgroup GaugeGroupI
 
 /-- The smallest possible gauge group of the Standard Model, i.e., the quotient of `GaugeGroupI` by
 the ℤ₆-subgroup `gaugeGroupℤ₆SubGroup`.
 
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
-informal_definition GaugeGroupℤ₆ where
-  deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
-  tag := "6V2GA"
+semiformal_result "6V2GA" GaugeGroupℤ₆ : Type
 
 /-- The ℤ₂subgroup of the un-quotiented gauge group which acts trivially on all particles in the
 standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` derived from the ℤ₂ subgroup of
@@ -52,7 +49,7 @@ standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` derived from the ℤ�
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
 informal_definition gaugeGroupℤ₂SubGroup where
-  deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
+  deps := [``GaugeGroupI]
   tag := "6V2GH"
 
 /-- The gauge group of the Standard Model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI` by
@@ -71,7 +68,7 @@ standard model, i.e., the ℤ₃-subgroup of `GaugeGroupI` derived from the ℤ�
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
 informal_definition gaugeGroupℤ₃SubGroup where
-  deps := [``GaugeGroupI, ``StandardModel.gaugeGroupℤ₆SubGroup]
+  deps := [``GaugeGroupI]
   tag := "6V2GV"
 
 /-- The gauge group of the Standard Model with a ℤ₃-quotient, i.e., the quotient of `GaugeGroupI` by
@@ -105,7 +102,7 @@ quotient.
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
 informal_definition GaugeGroup where
-  deps := [``GaugeGroupI, ``gaugeGroupℤ₆SubGroup, ``gaugeGroupℤ₂SubGroup, ``gaugeGroupℤ₃SubGroup,
+  deps := [``GaugeGroupI,  ``gaugeGroupℤ₂SubGroup, ``gaugeGroupℤ₃SubGroup,
     ``GaugeGroupQuot]
   tag := "6V2HF"
 

@@ -37,14 +37,14 @@ informal_definition inclSM where
 See page 34 of https://math.ucr.edu/home/baez/guts.pdf
 -/
 informal_lemma inclSM_ker where
-  deps := [``inclSM, ``StandardModel.gaugeGroupℤ₆SubGroup]
+  deps := [``inclSM]
   tag := "6V2W2"
 
 /-- The group embedding from `StandardModel.GaugeGroupℤ₆` to `GaugeGroupI` induced by `inclSM` by
 quotienting by the kernel `inclSM_ker`.
 -/
 informal_definition embedSMℤ₆ where
-  deps := [``inclSM, ``StandardModel.GaugeGroupℤ₆, ``GaugeGroupI, ``inclSM_ker]
+  deps := [``inclSM,  ``GaugeGroupI, ``inclSM_ker]
   tag := "6V2XA"
 
 end GeorgiGlashow
