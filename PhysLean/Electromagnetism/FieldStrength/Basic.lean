@@ -18,7 +18,7 @@ open TensorTree in
 /-- The Field strength is a tensor `F^μ^ν` which is anti-symmetric.. -/
 noncomputable abbrev FieldStrength (d : ℕ := 3) :
     Submodule ℝ (ℝT[d, .up] → ℝT[d, .up, .up]) where
-  carrier F := ∀ x, {F x | μ ν = - (F x| ν μ)}ᵀ
+  carrier F := ∀ x, {F x | μ ν = - (F x | ν μ)}ᵀ
   add_mem' {F1 F2} hF1 hF2:= by
     intro x
     simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Pi.add_apply,
@@ -455,8 +455,5 @@ lemma fromElectricMagneticField_repr (EM : ElectricField × MagneticField) (y : 
 TODO "6V2OU" "Define the dual field strength."
 
 end FieldStrength
-
-TODO "6V2O4" "Show that the isomorphism between `ElectricField d × MagneticField d` and
-  `ElectricField d × MagneticField d` is equivariant with respect to the Lorentz group."
 
 end Electromagnetism

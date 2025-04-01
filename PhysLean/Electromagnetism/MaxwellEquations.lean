@@ -20,7 +20,7 @@ structure EMSystem where
   /-- The permittivity. -/
   ε₀ : ℝ
 
-TODO "6V2UZ" "Charge density and current desnity should be generalized to signed measures,
+TODO "6V2UZ" "Charge density and current density should be generalized to signed measures,
   in such a way
   that they are still easy to work with and can be integrated with with tensor notation.
   See here:
