@@ -44,6 +44,7 @@ body:
       - label: Ensure `lake exe TODO_to_yml mkFile` runs without errors.
       - label: Ensure `lake exe stats mkHTML` runs without errors.
       - label: Ensure `lake exe informal mkFile mkDot mkHTML` runs without errors.
+      - label: Ensure `lake exe make_tag` runs without errors.
   validations:
     required: false
 - type: checkboxes
