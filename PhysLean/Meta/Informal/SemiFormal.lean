@@ -56,10 +56,6 @@ def elabLemmaWanted : CommandElab := fun stx =>
     let tag : String := s.getString
     let pos := stx.getPos?
     let docString : String := doc.getDocString
-    let name :=
-      match name with
-      | `($name:ident) => name
-      | _ => panic! "Invalid syntax for `lemma_wanted` command"
     match pos with
     | some pos => do
       let env ← getEnv
@@ -69,7 +65,7 @@ def elabLemmaWanted : CommandElab := fun stx =>
       let modName := env.mainModule
       let wantedInfo : WantedInfo := {
         content := docString,
-        name := name.getId,
+        name := (Lean.Elab.expandDeclIdCore name).1,
         fileName := modName,
         line := line,
         tag := tag }
