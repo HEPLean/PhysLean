@@ -474,6 +474,14 @@ def PermCond.toEquiv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   left_inv := Fintype.rightInverse_bijInv h.1
   right_inv := Fintype.leftInverse_bijInv h.1
 
+@[simp]
+lemma PermCond.toHom_id {n : ℕ} {c c1 : Fin n → S.C} (h : PermCond c c1 id) :
+    PermCond.toEquiv h = Equiv.refl _ := by
+  apply Equiv.symm_bijective.injective
+  simp [PermCond.toEquiv]
+  ext a
+  simp
+
 lemma PermCond.preserve_color {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ) :
     ∀ (x : Fin m), c1 x = (c ∘ σ) x := by
@@ -488,6 +496,12 @@ def PermCond.toHom {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ) :
     OverColor.mk c ⟶ OverColor.mk c1 :=
   equivToHomEq (h.toEquiv) (h.preserve_color)
+
+@[simp]
+lemma PermCond.toHom_id_refl {n : ℕ} {c : Fin n → S.C} :
+    PermCond.toHom (by simp [PermCond] : PermCond c c id) = 𝟙 (OverColor.mk c) := by
+  simp [PermCond.toHom]
+  rfl
 
 /-- Given a morphism in the `OverColor C` between `c` and `c1` category the corresponding morphism
   `(Hom.toEquiv σ).symm` satisfies the `PermCond`. -/
@@ -549,6 +563,10 @@ lemma Pure.permP_basisVector {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C
   apply h1
   simp [h.preserve_color]
 
+lemma PermCond.by_decide {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    {σ : Fin m → Fin n} (h : PermCond c c1 σ := by decide) :
+    PermCond c c1 σ  := h
+
 /-- Given a permutation `σ : Fin m → Fin n` of indices satisfying `PermCond` through `h`,
   and a tensor `t`, `permT σ h t` is the tensor tensor permuted accordinge to `σ`. -/
 noncomputable def permT {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
@@ -558,6 +576,12 @@ noncomputable def permT {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     simp
   map_smul' r t := by
     simp
+
+@[simp]
+lemma permT_id_rfl {n : ℕ} {c : Fin n → S.C} :
+    permT id (by simp [PermCond] : PermCond c c id) = LinearMap.id := by
+  ext t
+  simp [permT]
 
 lemma permT_pure {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ) (p : Pure S c) :

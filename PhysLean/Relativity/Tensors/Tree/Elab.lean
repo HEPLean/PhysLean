@@ -4,6 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Basic
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Evaluation
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction
 /-!
 
 # Elaboration of tensor trees
@@ -168,13 +171,21 @@ def toPairs (l : List ℕ) : List (ℕ × ℕ) :=
 /-- Adjusts a list `List (ℕ × ℕ)` by subtracting from each natural number the number
   of elements before it in the list which are less than itself. This is used
   to form a list of pairs which can be used for contracting indices. -/
-def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
+def contrListAdjustOld (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
   let l' := l.flatMap (fun p => [p.1, p.2])
   let l'' := List.mapAccumr
     (fun x (prev : List ℕ) =>
       let e := prev.countP (fun y => y < x)
       (x :: prev, x - e)) l'.reverse []
   toPairs l''.2.reverse
+
+def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
+  let l' := List.mapAccumr
+    (fun (x : ℕ × ℕ) (prev : List ℕ) =>
+      let efst := prev.countP (fun y => y < x.1)
+      let esnd := prev.countP (fun y => y < x.2)
+      (x.1 :: x.2 :: prev, (x.1- efst, x.2 - esnd))) l []
+  l'.2
 
 /-!
 
@@ -217,7 +228,7 @@ def getPermutationTerm (l1 l2 : List (TSyntax `indexExpr)) : TermElabM Term := d
   let P1 ← stringToTerm permString
   let P2 ← stringToTerm perm2String
   let stx := Syntax.mkApp (mkIdent ``finMapToEquiv) #[P1, P2]
-  return stx
+  return P1
 
 /-!
 
@@ -365,10 +376,11 @@ def getIndicesRightEq (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)) := 
 ## Modifying terms to tensor trees
 
 -/
+open TensorSpecies
 
 /-- For a term of the form `T` where `T` is `S.F.obj (OverColor.mk c)`,
   `tensorTermToTensorTree` returns the term corresponding to the `tensorNode T` -/
-def nodeTermMap (T : Term) : Term := Syntax.mkApp (mkIdent ``TensorTree.tensorNode) #[T]
+def nodeTermMap (T : Term) : Term := T
 
 /-- Given a list `l` of pairs `ℕ × ℕ` and a term `T` corresponding to a tensor tree,
   for each `(a, b)` in `l`, `evalSyntax` applies `TensorTree.eval a b` to `T` recursively.
@@ -380,44 +392,41 @@ def nodeTermMap (T : Term) : Term := Syntax.mkApp (mkIdent ``TensorTree.tensorNo
   The list `l` is expected to be the output of `getEvalPos`.
 -/
 def evalTermMap (l : List (ℕ × ℕ)) (T : Term) : Term :=
-  l.foldl (fun T' (x1, x2) => Syntax.mkApp (mkIdent ``TensorTree.eval)
+  l.foldl (fun T' (x1, x2) => Syntax.mkApp (mkIdent ``Tensor.evalT)
     #[Syntax.mkNumLit (toString x1), Syntax.mkNumLit (toString x2), T']) T
 
 /-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.contr` to the given term. -/
-def contrTermMap (l : List (ℕ × ℕ)) (T : Term) : Term :=
-  (contrListAdjust l).foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``TensorTree.contr)
-    #[Syntax.mkNumLit (toString x0),
-    Syntax.mkNumLit (toString x1), mkIdent ``rfl, T']) T
+def contrTermMap (n : ℕ) (l : List (ℕ × ℕ)) (T : Term) : Term :=
+  let proofTerm := Syntax.mkApp (mkIdent ``Tensor.contrT_decide) #[mkIdent ``rfl]
+  (contrListAdjust l).foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``Tensor.contrT)
+    #[Syntax.mkNumLit (toString (n -2)), Syntax.mkNumLit (toString x0),
+    Syntax.mkNumLit (toString x1), proofTerm, T']) T
 
 /-- The syntax associated with a product of tensors. -/
 def prodTermMap (T1 T2 : Term) : Term :=
-  Syntax.mkApp (mkIdent ``TensorTree.prod) #[T1, T2]
+  Syntax.mkApp (mkIdent ``Tensor.prodT) #[T1, T2]
 
-/-- The syntax associated with a product of tensors. -/
+/-- The syntax associated with negation of tensors. -/
 def negTermMap (T1 : Term) : Term :=
-  Syntax.mkApp (mkIdent ``TensorTree.neg) #[T1]
+  Syntax.mkApp (mkIdent ``Neg.neg) #[T1]
 
 /-- The syntax associated with the scalar multiplication of tensors. -/
 def smulTermMap (c T : Term) : Term :=
-  Syntax.mkApp (mkIdent ``TensorTree.smul) #[c, T]
+  Syntax.mkApp (mkIdent ``SMul.smul) #[c, T]
 
 /-- The syntax associated with the group action of tensors. -/
 def actionTermMap (c T : Term) : Term :=
-  Syntax.mkApp (mkIdent ``TensorTree.action) #[c, T]
+  Syntax.mkApp (mkIdent ``SMul.smul) #[c, T]
 
 /-- The syntax for a equality of tensor trees. -/
-def addTermMap (permSyntax : Term) (T1 T2 : Term) : TermElabM Term := do
-  let P := Syntax.mkApp (mkIdent ``OverColor.equivToHomEq) #[permSyntax]
-  let RHS := Syntax.mkApp (mkIdent ``TensorTree.perm) #[P, T2]
-  return Syntax.mkApp (mkIdent ``add) #[T1, RHS]
+def addTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
+  let RHS := Syntax.mkApp (mkIdent ``Tensor.permT) #[P, T2]
+  return Syntax.mkApp (mkIdent ``Add.add) #[T1, RHS]
 
 /-- The syntax for a equality of tensor trees. -/
-def equalTermMap (permSyntax : Term) (T1 T2 : Term) : TermElabM Term := do
-  let X1 := Syntax.mkApp (mkIdent ``TensorTree.tensor) #[T1]
-  let P := Syntax.mkApp (mkIdent ``OverColor.equivToHomEq) #[permSyntax]
-  let X2' := Syntax.mkApp (mkIdent ``TensorTree.perm) #[P, T2]
-  let X2 := Syntax.mkApp (mkIdent ``TensorTree.tensor) #[X2']
-  return Syntax.mkApp (mkIdent ``Eq) #[X1, X2]
+def equalTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
+  let X2' := Syntax.mkApp (mkIdent ``Tensor.permT) #[P, T2]
+  return Syntax.mkApp (mkIdent ``Eq) #[T1, X2']
 
 /-!
 
@@ -436,11 +445,11 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
         throwError "The expected number of indices {rawIndex} does not match the tensor {T}."
       let tensorNodeSyntax := nodeTermMap T
       let evalSyntax := evalTermMap (← getEvalPos indices) tensorNodeSyntax
-      let contrSyntax := contrTermMap (← getContrPos indices) evalSyntax
+      let contrSyntax := contrTermMap indices.length (← getContrPos indices) evalSyntax
       return contrSyntax
   | `(tensorExpr| $a:tensorExpr ⊗ $b:tensorExpr) => do
       let prodSyntax := prodTermMap (← syntaxFull a) (← syntaxFull b)
-      let contrSyntax := contrTermMap (← getContrPos (← getProdIndices stx)) prodSyntax
+      let contrSyntax := contrTermMap (← getProdIndices stx).length (← getContrPos (← getProdIndices stx)) prodSyntax
       return contrSyntax
   | `(tensorExpr| ($a:tensorExpr)) => do
       return (← syntaxFull a)
@@ -475,6 +484,7 @@ partial def syntaxFull (stx : Syntax) : TermElabM Term := do
   expression corresponding to a tensor tree. -/
 def elaborateTensorNode (stx : Syntax) : TermElabM Expr := do
   let tensorExpr ← elabTerm (← syntaxFull stx) none
+  println! (← syntaxFull stx)
   return tensorExpr
 
 /-- The tensor tree corresponding to a tensor expression. -/
@@ -490,10 +500,15 @@ elab_rules (kind:=tensorExprSyntax) : term
 
 -/
 
-/-
+
+open Tensor
+
 variable {k : Type} [CommRing k] {S : TensorSpecies k}
   {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.F.obj (OverColor.mk c)}
+  {c1 c2 : S.C}
+  {t2 : S.Tensor ![c1, c2]}
+  {t3 : S.Tensor ![S.τ c1, S.τ c2]}
+#check {t | α β }ᵀ
 
-#check {t | α β}ᵀ
--/
+#check {t2 | α β ⊗ t3 | ρ β}ᵀ
 end TensorTree
