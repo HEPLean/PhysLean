@@ -180,7 +180,8 @@ unsafe def allTODOs : MetaM (List FullTODOInfo) := do
   let todos ← getTodoInfo
   let informalTODOs ← allInformalTODO
   let all := todos ++ informalTODOs
-  return  (all.qsort (fun x y => x.fileName.toString < y.fileName.toString)).toList
+  return  (all.qsort (fun x y => x.fileName.toString < y.fileName.toString
+    ∨ (x.fileName.toString = y.fileName.toString ∧ x.line < y.line))).toList
 
 unsafe def categoriesToYML : MetaM String := do
   let todos ← allTODOs
