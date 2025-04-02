@@ -458,6 +458,11 @@ def PermCond {n m : ℕ} (c : Fin n → S.C) (c1 : Fin m → S.C)
     (σ : Fin m → Fin n) : Prop :=
   Function.Bijective σ ∧ ∀ i, c (σ i) = c1 i
 
+@[simp]
+lemma PermCond.on_id {n : ℕ} {c c1 : Fin n → S.C} :
+    PermCond c c1 (id : Fin n → Fin n) ↔  ∀ i, c i = c1 i := by
+  simp [PermCond]
+
 /-- For a map `σ` satisfying `PermCond c c1 σ`, the inverse of that map. -/
 def PermCond.inv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (σ : Fin m → Fin n) (h : PermCond c c1 σ) : Fin n → Fin m :=
@@ -559,12 +564,37 @@ noncomputable def permT {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   map_smul' r t := by
     simp
 
+
+
 lemma permT_pure {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ) (p : Pure S c) :
     permT σ h p.toTensor = (p.permP σ h).toTensor := by
   simp only [F_def, permT, Pure.toTensor, LinearMap.coe_mk, AddHom.coe_mk]
   rw [OverColor.lift.map_tprod]
   rfl
+
+@[simp]
+lemma Pure.permP_id_self {n : ℕ} {c : Fin n → S.C} (p : Pure S c) :
+    Pure.permP (id : Fin n → Fin n) (by simp : PermCond c c id) p = p := by
+  ext i
+  simp only [permP, Pure.permP, Function.comp_apply]
+  rw [eqToHom_refl]
+  simp
+
+@[simp]
+lemma permT_id_self {n : ℕ} {c : Fin n → S.C} (t : S.Tensor c) :
+    permT (id : Fin n → Fin n) (by simp : PermCond c c id)  t = t := by
+  let P (t : S.Tensor c) := permT (id : Fin n → Fin n) (by simp : PermCond c c id) t = t
+  change P t
+  apply induction_on_pure
+  · intro p
+    simp [P]
+    rw [permT_pure]
+    simp
+  · intro r t ht
+    simp [P, ht]
+  · intro t1 t2 h1 h2
+    simp [P, h1, h2]
 
 @[simp]
 lemma permT_equivariant {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
@@ -800,9 +830,19 @@ These maps are used in permutations of tensors.
 def prodLeftMap (n2 : ℕ) (σ : Fin n → Fin n') : Fin (n + n2) → Fin (n' + n2) :=
     finSumFinEquiv ∘ Sum.map σ id ∘ finSumFinEquiv.symm
 
+@[simp]
+lemma prodLeftMap_id {n2 n: ℕ} :
+    prodLeftMap (n := n) n2 id = id := by
+  simp [prodLeftMap]
+
 /-- Given a map `σ : Fin n → Fin n'`, the induced map `Fin (n2 + n) → Fin (n2 + n')`. -/
 def prodRightMap (n2 : ℕ) (σ : Fin n → Fin n') : Fin (n2 + n) → Fin (n2 + n') :=
     finSumFinEquiv ∘ Sum.map id σ ∘ finSumFinEquiv.symm
+
+@[simp]
+lemma prodRightMap_id {n2 n: ℕ} :
+    prodRightMap (n := n) n2 id = id := by
+  simp [prodRightMap]
 
 /-- The map between `Fin (n1 + n2 + n3)` and `Fin (n1 + (n2 + n3))` formed by casting. -/
 def prodAssocMap (n1 n2 n3 : ℕ) : Fin (n1 + n2 + n3) → Fin (n1 + (n2 + n3)) :=

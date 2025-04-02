@@ -291,7 +291,7 @@ lemma dropPair_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
 lemma dropPair_symm (i j : Fin (n + 1 + 1)) (hij : i ≠ j)
     (p : Pure S c) : dropPair i j hij p =
-    permP id (by simp) (dropPair j i hij.symm p) := by
+    permP id (by simp [-PermCond.on_id]) (dropPair j i hij.symm p) := by
   ext m
   simp only [Function.comp_apply, dropPair, dropEm, permP, id_eq]
   refine (congr_right _ _ _ ?_).symm
@@ -602,7 +602,7 @@ lemma contrP_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
 lemma contrP_symm {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
     {i j : Fin (n + 1 + 1)} {hij : i ≠ j ∧ c i = S.τ (c j)} {p : Pure S c} :
-    contrP i j hij p = permT id (by simp)
+    contrP i j hij p = permT id (by simp [- PermCond.on_id])
     (contrP j i ⟨hij.1.symm, by simp [hij]⟩ p) := by
   rw [contrP, contrPCoeff_symm, dropPair_symm]
   simp [contrP, permT_pure]
@@ -702,9 +702,9 @@ lemma contrT_permT {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
 lemma contrT_symm {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
     {i j : Fin (n + 1 + 1)} {hij : i ≠ j ∧ c i = S.τ (c j)} (t : Tensor S c) :
-    contrT i j hij t = permT id (by simp)
+    contrT i j hij t = permT id (by simp [- PermCond.on_id])
       (contrT j i ⟨hij.1.symm, by simp [hij]⟩ t) := by
-  let P (t : Tensor S c) : Prop := contrT i j hij t = permT id (by simp)
+  let P (t : Tensor S c) : Prop := contrT i j hij t = permT id (by simp [- PermCond.on_id])
       (contrT j i ⟨hij.1.symm, by simp [hij]⟩ t)
   change P t
   apply induction_on_pure
