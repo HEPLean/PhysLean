@@ -244,6 +244,35 @@ noncomputable def fromPairTContr {c c1 c2 : S.C}
   let T5 : V1 ⊗[k] V3 := (V1 ◁ (λ_ V3).hom).hom T4
   fromPairT T5
 
+lemma fromPairTContr_tmul_tmul {c c1 c2 : S.C}
+    (x1 : S.FD.obj (Discrete.mk c1))
+    (x2 : S.FD.obj (Discrete.mk c))
+    (y1 : S.FD.obj (Discrete.mk (S.τ c)))
+    (y2 : S.FD.obj (Discrete.mk c2)) :
+    fromPairTContr (x1 ⊗ₜ[k] x2) (y1 ⊗ₜ[k] y2) =
+    (S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) • fromPairT (x1 ⊗ₜ[k] y2) := by
+  rw [fromPairTContr]
+  conv_lhs =>
+    enter [2, 2, 2, 2]
+    change x1 ⊗ₜ[k] (x2 ⊗ₜ[k] y1 ⊗ₜ[k] y2)
+  conv_lhs =>
+    enter [2, 2, 2]
+    change x1 ⊗ₜ[k] (x2 ⊗ₜ[k] y1) ⊗ₜ[k] y2
+  conv_lhs =>
+    enter [2, 2]
+    change x1 ⊗ₜ[k] (S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) ⊗ₜ[k] y2
+  conv_lhs =>
+    enter [2]
+    change x1 ⊗ₜ[k] ((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) • y2)
+  simp [tmul_smul]
+
+/-
+lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : S.C)
+    (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
+    (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
+    contrT (n := 2) 1 2 (by simp; change _ = S.τ (S.τ c); simp; rfl)
+      (prodT (fromPairT x) (fromPairT y)) =
+    permT id (by simp; sorry ) (fromPairTContr (c := c) (c1 := c1) (c2 := c2) x y) := by sorry-/
 /-!
 
 ## fromConstPair
