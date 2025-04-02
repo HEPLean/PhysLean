@@ -149,7 +149,7 @@ variable (EquationOfMotion : (x : ℝ → ℝ)  → Prop )
 /-- The definition of the equation of motion for the classical harmonic oscillator
   defined through the Euler-Lagrange equations.  -/
 semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : ℝ → ℝ) :
-    EquationOfMotion x ↔ ∀ t, deriv x t = S.m * force S x t
+    EquationOfMotion x ↔ ∀ t, force S x t = S.m * deriv (fun t' => deriv x t') t
 
 /-- The proposition on a trajectory which is true if that trajectory is an extrema of the
   action.
