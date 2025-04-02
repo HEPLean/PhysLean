@@ -42,7 +42,7 @@ informal_lemma limit_S_saddle where
 /-- The limit of `S (Sphere k) r` as `k → ∞` is equal to `S (Flat) r`. -/
 informal_lemma limit_S_sphere where
   deps := []
-  tag := "6ZZ3D"
+  tag := "62A4R"
 
 end SpatialGeometry
 
