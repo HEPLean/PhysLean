@@ -44,7 +44,15 @@ initialize wantedExtension : SimplePersistentEnvExtension WantedInfo (Array Want
     addImportedFn := fun es => es.foldl (· ++ ·) #[]
   }
 
-/-- The parser for semiformal results. -/
+/-- A semiformal result is either a
+- definition in which the type is given but not the definition.
+- proof in which the proposition is given but not the proof.
+Semiformal results cannot be used in further code. They are essentially
+forgot about after made.
+
+With minor modification they act in a similar way to `proof_wanted`, however
+they appear in PhysLean's TODO list and must be tagged accordingly.
+They must also always have a doc-string. -/
 @[command_parser]
 def «semiformal_result» := leading_parser
     docComment >>  "semiformal_result" >> strLit >> declId >> ppIndent declSig
