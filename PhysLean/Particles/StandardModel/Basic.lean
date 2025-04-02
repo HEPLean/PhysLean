@@ -102,7 +102,7 @@ quotient.
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
 informal_definition GaugeGroup where
-  deps := [``GaugeGroupI,  ``gaugeGroupℤ₂SubGroup, ``gaugeGroupℤ₃SubGroup,
+  deps := [``GaugeGroupI, ``gaugeGroupℤ₂SubGroup, ``gaugeGroupℤ₃SubGroup,
     ``GaugeGroupQuot]
   tag := "6V2HF"
 

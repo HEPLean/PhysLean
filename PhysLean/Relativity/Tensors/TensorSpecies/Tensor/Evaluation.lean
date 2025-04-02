@@ -17,10 +17,9 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 namespace Tensor
-
 
 namespace Pure
 
@@ -33,19 +32,19 @@ variable {n : ℕ} {c : Fin (n + 1) → S.C}
 -/
 
 /-- Given a `i : Fin (n + 1)`, a `b : Fin (S.repDim (c i))` and a pure tensor
-  `p : Pure S c`,  `evalPCoeff i b p` is the `b`th component of `p i`. -/
+  `p : Pure S c`, `evalPCoeff i b p` is the `b`th component of `p i`. -/
 def evalPCoeff (i : Fin (n + 1)) (b : Fin (S.repDim (c i))) (p : Pure S c) : k :=
   (S.basis (c i)).repr (p i) b
 
 @[simp]
 lemma evalPCoeff_update_self (i : Fin (n + 1)) [inst : DecidableEq (Fin (n + 1))]
     (b : Fin (S.repDim (c i))) (p : Pure S c)
-    (x : S.FD.obj (Discrete.mk (c i)))  :
+    (x : S.FD.obj (Discrete.mk (c i))) :
     evalPCoeff i b (p.update i x) = (S.basis (c i)).repr x b := by
   simp [evalPCoeff]
 
 @[simp]
-lemma evalPCoeff_update_succAbove (i : Fin (n + 1))  [inst : DecidableEq (Fin (n + 1))]
+lemma evalPCoeff_update_succAbove (i : Fin (n + 1)) [inst : DecidableEq (Fin (n + 1))]
     (j : Fin n)
     (b : Fin (S.repDim (c i))) (p : Pure S c)
     (x : S.FD.obj (Discrete.mk (c (i.succAbove j)))) :
@@ -65,11 +64,11 @@ noncomputable def evalP (i : Fin (n + 1)) (b : Fin (S.repDim (c i))) (p : Pure S
   Tensor S (c ∘ i.succAbove) := evalPCoeff i b p • (drop p i).toTensor
 
 @[simp]
-lemma evalP_update_add  [inst : DecidableEq (Fin (n + 1))] (i j : Fin (n + 1))
+lemma evalP_update_add [inst : DecidableEq (Fin (n + 1))] (i j : Fin (n + 1))
     (b : Fin (S.repDim (c i))) (p : Pure S c)
     (x y: S.FD.obj (Discrete.mk (c j))) :
     evalP i b (p.update j (x + y)) =
-    evalP i b (p.update j x) + evalP i b (p.update j y):= by
+    evalP i b (p.update j x) + evalP i b (p.update j y) := by
   simp only [evalP]
   rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨j, rfl⟩
   · simp [add_smul]
@@ -80,8 +79,8 @@ lemma evalP_update_smul [inst : DecidableEq (Fin (n + 1))] (i j : Fin (n + 1))
     (b : Fin (S.repDim (c i))) (p : Pure S c)
     (r : k)
     (x : S.FD.obj (Discrete.mk (c j))) :
-    evalP i b (p.update j (r • x )) =
-    r • evalP i b (p.update j x):= by
+    evalP i b (p.update j (r • x)) =
+    r • evalP i b (p.update j x) := by
   simp only [evalP]
   rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨j, rfl⟩
   · simp [smul_smul]

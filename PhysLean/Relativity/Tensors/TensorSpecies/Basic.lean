@@ -23,11 +23,7 @@ open MonoidalCategory
 /-- The structure `TensorSpecies` contains the necessary structure needed to define
   a system of tensors with index notation. Examples of `TensorSpecies` include real Lorentz tensors,
   complex Lorentz tensors, and ordinary Euclidean tensors. -/
-structure TensorSpecies (k : Type) [CommRing k] where
-  /-- The symmetry group acting on these tensor e.g. the Lorentz group or SL(2,ℂ). -/
-  G : Type
-  /-- An instance of `G` as a group. -/
-  G_group : Group G
+structure TensorSpecies (k : Type) [CommRing k] (G : Type) [Group G] where
   /-- The colors of indices e.g. up or down. -/
   C : Type
   /-- A functor from `C` to `Rep k G` giving our building block representations.
@@ -87,10 +83,7 @@ noncomputable section
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] (S : TensorSpecies k)
-
-/-- The field `G` of a `TensorSpecies` has the instance of a group. -/
-instance : Group S.G := S.G_group
+variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /-- The field `repDim` of a `TensorSpecies` is non-zero for all colors. -/
 instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
@@ -105,7 +98,7 @@ lemma FD_map_basis {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
   simp
 
 /-- The lift of the functor `S.F` to functor. -/
-def F : Functor (OverColor S.C) (Rep k S.G) := ((OverColor.lift).obj S.FD).toFunctor
+def F : Functor (OverColor S.C) (Rep k G) := ((OverColor.lift).obj S.FD).toFunctor
 
 /- The definition of `F` as a lemma. -/
 lemma F_def : F S = ((OverColor.lift).obj S.FD).toFunctor := rfl
@@ -142,8 +135,8 @@ lemma perm_contr_cond {n : ℕ} {c : Fin n.succ.succ → S.C} {c1 : Fin n.succ.s
   erw [Equiv.apply_eq_iff_eq]
   exact (Fin.succAbove_ne i j).symm
 
-/-- Casts an element of the monoidal unit of `Rep k S.G` to the field `k`. -/
-def castToField (v : (↑((𝟙_ (Discrete S.C ⥤ Rep k S.G)).obj { as := c }).V)) : k := v
+/-- Casts an element of the monoidal unit of `Rep k G` to the field `k`. -/
+def castToField (v : (↑((𝟙_ (Discrete S.C ⥤ Rep k G)).obj { as := c }).V)) : k := v
 
 /-- Casts an element of `(S.F.obj (OverColor.mk c)).V` for `c` a map from `Fin 0` to an
   element of the field. -/
@@ -176,7 +169,7 @@ lemma contr_congr (c c' : S.C) (h : c = c') (x : S.FD.obj (Discrete.mk c))
 
 -/
 
-/-- The isomorphism of objects in `Rep k S.G` given an `i` in `Fin n.succ`
+/-- The isomorphism of objects in `Rep k G` given an `i` in `Fin n.succ`
   allowing us to undertake evaluation. -/
 def evalIso {n : ℕ} (c : Fin n.succ → S.C)
     (i : Fin n.succ) : S.F.obj (OverColor.mk c) ≅ (S.FD.obj (Discrete.mk (c i))) ⊗
@@ -295,7 +288,7 @@ lemma evalMap_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : Fin
   erw [evalIso_tprod]
   change ((TensorProduct.lid k ↑((lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove))).V))
     (((TensorProduct.map (S.evalLinearMap i e) LinearMap.id))
-    ((Functor.Monoidal.μIso (Action.forget (ModuleCat k) (MonCat.of S.G)) (S.FD.obj { as := c i })
+    ((Functor.Monoidal.μIso (Action.forget (ModuleCat k) (MonCat.of G)) (S.FD.obj { as := c i })
     ((lift.obj S.FD).obj (OverColor.mk (c ∘ i.succAbove)))).inv
     (x i ⊗ₜ[k] (PiTensorProduct.tprod k) fun k => x (i.succAbove k)))) = _
   simp only [Nat.succ_eq_add_one, Action.forget_obj, Action.instMonoidalCategory_tensorObj_V,
@@ -350,7 +343,7 @@ def liftTensor {n : ℕ} {c : Fin n → S.C} {E : Type} [AddCommMonoid E] [Modul
 
 /-- The number of indices `n` from a tensor. -/
 @[nolint unusedArguments]
-def numIndices {S : TensorSpecies k} {n : ℕ} {c : Fin n → S.C}
+def numIndices {S : TensorSpecies k G} {n : ℕ} {c : Fin n → S.C}
     (_ : S.F.obj (OverColor.mk c)) : ℕ := n
 
 end TensorSpecies

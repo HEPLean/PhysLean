@@ -44,10 +44,8 @@ end realLorentzTensor
 noncomputable section
 open realLorentzTensor in
 /-- The tensor structure for complex Lorentz tensors. -/
-def realLorentzTensor (d : ℕ := 3) : TensorSpecies ℝ where
+def realLorentzTensor (d : ℕ := 3) : TensorSpecies ℝ (LorentzGroup d) where
   C := realLorentzTensor.Color
-  G := LorentzGroup d
-  G_group := inferInstance
   FD := Discrete.functor fun c =>
     match c with
     | Color.up => Lorentz.Contr d

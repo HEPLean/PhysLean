@@ -292,10 +292,8 @@ lemma action_apply_eq_sum (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : Vecto
     Pi.smul_apply, smul_eq_mul]
   conv_lhs =>
     enter [2, 2]
-    simp only [C_eq_color, OverColor.lift, OverColor.lift.obj', LaxBraidedFunctor.of_toFunctor,
+    simp  [C_eq_color, OverColor.lift, OverColor.lift.obj', LaxBraidedFunctor.of_toFunctor,
       Nat.succ_eq_add_one, Nat.reduceAdd]
-    /- I beleive this erw is needed becuase of (realLorentzTensor d).G and
-      LorentzGroup d are different. -/
     erw [OverColor.lift.objObj'_ρ_tprod]
   conv_rhs =>
     enter [2, x]

@@ -20,7 +20,7 @@ open OverColor
 open PhysLean.RatComplexNum
 open PhysLean
 
-variable {k : Type} [CommRing k] (S : TensorSpecies k)
+variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /--A complex Lorentz tensor from a map
   `(Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum`. All

@@ -20,7 +20,6 @@ David Thrane Christiansen.
 
 -/
 
-
 open Lean Parser Elab Command
 
 /-- The information from a `TODO ...` command. -/
@@ -55,7 +54,7 @@ they appear in PhysLean's TODO list and must be tagged accordingly.
 They must also always have a doc-string. -/
 @[command_parser]
 def «semiformal_result» := leading_parser
-    docComment >>  "semiformal_result" >> strLit >> declId >> ppIndent declSig
+    docComment >> "semiformal_result" >> strLit >> declId >> ppIndent declSig
 
 /-- The elaborator for semiformal results. -/
 @[command_elab «semiformal_result»]
@@ -80,8 +79,8 @@ def elabLemmaWanted : CommandElab := fun stx =>
         tag := tag }
       let _ ← modifyEnv fun env => wantedExtension.addEntry env wantedInfo
       let _ ← withoutModifyingEnv do
-      elabCommand <| ← `(
-        section
+      elabCommand <| ←
+        `(section
         set_option linter.unusedVariables false
         axiom helper {α : Sort _} : α
         $doc:docComment noncomputable def $name $args* : $res := helper

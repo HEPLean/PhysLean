@@ -25,7 +25,7 @@ noncomputable section
 namespace TensorSpecies
 open TensorTree
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 /-- Th map built contracting a 1-tensor with a 2-tensor using basic categorical constructions. -/
 def contrOneTwoLeft {c1 c2 : S.C}

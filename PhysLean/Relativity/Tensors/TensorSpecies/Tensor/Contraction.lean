@@ -17,7 +17,7 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 namespace Tensor
 
@@ -283,7 +283,7 @@ def dropPair (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c) :
 
 @[simp]
 lemma dropPair_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c) (g : S.G) :
+    (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c) (g : G) :
     dropPair i j hij (g • p) = g • dropPair i j hij p := by
   ext m
   simp only [dropPair, dropEm, actionP_eq]
@@ -529,7 +529,7 @@ lemma contrPCoeff_mul_dropPair {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
 @[simp]
 lemma contrPCoeff_invariant {n : ℕ} {c : Fin n → S.C} {i j : Fin n}
     {hij : i ≠ j ∧ c i = S.τ (c j)} {p : Pure S c}
-    (g : S.G) : (g • p).contrPCoeff i j hij = p.contrPCoeff i j hij := by
+    (g : G) : (g • p).contrPCoeff i j hij = p.contrPCoeff i j hij := by
   calc (g • p).contrPCoeff i j hij
     _ = (S.contr.app (Discrete.mk (c i)))
           ((S.FD.obj _).ρ g (p i) ⊗ₜ ((S.FD.map (eqToHom (by simp [hij])))
@@ -596,7 +596,7 @@ lemma contrP_update_smul {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fi
 
 @[simp]
 lemma contrP_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ c i = S.τ (c j)) (p : Pure S c) (g : S.G) :
+    (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ c i = S.τ (c j)) (p : Pure S c) (g : G) :
     contrP i j hij (g • p) = g • contrP i j hij p := by
   simp [contrP, contrPCoeff_invariant, dropPair_equivariant, actionT_pure]
 
@@ -658,7 +658,7 @@ lemma contrT_pure {n : ℕ} {c : Fin (n + 1 + 1) → S.C} (i j : Fin (n + 1 + 1)
 
 @[simp]
 lemma contrT_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ c i = S.τ (c j)) (g : S.G)
+    (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ c i = S.τ (c j)) (g : G)
     (t : Tensor S c) :
     contrT i j hij (g • t) = g • contrT i j hij t := by
   let P (t : Tensor S c) : Prop := contrT i j hij (g • t) = g • contrT i j hij t

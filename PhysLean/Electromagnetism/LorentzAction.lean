@@ -34,10 +34,9 @@ open FieldStrength
   (In this semiformal result `lorentzActionTemp` should be replaced with `lorentzAction`.) -/
 semiformal_result "6V2O4" toElectricMagneticField_equivariant (d : ℕ)
   (g : LorentzGroup 3) (E : ElectricField) (B : MagneticField)
-  (lorentzActionTemp : (LorentzGroup 3) → (ElectricField  × MagneticField)
-    → (ElectricField  × MagneticField)) (x : SpaceTime) :
-  (toElectricMagneticField.symm (lorentzActionTemp g  (E, B))).1  x=
+  (lorentzActionTemp : (LorentzGroup 3) → (ElectricField × MagneticField)
+    → (ElectricField × MagneticField)) (x : SpaceTime) :
+  (toElectricMagneticField.symm (lorentzActionTemp g (E, B))).1 x=
   (realLorentzTensor.F.obj _).ρ g ((toElectricMagneticField.symm (E, B)).1 x)
-
 
 end Electromagnetism

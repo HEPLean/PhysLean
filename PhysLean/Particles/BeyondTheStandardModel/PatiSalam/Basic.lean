@@ -85,7 +85,7 @@ informal_lemma sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup where
 /-- The group homomorphism from `StandardModel.GaugeGroupℤ₆` to `GaugeGroupℤ₂` induced by `embedSM`.
 -/
 informal_definition embedSMℤ₆Toℤ₂ where
-  deps := [``inclSM,  ``GaugeGroupℤ₂,
+  deps := [``inclSM, ``GaugeGroupℤ₂,
     ``sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup]
   tag := "6V2S4"
 

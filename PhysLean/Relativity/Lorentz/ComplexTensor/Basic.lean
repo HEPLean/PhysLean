@@ -83,10 +83,8 @@ end complexLorentzTensor
 noncomputable section
 open complexLorentzTensor in
 /-- The tensor structure for complex Lorentz tensors. -/
-def complexLorentzTensor : TensorSpecies ℂ where
+def complexLorentzTensor : TensorSpecies ℂ SL(2, ℂ) where
   C := complexLorentzTensor.Color
-  G := SL(2, ℂ)
-  G_group := inferInstance
   FD := Discrete.functor fun c =>
     match c with
     | Color.upL => Fermion.leftHanded

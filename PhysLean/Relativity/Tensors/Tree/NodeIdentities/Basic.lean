@@ -22,8 +22,7 @@ open TensorProduct
 
 namespace TensorTree
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
-
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 /-!
 
@@ -288,13 +287,13 @@ lemma prod_add_both {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
 -/
 
 /-- An `action` node can be moved through a `smul` node. -/
-lemma smul_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (a : k) (t : TensorTree S c) :
+lemma smul_action {n : ℕ} {c : Fin n → S.C} (g : G) (a : k) (t : TensorTree S c) :
     (smul a (action g t)).tensor = (action g (smul a t)).tensor := by
   simp only [smul_tensor, action_tensor, map_smul]
 
 /-- An `action` node can be moved through a `contr` node. -/
 lemma contr_action {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ} {j : Fin n.succ}
-    {h : c (i.succAbove j) = S.τ (c i)} (g : S.G) (t : TensorTree S c) :
+    {h : c (i.succAbove j) = S.τ (c i)} (g : G) (t : TensorTree S c) :
     (contr i j h (action g t)).tensor = (action g (contr i j h t)).tensor := by
   simp only [Nat.succ_eq_add_one, contr_tensor, action_tensor]
   change (ModuleCat.ofHom ((S.F.obj (OverColor.mk c)).ρ g) ≫ (S.contrMap c i j h).hom) t.tensor = _
@@ -302,7 +301,7 @@ lemma contr_action {n : ℕ} {c : Fin n.succ.succ → S.C} {i : Fin n.succ.succ}
   rfl
 
 /-- An `action` node can be moved through a `prod` node when acting on both elements. -/
-lemma prod_action {n n1 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} (g : S.G)
+lemma prod_action {n n1 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} (g : G)
     (t : TensorTree S c) (t1 : TensorTree S c1) :
     (prod (action g t) (action g t1)).tensor = (action g (prod t t1)).tensor := by
   simp only [prod_tensor, action_tensor, map_tmul]
@@ -321,24 +320,24 @@ lemma prod_action {n n1 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} (g : S.
   rfl
 
 /-- An `action` node can be moved through a `add` node when acting on both elements. -/
-lemma add_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (t t1 : TensorTree S c) :
+lemma add_action {n : ℕ} {c : Fin n → S.C} (g : G) (t t1 : TensorTree S c) :
     (add (action g t) (action g t1)).tensor = (action g (add t t1)).tensor := by
   simp only [add_tensor, action_tensor, map_add]
 
 /-- An `action` node can be moved through a `perm` node. -/
 lemma perm_action {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (g : S.G) (t : TensorTree S c) :
+    (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (g : G) (t : TensorTree S c) :
     (perm σ (action g t)).tensor = (action g (perm σ t)).tensor := by
   simp only [perm_tensor, action_tensor]
   exact Rep.hom_comm_apply (S.F.map σ) g t.tensor
 
 /-- An `action` node can be moved through a `neg` node. -/
-lemma neg_action {n : ℕ} {c : Fin n → S.C} (g : S.G) (t : TensorTree S c) :
+lemma neg_action {n : ℕ} {c : Fin n → S.C} (g : G) (t : TensorTree S c) :
     (neg (action g t)).tensor = (action g (neg t)).tensor := by
   simp only [neg_tensor, action_tensor, map_neg]
 
 /-- Two `action` nodes can be combined into a single `action` node. -/
-lemma action_action {n : ℕ} {c : Fin n → S.C} (g h : S.G) (t : TensorTree S c) :
+lemma action_action {n : ℕ} {c : Fin n → S.C} (g h : G) (t : TensorTree S c) :
     (action g (action h t)).tensor = (action (g * h) t).tensor := by
   simp only [action_tensor, map_mul, LinearMap.mul_apply]
 
@@ -347,7 +346,7 @@ lemma action_id {n : ℕ} {c : Fin n → S.C} (t : TensorTree S c) :
     (action 1 t).tensor = t.tensor := by
   simp only [action_tensor, map_one, LinearMap.one_apply]
 
-lemma action_zero {c : Fin 0 → S.C} (g : S.G) (t : TensorTree S c) :
+lemma action_zero {c : Fin 0 → S.C} (g : G) (t : TensorTree S c) :
     (action g t).tensor = t.tensor := by
   simp only [S.F_def, OverColor.lift, lift.obj', LaxBraidedFunctor.of_toFunctor,
     lift.objObj'_V_carrier, mk_left, mk_hom, action_tensor]
@@ -355,15 +354,15 @@ lemma action_zero {c : Fin 0 → S.C} (g : S.G) (t : TensorTree S c) :
   simp
 
 @[simp]
-lemma action_field {c : Fin 0 → S.C} (g : S.G) (t : TensorTree S c) :
+lemma action_field {c : Fin 0 → S.C} (g : G) (t : TensorTree S c) :
     (action g t).field = t.field := by
   rw [field, action_zero]
   rfl
 
 /-- An `action` node on a `constTwoNode` leaves the tensor invariant. -/
 lemma action_constTwoNode {c1 c2 : S.C}
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2))
-    (g : S.G) : (action g (constTwoNode v)).tensor = (constTwoNode v).tensor := by
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2))
+    (g : G) : (action g (constTwoNode v)).tensor = (constTwoNode v).tensor := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constTwoNode_tensor,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
   change ((Discrete.pairIsoSep S.FD).hom.hom ≫
@@ -376,9 +375,9 @@ lemma action_constTwoNode {c1 c2 : S.C}
 
 /-- An `action` node on a `constThreeNode` leaves the tensor invariant. -/
 lemma action_constThreeNode {c1 c2 c3 : S.C}
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
       S.FD.obj (Discrete.mk c3))
-    (g : S.G) : (action g (constThreeNode v)).tensor = (constThreeNode v).tensor := by
+    (g : G) : (action g (constThreeNode v)).tensor = (constThreeNode v).tensor := by
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, action_tensor, constThreeNode_tensor,
     Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V]
   change ((Discrete.tripleIsoSep S.FD).hom.hom ≫

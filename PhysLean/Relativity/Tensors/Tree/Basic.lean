@@ -27,8 +27,8 @@ open MonoidalCategory
 noncomputable section
 
 /-- A syntax tree for tensor expressions. -/
-inductive TensorTree {k : Type} [CommRing k]
-    (S : TensorSpecies k) : {n : ℕ} → (Fin n → S.C) → Type where
+inductive TensorTree {k : Type} [CommRing k] {G : Type} [Group G]
+    (S : TensorSpecies k G) : {n : ℕ} → (Fin n → S.C) → Type where
   /-- A general tensor node. -/
   | tensorNode {n : ℕ} {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) : TensorTree S c
   /-- A node corresponding to the scalar multiple of a tensor by a element of the field. -/
@@ -38,7 +38,7 @@ inductive TensorTree {k : Type} [CommRing k]
   /-- A node corresponding to the addition of two tensors. -/
   | add {n : ℕ} {c : Fin n → S.C} : TensorTree S c → TensorTree S c → TensorTree S c
   /-- A node corresponding to the action of a group element on a tensor. -/
-  | action {n : ℕ} {c : Fin n → S.C} : S.G → TensorTree S c → TensorTree S c
+  | action {n : ℕ} {c : Fin n → S.C} : G → TensorTree S c → TensorTree S c
   /-- A node corresponding to the permutation of indices of a tensor. -/
   | perm {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
       (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) (t : TensorTree S c) : TensorTree S c1
@@ -55,7 +55,7 @@ inductive TensorTree {k : Type} [CommRing k]
 
 namespace TensorTree
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
   {n : ℕ} {c : Fin n → S.C} (T : TensorTree S c)
 
 open MonoidalCategory
@@ -74,7 +74,7 @@ def vecNode {c : S.C} (v : S.FD.obj (Discrete.mk c)) : TensorTree S ![c] :=
   (tensorNode ((OverColor.forgetLiftApp S.FD c).symm.hom.hom v))
 
 /-- The node `vecNode` of a tensor tree, with all arguments explicit. -/
-abbrev vecNodeE (S : TensorSpecies k) (c1 : S.C)
+abbrev vecNodeE (S : TensorSpecies k G) (c1 : S.C)
     (v : (S.FD.obj (Discrete.mk c1)).V) :
     TensorTree S ![c1] := vecNode v
 
@@ -85,7 +85,7 @@ def twoNode {c1 c2 : S.C} (t : (S.FD.obj (Discrete.mk c1) ⊗
   (tensorNode ((OverColor.Discrete.pairIsoSep S.FD).hom.hom t))
 
 /-- The node `twoNode` of a tensor tree, with all arguments explicit. -/
-abbrev twoNodeE (S : TensorSpecies k) (c1 c2 : S.C)
+abbrev twoNodeE (S : TensorSpecies k G) (c1 c2 : S.C)
     (v : (S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)).V) :
     TensorTree S ![c1, c2] := twoNode v
 
@@ -96,38 +96,38 @@ def threeNode {c1 c2 c3 : S.C} (t : (S.FD.obj (Discrete.mk c1) ⊗
   (tensorNode ((OverColor.Discrete.tripleIsoSep S.FD).hom.hom t))
 
 /-- The node `threeNode` of a tensor tree, with all arguments explicit. -/
-abbrev threeNodeE (S : TensorSpecies k) (c1 c2 c3 : S.C)
+abbrev threeNodeE (S : TensorSpecies k G) (c1 c2 c3 : S.C)
     (v : (S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)).V) :
     TensorTree S ![c1, c2, c3] := threeNode v
 
 /-- A general constant node. -/
-def constNode {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep k S.G) ⟶ S.F.obj (OverColor.mk c)) :
+def constNode {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c)) :
     TensorTree S c := tensorNode (T.hom (1 : k))
 
 /-- A constant vector. -/
-def constVecNode {c : S.C} (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c)) :
+def constVecNode {c : S.C} (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c)) :
     TensorTree S ![c] := vecNode (v.hom (1 : k))
 
 /-- A constant two tensor (e.g. metric and unit). -/
 def constTwoNode {c1 c2 : S.C}
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := twoNode (v.hom (1 : k))
 
 /-- The node `constTwoNode` of a tensor tree, with all arguments explicit. -/
-abbrev constTwoNodeE (S : TensorSpecies k) (c1 c2 : S.C)
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
+abbrev constTwoNodeE (S : TensorSpecies k G) (c1 c2 : S.C)
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
     TensorTree S ![c1, c2] := constTwoNode v
 
 /-- A constant three tensor (e.g. Pauli matrices). -/
 def constThreeNode {c1 c2 c3 : S.C}
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
   threeNode (v.hom (1 : k))
 
 /-- The node `constThreeNode` of a tensor tree, with all arguments explicit. -/
-abbrev constThreeNodeE (S : TensorSpecies k) (c1 c2 c3 : S.C)
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+abbrev constThreeNodeE (S : TensorSpecies k G) (c1 c2 c3 : S.C)
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)) : TensorTree S ![c1, c2, c3] :=
   constThreeNode v
 
@@ -178,14 +178,14 @@ lemma tensorNode_tensor {c : Fin n → S.C} (T : S.F.obj (OverColor.mk c)) :
 
 @[simp]
 lemma constTwoNode_tensor {c1 c2 : S.C}
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
     (constTwoNode v).tensor =
     (OverColor.Discrete.pairIsoSep S.FD).hom.hom (v.hom (1 : k)) :=
   rfl
 
 @[simp]
 lemma constThreeNode_tensor {c1 c2 c3 : S.C}
-    (v : 𝟙_ (Rep k S.G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
+    (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
     S.FD.obj (Discrete.mk c3)) :
     (constThreeNode v).tensor =
     (OverColor.Discrete.tripleIsoSep S.FD).hom.hom (v.hom (1 : k)) :=
@@ -213,7 +213,7 @@ lemma eval_tensor {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ) (e : ℕ) 
 lemma smul_tensor {c : Fin n → S.C} (a : k) (T : TensorTree S c) :
     (smul a T).tensor = a • T.tensor:= rfl
 
-lemma action_tensor {c : Fin n → S.C} (g : S.G) (T : TensorTree S c) :
+lemma action_tensor {c : Fin n → S.C} (g : G) (T : TensorTree S c) :
     (action g T).tensor = (S.F.obj (OverColor.mk c)).ρ g T.tensor := rfl
 
 /-!
@@ -279,7 +279,7 @@ lemma smul_tensor_eq {T1 T2 : TensorTree S c} {a : k} (h : T1.tensor = T2.tensor
   simp only [smul_tensor]
   rw [h]
 
-lemma action_tensor_eq {T1 T2 : TensorTree S c} {g : S.G} (h : T1.tensor = T2.tensor) :
+lemma action_tensor_eq {T1 T2 : TensorTree S c} {g : G} (h : T1.tensor = T2.tensor) :
     (action g T1).tensor = (action g T2).tensor := by
   simp only [action_tensor]
   rw [h]

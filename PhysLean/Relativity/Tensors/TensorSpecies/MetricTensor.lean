@@ -22,11 +22,11 @@ namespace TensorSpecies
 open TensorTree
 
 /-- The metric of a tensor species in a `PiTensorProduct`. -/
-def metricTensor {k : Type} [CommRing k] (S : TensorSpecies k)
+def metricTensor {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
     (c : S.C) : S.F.obj (OverColor.mk ![c, c]) :=
   (OverColor.Discrete.pairIsoSep S.FD).hom.hom ((S.metric.app (Discrete.mk c)).hom (1 : k))
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 lemma metricTensor_congr {c c' : S.C} (h : c = c') : {S.metricTensor c | μ ν}ᵀ.tensor =
     (perm (OverColor.equivToHomEq (Equiv.refl _) (fun x => by subst h; fin_cases x <;> rfl))

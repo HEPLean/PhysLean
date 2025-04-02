@@ -18,7 +18,7 @@ open PhysLean.Fin
 
 namespace TensorTree
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k} {n n2 n3 : ℕ}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G} {n n2 n3 : ℕ}
     (c : Fin n → S.C) (c2 : Fin n2 → S.C) (c3 : Fin n3 → S.C)
 
 /-- The permutation that arises from associativity of `prod` node.

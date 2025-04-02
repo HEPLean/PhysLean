@@ -23,7 +23,7 @@ It physically corresponds to a particle of mass `m` attached to a spring providi
 **Basic**
 
 The main components of the basic module (this module) are:
-- The structure  `HarmonicOscillator` containing the physical parameters of the system.
+- The structure `HarmonicOscillator` containing the physical parameters of the system.
 - The definition of the lagrangian `lagrangian` of the system.
 
 **Solution**
@@ -133,20 +133,20 @@ lemma lagrangian_parity (x : ℝ → ℝ) (hx : Differentiable ℝ x) :
 semiformal_result "6YBYP" force (S : HarmonicOscillator) (x : ℝ → ℝ) : ℝ → ℝ
 
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable  (force : (S : HarmonicOscillator) → (x : ℝ → ℝ) → ℝ → ℝ)
+variable (force : (S : HarmonicOscillator) → (x : ℝ → ℝ) → ℝ → ℝ)
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 semiformal_result "6YB2U" force_is_linear (x : ℝ → ℝ) :
   force S x = - S.k • x
 
 /-- The definition of the equation of motion for the classical harmonic oscillator
-  defined through the Euler-Lagrange equations.  -/
+  defined through the Euler-Lagrange equations. -/
 semiformal_result"6ZTP5" EquationOfMotion (x : ℝ → ℝ) : Prop
 
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (EquationOfMotion : (x : ℝ → ℝ)  → Prop )
+variable (EquationOfMotion : (x : ℝ → ℝ) → Prop)
 
-/-- The equations of motion are satisfied if and only if Newton's second law holds.  -/
+/-- The equations of motion are satisfied if and only if Newton's second law holds. -/
 semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : ℝ → ℝ) :
     EquationOfMotion x ↔ ∀ t, force S x t = S.m * deriv (fun t' => deriv x t') t
 
@@ -158,7 +158,7 @@ semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : ℝ → �
 semiformal_result "6YBIG" ExtremaOfAction (x : ℝ → ℝ) : Prop
 
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (ExtremaOfAction : (x : ℝ → ℝ)  → Prop )
+variable (ExtremaOfAction : (x : ℝ → ℝ) → Prop)
 
 /-- A trajectory `x : ℝ → ℝ` satsifies the equation of motion if and only if
   it is an extrema of the action.

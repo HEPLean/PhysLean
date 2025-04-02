@@ -21,7 +21,7 @@ open PhysLean.Fin
 
 namespace TensorTree
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 /-- A structure containing two pairs of indices (i, j) and (k, l) to be sequentially
   contracted in a tensor. -/

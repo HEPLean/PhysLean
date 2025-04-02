@@ -19,7 +19,7 @@ open PhysLean.Fin
 
 namespace TensorTree
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k} {n n' n2 : ℕ}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G} {n n' n2 : ℕ}
     {c : Fin n → S.C} {c' : Fin n' → S.C} (c2 : Fin n2 → S.C)
     (σ : OverColor.mk c ⟶ OverColor.mk c')
 

@@ -20,7 +20,7 @@ noncomputable section
 
 namespace TensorSpecies
 
-variable {k : Type} [CommRing k] (S : TensorSpecies k)
+variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /-- The isomorphism between the image of a map `Fin 1 ⊕ Fin 1 → S.C` constructed by `finExtractTwo`
   under `S.F.obj`, and an object in the image of `OverColor.Discrete.pairτ S.FD`. -/
@@ -136,7 +136,7 @@ lemma contrFin1Fin1_hom_hom_tprod {n : ℕ} (c : Fin n.succ.succ → S.C)
     simp
   exact h
 
-/-- The isomorphism of objects in `Rep k S.G` given an `i` in `Fin n.succ.succ` and
+/-- The isomorphism of objects in `Rep k G` given an `i` in `Fin n.succ.succ` and
   a `j` in `Fin n.succ` allowing us to undertake contraction. -/
 def contrIso {n : ℕ} (c : Fin n.succ.succ → S.C)
     (i : Fin n.succ.succ) (j : Fin n.succ) (h : c (i.succAbove j) = S.τ (c i)) :

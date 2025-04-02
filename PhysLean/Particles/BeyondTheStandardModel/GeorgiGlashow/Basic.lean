@@ -44,7 +44,7 @@ informal_lemma inclSM_ker where
 quotienting by the kernel `inclSM_ker`.
 -/
 informal_definition embedSMℤ₆ where
-  deps := [``inclSM,  ``GaugeGroupI, ``inclSM_ker]
+  deps := [``inclSM, ``GaugeGroupI, ``inclSM_ker]
   tag := "6V2XA"
 
 end GeorgiGlashow

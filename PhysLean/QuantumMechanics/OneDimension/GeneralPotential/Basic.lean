@@ -140,7 +140,7 @@ variable (Q : GeneralPotential)
 
   `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + V(x) * ψ`. -/
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun x => 1 / (2 * Q.m) * (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ) x) + (Q.V x) *  ψ x
+  fun x => 1 / (2 * Q.m) * (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ) x) + (Q.V x) * ψ x
 
 private lemma eval_add (f g : ℝ → ℂ) :
     (f + g) x = f x + g x := by

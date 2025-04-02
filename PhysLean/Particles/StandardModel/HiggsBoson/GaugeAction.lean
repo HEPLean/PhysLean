@@ -241,7 +241,7 @@ end HiggsVec
 
 TODO "6V2MV" "Define the global gauge action on HiggsField."
 TODO "6V2M3" "Prove `⟪φ1, φ2⟫_H` invariant under the global gauge action. (norm_map_of_mem_unitary)"
-TODO  "6V2NA" "Prove invariance of potential under global gauge action."
+TODO "6V2NA" "Prove invariance of potential under global gauge action."
 
 namespace HiggsField
 

@@ -21,19 +21,19 @@ noncomputable section
 
 namespace TensorSpecies
 open TensorTree
-variable {k : Type} [CommRing k] (S : TensorSpecies k)
+variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /-- The equivariant map from ` S.FD.obj (Discrete.mk c) ⊗ S.FD.obj (Discrete.mk c)` to
   the underlying field obtained by contracting. -/
 def contractSelfHom (c : S.C) : S.FD.obj (Discrete.mk c) ⊗ S.FD.obj (Discrete.mk c) ⟶
-    𝟙_ (Rep k S.G) :=
+    𝟙_ (Rep k G) :=
   (S.FD.obj (Discrete.mk c) ◁ (S.dualRepIsoDiscrete c).hom) ≫ S.contr.app (Discrete.mk c)
 
 open TensorProduct
 
 /-- The contraction of two vectors in a tensor species of the same color, as a linear
   map to the underlying field. -/
-def contractSelfField {S : TensorSpecies k} {c : S.C} :
+def contractSelfField {S : TensorSpecies k G} {c : S.C} :
     S.FD.obj (Discrete.mk c) ⊗[k] S.FD.obj (Discrete.mk c) →ₗ[k] k :=
   (S.contractSelfHom c).hom.hom
 
@@ -42,7 +42,7 @@ scoped[TensorSpecies] notation "⟪" ψ "," φ "⟫ₜₛ" => contractSelfField 
 
 /-- The map `contractSelfField` is equivariant with respect to the group action. -/
 @[simp]
-lemma contractSelfField_equivariant {S : TensorSpecies k} {c : S.C} {g : S.G}
+lemma contractSelfField_equivariant {S : TensorSpecies k G} {c : S.C} {g : G}
     (ψ : S.FD.obj (Discrete.mk c)) (φ : S.FD.obj (Discrete.mk c)) :
     ⟪(S.FD.obj (Discrete.mk c)).ρ g ψ, (S.FD.obj (Discrete.mk c)).ρ g φ⟫ₜₛ = ⟪ψ, φ⟫ₜₛ := by
   simpa using congrFun (congrArg (fun x => x.hom.toFun)
@@ -75,7 +75,7 @@ def IsNormOne {c : S.C} (ψ : S.FD.obj (Discrete.mk c)) : Prop := ⟪ψ, ψ⟫�
 
 /-- If a vector is norm-one, then any vector in the orbit of that vector is also norm-one. -/
 @[simp]
-lemma action_isNormOne_of_isNormOne {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : S.G) :
+lemma action_isNormOne_of_isNormOne {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : G) :
     S.IsNormOne ((S.FD.obj (Discrete.mk c)).ρ g ψ) ↔ S.IsNormOne ψ := by
   simp only [IsNormOne, contractSelfField_equivariant]
 
@@ -90,7 +90,7 @@ def IsNormZero {c : S.C} (ψ : S.FD.obj (Discrete.mk c)) : Prop := ⟪ψ, ψ⟫�
 
 /-- The zero vector has norm equal to zero. -/
 @[simp]
-lemma zero_isNormZero {c : S.C} : @IsNormZero _ _ S c 0 := by
+lemma zero_isNormZero {c : S.C} : @IsNormZero _ _ _ _ S c 0 := by
   simp only [IsNormZero, tmul_zero, map_zero]
 
 /-- If a vector is norm-zero, then any scalar multiple of that vector is also norm-zero. -/
@@ -102,7 +102,7 @@ lemma smul_isNormZero_of_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)}
 
 /-- If a vector is norm-zero, then any vector in the orbit of that vector is also norm-zero. -/
 @[simp]
-lemma action_isNormZero_iff_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : S.G) :
+lemma action_isNormZero_iff_isNormZero {c : S.C} {ψ : S.FD.obj (Discrete.mk c)} (g : G) :
     S.IsNormZero ((S.FD.obj (Discrete.mk c)).ρ g ψ) ↔ S.IsNormZero ψ := by
   simp only [IsNormZero, contractSelfField_equivariant]
 

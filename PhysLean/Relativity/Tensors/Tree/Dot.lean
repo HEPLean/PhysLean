@@ -16,7 +16,8 @@ that converts a tensor tree into a dot file.
 namespace TensorTree
 
 /-- Turns a nodes of tensor trees into nodes and edges of a dot file. -/
-def dotString {k : Type} [CommRing k] {S : TensorSpecies k} (m : ℕ) (nt : ℕ) :
+def dotString {k : Type} [CommRing k] {G : Type} [Group G]
+    {S : TensorSpecies k G} (m : ℕ) (nt : ℕ) :
     ∀ {n : ℕ} {c : Fin n → S.C}, TensorTree S c → String := fun
   | tensorNode _ =>
     " node" ++ toString m ++ " [label=\"T" ++ toString nt ++ "\"];\n"
@@ -60,7 +61,7 @@ def dotString {k : Type} [CommRing k] {S : TensorSpecies k} (m : ℕ) (nt : ℕ)
 /-- Used to form a dot graph from a tensor tree. use e.g.
   `#tensor_dot {T4 | i j l d ⊗ T5 | i j k a b}ᵀ.dot`.
   Dot files can be viewed by copying and pasting into: https://dreampuf.github.io/GraphvizOnline. -/
-def dot {k : Type} [CommRing k] {S : TensorSpecies k} {n : ℕ}
+def dot {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G} {n : ℕ}
     {c : Fin n → S.C} (t : TensorTree S c) : String :=
   "// Dot file created by PhysLean for a tensor expression.
 // Can be viewed at https://dreampuf.github.io/GraphvizOnline/\n" ++

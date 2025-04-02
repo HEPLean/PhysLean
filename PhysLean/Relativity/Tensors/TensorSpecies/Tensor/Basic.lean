@@ -17,7 +17,7 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] (S : TensorSpecies k)
+variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /-- The tensors associated with a list of indicies of a given color
   `c : Fin n → S.C`. s-/
@@ -25,7 +25,7 @@ noncomputable abbrev Tensor {n : ℕ} (c : Fin n → S.C) : Type := (S.F.obj (Ov
 
 namespace Tensor
 
-variable {S : TensorSpecies k} {n n' n2 : ℕ} {c : Fin n → S.C} {c' : Fin n' → S.C}
+variable {S : TensorSpecies k G} {n n' n2 : ℕ} {c : Fin n → S.C} {c' : Fin n' → S.C}
   {c2 : Fin n2 → S.C}
 
 /-- Given a list of indices `c : Fin n → S.C` e.g. `![.up, .down]`, the type
@@ -46,7 +46,7 @@ lemma ComponentIdx.congr_right {n : ℕ} {c : Fin n → S.C} (b : ComponentIdx c
 
 /-- The type of pure tensors associated to a list of indices `c : OverColor S.C`.
   A pure tensor is a tensor which can be written in the form `v1 ⊗ₜ v2 ⊗ₜ v3 …`. -/
-abbrev Pure (S : TensorSpecies k) (c : Fin n → S.C) : Type :=
+abbrev Pure (S : TensorSpecies k G) (c : Fin n → S.C) : Type :=
     (i : Fin n) → S.FD.obj (Discrete.mk (c i))
 
 namespace Pure
@@ -381,7 +381,7 @@ end Basis
 
 namespace Pure
 
-noncomputable instance actionP : MulAction S.G (Pure S c) where
+noncomputable instance actionP : MulAction G (Pure S c) where
   smul g p := fun i => (S.FD.obj _).ρ g (p i)
   one_smul p := by
     ext i
@@ -392,12 +392,12 @@ noncomputable instance actionP : MulAction S.G (Pure S c) where
     change (S.FD.obj _).ρ (g * g') (p i) = (S.FD.obj _).ρ g ((S.FD.obj _).ρ g' (p i))
     simp
 
-noncomputable instance : SMul (S.G) (Pure S c) := actionP.toSMul
+noncomputable instance : SMul (G) (Pure S c) := actionP.toSMul
 
-lemma actionP_eq {g : S.G} {p : Pure S c} : g • p = fun i => (S.FD.obj _).ρ g (p i) := rfl
+lemma actionP_eq {g : G} {p : Pure S c} : g • p = fun i => (S.FD.obj _).ρ g (p i) := rfl
 
 @[simp]
-lemma drop_actionP {n : ℕ} {c : Fin (n + 1) → S.C} {i : Fin (n + 1)} {p : Pure S c} (g : S.G) :
+lemma drop_actionP {n : ℕ} {c : Fin (n + 1) → S.C} {i : Fin (n + 1)} {p : Pure S c} (g : G) :
     (g • p).drop i = g • (p.drop i) := by
   ext j
   rw [drop, actionP_eq, actionP_eq]
@@ -406,7 +406,7 @@ lemma drop_actionP {n : ℕ} {c : Fin (n + 1) → S.C} {i : Fin (n + 1)} {p : Pu
 
 end Pure
 
-noncomputable instance actionT : MulAction S.G (S.Tensor c) where
+noncomputable instance actionT : MulAction G (S.Tensor c) where
   smul g t := (S.F.obj (OverColor.mk c)).ρ g t
   one_smul t := by
     change (S.F.obj (OverColor.mk c)).ρ 1 t = t
@@ -416,9 +416,9 @@ noncomputable instance actionT : MulAction S.G (S.Tensor c) where
       (S.F.obj (OverColor.mk c)).ρ g ((S.F.obj (OverColor.mk c)).ρ g' t)
     simp
 
-lemma actionT_eq {g : S.G} {t : S.Tensor c} : g • t = (S.F.obj (OverColor.mk c)).ρ g t := rfl
+lemma actionT_eq {g : G} {t : S.Tensor c} : g • t = (S.F.obj (OverColor.mk c)).ρ g t := rfl
 
-lemma actionT_pure {g : S.G} {p : Pure S c} :
+lemma actionT_pure {g : G} {p : Pure S c} :
     g • p.toTensor = Pure.toTensor (g • p) := by
   rw [actionT_eq, Pure.toTensor]
   simp only [F_def, lift, lift.obj', LaxBraidedFunctor.of_toFunctor]
@@ -426,19 +426,19 @@ lemma actionT_pure {g : S.G} {p : Pure S c} :
   rfl
 
 @[simp]
-lemma actionT_add {g : S.G} {t1 t2 : S.Tensor c} :
+lemma actionT_add {g : G} {t1 t2 : S.Tensor c} :
     g • (t1 + t2) = g • t1 + g • t2 := by
   rw [actionT_eq, actionT_eq, actionT_eq]
   simp
 
 @[simp]
-lemma actionT_smul {g : S.G} {r : k} {t : S.Tensor c} :
+lemma actionT_smul {g : G} {r : k} {t : S.Tensor c} :
     g • (r • t) = r • (g • t) := by
   rw [actionT_eq, actionT_eq]
   simp
 
 @[simp]
-lemma actionT_zero {g : S.G} : g • (0 : S.Tensor c) = 0 := by
+lemma actionT_zero {g : G} : g • (0 : S.Tensor c) = 0 := by
   simp [actionT_eq]
 
 /-!
@@ -568,7 +568,7 @@ lemma permT_pure {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
 
 @[simp]
 lemma permT_equivariant {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-    {σ : Fin m → Fin n} (h : PermCond c c1 σ) (g : S.G) (t : S.Tensor c) :
+    {σ : Fin m → Fin n} (h : PermCond c c1 σ) (g : G) (t : S.Tensor c) :
     permT σ h (g • t) = g • permT σ h t := by
   simp only [permT, actionT_eq, LinearMap.coe_mk, AddHom.coe_mk]
   exact Rep.hom_comm_apply (S.F.map h.toHom) g t
@@ -982,7 +982,7 @@ lemma prodAssocMap'_permCond {n1 n2 n3 : ℕ} {c : Fin n1 → S.C} {c2 : Fin n2 
 
 @[simp]
 lemma Pure.prodP_equivariant {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C}
-    (g : S.G) (p : Pure S c) (p1 : Pure S c1) :
+    (g : G) (p : Pure S c) (p1 : Pure S c1) :
     prodP (g • p) (g • p1) = g • prodP p p1 := by
   ext i
   obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
@@ -1007,7 +1007,7 @@ lemma Pure.prodP_equivariant {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C}
 
 @[simp]
 lemma prodT_equivariant {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C}
-    (g : S.G) (t : S.Tensor c) (t1 : S.Tensor c1) :
+    (g : G) (t : S.Tensor c) (t1 : S.Tensor c1) :
     prodT (g • t) (g • t1) = g • prodT t t1 := by
   let P (t : S.Tensor c) := prodT (g • t) (g • t1) = g • prodT t t1
   change P t

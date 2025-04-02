@@ -22,7 +22,7 @@ open PhysLean.Fin
 namespace TensorSpecies
 noncomputable section
 
-variable {k : Type} [CommRing k] (S : TensorSpecies k)
+variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 lemma contrFin1Fin1_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ} (h : c1 (i.succAbove j) = S.τ (c1 i))
@@ -140,7 +140,7 @@ lemma contrIso_comm_aux_2 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
 lemma contrIso_comm_aux_3 {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
     {i : Fin n.succ.succ} {j : Fin n.succ}
     (σ : (OverColor.mk c) ⟶ (OverColor.mk c1)) :
-      ((Action.functorCategoryEquivalence (ModuleCat k) (MonCat.of S.G)).symm.inverse.map
+      ((Action.functorCategoryEquivalence (ModuleCat k) (MonCat.of G)).symm.inverse.map
                   (S.F.map (extractTwoAux i j σ))).app
               PUnit.unit ≫
             (S.F.map (mkIso (contrIso.proof_1 S c1 i j)).hom).hom
@@ -235,7 +235,7 @@ lemma contrMap_naturality {n : ℕ} {c c1 : Fin n.succ.succ → S.C}
   apply congrArg
   rw [contrIsoComm]
   rw [← tensor_comp]
-  have h1 : 𝟙_ (Rep k S.G) ◁ S.F.map (extractTwo i j σ) = 𝟙 _ ⊗ S.F.map (extractTwo i j σ) := by
+  have h1 : 𝟙_ (Rep k G) ◁ S.F.map (extractTwo i j σ) = 𝟙 _ ⊗ S.F.map (extractTwo i j σ) := by
     rfl
   rw [h1, ← tensor_comp, Category.id_comp]
   erw [Category.comp_id, Category.comp_id]
@@ -247,7 +247,7 @@ end TensorSpecies
 
 namespace TensorTree
 
-variable {k : Type} [CommRing k] {S : TensorSpecies k}
+variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 /-- Permuting indices, and then contracting is equivalent to contracting and then permuting,
   once care is taking about ensuring one is contracting the same indices. -/

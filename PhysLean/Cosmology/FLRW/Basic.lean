@@ -73,7 +73,7 @@ informal_definition hubbleConstant where
 
   The notation `q` is used for the `decelerationParameter`.
 
-  Semiformal implementation note: Implement also scoped notation.  -/
+  Semiformal implementation note: Implement also scoped notation. -/
 informal_definition decelerationParameter where
   deps := []
   tag := "6Z2UE"
