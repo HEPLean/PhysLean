@@ -3,6 +3,7 @@ import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.CondensedMatter.Basic
 import PhysLean.Cosmology.Basic
+import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
