@@ -146,8 +146,7 @@ semiformal_result"6ZTP5" EquationOfMotion (x : ℝ → ℝ) : Prop
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
 variable (EquationOfMotion : (x : ℝ → ℝ)  → Prop )
 
-/-- The definition of the equation of motion for the classical harmonic oscillator
-  defined through the Euler-Lagrange equations.  -/
+/-- The equations of motion are satisfied if and only if Newton's second law holds.  -/
 semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : ℝ → ℝ) :
     EquationOfMotion x ↔ ∀ t, force S x t = S.m * deriv (fun t' => deriv x t') t
 
