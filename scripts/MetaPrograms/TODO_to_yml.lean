@@ -217,7 +217,9 @@ unsafe def todosToYAML : MetaM String := do
   /- Check no dulicate tags-/
   let tags := todos.map (fun x => x.tag)
   if !tags.Nodup then
-    panic! "Duplicate tags found."
+    let duplicates := tags.filter (fun tag => tags.count tag > 1) |>.eraseDups
+    println! duplicates
+    panic! s!"Duplicate tags found: {duplicates}"
   /- End of check. -/
   let todosYAML ← todos.mapM FullTODOInfo.toYAML
   return "TODOItem:\n" ++ String.intercalate "\n" todosYAML

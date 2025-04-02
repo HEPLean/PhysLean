@@ -141,7 +141,7 @@ semiformal_result "6YB2U" force_is_linear (x : ℝ → ℝ) :
 
 /-- The definition of the equation of motion for the classical harmonic oscillator
   defined through the Euler-Lagrange equations.  -/
-semiformal_result"6YBEI" EquationOfMotion (x : ℝ → ℝ) : Prop
+semiformal_result"6ZTP5" EquationOfMotion (x : ℝ → ℝ) : Prop
 
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
 variable (EquationOfMotion : (x : ℝ → ℝ)  → Prop )
