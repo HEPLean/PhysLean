@@ -229,11 +229,7 @@ import PhysLean.Relativity.Tensors.OverColor.Iso
 import PhysLean.Relativity.Tensors.OverColor.Lift
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Basis
-import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.Basic
-import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.Categorical
 import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.ContrMap
-import PhysLean.Relativity.Tensors.TensorSpecies.DualRepIso
-import PhysLean.Relativity.Tensors.TensorSpecies.MetricTensor
 import PhysLean.Relativity.Tensors.TensorSpecies.OfInt
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Constructors
@@ -242,7 +238,6 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Dual
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Evaluation
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.UnitTensor
-import PhysLean.Relativity.Tensors.TensorSpecies.UnitTensor
 import PhysLean.Relativity.Tensors.Tree.Basic
 import PhysLean.Relativity.Tensors.Tree.Dot
 import PhysLean.Relativity.Tensors.Tree.Elab
