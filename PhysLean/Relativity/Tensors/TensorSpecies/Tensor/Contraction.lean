@@ -259,17 +259,47 @@ lemma dropPairEmb_succAbove {n : ℕ}
     i.succAbove ∘ j.succAbove := by
   exact dropPairEmb_eq_succAbove_succAbove i j
 
+/-!
+
+## dropPairEmbPre
+
+-/
 /-- Given an `i j m : Fin (n + 1 + 1)` such that they are pairwise not equal, then
   `dropPairEmbPre` gives the pre-image of `m` under `dropPairEm i j _`. -/
-def dropPairEmbPre (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (m : Fin (n + 1 + 1))
+def dropPairEmbPreOrderIso (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (m : Fin (n + 1 + 1))
     (hm : m ≠ i ∧ m ≠ j) : Fin n :=
     (Finset.orderIsoOfFin {i, j}ᶜ (by rw [Finset.card_compl]; simp [Finset.card_pair hij])).symm
     ⟨m, by simp [hm]⟩
 
+def dropPairEmbPre (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (m : Fin (n + 1 + 1))
+    (hm : m ≠ i ∧ m ≠ j) :  Fin n :=
+  if h1 : m.1 < i.1 ∧ m.1 < j.1 then
+        ⟨m, by fin_omega⟩
+      else if h2 : m.1 - 1 < i.1 ∧ j.1 ≤ m.1 then
+        ⟨m - 1, by fin_omega⟩
+      else if h3 : i.1 - 1 ≤ m.1 ∧ m.1 < j.1 then
+        ⟨m - 1, by fin_omega⟩
+      else
+        ⟨m - 2, by fin_omega⟩
+
 @[simp]
 lemma dropPairEmb_dropPairEmbPre (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (m : Fin (n + 1 + 1))
-    (hm : m ≠ i ∧ m ≠ j) : dropPairEmb i j (dropPairEmbPre i j hij m hm) = m := by
-  rw [dropPairEmb_apply_eq_orderIsoOfFin hij, dropPairEmbPre]
+    (hm : m ≠ i ∧ m ≠ j) :
+    dropPairEmb i j (dropPairEmbPre i j hij m hm) = m := by
+  dsimp [dropPairEmb, dropPairEmbPre]
+  split_ifs
+  · rfl
+  all_goals
+    simp_all [Fin.ext_iff]
+    try omega
+
+lemma dropPairEmbPre_eq_orderIsoOfFin (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (m : Fin (n + 1 + 1))
+    (hm : m ≠ i ∧ m ≠ j) :
+    dropPairEmbPre i j hij m hm =
+    (Finset.orderIsoOfFin {i, j}ᶜ (by rw [Finset.card_compl]; simp [Finset.card_pair hij])).symm
+    ⟨m, by simp [hm]⟩ := by
+  apply dropPairEmb_injective i j
+  conv_rhs => rw [dropPairEmb_apply_eq_orderIsoOfFin hij]
   simp
 
 @[simp]
@@ -434,6 +464,14 @@ lemma permCond_dropPairOfMap {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
   · exact dropPairOfMap_bijective i j hij σ hσ.left
   · intro m
     simp [dropPairOfMap, hσ.2]
+
+@[simp]
+lemma dropPairOfMap_id { n1 : ℕ} (i j : Fin (n1 + 1 + 1)) (hij : i ≠ j) :
+    dropPairOfMap i j hij id (Function.bijective_id) = id := by
+  ext1 m
+  simp [dropPairOfMap]
+  apply dropPairEmb_injective i j
+  simp
 
 /-!
 
@@ -1236,6 +1274,20 @@ lemma prodT_contrT_snd {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
     P1]
   rw [Pure.prodP_contrP_snd, prodT_pure, contrT_pure]
   rfl
+
+lemma contrT_prodT_snd {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
+    {c1 : Fin n1 → S.C}
+    (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j)
+    (t : Tensor S c) (t1 : Tensor S c1) :
+    (contrT _
+      (finSumFinEquiv (m := n1) (Sum.inr i))
+      (finSumFinEquiv (m := n1) (Sum.inr j))
+      (by simp [hij, - finSumFinEquiv_apply_right, finSumFinEquiv.injective.eq_iff]) <|
+    prodT t1 t) =
+    ((permT id (PermCond.on_id_symm (Pure.dropPairEmb_permCond_prod i j hij))) <|
+     (prodT t1 (contrT n i j hij t))) := by
+  rw [prodT_contrT_snd]
+  simp
 
 end Tensor
 

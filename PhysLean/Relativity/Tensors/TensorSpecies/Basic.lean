@@ -49,14 +49,16 @@ structure TensorSpecies (k : Type) [CommRing k] (G : Type) [Group G] where
     (y ⊗ₜ (FD.map (Discrete.eqToHom (τ_involution c).symm)).hom x)
   /-- The natural transformation describing the unit. -/
   unit : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.τPair FD τ
-  /-- The unit is symmetric. -/
+  /-- The unit is symmetric.
+    The de-categorification of this lemma is: `unitTensor_eq_permT_dual`. -/
   unit_symm (c : C) :
     ((unit.app (Discrete.mk c)).hom (1 : k)) =
     ((FD.obj (Discrete.mk (τ (c)))) ◁
       (FD.map (Discrete.eqToHom (τ_involution c)))).hom
     ((β_ (FD.obj (Discrete.mk (τ (τ c)))) (FD.obj (Discrete.mk (τ (c))))).hom.hom
     ((unit.app (Discrete.mk (τ c))).hom (1 : k)))
-  /-- Contraction with unit leaves invariant. -/
+  /-- Contraction with unit leaves invariant.
+    The de-categorification of this lemma is: `contrT_single_unitTensor`. -/
   contr_unit (c : C) (x : FD.obj (Discrete.mk (c))) :
     (λ_ (FD.obj (Discrete.mk (c)))).hom.hom
     (((contr.app (Discrete.mk c)) ▷ (FD.obj (Discrete.mk (c)))).hom
@@ -64,7 +66,8 @@ structure TensorSpecies (k : Type) [CommRing k] (G : Type) [Group G] where
     (x ⊗ₜ[k] (unit.app (Discrete.mk c)).hom (1 : k)))) = x
   /-- The natural transformation describing the metric. -/
   metric : 𝟙_ (Discrete C ⥤ Rep k G) ⟶ OverColor.Discrete.pair FD
-  /-- On contracting metrics we get back the unit. -/
+  /-- On contracting metrics we get back the unit.
+    The de-categorification of this lemma is: `contrT_metricTensor_metricTensor`. -/
   contr_metric (c : C) :
     (β_ (FD.obj (Discrete.mk c)) (FD.obj (Discrete.mk (τ c)))).hom.hom
     (((FD.obj (Discrete.mk c)) ◁ (λ_ (FD.obj (Discrete.mk (τ c)))).hom).hom
@@ -201,7 +204,6 @@ lemma evalIso_tprod {n : ℕ} {c : Fin n.succ → S.C} (i : Fin n.succ)
   conv_lhs =>
     enter [2, 2, 2]
     rw [lift.map_tprod]
-
   change (((lift.obj S.FD).map (mkIso _).hom).hom ≫
     (forgetLiftApp S.FD (c i)).hom.hom ⊗
     ((lift.obj S.FD).map (mkIso _).hom).hom)

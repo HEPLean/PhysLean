@@ -67,6 +67,16 @@ lemma congr_mid {n : ℕ} {c : Fin n → S.C} (c' : S.C) (p : Pure S c)
   apply congr_right
   exact h
 
+lemma map_mid_move_left {n n1 : ℕ} {c : Fin n → S.C} {c1 : Fin n1 → S.C} (p : Pure S c)
+    (p' : Pure S c1) {c' : S.C}
+    (i  : Fin n) (j : Fin n1)  (hi : c i = c') (hj : c1 j = c') :
+    S.FD.map (eqToHom (by rw [hi] : { as := c i } = { as := c' })) (p i) =
+    S.FD.map (eqToHom (by rw [hj] : { as := c1 j } = { as := c' })) (p' j)
+    ↔ S.FD.map (eqToHom (by rw [hi, hj] : { as := c i } = { as := c1 j})) (p i) =
+    (p' j)  := by
+  subst hj
+  simp_all only [eqToHom_refl, Discrete.functor_map_id, ConcreteCategory.id_apply]
+
 lemma map_map_apply {n : ℕ} {c : Fin n → S.C} (c1 c2 : S.C) (p : Pure S c) (i : Fin n)
     (f : ({ as := c i } : Discrete S.C) ⟶ { as := c1 })
     (g : ({ as := c1 } : Discrete S.C) ⟶ { as := c2 }) :
@@ -463,6 +473,12 @@ lemma PermCond.on_id {n : ℕ} {c c1 : Fin n → S.C} :
     PermCond c c1 (id : Fin n → Fin n) ↔  ∀ i, c i = c1 i := by
   simp [PermCond]
 
+lemma PermCond.on_id_symm {n : ℕ} {c c1 : Fin n → S.C} (h : PermCond c1 c id):
+    PermCond c c1 (id : Fin n → Fin n) := by
+  simp at h ⊢
+  exact fun i => (h i).symm
+
+
 /-- For a map `σ` satisfying `PermCond c c1 σ`, the inverse of that map. -/
 def PermCond.inv {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (σ : Fin m → Fin n) (h : PermCond c c1 σ) : Fin n → Fin m :=
@@ -595,6 +611,19 @@ lemma permT_id_self {n : ℕ} {c : Fin n → S.C} (t : S.Tensor c) :
     simp [P, ht]
   · intro t1 t2 h1 h2
     simp [P, h1, h2]
+
+lemma permT_congr_eq_id {n : ℕ} {c : Fin n → S.C} (t : S.Tensor c )
+    (σ : Fin n → Fin n) (hσ : PermCond c c σ) (h : σ = id) :
+    permT σ (hσ) t = t := by
+  subst h
+  simp
+
+
+lemma permT_congr_eq_id' {n : ℕ} {c : Fin n → S.C} (t t1 : S.Tensor c )
+    (σ : Fin n → Fin n) (hσ : PermCond c c σ) (h : σ = id) (ht : t = t1) :
+    permT σ (hσ) t = t1 := by
+  subst h ht
+  simp
 
 @[simp]
 lemma permT_equivariant {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
@@ -1315,6 +1344,47 @@ lemma prodT_assoc' {n n1 n2} {c : Fin n → S.C}
   simp only [P3, P, P2, P1]
   rw [prodT_pure, prodT_pure, prodT_pure, prodT_pure, permT_pure, Pure.prodP_assoc']
 
+lemma Pure.prodP_zero_right_permCond {n} {c : Fin n → S.C}
+      {c1 : Fin 0 → S.C} :  PermCond c (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) id := by
+    simp
+    intro i
+    obtain ⟨j, hi⟩ := finSumFinEquiv.surjective (Fin.cast (by rfl) i : Fin (n + 0))
+    simp at hi
+    subst hi
+    simp
+    match j with
+    | Sum.inl j => rfl
+    | Sum.inr j => exact Fin.elim0 j
+
+lemma Pure.prodP_zero_right {n} {c : Fin n → S.C}
+    {c1 : Fin 0 → S.C}  (p : Pure S c) (p0 : Pure S c1)  :
+    prodP p p0 = permP id (prodP_zero_right_permCond) p := by
+  ext i
+  obtain ⟨j, hi⟩ := finSumFinEquiv.surjective (Fin.cast (by rfl) i : Fin (n + 0))
+  simp at hi
+  subst hi
+  erw [prodP_apply_finSumFinEquiv]
+  match j with
+  | Sum.inl j => rfl
+  | Sum.inr j => exact Fin.elim0 j
+
+@[simp]
+lemma prodT_default_right {n} {c : Fin n → S.C}
+  {c1 : Fin 0 → S.C} (t : S.Tensor c) :
+  prodT t (Pure.toTensor default : S.Tensor c1) = permT id (Pure.prodP_zero_right_permCond) t := by
+  let P (t : S.Tensor c) := prodT t (Pure.toTensor default : S.Tensor c1)
+    = permT id (Pure.prodP_zero_right_permCond) t
+  change P t
+  apply induction_on_pure
+  · intro p
+    simp [P]
+    erw [prodT_pure]
+    rw [Pure.prodP_zero_right]
+    rw [permT_pure]
+  · intro r t h1
+    simp_all only [map_smul, LinearMap.smul_apply, P]
+  · intro t1 t2 h1 h2
+    simp_all only [map_add, LinearMap.add_apply, P]
 end Tensor
 
 end TensorSpecies

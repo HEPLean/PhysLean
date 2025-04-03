@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.FromConst
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Constructors
 /-!
 
 # The unit tensors
@@ -59,5 +59,47 @@ lemma dual_unitTensor_eq_permT_unitTensor (c : S.C) :
   simp
 
 
+lemma unit_fromSingleTContrFromPairT_eq_fromSingleT {c : S.C} (x : S.FD.obj (Discrete.mk c)) :
+    fromSingleTContrFromPairT x ((S.unit.app (Discrete.mk c)).hom (1 : k)) =
+    fromSingleT x := by
+  change fromSingleT ((λ_ (S.FD.obj (Discrete.mk (c)))).hom.hom
+    (((S.contr.app (Discrete.mk c)) ▷ (S.FD.obj (Discrete.mk (c)))).hom
+    ((α_ _ _ (S.FD.obj (Discrete.mk (c)))).inv.hom
+    (x ⊗ₜ[k] (S.unit.app (Discrete.mk c)).hom (1 : k))))) = _
+  rw [S.contr_unit]
+
+/-- This lemma represents the de-categorification of `S.contr_unit`. -/
+@[simp]
+lemma contrT_single_unitTensor {c : S.C} (x : Tensor S ![c]) :
+    contrT 1 0 1 (by simp; rfl) (prodT x (unitTensor c)) =
+    permT id (by simp; intro i; fin_cases i; rfl) x := by
+  obtain ⟨x, rfl⟩ := fromSingleT.surjective x
+  rw [unitTensor, fromConstPair, contrT_fromSingleT_fromPairT]
+  congr 1
+  rw [← unit_fromSingleTContrFromPairT_eq_fromSingleT x]
+  rfl
+
+lemma contrT_unitTensor_dual_single  {c : S.C} (x : Tensor S ![S.τ c]) :
+    contrT 1 1 2 (by simp; rfl) (prodT (unitTensor c) x) =
+    permT id (by simp; intro i; fin_cases i; rfl) x := by
+  rw [unitTensor_eq_permT_dual]
+  rw [prodT_permT_left]
+  rw [contrT_permT]
+  rw [prodT_swap]
+  rw [contrT_permT]
+  rw [permT_permT]
+  conv_lhs =>
+    enter [2]
+    change contrT 1 1 0 _ _
+    rw [contrT_symm]
+  rw [contrT_single_unitTensor]
+  rw [permT_permT]
+  conv_lhs =>
+    rw (transparency := .instances) [permT_permT]
+  apply permT_congr
+  · ext i
+    fin_cases i
+    rfl
+  · rfl
 
 end TensorSpecies

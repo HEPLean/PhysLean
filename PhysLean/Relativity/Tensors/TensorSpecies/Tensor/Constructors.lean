@@ -106,7 +106,7 @@ lemma fromSingleT_map {c c1 : S.C} (h : ({as := c} : Discrete S.C) = {as := c1})
 
 lemma contrT_fromSingleT_fromSingleT {c : S.C} (x : S.FD.obj {as :=  c})
     (y : S.FD.obj {as := S.τ c}) :
-    contrT 0 1 (by simp; change _ = S.τ (S.τ c); simp; rfl) (prodT (fromSingleT x) (fromSingleT y)) =
+    contrT 0 0 1 (by simp; rfl) (prodT (fromSingleT x) (fromSingleT y)) =
     (S.contr.app (Discrete.mk (c))) (x ⊗ₜ[k] y) • (Pure.toTensor default) := by
   rw [fromSingleT_eq_pureT, fromSingleT_eq_pureT]
   rw [prodT_pure, contrT_pure, ]
@@ -229,6 +229,133 @@ lemma fromPairT_comm {c1 c2 : S.C}
   · intro x y hx hy
     simp [P, hx, hy]
 
+/-!
+
+### Contraction of fromPairT with fromSingleT
+
+-/
+
+noncomputable def fromSingleTContrFromPairT {c c2 : S.C}
+    (x :  (S.FD.obj (Discrete.mk c)).V)
+    (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
+    S.Tensor ![c2] :=
+  let V2 := (S.FD.obj (Discrete.mk c))
+  let V2' := (S.FD.obj (Discrete.mk (S.τ c)))
+  let V3 := (S.FD.obj (Discrete.mk c2))
+  let T1 : V2 ⊗[k] (V2' ⊗[k] V3) := x ⊗ₜ[k] y
+  let T3 :  (V2 ⊗[k] V2') ⊗[k] V3 :=  (α_ V2 V2' V3).inv.hom T1
+  let T4 : k ⊗[k] V3 := ((S.contr.app (Discrete.mk c)) ▷ V3).hom T3
+  let T5 : V3 := (λ_ V3).hom.hom T4
+  fromSingleT T5
+
+lemma fromSingleTContrFromPairT_tmul {c c2 : S.C}
+    (x : S.FD.obj (Discrete.mk c))
+    (y1 : (S.FD.obj (Discrete.mk (S.τ c))).V)
+    (y2 : (S.FD.obj (Discrete.mk c2)).V) :
+    fromSingleTContrFromPairT x (y1 ⊗ₜ[k] y2) =
+    (S.contr.app (Discrete.mk (c))) (x ⊗ₜ[k] y1) • fromSingleT y2 := by
+  rw [fromSingleTContrFromPairT]
+  conv_lhs =>
+    enter [2, 2, 2]
+    change (x ⊗ₜ[k] y1) ⊗ₜ[k] y2
+  conv_lhs =>
+    enter [2, 2]
+    change (S.contr.app (Discrete.mk (c))) (x ⊗ₜ[k] y1) ⊗ₜ[k] y2
+  conv_lhs =>
+    enter [2]
+    change (S.contr.app (Discrete.mk (c))) (x ⊗ₜ[k] y1) • y2
+  simp
+
+lemma fromSingleT_contr_fromPairT_tmul {c c2 : S.C}
+    (x : S.FD.obj (Discrete.mk c))
+    (y1 : (S.FD.obj (Discrete.mk (S.τ c))).V)
+    (y2 : (S.FD.obj (Discrete.mk c2)).V) :
+    contrT 1 0 1 (by simp; rfl)
+      (prodT (fromSingleT x) (fromPairT (y1 ⊗ₜ[k] y2))) =
+    permT id (by simp; intro i; fin_cases i; rfl) (fromSingleTContrFromPairT x (y1 ⊗ₜ[k] y2)) := by
+  trans permT id (by simp; intro i; fin_cases i; rfl)
+    (prodT (contrT 0 0 1 (by simp; rfl) (prodT (fromSingleT x) (fromSingleT y1))) (fromSingleT y2))
+  · conv_rhs =>
+      enter [2]
+      rw [prodT_swap]
+      enter [2]
+      rw [prodT_contrT_snd]
+      change permT id _ (contrT 1 1 2 _ _)
+    conv_rhs =>
+      enter [2, 2, 2, 2]
+      rw [prodT_swap]
+    conv_rhs =>
+      enter [2, 2, 2]
+      rw [contrT_permT]
+      enter [2]
+      change contrT 1 0 1 _ _
+    conv_rhs =>
+      rw [permT_permT, permT_permT, permT_permT]
+    rw [fromPairT_tmul]
+    symm
+    have h1 : Pure.dropPairOfMap 1 2 (by simp) (prodSwapMap (Nat.succ 0) (0 + 1 + 1)) (by decide) ∘
+      id ∘ prodSwapMap 0 (Nat.succ 0) ∘ id = id := by
+      ext i
+      fin_cases i
+      dsimp [Pure.dropPairOfMap]
+      rfl
+    conv_lhs =>
+      enter [1, 1]
+      rw [h1]
+    conv_rhs =>
+      enter [2]
+      rw [prodT_permT_right]
+      enter [2]
+      rw [prodT_assoc']
+    conv_rhs =>
+      enter [2]
+      rw [permT_permT]
+    conv_rhs =>
+      rw [contrT_permT]
+    apply permT_congr
+    · ext i
+      simp
+    · rfl
+  · rw [contrT_fromSingleT_fromSingleT]
+    simp only [ map_smul, prodT_default_right, LinearMap.smul_apply]
+    rw [fromSingleTContrFromPairT_tmul]
+    simp
+    congr 1
+    rw [prodT_swap, permT_permT]
+    simp
+    apply permT_congr
+    · ext i
+      simp
+    · rfl
+
+lemma contrT_fromSingleT_fromPairT {c c2 : S.C}
+    (x : S.FD.obj (Discrete.mk c))
+    (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
+    contrT 1 0 1 (by simp; rfl)
+      (prodT (fromSingleT x) (fromPairT y)) =
+    permT id (by simp; intro i; fin_cases i; rfl) (fromSingleTContrFromPairT x y) := by
+  /- The proof -/
+  let P (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) : Prop :=
+    contrT 1 0 1 (by simp; rfl)
+      (prodT (fromSingleT x) (fromPairT y)) =
+    permT id (by simp; intro i; fin_cases i; rfl) (fromSingleTContrFromPairT x y)
+  change P y
+  apply TensorProduct.induction_on
+  · simp only [fromSingleTContrFromPairT, map_zero, LinearMap.zero_apply, tmul_zero, P]
+  · intro y1 y2
+    exact fromSingleT_contr_fromPairT_tmul x y1 y2
+  · intro x y hx hy
+    simp only [P, fromSingleTContrFromPairT] at hx hy ⊢
+    simp only [tmul_add, map_add, fromSingleTContrFromPairT]
+    rw [hx, hy]
+
+
+/-!
+
+### Contraction of fromPairT with fromPairT
+
+-/
+
 noncomputable def fromPairTContr {c c1 c2 : S.C}
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
@@ -266,13 +393,95 @@ lemma fromPairTContr_tmul_tmul {c c1 c2 : S.C}
     change x1 ⊗ₜ[k] ((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) • y2)
   simp [tmul_smul]
 
-/-
+lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : S.C)
+    (x1 : (S.FD.obj (Discrete.mk c1)).V)
+    (x2 :  (S.FD.obj (Discrete.mk c)).V)
+    (y1 : (S.FD.obj (Discrete.mk (S.τ c))).V)
+    (y2 :  (S.FD.obj (Discrete.mk c2)).V) :
+    contrT 2 1 2 (by simp; rfl)
+      (prodT (fromPairT (x1 ⊗ₜ[k] x2)) (fromPairT (y1 ⊗ₜ[k] y2))) =
+    permT id (by simp; intro i; fin_cases i <;> rfl) (fromPairTContr (x1 ⊗ₜ[k] x2) (y1 ⊗ₜ[k] y2)) := by
+  rw [fromPairT_tmul, fromPairT_tmul]
+  rw [prodT_permT_left, prodT_permT_right, permT_permT]
+  conv_lhs => simp only [ prodLeftMap_id, prodRightMap_id]
+  conv_lhs => rw [contrT_permT]
+  have h1 : ((contrT 2 1 2 (by simp; rfl))
+    ((prodT ((prodT (fromSingleT x1)) (fromSingleT x2)))
+    ((prodT (fromSingleT y1)) (fromSingleT y2))))
+    = permT id (by simp; intro i; fin_cases i <;> rfl) (prodT (prodT (fromSingleT x1)
+      (contrT 0 0 1 (by simp; rfl) (prodT (fromSingleT x2) (fromSingleT y1))))
+      (fromSingleT y2))  := by
+    conv_rhs => enter [2]; rw [prodT_contrT_snd]
+    conv_rhs => enter [2]; rw [prodT_permT_left]
+    conv_rhs =>  rw [permT_permT]
+    conv_rhs => enter [2]; rw [prodT_swap]
+    conv_rhs => enter [2, 2]; rw [prodT_contrT_snd]
+    conv_rhs => enter [2]; rw [permT_permT]
+    conv_rhs =>  rw [permT_permT]
+    conv_rhs => enter [2, 2]; rw [prodT_swap]
+    conv_rhs => enter [2, 2, 2, 1, 2]; rw [prodT_assoc']
+    conv_rhs =>
+      enter [2, 2, 2]
+      rw [prodT_permT_left]
+      rw [prodT_assoc]
+      rw [permT_permT]
+    rw [permT_permT]
+    conv_rhs =>
+      rw [contrT_permT, permT_permT]
+      enter [2, 1]
+      change contrT 2 1 2 _
+    symm
+    apply permT_congr_eq_id
+    ext i
+    fin_cases i
+    · rfl
+    · rfl
+  simp only [ Fin.isValue, Function.comp_id,
+    Pure.dropPairOfMap_id, Function.comp_apply, id_eq]
+  rw [h1, contrT_fromSingleT_fromSingleT]
+  simp only [ map_smul, prodT_default_right, LinearMap.smul_apply]
+  rw [prodT_permT_left, permT_permT]
+  conv_lhs => simp only [prodLeftMap_id, CompTriple.comp_eq]
+  conv_rhs => rw [fromPairTContr_tmul_tmul]
+  conv_rhs => rw [fromPairT_tmul]
+  simp
+
 lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : S.C)
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
-    contrT (n := 2) 1 2 (by simp; change _ = S.τ (S.τ c); simp; rfl)
+    contrT 2 1 2 (by simp; rfl)
       (prodT (fromPairT x) (fromPairT y)) =
-    permT id (by simp; sorry ) (fromPairTContr (c := c) (c1 := c1) (c2 := c2) x y) := by sorry-/
+    permT id (by simp; intro i; fin_cases i <;> rfl) (fromPairTContr x y) := by
+  /- The proof-/
+  let P (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
+      (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) : Prop :=
+    contrT 2 1 2 (by simp; rfl)
+      (prodT (fromPairT x) (fromPairT y)) =
+    permT id (by simp; intro i; fin_cases i <;> rfl) (fromPairTContr x y)
+  let P1  (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V) := P x y
+  change P1 x
+  apply TensorProduct.induction_on
+  · simp only [fromPairTContr, map_zero, LinearMap.zero_apply, zero_tmul, P1, P]
+  · intro x1 x2
+    let P2 (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) : Prop :=
+      P (x1 ⊗ₜ x2) y
+    change P2 y
+    apply TensorProduct.induction_on
+    · simp only [fromPairTContr, map_zero, tmul_zero, P2, P, P1]
+    · intro y1 y2
+      simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, P2, P, P1]
+      exact fromPairT_contr_fromPairT_eq_fromPairTContr_tmul c c1 c2 x1 x2 y1 y2
+    · intro x y hx hy
+      simp only [P2, P, fromPairTContr] at hx hy ⊢
+      simp only [tmul_add, map_add]
+      rw [← hx, ← hy]
+  · intro x y hx hy
+    simp only [P1, P, fromPairTContr] at hx hy ⊢
+    simp only [add_tmul, map_add]
+    rw [← hx, ← hy]
+    simp
+
+
 /-!
 
 ## fromConstPair
