@@ -20,6 +20,10 @@ In the case of complex Lorentz tensors, indices can take one of six different co
 corresponding to up and down, dotted and undotted weyl fermion indices and up and down
 Lorentz indices.
 
+## References
+- *Formalization of physics index notation in Lean 4*, Tooby-Smith.
+<https://doi.org/10.48550/arXiv.2411.07667>.
+
 -/
 
 namespace IndexNotation
