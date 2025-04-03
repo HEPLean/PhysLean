@@ -1357,14 +1357,13 @@ lemma Pure.prodP_zero_right {n} {c : Fin n → S.C}
     prodP p p0 = permP id (prodP_zero_right_permCond) p := by
   ext i
   obtain ⟨j, hi⟩ := finSumFinEquiv.surjective (Fin.cast (by rfl) i : Fin (n + 0))
-  simp at hi
+  simp only [Nat.add_zero, Fin.cast_eq_self] at hi
   subst hi
-  erw [prodP_apply_finSumFinEquiv]
+  rw (transparency := .instances) [prodP_apply_finSumFinEquiv]
   match j with
   | Sum.inl j => rfl
   | Sum.inr j => exact Fin.elim0 j
 
-@[simp]
 lemma prodT_default_right {n} {c : Fin n → S.C}
     {c1 : Fin 0 → S.C} (t : S.Tensor c) :
     prodT t (Pure.toTensor default : S.Tensor c1) =
@@ -1375,13 +1374,14 @@ lemma prodT_default_right {n} {c : Fin n → S.C}
   apply induction_on_pure
   · intro p
     simp [P]
-    erw [prodT_pure]
+    rw (transparency := .instances) [prodT_pure]
     rw [Pure.prodP_zero_right]
     rw [permT_pure]
   · intro r t h1
     simp_all only [map_smul, LinearMap.smul_apply, P]
   · intro t1 t2 h1 h2
     simp_all only [map_add, LinearMap.add_apply, P]
+
 end Tensor
 
 end TensorSpecies

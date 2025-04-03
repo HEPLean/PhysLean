@@ -37,6 +37,8 @@ namespace Pure
 
 variable {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
+/-- The embedding of `Fin n` into `Fin (n + 1 + 1)` which leaves a hole
+  at `i` and `j`. -/
 def dropPairEmb (i j : Fin (n + 1 + 1)) (m : Fin n) : Fin (n + 1 + 1) :=
   if m.1 < i.1 ∧ m.1 < j.1 then
     ⟨m, by omega⟩
@@ -197,10 +199,10 @@ lemma dropPairEmb_symm (i j : Fin (n + 1 + 1)) :
     dropPairEmb_eq_orderEmbOfFin j i (Ne.symm hij)]
   simp [Finset.pair_comm]
 
-@[simp]
-lemma permCond_dropPairEmb_symm (i j : Fin (n + 1 + 1)) :
-    PermCond (c ∘ dropPairEmb i j) (c ∘ dropPairEmb j i) id :=
-  And.intro (Function.bijective_id) (by rw [dropPairEmb_symm]; simp)
+@[simp, nolint simpVarHead]
+lemma permCond_dropPairEmb_symm {c : Fin (n + 1 + 1) → S.C} (i j : Fin (n + 1 + 1))
+    (k : Fin n) : c (dropPairEmb i j k) = c (dropPairEmb j i k) := by
+  rw [dropPairEmb_symm]
 
 lemma dropPairEmb_apply_eq_orderIsoOfFin {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (m : Fin n) :
     (dropPairEmb i j) m = (Finset.orderIsoOfFin {i, j}ᶜ
@@ -268,6 +270,8 @@ def dropPairEmbPreOrderIso (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (m : Fin (n +
     (Finset.orderIsoOfFin {i, j}ᶜ (by rw [Finset.card_compl]; simp [Finset.card_pair hij])).symm
     ⟨m, by simp [hm]⟩
 
+/-- The preimage of `m` under `dropPairEmb i j hij` given that `m` is not equal
+  to `i` or `j`. -/
 def dropPairEmbPre (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (m : Fin (n + 1 + 1))
     (hm : m ≠ i ∧ m ≠ j) : Fin n :=
   if h1 : m.1 < i.1 ∧ m.1 < j.1 then
@@ -371,7 +375,6 @@ lemma dropPairEmb_comm_apply (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n +
   rw [dropPairEmb_comm i1 j1 i2 j2 hij1 hij2]
   rfl
 
-@[simp]
 lemma permCond_dropPairEmb_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
     (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1))
     (hij1 : i1 ≠ j1) (hij2 : i2 ≠ j2) :
@@ -479,6 +482,7 @@ lemma dropPairOfMap_id { n1 : ℕ} (i j : Fin (n1 + 1 + 1)) (hij : i ≠ j) :
 set_option linter.unusedVariables false in
 /-- Given `i j : Fin (n + 1 + 1)`, `c : Fin (n + 1 + 1) → S.C` and a pure tensor `p : Pure S c`,
   `dropPair i j _ p` is the tensor formed by dropping the `i`th and `j`th parts of `p`. -/
+@[nolint unusedArguments]
 def dropPair (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c) :
     Pure S (c ∘ dropPairEmb i j) :=
     fun m => p (dropPairEmb i j m)
@@ -493,7 +497,7 @@ lemma dropPair_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
 lemma dropPair_symm (i j : Fin (n + 1 + 1)) (hij : i ≠ j)
     (p : Pure S c) : dropPair i j hij p =
-    permP id (by simp [- PermCond.on_id]) (dropPair j i hij.symm p) := by
+    permP id (by simp) (dropPair j i hij.symm p) := by
   ext m
   simp only [Function.comp_apply, dropPair, permP, id_eq]
   refine (congr_right _ _ _ ?_).symm
@@ -806,7 +810,7 @@ lemma contrP_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
 lemma contrP_symm {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
     {i j : Fin (n + 1 + 1)} {hij : i ≠ j ∧ S.τ (c i) = c j} {p : Pure S c} :
-    contrP i j hij p = permT id (by simp [- PermCond.on_id])
+    contrP i j hij p = permT id (by simp)
     (contrP j i ⟨hij.1.symm, by simp [← hij.2]⟩ p) := by
   rw [contrP, contrPCoeff_symm, dropPair_symm]
   simp [contrP, permT_pure]
@@ -921,9 +925,9 @@ lemma contrT_permT {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
 lemma contrT_symm {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
     {i j : Fin (n + 1 + 1)} {hij : i ≠ j ∧ S.τ (c i) = c j} (t : Tensor S c) :
-    contrT n i j hij t = permT id (by simp [-PermCond.on_id])
+    contrT n i j hij t = permT id (by simp)
       (contrT n j i ⟨hij.1.symm, by simp [← hij.2]⟩ t) := by
-  let P (t : Tensor S c) : Prop := contrT n i j hij t = permT id (by simp [-PermCond.on_id])
+  let P (t : Tensor S c) : Prop := contrT n i j hij t = permT id (by simp)
       (contrT n j i ⟨hij.1.symm, by simp [← hij.2]⟩ t)
   change P t
   apply induction_on_pure

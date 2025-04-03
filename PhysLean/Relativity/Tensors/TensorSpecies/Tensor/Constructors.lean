@@ -28,6 +28,7 @@ namespace Tensor
 
 -/
 
+/-- The equivalence between `S.FD.obj {as := c}` and `Pure S ![c]`. -/
 noncomputable def Pure.fromSingleP {c : S.C} : S.FD.obj {as := c} ≃ₗ[k] Pure S ![c] where
   toFun x := fun | 0 => x
   invFun x := x 0
@@ -45,6 +46,7 @@ noncomputable def Pure.fromSingleP {c : S.C} : S.FD.obj {as := c} ≃ₗ[k] Pure
     fin_cases i
     rfl
 
+/-- The equivalence between `S.FD.obj {as := c}` and `S.Tensor ![c]`. -/
 noncomputable def fromSingleT {c : S.C} : S.FD.obj {as := c} ≃ₗ[k] S.Tensor ![c] where
   toFun x := (OverColor.forgetLiftAppCon S.FD c).symm.hom x
   invFun x := (OverColor.forgetLiftAppCon S.FD c).hom x
@@ -144,6 +146,9 @@ open TensorProduct
 
 -/
 
+/-- The construction of a tensor with two indices from the tensor product
+  `(S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V ` defined
+  categorically. -/
 noncomputable def fromPairT {c1 c2 : S.C} :
     (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V →ₗ[k] S.Tensor ![c1, c2] where
   toFun x :=
@@ -237,6 +242,7 @@ lemma fromPairT_comm {c1 c2 : S.C}
 
 -/
 
+/-- The contraction of tensors with one index with one with two indices defined categorically. -/
 noncomputable def fromSingleTContrFromPairT {c c2 : S.C}
     (x : (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
@@ -360,6 +366,7 @@ lemma contrT_fromSingleT_fromPairT {c c2 : S.C}
 
 -/
 
+/-- The contraction of tensors with two indices defined categorically. -/
 noncomputable def fromPairTContr {c c1 c2 : S.C}
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :

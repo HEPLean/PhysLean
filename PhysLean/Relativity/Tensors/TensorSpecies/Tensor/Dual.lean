@@ -21,6 +21,8 @@ variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
 namespace Tensor
 
+/-- The linear map taking a tensor based on the color `S.τ c` to a tensor
+  based on the color `c`, defined by contraction with the metric tensor. -/
 noncomputable def fromDualMap {c : S.C} : S.Tensor ![S.τ c] →ₗ[k] S.Tensor ![c] where
   toFun t := permT id (by simp; intro i; fin_cases i; rfl)
     (contrT 1 1 2 (by simp; rfl) (prodT (metricTensor c) t))
@@ -34,6 +36,8 @@ lemma fromDualMap_apply {c : S.C} (t : S.Tensor ![S.τ c]) :
       (contrT 1 1 2 (by simp; rfl) (prodT (metricTensor c) t)) := by
   rfl
 
+/-- The linear map taking a tensor based on the color `c` to a tensor
+  based on the color `S.τ c`, defined by contraction with the metric tensor. -/
 noncomputable def toDualMap {c : S.C} : S.Tensor ![c] →ₗ[k] S.Tensor ![S.τ c] where
   toFun t := permT id (by
     simp;intro i; fin_cases i; rfl) (contrT 1 1 2 (by
