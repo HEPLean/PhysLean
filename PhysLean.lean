@@ -236,9 +236,12 @@ import PhysLean.Relativity.Tensors.TensorSpecies.DualRepIso
 import PhysLean.Relativity.Tensors.TensorSpecies.MetricTensor
 import PhysLean.Relativity.Tensors.TensorSpecies.OfInt
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Basic
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Constructors
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Dual
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Evaluation
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.UnitTensor
 import PhysLean.Relativity.Tensors.TensorSpecies.UnitTensor
 import PhysLean.Relativity.Tensors.Tree.Basic
 import PhysLean.Relativity.Tensors.Tree.Dot
