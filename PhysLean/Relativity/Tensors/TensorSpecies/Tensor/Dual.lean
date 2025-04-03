@@ -107,10 +107,10 @@ lemma toDualMap_fromDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
 lemma fromDualMap_eq_permT_toDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
     fromDualMap t = permT id (by simp) (toDualMap t) := by
   rw [fromDualMap_apply, toDualMap_apply]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, permT_permT, CompTriple.comp_eq]
   rw [metricTensor_congr (by simp : c = S.τ (S.τ c))]
   rw [prodT_permT_left, contrT_permT]
-  simp
+  simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, permT_permT, CompTriple.comp_eq]
   apply permT_congr
   · ext i
     fin_cases i
@@ -127,7 +127,8 @@ lemma toDualMap_eq_permT_fromDualMap {c : S.C} (t : S.Tensor ![c]) :
     rw [metricTensor_congr (by simp : S.τ (S.τ (S.τ c)) = S.τ c)]
     rw [prodT_permT_left]
     rw [contrT_permT, contrT_permT]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, permT_permT, CompTriple.comp_eq,
+    τ_τ_apply, PermCond.on_id, Matrix.cons_val_fin_one, implies_true]
   apply permT_congr
   · ext i
     fin_cases i

@@ -1341,16 +1341,16 @@ lemma prodT_assoc' {n n1 n2} {c : Fin n → S.C}
   rw [prodT_pure, prodT_pure, prodT_pure, prodT_pure, permT_pure, Pure.prodP_assoc']
 
 lemma Pure.prodP_zero_right_permCond {n} {c : Fin n → S.C}
-      {c1 : Fin 0 → S.C} : PermCond c (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) id := by
-    simp
-    intro i
-    obtain ⟨j, hi⟩ := finSumFinEquiv.surjective (Fin.cast (by rfl) i : Fin (n + 0))
-    simp at hi
-    subst hi
-    simp
-    match j with
-    | Sum.inl j => rfl
-    | Sum.inr j => exact Fin.elim0 j
+    {c1 : Fin 0 → S.C} : PermCond c (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) id := by
+  simp only [Nat.add_zero, PermCond.on_id, Function.comp_apply]
+  intro i
+  obtain ⟨j, hi⟩ := finSumFinEquiv.surjective (Fin.cast (by rfl) i : Fin (n + 0))
+  simp at hi
+  subst hi
+  simp only [Equiv.symm_apply_apply]
+  match j with
+  | Sum.inl j => rfl
+  | Sum.inr j => exact Fin.elim0 j
 
 lemma Pure.prodP_zero_right {n} {c : Fin n → S.C}
     {c1 : Fin 0 → S.C} (p : Pure S c) (p0 : Pure S c1) :
@@ -1366,8 +1366,9 @@ lemma Pure.prodP_zero_right {n} {c : Fin n → S.C}
 
 @[simp]
 lemma prodT_default_right {n} {c : Fin n → S.C}
-  {c1 : Fin 0 → S.C} (t : S.Tensor c) :
-  prodT t (Pure.toTensor default : S.Tensor c1) = permT id (Pure.prodP_zero_right_permCond) t := by
+    {c1 : Fin 0 → S.C} (t : S.Tensor c) :
+    prodT t (Pure.toTensor default : S.Tensor c1) =
+    permT id (Pure.prodP_zero_right_permCond) t := by
   let P (t : S.Tensor c) := prodT t (Pure.toTensor default : S.Tensor c1)
     = permT id (Pure.prodP_zero_right_permCond) t
   change P t

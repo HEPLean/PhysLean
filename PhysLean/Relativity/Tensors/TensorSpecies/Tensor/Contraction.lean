@@ -109,7 +109,7 @@ lemma dropPairEmb_leq_iff_leq {n : ℕ}
       omega
     · simp_all [Fin.ext_iff]
   · rw [dropPairEmb_eq_succAbove_succAbove]
-    simp
+    simp only [Function.comp_apply]
     rw [Fin.succAbove_le_succAbove_iff]
     rw [Fin.succAbove_le_succAbove_iff]
 
@@ -127,7 +127,7 @@ lemma dropPairEmb_lt_iff_lt {n : ℕ}
       omega
     · simp_all [Fin.ext_iff]
   · rw [dropPairEmb_eq_succAbove_succAbove]
-    simp
+    simp only [Function.comp_apply]
     rw [Fin.succAbove_lt_succAbove_iff]
     rw [Fin.succAbove_lt_succAbove_iff]
 
@@ -176,7 +176,8 @@ lemma dropPairEmb_eq_orderEmbOfFin {n : ℕ}
       exact h.2
     · intro h
       obtain ⟨a, h1, rfl⟩ := h
-      simp
+      simp only [Finset.coe_insert, Finset.coe_singleton, Set.mem_insert_iff, Set.mem_singleton_iff,
+        not_or, f, dropPairEmb]
       rw [Fin.succAbove_right_injective.eq_iff]
       simp_all only [not_false_eq_true, and_true, f]
       exact Fin.succAbove_ne i a
@@ -842,8 +843,8 @@ end Pure
 open Pure
 
 lemma contrT_decide {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin (n + 1 + 1)}
-  (hx : S.τ (c i) = c j) (hij : i ≠ j := by decide) :
-  i ≠ j ∧ S.τ (c i) = c j := by
+    (hx : S.τ (c i) = c j) (hij : i ≠ j := by decide) :
+    i ≠ j ∧ S.τ (c i) = c j := by
   apply And.intro hij hx
 
 /-- For `c : Fin (n + 1 + 1) → S.C`, `i j : Fin (n + 1 + 1)` with dual color, and a tensor
@@ -1058,10 +1059,10 @@ lemma Pure.dropPairEmb_comm_natAdd {n n1 : ℕ}
     ⟨⟨(dropPairEmb (Fin.natAdd n1 i) (Fin.natAdd n1 j))
     ∘ Fin.natAdd n1, by
       intro i j
-      simp
+      simp only [Function.comp_apply, dropPairEmb_eq_iff_eq]
       simp [Fin.ext_iff]⟩, by
       intro a b
-      simp
+      simp only [Function.Embedding.coeFn_mk, Function.comp_apply, dropPairEmb_leq_iff_leq]
       rw [Fin.le_def, Fin.le_def]
       simp⟩
   let g : Fin n ↪o Fin (n1 + n + 1 + 1) :=

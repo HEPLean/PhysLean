@@ -76,10 +76,10 @@ lemma contrT_dual_metricTensor_metricTensor {c : S.C} :
     enter [2]
     change contrT 2 1 2 _ _
     rw [contrT_metricTensor_metricTensor]
-  simp
+  simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue]
   conv_rhs => rw [unitTensor_eq_permT_dual]
-  simp
-  erw [permT_permT]
+  simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, permT_permT, CompTriple.comp_eq]
+  rw (transparency := .instances) [permT_permT]
   apply permT_congr
   · ext i
     fin_cases i <;> rfl
