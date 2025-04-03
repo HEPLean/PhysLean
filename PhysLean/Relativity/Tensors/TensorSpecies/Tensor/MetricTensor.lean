@@ -34,9 +34,9 @@ lemma permT_fromPairTContr_metric_metric {c : S.C} :
     permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> rfl))
     (fromPairTContr ((S.metric.app (Discrete.mk c)).hom (1 : k))
     ((S.metric.app (Discrete.mk (S.τ c))).hom (1 : k))) =
-    (unitTensor c)  := by
+    (unitTensor c) := by
   rw [fromPairTContr, ← fromPairT_comm]
-  change  _ = fromPairT ((S.unit.app (Discrete.mk c)).hom (1 : k))
+  change _ = fromPairT ((S.unit.app (Discrete.mk c)).hom (1 : k))
   rw [← S.contr_metric]
   rfl
 
@@ -66,7 +66,8 @@ lemma contrT_metricTensor_metricTensor {c : S.C} :
 
 @[simp]
 lemma contrT_dual_metricTensor_metricTensor {c : S.C} :
-    contrT 2 1 2 (by  change _ ∧ S.τ (S.τ c) = c; simp) (prodT (metricTensor (S.τ c)) (metricTensor c)) =
+    contrT 2 1 2 (by change _ ∧ S.τ (S.τ c) = c; simp)
+      (prodT (metricTensor (S.τ c)) (metricTensor c)) =
       permT id (by simp; intro i; fin_cases i <;> rfl) (unitTensor c) := by
   have hm := metricTensor_congr (by simp : c = S.τ (S.τ c))
   rw [hm]
@@ -83,9 +84,5 @@ lemma contrT_dual_metricTensor_metricTensor {c : S.C} :
   · ext i
     fin_cases i <;> rfl
   · rfl
-
-
-
-
 
 end TensorSpecies

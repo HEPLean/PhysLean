@@ -76,7 +76,7 @@ lemma toDualMap_fromDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
     rw [contrT_congr (finSumFinEquiv (m := 1) (n := 4) (Sum.inr 1))
       (finSumFinEquiv (m := 1) (n := 4) (Sum.inr 2)) _ (by rfl) (by rfl)]
     enter [2]
-    rw (transparency := .instances)  [contrT_prodT_snd 1 2 (by change _ ∧ S.τ (S.τ c) = c; simp)]
+    rw (transparency := .instances) [contrT_prodT_snd 1 2 (by change _ ∧ S.τ (S.τ c) = c; simp)]
     rw [contrT_dual_metricTensor_metricTensor]
     rw [prodT_permT_right, prodT_swap]
     simp only [prodRightMap_id, permT_permT, CompTriple.comp_eq]
@@ -91,7 +91,7 @@ lemma toDualMap_fromDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
     rw [permT_permT]
   conv_lhs =>
     enter [2, 2]
-    rw (transparency := .instances)  [contrT_permT]
+    rw (transparency := .instances) [contrT_permT]
   conv_lhs =>
     enter [2, 2, 2]
     rw [contrT_congr 1 2 _ (by rfl) (by rfl)]
@@ -103,7 +103,6 @@ lemma toDualMap_fromDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
   ext i
   fin_cases i
   simp
-
 
 lemma fromDualMap_eq_permT_toDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
     fromDualMap t = permT id (by simp) (toDualMap t) := by
@@ -138,12 +137,11 @@ lemma toDualMap_eq_permT_fromDualMap {c : S.C} (t : S.Tensor ![c]) :
 @[simp]
 lemma fromDualMap_toDualMap {c : S.C} (t : S.Tensor ![c]) :
     fromDualMap (toDualMap t) = t := by
-  rw [fromDualMap_eq_permT_toDualMap, ]
+  rw [fromDualMap_eq_permT_toDualMap]
   conv_lhs =>
     enter [2, 2]
     rw [toDualMap_eq_permT_fromDualMap]
   simp
-
 
 /-- The linear equivalence between `S.Tensor ![c]` and
   `S.Tensor ![S.τ c]` formed by contracting with metric tensors. -/

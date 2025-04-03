@@ -35,8 +35,8 @@ lemma unit_app_eq_dual_unit_app (c : S.C) :
       (β_ (S.FD.obj ({ as := S.τ (S.τ c) })) (S.FD.obj ({ as := S.τ c }))).hom ≫
       ((S.FD.obj ({ as := S.τ c } : Discrete S.C) ◁ S.FD.map (Discrete.eqToHom (by simp)))) := by
   ext
-  change (ConcreteCategory.hom (S.unit.app { as := c }).hom) (1 : k)  = _
-  rw [ S.unit_symm c]
+  change (ConcreteCategory.hom (S.unit.app { as := c }).hom) (1 : k) = _
+  rw [S.unit_symm c]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_whiskerLeft_hom,
     Action.β_hom_hom, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
     Action.comp_hom, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply]
@@ -58,7 +58,6 @@ lemma dual_unitTensor_eq_permT_unitTensor (c : S.C) :
   rw [unitTensor_congr (by simp : c = S.τ (S.τ c))]
   simp
 
-
 lemma unit_fromSingleTContrFromPairT_eq_fromSingleT {c : S.C} (x : S.FD.obj (Discrete.mk c)) :
     fromSingleTContrFromPairT x ((S.unit.app (Discrete.mk c)).hom (1 : k)) =
     fromSingleT x := by
@@ -79,7 +78,7 @@ lemma contrT_single_unitTensor {c : S.C} (x : Tensor S ![c]) :
   rw [← unit_fromSingleTContrFromPairT_eq_fromSingleT x]
   rfl
 
-lemma contrT_unitTensor_dual_single  {c : S.C} (x : Tensor S ![S.τ c]) :
+lemma contrT_unitTensor_dual_single {c : S.C} (x : Tensor S ![S.τ c]) :
     contrT 1 1 2 (by simp; rfl) (prodT (unitTensor c) x) =
     permT id (by simp; intro i; fin_cases i; rfl) x := by
   rw [unitTensor_eq_permT_dual]
