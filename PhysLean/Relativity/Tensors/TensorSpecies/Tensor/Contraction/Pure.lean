@@ -428,8 +428,6 @@ lemma permCond_dropPairEmb_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
   · simp [hij1]
   · simp [hij2]
 
-
-
 /-!
 
 ## dropPairOfMap

@@ -26,7 +26,7 @@ namespace Tensor
 -/
 namespace ComponentIdx
 
-/-- The `ComponentIdx` obtained by dropping two components.  -/
+/-- The `ComponentIdx` obtained by dropping two components. -/
 def dropPair {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
     (i j : Fin (n + 1 + 1)) (b : ComponentIdx c) :
     ComponentIdx (c ∘ Pure.dropPairEmb i j) :=
@@ -100,13 +100,12 @@ lemma ofFin_mem_dropPairEmbSection {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
   simp only [Fin.ext_iff, Fin.coe_cast]
   rw [Pure.dropPairEmbPre_dropPairEmb]
 
-
 /-- The equivalence between `ContrSection b` and
   `Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))`. -/
 def ofFinEquiv {n : ℕ} {c : Fin n.succ.succ → S.C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j)
     (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
-    Fin (S.repDim (c i)) × Fin (S.repDim (c j)) ≃ DropPairSection b  where
+    Fin (S.repDim (c i)) × Fin (S.repDim (c j)) ≃ DropPairSection b where
   invFun b' := ⟨b'.1 i, b'.1 j⟩
   toFun x := ⟨ofFin hij b x, ofFin_mem_dropPairEmbSection hij b x⟩
   right_inv b' := by
@@ -137,11 +136,6 @@ lemma ofFinEquiv_apply_snd {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
     (ofFinEquiv hij b x).1 j = x.2 := by
   simp [ofFinEquiv]
 
-instance {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    {i j : Fin n.succ.succ} (hij : i ≠ j)
-    (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) : Fintype (DropPairSection b) :=
-  Fintype.ofEquiv _ (ofFinEquiv hij b)
-
 end DropPairSection
 
 end ComponentIdx
@@ -155,7 +149,7 @@ lemma Pure.dropPair_basisVector {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
   simp [dropPair, basisVector]
 
 lemma contrT_basis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin (n + 1 + 1)}
-    (h  : i ≠ j ∧  S.τ (c i) = c j) (t : Tensor S c)
+    (h : i ≠ j ∧ S.τ (c i) = c j) (t : Tensor S c)
     (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
     (basis (c ∘ Pure.dropPairEmb i j)).repr (contrT n i j h t) b =
     ∑ (b' : DropPairSection b), (basis c).repr t b'.1 *
@@ -211,7 +205,7 @@ lemma contrT_basis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin
     rw [← add_mul]
 
 lemma contrT_basis_repr_apply_eq_sum_fin {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin (n + 1 + 1)}
-    (h  : i ≠ j ∧  S.τ (c i) = c j) (t : Tensor S c)
+    (h : i ≠ j ∧ S.τ (c i) = c j) (t : Tensor S c)
     (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
     (basis (c ∘ Pure.dropPairEmb i j)).repr (contrT n i j h t) b =
     ∑ (x1 : Fin (S.repDim (c i))), ∑ (x2 : Fin (S.repDim (c j))),
