@@ -3,10 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.Tree.Dot
-import PhysLean.Relativity.Lorentz.Weyl.Metric
 import PhysLean.Relativity.Lorentz.ComplexVector.Metric
-import PhysLean.Relativity.Lorentz.PauliMatrices.AsTensor
+import PhysLean.Relativity.Lorentz.Weyl.Metric
+import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 /-!
 
 ## Complex Lorentz tensors

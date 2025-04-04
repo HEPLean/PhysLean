@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.RealTensor.Metrics.Pre
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
+import PhysLean.Relativity.Tensors.Tree.Elab
 /-!
 
 ## Real Lorentz tensors

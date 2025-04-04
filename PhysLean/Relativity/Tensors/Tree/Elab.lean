@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
+import PhysLean.Relativity.Tensors.Tree.Basic
 /-!
 
 # Elaboration of tensor trees

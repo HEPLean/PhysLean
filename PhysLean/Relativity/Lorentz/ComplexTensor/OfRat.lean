@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
 import PhysLean.Mathematics.RatComplexNum
+import PhysLean.Relativity.Tensors.Tree.Elab
 /-!
 
 # Basis for tensors in a tensor species
