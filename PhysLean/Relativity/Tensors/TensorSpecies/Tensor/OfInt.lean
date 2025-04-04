@@ -21,13 +21,14 @@ variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 namespace Tensor
 
+/-- A tensor with integer components with respect to the basis. -/
 abbrev TensorInt {n : ℕ} (c : Fin n → S.C) := (ComponentIdx c) → ℤ
 
 namespace TensorInt
 
 variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
 
-
+/-- The element of `S.Tensor c` created from a tensor `TensorInt S c`. -/
 noncomputable def toTensor {n : ℕ} {c : Fin n → S.C} (f : TensorInt S c) :
     S.Tensor c := (Tensor.basis c).repr.symm <|
   (Finsupp.linearEquivFunOnFinite k k ((j : Fin n) → Fin (S.repDim (c j)))).symm <|
