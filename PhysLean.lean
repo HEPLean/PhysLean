@@ -232,7 +232,9 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basis
 import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.ContrMap
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Constructors
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basic
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Products
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Pure
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Dual
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Evaluation
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor

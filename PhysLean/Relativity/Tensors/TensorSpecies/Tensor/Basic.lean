@@ -366,6 +366,14 @@ lemma basis_apply {n : ℕ} (c : Fin n → S.C) (b : ComponentIdx c) :
     simp [hb]
   · simp
 
+@[simp]
+lemma basis_repr_pure {n : ℕ} (c : Fin n → S.C)
+    (p : Pure S c) :
+    (basis c).repr p.toTensor = p.component := by
+  ext b
+  change componentMap c p.toTensor b = _
+  simp
+
 lemma induction_on_basis {n : ℕ} {c : Fin n → S.C} {P : S.Tensor c → Prop}
     (h : ∀ b, P (basis c b)) (hzero : P 0)
     (hsmul : ∀ (r : k) t, P t → P (r • t))

@@ -94,6 +94,11 @@ instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
 @[simp]
 lemma τ_τ_apply (c : S.C) : S.τ (S.τ c) = c := S.τ_involution c
 
+lemma basis_congr {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
+    S.basis c i = S.FD.map (eqToHom (by simp [h])) (S.basis c1 (Fin.cast (by simp [h]) i)) := by
+  subst h
+  simp
+
 lemma FD_map_basis {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
     (S.FD.map (Discrete.eqToHom h)).hom.hom (S.basis c i)
     = S.basis c1 (Fin.cast (by simp [h]) i) := by
