@@ -719,6 +719,39 @@ lemma ComponentIdx.prod_apply_finSumFinEquiv {n1 n2 : ℕ} {c : Fin n1 → S.C} 
   | Sum.inr i =>
     rfl
 
+/-- The equivalence between `ComponentIdx (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)` and
+  `ComponentIdx c × ComponentIdx c1` formed by products. -/
+def ComponentIdx.splitEquiv {n1 n2 : ℕ} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C} :
+    ComponentIdx (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) ≃ ComponentIdx c × ComponentIdx c1 where
+  toFun p := (fun i => (prodEquiv p) (Sum.inl i), fun i => (prodEquiv p) (Sum.inr i))
+  invFun p := ComponentIdx.prod (p.1) (p.2)
+  left_inv p := by
+    simp only
+    funext i
+    obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
+    rw [prod_apply_finSumFinEquiv]
+    match i with
+    | Sum.inl i =>
+      rfl
+    | Sum.inr i =>
+      rfl
+  right_inv p := by
+    ext i
+    simp only
+    · rw [prodEquiv]
+      rw [Equiv.piCongr_symm_apply]
+      simp only [Function.comp_apply, Sum.elim_inl, finCongr_symm,
+        finCongr_apply, Fin.coe_cast]
+      rw [prod_apply_finSumFinEquiv]
+      rfl
+    · rw [prodEquiv]
+      simp only [Function.comp_apply]
+      erw [Equiv.piCongr_symm_apply]
+      simp only [Function.comp_apply, Sum.elim_inr, finCongr_symm,
+        finCongr_apply, Fin.coe_cast]
+      rw [prod_apply_finSumFinEquiv]
+      rfl
+
 /-- The equivalence between pure tensors based on a product of lists of indices, and
   the type `Π (i : Fin n1 ⊕ Fin n2), S.FD.obj (Discrete.mk ((Sum.elim c c1) i))`. -/
 def Pure.prodEquiv {n1 n2 : ℕ} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C} :
@@ -1052,6 +1085,57 @@ lemma prodAssocMap'_permCond {n1 n2 n3 : ℕ} {c : Fin n1 → S.C} {c2 : Fin n2 
 ## Relationships assocaited with products
 
 -/
+
+lemma Pure.prodP_component {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (p : Pure S c) (p1 : Pure S c1)
+    (b : ComponentIdx (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)) :
+    (p.prodP p1).component b = p.component (ComponentIdx.splitEquiv b).1 *
+    p1.component (ComponentIdx.splitEquiv b).2 := by
+  simp [component]
+  rw [← finSumFinEquiv.prod_comp]
+  conv_lhs =>
+    enter [2, x]
+    rw [prodP_apply_finSumFinEquiv]
+  simp only [Function.comp_apply, finSumFinEquiv_apply_left, finSumFinEquiv_apply_right,
+    Fintype.prod_sum_type]
+  congr
+  · funext x
+    generalize_proofs h1 h2
+    simp [- finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl] at h2
+    rw [S.basis_congr_repr h2]
+    rfl
+  · funext x
+    generalize_proofs h1 h2
+    simp [- finSumFinEquiv_symm_apply_natAdd, Sum.elim_inr] at h2
+    rw [S.basis_congr_repr h2]
+    rfl
+
+lemma prodT_basis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
+    (t : Tensor S c) (t1 : Tensor S c1)
+    (b : ComponentIdx (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)) :
+    (basis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).repr (prodT t t1) b =
+    (basis c).repr t (ComponentIdx.splitEquiv b).1 *
+    (basis c1).repr t1 (ComponentIdx.splitEquiv b).2 := by
+  apply induction_on_pure (t := t)
+  · apply induction_on_pure (t := t1)
+    · intro p p1
+      rw [prodT_pure]
+      rw [basis_repr_pure, basis_repr_pure, basis_repr_pure]
+      rw [Pure.prodP_component]
+    · intro r t hp p
+      simp at hp ⊢
+      simp [hp]
+      ring
+    · intro t1 t2 hp1 hp2 p
+      simp [hp1, hp2]
+      ring_nf
+  · intro r t hp
+    simp at hp ⊢
+    simp [hp]
+    ring
+  · intro t1 t2 hp1 hp2
+    simp [hp1, hp2]
+    ring_nf
 
 @[simp]
 lemma Pure.prodP_equivariant {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C}
@@ -1389,6 +1473,57 @@ lemma prodT_default_right {n} {c : Fin n → S.C}
     simp_all only [map_smul, LinearMap.smul_apply, P]
   · intro t1 t2 h1 h2
     simp_all only [map_add, LinearMap.add_apply, P]
+
+/-!
+## field
+-/
+
+noncomputable def toField {c : Fin 0 → S.C} : S.Tensor c →ₗ[k] k :=
+  (PiTensorProduct.isEmptyEquiv (Fin 0)).toLinearMap
+
+@[simp]
+lemma toField_default {c : Fin 0 → S.C} :
+    toField (Pure.toTensor default : S.Tensor c) = 1 := by
+  simp [toField, Pure.toTensor]
+  erw [PiTensorProduct.isEmptyEquiv_apply_tprod]
+
+@[simp]
+lemma toField_pure {c : Fin 0 → S.C} (p : Pure S c) :
+    toField (p.toTensor : S.Tensor c) = 1 := by
+  rw [← toField_default (S := S)]
+  congr
+  ext i
+  exact Fin.elim0 i
+
+@[simp]
+lemma toField_basis_default {c : Fin 0 → S.C} :
+    toField (basis c (@default (ComponentIdx c) Unique.instInhabited)) = 1 := by
+  simp [basis_apply]
+
+lemma toField_eq_repr {c : Fin 0 → S.C} (t : Tensor S c) :
+    t.toField = (basis c).repr t (fun j => Fin.elim0 j) := by
+  obtain ⟨t, rfl⟩ := (basis c).repr.symm.surjective t
+  simp only [Basis.repr_symm_apply, Basis.repr_linearCombination]
+  rw [@Finsupp.linearCombination_unique]
+  rw [map_smul]
+  have hc := toField_basis_default (c := c)
+  conv_lhs =>
+    enter [2]
+    rw [toField_basis_default (c := c)]
+  simp
+  rfl
+
+@[simp]
+lemma toField_equivariant {c : Fin 0 → S.C} (g : G) (t : Tensor S c) :
+    toField (g • t) = toField t := by
+  apply induction_on_pure (t := t)
+  · intro p
+    rw [actionT_pure]
+    simp
+  · intro r t hp
+    simp [hp]
+  · intro t1 t2 hp1 hp2
+    simp [hp1, hp2]
 
 end Tensor
 

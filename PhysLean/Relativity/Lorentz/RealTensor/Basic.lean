@@ -5,7 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.RealTensor.Metrics.Pre
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
-import PhysLean.Relativity.Tensors.Tree.Elab
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Elab
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basis
 /-!
 
 ## Real Lorentz tensors
@@ -129,16 +130,16 @@ syntax (name := realLorentzTensorSyntax) "ℝT[" term,* "]" : term
 
 macro_rules
   | `(ℝT[$termDim:term, $term:term, $terms:term,*]) =>
-      `(((realLorentzTensor $termDim).F.obj (OverColor.mk (vecCons $term ![$terms,*]))))
+      `(((realLorentzTensor $termDim).Tensor (vecCons $term ![$terms,*])))
   | `(ℝT[$termDim:term, $term:term]) =>
-    `(((realLorentzTensor $termDim).F.obj (OverColor.mk (vecCons $term ![]))))
-  | `(ℝT[$termDim:term]) =>`(((realLorentzTensor $termDim).F.obj (OverColor.mk (vecEmpty))))
-  | `(ℝT[]) =>`(((realLorentzTensor 3).F.obj (OverColor.mk (vecEmpty))))
+    `(((realLorentzTensor $termDim).Tensor (vecCons $term ![])))
+  | `(ℝT[$termDim:term]) =>`(((realLorentzTensor $termDim).Tensor (vecEmpty)))
+  | `(ℝT[]) =>`(((realLorentzTensor 3).Tensor (vecEmpty)))
 
 set_option quotPrecheck false in
 /-- Notation for a real Lorentz tensor. -/
 scoped[realLorentzTensor] notation "ℝT(" d "," c ")" =>
-  (realLorentzTensor d).F.obj (OverColor.mk c)
+  (realLorentzTensor d).Tensor c
 
 /-- Color for real Lorentz tensors is decidable. -/
 instance (d : ℕ) : DecidableEq (realLorentzTensor d).C := realLorentzTensor.instDecidableEqColor
@@ -181,7 +182,6 @@ lemma τ_down_eq_up {d : ℕ} : (realLorentzTensor d).τ Color.down = Color.up :
 
 -/
 
-open TensorTree
 open TensorSpecies
 
 lemma contr_basis {d : ℕ} {c : (realLorentzTensor d).C}
@@ -211,37 +211,32 @@ lemma contr_basis {d : ℕ} {c : (realLorentzTensor d).C}
     refine ite_congr ?_ (congrFun rfl) (congrFun rfl)
     simp only [eq_comm, EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, repDim_up]
 
-lemma contr_tensorBasis_repr_apply_eq_contrSection {n d: ℕ}
+open Tensor
+lemma contrT_basis_repr_apply_eq_dropPairSection {n d: ℕ}
     {c : Fin (n + 1 + 1) → (realLorentzTensor d).C}
-    {i : Fin (n + 1 + 1)}
-    {j : Fin (n + 1)} {h : c (i.succAbove j) = (realLorentzTensor d).τ (c i)}
-    (t : TensorTree (realLorentzTensor d) c)
-    (b : Π k, Fin ((realLorentzTensor d).repDim (c (i.succAbove (j.succAbove k))))) :
-    ((realLorentzTensor d).tensorBasis
-    (c ∘ i.succAbove ∘ j.succAbove)).repr (contr i j h t).tensor b =
-    ∑ (x : TensorBasis.ContrSection b),
-    (((realLorentzTensor d).tensorBasis c).repr t.tensor x.1) *
-    if (x.1 i).1 = (x.1 (i.succAbove j)).1 then 1 else 0 := by
-  rw [contr_tensorBasis_repr_apply]
+    {i j : Fin (n + 1 + 1)} (h : i ≠ j ∧ (realLorentzTensor d).τ (c i) = c j)
+    (t : ℝT(d, c)) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
+    (basis (c ∘ Pure.dropPairEmb i j)).repr (contrT n i j h t) b =
+    ∑ (x : b.DropPairSection),
+    ((basis c).repr t x.1) *
+    if (x.1 i).1 = (x.1 j).1 then 1 else 0 := by
+  rw [contrT_basis_repr_apply]
   congr
   funext x
   congr 1
-  exact contr_basis _ _
+  rw [contr_basis]
+  rfl
 
-open TensorSpecies.TensorBasis in
-lemma contr_tensorBasis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → (realLorentzTensor d).C}
-    {i : Fin (n + 1 + 1)}
-    {j : Fin (n + 1)} {h : c (i.succAbove j) = (realLorentzTensor d).τ (c i)}
-    (t : TensorTree (realLorentzTensor d) c)
-    (b : Π k, Fin ((realLorentzTensor d).repDim (c (i.succAbove (j.succAbove k))))) :
-    ((realLorentzTensor d).tensorBasis
-    (c ∘ i.succAbove ∘ j.succAbove)).repr (contr i j h t).tensor b =
+open ComponentIdx in
+lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → (realLorentzTensor d).C}
+    {i j : Fin (n + 1 + 1)}
+    {h : i ≠ j ∧ (realLorentzTensor d).τ (c i) = c j}
+    (t : ℝT(d,c)) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
+    (basis (c ∘ Pure.dropPairEmb i j)).repr (contrT n i j h t) b =
     ∑ (x : Fin (1 + d)),
-    (((realLorentzTensor d).tensorBasis c).repr t.tensor
-    (liftToContrSection b ⟨Fin.cast (by simp) x, Fin.cast (by simp) x⟩)) := by
-  rw [contr_tensorBasis_repr_apply_eq_contrSection]
-  rw [← (contrSectionEquiv b).symm.sum_comp]
-  rw [Fintype.sum_prod_type]
+    ((basis c).repr t
+    (DropPairSection.ofFinEquiv h.1 b ⟨Fin.cast (by simp) x, Fin.cast (by simp) x⟩)) := by
+  rw [contrT_basis_repr_apply_eq_sum_fin]
   let e : Fin ((realLorentzTensor d).repDim (c i)) ≃ Fin (1 + d) :=
     (Fin.castOrderIso (by simp)).toEquiv
   rw [← e.symm.sum_comp]
@@ -249,13 +244,16 @@ lemma contr_tensorBasis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → (r
   funext x
   simp only [C_eq_color, Nat.succ_eq_add_one, mul_ite, mul_one, mul_zero]
   rw [Finset.sum_eq_single (Fin.cast (by simp) x)]
-  · simp [contrSectionEquiv, e]
+  · rw [contr_basis]
+    simp [e]
   · intro y _ hy
+    rw [contr_basis]
     rw [if_neg]
-    · simp [contrSectionEquiv, e]
-      rw [Fin.ne_iff_vne] at hy
-      simp at hy
-      exact fun a => hy (id (Eq.symm a))
+    · dsimp [e]
+      simp
+    · dsimp [e]
+      simp_all [Fin.ext_iff]
+      omega
   · simp
 
 end realLorentzTensor

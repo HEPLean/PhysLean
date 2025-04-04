@@ -31,16 +31,16 @@ abbrev Vector (d : ℕ := 3) := ℝT[d, .up]
 
 namespace Vector
 
+open TensorSpecies
+open Tensor
+
 set_option quotPrecheck false in
-/-- The actoin of the Lorentz group on a Lorentz vector. -/
-scoped infixl:60 "•" => ((realLorentzTensor _).F.obj (OverColor.mk ![Color.up])).ρ
 
 /-- The equivalence between the type of indices of a Lorentz vector and
   `Fin 1 ⊕ Fin d`. -/
 def indexEquiv {d : ℕ} :
-    ((j : Fin (Nat.succ 0)) → Fin ((realLorentzTensor d).repDim (![Color.up] j)))
-    ≃ Fin 1 ⊕ Fin d :=
-  let e :((j : Fin (Nat.succ 0)) → Fin ((realLorentzTensor d).repDim (![Color.up] j)))
+    ComponentIdx (S := (realLorentzTensor d)) ![Color.up] ≃ Fin 1 ⊕ Fin d :=
+  let e : (ComponentIdx (S := (realLorentzTensor d)) ![Color.up])
     ≃ Fin (1 + d) := {
     toFun := fun f => Fin.cast (by rfl) (f 0)
     invFun := fun x => (fun j => Fin.cast (by simp) x)
@@ -76,11 +76,8 @@ lemma toCoord_injective {d : ℕ} : Function.Injective (@toCoord d) := by
 
 instance : CoeFun (Vector d) (fun _ => Fin 1 ⊕ Fin d → ℝ) := ⟨toCoord⟩
 
-lemma toCoord_tprod {d : ℕ} (p : (i : Fin 1) →
-    ↑((realLorentzTensor d).FD.obj { as := ![Color.up] i }).V) (i : Fin 1 ⊕ Fin d) :
-    toCoord (PiTensorProduct.tprod ℝ p) i =
-      ((Lorentz.contrBasisFin d).repr (p 0))
-      (indexEquiv.symm i 0) := by
+lemma toCoord_pure {d : ℕ} (p : Pure (realLorentzTensor d) ![.up]) (i : Fin 1 ⊕ Fin d) :
+    toCoord p.toTensor i = ((Lorentz.contrBasisFin d).repr (p 0)) (indexEquiv.symm i 0) := by
   rw [toCoord_apply]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, OverColor.mk_left, Functor.id_obj,
     OverColor.mk_hom, Equiv.piCongrLeft'_apply, Finsupp.equivFunOnFinite_apply, Fin.isValue]
@@ -89,9 +86,9 @@ lemma toCoord_tprod {d : ℕ} (p : (i : Fin 1) →
     Finset.prod_singleton, cons_val_zero]
   rfl
 
-lemma tensorNode_repr_apply {d : ℕ} (p : Vector d)
-    (b : (j : Fin (Nat.succ 0)) → Fin ((realLorentzTensor d).repDim (![Color.up] j))) :
-    ((realLorentzTensor d).tensorBasis _).repr p b =
+lemma basis_repr_apply {d : ℕ} (p : Vector d)
+    (b : ComponentIdx (S := realLorentzTensor d) ![Color.up]) :
+    (Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr p b =
     p (finSumFinEquiv.symm (b 0)) := by
   simp [toCoord_apply, indexEquiv]
   congr
@@ -101,41 +98,42 @@ lemma tensorNode_repr_apply {d : ℕ} (p : Vector d)
 
 /-- The Minkowski product of Lorentz vectors in the +--- convention.. -/
 def innerProduct {d : ℕ} (p q : Vector d) : ℝ :=
-  {η' d | μ ν ⊗ p | μ ⊗ q | ν}ᵀᵀ.field
+  {η' d | μ ν ⊗ p | μ ⊗ q | ν}ᵀ.toField
 
 @[inherit_doc innerProduct]
 notation "⟪" p ", " q "⟫ₘ" => innerProduct p q
 
-open TensorTree
 lemma innerProduct_toCoord {d : ℕ} (p q : Vector d) :
     ⟪p, q⟫ₘ = p (Sum.inl 0) * q (Sum.inl 0) - ∑ i, p (Sum.inr i) * q (Sum.inr i) := by
   dsimp only [innerProduct, Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue]
-  rw [TensorTree.field_eq_repr]
-  rw [contr_tensorBasis_repr_apply_eq_fin]
+  rw [toField_eq_repr]
+  rw [contrT_basis_repr_apply_eq_fin]
   conv_lhs =>
     enter [2, x]
-    rw [prod_tensorBasis_repr_apply]
-    rw [contr_tensorBasis_repr_apply_eq_fin]
-    rw [tensorNode_repr_apply]
+    rw [prodT_basis_repr_apply]
+    rw [contrT_basis_repr_apply_eq_fin]
     enter [1, 2, y]
-    rw [prod_tensorBasis_repr_apply]
-    rw [tensorNode_repr_apply]
+    rw [prodT_basis_repr_apply]
     enter [1]
     erw [coMetric_repr_apply_eq_minkowskiMatrix]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Fin.succAbove_zero,
     Function.comp_apply, Fin.zero_succAbove, Fin.succ_zero_eq_one, Fin.cast_eq_self,
     Fin.succ_one_eq_two, tensorNode_tensor]
   conv_lhs =>
-    enter [2, x, 2, 3]
-    simp only [Fin.isValue]
-    change finSumFinEquiv.symm x
-  conv_lhs =>
-    enter [2, x, 1, 2, y, 2, 3]
-    change finSumFinEquiv.symm y
-  conv_lhs =>
     enter [2, x, 1, 2, y, 1]
     simp only [Fin.isValue]
     change minkowskiMatrix (finSumFinEquiv.symm y) (finSumFinEquiv.symm x)
+  conv_lhs =>
+    enter [2, x, 2]
+    rw [basis_repr_apply]
+    enter [3]
+    change finSumFinEquiv.symm x
+  conv_lhs =>
+    enter [2, x, 1, 2, y, 2]
+    simp only [Fin.isValue]
+    rw [basis_repr_apply]
+    enter [3]
+    change finSumFinEquiv.symm y
   conv_lhs =>
     enter [2, x, 1]
     rw [← finSumFinEquiv.sum_comp]
@@ -173,28 +171,10 @@ lemma innerProduct_zero_right {d : ℕ} (p : Vector d) :
 @[simp]
 lemma innerProduct_invariant {d : ℕ} (p q : Vector d) (Λ : LorentzGroup d) :
     ⟪Λ • p, Λ • q⟫ₘ = ⟪p, q⟫ₘ := by
-  rw [innerProduct]
-  have h1 (q : Vector d) :
-    (tensorNode (Λ • q)).tensor
-    = (action Λ (tensorNode q)).tensor := by simp [action_tensor]
-  rw [field]
-  rw [contr_tensor_eq <| prod_tensor_eq_snd <| h1 q]
-  rw [contr_tensor_eq <| prod_tensor_eq_fst
-    <| contr_tensor_eq <| prod_tensor_eq_snd <| h1 p]
-  have h2 : (tensorNode (realLorentzTensor.coMetric d)).tensor
-      = (action Λ (tensorNode (realLorentzTensor.coMetric d))).tensor := by
-    rw [action_coMetric]
-  rw [contr_tensor_eq <| prod_tensor_eq_fst
-    <| contr_tensor_eq <| prod_tensor_eq_fst <| h2]
-  rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <|
-    prod_action _ _ _]
-  rw [contr_tensor_eq <| prod_tensor_eq_fst <| contr_action _ _]
-  rw [contr_tensor_eq <| prod_action _ _ _]
-  rw [contr_action _]
-  rw [← field]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Fin.succAbove_zero,
-    action_field]
-  rw [innerProduct]
+  rw [innerProduct, ← actionT_coMetric Λ]
+  rw [prodT_equivariant, contrT_equivariant, prodT_equivariant, contrT_equivariant,
+    toField_equivariant]
+  rfl
 
 instance : FiniteDimensional ℝ (Vector d) := by
   apply FiniteDimensional.of_fintype_basis ((realLorentzTensor d).tensorBasis _)
@@ -208,7 +188,7 @@ instance : FiniteDimensional ℝ (Vector d) := by
 section smoothness
 
 instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (Vector d) :=
-  NormedAddCommGroup.induced ↑(Vector d).V (Fin 1 ⊕ Fin d → ℝ)
+  NormedAddCommGroup.induced (Vector d) (Fin 1 ⊕ Fin d → ℝ)
   (@toCoord d) (toCoord_injective)
 
 instance isNormedSpace (d : ℕ) :
@@ -225,7 +205,7 @@ lemma toCoord_differentiable {d : ℕ} :
     Differentiable ℝ (@toCoord d) := by
   exact toCoordContinuous.differentiable
 
-lemma toCoord_fderiv {d : ℕ} (x : ↑(Vector d).V) :
+lemma toCoord_fderiv {d : ℕ} (x : (Vector d)) :
     (fderiv ℝ (@toCoord d) x).toLinearMap = toCoord.toLinearMap := by
   change (fderiv ℝ toCoordContinuous x).toLinearMap = toCoord.toLinearMap
   rw [ContinuousLinearEquiv.fderiv]
@@ -276,52 +256,40 @@ end smoothness
 
 -/
 
-lemma action_apply_eq_sum (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : Vector d) :
+lemma action_apply_eq_sum {d : ℕ} (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : Vector d) :
     (Λ • p) i = ∑ j, Λ.1 i j * p j := by
-  revert p
-  refine fun p ↦
-    PiTensorProduct.induction_on' p ?_ (by
-    intro a b hx hy
-    simp at hx hy ⊢
-    rw [hx, hy]
-    simp [mul_add, Finset.sum_add_distrib]
-    ring)
-  intro r p
-  simp only [TensorSpecies.F_def, Nat.reduceAdd, OverColor.mk_left,
-    Functor.id_obj, OverColor.mk_hom, PiTensorProduct.tprodCoeff_eq_smul_tprod, _root_.map_smul,
-    Pi.smul_apply, smul_eq_mul]
-  conv_lhs =>
-    enter [2, 2]
-    simp [C_eq_color, OverColor.lift, OverColor.lift.obj', LaxBraidedFunctor.of_toFunctor,
-      Nat.succ_eq_add_one, Nat.reduceAdd]
-    erw [OverColor.lift.objObj'_ρ_tprod]
-  conv_rhs =>
-    enter [2, x]
-    rw [← mul_assoc, mul_comm _ r, mul_assoc]
-  rw [← Finset.mul_sum]
-  congr
-  simp_all only [Nat.succ_eq_add_one, OverColor.mk_left, _root_.zero_add, Functor.id_obj,
-    C_eq_color, OverColor.mk_hom]
-  erw [toCoord_tprod]
-  change ((contrBasisFin d).repr (Λ *ᵥ _)) _ = _
-  rw [contrBasisFin_repr_apply]
-  rw [ContrMod.mulVec_val]
-  rw [mulVec_eq_sum]
-  simp only [Fin.isValue, op_smul_eq_smul, Nat.succ_eq_add_one, Nat.reduceAdd, Finset.sum_apply,
-    Pi.smul_apply, transpose_apply, smul_eq_mul]
-  congr
-  funext j
-  rw [mul_comm]
-  congr
-  · match i with
-    | Sum.inl 0 => rfl
-    | Sum.inr i => simp [finSumFinEquiv, indexEquiv]
-  · erw [toCoord_tprod]
+  apply induction_on_pure (t := p)
+  · intro p
+    rw [actionT_pure]
+    rw [toCoord_pure]
+    conv_lhs =>
+      enter [1, 2]
+      change Λ.1 *ᵥ (p 0)
     rw [contrBasisFin_repr_apply]
+    conv_lhs => simp [indexEquiv]
+    rw [mulVec_eq_sum]
+    simp only [Finset.sum_apply]
     congr
-    match j with
-    | Sum.inl 0 => rfl
-    | Sum.inr j => simp [finSumFinEquiv, indexEquiv]
+    funext j
+    simp only [Fin.isValue, Pi.smul_apply, transpose_apply, MulOpposite.smul_eq_mul_unop,
+      MulOpposite.unop_op, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, mul_eq_mul_left_iff]
+    left
+    rw [toCoord_pure, contrBasisFin_repr_apply]
+    congr
+    simp [indexEquiv]
+  · intro r t h
+    simp only [actionT_smul, _root_.map_smul, Pi.smul_apply, smul_eq_mul]
+    rw [h]
+    rw [Finset.mul_sum]
+    congr
+    funext x
+    ring
+  · intro t1 t2 h1 h2
+    simp only [actionT_add, map_add, Pi.add_apply, h1, h2]
+    rw [← Finset.sum_add_distrib]
+    congr
+    funext x
+    ring
 
 lemma action_toCoord_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
     toCoord (Λ • p) = Λ.1 *ᵥ (toCoord p) := by

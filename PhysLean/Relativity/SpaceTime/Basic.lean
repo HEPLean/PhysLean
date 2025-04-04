@@ -128,7 +128,7 @@ lemma neg_deriv_apply {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → ℝ) (y 
 @[fun_prop]
 lemma coord_differentiable {d : ℕ} (μ : Fin (1 + d)) :
     Differentiable ℝ (𝔁 μ) := by
-  let φ : (Fin 1 ⊕ Fin d) → (↑(SpaceTime d).V) → ℝ := fun b y => y b
+  let φ : (Fin 1 ⊕ Fin d) → (SpaceTime d) → ℝ := fun b y => y b
   change Differentiable ℝ (fun y => φ _ _)
   have h : Differentiable ℝ (flip φ) := by
     change Differentiable ℝ Lorentz.Vector.toCoord

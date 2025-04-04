@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.PermContr
 import PhysLean.Relativity.Lorentz.RealTensor.Basic
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor
 /-!
 
 ## Metrics as real Lorentz tensors
@@ -33,12 +34,12 @@ open Fermion
 -/
 
 /-- The metric `ηᵢᵢ` as a complex Lorentz tensor. -/
-def coMetric (d : ℕ := 3) := (TensorTree.constTwoNodeE (realLorentzTensor d)
-  .down .down (Lorentz.preCoMetric d)).tensor
+abbrev coMetric (d : ℕ := 3) : ℝT[d, .down, .down] :=
+  (realLorentzTensor d).metricTensor .down
 
 /-- The metric `ηⁱⁱ` as a complex Lorentz tensor. -/
-def contrMetric (d : ℕ := 3) := (TensorTree.constTwoNodeE (realLorentzTensor d)
-  .up .up (Lorentz.preContrMetric d)).tensor
+abbrev contrMetric (d : ℕ := 3) : ℝT[d, .up, .up] :=
+  (realLorentzTensor d).metricTensor .up
 
 /-!
 
@@ -54,21 +55,31 @@ scoped[realLorentzTensor] notation "η" => @contrMetric
 
 /-!
 
-## Tensor nodes.
+## Equivalent forms of the metrics
 
 -/
+open TensorSpecies
+open Tensor
 
-/-- The definitional tensor node relation for `coMetric`. -/
-lemma tensorNode_coMetric {d : ℕ} : {η' d | μ ν}ᵀᵀ.tensor =
-    (TensorTree.constTwoNodeE (realLorentzTensor d)
-    .down .down (Lorentz.preCoMetric d)).tensor := by
+lemma coMetric_eq_fromConstPair {d : ℕ} :
+    η' d = fromConstPair (Lorentz.preCoMetric d) := by
+  rw [coMetric, metricTensor]
   rfl
 
-/-- The definitional tensor node relation for `contrMetric`. -/
-lemma tensorNode_contrMetric : {η d | μ ν}ᵀᵀ.tensor =
-    (TensorTree.constTwoNodeE (realLorentzTensor d)
-    .up .up (Lorentz.preContrMetric d)).tensor := by
+lemma contrMetric_eq_fromConstPair {d : ℕ} :
+    η d = fromConstPair (Lorentz.preContrMetric d) := by
+  rw [contrMetric, metricTensor]
   rfl
+
+lemma coMetric_eq_fromPairT {d : ℕ} :
+    η' d = fromPairT (Lorentz.preCoMetricVal d) := by
+  rw [coMetric_eq_fromConstPair, fromConstPair]
+  erw [Lorentz.preCoMetric_apply_one]
+
+lemma contrMetric_eq_fromPairT {d : ℕ} :
+    η d = fromPairT (Lorentz.preContrMetricVal d) := by
+  rw [contrMetric_eq_fromConstPair, fromConstPair]
+  erw [Lorentz.preContrMetric_apply_one]
 
 /-
 
@@ -77,18 +88,15 @@ lemma tensorNode_contrMetric : {η d | μ ν}ᵀᵀ.tensor =
 -/
 
 /-- The tensor `coMetric` is invariant under the action of `LorentzGroup d`. -/
-lemma action_coMetric {d : ℕ} (g : LorentzGroup d) : {g •ₐ η' d | μ ν}ᵀᵀ.tensor =
-    {η' d | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_coMetric, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
-  rfl
+@[simp]
+lemma actionT_coMetric {d : ℕ} (g : LorentzGroup d) :
+    g • η' d = η' d:= by
+  rw [TensorSpecies.metricTensor_invariant]
 
 /-- The tensor `contrMetric` is invariant under the action of `LorentzGroup d`. -/
-lemma action_contrMetric (g : LorentzGroup d) : {g •ₐ η d | μ ν}ᵀᵀ.tensor =
-    {η d | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_contrMetric, constTwoNodeE]
-  rw [← action_constTwoNode _ g]
-  rfl
+@[simp]
+lemma actionT_contrMetric {d} (g : LorentzGroup d) : g • η d = η d := by
+  rw [TensorSpecies.metricTensor_invariant]
 
 /-
 
@@ -97,21 +105,20 @@ lemma action_contrMetric (g : LorentzGroup d) : {g •ₐ η d | μ ν}ᵀᵀ.te
 -/
 
 lemma coMetric_repr_apply_eq_minkowskiMatrix {d : ℕ}
-    (b : (j : Fin (Nat.succ 0).succ) →
-      Fin ((realLorentzTensor d).repDim (![Color.down, Color.down] j))) :
-    ((realLorentzTensor d).tensorBasis _).repr (coMetric d) b =
+    (b : ComponentIdx (S := realLorentzTensor d) ![Color.down, Color.down]) :
+    (Tensor.basis _).repr (coMetric d) b =
     minkowskiMatrix (finSumFinEquiv.symm (b 0)) (finSumFinEquiv.symm (b 1)) := by
-  simp [coMetric]
-  erw [Lorentz.preCoMetric_apply_one]
+  rw [coMetric_eq_fromPairT]
   simp [Lorentz.preCoMetricVal]
   erw [Lorentz.coCoToMatrixRe_symm_expand_tmul]
-  simp only [map_sum, _root_.map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul, Finset.sum_apply,
-    Pi.smul_apply, smul_eq_mul, Fin.isValue]
+  simp only [map_sum, _root_.map_smul, C_eq_color, Finsupp.coe_finset_sum, Finsupp.coe_smul,
+    Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Fin.isValue]
   conv_lhs =>
-    enter [2, x, 2, y, 2]
-    erw [TensorSpecies.pairIsoSep_tensorBasis_repr]
+    enter [2, x1, 2, x2]
+    rw [fromPairT_basis_repr]
+    enter [2]
     change (((Lorentz.coBasisFin d).tensorProduct (Lorentz.coBasisFin d)).repr
-        ((Lorentz.coBasis d) x ⊗ₜ[ℝ] (Lorentz.coBasis d) y)) (b 0, b 1)
+      ((Lorentz.coBasis d) x1 ⊗ₜ[ℝ] (Lorentz.coBasis d) x2)) _
     simp [Fin.isValue, Basis.tensorProduct_repr_tmul_apply, smul_eq_mul, Lorentz.coBasisFin]
     rw [Finsupp.single_apply, Finsupp.single_apply]
   rw [Finset.sum_eq_single (finSumFinEquiv.symm (b 0))]
@@ -134,20 +141,20 @@ lemma coMetric_repr_apply_eq_minkowskiMatrix {d : ℕ}
   · simp
 
 lemma contrMetric_repr_apply_eq_minkowskiMatrix {d : ℕ}
-    (b : (j : Fin (Nat.succ 0).succ) → Fin ((realLorentzTensor d).repDim (![.up, .up] j))) :
-    ((realLorentzTensor d).tensorBasis _).repr (contrMetric d) b =
+    (b : ComponentIdx (S := realLorentzTensor d) ![Color.up, Color.up]) :
+    (Tensor.basis _).repr (contrMetric d) b =
     minkowskiMatrix (finSumFinEquiv.symm (b 0)) (finSumFinEquiv.symm (b 1)) := by
-  simp [contrMetric]
-  erw [Lorentz.preContrMetric_apply_one]
+  rw [contrMetric_eq_fromPairT]
   simp [Lorentz.preContrMetricVal]
   erw [Lorentz.contrContrToMatrixRe_symm_expand_tmul]
-  simp only [map_sum, _root_.map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul, Finset.sum_apply,
-  Pi.smul_apply, smul_eq_mul, Fin.isValue]
+  simp only [map_sum, _root_.map_smul, C_eq_color, Finsupp.coe_finset_sum, Finsupp.coe_smul,
+  Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Fin.isValue]
   conv_lhs =>
-    enter [2, x, 2, y, 2]
-    erw [TensorSpecies.pairIsoSep_tensorBasis_repr]
+    enter [2, x1, 2, x2]
+    rw [fromPairT_basis_repr]
+    enter [2]
     change (((Lorentz.contrBasisFin d).tensorProduct (Lorentz.contrBasisFin d)).repr
-      ((Lorentz.contrBasis d) x ⊗ₜ[ℝ] (Lorentz.contrBasis d) y)) (b 0, b 1)
+      ((Lorentz.contrBasis d) x1 ⊗ₜ[ℝ] (Lorentz.contrBasis d) x2)) _
     simp [Fin.isValue, Basis.tensorProduct_repr_tmul_apply, smul_eq_mul, Lorentz.contrBasisFin]
     rw [Finsupp.single_apply, Finsupp.single_apply]
   rw [Finset.sum_eq_single (finSumFinEquiv.symm (b 0))]

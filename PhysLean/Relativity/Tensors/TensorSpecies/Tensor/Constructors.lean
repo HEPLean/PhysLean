@@ -493,6 +493,52 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : S.C)
     rw [← hx, ← hy]
     simp
 
+lemma fromPairT_basis_repr {c c1 : S.C}
+    (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] (S.FD.obj (Discrete.mk c1)).V)
+    (b : ComponentIdx ![c, c1]) :
+    (basis ![c, c1]).repr (fromPairT x) b =
+    (Basis.tensorProduct (S.basis c) (S.basis c1)).repr x (b 0, b 1) := by
+  let P (x : ((S.FD.obj { as := c } ⊗ S.FD.obj { as := c1 }).V)) :=
+    (basis ![c, c1]).repr
+    (fromPairT x) b =
+    (Basis.tensorProduct (S.basis c) (S.basis c1)).repr x (b 0, b 1)
+  change P x
+  apply TensorProduct.induction_on
+  · simp [P]
+  · intro x y
+    simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
+      Fin.isValue, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, Basis.tensorProduct_repr_tmul_apply,
+      smul_eq_mul, P]
+    conv_lhs =>
+      left
+      right
+      rw [fromPairT_tmul]
+    rw [fromSingleT_eq_pureT, fromSingleT_eq_pureT]
+    rw [prodT_pure, permT_pure]
+    rw [basis_repr_pure]
+    simp [Pure.component]
+    rw [mul_comm]
+    congr
+    · simp [Pure.permP]
+      conv_lhs =>
+        enter [2]
+        change Pure.prodP (fun | (0 : Fin 1) => x)
+          (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inr 0))
+      rw [Pure.prodP_apply_finSumFinEquiv]
+      simp
+      rfl
+    · simp [Pure.permP]
+      conv_lhs =>
+        enter [2]
+        change Pure.prodP (fun | (0 : Fin 1) => x)
+          (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inl 0))
+      rw [Pure.prodP_apply_finSumFinEquiv]
+      simp
+      rfl
+  · intro x y hx hy
+    simp_all [P]
+
 /-!
 
 ## fromConstPair

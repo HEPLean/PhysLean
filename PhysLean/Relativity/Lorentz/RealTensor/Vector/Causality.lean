@@ -48,9 +48,8 @@ def causalCharacter {d : ℕ} (p : Vector d) : CausalCharacter :=
   else CausalCharacter.spaceLike
 
 /-- `causalCharacter` are invariant under an action of the Lorentz group. -/
-lemma causalCharacter_invariant {d : ℕ} (p : Vector d)
-    (Λ : LorentzGroup d) :
-    causalCharacter (((realLorentzTensor d).F.obj _).ρ Λ p) = causalCharacter p := by
+lemma causalCharacter_invariant {d : ℕ} (p : Vector d) (Λ : LorentzGroup d) :
+    causalCharacter (Λ • p) = causalCharacter p := by
   simp only [causalCharacter, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd]
   rw [innerProduct_invariant]
 

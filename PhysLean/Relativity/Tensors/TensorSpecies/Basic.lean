@@ -99,6 +99,13 @@ lemma basis_congr {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
   subst h
   simp
 
+lemma basis_congr_repr {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c))
+    (t : S.FD.obj (Discrete.mk c)) :
+    (S.basis c).repr t i = (S.basis c1).repr (S.FD.map (eqToHom (by simp [h])) t)
+    (Fin.cast (by simp [h]) i) := by
+  subst h
+  simp
+
 lemma FD_map_basis {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
     (S.FD.map (Discrete.eqToHom h)).hom.hom (S.basis c i)
     = S.basis c1 (Fin.cast (by simp [h]) i) := by

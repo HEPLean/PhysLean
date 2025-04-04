@@ -30,6 +30,11 @@ lemma metricTensor_congr {c c1 : S.C} (h : c = c1) :
   subst h
   simp
 
+@[simp]
+lemma metricTensor_invariant {c : S.C} (g : G) :
+    g • metricTensor c = metricTensor c := by
+  rw [metricTensor, actionT_fromConstPair]
+
 lemma permT_fromPairTContr_metric_metric {c : S.C} :
     permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> rfl))
     (fromPairTContr ((S.metric.app (Discrete.mk c)).hom (1 : k))
