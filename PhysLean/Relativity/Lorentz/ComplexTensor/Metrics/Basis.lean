@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Basic
 import PhysLean.Relativity.Lorentz.ComplexTensor.OfRat
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basis
-import PhysLean.Relativity.Tensors.TensorSpecies.OfInt
 /-!
 
 ## Metrics and basis expansions

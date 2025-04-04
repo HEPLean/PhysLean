@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Basis
 import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Symm
-import PhysLean.Relativity.Tensors.TensorSpecies.OfInt
 /-!
 
 ## Basic lemmas regarding metrics
