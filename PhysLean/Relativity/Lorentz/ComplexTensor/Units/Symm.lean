@@ -22,8 +22,8 @@ namespace complexLorentzTensor
 
 -/
 
-/-- Swapping indices of `coContrUnit` returns `contrCoUnit`: `{δ' | μ ν = δ | ν μ}ᵀ`. -/
-lemma coContrUnit_symm : {δ' | μ ν = δ | ν μ}ᵀ := by
+/-- Swapping indices of `coContrUnit` returns `contrCoUnit`: `{δ' | μ ν = δ | ν μ}ᵀᵀ`. -/
+lemma coContrUnit_symm : {δ' | μ ν = δ | ν μ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, coContrUnit_eq_ofRat,
@@ -34,8 +34,8 @@ lemma coContrUnit_symm : {δ' | μ ν = δ | ν μ}ᵀ := by
   revert b
   decide
 
-/-- Swapping indices of `contrCoUnit` returns `coContrUnit`: `{δ | μ ν = δ' | ν μ}ᵀ`. -/
-lemma contrCoUnit_symm : {δ | μ ν = δ' | ν μ}ᵀ := by
+/-- Swapping indices of `contrCoUnit` returns `coContrUnit`: `{δ | μ ν = δ' | ν μ}ᵀᵀ`. -/
+lemma contrCoUnit_symm : {δ | μ ν = δ' | ν μ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, coContrUnit_eq_ofRat,
@@ -46,8 +46,9 @@ lemma contrCoUnit_symm : {δ | μ ν = δ' | ν μ}ᵀ := by
   revert b
   decide
 
-/-- Swapping indices of `altLeftLeftUnit` returns `leftAltLeftUnit`: `{δL' | α α' = δL | α' α}ᵀ`. -/
-lemma altLeftLeftUnit_symm : {δL' | α α' = δL | α' α}ᵀ := by
+/-- Swapping indices of `altLeftLeftUnit` returns
+  `leftAltLeftUnit`: `{δL' | α α' = δL | α' α}ᵀᵀ`. -/
+lemma altLeftLeftUnit_symm : {δL' | α α' = δL | α' α}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altLeftLeftUnit_eq_ofRat,
@@ -58,8 +59,9 @@ lemma altLeftLeftUnit_symm : {δL' | α α' = δL | α' α}ᵀ := by
   revert b
   decide
 
-/-- Swapping indices of `leftAltLeftUnit` returns `altLeftLeftUnit`: `{δL | α α' = δL' | α' α}ᵀ`. -/
-lemma leftAltLeftUnit_symm : {δL | α α' = δL' | α' α}ᵀ := by
+/-- Swapping indices of `leftAltLeftUnit` returns
+  `altLeftLeftUnit`: `{δL | α α' = δL' | α' α}ᵀᵀ`. -/
+lemma leftAltLeftUnit_symm : {δL | α α' = δL' | α' α}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altLeftLeftUnit_eq_ofRat,
@@ -71,9 +73,9 @@ lemma leftAltLeftUnit_symm : {δL | α α' = δL' | α' α}ᵀ := by
   decide
 
 /-- Swapping indices of `altRightRightUnit` returns `rightAltRightUnit`:
-`{δR' | β β' = δR | β' β}ᵀ`.
+`{δR' | β β' = δR | β' β}ᵀᵀ`.
 -/
-lemma altRightRightUnit_symm : {δR' | β β' = δR | β' β}ᵀ := by
+lemma altRightRightUnit_symm : {δR' | β β' = δR | β' β}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altRightRightUnit_eq_ofRat,
@@ -85,9 +87,9 @@ lemma altRightRightUnit_symm : {δR' | β β' = δR | β' β}ᵀ := by
   decide
 
 /-- Swapping indices of `rightAltRightUnit` returns `altRightRightUnit`:
-`{δR | β β' = δR' | β' β}ᵀ`.
+`{δR | β β' = δR' | β' β}ᵀᵀ`.
 -/
-lemma rightAltRightUnit_symm : {δR | β β' = δR' | β' β}ᵀ := by
+lemma rightAltRightUnit_symm : {δR | β β' = δR' | β' β}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altRightRightUnit_eq_ofRat,

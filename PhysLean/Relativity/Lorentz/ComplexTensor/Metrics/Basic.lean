@@ -90,34 +90,34 @@ scoped[complexLorentzTensor] notation "εR'" => altRightMetric
 -/
 
 /-- The definitional tensor node relation for `coMetric`. -/
-lemma tensorNode_coMetric : {η' | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+lemma tensorNode_coMetric : {η' | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
     .down .down Lorentz.coMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `contrMetric`. -/
-lemma tensorNode_contrMetric : {η | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+lemma tensorNode_contrMetric : {η | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
     .up .up Lorentz.contrMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `leftMetric`. -/
-lemma tensorNode_leftMetric : {εL | α α'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+lemma tensorNode_leftMetric : {εL | α α'}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
     .upL .upL Fermion.leftMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `rightMetric`. -/
-lemma tensorNode_rightMetric : {εR | β β'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+lemma tensorNode_rightMetric : {εR | β β'}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
     .upR .upR Fermion.rightMetric).tensor:= by
   rfl
 
 /-- The definitional tensor node relation for `altLeftMetric`. -/
 lemma tensorNode_altLeftMetric :
-    {εL' | α α'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+    {εL' | α α'}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
   .downL .downL Fermion.altLeftMetric).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `altRightMetric`. -/
 lemma tensorNode_altRightMetric :
-    {εR' | β β'}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+    {εR' | β β'}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
   .downR .downR Fermion.altRightMetric).tensor:= by
   rfl
 
@@ -128,43 +128,43 @@ lemma tensorNode_altRightMetric :
 -/
 
 /-- The tensor `coMetric` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_coMetric (g : SL(2,ℂ)) : {g •ₐ η' | μ ν}ᵀ.tensor =
-    {η' | μ ν}ᵀ.tensor := by
+lemma action_coMetric (g : SL(2,ℂ)) : {g •ₐ η' | μ ν}ᵀᵀ.tensor =
+    {η' | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_coMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `contrMetric` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_contrMetric (g : SL(2,ℂ)) : {g •ₐ η | μ ν}ᵀ.tensor =
-    {η | μ ν}ᵀ.tensor := by
+lemma action_contrMetric (g : SL(2,ℂ)) : {g •ₐ η | μ ν}ᵀᵀ.tensor =
+    {η | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_contrMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `leftMetric` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_leftMetric (g : SL(2,ℂ)) : {g •ₐ εL | α α'}ᵀ.tensor =
-    {εL | α α'}ᵀ.tensor := by
+lemma action_leftMetric (g : SL(2,ℂ)) : {g •ₐ εL | α α'}ᵀᵀ.tensor =
+    {εL | α α'}ᵀᵀ.tensor := by
   rw [tensorNode_leftMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `rightMetric` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_rightMetric (g : SL(2,ℂ)) : {g •ₐ εR | β β'}ᵀ.tensor =
-    {εR | β β'}ᵀ.tensor := by
+lemma action_rightMetric (g : SL(2,ℂ)) : {g •ₐ εR | β β'}ᵀᵀ.tensor =
+    {εR | β β'}ᵀᵀ.tensor := by
   rw [tensorNode_rightMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `altLeftMetric` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_altLeftMetric (g : SL(2,ℂ)) : {g •ₐ εL' | α α'}ᵀ.tensor =
-    {εL' | α α'}ᵀ.tensor := by
+lemma action_altLeftMetric (g : SL(2,ℂ)) : {g •ₐ εL' | α α'}ᵀᵀ.tensor =
+    {εL' | α α'}ᵀᵀ.tensor := by
   rw [tensorNode_altLeftMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `altRightMetric` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_altRightMetric (g : SL(2,ℂ)) : {g •ₐ εR' | β β'}ᵀ.tensor =
-    {εR' | β β'}ᵀ.tensor := by
+lemma action_altRightMetric (g : SL(2,ℂ)) : {g •ₐ εR' | β β'}ᵀᵀ.tensor =
+    {εR' | β β'}ᵀᵀ.tensor := by
   rw [tensorNode_altRightMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl

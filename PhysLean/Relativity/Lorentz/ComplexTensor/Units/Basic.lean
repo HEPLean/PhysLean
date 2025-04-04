@@ -91,32 +91,32 @@ scoped[complexLorentzTensor] notation "δR" => rightAltRightUnit
 -/
 
 /-- The definitional tensor node relation for `coContrUnit`. -/
-lemma tensorNode_coContrUnit : {δ' | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+lemma tensorNode_coContrUnit : {δ' | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
     Color.down Color.up Lorentz.coContrUnit).tensor:= by
   rfl
 
 /-- The definitional tensor node relation for `contrCoUnit`. -/
-lemma tensorNode_contrCoUnit: {δ | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
+lemma tensorNode_contrCoUnit: {δ | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
     Color.up Color.down Lorentz.contrCoUnit).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `altLeftLeftUnit`. -/
-lemma tensorNode_altLeftLeftUnit : {δL' | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE
+lemma tensorNode_altLeftLeftUnit : {δL' | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
     complexLorentzTensor Color.downL Color.upL Fermion.altLeftLeftUnit).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `leftAltLeftUnit`. -/
-lemma tensorNode_leftAltLeftUnit : {δL | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE
+lemma tensorNode_leftAltLeftUnit : {δL | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
     complexLorentzTensor Color.upL Color.downL Fermion.leftAltLeftUnit).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `altRightRightUnit`. -/
-lemma tensorNode_altRightRightUnit: {δR' | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE
+lemma tensorNode_altRightRightUnit: {δR' | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
     complexLorentzTensor Color.downR Color.upR Fermion.altRightRightUnit).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `rightAltRightUnit`. -/
-lemma tensorNode_rightAltRightUnit: {δR | μ ν}ᵀ.tensor = (TensorTree.constTwoNodeE
+lemma tensorNode_rightAltRightUnit: {δR | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
     complexLorentzTensor Color.upR Color.downR Fermion.rightAltRightUnit).tensor := by
   rfl
 
@@ -127,32 +127,38 @@ lemma tensorNode_rightAltRightUnit: {δR | μ ν}ᵀ.tensor = (TensorTree.constT
 -/
 
 /-- The tensor `coContrUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_coContrUnit (g : SL(2,ℂ)) : {g •ₐ δ' | μ ν}ᵀ.tensor = {δ' | μ ν}ᵀ.tensor := by
+lemma action_coContrUnit (g : SL(2,ℂ)) :
+    {g •ₐ δ' | μ ν}ᵀᵀ.tensor = {δ' | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_coContrUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `contrCoUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_contrCoUnit (g : SL(2,ℂ)) : {g •ₐ δ | μ ν}ᵀ.tensor = {δ | μ ν}ᵀ.tensor := by
+lemma action_contrCoUnit (g : SL(2,ℂ)) :
+    {g •ₐ δ | μ ν}ᵀᵀ.tensor = {δ | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_contrCoUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `altLeftLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_altLeftLeftUnit (g : SL(2,ℂ)) : {g •ₐ δL' | μ ν}ᵀ.tensor = {δL' | μ ν}ᵀ.tensor := by
+lemma action_altLeftLeftUnit (g : SL(2,ℂ)) :
+    {g •ₐ δL' | μ ν}ᵀᵀ.tensor = {δL' | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_altLeftLeftUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `leftAltLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_leftAltLeftUnit (g : SL(2,ℂ)) : {g •ₐ δL | μ ν}ᵀ.tensor = {δL | μ ν}ᵀ.tensor := by
+lemma action_leftAltLeftUnit (g : SL(2,ℂ)) :
+    {g •ₐ δL | μ ν}ᵀᵀ.tensor = {δL | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_leftAltLeftUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `altRightRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_altRightRightUnit (g : SL(2,ℂ)) : {g •ₐ δR' | μ ν}ᵀ.tensor = {δR' | μ ν}ᵀ.tensor := by
+lemma action_altRightRightUnit (g : SL(2,ℂ)) :
+    {g •ₐ δR' | μ ν}ᵀᵀ.tensor = {δR' | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_altRightRightUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `rightAltRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_rightAltRightUnit (g : SL(2,ℂ)) : {g •ₐ δR | μ ν}ᵀ.tensor = {δR | μ ν}ᵀ.tensor := by
+lemma action_rightAltRightUnit (g : SL(2,ℂ)) :
+    {g •ₐ δR | μ ν}ᵀᵀ.tensor = {δR | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_rightAltRightUnit, constTwoNodeE, ← action_constTwoNode _ g]
   rfl
 

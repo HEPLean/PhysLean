@@ -28,7 +28,7 @@ set_option maxRecDepth 2000 in
 /-- The associativity lemma for `t1 | μ ⊗ t2 | μ ν ⊗ t3 | ν σ`. -/
 lemma assoc_one_two_two {c1 c2 c3 : S.C} (t1 : S.F.obj (OverColor.mk ![c1]))
     (t2 : S.F.obj (OverColor.mk ![S.τ c1, c2])) (t3 : S.F.obj (OverColor.mk ![S.τ c2, c3])) :
-    {t1 | μ ⊗ t2 | μ ν ⊗ t3 | ν σ}ᵀ.tensor = ({t1 | μ ⊗ (t2 | μ ν ⊗ t3 | ν σ)}ᵀ
+    {t1 | μ ⊗ t2 | μ ν ⊗ t3 | ν σ}ᵀᵀ.tensor = ({t1 | μ ⊗ (t2 | μ ν ⊗ t3 | ν σ)}ᵀᵀ
     |> perm (OverColor.equivToHomEq (Equiv.refl (Fin 1)) (by
       intro x
       fin_cases x

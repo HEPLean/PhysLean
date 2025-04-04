@@ -26,8 +26,8 @@ namespace complexLorentzTensor
 open PhysLean.Fin
 /-
 lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
-    (hA : {A | μ ν = - (A | ν μ)}ᵀ) (hs : {S | μ ν = S | ν μ}ᵀ) :
-    {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ := by
+    (hA : {A | μ ν = - (A | ν μ)}ᵀᵀ) (hs : {S | μ ν = S | ν μ}ᵀᵀ) :
+    {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀᵀ := by
 
   conv =>
     lhs

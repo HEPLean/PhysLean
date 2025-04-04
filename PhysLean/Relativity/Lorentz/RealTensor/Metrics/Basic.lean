@@ -59,13 +59,13 @@ scoped[realLorentzTensor] notation "η" => @contrMetric
 -/
 
 /-- The definitional tensor node relation for `coMetric`. -/
-lemma tensorNode_coMetric {d : ℕ} : {η' d | μ ν}ᵀ.tensor =
+lemma tensorNode_coMetric {d : ℕ} : {η' d | μ ν}ᵀᵀ.tensor =
     (TensorTree.constTwoNodeE (realLorentzTensor d)
     .down .down (Lorentz.preCoMetric d)).tensor := by
   rfl
 
 /-- The definitional tensor node relation for `contrMetric`. -/
-lemma tensorNode_contrMetric : {η d | μ ν}ᵀ.tensor =
+lemma tensorNode_contrMetric : {η d | μ ν}ᵀᵀ.tensor =
     (TensorTree.constTwoNodeE (realLorentzTensor d)
     .up .up (Lorentz.preContrMetric d)).tensor := by
   rfl
@@ -77,15 +77,15 @@ lemma tensorNode_contrMetric : {η d | μ ν}ᵀ.tensor =
 -/
 
 /-- The tensor `coMetric` is invariant under the action of `LorentzGroup d`. -/
-lemma action_coMetric {d : ℕ} (g : LorentzGroup d) : {g •ₐ η' d | μ ν}ᵀ.tensor =
-    {η' d | μ ν}ᵀ.tensor := by
+lemma action_coMetric {d : ℕ} (g : LorentzGroup d) : {g •ₐ η' d | μ ν}ᵀᵀ.tensor =
+    {η' d | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_coMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl
 
 /-- The tensor `contrMetric` is invariant under the action of `LorentzGroup d`. -/
-lemma action_contrMetric (g : LorentzGroup d) : {g •ₐ η d | μ ν}ᵀ.tensor =
-    {η d | μ ν}ᵀ.tensor := by
+lemma action_contrMetric (g : LorentzGroup d) : {g •ₐ η d | μ ν}ᵀᵀ.tensor =
+    {η d | μ ν}ᵀᵀ.tensor := by
   rw [tensorNode_contrMetric, constTwoNodeE]
   rw [← action_constTwoNode _ g]
   rfl

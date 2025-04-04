@@ -101,7 +101,7 @@ lemma tensorNode_repr_apply {d : ℕ} (p : Vector d)
 
 /-- The Minkowski product of Lorentz vectors in the +--- convention.. -/
 def innerProduct {d : ℕ} (p q : Vector d) : ℝ :=
-  {η' d | μ ν ⊗ p | μ ⊗ q | ν}ᵀ.field
+  {η' d | μ ν ⊗ p | μ ⊗ q | ν}ᵀᵀ.field
 
 @[inherit_doc innerProduct]
 notation "⟪" p ", " q "⟫ₘ" => innerProduct p q

@@ -28,7 +28,8 @@ open Fermion
 open complexLorentzTensor
 
 /-- The statement that ` σᵥᵃᵇ σᵛᵃ'ᵇ' = 2 εᵃᵃ' εᵇᵇ'`. -/
-lemma pauliCo_contr_pauliContr : {σ_^^ | ν α β ⊗ σ^^^ | ν α' β' = 2 •ₜ εL | α α' ⊗ εR | β β'}ᵀ := by
+lemma pauliCo_contr_pauliContr :
+    {σ_^^ | ν α β ⊗ σ^^^ | ν α' β' = 2 •ₜ εL | α α' ⊗ εR | β β'}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   conv_rhs =>
@@ -70,7 +71,7 @@ lemma pauliCo_contr_pauliContr : {σ_^^ | ν α β ⊗ σ^^^ | ν α' β' = 2 �
   revert b
   decide +kernel
 
-lemma pauliCoDown_trace_pauliCo : {σ___ | μ β α ⊗ σ_^^ | ν α β = 2 •ₜ η' | μ ν}ᵀ := by
+lemma pauliCoDown_trace_pauliCo : {σ___ | μ β α ⊗ σ_^^ | ν α β = 2 •ₜ η' | μ ν}ᵀᵀ := by
   conv_lhs =>
     rw [pauliCoDown_ofRat, pauliCo_ofRat]
     rw [contr_tensor_eq <| contr_tensor_eq <| prod_ofRat_ofRat _ _]
@@ -88,7 +89,7 @@ lemma pauliCoDown_trace_pauliCo : {σ___ | μ β α ⊗ σ_^^ | ν α β = 2 •
   revert b
   decide +kernel
 
-lemma pauliCo_trace_pauliCoDown: {σ_^^ | μ α β ⊗ σ___ | ν β α = 2 •ₜ η' | μ ν}ᵀ := by
+lemma pauliCo_trace_pauliCoDown: {σ_^^ | μ α β ⊗ σ___ | ν β α = 2 •ₜ η' | μ ν}ᵀᵀ := by
   conv_lhs =>
     rw [pauliCoDown_ofRat, pauliCo_ofRat]
     rw [contr_tensor_eq <| contr_tensor_eq <| prod_ofRat_ofRat _ _]
@@ -107,7 +108,7 @@ lemma pauliCo_trace_pauliCoDown: {σ_^^ | μ α β ⊗ σ___ | ν β α = 2 •�
 
 lemma pauliContr_mul_pauliContrDown_add :
     {((σ^^^ | μ α β ⊗ σ^__ | ν β α') + (σ^^^ | ν α β ⊗ σ^__ | μ β α')) =
-    2 •ₜ η | μ ν ⊗ δL | α α'}ᵀ := by
+    2 •ₜ η | μ ν ⊗ δL | α α'}ᵀᵀ := by
   conv_lhs =>
     rw [pauliContrDown_ofRat, pauliContr_ofRat]
     rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_ofRat_ofRat _ _]
@@ -129,7 +130,7 @@ lemma pauliContr_mul_pauliContrDown_add :
 
 lemma auliContrDown_pauliContr_mul_add :
     {((σ^__ | μ β α ⊗ σ^^^ | ν α β') + (σ^__ | ν β α ⊗ σ^^^ | μ α β')) =
-    2 •ₜ η | μ ν ⊗ δR' | β β'}ᵀ := by
+    2 •ₜ η | μ ν ⊗ δR' | β β'}ᵀᵀ := by
   conv_lhs =>
     rw [pauliContrDown_ofRat, pauliContr_ofRat]
     rw [add_tensor_eq_fst <| contr_tensor_eq <| prod_ofRat_ofRat _ _]

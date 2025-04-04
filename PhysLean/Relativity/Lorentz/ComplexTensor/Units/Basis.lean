@@ -33,7 +33,7 @@ lemma coContrUnit_tensorBasis : coContrUnit =
     + complexLorentzTensor.tensorBasis ![Color.down, Color.up] (fun _ => 1)
     + complexLorentzTensor.tensorBasis ![Color.down, Color.up] (fun _ => 2)
     + complexLorentzTensor.tensorBasis ![Color.down, Color.up] (fun _ => 3) := by
-  trans {δ' | μ ν}ᵀ.tensor
+  trans {δ' | μ ν}ᵀᵀ.tensor
   · simp
   rw [tensorNode_coContrUnit]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
@@ -67,7 +67,7 @@ lemma contrCoUnit_tensorBasis : contrCoUnit =
     + complexLorentzTensor.tensorBasis ![Color.up, Color.down] (fun _ => 1)
     + complexLorentzTensor.tensorBasis ![Color.up, Color.down] (fun _ => 2)
     + complexLorentzTensor.tensorBasis ![Color.up, Color.down] (fun _ => 3) := by
-  trans {δ | μ ν}ᵀ.tensor
+  trans {δ | μ ν}ᵀᵀ.tensor
   · simp
   rw [tensorNode_contrCoUnit]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, constTwoNode_tensor,
@@ -98,7 +98,7 @@ lemma contrCoUnit_tensorBasis : contrCoUnit =
 lemma altLeftLeftUnit_tensorBasis : altLeftLeftUnit =
     complexLorentzTensor.tensorBasis ![Color.downL, Color.upL] (fun _ => 0)
     + complexLorentzTensor.tensorBasis ![Color.downL, Color.upL] (fun _ => 1) := by
-  trans {δL' | μ ν}ᵀ.tensor
+  trans {δL' | μ ν}ᵀᵀ.tensor
   · simp
   rw [tensorNode_altLeftLeftUnit]
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]
@@ -122,7 +122,7 @@ lemma altLeftLeftUnit_tensorBasis : altLeftLeftUnit =
 lemma leftAltLeftUnit_tensorBasis : leftAltLeftUnit =
     complexLorentzTensor.tensorBasis ![Color.upL, Color.downL] (fun _ => 0)
     + complexLorentzTensor.tensorBasis ![Color.upL, Color.downL] (fun _ => 1) := by
-  trans {δL | μ ν}ᵀ.tensor
+  trans {δL | μ ν}ᵀᵀ.tensor
   · simp
   rw [tensorNode_leftAltLeftUnit]
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]
@@ -146,7 +146,7 @@ lemma leftAltLeftUnit_tensorBasis : leftAltLeftUnit =
 lemma altRightRightUnit_tensorBasis : altRightRightUnit =
     complexLorentzTensor.tensorBasis ![Color.downR, Color.upR] (fun _ => 0)
     + complexLorentzTensor.tensorBasis ![Color.downR, Color.upR] (fun _ => 1) := by
-  trans {δR' | μ ν}ᵀ.tensor
+  trans {δR' | μ ν}ᵀᵀ.tensor
   · simp
   rw [tensorNode_altRightRightUnit]
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]
@@ -170,7 +170,7 @@ lemma altRightRightUnit_tensorBasis : altRightRightUnit =
 lemma rightAltRightUnit_tensorBasis : rightAltRightUnit =
     complexLorentzTensor.tensorBasis ![Color.upR, Color.downR] (fun _ => 0)
     + complexLorentzTensor.tensorBasis ![Color.upR, Color.downR] (fun _ => 1) := by
-  trans {δR | μ ν}ᵀ.tensor
+  trans {δR | μ ν}ᵀᵀ.tensor
   · simp
   rw [tensorNode_rightAltRightUnit]
   simp only [constTwoNode_tensor, Action.instMonoidalCategory_tensorObj_V]

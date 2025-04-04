@@ -63,8 +63,8 @@ def PhysLean.Imports.getUserConsts (imp : Import) : CoreM (Array ConstantInfo) :
       && !isAuxRecursorWithSuffix env name belowSuffix
       && !isAuxRecursorWithSuffix env name ibelowSuffix
       /- Removing syntax category declarations. -/
-      && name.toString != "TensorTree.indexExpr.quot"
-      && name.toString != "TensorTree.tensorExpr.quot"
+      && name.toString != "TensorTree.indexExprTT.quot"
+      && name.toString != "TensorTree.tensorExprTT.quot"
 
 /-- Turns a name into a system file path. -/
 def Lean.Name.toFilePath (c : Name) : System.FilePath :=

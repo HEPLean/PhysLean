@@ -31,8 +31,8 @@ namespace complexLorentzTensor
 
 -/
 
-/-- The covariant metric is symmetric `{η' | μ ν = η' | ν μ}ᵀ`. -/
-lemma coMetric_symm : {η' | μ ν = η' | ν μ}ᵀ := by
+/-- The covariant metric is symmetric `{η' | μ ν = η' | ν μ}ᵀᵀ`. -/
+lemma coMetric_symm : {η' | μ ν = η' | ν μ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, coMetric_eq_ofRat, Fin.isValue, cons_val_zero,
@@ -42,8 +42,8 @@ lemma coMetric_symm : {η' | μ ν = η' | ν μ}ᵀ := by
   revert b
   decide
 
-/-- The contravariant metric is symmetric `{η | μ ν = η | ν μ}ᵀ`. -/
-lemma contrMetric_symm : {η | μ ν = η | ν μ}ᵀ := by
+/-- The contravariant metric is symmetric `{η | μ ν = η | ν μ}ᵀᵀ`. -/
+lemma contrMetric_symm : {η | μ ν = η | ν μ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, contrMetric_eq_ofRat, Fin.isValue, cons_val_zero,
@@ -53,8 +53,8 @@ lemma contrMetric_symm : {η | μ ν = η | ν μ}ᵀ := by
   revert b
   decide
 
-/-- The left metric is antisymmetric `{εL | α α' = - εL | α' α}ᵀ`. -/
-lemma leftMetric_antisymm : {εL | α α' = - (εL| α' α)}ᵀ := by
+/-- The left metric is antisymmetric `{εL | α α' = - εL | α' α}ᵀᵀ`. -/
+lemma leftMetric_antisymm : {εL | α α' = - (εL| α' α)}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, leftMetric_eq_ofRat, Fin.isValue, cons_val_zero,
@@ -66,8 +66,8 @@ lemma leftMetric_antisymm : {εL | α α' = - (εL| α' α)}ᵀ := by
   revert b
   decide
 
-/-- The right metric is antisymmetric `{εR | β β' = - εR | β' β}ᵀ`. -/
-lemma rightMetric_antisymm : {εR | β β' = - (εR| β' β)}ᵀ := by
+/-- The right metric is antisymmetric `{εR | β β' = - εR | β' β}ᵀᵀ`. -/
+lemma rightMetric_antisymm : {εR | β β' = - (εR| β' β)}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, rightMetric_eq_ofRat, Fin.isValue, cons_val_zero,
@@ -79,8 +79,8 @@ lemma rightMetric_antisymm : {εR | β β' = - (εR| β' β)}ᵀ := by
   revert b
   decide
 
-/-- The alt-left metric is antisymmetric `{εL' | α α' = - εL' | α' α}ᵀ`. -/
-lemma altLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀ := by
+/-- The alt-left metric is antisymmetric `{εL' | α α' = - εL' | α' α}ᵀᵀ`. -/
+lemma altLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altLeftMetric_eq_ofRat, Fin.isValue, cons_val_zero,
@@ -92,8 +92,8 @@ lemma altLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀ := by
   revert b
   decide
 
-/-- The alt-right metric is antisymmetric `{εR' | β β' = - εR' | β' β}ᵀ`. -/
-lemma altRightMetric_antisymm : {εR' | α α' = - (εR' | α' α)}ᵀ := by
+/-- The alt-right metric is antisymmetric `{εR' | β β' = - εR' | β' β}ᵀᵀ`. -/
+lemma altRightMetric_antisymm : {εR' | α α' = - (εR' | α' α)}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altRightMetric_eq_ofRat, Fin.isValue,
@@ -112,9 +112,9 @@ lemma altRightMetric_antisymm : {εR' | α α' = - (εR' | α' α)}ᵀ := by
 -/
 
 /-- The contraction of the covariant metric with the contravariant metric is the unit
-`{η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ`.
+`{η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀᵀ`.
 -/
-lemma coMetric_contr_contrMetric : {η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ := by
+lemma coMetric_contr_contrMetric : {η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [TensorTree.contr_tensorBasis_repr_apply]
@@ -150,9 +150,9 @@ lemma coMetric_contr_contrMetric : {η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ
   decide +kernel
 
 /-- The contraction of the contravariant metric with the covariant metric is the unit
-`{η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ`.
+`{η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀᵀ`.
 -/
-lemma contrMetric_contr_coMetric : {η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ := by
+lemma contrMetric_contr_coMetric : {η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [TensorTree.contr_tensorBasis_repr_apply]
@@ -188,9 +188,9 @@ lemma contrMetric_contr_coMetric : {η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ 
   decide +kernel
 
 /-- The contraction of the left metric with the alt-left metric is the unit
-`{εL | α β ⊗ εL' | β γ = δL | α γ}ᵀ`.
+`{εL | α β ⊗ εL' | β γ = δL | α γ}ᵀᵀ`.
 -/
-lemma leftMetric_contr_altLeftMetric : {εL | α β ⊗ εL' | β γ = δL | α γ}ᵀ := by
+lemma leftMetric_contr_altLeftMetric : {εL | α β ⊗ εL' | β γ = δL | α γ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [TensorTree.contr_tensorBasis_repr_apply]
@@ -226,9 +226,9 @@ lemma leftMetric_contr_altLeftMetric : {εL | α β ⊗ εL' | β γ = δL | α 
   decide +kernel
 
 /-- The contraction of the right metric with the alt-right metric is the unit
-`{εR | α β ⊗ εR' | β γ = δR | α γ}ᵀ`.
+`{εR | α β ⊗ εR' | β γ = δR | α γ}ᵀᵀ`.
 -/
-lemma rightMetric_contr_altRightMetric : {εR | α β ⊗ εR' | β γ = δR | α γ}ᵀ := by
+lemma rightMetric_contr_altRightMetric : {εR | α β ⊗ εR' | β γ = δR | α γ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [TensorTree.contr_tensorBasis_repr_apply]
@@ -264,9 +264,9 @@ lemma rightMetric_contr_altRightMetric : {εR | α β ⊗ εR' | β γ = δR | �
   decide +kernel
 
 /-- The contraction of the alt-left metric with the left metric is the unit
-`{εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ`.
+`{εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀᵀ`.
 -/
-lemma altLeftMetric_contr_leftMetric : {εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ := by
+lemma altLeftMetric_contr_leftMetric : {εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [TensorTree.contr_tensorBasis_repr_apply]
@@ -302,9 +302,9 @@ lemma altLeftMetric_contr_leftMetric : {εL' | α β ⊗ εL | β γ = δL' | α
   decide +kernel
 
 /-- The contraction of the alt-right metric with the right metric is the unit
-`{εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ`.
+`{εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀᵀ`.
 -/
-lemma altRightMetric_contr_rightMetric : {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ := by
+lemma altRightMetric_contr_rightMetric : {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀᵀ := by
   apply (complexLorentzTensor.tensorBasis _).repr.injective
   ext b
   rw [TensorTree.contr_tensorBasis_repr_apply]
@@ -349,7 +349,7 @@ def leftMetricMulRightMap := (Sum.elim ![Color.upL, Color.upL] ![Color.upR, Colo
   finSumFinEquiv.symm
 
 /-- Expansion of the product of `εL` and `εR` in terms of a basis. -/
-lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
+lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀᵀ.tensor
     = basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     - basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
     - basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
@@ -382,7 +382,7 @@ lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
     fin_cases x <;> rfl
 
 /-- Expansion of the product of `εL` and `εR` in terms of a basis, as a tensor tree. -/
-lemma leftMetric_prod_rightMetric_tree : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
+lemma leftMetric_prod_rightMetric_tree : {εL | α α' ⊗ εR | β β'}ᵀᵀ.tensor
     = (TensorTree.add (tensorNode
         (basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1))) <|
       TensorTree.add (TensorTree.smul (-1 : ℂ) (tensorNode

@@ -33,19 +33,19 @@ open PauliMatrix
 
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. -/
 def contrBispinorUp (p : ℂT[.up]) :=
-  {pauliCo | μ α β ⊗ p | μ}ᵀ.tensor
+  {pauliCo | μ α β ⊗ p | μ}ᵀᵀ.tensor
 
 /-- A bispinor `pₐₐ` created from a lorentz vector `p^μ`. -/
 def contrBispinorDown (p : ℂT[.up]) :=
-  {εL' | α α' ⊗ εR' | β β' ⊗ contrBispinorUp p | α β}ᵀ.tensor
+  {εL' | α α' ⊗ εR' | β β' ⊗ contrBispinorUp p | α β}ᵀᵀ.tensor
 
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p_μ`. -/
 def coBispinorUp (p : ℂT[.down]) :=
-  {pauliContr | μ α β ⊗ p | μ}ᵀ.tensor
+  {pauliContr | μ α β ⊗ p | μ}ᵀᵀ.tensor
 
 /-- A bispinor `pₐₐ` created from a lorentz vector `p_μ`. -/
 def coBispinorDown (p : ℂT[.down]) :=
-  {εL' | α α' ⊗ εR' | β β' ⊗ coBispinorUp p | α β}ᵀ.tensor
+  {εL' | α α' ⊗ εR' | β β' ⊗ coBispinorUp p | α β}ᵀᵀ.tensor
 
 /-!
 
@@ -55,24 +55,24 @@ def coBispinorDown (p : ℂT[.down]) :=
 
 /-- The definitional tensor node relation for `contrBispinorUp`. -/
 lemma tensorNode_contrBispinorUp (p : ℂT[.up]) :
-    {contrBispinorUp p | α β}ᵀ.tensor = {pauliCo | μ α β ⊗ p | μ}ᵀ.tensor := by
+    {contrBispinorUp p | α β}ᵀᵀ.tensor = {pauliCo | μ α β ⊗ p | μ}ᵀᵀ.tensor := by
   rw [contrBispinorUp, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `contrBispinorDown`. -/
 lemma tensorNode_contrBispinorDown (p : ℂT[.up]) :
-    {contrBispinorDown p | α β}ᵀ.tensor =
-    {εL' | α α' ⊗ εR' | β β' ⊗ contrBispinorUp p | α β}ᵀ.tensor := by
+    {contrBispinorDown p | α β}ᵀᵀ.tensor =
+    {εL' | α α' ⊗ εR' | β β' ⊗ contrBispinorUp p | α β}ᵀᵀ.tensor := by
   rw [contrBispinorDown, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `coBispinorUp`. -/
 lemma tensorNode_coBispinorUp (p : ℂT[.down]) :
-    {coBispinorUp p | α β}ᵀ.tensor = {pauliContr | μ α β ⊗ p | μ}ᵀ.tensor := by
+    {coBispinorUp p | α β}ᵀᵀ.tensor = {pauliContr | μ α β ⊗ p | μ}ᵀᵀ.tensor := by
   rw [coBispinorUp, tensorNode_tensor]
 
 /-- The definitional tensor node relation for `coBispinorDown`. -/
 lemma tensorNode_coBispinorDown (p : ℂT[.down]) :
-    {coBispinorDown p | α β}ᵀ.tensor =
-    {εL' | α α' ⊗ εR' | β β' ⊗ coBispinorUp p | α β}ᵀ.tensor := by
+    {coBispinorDown p | α β}ᵀᵀ.tensor =
+    {εL' | α α' ⊗ εR' | β β' ⊗ coBispinorUp p | α β}ᵀᵀ.tensor := by
   rw [coBispinorDown, tensorNode_tensor]
 
 /-!
@@ -81,7 +81,7 @@ lemma tensorNode_coBispinorDown (p : ℂT[.down]) :
 
 -/
 
-/-- `{contrBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ contrBispinorDown p | α' β' }ᵀ`.
+/-- `{contrBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ contrBispinorDown p | α' β' }ᵀᵀ`.
 
 Proof: expand `contrBispinorDown` and use fact that metrics contract to the identity.
 -/
@@ -89,7 +89,7 @@ informal_lemma contrBispinorUp_eq_metric_contr_contrBispinorDown where
   deps := [``contrBispinorUp, ``contrBispinorDown, ``leftMetric, ``rightMetric]
   tag := "6V2PV"
 
-/-- `{coBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ coBispinorDown p | α' β' }ᵀ`.
+/-- `{coBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ coBispinorDown p | α' β' }ᵀᵀ`.
 
 proof: expand `coBispinorDown` and use fact that metrics contract to the identity.
 -/
@@ -98,15 +98,15 @@ informal_lemma coBispinorUp_eq_metric_contr_coBispinorDown where
   tag := "6V2P6"
 
 lemma contrBispinorDown_expand (p : ℂT[.up]) :
-    {contrBispinorDown p | α β}ᵀ.tensor =
+    {contrBispinorDown p | α β}ᵀᵀ.tensor =
     {εL' | α α' ⊗ εR' | β β' ⊗
-    (pauliCo | μ α β ⊗ p | μ)}ᵀ.tensor := by
+    (pauliCo | μ α β ⊗ p | μ)}ᵀᵀ.tensor := by
   rw [tensorNode_contrBispinorDown p]
   rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_contrBispinorUp p]
 
 lemma coBispinorDown_expand (p : ℂT[.down]) :
-    {coBispinorDown p | α β}ᵀ.tensor =
-    {εL' | α α' ⊗ εR' | β β' ⊗ (pauliContr | μ α β ⊗ p | μ)}ᵀ.tensor := by
+    {coBispinorDown p | α β}ᵀᵀ.tensor =
+    {εL' | α α' ⊗ εR' | β β' ⊗ (pauliContr | μ α β ⊗ p | μ)}ᵀᵀ.tensor := by
   rw [tensorNode_coBispinorDown p]
   rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_coBispinorUp p]
 

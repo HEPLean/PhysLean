@@ -18,7 +18,7 @@ open TensorTree in
 /-- The Field strength is a tensor `F^μ^ν` which is anti-symmetric.. -/
 noncomputable abbrev FieldStrength (d : ℕ := 3) :
     Submodule ℝ (ℝT[d, .up] → ℝT[d, .up, .up]) where
-  carrier F := ∀ x, {F x | μ ν = - (F x | ν μ)}ᵀ
+  carrier F := ∀ x, {F x | μ ν = - (F x | ν μ)}ᵀᵀ
   add_mem' {F1 F2} hF1 hF2:= by
     intro x
     simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Pi.add_apply,
@@ -53,7 +53,7 @@ namespace FieldStrength
 lemma mem_of_repr {d : ℕ} {F : ℝT[d, .up, .up]}
     (h : ∀ i j, (((realLorentzTensor d).tensorBasis _).repr F) (fun | 0 => i | 1 => j) =
     - ((((realLorentzTensor d).tensorBasis _).repr F) (fun | 0 => j | 1 => i))) :
-    {F | μ ν = - (F | ν μ)}ᵀ := by
+    {F | μ ν = - (F | ν μ)}ᵀᵀ := by
   obtain ⟨F, rfl⟩ := ((realLorentzTensor d).tensorBasis _).repr.symm.surjective F
   simp at h
   apply ((realLorentzTensor d).tensorBasis _).repr.injective

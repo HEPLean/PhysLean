@@ -28,7 +28,7 @@ open complexLorentzTensor
 
 -/
 /-- The expansion of the Pauli matrices `σ^μ^a^{dot a}` in terms of basis vectors. -/
-lemma pauliContr_in_basis : {pauliContr | μ α β}ᵀ.tensor =
+lemma pauliContr_in_basis : {pauliContr | μ α β}ᵀᵀ.tensor =
     basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0)
     + basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 1 | 2 => 1)
     + basisVector ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 0 | 2 => 1)
@@ -83,7 +83,7 @@ lemma pauliContr_tensorBasis : pauliContr =
       (fun | 0 => 3 | 1 => 0 | 2 => 0)
     - complexLorentzTensor.tensorBasis ![Color.up, Color.upL, Color.upR]
       (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
-  trans {pauliContr | μ α β}ᵀ.tensor
+  trans {pauliContr | μ α β}ᵀᵀ.tensor
   · simp
   rw [pauliContr_in_basis]
   simp [basisVector_eq_tensorBasis]
