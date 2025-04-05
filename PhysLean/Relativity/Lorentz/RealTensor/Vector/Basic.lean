@@ -32,7 +32,7 @@ abbrev Vector (d : ℕ := 3) := ℝT[d, .up]
 namespace Vector
 
 set_option quotPrecheck false in
-/-- The actoin of the Lorentz group on a Lorentz vector. -/
+/-- The action of the Lorentz group on a Lorentz vector. -/
 scoped infixl:60 "•" => ((realLorentzTensor _).F.obj (OverColor.mk ![Color.up])).ρ
 
 /-- The equivalence between the type of indices of a Lorentz vector and
