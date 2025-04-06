@@ -247,12 +247,13 @@ lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → (realLo
   · rw [contr_basis]
     simp [e]
   · intro y _ hy
-    rw [contr_basis]
-    rw [if_neg]
-    · dsimp [e]
+    rw [contr_basis, if_neg]
+    · dsimp only [ne_eq, C_eq_color, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, e]
       simp
-    · dsimp [e]
-      simp_all [Fin.ext_iff]
+    · dsimp only [OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, C_eq_color, ne_eq, id_eq,
+      eq_mpr_eq_cast, Fin.coe_cast, e]
+      simp_all only [ne_eq, Fin.ext_iff, C_eq_color, Finset.mem_univ, Fin.coe_cast,
+        Fin.symm_castOrderIso, Fin.castOrderIso_apply, e]
       omega
   · simp
 

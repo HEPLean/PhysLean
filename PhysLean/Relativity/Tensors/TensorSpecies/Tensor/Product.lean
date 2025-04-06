@@ -437,7 +437,7 @@ lemma Pure.prodP_component {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
     (b : ComponentIdx (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)) :
     (p.prodP p1).component b = p.component (ComponentIdx.splitEquiv b).1 *
     p1.component (ComponentIdx.splitEquiv b).2 := by
-  simp [component]
+  simp only [component, Function.comp_apply]
   rw [← finSumFinEquiv.prod_comp]
   conv_lhs =>
     enter [2, x]
@@ -447,12 +447,12 @@ lemma Pure.prodP_component {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
   congr
   · funext x
     generalize_proofs h1 h2
-    simp [- finSumFinEquiv_symm_apply_castAdd, Sum.elim_inl] at h2
+    simp only [Discrete.mk.injEq] at h2
     rw [S.basis_congr_repr h2]
     rfl
   · funext x
     generalize_proofs h1 h2
-    simp [- finSumFinEquiv_symm_apply_natAdd, Sum.elim_inr] at h2
+    simp only [Discrete.mk.injEq] at h2
     rw [S.basis_congr_repr h2]
     rfl
 
@@ -469,18 +469,18 @@ lemma prodT_basis_repr_apply {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C
       rw [basis_repr_pure, basis_repr_pure, basis_repr_pure]
       rw [Pure.prodP_component]
     · intro r t hp p
-      simp at hp ⊢
-      simp [hp]
+      simp only [basis_repr_pure, map_smul, Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul] at hp ⊢
+      rw [hp]
       ring
     · intro t1 t2 hp1 hp2 p
-      simp [hp1, hp2]
+      simp only [map_add, Finsupp.coe_add, Pi.add_apply, hp1, basis_repr_pure, hp2]
       ring_nf
   · intro r t hp
-    simp at hp ⊢
-    simp [hp]
+    simp only [map_smul, LinearMap.smul_apply, Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul] at hp ⊢
+    rw [hp]
     ring
   · intro t1 t2 hp1 hp2
-    simp [hp1, hp2]
+    simp only [map_add, LinearMap.add_apply, Finsupp.coe_add, Pi.add_apply, hp1, hp2]
     ring_nf
 
 @[simp]
@@ -783,7 +783,7 @@ lemma Pure.prodP_zero_right_permCond {n} {c : Fin n → S.C}
   simp only [Nat.add_zero, PermCond.on_id, Function.comp_apply]
   intro i
   obtain ⟨j, hi⟩ := finSumFinEquiv.surjective (Fin.cast (by rfl) i : Fin (n + 0))
-  simp at hi
+  simp only [Nat.add_zero, Fin.cast_eq_self] at hi
   subst hi
   simp only [Equiv.symm_apply_apply]
   match j with
@@ -811,7 +811,7 @@ lemma prodT_default_right {n} {c : Fin n → S.C}
   change P t
   apply induction_on_pure
   · intro p
-    simp [P]
+    simp only [Nat.add_zero, P]
     rw (transparency := .instances) [prodT_pure]
     rw [Pure.prodP_zero_right]
     rw [permT_pure]

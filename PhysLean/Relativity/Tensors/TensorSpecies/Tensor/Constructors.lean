@@ -120,7 +120,8 @@ lemma contrT_fromSingleT_fromSingleT {c : S.C} (x : S.FD.obj {as := c})
         (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inl 0))
       · rfl
       · rw [Pure.prodP_apply_finSumFinEquiv]
-        simp
+        simp only [Nat.reduceAdd, Fin.isValue, Function.comp_apply, Matrix.cons_val_zero,
+          eqToHom_refl, Discrete.functor_map_id]
         rfl
     · trans (ConcreteCategory.hom
         (𝟙 (S.FD.obj { as := Sum.elim ![c] ![S.τ c] (finSumFinEquiv.symm 1) })))
@@ -128,7 +129,8 @@ lemma contrT_fromSingleT_fromSingleT {c : S.C} (x : S.FD.obj {as := c})
         (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inr 0)))
       · rfl
       · rw [Pure.prodP_apply_finSumFinEquiv]
-        simp
+        simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
+          Function.comp_apply, eqToHom_refl, Discrete.functor_map_id, ConcreteCategory.id_apply]
         rfl
   · congr 1
     ext i

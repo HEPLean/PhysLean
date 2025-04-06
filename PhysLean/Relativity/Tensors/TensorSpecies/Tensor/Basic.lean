@@ -777,7 +777,7 @@ lemma toField_eq_repr {c : Fin 0 → S.C} (t : Tensor S c) :
   conv_lhs =>
     enter [2]
     rw [toField_basis_default (c := c)]
-  simp
+  simp only [smul_eq_mul, mul_one]
   rfl
 
 @[simp]
