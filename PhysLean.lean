@@ -241,6 +241,7 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Elab
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Evaluation
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.OfInt
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.UnitTensor
 import PhysLean.Relativity.Tensors.Tree.Basic
 import PhysLean.Relativity.Tensors.Tree.Elab

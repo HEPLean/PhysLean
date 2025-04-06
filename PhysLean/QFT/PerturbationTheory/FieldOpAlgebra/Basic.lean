@@ -271,6 +271,9 @@ lemma fermionicProjF_mem_fieldOpIdealSet_or_zero (x : FieldOpFreeAlgebra 𝓕)
       rw [fermionicProjF_of_mem_fermionic _ h]
       simpa using hx'
 
+TODO "7ERJ3" "The lemma `bosonicProjF_mem_ideal` has a proof which is really long.
+  We should either 1) split it up into smaller lemmas or 2) Put more comments into the proof."
+
 lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
     (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
     x.bosonicProjF.1 ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet := by
@@ -338,7 +341,8 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProjF y).1
           simp [hby, hfy]
-        · aesop
+        · simp only [Set.mem_univ, mul_eq_mul_left_iff, mul_eq_zero, ZeroMemClass.coe_eq_zero,
+          true_and, exists_or_eq_left, p]
     · simp only [hby, ZeroMemClass.coe_zero, mul_zero, zero_mul, zero_add, add_zero]
       apply TwoSidedIdeal.add_mem
       · /- fermion, fermion, boson mem-/
@@ -364,7 +368,8 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
           simp [hby, hfy]
-        · aesop
+        · simp only [Set.mem_univ, mul_eq_mul_left_iff, mul_eq_zero, ZeroMemClass.coe_eq_zero,
+          true_and, exists_or_eq_left, p]
     · simp only [hfy, ZeroMemClass.coe_zero, mul_zero, zero_mul, add_zero, zero_add]
       apply TwoSidedIdeal.add_mem
       · /- boson, boson, boson mem-/
@@ -398,7 +403,8 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
     apply TwoSidedIdeal.add_mem
     · exact hpx
     · exact hpy
-  · aesop
+  · intro x_1 hx_1 a
+    simp_all only [map_neg, NegMemClass.coe_neg, neg_mem_iff, p]
 
 lemma fermionicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
     (hx : x ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :

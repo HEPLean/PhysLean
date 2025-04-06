@@ -28,6 +28,7 @@ open Manifold
 open Matrix
 open Complex
 open ComplexConjugate
+open TensorSpecies
 
 /-- The space part of spacetime. -/
 @[simp]
@@ -53,11 +54,12 @@ lemma coord_apply {d : ℕ} (μ : Fin (1 + d)) (y : SpaceTime d) :
   rfl
 
 open realLorentzTensor
+open Tensor
 
 lemma coord_on_repr {d : ℕ} (μ : Fin (1 + d))
-    (y : ((j : Fin (Nat.succ 0)) → Fin ((realLorentzTensor d).repDim (![Color.up] j))) → ℝ) :
-    𝔁 μ (((realLorentzTensor d).tensorBasis ![Color.up]).repr.symm
-      (Finsupp.equivFunOnFinite.symm y)) =
+    (y : ComponentIdx (S := realLorentzTensor d) ![Color.up] → ℝ) :
+    𝔁 μ ((Tensor.basis (S := realLorentzTensor d)
+      ![Color.up]).repr.symm (Finsupp.equivFunOnFinite.symm y)) =
     y (fun _ => Fin.cast (by simp) μ) := by
   change 𝔁 μ (Lorentz.Vector.toCoordFull.symm y) = _
   rw [coord_apply]
@@ -78,7 +80,7 @@ lemma coord_on_repr {d : ℕ} (μ : Fin (1 + d))
 /-- The derivative of a function `SpaceTime d → ℝ` along the `μ` coordinte. -/
 noncomputable def deriv {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → M) : SpaceTime d → M :=
-  fun y => fderiv ℝ f y ((realLorentzTensor d).tensorBasis _ (fun x => Fin.cast (by simp) μ))
+  fun y => fderiv ℝ f y (Tensor.basis _ (fun x => Fin.cast (by simp) μ))
 
 @[inherit_doc deriv]
 scoped notation "∂_" => deriv
@@ -88,7 +90,7 @@ scoped notation "∂ₜ" => deriv 0
 
 lemma deriv_eq {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → ℝ) (y : SpaceTime d) :
     SpaceTime.deriv μ f y =
-    fderiv ℝ f y ((realLorentzTensor d).tensorBasis _ (fun x => Fin.cast (by simp) μ)) := by
+    fderiv ℝ f y (Tensor.basis _ (fun x => Fin.cast (by simp) μ)) := by
   rfl
 
 @[simp]
@@ -99,12 +101,12 @@ lemma deriv_zero {d : ℕ} (μ : Fin (1 + d)) : SpaceTime.deriv μ (fun _ => (0 
 
 lemma deriv_eq_deriv_on_coord {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → ℝ) (y : SpaceTime d) :
     SpaceTime.deriv μ f y = fderiv ℝ
-      (fun y => (f (((realLorentzTensor d).tensorBasis ![Color.up]).repr.symm
+      (fun y => (f ((Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr.symm
             (Finsupp.equivFunOnFinite.symm y))))
-      ⇑(((realLorentzTensor d).tensorBasis ![Color.up]).repr y)
+      ⇑((Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr y)
     ⇑(Finsupp.single (fun x => Fin.cast (by simp) μ) 1) := by
   change _ = fderiv ℝ (f ∘ Lorentz.Vector.fromCoordFullContinuous)
-    ⇑(((realLorentzTensor d).tensorBasis ![Color.up]).repr y)
+    ⇑((Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr y)
     ⇑(Finsupp.single (fun x => Fin.cast (by simp) μ) 1)
   rw [ContinuousLinearEquiv.comp_right_fderiv]
   rw [deriv_eq]
@@ -162,9 +164,9 @@ lemma deriv_coord_same {d : ℕ} (μ : Fin (1 + d)) (y : SpaceTime d) :
   conv at h2 =>
     enter [x]
     rw [fderiv_pi (h3 x)]
-  have h2' := h2 (((realLorentzTensor d).tensorBasis ![Color.up]).repr y)
+  have h2' := h2 ((Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr y)
   change (ContinuousLinearMap.pi fun i =>
-    fderiv ℝ (φ i) ⇑(((realLorentzTensor d).tensorBasis ![Color.up]).repr y))
+    fderiv ℝ (φ i) ⇑((Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr y))
     ((Finsupp.single (fun x => Fin.cast (by simp) μ) 1)) (fun _ => Fin.cast (by simp) μ) = _
   rw [h2']
   simp

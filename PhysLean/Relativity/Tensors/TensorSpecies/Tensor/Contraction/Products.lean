@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basic
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
 /-!
 
 # The interfaction of contractions and products

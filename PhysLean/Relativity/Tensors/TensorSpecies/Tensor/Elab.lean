@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Evaluation
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
 /-!
 
 # Elaboration of tensor expressions
@@ -409,12 +410,12 @@ def actionTermMap (c T : Term) : Term :=
 
 /-- The syntax for a equality of tensor trees. -/
 def addTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
-  let RHS := Syntax.mkApp (mkIdent ``Tensor.permT) #[P, T2]
+  let RHS := Syntax.mkApp (mkIdent ``Tensor.permT) #[P, (mkIdent ``PermCond.auto), T2]
   return Syntax.mkApp (mkIdent ``Add.add) #[T1, RHS]
 
 /-- The syntax for a equality of tensor trees. -/
 def equalTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
-  let X2' := Syntax.mkApp (mkIdent ``Tensor.permT) #[P, T2]
+  let X2' := Syntax.mkApp (mkIdent ``Tensor.permT) #[P, (mkIdent ``PermCond.auto), T2]
   return Syntax.mkApp (mkIdent ``Eq) #[T1, X2']
 
 /-!
@@ -499,7 +500,7 @@ variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
   {t3 : S.Tensor ![S.τ c1, S.τ c2]}
 #check {t | α β }ᵀ
 
-#check {t2 | α β ⊗ t3 | ρ β}ᵀ
+#check {(t2 | α β) = (t3 | ρ β)}ᵀ
 -/
 end Tensor
 
