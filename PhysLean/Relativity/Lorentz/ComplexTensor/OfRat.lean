@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Basic
 import PhysLean.Mathematics.RatComplexNum
 import PhysLean.Relativity.Tensors.Tree.Elab
 /-!
@@ -21,6 +22,8 @@ open OverColor
 open PhysLean.RatComplexNum
 open PhysLean
 
+open TensorSpecies
+open Tensor
 variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /--A complex Lorentz tensor from a map
@@ -28,35 +31,38 @@ variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
   complex Lorentz tensors with rational coefficents with respect to the basis are of this
   form. -/
 noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
-    (f : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum) : ℂT(c) :=
-  (complexLorentzTensor.tensorBasis c).repr.symm <|
-  (Finsupp.linearEquivFunOnFinite ℂ ℂ
-  ((j : Fin n) → Fin (complexLorentzTensor.repDim (c j)))).symm <|
-  (fun j => toComplexNum (f j))
+    : ((ComponentIdx c) → RatComplexNum) →ₛₗ[toComplexNum] ℂT(c) where
+  toFun f := (Tensor.basis c).repr.symm <|
+    (Finsupp.linearEquivFunOnFinite ℂ ℂ
+    ((j : Fin n) → Fin (complexLorentzTensor.repDim (c j)))).symm <|
+    (fun j => toComplexNum (f j))
+  map_add' f f1 := by
+    apply (Tensor.basis _).repr.injective
+    ext b
+    simp
+    rfl
+  map_smul' r f := by
+    apply (Tensor.basis _).repr.injective
+    ext b
+    simp
+    rfl
 
 @[simp]
-lemma ofRat_tensorBasis_repr_apply {n : ℕ} {c : Fin n → complexLorentzTensor.C}
-    (f : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum)
-    (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
-  (complexLorentzTensor.tensorBasis c).repr (ofRat f) b = toComplexNum (f b) := by
+lemma ofRat_basis_repr_apply {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+    (f : (ComponentIdx c) → RatComplexNum)
+    (b :(ComponentIdx c)) :
+  (Tensor.basis c).repr (ofRat f) b = toComplexNum (f b) := by
   simp [ofRat]
   rfl
 
-lemma ofRat_add {n : ℕ} {c : Fin n → complexLorentzTensor.C}
-    (f f1 : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum) :
-    ofRat (f + f1) = ofRat f + ofRat f1 := by
-  apply (complexLorentzTensor.tensorBasis _).repr.injective
-  ext b
-  simp
-
-lemma tensorBasis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
-    (b : Π j, Fin (complexLorentzTensor.repDim (c j))) :
-    complexLorentzTensor.tensorBasis c b
+lemma basis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+    (b : (ComponentIdx c)) :
+    Tensor.basis c b
     = ofRat (fun b' => if b = b' then ⟨1, 0⟩ else ⟨0, 0⟩) := by
-  apply (complexLorentzTensor.tensorBasis c).repr.injective
+  apply (Tensor.basis c).repr.injective
   simp only [Basis.repr_self]
   ext b'
-  simp only [ofRat_tensorBasis_repr_apply]
+  simp only [ofRat_basis_repr_apply]
   rw [Finsupp.single_apply, toComplexNum]
   simp only [RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk]
   split
@@ -99,7 +105,7 @@ lemma contr_basis_ratComplexNum {c : complexLorentzTensor.C}
     rw [Lorentz.contrCoContraction_basis]
     simp
 open TensorTree
-
+/-
 lemma prod_ofRat_ofRat {n n1 : ℕ} {c : Fin n → complexLorentzTensor.C}
     (f : (Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum)
     {c1 : Fin n1 → complexLorentzTensor.C}
@@ -187,5 +193,5 @@ lemma add_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
   rw [add_tensor]
   simp [← ofRat_add]
   rfl
-
+-/
 end complexLorentzTensor

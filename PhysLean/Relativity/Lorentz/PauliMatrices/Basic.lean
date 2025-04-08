@@ -32,67 +32,61 @@ open complexLorentzTensor
 ## Definitions.
 
 -/
+open TensorSpecies
+open Tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ^μ^α^{dot β}`. -/
-def pauliContr := (TensorTree.constThreeNodeE complexLorentzTensor .up .upL .upR
-  PauliMatrix.asConsTensor).tensor
+abbrev pauliContr : ℂT[.up, .upL, .upR] := fromConstTriple PauliMatrix.asConsTensor
 
 @[inherit_doc pauliContr]
 scoped[PauliMatrix] notation "σ^^^" => PauliMatrix.pauliContr
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
-def pauliCo : ℂT[.down, .upL, .upR] :=
-  (perm (OverColor.equivToHomEq (Equiv.refl _) (by decide))
-  {η' | μ ν ⊗ σ^^^ | ν α β}ᵀᵀ).tensor
+abbrev pauliCo : ℂT[.down, .upL, .upR] :=
+  permT id (PermCond.auto) {η' | μ ν ⊗ σ^^^ | ν α β}ᵀ
 
 @[inherit_doc pauliCo]
 scoped[PauliMatrix] notation "σ_^^" => PauliMatrix.pauliCo
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ_{dot β}_α`. -/
-def pauliCoDown : ℂT[.down, .downR, .downL] :=
-  (perm (OverColor.equivToHomEq (Equiv.refl _) (by decide))
-  {σ_^^ | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀᵀ).tensor
+abbrev pauliCoDown : ℂT[.down, .downR, .downL] :=
+  permT id (PermCond.auto) {σ_^^ | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀ
 
 @[inherit_doc pauliCoDown]
 scoped[PauliMatrix] notation "σ___" => PauliMatrix.pauliCoDown
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ^μ_{dot β}_α`. -/
-def pauliContrDown : ℂT[.up, .downR, .downL] :=
-    (perm (OverColor.equivToHomEq (Equiv.refl _) (by decide))
-    {pauliContr | μ α β ⊗ εR' | β β' ⊗ εL' | α α'}ᵀᵀ).tensor
+abbrev pauliContrDown : ℂT[.up, .downR, .downL] :=
+    permT id (PermCond.auto) {pauliContr | μ α β ⊗ εR' | β β' ⊗ εL' | α α'}ᵀ
 
 @[inherit_doc pauliContrDown]
 scoped[PauliMatrix] notation "σ^__" => PauliMatrix.pauliContrDown
 
 /-!
 
-## Tensor nodes.
-
+## Different forms
 -/
-
-/-- The definitional tensor node relation for `pauliContr`. -/
-lemma tensorNode_pauliContr : {pauliContr | μ α β}ᵀᵀ.tensor =
-    (TensorTree.constThreeNodeE complexLorentzTensor .up .upL .upR
-  PauliMatrix.asConsTensor).tensor := by
+open Lorentz
+lemma pauliContr_eq_fromConstTriple : σ^^^ = fromConstTriple PauliMatrix.asConsTensor := by
   rfl
 
-/-- The definitional tensor node relation for `pauliCo`. -/
-lemma tensorNode_pauliCo : {pauliCo | μ α β}ᵀᵀ.tensor =
-    (perm (OverColor.equivToHomEq (Equiv.refl _) (by decide))
-  {η' | μ ν ⊗ σ^^^ | ν α β}ᵀᵀ).tensor := by
-  rw [pauliCo, tensorNode_tensor]
+lemma pauliContr_eq_fromTripleT : σ^^^ = fromTripleT PauliMatrix.asTensor := by
+  rw [pauliContr_eq_fromConstTriple, fromConstTriple]
+  erw [PauliMatrix.asConsTensor_apply_one]
 
-/-- The definitional tensor node relation for `pauliCoDown`. -/
-lemma tensorNode_pauliCoDown : {pauliCoDown | μ α β}ᵀᵀ.tensor =
-    (perm (OverColor.equivToHomEq (Equiv.refl _) (by decide))
-    {pauliCo | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀᵀ).tensor := by
-  rw [pauliCoDown, tensorNode_tensor]
 
-/-- The definitional tensor node relation for `pauliContrDown`. -/
-lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀᵀ.tensor =
-    (perm (OverColor.equivToHomEq (Equiv.refl _) (by decide))
-    {pauliContr | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀᵀ).tensor := by
-  rfl
+lemma pauliContr_eq_basis : pauliContr =
+    Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0)
+    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 1 | 2 => 1)
+    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 0 | 2 => 1)
+    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 1 | 2 => 0)
+    - I • Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 0 | 2 => 1)
+    + I • Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 1 | 2 => 0)
+    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 0 | 2 => 0)
+    - Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
+  rw [pauliContr_eq_fromTripleT]
+  rw [PauliMatrix.asTensor_expand]
+  simp
 
 /-!
 
@@ -101,71 +95,25 @@ lemma tensorNode_pauliContrDown : {pauliContrDown | μ α β}ᵀᵀ.tensor =
 -/
 
 /-- The tensor `pauliContr` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_pauliContr (g : SL(2,ℂ)) : {g •ₐ pauliContr | μ α β}ᵀᵀ.tensor =
-    {pauliContr | μ α β}ᵀᵀ.tensor := by
-  rw [tensorNode_pauliContr, constThreeNodeE]
-  rw [← action_constThreeNode _ g]
-  rfl
+lemma actionT_pauliContr (g : SL(2,ℂ)) : g • pauliContr = pauliContr := by
+  rw [pauliContr_eq_fromConstTriple]
+  rw [actionT_fromConstTriple]
 
 /-- The tensor `pauliCo` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_pauliCo (g : SL(2,ℂ)) : {g •ₐ pauliCo | μ α β}ᵀᵀ.tensor =
-    {pauliCo | μ α β}ᵀᵀ.tensor := by
-  conv =>
-    lhs
-    rw [action_tensor_eq <| tensorNode_pauliCo]
-    rw [action_tensor_eq <| perm_tensor_eq <| contr_tensor_eq <|
-      prod_tensor_eq_snd <| tensorNode_pauliContr]
-    rw [(perm_action _ _ _).symm]
-    rw [perm_tensor_eq <| (contr_action _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| (prod_action _ _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| action_constTwoNode _ _]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| action_constThreeNode _ _]
-  conv =>
-    rhs
-    rw [tensorNode_pauliCo]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| tensorNode_pauliContr]
-  rfl
+lemma actionT_pauliCo (g : SL(2,ℂ)) : g • pauliCo = pauliCo := by
+  rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant]
+  rw [actionT_pauliContr, actionT_coMetric]
 
 /-- The tensor `pauliCoDown` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_pauliCoDown (g : SL(2,ℂ)) : {g •ₐ pauliCoDown | μ α β}ᵀᵀ.tensor =
-    {pauliCoDown | μ α β}ᵀᵀ.tensor := by
-  conv =>
-    lhs
-    rw [action_tensor_eq <| tensorNode_pauliCoDown]
-    rw [(perm_action _ _ _).symm]
-    rw [perm_tensor_eq <| (contr_action _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| (prod_action _ _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| (contr_action _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <|
-      contr_tensor_eq <| (prod_action _ _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <|
-      prod_tensor_eq_fst <| action_pauliCo _]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <|
-      prod_tensor_eq_snd <| action_altRightMetric _]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| action_altLeftMetric _]
-  conv =>
-    rhs
-    rw [tensorNode_pauliCoDown]
+lemma actionT_pauliCoDown (g : SL(2,ℂ)) : g • pauliCoDown = pauliCoDown := by
+  rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant,
+    ← contrT_equivariant, ← prodT_equivariant]
+  rw [actionT_pauliCo, actionT_altLeftMetric, actionT_altRightMetric]
 
 /-- The tensor `pauliContrDown` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_pauliContrDown (g : SL(2,ℂ)) : {g •ₐ pauliContrDown | μ α β}ᵀᵀ.tensor =
-    {pauliContrDown | μ α β}ᵀᵀ.tensor := by
-  conv =>
-    lhs
-    rw [action_tensor_eq <| tensorNode_pauliContrDown]
-    rw [(perm_action _ _ _).symm]
-    rw [perm_tensor_eq <| (contr_action _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| (prod_action _ _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| (contr_action _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <|
-      contr_tensor_eq <| (prod_action _ _ _).symm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq <|
-      prod_tensor_eq_fst <| action_pauliContr _]
-    rw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| contr_tensor_eq
-      <| prod_tensor_eq_snd <| action_altRightMetric _]
-    erw [perm_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| action_altLeftMetric _]
-  conv =>
-    rhs
-    rw [tensorNode_pauliContrDown]
+lemma actionT_pauliContrDown (g : SL(2,ℂ)) : g • pauliContrDown = pauliContrDown := by
+  rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant,
+    ← contrT_equivariant, ← prodT_equivariant]
+  rw [actionT_pauliContr, actionT_altLeftMetric, actionT_altRightMetric]
 
 end PauliMatrix

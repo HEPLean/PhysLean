@@ -9,9 +9,11 @@ import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdContr
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ContrContr
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ContrSwap
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.PermContr
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.UnitTensor
+import PhysLean.Relativity.Lorentz.ComplexTensor.OfRat
 /-!
 
-## Metrics as complex Lorentz tensors
+## Unit tensors for complex Lorentz tensors
 
 -/
 open IndexNotation
@@ -29,7 +31,8 @@ noncomputable section
 
 namespace complexLorentzTensor
 open Fermion
-
+open TensorSpecies
+open Tensor
 /-!
 
 ## Definitions.
@@ -37,28 +40,22 @@ open Fermion
 -/
 
 /-- The unit `δᵢⁱ` as a complex Lorentz tensor. -/
-def coContrUnit := (TensorTree.constTwoNodeE complexLorentzTensor Color.down Color.up
-  Lorentz.coContrUnit).tensor
+abbrev coContrUnit : ℂT[.down, .up] := complexLorentzTensor.unitTensor Color.up
 
 /-- The unit `δⁱᵢ` as a complex Lorentz tensor. -/
-def contrCoUnit := (TensorTree.constTwoNodeE complexLorentzTensor Color.up Color.down
-  Lorentz.contrCoUnit).tensor
+abbrev contrCoUnit : ℂT[.up, .down] := complexLorentzTensor.unitTensor Color.down
 
 /-- The unit `δₐᵃ` as a complex Lorentz tensor. -/
-def altLeftLeftUnit := (TensorTree.constTwoNodeE complexLorentzTensor Color.downL Color.upL
-  Fermion.altLeftLeftUnit).tensor
+abbrev altLeftLeftUnit : ℂT[.downL, .upL] := complexLorentzTensor.unitTensor Color.upL
 
 /-- The unit `δᵃₐ` as a complex Lorentz tensor. -/
-def leftAltLeftUnit := (TensorTree.constTwoNodeE complexLorentzTensor Color.upL Color.downL
-  Fermion.leftAltLeftUnit).tensor
+abbrev leftAltLeftUnit : ℂT[.upL, .downL] := complexLorentzTensor.unitTensor Color.downL
 
 /-- The unit `δ_{dot a}^{dot a}` as a complex Lorentz tensor. -/
-def altRightRightUnit := (TensorTree.constTwoNodeE complexLorentzTensor Color.downR Color.upR
-  Fermion.altRightRightUnit).tensor
+abbrev altRightRightUnit : ℂT[.downR, .upR] := complexLorentzTensor.unitTensor Color.upR
 
 /-- The unit `δ^{dot a}_{dot a}` as a complex Lorentz tensor. -/
-def rightAltRightUnit := (TensorTree.constTwoNodeE complexLorentzTensor Color.upR Color.downR
-  Fermion.rightAltRightUnit).tensor
+abbrev rightAltRightUnit : ℂT[.upR, .downR] := complexLorentzTensor.unitTensor Color.downR
 
 /-!
 
@@ -86,39 +83,257 @@ scoped[complexLorentzTensor] notation "δR" => rightAltRightUnit
 
 /-!
 
-## Tensor nodes.
+## Other forms
 
 -/
 
-/-- The definitional tensor node relation for `coContrUnit`. -/
-lemma tensorNode_coContrUnit : {δ' | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
-    Color.down Color.up Lorentz.coContrUnit).tensor:= by
+/-!
+
+### fromConstPair
+
+-/
+
+lemma coContrUnit_eq_fromConstPair : δ' = fromConstPair Lorentz.coContrUnit := by
+  rw [Lorentz.coContrUnit]
   rfl
 
-/-- The definitional tensor node relation for `contrCoUnit`. -/
-lemma tensorNode_contrCoUnit: {δ | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE complexLorentzTensor
-    Color.up Color.down Lorentz.contrCoUnit).tensor := by
+lemma contrCoUnit_eq_fromConstPair : δ = fromConstPair Lorentz.contrCoUnit := by
+  rw [Lorentz.contrCoUnit]
   rfl
 
-/-- The definitional tensor node relation for `altLeftLeftUnit`. -/
-lemma tensorNode_altLeftLeftUnit : {δL' | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
-    complexLorentzTensor Color.downL Color.upL Fermion.altLeftLeftUnit).tensor := by
+lemma altLeftLeftUnit_eq_fromConstPair : δL' = fromConstPair Fermion.altLeftLeftUnit := by
+  rw [Fermion.altLeftLeftUnit]
   rfl
 
-/-- The definitional tensor node relation for `leftAltLeftUnit`. -/
-lemma tensorNode_leftAltLeftUnit : {δL | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
-    complexLorentzTensor Color.upL Color.downL Fermion.leftAltLeftUnit).tensor := by
+lemma leftAltLeftUnit_eq_fromConstPair : δL = fromConstPair Fermion.leftAltLeftUnit := by
+  rw [Fermion.leftAltLeftUnit]
   rfl
 
-/-- The definitional tensor node relation for `altRightRightUnit`. -/
-lemma tensorNode_altRightRightUnit: {δR' | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
-    complexLorentzTensor Color.downR Color.upR Fermion.altRightRightUnit).tensor := by
+lemma altRightRightUnit_eq_fromConstPair : δR' = fromConstPair Fermion.altRightRightUnit := by
+  rw [Fermion.altRightRightUnit]
   rfl
 
-/-- The definitional tensor node relation for `rightAltRightUnit`. -/
-lemma tensorNode_rightAltRightUnit: {δR | μ ν}ᵀᵀ.tensor = (TensorTree.constTwoNodeE
-    complexLorentzTensor Color.upR Color.downR Fermion.rightAltRightUnit).tensor := by
+lemma rightAltRightUnit_eq_fromConstPair : δR = fromConstPair Fermion.rightAltRightUnit := by
+  rw [Fermion.rightAltRightUnit]
   rfl
+
+/-!
+
+### fromPairT
+
+-/
+
+lemma coContrUnit_eq_fromPairT : δ' = fromPairT (Lorentz.coContrUnitVal) := by
+  rw [coContrUnit_eq_fromConstPair, fromConstPair]
+  erw [Lorentz.coContrUnit_apply_one]
+
+lemma contrCoUnit_eq_fromPairT : δ = fromPairT (Lorentz.contrCoUnitVal) := by
+  rw [contrCoUnit_eq_fromConstPair, fromConstPair]
+  erw [Lorentz.contrCoUnit_apply_one]
+
+lemma altLeftLeftUnit_eq_fromPairT : δL' = fromPairT (Fermion.altLeftLeftUnitVal) := by
+  rw [altLeftLeftUnit_eq_fromConstPair, fromConstPair]
+  erw [Fermion.altLeftLeftUnit_apply_one]
+
+lemma leftAltLeftUnit_eq_fromPairT : δL = fromPairT (Fermion.leftAltLeftUnitVal) := by
+  rw [leftAltLeftUnit_eq_fromConstPair, fromConstPair]
+  erw [Fermion.leftAltLeftUnit_apply_one]
+
+lemma altRightRightUnit_eq_fromPairT : δR' = fromPairT (Fermion.altRightRightUnitVal) := by
+  rw [altRightRightUnit_eq_fromConstPair, fromConstPair]
+  erw [Fermion.altRightRightUnit_apply_one]
+
+lemma rightAltRightUnit_eq_fromPairT : δR = fromPairT (Fermion.rightAltRightUnitVal) := by
+  rw [rightAltRightUnit_eq_fromConstPair, fromConstPair]
+  erw [Fermion.rightAltRightUnit_apply_one]
+
+/-!
+
+### complexCoBasis etc.
+
+-/
+
+open Lorentz in
+lemma coContrUnit_eq_complexCoBasis_complexContrBasis : δ' =
+    ∑ i, fromPairT (complexCoBasis i ⊗ₜ[ℂ] complexContrBasis i) := by
+  rw [coContrUnit_eq_fromPairT, coContrUnitVal_expand_tmul]
+  rfl
+
+open Lorentz in
+lemma coContrUnit_eq_complexCoBasisFin4_complexContrBasisFin4 : δ' =
+    ∑ i, fromPairT (complexCoBasisFin4 i ⊗ₜ[ℂ] complexContrBasisFin4 i) := by
+  rw [coContrUnit_eq_complexCoBasis_complexContrBasis]
+  rw [← finSumFinEquiv.symm.sum_comp]
+  simp [complexCoBasisFin4, complexContrBasisFin4]
+
+open Lorentz in
+lemma contrCoUnit_eq_complexContrBasis_complexCoBasis : δ =
+    ∑ i, fromPairT (complexContrBasis i ⊗ₜ[ℂ] complexCoBasis i) := by
+  rw [contrCoUnit_eq_fromPairT, contrCoUnitVal_expand_tmul]
+  rfl
+
+open Lorentz in
+lemma contrCoUnit_eq_complexContrBasisFin4_complexCoBasisFin4 : δ =
+    ∑ i, fromPairT (complexContrBasisFin4 i ⊗ₜ[ℂ] complexCoBasisFin4 i) := by
+  rw [contrCoUnit_eq_complexContrBasis_complexCoBasis]
+  rw [← finSumFinEquiv.symm.sum_comp]
+  simp [complexContrBasisFin4, complexCoBasisFin4]
+
+open Fermion in
+lemma altLeftLeftUnit_eq_altLeftBasis_leftBasis : δL' =
+    ∑ i, fromPairT (altLeftBasis i ⊗ₜ[ℂ] leftBasis i) := by
+  rw [altLeftLeftUnit_eq_fromPairT, altLeftLeftUnitVal_expand_tmul]
+  rfl
+
+open Fermion in
+lemma leftAltLeftUnit_eq_leftBasis_altLeftBasis : δL =
+    ∑ i, fromPairT (leftBasis i ⊗ₜ[ℂ] altLeftBasis i) := by
+  rw [leftAltLeftUnit_eq_fromPairT, leftAltLeftUnitVal_expand_tmul]
+  rfl
+
+open Fermion in
+lemma altRightRightUnit_eq_altRightBasis_rightBasis : δR' =
+    ∑ i, fromPairT (altRightBasis i ⊗ₜ[ℂ] rightBasis i) := by
+  rw [altRightRightUnit_eq_fromPairT, altRightRightUnitVal_expand_tmul]
+  rfl
+
+open Fermion in
+lemma rightAltRightUnit_eq_rightBasis_altRightBasis : δR =
+    ∑ i, fromPairT (rightBasis i ⊗ₜ[ℂ] altRightBasis i) := by
+  rw [rightAltRightUnit_eq_fromPairT, rightAltRightUnitVal_expand_tmul]
+  rfl
+
+/-!
+
+### basis
+
+-/
+
+lemma coContrUnit_eq_basis : δ' =
+    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+      ![Color.down, Color.up] (fun | 0 => i | 1 => i) := by
+  rw [coContrUnit_eq_complexCoBasisFin4_complexContrBasisFin4]
+  conv_lhs =>
+    enter [2, x]
+    change fromPairT ((complexLorentzTensor.basis .down x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .up _ ))
+    rw [fromPairT_apply_basis_repr]
+  rfl
+
+lemma contrCoUnit_eq_basis : δ =
+    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+      ![Color.up, Color.down] (fun | 0 => i | 1 => i) := by
+  rw [contrCoUnit_eq_complexContrBasisFin4_complexCoBasisFin4]
+  conv_lhs =>
+    enter [2, x]
+    change fromPairT ((complexLorentzTensor.basis .up x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .down _ ))
+    rw [fromPairT_apply_basis_repr]
+  rfl
+
+lemma altLeftLeftUnit_eq_basis : δL' =
+    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+      ![Color.downL, Color.upL] (fun | 0 => i | 1 => i) := by
+  rw [altLeftLeftUnit_eq_altLeftBasis_leftBasis]
+  conv_lhs =>
+    enter [2, x]
+    change fromPairT ((complexLorentzTensor.basis .downL x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .upL _ ))
+    rw [fromPairT_apply_basis_repr]
+  rfl
+
+lemma leftAltLeftUnit_eq_basis : δL =
+    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+      ![Color.upL, Color.downL] (fun | 0 => i | 1 => i) := by
+  rw [leftAltLeftUnit_eq_leftBasis_altLeftBasis]
+  conv_lhs =>
+    enter [2, x]
+    change fromPairT ((complexLorentzTensor.basis .upL x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .downL _ ))
+    rw [fromPairT_apply_basis_repr]
+  rfl
+
+lemma altRightRightUnit_eq_basis : δR' =
+    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+      ![Color.downR, Color.upR] (fun | 0 => i | 1 => i) := by
+  rw [altRightRightUnit_eq_altRightBasis_rightBasis]
+  conv_lhs =>
+    enter [2, x]
+    change fromPairT ((complexLorentzTensor.basis .downR x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .upR _ ))
+    rw [fromPairT_apply_basis_repr]
+  rfl
+
+lemma rightAltRightUnit_eq_basis : δR =
+    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+      ![Color.upR, Color.downR] (fun | 0 => i | 1 => i) := by
+  rw [rightAltRightUnit_eq_rightBasis_altRightBasis]
+  conv_lhs =>
+    enter [2, x]
+    change fromPairT ((complexLorentzTensor.basis .upR x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .downR _ ))
+    rw [fromPairT_apply_basis_repr]
+  rfl
+
+/-!
+
+### ofRat
+
+-/
+
+lemma coContrUnit_eq_ofRat : δ' = ofRat fun f =>
+    if f 0 = f 1 then 1 else 0 := by
+  rw [coContrUnit_eq_basis]
+  conv_lhs =>
+    enter [2, x]
+    rw [basis_eq_ofRat]
+  rw [← map_sum]
+  congr
+  with_unfolding_all decide
+
+lemma contrCoUnit_eq_ofRat : δ = ofRat fun f =>
+    if f 0 = f 1 then 1 else 0 := by
+  rw [contrCoUnit_eq_basis]
+  conv_lhs =>
+    enter [2, x]
+    rw [basis_eq_ofRat]
+  rw [← map_sum]
+  congr
+  with_unfolding_all decide
+
+lemma altLeftLeftUnit_eq_ofRat : δL' = ofRat fun f =>
+    if f 0 = f 1 then 1 else 0 := by
+  rw [altLeftLeftUnit_eq_basis]
+  conv_lhs =>
+    enter [2, x]
+    rw [basis_eq_ofRat]
+  rw [← map_sum]
+  congr
+  with_unfolding_all decide
+
+lemma leftAltLeftUnit_eq_ofRat : δL = ofRat fun f =>
+    if f 0 = f 1 then 1 else 0 := by
+  rw [leftAltLeftUnit_eq_basis]
+  conv_lhs =>
+    enter [2, x]
+    rw [basis_eq_ofRat]
+  rw [← map_sum]
+  congr
+  with_unfolding_all decide
+
+lemma altRightRightUnit_eq_ofRat : δR' = ofRat fun f =>
+    if f 0 = f 1 then 1 else 0 := by
+  rw [altRightRightUnit_eq_basis]
+  conv_lhs =>
+    enter [2, x]
+    rw [basis_eq_ofRat]
+  rw [← map_sum]
+  congr
+  with_unfolding_all decide
+
+lemma rightAltRightUnit_eq_ofRat : δR = ofRat fun f =>
+    if f 0 = f 1 then 1 else 0 := by
+  rw [rightAltRightUnit_eq_basis]
+  conv_lhs =>
+    enter [2, x]
+    rw [basis_eq_ofRat]
+  rw [← map_sum]
+  congr
+  with_unfolding_all decide
 
 /-!
 
@@ -127,39 +342,27 @@ lemma tensorNode_rightAltRightUnit: {δR | μ ν}ᵀᵀ.tensor = (TensorTree.con
 -/
 
 /-- The tensor `coContrUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_coContrUnit (g : SL(2,ℂ)) :
-    {g •ₐ δ' | μ ν}ᵀᵀ.tensor = {δ' | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_coContrUnit, constTwoNodeE, ← action_constTwoNode _ g]
-  rfl
+lemma actionT_coContrUnit (g : SL(2,ℂ)) : g • δ' = δ'  := by
+  rw [unitTensor_invariant]
 
 /-- The tensor `contrCoUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_contrCoUnit (g : SL(2,ℂ)) :
-    {g •ₐ δ | μ ν}ᵀᵀ.tensor = {δ | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_contrCoUnit, constTwoNodeE, ← action_constTwoNode _ g]
-  rfl
+lemma actionT_contrCoUnit (g : SL(2,ℂ)) : g • δ  = δ := by
+  rw [unitTensor_invariant]
 
 /-- The tensor `altLeftLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_altLeftLeftUnit (g : SL(2,ℂ)) :
-    {g •ₐ δL' | μ ν}ᵀᵀ.tensor = {δL' | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_altLeftLeftUnit, constTwoNodeE, ← action_constTwoNode _ g]
-  rfl
+lemma actionT_altLeftLeftUnit (g : SL(2,ℂ)) : g • δL'  = δL' := by
+  rw [unitTensor_invariant]
 
 /-- The tensor `leftAltLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_leftAltLeftUnit (g : SL(2,ℂ)) :
-    {g •ₐ δL | μ ν}ᵀᵀ.tensor = {δL | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_leftAltLeftUnit, constTwoNodeE, ← action_constTwoNode _ g]
-  rfl
+lemma actionT_leftAltLeftUnit (g : SL(2,ℂ)) : g • δL = δL := by
+  rw [unitTensor_invariant]
 
 /-- The tensor `altRightRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_altRightRightUnit (g : SL(2,ℂ)) :
-    {g •ₐ δR' | μ ν}ᵀᵀ.tensor = {δR' | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_altRightRightUnit, constTwoNodeE, ← action_constTwoNode _ g]
-  rfl
+lemma actionT_altRightRightUnit (g : SL(2,ℂ)) : g • δR' = δR' := by
+  rw [unitTensor_invariant]
 
 /-- The tensor `rightAltRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma action_rightAltRightUnit (g : SL(2,ℂ)) :
-    {g •ₐ δR | μ ν}ᵀᵀ.tensor = {δR | μ ν}ᵀᵀ.tensor := by
-  rw [tensorNode_rightAltRightUnit, constTwoNodeE, ← action_constTwoNode _ g]
-  rfl
+lemma actionT_rightAltRightUnit (g : SL(2,ℂ)) : g • δR  = δR := by
+  rw [unitTensor_invariant]
 
 end complexLorentzTensor

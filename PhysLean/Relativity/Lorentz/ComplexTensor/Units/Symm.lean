@@ -3,8 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Basis
-import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Basis
+import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Basic
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Elab
 /-!
 
 ## Symmetry lemmas relating to units
@@ -21,83 +21,43 @@ namespace complexLorentzTensor
 ## Symmetry properties
 
 -/
+open TensorSpecies
+open Tensor
 
-/-- Swapping indices of `coContrUnit` returns `contrCoUnit`: `{δ' | μ ν = δ | ν μ}ᵀᵀ`. -/
-lemma coContrUnit_symm : {δ' | μ ν = δ | ν μ}ᵀᵀ := by
-  apply (complexLorentzTensor.tensorBasis _).repr.injective
-  ext b
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, coContrUnit_eq_ofRat,
-    contrCoUnit_eq_ofRat, Fin.isValue, cons_val_zero,
-    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
-    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide
+/-- Swapping indices of `coContrUnit` returns `contrCoUnit`: `{δ' | μ ν = δ | ν μ}ᵀ`. -/
+lemma coContrUnit_symm : {δ' | μ ν = δ | ν μ}ᵀ := by
+  rw [coContrUnit, unitTensor_eq_permT_dual]
+  rfl
 
-/-- Swapping indices of `contrCoUnit` returns `coContrUnit`: `{δ | μ ν = δ' | ν μ}ᵀᵀ`. -/
-lemma contrCoUnit_symm : {δ | μ ν = δ' | ν μ}ᵀᵀ := by
-  apply (complexLorentzTensor.tensorBasis _).repr.injective
-  ext b
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, coContrUnit_eq_ofRat,
-    contrCoUnit_eq_ofRat, Fin.isValue, cons_val_zero,
-    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
-    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide
+/-- Swapping indices of `contrCoUnit` returns `coContrUnit`: `{δ | μ ν = δ' | ν μ}ᵀ`. -/
+lemma contrCoUnit_symm : {δ | μ ν = δ' | ν μ}ᵀ := by
+  rw [contrCoUnit, unitTensor_eq_permT_dual]
+  rfl
 
 /-- Swapping indices of `altLeftLeftUnit` returns
-  `leftAltLeftUnit`: `{δL' | α α' = δL | α' α}ᵀᵀ`. -/
-lemma altLeftLeftUnit_symm : {δL' | α α' = δL | α' α}ᵀᵀ := by
-  apply (complexLorentzTensor.tensorBasis _).repr.injective
-  ext b
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altLeftLeftUnit_eq_ofRat,
-    leftAltLeftUnit_eq_ofRat, Fin.isValue, cons_val_zero,
-    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
-    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide
+  `leftAltLeftUnit`: `{δL' | α α' = δL | α' α}ᵀ`. -/
+lemma altLeftLeftUnit_symm : {δL' | α α' = δL | α' α}ᵀ := by
+  rw [altLeftLeftUnit, unitTensor_eq_permT_dual]
+  rfl
 
 /-- Swapping indices of `leftAltLeftUnit` returns
-  `altLeftLeftUnit`: `{δL | α α' = δL' | α' α}ᵀᵀ`. -/
-lemma leftAltLeftUnit_symm : {δL | α α' = δL' | α' α}ᵀᵀ := by
-  apply (complexLorentzTensor.tensorBasis _).repr.injective
-  ext b
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altLeftLeftUnit_eq_ofRat,
-    leftAltLeftUnit_eq_ofRat, Fin.isValue, cons_val_zero,
-    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
-    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide
+  `altLeftLeftUnit`: `{δL | α α' = δL' | α' α}ᵀ`. -/
+lemma leftAltLeftUnit_symm : {δL | α α' = δL' | α' α}ᵀ := by
+  rw [leftAltLeftUnit, unitTensor_eq_permT_dual]
+  rfl
 
 /-- Swapping indices of `altRightRightUnit` returns `rightAltRightUnit`:
-`{δR' | β β' = δR | β' β}ᵀᵀ`.
+`{δR' | β β' = δR | β' β}ᵀ`.
 -/
-lemma altRightRightUnit_symm : {δR' | β β' = δR | β' β}ᵀᵀ := by
-  apply (complexLorentzTensor.tensorBasis _).repr.injective
-  ext b
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altRightRightUnit_eq_ofRat,
-    rightAltRightUnit_eq_ofRat, Fin.isValue, cons_val_zero,
-    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
-    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide
+lemma altRightRightUnit_symm : {δR' | β β' = δR | β' β}ᵀ := by
+  rw [altRightRightUnit, unitTensor_eq_permT_dual]
+  rfl
 
 /-- Swapping indices of `rightAltRightUnit` returns `altRightRightUnit`:
-`{δR | β β' = δR' | β' β}ᵀᵀ`.
+`{δR | β β' = δR' | β' β}ᵀ`.
 -/
-lemma rightAltRightUnit_symm : {δR | β β' = δR' | β' β}ᵀᵀ := by
-  apply (complexLorentzTensor.tensorBasis _).repr.injective
-  ext b
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, altRightRightUnit_eq_ofRat,
-    rightAltRightUnit_eq_ofRat, Fin.isValue, cons_val_zero,
-    cons_val_one, head_cons, tensorNode_tensor, ofRat_tensorBasis_repr_apply,
-    perm_tensorBasis_repr_apply, OverColor.mk_hom, OverColor.equivToHomEq_toEquiv]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide
+lemma rightAltRightUnit_symm : {δR | β β' = δR' | β' β}ᵀ := by
+  rw [rightAltRightUnit, unitTensor_eq_permT_dual]
+  rfl
 
 end complexLorentzTensor

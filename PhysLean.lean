@@ -171,11 +171,9 @@ import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basis
 import PhysLean.Relativity.Lorentz.ComplexTensor.Lemmas
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Basic
-import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Basis
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Lemmas
 import PhysLean.Relativity.Lorentz.ComplexTensor.OfRat
 import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Basic
-import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Basis
 import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Symm
 import PhysLean.Relativity.Lorentz.ComplexVector.Basic
 import PhysLean.Relativity.Lorentz.ComplexVector.Contraction
