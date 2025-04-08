@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.CategoryTheory.Core
 import PhysLean.Relativity.Lorentz.Weyl.Basic
-import PhysLean.Relativity.Lorentz.ComplexVector.Basic
+import PhysLean.Relativity.Lorentz.ComplexTensor.Vector.Pre.Basic
 /-!
 
 # Over color category.
