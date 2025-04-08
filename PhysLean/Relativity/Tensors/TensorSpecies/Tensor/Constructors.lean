@@ -750,6 +750,33 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
     simp_all [P]
 
 
+lemma fromTripleT_apply_basis {c c1 c2 : S.C}
+    (b0 : Fin (S.repDim c)) (b1 : Fin (S.repDim c1))
+    (b2 : Fin (S.repDim c2)) :
+    fromTripleT (S.basis c b0 ⊗ₜ[k] S.basis c1 b1 ⊗ₜ[k] S.basis c2 b2) =
+    Tensor.basis ![c, c1, c2] (fun | 0 => b0 | 1 => b1 | 2 => b2) := by
+  apply (Tensor.basis _).repr.injective
+  simp
+  ext b
+  rw [fromTripleT_basis_repr]
+  simp [Finsupp.single_apply]
+  conv_rhs =>
+    enter [1]
+    rw [funext_iff]
+    rw [Fin.forall_fin_succ, Fin.forall_fin_two]
+    simp
+  split
+  next h =>
+    subst h
+    simp_all only [Fin.isValue, true_and]
+    split
+    next h =>
+      subst h
+      simp_all only [Fin.isValue, true_and]
+    next h => simp_all only [Fin.isValue, false_and, ↓reduceIte]
+  next h => simp_all only [Fin.isValue, false_and, ↓reduceIte]
+
+
 /-!
 
 ## fromConstTriple
