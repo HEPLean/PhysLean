@@ -85,7 +85,6 @@ lemma ω_sq : S.ω^2 = S.k / S.m := by
   exact div_nonneg (le_of_lt S.k_pos) (le_of_lt S.m_pos)
 
 /-- The angular frequence of the classical harmonic osscilator is not equal to zero. -/
-@[simp]
 lemma ω_neq_zero : S.ω ≠ 0 := Ne.symm (ne_of_lt S.ω_pos)
 
 /-- The inverse of the square of the angular frequence of the classical harmonic osscilator

@@ -72,14 +72,16 @@ def example1 : InstantaneousTwinParadox where
   endPoint_causallyFollows_startPoint := by
     simp [causallyFollows]
     left
-    simp [interiorFutureLightCone]
+    simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq,
+      LinearEquiv.apply_symm_apply, Nat.ofNat_pos, and_true]
     refine (timeLike_iff_norm_sq_pos _).mpr ?_
     rw [innerProduct_toCoord]
     simp
   twinBMid_causallyFollows_startPoint := by
-    simp [causallyFollows]
+    simp only [causallyFollows]
     left
-    simp [interiorFutureLightCone]
+    simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq,
+      LinearEquiv.apply_symm_apply]
     norm_num
     refine (timeLike_iff_norm_sq_pos _).mpr ?_
     rw [innerProduct_toCoord]

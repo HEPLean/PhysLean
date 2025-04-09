@@ -167,6 +167,7 @@ lemma sol_eq_amplitude_mul_cos_phase (IC : InitialConditions) :
   · rw [amplitude_mul_cos_phase, amplitude_mul_sin_phase]
     rw [sol]
     field_simp
+    ring
   · ring
 
 /-- For any time the position of the harmonic oscillator is less then the
@@ -201,8 +202,8 @@ lemma sol_velocity (IC : InitialConditions) : deriv (S.sol IC) =
   rw [sol_eq, deriv_add (by fun_prop) (by fun_prop)]
   simp only [differentiableAt_const, deriv_const_mul_field']
   rw [deriv_cos (by fun_prop), deriv_sin (by fun_prop), deriv_mul (by fun_prop) (by fun_prop)]
-  field_simp
-  ring
+  field_simp [S.ω_neq_zero]
+  ring_nf
 
 lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
     fun t => - S.amplitude IC * S.ω * sin (S.ω * t + S.phase IC) := by
@@ -281,7 +282,7 @@ lemma sol_action (IC : InitialConditions) (t1 t2 : ℝ) :
       congr
       funext t
       congr 1
-      field_simp
+      field_simp [S.ω_neq_zero]
       ring
     _ = ∫ (x : ℝ) in (t1 + S.phase IC/S.ω)..(t2 + S.phase IC/S.ω), cos (2 * S.ω * x) := by
       rw [intervalIntegral.integral_comp_add_right (b := t2) (a := t1) (fun x => cos (2 * S.ω * x))
@@ -291,9 +292,9 @@ lemma sol_action (IC : InitialConditions) (t1 t2 : ℝ) :
         intervalIntegral.integral_comp_mul_left, mul_inv_rev, integral_cos, smul_eq_mul,
         mul_eq_mul_left_iff, inv_eq_zero, or_false]
       congr 2
-      · field_simp
+      · field_simp [S.ω_neq_zero]
         ring
-      · field_simp
+      · field_simp [S.ω_neq_zero]
         ring
 
 /-!

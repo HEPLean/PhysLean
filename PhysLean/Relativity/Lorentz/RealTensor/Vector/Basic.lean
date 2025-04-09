@@ -297,6 +297,15 @@ lemma action_toCoord_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
   simp only [op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply, transpose_apply, smul_eq_mul,
     mul_comm]
 
+/-- Extract spatial components from a Lorentz vector,
+    returning them as a vector in Euclidean space. -/
+abbrev spatialPart {d : ℕ} (v : Vector d) : EuclideanSpace ℝ (Fin d) :=
+  fun i => v (Sum.inr i)
+
+/-- Extract time component from a Lorentz vector -/
+abbrev timeComponent {d : ℕ} (v : Vector d) : ℝ :=
+  v (Sum.inl 0)
+
 end Vector
 
 end Lorentz

@@ -13,7 +13,7 @@ import PhysLean.Electromagnetism.Basic
 namespace Electromagnetism
 
 /-- An electromagnetic system consists of charge density, a current density,
-  the speed ofl light and the electric permittivity. -/
+  the speed of light and the electric permittivity. -/
 structure EMSystem where
   /-- The speed of light. -/
   c : ℝ

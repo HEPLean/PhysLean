@@ -237,6 +237,17 @@ def spaceCurl (f : SpaceTime → EuclideanSpace ℝ (Fin 3)) :
 @[inherit_doc spaceCurl]
 scoped[SpaceTime] notation "∇×" => spaceCurl
 
+/-- The gradient of a function `SpaceTime → EuclideanSpace ℝ (Fin 3)`. -/
+def spaceGrad (f : SpaceTime → EuclideanSpace ℝ (Fin 3)) :
+    SpaceTime → EuclideanSpace ℝ (Fin 3) := fun x j =>
+  match j with
+  | 0 => deriv 0 (fun y => f y 0) x
+  | 1 => deriv 1 (fun y => f y 1) x
+  | 2 => deriv 2 (fun y => f y 2) x
+
+@[inherit_doc spaceGrad]
+scoped[SpaceTime] notation "∇" => spaceGrad
+
 end SpaceTime
 
 end

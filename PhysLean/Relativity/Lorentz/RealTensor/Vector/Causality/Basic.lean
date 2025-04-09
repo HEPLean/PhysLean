@@ -4,25 +4,18 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina, Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.RealTensor.Vector.Basic
+
 /-!
 
 ## Causality of Lorentz vectors
 
 -/
-open IndexNotation
-open CategoryTheory
-open MonoidalCategory
-open Matrix
-open MatrixGroups
-open Complex
-open TensorProduct
-open IndexNotation
-open CategoryTheory
-open OverColor.Discrete
+
 noncomputable section
 
 namespace Lorentz
 open realLorentzTensor
+open InnerProductSpace
 
 namespace Vector
 
@@ -52,31 +45,6 @@ lemma causalCharacter_invariant {d : ℕ} (p : Vector d) (Λ : LorentzGroup d) :
   simp only [causalCharacter, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd]
   rw [innerProduct_invariant]
 
-lemma timeLike_iff_norm_sq_pos {d : ℕ} (p : Vector d) :
-    causalCharacter p = CausalCharacter.timeLike ↔ 0 < ⟪p, p⟫ₘ := by
-  simp only [causalCharacter]
-  split
-  · rename_i h
-    simp only [reduceCtorEq, h, lt_self_iff_false]
-  · split
-    · rename_i h
-      simp only [h]
-    · rename_i h
-      simp only [reduceCtorEq, false_iff, not_lt]
-      linarith
-
-lemma lightLike_iff_norm_sq_zero {d : ℕ} (p : Vector d) :
-    causalCharacter p = CausalCharacter.lightLike ↔ ⟪p, p⟫ₘ = 0 := by
-  simp only [causalCharacter]
-  split
-  · rename_i h
-    simp only [reduceCtorEq, h, eq_self_iff_true]
-  · rename_i h
-    simp [h]
-    split
-    · simp
-    · simp
-
 lemma spaceLike_iff_norm_sq_neg {d : ℕ} (p : Vector d) :
     causalCharacter p = CausalCharacter.spaceLike ↔ ⟪p, p⟫ₘ < 0 := by
   simp only [causalCharacter]
@@ -97,8 +65,10 @@ lemma spaceLike_iff_norm_sq_neg {d : ℕ} (p : Vector d) :
 lemma neg_causalCharacter_eq_self {d : ℕ} (p : Vector d) :
     causalCharacter (-p) = causalCharacter p := by
   have h : ⟪-p, -p⟫ₘ = ⟪p, p⟫ₘ := by
-    simp [innerProduct_toCoord, toCoord]
-  simp [causalCharacter, h]
+    simp only [innerProduct_toCoord, toCoord];
+    simp only [C_eq_color, Nat.succ_eq_add_one,
+      Nat.reduceAdd, Fin.isValue, map_neg, Pi.neg_apply, mul_neg, neg_mul, _root_.neg_neg]
+  simp only [causalCharacter, h];
 
 /-- The future light cone of a Lorentz vector `p` is defined as those
   vectors `q` such that
@@ -126,8 +96,16 @@ def futureLightConeBoundary {d : ℕ} (p : Vector d) : Set (Vector d) :=
 def pastLightConeBoundary {d : ℕ} (p : Vector d) : Set (Vector d) :=
   {q | causalCharacter (q - p) = .lightLike ∧ (q - p) (Sum.inl 0) ≤ 0}
 
+/-- Any point `p` lies on its own light cone boundary, as `p - p = 0` has
+    zero Minkowski norm squared. -/
 lemma self_mem_lightConeBoundary {d : ℕ} (p : Vector d) : p ∈ lightConeBoundary p := by
-  simp [lightConeBoundary, causalCharacter]
+  simp [lightConeBoundary]
+  have : p - p = 0 := by simp
+  rw [← this]
+  simp only [causalCharacter]
+  have h0 : ⟪(0 : Vector d), 0⟫ₘ = 0 := by
+    simp only [innerProduct_zero_left]
+  simp [h0]
 
 /-- A proposition which is true if `q` is in the causal future of event `p`. -/
 def causallyFollows {d : ℕ} (p q : Vector d) : Prop :=
@@ -149,6 +127,15 @@ def causallyUnrelated {d : ℕ} (p q : Vector d) : Prop :=
 def causalDiamond {d : ℕ} (p q : Vector d) : Set (Vector d) :=
   {r | causallyFollows p r ∧ causallyFollows r q}
 
-end Vector
+/-- In Minkowski spacetime with (+---) signature, we can define future-directed vectors
+    as having positive time components (by convention) -/
+def isFutureDirected {d : ℕ} (v : Vector d) : Prop :=
+    0 < timeComponent v
 
+/-- In Minkowski spacetime with (+---) signature, we can define past-directed vectors
+    as having negative time components (by convention) -/
+def isPastDirected {d : ℕ} (v : Vector d) : Prop :=
+  timeComponent v < 0
+
+end Vector
 end Lorentz
