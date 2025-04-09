@@ -239,15 +239,5 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.OfInt
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.UnitTensor
-import PhysLean.Relativity.Tensors.Tree.Basic
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Basic
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Congr
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ContrContr
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ContrSwap
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.PermContr
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.PermProd
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdAssoc
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdComm
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ProdContr
 import PhysLean.StatisticalMechanics.Basic
 import PhysLean.Thermodynamics.Basic
