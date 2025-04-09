@@ -1,6 +1,8 @@
 import PhysLean.ClassicalMechanics.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
+import PhysLean.ClassicalMechanics.Space.Basic
+import PhysLean.ClassicalMechanics.Time.Basic
 import PhysLean.CondensedMatter.Basic
 import PhysLean.Cosmology.Basic
 import PhysLean.Cosmology.FLRW.Basic
