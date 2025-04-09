@@ -4,16 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.RealTensor.Vector.Basic
+import PhysLean.ClassicalMechanics.Space.Basic
+import PhysLean.ClassicalMechanics.Time.Basic
 /-!
 # Space time
 
 This file introduce 4d Minkowski spacetime.
 
 -/
-
-/-- The type `Space d` representes `d` dimensional Euclidean space.
-  The default value of `d` is `3`. Thus `Space = Space 3`. -/
-abbrev Space (d : ℕ := 3) := EuclideanSpace ℝ (Fin d)
 
 noncomputable section
 
@@ -32,8 +30,17 @@ open TensorSpecies
 
 /-- The space part of spacetime. -/
 @[simp]
-def space (x : SpaceTime d) : EuclideanSpace ℝ (Fin d) :=
+def space {d : ℕ} (x : SpaceTime d) : Space d :=
   fun i => x (Sum.inr i)
+
+/-- The function `space` is equivariant with respect to rotations. -/
+informal_lemma space_equivariant where
+  deps := [``space]
+  tag := "7MTYX"
+
+/-- The time part of spacetime. -/
+@[simp]
+def time {d : ℕ} (x : SpaceTime d) : Time := x (Sum.inl 0)
 
 /-- For a given `μ : Fin (1 + d)` `coord μ p` is the coordinate of
   `p` in the direction `μ`.
