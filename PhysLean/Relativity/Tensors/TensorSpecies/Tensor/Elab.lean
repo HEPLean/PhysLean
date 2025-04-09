@@ -388,9 +388,10 @@ def evalTermMap (l : List (ℕ × ℕ)) (T : Term) : Term :=
 /-- For each element of `l : List (ℕ × ℕ)` applies `TensorTree.contr` to the given term. -/
 def contrTermMap (n : ℕ) (l : List (ℕ × ℕ)) (T : Term) : Term :=
   let proofTerm := Syntax.mkApp (mkIdent ``Tensor.contrT_decide) #[mkIdent ``rfl]
-  (contrListAdjust l).foldl (fun T' (x0, x1) => Syntax.mkApp (mkIdent ``Tensor.contrT)
-    #[Syntax.mkNumLit (toString (n -2)), Syntax.mkNumLit (toString x0),
-    Syntax.mkNumLit (toString x1), proofTerm, T']) T
+  ((contrListAdjust l).reverse.foldl (fun (m, T') (x0, x1) =>
+    (m + 2, Syntax.mkApp (mkIdent ``Tensor.contrT)
+    #[Syntax.mkNumLit (toString (n - m)), Syntax.mkNumLit (toString x0),
+    Syntax.mkNumLit (toString x1), proofTerm, T'])) ((2, T) : ℕ × Term)).2
 
 /-- The syntax associated with a product of tensors. -/
 def prodTermMap (T1 T2 : Term) : Term :=
@@ -402,16 +403,16 @@ def negTermMap (T1 : Term) : Term :=
 
 /-- The syntax associated with the scalar multiplication of tensors. -/
 def smulTermMap (c T : Term) : Term :=
-  Syntax.mkApp (mkIdent ``SMul.smul) #[c, T]
+  Syntax.mkApp (mkIdent ``HSMul.hSMul) #[c, T]
 
 /-- The syntax associated with the group action of tensors. -/
 def actionTermMap (c T : Term) : Term :=
-  Syntax.mkApp (mkIdent ``SMul.smul) #[c, T]
+  Syntax.mkApp (mkIdent ``HSMul.hSMul) #[c, T]
 
 /-- The syntax for a equality of tensor trees. -/
 def addTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
   let RHS := Syntax.mkApp (mkIdent ``Tensor.permT) #[P, (mkIdent ``PermCond.auto), T2]
-  return Syntax.mkApp (mkIdent ``Add.add) #[T1, RHS]
+  return Syntax.mkApp (mkIdent ``HAdd.hAdd) #[T1, RHS]
 
 /-- The syntax for a equality of tensor trees. -/
 def equalTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
@@ -498,10 +499,11 @@ variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
   {c1 c2 : S.C}
   {t2 : S.Tensor ![c1, c2]}
   {t3 : S.Tensor ![S.τ c1, S.τ c2]}
+  {t4 : S.Tensor ![c1, c2]}
+  {t5 : S.Tensor ![S.τ c1, S.τ c2]}
 #check {t | α β }ᵀ
 
-#check {(t2 | α β) = (t3 | ρ β)}ᵀ
--/
+#check {t4 | α β ⊗ t5 | α β}ᵀ-/
 end Tensor
 
 end TensorSpecies
