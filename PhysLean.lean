@@ -175,6 +175,7 @@ import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Lemmas
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Pre
 import PhysLean.Relativity.Lorentz.ComplexTensor.OfRat
 import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Basic
+import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Pre
 import PhysLean.Relativity.Lorentz.ComplexTensor.Units.Symm
 import PhysLean.Relativity.Lorentz.ComplexTensor.Vector.Pre.Basic
 import PhysLean.Relativity.Lorentz.ComplexTensor.Vector.Pre.Contraction
