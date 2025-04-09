@@ -20,7 +20,6 @@ open Complex
 open TensorProduct
 open IndexNotation
 open CategoryTheory
-open TensorTree
 open OverColor.Discrete
 noncomputable section
 
@@ -154,7 +153,7 @@ lemma pauliCo_eq_ofRat : pauliCo = ofRat (fun b =>
     enter [2, x]
     rw [contr_basis_ratComplexNum]
     rw [prodT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, tensorNode_tensor, ofRat_basis_repr_apply, pauliContr_eq_ofRat]
+    simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply, pauliContr_eq_ofRat]
     rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
     rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
   rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
@@ -181,7 +180,7 @@ lemma pauliCoDown_eq_ofRat : pauliCoDown = ofRat (fun b =>
     rw [contr_basis_ratComplexNum]
     rw [prodT_basis_repr_apply]
     rw [contrT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, tensorNode_tensor, ofRat_basis_repr_apply,
+    simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply,
       altLeftMetric_eq_ofRat]
     enter [1, 1, 2, y]
     rw [contr_basis_ratComplexNum]
@@ -218,12 +217,12 @@ lemma pauliContrDown_ofRat : pauliContrDown = ofRat (fun b =>
     rw [contr_basis_ratComplexNum]
     rw [prodT_basis_repr_apply]
     rw [contrT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, tensorNode_tensor, ofRat_basis_repr_apply,
+    simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply,
       altLeftMetric_eq_ofRat]
     enter [1, 1, 2, y]
     rw [contr_basis_ratComplexNum]
     rw [prodT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, tensorNode_tensor, ofRat_basis_repr_apply, pauliContr_eq_ofRat,
+    simp only [coMetric_eq_ofRat,ofRat_basis_repr_apply, pauliContr_eq_ofRat,
       altRightMetric_eq_ofRat]
     rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
     rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]

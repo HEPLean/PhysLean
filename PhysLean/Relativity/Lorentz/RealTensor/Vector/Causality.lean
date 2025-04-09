@@ -18,7 +18,6 @@ open Complex
 open TensorProduct
 open IndexNotation
 open CategoryTheory
-open TensorTree
 open OverColor.Discrete
 noncomputable section
 

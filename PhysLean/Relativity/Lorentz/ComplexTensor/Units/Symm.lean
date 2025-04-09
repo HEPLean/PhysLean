@@ -12,7 +12,6 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Elab
 -/
 open IndexNotation
 open Matrix
-open TensorTree
 
 namespace complexLorentzTensor
 

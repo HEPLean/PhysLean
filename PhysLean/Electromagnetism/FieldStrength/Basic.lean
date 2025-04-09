@@ -269,7 +269,7 @@ lemma magneticField_ofMagneticField (B : MagneticField) :
     magneticField (ofMagneticField B) = B := by
   ext x j
   simp only [magneticField, ofMagneticField, ofMagneticFieldAux, C_eq_color,
-    TensorTree.tensorNode_tensor, Fin.isValue, Set.mem_setOf_eq, mem_of_repr,
+    Fin.isValue, Set.mem_setOf_eq, mem_of_repr,
     Basis.repr_symm_apply, Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun]
   fin_cases j <;> simp only [LinearMap.coe_mk, AddHom.coe_mk, Basis.repr_linearCombination]
   · rfl

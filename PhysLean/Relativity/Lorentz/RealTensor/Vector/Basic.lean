@@ -19,7 +19,6 @@ open Complex
 open TensorProduct
 open IndexNotation
 open CategoryTheory
-open TensorTree
 open OverColor.Discrete
 noncomputable section
 
@@ -118,7 +117,7 @@ lemma innerProduct_toCoord {d : ℕ} (p q : Vector d) :
     erw [coMetric_repr_apply_eq_minkowskiMatrix]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Fin.succAbove_zero,
     Function.comp_apply, Fin.zero_succAbove, Fin.succ_zero_eq_one, Fin.cast_eq_self,
-    Fin.succ_one_eq_two, tensorNode_tensor]
+    Fin.succ_one_eq_two]
   conv_lhs =>
     enter [2, x, 1, 2, y, 1]
     simp only [Fin.isValue]

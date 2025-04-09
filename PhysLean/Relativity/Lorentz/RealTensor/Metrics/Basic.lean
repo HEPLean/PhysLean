@@ -3,10 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.PermContr
 import PhysLean.Relativity.Lorentz.RealTensor.Basic
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor
-/-!
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor/-!
 
 ## Metrics as real Lorentz tensors
 
@@ -20,7 +18,6 @@ open Complex
 open TensorProduct
 open IndexNotation
 open CategoryTheory
-open TensorTree
 open OverColor.Discrete
 noncomputable section
 

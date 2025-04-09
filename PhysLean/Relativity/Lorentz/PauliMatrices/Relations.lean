@@ -21,7 +21,6 @@ open MonoidalCategory
 open Matrix
 open TensorProduct
 open CategoryTheory
-open TensorTree
 
 namespace PauliMatrix
 open Fermion
@@ -42,7 +41,7 @@ lemma pauliCo_contr_pauliContr :
       Pi.smul_apply, smul_eq_mul]
     rw (transparency := .instances) [prodT_basis_repr_apply]
     simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, Fin.succAbove_zero,
-      Function.comp_apply, tensorNode_tensor]
+      Function.comp_apply]
     rw [leftMetric_eq_ofRat, rightMetric_eq_ofRat]
     simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, Fin.succAbove_zero,
       Function.comp_apply, cons_val_zero, cons_val_one, head_cons, ofRat_basis_repr_apply]
@@ -53,8 +52,7 @@ lemma pauliCo_contr_pauliContr :
     enter [2, x]
     rw [prodT_basis_repr_apply]
     simp only [pauliCo_eq_ofRat, pauliContr_eq_ofRat]
-    simp only [Fin.isValue, Function.comp_apply,
-      tensorNode_tensor, ofRat_basis_repr_apply, Monoidal.tensorUnit_obj,
+    simp only [Fin.isValue, Function.comp_apply, ofRat_basis_repr_apply, Monoidal.tensorUnit_obj,
       Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
       Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
       Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
