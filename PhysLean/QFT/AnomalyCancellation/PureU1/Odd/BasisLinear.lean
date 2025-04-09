@@ -237,11 +237,11 @@ lemma basis_oddSnd_eq_minus_oddFst (j i : Fin n) :
     rename_i h1 h2
     rw [Fin.ext_iff] at h1 h2
     simp_all only [Fin.cast_inj, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, neg_neg,
-      add_left_eq_self, AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, not_false_eq_true]
+      add_eq_right, AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, not_false_eq_true]
   all_goals
     rename_i h3
     rw [Fin.ext_iff] at h3
-    simp_all only [Fin.coe_natAdd, Fin.coe_castAdd, add_left_eq_self,
+    simp_all only [Fin.coe_natAdd, Fin.coe_castAdd, add_eq_right,
       AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, not_false_eq_true]
   all_goals
     omega

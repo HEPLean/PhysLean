@@ -454,7 +454,7 @@ lemma on_param_cos_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
       cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
       cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
-      vecCons_const, mul_one, mul_zero, tail_val', head_val', self_eq_add_right, mul_eq_zero,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', left_eq_add, mul_eq_zero,
       zero_add, mul_neg, neg_inj, Fin.mk_one, Fin.reduceFinMk]
   · exact Or.inr rfl
   · ring_nf
@@ -474,7 +474,7 @@ lemma on_param_sin_θ₁₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
       cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
       cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
-      vecCons_const, mul_one, mul_zero, tail_val', head_val', zero_add, self_eq_add_right,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', zero_add, left_eq_add,
       mul_eq_zero, Fin.mk_one, Fin.reduceFinMk]
   · exact Or.inr rfl
   · exact Or.inr rfl
@@ -491,7 +491,7 @@ lemma on_param_sin_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
       cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
       cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
-      vecCons_const, mul_one, mul_zero, tail_val', head_val', self_eq_add_right, mul_eq_zero,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', left_eq_add, mul_eq_zero,
       Fin.mk_one, zero_add, Fin.reduceFinMk, mul_neg, neg_mul, neg_inj]
   · apply Or.inr rfl
   · change _ = _ + _ * 0
@@ -520,7 +520,7 @@ lemma on_param_sin_θ₂₃_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.s
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue, cons_val',
       cons_val_zero, empty_val', cons_val_fin_one, mul_apply, Fin.sum_univ_three, one_mul,
       cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const,
-      vecCons_const, mul_one, mul_zero, tail_val', head_val', self_eq_add_right, mul_eq_zero,
+      vecCons_const, mul_one, mul_zero, tail_val', head_val', left_eq_add, mul_eq_zero,
       Fin.mk_one, zero_add, Fin.reduceFinMk, mul_neg, neg_inj]
   · exact Or.inr rfl
   · change _ = _ + _ * 0

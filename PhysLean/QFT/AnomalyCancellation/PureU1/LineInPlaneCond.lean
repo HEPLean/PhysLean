@@ -139,8 +139,7 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
     have h4 : S.val (2 : Fin 4) ^ 3 = 0 := by
       linear_combination -1 * hcube / 24
     simp only [Fin.isValue, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff] at h4
-    simp_all only [neg_mul, neg_neg, add_left_eq_self, add_right_eq_self, not_true_eq_false,
-      false_and]
+    simp_all only [neg_mul, neg_neg, add_eq_right, add_eq_left, not_true_eq_false, false_and]
   · by_cases h3 : S.val (0 : Fin 4) = - S.val (2 : Fin 4)
     · simp_all
       have h4 : S.val (1 : Fin 4) = - S.val (2 : Fin 4) := by

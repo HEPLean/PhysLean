@@ -283,7 +283,7 @@ lemma electricField_ofMagneticField (B : MagneticField) :
     Matrix.cons_val_zero, repDim_up, ofMagneticField, ofMagneticFieldAux, Matrix.cons_val_one,
     Matrix.head_cons, Basis.repr_symm_apply, LinearMap.coe_mk, AddHom.coe_mk,
     Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun, Fin.mk_eq_one,
-    add_left_eq_self, Fin.val_eq_zero_iff, Fin.reduceEq, imp_self, implies_true, zero_ne_one]
+    add_eq_left, Fin.val_eq_zero_iff, Fin.reduceEq, imp_self, implies_true, zero_ne_one]
   rfl
 
 @[simp]
@@ -294,7 +294,7 @@ lemma magneticField_ofElectricField (E : ElectricField) :
     Matrix.head_cons, Basis.repr_symm_apply, LinearMap.coe_mk, AddHom.coe_mk,
     Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun, Fin.zero_eta,
     Fin.reduceEq, imp_false, IsEmpty.forall_iff, implies_true, imp_self, one_ne_zero, Fin.one_eq_mk,
-    add_left_eq_self]
+    add_eq_left]
   funext x j
   fin_cases j <;> simp
 

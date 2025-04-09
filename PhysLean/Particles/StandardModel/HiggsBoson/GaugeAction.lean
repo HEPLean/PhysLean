@@ -70,6 +70,7 @@ noncomputable def unitaryToLin : unitaryGroup (Fin 2) ℂ →* unitary (HiggsVec
   map_mul' g h := by simp
   map_one' := by simp
 
+set_option synthInstance.maxHeartbeats 0 in
 /-- The inclusion of unitary transformations on `higgsVec` into all linear transformations. -/
 @[simps!]
 def unitToLinear : unitary (HiggsVec →L[ℂ] HiggsVec) →* HiggsVec →ₗ[ℂ] HiggsVec :=

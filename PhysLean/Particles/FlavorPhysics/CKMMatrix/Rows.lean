@@ -6,7 +6,8 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.LinearAlgebra.CrossProduct
-import Mathlib.LinearAlgebra.FiniteDimensional
+import Mathlib.LinearAlgebra.FiniteDimensional.Basic
+import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 /-!
 # Rows for the CKM Matrix
 

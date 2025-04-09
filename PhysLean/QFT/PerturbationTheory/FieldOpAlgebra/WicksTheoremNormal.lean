@@ -235,7 +235,7 @@ theorem wicks_theorem_normal_order : (φs : List 𝓕.FieldOp) →
   | [] => wicks_theorem_normal_order_empty
   | φ :: φs => by
     rw [normalOrder_timeOrder_ofFieldOpList_eq_not_haveEqTime_sub_inductive]
-    simp only [Algebra.smul_mul_assoc, ne_eq, add_right_eq_self]
+    simp only [Algebra.smul_mul_assoc, ne_eq, add_eq_left]
     apply Finset.sum_eq_zero
     intro φsΛ hφsΛ
     simp only [smul_eq_zero]

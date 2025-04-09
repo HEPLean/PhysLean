@@ -52,7 +52,7 @@ lemma succsAbove_predAboveI {i x : Fin n.succ.succ} (h : i ≠ x) :
   · rfl
   · rename_i h1 h2
     rw [Fin.lt_def] at h1 h2
-    simp only [Fin.succ_mk, Nat.succ_eq_add_one, add_right_eq_self, one_ne_zero]
+    simp only [Fin.succ_mk, Nat.succ_eq_add_one, add_eq_left, one_ne_zero]
     simp only [Fin.castSucc_mk, Fin.eta, Fin.val_fin_lt, not_lt] at h2
     rw [Fin.le_def] at h2
     omega
@@ -203,7 +203,7 @@ lemma finExtractOne_symm_inr {n : ℕ} (i : Fin n.succ) :
     · rfl
     rename_i hn
     simp_all only [Nat.succ_eq_add_one, not_lt, Fin.le_def, Fin.coe_castSucc, Fin.val_succ,
-      self_eq_add_right, one_ne_zero]
+      left_eq_add, one_ne_zero]
     omega
   · have h1 : (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)) =
         Sum.inr ⟨x - i, by omega⟩ := by

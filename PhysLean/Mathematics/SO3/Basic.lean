@@ -72,11 +72,11 @@ lemma toProd_eq_transpose : toProd A = (A.1, ⟨A.1ᵀ⟩) := rfl
 
 lemma toProd_injective : Function.Injective toProd := by
   intro A B h
-  rw [toProd_eq_transpose, toProd_eq_transpose, @Prod.mk.inj_iff] at h
+  rw [toProd_eq_transpose, toProd_eq_transpose, Prod.mk_inj] at h
   exact Subtype.eq h.1
 
 lemma toProd_continuous : Continuous toProd :=
-  continuous_prod_mk.mpr ⟨continuous_iff_le_induced.mpr fun _ a ↦ a,
+  continuous_prodMk.mpr ⟨continuous_iff_le_induced.mpr fun _ a ↦ a,
     Continuous.comp' (MulOpposite.continuous_op)
       (Continuous.matrix_transpose (continuous_iff_le_induced.mpr fun _ a ↦ a))⟩
 

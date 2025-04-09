@@ -39,7 +39,7 @@ def chargeMap (f : PermGroup) : MSSMCharges.Charges →ₗ[ℚ] MSSMCharges.Char
   map_add' S T := by
     simp only
     rw [charges_eq_toSpecies_eq]
-    refine And.intro ?_ $ Prod.mk.inj_iff.mp rfl
+    refine And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
     rw [(toSMSpecies i).map_add]
     rw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
@@ -47,7 +47,7 @@ def chargeMap (f : PermGroup) : MSSMCharges.Charges →ₗ[ℚ] MSSMCharges.Char
   map_smul' a S := by
     simp only
     rw [charges_eq_toSpecies_eq]
-    apply And.intro ?_ $ Prod.mk.inj_iff.mp rfl
+    apply And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
     rw [(toSMSpecies i).map_smul, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
     rfl
@@ -65,7 +65,7 @@ def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
-    refine And.intro ?_ $ Prod.mk.inj_iff.mp rfl
+    refine And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
     simp only [Pi.mul_apply, Pi.inv_apply, Equiv.Perm.coe_mul, LinearMap.mul_apply]
     rw [chargeMap_toSpecies, chargeMap_toSpecies]
@@ -76,7 +76,7 @@ def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
     apply LinearMap.ext
     intro S
     rw [charges_eq_toSpecies_eq]
-    refine And.intro ?_ $ Prod.mk.inj_iff.mp rfl
+    refine And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
     erw [toSMSpecies_toSpecies_inv]
     rfl

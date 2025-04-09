@@ -42,6 +42,7 @@ lemma mul_eigenfunction_integrable (f : ℝ → ℂ) (hf : MemHS f) :
     (HilbertSpace.mk hf)
   refine (integrable_congr ?_).mp h1
   simp only [RCLike.inner_apply]
+  conv_lhs => enter [x]; rw [mul_comm]
   apply Filter.EventuallyEq.mul
   swap
   · exact coe_mk_ae hf
@@ -451,7 +452,7 @@ lemma fourierIntegral_zero_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
   funext x
   simp only [fourierChar, Circle.exp, ContinuousMap.coe_mk, ofReal_mul, ofReal_ofNat,
     AddChar.coe_mk, ofReal_neg, mul_neg, neg_mul, ofReal_exp, ofReal_div, ofReal_pow]
-  change Complex.exp (-(2 * ↑Real.pi * (x * c) * Complex.I)) *
+  change cexp (-(2 * ↑π * (↑c * ↑x) * I)) *
     (f x * Complex.exp (- x ^ 2 / (2 * Q.ξ^2))) = _
   congr 2
   ring

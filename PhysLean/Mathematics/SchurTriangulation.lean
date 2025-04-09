@@ -129,6 +129,7 @@ equivalence is propositionally established by `Equiv.sumEquivSigmalCond`.
 
 variable [IsAlgClosed 𝕜]
 
+set_option maxHeartbeats 800000 in
 /-- **Don't use this definition directly.** This is the key algorithm behind
 `Matrix.schur_triangulation`. -/
 protected noncomputable def SchurTriangulationAux.of
@@ -162,10 +163,12 @@ protected noncomputable def SchurTriangulationAux.of
         have hB : ∀ s, bE s = B s.1 s.2
           | ⟨true, i⟩ => show bE ⟨true, i⟩ = bV i from
             show (int.collectedBasis fun b => (B b).toBasis).toOrthonormalBasis _ ⟨true, i⟩ = bV i
-            by simp [B]
+            by simp only [Basis.coe_toOrthonormalBasis, DirectSum.IsInternal.collectedBasis_coe,
+              cond_true, OrthonormalBasis.coe_toBasis, B, V, W]
           | ⟨false, j⟩ => show bE ⟨false, j⟩ = bW j from
             show (int.collectedBasis fun b => (B b).toBasis).toOrthonormalBasis _ ⟨false, j⟩ = bW j
-            by simp [B]
+            by simp only [Basis.coe_toOrthonormalBasis, DirectSum.IsInternal.collectedBasis_coe,
+              cond_false, OrthonormalBasis.coe_toBasis, B, V, W]
         have hf {bi i' bj j'} (hi : e i = ⟨bi, i'⟩) (hj : e j = ⟨bj, j'⟩) :=
           calc toMatrixOrthonormal basis f i j
             _ = toMatrixOrthonormal bE f (e i) (e j) := by
@@ -200,7 +203,9 @@ protected noncomputable def SchurTriangulationAux.of
           calc toMatrixOrthonormal basis f i j
             _ = ⟪(bW i' : E), f (bW j')⟫_𝕜 :=
               hf (Equiv.finAddEquivSigmaCond_false hi) (Equiv.finAddEquivSigmaCond_false hj)
-            _ = ⟪bW i', g (bW j')⟫_𝕜 := by simp [g]
+            _ = ⟪bW i', g (bW j')⟫_𝕜 := by simp only [coe_comp, ContinuousLinearMap.coe_coe,
+              Function.comp_apply, domRestrict_apply, inner_orthogonalProjection_eq_of_mem_left, g,
+              B, V, W]
             _ = toMatrixOrthonormal bW g i' j' := (g.toMatrixOrthonormal_apply_apply ..).symm
             _ = 0 := hg (Nat.sub_lt_sub_right (Nat.le_of_not_lt hj) hji)
     }

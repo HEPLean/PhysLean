@@ -224,7 +224,7 @@ lemma basis!_evenShftSnd_eq_neg_evenShiftFst (j i : Fin n) :
     rename_i h1 h2
     rw [Fin.ext_iff] at h1 h2
     simp_all only [Fin.natAdd_eq_addNat, Fin.cast_inj, Fin.coe_cast, Fin.coe_natAdd,
-      Fin.coe_castAdd, add_right_inj, Fin.coe_addNat, add_right_eq_self]
+      Fin.coe_castAdd, add_right_inj, Fin.coe_addNat, add_eq_left]
   · subst h1
     exact Fin.elim0 i
   all_goals
@@ -527,7 +527,7 @@ lemma Pa_zero (f : Fin n.succ → ℚ) (g : Fin n → ℚ) (h : Pa f g = 0) :
     change 0 = _ at h2
     simp only [neg_zero, zero_sub, zero_eq_neg] at h2
     rw [h2] at h1
-    exact self_eq_add_left.mp h1
+    exact right_eq_add.mp h1
   exact hinduc i.val i.prop
 
 lemma Pa_zero! (f : Fin n.succ → ℚ) (g : Fin n → ℚ) (h : Pa f g = 0) :

@@ -218,11 +218,11 @@ lemma toProd_eq_transpose_η : toProd Λ = (Λ.1, MulOpposite.op $ minkowskiMatr
 lemma toProd_injective : Function.Injective (@toProd d) := by
   intro A B h
   rw [toProd_eq_transpose_η, toProd_eq_transpose_η] at h
-  rw [@Prod.mk.inj_iff] at h
+  rw [Prod.mk_inj] at h
   exact Subtype.eq h.1
 
 lemma toProd_continuous : Continuous (@toProd d) := by
-  refine continuous_prod_mk.mpr ⟨continuous_iff_le_induced.mpr fun U a ↦ a,
+  refine continuous_prodMk.mpr ⟨continuous_iff_le_induced.mpr fun U a ↦ a,
     MulOpposite.continuous_op.comp' ((continuous_const.matrix_mul (continuous_iff_le_induced.mpr
       fun U a => a).matrix_transpose).matrix_mul continuous_const)⟩
 

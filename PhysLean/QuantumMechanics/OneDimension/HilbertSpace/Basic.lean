@@ -77,7 +77,7 @@ lemma inner_mk_mk {f g : ℝ → ℂ} {hf : MemHS f} {hg : MemHS g} :
     inner (mk hf) (mk hg) = ∫ x : ℝ, starRingEnd ℂ (f x) * g x := by
   apply MeasureTheory.integral_congr_ae
   filter_upwards [coe_mk_ae hf, coe_mk_ae hg] with _ hf hg
-  simp [hf, hg]
+  simp [hf, hg, mul_comm]
 
 @[simp]
 lemma eLpNorm_mk {f : ℝ → ℂ} {hf : MemHS f} : eLpNorm (mk hf) 2 volume = eLpNorm f 2 volume :=
@@ -182,7 +182,6 @@ lemma mul_gaussian_mem_Lp_one (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb :
   refine (integrable_congr ?_).mp (MeasureTheory.L2.integrable_inner (𝕜 := ℂ) g (mk hf))
   simp only [RCLike.inner_apply, neg_mul, Complex.ofReal_exp, Complex.ofReal_neg,
     Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_sub]
-  conv_lhs => enter [x]; rw [mul_comm]
   refine Filter.EventuallyEq.mul (coe_mk_ae hf) ?_
   trans (fun x => (starRingEnd ℂ) (Real.exp (- b * (x - c) ^2)))
   · apply Filter.EventuallyEq.fun_comp

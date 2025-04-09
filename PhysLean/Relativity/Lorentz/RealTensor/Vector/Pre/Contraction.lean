@@ -205,6 +205,9 @@ open InnerProductSpace
 lemma as_sum_toSpace : ⟪x, y⟫ₘ = x.val (Sum.inl 0) * y.val (Sum.inl 0) -
     ⟪x.toSpace, y.toSpace⟫_ℝ := by
   rw [as_sum]
+  congr
+  funext i
+  rw [mul_comm]
   rfl
 
 lemma stdBasis_inl {d : ℕ} :

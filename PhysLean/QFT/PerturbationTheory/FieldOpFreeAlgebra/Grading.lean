@@ -222,7 +222,7 @@ lemma directSum_eq_bosonic_plus_fermionic
     simp only [C]
     match i with
     | bosonic =>
-      simp only [DirectSum.of_eq_same, self_eq_add_right]
+      simp only [DirectSum.of_eq_same, left_eq_add]
       rw [DirectSum.of_eq_of_ne]
       simp only [map_zero]
       simp

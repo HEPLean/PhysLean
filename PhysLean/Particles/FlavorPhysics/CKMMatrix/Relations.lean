@@ -81,7 +81,7 @@ lemma ud_us_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
   have h2 := V.fst_row_normalized_abs
   refine Iff.intro (fun h h1 => ?_) (fun h => ?_)
   · rw [h1] at h2
-    simp only [Fin.isValue, one_pow, add_left_eq_self] at h2
+    simp only [Fin.isValue, one_pow, add_eq_right] at h2
     rw [add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)] at h2
     simp_all
   · by_contra hn
@@ -174,14 +174,14 @@ lemma VAbs_thd_eq_one_fst_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3} (hV
     VAbs i 0 V = 0 := by
   have h := VAbs_sum_sq_row_eq_one V i
   rw [hV] at h
-  simp only [Fin.isValue, one_pow, add_left_eq_self] at h
+  simp only [Fin.isValue, one_pow, add_eq_right] at h
   nlinarith
 
 lemma VAbs_thd_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3} (hV : VAbs i 2 V = 1) :
     VAbs i 1 V = 0 := by
   have h := VAbs_sum_sq_row_eq_one V i
   rw [hV] at h
-  simp only [Fin.isValue, one_pow, add_left_eq_self] at h
+  simp only [Fin.isValue, one_pow, add_eq_right] at h
   nlinarith
 
 section crossProduct
@@ -308,7 +308,7 @@ lemma cb_eq_zero_of_ud_us_zero {V : CKMMatrix} (h : [V]ud = 0 ∧ [V]us = 0) :
     add_zero, zero_add] at h1
   rw [add_assoc] at h1
   simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, Fin.isValue,
-    zero_add, add_assoc, self_eq_add_right] at h1
+    zero_add, add_assoc, left_eq_add] at h1
   rw [add_eq_zero_iff_of_nonneg (sq_nonneg _) (sq_nonneg _)] at h1
   simp only [Fin.isValue, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
     norm_eq_zero] at h1
