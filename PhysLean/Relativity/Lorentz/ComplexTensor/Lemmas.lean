@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Lorentz.ComplexTensor.Basis
+import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basis
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Elab
 /-!
@@ -20,7 +20,6 @@ open Complex
 open TensorProduct
 open IndexNotation
 open CategoryTheory
-open TensorTree
 open OverColor.Discrete
 noncomputable section
 

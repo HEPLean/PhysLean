@@ -7,7 +7,6 @@ import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basis
 import PhysLean.Mathematics.RatComplexNum
-import PhysLean.Relativity.Tensors.Tree.Elab
 /-!
 
 # Basis for tensors in a tensor species

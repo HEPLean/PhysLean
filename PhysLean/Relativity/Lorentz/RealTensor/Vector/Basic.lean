@@ -53,7 +53,7 @@ def indexEquiv {d : ℕ} :
 
 /-- The coordinates of a Lorentz vector as a linear map. -/
 def toCoord {d : ℕ} : Vector d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) := Equiv.toLinearEquiv
-  (((realLorentzTensor d).tensorBasis ![.up]).repr.toEquiv.trans <|
+  ((Tensor.basis (S := (realLorentzTensor d)) ![.up]).repr.toEquiv.trans <|
   Finsupp.equivFunOnFinite.trans <|
   (Equiv.piCongrLeft' _ indexEquiv))
     {
@@ -69,7 +69,7 @@ def toCoord {d : ℕ} : Vector d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) := Equiv.
 lemma toCoord_apply {d : ℕ} (p : Vector d) : toCoord p =
     (Equiv.piCongrLeft' _ indexEquiv <|
     Finsupp.equivFunOnFinite <|
-    ((realLorentzTensor d).tensorBasis _).repr p) := rfl
+    (Tensor.basis (S := (realLorentzTensor d)) _).repr p) := rfl
 
 lemma toCoord_injective {d : ℕ} : Function.Injective (@toCoord d) := by
   exact toCoord.toEquiv.injective
@@ -81,8 +81,8 @@ lemma toCoord_pure {d : ℕ} (p : Pure (realLorentzTensor d) ![.up]) (i : Fin 1 
   rw [toCoord_apply]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, OverColor.mk_left, Functor.id_obj,
     OverColor.mk_hom, Equiv.piCongrLeft'_apply, Finsupp.equivFunOnFinite_apply, Fin.isValue]
-  erw [TensorSpecies.TensorBasis.tensorBasis_repr_tprod]
-  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, C_eq_color,
+  rw [Tensor.basis_repr_pure]
+  simp only [Pure.component, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, C_eq_color,
     Finset.prod_singleton, cons_val_zero]
   rfl
 
@@ -177,7 +177,7 @@ lemma innerProduct_invariant {d : ℕ} (p q : Vector d) (Λ : LorentzGroup d) :
   rfl
 
 instance : FiniteDimensional ℝ (Vector d) := by
-  apply FiniteDimensional.of_fintype_basis ((realLorentzTensor d).tensorBasis _)
+  apply FiniteDimensional.of_fintype_basis (Tensor.basis _)
 
 /-!
 
@@ -215,7 +215,7 @@ lemma toCoord_fderiv {d : ℕ} (x : (Vector d)) :
 def toCoordFull {d : ℕ} : Vector d ≃ₗ[ℝ]
     (((j : Fin (Nat.succ 0)) → Fin ((realLorentzTensor d).repDim (![Color.up] j))) → ℝ) :=
   Equiv.toLinearEquiv
-  (((realLorentzTensor d).tensorBasis ![.up]).repr.toEquiv.trans <|
+  ((Tensor.basis (S := realLorentzTensor d) ![.up]).repr.toEquiv.trans <|
   Finsupp.equivFunOnFinite)
     {
       map_add := fun x y => by

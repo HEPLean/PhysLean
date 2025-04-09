@@ -168,7 +168,6 @@ import PhysLean.Relativity.Lorentz.Algebra.Basic
 import PhysLean.Relativity.Lorentz.Algebra.Basis
 import PhysLean.Relativity.Lorentz.Bispinors.Basic
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
-import PhysLean.Relativity.Lorentz.ComplexTensor.Basis
 import PhysLean.Relativity.Lorentz.ComplexTensor.Lemmas
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Basic
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Lemmas
@@ -241,8 +240,6 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.OfInt
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.UnitTensor
 import PhysLean.Relativity.Tensors.Tree.Basic
-import PhysLean.Relativity.Tensors.Tree.Elab
-import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Assoc
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Basic
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.Congr
 import PhysLean.Relativity.Tensors.Tree.NodeIdentities.ContrContr

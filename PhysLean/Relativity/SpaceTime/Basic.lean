@@ -197,9 +197,9 @@ lemma deriv_coord_diff {d : ℕ} (μ ν : Fin (1 + d)) (h : μ ≠ ν) (y : Spac
   conv at h2 =>
     enter [x]
     rw [fderiv_pi (h3 x)]
-  have h2' := h2 (((realLorentzTensor d).tensorBasis ![Color.up]).repr y)
+  have h2' := h2 ((Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr y)
   change (ContinuousLinearMap.pi fun i => fderiv ℝ (φ i)
-    ⇑(((realLorentzTensor d).tensorBasis ![Color.up]).repr y))
+    ⇑((Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr y))
     ((Finsupp.single (fun x => Fin.cast (by simp) μ) 1)) (fun _ => Fin.cast (by simp) ν) = _
   rw [h2']
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, ContinuousLinearMap.coe_id', id_eq]

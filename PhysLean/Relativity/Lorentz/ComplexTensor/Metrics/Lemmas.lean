@@ -134,7 +134,7 @@ lemma altLeftMetric_contr_leftMetric : {εL' | α β ⊗ εL | β γ = δL' | α
   rfl
 
 /-- The contraction of the alt-right metric with the right metric is the unit
-`{εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀᵀ`.
+`{εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ`.
 -/
 lemma altRightMetric_contr_rightMetric : {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ := by
   erw [contrT_metricTensor_metricTensor_eq_dual_unit]
@@ -151,7 +151,7 @@ def leftMetricMulRightMap := (Sum.elim ![Color.upL, Color.upL] ![Color.upR, Colo
   finSumFinEquiv.symm
 
 /-- Expansion of the product of `εL` and `εR` in terms of a basis. -/
-lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀᵀ.tensor
+lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
     = basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1)
     - basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 1 | 3 => 0)
     - basisVector leftMetricMulRightMap (fun | 0 => 1 | 1 => 0 | 2 => 0 | 3 => 1)
@@ -184,7 +184,7 @@ lemma leftMetric_prod_rightMetric : {εL | α α' ⊗ εR | β β'}ᵀᵀ.tensor
     fin_cases x <;> rfl
 
 /-- Expansion of the product of `εL` and `εR` in terms of a basis, as a tensor tree. -/
-lemma leftMetric_prod_rightMetric_tree : {εL | α α' ⊗ εR | β β'}ᵀᵀ.tensor
+lemma leftMetric_prod_rightMetric_tree : {εL | α α' ⊗ εR | β β'}ᵀ.tensor
     = (TensorTree.add (tensorNode
         (basisVector leftMetricMulRightMap (fun | 0 => 0 | 1 => 1 | 2 => 0 | 3 => 1))) <|
       TensorTree.add (TensorTree.smul (-1 : ℂ) (tensorNode
