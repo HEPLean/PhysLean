@@ -203,62 +203,68 @@ lemma rightAltRightUnit_eq_rightBasis_altRightBasis : δR =
 -/
 
 lemma coContrUnit_eq_basis : δ' =
-    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+    ∑ i, Tensor.basis (S := complexLorentzTensor)
       ![Color.down, Color.up] (fun | 0 => i | 1 => i) := by
   rw [coContrUnit_eq_complexCoBasisFin4_complexContrBasisFin4]
   conv_lhs =>
     enter [2, x]
-    change fromPairT ((complexLorentzTensor.basis .down x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .up _ ))
+    change fromPairT ((complexLorentzTensor.basis .down x) ⊗ₜ[ℂ]
+      (complexLorentzTensor.basis .up _))
     rw [fromPairT_apply_basis_repr]
   rfl
 
 lemma contrCoUnit_eq_basis : δ =
-    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+    ∑ i, Tensor.basis (S := complexLorentzTensor)
       ![Color.up, Color.down] (fun | 0 => i | 1 => i) := by
   rw [contrCoUnit_eq_complexContrBasisFin4_complexCoBasisFin4]
   conv_lhs =>
     enter [2, x]
-    change fromPairT ((complexLorentzTensor.basis .up x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .down _ ))
+    change fromPairT ((complexLorentzTensor.basis .up x) ⊗ₜ[ℂ]
+      (complexLorentzTensor.basis .down _))
     rw [fromPairT_apply_basis_repr]
   rfl
 
 lemma altLeftLeftUnit_eq_basis : δL' =
-    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+    ∑ i, Tensor.basis (S := complexLorentzTensor)
       ![Color.downL, Color.upL] (fun | 0 => i | 1 => i) := by
   rw [altLeftLeftUnit_eq_altLeftBasis_leftBasis]
   conv_lhs =>
     enter [2, x]
-    change fromPairT ((complexLorentzTensor.basis .downL x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .upL _ ))
+    change fromPairT ((complexLorentzTensor.basis .downL x) ⊗ₜ[ℂ]
+      (complexLorentzTensor.basis .upL _))
     rw [fromPairT_apply_basis_repr]
   rfl
 
 lemma leftAltLeftUnit_eq_basis : δL =
-    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+    ∑ i, Tensor.basis (S := complexLorentzTensor)
       ![Color.upL, Color.downL] (fun | 0 => i | 1 => i) := by
   rw [leftAltLeftUnit_eq_leftBasis_altLeftBasis]
   conv_lhs =>
     enter [2, x]
-    change fromPairT ((complexLorentzTensor.basis .upL x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .downL _ ))
+    change fromPairT ((complexLorentzTensor.basis .upL x) ⊗ₜ[ℂ]
+      (complexLorentzTensor.basis .downL _))
     rw [fromPairT_apply_basis_repr]
   rfl
 
 lemma altRightRightUnit_eq_basis : δR' =
-    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+    ∑ i, Tensor.basis (S := complexLorentzTensor)
       ![Color.downR, Color.upR] (fun | 0 => i | 1 => i) := by
   rw [altRightRightUnit_eq_altRightBasis_rightBasis]
   conv_lhs =>
     enter [2, x]
-    change fromPairT ((complexLorentzTensor.basis .downR x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .upR _ ))
+    change fromPairT ((complexLorentzTensor.basis .downR x) ⊗ₜ[ℂ]
+      (complexLorentzTensor.basis .upR _))
     rw [fromPairT_apply_basis_repr]
   rfl
 
 lemma rightAltRightUnit_eq_basis : δR =
-    ∑ i,  Tensor.basis (S := complexLorentzTensor)
+    ∑ i, Tensor.basis (S := complexLorentzTensor)
       ![Color.upR, Color.downR] (fun | 0 => i | 1 => i) := by
   rw [rightAltRightUnit_eq_rightBasis_altRightBasis]
   conv_lhs =>
     enter [2, x]
-    change fromPairT ((complexLorentzTensor.basis .upR x ) ⊗ₜ[ℂ] (complexLorentzTensor.basis .downR _ ))
+    change fromPairT ((complexLorentzTensor.basis .upR x) ⊗ₜ[ℂ]
+      (complexLorentzTensor.basis .downR _))
     rw [fromPairT_apply_basis_repr]
   rfl
 
@@ -335,15 +341,15 @@ lemma rightAltRightUnit_eq_ofRat : δR = ofRat fun f =>
 -/
 
 /-- The tensor `coContrUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_coContrUnit (g : SL(2,ℂ)) : g • δ' = δ'  := by
+lemma actionT_coContrUnit (g : SL(2,ℂ)) : g • δ' = δ' := by
   rw [unitTensor_invariant]
 
 /-- The tensor `contrCoUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_contrCoUnit (g : SL(2,ℂ)) : g • δ  = δ := by
+lemma actionT_contrCoUnit (g : SL(2,ℂ)) : g • δ = δ := by
   rw [unitTensor_invariant]
 
 /-- The tensor `altLeftLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_altLeftLeftUnit (g : SL(2,ℂ)) : g • δL'  = δL' := by
+lemma actionT_altLeftLeftUnit (g : SL(2,ℂ)) : g • δL' = δL' := by
   rw [unitTensor_invariant]
 
 /-- The tensor `leftAltLeftUnit` is invariant under the action of `SL(2,ℂ)`. -/
@@ -355,7 +361,7 @@ lemma actionT_altRightRightUnit (g : SL(2,ℂ)) : g • δR' = δR' := by
   rw [unitTensor_invariant]
 
 /-- The tensor `rightAltRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_rightAltRightUnit (g : SL(2,ℂ)) : g • δR  = δR := by
+lemma actionT_rightAltRightUnit (g : SL(2,ℂ)) : g • δR = δR := by
   rw [unitTensor_invariant]
 
 end complexLorentzTensor

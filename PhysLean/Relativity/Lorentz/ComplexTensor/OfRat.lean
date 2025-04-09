@@ -112,7 +112,7 @@ lemma prodT_ofRat_ofRat {n n1 : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin n1 → complexLorentzTensor.C}
     (f1 : (ComponentIdx c1) → RatComplexNum) :
     (prodT (ofRat f) (ofRat f1)) =
-    ( (ofRat (fun b => f (ComponentIdx.splitEquiv b).1 *
+    ((ofRat (fun b => f (ComponentIdx.splitEquiv b).1 *
       f1 (ComponentIdx.splitEquiv b).2))) := by
   apply (Tensor.basis _).repr.injective
   ext b
@@ -140,7 +140,7 @@ lemma contrT_ofRat_eq_sum_dropPairSection {n : ℕ} {c : Fin (n + 1 + 1) → com
 
 open ComponentIdx
 lemma contrT_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C}
-    {i j : Fin (n + 1 + 1)}  {h : i ≠ j ∧ complexLorentzTensor.τ (c i) = c j }
+    {i j : Fin (n + 1 + 1)} {h : i ≠ j ∧ complexLorentzTensor.τ (c i) = c j }
     (f : (ComponentIdx c) → RatComplexNum) :
   (contrT n i j h (ofRat f)) = ((ofRat (fun b =>
     (∑ x : Fin (complexLorentzTensor.repDim (c i)),
@@ -163,13 +163,13 @@ lemma contrT_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C}
       exact fun a => hy ((Eq.symm a))
   · simp
 
-
 lemma permT_ofRat {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     {c1 : Fin m → complexLorentzTensor.C}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ)
     (f : ComponentIdx c → RatComplexNum) :
     (permT σ h ((ofRat f))) =
-    ((ofRat (fun b => f (fun i => Fin.cast (by simp [PermCond.inv_perserve_color]) (b (h.inv σ i))) ))) := by
+    ((ofRat (fun b => f (fun i => Fin.cast (by simp [PermCond.inv_perserve_color])
+      (b (h.inv σ i)))))) := by
   apply (Tensor.basis _).repr.injective
   ext b
   simp only [permT_basis_repr_symm_apply, mk_hom, ofRat_basis_repr_apply]

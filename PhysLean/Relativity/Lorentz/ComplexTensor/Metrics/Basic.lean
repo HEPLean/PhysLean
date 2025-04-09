@@ -267,7 +267,8 @@ lemma contrMetric_eq_basis : η =
 open Fermion in
 lemma leftMetric_eq_basis : εL =
     - (Tensor.basis (S := complexLorentzTensor) ![Color.upL, Color.upL] (fun | 0 => 0 | 1 => 1))
-    + (Tensor.basis (S := complexLorentzTensor) ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0)) := by
+    + (Tensor.basis (S := complexLorentzTensor)
+      ![Color.upL, Color.upL] (fun | 0 => 1 | 1 => 0)) := by
   rw [leftMetric_eq_leftBasis]
   rw [show leftBasis = complexLorentzTensor.basis .upL by rfl]
   conv_lhs =>
@@ -281,7 +282,8 @@ lemma leftMetric_eq_basis : εL =
 open Fermion in
 lemma altLeftMetric_eq_basis : εL' =
     (Tensor.basis (S := complexLorentzTensor) ![Color.downL, Color.downL] (fun | 0 => 0 | 1 => 1))
-    - (Tensor.basis (S := complexLorentzTensor) ![Color.downL, Color.downL] (fun | 0 => 1 | 1 => 0)) := by
+    - (Tensor.basis (S := complexLorentzTensor)
+      ![Color.downL, Color.downL] (fun | 0 => 1 | 1 => 0)) := by
   rw [altLeftMetric_eq_altLeftBasis]
   rw [show altLeftBasis = complexLorentzTensor.basis .downL by rfl]
   conv_lhs =>
@@ -295,7 +297,8 @@ lemma altLeftMetric_eq_basis : εL' =
 open Fermion in
 lemma rightMetric_eq_basis : εR =
     - (Tensor.basis (S := complexLorentzTensor) ![Color.upR, Color.upR] (fun | 0 => 0 | 1 => 1))
-    + (Tensor.basis (S := complexLorentzTensor) ![Color.upR, Color.upR] (fun | 0 => 1 | 1 => 0)) := by
+    + (Tensor.basis (S := complexLorentzTensor)
+      ![Color.upR, Color.upR] (fun | 0 => 1 | 1 => 0)) := by
   rw [rightMetric_eq_rightBasis]
   rw [show rightBasis = complexLorentzTensor.basis .upR by rfl]
   conv_lhs =>
@@ -308,8 +311,10 @@ lemma rightMetric_eq_basis : εR =
 
 open Fermion in
 lemma altRightMetric_eq_basis : εR' =
-    (Tensor.basis (S := complexLorentzTensor) ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1))
-    - (Tensor.basis (S := complexLorentzTensor) ![Color.downR, Color.downR] (fun | 0 => 1 | 1 => 0)) := by
+    (Tensor.basis (S := complexLorentzTensor)
+      ![Color.downR, Color.downR] (fun | 0 => 0 | 1 => 1))
+    - (Tensor.basis (S := complexLorentzTensor)
+      ![Color.downR, Color.downR] (fun | 0 => 1 | 1 => 0)) := by
   rw [altRightMetric_eq_altRightBasis]
   rw [show altRightBasis = complexLorentzTensor.basis .downR by rfl]
   conv_lhs =>
@@ -385,7 +390,6 @@ lemma altRightMetric_eq_ofRat : εR' = ofRat fun f =>
   rw [← map_sub]
   congr
   with_unfolding_all decide
-
 
 /-!
 

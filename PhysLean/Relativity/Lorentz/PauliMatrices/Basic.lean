@@ -84,10 +84,10 @@ lemma pauliContr_eq_basis : pauliContr =
     - Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
   rw [pauliContr_eq_fromTripleT, PauliMatrix.asTensor_expand]
   simp
-  rw [show complexContrBasis (Sum.inl 0)  = complexContrBasisFin4 0 by {simp}]
-  rw [show complexContrBasis (Sum.inr 0)  = complexContrBasisFin4 1 by {simp}]
-  rw [show complexContrBasis (Sum.inr 1)  = complexContrBasisFin4 2 by {simp}]
-  rw [show complexContrBasis (Sum.inr 2)  = complexContrBasisFin4 3 by {simp}]
+  rw [show complexContrBasis (Sum.inl 0) = complexContrBasisFin4 0 by {simp}]
+  rw [show complexContrBasis (Sum.inr 0) = complexContrBasisFin4 1 by {simp}]
+  rw [show complexContrBasis (Sum.inr 1) = complexContrBasisFin4 2 by {simp}]
+  rw [show complexContrBasis (Sum.inr 2) = complexContrBasisFin4 3 by {simp}]
   conv_lhs =>
     enter [1, 1, 1, 1, 1, 1, 1]
     erw [fromTripleT_apply_basis]
@@ -162,7 +162,6 @@ lemma pauliCo_eq_ofRat : pauliCo = ofRat (fun b =>
   revert b
   decide +kernel
 
-
 lemma pauliCoDown_eq_ofRat : pauliCoDown = ofRat (fun b =>
     if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
     if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨1, 0⟩ else
@@ -236,7 +235,6 @@ lemma pauliContrDown_ofRat : pauliContrDown = ofRat (fun b =>
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   revert b
   decide +kernel
-
 
 /-!
 

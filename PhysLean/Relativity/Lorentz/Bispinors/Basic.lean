@@ -29,7 +29,7 @@ open PauliMatrix
 ## Definitions
 
 -/
-open  TensorSpecies
+open TensorSpecies
 open Tensor
 
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. -/
@@ -45,7 +45,7 @@ def coBispinorUp (p : ℂT[.down]) : ℂT[.upL, .upR] := permT id (PermCond.auto
   {pauliContr | μ α β ⊗ p | μ}ᵀ
 
 /-- A bispinor `pₐₐ` created from a lorentz vector `p_μ`. -/
-def coBispinorDown (p : ℂT[.down]) : ℂT[.downL, .downR] :=  permT id (PermCond.auto)
+def coBispinorDown (p : ℂT[.down]) : ℂT[.downL, .downR] := permT id (PermCond.auto)
   {εL' | α α' ⊗ εR' | β β' ⊗ coBispinorUp p | α β}ᵀ
 
 /-!

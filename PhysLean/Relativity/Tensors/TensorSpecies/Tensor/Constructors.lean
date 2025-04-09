@@ -542,7 +542,7 @@ lemma fromPairT_basis_repr {c c1 : S.C}
     simp_all [P]
 
 lemma fromPairT_apply_basis_repr {c c1 : S.C}
-    (b0 : Fin (S.repDim c)) (b1 : Fin (S.repDim c1)):
+    (b0 : Fin (S.repDim c)) (b1 : Fin (S.repDim c1)) :
     fromPairT (S.basis c b0 ⊗ₜ[k] S.basis c1 b1) =
     Tensor.basis ![c, c1] (fun | 0 => b0 | 1 => b1) := by
   apply (Tensor.basis _).repr.injective
@@ -612,7 +612,6 @@ lemma fromConstPair_braid {c1 c2 : S.C}
   rw [fromPairT_comm]
   rfl
 
-
 /-!
 
 ## fromTripleT
@@ -626,10 +625,10 @@ noncomputable def fromTripleT {c1 c2 c3 : S.C} :
     (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
     ⊗[k] (S.FD.obj (Discrete.mk c3)).V →ₗ[k] S.Tensor ![c1, c2, c3] where
   toFun x :=
-    let x1 :  S.Tensor ![c1] ⊗[k] S.Tensor ![c2] ⊗[k] S.Tensor ![c3] :=
+    let x1 : S.Tensor ![c1] ⊗[k] S.Tensor ![c2] ⊗[k] S.Tensor ![c3] :=
       TensorProduct.map (fromSingleT (c := c1))
         (TensorProduct.map (fromSingleT (c := c2)) (fromSingleT (c := c3))) x
-    let x2  :=
+    let x2 :=
       TensorProduct.lift prodT (TensorProduct.map LinearMap.id (TensorProduct.lift prodT) x1)
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl)) x2
   map_add' x y := by
@@ -637,7 +636,7 @@ noncomputable def fromTripleT {c1 c2 c3 : S.C} :
   map_smul' r x := by
     simp
 
-lemma fromTripleT_tmul {c1 c2 c3 : S.C}  (x : S.FD.obj (Discrete.mk c1))
+lemma fromTripleT_tmul {c1 c2 c3 : S.C} (x : S.FD.obj (Discrete.mk c1))
     (y : S.FD.obj (Discrete.mk c2)) (z : S.FD.obj (Discrete.mk c3)) :
     fromTripleT (x ⊗ₜ[k] y ⊗ₜ[k] z) =
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl))
@@ -648,10 +647,11 @@ lemma actionT_fromTripleT {c1 c2 c3 : S.C}
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
       ⊗[k] (S.FD.obj (Discrete.mk c3)).V) (g : G) :
     g • fromTripleT x = fromTripleT (TensorProduct.map ((S.FD.obj (Discrete.mk c1)).ρ g)
-      (TensorProduct.map ((S.FD.obj (Discrete.mk c2)).ρ g) ((S.FD.obj (Discrete.mk c3)).ρ g)) x) := by
+      (TensorProduct.map ((S.FD.obj (Discrete.mk c2)).ρ g)
+      ((S.FD.obj (Discrete.mk c3)).ρ g)) x) := by
   let P (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
       ⊗[k] (S.FD.obj (Discrete.mk c3)).V) : Prop :=
-     g • fromTripleT x = fromTripleT (TensorProduct.map ((S.FD.obj (Discrete.mk c1)).ρ g)
+      g • fromTripleT x = fromTripleT (TensorProduct.map ((S.FD.obj (Discrete.mk c1)).ρ g)
       (TensorProduct.map ((S.FD.obj (Discrete.mk c2)).ρ g) ((S.FD.obj (Discrete.mk c3)).ρ g)) x)
   change P x
   apply TensorProduct.induction_on
@@ -737,7 +737,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
           rw [Pure.prodP_apply_finSumFinEquiv]
         simp
         conv_lhs =>
-          enter [ 2, 2, 2]
+          enter [2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))
           rw [Pure.prodP_apply_finSumFinEquiv]
         simp
@@ -748,7 +748,6 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
       rw [hx, hy]
   · intro x y hx hy
     simp_all [P]
-
 
 lemma fromTripleT_apply_basis {c c1 c2 : S.C}
     (b0 : Fin (S.repDim c)) (b1 : Fin (S.repDim c1))
@@ -776,13 +775,11 @@ lemma fromTripleT_apply_basis {c c1 c2 : S.C}
     next h => simp_all only [Fin.isValue, false_and, ↓reduceIte]
   next h => simp_all only [Fin.isValue, false_and, ↓reduceIte]
 
-
 /-!
 
 ## fromConstTriple
 
 -/
-
 
 /-- A constant three tensor (e.g. the Pauli matrices). -/
 noncomputable def fromConstTriple {c1 c2 c3 : S.C}
@@ -798,7 +795,9 @@ lemma actionT_fromConstTriple {c1 c2 c3 : S.C}
     (g : G) : g • fromConstTriple v = fromConstTriple v := by
   rw [fromConstTriple, actionT_fromTripleT]
   congr 1
-  change ((v.hom ≫ ModuleCat.ofHom ((S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 } ⊗ S.FD.obj { as := c3 }).ρ g))) _ = _
+  change ((v.hom ≫
+    ModuleCat.ofHom ((S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 } ⊗
+      S.FD.obj { as := c3 }).ρ g))) _ = _
   erw [← v.comm g]
   simp
 
