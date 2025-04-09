@@ -477,7 +477,7 @@ def PermCond {n m : ℕ} (c : Fin n → S.C) (c1 : Fin m → S.C)
   Function.Bijective σ ∧ ∀ i, c (σ i) = c1 i
 
 lemma PermCond.auto {n m : ℕ} {c : Fin n → S.C} {c1 : Fin m → S.C}
-    {σ : Fin m → Fin n} (h : PermCond c c1 σ := by {simp [PermCond]; decide}) :
+    {σ : Fin m → Fin n} (h : PermCond c c1 σ := by {simp [PermCond]; try decide}) :
     PermCond c c1 σ := h
 
 @[simp]

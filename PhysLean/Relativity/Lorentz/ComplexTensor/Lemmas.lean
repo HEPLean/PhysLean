@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basis
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basis
+import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Elab
 /-!
 
 ## Lemmas related to complex Lorentz tensors.
@@ -24,27 +26,27 @@ noncomputable section
 
 namespace complexLorentzTensor
 open PhysLean.Fin
-/-
-lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
-    (hA : {A | μ ν = - (A | ν μ)}ᵀᵀ) (hs : {S | μ ν = S | ν μ}ᵀᵀ) :
-    {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀᵀ := by
+open TensorSpecies
+open Tensor
 
-  conv =>
-    lhs
-    rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_fst <| hA]
-    rw [contr_tensor_eq <| contr_tensor_eq <| prod_tensor_eq_snd <| hs]
-    rw [contr_tensor_eq <| contr_tensor_eq <| prod_perm_left _ _ _ _]
-    rw [contr_tensor_eq <| contr_tensor_eq <| perm_tensor_eq <| prod_perm_right _ _ _ _]
-    rw [contr_tensor_eq <| contr_tensor_eq <| perm_perm _ _ _]
-    rw [contr_tensor_eq <| perm_contr_congr 1 2]
-    rw [perm_contr_congr 0 0]
-    rw [perm_tensor_eq <| contr_contr _ _ _]
-    rw [perm_perm]
-    rw [perm_tensor_eq <| contr_tensor_eq <| contr_tensor_eq <| neg_fst_prod _ _]
-    rw [perm_tensor_eq <| contr_tensor_eq <| neg_contr _]
-    rw [perm_tensor_eq <| neg_contr _]
-  apply perm_congr _ rfl
-  decide-/
+lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
+    (hA : {A | μ ν = - (A | ν μ)}ᵀ) (hs : {S | μ ν = S | ν μ}ᵀ) :
+    {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ := by
+  conv_lhs =>
+    rw [hA, hs, prodT_permT_left, prodT_permT_right, permT_permT, contrT_comm, contrT_congr 0 1,
+      contrT_congr 0 3, contrT_permT,contrT_permT]
+    enter [2, 2, 2, 2]
+    rw [contrT_congr 0 1]
+    enter [2, 2]
+    rw [contrT_congr 1 3]
+  conv_lhs =>
+    enter [2, 2, 2, 2]
+    rw [contrT_permT, permT_permT]
+    enter [2, 2]
+  rw [permT_permT, permT_permT, permT_permT, permT_permT]
+  apply permT_congr
+  · decide
+  · simp
 
 end complexLorentzTensor
 
