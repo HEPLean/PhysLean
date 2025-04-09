@@ -83,7 +83,8 @@ lemma pauliContr_eq_basis : pauliContr =
     + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 0 | 2 => 0)
     - Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
   rw [pauliContr_eq_fromTripleT, PauliMatrix.asTensor_expand]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Equivalence.symm_inverse, Fin.isValue, map_sub,
+    map_add, _root_.map_smul]
   rw [show complexContrBasis (Sum.inl 0) = complexContrBasisFin4 0 by {simp}]
   rw [show complexContrBasis (Sum.inr 0) = complexContrBasisFin4 1 by {simp}]
   rw [show complexContrBasis (Sum.inr 1) = complexContrBasisFin4 2 by {simp}]

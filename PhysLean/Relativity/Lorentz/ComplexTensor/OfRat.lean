@@ -30,8 +30,8 @@ variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
   `(Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum`. All
   complex Lorentz tensors with rational coefficents with respect to the basis are of this
   form. -/
-noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
-    : ((ComponentIdx c) → RatComplexNum) →ₛₗ[toComplexNum] ℂT(c) where
+noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
+    ((ComponentIdx c) → RatComplexNum) →ₛₗ[toComplexNum] ℂT(c) where
   toFun f := (Tensor.basis c).repr.symm <|
     (Finsupp.linearEquivFunOnFinite ℂ ℂ
     ((j : Fin n) → Fin (complexLorentzTensor.repDim (c j)))).symm <|

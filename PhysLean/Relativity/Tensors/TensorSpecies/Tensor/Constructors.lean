@@ -546,7 +546,7 @@ lemma fromPairT_apply_basis_repr {c c1 : S.C}
     fromPairT (S.basis c b0 ⊗ₜ[k] S.basis c1 b1) =
     Tensor.basis ![c, c1] (fun | 0 => b0 | 1 => b1) := by
   apply (Tensor.basis _).repr.injective
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Basis.repr_self]
   ext b
   rw [fromPairT_basis_repr]
   simp [Finsupp.single_apply]
@@ -723,7 +723,8 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
           enter [1, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))
           rw [Pure.prodP_apply_finSumFinEquiv]
-        simp
+        simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
+          eqToHom_refl, Discrete.functor_map_id, P, P1]
         conv_lhs =>
           enter [1, 2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inl 0))
@@ -735,7 +736,8 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
           enter [2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 1))
           rw [Pure.prodP_apply_finSumFinEquiv]
-        simp
+        simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
+          eqToHom_refl, Discrete.functor_map_id, P, P1]
         conv_lhs =>
           enter [2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))
@@ -755,7 +757,7 @@ lemma fromTripleT_apply_basis {c c1 c2 : S.C}
     fromTripleT (S.basis c b0 ⊗ₜ[k] S.basis c1 b1 ⊗ₜ[k] S.basis c2 b2) =
     Tensor.basis ![c, c1, c2] (fun | 0 => b0 | 1 => b1 | 2 => b2) := by
   apply (Tensor.basis _).repr.injective
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Basis.repr_self]
   ext b
   rw [fromTripleT_basis_repr]
   simp [Finsupp.single_apply]
