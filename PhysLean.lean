@@ -222,11 +222,10 @@ import PhysLean.Relativity.SpaceTime.Basic
 import PhysLean.Relativity.SpaceTime.CliffordAlgebra
 import PhysLean.Relativity.SpaceTime.ProperTime
 import PhysLean.Relativity.Special.TwinParadox.Basic
+import PhysLean.Relativity.Tensors.Basic
 import PhysLean.Relativity.Tensors.Color.Basic
 import PhysLean.Relativity.Tensors.Color.Discrete
 import PhysLean.Relativity.Tensors.Color.Lift
-import PhysLean.Relativity.Tensors.TensorSpecies.Basic
-import PhysLean.Relativity.Tensors.Basic
 import PhysLean.Relativity.Tensors.Constructors
 import PhysLean.Relativity.Tensors.Contraction.Basic
 import PhysLean.Relativity.Tensors.Contraction.Basis
@@ -238,6 +237,7 @@ import PhysLean.Relativity.Tensors.Evaluation
 import PhysLean.Relativity.Tensors.MetricTensor
 import PhysLean.Relativity.Tensors.OfInt
 import PhysLean.Relativity.Tensors.Product
+import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.Basic
 import PhysLean.Thermodynamics.Basic

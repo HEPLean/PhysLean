@@ -56,7 +56,6 @@ instance (C : Type) : Groupoid (OverColor C) := coreCategory
 
 namespace OverColor
 
-
 /-- Make an object of `OverColor C` from a map `X → C`. -/
 def mk (f : X → C) : OverColor C := Over.mk f
 
@@ -344,7 +343,6 @@ lemma α_inv_toEquiv (f : X → C) (g : Y → C) (h : Z → C) :
     Hom.toEquiv (α_ (OverColor.mk f) (OverColor.mk g) (OverColor.mk h)).inv =
     (Equiv.sumAssoc X Y Z).symm := by
   rfl
-
 
 /-!
 
