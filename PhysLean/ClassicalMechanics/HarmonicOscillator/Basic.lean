@@ -8,6 +8,7 @@ import Mathlib.Analysis.SpecialFunctions.PolarCoord
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Informal.Basic
+import PhysLean.ClassicalMechanics.Time.Basic
 /-!
 
 # The Classical Harmonic Oscillator
@@ -94,26 +95,26 @@ lemma inverse_ω_sq : (S.ω ^ 2)⁻¹ = S.m/S.k := by
   field_simp
 
 /-- The kinetic energy of the harmonic oscillator is `1/2 m (dx/dt) ^ 2`. -/
-noncomputable def kineticEnergy (x : ℝ → ℝ) : ℝ → ℝ := fun t =>
+noncomputable def kineticEnergy (x : Time → ℝ) : Time → ℝ := fun t =>
   1/2 * S.m * (deriv x t)^2
 
 /-- The potential energy of the harmonic oscillator is `1/2 k x ^ 2` -/
-noncomputable def potentialEnergy (x : ℝ → ℝ) : ℝ → ℝ := fun t =>
+noncomputable def potentialEnergy (x : Time → ℝ) : Time → ℝ := fun t =>
   1/2 * S.k * (x t)^2
 
 /-- The energy of the harmonic oscillator is the kinetic energy plus the potential energy. -/
-noncomputable def energy (x : ℝ → ℝ) : ℝ → ℝ := fun t =>
+noncomputable def energy (x : Time → ℝ) : Time → ℝ := fun t =>
   kineticEnergy S x t + potentialEnergy S x t
 
 /-- The lagrangian of the harmonic oscillator is the kinetic energy minus the potential energy. -/
-noncomputable def lagrangian (x : ℝ → ℝ) : ℝ → ℝ := fun t =>
+noncomputable def lagrangian (x : Time → ℝ) : Time → ℝ := fun t =>
   kineticEnergy S x t - potentialEnergy S x t
 
 /-- The lagrangian of the classical harmonic oscillator obeys the condition
 
   `lagrangian S (- x) = lagrangian S x`.
 -/
-lemma lagrangian_parity (x : ℝ → ℝ) (hx : Differentiable ℝ x) :
+lemma lagrangian_parity (x : Time → ℝ) (hx : Differentiable ℝ x) :
     lagrangian S (- x) = lagrangian S x := by
   funext t
   simp only [lagrangian, kineticEnergy, one_div, potentialEnergy, Pi.neg_apply, even_two,
@@ -129,24 +130,24 @@ lemma lagrangian_parity (x : ℝ → ℝ) (hx : Differentiable ℝ x) :
 
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
   is the potential energy. -/
-semiformal_result "6YBYP" force (S : HarmonicOscillator) (x : ℝ → ℝ) : ℝ → ℝ
+semiformal_result "6YBYP" force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ
 
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (force : (S : HarmonicOscillator) → (x : ℝ → ℝ) → ℝ → ℝ)
+variable (force : (S : HarmonicOscillator) → (x : Time → ℝ) → Time → ℝ)
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
-semiformal_result "6YB2U" force_is_linear (x : ℝ → ℝ) :
+semiformal_result "6YB2U" force_is_linear (x : Time → ℝ) :
   force S x = - S.k • x
 
 /-- The definition of the equation of motion for the classical harmonic oscillator
   defined through the Euler-Lagrange equations. -/
-semiformal_result"6ZTP5" EquationOfMotion (x : ℝ → ℝ) : Prop
+semiformal_result"6ZTP5" EquationOfMotion (x : Time → ℝ) : Prop
 
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (EquationOfMotion : (x : ℝ → ℝ) → Prop)
+variable (EquationOfMotion : (x : Time → ℝ) → Prop)
 
 /-- The equations of motion are satisfied if and only if Newton's second law holds. -/
-semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : ℝ → ℝ) :
+semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : Time → ℝ) :
     EquationOfMotion x ↔ ∀ t, force S x t = S.m * deriv (fun t' => deriv x t') t
 
 /-- The proposition on a trajectory which is true if that trajectory is an extrema of the
@@ -154,10 +155,10 @@ semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : ℝ → �
 
   semiformal implmentation notes:
   - This is not expected to be easy to define. -/
-semiformal_result "6YBIG" ExtremaOfAction (x : ℝ → ℝ) : Prop
+semiformal_result "6YBIG" ExtremaOfAction (x : Time → ℝ) : Prop
 
 /- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (ExtremaOfAction : (x : ℝ → ℝ) → Prop)
+variable (ExtremaOfAction : (x : Time → ℝ) → Prop)
 
 /-- A trajectory `x : ℝ → ℝ` satsifies the equation of motion if and only if
   it is an extrema of the action.
@@ -165,7 +166,7 @@ variable (ExtremaOfAction : (x : ℝ → ℝ) → Prop)
   Implementation note: This result depends on other semi-formal results which
   will need defining before this.
 -/
-semiformal_result "6YBQH" equationOfMotion_iff_extremaOfAction (x : ℝ → ℝ) :
+semiformal_result "6YBQH" equationOfMotion_iff_extremaOfAction (x : Time → ℝ) :
   EquationOfMotion x ↔ ExtremaOfAction x
 
 TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
