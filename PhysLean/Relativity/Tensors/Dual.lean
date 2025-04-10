@@ -154,6 +154,12 @@ noncomputable def toDual {c : S.C} : S.Tensor ![c] ≃ₗ[k] S.Tensor ![S.τ c] 
   LinearEquiv.mk toDualMap fromDualMap.toFun
     (fun x => by simp) (fun x => by simp)
 
+lemma toDual_equivariant {c : S.C} (g : G) (t : S.Tensor ![c]) :
+    toDual (g • t) = g • toDual t := by
+  simp [toDual, toDualMap]
+  conv_lhs => rw [← metricTensor_invariant g]
+  rw [prodT_equivariant, contrT_equivariant, permT_equivariant]
+
 end Tensor
 
 open Tensor

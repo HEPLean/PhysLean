@@ -6,6 +6,8 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Pre
 import PhysLean.Relativity.Lorentz.Weyl.Metric
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
+import PhysLean.Relativity.Tensors.Dual
+
 /-!
 
 ## Complex Lorentz tensors
@@ -250,12 +252,12 @@ syntax (name := complexLorentzTensorSyntax) "ℂT[" term,* "]" : term
 
 macro_rules
   | `(ℂT[$term:term, $terms:term,*]) =>
-    `((complexLorentzTensor.F.obj (OverColor.mk (vecCons $term ![$terms,*]))))
-  | `(ℂT[$term:term]) => `((complexLorentzTensor.F.obj (OverColor.mk (vecCons $term ![]))))
-  | `(ℂT[]) =>`((complexLorentzTensor.F.obj (OverColor.mk (vecEmpty))))
+    `(complexLorentzTensor.Tensor (vecCons $term ![$terms,*]))
+  | `(ℂT[$term:term]) => `(complexLorentzTensor.Tensor (vecCons $term ![]))
+  | `(ℂT[]) =>`(complexLorentzTensor.Tensor (vecEmpty))
 
 /-- Complex Lorentz tensor. -/
-scoped[complexLorentzTensor] notation "ℂT(" c ")" => complexLorentzTensor.F.obj (OverColor.mk c)
+scoped[complexLorentzTensor] notation "ℂT(" c ")" => complexLorentzTensor.Tensor c
 
 /-- Color for complex Lorentz tensors is decidable. -/
 instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor
@@ -290,13 +292,5 @@ instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 
-TODO "6V2BK" "The lemma `repDim_τ` should hold for any Tensor Species not just complex Lorentz
-  tensors."
-@[simp]
-lemma repDim_τ {c : complexLorentzTensor.C} :
-    complexLorentzTensor.repDim (complexLorentzTensor.τ c) = complexLorentzTensor.repDim c := by
-  cases c
-  all_goals
-    rfl
 end complexLorentzTensor
 end
