@@ -185,6 +185,6 @@
   line: 16
 
 - content: "Find a better place for this."
-  file: HepLean.Tensors.OverColor.Discrete
+  file: HepLean.Tensors.Color.Discrete
   githubLink: https://github.com/HEPLean/HepLean/blob/master/HepLean/Tensors/OverColor/Discrete.lean#L159
   line: 159

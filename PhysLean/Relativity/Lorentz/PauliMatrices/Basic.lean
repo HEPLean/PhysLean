@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Metrics.Lemmas
 import PhysLean.Relativity.Lorentz.PauliMatrices.AsTensor
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basis
+import PhysLean.Relativity.Tensors.Contraction.Basis
 /-!
 
 ## Pauli matrices as complex Lorentz tensors

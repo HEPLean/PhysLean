@@ -3,9 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basic
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Evaluation
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
+import PhysLean.Relativity.Tensors.Contraction.Basic
+import PhysLean.Relativity.Tensors.Evaluation
+import PhysLean.Relativity.Tensors.Product
 /-!
 
 # Elaboration of tensor expressions

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.Basic
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Product
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basis
+import PhysLean.Relativity.Tensors.Product
+import PhysLean.Relativity.Tensors.Contraction.Basis
 import PhysLean.Mathematics.RatComplexNum
 /-!
 

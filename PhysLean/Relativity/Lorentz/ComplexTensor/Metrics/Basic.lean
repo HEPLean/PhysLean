@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.ComplexTensor.OfRat
-import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.MetricTensor
+import PhysLean.Relativity.Tensors.MetricTensor
 /-!
 
 ## Metrics as complex Lorentz tensors

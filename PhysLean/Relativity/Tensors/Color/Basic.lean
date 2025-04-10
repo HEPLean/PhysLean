@@ -8,17 +8,36 @@ import PhysLean.Relativity.Lorentz.Weyl.Basic
 import PhysLean.Relativity.Lorentz.ComplexTensor.Vector.Pre.Basic
 /-!
 
-# Over color category.
+# Color
 
-## Color
+In the context of tensors `Color` is defined as the type of indices of a tensor.
+For example if `A_μ^ν` is a real Lorentz tensors, we say it has indicies of color `[down, up]`.
+For complex Lorentz Tensors there are six different colors, corresponding to the
+up and down indices of the Lorentz group, the dotted and undotted Weyl fermion indices.
 
-The notion of color will plays a critical role of the formalisation of index notation used here.
-The way to describe color is through examples.
-Indices of real Lorentz tensors can either be up-colored or down-colored.
-On the other hand, indices of Einstein tensors can just down-colored.
-In the case of complex Lorentz tensors, indices can take one of six different colors,
-corresponding to up and down, dotted and undotted weyl fermion indices and up and down
-Lorentz indices.
+_Note if you only want to work with tensors, and not understand their implementation
+you can safely ignore these files._
+
+## Overview of directory
+
+**This file**
+
+Let `C` be the type of colors for a given species of tensor.
+In this file we define the category `OverColor C`. The objects of `OverColor C`
+correspond to allowed colorings of indices represented as a map `X → C` from a type `X` to `C`.
+Usually `X` will be `Fin n` for some `n : ℕ`.
+The morphisms of `OverColor C` correspond to color-preserving permutaitons of indices.
+
+We also define here a symmetric-monoidal structure on `OverColor C`.
+
+**Discrete**
+
+The file `Discrete` contains some basic properties of the category `Discrete C`.
+
+**Lift**
+
+The file `Lift` we define the lift of a functor `F : Discrete C ⥤ Rep k G` to
+a symmetric monodial functor `OverColor C ⥤ Rep k G`, given by taking tensor products.
 
 ## References
 - *Formalization of physics index notation in Lean 4*, Tooby-Smith.
