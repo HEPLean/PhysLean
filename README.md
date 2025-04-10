@@ -1,18 +1,21 @@
 
 ![PhysLean](./docs/PhysLeanLogo.jpeg)
-[![](https://img.shields.io/badge/Read_The-Docs-green)](https://heplean.com)
-[![](https://img.shields.io/badge/Get-Involved-green)](https://heplean.com/GetInvolved.html)
-[![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
-[![](https://img.shields.io/badge/TODO-List-green)](https://heplean.com/TODOList)
-[![](https://img.shields.io/badge/Informal_dependencies-Graph-green)](https://heplean.com/InformalGraph)
+_A project to digitalize physics._
 
-[![](https://img.shields.io/badge/View_The-Stats-blue)](https://heplean.com/Stats)
+
+- [![](https://img.shields.io/badge/Getting-Started-green)](https://physlean.com/GettingStarted.html)
+[![](https://img.shields.io/badge/The-Website-green)](https://physlean.com)
+[![](https://img.shields.io/badge/How_To-Get_Involved-green)](https://physlean.com/GetInvolved.html)
+[![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com)
+[![](https://img.shields.io/badge/TODO-List-green)](https://physlean.com/TODOList)
+
+- [![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
+[![](https://img.shields.io/badge/PhysLean-Online-purple)](https://loogle.physlean.com)
+
+- [![](https://img.shields.io/badge/View_The-Stats-blue)](https://heplean.com/Stats)
 [![](https://img.shields.io/badge/Lean-v4.18.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.18.0)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
 
-A project to digitalize physics.
-
-*(Formerly called HepLean)*
 ## Aims of this project
 
 🎯 __Digitalize__ results (meaning calculations, definitions, and theorems) from physics
@@ -56,17 +59,17 @@ __HepLean: Digitalising high energy physics__, Computer Physics Communications, 
 ### Papers referencing PhysLean
 - Hu, Jiewen, Thomas Zhu, and Sean Welleck. "miniCTX: Neural Theorem Proving with (Long-) Contexts." arXiv preprint [arXiv:2408.03350](https://www.arxiv.org/abs/2408.03350) (2024). [Project page]( https://cmu-l3.github.io/minictx/)
 
-How HepLean was used: *Theorems from the space-time files of HepLean were included in a data set used to evaluate the ability of models to prove theorems from real-world repositories, which requires working with definitions, theorems, and other context not seen in training.*
+How PhysLean (then called HepLean) was used: *Theorems from the space-time files of HepLean were included in a data set used to evaluate the ability of models to prove theorems from real-world repositories, which requires working with definitions, theorems, and other context not seen in training.*
 
 ## Contributing
 
-We would love to have you involved! See the [Get Involved](https://heplean.com/GetInvolved.html) page to see how you can get involved.
+We would love to have you involved! See the [Get Involved](https://physlean.com/GetInvolved.html) page to see how you can get involved.
 Any contributions are welcome! If you have any questions or want permission  permission to create a pull-request for this
 repository contact Joseph Tooby-Smith on the [Lean Zulip](https://leanprover.zulipchat.com), or email.
 
 ## Installation
 
-If you want to play around with HepLean, but do not want to download Lean, then you can use [GitPod](https://gitpod.io/#https://github.com/HEPLean/HepLean).
+If you want to play around with PhysLean, but do not want to download Lean, then you can use [GitPod](https://gitpod.io/#https://github.com/HEPLean/HepLean).
 
 ### Installing Lean 4
 
