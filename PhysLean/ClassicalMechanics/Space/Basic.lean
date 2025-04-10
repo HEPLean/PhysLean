@@ -21,7 +21,7 @@ namespace Space
 /-- The standard basis of Space based on `Fin d`. -/
 informal_definition basis where
   deps := []
-  tag := "7MSR5"
+  tag := "7PBAP"
 
 /-- The standard coordinate functions of Space based on `Fin d`.
 

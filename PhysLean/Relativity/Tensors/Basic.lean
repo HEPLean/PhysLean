@@ -392,6 +392,20 @@ lemma induction_on_basis {n : ℕ} {c : Fin n → S.C} {P : S.Tensor c → Prop}
     exact fun a => hsmul r t a
 
 end Basis
+
+/-!
+
+## The rank
+
+-/
+
+lemma finrank_tensor_eq {n : ℕ} [StrongRankCondition k] (c : Fin n → S.C) :
+    Module.finrank k (S.Tensor c) = ∏ x, S.repDim (c x) := by
+  rw [(Tensor.basis c).repr.finrank_eq]
+  rw [(Finsupp.linearEquivFunOnFinite _ _ _).finrank_eq]
+  rw [Module.finrank_pi]
+  simp
+
 /-!
 
 ## The action

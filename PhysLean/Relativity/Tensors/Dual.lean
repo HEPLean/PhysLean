@@ -156,4 +156,15 @@ noncomputable def toDual {c : S.C} : S.Tensor ![c] ≃ₗ[k] S.Tensor ![S.τ c] 
 
 end Tensor
 
+open Tensor
+@[simp]
+lemma repDim_τ {c : S.C} [StrongRankCondition k] :
+    S.repDim (S.τ c) = S.repDim c := by
+  trans Module.finrank k (S.Tensor ![S.τ c])
+  · rw [finrank_tensor_eq]
+    simp
+  rw [toDual.symm.finrank_eq]
+  rw [finrank_tensor_eq]
+  simp
+
 end TensorSpecies
