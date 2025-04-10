@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.ContrMap
+import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 /-!
 
 # Products of tensors.
@@ -20,7 +20,7 @@ open OverColor
 variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /-- The tensors associated with a list of indicies of a given color
-  `c : Fin n → S.C`. s-/
+  `c : Fin n → S.C`. -/
 noncomputable abbrev Tensor {n : ℕ} (c : Fin n → S.C) : Type := (S.F.obj (OverColor.mk c))
 
 namespace Tensor

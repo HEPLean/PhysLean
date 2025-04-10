@@ -224,12 +224,8 @@ import PhysLean.Relativity.SpaceTime.ProperTime
 import PhysLean.Relativity.Special.TwinParadox.Basic
 import PhysLean.Relativity.Tensors.OverColor.Basic
 import PhysLean.Relativity.Tensors.OverColor.Discrete
-import PhysLean.Relativity.Tensors.OverColor.Functors
-import PhysLean.Relativity.Tensors.OverColor.Iso
 import PhysLean.Relativity.Tensors.OverColor.Lift
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
-import PhysLean.Relativity.Tensors.TensorSpecies.Basis
-import PhysLean.Relativity.Tensors.TensorSpecies.Contractions.ContrMap
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Constructors
 import PhysLean.Relativity.Tensors.TensorSpecies.Tensor.Contraction.Basic

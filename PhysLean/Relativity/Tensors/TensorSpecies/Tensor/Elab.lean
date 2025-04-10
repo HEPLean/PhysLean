@@ -183,8 +183,6 @@ def contrListAdjust (l : List (ℕ × ℕ)) : List (ℕ × ℕ) :=
 
 -/
 
-open PhysLean.Fin
-
 /-- Given two lists of indices, all of which are indent,
   returns the `List (ℕ)` representing the how one list
   permutes into the other. -/
