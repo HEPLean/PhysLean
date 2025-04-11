@@ -7,6 +7,20 @@ import PhysLean.Relativity.SpaceTime.ProperTime
 /-!
 # Twin Paradox
 
+The twin paradox corresponds to the following scenario:
+
+Two twins start at the same point `startPoint` in spacetime.
+Twin A travels at constant speed to the spacetime point `endPoint`,
+whilst twin B makes a detour through the spacetime `twinBMid` and then to `endPoint`.
+
+In this file, we assume that both twins travel at constant speed,
+and that the acceleration of Twin B is instantaneous.
+
+The conclusion of this senario is that Twin A will be older than Twin B when they meet at
+`endPoint`. This is something we show here with an explicit example.
+
+The origin of the twin paradox dates back to Paul Langevin in 1911.
+
 -/
 
 noncomputable section
@@ -48,6 +62,12 @@ def properTimeTwinB : ℝ := SpaceTime.properTime T.startPoint T.twinBMid +
 def ageGap : ℝ := T.properTimeTwinA - T.properTimeTwinB
 
 TODO "6V2UQ" "Find the conditions for which the age gap for the twin paradox is zero."
+
+/-- In the twin paradox with instantous acceleration, Twin A is always older
+  then Twin B. -/
+informal_lemma ageGap_nonneg where
+  deps := [``ageGap]
+  tag := "7ROVE"
 
 /-!
 
@@ -116,6 +136,9 @@ lemma example1_ageGap : example1.ageGap = 6 := by
   norm_num
 
 end InstantaneousTwinParadox
+
+TODO "7ROQ4" "Do the twin paradox with a non-instantaneous acceleration. This should be done
+  in a different module."
 
 end SpecialRelativity
 
