@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.FieldStrength.Basic
-import PhysLean.Relativity.Lorentz.RealTensor.Derivative
+import PhysLean.Relativity.Tensors.RealTensor.Derivative
 /-!
 
 # Derivative of the field strength tensor

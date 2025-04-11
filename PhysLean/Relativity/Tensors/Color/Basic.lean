@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.CategoryTheory.Core
-import PhysLean.Relativity.Lorentz.Weyl.Basic
-import PhysLean.Relativity.Lorentz.ComplexTensor.Vector.Pre.Basic
+import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Basic
+import PhysLean.Relativity.Tensors.ComplexTensor.Vector.Pre.Basic
 /-!
 
 # Color

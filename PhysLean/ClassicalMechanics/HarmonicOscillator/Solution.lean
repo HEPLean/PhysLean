@@ -55,9 +55,11 @@ lemma InitialConditions.ext {IC₁ IC₂ : InitialConditions} (h1 : IC₁.x₀ =
 /-- The zero initial condition. -/
 def zeroIC : InitialConditions := ⟨0, 0⟩
 
+/-- The zero initial condition has zero starting point. -/
 @[simp]
 lemma x₀_zeroIC : zeroIC.x₀ = 0 := rfl
 
+/-- The zero initial condition has zero starting velocity. -/
 @[simp]
 lemma v₀_zeroIC : zeroIC.v₀ = 0 := rfl
 
