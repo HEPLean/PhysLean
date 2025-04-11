@@ -7,13 +7,27 @@ import PhysLean.Mathematics.LinearMaps
 import PhysLean.Meta.TODO.Basic
 import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 /-!
-# Basic set up for anomaly cancellation conditions
+# Anomaly cancellation conditions
 
-This file defines the basic structures for the anomaly cancellation conditions.
+Anomaly cancellation conditions (ACCs) are consistency conditions which arise
+in gauge field theories.
 
-It defines a module structure on the charges, and the solutions to the linear ACCs.
+They correspond to a set of homogeneous diophantine equations in the integer charges
+assigned to fermions under `u(1)` contributions to the gauge group.
+
+In `4d` the ACCs are at most cubic.
+
+## Current status
+
+Currently we have research-level results related to the solutions for
+various types of ACCs.
+
+## Important TODOs
+
+- 6VZMW: Derive the ACCs from gauge field theories.
 
 -/
+
 TODO "6VZMW" "Anomaly cancellation conditions can be derived formally from the gauge group
   and fermionic representations using e.g. topological invariants. Include such a
   definition."
