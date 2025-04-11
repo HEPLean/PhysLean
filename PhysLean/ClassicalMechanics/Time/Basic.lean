@@ -8,6 +8,8 @@ import PhysLean.Meta.Informal.Basic
 /-!
 # Time
 
+In this file we define the time worldvolume as a real line.
+
 -/
 
 /-- The type `Time` represents the time manifold. -/
