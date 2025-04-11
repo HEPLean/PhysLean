@@ -45,7 +45,7 @@ jobs:
 
       - name: check for duplicate TODO tags
         run: |
-          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_up_tags"
+          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_dup_tags"
 
       - name: runLinter on PhysLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
