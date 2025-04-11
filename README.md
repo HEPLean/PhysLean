@@ -10,7 +10,7 @@ _A project to digitalize physics._
 [![](https://img.shields.io/badge/TODO-List-green)](https://physlean.com/TODOList)
 
 - [![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
-[![](https://img.shields.io/badge/PhysLean-Online-purple)](https://loogle.physlean.com)
+[![](https://img.shields.io/badge/PhysLean-Online-purple)](https://live.physlean.com)
 
 - [![](https://img.shields.io/badge/View_The-Stats-blue)](https://heplean.com/Stats)
 [![](https://img.shields.io/badge/Lean-v4.18.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.18.0)
