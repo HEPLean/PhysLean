@@ -8,6 +8,7 @@ import PhysLean.QFT.PerturbationTheory.FieldStatistics.ExchangeSign
 import PhysLean.Relativity.SpaceTime.Basic
 import PhysLean.QFT.PerturbationTheory.FieldStatistics.OfFinset
 import PhysLean.Meta.Remark.Basic
+import PhysLean.ClassicalMechanics.Momentum.Basic
 /-!
 
 # Field specification
@@ -96,9 +97,9 @@ As an example, if `f` corresponds to a Weyl-fermion field, then
 
 -/
 inductive FieldOp (𝓕 : FieldSpecification) where
-  | inAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ) → 𝓕.FieldOp
+  | inAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Momentum 3) → 𝓕.FieldOp
   | position : (Σ f, 𝓕.PositionLabel f) × SpaceTime → 𝓕.FieldOp
-  | outAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ) → 𝓕.FieldOp
+  | outAsymp : (Σ f, 𝓕.AsymptoticLabel f) × (Momentum 3) → 𝓕.FieldOp
 
 /-- The bool on `FieldOp` which is true only for position field operator. -/
 def statesIsPosition : 𝓕.FieldOp → Bool
@@ -132,7 +133,7 @@ scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
     (fieldOpStatistic 𝓕) φ
 
 @[inherit_doc fieldOpStatistic]
-scoped[FieldSpecification] notation 𝓕 "|>ₛ" "⟨" f ","a "⟩"=> FieldStatistic.ofFinset
+scoped[FieldSpecification] notation 𝓕 "|>ₛ" "⟨" f ","a "⟩" => FieldStatistic.ofFinset
     (fieldOpStatistic 𝓕) f a
 
 end FieldSpecification
