@@ -5,7 +5,12 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.AnomalyCancellation.Basic
 /-!
-# Anomaly cancellation conditions for n family SM.
+
+# Anomaly cancellation conditions for the Standard Model with right-handed neutrinos
+
+This directory is relted to the anomaly cancellation conditions (ACCs) for the Standard Model with
+right-handed neutrinos (SMν).
+
 -/
 
 universe v u
@@ -106,15 +111,15 @@ lemma accGrav_decomp (S : (SMνCharges n).Charges) :
       ∑ i, N S i := by
   simp only [accGrav, SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
     AddHom.coe_mk]
-  repeat erw [Finset.sum_add_distrib]
-  repeat erw [← Finset.mul_sum]
+  repeat rw [Finset.sum_add_distrib]
+  repeat rw [← Finset.mul_sum]
 
 /-- Extensionality lemma for `accGrav`. -/
 lemma accGrav_ext {S T : (SMνCharges n).Charges}
     (hj : ∀ (j : Fin 6), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accGrav S = accGrav T := by
   rw [accGrav_decomp, accGrav_decomp]
-  repeat erw [hj]
+  repeat rw [hj]
 
 /-- The `SU(2)` anomaly equation. -/
 @[simp]
@@ -125,15 +130,15 @@ def accSU2 : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
     repeat rw [map_add]
     simp only [SMνSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
       Fin.isValue, mul_add]
-    repeat erw [Finset.sum_add_distrib]
+    repeat rw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
     simp only
-    repeat erw [map_smul]
+    repeat rw [map_smul]
     simp only [SMνSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
       eq_ratCast, Rat.cast_eq_id, id_eq]
-    repeat erw [Finset.sum_add_distrib]
-    repeat erw [← Finset.mul_sum]
+    repeat rw [Finset.sum_add_distrib]
+    repeat rw [← Finset.mul_sum]
     -- rw [show Rat.cast a = a from rfl]
     ring
 
@@ -141,15 +146,15 @@ lemma accSU2_decomp (S : (SMνCharges n).Charges) :
     accSU2 S = 3 * ∑ i, Q S i + ∑ i, L S i := by
   simp only [accSU2, SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, LinearMap.coe_mk,
     AddHom.coe_mk]
-  repeat erw [Finset.sum_add_distrib]
-  repeat erw [← Finset.mul_sum]
+  repeat rw [Finset.sum_add_distrib]
+  repeat rw [← Finset.mul_sum]
 
 /-- Extensionality lemma for `accSU2`. -/
 lemma accSU2_ext {S T : (SMνCharges n).Charges}
     (hj : ∀ (j : Fin 6), ∑ i, (toSpecies j) S i = ∑ i, (toSpecies j) T i) :
     accSU2 S = accSU2 T := by
   rw [accSU2_decomp, accSU2_decomp]
-  repeat erw [hj]
+  repeat rw [hj]
 
 /-- The `SU(3)` anomaly equations. -/
 @[simp]
@@ -167,8 +172,8 @@ def accSU3 : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
     repeat erw [map_smul]
     simp only [SMνSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
       eq_ratCast, Rat.cast_eq_id, id_eq]
-    repeat erw [Finset.sum_add_distrib]
-    repeat erw [← Finset.mul_sum]
+    repeat rw [Finset.sum_add_distrib]
+    repeat rw [← Finset.mul_sum]
     -- rw [show Rat.cast a = a from rfl]
     ring
 
@@ -200,7 +205,7 @@ def accYY : (SMνCharges n).Charges →ₗ[ℚ] ℚ where
     ring
   map_smul' a S := by
     simp only
-    repeat erw [map_smul]
+    repeat rw [map_smul]
     simp only [SMνSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
       eq_ratCast, Rat.cast_eq_id, id_eq]
     repeat erw [Finset.sum_add_distrib]
@@ -243,7 +248,7 @@ def quadBiLin : BiLinearSymm (SMνCharges n).Charges := BiLinearSymm.mk₂
     simp only
     rw [← Finset.sum_add_distrib]
     refine Fintype.sum_congr _ _ fun i ↦ ?_
-    repeat erw [map_add]
+    repeat rw [map_add]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply, Fin.isValue, neg_mul,
       one_mul]
     ring)
@@ -259,8 +264,8 @@ lemma quadBiLin_decomp (S T : (SMνCharges n).Charges) :
   erw [← quadBiLin.toFun_eq_coe]
   rw [quadBiLin]
   simp only [quadBiLin, BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
-  repeat erw [Finset.sum_add_distrib]
-  repeat erw [← Finset.mul_sum]
+  repeat rw [Finset.sum_add_distrib]
+  repeat rw [← Finset.mul_sum]
   simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul, add_left_inj]
   ring
 
@@ -338,7 +343,8 @@ def accCube : HomogeneousCubic (SMνCharges n).Charges := cubeTriLin.toCubic
 lemma accCube_decomp (S : (SMνCharges n).Charges) :
     accCube S = 6 * ∑ i, (Q S i)^3 + 3 * ∑ i, (U S i)^3 + 3 * ∑ i, (D S i)^3 + 2 * ∑ i, (L S i)^3 +
       ∑ i, (E S i)^3 + ∑ i, (N S i)^3 := by
-  erw [cubeTriLin_decomp]
+  change cubeTriLin S S S = _
+  rw [cubeTriLin_decomp]
   ring_nf
 
 /-- Extensionality lemma for `accCube`. -/
