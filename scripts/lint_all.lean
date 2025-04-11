@@ -5,16 +5,25 @@ Authors: Joseph Tooby-Smith
 -/
 
 def main (_: List String) : IO UInt32 := do
+
   println! "Style lint ... "
   let styleLint ← IO.Process.output {cmd := "lake", args := #["exe", "style_lint"]}
   println! styleLint.stdout
+
   println! "Building ... "
   let build ← IO.Process.output {cmd := "lake", args := #["build"]}
   println! build.stdout
+
   println! "File imports ... "
   let importCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_file_imports"]}
   println! importCheck.stdout
+
+  println! "TODO tag duplicates ... "
+  let todoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_dup_tags"]}
+  println! todoCheck.stdout
+
   println! "Lean linter ..."
   let leanCheck ← IO.Process.output {cmd := "lake", args := #["exe", "runLinter", "PhysLean"]}
   println! leanCheck.stdout
+
   pure 0
