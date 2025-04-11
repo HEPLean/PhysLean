@@ -227,6 +227,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Derivative
 import PhysLean.Relativity.Tensors.RealTensor.Matrix.Pre
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Pre
+import PhysLean.Relativity.Tensors.RealTensor.ToComplex
 import PhysLean.Relativity.Tensors.RealTensor.Units.Pre
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Boosts
