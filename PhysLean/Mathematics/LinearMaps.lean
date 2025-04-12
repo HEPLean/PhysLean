@@ -208,8 +208,9 @@ lemma swap₃ (f : TriLinearSymm V) (S T L : V) : f S T L = f L T S := by
 
 lemma map_smul₁ (f : TriLinearSymm V) (a : ℚ) (S T L : V) :
     f (a • S) T L = a * f S T L := by
-  erw [f.map_smul a S]
-  rfl
+  have h : f (a • S) = a • (f S) := by
+    exact f.map_smul a S
+  simp [h]
 
 lemma map_smul₂ (f : TriLinearSymm V) (S : V) (a : ℚ) (T L : V) :
     f S (a • T) L = a * f S T L := by
