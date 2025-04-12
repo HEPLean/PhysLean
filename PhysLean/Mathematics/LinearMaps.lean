@@ -83,18 +83,7 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
   map_add' := fun S1 S2 => LinearMap.ext fun T => map_add S1 S2 T
   swap' := swap
 
--- variable (V : Type) [AddCommGroup V] [Module ℚ V]
--- variable (f : BiLinearSymm V) (a : ℚ) (S T : V)
-
--- #check f
--- #check f S
--- #check f S T
--- #check a * f S T
--- #check a * (f S) T
--- #check a • (f S)
--- #check (a • f.toLinearMap S)
-
-lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S) T = a * (f S) T := by
+lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S) T = a * f S T := by
   have h : f (a • S) = a • (f S) := by
     exact f.toLinearMap.map_smul a S
   simp [h]
