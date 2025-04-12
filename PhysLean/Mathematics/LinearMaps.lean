@@ -94,8 +94,9 @@ lemma map_smul₂ (f : BiLinearSymm V) (a : ℚ) (S : V) (T : V) : f S (a • T)
   rw [f.swap, f.map_smul₁, f.swap]
 
 lemma map_add₁ (f : BiLinearSymm V) (S1 S2 T : V) : f (S1 + S2) T = f S1 T + f S2 T := by
-  erw [f.map_add]
-  rfl
+  have h : f (S1 + S2) = f S1 + f S2 := by
+    exact f.map_add S1 S2
+  simp [h]
 
 lemma map_add₂ (f : BiLinearSymm V) (S : V) (T1 T2 : V) :
     f S (T1 + T2) = f S T1 + f S T2 := by
