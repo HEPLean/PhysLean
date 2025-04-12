@@ -222,8 +222,9 @@ lemma map_smul₃ (f : TriLinearSymm V) (S T : V) (a : ℚ) (L : V) :
 
 lemma map_add₁ (f : TriLinearSymm V) (S1 S2 T L : V) :
     f (S1 + S2) T L = f S1 T L + f S2 T L := by
-  erw [f.map_add]
-  rfl
+  have h : f (S1 + S2) = f S1 + f S2 := by
+    exact f.map_add S1 S2
+  simp [h]
 
 lemma map_add₂ (f : TriLinearSymm V) (S T1 T2 L : V) :
     f S (T1 + T2) L = f S T1 L + f S T2 L := by
