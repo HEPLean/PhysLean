@@ -85,7 +85,7 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
 
 lemma map_smul₁ (f : BiLinearSymm V) (a : ℚ) (S T : V) : f (a • S) T = a * f S T := by
   have h : f (a • S) = a • (f S) := by
-    exact f.toLinearMap.map_smul a S
+    exact f.map_smul a S
   simp [h]
 
 lemma swap (f : BiLinearSymm V) (S T : V) : f S T = f T S := f.swap' S T
