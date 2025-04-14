@@ -188,6 +188,7 @@ import PhysLean.Relativity.SL2C.SelfAdjoint
 import PhysLean.Relativity.SpaceTime.Basic
 import PhysLean.Relativity.SpaceTime.CliffordAlgebra
 import PhysLean.Relativity.SpaceTime.ProperTime
+import PhysLean.Relativity.SpaceTime.TimeSlice
 import PhysLean.Relativity.Special.TwinParadox.Basic
 import PhysLean.Relativity.Tensors.Basic
 import PhysLean.Relativity.Tensors.Color.Basic

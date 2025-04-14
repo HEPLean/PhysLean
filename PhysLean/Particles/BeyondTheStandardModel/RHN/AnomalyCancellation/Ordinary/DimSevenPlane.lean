@@ -138,7 +138,7 @@ lemma B₆_cubic (S T : (SM 3).Charges) : cubeTriLin B₆ S T =
   ring_nf
 
 TODO "7SQUT" "Remove the definitions of elements `(SM 3).Charges` B₀, B₁ etc, here are
-  use only `B :  Fin 7 → (SM 3).Charges`. "
+  use only `B : Fin 7 → (SM 3).Charges`. "
 /-- The charge assignments forming a basis of the plane. -/
 @[simp]
 abbrev B : Fin 7 → (SM 3).Charges := fun i =>
