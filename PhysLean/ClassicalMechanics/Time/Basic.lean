@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Basic
 /-!
 # Time
 
@@ -18,8 +19,11 @@ abbrev Time := ℝ
 namespace Time
 
 /-- Given a function `f : Time → M` the derivative of `f`. -/
-informal_definition deriv where
-  deps := []
-  tag := "7MTUR"
+noncomputable def deriv [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+    (f : Time → M) : Time → M :=
+  (fun x => fderiv ℝ f x 1)
+
+@[inherit_doc deriv]
+scoped notation "∂ₜ" => deriv
 
 end Time

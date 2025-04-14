@@ -45,14 +45,13 @@ noncomputable def deriv [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
   (fun x => fderiv ℝ f x (EuclideanSpace.single μ (1:ℝ)))
 
 @[inherit_doc deriv]
-macro "∂[" i:term "]" : term => `(fun f => deriv $i f)
+macro "∂[" i:term "]" : term => `(deriv $i)
 
 /-- The theorem that derivatives on space commute with one another. -/
 lemma deriv_commute [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f : Space d → M) (hf : ContDiff ℝ ⊤ f) : ∂[u] (∂[v] f) = ∂[v] (∂[u] f) := by
   have hf' : ContDiff ℝ (⊤ : ℕ∞) f := hf.of_le le_top
   rw [contDiff_infty_iff_fderiv] at hf'
-  simp only
   unfold deriv
   ext x
   rw [fderiv_clm_apply, fderiv_clm_apply]
@@ -81,12 +80,12 @@ noncomputable def curl (f : Space → EuclideanSpace ℝ (Fin 3)) :
   let fi i x := coord i (f x)
   -- derivative of i-th component in j-th coordinate
   -- ∂fᵢ/∂xⱼ
-  let df i j := ∂[j] (fi i) x
+  let df i j x := ∂[j] (fi i) x
   fun i =>
     match i with
-    | 0 => df 2 1 - df 1 2
-    | 1 => df 0 2 - df 2 0
-    | 2 => df 1 0 - df 0 1
+    | 0 => df 2 1 x - df 1 2 x
+    | 1 => df 0 2 x - df 2 0 x
+    | 2 => df 1 0 x - df 0 1 x
 
 @[inherit_doc curl]
 scoped[Space] notation "∇×" => curl
