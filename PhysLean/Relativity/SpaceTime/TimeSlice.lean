@@ -37,7 +37,7 @@ def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d �
     (fun i => (Lorentz.Vector.toCoord x (Sum.inr i)))
   left_inv f := by
     funext x
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
     congr
     refine (LinearEquiv.symm_apply_eq Lorentz.Vector.toCoord).mpr ?_
     generalize Lorentz.Vector.toCoord x = y
@@ -52,12 +52,12 @@ def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d �
 /-- The derivative on space commutes with time-slicing. -/
 semiformal_result "7Z2GA" timeSlice_spatial_deriv {M : Type} [AddCommGroup M]
     [Module ℝ M] [TopologicalSpace M] {d : ℕ} (f : SpaceTime d → M) (i : Fin d) :
-  timeSlice (deriv (finSumFinEquiv (Sum.inr i)) f) = fun t => ∂[i] (timeSlice f t)
+  timeSlice (∂_ (finSumFinEquiv (Sum.inr i)) f) = fun t => ∂[i] (timeSlice f t)
 
 /-- The derivative on time commutes with time-slicing. -/
 semiformal_result "7Z2LF" timeSlice_time_deriv {M : Type} [AddCommGroup M]
     [Module ℝ M] [TopologicalSpace M] {d : ℕ} (f : SpaceTime d → M) :
-  timeSlice (deriv (finSumFinEquiv (Sum.inl 0)) f) = ∂ₜ (timeSlice f)
+  timeSlice (∂_ (finSumFinEquiv (Sum.inl 0)) f) = ∂ₜ (timeSlice f)
 
 end SpaceTime
 
