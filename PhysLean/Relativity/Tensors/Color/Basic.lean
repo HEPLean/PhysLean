@@ -187,7 +187,7 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
       | Sum.inr x => rfl,
     inv_hom_id := by
       apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]
+      rw [Hom.hom_comp]
       simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.inv_hom_id]
       rfl}
   leftUnitor X := {
@@ -195,7 +195,7 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
     inv := (Over.isoMk (Equiv.emptySum Empty X.left).toIso).symm
     hom_inv_id := by
       apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]
+      rw [Hom.hom_comp]
       simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
       rfl,
     inv_hom_id := by
@@ -205,7 +205,7 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
     inv := (Over.isoMk (Equiv.sumEmpty X.left Empty).toIso).symm
     hom_inv_id := by
       apply CategoryTheory.Iso.ext
-      erw [CategoryTheory.Iso.trans_hom]
+      rw [Hom.hom_comp]
       simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
       rfl,
     inv_hom_id := by
