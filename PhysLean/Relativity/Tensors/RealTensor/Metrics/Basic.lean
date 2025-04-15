@@ -14,7 +14,6 @@ open CategoryTheory
 open MonoidalCategory
 open Matrix
 open MatrixGroups
-open Complex
 open TensorProduct
 open IndexNotation
 open CategoryTheory

@@ -523,7 +523,7 @@ lemma prod_finset_eq_mul_fst_snd (c : WickContraction n) (a : c.1)
   In other words, in a `GradingCompliant` Wick contraction if
   no contracted pairs occur between `fermionic` and `bosonic` fields. -/
 def GradingCompliant (φs : List 𝓕.FieldOp) (φsΛ : WickContraction φs.length) :=
-  ∀ (a : φsΛ.1), (𝓕 |>ₛ φs[φsΛ.fstFieldOfContract a]) = (𝓕 |>ₛ φs[φsΛ.sndFieldOfContract a])
+  ∀ (a : φsΛ.1), (𝓕 |>ₛ φs[(φsΛ.fstFieldOfContract a).1]) = (𝓕 |>ₛ φs[(φsΛ.sndFieldOfContract a).1])
 
 lemma gradingCompliant_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs')
     (φsΛ : WickContraction φs.length) :

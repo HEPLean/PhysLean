@@ -21,8 +21,8 @@ open FieldStatistic
 
 lemma signFinset_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (i1 i2 : Fin φs.length) :
-    (φsΛ ↩Λ φ i none).signFinset (finCongr (insertIdx_length_fin φ φs i).symm
-    (i.succAbove i1)) (finCongr (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
+    (φsΛ ↩Λ φ i none).signFinset (Fin.cast (insertIdx_length_fin φ φs i).symm
+    (i.succAbove i1)) (Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove i2)) =
     if i.succAbove i1 < i ∧ i < i.succAbove i2 then
       Insert.insert (finCongr (insertIdx_length_fin φ φs i).symm i)
       (insertAndContractLiftFinset φ i (φsΛ.signFinset i1 i2))
@@ -98,7 +98,7 @@ lemma sign_insert_none_eq_signInsertNone_mul_sign (φ : 𝓕.FieldOp) (φs : Lis
   simp only [instCommGroup, Nat.succ_eq_add_one, insertAndContract_sndFieldOfContract,
     finCongr_apply, Fin.getElem_fin, Fin.coe_cast, insertIdx_getElem_fin,
     insertAndContract_fstFieldOfContract, ite_mul, one_mul]
-  erw [signFinset_insertAndContract_none]
+  rw [signFinset_insertAndContract_none]
   split
   · rw [ofFinset_insert]
     simp only [instCommGroup, Nat.succ_eq_add_one, finCongr_apply, Fin.getElem_fin, Fin.coe_cast,
@@ -154,8 +154,7 @@ lemma signInsertNone_eq_prod_prod (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   congr 1
   congr 1
   simp only [Fin.getElem_fin]
-  erw [hG a]
-  rfl
+  rw [hG a]
 
 lemma signInsertNone_eq_prod_getDual?_Some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (hG : GradingCompliant φs φsΛ) :

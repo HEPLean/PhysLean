@@ -316,7 +316,7 @@ lemma joinSignLeftExtra_eq_joinSignRightExtra {φs : List 𝓕.FieldOp}
         simp_all)]
   simp only [Finset.mem_filter, mem_signFinset, map_one, Finset.prod_const_one, mul_one]
   rw [← ((singleton h).join φsucΛ).sigmaContractedEquiv.prod_comp]
-  erw [Finset.prod_sigma]
+  rw [Fintype.prod_sigma]
   conv_lhs =>
     enter [2, a]
     rw [prod_finset_eq_mul_fst_snd]

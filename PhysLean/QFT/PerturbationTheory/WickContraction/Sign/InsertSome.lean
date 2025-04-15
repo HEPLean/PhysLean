@@ -43,14 +43,14 @@ lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.FieldOp)
     rw [if_neg (hnon x.1 (by simpa using x.2))]
   simp only [Equiv.symm_symm, Equiv.sumCompl_apply_inl, Finset.prod_const_one, mul_one, e2]
   rw [← φsΛ.sigmaContractedEquiv.prod_comp]
-  erw [Finset.prod_sigma]
+  rw [Fintype.prod_sigma]
   apply Fintype.prod_eq_one _
   intro x
   rw [prod_finset_eq_mul_fst_snd]
   simp only [sigmaContractedEquiv, Equiv.coe_fn_mk, mul_ite, ite_mul, one_mul, mul_one]
   split
   · split
-    erw [hg x]
+    rw [hg x]
     simp only [Fin.getElem_fin, mul_self]
     rename_i h1 h2
     have hsom' := hsom (φsΛ.sndFieldOfContract x) (by simp) h1
@@ -336,8 +336,7 @@ lemma signInsertSomeProd_eq_prod_prod (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
   · simp only [Nat.succ_eq_add_one, not_lt, instCommGroup.eq_1, Fin.getElem_fin,
     fstFieldOfContract_getDual?, Option.get_some, mul_one]
     congr 1
-    erw [hg a]
-    simp
+    rw [hg a]
   · simp only [Nat.succ_eq_add_one, sndFieldOfContract_getDual?, Option.get_some, not_lt, not_and,
     not_or, not_le]
     intro h1
