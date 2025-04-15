@@ -3,6 +3,8 @@ defaultTargets = ["PhysLean"]
 # -- Optional inclusion for LeanCopilot
 #moreLinkArgs = ["-L./.lake/packages/LeanCopilot/.lake/build/lib", "-lctranslate2"]
 
+## Imports
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
@@ -15,6 +17,99 @@ rev = "v4.18.0"
 
 [[lean_lib]]
 name = "PhysLean"
+
+## Scripts
+
+### Core linting scripts
+
+[[lean_exe]]
+name = "check_file_imports"
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "style_lint"
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
+name = "type_former_lint"
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "lint_all"
+supportInterpreter = true
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "check_dup_tags"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+
+### Other linting scripts
+
+[[lean_exe]]
+name = "free_simps"
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
+name = "check_rfl"
+srcDir = "scripts/MetaPrograms"
+
+
+[[lean_exe]]
+name = "redundent_imports"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+### Stats
+
+[[lean_exe]]
+name = "stats"
+supportInterpreter = true
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "local_stats"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+### Scripts for the website
+
+[[lean_exe]]
+name = "make_tag"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
+name = "TODO_to_yml"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
+name = "informal"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+### Old
+
+[[lean_exe]]
+name = "find_TODOs"
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "notes"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
+name = "mathlib_textLint_on_hepLean"
+srcDir = "scripts"
+
+[[lean_exe]]
+name = "no_docs"
+srcDir = "scripts/MetaPrograms"
+
+### Optional scripts
 
 # -- Optional inclusion of llm. Needed for `openAI_doc_check`
 #[[require]]
@@ -35,78 +130,6 @@ name = "PhysLean"
 #rev = "v1.4.1"
 
 # lean_exe commands defined specifically for PhysLean.
-
-[[lean_exe]]
-name = "check_file_imports"
-srcDir = "scripts"
-
-[[lean_exe]]
-name = "type_former_lint"
-srcDir = "scripts"
-
-[[lean_exe]]
-name = "style_lint"
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "find_TODOs"
-srcDir = "scripts"
-
-[[lean_exe]]
-name = "mathlib_textLint_on_hepLean"
-srcDir = "scripts"
-
-[[lean_exe]]
-name = "stats"
-supportInterpreter = true
-srcDir = "scripts"
-
-[[lean_exe]]
-name = "notes"
-supportInterpreter = true
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "TODO_to_yml"
-supportInterpreter = true
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "lint_all"
-supportInterpreter = true
-srcDir = "scripts"
-
-[[lean_exe]]
-name = "free_simps"
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "check_rfl"
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "no_docs"
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "informal"
-supportInterpreter = true
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "redundent_imports"
-supportInterpreter = true
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "make_tag"
-supportInterpreter = true
-srcDir = "scripts/MetaPrograms"
-
-[[lean_exe]]
-name = "check_dup_tags"
-supportInterpreter = true
-srcDir = "scripts/MetaPrograms"
 
 # -- Optional inclusion of openAI_doc_check. Needs `llm` above.
 #[[lean_exe]]
