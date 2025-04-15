@@ -579,8 +579,8 @@ lemma actionT_fromConstPair {c1 c2 : S.C}
     (g : G) : g • fromConstPair v = fromConstPair v := by
   rw [fromConstPair, actionT_fromPairT]
   congr 1
-  change ((v.hom ≫ ModuleCat.ofHom ((S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 }).ρ g))) _ = _
-  erw [← v.comm g]
+  change ((v.hom ≫ (tensorObj (𝒞 := Action.instCategory) _ _).ρ g)) _ = _
+  rw [← v.comm g]
   simp
 
 @[simp]
@@ -797,10 +797,8 @@ lemma actionT_fromConstTriple {c1 c2 c3 : S.C}
     (g : G) : g • fromConstTriple v = fromConstTriple v := by
   rw [fromConstTriple, actionT_fromTripleT]
   congr 1
-  change ((v.hom ≫
-    ModuleCat.ofHom ((S.FD.obj { as := c1 } ⊗ S.FD.obj { as := c2 } ⊗
-      S.FD.obj { as := c3 }).ρ g))) _ = _
-  erw [← v.comm g]
+  change ((v.hom ≫ (tensorObj (𝒞 := Action.instCategory) _ _).ρ g)) _ = _
+  rw [← v.comm g]
   simp
 
 /-!
