@@ -32,11 +32,10 @@ lemma SO3ToMatrix_in_LorentzGroup (A : SO(3)) : SO3ToMatrix A ∈ LorentzGroup 3
 
 lemma SO3ToMatrix_injective : Function.Injective SO3ToMatrix := by
   intro A B h
-  erw [Equiv.apply_eq_iff_eq] at h
-  have h1 := congrArg Matrix.toBlocks₂₂ h
-  erw [Matrix.toBlocks_fromBlocks₂₂, Matrix.toBlocks_fromBlocks₂₂] at h1
   apply Subtype.eq
-  exact h1
+  have h_blocks := congr_arg
+    (Matrix.toBlocks₂₂ : _ → Matrix (Fin 3) (Fin 3) ℝ) h
+  exact h_blocks
 
 /-- Given a element of `SO(3)` the element of the Lorentz group corresponding to a
 space-time rotation. -/
