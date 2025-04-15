@@ -12,7 +12,8 @@ We define the Lorentz group.
 
 ## References
 
-- http://home.ku.edu.tr/~amostafazadeh/phys517_518/phys517_2016f/Handouts/A_Jaffi_Lorentz_Group.pdf
+- *Lorentz Transformations, Rotations, and Boosts*, Jaffe.
+<https://cdn.ku.edu.tr/cdn/files/amostafazadeh/phys517_518/phys517_2016f/Handouts/A_Jaffi_Lorentz_Group.pdf>
 
 -/
 TODO "6VZHM" "Define the Lie group structure on the Lorentz group."
