@@ -33,7 +33,7 @@ lemma SO3ToMatrix_in_LorentzGroup (A : SO(3)) : SO3ToMatrix A ∈ LorentzGroup 3
 lemma SO3ToMatrix_injective : Function.Injective SO3ToMatrix := by
   intro A B h
   apply Subtype.eq
-  have h_blocks := congr_arg
+  have h_blocks := congrArg
     (Matrix.toBlocks₂₂ : _ → Matrix (Fin 3) (Fin 3) ℝ) h
   exact h_blocks
 
