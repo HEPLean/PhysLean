@@ -94,25 +94,23 @@ lemma detContinuous_eq_zero (Λ : LorentzGroup d) :
 
 lemma detContinuous_eq_iff_det_eq (Λ Λ' : LorentzGroup d) :
     detContinuous Λ = detContinuous Λ' ↔ Λ.1.det = Λ'.1.det := by
-  cases' det_eq_one_or_neg_one Λ with h1 h1
-  · rw [h1, (detContinuous_eq_one Λ).mpr h1]
-    cases' det_eq_one_or_neg_one Λ' with h2 h2
-    · rw [h2, (detContinuous_eq_one Λ').mpr h2]
-      simp only [toMul_zero]
-    · rw [h2, (detContinuous_eq_zero Λ').mpr h2]
-      erw [Additive.toMul.apply_eq_iff_eq]
-      change (0 : Fin 2) = (1 : Fin 2) ↔ _
-      simp only [Fin.isValue, zero_ne_one, false_iff]
-      linarith
-  · rw [h1, (detContinuous_eq_zero Λ).mpr h1]
-    cases' det_eq_one_or_neg_one Λ' with h2 h2
-    · rw [h2, (detContinuous_eq_one Λ').mpr h2]
-      erw [Additive.toMul.apply_eq_iff_eq]
-      change (1 : Fin 2) = (0 : Fin 2) ↔ _
-      simp only [Fin.isValue, one_ne_zero, false_iff]
-      linarith
-    · rw [h2, (detContinuous_eq_zero Λ').mpr h2]
-      simp only [Nat.reduceAdd]
+  match det_eq_one_or_neg_one Λ, det_eq_one_or_neg_one Λ' with
+  | .inl h1, .inl h2 =>
+    rw [h1, h2, (detContinuous_eq_one Λ).mpr h1, (detContinuous_eq_one Λ').mpr h2]
+    simp only [toMul_zero]
+  | .inr h1, .inr h2 =>
+    rw [h1, h2, (detContinuous_eq_zero Λ).mpr h1, (detContinuous_eq_zero Λ').mpr h2]
+    simp only [Nat.reduceAdd]
+  | .inl h1, .inr h2 =>
+    rw [h1, h2, (detContinuous_eq_one Λ).mpr h1, (detContinuous_eq_zero Λ').mpr h2]
+    change (0 : Fin 2) = (1 : Fin 2) ↔ _
+    simp only [zero_ne_one, false_iff]
+    linarith
+  | .inr h1, .inl h2 =>
+    rw [h1, h2, (detContinuous_eq_zero Λ).mpr h1, (detContinuous_eq_one Λ').mpr h2]
+    change (1 : Fin 2) = (0 : Fin 2) ↔ _
+    simp only [one_ne_zero, false_iff]
+    linarith
 
 /-- The representation taking a Lorentz matrix to its determinant. -/
 @[simps!]
