@@ -188,10 +188,8 @@ lemma toMatrix_in_lorentzGroup (u v : FuturePointing d) : (toMatrix u v) ∈ Lor
       (contrContrContractField ((genBoost u v) y ⊗ₜ[ℝ] (genBoost u v) x))
       = (((1 + ⟪u.1.1, v.1.1⟫ₘ)) * (1 + ⟪u.1.1, v.1.1⟫ₘ)) • ⟪y, x⟫ₘ := by
     conv_lhs =>
-      erw [← map_smul]
-      rw [← smul_smul]
-      rw [← tmul_smul, ← smul_tmul, ← tmul_smul, genBoost_mul_one_plus_contr,
-        genBoost_mul_one_plus_contr]
+      rw [← map_smul, ← smul_smul, ← tmul_smul, ← smul_tmul, ← tmul_smul,
+        genBoost_mul_one_plus_contr, genBoost_mul_one_plus_contr]
       simp only [add_smul, one_smul, tmul_add, map_add, smul_add, tmul_sub, sub_tmul, add_tmul,
         smul_tmul, tmul_smul, map_sub, map_smul, smul_eq_mul, contr_self, mul_one]
       rw [contrContrContractField.symm v.1.1 u, contrContrContractField.symm v.1.1 x,
