@@ -323,36 +323,6 @@ lemma deriv_comp_toTimeAndSpace_natAdd {M : Type} [NormedAddCommGroup M] [Normed
     ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   rw [toTimeAndSpace_basis_natAdd]
 
-/-- The divergence of a function `SpaceTime d → EuclideanSpace ℝ (Fin d)`. -/
-noncomputable def spaceDiv {d : ℕ} (f : SpaceTime d → EuclideanSpace ℝ (Fin d)) :
-    SpaceTime d → ℝ :=
-  ∑ j, SpaceTime.deriv (finSumFinEquiv (Sum.inr j)) (fun y => f y j)
-
-@[inherit_doc spaceDiv]
-scoped[SpaceTime] notation "∇⬝" E => spaceDiv E
-
-/-- The curl of a function `SpaceTime → EuclideanSpace ℝ (Fin 3)`. -/
-def spaceCurl (f : SpaceTime → EuclideanSpace ℝ (Fin 3)) :
-    SpaceTime → EuclideanSpace ℝ (Fin 3) := fun x j =>
-  match j with
-  | 0 => deriv 1 (fun y => f y 2) x - deriv 2 (fun y => f y 1) x
-  | 1 => deriv 2 (fun y => f y 0) x - deriv 0 (fun y => f y 2) x
-  | 2 => deriv 0 (fun y => f y 1) x - deriv 1 (fun y => f y 0) x
-
-@[inherit_doc spaceCurl]
-scoped[SpaceTime] notation "∇×" => spaceCurl
-
-/-- The gradient of a function `SpaceTime → EuclideanSpace ℝ (Fin 3)`. -/
-def spaceGrad (f : SpaceTime → ℝ) :
-    SpaceTime → EuclideanSpace ℝ (Fin 3) := fun x j =>
-  match j with
-  | 0 => deriv 0 f x
-  | 1 => deriv 1 f x
-  | 2 => deriv 2 f x
-
-@[inherit_doc spaceGrad]
-scoped[SpaceTime] notation "∇" => spaceGrad
-
 end SpaceTime
 
 end
