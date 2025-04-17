@@ -228,6 +228,11 @@ lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnFieldOp) :
   | [] => rfl
   | φ :: φs => erw [List.map_cons]
 
+lemma ofCrAnListF_injective : Function.Injective (ofCrAnListF (𝓕 := 𝓕)) := by
+  intro φs φs' h
+  rw [← ofListBasis_eq_ofList, ← ofListBasis_eq_ofList] at h
+  exact Basis.injective ofCrAnListFBasis h
+
 /-!
 
 ## Some useful multi-linear maps.
