@@ -494,7 +494,7 @@ lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.FieldOp}
     apply timeOrder_superCommute_neq_time
     simp_all [crAnTimeOrderRel]
   | .outAsymp φ =>
-    simp only [anPart_posAsymp, instCommGroup.eq_1]
+    simp only [anPart_outAsymp, instCommGroup.eq_1]
     apply timeOrder_superCommute_neq_time
     simp_all [crAnTimeOrderRel]
 

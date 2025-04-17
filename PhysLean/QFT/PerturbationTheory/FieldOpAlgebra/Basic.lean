@@ -510,7 +510,7 @@ def anPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (anPartF φ)
 lemma anPart_eq_ι_anPartF (φ : 𝓕.FieldOp) : anPart φ = ι (anPartF φ) := rfl
 
 @[simp]
-lemma anPart_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma anPart_inAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     anPart (FieldOp.inAsymp φ) = 0 := by
   simp [anPart, anPartF]
 
@@ -521,9 +521,21 @@ lemma anPart_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
   simp [anPart, ofCrAnOp]
 
 @[simp]
-lemma anPart_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma anPart_outAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     anPart (FieldOp.outAsymp φ) = ofCrAnOp ⟨FieldOp.outAsymp φ, ()⟩ := by
   simp [anPart, ofCrAnOp]
+
+lemma anPart_outAsymp_eq_ofFieldOp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
+    anPart (FieldOp.outAsymp φ) = ofFieldOp (FieldOp.outAsymp φ) := by
+  rw [anPart_outAsymp]
+  simp only [ofCrAnOp, ofFieldOp]
+  congr
+  simp only [ofFieldOpF]
+  rw [Fintype.sum_eq_add_sum_subtype_ne (fun i => ofCrAnOpF ⟨FieldOp.outAsymp φ, i⟩) PUnit.unit]
+  simp_all only [ne_eq, left_eq_add]
+  obtain ⟨fst, snd⟩ := φ
+  obtain ⟨fst, snd_1⟩ := fst
+  rfl
 
 /-- For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
   creation part of `𝓕.FieldOp` as an element of `𝓕.FieldOpAlgebra`.

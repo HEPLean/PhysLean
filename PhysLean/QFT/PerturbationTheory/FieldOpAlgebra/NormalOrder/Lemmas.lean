@@ -189,7 +189,7 @@ lemma normalOrder_anPart_ofFieldOpList_swap (φ : 𝓕.FieldOp) (φ' : List 𝓕
     rw [normalOrder_ofCrAnOp_ofFieldOpList_swap]
     rfl
   | .outAsymp φ =>
-    simp only [anPart_posAsymp, instCommGroup.eq_1]
+    simp only [anPart_outAsymp, instCommGroup.eq_1]
     rw [normalOrder_ofCrAnOp_ofFieldOpList_swap]
     rfl
 
@@ -300,7 +300,7 @@ lemma anPart_superCommute_normalOrder_ofFieldOpList_sum (φ : 𝓕.FieldOp) (φs
       Fin.getElem_fin, Algebra.smul_mul_assoc]
     rfl
   | .outAsymp φ =>
-    simp only [anPart_posAsymp, instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc]
+    simp only [anPart_outAsymp, instCommGroup.eq_1, Fin.getElem_fin, Algebra.smul_mul_assoc]
     rw [ofCrAnOp_superCommute_normalOrder_ofFieldOpList_sum]
     simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod,
       Fin.getElem_fin, Algebra.smul_mul_assoc]

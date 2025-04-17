@@ -69,6 +69,15 @@ lemma timeContract_of_not_timeOrderRel_expand (φ ψ : 𝓕.FieldOp) (h : ¬ tim
   have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
   simp_all
 
+lemma timeContract_eq_superCommute (φ ψ : 𝓕.FieldOp) :
+    timeContract φ ψ = if timeOrderRel φ ψ then [anPart φ, ofFieldOp ψ]ₛ
+    else 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • [anPart ψ, ofFieldOp φ]ₛ := by
+  split_ifs
+  · rename_i h
+    rw [timeContract_of_timeOrderRel _ _ h]
+  · rename_i h
+    rw [timeContract_of_not_timeOrderRel_expand _ _ h]
+
 /-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, then
   `timeContract φ ψ` is in the center of `𝓕.FieldOpAlgebra`. -/
 lemma timeContract_mem_center (φ ψ : 𝓕.FieldOp) :
@@ -127,7 +136,7 @@ lemma timeOrder_timeContract_eq_time_mid {φ ψ : 𝓕.FieldOp}
     simp only [crAnTimeOrderRel, h1]
     simp [crAnTimeOrderRel, h2]
   | .outAsymp φ =>
-    simp only [anPart_posAsymp, instCommGroup.eq_1]
+    simp only [anPart_outAsymp, instCommGroup.eq_1]
     apply timeOrder_superCommute_eq_time_mid _ _
     simp only [crAnTimeOrderRel, h1]
     simp [crAnTimeOrderRel, h2]
@@ -159,7 +168,7 @@ lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
     | .outAsymp φ =>
-      simp only [anPart_posAsymp, instCommGroup.eq_1]
+      simp only [anPart_outAsymp, instCommGroup.eq_1]
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
   · rw [timeContract_of_not_timeOrderRel_expand _ _ h2]
@@ -177,9 +186,32 @@ lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
     | .outAsymp ψ =>
-      simp only [anPart_posAsymp, instCommGroup.eq_1]
+      simp only [anPart_outAsymp, instCommGroup.eq_1]
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
+
+
+/-- The time contraction of an incoming asymptotic field with
+  another incoming asymptotic field is zero.
+
+  This prevents Feynman diagrams where incoming vertices are
+  connected to incoming vertices.
+ -/
+lemma timeContract_inAsymp_inAsymp (φ ψ : ((f : Field 𝓕) × AsymptoticLabel 𝓕 f) × Momentum) :
+    timeContract (.inAsymp φ) (.inAsymp ψ) = 0 := by
+  rw [timeContract_eq_superCommute]
+  simp
+
+
+/-- The time contraction of an outgoing asymptotic field with
+  another outgoing asymptotic field is zero.
+
+  This prevents Feynman diagrams where outgoing vertices are
+  connected to outgoing vertices. -/
+lemma timeContract_outAsymp_outAsymp (φ ψ : ((f : Field 𝓕) × AsymptoticLabel 𝓕 f) × Momentum) :
+    timeContract (.outAsymp φ) (.outAsymp ψ) = 0 := by
+  rw [timeContract_eq_superCommute, ← anPart_outAsymp_eq_ofFieldOp, ← anPart_outAsymp_eq_ofFieldOp]
+  simp [- anPart_outAsymp]
 
 end FieldOpAlgebra
 

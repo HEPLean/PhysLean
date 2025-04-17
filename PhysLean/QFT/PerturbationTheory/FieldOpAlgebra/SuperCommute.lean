@@ -210,7 +210,7 @@ lemma superCommute_anPart_ofFieldOp_mem_center (φ φ' : 𝓕.FieldOp) :
     [anPart φ, ofFieldOp φ']ₛ ∈ Subalgebra.center ℂ (FieldOpAlgebra 𝓕) := by
   match φ with
   | FieldOp.inAsymp _ =>
-    simp only [anPart_negAsymp, map_zero, LinearMap.zero_apply]
+    simp only [anPart_inAsymp, map_zero, LinearMap.zero_apply]
     exact Subalgebra.zero_mem (Subalgebra.center ℂ _)
   | FieldOp.position φ =>
     exact superCommute_ofCrAnOp_ofFieldOp_mem_center _ _
@@ -321,17 +321,17 @@ lemma superCommute_anPart_anPart (φ φ' : 𝓕.FieldOp) : [anPart φ, anPart φ
     · rfl
     · rfl
   | FieldOp.position φ, FieldOp.outAsymp φ' =>
-    simp only [anPart_position, anPart_posAsymp]
+    simp only [anPart_position, anPart_outAsymp]
     apply superCommute_annihilate_annihilate
     · rfl
     · rfl
   | FieldOp.outAsymp φ, FieldOp.outAsymp φ' =>
-    simp only [anPart_posAsymp]
+    simp only [anPart_outAsymp]
     apply superCommute_annihilate_annihilate
     · rfl
     · rfl
   | FieldOp.outAsymp φ, FieldOp.position φ' =>
-    simp only [anPart_posAsymp, anPart_position]
+    simp only [anPart_outAsymp, anPart_position]
     apply superCommute_annihilate_annihilate
     · rfl
     · rfl
