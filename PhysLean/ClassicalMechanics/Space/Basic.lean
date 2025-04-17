@@ -44,6 +44,11 @@ noncomputable def deriv [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (μ : Fin d) (f : Space d → M) : Space d → M :=
   (fun x => fderiv ℝ f x (EuclideanSpace.single μ (1:ℝ)))
 
+lemma deriv_eq [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+    (μ : Fin d) (f : Space d → M) (x : Space d) :
+    deriv μ f x = fderiv ℝ f x (EuclideanSpace.single μ (1:ℝ)) := by
+  rfl
+
 @[inherit_doc deriv]
 macro "∂[" i:term "]" : term => `(deriv $i)
 

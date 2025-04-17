@@ -28,10 +28,24 @@ open Complex
 open ComplexConjugate
 open TensorSpecies
 
+/-!
+
+## To space and time
+
+-/
+
 /-- The space part of spacetime. -/
-@[simp]
-def space {d : ℕ} (x : SpaceTime d) : Space d :=
-  fun i => x (Sum.inr i)
+def space {d : ℕ} : SpaceTime d →ₗ[ℝ] Space d where
+  toFun x := Lorentz.Vector.spatialPart x
+  map_add' x1 x2 := by
+    ext i
+    simp [Lorentz.Vector.spatialPart]
+  map_smul' c x := by
+    ext i
+    simp [Lorentz.Vector.spatialPart]
+
+open realLorentzTensor
+open Tensor
 
 /-- The function `space` is equivariant with respect to rotations. -/
 informal_lemma space_equivariant where
@@ -39,8 +53,67 @@ informal_lemma space_equivariant where
   tag := "7MTYX"
 
 /-- The time part of spacetime. -/
-@[simp]
-def time {d : ℕ} (x : SpaceTime d) : Time := x (Sum.inl 0)
+def time {d : ℕ} : SpaceTime d →ₗ[ℝ] Time where
+  toFun x := Lorentz.Vector.timeComponent x
+  map_add' x1 x2 := by
+    simp [Lorentz.Vector.timeComponent]
+  map_smul' c x := by
+    simp [Lorentz.Vector.timeComponent]
+
+
+/-- A continuous linear equivalence between `SpaceTime d` and
+  `Time × Space d`. -/
+def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
+  LinearEquiv.toContinuousLinearEquiv {
+    toFun x := (x.time, x.space)
+    invFun tx := Lorentz.Vector.toCoord.symm (fun i =>
+      match i with
+      | Sum.inl _ => tx.1
+      | Sum.inr i => tx.2 i)
+    left_inv x := by
+      obtain ⟨x, rfl⟩ := Lorentz.Vector.toCoord.symm.surjective x
+      simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, time, Fin.isValue,
+        LinearMap.coe_mk, AddHom.coe_mk, LinearEquiv.apply_symm_apply, space,
+        EmbeddingLike.apply_eq_iff_eq]
+      funext i
+      match i with
+      | Sum.inl 0 => simp [Lorentz.Vector.timeComponent]
+      | Sum.inr i => simp [Lorentz.Vector.spatialPart]
+    right_inv tx := by
+      simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, time, Lorentz.Vector.timeComponent,
+        Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk, LinearEquiv.apply_symm_apply, space]
+      obtain ⟨fst, snd⟩ := tx
+      simp only [Prod.mk.injEq, true_and]
+      funext i
+      simp [Lorentz.Vector.spatialPart]
+    map_add' x y := by
+      simp
+    map_smul' := by
+      simp
+  }
+
+lemma toTimeAndSpace_basis_natAdd {d : ℕ} (i : Fin d) :
+    toTimeAndSpace ((Tensor.basis  (S := realLorentzTensor d) ![Color.up])
+      fun x => Fin.cast (by simp) (Fin.natAdd 1 i))
+    = (0, Space.basis i) := by
+  simp [toTimeAndSpace]
+  simp [time]
+  rw [Lorentz.Vector.timeComponent_basis_natAdd]
+  simp
+  funext j
+  simp  [space]
+  rw [Lorentz.Vector.spatialPart_basis_natAdd]
+  simp [Space.basis]
+  rw [Finsupp.single_apply]
+  simp
+  congr 1
+  exact Lean.Grind.eq_congr' rfl rfl
+
+/-!
+
+## Coordinates
+
+-/
 
 /-- For a given `μ : Fin (1 + d)` `coord μ p` is the coordinate of
   `p` in the direction `μ`.
@@ -60,8 +133,6 @@ lemma coord_apply {d : ℕ} (μ : Fin (1 + d)) (y : SpaceTime d) :
     𝔁 μ y = y (finSumFinEquiv.symm μ) := by
   rfl
 
-open realLorentzTensor
-open Tensor
 
 lemma coord_on_repr {d : ℕ} (μ : Fin (1 + d))
     (y : ComponentIdx (S := realLorentzTensor d) ![Color.up] → ℝ) :
@@ -95,7 +166,8 @@ scoped notation "∂_" => deriv
 /-- The derivative with respect to time. -/
 scoped notation "∂ₜ" => deriv 0
 
-lemma deriv_eq {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → ℝ) (y : SpaceTime d) :
+variable {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+lemma deriv_eq {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → M) (y : SpaceTime d) :
     SpaceTime.deriv μ f y =
     fderiv ℝ f y (Tensor.basis _ (fun x => Fin.cast (by simp) μ)) := by
   rfl
@@ -224,6 +296,27 @@ lemma deriv_coord_eq_if {d : ℕ} (μ ν : Fin (1 + d)) (y : SpaceTime d) :
     exact SpaceTime.deriv_coord_same ν y
   · rw [if_neg h]
     exact SpaceTime.deriv_coord_diff μ ν h y
+
+@[simp]
+lemma deriv_toTimeAndSpace {d : ℕ} (μ : Fin (1 + d)) (y : SpaceTime d) :
+    SpaceTime.deriv μ (toTimeAndSpace) y = toTimeAndSpace
+      ((Tensor.basis _ (fun x => Fin.cast (by simp) μ))):= by
+  simp [SpaceTime.deriv]
+  rw [ContinuousLinearEquiv.fderiv]
+  rfl
+
+lemma deriv_comp_toTimeAndSpace_natAdd {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ}
+    (i : Fin (d)) (f : Time × Space d → M) (y : SpaceTime d) :
+    SpaceTime.deriv (Fin.natAdd 1 i) (f ∘ toTimeAndSpace) y =
+    fderiv ℝ f (toTimeAndSpace y) (0, Space.basis i) := by
+  rw [SpaceTime.deriv_eq]
+  have h1 := toTimeAndSpace.comp_right_fderiv (f := f) (x := y)
+  conv_lhs =>
+    enter [1]
+    rw [h1]
+  simp
+  rw [toTimeAndSpace_basis_natAdd]
+
 
 /-- The divergence of a function `SpaceTime d → EuclideanSpace ℝ (Fin d)`. -/
 noncomputable def spaceDiv {d : ℕ} (f : SpaceTime d → EuclideanSpace ℝ (Fin d)) :
