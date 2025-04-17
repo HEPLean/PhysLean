@@ -293,17 +293,17 @@ lemma superCommute_crPart_crPart (φ φ' : 𝓕.FieldOp) : [crPart φ, crPart φ
     · rfl
     · rfl
   | FieldOp.position φ, FieldOp.inAsymp φ' =>
-    simp only [crPart_position, crPart_negAsymp]
+    simp only [crPart_position, crPart_inAsymp]
     apply superCommute_create_create
     · rfl
     · rfl
   | FieldOp.inAsymp φ, FieldOp.inAsymp φ' =>
-    simp only [crPart_negAsymp]
+    simp only [crPart_inAsymp]
     apply superCommute_create_create
     · rfl
     · rfl
   | FieldOp.inAsymp φ, FieldOp.position φ' =>
-    simp only [crPart_negAsymp, crPart_position]
+    simp only [crPart_inAsymp, crPart_position]
     apply superCommute_create_create
     · rfl
     · rfl

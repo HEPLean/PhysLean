@@ -525,18 +525,6 @@ lemma anPart_outAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     anPart (FieldOp.outAsymp φ) = ofCrAnOp ⟨FieldOp.outAsymp φ, ()⟩ := by
   simp [anPart, ofCrAnOp]
 
-lemma anPart_outAsymp_eq_ofFieldOp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
-    anPart (FieldOp.outAsymp φ) = ofFieldOp (FieldOp.outAsymp φ) := by
-  rw [anPart_outAsymp]
-  simp only [ofCrAnOp, ofFieldOp]
-  congr
-  simp only [ofFieldOpF]
-  rw [Fintype.sum_eq_add_sum_subtype_ne (fun i => ofCrAnOpF ⟨FieldOp.outAsymp φ, i⟩) PUnit.unit]
-  simp_all only [ne_eq, left_eq_add]
-  obtain ⟨fst, snd⟩ := φ
-  obtain ⟨fst, snd_1⟩ := fst
-  rfl
-
 /-- For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
   creation part of `𝓕.FieldOp` as an element of `𝓕.FieldOpAlgebra`.
   Thus for `φ`
@@ -548,7 +536,7 @@ def crPart (φ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra := ι (crPartF φ)
 lemma crPart_eq_ι_crPartF (φ : 𝓕.FieldOp) : crPart φ = ι (crPartF φ) := rfl
 
 @[simp]
-lemma crPart_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma crPart_inAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     crPart (FieldOp.inAsymp φ) = ofCrAnOp ⟨FieldOp.inAsymp φ, ()⟩ := by
   simp [crPart, ofCrAnOp]
 
@@ -559,7 +547,7 @@ lemma crPart_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
   simp [crPart, ofCrAnOp]
 
 @[simp]
-lemma crPart_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma crPart_outAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     crPart (FieldOp.outAsymp φ) = 0 := by
   simp [crPart]
 
@@ -573,6 +561,16 @@ lemma ofFieldOp_eq_crPart_add_anPart (φ : 𝓕.FieldOp) :
     ofFieldOp φ = crPart φ + anPart φ := by
   rw [ofFieldOp, crPart, anPart, ofFieldOpF_eq_crPartF_add_anPartF]
   simp [map_add]
+
+lemma anPart_outAsymp_eq_ofFieldOp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
+    anPart (FieldOp.outAsymp φ) = ofFieldOp (FieldOp.outAsymp φ) := by
+  rw [ofFieldOp_eq_crPart_add_anPart]
+  simp
+
+lemma crPart_inAsymp_eq_ofFieldOp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
+    crPart (FieldOp.inAsymp φ) = ofFieldOp (FieldOp.inAsymp φ) := by
+  rw [ofFieldOp_eq_crPart_add_anPart]
+  simp
 
 end FieldOpAlgebra
 end FieldSpecification
