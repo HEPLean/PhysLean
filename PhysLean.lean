@@ -133,7 +133,6 @@ import PhysLean.QFT.PerturbationTheory.WickContraction.InsertAndContractNat
 import PhysLean.QFT.PerturbationTheory.WickContraction.Involutions
 import PhysLean.QFT.PerturbationTheory.WickContraction.IsFull
 import PhysLean.QFT.PerturbationTheory.WickContraction.Join
-import PhysLean.QFT.PerturbationTheory.WickContraction.Perm
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Basic
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
