@@ -153,7 +153,7 @@ lemma deriv_coord_2nd_add (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
 
 /-- Second derivatives distiribute coordinate-wise over subtraction (two components for curl). -/
 lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f) :
-    ∂[u] (fun x => ∂[v] (fun x => f x w) x - ∂[w]  (fun x => f x v) x) =
+    ∂[u] (fun x => ∂[v] (fun x => f x w) x - ∂[w] (fun x => f x v) x) =
     (∂[u] (∂[v] (fun x => f x w))) - (∂[u] (∂[w] (fun x => f x v))) := by
   unfold deriv
   ext x

@@ -190,18 +190,15 @@ lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
 
-
 /-- The time contraction of an incoming asymptotic field with
   another incoming asymptotic field is zero.
 
   This prevents Feynman diagrams where incoming vertices are
-  connected to incoming vertices.
- -/
+  connected to incoming vertices. -/
 lemma timeContract_inAsymp_inAsymp (φ ψ : ((f : Field 𝓕) × AsymptoticLabel 𝓕 f) × Momentum) :
     timeContract (.inAsymp φ) (.inAsymp ψ) = 0 := by
   rw [timeContract_eq_superCommute]
   simp
-
 
 /-- The time contraction of an outgoing asymptotic field with
   another outgoing asymptotic field is zero.

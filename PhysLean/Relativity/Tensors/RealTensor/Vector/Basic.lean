@@ -87,14 +87,14 @@ lemma toCoord_pure {d : ℕ} (p : Pure (realLorentzTensor d) ![.up]) (i : Fin 1 
 
 lemma toCoord_basis_apply {d : ℕ} (μ : Fin (1 + d)) (ν : Fin 1 ⊕ Fin d) :
     toCoord (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ => Fin.cast (by simp) μ)) ν
-    = (Finsupp.single (finSumFinEquiv.symm μ) 1) ν  := by
+    = (Finsupp.single (finSumFinEquiv.symm μ) 1) ν := by
   rw [Tensor.basis_apply]
   rw [toCoord_pure]
   simp [contrBasisFin, Pure.basisVector]
   conv_lhs =>
     enter [1, 2]
     change (contrBasisFin d) μ
-  simp [ contrBasisFin]
+  simp [contrBasisFin]
   simp [indexEquiv]
 
 lemma basis_repr_apply {d : ℕ} (p : Vector d)
@@ -313,7 +313,6 @@ lemma action_toCoord_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
     returning them as a vector in Euclidean space. -/
 abbrev spatialPart {d : ℕ} (v : Vector d) : EuclideanSpace ℝ (Fin d) :=
   fun i => v (Sum.inr i)
-
 
 @[simp]
 lemma spatialPart_basis_natAdd {d : ℕ} (i : Fin d) (j : Fin d) :

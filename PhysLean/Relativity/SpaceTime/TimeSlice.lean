@@ -35,6 +35,8 @@ def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d �
     funext x t
     simp
 
+/-- The timeslice of a function `SpaceTime d → M` forming a function
+  `Time → Space d → M`, as a linear equivalence. -/
 def timeSliceLinearEquiv {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M] :
     (SpaceTime d → M) ≃ₗ[ℝ] (Time → Space d → M) where
   toFun := timeSlice
@@ -58,7 +60,7 @@ lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Mod
   simp [timeSliceLinearEquiv, timeSlice]
 
 /-- The derivative on space commutes with time-slicing. -/
-semiformal_result "7Z2GA"  timeSlice_spatial_deriv {M : Type} [AddCommGroup M]
+semiformal_result "7Z2GA" timeSlice_spatial_deriv {M : Type} [AddCommGroup M]
     [Module ℝ M] [TopologicalSpace M] {d : ℕ} (f : SpaceTime d → M) (i : Fin d) :
     timeSlice (∂_ (finSumFinEquiv (Sum.inr i)) f) = fun t => ∂[i] (timeSlice f t)
 

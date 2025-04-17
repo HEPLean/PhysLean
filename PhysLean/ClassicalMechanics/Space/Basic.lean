@@ -75,7 +75,7 @@ noncomputable def curl (f : Space → EuclideanSpace ℝ (Fin 3)) :
     | 2 => df 1 0 x - df 0 1 x
 
 @[inherit_doc curl]
-macro (name := curlNotation) "∇" "×" f:term:100  : term => `(curl $f)
+macro (name := curlNotation) "∇" "×" f:term:100 : term => `(curl $f)
 
 /-- The vector calculus operator `div`. -/
 noncomputable def div (f : Space d → EuclideanSpace ℝ (Fin d)) :
@@ -88,7 +88,7 @@ noncomputable def div (f : Space d → EuclideanSpace ℝ (Fin d)) :
   ∑ i, df i x
 
 @[inherit_doc div]
-macro (name := divNotation) "∇" "⬝" f:term:100  : term => `(div $f)
+macro (name := divNotation) "∇" "⬝" f:term:100 : term => `(div $f)
 
 /-- The scalar `laplacian` operator. -/
 noncomputable def laplacian (f : Space d → ℝ) :

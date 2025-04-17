@@ -22,8 +22,8 @@ open IndexNotation
 
 This file needs updating after:
 
-- [semiformal_result (7Z2GA): timeSlice_spatial_deriv](https://physlean.com/TODOList#7Z2GA)
-- [semiformal_result (7Z2LF): timeSlice_time_deriv](https://physlean.com/TODOList#7Z2LF)
+- [semiformal_result (7Z2GA) : timeSlice_spatial_deriv](https://physlean.com/TODOList#7Z2GA)
+- [semiformal_result (7Z2LF) : timeSlice_time_deriv](https://physlean.com/TODOList#7Z2LF)
 are complete.
 
 -/

@@ -261,8 +261,8 @@ lemma ofMagneticField_coe (B : MagneticField) :
 
 /-- The electric field given a field strength. -/
 noncomputable def electricField {d : ℕ} : FieldStrength d →ₗ[ℝ] ElectricField d where
-  toFun F := fun t x j =>
-    (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0)
+  toFun F := fun t x j => (Tensor.basis _).repr
+    (timeSliceLinearEquiv F.1 t x) (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0)
   map_add' F1 F2 := by
     simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Submodule.coe_add, Pi.add_apply,
       map_add, Fin.isValue, Matrix.cons_val_zero, Finsupp.coe_add]
@@ -279,7 +279,7 @@ lemma electricField_apply {d : ℕ} (F : FieldStrength d) (t : Time) (x : Space 
 
 lemma timeSliceLinearEquiv_symm_electricField {d : ℕ} (F : FieldStrength d) :
     timeSliceLinearEquiv.symm (electricField F) = fun x (j : Fin d) =>
-    (Tensor.basis _).repr (F.1 x) (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0):= by
+    (Tensor.basis _).repr (F.1 x) (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0) := by
   rw [LinearEquiv.symm_apply_eq]
   ext t x j
   rw [electricField_apply]
@@ -316,7 +316,7 @@ noncomputable def magneticField : FieldStrength →ₗ[ℝ] MagneticField where
     funext t x j
     fin_cases j <;> simp
 
-lemma magneticField_apply (F : FieldStrength ) (t : Time) (x : Space) (j : Fin 3) :
+lemma magneticField_apply (F : FieldStrength) (t : Time) (x : Space) (j : Fin 3) :
     magneticField F t x j = match j with
       | 0 => (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 3| 1 => 2)
       | 1 => (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 1| 1 => 3)
@@ -324,7 +324,7 @@ lemma magneticField_apply (F : FieldStrength ) (t : Time) (x : Space) (j : Fin 3
   rfl
 
 lemma timeSliceLinearEquiv_symm_magneticField (F : FieldStrength) :
-    timeSliceLinearEquiv.symm (magneticField F)  = fun x j =>
+    timeSliceLinearEquiv.symm (magneticField F) = fun x j =>
     match j with
     | 0 =>
       (Tensor.basis _).repr (F.1 x) (fun | 0 => 3| 1 => 2)
@@ -337,7 +337,6 @@ lemma timeSliceLinearEquiv_symm_magneticField (F : FieldStrength) :
   rw [magneticField_apply]
   fin_cases j <;> rfl
 
-
 @[simp]
 lemma magneticField_ofMagneticField (B : MagneticField) :
     magneticField (ofMagneticField B) = B := by
@@ -349,7 +348,6 @@ lemma magneticField_ofMagneticField (B : MagneticField) :
       Matrix.cons_val_one, Matrix.head_cons, Basis.repr_symm_apply, Basis.repr_linearCombination,
       Finsupp.equivFunOnFinite_symm_apply_toFun, Fin.zero_eta]
     rfl
-
 
 @[simp]
 lemma electricField_ofMagneticField (B : MagneticField) :
@@ -400,20 +398,20 @@ lemma eq_ofElectricField_add_ofMagneticField (F : FieldStrength) : F =
   | (1 : Fin 4), (2 : Fin 4) =>
     simpa [timeSliceLinearEquiv_symm_magneticField] using repr_symm F 1 2 x
   | (1 : Fin 4), (3 : Fin 4) =>
-    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
-      LinearMap.coe_mk, AddHom.coe_mk, zero_add]
+    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, Nat.succ_eq_add_one,
+      Nat.reduceAdd, C_eq_color, zero_add]
     rfl
   | (2 : Fin 4), (3 : Fin 4) =>
     simpa [timeSliceLinearEquiv_symm_magneticField] using repr_symm F 2 3 x
   | (2 : Fin 4), (1 : Fin 4) =>
-    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
-      LinearMap.coe_mk, AddHom.coe_mk, zero_add]
+    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, Nat.succ_eq_add_one,
+      Nat.reduceAdd, C_eq_color, zero_add]
     rfl
   | (3 : Fin 4), (1 : Fin 4) =>
     simpa [timeSliceLinearEquiv_symm_magneticField] using repr_symm F 3 1 x
   | (3 : Fin 4), (2 : Fin 4) =>
-    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
-      LinearMap.coe_mk, AddHom.coe_mk, zero_add]
+    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, Nat.succ_eq_add_one,
+      Nat.reduceAdd, C_eq_color, zero_add]
     rfl
   | ⟨0, h0⟩, ⟨0, h0'⟩ =>
     simpa using repr_diag_zero F 0 x
@@ -431,18 +429,19 @@ lemma eq_ofElectricField_add_ofMagneticField (F : FieldStrength) : F =
     simpa [timeSliceLinearEquiv_symm_electricField] using repr_symm F 0 3 x
   | ⟨1, h0⟩, ⟨0, h1⟩ =>
     simp only [Fin.isValue, Matrix.cons_val_zero, repDim_up, Nat.reduceAdd, Fin.mk_one,
-      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField, C_eq_color,
-      Nat.succ_eq_add_one, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_zero, zero_add, add_zero]
+      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField,
+      Nat.succ_eq_add_one, C_eq_color, Fin.val_zero, zero_add, add_zero]
     rfl
   | ⟨2, h0⟩, ⟨0, h1⟩ =>
     simp only [Fin.isValue, Matrix.cons_val_zero, repDim_up, Nat.reduceAdd, Fin.reduceFinMk,
-      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField, C_eq_color,
-      Nat.succ_eq_add_one, Fin.mk_one, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_one, add_zero]
+      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, Fin.mk_one,
+      timeSliceLinearEquiv_symm_electricField, Nat.succ_eq_add_one, C_eq_color, Fin.val_one,
+      add_zero]
     rfl
   | ⟨3, h0⟩, ⟨0, h1⟩ =>
     simp only [Fin.isValue, Matrix.cons_val_zero, repDim_up, Nat.reduceAdd, Fin.reduceFinMk,
-      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField, C_eq_color,
-      Nat.succ_eq_add_one, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_two, add_zero]
+      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField,
+      Nat.succ_eq_add_one, C_eq_color, Fin.val_two, add_zero]
     rfl
 
 /-- The isomorphism between the field strength and the electric and magnetic fields. -/
