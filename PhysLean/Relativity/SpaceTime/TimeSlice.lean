@@ -35,6 +35,28 @@ def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d �
     funext x t
     simp
 
+def timeSliceLinearEquiv {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M] :
+    (SpaceTime d → M) ≃ₗ[ℝ] (Time → Space d → M) where
+  toFun := timeSlice
+  invFun := timeSlice.symm
+  map_add' f g := by
+    ext t x
+    simp [timeSlice]
+  map_smul' := by
+    intros c f
+    ext t x
+    simp [timeSlice]
+  left_inv f := by simp
+  right_inv f := by simp
+
+lemma timeSliceLinearEquiv_apply {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M]
+    (f : SpaceTime d → M) : timeSliceLinearEquiv f = timeSlice f := by
+  simp [timeSliceLinearEquiv, timeSlice]
+
+lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M]
+    (f : Time → Space d → M) : timeSliceLinearEquiv.symm f = timeSlice.symm f := by
+  simp [timeSliceLinearEquiv, timeSlice]
+
 /-- The derivative on space commutes with time-slicing. -/
 semiformal_result "7Z2GA"  timeSlice_spatial_deriv {M : Type} [AddCommGroup M]
     [Module ℝ M] [TopologicalSpace M] {d : ℕ} (f : SpaceTime d → M) (i : Fin d) :

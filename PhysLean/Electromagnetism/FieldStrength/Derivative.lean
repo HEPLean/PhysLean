@@ -20,10 +20,17 @@ open IndexNotation
 
 ## Derivative of the field strength
 
+This file needs updating after:
+
+- [semiformal_result (7Z2GA): timeSlice_spatial_deriv](https://physlean.com/TODOList#7Z2GA)
+- [semiformal_result (7Z2LF): timeSlice_time_deriv](https://physlean.com/TODOList#7Z2LF)
+are complete.
+
 -/
 open TensorSpecies
 open Tensor
 open ComponentIdx
+/-
 private lemma finsupp_single_prodEquiv (b : (j : Fin (Nat.succ 0 + (Nat.succ 0).succ)) →
       Fin (realLorentzTensor.repDim
         ((Sum.elim (fun (i : Fin 1) => realLorentzTensor.τ (![Color.up] i))
@@ -389,7 +396,7 @@ lemma derivative_fromElectricMagneticField (EM : ElectricField × MagneticField)
   apply (Tensor.basis _).repr.injective
   rw [derivative_fromElectricMagneticField_repr EM hdiff y]
   simp
-
+-/
 end FieldStrength
 
 end Electromagnetism

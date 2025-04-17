@@ -44,6 +44,12 @@ def space {d : ℕ} : SpaceTime d →ₗ[ℝ] Space d where
     ext i
     simp [Lorentz.Vector.spatialPart]
 
+@[simp]
+lemma space_toCoord_symm {d : ℕ}  (f : Fin 1 ⊕ Fin d → ℝ) :
+    space (Lorentz.Vector.toCoord.symm f) = fun i => f (Sum.inr i) := by
+  funext i
+  simp [space, Lorentz.Vector.spatialPart]
+
 open realLorentzTensor
 open Tensor
 
@@ -60,6 +66,10 @@ def time {d : ℕ} : SpaceTime d →ₗ[ℝ] Time where
   map_smul' c x := by
     simp [Lorentz.Vector.timeComponent]
 
+@[simp]
+lemma time_toCoord_symm {d : ℕ}  (f : Fin 1 ⊕ Fin d → ℝ) :
+    time (Lorentz.Vector.toCoord.symm  f) =f (Sum.inl 0) := by
+  simp [time, Lorentz.Vector.timeComponent]
 
 /-- A continuous linear equivalence between `SpaceTime d` and
   `Time × Space d`. -/
@@ -162,9 +172,6 @@ noncomputable def deriv {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalS
 
 @[inherit_doc deriv]
 scoped notation "∂_" => deriv
-
-/-- The derivative with respect to time. -/
-scoped notation "∂ₜ" => deriv 0
 
 variable {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
 lemma deriv_eq {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → M) (y : SpaceTime d) :

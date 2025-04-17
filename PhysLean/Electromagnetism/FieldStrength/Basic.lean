@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Basic
+import PhysLean.Relativity.SpaceTime.TimeSlice
 /-!
 
 # The field strength tensor
@@ -18,7 +19,7 @@ open Tensor
 
 /-- The Field strength is a tensor `F^μ^ν` which is anti-symmetric.. -/
 noncomputable abbrev FieldStrength (d : ℕ := 3) :
-    Submodule ℝ (ℝT[d, .up] → ℝT[d, .up, .up]) where
+    Submodule ℝ (SpaceTime d → ℝT[d, .up, .up]) where
   carrier F := ∀ x, {F x | μ ν = - (F x | ν μ)}ᵀ
   add_mem' {F1 F2} hF1 hF2:= by
     intro x
@@ -91,18 +92,35 @@ lemma repr_diag_zero {d : ℕ} (F : FieldStrength d) (i : Fin (1 + d))
     exact CharZero.eq_neg_self_iff.mp ha
   exact hl _ h1
 
+open SpaceTime
+
 /-- The field strength from an electric field as an element of `ℝT[d, .up, .up]`. -/
-noncomputable def ofElectricFieldAux {d : ℕ} (E : ElectricField d) (x : ℝT[d, .up]) :
+noncomputable def ofElectricFieldAux {d : ℕ} (E : ElectricField d) (x : SpaceTime d) :
     ℝT[d, .up, .up] := (Tensor.basis _).repr.symm <|
       Finsupp.equivFunOnFinite.symm <| fun b =>
     match b 0, b 1 with
-    | 0, ⟨j + 1, hj⟩ => - E x ⟨j, by
+    | 0, ⟨j + 1, hj⟩ => - timeSliceLinearEquiv.symm E x ⟨j, by
       change j + 1 < 1 + d at hj
       omega⟩
-    | ⟨j + 1, hj⟩, 0 => E x ⟨j, by
+    | ⟨j + 1, hj⟩, 0 => timeSliceLinearEquiv.symm E x ⟨j, by
       change j + 1 < 1 + d at hj
       omega⟩
     | _, _ => 0
+
+lemma timeSliceLinearEquiv_ofElectricFieldAux {d : ℕ} (E : ElectricField d) (t : Time)
+    (x : Space d) :
+    timeSliceLinearEquiv (ofElectricFieldAux E) t x =
+    ((Tensor.basis _).repr.symm <|
+      Finsupp.equivFunOnFinite.symm <| fun b =>
+      match b 0, b 1 with
+      | 0, ⟨j + 1, hj⟩ => - E t x ⟨j, by
+        change j + 1 < 1 + d at hj
+        omega⟩
+      | ⟨j + 1, hj⟩, 0 => E t x ⟨j, by
+        change j + 1 < 1 + d at hj
+        omega⟩
+      | _, _ => 0) := by
+  simp [timeSliceLinearEquiv, timeSlice, ofElectricFieldAux]
 
 /-- The field strength from an eletric field. -/
 noncomputable def ofElectricField {d : ℕ} : ElectricField d →ₗ[ℝ] FieldStrength d where
@@ -159,19 +177,38 @@ noncomputable def ofElectricField {d : ℕ} : ElectricField d →ₗ[ℝ] FieldS
     next x_2 x_3 x_4 x_5 =>
       simp only [mul_zero]
 
+lemma ofElectricField_coe {d : ℕ} (E : ElectricField d) :
+    (ofElectricField E).1 = ofElectricFieldAux E := by
+  rfl
+
 /-- The field strength from a magnetic field as an element of `ℝT[3, .up, .up]`.
   This is only defined here for 4d spacetime. -/
 noncomputable def ofMagneticFieldAux (B : MagneticField) (x : ℝT[3, .up]) :
       ℝT[3, .up, .up] := (Tensor.basis _).repr.symm <|
       Finsupp.equivFunOnFinite.symm <| fun b =>
     match b 0, b 1 with
-    | 1, 2 => - B x 2
-    | 1, 3 => B x 1
-    | 2, 3 => - B x 0
-    | 2, 1 => B x 2
-    | 3, 1 => - B x 1
-    | 3, 2 => B x 0
+    | 1, 2 => - timeSliceLinearEquiv.symm B x 2
+    | 1, 3 => timeSliceLinearEquiv.symm B x 1
+    | 2, 3 => - timeSliceLinearEquiv.symm B x 0
+    | 2, 1 => timeSliceLinearEquiv.symm B x 2
+    | 3, 1 => - timeSliceLinearEquiv.symm B x 1
+    | 3, 2 => timeSliceLinearEquiv.symm B x 0
     | _, _ => 0
+
+lemma timeSliceLinearEquiv_ofMagneticFieldAux (B : MagneticField) (t : Time)
+    (x : Space 3) :
+    timeSliceLinearEquiv (ofMagneticFieldAux B) t x =
+    ((Tensor.basis _).repr.symm <|
+      Finsupp.equivFunOnFinite.symm <| fun b =>
+      match b 0, b 1 with
+      | 1, 2 => - B t x 2
+      | 1, 3 => B t x 1
+      | 2, 3 => - B t x 0
+      | 2, 1 => B t x 2
+      | 3, 1 => - B t x 1
+      | 3, 2 => B t x 0
+      | _, _ => 0) := by
+  simp [timeSliceLinearEquiv, timeSlice, ofMagneticFieldAux]
 
 /-- The field strength from a magnetic field. -/
 noncomputable def ofMagneticField : MagneticField →ₗ[ℝ] FieldStrength where
@@ -218,10 +255,14 @@ noncomputable def ofMagneticField : MagneticField →ₗ[ℝ] FieldStrength wher
     · simp only [Fin.isValue]
     · simp only [mul_zero]
 
+lemma ofMagneticField_coe (B : MagneticField) :
+    (ofMagneticField B).1 = ofMagneticFieldAux B := by
+  rfl
+
 /-- The electric field given a field strength. -/
 noncomputable def electricField {d : ℕ} : FieldStrength d →ₗ[ℝ] ElectricField d where
-  toFun F := fun x j =>
-    (Tensor.basis _).repr (F.1 x) (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0)
+  toFun F := fun t x j =>
+    (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0)
   map_add' F1 F2 := by
     simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Submodule.coe_add, Pi.add_apply,
       map_add, Fin.isValue, Matrix.cons_val_zero, Finsupp.coe_add]
@@ -231,72 +272,106 @@ noncomputable def electricField {d : ℕ} : FieldStrength d →ₗ[ℝ] Electric
       map_smul, Fin.isValue, Matrix.cons_val_zero, Finsupp.coe_smul, smul_eq_mul, RingHom.id_apply]
     rfl
 
+lemma electricField_apply {d : ℕ} (F : FieldStrength d) (t : Time) (x : Space d) (j : Fin d) :
+    electricField F t x j = (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x)
+      (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0) := by
+  rfl
+
+lemma timeSliceLinearEquiv_symm_electricField {d : ℕ} (F : FieldStrength d) :
+    timeSliceLinearEquiv.symm (electricField F) = fun x (j : Fin d) =>
+    (Tensor.basis _).repr (F.1 x) (fun | 0 => ⟨j + 1, by simp; omega⟩ | 1 => 0):= by
+  rw [LinearEquiv.symm_apply_eq]
+  ext t x j
+  rw [electricField_apply]
+  rfl
+
 @[simp]
 lemma electricField_ofElectricField {d : ℕ} (E : ElectricField d) :
     electricField (ofElectricField E) = E := by
   ext x j
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, electricField, Fin.isValue,
-    Matrix.cons_val_zero, repDim_up, ofElectricField, ofElectricFieldAux, Matrix.cons_val_one,
-    Matrix.head_cons, Basis.repr_symm_apply, LinearMap.coe_mk, AddHom.coe_mk,
-    Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun]
-  conv_lhs=>
-    enter [3]
-    change ⟨0, Nat.pos_of_neZero _⟩
+  rw [electricField_apply, ofElectricField_coe, timeSliceLinearEquiv_ofElectricFieldAux]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.head_cons, id_eq, Int.reduceNeg, Int.Nat.cast_ofNat_Int,
+    Basis.repr_symm_apply, Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun]
+  rfl
 
 /-- The magnetic field given a field strength. -/
 noncomputable def magneticField : FieldStrength →ₗ[ℝ] MagneticField where
-  toFun F := fun x j =>
+  toFun F := fun t x j =>
+    match j with
+    | 0 =>
+      (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 3| 1 => 2)
+    | 1 =>
+      (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 1| 1 => 3)
+    | 2 =>
+      (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 2| 1 => 1)
+  map_add' F1 F2 := by
+    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Submodule.coe_add, Pi.add_apply,
+      map_add, Fin.isValue, Finsupp.coe_add]
+    funext t x j
+    fin_cases j <;> simp
+  map_smul' c F := by
+    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, SetLike.val_smul, Pi.smul_apply,
+      map_smul, Fin.isValue, Finsupp.coe_smul, smul_eq_mul, RingHom.id_apply]
+    funext t x j
+    fin_cases j <;> simp
+
+lemma magneticField_apply (F : FieldStrength ) (t : Time) (x : Space) (j : Fin 3) :
+    magneticField F t x j = match j with
+      | 0 => (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 3| 1 => 2)
+      | 1 => (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 1| 1 => 3)
+      | 2 => (Tensor.basis _).repr (timeSliceLinearEquiv F.1 t x) (fun | 0 => 2| 1 => 1) := by
+  rfl
+
+lemma timeSliceLinearEquiv_symm_magneticField (F : FieldStrength) :
+    timeSliceLinearEquiv.symm (magneticField F)  = fun x j =>
     match j with
     | 0 =>
       (Tensor.basis _).repr (F.1 x) (fun | 0 => 3| 1 => 2)
     | 1 =>
       (Tensor.basis _).repr (F.1 x) (fun | 0 => 1| 1 => 3)
     | 2 =>
-      (Tensor.basis _).repr (F.1 x) (fun | 0 => 2| 1 => 1)
-  map_add' F1 F2 := by
-    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Submodule.coe_add, Pi.add_apply,
-      map_add, Fin.isValue, Finsupp.coe_add]
-    funext x j
-    fin_cases j <;> simp
-  map_smul' c F := by
-    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, SetLike.val_smul, Pi.smul_apply,
-      map_smul, Fin.isValue, Finsupp.coe_smul, smul_eq_mul, RingHom.id_apply]
-    funext x j
-    fin_cases j <;> simp
+      (Tensor.basis _).repr (F.1 x) (fun | 0 => 2| 1 => 1) := by
+  rw [LinearEquiv.symm_apply_eq]
+  ext t x j
+  rw [magneticField_apply]
+  fin_cases j <;> rfl
+
 
 @[simp]
 lemma magneticField_ofMagneticField (B : MagneticField) :
     magneticField (ofMagneticField B) = B := by
-  ext x j
-  simp only [magneticField, ofMagneticField, ofMagneticFieldAux, C_eq_color,
-    Fin.isValue, Set.mem_setOf_eq, mem_of_repr,
-    Basis.repr_symm_apply, Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun]
-  fin_cases j <;> simp only [LinearMap.coe_mk, AddHom.coe_mk, Basis.repr_linearCombination]
-  · rfl
-  · rfl
-  · rfl
+  ext t x j
+  rw [magneticField_apply, ofMagneticField_coe, timeSliceLinearEquiv_ofMagneticFieldAux]
+  fin_cases j
+  all_goals
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.head_cons, Basis.repr_symm_apply, Basis.repr_linearCombination,
+      Finsupp.equivFunOnFinite_symm_apply_toFun, Fin.zero_eta]
+    rfl
+
 
 @[simp]
 lemma electricField_ofMagneticField (B : MagneticField) :
     electricField (ofMagneticField B) = 0 := by
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, electricField, Fin.isValue,
-    Matrix.cons_val_zero, repDim_up, ofMagneticField, ofMagneticFieldAux, Matrix.cons_val_one,
-    Matrix.head_cons, Basis.repr_symm_apply, LinearMap.coe_mk, AddHom.coe_mk,
+  ext x j
+  rw [electricField_apply, ofMagneticField_coe, timeSliceLinearEquiv_ofMagneticFieldAux]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Matrix.cons_val_zero,
+    repDim_up, Matrix.cons_val_one, Matrix.head_cons, Basis.repr_symm_apply,
     Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun, Fin.mk_eq_one,
-    add_eq_left, Fin.val_eq_zero_iff, Fin.reduceEq, imp_self, implies_true, zero_ne_one]
+    Fin.reduceEq, imp_self, implies_true, zero_ne_one]
   rfl
 
 @[simp]
 lemma magneticField_ofElectricField (E : ElectricField) :
     magneticField (ofElectricField E) = 0 := by
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, magneticField, Fin.isValue,
-    ofElectricField, ofElectricFieldAux, Matrix.cons_val_zero, repDim_up, Matrix.cons_val_one,
-    Matrix.head_cons, Basis.repr_symm_apply, LinearMap.coe_mk, AddHom.coe_mk,
+  ext t x j
+  rw [magneticField_apply, ofElectricField_coe, timeSliceLinearEquiv_ofElectricFieldAux]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Matrix.cons_val_zero,
+    repDim_up, Matrix.cons_val_one, Matrix.head_cons, Basis.repr_symm_apply,
     Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun, Fin.zero_eta,
-    Fin.reduceEq, imp_false, IsEmpty.forall_iff, implies_true, imp_self, one_ne_zero, Fin.one_eq_mk,
-    add_eq_left]
-  funext x j
-  fin_cases j <;> simp
+    Fin.reduceEq, imp_false, IsEmpty.forall_iff, implies_true, one_ne_zero, Fin.one_eq_mk]
+  fin_cases j <;> rfl
 
 lemma eq_ofElectricField_add_ofMagneticField (F : FieldStrength) : F =
     ofElectricField (electricField F) + ofMagneticField (magneticField F) := by
@@ -323,21 +398,21 @@ lemma eq_ofElectricField_add_ofMagneticField (F : FieldStrength) : F =
   simp only [Fin.isValue]
   match i, j with
   | (1 : Fin 4), (2 : Fin 4) =>
-    simpa [magneticField] using repr_symm F 1 2 x
+    simpa [timeSliceLinearEquiv_symm_magneticField] using repr_symm F 1 2 x
   | (1 : Fin 4), (3 : Fin 4) =>
-    simp only [Fin.isValue, magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
       LinearMap.coe_mk, AddHom.coe_mk, zero_add]
     rfl
   | (2 : Fin 4), (3 : Fin 4) =>
-    simpa [magneticField] using repr_symm F 2 3 x
+    simpa [timeSliceLinearEquiv_symm_magneticField] using repr_symm F 2 3 x
   | (2 : Fin 4), (1 : Fin 4) =>
-    simp only [Fin.isValue, magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
       LinearMap.coe_mk, AddHom.coe_mk, zero_add]
     rfl
   | (3 : Fin 4), (1 : Fin 4) =>
-    simpa [magneticField] using repr_symm F 3 1 x
+    simpa [timeSliceLinearEquiv_symm_magneticField] using repr_symm F 3 1 x
   | (3 : Fin 4), (2 : Fin 4) =>
-    simp only [Fin.isValue, magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    simp only [Fin.isValue, timeSliceLinearEquiv_symm_magneticField, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
       LinearMap.coe_mk, AddHom.coe_mk, zero_add]
     rfl
   | ⟨0, h0⟩, ⟨0, h0'⟩ =>
@@ -349,24 +424,24 @@ lemma eq_ofElectricField_add_ofMagneticField (F : FieldStrength) : F =
   | ⟨3, h0⟩, ⟨3, h1⟩ =>
     simpa using repr_diag_zero F 3 x
   | ⟨0, h0⟩, ⟨1, h1⟩ =>
-    simpa [electricField] using repr_symm F 0 1 x
+    simpa [timeSliceLinearEquiv_symm_electricField] using repr_symm F 0 1 x
   | ⟨0, h0⟩, ⟨2, h1⟩ =>
-    simpa [electricField] using repr_symm F 0 2 x
+    simpa [timeSliceLinearEquiv_symm_electricField] using repr_symm F 0 2 x
   | ⟨0, h0⟩, ⟨3, h1⟩ =>
-    simpa [electricField] using repr_symm F 0 3 x
+    simpa [timeSliceLinearEquiv_symm_electricField] using repr_symm F 0 3 x
   | ⟨1, h0⟩, ⟨0, h1⟩ =>
     simp only [Fin.isValue, Matrix.cons_val_zero, repDim_up, Nat.reduceAdd, Fin.mk_one,
-      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, electricField, C_eq_color,
+      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField, C_eq_color,
       Nat.succ_eq_add_one, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_zero, zero_add, add_zero]
     rfl
   | ⟨2, h0⟩, ⟨0, h1⟩ =>
     simp only [Fin.isValue, Matrix.cons_val_zero, repDim_up, Nat.reduceAdd, Fin.reduceFinMk,
-      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, electricField, C_eq_color,
+      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField, C_eq_color,
       Nat.succ_eq_add_one, Fin.mk_one, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_one, add_zero]
     rfl
   | ⟨3, h0⟩, ⟨0, h1⟩ =>
     simp only [Fin.isValue, Matrix.cons_val_zero, repDim_up, Nat.reduceAdd, Fin.reduceFinMk,
-      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, electricField, C_eq_color,
+      Matrix.cons_val_one, Matrix.head_cons, Fin.zero_eta, timeSliceLinearEquiv_symm_electricField, C_eq_color,
       Nat.succ_eq_add_one, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_two, add_zero]
     rfl
 
@@ -391,18 +466,18 @@ lemma fromElectricMagneticField_repr (EM : ElectricField × MagneticField) (y : 
     (Tensor.basis _).repr ((fromElectricMagneticField EM).1 y) =
     Finsupp.equivFunOnFinite.symm fun b =>
       match b 0, b 1 with
-      | 0, 1 => - EM.1 y 0
-      | 0, 2 => - EM.1 y 1
-      | 0, 3 => - EM.1 y 2
-      | 1, 0 => EM.1 y 0
-      | 2, 0 => EM.1 y 1
-      | 3, 0 => EM.1 y 2
-      | 1, 2 => - EM.2 y 2
-      | 1, 3 => EM.2 y 1
-      | 2, 3 => - EM.2 y 0
-      | 2, 1 => EM.2 y 2
-      | 3, 1 => - EM.2 y 1
-      | 3, 2 => EM.2 y 0
+      | 0, 1 => - timeSliceLinearEquiv.symm EM.1 y 0
+      | 0, 2 => - timeSliceLinearEquiv.symm EM.1 y 1
+      | 0, 3 => - timeSliceLinearEquiv.symm EM.1 y 2
+      | 1, 0 => timeSliceLinearEquiv.symm EM.1 y 0
+      | 2, 0 => timeSliceLinearEquiv.symm EM.1 y 1
+      | 3, 0 => timeSliceLinearEquiv.symm EM.1 y 2
+      | 1, 2 => - timeSliceLinearEquiv.symm EM.2 y 2
+      | 1, 3 => timeSliceLinearEquiv.symm EM.2 y 1
+      | 2, 3 => - timeSliceLinearEquiv.symm EM.2 y 0
+      | 2, 1 => timeSliceLinearEquiv.symm EM.2 y 2
+      | 3, 1 => - timeSliceLinearEquiv.symm EM.2 y 1
+      | 3, 2 => timeSliceLinearEquiv.symm EM.2 y 0
       | _, _ => 0 := by
   simp only [C_eq_color, fromElectricMagneticField, toElectricMagneticField, ofElectricField,
     ofElectricFieldAux, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,

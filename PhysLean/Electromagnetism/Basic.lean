@@ -16,11 +16,11 @@ namespace Electromagnetism
 
 /-- The electric field is a map from `d`+1 dimensional spacetime to the vector space
   `ℝ^d`. -/
-abbrev ElectricField (d : ℕ := 3) := SpaceTime d → EuclideanSpace ℝ (Fin d)
+abbrev ElectricField (d : ℕ := 3) := Time → Space d → EuclideanSpace ℝ (Fin d)
 
 /-- The magnetic field is a map from `d+1` dimensional spacetime to the vector space
   `ℝ^d`. -/
-abbrev MagneticField (d : ℕ := 3) := SpaceTime d → EuclideanSpace ℝ (Fin d)
+abbrev MagneticField (d : ℕ := 3) := Time → Space d → EuclideanSpace ℝ (Fin d)
 
 open IndexNotation
 open realLorentzTensor

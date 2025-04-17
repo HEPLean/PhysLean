@@ -27,10 +27,10 @@ TODO "6V2UZ" "Charge density and current density should be generalized to signed
   https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/Maxwell's.20Equations"
 
 /-- The charge density. -/
-abbrev ChargeDensity := SpaceTime → ℝ
+abbrev ChargeDensity := Time → Space → ℝ
 
 /-- Current density. -/
-abbrev CurrentDensity := SpaceTime → EuclideanSpace ℝ (Fin 3)
+abbrev CurrentDensity := Time → Space → EuclideanSpace ℝ (Fin 3)
 
 namespace EMSystem
 variable (𝓔 : EMSystem)
@@ -49,22 +49,23 @@ open SpaceTime
 
 local notation "ε₀" => 𝓔.ε₀
 local notation "μ₀" => 𝓔.μ₀
+open Time
 
 /-- Gauss's law for the Electric field. -/
 def GaussLawElectric (E : ElectricField) : Prop :=
-  ∀ x : SpaceTime, ε₀ * (∇⬝ E) x = ρ x
+  ∀ t : Time, ∀ x : Space, ε₀ * (∇ ⬝ E t) x = ρ t x
 
 /-- Gauss's law for the Magnetic field. -/
 def GaussLawMagnetic (B : MagneticField) : Prop :=
-  ∀ x : SpaceTime, (∇⬝ B) x = 0
+  ∀ t : Time, ∀ x : Space, (∇ ⬝ B t) x = 0
 
 /-- Ampère's law. -/
 def AmpereLaw (E : ElectricField) (B : MagneticField) : Prop :=
-  ∀ x : SpaceTime, ∇× B x = μ₀ • (J x + ε₀ • ∂ₜ E x)
+  ∀ t : Time, ∀ x : Space, (∇ × B t) x = μ₀ • (J t x + ε₀ • ∂ₜ (fun t => E t x) t)
 
 /-- Faraday's law. -/
 def FaradayLaw (E : ElectricField) (B : MagneticField) : Prop :=
-  ∀ x : SpaceTime, ∇× E x = - ∂ₜ B x
+  ∀ t : Time, ∀ x : Space, (∇ × E t) x = - ∂ₜ (fun t => B t x) t
 
 /-- Maxwell's equations. -/
 def MaxwellEquations (E : ElectricField) (B : MagneticField) : Prop :=
