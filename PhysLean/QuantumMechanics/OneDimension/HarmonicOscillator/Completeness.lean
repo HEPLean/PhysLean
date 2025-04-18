@@ -125,9 +125,14 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
     suffices h2 : IsUnit (↑((1/Q.ξ)^ r : ℂ)) by
       rw [IsUnit.integrable_smul_iff h2] at h1
       simpa using h1
-    simp only [isUnit_iff_ne_zero, ne_eq, pow_eq_zero_iff', Complex.ofReal_eq_zero, not_and,
-      Decidable.not_not]
-    simp
+    simp only [isUnit_iff_ne_zero, ne_eq, pow_eq_zero_iff', Complex.ofReal_eq_zero]
+    intro h
+    cases h with
+    | intro h =>
+      have h' : Q.ξ = 0 := by
+        simpa [one_div] using h
+      exact Q.ξ_pos.ne' h'
+
   · simp only [ne_eq, Decidable.not_not] at hr
     subst hr
     simpa using Q.mul_physHermite_integrable f hf 0
