@@ -59,10 +59,56 @@ lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Mod
     (f : Time → Space d → M) : timeSliceLinearEquiv.symm f = timeSlice.symm f := by
   simp [timeSliceLinearEquiv, timeSlice]
 
+
+variable {k : Type} [NontriviallyNormedField k]
+    {N W M : Type} [NormedAddCommGroup M] [NormedSpace k M]
+    [NormedAddCommGroup N] [NormedSpace k N]
+    [NormedAddCommGroup W] [NormedSpace k W]
+
+private lemma fderiv_uncurry  (f : N → W → M) (y : N × W) (w : W)
+    (h : DifferentiableAt k (Function.uncurry f) y)  :
+    fderiv k (Function.uncurry f) y (0, w) =
+    fderiv k (fun x => f y.1 x) y.2 w := by
+  rw [show (fun x => f y.1 x) =
+    (Function.uncurry f) ∘ (fun x => (y.1, x)) by {ext w; rfl}]
+  rw [fderiv_comp _ (by fun_prop) (by fun_prop)]
+  rw [(hasFDerivAt_prodMk_right (𝕜 := k) y.1 y.2).fderiv]
+  rfl
+
+private lemma fderiv_curry (f : N × W → M) (n : N) (w : W)
+    (h : DifferentiableAt k f (n, w)) (dw : W):
+    fderiv k (Function.curry f n) w dw = fderiv k (f) (n, w) (0, dw) := by
+  have h1 : f = Function.uncurry (Function.curry f) := by
+    ext x
+    simp
+  conv_rhs =>
+    rw [h1]
+  rw [fderiv_uncurry]
+  simp
+  exact h
+
 /-- The derivative on space commutes with time-slicing. -/
-semiformal_result "7Z2GA" timeSlice_spatial_deriv {M : Type} [AddCommGroup M]
-    [Module ℝ M] [TopologicalSpace M] {d : ℕ} (f : SpaceTime d → M) (i : Fin d) :
-    timeSlice (∂_ (finSumFinEquiv (Sum.inr i)) f) = fun t => ∂[i] (timeSlice f t)
+lemma timeSlice_spatial_deriv {M : Type}
+  [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} {f : SpaceTime d → M}
+    {t : Time} {x : Space d}
+    (hdiff : DifferentiableAt ℝ f (toTimeAndSpace.symm (t, x))) (i : Fin d) :
+    timeSlice (∂_ (Fin.natAdd 1 i) f) t x = ∂[i] (timeSlice f t) x := by
+  have hf : f = (f ∘ toTimeAndSpace.symm) ∘ toTimeAndSpace := by
+    ext x
+    simp
+  conv_lhs =>
+    rw [hf]
+    simp only [timeSlice, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+      Equiv.coe_fn_mk, Function.curry_apply, Function.comp_apply]
+    rw [deriv_comp_toTimeAndSpace_natAdd i (f ∘ ⇑toTimeAndSpace.symm)]
+  conv_rhs =>
+    rw [timeSlice]
+    simp [Space.deriv]
+  simp
+  rw [fderiv_curry]
+  · simp [basis]
+  · fun_prop
+
 
 /-- The derivative on time commutes with time-slicing. -/
 semiformal_result "7Z2LF" timeSlice_time_deriv {M : Type} [AddCommGroup M]
