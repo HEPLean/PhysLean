@@ -84,12 +84,12 @@ private lemma fderiv_curry (f : N × W → M) (n : N) (w : W)
   conv_rhs =>
     rw [h1]
   rw [fderiv_uncurry]
-  simp
+  rw [Function.uncurry_curry]
   exact h
 
 /-- The derivative on space commutes with time-slicing. -/
 lemma timeSlice_spatial_deriv {M : Type}
-  [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} {f : SpaceTime d → M}
+    [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} {f : SpaceTime d → M}
     {t : Time} {x : Space d}
     (hdiff : DifferentiableAt ℝ f (toTimeAndSpace.symm (t, x))) (i : Fin d) :
     timeSlice (∂_ (Fin.natAdd 1 i) f) t x = ∂[i] (timeSlice f t) x := by
@@ -104,11 +104,11 @@ lemma timeSlice_spatial_deriv {M : Type}
   conv_rhs =>
     rw [timeSlice]
     simp [Space.deriv]
-  simp
+  simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    ContinuousLinearEquiv.apply_symm_apply]
   rw [fderiv_curry]
   · simp [basis]
   · fun_prop
-
 
 /-- The derivative on time commutes with time-slicing. -/
 semiformal_result "7Z2LF" timeSlice_time_deriv {M : Type} [AddCommGroup M]
