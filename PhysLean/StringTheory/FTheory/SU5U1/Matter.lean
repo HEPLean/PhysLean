@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Finset.Insert
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
+import Mathlib.Algebra.BigOperators.Group.Multiset.Defs
 /-!
 
 # Matter
@@ -23,10 +24,6 @@ namespace FTheory
 
 namespace SU5U1
 
-/-- A type for the `U(1)`-charges of matter.
-  This is often denoted `q`. -/
-abbrev Charge : Type := ℤ
-
 /-- A type for the chirality of matter. This is induced by G₄-flux.
   This is often denoted `M`. -/
 abbrev Chirality : Type := ℕ
@@ -43,9 +40,9 @@ structure MatterContent (I : CodimensionOneConfig) where
   /-- The number of matter fields in the 10d representation of `SU(5)`. -/
   numberTen : ℕ
   /-- The chirality, charge and hyperChargeFlux associated with the 5-bar representations. -/
-  quantaBarFive : Multiset (Chirality × HyperChargeFlux × Charge)
+  quantaBarFive : Multiset (Chirality × HyperChargeFlux × I.allowedBarFiveCharges)
   /-- The chirality, charge and hyperChargeFlux associated with the 10d representations. -/
-  quantaTen : Multiset (Chirality × HyperChargeFlux × Charge)
+  quantaTen : Multiset (Chirality × HyperChargeFlux × I.allowedTenCharges)
   /-- The cardinality of `quantaBarFive` should equal `numberBarFive`. -/
   quantaBarFive_card : quantaBarFive.card = numberBarFive
   /-- The cardinality of `quantaTen` should equal `numberTen`. -/
@@ -54,6 +51,18 @@ structure MatterContent (I : CodimensionOneConfig) where
   chirality_charge_not_both_zero_bar_five : ∀ q ∈ quantaBarFive, (q.1 = 0 → q.2.1 ≠ 0)
   /-- There is no matter in the 10d representation with zero `Chirality` and `HyperChargeFlux`. -/
   chirality_charge_not_both_zero_ten : ∀ q ∈ quantaTen, (q.1 = 0 → q.2.1 ≠ 0)
+
+namespace MatterContent
+
+variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
+
+/-- The multiset of hypercharge fluxes associated with the 5-bar matter content. -/
+def hyperChargeFluxesBarFive : Multiset HyperChargeFlux := 𝓜.quantaBarFive.map fun q => q.2.1
+
+/-- The multiset of hypercharge fluxes associated with the 10d-rep matter content. -/
+def hyperChargeFluxesTen : Multiset HyperChargeFlux := 𝓜.quantaTen.map fun q => q.2.1
+
+end MatterContent
 
 end SU5U1
 
