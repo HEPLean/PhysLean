@@ -36,6 +36,7 @@ inductive PhysLeanCategory
   | QFT
   | QuantumMechanics
   | Relativity
+  | StringTheory
   | StatisticalMechanics
   | Thermodynamics
   | Other
@@ -53,6 +54,7 @@ def PhysLeanCategory.string :  PhysLeanCategory → String
   | QFT => "QFT"
   | QuantumMechanics => "Quantum Mechanics"
   | Relativity => "Relativity"
+  | StringTheory => "String Theory"
   | StatisticalMechanics => "Statistical Mechanics"
   | Thermodynamics => "Thermodynamics"
   | Other => "Other"
@@ -69,6 +71,7 @@ def PhysLeanCategory.emoji : PhysLeanCategory → String
   | QFT => "🌊"
   | QuantumMechanics => "⚛️"
   | Relativity => "⏳"
+  | StringTheory => "🧵"
   | StatisticalMechanics => "🎲"
   | Thermodynamics => "🔥"
   | Other => "❓"
@@ -85,6 +88,7 @@ def PhysLeanCategory.List :  List PhysLeanCategory :=
     PhysLeanCategory.QFT,
     PhysLeanCategory.QuantumMechanics,
     PhysLeanCategory.Relativity,
+    PhysLeanCategory.StringTheory,
     PhysLeanCategory.StatisticalMechanics,
     PhysLeanCategory.Thermodynamics,
     PhysLeanCategory.Other]
