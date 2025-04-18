@@ -11,8 +11,21 @@ import Mathlib.Combinatorics.SimpleGraph.Connectivity.WalkCounting
 /-!
 # Feynman diagrams
 
+Feynman diagrams form a type into which permissible Wick contractions
+embed.
+
+A permissible Wick contraction is one which does not contribute zero to
+the vacuum expection value.
+
+Feynman diagrams are based on multisets of `FieldOp`. This should be contrasted
+with Wick contractions which are based on lists of `FieldOp`.
+
+In particular a Feynman diagram is a partion of a Multiset into
+disjoint pairs.
+
 ## Note
 
 This directory is currently a work in progress.
+(Contact JTS before working in this directory.)
 
 -/
