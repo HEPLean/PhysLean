@@ -71,8 +71,8 @@ lemma pauliContr_eq_fromConstTriple : σ^^^ = fromConstTriple PauliMatrix.asCons
   rfl
 
 lemma pauliContr_eq_fromTripleT : σ^^^ = fromTripleT PauliMatrix.asTensor := by
-  rw [pauliContr_eq_fromConstTriple, fromConstTriple]
-  erw [PauliMatrix.asConsTensor_apply_one]
+  rw [pauliContr_eq_fromConstTriple, fromConstTriple,
+    congrArg fromTripleT PauliMatrix.asConsTensor_apply_one]
 
 lemma pauliContr_eq_basis : pauliContr =
     Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0)
