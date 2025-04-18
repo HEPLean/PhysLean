@@ -29,9 +29,9 @@ namespace FTheory
 
 namespace SU5U1
 
-/-- A type for the chirality of matter. This is induced by G₄-flux.
+/-- A type for the chirality flux of matter. This is induced by G₄-flux.
   This is often denoted `M`. -/
-abbrev Chirality : Type := ℕ
+abbrev ChiralityFlux : Type := ℤ
 
 /-- A type for the hypercharge flux associated with matter curves.
   This is often denote `N`. -/
@@ -45,9 +45,9 @@ structure MatterContent (I : CodimensionOneConfig) where
   /-- The number of matter fields in the 10d representation of `SU(5)`. -/
   numberTen : ℕ
   /-- The chirality, charge and hyperChargeFlux associated with the 5-bar representations. -/
-  quantaBarFive : Multiset (Chirality × HyperChargeFlux × I.allowedBarFiveCharges)
+  quantaBarFive : Multiset (ChiralityFlux × HyperChargeFlux × I.allowedBarFiveCharges)
   /-- The chirality, charge and hyperChargeFlux associated with the 10d representations. -/
-  quantaTen : Multiset (Chirality × HyperChargeFlux × I.allowedTenCharges)
+  quantaTen : Multiset (ChiralityFlux × HyperChargeFlux × I.allowedTenCharges)
   /-- The cardinality of `quantaBarFive` should equal `numberBarFive`. -/
   quantaBarFive_card : quantaBarFive.card = numberBarFive
   /-- The cardinality of `quantaTen` should equal `numberTen`. -/
