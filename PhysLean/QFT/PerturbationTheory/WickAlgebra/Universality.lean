@@ -3,10 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.Basic
 /-!
 
-# Universality properties of FieldOpAlgebra
+# Universality properties of WickAlgebra
 
 -/
 
@@ -15,16 +15,16 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 
-namespace FieldOpAlgebra
+namespace WickAlgebra
 variable {𝓕 : FieldSpecification}
 
 /-- For a field specification, `𝓕`, given an algebra `A` and a function `f : 𝓕.CrAnFieldOp → A`
   such that the lift of `f` to `FreeAlgebra.lift ℂ f : FreeAlgebra ℂ 𝓕.CrAnFieldOp → A` is
-  zero on the ideal defining `𝓕.FieldOpAlgebra`, the corresponding map `𝓕.FieldOpAlgebra → A`.
+  zero on the ideal defining `𝓕.WickAlgebra`, the corresponding map `𝓕.WickAlgebra → A`.
 -/
 def universalLiftMap {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A)
     (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0) :
-    FieldOpAlgebra 𝓕 → A :=
+    WickAlgebra 𝓕 → A :=
   Quotient.lift (FreeAlgebra.lift ℂ f) (by
     intro a b h
     rw [equiv_iff_exists_add] at h
@@ -40,12 +40,12 @@ lemma universalLiftMap_ι {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAn
 
 /-- For a field specification, `𝓕`, given an algebra `A` and a function `f : 𝓕.CrAnFieldOp → A`
   such that the lift of `f` to `FreeAlgebra.lift ℂ f : FreeAlgebra ℂ 𝓕.CrAnFieldOp → A` is
-  zero on the ideal defining `𝓕.FieldOpAlgebra`, the corresponding algebra map
-  `𝓕.FieldOpAlgebra → A`.
+  zero on the ideal defining `𝓕.WickAlgebra`, the corresponding algebra map
+  `𝓕.WickAlgebra → A`.
 -/
 def universalLift {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A)
     (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0) :
-    FieldOpAlgebra 𝓕 →ₐ[ℂ] A where
+    WickAlgebra 𝓕 →ₐ[ℂ] A where
   toFun := universalLiftMap f h1
   map_one' := by
     rw [show 1 = ι (𝓕 := 𝓕) 1 from rfl, universalLiftMap_ι]
@@ -75,16 +75,16 @@ lemma universalLift_ι {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFie
     universalLift f h1 (ι a) = FreeAlgebra.lift ℂ f a := by rfl
 
 /--
-For a field specification, `𝓕`, the algebra `𝓕.FieldOpAlgebra` satisfies the following universal
+For a field specification, `𝓕`, the algebra `𝓕.WickAlgebra` satisfies the following universal
 property. Let `f : 𝓕.CrAnFieldOp → A` be a function and `g : 𝓕.FieldOpFreeAlgebra →ₐ[ℂ] A`
 the universal lift of that function associated with the free algebra `𝓕.FieldOpFreeAlgebra`.
-If `g` is zero on the ideal defining `𝓕.FieldOpAlgebra`, then there exists
-algebra map `g' : FieldOpAlgebra 𝓕 →ₐ[ℂ] A` such that `g' ∘ ι = g`, and furthermore this
+If `g` is zero on the ideal defining `𝓕.WickAlgebra`, then there exists
+algebra map `g' : WickAlgebra 𝓕 →ₐ[ℂ] A` such that `g' ∘ ι = g`, and furthermore this
 algebra map is unique.
 -/
 lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp → A)
     (h1 : ∀ a ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet, FreeAlgebra.lift ℂ f a = 0) :
-    ∃! g : FieldOpAlgebra 𝓕 →ₐ[ℂ] A, g ∘ ι = FreeAlgebra.lift ℂ f := by
+    ∃! g : WickAlgebra 𝓕 →ₐ[ℂ] A, g ∘ ι = FreeAlgebra.lift ℂ f := by
   use universalLift f h1
   simp only
   apply And.intro
@@ -95,5 +95,5 @@ lemma universality {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp
     obtain ⟨a, rfl⟩ := ι_surjective a
     simpa using congrFun hg a
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

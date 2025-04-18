@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTheorem
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WicksTheorem
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.StaticWickTheorem
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.WicksTheorem
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Join
 import PhysLean.QFT.PerturbationTheory.WickContraction.TimeCond
 /-!
@@ -16,7 +16,7 @@ import PhysLean.QFT.PerturbationTheory.WickContraction.TimeCond
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 open FieldOpFreeAlgebra
-namespace FieldOpAlgebra
+namespace WickAlgebra
 open WickContraction
 open EqTimeOnly
 
@@ -142,7 +142,7 @@ lemma timeOrder_haveEqTime_split (φs : List 𝓕.FieldOp) :
     Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, ne_eq, sub_left_inj, e1]
   rw [add_comm]
   congr 1
-  let f : WickContraction φs.length → 𝓕.FieldOpAlgebra := fun φsΛ =>
+  let f : WickContraction φs.length → 𝓕.WickAlgebra := fun φsΛ =>
     φsΛ.sign • (φsΛ.timeContract.1 * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ))
   change ∑ (φsΛ : {φsΛ : WickContraction φs.length // HaveEqTime φsΛ}), f φsΛ.1 = _
   rw [sum_haveEqTime]
@@ -253,5 +253,5 @@ decreasing_by
   simp_all only [Algebra.smul_mul_assoc, List.length_cons, Finset.mem_univ, gt_iff_lt]
   omega
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

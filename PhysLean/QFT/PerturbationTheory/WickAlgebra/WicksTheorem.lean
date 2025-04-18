@@ -6,8 +6,8 @@ Authors: Joseph Tooby-Smith
 import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.WickTerm
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.WickContractions
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.WickTerm
 import PhysLean.Meta.Remark.Basic
 /-!
 
@@ -23,7 +23,7 @@ Wick's theorem is related to Isserlis' theorem in mathematics.
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 open FieldOpFreeAlgebra
-open FieldOpAlgebra
+open WickAlgebra
 open PhysLean.List
 open WickContraction
 open FieldStatistic

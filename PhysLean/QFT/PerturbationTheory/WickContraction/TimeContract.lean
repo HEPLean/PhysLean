@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Basic
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeContraction
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeContraction
 /-!
 
 # Time contractions
@@ -17,16 +17,16 @@ variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open PhysLean.List
-open FieldOpAlgebra
+open WickAlgebra
 
 /-- For a list `φs` of `𝓕.FieldOp` and a Wick contraction `φsΛ` the
-  element of the center of `𝓕.FieldOpAlgebra`, `φsΛ.timeContract` is defined as the product
+  element of the center of `𝓕.WickAlgebra`, `φsΛ.timeContract` is defined as the product
   of `timeContract φs[j] φs[k]` over contracted pairs `{j, k}` in `φsΛ`
   with `j < k`. -/
 noncomputable def timeContract {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) :
-    Subalgebra.center ℂ 𝓕.FieldOpAlgebra :=
-  ∏ (a : φsΛ.1), ⟨FieldOpAlgebra.timeContract
+    Subalgebra.center ℂ 𝓕.WickAlgebra :=
+  ∏ (a : φsΛ.1), ⟨WickAlgebra.timeContract
     (φs.get (φsΛ.fstFieldOfContract a)) (φs.get (φsΛ.sndFieldOfContract a)),
     timeContract_mem_center _ _⟩
 
@@ -57,8 +57,8 @@ lemma timeContract_insertAndContract_some
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) (j : φsΛ.uncontracted) :
     (φsΛ ↩Λ φ i (some j)).timeContract =
     (if i < i.succAbove j then
-      ⟨FieldOpAlgebra.timeContract φ φs[j.1], timeContract_mem_center _ _⟩
-    else ⟨FieldOpAlgebra.timeContract φs[j.1] φ, timeContract_mem_center _ _⟩) *
+      ⟨WickAlgebra.timeContract φ φs[j.1], timeContract_mem_center _ _⟩
+    else ⟨WickAlgebra.timeContract φs[j.1] φ, timeContract_mem_center _ _⟩) *
     φsΛ.timeContract := by
   rw [timeContract, insertAndContract_some_prod_contractions]
   congr 1

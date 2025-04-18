@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeOrder
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.Lemmas
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeOrder
 /-!
 
 # Time contractions
@@ -19,13 +19,13 @@ variable {𝓕 : FieldSpecification}
 open FieldOpFreeAlgebra
 noncomputable section
 
-namespace FieldOpAlgebra
+namespace WickAlgebra
 
 open FieldStatistic
 
 /-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, the element of
-  `𝓕.FieldOpAlgebra`, `timeContract φ ψ` is defined to be `𝓣(φψ) - 𝓝(φψ)`. -/
-def timeContract (φ ψ : 𝓕.FieldOp) : 𝓕.FieldOpAlgebra :=
+  `𝓕.WickAlgebra`, `timeContract φ ψ` is defined to be `𝓣(φψ) - 𝓝(φψ)`. -/
+def timeContract (φ ψ : 𝓕.FieldOp) : 𝓕.WickAlgebra :=
     𝓣(ofFieldOp φ * ofFieldOp ψ) - 𝓝(ofFieldOp φ * ofFieldOp ψ)
 
 lemma timeContract_eq_smul (φ ψ : 𝓕.FieldOp) : timeContract φ ψ =
@@ -79,9 +79,9 @@ lemma timeContract_eq_superCommute (φ ψ : 𝓕.FieldOp) :
     rw [timeContract_of_not_timeOrderRel_expand _ _ h]
 
 /-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, then
-  `timeContract φ ψ` is in the center of `𝓕.FieldOpAlgebra`. -/
+  `timeContract φ ψ` is in the center of `𝓕.WickAlgebra`. -/
 lemma timeContract_mem_center (φ ψ : 𝓕.FieldOp) :
-    timeContract φ ψ ∈ Subalgebra.center ℂ 𝓕.FieldOpAlgebra := by
+    timeContract φ ψ ∈ Subalgebra.center ℂ 𝓕.WickAlgebra := by
   by_cases h : timeOrderRel φ ψ
   · rw [timeContract_of_timeOrderRel _ _ h]
     exact superCommute_anPart_ofFieldOp_mem_center φ ψ
@@ -120,7 +120,7 @@ lemma normalOrder_timeContract (φ ψ : 𝓕.FieldOp) :
     simp
 
 lemma timeOrder_timeContract_eq_time_mid {φ ψ : 𝓕.FieldOp}
-    (h1 : timeOrderRel φ ψ) (h2 : timeOrderRel ψ φ) (a b : 𝓕.FieldOpAlgebra) :
+    (h1 : timeOrderRel φ ψ) (h2 : timeOrderRel ψ φ) (a b : 𝓕.WickAlgebra) :
     𝓣(a * timeContract φ ψ * b) = timeContract φ ψ * 𝓣(a * b) := by
   rw [timeContract_of_timeOrderRel _ _ h1]
   rw [ofFieldOp_eq_sum]
@@ -142,7 +142,7 @@ lemma timeOrder_timeContract_eq_time_mid {φ ψ : 𝓕.FieldOp}
     simp [crAnTimeOrderRel, h2]
 
 lemma timeOrder_timeContract_eq_time_left {φ ψ : 𝓕.FieldOp}
-    (h1 : timeOrderRel φ ψ) (h2 : timeOrderRel ψ φ) (b : 𝓕.FieldOpAlgebra) :
+    (h1 : timeOrderRel φ ψ) (h2 : timeOrderRel ψ φ) (b : 𝓕.WickAlgebra) :
     𝓣(timeContract φ ψ * b) = timeContract φ ψ * 𝓣(b) := by
   trans 𝓣(1 * timeContract φ ψ * b)
   simp only [one_mul]
@@ -210,7 +210,7 @@ lemma timeContract_outAsymp_outAsymp (φ ψ : ((f : Field 𝓕) × AsymptoticLab
   rw [timeContract_eq_superCommute, ← anPart_outAsymp_eq_ofFieldOp, ← anPart_outAsymp_eq_ofFieldOp]
   simp [- anPart_outAsymp]
 
-end FieldOpAlgebra
+end WickAlgebra
 
 end
 end FieldSpecification

@@ -44,7 +44,7 @@ remark naming_convention := "
   For mathematical objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
   may be given to
   their names to indicate that they are related to the free algebra.
-  This is to avoid confusion when working within the context of `FieldOpAlgebra` which is defined
+  This is to avoid confusion when working within the context of `WickAlgebra` which is defined
   as a quotient of `FieldOpFreeAlgebra`."
 
 /-- For a field specification `𝓕`, and a element `φ` of `𝓕.CrAnFieldOp`,

@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.StaticWickTerm
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.StaticWickTerm
 /-!
 
 # Static Wick's theorem
@@ -17,7 +17,7 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open WickContraction
 open FieldStatistic
-namespace FieldOpAlgebra
+namespace WickAlgebra
 
 /--
 For a list `φs` of `𝓕.FieldOp`, the static version of Wick's theorem states that
@@ -66,5 +66,5 @@ theorem static_wick_theorem : (φs : List 𝓕.FieldOp) →
     rw [mul_staticWickTerm_eq_sum]
     rfl
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

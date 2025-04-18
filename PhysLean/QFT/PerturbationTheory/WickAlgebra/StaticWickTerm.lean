@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.WickContractions
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
 import PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
@@ -18,17 +18,17 @@ variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open PhysLean.List
-open FieldOpAlgebra
+open WickAlgebra
 open FieldStatistic
 noncomputable section
 
 /-- For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`, the element
-  of `𝓕.FieldOpAlgebra`, `φsΛ.staticWickTerm` is defined as
+  of `𝓕.WickAlgebra`, `φsΛ.staticWickTerm` is defined as
 
   `φsΛ.sign • φsΛ.staticContract * 𝓝([φsΛ]ᵘᶜ)`.
 
   This is a term which appears in the static version Wick's theorem. -/
-def staticWickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
+def staticWickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.WickAlgebra :=
   φsΛ.sign • φsΛ.staticContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
 /-- For the empty list `[]` of `𝓕.FieldOp`, the `staticWickTerm` of the Wick contraction

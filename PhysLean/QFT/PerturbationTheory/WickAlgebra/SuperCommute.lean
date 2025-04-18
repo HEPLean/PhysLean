@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.TimeOrder
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.Basic
 /-!
 
 # SuperCommute on Field operator algebra
@@ -16,7 +16,7 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 
-namespace FieldOpAlgebra
+namespace WickAlgebra
 variable {𝓕 : FieldSpecification}
 
 lemma ι_superCommuteF_eq_zero_of_ι_right_zero (a b : 𝓕.FieldOpFreeAlgebra) (h : ι b = 0) :
@@ -49,9 +49,9 @@ lemma ι_superCommuteF_eq_of_equiv_right (a b1 b2 : 𝓕.FieldOpFreeAlgebra) (h 
   simp only [LinearMap.mem_ker, ← map_sub]
   exact ι_superCommuteF_right_zero_of_mem_ideal a (b1 - b2) h
 
-/-- The super commutator on the `FieldOpAlgebra` defined as a linear map `[a,_]ₛ`. -/
+/-- The super commutator on the `WickAlgebra` defined as a linear map `[a,_]ₛ`. -/
 noncomputable def superCommuteRight (a : 𝓕.FieldOpFreeAlgebra) :
-  FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+  WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ superCommuteF a)
     (ι_superCommuteF_eq_of_equiv_right a)
   map_add' x y := by
@@ -90,18 +90,18 @@ lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.FieldOpFreeAlgebra) (h : a1 �
 
 /-- For a field specification `𝓕`, `superCommute` is the linear map
 
-  `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+  `WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕`
 
   defined as the descent of `ι ∘ superCommuteF` in both arguments.
-  In particular for `φs` and `φs'` lists of `𝓕.CrAnFieldOp` in `FieldOpAlgebra 𝓕` the following
+  In particular for `φs` and `φs'` lists of `𝓕.CrAnFieldOp` in `WickAlgebra 𝓕` the following
   relation holds:
 
   `superCommute φs φs' = φs * φs' - 𝓢(φs, φs') • φs' * φs`
 
   The notation `[a, b]ₛ` is used for `superCommute a b`.
   -/
-noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
-    FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+noncomputable def superCommute : WickAlgebra 𝓕 →ₗ[ℂ]
+    WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕 where
   toFun := Quotient.lift superCommuteRight superCommuteRight_eq_of_equiv
   map_add' x y := by
     obtain ⟨x, rfl⟩ := ι_surjective x
@@ -123,7 +123,7 @@ noncomputable def superCommute : FieldOpAlgebra 𝓕 →ₗ[ℂ]
     simp
 
 @[inherit_doc superCommute]
-scoped[FieldSpecification.FieldOpAlgebra] notation "[" a "," b "]ₛ" => superCommute a b
+scoped[FieldSpecification.WickAlgebra] notation "[" a "," b "]ₛ" => superCommute a b
 
 lemma superCommute_eq_ι_superCommuteF (a b : 𝓕.FieldOpFreeAlgebra) :
     [ι a, ι b]ₛ = ι [a, b]ₛF := rfl
@@ -136,7 +136,7 @@ lemma superCommute_eq_ι_superCommuteF (a b : 𝓕.FieldOpFreeAlgebra) :
 
 /-!
 
-## Properties from the definition of FieldOpAlgebra
+## Properties from the definition of WickAlgebra
 
 -/
 
@@ -180,34 +180,34 @@ lemma superCommute_anPart_ofFieldOpF_diff_grade_zero (φ ψ : 𝓕.FieldOp)
     simpa [crAnStatistics] using h
 
 lemma superCommute_ofCrAnOp_ofCrAnOp_mem_center (φ φ' : 𝓕.CrAnFieldOp) :
-    [ofCrAnOp φ, ofCrAnOp φ']ₛ ∈ Subalgebra.center ℂ (FieldOpAlgebra 𝓕) := by
+    [ofCrAnOp φ, ofCrAnOp φ']ₛ ∈ Subalgebra.center ℂ (WickAlgebra 𝓕) := by
   rw [ofCrAnOp, ofCrAnOp, superCommute_eq_ι_superCommuteF]
   exact ι_superCommuteF_ofCrAnOpF_ofCrAnOpF_mem_center φ φ'
 
 lemma superCommute_ofCrAnOp_ofCrAnOp_commute (φ φ' : 𝓕.CrAnFieldOp)
-    (a : FieldOpAlgebra 𝓕) :
+    (a : WickAlgebra 𝓕) :
     a * [ofCrAnOp φ, ofCrAnOp φ']ₛ = [ofCrAnOp φ, ofCrAnOp φ']ₛ * a := by
   have h1 := superCommute_ofCrAnOp_ofCrAnOp_mem_center φ φ'
   rw [@Subalgebra.mem_center_iff] at h1
   exact h1 a
 
 lemma superCommute_ofCrAnOp_ofFieldOp_mem_center (φ : 𝓕.CrAnFieldOp) (φ' : 𝓕.FieldOp) :
-    [ofCrAnOp φ, ofFieldOp φ']ₛ ∈ Subalgebra.center ℂ (FieldOpAlgebra 𝓕) := by
+    [ofCrAnOp φ, ofFieldOp φ']ₛ ∈ Subalgebra.center ℂ (WickAlgebra 𝓕) := by
   rw [ofFieldOp_eq_sum]
   simp only [map_sum]
-  refine Subalgebra.sum_mem (Subalgebra.center ℂ 𝓕.FieldOpAlgebra) ?_
+  refine Subalgebra.sum_mem (Subalgebra.center ℂ 𝓕.WickAlgebra) ?_
   intro x hx
   exact superCommute_ofCrAnOp_ofCrAnOp_mem_center φ ⟨φ', x⟩
 
 lemma superCommute_ofCrAnOp_ofFieldOp_commute (φ : 𝓕.CrAnFieldOp) (φ' : 𝓕.FieldOp)
-    (a : FieldOpAlgebra 𝓕) : a * [ofCrAnOp φ, ofFieldOp φ']ₛ =
+    (a : WickAlgebra 𝓕) : a * [ofCrAnOp φ, ofFieldOp φ']ₛ =
     [ofCrAnOp φ, ofFieldOp φ']ₛ * a := by
   have h1 := superCommute_ofCrAnOp_ofFieldOp_mem_center φ φ'
   rw [@Subalgebra.mem_center_iff] at h1
   exact h1 a
 
 lemma superCommute_anPart_ofFieldOp_mem_center (φ φ' : 𝓕.FieldOp) :
-    [anPart φ, ofFieldOp φ']ₛ ∈ Subalgebra.center ℂ (FieldOpAlgebra 𝓕) := by
+    [anPart φ, ofFieldOp φ']ₛ ∈ Subalgebra.center ℂ (WickAlgebra 𝓕) := by
   match φ with
   | FieldOp.inAsymp _ =>
     simp only [anPart_inAsymp, map_zero, LinearMap.zero_apply]
@@ -524,5 +524,5 @@ lemma superCommute_ofCrAnOp_ofFieldOpList_eq_sum (φ : 𝓕.CrAnFieldOp) (φs' :
   congr
   exact Eq.symm (List.eraseIdx_eq_take_drop_succ φs' ↑n)
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

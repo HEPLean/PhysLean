@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.TimeOrder
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.SuperCommute
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.SuperCommute
 /-!
 
 # Time Ordering on Field operator algebra
@@ -16,7 +16,7 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 
-namespace FieldOpAlgebra
+namespace WickAlgebra
 variable {𝓕 : FieldSpecification}
 
 lemma ι_timeOrderF_superCommuteF_superCommuteF_eq_time_ofCrAnListF {φ1 φ2 φ3 : 𝓕.CrAnFieldOp}
@@ -243,7 +243,7 @@ lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnFieldOp}
         simp
       rw [h1]
       have hc : ι ((superCommuteF (ofCrAnOpF φ)) (ofCrAnOpF ψ)) ∈
-          Subalgebra.center ℂ 𝓕.FieldOpAlgebra := by
+          Subalgebra.center ℂ 𝓕.WickAlgebra := by
         apply ι_superCommuteF_ofCrAnOpF_ofCrAnOpF_mem_center
       rw [Subalgebra.mem_center_iff] at hc
       repeat rw [← mul_assoc]
@@ -369,14 +369,14 @@ lemma ι_timeOrderF_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) :
 
 /-- For a field specification `𝓕`, `timeOrder` is the linear map
 
-`FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+`WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕`
 
-defined as the descent of `ι ∘ₗ timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕` from
-`FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
+defined as the descent of `ι ∘ₗ timeOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕` from
+`FieldOpFreeAlgebra 𝓕` to `WickAlgebra 𝓕`.
 This descent exists because `ι ∘ₗ timeOrderF` is well-defined on equivalence classes.
 
 The notation `𝓣(a)` is used for `timeOrder a`. -/
-noncomputable def timeOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+noncomputable def timeOrder : WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ timeOrderF) ι_timeOrderF_eq_of_equiv
   map_add' x y := by
     obtain ⟨x, hx⟩ := ι_surjective x
@@ -392,7 +392,7 @@ noncomputable def timeOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra �
     simp
 
 @[inherit_doc timeOrder]
-scoped[FieldSpecification.FieldOpAlgebra] notation "𝓣(" a ")" => timeOrder a
+scoped[FieldSpecification.WickAlgebra] notation "𝓣(" a ")" => timeOrder a
 
 /-!
 
@@ -446,7 +446,7 @@ lemma timeOrder_eq_maxTimeField_mul_finset (φ : 𝓕.FieldOp) (φs : List 𝓕.
   rfl
 
 lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnFieldOp}
-    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.FieldOpAlgebra) :
+    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (a b : 𝓕.WickAlgebra) :
     𝓣(a * [ofCrAnOp φ, ofCrAnOp ψ]ₛ * b) =
     [ofCrAnOp φ, ofCrAnOp ψ]ₛ * 𝓣(a * b) := by
   rw [ofCrAnOp, ofCrAnOp]
@@ -460,7 +460,7 @@ lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnFieldOp}
   · simp_all
 
 lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnFieldOp}
-    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (b : 𝓕.FieldOpAlgebra) :
+    (hφψ : crAnTimeOrderRel φ ψ) (hψφ : crAnTimeOrderRel ψ φ) (b : 𝓕.WickAlgebra) :
     𝓣([ofCrAnOp φ, ofCrAnOp ψ]ₛ * b) =
     [ofCrAnOp φ, ofCrAnOp ψ]ₛ * 𝓣(b) := by
   trans 𝓣(1 * [ofCrAnOp φ, ofCrAnOp ψ]ₛ * b)
@@ -498,9 +498,9 @@ lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.FieldOp}
     apply timeOrder_superCommute_neq_time
     simp_all [crAnTimeOrderRel]
 
-/-- For a field specification `𝓕`, and `a`, `b`, `c` in `𝓕.FieldOpAlgebra`, then
+/-- For a field specification `𝓕`, and `a`, `b`, `c` in `𝓕.WickAlgebra`, then
   `𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c)`. -/
-lemma timeOrder_timeOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
+lemma timeOrder_timeOrder_mid (a b c : 𝓕.WickAlgebra) :
     𝓣(a * b * c) = 𝓣(a * 𝓣(b) * c) := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -508,14 +508,14 @@ lemma timeOrder_timeOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
   rw [← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrder_eq_ι_timeOrderF,
   ← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF, timeOrderF_timeOrderF_mid]
 
-lemma timeOrder_timeOrder_left (b c : 𝓕.FieldOpAlgebra) :
+lemma timeOrder_timeOrder_left (b c : 𝓕.WickAlgebra) :
     𝓣(b * c) = 𝓣(𝓣(b) * c) := by
   trans 𝓣(1 * b * c)
   simp only [one_mul]
   rw [timeOrder_timeOrder_mid]
   simp
 
-lemma timeOrder_timeOrder_right (a b : 𝓕.FieldOpAlgebra) :
+lemma timeOrder_timeOrder_right (a b : 𝓕.WickAlgebra) :
     𝓣(a * b) = 𝓣(a * 𝓣(b)) := by
   trans 𝓣(a * b * 1)
   simp only [mul_one]
@@ -523,12 +523,12 @@ lemma timeOrder_timeOrder_right (a b : 𝓕.FieldOpAlgebra) :
   simp
 
 /-- Time ordering is a projection. -/
-lemma timeOrder_timeOrder (a : 𝓕.FieldOpAlgebra) :
+lemma timeOrder_timeOrder (a : 𝓕.WickAlgebra) :
     𝓣(𝓣(a)) = 𝓣(a) := by
   trans 𝓣(𝓣(a) * 1)
   · simp
   · rw [← timeOrder_timeOrder_left]
     simp
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

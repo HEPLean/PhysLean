@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.Basic
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.Basic
 /-!
 
 # Grading on the field operation algebra
@@ -15,11 +15,11 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 
-namespace FieldOpAlgebra
+namespace WickAlgebra
 variable {𝓕 : FieldSpecification}
 
-/-- The submodule of `𝓕.FieldOpAlgebra` spanned by lists of field statistic `f`. -/
-def statSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.FieldOpAlgebra :=
+/-- The submodule of `𝓕.WickAlgebra` spanned by lists of field statistic `f`. -/
+def statSubmodule (f : FieldStatistic) : Submodule ℂ 𝓕.WickAlgebra :=
   Submodule.span ℂ {a | ∃ φs, a = ofCrAnList φs ∧ (𝓕 |>ₛ φs) = f}
 
 lemma ofCrAnList_mem_statSubmodule_of_eq (φs : List 𝓕.CrAnFieldOp) (f : FieldStatistic)
@@ -115,8 +115,8 @@ lemma bosonicProjFree_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) 
   simp only [LinearMap.mem_ker, ← map_sub]
   exact bosonicProjFree_zero_of_ι_zero (a - b) h
 
-/-- The projection of `𝓕.FieldOpAlgebra` to `statSubmodule (𝓕 := 𝓕) bosonic`. -/
-def bosonicProj : 𝓕.FieldOpAlgebra →ₗ[ℂ] statSubmodule (𝓕 := 𝓕) bosonic where
+/-- The projection of `𝓕.WickAlgebra` to `statSubmodule (𝓕 := 𝓕) bosonic`. -/
+def bosonicProj : 𝓕.WickAlgebra →ₗ[ℂ] statSubmodule (𝓕 := 𝓕) bosonic where
   toFun := Quotient.lift bosonicProjFree bosonicProjFree_eq_of_equiv
   map_add' x y := by
     obtain ⟨x, hx⟩ := ι_surjective x
@@ -161,8 +161,8 @@ lemma fermionicProjFree_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b
   simp only [LinearMap.mem_ker, ← map_sub]
   exact fermionicProjFree_zero_of_ι_zero (a - b) h
 
-/-- The projection of `𝓕.FieldOpAlgebra` to `statSubmodule (𝓕 := 𝓕) fermionic`. -/
-def fermionicProj : 𝓕.FieldOpAlgebra →ₗ[ℂ] statSubmodule (𝓕 := 𝓕) fermionic where
+/-- The projection of `𝓕.WickAlgebra` to `statSubmodule (𝓕 := 𝓕) fermionic`. -/
+def fermionicProj : 𝓕.WickAlgebra →ₗ[ℂ] statSubmodule (𝓕 := 𝓕) fermionic where
   toFun := Quotient.lift fermionicProjFree fermionicProjFree_eq_of_equiv
   map_add' x y := by
     obtain ⟨x, hx⟩ := ι_surjective x
@@ -186,16 +186,16 @@ lemma fermionicProj_eq_fermionicProjFree (a : 𝓕.FieldOpFreeAlgebra) :
 
 -/
 
-lemma bosonicProj_add_fermionicProj (a : 𝓕.FieldOpAlgebra) :
+lemma bosonicProj_add_fermionicProj (a : 𝓕.WickAlgebra) :
     bosonicProj a + (fermionicProj a).1 = a := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   rw [fermionicProj_eq_fermionicProjFree, bosonicProj_eq_bosonicProjFree]
   rw [bosonicProjFree_eq_ι_bosonicProjF, fermionicProjFree_eq_ι_fermionicProjF]
   rw [← map_add, bosonicProjF_add_fermionicProjF]
 
-lemma bosonicProj_mem_bosonic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubmodule .bosonic) :
+lemma bosonicProj_mem_bosonic (a : 𝓕.WickAlgebra) (ha : a ∈ statSubmodule .bosonic) :
     bosonicProj a = ⟨a, ha⟩ := by
-  let p (a : 𝓕.FieldOpAlgebra) (hx : a ∈ statSubmodule bosonic) : Prop :=
+  let p (a : 𝓕.WickAlgebra) (hx : a ∈ statSubmodule bosonic) : Prop :=
     (bosonicProj a) = ⟨a, hx⟩
   change p a ha
   apply Submodule.span_induction
@@ -216,9 +216,9 @@ lemma bosonicProj_mem_bosonic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubmodul
   · intro a x hx hy
     simp_all [p]
 
-lemma fermionicProj_mem_fermionic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubmodule .fermionic) :
+lemma fermionicProj_mem_fermionic (a : 𝓕.WickAlgebra) (ha : a ∈ statSubmodule .fermionic) :
     fermionicProj a = ⟨a, ha⟩ := by
-  let p (a : 𝓕.FieldOpAlgebra) (hx : a ∈ statSubmodule fermionic) : Prop :=
+  let p (a : 𝓕.WickAlgebra) (hx : a ∈ statSubmodule fermionic) : Prop :=
     (fermionicProj a) = ⟨a, hx⟩
   change p a ha
   apply Submodule.span_induction
@@ -239,19 +239,19 @@ lemma fermionicProj_mem_fermionic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubm
   · intro a x hx hy
     simp_all [p]
 
-lemma bosonicProj_mem_fermionic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubmodule .fermionic) :
+lemma bosonicProj_mem_fermionic (a : 𝓕.WickAlgebra) (ha : a ∈ statSubmodule .fermionic) :
     bosonicProj a = 0 := by
   have h := bosonicProj_add_fermionicProj a
   rw [fermionicProj_mem_fermionic a ha] at h
   simpa using h
 
-lemma fermionicProj_mem_bosonic (a : 𝓕.FieldOpAlgebra) (ha : a ∈ statSubmodule .bosonic) :
+lemma fermionicProj_mem_bosonic (a : 𝓕.WickAlgebra) (ha : a ∈ statSubmodule .bosonic) :
     fermionicProj a = 0 := by
   have h := bosonicProj_add_fermionicProj a
   rw [bosonicProj_mem_bosonic a ha] at h
   simpa using h
 
-lemma mem_bosonic_iff_fermionicProj_eq_zero (a : 𝓕.FieldOpAlgebra) :
+lemma mem_bosonic_iff_fermionicProj_eq_zero (a : 𝓕.WickAlgebra) :
     a ∈ statSubmodule bosonic ↔ fermionicProj a = 0 := by
   apply Iff.intro
   · intro h
@@ -263,7 +263,7 @@ lemma mem_bosonic_iff_fermionicProj_eq_zero (a : 𝓕.FieldOpAlgebra) :
     rw [← ha]
     exact (bosonicProj a).2
 
-lemma mem_fermionic_iff_bosonicProj_eq_zero (a : 𝓕.FieldOpAlgebra) :
+lemma mem_fermionic_iff_bosonicProj_eq_zero (a : 𝓕.WickAlgebra) :
     a ∈ statSubmodule fermionic ↔ bosonicProj a = 0 := by
   apply Iff.intro
   · intro h
@@ -275,7 +275,7 @@ lemma mem_fermionic_iff_bosonicProj_eq_zero (a : 𝓕.FieldOpAlgebra) :
     rw [← ha]
     exact (fermionicProj a).2
 
-lemma eq_zero_of_bosonic_and_fermionic {a : 𝓕.FieldOpAlgebra}
+lemma eq_zero_of_bosonic_and_fermionic {a : 𝓕.WickAlgebra}
     (hb : a ∈ statSubmodule bosonic) (hf : a ∈ statSubmodule fermionic) : a = 0 := by
   have ha := bosonicProj_mem_bosonic a hb
   have hb := fermionicProj_mem_fermionic a hf
@@ -284,24 +284,24 @@ lemma eq_zero_of_bosonic_and_fermionic {a : 𝓕.FieldOpAlgebra}
   simpa using hc
 
 @[simp]
-lemma bosonicProj_fermionicProj_eq_zero (a : 𝓕.FieldOpAlgebra) :
+lemma bosonicProj_fermionicProj_eq_zero (a : 𝓕.WickAlgebra) :
     bosonicProj (fermionicProj a).1 = 0 := by
   apply bosonicProj_mem_fermionic
   exact Submodule.coe_mem (fermionicProj a)
 
 @[simp]
-lemma fermionicProj_bosonicProj_eq_zero (a : 𝓕.FieldOpAlgebra) :
+lemma fermionicProj_bosonicProj_eq_zero (a : 𝓕.WickAlgebra) :
     fermionicProj (bosonicProj a).1 = 0 := by
   apply fermionicProj_mem_bosonic
   exact Submodule.coe_mem (bosonicProj a)
 
 @[simp]
-lemma bosonicProj_bosonicProj_eq_bosonicProj (a : 𝓕.FieldOpAlgebra) :
+lemma bosonicProj_bosonicProj_eq_bosonicProj (a : 𝓕.WickAlgebra) :
     bosonicProj (bosonicProj a).1 = bosonicProj a := by
   apply bosonicProj_mem_bosonic
 
 @[simp]
-lemma fermionicProj_fermionicProj_eq_fermionicProj (a : 𝓕.FieldOpAlgebra) :
+lemma fermionicProj_fermionicProj_eq_fermionicProj (a : 𝓕.WickAlgebra) :
     fermionicProj (fermionicProj a).1 = fermionicProj a := by
   apply fermionicProj_mem_fermionic
 
@@ -383,12 +383,12 @@ lemma directSum_eq_bosonic_plus_fermionic
     conv_lhs => rw [hx, hy]
     abel
 
-/-- For a field statistic `𝓕`, the algebra `𝓕.FieldOpAlgebra` is graded by `FieldStatistic`.
+/-- For a field statistic `𝓕`, the algebra `𝓕.WickAlgebra` is graded by `FieldStatistic`.
   Those `ofCrAnList φs` for which `φs` has an overall `bosonic` statistic
   (i.e. `𝓕 |>ₛ φs = bosonic`) span `bosonic`
   submodule, whilst those `ofCrAnList φs` for which `φs` has an overall `fermionic` statistic
   (i.e. `𝓕 |>ₛ φs = fermionic`) span the `fermionic` submodule. -/
-instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubmodule where
+instance WickAlgebraGrade : GradedAlgebra (A := 𝓕.WickAlgebra) statSubmodule where
   one_mem := by
     simp only [statSubmodule]
     refine Submodule.mem_span.mpr fun p a => a ?_
@@ -397,7 +397,7 @@ instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubm
     simp only [ofCrAnList, ofCrAnListF_nil, map_one, ofList_empty, true_and]
     rfl
   mul_mem f1 f2 a1 a2 h1 h2 := by
-    let p (a2 : 𝓕.FieldOpAlgebra) (hx : a2 ∈ statSubmodule f2) : Prop :=
+    let p (a2 : 𝓕.WickAlgebra) (hx : a2 ∈ statSubmodule f2) : Prop :=
       a1 * a2 ∈ statSubmodule (f1 + f2)
     change p a2 h2
     apply Submodule.span_induction
@@ -405,7 +405,7 @@ instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubm
       simp only [Set.mem_setOf_eq] at hx
       obtain ⟨φs, rfl, h⟩ := hx
       simp only [p]
-      let p (a1 : 𝓕.FieldOpAlgebra) (hx : a1 ∈ statSubmodule f1) : Prop :=
+      let p (a1 : 𝓕.WickAlgebra) (hx : a1 ∈ statSubmodule f1) : Prop :=
         a1 * ofCrAnList φs ∈ statSubmodule (f1 + f2)
       change p a1 h1
       apply Submodule.span_induction (p := p)
@@ -447,5 +447,5 @@ instance fieldOpAlgebraGrade : GradedAlgebra (A := 𝓕.FieldOpAlgebra) statSubm
     conv_rhs => rw [directSum_eq_bosonic_plus_fermionic a]
 
 end
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

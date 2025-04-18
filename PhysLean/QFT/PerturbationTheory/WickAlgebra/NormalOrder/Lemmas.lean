@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.Basic
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.Basic
 /-!
 
 # Basic properties of normal ordering
@@ -15,7 +15,7 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 
-namespace FieldOpAlgebra
+namespace WickAlgebra
 variable {𝓕 : FieldSpecification}
 
 /-!
@@ -58,7 +58,7 @@ lemma ofCrAnList_eq_normalOrder (φs : List 𝓕.CrAnFieldOp) :
   rw [normalOrder_ofCrAnList, smul_smul, normalOrderSign, Wick.koszulSign_mul_self,
     one_smul]
 
-lemma normalOrder_normalOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
+lemma normalOrder_normalOrder_mid (a b c : 𝓕.WickAlgebra) :
     𝓝(a * b * c) = 𝓝(a * 𝓝(b) * c) := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -69,7 +69,7 @@ lemma normalOrder_normalOrder_mid (a b c : 𝓕.FieldOpAlgebra) :
   rw [normalOrderF_normalOrderF_mid]
   rfl
 
-lemma normalOrder_normalOrder_left (a b : 𝓕.FieldOpAlgebra) :
+lemma normalOrder_normalOrder_left (a b : 𝓕.WickAlgebra) :
     𝓝(a * b) = 𝓝(𝓝(a) * b) := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -79,7 +79,7 @@ lemma normalOrder_normalOrder_left (a b : 𝓕.FieldOpAlgebra) :
   rw [normalOrderF_normalOrderF_left]
   rfl
 
-lemma normalOrder_normalOrder_right (a b : 𝓕.FieldOpAlgebra) :
+lemma normalOrder_normalOrder_right (a b : 𝓕.WickAlgebra) :
     𝓝(a * b) = 𝓝(a * 𝓝(b)) := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -89,7 +89,7 @@ lemma normalOrder_normalOrder_right (a b : 𝓕.FieldOpAlgebra) :
   rw [normalOrderF_normalOrderF_right]
   rfl
 
-lemma normalOrder_normalOrder (a : 𝓕.FieldOpAlgebra) : 𝓝(𝓝(a)) = 𝓝(a) := by
+lemma normalOrder_normalOrder (a : 𝓕.WickAlgebra) : 𝓝(𝓝(a)) = 𝓝(a) := by
   trans 𝓝(𝓝(a) * 1)
   · simp
   · rw [← normalOrder_normalOrder_left]
@@ -100,13 +100,13 @@ lemma normalOrder_normalOrder (a : 𝓕.FieldOpAlgebra) : 𝓝(𝓝(a)) = 𝓝(a
 ## mul anpart and crpart
 -/
 
-lemma normalOrder_mul_anPart (φ : 𝓕.FieldOp) (a : 𝓕.FieldOpAlgebra) :
+lemma normalOrder_mul_anPart (φ : 𝓕.FieldOp) (a : 𝓕.WickAlgebra) :
     𝓝(a * anPart φ) = 𝓝(a) * anPart φ := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   rw [anPart, ← map_mul, normalOrder_eq_ι_normalOrderF, normalOrderF_mul_anPartF]
   rfl
 
-lemma crPart_mul_normalOrder (φ : 𝓕.FieldOp) (a : 𝓕.FieldOpAlgebra) :
+lemma crPart_mul_normalOrder (φ : 𝓕.FieldOp) (a : 𝓕.WickAlgebra) :
     𝓝(crPart φ * a) = crPart φ * 𝓝(a) := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   rw [crPart, ← map_mul, normalOrder_eq_ι_normalOrderF, normalOrderF_crPartF_mul]
@@ -118,10 +118,10 @@ lemma crPart_mul_normalOrder (φ : 𝓕.FieldOp) (a : 𝓕.FieldOpAlgebra) :
 
 -/
 
-/-- For a field specification `𝓕`, and `a` and `b` in `𝓕.FieldOpAlgebra` the normal ordering
+/-- For a field specification `𝓕`, and `a` and `b` in `𝓕.WickAlgebra` the normal ordering
   of the super commutator of `a` and `b` vanishes, i.e. `𝓝([a,b]ₛ) = 0`. -/
 @[simp]
-lemma normalOrder_superCommute_eq_zero (a b : 𝓕.FieldOpAlgebra) :
+lemma normalOrder_superCommute_eq_zero (a b : 𝓕.WickAlgebra) :
     𝓝([a, b]ₛ) = 0 := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -129,7 +129,7 @@ lemma normalOrder_superCommute_eq_zero (a b : 𝓕.FieldOpAlgebra) :
   simp
 
 @[simp]
-lemma normalOrder_superCommute_left_eq_zero (a b c: 𝓕.FieldOpAlgebra) :
+lemma normalOrder_superCommute_left_eq_zero (a b c: 𝓕.WickAlgebra) :
     𝓝([a, b]ₛ * c) = 0 := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -138,7 +138,7 @@ lemma normalOrder_superCommute_left_eq_zero (a b c: 𝓕.FieldOpAlgebra) :
   simp
 
 @[simp]
-lemma normalOrder_superCommute_right_eq_zero (a b c: 𝓕.FieldOpAlgebra) :
+lemma normalOrder_superCommute_right_eq_zero (a b c: 𝓕.WickAlgebra) :
     𝓝(c * [a, b]ₛ) = 0 := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -147,7 +147,7 @@ lemma normalOrder_superCommute_right_eq_zero (a b c: 𝓕.FieldOpAlgebra) :
   simp
 
 @[simp]
-lemma normalOrder_superCommute_mid_eq_zero (a b c d : 𝓕.FieldOpAlgebra) :
+lemma normalOrder_superCommute_mid_eq_zero (a b c d : 𝓕.WickAlgebra) :
     𝓝(a * [c, d]ₛ * b) = 0 := by
   obtain ⟨a, rfl⟩ := ι_surjective a
   obtain ⟨b, rfl⟩ := ι_surjective b
@@ -230,7 +230,7 @@ The proof of this result ultimately goes as follows
 - `superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum` is used to rewrite the super commutator of `φ`
   (considered as a list with one element) with
   `ofCrAnList φsn` as a sum of super commutators, one for each element of `φsn`.
-- The fact that super-commutators are in the center of `𝓕.FieldOpAlgebra` is used to rearrange
+- The fact that super-commutators are in the center of `𝓕.WickAlgebra` is used to rearrange
   terms.
 - Properties of ordered lists, and `normalOrderSign_eraseIdx` are then used to complete the proof.
 -/
@@ -339,7 +339,7 @@ lemma ofFieldOp_mul_normalOrder_ofFieldOpList_eq_superCommute (φ : 𝓕.FieldOp
 /-- In the expansion of `ofFieldOpF φ * normalOrderF (ofFieldOpListF φs)` the element
   of `𝓞.A` associated with contracting `φ` with the (optional) `n`th element of `φs`. -/
 noncomputable def contractStateAtIndex (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
-    (n : Option (Fin φs.length)) : 𝓕.FieldOpAlgebra :=
+    (n : Option (Fin φs.length)) : 𝓕.WickAlgebra :=
   match n with
   | none => 1
   | some n => 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ (φs.take n)) • [anPart φ, ofFieldOp φs[n]]ₛ
@@ -436,5 +436,5 @@ lemma normalOrder_ofFieldOp_mul_ofFieldOp (φ φ' : 𝓕.FieldOp) : 𝓝(ofField
     normalOrderF_ofFieldOpF_mul_ofFieldOpF]
   rfl
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

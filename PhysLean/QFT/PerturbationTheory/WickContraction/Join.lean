@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
 import PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.TimeContraction
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeContraction
 import PhysLean.QFT.PerturbationTheory.WickContraction.SubContraction
 import PhysLean.QFT.PerturbationTheory.WickContraction.Singleton
 
@@ -21,7 +21,7 @@ variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open PhysLean.List
-open FieldOpAlgebra
+open WickAlgebra
 
 /-- Given a list `φs` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs` and a Wick contraction
   `φsucΛ` of `[φsΛ]ᵘᶜ`, `join φsΛ φsucΛ` is defined as the Wick contraction of `φs` consisting of

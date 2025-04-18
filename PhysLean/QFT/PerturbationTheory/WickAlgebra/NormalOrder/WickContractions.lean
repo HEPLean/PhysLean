@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.Lemmas
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.Lemmas
 import PhysLean.QFT.PerturbationTheory.WickContraction.InsertAndContract
 /-!
 
@@ -16,7 +16,7 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 open WickContraction
-namespace FieldOpAlgebra
+namespace WickAlgebra
 variable {𝓕 : FieldSpecification}
 
 /-!
@@ -120,5 +120,5 @@ lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
   congr
   conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

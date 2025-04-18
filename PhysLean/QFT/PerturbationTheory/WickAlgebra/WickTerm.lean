@@ -7,7 +7,7 @@ import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Basic
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
 import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.NormalOrder.WickContractions
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.WickContractions
 /-!
 
 # Wick term
@@ -20,17 +20,17 @@ variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open PhysLean.List
-open FieldOpAlgebra
+open WickAlgebra
 open FieldStatistic
 noncomputable section
 
 /-- For a list `φs` of `𝓕.FieldOp`, and a Wick contraction `φsΛ` of `φs`, the element
-  of `𝓕.FieldOpAlgebra`, `φsΛ.wickTerm` is defined as
+  of `𝓕.WickAlgebra`, `φsΛ.wickTerm` is defined as
 
   `φsΛ.sign • φsΛ.timeContract * 𝓝([φsΛ]ᵘᶜ)`.
 
   This is a term which appears in the Wick's theorem. -/
-def wickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.FieldOpAlgebra :=
+def wickTerm {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) : 𝓕.WickAlgebra :=
   φsΛ.sign • φsΛ.timeContract * 𝓝(ofFieldOpList [φsΛ]ᵘᶜ)
 
 /-- For the empty list `[]` of `𝓕.FieldOp`, the `wickTerm` of the Wick contraction

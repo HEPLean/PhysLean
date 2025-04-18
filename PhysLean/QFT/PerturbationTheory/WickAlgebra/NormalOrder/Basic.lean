@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.NormalOrder
-import PhysLean.QFT.PerturbationTheory.FieldOpAlgebra.SuperCommute
+import PhysLean.QFT.PerturbationTheory.WickAlgebra.SuperCommute
 /-!
 
 # Normal Ordering on Field operator algebra
@@ -16,7 +16,7 @@ open FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 
-namespace FieldOpAlgebra
+namespace WickAlgebra
 variable {𝓕 : FieldSpecification}
 
 /-!
@@ -221,14 +221,14 @@ lemma ι_normalOrderF_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) 
 
 /-- For a field specification `𝓕`, `normalOrder` is the linear map
 
-  `FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
+  `WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕`
 
-  defined as the descent of `ι ∘ₗ normalOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕`
-  from `FieldOpFreeAlgebra 𝓕` to `FieldOpAlgebra 𝓕`.
+  defined as the descent of `ι ∘ₗ normalOrderF : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕`
+  from `FieldOpFreeAlgebra 𝓕` to `WickAlgebra 𝓕`.
   This descent exists because `ι ∘ₗ normalOrderF` is well-defined on equivalence classes.
 
-  The notation `𝓝(a)` is used for `normalOrder a` for `a` an element of `FieldOpAlgebra 𝓕`. -/
-noncomputable def normalOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra 𝓕 where
+  The notation `𝓝(a)` is used for `normalOrder a` for `a` an element of `WickAlgebra 𝓕`. -/
+noncomputable def normalOrder : WickAlgebra 𝓕 →ₗ[ℂ] WickAlgebra 𝓕 where
   toFun := Quotient.lift (ι.toLinearMap ∘ₗ normalOrderF) ι_normalOrderF_eq_of_equiv
   map_add' x y := by
     obtain ⟨x, rfl⟩ := ι_surjective x
@@ -242,7 +242,7 @@ noncomputable def normalOrder : FieldOpAlgebra 𝓕 →ₗ[ℂ] FieldOpAlgebra �
     simp
 
 @[inherit_doc normalOrder]
-scoped[FieldSpecification.FieldOpAlgebra] notation "𝓝(" a ")" => normalOrder a
+scoped[FieldSpecification.WickAlgebra] notation "𝓝(" a ")" => normalOrder a
 
-end FieldOpAlgebra
+end WickAlgebra
 end FieldSpecification

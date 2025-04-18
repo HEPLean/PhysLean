@@ -16,7 +16,7 @@ variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open PhysLean.List
-open FieldOpAlgebra
+open WickAlgebra
 
 open FieldStatistic
 

@@ -16,7 +16,7 @@ variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open PhysLean.List
-open FieldOpAlgebra
+open WickAlgebra
 
 /-- The condition on a Wick contraction which is true iff and only if every contraction
   is between two fields of equal time. -/
@@ -166,7 +166,7 @@ lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : W
 
 lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
-    (hl : φsΛ.EqTimeOnly) (a b: 𝓕.FieldOpAlgebra) : (n : ℕ) → (hn : φsΛ.1.card = n) →
+    (hl : φsΛ.EqTimeOnly) (a b: 𝓕.WickAlgebra) : (n : ℕ) → (hn : φsΛ.1.card = n) →
     𝓣(a * φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(a * b)
   | 0, hn => by
     rw [@card_zero_iff_empty] at hn
@@ -178,7 +178,7 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction {φs : List 𝓕.Fi
     rw [join_timeContract]
     rw [singleton_timeContract]
     simp only [Fin.getElem_fin, MulMemClass.coe_mul]
-    trans timeOrder (a * FieldOpAlgebra.timeContract φs[↑i] φs[↑j] * (φsucΛ.timeContract.1 * b))
+    trans timeOrder (a * WickAlgebra.timeContract φs[↑i] φs[↑j] * (φsucΛ.timeContract.1 * b))
     simp only [mul_assoc, Fin.getElem_fin]
     rw [timeOrder_timeContract_eq_time_mid]
     have ih := timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction φsucΛ h3 a b n (by omega)
@@ -189,19 +189,19 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction {φs : List 𝓕.Fi
 
 lemma timeOrder_timeContract_mul_of_eqTimeOnly_mid {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
-    (hl : φsΛ.EqTimeOnly) (a b : 𝓕.FieldOpAlgebra) :
+    (hl : φsΛ.EqTimeOnly) (a b : 𝓕.WickAlgebra) :
     𝓣(a * φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(a * b) := by
   exact timeOrder_timeContract_mul_of_eqTimeOnly_mid_induction φsΛ hl a b φsΛ.1.card rfl
 
 /-- Let `φs` be a list of `𝓕.FieldOp`, `φsΛ` a `WickContraction` of `φs` within
   which every contraction involves two `𝓕.FieldOp`s that have the same time and
-  `b` a general element in `𝓕.FieldOpAlgebra`. Then
+  `b` a general element in `𝓕.WickAlgebra`. Then
   `𝓣(φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(b)`.
 
-  This follows from properties of orderings and the ideal defining `𝓕.FieldOpAlgebra`. -/
+  This follows from properties of orderings and the ideal defining `𝓕.WickAlgebra`. -/
 lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length)
-    (hl : φsΛ.EqTimeOnly) (b : 𝓕.FieldOpAlgebra) :
+    (hl : φsΛ.EqTimeOnly) (b : 𝓕.WickAlgebra) :
     𝓣(φsΛ.timeContract.1 * b) = φsΛ.timeContract.1 * 𝓣(b) := by
   trans 𝓣(1 * φsΛ.timeContract.1 * b)
   simp only [one_mul]
