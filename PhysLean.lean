@@ -244,4 +244,5 @@ import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.Basic
 import PhysLean.StringTheory.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
+import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.Thermodynamics.Basic
