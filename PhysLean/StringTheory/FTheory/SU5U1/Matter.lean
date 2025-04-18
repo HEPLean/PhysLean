@@ -15,9 +15,14 @@ with an additional U(1) symmetry.
 
 ## References
 
-Krippendorf, Schafer-Nameki and Wong.
-Froggatt-Nielson meets Mordell-Weil: A Phenomenological Survey of Global F-theory GUTs with U(1)s
-<https://arxiv.org/pdf/1507.05961>.
+  Krippendorf, Schafer-Nameki and Wong.
+  Froggatt-Nielson meets Mordell-Weil: A Phenomenological Survey of Global F-theory GUTs with U(1)s
+  <https://arxiv.org/pdf/1507.05961>.
+
+For conditions placed on the matter content, see:
+  Krippendorf, Peña, Oehlmann, Ruehle.
+  Rational F-theory GUTs without exotics
+  <https://arxiv.org/pdf/1401.5084>.
 
 -/
 namespace FTheory
