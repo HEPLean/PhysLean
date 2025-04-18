@@ -90,9 +90,6 @@ import PhysLean.QFT.AnomalyCancellation.Basic
 import PhysLean.QFT.AnomalyCancellation.GroupActions
 import PhysLean.QFT.PerturbationTheory.CreateAnnihilate
 import PhysLean.QFT.PerturbationTheory.FeynmanDiagrams.Basic
-import PhysLean.QFT.PerturbationTheory.FeynmanDiagrams.Instances.ComplexScalar
-import PhysLean.QFT.PerturbationTheory.FeynmanDiagrams.Instances.Phi4
-import PhysLean.QFT.PerturbationTheory.FeynmanDiagrams.Momentum
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Grading
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.NormTimeOrder
