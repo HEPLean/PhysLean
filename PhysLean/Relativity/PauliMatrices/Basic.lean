@@ -93,30 +93,7 @@ lemma pauliContr_eq_basis : pauliContr =
   rw [show complexContrBasis (Sum.inr 2) = complexContrBasisFin4 3 by {simp}]
   repeat rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
   rw [← basis_up_eq, ← basis_up_eq]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 1, 1, 1]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 1, 1, 2]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 1, 2]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 2]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 2]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 2]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 2]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [2]
-    rw [fromTripleT_apply_basis]
+  repeat rw [fromTripleT_apply_basis]
   rfl
 
 lemma pauliContr_eq_ofRat : pauliContr = ofRat (fun b =>
