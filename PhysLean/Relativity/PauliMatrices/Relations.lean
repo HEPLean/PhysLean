@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.PauliMatrices.Basic
 /-!
 
-## Contractiong of indices of Pauli matrix.
+## Contracting of indices of Pauli matrix.
 
 The main result of this file is `pauliMatrix_contract_pauliMatrix` which states that
 `η_{μν} σ^{μ α dot β} σ^{ν α' dot β'} = 2 ε^{αα'} ε^{dot β dot β'}`.
