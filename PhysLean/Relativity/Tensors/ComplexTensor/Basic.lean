@@ -290,5 +290,30 @@ instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 
+
+/-!
+
+## Relating basis
+
+-/
+
+lemma basis_up_eq {i : Fin 4} :
+    complexLorentzTensor.basis Color.up i = Lorentz.complexContrBasisFin4 i := rfl
+
+lemma basis_down_eq {i : Fin 4} :
+    complexLorentzTensor.basis Color.down i = Lorentz.complexCoBasisFin4 i := rfl
+
+lemma basis_upL_eq {i : Fin 2} :
+    complexLorentzTensor.basis Color.upL i = Fermion.leftBasis i := rfl
+
+lemma basis_downL_eq {i : Fin 2} :
+    complexLorentzTensor.basis Color.downL i = Fermion.altLeftBasis i := rfl
+
+lemma basis_upR_eq {i : Fin 2} :
+    complexLorentzTensor.basis Color.upR i = Fermion.rightBasis i := rfl
+
+lemma basis_downR_eq {i : Fin 2} :
+    complexLorentzTensor.basis Color.downR i = Fermion.altRightBasis i := rfl
+
 end complexLorentzTensor
 end

@@ -74,6 +74,7 @@ lemma pauliContr_eq_fromTripleT : σ^^^ = fromTripleT PauliMatrix.asTensor := by
   rw [pauliContr_eq_fromConstTriple, fromConstTriple,
     congrArg fromTripleT PauliMatrix.asConsTensor_apply_one]
 
+set_option maxHeartbeats 0 in
 lemma pauliContr_eq_basis : pauliContr =
     Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0)
     + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 1 | 2 => 1)
@@ -90,30 +91,32 @@ lemma pauliContr_eq_basis : pauliContr =
   rw [show complexContrBasis (Sum.inr 0) = complexContrBasisFin4 1 by {simp}]
   rw [show complexContrBasis (Sum.inr 1) = complexContrBasisFin4 2 by {simp}]
   rw [show complexContrBasis (Sum.inr 2) = complexContrBasisFin4 3 by {simp}]
+  repeat rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
+  rw [← basis_up_eq, ← basis_up_eq]
   conv_lhs =>
     enter [1, 1, 1, 1, 1, 1, 1]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   conv_lhs =>
     enter [1, 1, 1, 1, 1, 1, 2]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   conv_lhs =>
     enter [1, 1, 1, 1, 1, 2]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   conv_lhs =>
     enter [1, 1, 1, 1, 2]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   conv_lhs =>
     enter [1, 1, 1, 2]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   conv_lhs =>
     enter [1, 1, 2]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   conv_lhs =>
     enter [1, 2]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   conv_lhs =>
     enter [2]
-    erw [fromTripleT_apply_basis]
+    rw [fromTripleT_apply_basis]
   rfl
 
 lemma pauliContr_eq_ofRat : pauliContr = ofRat (fun b =>
