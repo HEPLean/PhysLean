@@ -242,4 +242,5 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.NormOne
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.Basic
+import PhysLean.StringTheory.Basic
 import PhysLean.Thermodynamics.Basic
