@@ -75,6 +75,16 @@ private lemma fderiv_uncurry  (f : N → W → M) (y : N × W) (w : W)
   rw [(hasFDerivAt_prodMk_right (𝕜 := k) y.1 y.2).fderiv]
   rfl
 
+private lemma fderiv_uncurry'  (f : N → W → M) (y : N × W) (n : N)
+    (h : DifferentiableAt k (Function.uncurry f) y)  :
+    fderiv k (Function.uncurry f) y (n, 0) =
+    fderiv k (fun x => f x y.2) y.1 n := by
+  rw [show (fun x => f x y.2) =
+    (Function.uncurry f) ∘ (fun x => (x, y.2)) by {ext w; rfl}]
+  rw [fderiv_comp _ (by fun_prop) (by fun_prop)]
+  rw [(hasFDerivAt_prodMk_left (𝕜 := k) y.1 y.2).fderiv]
+  rfl
+
 private lemma fderiv_curry (f : N × W → M) (n : N) (w : W)
     (h : DifferentiableAt k f (n, w)) (dw : W):
     fderiv k (Function.curry f n) w dw = fderiv k (f) (n, w) (0, dw) := by
@@ -84,6 +94,18 @@ private lemma fderiv_curry (f : N × W → M) (n : N) (w : W)
   conv_rhs =>
     rw [h1]
   rw [fderiv_uncurry]
+  rw [Function.uncurry_curry]
+  exact h
+
+private lemma fderiv_curry' (f : N × W → M) (n : N) (w : W)
+    (h : DifferentiableAt k f (n, w)) (dn : N):
+    fderiv k (fun n => Function.curry f n w) n dn = fderiv k f (n, w) (dn, 0) := by
+  have h1 : f = Function.uncurry (Function.curry f) := by
+    ext x
+    simp
+  conv_rhs =>
+    rw [h1]
+  rw [fderiv_uncurry']
   rw [Function.uncurry_curry]
   exact h
 
@@ -111,9 +133,28 @@ lemma timeSlice_spatial_deriv {M : Type}
   · fun_prop
 
 /-- The derivative on time commutes with time-slicing. -/
-semiformal_result "7Z2LF" timeSlice_time_deriv {M : Type} [AddCommGroup M]
-    [Module ℝ M] [TopologicalSpace M] {d : ℕ} (f : SpaceTime d → M) :
-  timeSlice (∂_ (finSumFinEquiv (Sum.inl 0)) f) = ∂ₜ (timeSlice f)
+lemma timeSlice_time_deriv {M : Type}
+    [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} (f : SpaceTime d → M)
+    {t : Time} {x : Space d}
+    (hdiff : DifferentiableAt ℝ f (toTimeAndSpace.symm (t, x))):
+    timeSlice (∂_ (finSumFinEquiv (Sum.inl 0)) f) t x = ∂ₜ (fun t => timeSlice f t x) t := by
+  have hf : f = (f ∘ toTimeAndSpace.symm) ∘ toTimeAndSpace := by
+    ext x
+    simp
+  conv_lhs =>
+    rw [hf]
+    simp only [timeSlice, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+      Fin.isValue, finSumFinEquiv_apply_left, Equiv.coe_fn_mk, Function.curry_apply,
+      Function.comp_apply]
+    rw [deriv_comp_toTimeAndSpace_castAdd (f ∘ ⇑toTimeAndSpace.symm)]
+  conv_rhs =>
+    rw [timeSlice]
+    simp only [Time.deriv, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+      Equiv.coe_fn_mk,  Function.comp_apply]
+  simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    ContinuousLinearEquiv.apply_symm_apply]
+  rw [fderiv_curry']
+  fun_prop
 
 end SpaceTime
 

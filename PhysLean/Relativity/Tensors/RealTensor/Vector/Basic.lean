@@ -322,6 +322,13 @@ lemma spatialPart_basis_natAdd {d : ℕ} (i : Fin d) (j : Fin d) :
   rw [spatialPart, toCoord_basis_apply]
   simp
 
+@[simp]
+lemma spatialPart_basis_castAdd {d : ℕ} (i : Fin d) :
+    spatialPart (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ =>
+      Fin.cast (by simp) (Fin.castAdd d (0 : Fin 1)))) i = 0 := by
+  rw [spatialPart, toCoord_basis_apply]
+  simp
+
 /-- Extract time component from a Lorentz vector -/
 abbrev timeComponent {d : ℕ} (v : Vector d) : ℝ :=
   v (Sum.inl 0)
@@ -330,6 +337,13 @@ abbrev timeComponent {d : ℕ} (v : Vector d) : ℝ :=
 lemma timeComponent_basis_natAdd {d : ℕ} (i : Fin d) :
     timeComponent (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ =>
       Fin.cast (by simp) (Fin.natAdd 1 i))) = 0 := by
+  rw [timeComponent, toCoord_basis_apply]
+  simp
+
+@[simp]
+lemma timeComponent_basis_castAdd {d : ℕ} :
+    timeComponent (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ =>
+      Fin.cast (by simp) (Fin.castAdd d (0 : Fin 1)))) = 1 := by
   rw [timeComponent, toCoord_basis_apply]
   simp
 

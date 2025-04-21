@@ -118,6 +118,17 @@ lemma toTimeAndSpace_basis_natAdd {d : ℕ} (i : Fin d) :
   congr 1
   exact Lean.Grind.eq_congr' rfl rfl
 
+lemma toTimeAndSpace_basis_castAdd {d : ℕ} :
+    toTimeAndSpace ((Tensor.basis (S := realLorentzTensor d) ![Color.up])
+      fun x => Fin.cast (by simp) (Fin.castAdd d (0 : Fin 1))) = (1, 0) := by
+  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
+    AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
+  rw [Lorentz.Vector.timeComponent_basis_castAdd]
+  simp only [true_and]
+  funext j
+  simp [space]
+  rw [Lorentz.Vector.spatialPart_basis_castAdd]
+
 /-!
 
 ## Coordinates
@@ -322,6 +333,20 @@ lemma deriv_comp_toTimeAndSpace_natAdd {M : Type} [NormedAddCommGroup M] [Normed
   simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, ContinuousLinearMap.coe_comp',
     ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   rw [toTimeAndSpace_basis_natAdd]
+
+lemma deriv_comp_toTimeAndSpace_castAdd {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {d : ℕ} (f : Time × Space d → M) (y : SpaceTime d) :
+    SpaceTime.deriv (Fin.castAdd d 0) (f ∘ toTimeAndSpace) y =
+    fderiv ℝ f (toTimeAndSpace y) (1, 0) := by
+  rw [SpaceTime.deriv_eq]
+  have h1 := toTimeAndSpace.comp_right_fderiv (f := f) (x := y)
+  conv_lhs =>
+    enter [1]
+    rw [h1]
+  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
+    ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply]
+  rw [toTimeAndSpace_basis_castAdd]
+
 
 end SpaceTime
 
