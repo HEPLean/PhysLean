@@ -3,10 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Data.Finset.Insert
-import PhysLean.StringTheory.FTheory.SU5U1.Charges
 import Mathlib.Algebra.BigOperators.Group.Multiset.Defs
-import PhysLean.Relativity.SpaceTime.Basic
+import Mathlib.Algebra.Group.Int.Defs
+import Mathlib.Algebra.Order.Group.Unbundled.Abs
+import PhysLean.StringTheory.FTheory.SU5U1.Charges
 /-!
 
 # Matter
