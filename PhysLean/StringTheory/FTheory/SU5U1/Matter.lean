@@ -194,6 +194,12 @@ Ref: Equation (29) of arXiv:1401.5084.
 def ThreeLeptonDoublets : Prop :=
   (𝓜.quantaBarFive.map fun a => |a.M + a.N|).sum = 5
 
+/-- The condition on the matter content for it to produce a valid spectrum. -/
+def ValidMatterSpectrum : Prop :=
+  𝓜.ThreeChiralFamiles ∧
+  𝓜.NoExotics ∧
+  𝓜.ThreeLeptonDoublets
+
 end MatterContent
 
 end SU5U1
