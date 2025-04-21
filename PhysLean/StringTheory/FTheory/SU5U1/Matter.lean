@@ -188,6 +188,8 @@ exactly one pair of Higgs.
 
 This corresponds to the conditions that:
 - `∑ᵢ |Mᵢ + Nᵢ| = 5`
+
+Ref: Equation (29) of arXiv:1401.5084.
 -/
 def ThreeLeptonDoublets : Prop :=
   (𝓜.quantaBarFive.map fun a => |a.M + a.N|).sum = 5
