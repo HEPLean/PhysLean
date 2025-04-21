@@ -6,11 +6,26 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-
 /-!
 # Space
 
-This file contains `d`-dimensional Euclidean space.
+This file contains `d`-dimensional space.
+
+## Note on implementation
+
+The definition of `Space d` currently inherits all instances of
+`EuclideanSpace ℝ (Fin d)`.
+
+This, in particular, automatically equips `Space d` with a
+norm. This norm induces a metric on `Space d` which is the standard
+Euclidean metric. Thus `Space d` automatically corresponds to
+flat space.
+
+The definition of `deriv` through `fderiv` explicitly uses this metric.
+
+`Space d` also inherits instances of `EuclideanSpace ℝ (Fin d)` such as
+a zero vector, the ability to add two space positions etc, which
+are not really allowed operations on `Space d`.
 
 -/
 

@@ -11,6 +11,23 @@ import Mathlib.Analysis.Calculus.FDeriv.Basic
 
 In this file we define the time worldvolume as a real line.
 
+## Note on implementation
+
+The definition of `Time` currently inherits all instances of
+`ℝ`.
+
+This, in particular, automatically equips `Time` with a
+norm. This norm induces a metric on `Time` which is the standard
+flat metric. Thus `Time` automatically corresponds to
+flat time.
+
+The definition of `deriv` through `fderiv` explicitly uses this metric.
+
+`Time` also inherits instances of `ℝ` such as
+a zero vector, the ability to add two time positions etc, which
+are not really allowed operations on `Time`.
+
+
 -/
 
 /-- The type `Time` represents the time manifold. -/
