@@ -180,7 +180,7 @@ Ref: Equation (27) and (28) of arXiv:1401.5084.
 def NoExotics : Prop :=
   (𝓜.quantaTen.map QuantaTen.N).sum = 0 ∧
   (𝓜.quantaBarFive.map QuantaBarFive.N).sum = 0 ∧
-  (∀ a ∈ 𝓜.quantaTen, -a.M ≤ a.N ∧ a.N ≤ a.M) ∧
+  (∀ a ∈ 𝓜.quantaTen, - a.M ≤ a.N ∧ a.N ≤ a.M) ∧
   (∀ a ∈ 𝓜.quantaBarFive, -a.M - 1 ≤ a.N ∧ a.N ≤ 3)
 
 /-- The condition on the matter content for there to be three lepton doublets with
