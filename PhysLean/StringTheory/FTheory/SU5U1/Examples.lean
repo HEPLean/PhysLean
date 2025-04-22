@@ -9,13 +9,13 @@ import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Basic
 
 # Examples of matter content and show that they satisfy certain conditions
 
-The majority of examples are taken from the paper:
+The examples in this module correspond to those in:
 
   Krippendorf, Schafer-Nameki and Wong.
   Froggatt-Nielson meets Mordell-Weil: A Phenomenological Survey of Global F-theory GUTs with U(1)s
   <https://arxiv.org/pdf/1507.05961>.
 
-We use the notational convention given there.
+We copy the notational convention used there.
 For example I14a corresponds to the first (`a`) example with
 `1` 10d representation and `4` 5-bar representations.
 
