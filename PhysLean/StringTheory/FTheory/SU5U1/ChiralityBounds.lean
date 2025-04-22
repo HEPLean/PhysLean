@@ -21,6 +21,12 @@ The two conditions used are `ThreeChiralFamiles` and `NoExotics`.
 
 - `quantaTen_card_le_three` given these constraints, there are at most
   three 10d representations.
+- `quantaBarFive_chiralityFlux_filter_non_zero_mem` which states that
+  the non-zero chirality fluxes of the 5-bar representations must be
+  `{1, 1, 1}`, `{1, 2}` or `{3}`.
+- `quantaTen_chiralityFlux_mem` which states that
+  the chirality fluxes of the 10d representations must be
+  `{1, 1, 1}`, `{1, 2}` or `{3}`.
 
 -/
 namespace FTheory
