@@ -105,8 +105,9 @@ lemma quantaBarFive_chiralityFlux_filter_non_zero_card_mem (h3 : 𝓜.ThreeChira
   rw [hn] at hl
   simp at hl
 
-/-- The multiset of non-zero chirality fluxes of matter content satisfying the
-  `ThreeChiralFamiles` family condition must either be
+/-- The multiset of non-zero chirality fluxes of matter content in the 5-bar
+  representation satisfying
+  `ThreeChiralFamiles` must either be
 - `{1, 1, 1}`
 - `{1, 2}`
 - `{3}`
@@ -238,10 +239,76 @@ lemma quantaTen_chiralityFlux_card_le_three (he : 𝓜.NoExotics)
   simp only [nsmul_eq_mul, mul_one] at hl
   simp_all  [ChiralityFlux]
 
+lemma quantaTen_chiralityFlux_card_mem (he : 𝓜.NoExotics)
+    (h3 : 𝓜.ThreeChiralFamiles) :
+    ((𝓜.quantaTen.map (QuantaTen.M))).card ∈
+    ({1, 2, 3} : Finset ℕ) := by
+  have hn {n : ℕ} (hn : n ≤ 3) (hn : n ≠ 0) : n ∈ ({1, 2, 3} : Finset ℕ) := by
+    simp
+    omega
+  refine hn (quantaTen_chiralityFlux_card_le_three he h3) ?_
+  by_contra hn
+  have hl := h3.2
+  simp at hn
+  rw [hn] at hl
+  simp at hl
+
 /-- The number of 10d representations is less than or equal to three. -/
 lemma quantaTen_card_le_three (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) : 𝓜.quantaTen.card ≤ 3 := by
  simpa using quantaTen_chiralityFlux_card_le_three he h3
+
+/-- The multiset of chirality fluxes of matter content in the 10d representation
+   satisfying `NoExotics` and
+  `ThreeChiralFamiles` must either be
+- `{1, 1, 1}`
+- `{1, 2}`
+- `{3}`
+-/
+lemma quantaTen_chiralityFlux_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
+    𝓜.quantaTen.map (QuantaTen.M)
+    ∈ ({{1, 1, 1}, {1, 2}, {3}} : Finset (Multiset ChiralityFlux)) := by
+  have hr := quantaTen_chiralityFlux_card_mem he h3
+  simp at hr
+  rcases hr with hr | hr | hr
+  · rw [Multiset.card_eq_one] at hr
+    obtain ⟨a, ha⟩ := hr
+    have hl := h3.2
+    rw [ha] at hl
+    simp at hl
+    rw [ha]
+    simpa using hl.1
+  · rw [Multiset.card_eq_two] at hr
+    obtain ⟨a, b, ha⟩ := hr
+    have hl := h3.2
+    rw [ha] at hl ⊢
+    simp at hl
+    have a_mem_filter : a ∈ 𝓜.quantaTen := by simp [ha]
+    have b_mem_filter : b ∈ 𝓜.quantaTen := by simp [ha]
+    have a_pos : 0 < a.M := quantaTen_chiralityFlux_pos he h3 (by simp; use a)
+    have b_pos : 0 < b.M := quantaTen_chiralityFlux_pos he h3 (by simp; use b)
+    have hab (a b : ℤ) (ha : 0 < a) (hb : 0 < b) (hab : a + b = 3) :
+        (a = 2 ∧  b = 1) ∨ (a = 1 ∧ b = 2) := by omega
+    rcases hab a.M b.M a_pos b_pos hl.1 with hr | hr
+    · conv_rhs => rw [Multiset.pair_comm]
+      simp [hr]
+    · simp [hr]
+  · rw [Multiset.card_eq_three] at hr
+    obtain ⟨a, b, c, ha⟩ := hr
+    have hl := h3.2
+    rw [ha] at hl
+    simp [← add_assoc] at hl
+    rw [ha]
+    have a_mem_filter : a ∈ 𝓜.quantaTen := by simp [ha]
+    have b_mem_filter : b ∈ 𝓜.quantaTen := by simp [ha]
+    have c_mem_filter : c ∈ 𝓜.quantaTen := by simp [ha]
+    have a_pos : 0 < a.M := quantaTen_chiralityFlux_pos he h3 (by simp; use a)
+    have b_pos : 0 < b.M := quantaTen_chiralityFlux_pos he h3 (by simp; use b)
+    have c_pos : 0 < c.M := quantaTen_chiralityFlux_pos he h3 (by simp; use c)
+    have habc (a b c : ℤ) (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (habc : a + b + c = 3) :
+        (a = 1 ∧ b = 1 ∧ c = 1) := by omega
+    rcases habc a.M b.M c.M a_pos b_pos c_pos hl.1 with hr
+    simp [hr]
 
 end MatterContent
 
