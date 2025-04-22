@@ -347,7 +347,6 @@ lemma deriv_comp_toTimeAndSpace_castAdd {M : Type} [NormedAddCommGroup M] [Norme
     ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   rw [toTimeAndSpace_basis_castAdd]
 
-
 end SpaceTime
 
 end

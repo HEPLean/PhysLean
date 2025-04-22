@@ -27,7 +27,6 @@ The definition of `deriv` through `fderiv` explicitly uses this metric.
 a zero vector, the ability to add two time positions etc, which
 are not really allowed operations on `Time`.
 
-
 -/
 
 /-- The type `Time` represents the time manifold. -/

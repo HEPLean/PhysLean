@@ -15,7 +15,6 @@ https://arxiv.org/pdf/1401.5084
 - Condition (27) and (28) for no exotics in the spectrum.
 - Condition (29) for the three lepton doublets with exactly one pair of Higges.
 
-
 -/
 namespace FTheory
 
@@ -23,7 +22,6 @@ namespace SU5U1
 namespace MatterContent
 
 variable {I : CodimensionOneConfig} {𝓜 : MatterContent I}
-
 
 /-- The condition on the matter content for there to exist three chiral familes.
 

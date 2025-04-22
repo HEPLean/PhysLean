@@ -74,8 +74,8 @@ private lemma fderiv_uncurry (f : N → W → M) (y : N × W) (w : W)
   rw [(hasFDerivAt_prodMk_right (𝕜 := k) y.1 y.2).fderiv]
   rfl
 
-private lemma fderiv_uncurry'  (f : N → W → M) (y : N × W) (n : N)
-    (h : DifferentiableAt k (Function.uncurry f) y)  :
+private lemma fderiv_uncurry' (f : N → W → M) (y : N × W) (n : N)
+    (h : DifferentiableAt k (Function.uncurry f) y) :
     fderiv k (Function.uncurry f) y (n, 0) =
     fderiv k (fun x => f x y.2) y.1 n := by
   rw [show (fun x => f x y.2) =
@@ -97,7 +97,7 @@ private lemma fderiv_curry (f : N × W → M) (n : N) (w : W)
   exact h
 
 private lemma fderiv_curry' (f : N × W → M) (n : N) (w : W)
-    (h : DifferentiableAt k f (n, w)) (dn : N):
+    (h : DifferentiableAt k f (n, w)) (dn : N) :
     fderiv k (fun n => Function.curry f n w) n dn = fderiv k f (n, w) (dn, 0) := by
   have h1 : f = Function.uncurry (Function.curry f) := by
     ext x
@@ -135,7 +135,7 @@ lemma timeSlice_spatial_deriv {M : Type}
 lemma timeSlice_time_deriv {M : Type}
     [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} (f : SpaceTime d → M)
     {t : Time} {x : Space d}
-    (hdiff : DifferentiableAt ℝ f (toTimeAndSpace.symm (t, x))):
+    (hdiff : DifferentiableAt ℝ f (toTimeAndSpace.symm (t, x))) :
     timeSlice (∂_ (finSumFinEquiv (Sum.inl 0)) f) t x = ∂ₜ (fun t => timeSlice f t x) t := by
   have hf : f = (f ∘ toTimeAndSpace.symm) ∘ toTimeAndSpace := by
     ext x
@@ -149,7 +149,7 @@ lemma timeSlice_time_deriv {M : Type}
   conv_rhs =>
     rw [timeSlice]
     simp only [Time.deriv, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
-      Equiv.coe_fn_mk,  Function.comp_apply]
+      Equiv.coe_fn_mk, Function.comp_apply]
   simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
     ContinuousLinearEquiv.apply_symm_apply]
   rw [fderiv_curry']

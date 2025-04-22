@@ -165,12 +165,11 @@ lemma quantaBarFive_chiralityFlux_filter_non_zero_mem (h3 : 𝓜.ThreeChiralFami
     rcases habc a b c a_pos b_pos c_pos hl with ⟨rfl, rfl, rfl⟩
     simp
 
-
-lemma quantaBarFive_zero_chiralityFlux_abs_sum_le_five (h3L : 𝓜.ThreeLeptonDoublets):
+lemma quantaBarFive_zero_chiralityFlux_abs_sum_le_five (h3L : 𝓜.ThreeLeptonDoublets) :
     (Multiset.map (fun a => |a.M + a.N|) (𝓜.quantaBarFive.filter (fun x => x.M = 0))).sum ≤ 5 := by
   simp [ThreeLeptonDoublets] at h3L
   have h1 : (Multiset.map (fun a => |a.M + a.N|) 𝓜.quantaBarFive).sum
-     = (Multiset.map (fun a => |a.M + a.N|) (𝓜.quantaBarFive.filter (fun x => x.M = 0))).sum
+      = (Multiset.map (fun a => |a.M + a.N|) (𝓜.quantaBarFive.filter (fun x => x.M = 0))).sum
       + (Multiset.map (fun a => |a.M + a.N|)
       (𝓜.quantaBarFive.filter (fun x => ¬ x.M = 0))).sum := by
     conv_lhs => rw [Eq.symm (Multiset.filter_add_not (fun x => x.M = 0) 𝓜.quantaBarFive)]
@@ -194,13 +193,13 @@ lemma quantaBarFive_zero_chiralityFlux_abs_sum_le_five (h3L : 𝓜.ThreeLeptonDo
   have hab {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : a + b = 5) : a ≤ 5 := by omega
   exact hab hz_pos hz_non_zero_pos h3L
 
-/-- The  number of 5d representations with chirality flux equal to zero is
+/-- The number of 5d representations with chirality flux equal to zero is
   less than or equal to five. -/
-lemma quantaBarFive_zero_chiralityFlux_card_le_five (h3L : 𝓜.ThreeLeptonDoublets):
+lemma quantaBarFive_zero_chiralityFlux_card_le_five (h3L : 𝓜.ThreeLeptonDoublets) :
     ((𝓜.quantaBarFive.filter (fun x => x.M = 0))).card ≤ 5 := by
   have h1 := quantaBarFive_zero_chiralityFlux_abs_sum_le_five h3L
   have h1' : ((𝓜.quantaBarFive.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).card • 1 ≤
-       ((𝓜.quantaBarFive.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).sum := by
+      ((𝓜.quantaBarFive.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).sum := by
     apply Multiset.card_nsmul_le_sum
     intro x hx
     simp at hx
@@ -208,7 +207,7 @@ lemma quantaBarFive_zero_chiralityFlux_card_le_five (h3L : 𝓜.ThreeLeptonDoubl
     rw [ha.2]
     have hp := 𝓜.chirality_charge_not_both_zero_bar_five (m, n, ⟨q, hq⟩) ha.1
     simp [ha.2] at hp
-    have ha {a : ℤ} (h : ¬ a  = 0)  : 1 ≤ |a| := by
+    have ha {a : ℤ} (h : ¬ a = 0) : 1 ≤ |a| := by
       exact Int.one_le_abs h
     apply ha
     simpa using hp
@@ -216,8 +215,9 @@ lemma quantaBarFive_zero_chiralityFlux_card_le_five (h3L : 𝓜.ThreeLeptonDoubl
   simp_all [HyperChargeFlux, ChiralityFlux]
   exact Int.ofNat_le.mp (le_trans h1' h1)
 
-lemma quantaBarFive_zero_chiralityFlux_card_mem (h3L : 𝓜.ThreeLeptonDoublets):
-    ((𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => x = 0)).card ∈ ({0, 1, 2, 3, 4, 5}  : Finset ℕ) := by
+lemma quantaBarFive_zero_chiralityFlux_card_mem (h3L : 𝓜.ThreeLeptonDoublets) :
+    ((𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => x = 0)).card ∈
+    ({0, 1, 2, 3, 4, 5} : Finset ℕ) := by
   have hn {n : ℕ} (hn : n ≤ 5) : n ∈ ({0, 1, 2, 3, 4, 5} : Finset ℕ) := by
     simp only [Finset.mem_insert, Finset.mem_singleton]
     omega
@@ -225,10 +225,10 @@ lemma quantaBarFive_zero_chiralityFlux_card_mem (h3L : 𝓜.ThreeLeptonDoublets)
   simpa [Multiset.filter_map] using 𝓜.quantaBarFive_zero_chiralityFlux_card_le_five h3L
 
 open Multiset in
-lemma quantaBarFive_zero_chiralityFlux_mem (h3L : 𝓜.ThreeLeptonDoublets):
+lemma quantaBarFive_zero_chiralityFlux_mem (h3L : 𝓜.ThreeLeptonDoublets) :
     (𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => x = 0) ∈
     ({replicate 5 0, replicate 4 0, replicate 3 0, replicate 2 0, replicate 1 0, {}} :
-      Finset (Multiset ChiralityFlux))  := by
+      Finset (Multiset ChiralityFlux)) := by
   have h1 := quantaBarFive_zero_chiralityFlux_card_mem h3L
   have hn (n : ℕ) (hr : (filter (fun x => x = 0) (map QuantaBarFive.M 𝓜.quantaBarFive)).card = n) :
       (𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => x = 0) = replicate n 0 := by
@@ -264,7 +264,6 @@ lemma quantaBarFive_card_le_eight (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.Thr
   have h3 := quantaBarFive_zero_chiralityFlux_card_le_five h3L
   omega
 
-
 /-- The multiset of chirality fluxes of matter content in the 5 bar representation
   satisfying `ThreeChiralFamiles` and
   `ThreeLeptonDoublets` must either be
@@ -273,7 +272,7 @@ lemma quantaBarFive_card_le_eight (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.Thr
 - `{3}`
 with zero to five chirality fluxes equal to zero.
 -/
-lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L :  𝓜.ThreeLeptonDoublets) :
+lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFive.map (QuantaBarFive.M) ∈
     ({{1, 1, 1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0}, {1, 1, 1, 0, 0},
         {1, 1, 1, 0}, {1, 1, 1},

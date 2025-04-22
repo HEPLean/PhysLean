@@ -20,7 +20,6 @@ from the conditions of a valid spectrum.
   satisfying `ThreeChiralFamiles` and `ThreeLeptonDoublets` must either be
   `{1, 1, 1}`, `{1, 2}`, or `{3}`.
 
-
 -/
 namespace FTheory
 
@@ -29,7 +28,6 @@ namespace SU5U1
 namespace MatterContent
 
 variable {I : CodimensionOneConfig} {𝓜 : MatterContent I}
-
 
 /-- The chirality flux associated with a 10d representation must be non-negative. -/
 lemma quantaTen_chiralityFlux_nonneg' {a : QuantaTen I}

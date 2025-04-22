@@ -290,7 +290,6 @@ instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 
-
 /-!
 
 ## Relating basis
