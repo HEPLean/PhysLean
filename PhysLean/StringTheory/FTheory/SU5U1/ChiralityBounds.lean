@@ -8,7 +8,19 @@ import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 import PhysLean.Relativity.SpaceTime.Basic
 /-!
 
-# Bounds on chirality flux
+# Chirality flux constraints
+
+In this module we use the conditions on
+the matter content of the SU(5) GUT model in F-theory
+with an additional U(1) symmetry corresponding to having a valid spectrum
+to constrain the chirality flux of the matter content.
+
+The two conditions used are `ThreeChiralFamiles` and `NoExotics`.
+
+## Important results
+
+- `quantaTen_card_le_three` given these constraints, there are at most
+  three 10d representations.
 
 -/
 namespace FTheory
