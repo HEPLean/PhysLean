@@ -31,4 +31,16 @@ and orthochronous. -/
 def Restricted (d : ℕ) : Set (LorentzGroup d) :=
   { Λ : LorentzGroup d | IsProper Λ ∧ IsOrthochronous Λ }
 
+open Matrix
+
+/- The restricted Lorentz group is a subgroup of the Lorentz group. -/
+instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) where
+  carrier := Restricted d
+  one_mem' := ⟨
+    by rw [IsProper]; exact det_one,
+    by rw [IsOrthochronous]; exact zero_le_one
+  ⟩
+  mul_mem' := sorry
+  inv_mem' := sorry
+
 end LorentzGroup
