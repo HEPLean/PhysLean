@@ -27,16 +27,15 @@ variable {I : CodimensionOneConfig} {𝓜 : MatterContent I}
 
 /-- The chirality flux associated with a 5-bar representation must be non-negative. -/
 lemma quantaBarFive_chiralityFlux_nonneg' {a : QuantaBarFive I}
-    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaBarFive)  : 0 ≤ a.M := by
+    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaBarFive) : 0 ≤ a.M := by
   exact h3.2.2.1 a h
 
 /-- The chirality flux associated with a 5-bar representation must be non-negative. -/
 lemma quantaBarFive_chiralityFlux_nonneg {a : ChiralityFlux}
-    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ (𝓜.quantaBarFive).map QuantaBarFive.M)  : 0 ≤ a := by
+    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ (𝓜.quantaBarFive).map QuantaBarFive.M) : 0 ≤ a := by
   simp only [Multiset.mem_map] at h
-  obtain ⟨a', h',  rfl⟩ := h
-  exact h3.2.2.1  a' h'
-
+  obtain ⟨a', h', rfl⟩ := h
+  exact h3.2.2.1 a' h'
 
 /-- The chirality flux associated with a 5-bar representation must be
   less then or equal to three. -/
@@ -75,7 +74,7 @@ lemma quantaBarFive_chiralityFlux_filter_non_zero_card_le_three (h3 : 𝓜.Three
     apply Multiset.card_nsmul_le_sum
     intro x hx
     rw [Multiset.mem_filter] at hx
-    have hx' :=  quantaBarFive_chiralityFlux_nonneg h3 hx.1
+    have hx' := quantaBarFive_chiralityFlux_nonneg h3 hx.1
     have hx'' := hx.2
     simp_all only [ChiralityFlux]
     omega
@@ -84,7 +83,8 @@ lemma quantaBarFive_chiralityFlux_filter_non_zero_card_le_three (h3 : 𝓜.Three
   omega
 
 lemma pos_of_mem_quantaBarFive_chiralityFlux_filter_non_zero {a : ChiralityFlux}
-    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ ((𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0))) :
+    (h3 : 𝓜.ThreeChiralFamiles)
+    (h : a ∈ ((𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0))) :
     0 < a := by
   rw [Multiset.mem_filter] at h
   have h' := quantaBarFive_chiralityFlux_nonneg h3 h.1
@@ -96,7 +96,7 @@ lemma quantaBarFive_chiralityFlux_filter_non_zero_card_mem (h3 : 𝓜.ThreeChira
     ((𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0)).card ∈
     ({1, 2, 3} : Finset ℕ) := by
   have hn {n : ℕ} (hn : n ≤ 3) (hn : n ≠ 0) : n ∈ ({1, 2, 3} : Finset ℕ) := by
-    simp
+    simp only [Finset.mem_insert, Finset.mem_singleton]
     omega
   refine hn (quantaBarFive_chiralityFlux_filter_non_zero_card_le_three h3) ?_
   by_contra hn
@@ -137,7 +137,7 @@ lemma quantaBarFive_chiralityFlux_filter_non_zero_mem (h3 : 𝓜.ThreeChiralFami
     have a_pos : 0 < a := pos_of_mem_quantaBarFive_chiralityFlux_filter_non_zero h3 a_mem_filter
     have b_pos : 0 < b := pos_of_mem_quantaBarFive_chiralityFlux_filter_non_zero h3 b_mem_filter
     have hab (a b : ℤ) (ha : 0 < a) (hb : 0 < b) (hab : a + b = 3) :
-        (a = 2 ∧  b = 1) ∨ (a = 1 ∧ b = 2) := by omega
+        (a = 2 ∧ b = 1) ∨ (a = 1 ∧ b = 2) := by omega
     rcases hab a b a_pos b_pos hl with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
     · conv_rhs => rw [Multiset.pair_comm]
       simp
@@ -170,15 +170,15 @@ lemma quantaBarFive_chiralityFlux_filter_non_zero_mem (h3 : 𝓜.ThreeChiralFami
 
 /-- The chirality flux associated with a 10d representation must be non-negative. -/
 lemma quantaTen_chiralityFlux_nonneg' {a : QuantaTen I}
-    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaTen)  : 0 ≤ a.M := by
+    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaTen) : 0 ≤ a.M := by
   exact h3.2.2.2 a h
 
 /-- The chirality flux associated with a 5-bar representation must be non-negative. -/
 lemma quantaTen_chiralityFlux_nonneg {a : ChiralityFlux}
-    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ (𝓜.quantaTen).map QuantaTen.M)  : 0 ≤ a := by
+    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ (𝓜.quantaTen).map QuantaTen.M) : 0 ≤ a := by
   simp only [Multiset.mem_map] at h
-  obtain ⟨a', h',  rfl⟩ := h
-  exact h3.2.2.2  a' h'
+  obtain ⟨a', h', rfl⟩ := h
+  exact h3.2.2.2 a' h'
 
 /-- Due to the condition of having no exotics in the spectrum, the chirality flux of a
   10d representation must be non-zero.
@@ -187,7 +187,7 @@ lemma quantaTen_chiralityFlux_nonneg {a : ChiralityFlux}
 lemma quantaTen_chiralityFlux_ne_zero {a : ChiralityFlux}
     (he : 𝓜.NoExotics) (h : a ∈ (𝓜.quantaTen).map QuantaTen.M) : ¬ a = 0 := by
   rw [Multiset.mem_map] at h
-  obtain ⟨a', h',  rfl⟩ := h
+  obtain ⟨a', h', rfl⟩ := h
   have h1 := he.2.2.1 a' h'
   have h2 := 𝓜.chirality_charge_not_both_zero_ten a' h'
   rcases a' with ⟨m, n, q⟩
@@ -200,14 +200,14 @@ lemma quantaTen_chiralityFlux_ne_zero {a : ChiralityFlux}
 
 /-- The chirality flux associated with a 5-bar representation must be non-negative. -/
 lemma quantaTen_chiralityFlux_pos {a : ChiralityFlux} (he : 𝓜.NoExotics)
-    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ (𝓜.quantaTen).map QuantaTen.M)  : 0 < a := by
+    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ (𝓜.quantaTen).map QuantaTen.M) : 0 < a := by
   have h1 := quantaTen_chiralityFlux_nonneg h3 h
   have h2 := quantaTen_chiralityFlux_ne_zero he h
   simp_all only [ChiralityFlux]
   omega
 
 lemma quantaTen_chiralityFlux_filter_ne_zero_eq_self (he : 𝓜.NoExotics) :
-    (𝓜.quantaTen.map (QuantaTen.M)).filter (fun x => ¬ x = 0)  =
+    (𝓜.quantaTen.map (QuantaTen.M)).filter (fun x => ¬ x = 0) =
     𝓜.quantaTen.map (QuantaTen.M) := by
   refine Multiset.filter_eq_self.mpr ?_
   intro a ha
@@ -237,14 +237,14 @@ lemma quantaTen_chiralityFlux_card_le_three (he : 𝓜.NoExotics)
     simp_all only [ChiralityFlux]
     omega
   simp only [nsmul_eq_mul, mul_one] at hl
-  simp_all  [ChiralityFlux]
+  simp_all [ChiralityFlux]
 
 lemma quantaTen_chiralityFlux_card_mem (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) :
     ((𝓜.quantaTen.map (QuantaTen.M))).card ∈
     ({1, 2, 3} : Finset ℕ) := by
   have hn {n : ℕ} (hn : n ≤ 3) (hn : n ≠ 0) : n ∈ ({1, 2, 3} : Finset ℕ) := by
-    simp
+    simp only [Finset.mem_insert, Finset.mem_singleton]
     omega
   refine hn (quantaTen_chiralityFlux_card_le_three he h3) ?_
   by_contra hn
@@ -256,10 +256,10 @@ lemma quantaTen_chiralityFlux_card_mem (he : 𝓜.NoExotics)
 /-- The number of 10d representations is less than or equal to three. -/
 lemma quantaTen_card_le_three (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) : 𝓜.quantaTen.card ≤ 3 := by
- simpa using quantaTen_chiralityFlux_card_le_three he h3
+  simpa using quantaTen_chiralityFlux_card_le_three he h3
 
 /-- The multiset of chirality fluxes of matter content in the 10d representation
-   satisfying `NoExotics` and
+  satisfying `NoExotics` and
   `ThreeChiralFamiles` must either be
 - `{1, 1, 1}`
 - `{1, 2}`
@@ -288,7 +288,7 @@ lemma quantaTen_chiralityFlux_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFa
     have a_pos : 0 < a.M := quantaTen_chiralityFlux_pos he h3 (by simp; use a)
     have b_pos : 0 < b.M := quantaTen_chiralityFlux_pos he h3 (by simp; use b)
     have hab (a b : ℤ) (ha : 0 < a) (hb : 0 < b) (hab : a + b = 3) :
-        (a = 2 ∧  b = 1) ∨ (a = 1 ∧ b = 2) := by omega
+        (a = 2 ∧ b = 1) ∨ (a = 1 ∧ b = 2) := by omega
     rcases hab a.M b.M a_pos b_pos hl.1 with hr | hr
     · conv_rhs => rw [Multiset.pair_comm]
       simp [hr]

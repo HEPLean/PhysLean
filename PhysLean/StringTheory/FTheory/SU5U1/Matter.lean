@@ -109,7 +109,6 @@ def GaugeAnomalyMSSM : Prop :=
   (𝓜.quantaTen.map QuantaTen.N).sum = 0 ∧
   (𝓜.quantaBarFive.map QuantaBarFive.N).sum = 0
 
-
 /-- The mixed U(1)-MSSM gauge anomaly.
 
 This condition corresponds to
@@ -118,9 +117,8 @@ This condition corresponds to
 
 Ref: See equation (22) of arXiv:1401.5084. -/
 def GaugeAnomalyU1MSSM : Prop :=
-  (𝓜.quantaTen.map fun a =>  a.q.1 * a.N) +
+  (𝓜.quantaTen.map fun a => a.q.1 * a.N) +
   (𝓜.quantaBarFive.map fun a => a.q.1 * a.N) = 0
-
 
 /-- The mixed U(1)Y-U(1)-U(1) gauge anomaly.
 
@@ -133,10 +131,9 @@ def GaugeAnomalyU1YU1U1 : Prop :=
   3 * (𝓜.quantaTen.map fun a => a.q.1 * a.q.1 * a.N).sum +
   (𝓜.quantaBarFive.map fun a => a.q.1 * a.q.1 * a.N).sum = 0
 
-
 /-- The condition on matter content for it to be anomaly free. -/
 def AnomalyFree : Prop :=
-  𝓜.GaugeAnomalyMSSM  ∧
+  𝓜.GaugeAnomalyMSSM ∧
   𝓜.GaugeAnomalyU1MSSM ∧
   𝓜.GaugeAnomalyU1YU1U1
 

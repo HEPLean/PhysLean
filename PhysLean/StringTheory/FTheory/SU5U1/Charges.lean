@@ -37,13 +37,13 @@ namespace SU5U1
 inductive CodimensionOneConfig
   /-- `σ₀` and `σ₁` intersect the same `ℙ¹` of the `I₅` Kodaira fiber.
     This is sometimes denoted `I₅^{(01)}` -/
- | same : CodimensionOneConfig
- /-- `σ₀` and `σ₁` intersect the nearest neighbor `ℙ¹`s of the `I₅` Kodaira fiber.
+  | same : CodimensionOneConfig
+  /-- `σ₀` and `σ₁` intersect the nearest neighbor `ℙ¹`s of the `I₅` Kodaira fiber.
     This is sometimes denoted `I₅^{(0|1)}` -/
- | nearestNeighbor : CodimensionOneConfig
- /-- `σ₀` and `σ₁` intersect the next to nearest neighbor `ℙ¹`s of the `I₅` Kodaira fiber.
+  | nearestNeighbor : CodimensionOneConfig
+  /-- `σ₀` and `σ₁` intersect the next to nearest neighbor `ℙ¹`s of the `I₅` Kodaira fiber.
     This is sometimes denoted `I₅^{(0||1)}` -/
- | nextToNearestNeighbor : CodimensionOneConfig
+  | nextToNearestNeighbor : CodimensionOneConfig
 
 namespace CodimensionOneConfig
 

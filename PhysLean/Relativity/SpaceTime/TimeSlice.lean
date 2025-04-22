@@ -59,14 +59,13 @@ lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Mod
     (f : Time → Space d → M) : timeSliceLinearEquiv.symm f = timeSlice.symm f := by
   simp [timeSliceLinearEquiv, timeSlice]
 
-
 variable {k : Type} [NontriviallyNormedField k]
     {N W M : Type} [NormedAddCommGroup M] [NormedSpace k M]
     [NormedAddCommGroup N] [NormedSpace k N]
     [NormedAddCommGroup W] [NormedSpace k W]
 
-private lemma fderiv_uncurry  (f : N → W → M) (y : N × W) (w : W)
-    (h : DifferentiableAt k (Function.uncurry f) y)  :
+private lemma fderiv_uncurry (f : N → W → M) (y : N × W) (w : W)
+    (h : DifferentiableAt k (Function.uncurry f) y) :
     fderiv k (Function.uncurry f) y (0, w) =
     fderiv k (fun x => f y.1 x) y.2 w := by
   rw [show (fun x => f y.1 x) =
@@ -76,7 +75,7 @@ private lemma fderiv_uncurry  (f : N → W → M) (y : N × W) (w : W)
   rfl
 
 private lemma fderiv_curry (f : N × W → M) (n : N) (w : W)
-    (h : DifferentiableAt k f (n, w)) (dw : W):
+    (h : DifferentiableAt k f (n, w)) (dw : W) :
     fderiv k (Function.curry f n) w dw = fderiv k (f) (n, w) (0, dw) := by
   have h1 : f = Function.uncurry (Function.curry f) := by
     ext x
