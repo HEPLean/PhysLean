@@ -296,6 +296,25 @@ lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜
     simp only [Multiset.cons_zero, Finset.mem_insert, Finset.mem_singleton,
       Multiset.empty_eq_zero, true_or, or_true]
 
+lemma quantaBarFive_chiralityFlux_neq_singleton_three (he : 𝓜.NoExotics)
+    (h3L : 𝓜.ThreeLeptonDoublets) : ¬ 𝓜.quantaBarFive.map (QuantaBarFive.M) = {3} := by
+  by_contra hn
+  have h0 : (𝓜.quantaBarFive.map (QuantaBarFive.M)).card = 1 := by
+    rw [hn]
+    simp
+  simp at h0
+  rw [@Multiset.card_eq_one] at h0
+  obtain ⟨a, ha⟩ := h0
+  obtain ⟨m, n, q⟩ := a
+  have he1 := he.2.1
+  simp [ThreeLeptonDoublets] at h3L he1
+  rw [ha] at h3L he1
+  simp [QuantaBarFive.M, QuantaBarFive.N] at h3L he1
+  rw [ha] at hn
+  simp [QuantaBarFive.M, QuantaBarFive.N] at hn
+  subst hn he1
+  simp at h3L
+
 end MatterContent
 
 end SU5U1

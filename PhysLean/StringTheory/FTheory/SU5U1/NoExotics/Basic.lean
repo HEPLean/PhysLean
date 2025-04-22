@@ -21,7 +21,7 @@ namespace FTheory
 namespace SU5U1
 namespace MatterContent
 
-variable {I : CodimensionOneConfig} {𝓜 : MatterContent I}
+variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
 
 /-- The condition on the matter content for there to exist three chiral familes.
 
@@ -39,6 +39,8 @@ def ThreeChiralFamiles : Prop :=
   (∀ a ∈ 𝓜.quantaBarFive, 0 ≤ a.M) ∧
   ∀ a ∈ 𝓜.quantaTen, 0 ≤ a.M
 
+instance : Decidable 𝓜.ThreeChiralFamiles := instDecidableAnd
+
 /-- The condition on the matter content for there to be no exotics in the spectrum.
 
 This corresponds to the conditions that:
@@ -55,6 +57,8 @@ def NoExotics : Prop :=
   (∀ a ∈ 𝓜.quantaTen, - a.M ≤ a.N ∧ a.N ≤ a.M) ∧
   (∀ a ∈ 𝓜.quantaBarFive, -a.M - 1 ≤ a.N ∧ a.N ≤ 3)
 
+instance : Decidable 𝓜.NoExotics := instDecidableAnd
+
 /-- The condition on the matter content for there to be three lepton doublets with
 exactly one pair of Higgs.
 
@@ -66,11 +70,15 @@ Ref: Equation (29) of arXiv:1401.5084.
 def ThreeLeptonDoublets : Prop :=
   (𝓜.quantaBarFive.map fun a => |a.M + a.N|).sum = 5
 
+instance : Decidable 𝓜.ThreeLeptonDoublets := decEq _ _
+
 /-- The condition on the matter content for it to produce a valid spectrum. -/
 def ValidMatterSpectrum : Prop :=
   𝓜.ThreeChiralFamiles ∧
   𝓜.NoExotics ∧
   𝓜.ThreeLeptonDoublets
+
+instance : Decidable 𝓜.ValidMatterSpectrum := instDecidableAnd
 
 end MatterContent
 
