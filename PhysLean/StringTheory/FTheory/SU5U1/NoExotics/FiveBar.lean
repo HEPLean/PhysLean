@@ -197,7 +197,6 @@ lemma quantaBarFive_zero_chiralityFlux_abs_sum_le_five (h3L : 𝓜.ThreeLeptonDo
   less than or equal to five. -/
 lemma quantaBarFive_zero_chiralityFlux_card_le_five (h3L : 𝓜.ThreeLeptonDoublets) :
     ((𝓜.quantaBarFive.filter (fun x => x.M = 0))).card ≤ 5 := by
-  have h1 := quantaBarFive_zero_chiralityFlux_abs_sum_le_five h3L
   have h1' : ((𝓜.quantaBarFive.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).card • 1 ≤
       ((𝓜.quantaBarFive.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).sum := by
     apply Multiset.card_nsmul_le_sum
