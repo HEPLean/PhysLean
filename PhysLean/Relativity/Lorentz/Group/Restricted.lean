@@ -51,33 +51,14 @@ instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) 
     rintro Λ ⟨Λ_proper, Λ_ortho⟩
     change Λ⁻¹ ∈ Restricted d
 
-    -- hypotheses
-    have h_det_eq : det Λ⁻¹.1 = det Λ.1 := by
-      rw [inv_eq_dual, det_dual]
+    have h_eta : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by rfl
 
-    have h_proper : IsProper Λ⁻¹ := by
-      rw [Λ_proper] at h_det_eq
-      exact h_det_eq
-
-    have h_eta : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
-      rfl
-
-    have h_dual_apply : (dual Λ.1) (Sum.inl 0) (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inl 0) := by
+    have h_dual : (dual Λ.1) (Sum.inl 0) (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inl 0) := by
       rw [dual_apply, h_eta, one_mul, mul_one]
 
-    have h_inv_00 : (Λ⁻¹.1) (Sum.inl 0) (Sum.inl 0) = (Λ.1) (Sum.inl 0) (Sum.inl 0) := by
-      rw [inv_eq_dual]
-      rw [h_dual_apply]
-
-    have h_ortho' : IsOrthochronous Λ⁻¹ := by
-      rw [IsOrthochronous] at Λ_ortho
-      unfold IsOrthochronous
-      rw [h_inv_00]
-      exact Λ_ortho
-
     exact ⟨
-      by exact h_proper,
-      by exact h_ortho'
+      by rw [IsProper, inv_eq_dual, det_dual, Λ_proper],
+      by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho
     ⟩
 
 end LorentzGroup
