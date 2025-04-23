@@ -32,6 +32,7 @@ def Restricted (d : ℕ) : Set (LorentzGroup d) :=
   { Λ : LorentzGroup d | IsProper Λ ∧ IsOrthochronous Λ }
 
 open Matrix
+open minkowskiMatrix
 
 /- The restricted Lorentz group is a subgroup of the Lorentz group. -/
 instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) where
@@ -46,6 +47,37 @@ instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) 
       by exact mul_proper_of_proper_proper Λ₁_proper Λ₂_proper,
       by exact mul_othchron_of_othchron_othchron Λ₁_ortho Λ₂_ortho
     ⟩
-  inv_mem' := sorry
+  inv_mem' := by
+    rintro Λ ⟨Λ_proper, Λ_ortho⟩
+    change Λ⁻¹ ∈ Restricted d
+
+    -- hypotheses
+    have h_det_eq : det Λ⁻¹.1 = det Λ.1 := by
+      rw [inv_eq_dual, det_dual]
+
+    have h_proper : IsProper Λ⁻¹ := by
+      rw [Λ_proper] at h_det_eq
+      exact h_det_eq
+
+    have h_eta : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
+      rfl
+
+    have h_dual_apply : (dual Λ.1) (Sum.inl 0) (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inl 0) := by
+      rw [dual_apply, h_eta, one_mul, mul_one]
+
+    have h_inv_00 : (Λ⁻¹.1) (Sum.inl 0) (Sum.inl 0) = (Λ.1) (Sum.inl 0) (Sum.inl 0) := by
+      rw [inv_eq_dual]
+      rw [h_dual_apply]
+
+    have h_ortho' : IsOrthochronous Λ⁻¹ := by
+      rw [IsOrthochronous] at Λ_ortho
+      unfold IsOrthochronous
+      rw [h_inv_00]
+      exact Λ_ortho
+
+    exact ⟨
+      by exact h_proper,
+      by exact h_ortho'
+    ⟩
 
 end LorentzGroup

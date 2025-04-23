@@ -106,6 +106,9 @@ instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   inv A := ⟨minkowskiMatrix.dual A.1, LorentzGroup.dual_mem A.2⟩
   inv_mul_cancel A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
 
+lemma inv_eq_dual (Λ : LorentzGroup d) :
+  (Λ⁻¹ : LorentzGroup d) = minkowskiMatrix.dual Λ := by rfl
+
 /-- `LorentzGroup` has the subtype topology. -/
 instance : TopologicalSpace (LorentzGroup d) := instTopologicalSpaceSubtype
 
