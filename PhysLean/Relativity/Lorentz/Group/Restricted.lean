@@ -40,7 +40,15 @@ instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) 
     by rw [IsProper]; exact det_one,
     by rw [IsOrthochronous]; exact zero_le_one
   ⟩
-  mul_mem' := sorry
+  mul_mem' := by
+    rintro Λ₁ Λ₂ ⟨Λ₁_proper, Λ₁_ortho⟩ ⟨Λ₂_proper, Λ₂_ortho⟩
+    have h_det : det (Λ₁.1 * Λ₂.1) = 1 := by
+      rw [IsProper] at Λ₁_proper Λ₂_proper
+      rw [det_mul, Λ₁_proper, Λ₂_proper, mul_one]
+    exact ⟨
+      by rw [IsProper]; exact h_det,
+      by exact mul_othchron_of_othchron_othchron Λ₁_ortho Λ₂_ortho
+    ⟩
   inv_mem' := sorry
 
 end LorentzGroup
