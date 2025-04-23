@@ -15,6 +15,10 @@ https://arxiv.org/pdf/1401.5084
 - Condition (27) and (28) for no exotics in the spectrum.
 - Condition (29) for the three lepton doublets with exactly one pair of Higges.
 
+## References
+
+see also: https://arxiv.org/pdf/1011.2212
+
 -/
 namespace FTheory
 
@@ -72,11 +76,40 @@ def ThreeLeptonDoublets : Prop :=
 
 instance : Decidable 𝓜.ThreeLeptonDoublets := decEq _ _
 
+/-!
+
+## Condition on Higges
+
+-/
+
+def IsUpHiggs (a : QuantaBarFive I) : Prop :=
+  a.M = 0 ∧ a.N = -1
+
+instance : DecidablePred (IsUpHiggs (I := I)) := fun _ => instDecidableAnd
+
+def IsDownHiggs (a : QuantaBarFive I) : Prop :=
+  a.M = 0 ∧ a.N = 1
+
+instance : DecidablePred (IsDownHiggs (I := I)) := fun _ => instDecidableAnd
+
+def HasExclusiveHigges : Prop :=
+  𝓜.quantaBarFive.countP IsUpHiggs = 1
+  ∧ 𝓜.quantaBarFive.countP IsDownHiggs = 1
+
+instance : Decidable 𝓜.HasExclusiveHigges := instDecidableAnd
+
+/-!
+
+## Combined conditions
+
+-/
+
 /-- The condition on the matter content for it to produce a valid spectrum. -/
 def ValidMatterSpectrum : Prop :=
   𝓜.ThreeChiralFamiles ∧
   𝓜.NoExotics ∧
-  𝓜.ThreeLeptonDoublets
+  𝓜.ThreeLeptonDoublets ∧
+  𝓜.HasExclusiveHigges
 
 instance : Decidable 𝓜.ValidMatterSpectrum := instDecidableAnd
 
