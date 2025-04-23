@@ -111,7 +111,7 @@ lemma mulVec_inr_i (v : (Fin 1 ⊕ Fin d) → ℝ) (i : Fin d) :
 variable (Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
 
 /-- The dual of a matrix with respect to the Minkowski metric.
-  A suitable name fo this construction is the Minkowski dual. -/
+  A suitable name for this construction is the Minkowski dual. -/
 def dual : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ := η * Λᵀ * η
 
 /-- The Minkowski dual of the identity is the identity. -/
