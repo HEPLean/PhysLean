@@ -176,6 +176,11 @@ instance : DecidablePred (@IsProper d) := by
   intro Λ
   apply Real.decidableEq
 
+/-- The product of two proper Lorentz transformations is proper. -/
+lemma mul_proper_of_proper_proper {Λ Λ' : LorentzGroup d} (h : IsProper Λ) (h' : IsProper Λ') :
+    IsProper (Λ * Λ') := by
+  rw [IsProper, lorentzGroupIsGroup_mul_coe, det_mul, h, h', mul_one]
+
 /-- A Lorentz transformation is proper if it's image under the det-representation
   `detRep` is `1`. -/
 lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
