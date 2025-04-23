@@ -3,17 +3,18 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
+import PhysLean.Meta.Informal.Basic
+import PhysLean.Relativity.Lorentz.Group.Basic
 import PhysLean.Relativity.Lorentz.Group.Orthochronous
 import PhysLean.Relativity.Lorentz.Group.Proper
-import PhysLean.Relativity.Lorentz.Group.Basic
-import PhysLean.Meta.Informal.Basic
+
 /-!
 # The Restricted Lorentz Group
 
 This file is currently a stub.
 
 -/
-TODO "6VZNK" "Add definition of the restricted Lorentz group."
+
 TODO "6VZNP" "Prove that every member of the restricted Lorentz group is
   combiniation of a boost and a rotation."
 TODO "6VZNU" "Prove restricted Lorentz group equivalent to connected component of identity
@@ -26,8 +27,8 @@ namespace LorentzGroup
 --   deps := [``LorentzGroup, ``IsProper, ``IsOrthochronous]
 --   tag := "6VZN7"
 
-/- The restricted Lorentz group is the subset of the Lorentz group which is proper
-and orthochronous. -/
+/- The restricted Lorentz group comprises the proper and orthochronous elements of the
+Lorentz group. -/
 def Restricted (d : ℕ) : Set (LorentzGroup d) :=
   { Λ : LorentzGroup d | IsProper Λ ∧ IsOrthochronous Λ }
 
@@ -49,12 +50,10 @@ instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) 
     ⟩
   inv_mem' := by
     rintro Λ ⟨Λ_proper, Λ_ortho⟩
-    change Λ⁻¹ ∈ Restricted d
 
-    have h_eta : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by rfl
-
+    have h_η₀₀ : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by rfl
     have h_dual : (dual Λ.1) (Sum.inl 0) (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inl 0) := by
-      rw [dual_apply, h_eta, one_mul, mul_one]
+      rw [dual_apply, h_η₀₀, one_mul, mul_one]
 
     exact ⟨
       by rw [IsProper, inv_eq_dual, det_dual, Λ_proper],
