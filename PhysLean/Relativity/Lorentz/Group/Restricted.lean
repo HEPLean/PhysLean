@@ -22,7 +22,7 @@ TODO "6VZNU" "Prove restricted Lorentz group equivalent to connected component o
 
 namespace LorentzGroup
 
-/- The restricted Lorentz group comprises the proper and orthochronous elements of the
+/-- The restricted Lorentz group comprises the proper and orthochronous elements of the
 Lorentz group. -/
 def Restricted (d : ℕ) : Set (LorentzGroup d) :=
   { Λ : LorentzGroup d | IsProper Λ ∧ IsOrthochronous Λ }
@@ -35,14 +35,12 @@ instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) 
   carrier := Restricted d
   one_mem' := ⟨
     by rw [IsProper]; exact det_one,
-    by rw [IsOrthochronous]; exact zero_le_one
-  ⟩
+    by rw [IsOrthochronous]; exact zero_le_one⟩
   mul_mem' := by
     rintro Λ₁ Λ₂ ⟨Λ₁_proper, Λ₁_ortho⟩ ⟨Λ₂_proper, Λ₂_ortho⟩
     exact ⟨
       by exact mul_proper_of_proper_proper Λ₁_proper Λ₂_proper,
-      by exact mul_othchron_of_othchron_othchron Λ₁_ortho Λ₂_ortho
-    ⟩
+      by exact mul_othchron_of_othchron_othchron Λ₁_ortho Λ₂_ortho⟩
   inv_mem' := by
     rintro Λ ⟨Λ_proper, Λ_ortho⟩
 
@@ -52,8 +50,7 @@ instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) 
 
     exact ⟨
       by rw [IsProper, inv_eq_dual, det_dual, Λ_proper],
-      by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho
-    ⟩
+      by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
 
 /- The restricted Lorentz group is a group. -/
 instance {d : ℕ} : Group (Restricted d) := Subgroup.toGroup (restrictedLorentzGroupIsSubgroup)
