@@ -22,11 +22,6 @@ TODO "6VZNU" "Prove restricted Lorentz group equivalent to connected component o
 
 namespace LorentzGroup
 
-/-- The subgroup of the Lorentz group consisting of elements which are proper and orthochronous. -/
--- informal_definition Restricted where
---   deps := [``LorentzGroup, ``IsProper, ``IsOrthochronous]
---   tag := "6VZN7"
-
 /- The restricted Lorentz group comprises the proper and orthochronous elements of the
 Lorentz group. -/
 def Restricted (d : ℕ) : Set (LorentzGroup d) :=
