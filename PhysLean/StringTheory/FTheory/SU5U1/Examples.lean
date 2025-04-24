@@ -139,6 +139,27 @@ lemma exampleI14f_anomalyFree : exampleI14f.AnomalyFree := by
 lemma exampleI14f_validMatterSpectrum : exampleI14f.ValidMatterSpectrum := by
   decide
 
+/-!
+
+## Three 10d representations and four 5-bar representations
+
+-/
+
+def exampleI34a : MatterContent .same where
+  quantaTen := {(1, 0, ⟨-3, by decide⟩), (1, 0, ⟨-2, by decide⟩), (1, 0, ⟨-1, by decide⟩)}
+  quantaBarFive := {(0, -1, ⟨-2, by decide⟩), (0, 1, ⟨1, by decide⟩),
+    (0, 3, ⟨-1, by decide⟩), (3, -3, ⟨0, by decide⟩)}
+  chirality_charge_not_both_zero_bar_five := by
+    simp
+  chirality_charge_not_both_zero_ten := by
+    simp
+
+lemma exampleI34a_anomalyFree : exampleI34a.AnomalyFree := by
+  decide
+
+lemma exampleI34a_validMatterSpectrum : exampleI34a.ValidMatterSpectrum := by
+  decide
+
 end MatterContent
 
 end SU5U1

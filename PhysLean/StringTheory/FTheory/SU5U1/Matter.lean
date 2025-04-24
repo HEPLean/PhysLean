@@ -45,8 +45,18 @@ abbrev QuantaBarFive (I : CodimensionOneConfig) : Type :=
 /-- The `ChiralityFlux` quanta of a 5-bar representation. -/
 abbrev QuantaBarFive.M {I : CodimensionOneConfig} (a : QuantaBarFive I) : ChiralityFlux := a.1
 
+@[simp]
+lemma QuantaBarFive.M_mk {I : CodimensionOneConfig} (m : ChiralityFlux)
+    (n : HyperChargeFlux) (q : I.allowedBarFiveCharges) :
+    QuantaBarFive.M (m, n, q) = m := rfl
+
 /-- The `HyperChargeFlux` quanta of a 5-bar representation. -/
 abbrev QuantaBarFive.N {I : CodimensionOneConfig} (a : QuantaBarFive I) : HyperChargeFlux := a.2.1
+
+@[simp]
+lemma QuantaBarFive.N_mk {I : CodimensionOneConfig} (m : ChiralityFlux)
+    (n : HyperChargeFlux) (q : I.allowedBarFiveCharges) :
+    QuantaBarFive.N (m, n, q) = n := rfl
 
 /-- The extra `U(1)` charge of a 5-bar representation. -/
 abbrev QuantaBarFive.q {I : CodimensionOneConfig} (a : QuantaBarFive I) :
@@ -59,8 +69,18 @@ def QuantaTen (I : CodimensionOneConfig) : Type :=
 /-- The `ChiralityFlux` quanta of a 10d representation. -/
 abbrev QuantaTen.M {I : CodimensionOneConfig} (a : QuantaTen I) : ChiralityFlux := a.1
 
+@[simp]
+lemma QuantaBarTen.M_mk {I : CodimensionOneConfig} (m : ChiralityFlux)
+    (n : HyperChargeFlux) (q : I.allowedTenCharges) :
+    QuantaTen.M (m, n, q) = m := rfl
+
 /-- The `HyperChargeFlux` quanta of a 10d representation. -/
 abbrev QuantaTen.N {I : CodimensionOneConfig} (a : QuantaTen I) : HyperChargeFlux := a.2.1
+
+@[simp]
+lemma QuantaBarTen.N_mk {I : CodimensionOneConfig} (m : ChiralityFlux)
+    (n : HyperChargeFlux) (q : I.allowedTenCharges) :
+    QuantaTen.N (m, n, q) = n := rfl
 
 /-- The extra `U(1)` charge of a 10d representation. -/
 abbrev QuantaTen.q {I : CodimensionOneConfig} (a : QuantaTen I) :

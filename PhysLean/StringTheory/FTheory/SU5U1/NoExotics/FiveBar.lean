@@ -182,14 +182,14 @@ lemma quantaBarFive_zero_chiralityFlux_abs_sum_le_five (h3L : 𝓜.ThreeLeptonDo
     intro x hx
     simp at hx
     obtain ⟨a, b, hc, d, ha, rfl⟩ := hx
-    exact abs_nonneg (QuantaBarFive.M (a, b, ⟨hc, d⟩) + QuantaBarFive.N (a, b, ⟨hc, d⟩))
+    exact abs_nonneg _
   have hz_non_zero_pos : 0 ≤
       (Multiset.map (fun a => |a.M + a.N|) (𝓜.quantaBarFive.filter (fun x => ¬ x.M = 0))).sum := by
     apply Multiset.sum_nonneg
     intro x hx
     simp at hx
     obtain ⟨a, b, hc, d, ha, rfl⟩ := hx
-    exact abs_nonneg (QuantaBarFive.M (a, b, ⟨hc, d⟩) + QuantaBarFive.N (a, b, ⟨hc, d⟩))
+    exact abs_nonneg _
   have hab {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : a + b = 5) : a ≤ 5 := by omega
   exact hab hz_pos hz_non_zero_pos h3L
 
@@ -201,7 +201,7 @@ lemma quantaBarFive_zero_chiralityFlux_card_le_five (h3L : 𝓜.ThreeLeptonDoubl
       ((𝓜.quantaBarFive.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).sum := by
     apply Multiset.card_nsmul_le_sum
     intro x hx
-    simp at hx
+    simp only [Multiset.mem_map, Multiset.mem_filter, Prod.exists, Subtype.exists] at hx
     obtain ⟨m, n, q, hq, ha, rfl⟩ := hx
     rw [ha.2]
     have hp := 𝓜.chirality_charge_not_both_zero_bar_five (m, n, ⟨q, hq⟩) ha.1
