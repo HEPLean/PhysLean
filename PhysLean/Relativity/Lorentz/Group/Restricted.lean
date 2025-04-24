@@ -30,7 +30,7 @@ def Restricted (d : ℕ) : Set (LorentzGroup d) :=
 open Matrix
 open minkowskiMatrix
 
-/- The restricted Lorentz group is a subgroup of the Lorentz group. -/
+/-- The restricted Lorentz group is a subgroup of the Lorentz group. -/
 def RestrictedIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) where
   carrier := Restricted d
   one_mem' := ⟨
@@ -52,7 +52,7 @@ def RestrictedIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) where
       by rw [IsProper, inv_eq_dual, det_dual, Λ_proper],
       by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
 
-/- The restricted Lorentz group is a group. -/
+/-- The restricted Lorentz group is a group. -/
 instance restrictedIsGroup {d : ℕ} : Group (Restricted d) :=
     Subgroup.toGroup (RestrictedIsSubgroup)
 
