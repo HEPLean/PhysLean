@@ -53,6 +53,7 @@ instance restrictedLorentzGroupIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) 
       by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
 
 /- The restricted Lorentz group is a group. -/
-instance {d : ℕ} : Group (Restricted d) := Subgroup.toGroup (restrictedLorentzGroupIsSubgroup)
+instance {d : ℕ} : Group (Restricted d) :=
+    Subgroup.toGroup (restrictedLorentzGroupIsSubgroup)
 
 end LorentzGroup
