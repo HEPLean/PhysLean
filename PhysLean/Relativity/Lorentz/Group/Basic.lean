@@ -192,7 +192,7 @@ lemma minkowskiMatrix_comm : minkowskiMatrix * Λ.1 = (transpose Λ⁻¹).1 * mi
 ## Lorentz group as a topological group
 
 We now show that the Lorentz group is a topological group.
-We do this by showing that the natrual map from the Lorentz group to `GL (Fin 4) ℝ` is an
+We do this by showing that the natural map from the Lorentz group to `GL (Fin 4) ℝ` is an
 embedding.
 
 -/
