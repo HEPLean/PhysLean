@@ -49,12 +49,8 @@ def Restricted (d : ℕ) : Subgroup (LorentzGroup d) where
       by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
 
 lemma isProper_conj {d : ℕ} {Λ P : LorentzGroup d} (hP : IsProper P) : IsProper (Λ * P * Λ⁻¹) := by
-  have h_det_dual : Λ.1 * dual Λ.1 = 1 := by exact Λ.2
-  have h_det : det Λ.1 * det Λ⁻¹.1 = 1 := by
-    rw [inv_eq_dual, ← det_mul, h_det_dual, det_one]
-
   simp only [IsProper, lorentzGroupIsGroup_mul_coe, det_mul]
-  rw [mul_comm Λ.1.det, mul_assoc, h_det, mul_one, hP]
+  rw [hP, mul_one, inv_eq_dual, ← det_mul, Λ.2, det_one]
 
 lemma isOrthochronous_conj {d : ℕ} {Λ O : LorentzGroup d} (hO : IsOrthochronous O) :
     IsOrthochronous (Λ * O * Λ⁻¹) := by
