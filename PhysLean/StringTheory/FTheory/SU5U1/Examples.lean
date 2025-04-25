@@ -145,6 +145,9 @@ lemma exampleI14f_validMatterSpectrum : exampleI14f.ValidMatterSpectrum := by
 
 -/
 
+
+/-- An example of matter content with three 10d representations and 4 5-bar representations.
+  This corresponds to example I.3.4.a of arXiv:1507.05961 (Eq. A12). -/
 def exampleI34a : MatterContent .same where
   quantaTen := {(1, 0, ⟨-3, by decide⟩), (1, 0, ⟨-2, by decide⟩), (1, 0, ⟨-1, by decide⟩)}
   quantaBarFive := {(0, -1, ⟨-2, by decide⟩), (0, 1, ⟨1, by decide⟩),
