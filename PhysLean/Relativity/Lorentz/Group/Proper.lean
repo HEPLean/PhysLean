@@ -30,6 +30,12 @@ lemma det_eq_one_or_neg_one (Λ : 𝓛 d) : Λ.1.det = 1 ∨ Λ.1.det = -1 := by
   refine mul_self_eq_one_iff.mp ?_
   simpa only [det_mul, det_dual, det_one] using congrArg det ((mem_iff_self_mul_dual).mp Λ.2)
 
+/-- The determinant of a Lorentz matrix is invertible. -/
+lemma det_invertible {d : ℕ} (Λ : 𝓛 d ) : Λ.1.det ≠ 0 := by
+  cases' det_eq_one_or_neg_one Λ with h1 h2
+  . rw [h1]; exact one_ne_zero
+  . rw [h2]; exact ne_of_lt neg_one_lt_zero
+
 /-- The group `ℤ₂`. -/
 local notation "ℤ₂" => Multiplicative (ZMod 2)
 
