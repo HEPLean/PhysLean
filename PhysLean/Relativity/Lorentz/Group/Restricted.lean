@@ -22,17 +22,13 @@ TODO "6VZNU" "Prove restricted Lorentz group equivalent to connected component o
 
 namespace LorentzGroup
 
-/-- The restricted Lorentz group comprises the proper and orthochronous elements of the
-Lorentz group. -/
-def Restricted (d : ℕ) : Set (LorentzGroup d) :=
-  { Λ : LorentzGroup d | IsProper Λ ∧ IsOrthochronous Λ }
-
 open Matrix
 open minkowskiMatrix
 
-/-- The restricted Lorentz group is a subgroup of the Lorentz group. -/
-def RestrictedIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) where
-  carrier := Restricted d
+/-- The restricted Lorentz group comprises the proper and orthochronous elements of the
+Lorentz group. -/
+def Restricted (d : ℕ) : Subgroup (LorentzGroup d) where
+  carrier := { Λ : LorentzGroup d | IsProper Λ ∧ IsOrthochronous Λ }
   one_mem' := ⟨
     by rw [IsProper]; exact det_one,
     by rw [IsOrthochronous]; exact zero_le_one⟩
@@ -51,11 +47,5 @@ def RestrictedIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) where
     exact ⟨
       by rw [IsProper, inv_eq_dual, det_dual, Λ_proper],
       by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
-
-/-- The restricted Lorentz group is a group. -/
-instance restrictedIsGroup {d : ℕ} : Group (Restricted d) :=
-    Subgroup.toGroup (RestrictedIsSubgroup)
-
-instance {d : ℕ} : Coe (Restricted d) (LorentzGroup d) := ⟨fun Λ => Λ⟩
 
 end LorentzGroup
