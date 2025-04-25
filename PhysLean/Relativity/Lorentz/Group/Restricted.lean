@@ -39,7 +39,7 @@ def RestrictedIsSubgroup {d : ℕ} : Subgroup (LorentzGroup d) where
   mul_mem' := by
     rintro Λ₁ Λ₂ ⟨Λ₁_proper, Λ₁_ortho⟩ ⟨Λ₂_proper, Λ₂_ortho⟩
     exact ⟨
-      by exact mul_proper_of_proper_proper Λ₁_proper Λ₂_proper,
+      by exact mul_isProper_of_isProper_isProper Λ₁_proper Λ₂_proper,
       by exact mul_othchron_of_othchron_othchron Λ₁_ortho Λ₂_ortho⟩
   inv_mem' := by
     rintro Λ ⟨Λ_proper, Λ_ortho⟩
