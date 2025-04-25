@@ -27,7 +27,7 @@ open minkowskiMatrix
 
 /-- The restricted Lorentz group comprises the proper and orthochronous elements of the
 Lorentz group. -/
-def restricted (d : ℕ) : Subgroup (LorentzGroup d) where
+def Restricted (d : ℕ) : Subgroup (LorentzGroup d) where
   carrier := { Λ : LorentzGroup d | IsProper Λ ∧ IsOrthochronous Λ }
   one_mem' := ⟨
     by rw [IsProper]; exact det_one,
