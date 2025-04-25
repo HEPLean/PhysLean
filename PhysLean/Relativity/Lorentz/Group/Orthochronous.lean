@@ -192,17 +192,19 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
 
 lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) :
     orthchroRep Λ⁻¹ = orthchroRep Λ := by
-  have h : orthchroRep Λ * orthchroRep Λ⁻¹ = 1 := by
-    rw [← orthchroRep.map_mul, mul_inv_cancel, orthchroRep.map_one]
+
+  have h_inv : orthchroRep Λ⁻¹ = (orthchroRep Λ)⁻¹ := by exact map_inv orthchroRep Λ
 
   by_cases h_orth : IsOrthochronous Λ
   case pos =>
     have hΛ_1 : orthchroRep Λ = 1 := by exact orthchroMap_IsOrthochronous h_orth
-    rw [hΛ_1, one_mul] at h
-    rw [h, hΛ_1]
+    rw [h_inv, hΛ_1]
+    group
   case neg =>
-    have hΛ₁ : orthchroRep Λ = Additive.toMul (1 : ZMod 2) := by
+    have hΛ_neg_1 : orthchroRep Λ = Additive.toMul (1 : ZMod 2) := by
       exact orthchroMap_not_IsOrthochronous h_orth
+    rw [h_inv, hΛ_neg_1]
+    group
     sorry
 
 end LorentzGroup
