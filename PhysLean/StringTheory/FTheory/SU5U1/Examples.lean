@@ -153,9 +153,9 @@ def exampleI34a : MatterContent .same where
   quantaBarFive := {(0, -1, ⟨-2, by decide⟩), (0, 1, ⟨1, by decide⟩),
     (0, 3, ⟨-1, by decide⟩), (3, -3, ⟨0, by decide⟩)}
   chirality_charge_not_both_zero_bar_five := by
-    simp
+    simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
-    simp
+    simp [QuantaTen.N, QuantaTen.M]
 
 lemma exampleI34a_anomalyFree : exampleI34a.AnomalyFree := by
   decide
