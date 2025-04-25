@@ -190,9 +190,7 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
         orthchroMap_IsOrthochronous (mul_othchron_of_not_othchron_not_othchron h h')]
       rfl
 
-lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) :
-    orthchroRep Λ⁻¹ = orthchroRep Λ := by
-
+lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orthchroRep Λ := by
   have h_inv : orthchroRep Λ⁻¹ = (orthchroRep Λ)⁻¹ := by exact map_inv orthchroRep Λ
 
   by_cases h_orth : IsOrthochronous Λ
