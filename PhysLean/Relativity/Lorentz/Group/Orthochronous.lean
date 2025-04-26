@@ -192,8 +192,8 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
 
 lemma isOrthchro_iff_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchroRep.ker := by
   constructor
-  . exact orthchroMap_IsOrthochronous
-  . intro h
+  · exact orthchroMap_IsOrthochronous
+  · intro h
     by_contra h'
     have := orthchroMap_not_IsOrthochronous h'
     change orthchroRep Λ = _ at this
@@ -217,13 +217,13 @@ lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orth
 lemma isOrthchro_iff_inv_isOrthchro {Λ : LorentzGroup d} :
     IsOrthochronous Λ ↔ IsOrthochronous Λ⁻¹ := by
   constructor
-  . intro h
+  · intro h
     rw [isOrthchro_iff_orthchroRep_ker]
     apply orthchroMap_IsOrthochronous at h
     change orthchroRep Λ = _ at h
     rw [← orthchroRep_inv_eq_self] at h
     exact h
-  . intro h
+  · intro h
     rw [isOrthchro_iff_orthchroRep_ker]
     apply orthchroMap_IsOrthochronous at h
     change orthchroRep Λ⁻¹ = _ at h
