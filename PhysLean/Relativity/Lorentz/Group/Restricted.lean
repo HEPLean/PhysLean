@@ -55,8 +55,18 @@ lemma isProper_conj {d : ℕ} {Λ P : LorentzGroup d} (hP : IsProper P) : IsProp
 lemma isOrthochronous_conj {d : ℕ} {Λ O : LorentzGroup d} (hO : IsOrthochronous O) :
     IsOrthochronous (Λ * O * Λ⁻¹) := by
   by_cases hΛ : IsOrthochronous Λ
-  case pos => sorry
-  case neg => sorry
+  case pos =>
+    have h_OΛ : IsOrthochronous (Λ * O) := by
+      exact mul_othchron_of_othchron_othchron hΛ hO
+    have hΛ_inv : IsOrthochronous Λ⁻¹ := by
+      exact isOrthchro_iff_inv_isOrthchro.mp hΛ
+    exact mul_othchron_of_othchron_othchron h_OΛ hΛ_inv
+  case neg =>
+    have h_OΛ : ¬IsOrthochronous (Λ * O) := by
+      exact mul_not_othchron_of_not_othchron_othchron hΛ hO
+    have hΛ_inv : ¬IsOrthochronous Λ⁻¹ := by
+      exact isOrthchro_iff_inv_isOrthchro.not.mp hΛ
+    exact mul_othchron_of_not_othchron_not_othchron h_OΛ hΛ_inv
 
 /-- The restricted Lorentz group is a normal subgroup of the Lorentz group. -/
 lemma restrictedIsNormalSubgroup {d : ℕ} : (Restricted d).Normal :=
