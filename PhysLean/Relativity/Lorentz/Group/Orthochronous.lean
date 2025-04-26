@@ -190,6 +190,25 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
         orthchroMap_IsOrthochronous (mul_othchron_of_not_othchron_not_othchron h h')]
       rfl
 
+-- What we know:
+example : Λ ∈ orthchroRep.ker ↔ orthchroRep Λ = 1 := by rfl
+example : Λ ∈ orthchroRep.ker ↔ orthchroRep Λ = 1 := by rw [MonoidHom.mem_ker]
+example : IsOrthochronous Λ → orthchroRep Λ = 1 := by exact orthchroMap_IsOrthochronous
+example : ¬ IsOrthochronous Λ → orthchroRep Λ = (1 : ZMod 2) := by exact orthchroMap_not_IsOrthochronous
+
+lemma isOrthchro_iff_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchroRep.ker := by
+  constructor
+  . intro h
+    change orthchroRep Λ = 1
+    exact orthchroMap_IsOrthochronous h
+  . intro h
+    rw [MonoidHom.mem_ker] at h
+    by_contra h'
+    have := orthchroMap_not_IsOrthochronous h'
+    change orthchroRep Λ = Multiplicative.ofAdd (1 : ZMod 2) at this
+    rw [h] at this
+    trivial
+
 lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orthchroRep Λ := by
   have h_inv : orthchroRep Λ⁻¹ = (orthchroRep Λ)⁻¹ := by exact map_inv orthchroRep Λ
 
