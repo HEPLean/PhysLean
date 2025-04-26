@@ -195,15 +195,14 @@ lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orth
 
   by_cases h_orth : IsOrthochronous Λ
   case pos =>
-    have hΛ_1 : orthchroRep Λ = 1 := by exact orthchroMap_IsOrthochronous h_orth
+    have hΛ_1 : orthchroRep Λ = (1 : ℤ₂) := by exact orthchroMap_IsOrthochronous h_orth
     rw [h_inv, hΛ_1]
-    group
+    rfl
   case neg =>
-    have hΛ_neg_1 : orthchroRep Λ = Additive.toMul (1 : ZMod 2) := by
+    have hΛ_neg_1 : orthchroRep Λ = Multiplicative.ofAdd (1 : ZMod 2) := by
       exact orthchroMap_not_IsOrthochronous h_orth
     rw [h_inv, hΛ_neg_1]
-    group
-    sorry
+    rfl
 
 end LorentzGroup
 
