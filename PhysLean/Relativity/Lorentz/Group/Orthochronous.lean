@@ -199,9 +199,9 @@ lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orth
     rw [h_inv, hΛ_1]
     rfl
   case neg =>
-    have hΛ_neg_1 : orthchroRep Λ = Multiplicative.ofAdd (1 : ZMod 2) := by
+    have hΛ_0 : orthchroRep Λ = Multiplicative.ofAdd (1 : ZMod 2) := by
       exact orthchroMap_not_IsOrthochronous h_orth
-    rw [h_inv, hΛ_neg_1]
+    rw [h_inv, hΛ_0]
     rfl
 
 end LorentzGroup
