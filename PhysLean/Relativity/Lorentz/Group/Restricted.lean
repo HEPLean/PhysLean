@@ -57,10 +57,10 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
     by_cases hΛ : IsOrthochronous Λ
     · exact mul_othchron_of_othchron_othchron
         (mul_othchron_of_othchron_othchron hΛ hO)
-        (isOrthchro_iff_inv_isOrthchro.mp hΛ)
+        (IsOrthochronous.iff_inv_isOrthochronous.mp hΛ)
     · exact mul_othchron_of_not_othchron_not_othchron
         (mul_not_othchron_of_not_othchron_othchron hΛ hO)
-        (isOrthchro_iff_inv_isOrthchro.not.mp hΛ)
+        (IsOrthochronous.iff_inv_isOrthochronous.not.mp hΛ)
   constructor
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩
