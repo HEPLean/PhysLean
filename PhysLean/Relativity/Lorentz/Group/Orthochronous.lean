@@ -205,9 +205,9 @@ lemma isOrthchro_iff_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchroRep
     rw [MonoidHom.mem_ker] at h
     by_contra h'
     have := orthchroMap_not_IsOrthochronous h'
-    change orthchroRep Λ = Multiplicative.ofAdd (1 : ZMod 2) at this
+    change orthchroRep Λ = _ at this
     rw [h] at this
-    trivial
+    contradiction
 
 lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orthchroRep Λ := by
   have h_inv : orthchroRep Λ⁻¹ = (orthchroRep Λ)⁻¹ := by exact map_inv orthchroRep Λ
