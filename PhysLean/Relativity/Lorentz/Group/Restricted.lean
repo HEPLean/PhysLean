@@ -49,7 +49,7 @@ def Restricted (d : ℕ) : Subgroup (LorentzGroup d) where
       by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
 
 /-- The restricted Lorentz group is a normal subgroup of the Lorentz group. -/
-lemma restrictedIsNormalSubgroup {d : ℕ} : (Restricted d).Normal := by
+lemma restricted_normal_subgroup {d : ℕ} : (Restricted d).Normal := by
   have h_proper {Λ P : LorentzGroup d} (hP : IsProper P) : IsProper (Λ * P * Λ⁻¹) := by
     simp only [IsProper, lorentzGroupIsGroup_mul_coe, det_mul]
     rw [hP, mul_one, ← det_mul, coe_inv, mul_inv_of_invertible, det_one]
