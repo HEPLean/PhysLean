@@ -55,10 +55,12 @@ lemma restrictedIsNormalSubgroup {d : ℕ} : (Restricted d).Normal := by
     rw [hP, mul_one, ← det_mul, coe_inv, mul_inv_of_invertible, det_one]
   have h_ortho {Λ O : LorentzGroup d} (hO : IsOrthochronous O) : IsOrthochronous (Λ * O * Λ⁻¹) := by
     by_cases hΛ : IsOrthochronous Λ
-    · have h_OΛ := mul_othchron_of_othchron_othchron hΛ hO
-      exact mul_othchron_of_othchron_othchron h_OΛ (isOrthchro_iff_inv_isOrthchro.mp hΛ)
-    · have h_OΛ := mul_not_othchron_of_not_othchron_othchron hΛ hO
-      exact mul_othchron_of_not_othchron_not_othchron h_OΛ (isOrthchro_iff_inv_isOrthchro.not.mp hΛ)
+    · exact mul_othchron_of_othchron_othchron
+        (mul_othchron_of_othchron_othchron hΛ hO)
+        (isOrthchro_iff_inv_isOrthchro.mp hΛ)
+    · exact mul_othchron_of_not_othchron_not_othchron
+        (mul_not_othchron_of_not_othchron_othchron hΛ hO)
+        (isOrthchro_iff_inv_isOrthchro.not.mp hΛ)
   constructor
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩
