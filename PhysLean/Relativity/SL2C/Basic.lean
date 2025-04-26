@@ -310,7 +310,7 @@ lemma toLorentzGroup_det_one (M : SL(2, ℂ)) : det (toLorentzGroup M).val = 1 :
 /-- The homomorphism from `SL(2, ℂ)` to the restricted Lorentz group. -/
 informal_lemma toRestrictedLorentzGroup where
   deps := [``toLorentzGroup, ``toLorentzGroup_det_one, ``toLorentzGroup_isOrthochronous,
-    ``LorentzGroup.Restricted]
+    ``restricted]
   tag := "6VZP6"
 
 TODO "6VZQF" "Define homomorphism from `SL(2, ℂ)` to the restricted Lorentz group."
