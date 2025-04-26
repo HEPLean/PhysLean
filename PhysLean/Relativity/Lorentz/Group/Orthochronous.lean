@@ -169,7 +169,7 @@ lemma mul_not_othchron_of_not_othchron_othchron {Λ Λ' : LorentzGroup d} (h : �
   rw [IsOrthochronous_iff_futurePointing] at h h'
   exact NormOne.FuturePointing.metric_reflect_not_mem_mem h h'
 
-/-- The homomorphism from `LorentzGroup` to `ℤ₂` whose kernel are the Orthochronous elements. -/
+/-- The homomorphism from `LorentzGroup` to `ℤ₂`. -/
 def orthchroRep : LorentzGroup d →* ℤ₂ where
   toFun := orthchroMap
   map_one' := orthchroMap_IsOrthochronous (by simp [IsOrthochronous])
@@ -190,6 +190,8 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
         orthchroMap_IsOrthochronous (mul_othchron_of_not_othchron_not_othchron h h')]
       rfl
 
+/-- The orthochronous Lorentz transformations form the kernel of the homomorphism from
+  `LorentzGroup` to `ℤ₂`. -/
 lemma isOrthchro_iff_in_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchroRep.ker := by
   constructor
   · exact orthchroMap_IsOrthochronous
@@ -200,6 +202,7 @@ lemma isOrthchro_iff_in_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchro
     rw [MonoidHom.mem_ker, h]
     trivial
 
+/-- The inverse of an orthochronous Lorentz transformation is orthochronous. -/
 lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ = orthchroRep Λ⁻¹ := by
   by_cases h_orth : IsOrthochronous Λ
   . have hΛ_1 : orthchroRep Λ = (1 : ℤ₂) := by exact orthchroMap_IsOrthochronous h_orth
@@ -209,6 +212,7 @@ lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ = orthchroR
     rw [map_inv orthchroRep Λ, hΛ_0]
     rfl
 
+/-- A Lorentz transformation is orthochronous iff its inverse is orthochronous. -/
 lemma isOrthchro_iff_inv_isOrthchro {Λ : LorentzGroup d} :
     IsOrthochronous Λ ↔ IsOrthochronous Λ⁻¹ := by
   rw [isOrthchro_iff_in_orthchroRep_ker, isOrthchro_iff_in_orthchroRep_ker, MonoidHom.mem_ker,
