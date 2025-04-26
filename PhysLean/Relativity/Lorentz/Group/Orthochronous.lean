@@ -214,7 +214,7 @@ lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orth
     rw [h_inv, hΛ_0]
     rfl
 
-lemma isOrthchro_iff_inv_isOrthchro (Λ : LorentzGroup d) :
+lemma isOrthchro_iff_inv_isOrthchro {Λ : LorentzGroup d} :
     IsOrthochronous Λ ↔ IsOrthochronous Λ⁻¹ := by
   constructor
   . intro h
