@@ -205,10 +205,10 @@ lemma isOrthchro_iff_in_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchro
 /-- The inverse of an orthochronous Lorentz transformation is orthochronous. -/
 lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ = orthchroRep Λ⁻¹ := by
   by_cases h_orth : IsOrthochronous Λ
-  . have hΛ_1 : orthchroRep Λ = (1 : ℤ₂) := by exact orthchroMap_IsOrthochronous h_orth
+  · have hΛ_1 : orthchroRep Λ = (1 : ℤ₂) := by exact orthchroMap_IsOrthochronous h_orth
     rw [map_inv orthchroRep Λ, hΛ_1]
     rfl
-  . have hΛ_0 : orthchroRep Λ = (1 : ZMod 2) := by exact orthchroMap_not_IsOrthochronous h_orth
+  · have hΛ_0 : orthchroRep Λ = (1 : ZMod 2) := by exact orthchroMap_not_IsOrthochronous h_orth
     rw [map_inv orthchroRep Λ, hΛ_0]
     rfl
 
