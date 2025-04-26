@@ -198,11 +198,8 @@ example : ¬ IsOrthochronous Λ → orthchroRep Λ = (1 : ZMod 2) := by exact or
 
 lemma isOrthchro_iff_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchroRep.ker := by
   constructor
+  . exact orthchroMap_IsOrthochronous
   . intro h
-    change orthchroRep Λ = 1
-    exact orthchroMap_IsOrthochronous h
-  . intro h
-    rw [MonoidHom.mem_ker] at h
     by_contra h'
     have := orthchroMap_not_IsOrthochronous h'
     change orthchroRep Λ = _ at this
