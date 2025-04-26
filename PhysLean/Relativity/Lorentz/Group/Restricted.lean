@@ -69,10 +69,9 @@ lemma isOrthochronous_conj {d : ℕ} {Λ O : LorentzGroup d} (hO : IsOrthochrono
     exact mul_othchron_of_not_othchron_not_othchron h_OΛ hΛ_inv
 
 /-- The restricted Lorentz group is a normal subgroup of the Lorentz group. -/
-lemma restrictedIsNormalSubgroup {d : ℕ} : (Restricted d).Normal :=
-  by
-    constructor
-    rintro R ⟨R_proper, R_ortho⟩ Λ
-    exact ⟨isProper_conj R_proper, isOrthochronous_conj R_ortho⟩
+lemma restrictedIsNormalSubgroup {d : ℕ} : (Restricted d).Normal := by
+  constructor
+  rintro R ⟨R_proper, R_ortho⟩ Λ
+  exact ⟨isProper_conj R_proper, isOrthochronous_conj R_ortho⟩
 
 end LorentzGroup
