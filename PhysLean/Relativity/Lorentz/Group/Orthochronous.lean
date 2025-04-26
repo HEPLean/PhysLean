@@ -201,17 +201,12 @@ lemma isOrthchro_iff_in_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchro
     trivial
 
 lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ = orthchroRep Λ⁻¹ := by
-  have h_inv : orthchroRep Λ⁻¹ = (orthchroRep Λ)⁻¹ := by exact map_inv orthchroRep Λ
-
   by_cases h_orth : IsOrthochronous Λ
-  case pos =>
-    have hΛ_1 : orthchroRep Λ = (1 : ℤ₂) := by exact orthchroMap_IsOrthochronous h_orth
-    rw [h_inv, hΛ_1]
+  . have hΛ_1 : orthchroRep Λ = (1 : ℤ₂) := by exact orthchroMap_IsOrthochronous h_orth
+    rw [map_inv orthchroRep Λ, hΛ_1]
     rfl
-  case neg =>
-    have hΛ_0 : orthchroRep Λ = Multiplicative.ofAdd (1 : ZMod 2) := by
-      exact orthchroMap_not_IsOrthochronous h_orth
-    rw [h_inv, hΛ_0]
+  . have hΛ_0 : orthchroRep Λ = (1 : ZMod 2) := by exact orthchroMap_not_IsOrthochronous h_orth
+    rw [map_inv orthchroRep Λ, hΛ_0]
     rfl
 
 lemma isOrthchro_iff_inv_isOrthchro {Λ : LorentzGroup d} :
