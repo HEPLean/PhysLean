@@ -220,6 +220,22 @@ lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ⁻¹ = orth
     rw [h_inv, hΛ_0]
     rfl
 
+lemma isOrthchro_iff_inv_isOrthchro (Λ : LorentzGroup d) :
+    IsOrthochronous Λ ↔ IsOrthochronous Λ⁻¹ := by
+  constructor
+  . intro h
+    rw [isOrthchro_iff_orthchroRep_ker]
+    apply orthchroMap_IsOrthochronous at h
+    change orthchroRep Λ = _ at h
+    rw [← orthchroRep_inv_eq_self] at h
+    exact h
+  . intro h
+    rw [isOrthchro_iff_orthchroRep_ker]
+    apply orthchroMap_IsOrthochronous at h
+    change orthchroRep Λ⁻¹ = _ at h
+    rw [orthchroRep_inv_eq_self] at h
+    exact h
+
 end LorentzGroup
 
 end
