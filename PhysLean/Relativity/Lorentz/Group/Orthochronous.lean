@@ -202,7 +202,8 @@ lemma isOrthchro_iff_in_orthchroRep_ker : IsOrthochronous Λ ↔ Λ ∈ orthchro
     rw [MonoidHom.mem_ker, h]
     trivial
 
-/-- The inverse of an orthochronous Lorentz transformation is orthochronous. -/
+/-- The homomorphism from `LorentzGroup` to `ℤ₂` assigns the same value to any Lorentz
+  transformation and its inverse. -/
 lemma orthchroRep_inv_eq_self (Λ : LorentzGroup d) : orthchroRep Λ = orthchroRep Λ⁻¹ := by
   by_cases h_orth : IsOrthochronous Λ
   · have hΛ_1 : orthchroRep Λ = (1 : ℤ₂) := by exact orthchroMap_IsOrthochronous h_orth
