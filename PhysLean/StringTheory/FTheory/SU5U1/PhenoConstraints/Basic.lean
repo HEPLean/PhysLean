@@ -26,7 +26,7 @@ The following terms break R-parity:
 The following terms are involved in proton-decay:
 - W¹, W², K¹, λ
 
-In what follows we constrain
+In what follows we constrain via `U(1)` charges
 - `μ` (C1 in 1507.05961)
 - `𝛽ᵢ` (C3 in 1507.05961)
 - `𝜆ᵢⱼₖ` (C4 in 1507.05961)
