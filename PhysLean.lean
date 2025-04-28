@@ -250,4 +250,5 @@ import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.FiveBar
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Ten
+import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
 import PhysLean.Thermodynamics.Basic
