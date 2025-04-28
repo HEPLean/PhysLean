@@ -44,6 +44,8 @@ namespace FTheory
 
 namespace SU5U1
 
+variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
+
 /-- A proposition which is true when the `μ`-term (`5Hu 5̄Hd`) does not obey the additional
   `U(1)` symmetry in the model, and is therefore constrained. -/
 semiformal_result "A6277" MuTermU1Constrained : Prop
