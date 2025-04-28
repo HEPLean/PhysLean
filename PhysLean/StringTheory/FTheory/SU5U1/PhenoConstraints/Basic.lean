@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 import PhysLean.Relativity.SpaceTime.Basic
+import PhysLean.Meta.Informal.SemiFormal
 /-!
 
 ## Phenomenological constraints on matter content
@@ -22,6 +23,8 @@ Important terms coming from the Kahler potential are (0912.0853):
 
 The following terms break R-parity:
 - β, λ, W², W⁴, K¹, K²
+(These are the interactions with an odd number of matter fields.)
+
 
 The following terms are involved in proton-decay:
 - W¹, W², K¹, λ
@@ -36,3 +39,39 @@ In what follows we constrain via `U(1)` charges
 - `W⁴ᵢ` (C6 in 1507.05961)
 - `K²ᵢ` (C7 in 1507.05961)
 -/
+
+namespace FTheory
+
+namespace SU5U1
+
+/-- A proposition which is true when the `μ`-term (`5Hu 5̄Hd`) does not obey the additional
+  `U(1)` symmetry in the model, and is therefore constrained. -/
+semiformal_result "A6277" MuTermU1Constrained : Prop
+
+/-- A proposition which is true
+  when the R-parity violating terms all do not obey the additional
+  `U(1)` symmetry in the model, and are therefore constrained.
+  This corresponds to the terms:
+- `𝛽ᵢ 5̄Mⁱ5Hu`
+- `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ`
+- `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`
+- `W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu`
+- `K¹ᵢⱼₖ  10ⁱ 10ʲ 5Mᵏ`
+- `K²ᵢ 5̄Hu 5̄Hd 10ⁱ`
+-/
+semiformal_result "A63BE" RParityU1Constrained : Prop
+
+/-- A proposition which is true when the terms in the super-potential and the Kahler potential
+  contributing to proton decay do not obey the additional `U(1)` symmetry in the model,
+  and are therefore constrained.
+  This corresponds to the terms
+- W¹ᵢⱼₖₗ 10ⁱ 10ʲ 10ᵏ 5̄Mˡ
+- 𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ
+- W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd
+- `K¹ᵢⱼₖ  10ⁱ 10ʲ 5Mᵏ`
+-/
+semiformal_result "A63B4" ProtonDecayU1Constrained : Prop
+
+end SU5U1
+
+end FTheory
