@@ -53,7 +53,7 @@ abbrev QuantaBarFive.q {I : CodimensionOneConfig} (a : QuantaBarFive I) :
     I.allowedBarFiveCharges := a.2.2
 
 /-- The type of quanta associated with matter content in the 10d representation. -/
-def QuantaTen (I : CodimensionOneConfig) : Type :=
+abbrev QuantaTen (I : CodimensionOneConfig) : Type :=
   ChiralityFlux × HyperChargeFlux × I.allowedTenCharges
 
 /-- The `ChiralityFlux` quanta of a 10d representation. -/
@@ -68,6 +68,7 @@ abbrev QuantaTen.q {I : CodimensionOneConfig} (a : QuantaTen I) :
 
 /-- The matter content, assumed to sit in the 5-bar or 10d representation of
   `SU(5)`. -/
+@[ext]
 structure MatterContent (I : CodimensionOneConfig) where
   /-- The chirality, charge and hyperChargeFlux associated with the 5-bar representations. -/
   quantaBarFiveMatter : Multiset (QuantaBarFive I)
@@ -86,6 +87,22 @@ structure MatterContent (I : CodimensionOneConfig) where
 namespace MatterContent
 
 variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
+
+/-- The type `MatterContent I` has a decidable equality. -/
+instance : DecidableEq (MatterContent I) := fun a b =>
+  match decEq (a.qHu) (b.qHu) with
+  | .isFalse _ => isFalse (by by_contra hn; simp_all)
+  | .isTrue _ =>
+  match decEq (a.qHd) (b.qHd) with
+  | .isFalse _ => isFalse (by by_contra hn; simp_all)
+  | .isTrue _ =>
+  match decEq (a.quantaBarFiveMatter) (b.quantaBarFiveMatter) with
+  | .isFalse _ => isFalse (by by_contra hn; simp_all)
+  | .isTrue _ =>
+  match decEq (a.quantaTen) (b.quantaTen) with
+  | .isFalse _ => isFalse (by by_contra hn; simp_all)
+  | .isTrue _ =>
+    isTrue (by ext1 <;> simp_all)
 
 /-- The `QuantaBarFive` of all 5-bar representations including the up and down Higges.
   The chirality fluxes of the up and down Higges are taken to be zero,

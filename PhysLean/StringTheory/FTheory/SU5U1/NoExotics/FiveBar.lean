@@ -273,7 +273,7 @@ lemma quantaBarFive_card_le_eight (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.Thr
 with zero to five chirality fluxes equal to zero.
 -/
 lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
-    𝓜.quantaBarFive.map (QuantaBarFive.M) ∈
+    𝓜.quantaBarFive.map QuantaBarFive.M ∈
     ({{1, 1, 1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0}, {1, 1, 1, 0, 0},
       {1, 2, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {1, 2, 0, 0},
       {3, 0, 0, 0, 0, 0}, {3, 0, 0, 0, 0}, {3, 0, 0, 0}, {3, 0, 0}} :

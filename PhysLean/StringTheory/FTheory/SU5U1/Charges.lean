@@ -44,6 +44,7 @@ inductive CodimensionOneConfig
   /-- `σ₀` and `σ₁` intersect the next to nearest neighbor `ℙ¹`s of the `I₅` Kodaira fiber.
     This is sometimes denoted `I₅^{(0||1)}` -/
   | nextToNearestNeighbor : CodimensionOneConfig
+deriving DecidableEq
 
 namespace CodimensionOneConfig
 

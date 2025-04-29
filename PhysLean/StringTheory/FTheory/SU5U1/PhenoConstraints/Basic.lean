@@ -43,12 +43,14 @@ In what follows we constrain via `U(1)` charges
 namespace FTheory
 
 namespace SU5U1
-
+namespace MatterContent
 variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
 
 /-- A proposition which is true when the `μ`-term (`5Hu 5̄Hd`) does not obey the additional
   `U(1)` symmetry in the model, and is therefore constrained. -/
-semiformal_result "A6277" MuTermU1Constrained : Prop
+def MuTermU1Constrained : Prop := - 𝓜.qHu.1 + 𝓜.qHd.1 ≠ 0
+
+instance : Decidable 𝓜.MuTermU1Constrained := instDecidableNot
 
 /-- A proposition which is true
   when the R-parity violating terms all do not obey the additional
@@ -61,7 +63,24 @@ semiformal_result "A6277" MuTermU1Constrained : Prop
 - `K¹ᵢⱼₖ  10ⁱ 10ʲ 5Mᵏ`
 - `K²ᵢ 5̄Hu 5̄Hd 10ⁱ`
 -/
-semiformal_result "A63BE" RParityU1Constrained : Prop
+def RParityU1Constrained : Prop :=
+  --`𝛽ᵢ 5̄Mⁱ5Hu`
+  (∀ fi ∈ 𝓜.quantaBarFiveMatter, fi.q.1 + (- 𝓜.qHu.1) ≠ 0)
+  -- `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ`
+  ∧ (∀ fi ∈ 𝓜.quantaBarFiveMatter, ∀ fj ∈ 𝓜.quantaBarFiveMatter, ∀ tk ∈ 𝓜.quantaTen,
+    fi.q.1 + fj.q.1 + tk.q.1 ≠ 0)
+  -- `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`
+  ∧ (∀ ti ∈ 𝓜.quantaTen, ∀ tj ∈ 𝓜.quantaTen, ∀ tk ∈ 𝓜.quantaTen,
+    ti.q.1 + tj.q.1 + tk.q.1 + 𝓜.qHd.1 ≠ 0)
+  -- `W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu`
+  ∧ (∀ fi ∈ 𝓜.quantaBarFiveMatter, fi.q.1 + 𝓜.qHd.1 + (- 𝓜.qHu.1) + (- 𝓜.qHu.1) ≠ 0)
+  -- `K¹ᵢⱼₖ  10ⁱ 10ʲ 5Mᵏ`
+  ∧ (∀ ti ∈ 𝓜.quantaTen, ∀ tj ∈ 𝓜.quantaTen, ∀ fk ∈ 𝓜.quantaBarFiveMatter,
+    ti.q.1 + tj.q.1 + (- fk.q.1) ≠ 0)
+  -- `K²ᵢ 5̄Hu 5̄Hd 10ⁱ`
+  ∧ (∀ ti ∈ 𝓜.quantaTen, 𝓜.qHu.1 + 𝓜.qHd.1 + ti.q.1 ≠ 0)
+
+instance : Decidable 𝓜.RParityU1Constrained := instDecidableAnd
 
 /-- A proposition which is true when the terms in the super-potential and the Kahler potential
   contributing to proton decay do not obey the additional `U(1)` symmetry in the model,
@@ -72,8 +91,23 @@ semiformal_result "A63BE" RParityU1Constrained : Prop
 - `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`
 - `K¹ᵢⱼₖ  10ⁱ 10ʲ 5Mᵏ`
 -/
-semiformal_result "A63B4" ProtonDecayU1Constrained : Prop
+def ProtonDecayU1Constrained : Prop :=
+  -- `W¹ᵢⱼₖₗ 10ⁱ 10ʲ 10ᵏ 5̄Mˡ`
+  (∀ ti ∈ 𝓜.quantaTen, ∀ tj ∈ 𝓜.quantaTen, ∀ tk ∈ 𝓜.quantaTen, ∀ fl ∈ 𝓜.quantaBarFiveMatter,
+    ti.q.1 + tj.q.1 + tk.q.1 + fl.q.1 ≠ 0)
+  -- `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ`
+  ∧ (∀ fi ∈ 𝓜.quantaBarFiveMatter, ∀ fj ∈ 𝓜.quantaBarFiveMatter, ∀ tk ∈ 𝓜.quantaTen,
+    fi.q.1 + fj.q.1 + tk.q.1 ≠ 0)
+  -- `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`
+  ∧ (∀ ti ∈ 𝓜.quantaTen, ∀ tj ∈ 𝓜.quantaTen, ∀ tk ∈ 𝓜.quantaTen,
+    ti.q.1 + tj.q.1 + tk.q.1 + 𝓜.qHd.1 ≠ 0)
+  -- `K¹ᵢⱼₖ  10ⁱ 10ʲ 5Mᵏ`
+  ∧ (∀ ti ∈ 𝓜.quantaTen, ∀ tj ∈ 𝓜.quantaTen, ∀ fk ∈ 𝓜.quantaBarFiveMatter,
+    ti.q.1 + tj.q.1 + (- fk.q.1) ≠ 0)
 
+instance : Decidable 𝓜.ProtonDecayU1Constrained := instDecidableAnd
+
+end MatterContent
 end SU5U1
 
 end FTheory
