@@ -119,6 +119,7 @@ def caseI34a : MatterContent .same where
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
 
+/- The finite set of all examples of MatterContent currently defined in PhysLean. -/
 def allCases : Finset (Σ I, MatterContent I) :=
   {⟨.same, caseI14a⟩, ⟨.same, caseI14b⟩, ⟨.nearestNeighbor, caseI14c⟩,
   ⟨.nearestNeighbor, caseI14c'⟩, ⟨.same, caseI14d⟩, ⟨.nearestNeighbor, caseI14e⟩,
@@ -134,6 +135,11 @@ lemma allCases_muTermU1Constrained : ∀ 𝓒 ∈ allCases, 𝓒.2.MuTermU1Const
 lemma allCases_RParityU1Constrained : ∀ 𝓒 ∈ allCases, 𝓒.2.RParityU1Constrained := by decide
 
 lemma allCases_protonDecayU1Constrained : ∀ 𝓒 ∈ allCases, 𝓒.2.ProtonDecayU1Constrained := by decide
+
+lemma allCases_hasATopYukawa : ∀ 𝓒 ∈ allCases, 𝓒.2.HasATopYukawa := by decide
+
+/-- Not all the examples have a bottom Yukawa. -/
+lemma not_allCases_hasABottomYukawa : ¬ ∀ 𝓒 ∈ allCases, 𝓒.2.HasABottomYukawa := by decide
 
 end MatterContent
 

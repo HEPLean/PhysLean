@@ -107,6 +107,31 @@ def ProtonDecayU1Constrained : Prop :=
 
 instance : Decidable 𝓜.ProtonDecayU1Constrained := instDecidableAnd
 
+/-- The condition on the matter content for there to exist at least one copy of the coupling
+- `λᵗᵢⱼ 10ⁱ 10ʲ 5Hu`
+-/
+def HasATopYukawa  (𝓜 : MatterContent I) : Prop := ∃ ti ∈ 𝓜.quantaTen,  ∃ tj ∈ 𝓜.quantaTen,
+  ti.q.1 + tj.q.1 + (- 𝓜.qHu.1)  = 0
+
+instance : Decidable 𝓜.HasATopYukawa :=
+  haveI : DecidablePred fun (ti : QuantaTen I) =>
+      ∃ tj ∈ 𝓜.quantaTen, ti.q.1 + ↑tj.q + -↑𝓜.qHu = 0 := fun _ =>
+        Multiset.decidableExistsMultiset
+  Multiset.decidableExistsMultiset
+
+/-- The condition on the matter content for there to exist at least one copy of the coupling
+- `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd`
+-/
+def HasABottomYukawa (𝓜 : MatterContent I) : Prop := ∃ ti ∈ 𝓜.quantaTen,
+  ∃ fj ∈ 𝓜.quantaBarFiveMatter,
+  ti.q.1 + fj.q.1 + 𝓜.qHd.1 = 0
+
+instance : Decidable 𝓜.HasABottomYukawa :=
+  haveI : DecidablePred fun (ti : QuantaTen I) =>
+      ∃ fj ∈ 𝓜.quantaBarFiveMatter, ti.q.1 + fj.q.1 + 𝓜.qHd.1 = 0 := fun _ =>
+        Multiset.decidableExistsMultiset
+  Multiset.decidableExistsMultiset
+
 end MatterContent
 end SU5U1
 
