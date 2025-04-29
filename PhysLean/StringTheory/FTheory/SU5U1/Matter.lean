@@ -70,17 +70,52 @@ abbrev QuantaTen.q {I : CodimensionOneConfig} (a : QuantaTen I) :
   `SU(5)`. -/
 structure MatterContent (I : CodimensionOneConfig) where
   /-- The chirality, charge and hyperChargeFlux associated with the 5-bar representations. -/
-  quantaBarFive : Multiset (QuantaBarFive I)
+  quantaBarFiveMatter : Multiset (QuantaBarFive I)
   /-- The chirality, charge and hyperChargeFlux associated with the 10d representations. -/
   quantaTen : Multiset (QuantaTen I)
+  /-- The charge of the up-type Higgs in the 5-bar representation. -/
+  qHu : I.allowedBarFiveCharges
+  /-- The charge of the down-type Higgs in the 5-bar representation. -/
+  qHd : I.allowedBarFiveCharges
   /-- There is no matter in the 5-bar representation with zero `Chirality` and `HyperChargeFlux`. -/
-  chirality_charge_not_both_zero_bar_five : ∀ a ∈ quantaBarFive, (a.M = 0 → a.N ≠ 0)
+  chirality_charge_not_both_zero_bar_five_matter :
+    ∀ a ∈ quantaBarFiveMatter, (a.M = 0 → a.N ≠ 0)
   /-- There is no matter in the 10d representation with zero `Chirality` and `HyperChargeFlux`. -/
   chirality_charge_not_both_zero_ten : ∀ a ∈ quantaTen, (a.M = 0 → a.N ≠ 0)
 
 namespace MatterContent
 
 variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
+
+/-- The `QuantaBarFive` of all 5-bar representations including the up and down Higges.
+  The chirality fluxes of the up and down Higges are taken to be zero,
+  whilst their hypercharge flux is taken to be -1 and +1 respectively,
+  this choice is related to doublet–triplet splitting.
+-/
+def quantaBarFive : Multiset (QuantaBarFive I) :=
+  (0, 1, 𝓜.qHd) ::ₘ (0, -1, 𝓜.qHu) ::ₘ 𝓜.quantaBarFiveMatter
+
+lemma chirality_charge_not_both_zero_bar_five :
+    ∀ a ∈ 𝓜.quantaBarFive, (a.M = 0 → a.N ≠ 0) := by
+  intro a
+  simp [quantaBarFive]
+  intro h
+  rcases h with rfl | rfl | h
+  · simp [QuantaBarFive.N]
+  · simp [QuantaBarFive.N]
+  · exact 𝓜.chirality_charge_not_both_zero_bar_five_matter a h
+
+lemma quantaBarFive_chiralityFlux_two_le_count_zero :
+    2 ≤ (𝓜.quantaBarFive.map (QuantaBarFive.M)).count 0 := by
+  simp [quantaBarFive]
+
+lemma quantaBarFive_chiralityFlux_two_le_filter_zero_card :
+    2 ≤ ((𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => x = 0)).card := by
+  apply le_of_le_of_eq 𝓜.quantaBarFive_chiralityFlux_two_le_count_zero
+  rw [Multiset.count_eq_card_filter_eq]
+  congr
+  funext x
+  exact Lean.Grind.eq_congr' rfl rfl
 
 /-!
 

@@ -50,16 +50,17 @@ def mkOneTenFourFiveBar (I : CodimensionOneConfig) (M : ChiralityFlux) (N : Hype
     (hqHd : qHd ∈ I.allowedBarFiveCharges:= by decide)
     (hq5₁ : q5₁ ∈ I.allowedBarFiveCharges:= by decide)
     (hq5₂ : q5₂ ∈ I.allowedBarFiveCharges:= by decide)
-    (h5 : ∀ a ∈ ({(0, -1, ⟨-qHu, hqHu⟩), (0, 1, ⟨qHd, hqHd⟩),
-      (M, N, ⟨q5₁, hq5₁⟩), (3 - M, - N, ⟨q5₂, hq5₂⟩)} :
+    (h5 : ∀ a ∈ ({ (M, N, ⟨q5₁, hq5₁⟩), (3 - M, - N, ⟨q5₂, hq5₂⟩)} :
       Multiset (QuantaBarFive I)), a.M = 0 → a.N ≠ 0 := by decide)
     (h10 :  ∀ a ∈ ({(3, 0, ⟨q10, hq10⟩)} :
       Multiset (QuantaTen I)), a.M = 0 → a.N ≠ 0 := by decide) :
     MatterContent I where
   quantaTen := {(3, 0, ⟨q10, hq10⟩)}
-  quantaBarFive := {(0, -1, ⟨- qHu, hqHu⟩), (0, 1, ⟨qHd, hqHd⟩), (M , N, ⟨q5₁, hq5₁⟩),
+  qHu := ⟨- qHu, hqHu⟩
+  qHd := ⟨qHd, hqHd⟩
+  quantaBarFiveMatter := {(M , N, ⟨q5₁, hq5₁⟩),
     (3 - M, - N, ⟨q5₂, hq5₂⟩)}
-  chirality_charge_not_both_zero_bar_five := h5
+  chirality_charge_not_both_zero_bar_five_matter := h5
   chirality_charge_not_both_zero_ten := h10
 
 /-- An example of matter content with one 10d representation and 4 5-bar representations.
@@ -150,9 +151,11 @@ lemma exampleI14f_validMatterSpectrum : exampleI14f.ValidMatterSpectrum := by
   This corresponds to example I.3.4.a of arXiv:1507.05961 (Eq. A12). -/
 def exampleI34a : MatterContent .same where
   quantaTen := {(1, 0, ⟨-3, by decide⟩), (1, 0, ⟨-2, by decide⟩), (1, 0, ⟨-1, by decide⟩)}
-  quantaBarFive := {(0, -1, ⟨-2, by decide⟩), (0, 1, ⟨1, by decide⟩),
+  qHu := ⟨-2, by decide⟩
+  qHd := ⟨1, by decide⟩
+  quantaBarFiveMatter := {
     (0, 3, ⟨-1, by decide⟩), (3, -3, ⟨0, by decide⟩)}
-  chirality_charge_not_both_zero_bar_five := by
+  chirality_charge_not_both_zero_bar_five_matter := by
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
