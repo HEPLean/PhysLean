@@ -62,4 +62,15 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩
 
+/-
+  Work in progress: Prove that the restricted Lorentz group is the identity component of the
+  Lorentz group.
+-/
+
+open TopologicalSpace
+
+lemma restricted_eq_identity_component {d : ℕ} :
+    (restricted d) = connectedComponent (1 : LorentzGroup d) := by
+  sorry
+
 end LorentzGroup
