@@ -81,10 +81,10 @@ lemma quantaTen_chiralityFlux_le_three {a : QuantaTen I}
   rw [← h3.2.1]
   refine Multiset.single_le_sum (α := ChiralityFlux) ?_ _ ?_
   · intro a ha
-    simp only [Multiset.mem_map, Prod.exists, Subtype.exists] at ha
+    simp only [Multiset.mem_map] at ha
     obtain ⟨a', h1, rfl⟩ := ha
     exact quantaTen_chiralityFlux_nonneg' h3 h1
-  · simp only [Multiset.mem_map, Prod.exists, Subtype.exists]
+  · simp only [Multiset.mem_map]
     use a
 
 lemma quantaTen_chiralityFlux_card_le_three (he : 𝓜.NoExotics)
@@ -146,8 +146,8 @@ lemma quantaTen_chiralityFlux_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFa
     simp at hl
     have a_mem_filter : a ∈ 𝓜.quantaTen := by simp [ha]
     have b_mem_filter : b ∈ 𝓜.quantaTen := by simp [ha]
-    have a_pos : 0 < a.M := quantaTen_chiralityFlux_pos he h3 (by simp; use a)
-    have b_pos : 0 < b.M := quantaTen_chiralityFlux_pos he h3 (by simp; use b)
+    have a_pos : 0 < a.M := quantaTen_chiralityFlux_pos he h3 (by rw [Multiset.mem_map]; use a)
+    have b_pos : 0 < b.M := quantaTen_chiralityFlux_pos he h3 (by rw [Multiset.mem_map]; use b)
     have hab (a b : ℤ) (ha : 0 < a) (hb : 0 < b) (hab : a + b = 3) :
         (a = 2 ∧ b = 1) ∨ (a = 1 ∧ b = 2) := by omega
     rcases hab a.M b.M a_pos b_pos hl.1 with hr | hr
@@ -163,9 +163,9 @@ lemma quantaTen_chiralityFlux_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFa
     have a_mem_filter : a ∈ 𝓜.quantaTen := by simp [ha]
     have b_mem_filter : b ∈ 𝓜.quantaTen := by simp [ha]
     have c_mem_filter : c ∈ 𝓜.quantaTen := by simp [ha]
-    have a_pos : 0 < a.M := quantaTen_chiralityFlux_pos he h3 (by simp; use a)
-    have b_pos : 0 < b.M := quantaTen_chiralityFlux_pos he h3 (by simp; use b)
-    have c_pos : 0 < c.M := quantaTen_chiralityFlux_pos he h3 (by simp; use c)
+    have a_pos : 0 < a.M := quantaTen_chiralityFlux_pos he h3 (by rw [Multiset.mem_map]; use a)
+    have b_pos : 0 < b.M := quantaTen_chiralityFlux_pos he h3 (by rw [Multiset.mem_map]; use b)
+    have c_pos : 0 < c.M := quantaTen_chiralityFlux_pos he h3 (by rw [Multiset.mem_map]; use c)
     have habc (a b c : ℤ) (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (habc : a + b + c = 3) :
         (a = 1 ∧ b = 1 ∧ c = 1) := by omega
     rcases habc a.M b.M c.M a_pos b_pos c_pos hl.1 with hr
