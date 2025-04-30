@@ -8,6 +8,7 @@ import Mathlib.Algebra.Group.Int.Defs
 import Mathlib.Algebra.Order.Group.Unbundled.Abs
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Powerset
 /-!
 
 # Matter
@@ -77,6 +78,7 @@ def DistinctChargedBarFive {I : CodimensionOneConfig}
       (quantaBarFiveMatter.map QuantaBarFive.q).card
     ∧ qHu ∉ (quantaBarFiveMatter.map QuantaBarFive.q)
     ∧ qHd ∉ (quantaBarFiveMatter.map QuantaBarFive.q)
+    ∧ qHu ≠ qHd
 
 instance {I : CodimensionOneConfig}
     (quantaBarFiveMatter : Multiset (QuantaBarFive I))
@@ -177,7 +179,6 @@ lemma quantaBarFiveMatter_map_q_eq_toFinset :
   conv_lhs => rw [← h1]
   rfl
 
-
 lemma quantaBarFive_map_q_noDup : (𝓜.quantaBarFive.map (QuantaBarFive.q)).Nodup := by
   simp only [quantaBarFive, Int.reduceNeg, Multiset.map_cons, Multiset.nodup_cons,
     Multiset.mem_cons, Multiset.mem_map, Prod.exists, exists_eq_right, not_or, not_exists,
@@ -217,7 +218,7 @@ lemma quantaTen_map_q_eq_toFinset :
   rw [← Multiset.dedup_eq_self] at h1
   conv_lhs => rw [← h1]
   rfl
-
+  
 /-!
 
 ## Gauge anomalies
