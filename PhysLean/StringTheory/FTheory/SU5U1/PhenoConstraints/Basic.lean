@@ -88,6 +88,17 @@ def chargeW2Term (q10 : Multiset I.allowedTenCharges)
   (Multiset.product q10 (Multiset.product q10 q10)).map
   (fun x => x.1 + x.2.1 + x.2.2.1 + qHd.1)
 
+/-- The charges associated with the term `λᵗᵢⱼ 10ⁱ 10ʲ 5Hu`-/
+def chargeYukawaTop (q10 : Multiset I.allowedTenCharges)
+    (qHu : I.allowedBarFiveCharges) : Multiset ℤ :=
+  ((Multiset.product q10 q10)).map (fun x => x.1 + x.2.1 + (- qHu.1))
+
+/-- The charges associated with the term `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd``. -/
+def chargeYukawaBottom (q5bar : Multiset I.allowedBarFiveCharges)  (q10 : Multiset I.allowedTenCharges)
+    (qHd : I.allowedBarFiveCharges) :
+    Multiset ℤ :=
+     (Multiset.product q10 q5bar).map (fun x => x.1 + x.2.1 + qHd.1)
+
 namespace MatterContent
 variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
 
@@ -110,7 +121,13 @@ K²-term (K²ᵢ 5̄Hu 5̄Hd 10ⁱ): {(chargeK2Term (𝓜.quantaTen.map QuantaTe
   𝓜.qHd).sort LE.le}
 ...
 W²-term (W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd): {(chargeW2Term (𝓜.quantaTen.map QuantaTen.q) 𝓜.qHd).sort LE.le}
+...
+Top-Yukawa (λᵗᵢⱼ 10ⁱ 10ʲ 5Hu): {(chargeYukawaTop (𝓜.quantaTen.map QuantaTen.q) 𝓜.qHu).sort LE.le}
+Bottom-Yukawa (λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd): {(chargeYukawaBottom (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
+  (𝓜.quantaTen.map QuantaTen.q)
+   𝓜.qHd).sort LE.le}
 "
+
 /-- A proposition which is true when the `μ`-term (`5Hu 5̄Hd`) does not obey the additional
   `U(1)` symmetry in the model, and is therefore constrained. -/
 def MuTermU1Constrained : Prop := chargeMuTerm 𝓜.qHu 𝓜.qHd ≠ 0
@@ -172,27 +189,22 @@ instance : Decidable 𝓜.ProtonDecayU1Constrained := instDecidableAnd
 /-- The condition on the matter content for there to exist at least one copy of the coupling
 - `λᵗᵢⱼ 10ⁱ 10ʲ 5Hu`
 -/
-def HasATopYukawa  (𝓜 : MatterContent I) : Prop := ∃ ti ∈ 𝓜.quantaTen,  ∃ tj ∈ 𝓜.quantaTen,
-  ti.q.1 + tj.q.1 + (- 𝓜.qHu.1)  = 0
+def HasATopYukawa  (𝓜 : MatterContent I) : Prop :=
+  0 ∈ chargeYukawaTop (𝓜.quantaTen.map QuantaTen.q) 𝓜.qHu
 
 instance : Decidable 𝓜.HasATopYukawa :=
-  haveI : DecidablePred fun (ti : QuantaTen I) =>
-      ∃ tj ∈ 𝓜.quantaTen, ti.q.1 + ↑tj.q + -↑𝓜.qHu = 0 := fun _ =>
-        Multiset.decidableExistsMultiset
-  Multiset.decidableExistsMultiset
+  Multiset.decidableMem 0 (chargeYukawaTop (Multiset.map QuantaTen.q 𝓜.quantaTen) 𝓜.qHu)
+
 
 /-- The condition on the matter content for there to exist at least one copy of the coupling
 - `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd`
 -/
-def HasABottomYukawa (𝓜 : MatterContent I) : Prop := ∃ ti ∈ 𝓜.quantaTen,
-  ∃ fj ∈ 𝓜.quantaBarFiveMatter,
-  ti.q.1 + fj.q.1 + 𝓜.qHd.1 = 0
+def HasABottomYukawa (𝓜 : MatterContent I) : Prop :=
+  0 ∈ chargeYukawaBottom (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
+    (𝓜.quantaTen.map QuantaTen.q) 𝓜.qHu
 
 instance : Decidable 𝓜.HasABottomYukawa :=
-  haveI : DecidablePred fun (ti : QuantaTen I) =>
-      ∃ fj ∈ 𝓜.quantaBarFiveMatter, ti.q.1 + fj.q.1 + 𝓜.qHd.1 = 0 := fun _ =>
-        Multiset.decidableExistsMultiset
-  Multiset.decidableExistsMultiset
+  Multiset.decidableMem _ _
 
 end MatterContent
 end SU5U1
