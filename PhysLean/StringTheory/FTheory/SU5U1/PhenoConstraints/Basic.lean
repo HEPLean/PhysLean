@@ -94,10 +94,9 @@ def chargeYukawaTop (q10 : Multiset I.allowedTenCharges)
   ((Multiset.product q10 q10)).map (fun x => x.1 + x.2.1 + (- qHu.1))
 
 /-- The charges associated with the term `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd``. -/
-def chargeYukawaBottom (q5bar : Multiset I.allowedBarFiveCharges)  (q10 : Multiset I.allowedTenCharges)
-    (qHd : I.allowedBarFiveCharges) :
-    Multiset ℤ :=
-     (Multiset.product q10 q5bar).map (fun x => x.1 + x.2.1 + qHd.1)
+def chargeYukawaBottom (q5bar : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (qHd : I.allowedBarFiveCharges) : Multiset ℤ :=
+  (Multiset.product q10 q5bar).map (fun x => x.1 + x.2.1 + qHd.1)
 
 namespace MatterContent
 variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
