@@ -43,6 +43,121 @@ In what follows we constrain via `U(1)` charges
 namespace FTheory
 
 namespace SU5U1
+
+variable {I : CodimensionOneConfig}
+
+/-- The overall charge of the term `μ 5Hu 5̄Hd` -/
+def chargeMuTerm (qHu qHd : I.allowedBarFiveCharges) : ℤ := - qHu.1 + qHd.1
+
+/-- The charges of the term `W¹ᵢⱼₖₗ 10ⁱ 10ʲ 10ᵏ 5̄Mˡ`. -/
+def chargeW1Term (q5 : Multiset I.allowedBarFiveCharges) (q10 : Multiset I.allowedTenCharges) :
+    Multiset ℤ :=
+  (Multiset.product q10 (Multiset.product q10 (Multiset.product q10 q5))).map
+  (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
+
+lemma chargeW1Term_subset_of_subset_ten (q5bar : Multiset I.allowedBarFiveCharges)
+    (q10 q10' : Multiset I.allowedTenCharges)
+    (h : q10 ⊆ q10') :
+    chargeW1Term q5bar q10 ⊆ chargeW1Term q5bar q10' := by
+  rw [chargeW1Term, chargeW1Term]
+  refine Multiset.map_subset_map ?_
+  rw [@Multiset.subset_iff]
+  intro x
+  simp
+  aesop
+
+lemma chargeW1Term_single_q10 (q5 : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (h : 0 ∉ chargeW1Term q5 q10)
+    (a : I.allowedTenCharges) (ha : a ∈ q10) :
+    0 ∉ chargeW1Term q5 {a} := by
+  have h1 : chargeW1Term q5 {a} ⊆ chargeW1Term q5 q10 := by
+    apply chargeW1Term_subset_of_subset_ten
+    exact Multiset.singleton_subset.mpr ha
+  exact fun a => h (h1 a)
+
+/-- The charges of the term `𝛽ᵢ 5̄Mⁱ5Hu`. -/
+def chargeBetaTerm (q5bar : Multiset I.allowedBarFiveCharges) (qHu : I.allowedBarFiveCharges) :
+    Multiset ℤ := q5bar.map (fun x => x.1 + (- qHu.1))
+
+/-- The charges of the term `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ`. -/
+def chargeLambdaTerm (q5bar : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) : Multiset ℤ :=
+  (Multiset.product q5bar (Multiset.product q5bar q10)).map
+  (fun x => x.1 + x.2.1 + x.2.2.1)
+
+lemma chargeLambdaTerm_subset_of_subset_ten (q5bar : Multiset I.allowedBarFiveCharges)
+    (q10 q10' : Multiset I.allowedTenCharges)
+    (h : q10 ⊆ q10') :
+    chargeLambdaTerm q5bar q10 ⊆ chargeLambdaTerm q5bar q10' := by
+  rw [chargeLambdaTerm, chargeLambdaTerm]
+  refine Multiset.map_subset_map ?_
+  rw [@Multiset.subset_iff]
+  intro x
+  simp
+  aesop
+
+lemma chargeLambdaTerm_single_q10 (q5 : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (h : 0 ∉ chargeLambdaTerm q5 q10)
+    (a : I.allowedTenCharges) (ha : a ∈ q10) :
+    0 ∉ chargeLambdaTerm q5 {a} := by
+  have h1 : chargeLambdaTerm q5 {a} ⊆ chargeLambdaTerm q5 q10 := by
+    apply chargeLambdaTerm_subset_of_subset_ten
+    exact Multiset.singleton_subset.mpr ha
+  exact fun a => h (h1 a)
+
+/-- The charges of the term `K¹ᵢⱼₖ  10ⁱ 10ʲ 5Mᵏ`. -/
+def chargeK1Term (q5bar : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) : Multiset ℤ :=
+  (Multiset.product q10 (Multiset.product q10 q5bar)).map
+  (fun x => x.1 + x.2.1 + (- x.2.2.1))
+
+lemma chargeK1Term_subset_of_subset_ten (q5bar : Multiset I.allowedBarFiveCharges)
+    (q10 q10' : Multiset I.allowedTenCharges)
+    (h : q10 ⊆ q10') :
+    chargeK1Term q5bar q10 ⊆ chargeK1Term q5bar q10' := by
+  rw [chargeK1Term, chargeK1Term]
+  refine Multiset.map_subset_map ?_
+  rw [@Multiset.subset_iff]
+  intro x
+  simp
+  aesop
+
+lemma chargeK1Term_single_q10 (q5 : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (h : 0 ∉ chargeK1Term q5 q10)
+    (a : I.allowedTenCharges) (ha : a ∈ q10) :
+    0 ∉ chargeK1Term q5 {a} := by
+  have h1 : chargeK1Term q5 {a} ⊆ chargeK1Term q5 q10 := by
+    apply chargeK1Term_subset_of_subset_ten
+    exact Multiset.singleton_subset.mpr ha
+  exact fun a => h (h1 a)
+
+/-- The charges of the term `W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu`. -/
+def chargeW4Term (q5bar : Multiset I.allowedBarFiveCharges)
+    (qHd : I.allowedBarFiveCharges) (qHu : I.allowedBarFiveCharges) : Multiset ℤ :=
+  q5bar.map (fun x => x.1 + qHd.1 + (- qHu.1) + (- qHu.1))
+
+/-- The charges of the term `K²ᵢ 5̄Hu 5̄Hd 10ⁱ` -/
+def chargeK2Term (q10 : Multiset I.allowedTenCharges)
+    (qHu : I.allowedBarFiveCharges) (qHd : I.allowedBarFiveCharges) :
+    Multiset ℤ :=
+  q10.map (fun x => qHu.1 + qHd.1 + x.1)
+
+/-- The charges of the term `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`. -/
+def chargeW2Term (q10 : Multiset I.allowedTenCharges)
+    (qHd : I.allowedBarFiveCharges) : Multiset ℤ :=
+  (Multiset.product q10 (Multiset.product q10 q10)).map
+  (fun x => x.1 + x.2.1 + x.2.2.1 + qHd.1)
+
+/-- The charges associated with the term `λᵗᵢⱼ 10ⁱ 10ʲ 5Hu`-/
+def chargeYukawaTop (q10 : Multiset I.allowedTenCharges)
+    (qHu : I.allowedBarFiveCharges) : Multiset ℤ :=
+  ((Multiset.product q10 q10)).map (fun x => x.1 + x.2.1 + (- qHu.1))
+
+/-- The charges associated with the term `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd`. -/
+def chargeYukawaBottom (q5bar : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (qHd : I.allowedBarFiveCharges) : Multiset ℤ :=
+  (Multiset.product q10 q5bar).map (fun x => x.1 + x.2.1 + qHd.1)
+
 namespace MatterContent
 variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
 

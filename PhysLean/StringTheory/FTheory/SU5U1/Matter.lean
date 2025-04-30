@@ -165,6 +165,59 @@ lemma quantaBarFive_chiralityFlux_two_le_filter_zero_card :
   funext x
   exact Lean.Grind.eq_congr' rfl rfl
 
+lemma quantaBarFiveMatter_map_q_noDup :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).Nodup :=
+  Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaBarFiveMatter.1
+
+lemma quantaBarFiveMatter_map_q_eq_toFinset :
+    𝓜.quantaBarFiveMatter.map (QuantaBarFive.q) =
+      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset.1 := by
+  have h1 := 𝓜.quantaBarFiveMatter_map_q_noDup
+  rw [← Multiset.dedup_eq_self] at h1
+  conv_lhs => rw [← h1]
+  rfl
+
+
+lemma quantaBarFive_map_q_noDup : (𝓜.quantaBarFive.map (QuantaBarFive.q)).Nodup := by
+  simp only [quantaBarFive, Int.reduceNeg, Multiset.map_cons, Multiset.nodup_cons,
+    Multiset.mem_cons, Multiset.mem_map, Prod.exists, exists_eq_right, not_or, not_exists,
+    𝓜.quantaBarFiveMatter_map_q_noDup, and_true]
+  have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter
+  simp_all only [DistinctChargedBarFive, QuantaBarFive.q, Multiset.card_map, Multiset.mem_map,
+    Prod.exists, exists_eq_right, not_exists, ne_eq, not_false_eq_true, implies_true, and_true]
+  exact fun a => h1.2.2.2 a.symm
+
+set_option maxRecDepth 1000 in
+lemma quantaBarFive_map_q_card_le_seven :
+    (𝓜.quantaBarFive.map (QuantaBarFive.q)).card ≤ 7 := by
+  rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
+  have h1 :  (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
+      Finset.powerset (Finset.univ (α := I.allowedBarFiveCharges)) := by
+    rw [Finset.mem_powerset]
+    exact Finset.subset_univ _
+  change (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset.card ≤ 7
+  generalize (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset = S at *
+  revert S
+  match I with
+  | CodimensionOneConfig.same => decide
+  | CodimensionOneConfig.nearestNeighbor => decide
+  | CodimensionOneConfig.nextToNearestNeighbor => decide
+
+lemma quantaBarFive_card_le_seven : 𝓜.quantaBarFive.card ≤ 7 := by
+  apply le_of_eq_of_le _ 𝓜.quantaBarFive_map_q_card_le_seven
+  simp
+
+lemma quantaTen_map_q_nodup :
+    (𝓜.quantaTen.map (QuantaTen.q)).Nodup :=
+  Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaTen
+
+lemma quantaTen_map_q_eq_toFinset :
+    𝓜.quantaTen.map (QuantaTen.q) = (𝓜.quantaTen.map QuantaTen.q).toFinset.1 := by
+  have h1 := 𝓜.quantaTen_map_q_nodup
+  rw [← Multiset.dedup_eq_self] at h1
+  conv_lhs => rw [← h1]
+  rfl
+
 /-!
 
 ## Gauge anomalies
