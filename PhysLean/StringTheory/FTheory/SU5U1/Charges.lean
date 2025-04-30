@@ -5,6 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Finset.Insert
 import PhysLean.Meta.TODO.Basic
+import Mathlib.Data.Fintype.Defs
+import Mathlib.Data.Fintype.Sets
 /-!
 
 # Allowed charges
@@ -55,12 +57,22 @@ def allowedBarFiveCharges : CodimensionOneConfig → Finset ℤ
   | nearestNeighbor => {-14, -9, -4, 1, 6, 11}
   | nextToNearestNeighbor => {-13, -8, -3, 2, 7, 12}
 
+instance : (I : CodimensionOneConfig) → Fintype I.allowedBarFiveCharges
+  | same => inferInstance
+  | nearestNeighbor => inferInstance
+  | nextToNearestNeighbor => inferInstance
+
 /-- The allowed `U(1)`-charges of matter in the 10d representation of `SU(5)`
   given a `CodimensionOneConfig`. -/
 def allowedTenCharges : CodimensionOneConfig → Finset ℤ
   | same => {-3, -2, -1, 0, 1, 2, 3}
   | nearestNeighbor => {-12, -7, -2, 3, 8, 13}
   | nextToNearestNeighbor => {-9, -4, 1, 6, 11}
+
+instance : (I : CodimensionOneConfig) → Fintype I.allowedTenCharges
+  | same => inferInstance
+  | nearestNeighbor => inferInstance
+  | nextToNearestNeighbor => inferInstance
 
 end CodimensionOneConfig
 end SU5U1
