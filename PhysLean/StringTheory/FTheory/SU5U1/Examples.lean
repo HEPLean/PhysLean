@@ -74,6 +74,8 @@ def mkOneTenFourFiveBar (I : CodimensionOneConfig) (M : ChiralityFlux) (N : Hype
 def caseI14a : MatterContent .same :=
   mkOneTenFourFiveBar .same 1 2 (-1) 2 2 (-1) 1
 
+-- #eval println! caseI14a.phenoCharges
+
 /-- An example of matter content with one 10d representation and 4 5-bar representations.
   This corresponds to example I.1.4.b in table 1 of arXiv:1507.05961. -/
 def caseI14b : MatterContent .same :=
