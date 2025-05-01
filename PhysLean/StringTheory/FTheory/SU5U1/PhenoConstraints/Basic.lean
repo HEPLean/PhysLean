@@ -295,7 +295,6 @@ instance : Decidable 𝓜.HasABottomYukawa :=
 ## More sophisticated checks
 -/
 
-
 lemma lambdaTerm_K1Term_W1Term_subset_check {I : CodimensionOneConfig} {n : ℕ} (𝓜 : MatterContent I)
     (hcard : 𝓜.quantaBarFiveMatter.card = n) (h : 𝓜.ProtonDecayU1Constrained)
     (S : Multiset (I.allowedTenCharges))
@@ -303,7 +302,7 @@ lemma lambdaTerm_K1Term_W1Term_subset_check {I : CodimensionOneConfig} {n : ℕ}
       F ⊆ Finset.univ → F.card = n →
       (0 ∈ chargeW1Term F.val S ∨ 0 ∈ chargeLambdaTerm F.val S) ∨ 0 ∈ chargeK1Term F.val S:= by
       decide) :
-      ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q  := by
+      ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
   have hL1 := chargeLambdaTerm_subset_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
     (𝓜.quantaTen.map QuantaTen.q) h.2.1 _ hn
@@ -327,16 +326,15 @@ lemma lambdaTerm_K1Term_W1Term_subset_check {I : CodimensionOneConfig} {n : ℕ}
     Int.reduceNeg, and_imp]
   exact hS
 
-
 lemma lambdaTerm_K1Term_W1Term_singleton_check {I : CodimensionOneConfig} {n : ℕ}
     (𝓜 : MatterContent I)
     (hcard : 𝓜.quantaBarFiveMatter.card = n) (h : 𝓜.ProtonDecayU1Constrained)
-    (a :  (I.allowedTenCharges))
-    (ha : ∀ (F : Finset { x // x ∈ I.allowedBarFiveCharges }),  F.card = n →
+    (a : (I.allowedTenCharges))
+    (ha : ∀ (F : Finset { x // x ∈ I.allowedBarFiveCharges }), F.card = n →
       F ⊆ Finset.univ → F.card = n →
       (0 ∈ chargeW1Term F.val {a} ∨ 0 ∈ chargeLambdaTerm F.val {a}) ∨
       0 ∈ chargeK1Term F.val {a} := by decide) :
-    a ∉ 𝓜.quantaTen.map QuantaTen.q  := by
+    a ∉ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
   have hL1 := chargeLambdaTerm_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
     (𝓜.quantaTen.map QuantaTen.q) h.2.1 _ hn

@@ -189,7 +189,7 @@ lemma quantaBarFiveMatter_map_q_mem_powerset_filter_card {n : ℕ}
     (hcard : 𝓜.quantaBarFiveMatter.card = n) :
     (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈
       (Finset.univ (α := I.allowedBarFiveCharges)).powerset.filter fun x => x.card = n := by
-  simp
+  simp only [Finset.mem_filter, Finset.mem_powerset, Finset.subset_univ, true_and]
   trans (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).card
   · rw [quantaBarFiveMatter_map_q_eq_toFinset]
     simp only [Multiset.toFinset_val, Multiset.toFinset_dedup]
