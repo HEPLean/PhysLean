@@ -49,126 +49,31 @@ set_option maxRecDepth 2000 in
 lemma zero_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 5) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨0, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
-  intro hn
-  have hL1 := chargeLambdaTerm_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.2.1 _ hn
-  have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
-  apply not_or_intro hW1 hL1
-  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
-    rw [Multiset.card_map]
-    exact hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at h5 ⊢
-  have hW1T : F ∈ (Finset.powerset (Finset.univ)).filter (fun x => x.card = 5) := by
-    rw [Finset.mem_filter]
-    rw [Finset.mem_powerset]
-    simp_all only [Finset.card_val, and_true]
-    exact Finset.subset_univ F
-  revert F
-  simp only [Finset.card_val, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_powerset,
-    Int.reduceNeg, and_imp]
-  decide
+  exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma one_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 5) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨1, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
-  intro hn
-  have hL1 := chargeLambdaTerm_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.2.1 _ hn
-  have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
-  apply not_or_intro hW1 hL1
-  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
-    rw [Multiset.card_map]
-    exact hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at h5 ⊢
-  have hW1T : F ∈ (Finset.powerset (Finset.univ)).filter (fun x => x.card = 5) := by
-    rw [Finset.mem_filter]
-    rw [Finset.mem_powerset]
-    simp_all only [Finset.card_val, and_true]
-    exact Finset.subset_univ F
-  revert F
-  simp only [Finset.card_val, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_powerset,
-    Int.reduceNeg, and_imp]
-  decide
+  exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma neg_one_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 5) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨-1, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
-  intro hn
-  have hL1 := chargeLambdaTerm_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.2.1 _ hn
-  have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
-  apply not_or_intro hW1 hL1
-  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
-    rw [Multiset.card_map]
-    exact hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at h5 ⊢
-  have hW1T : F ∈ (Finset.powerset (Finset.univ)).filter (fun x => x.card = 5) := by
-    rw [Finset.mem_filter]
-    rw [Finset.mem_powerset]
-    simp_all only [Finset.card_val, and_true]
-    exact Finset.subset_univ F
-  revert F
-  simp only [Finset.card_val, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_powerset,
-    Int.reduceNeg, and_imp]
-  decide
+  exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma neg_two_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 5) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨-2, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
-  intro hn
-  have hL1 := chargeLambdaTerm_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.2.1 _ hn
-  have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
-  apply not_or_intro hW1 hL1
-  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
-    rw [Multiset.card_map]
-    exact hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at h5 ⊢
-  have hW1T : F ∈ (Finset.powerset (Finset.univ)).filter (fun x => x.card = 5) := by
-    rw [Finset.mem_filter]
-    rw [Finset.mem_powerset]
-    simp_all only [Finset.card_val, and_true]
-    exact Finset.subset_univ F
-  revert F
-  simp only [Finset.card_val, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_powerset,
-    Int.reduceNeg, and_imp]
-  decide
+  exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma two_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 5) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨2, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
-  intro hn
-  have hL1 := chargeLambdaTerm_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.2.1 _ hn
-  have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
-    (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
-  apply not_or_intro hW1 hL1
-  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
-    rw [Multiset.card_map]
-    exact hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at h5 ⊢
-  have hW1T : F ∈ (Finset.powerset (Finset.univ)).filter (fun x => x.card = 5) := by
-    rw [Finset.mem_filter]
-    rw [Finset.mem_powerset]
-    simp_all only [Finset.card_val, and_true]
-    exact Finset.subset_univ F
-  revert F
-  simp only [Finset.card_val, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_powerset,
-    Int.reduceNeg, and_imp]
-  decide
+  exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 20000 in
 lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_five_mem
