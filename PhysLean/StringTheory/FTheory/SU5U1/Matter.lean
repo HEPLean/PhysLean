@@ -179,6 +179,23 @@ lemma quantaBarFiveMatter_map_q_eq_toFinset :
   conv_lhs => rw [← h1]
   rfl
 
+lemma quantaBarFiveMatter_map_q_mem_powerset :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈
+      Finset.powerset (Finset.univ (α := I.allowedBarFiveCharges)) := by
+  rw [Finset.mem_powerset]
+  exact Finset.subset_univ _
+
+lemma quantaBarFiveMatter_map_q_mem_powerset_filter_card {n : ℕ}
+    (hcard : 𝓜.quantaBarFiveMatter.card = n) :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈
+      (Finset.univ (α := I.allowedBarFiveCharges)).powerset.filter fun x => x.card = n := by
+  simp
+  trans (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).card
+  · rw [quantaBarFiveMatter_map_q_eq_toFinset]
+    simp only [Multiset.toFinset_val, Multiset.toFinset_dedup]
+    rfl
+  · simpa using hcard
+
 lemma quantaBarFive_map_q_noDup : (𝓜.quantaBarFive.map (QuantaBarFive.q)).Nodup := by
   simp only [quantaBarFive, Int.reduceNeg, Multiset.map_cons, Multiset.nodup_cons,
     Multiset.mem_cons, Multiset.mem_map, Prod.exists, exists_eq_right, not_or, not_exists,

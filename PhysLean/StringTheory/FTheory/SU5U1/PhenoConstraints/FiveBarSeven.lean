@@ -112,16 +112,9 @@ lemma not_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
   have h2 := 𝓜.qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_five_mem hcard h hTop hSpec
   rw [h2.2] at hW1
   rw [h2.1] at h1
-  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
-    rw [Multiset.card_map]
-    exact hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at hW1 h1 h5
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hW1 h1 h5
-  have hW1T : F ∈ (Finset.powerset (Finset.univ)).filter (fun x => x.card = 5) := by
-    rw [Finset.mem_filter]
-    rw [Finset.mem_powerset]
-    simp_all only [Finset.card_val, and_true]
-    exact Finset.subset_univ F
+  have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset_filter_card hcard
+  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at hW1 h1
+  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hW1 h1 hmem
   revert F
   simp only [Finset.card_val, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_powerset,
     Int.reduceNeg, and_imp]
@@ -142,11 +135,7 @@ lemma quantaBarFive_card_le_six {I : CodimensionOneConfig} (𝓜 : MatterContent
     apply le_of_eq_of_le (by simp :
       𝓜.quantaBarFive.card = (𝓜.quantaBarFive.map QuantaBarFive.q).card)
     rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
-    have h1 : (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
-        Finset.powerset (Finset.univ
-          (α := CodimensionOneConfig.nearestNeighbor.allowedBarFiveCharges)) := by
-      rw [Finset.mem_powerset]
-      exact Finset.subset_univ _
+    have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset
     change (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset.card ≤ _
     generalize (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset = S at *
     revert S
@@ -155,11 +144,7 @@ lemma quantaBarFive_card_le_six {I : CodimensionOneConfig} (𝓜 : MatterContent
     apply le_of_eq_of_le (by simp :
       𝓜.quantaBarFive.card = (𝓜.quantaBarFive.map QuantaBarFive.q).card)
     rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
-    have h1 : (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
-        Finset.powerset (Finset.univ
-          (α := CodimensionOneConfig.nextToNearestNeighbor.allowedBarFiveCharges)) := by
-      rw [Finset.mem_powerset]
-      exact Finset.subset_univ _
+    have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset
     change (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset.card ≤ _
     generalize (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset = S at *
     revert S
