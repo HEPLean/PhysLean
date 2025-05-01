@@ -74,6 +74,14 @@ lemma chargeW1Term_single_q10 (q5 : Multiset I.allowedBarFiveCharges)
     exact Multiset.singleton_subset.mpr ha
   exact fun a => h (h1 a)
 
+lemma chargeW1Term_subset_q10 (q5 : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (h : 0 ∉ chargeW1Term q5 q10)
+    (S : Multiset I.allowedTenCharges) (hS : S ⊆ q10) :
+    0 ∉ chargeW1Term q5 S := by
+  have h1 : chargeW1Term q5 S ⊆ chargeW1Term q5 q10 := by
+    apply chargeW1Term_subset_of_subset_ten
+    exact hS
+  exact fun a => h (h1 a)
 /-- The charges of the term `𝛽ᵢ 5̄Mⁱ5Hu`. -/
 def chargeBetaTerm (q5bar : Multiset I.allowedBarFiveCharges) (qHu : I.allowedBarFiveCharges) :
     Multiset ℤ := q5bar.map (fun x => x.1 + (- qHu.1))
@@ -104,6 +112,15 @@ lemma chargeLambdaTerm_single_q10 (q5 : Multiset I.allowedBarFiveCharges)
     exact Multiset.singleton_subset.mpr ha
   exact fun a => h (h1 a)
 
+lemma chargeLambdaTerm_subset_q10 (q5 : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (h : 0 ∉ chargeLambdaTerm q5 q10)
+    (S : Multiset I.allowedTenCharges) (hS : S ⊆ q10) :
+    0 ∉ chargeLambdaTerm q5 S := by
+  have h1 : chargeLambdaTerm q5 S ⊆ chargeLambdaTerm q5 q10 := by
+    apply chargeLambdaTerm_subset_of_subset_ten
+    exact hS
+  exact fun a => h (h1 a)
+
 /-- The charges of the term `K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ`. -/
 def chargeK1Term (q5bar : Multiset I.allowedBarFiveCharges)
     (q10 : Multiset I.allowedTenCharges) : Multiset ℤ :=
@@ -128,6 +145,15 @@ lemma chargeK1Term_single_q10 (q5 : Multiset I.allowedBarFiveCharges)
   have h1 : chargeK1Term q5 {a} ⊆ chargeK1Term q5 q10 := by
     apply chargeK1Term_subset_of_subset_ten
     exact Multiset.singleton_subset.mpr ha
+  exact fun a => h (h1 a)
+
+lemma chargeK1Term_subset_q10 (q5 : Multiset I.allowedBarFiveCharges)
+    (q10 : Multiset I.allowedTenCharges) (h : 0 ∉ chargeK1Term q5 q10)
+    (S : Multiset I.allowedTenCharges) (hS : S ⊆ q10) :
+    0 ∉ chargeK1Term q5 S := by
+  have h1 : chargeK1Term q5 S ⊆ chargeK1Term q5 q10 := by
+    apply chargeK1Term_subset_of_subset_ten
+    exact hS
   exact fun a => h (h1 a)
 
 /-- The charges of the term `W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu`. -/

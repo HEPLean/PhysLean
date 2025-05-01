@@ -145,7 +145,6 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem
     Finset.mem_insert, Prod.mk.injEq, Finset.mem_singleton, Subtype.forall, Subtype.mk.injEq]
   decide
 
-
 set_option maxRecDepth 20000 in
 lemma qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_four_mem_same
     (𝓜 : MatterContent .same)
@@ -191,16 +190,18 @@ lemma not_quantaBarFiveMatter_card_four_same (𝓜 : MatterContent .same)
   rw [RParityU1Constrained] at hx
   rw [ProtonDecayU1Constrained] at h
   have hd := 𝓜.distinctly_charged_quantaBarFiveMatter.2.2.1
-  have hr := qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_four_mem_same 𝓜  h hTop hSpec hcard
+  have hr := qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_four_mem_same
+    𝓜 h hTop hSpec hcard
   generalize 𝓜.qHu = qHu at h hx hr hμ ⊢
   generalize 𝓜.quantaTen.map QuantaTen.q = qTen at h hx hr hμ ⊢
   generalize 𝓜.quantaBarFiveMatter.map QuantaBarFive.q = qBarFive at h hx hr hμ hd ⊢
   generalize 𝓜.qHd = qHd at h hx hr hμ hd ⊢
   revert qHd
-  simp
+  simp only [ne_eq, imp_false, Decidable.not_not, and_imp, Subtype.forall]
   fin_cases hr
   all_goals
-    simp
+    simp only [Int.reduceNeg, Multiset.insert_eq_cons, Multiset.mem_cons, Subtype.mk.injEq,
+      Multiset.mem_singleton]
     decide
 
 
@@ -212,7 +213,7 @@ lemma not_quantaBarFiveMatter_card_four_same (𝓜 : MatterContent .same)
 
 set_option maxRecDepth 2000 in
 lemma neg_two_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
-     (𝓜 : MatterContent .nearestNeighbor)
+    (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨-2, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
@@ -238,7 +239,7 @@ lemma neg_two_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
 
 set_option maxRecDepth 2000 in
 lemma three_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
-     (𝓜 : MatterContent .nearestNeighbor)
+    (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨3, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
@@ -264,7 +265,7 @@ lemma three_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
 
 set_option maxRecDepth 2000 in
 lemma eight_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
-     (𝓜 : MatterContent .nearestNeighbor)
+    (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨8, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
@@ -366,7 +367,7 @@ Five bar charges : {-13, -8, -3, 2, 7, 12}
 
 set_option maxRecDepth 2000 in
 lemma neg_four_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
-     (𝓜 : MatterContent .nextToNearestNeighbor)
+    (𝓜 : MatterContent .nextToNearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨-4, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
@@ -393,7 +394,7 @@ lemma neg_four_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestN
 
 set_option maxRecDepth 2000 in
 lemma one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
-     (𝓜 : MatterContent .nextToNearestNeighbor)
+    (𝓜 : MatterContent .nextToNearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨1, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
@@ -420,7 +421,7 @@ lemma one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighb
 
 set_option maxRecDepth 2000 in
 lemma six_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
-     (𝓜 : MatterContent .nextToNearestNeighbor)
+    (𝓜 : MatterContent .nextToNearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
     ⟨6, by decide⟩ ∉ 𝓜.quantaTen.map QuantaTen.q := by
   intro hn
@@ -459,9 +460,12 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nextToNeare
     rw [Multiset.card_map]
     exact 𝓜.quantaTen_card_le_three hSpec.2.1 hSpec.1
   rw [HasATopYukawa] at hTop
-  have hN0 := neg_four_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor 𝓜 hcard h
-  have hN1 := one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor 𝓜 hcard h
-  have hNneg1 := six_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor 𝓜 hcard h
+  have hN0 := neg_four_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
+    𝓜 hcard h
+  have hN1 := one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
+    𝓜 hcard h
+  have hNneg1 := six_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
+    𝓜 hcard h
   rw [quantaTen_map_q_eq_toFinset] at hTop hcardT hN0 hN1 hNneg1 ⊢
   generalize (𝓜.quantaTen.map QuantaTen.q).toFinset = T at hTop hcardT hN0 hN1 hNneg1  ⊢
   revert T
