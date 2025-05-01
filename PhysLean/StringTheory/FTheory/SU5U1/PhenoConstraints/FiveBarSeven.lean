@@ -25,11 +25,11 @@ namespace MatterContent
 
 set_option maxRecDepth 1000 in
 lemma qHu_eq_quantaTen_map_q_eq_of_card_one_same (𝓜 : MatterContent .same)
-    (h : 𝓜.HasATopYukawa) (h1 : 𝓜.quantaTen.card = 1):
+    (h : 𝓜.HasATopYukawa) (h1 : 𝓜.quantaTen.card = 1) :
     (𝓜.qHu = ⟨0, by decide⟩ ∧ 𝓜.quantaTen.map QuantaTen.q = {⟨0, by decide⟩}) ∨
     (𝓜.qHu = ⟨2, by decide⟩ ∧ 𝓜.quantaTen.map QuantaTen.q = {⟨1, by decide⟩}) ∨
     (𝓜.qHu = ⟨-2, by decide⟩ ∧ 𝓜.quantaTen.map QuantaTen.q = {⟨-1, by decide⟩}) := by
-  have h1 :  (𝓜.quantaTen.map QuantaTen.q).card = 1 := by
+  have h1 : (𝓜.quantaTen.map QuantaTen.q).card = 1 := by
     rw [Multiset.card_map]
     exact h1
   rw [HasATopYukawa] at h
@@ -55,7 +55,7 @@ lemma zero_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterCont
   have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
     (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
   apply not_or_intro hW1 hL1
-  have h5 :  ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
+  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
     rw [Multiset.card_map]
     exact hcard
   rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
@@ -80,7 +80,7 @@ lemma one_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterConte
   have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
     (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
   apply not_or_intro hW1 hL1
-  have h5 :  ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
+  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
     rw [Multiset.card_map]
     exact hcard
   rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
@@ -105,7 +105,7 @@ lemma neg_one_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterC
   have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
     (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
   apply not_or_intro hW1 hL1
-  have h5 :  ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
+  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
     rw [Multiset.card_map]
     exact hcard
   rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
@@ -130,7 +130,7 @@ lemma neg_two_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterC
   have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
     (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
   apply not_or_intro hW1 hL1
-  have h5 :  ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
+  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
     rw [Multiset.card_map]
     exact hcard
   rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
@@ -155,7 +155,7 @@ lemma two_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterConte
   have hW1 := chargeW1Term_single_q10 (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)
     (𝓜.quantaTen.map QuantaTen.q) h.1 _ hn
   apply not_or_intro hW1 hL1
-  have h5 :  ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
+  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
     rw [Multiset.card_map]
     exact hcard
   rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at h5 ⊢
@@ -207,11 +207,11 @@ lemma not_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
   have h2 := 𝓜.qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_five_mem hcard h hTop hSpec
   rw [h2.2] at hW1
   rw [h2.1] at h1
-  have h5 :  ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
+  have h5 : ((𝓜.quantaBarFiveMatter).map QuantaBarFive.q).card = 5 := by
     rw [Multiset.card_map]
     exact hcard
   rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at hW1 h1 h5
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hW1 h1  h5
+  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hW1 h1 h5
   have hW1T : F ∈ (Finset.powerset (Finset.univ)).filter (fun x => x.card = 5) := by
     rw [Finset.mem_filter]
     rw [Finset.mem_powerset]
@@ -237,7 +237,7 @@ lemma quantaBarFive_card_le_six {I : CodimensionOneConfig} (𝓜 : MatterContent
     apply le_of_eq_of_le (by simp :
       𝓜.quantaBarFive.card = (𝓜.quantaBarFive.map QuantaBarFive.q).card)
     rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
-    have h1 :  (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
+    have h1 : (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
         Finset.powerset (Finset.univ
           (α := CodimensionOneConfig.nearestNeighbor.allowedBarFiveCharges)) := by
       rw [Finset.mem_powerset]
@@ -250,7 +250,7 @@ lemma quantaBarFive_card_le_six {I : CodimensionOneConfig} (𝓜 : MatterContent
     apply le_of_eq_of_le (by simp :
       𝓜.quantaBarFive.card = (𝓜.quantaBarFive.map QuantaBarFive.q).card)
     rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
-    have h1 :  (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
+    have h1 : (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
         Finset.powerset (Finset.univ
           (α := CodimensionOneConfig.nextToNearestNeighbor.allowedBarFiveCharges)) := by
       rw [Finset.mem_powerset]

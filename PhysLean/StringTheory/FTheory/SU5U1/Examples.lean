@@ -53,7 +53,7 @@ def mkOneTenFourFiveBar (I : CodimensionOneConfig) (M : ChiralityFlux) (N : Hype
     (hq5₂ : q5₂ ∈ I.allowedBarFiveCharges:= by decide)
     (h5 : ∀ a ∈ ({(M, N, ⟨q5₁, hq5₁⟩), (3 - M, - N, ⟨q5₂, hq5₂⟩)} :
       Multiset (QuantaBarFive I)), a.M = 0 → a.N ≠ 0 := by decide)
-    (h10 :  ∀ a ∈ ({(3, 0, ⟨q10, hq10⟩)} :
+    (h10 : ∀ a ∈ ({(3, 0, ⟨q10, hq10⟩)} :
       Multiset (QuantaTen I)), a.M = 0 → a.N ≠ 0 := by decide)
     (hd5 : DistinctChargedBarFive (I := I) {(M, N, ⟨q5₁, hq5₁⟩), (3 - M, - N, ⟨q5₂, hq5₂⟩)}
       ⟨-qHu, hqHu⟩ ⟨qHd, hqHd⟩ := by decide)
@@ -62,7 +62,7 @@ def mkOneTenFourFiveBar (I : CodimensionOneConfig) (M : ChiralityFlux) (N : Hype
   quantaTen := {(3, 0, ⟨q10, hq10⟩)}
   qHu := ⟨- qHu, hqHu⟩
   qHd := ⟨qHd, hqHd⟩
-  quantaBarFiveMatter := {(M , N, ⟨q5₁, hq5₁⟩),
+  quantaBarFiveMatter := {(M, N, ⟨q5₁, hq5₁⟩),
     (3 - M, - N, ⟨q5₂, hq5₂⟩)}
   chirality_charge_not_both_zero_bar_five_matter := h5
   chirality_charge_not_both_zero_ten := h10
@@ -202,7 +202,6 @@ def caseI24b''' : MatterContent .same where
 
 -/
 
-
 /-- An example of matter content with three 10d representations and 4 5-bar representations.
   This corresponds to example I.3.4.a of arXiv:1507.05961 (Eq. A12). -/
 def caseI34a : MatterContent .same where
@@ -222,7 +221,7 @@ def allCases : Finset (Σ I, MatterContent I) :=
   {⟨.same, caseI14a⟩, ⟨.same, caseI14b⟩, ⟨.nearestNeighbor, caseI14c⟩,
   ⟨.nearestNeighbor, caseI14c'⟩, ⟨.same, caseI14d⟩, ⟨.nearestNeighbor, caseI14e⟩,
   ⟨.nextToNearestNeighbor, caseI14f⟩,
-  ⟨.same, caseI24a⟩,  ⟨.same, caseI24a'⟩,
+  ⟨.same, caseI24a⟩, ⟨.same, caseI24a'⟩,
   ⟨.same, caseI24b⟩, ⟨.same, caseI24b'⟩, ⟨.same, caseI24b''⟩, ⟨.same, caseI24b'''⟩,
   ⟨.same, caseI34a⟩}
 

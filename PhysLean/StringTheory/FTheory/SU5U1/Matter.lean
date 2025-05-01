@@ -192,7 +192,7 @@ set_option maxRecDepth 1000 in
 lemma quantaBarFive_map_q_card_le_seven :
     (𝓜.quantaBarFive.map (QuantaBarFive.q)).card ≤ 7 := by
   rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
-  have h1 :  (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
+  have h1 : (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset ∈
       Finset.powerset (Finset.univ (α := I.allowedBarFiveCharges)) := by
     rw [Finset.mem_powerset]
     exact Finset.subset_univ _
@@ -218,7 +218,7 @@ lemma quantaTen_map_q_eq_toFinset :
   rw [← Multiset.dedup_eq_self] at h1
   conv_lhs => rw [← h1]
   rfl
-  
+
 /-!
 
 ## Gauge anomalies
