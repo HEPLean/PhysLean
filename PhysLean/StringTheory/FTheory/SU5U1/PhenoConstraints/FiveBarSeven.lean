@@ -135,7 +135,6 @@ lemma quantaBarFive_card_le_six {I : CodimensionOneConfig} (𝓜 : MatterContent
     apply le_of_eq_of_le (by simp :
       𝓜.quantaBarFive.card = (𝓜.quantaBarFive.map QuantaBarFive.q).card)
     rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
-    have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset
     change (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset.card ≤ _
     generalize (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset = S at *
     revert S
@@ -144,7 +143,6 @@ lemma quantaBarFive_card_le_six {I : CodimensionOneConfig} (𝓜 : MatterContent
     apply le_of_eq_of_le (by simp :
       𝓜.quantaBarFive.card = (𝓜.quantaBarFive.map QuantaBarFive.q).card)
     rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
-    have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset
     change (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset.card ≤ _
     generalize (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset = S at *
     revert S

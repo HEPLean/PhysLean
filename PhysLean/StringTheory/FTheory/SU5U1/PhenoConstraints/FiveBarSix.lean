@@ -260,7 +260,7 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nextToNeare
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa)
     (hSpec : 𝓜.ValidMatterSpectrum) :
-    𝓜.qHu =⟨2, by decide⟩ ∧  𝓜.quantaTen.map QuantaTen.q = {⟨-9, by decide⟩, ⟨11, by decide⟩} := by
+    𝓜.qHu = ⟨2, by decide⟩ ∧  𝓜.quantaTen.map QuantaTen.q = {⟨-9, by decide⟩, ⟨11, by decide⟩} := by
   have hcardT : (𝓜.quantaTen.map QuantaTen.q).card ≤ 3 := by
     rw [Multiset.card_map]
     exact 𝓜.quantaTen_card_le_three hSpec.2.1 hSpec.1
