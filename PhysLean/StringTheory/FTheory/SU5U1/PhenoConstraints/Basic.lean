@@ -295,7 +295,7 @@ instance : Decidable 𝓜.HasABottomYukawa :=
 lemma lambdaTerm_K1Term_W1Term_subset_check {I : CodimensionOneConfig} {n : ℕ} (𝓜 : MatterContent I)
     (hcard : 𝓜.quantaBarFiveMatter.card = n) (h : 𝓜.ProtonDecayU1Constrained)
     (S : Multiset ℤ)
-    (hS :  ∀ F ⊆ I.allowedBarFiveCharges, F.card = n →
+    (hS : ∀ F ⊆ I.allowedBarFiveCharges, F.card = n →
         (0 ∈ chargeW1Term F.val S ∨ 0 ∈ chargeLambdaTerm F.val S) ∨
         0 ∈ chargeK1Term F.val S := by decide) :
       ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q := by

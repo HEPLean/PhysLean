@@ -141,7 +141,7 @@ lemma quantaTen_map_q_powerset_filter_card_three (he : 𝓜.NoExotics)
 - `{3}`
 -/
 lemma quantaTen_chiralityFlux_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
-    𝓜.quantaTen.map (QuantaTen.M)
+    𝓜.quantaTen.map QuantaTen.M
     ∈ ({{1, 1, 1}, {1, 2}, {3}} : Finset (Multiset ChiralityFlux)) := by
   have hr := quantaTen_chiralityFlux_card_mem he h3
   simp at hr
@@ -184,6 +184,97 @@ lemma quantaTen_chiralityFlux_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFa
         (a = 1 ∧ b = 1 ∧ c = 1) := by omega
     rcases habc a.M b.M c.M a_pos b_pos c_pos hl.1 with hr
     simp [hr]
+
+lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
+    𝓜.quantaTen.map QuantaTen.MN
+    ∈ ({{(1, 0), (1, 0), (1, 0)}, {(1, 1), (1, -1), (1, 0)},
+      {(1, 0), (2, 0)}, {(1, -1), (2, 1)}, {(1, 1), (2, -1)}, {(3, 0)}} :
+      Finset (Multiset (ChiralityFlux × HyperChargeFlux))) := by
+  have hr := quantaTen_chiralityFlux_mem he h3
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hr
+  rcases hr with hr | hr | hr
+  · have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {1, 1, 1}) :
+        ∃ n1 n2 n3, S = {(1, n1), (1, n2), (1, n3)} := by
+      simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
+        Prod.exists, exists_and_right, exists_eq_right] at hprod
+      obtain ⟨_, n1, h1, rfl, hi⟩ := hprod
+      obtain ⟨_, n2, h2, rfl, hi⟩ := hi
+      obtain ⟨n3, hi⟩ := hi
+      rw [← (Multiset.cons_erase h1), ← (Multiset.cons_erase h2), hi]
+      use n1, n2
+      simp
+    obtain ⟨n1, n2, n3, hS⟩ := hS (𝓜.quantaTen.map QuantaTen.MN) (by simpa using hr)
+    have hx := he.1
+    have hx2 := 𝓜.quantaTen_map_MN_bound_N_of_noExotics he
+    rw [show (Multiset.map QuantaTen.N 𝓜.quantaTen) = (𝓜.quantaTen.map QuantaTen.MN).map Prod.snd
+      by rw [Multiset.map_map]; rfl] at hx
+    rw [hS] at hx hx2 ⊢
+    simp at hx hx2
+    have hl (m : ℤ) (hm : -1 ≤ m) (hm1 : m ≤ 1) : m ∈ ({-1, 0, 1} : Finset ℤ) := by
+      simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
+      omega
+    have hn := hl n1 hx2.1.1 hx2.1.2
+    have hn2 := hl n2 hx2.2.1.1 hx2.2.1.2
+    have hn3 := hl n3 hx2.2.2.1 hx2.2.2.2
+    clear hr hS
+    clear h3 he hS hl
+    revert hx hx2
+    revert n1
+    revert n2
+    revert n3
+    decide
+  · have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {1, 2}) :
+        ∃ n1 n2, S = {(1, n1), (2, n2)} := by
+      simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
+        Prod.exists, exists_and_right, exists_eq_right] at hprod
+      obtain ⟨_, n1, h1, rfl, hi⟩ := hprod
+      obtain ⟨n2, hi⟩ := hi
+      rw [← (Multiset.cons_erase h1), hi]
+      use n1, n2
+      simp
+    obtain ⟨n1, n2, hS⟩ := hS (𝓜.quantaTen.map QuantaTen.MN) (by simpa using hr)
+    have hx := he.1
+    have hx2 := 𝓜.quantaTen_map_MN_bound_N_of_noExotics he
+    rw [show (Multiset.map QuantaTen.N 𝓜.quantaTen) = (𝓜.quantaTen.map QuantaTen.MN).map Prod.snd
+      by rw [Multiset.map_map]; rfl] at hx
+    rw [hS] at hx hx2 ⊢
+    simp at hx hx2
+    clear hr hS
+    clear h3 he hS
+    have hl (m : ℤ) (hm : -1 ≤ m) (hm1 : m ≤ 1) : m ∈ ({-1, 0, 1} : Finset ℤ) := by
+      simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
+      omega
+    have hl2 (m : ℤ) (hm : -2 ≤ m) (hm1 : m ≤ 2) : m ∈ ({-2, -1, 0, 1, 2} : Finset ℤ) := by
+      simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
+      omega
+    have hn := hl n1 hx2.1.1 hx2.1.2
+    have hn2 := hl2 n2 hx2.2.1 hx2.2.2
+    revert hx hx2
+    revert n1
+    revert n2
+    decide
+  · have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {3}) :
+        ∃ n1, S = {(3, n1)} := by
+      simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
+        Prod.exists, exists_and_right, exists_eq_right] at hprod
+      obtain ⟨n1, h1, rfl, hi⟩ := hprod
+      use n1
+    obtain ⟨n1, hS⟩ := hS (𝓜.quantaTen.map QuantaTen.MN) (by simpa using hr)
+    have hx := he.1
+    have hx2 := 𝓜.quantaTen_map_MN_bound_N_of_noExotics he
+    rw [show (Multiset.map QuantaTen.N 𝓜.quantaTen) = (𝓜.quantaTen.map QuantaTen.MN).map Prod.snd
+      by rw [Multiset.map_map]; rfl] at hx
+    rw [hS] at hx hx2 ⊢
+    simp at hx hx2
+    clear hr hS
+    clear h3 he hS
+    have hl (m : ℤ) (hm : -3 ≤ m) (hm1 : m ≤ 3) : m ∈ ({-3, -2, -1, 0, 1, 2, 3} : Finset ℤ) := by
+      simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
+      omega
+    have hn := hl n1 hx2.1 hx2.2
+    revert hx hx2
+    revert n1
+    decide
 
 end MatterContent
 

@@ -63,6 +63,9 @@ abbrev QuantaTen.M (a : QuantaTen) : ChiralityFlux := a.1
 /-- The `HyperChargeFlux` quanta of a 10d representation. -/
 abbrev QuantaTen.N (a : QuantaTen) : HyperChargeFlux := a.2.1
 
+/-- The `ChiralityFlux` and`HyperChargeFlux` quanta of a 10d representation. -/
+abbrev QuantaTen.MN (a : QuantaTen) : ChiralityFlux × HyperChargeFlux := (a.M, a.N)
+
 /-- The extra `U(1)` charge of a 10d representation. -/
 abbrev QuantaTen.q (a : QuantaTen) : ℤ := a.2.2
 
@@ -221,7 +224,6 @@ lemma quantaBarFive_chiralityFlux_two_le_filter_zero_card :
   congr
   funext x
   exact Lean.Grind.eq_congr' rfl rfl
-
 
 lemma quantaBarFive_map_q_noDup : (𝓜.quantaBarFive.map (QuantaBarFive.q)).Nodup := by
   simp only [quantaBarFive, Int.reduceNeg, Multiset.map_cons, Multiset.nodup_cons,
