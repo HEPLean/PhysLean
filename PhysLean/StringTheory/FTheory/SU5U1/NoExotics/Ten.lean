@@ -30,7 +30,7 @@ namespace MatterContent
 variable {I : CodimensionOneConfig} {𝓜 : MatterContent I}
 
 /-- The chirality flux associated with a 10d representation must be non-negative. -/
-lemma quantaTen_chiralityFlux_nonneg' {a : QuantaTen I}
+lemma quantaTen_chiralityFlux_nonneg' {a : QuantaTen}
     (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaTen) : 0 ≤ a.M := by
   exact h3.2.2.2 a h
 
@@ -76,7 +76,7 @@ lemma quantaTen_chiralityFlux_filter_ne_zero_eq_self (he : 𝓜.NoExotics) :
 
 /-- The chirality flux associated with a 10d representation must be
   less then or equal to three. -/
-lemma quantaTen_chiralityFlux_le_three {a : QuantaTen I}
+lemma quantaTen_chiralityFlux_le_three {a : QuantaTen}
     (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaTen) : a.M ≤ 3 := by
   rw [← h3.2.1]
   refine Multiset.single_le_sum (α := ChiralityFlux) ?_ _ ?_
@@ -118,6 +118,20 @@ lemma quantaTen_chiralityFlux_card_mem (he : 𝓜.NoExotics)
 lemma quantaTen_card_le_three (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) : 𝓜.quantaTen.card ≤ 3 := by
   simpa using quantaTen_chiralityFlux_card_le_three he h3
+
+lemma quantaTen_map_q_powerset_filter_card_three (he : 𝓜.NoExotics)
+    (h3 : 𝓜.ThreeChiralFamiles) :
+    (𝓜.quantaTen.map QuantaTen.q).toFinset ∈
+    I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 3) := by
+  rw [Finset.mem_filter]
+  apply And.intro
+  · exact 𝓜.quantaTen_map_q_mem_powerset
+  · apply le_of_eq_of_le _ (𝓜.quantaTen_card_le_three he h3)
+    trans (𝓜.quantaTen.map QuantaTen.q).card
+    · conv_rhs => rw [𝓜.quantaTen_map_q_eq_toFinset]
+      simp only [Multiset.toFinset_val]
+      rfl
+    · rw [Multiset.card_map]
 
 /-- The multiset of chirality fluxes of matter content in the 10d representation
   satisfying `NoExotics` and
