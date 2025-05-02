@@ -198,7 +198,7 @@ lemma chirality_charge_not_both_zero_bar_five :
 lemma quantaBarFive_map_q_subset_allowedBarFiveCharges :
     (𝓜.quantaBarFive.map (QuantaBarFive.q)).toFinset ⊆ I.allowedBarFiveCharges := by
   rw [quantaBarFive]
-  simp
+  simp only [Int.reduceNeg, Multiset.map_cons, Multiset.toFinset_cons]
   refine Finset.insert_subset ?_ ?_
   · exact 𝓜.qHd_mem_allowedBarFiveCharges
   · apply Finset.insert_subset ?_ ?_
