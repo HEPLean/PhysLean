@@ -97,6 +97,14 @@ lemma ContDiff.two_differentiable (f : X → Y → Z) (hf : ContDiff 𝕜 2 ↿f
     Differentiable 𝕜 (↿f) :=
   ContDiff.differentiable hf (by simp)
 
+lemma ContDiff.uncurry (f : X → Y → Z) (x : X) (hf : ContDiff 𝕜 2 ↿f) :
+    ContDiff 𝕜 2 (f x) := by
+  have h : f x = ↿f ∘ (x, ·) := by rfl
+  rw [h]
+  apply ContDiff.comp
+  · exact hf
+  · exact contDiff_prodMk_right x
+
 lemma ContDiff.two_fderiv_differentiable (f : X → Y → Z) (hf : ContDiff 𝕜 2 ↿f) :
     Differentiable 𝕜 (fderiv 𝕜 (↿f)) := by
   change ContDiff 𝕜 (1 + 1) ↿f at hf

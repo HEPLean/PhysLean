@@ -63,6 +63,13 @@ def NoExotics : Prop :=
 
 instance : Decidable 𝓜.NoExotics := instDecidableAnd
 
+lemma quantaTen_map_MN_bound_N_of_noExotics (h : 𝓜.NoExotics) :
+    ∀ a ∈ (𝓜.quantaTen.map QuantaTen.MN), - a.1 ≤ a.2 ∧ a.2 ≤ a.1 := by
+  intro a ha
+  rw [@Multiset.mem_map] at ha
+  obtain ⟨a', h', rfl⟩ := ha
+  exact h.2.2.1 a' h'
+
 /-- The condition on the matter content for there to be three lepton doublets with
 exactly one pair of Higgs.
 

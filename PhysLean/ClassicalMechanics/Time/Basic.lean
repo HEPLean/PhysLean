@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
-import Mathlib.Analysis.Calculus.FDeriv.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Add
 /-!
 # Time
 
@@ -41,5 +41,13 @@ noncomputable def deriv [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
 
 @[inherit_doc deriv]
 scoped notation "∂ₜ" => deriv
+
+lemma deriv_smul (f : Time → EuclideanSpace ℝ (Fin 3)) (k : ℝ)
+    (hf : Differentiable ℝ f) :
+    ∂ₜ (fun t => k • f t) t = k • ∂ₜ (fun t => f t) t := by
+  rw [deriv]
+  rw [fderiv_const_smul]
+  rfl
+  fun_prop
 
 end Time

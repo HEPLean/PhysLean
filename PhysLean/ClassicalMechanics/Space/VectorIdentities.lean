@@ -221,6 +221,27 @@ lemma curl_of_curl (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ
       try apply contDiff_euclidean.mp
       exact hf
 
+@[simp]
+lemma grad_zero : ∇ (0 : Space d → ℝ) = 0 := by
+  unfold grad Space.deriv
+  simp only [fderiv_zero, Pi.zero_apply, ContinuousLinearMap.zero_apply]
+  rfl
+
+@[simp]
+lemma div_zero : ∇ ⬝ (0 : Space d → EuclideanSpace ℝ (Fin d)) = 0 := by
+  unfold div Space.deriv Finset.sum
+  simp only [Pi.zero_apply, fderiv_const, ContinuousLinearMap.zero_apply, Multiset.map_const',
+    Finset.card_val, Finset.card_univ, Fintype.card_fin, Multiset.sum_replicate, smul_zero]
+  rfl
+
+@[simp]
+lemma curl_zero : ∇ × (0 : Space → EuclideanSpace ℝ (Fin 3)) = 0 := by
+  unfold curl Space.deriv
+  simp only [Fin.isValue, Pi.zero_apply, fderiv_const, ContinuousLinearMap.zero_apply, sub_self]
+  ext x i
+  fin_cases i <;>
+  rfl
+
 /-!
 
 ## Addition of ∇ operations

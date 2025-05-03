@@ -6,6 +6,7 @@ import PhysLean.ClassicalMechanics.Space.Basic
 import PhysLean.ClassicalMechanics.Space.VectorIdentities
 import PhysLean.ClassicalMechanics.Time.Basic
 import PhysLean.ClassicalMechanics.VectorFields
+import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.CondensedMatter.Basic
 import PhysLean.CondensedMatter.TightBindingChain.Basic
 import PhysLean.Cosmology.Basic
@@ -13,8 +14,10 @@ import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
+import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
+import PhysLean.Electromagnetism.Wave
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
@@ -253,4 +256,6 @@ import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.FiveBar
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Ten
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
+import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSix
 import PhysLean.Thermodynamics.Basic

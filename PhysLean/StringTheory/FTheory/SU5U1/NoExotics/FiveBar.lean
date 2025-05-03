@@ -29,7 +29,7 @@ namespace MatterContent
 variable {I : CodimensionOneConfig} {𝓜 : MatterContent I}
 
 /-- The chirality flux associated with a 5-bar representation must be non-negative. -/
-lemma quantaBarFive_chiralityFlux_nonneg' {a : QuantaBarFive I}
+lemma quantaBarFive_chiralityFlux_nonneg' {a : QuantaBarFive}
     (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaBarFive) : 0 ≤ a.M := by
   exact h3.2.2.1 a h
 
@@ -42,16 +42,16 @@ lemma quantaBarFive_chiralityFlux_nonneg {a : ChiralityFlux}
 
 /-- The chirality flux associated with a 5-bar representation must be
   less then or equal to three. -/
-lemma quantaBarFive_chiralityFlux_le_three {a : QuantaBarFive I}
+lemma quantaBarFive_chiralityFlux_le_three {a : QuantaBarFive}
     (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ 𝓜.quantaBarFive) : a.M ≤ 3 := by
   rw [← h3.1]
   refine Multiset.single_le_sum (α := ChiralityFlux) ?_ _ ?_
   · intro a ha
     simp only [Multiset.mem_map, Prod.exists, Subtype.exists] at ha
-    obtain ⟨a', b, c, d, h, h2, rfl⟩ := ha
+    obtain ⟨a', b, c, h, rfl⟩ := ha
     exact quantaBarFive_chiralityFlux_nonneg' h3 h
   · simp only [Multiset.mem_map, Prod.exists, Subtype.exists]
-    use a.1, a.2.1, a.2.2, a.2.2.2
+    use a.1, a.2.1, a.2.2
 
 lemma quantaBarFive_chiralityFlux_filter_non_zero_sum (h3 : 𝓜.ThreeChiralFamiles) :
     ((𝓜.quantaBarFive.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0)).sum = 3 := by
@@ -202,9 +202,9 @@ lemma quantaBarFive_zero_chiralityFlux_card_le_five (h3L : 𝓜.ThreeLeptonDoubl
     apply Multiset.card_nsmul_le_sum
     intro x hx
     simp only [Multiset.mem_map, Multiset.mem_filter, Prod.exists, Subtype.exists] at hx
-    obtain ⟨m, n, q, hq, ha, rfl⟩ := hx
+    obtain ⟨m, n, q, ha, rfl⟩ := hx
     rw [ha.2]
-    have hp := 𝓜.chirality_charge_not_both_zero_bar_five (m, n, ⟨q, hq⟩) ha.1
+    have hp := 𝓜.chirality_charge_not_both_zero_bar_five (m, n, q) ha.1
     simp [ha.2] at hp
     have ha {a : ℤ} (h : ¬ a = 0) : 1 ≤ |a| := by
       exact Int.one_le_abs h
@@ -249,7 +249,9 @@ lemma quantaBarFive_zero_chiralityFlux_mem (h3L : 𝓜.ThreeLeptonDoublets) :
   · rw [hn 5 hr]
     simp
 
-/-- The number of 5-bar representations is less than or equal to eight. -/
+/-- The number of 5-bar representations is less than or equal to eight.
+  Note the existences of `quantaBarFive_card_le_seven`. The proof of this weaker result
+  does not rely on the assumptions of no-duplicate charges. -/
 lemma quantaBarFive_card_le_eight (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFive.card ≤ 8 := by
   have h1 : 𝓜.quantaBarFive.card =
@@ -274,11 +276,15 @@ with zero to five chirality fluxes equal to zero.
 -/
 lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFive.map QuantaBarFive.M ∈
-    ({{1, 1, 1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0}, {1, 1, 1, 0, 0},
+    ({{1, 1, 1, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0}, {1, 1, 1, 0, 0},
       {1, 2, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {1, 2, 0, 0},
       {3, 0, 0, 0, 0, 0}, {3, 0, 0, 0, 0}, {3, 0, 0, 0}, {3, 0, 0}} :
       Finset (Multiset ChiralityFlux)) := by
-  rw [← (Multiset.filter_add_not (fun x => x = 0) (Multiset.map QuantaBarFive.M 𝓜.quantaBarFive))]
+  have hcard : (𝓜.quantaBarFive.map QuantaBarFive.M).card ≤ 7 := by
+    rw [Multiset.card_map]
+    exact 𝓜.quantaBarFive_card_le_seven
+  rw [← (Multiset.filter_add_not (fun x => x = 0)
+    (Multiset.map QuantaBarFive.M 𝓜.quantaBarFive))] at hcard ⊢
   have hz := quantaBarFive_zero_chiralityFlux_mem h3L
   have h0 := quantaBarFive_chiralityFlux_filter_non_zero_mem h3
   simp only [Finset.mem_insert, Finset.mem_singleton] at hz
@@ -295,6 +301,9 @@ lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜
     rw [Multiset.add_comm, Multiset.singleton_add]
     simp only [Multiset.cons_zero, Finset.mem_insert, Finset.mem_singleton,
       Multiset.empty_eq_zero, true_or, or_true]
+  -- The case of {1, 1, 1, 0, 0, 0, 0, 0}
+  rw [hz, h0] at hcard
+  simp at hcard
 
 /-- The number of 5-bar representations (including the Higges) is greater then or equal to three. -/
 lemma quantaBarFive_three_le_card (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :

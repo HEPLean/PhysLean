@@ -7,6 +7,8 @@ import Mathlib.Algebra.BigOperators.Group.Multiset.Defs
 import Mathlib.Algebra.Group.Int.Defs
 import Mathlib.Algebra.Order.Group.Unbundled.Abs
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Powerset
 /-!
 
 # Matter
@@ -39,50 +41,83 @@ abbrev ChiralityFlux : Type := ℤ
 abbrev HyperChargeFlux : Type := ℤ
 
 /-- The type of quanta associated with matter content in the 5-bar representation. -/
-abbrev QuantaBarFive (I : CodimensionOneConfig) : Type :=
-  ChiralityFlux × HyperChargeFlux × I.allowedBarFiveCharges
+abbrev QuantaBarFive : Type :=
+  ChiralityFlux × HyperChargeFlux × ℤ
 
 /-- The `ChiralityFlux` quanta of a 5-bar representation. -/
-abbrev QuantaBarFive.M {I : CodimensionOneConfig} (a : QuantaBarFive I) : ChiralityFlux := a.1
+abbrev QuantaBarFive.M (a : QuantaBarFive) : ChiralityFlux := a.1
 
 /-- The `HyperChargeFlux` quanta of a 5-bar representation. -/
-abbrev QuantaBarFive.N {I : CodimensionOneConfig} (a : QuantaBarFive I) : HyperChargeFlux := a.2.1
+abbrev QuantaBarFive.N (a : QuantaBarFive) : HyperChargeFlux := a.2.1
 
 /-- The extra `U(1)` charge of a 5-bar representation. -/
-abbrev QuantaBarFive.q {I : CodimensionOneConfig} (a : QuantaBarFive I) :
-    I.allowedBarFiveCharges := a.2.2
+abbrev QuantaBarFive.q (a : QuantaBarFive) : ℤ := a.2.2
 
 /-- The type of quanta associated with matter content in the 10d representation. -/
-abbrev QuantaTen (I : CodimensionOneConfig) : Type :=
-  ChiralityFlux × HyperChargeFlux × I.allowedTenCharges
+abbrev QuantaTen : Type :=
+  ChiralityFlux × HyperChargeFlux × ℤ
 
 /-- The `ChiralityFlux` quanta of a 10d representation. -/
-abbrev QuantaTen.M {I : CodimensionOneConfig} (a : QuantaTen I) : ChiralityFlux := a.1
+abbrev QuantaTen.M (a : QuantaTen) : ChiralityFlux := a.1
 
 /-- The `HyperChargeFlux` quanta of a 10d representation. -/
-abbrev QuantaTen.N {I : CodimensionOneConfig} (a : QuantaTen I) : HyperChargeFlux := a.2.1
+abbrev QuantaTen.N (a : QuantaTen) : HyperChargeFlux := a.2.1
+
+/-- The `ChiralityFlux` and`HyperChargeFlux` quanta of a 10d representation. -/
+abbrev QuantaTen.MN (a : QuantaTen) : ChiralityFlux × HyperChargeFlux := (a.M, a.N)
 
 /-- The extra `U(1)` charge of a 10d representation. -/
-abbrev QuantaTen.q {I : CodimensionOneConfig} (a : QuantaTen I) :
-    I.allowedTenCharges := a.2.2
+abbrev QuantaTen.q (a : QuantaTen) : ℤ := a.2.2
+
+/-- The proposition on `Multiset (QuantaBarFive I)`,
+  and two `I.allowedBarFiveCharges` denoted `qHu` and `qHd` which is true
+  if none of the (underlying) charges are equal. -/
+def DistinctChargedBarFive  (quantaBarFiveMatter : Multiset QuantaBarFive)
+    (qHu : ℤ) (qHd : ℤ) : Prop :=
+  (quantaBarFiveMatter.map QuantaBarFive.q).toFinset.card =
+      (quantaBarFiveMatter.map QuantaBarFive.q).card
+    ∧ qHu ∉ (quantaBarFiveMatter.map QuantaBarFive.q)
+    ∧ qHd ∉ (quantaBarFiveMatter.map QuantaBarFive.q)
+    ∧ qHu ≠ qHd
+
+instance (quantaBarFiveMatter : Multiset (QuantaBarFive)) (qHu : ℤ) (qHd : ℤ) :
+    Decidable (DistinctChargedBarFive quantaBarFiveMatter qHu qHd) := instDecidableAnd
+
+/-- The proposition on a `Multiset (QuantaTen I)` which is true if non of the underlying
+  charges are equal. -/
+def DistinctChargedTen (quantaTen : Multiset QuantaTen) : Prop :=
+  (quantaTen.map QuantaTen.q).toFinset.card = (quantaTen.map QuantaTen.q).card
+
+instance (quantaTen : Multiset QuantaTen) :
+    Decidable (DistinctChargedTen quantaTen) := decEq _ _
 
 /-- The matter content, assumed to sit in the 5-bar or 10d representation of
   `SU(5)`. -/
 @[ext]
 structure MatterContent (I : CodimensionOneConfig) where
   /-- The chirality, charge and hyperChargeFlux associated with the 5-bar representations. -/
-  quantaBarFiveMatter : Multiset (QuantaBarFive I)
+  quantaBarFiveMatter : Multiset QuantaBarFive
+  quantaBarFiveMatter_map_q_subset_allowedBarFiveCharges :
+    (quantaBarFiveMatter.map QuantaBarFive.q).toFinset ⊆ I.allowedBarFiveCharges
   /-- The chirality, charge and hyperChargeFlux associated with the 10d representations. -/
-  quantaTen : Multiset (QuantaTen I)
+  quantaTen : Multiset QuantaTen
+  quantaTen_map_q_subset_allowedTenCharges :
+    (quantaTen.map QuantaTen.q).toFinset ⊆ I.allowedTenCharges
   /-- The charge of the up-type Higgs in the 5-bar representation. -/
-  qHu : I.allowedBarFiveCharges
+  qHu : ℤ
+  qHu_mem_allowedBarFiveCharges : qHu ∈ I.allowedBarFiveCharges
   /-- The charge of the down-type Higgs in the 5-bar representation. -/
-  qHd : I.allowedBarFiveCharges
+  qHd : ℤ
+  qHd_mem_allowedBarFiveCharges : qHd ∈ I.allowedBarFiveCharges
   /-- There is no matter in the 5-bar representation with zero `Chirality` and `HyperChargeFlux`. -/
   chirality_charge_not_both_zero_bar_five_matter :
     ∀ a ∈ quantaBarFiveMatter, (a.M = 0 → a.N ≠ 0)
   /-- There is no matter in the 10d representation with zero `Chirality` and `HyperChargeFlux`. -/
   chirality_charge_not_both_zero_ten : ∀ a ∈ quantaTen, (a.M = 0 → a.N ≠ 0)
+  /-- All 5-bar representations carry distinct charges. -/
+  distinctly_charged_quantaBarFiveMatter : DistinctChargedBarFive quantaBarFiveMatter qHu qHd
+  /-- All 10d representations carry distinct charges. -/
+  distinctly_charged_quantaTen : DistinctChargedTen quantaTen
 
 namespace MatterContent
 
@@ -104,12 +139,53 @@ instance : DecidableEq (MatterContent I) := fun a b =>
   | .isTrue _ =>
     isTrue (by ext1 <;> simp_all)
 
+/-!
+
+## Some properties of quantaBarFiveMatter
+
+-/
+
+lemma quantaBarFiveMatter_map_q_noDup :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).Nodup :=
+  Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaBarFiveMatter.1
+
+lemma quantaBarFiveMatter_map_q_eq_toFinset :
+    𝓜.quantaBarFiveMatter.map (QuantaBarFive.q) =
+      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset.1 := by
+  have h1 := 𝓜.quantaBarFiveMatter_map_q_noDup
+  rw [← Multiset.dedup_eq_self] at h1
+  conv_lhs => rw [← h1]
+  rfl
+
+lemma quantaBarFiveMatter_map_q_mem_powerset :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈ I.allowedBarFiveCharges.powerset := by
+  rw [Finset.mem_powerset]
+  exact 𝓜.quantaBarFiveMatter_map_q_subset_allowedBarFiveCharges
+
+lemma quantaBarFiveMatter_map_q_mem_powerset_filter_card {n : ℕ}
+    (hcard : 𝓜.quantaBarFiveMatter.card = n) :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈
+      I.allowedBarFiveCharges.powerset.filter fun x => x.card = n := by
+  simp only [Finset.mem_filter, Finset.mem_powerset, Finset.subset_univ, true_and,
+    𝓜.quantaBarFiveMatter_map_q_mem_powerset]
+  trans (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).card
+  · rw [quantaBarFiveMatter_map_q_eq_toFinset]
+    simp only [Multiset.toFinset_val, Multiset.toFinset_dedup]
+    rfl
+  · simpa using hcard
+
+/-!
+
+## quantaBarFive
+
+-/
+
 /-- The `QuantaBarFive` of all 5-bar representations including the up and down Higges.
   The chirality fluxes of the up and down Higges are taken to be zero,
   whilst their hypercharge flux is taken to be -1 and +1 respectively,
   this choice is related to doublet–triplet splitting.
 -/
-def quantaBarFive : Multiset (QuantaBarFive I) :=
+def quantaBarFive : Multiset QuantaBarFive :=
   (0, 1, 𝓜.qHd) ::ₘ (0, -1, 𝓜.qHu) ::ₘ 𝓜.quantaBarFiveMatter
 
 lemma chirality_charge_not_both_zero_bar_five :
@@ -122,6 +198,21 @@ lemma chirality_charge_not_both_zero_bar_five :
   · simp [QuantaBarFive.N]
   · exact 𝓜.chirality_charge_not_both_zero_bar_five_matter a h
 
+lemma quantaBarFive_map_q_subset_allowedBarFiveCharges :
+    (𝓜.quantaBarFive.map (QuantaBarFive.q)).toFinset ⊆ I.allowedBarFiveCharges := by
+  rw [quantaBarFive]
+  simp only [Int.reduceNeg, Multiset.map_cons, Multiset.toFinset_cons]
+  refine Finset.insert_subset ?_ ?_
+  · exact 𝓜.qHd_mem_allowedBarFiveCharges
+  · apply Finset.insert_subset ?_ ?_
+    · exact 𝓜.qHu_mem_allowedBarFiveCharges
+    · exact 𝓜.quantaBarFiveMatter_map_q_subset_allowedBarFiveCharges
+
+lemma quantaBarFive_map_q_mem_powerset :
+    (𝓜.quantaBarFive.map (QuantaBarFive.q)).toFinset ∈ I.allowedBarFiveCharges.powerset := by
+  rw [Finset.mem_powerset]
+  exact 𝓜.quantaBarFive_map_q_subset_allowedBarFiveCharges
+
 lemma quantaBarFive_chiralityFlux_two_le_count_zero :
     2 ≤ (𝓜.quantaBarFive.map (QuantaBarFive.M)).count 0 := by
   simp [quantaBarFive]
@@ -133,6 +224,54 @@ lemma quantaBarFive_chiralityFlux_two_le_filter_zero_card :
   congr
   funext x
   exact Lean.Grind.eq_congr' rfl rfl
+
+lemma quantaBarFive_map_q_noDup : (𝓜.quantaBarFive.map (QuantaBarFive.q)).Nodup := by
+  simp only [quantaBarFive, Int.reduceNeg, Multiset.map_cons, Multiset.nodup_cons,
+    Multiset.mem_cons, Multiset.mem_map, Prod.exists, exists_eq_right, not_or, not_exists,
+    𝓜.quantaBarFiveMatter_map_q_noDup, and_true]
+  have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter
+  simp_all only [DistinctChargedBarFive, QuantaBarFive.q, Multiset.card_map, Multiset.mem_map,
+    Prod.exists, exists_eq_right, not_exists, ne_eq, not_false_eq_true, implies_true, and_true]
+  exact fun a => h1.2.2.2 a.symm
+
+set_option maxRecDepth 1000 in
+lemma quantaBarFive_map_q_card_le_seven :
+    (𝓜.quantaBarFive.map QuantaBarFive.q).card ≤ 7 := by
+  rw [← Multiset.dedup_card_eq_card_iff_nodup.mpr 𝓜.quantaBarFive_map_q_noDup]
+  have hmem := 𝓜.quantaBarFive_map_q_subset_allowedBarFiveCharges
+  change (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset.card ≤ 7
+  generalize (Multiset.map QuantaBarFive.q 𝓜.quantaBarFive).toFinset = S at *
+  revert S
+  match I with
+  | CodimensionOneConfig.same => decide
+  | CodimensionOneConfig.nearestNeighbor => decide
+  | CodimensionOneConfig.nextToNearestNeighbor => decide
+
+lemma quantaBarFive_card_le_seven : 𝓜.quantaBarFive.card ≤ 7 := by
+  apply le_of_eq_of_le _ 𝓜.quantaBarFive_map_q_card_le_seven
+  simp
+
+/-!
+
+## Some properties of quantaTen
+
+-/
+
+lemma quantaTen_map_q_nodup :
+    (𝓜.quantaTen.map (QuantaTen.q)).Nodup :=
+  Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaTen
+
+lemma quantaTen_map_q_eq_toFinset :
+    𝓜.quantaTen.map (QuantaTen.q) = (𝓜.quantaTen.map QuantaTen.q).toFinset.1 := by
+  have h1 := 𝓜.quantaTen_map_q_nodup
+  rw [← Multiset.dedup_eq_self] at h1
+  conv_lhs => rw [← h1]
+  rfl
+
+lemma quantaTen_map_q_mem_powerset :
+    (𝓜.quantaTen.map (QuantaTen.q)).toFinset ∈ I.allowedTenCharges.powerset := by
+  rw [Finset.mem_powerset]
+  exact 𝓜.quantaTen_map_q_subset_allowedTenCharges
 
 /-!
 
@@ -171,8 +310,8 @@ This condition corresponds to
 
 Ref: See equation (22) of arXiv:1401.5084. -/
 def GaugeAnomalyU1MSSM : Prop :=
-  (𝓜.quantaTen.map fun a => a.q.1 * a.N).sum +
-  (𝓜.quantaBarFive.map fun a => a.q.1 * a.N).sum = 0
+  (𝓜.quantaTen.map fun a => a.q * a.N).sum +
+  (𝓜.quantaBarFive.map fun a => a.q * a.N).sum = 0
 
 instance : Decidable (GaugeAnomalyU1MSSM 𝓜) := decEq _ _
 
@@ -184,8 +323,8 @@ This condition corresponds to
 
 Ref: See equation (23) of arXiv:1401.5084. -/
 def GaugeAnomalyU1YU1U1 : Prop :=
-  3 * (𝓜.quantaTen.map fun a => a.q.1 * a.q.1 * a.N).sum +
-  (𝓜.quantaBarFive.map fun a => a.q.1 * a.q.1 * a.N).sum = 0
+  3 * (𝓜.quantaTen.map fun a => a.q * a.q * a.N).sum +
+  (𝓜.quantaBarFive.map fun a => a.q * a.q * a.N).sum = 0
 
 instance : Decidable (GaugeAnomalyU1YU1U1 𝓜) := decEq _ _
 
