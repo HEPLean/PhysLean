@@ -26,8 +26,8 @@ QM problem located on a lattice with only self and nearest neighbour integractio
 -/
 
 TODO "BBZAB" "Prove results related to the one-dimensional tight binding chain.
-    This is related to the following issue/feature-request:
-    https://github.com/HEPLean/PhysLean/issues/523 "
+  This is related to the following issue/feature-request:
+  https://github.com/HEPLean/PhysLean/issues/523 "
 
 namespace CondensedMatter
 
@@ -40,22 +40,24 @@ structure TightBindingChain  where
   E0 : ℝ
   /-- The hopping parameter. -/
   t : ℝ
+
 namespace TightBindingChain
 open InnerProductSpace
 variable (T : TightBindingChain)
 
 /-- The Hilbert space of a `TightBindingchain` is the `N`-dimensional finite dimensional
-    Hilbert space. -/
+Hilbert space. -/
 abbrev HilbertSpace := EuclideanSpace ℂ (Fin T.N)
 
 /-- The eigenstate corresponding to the particle been located on the `n`th site. -/
 noncomputable def localizedState {T : TightBindingChain} (n : Fin T.N) : HilbertSpace T :=
-    EuclideanSpace.single n 1
+  EuclideanSpace.single n 1
 
+@[inherit_doc localizedState]
 scoped notation "|" n "⟩" => localizedState n
 
+/-- The inner product of two localized states. -/
 scoped notation "⟨" m "|" n "⟩" => ⟪localizedState m, localizedState n⟫_ℝ
 
 end TightBindingChain
-
 end CondensedMatter
