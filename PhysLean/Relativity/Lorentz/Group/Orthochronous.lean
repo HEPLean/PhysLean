@@ -224,8 +224,8 @@ lemma IsOrthochronous.iff_inv_isOrthochronous {Λ : LorentzGroup d} :
 
 /-- Two Lorentz transformations are both orthochronous or both not orthochronous if they are mapped
 to the same element via the homomorphism from `LorentzGroup` to `ℤ₂`. -/
-lemma what_to_call_this? {Λ Λ' : LorentzGroup d} (h : orthchroMap Λ = orthchroMap Λ') :
-    IsOrthochronous Λ ↔ IsOrthochronous Λ' := by
+lemma isOrthochronous_iff_of_orthchroMap_eq {Λ Λ' : LorentzGroup d}
+    (h : orthchroMap Λ = orthchroMap Λ') : IsOrthochronous Λ ↔ IsOrthochronous Λ' := by
   rw [IsOrthochronous.iff_in_orthchroRep_ker, IsOrthochronous.iff_in_orthchroRep_ker]
   rw [MonoidHom.mem_ker, MonoidHom.mem_ker]
   change orthchroMap Λ = 1 ↔ orthchroMap Λ' = 1
@@ -242,7 +242,7 @@ lemma isOrthochronous_on_connected_component {Λ Λ' : LorentzGroup d}
     apply IsPreconnected.subsingleton (isPreconnected_range f.continuous_toFun)
     · exact Set.mem_range_self (⟨Λ, hs.2⟩ : {x : LorentzGroup d | x ∈ s})
     · exact Set.mem_range_self (⟨Λ', hΛ'⟩ : {x : LorentzGroup d | x ∈ s})
-  exact what_to_call_this? h_eq
+  exact isOrthochronous_iff_of_orthchroMap_eq h_eq
 
 end LorentzGroup
 
