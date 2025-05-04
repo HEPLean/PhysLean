@@ -60,6 +60,10 @@ lemma not_orthochronous_iff_le_zero : ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 0)
   rw [IsOrthochronous_iff_futurePointing, NormOne.FuturePointing.not_mem_iff_inl_le_zero,
     toNormOne_inl]
 
+/-- The identity Lorentz transformation is orthochronous. -/
+lemma id_IsOrthochronous : @IsOrthochronous d 1 := by
+  simp [IsOrthochronous]
+
 /-- The continuous map taking a Lorentz transformation to its `0 0` element. -/
 def timeCompCont : C(LorentzGroup d, ℝ) := ⟨fun Λ => Λ.1 (Sum.inl 0) (Sum.inl 0),
     Continuous.matrix_elem (continuous_iff_le_induced.mpr fun _ a => a) (Sum.inl 0) (Sum.inl 0)⟩
@@ -217,6 +221,28 @@ lemma IsOrthochronous.iff_inv_isOrthochronous {Λ : LorentzGroup d} :
     IsOrthochronous Λ ↔ IsOrthochronous Λ⁻¹ := by
   rw [IsOrthochronous.iff_in_orthchroRep_ker, IsOrthochronous.iff_in_orthchroRep_ker,
     MonoidHom.mem_ker, MonoidHom.mem_ker, orthchroRep_inv_eq_self]
+
+/-- Two Lorentz transformations are both orthochronous or both not orthochronous if they are mapped
+to the same element via the homomorphism from `LorentzGroup` to `ℤ₂`. -/
+lemma what_to_call_this? {Λ Λ' : LorentzGroup d} (h : orthchroMap Λ = orthchroMap Λ') :
+    IsOrthochronous Λ ↔ IsOrthochronous Λ' := by
+  rw [IsOrthochronous.iff_in_orthchroRep_ker, IsOrthochronous.iff_in_orthchroRep_ker]
+  rw [MonoidHom.mem_ker, MonoidHom.mem_ker]
+  change orthchroMap Λ = 1 ↔ orthchroMap Λ' = 1
+  rw [h]
+
+/-- Two Lorentz transformations which are in the same connected component are either both
+orthochronous or both not orthochronous. -/
+lemma isOrthochronous_on_connected_component {Λ Λ' : LorentzGroup d}
+    (h : Λ' ∈ connectedComponent Λ) : IsOrthochronous Λ ↔ IsOrthochronous Λ' := by
+  obtain ⟨s, hs, hΛ'⟩ := h
+  let f : ContinuousMap s ℤ₂ := ContinuousMap.restrict s orthchroMap
+  haveI : PreconnectedSpace s := isPreconnected_iff_preconnectedSpace.mp hs.1
+  have h_eq : orthchroMap Λ = orthchroMap Λ' := by
+    apply IsPreconnected.subsingleton (isPreconnected_range f.continuous_toFun)
+    · exact Set.mem_range_self (⟨Λ, hs.2⟩ : {x : LorentzGroup d | x ∈ s})
+    · exact Set.mem_range_self (⟨Λ', hΛ'⟩ : {x : LorentzGroup d | x ∈ s})
+  exact what_to_call_this? h_eq
 
 end LorentzGroup
 

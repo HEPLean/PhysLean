@@ -71,6 +71,17 @@ open TopologicalSpace
 
 lemma restricted_eq_identity_component {d : ℕ} :
     (restricted d) = connectedComponent (1 : LorentzGroup d) := by
-  sorry
+  ext x
+  constructor
+  . rintro ⟨Λ_proper, Λ_ortho⟩
+    sorry
+  . intro h
+    have h_proper : IsProper x := by
+      apply (isProper_on_connected_component h).mp
+      exact id_IsProper
+    have h_ortho : IsOrthochronous x := by
+      apply (isOrthochronous_on_connected_component h).mp
+      exact id_IsOrthochronous
+    exact ⟨h_proper, h_ortho⟩
 
 end LorentzGroup
