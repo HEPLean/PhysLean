@@ -73,9 +73,9 @@ lemma restricted_eq_identity_component {d : ℕ} :
     (restricted d) = connectedComponent (1 : LorentzGroup d) := by
   ext x
   constructor
-  . rintro ⟨Λ_proper, Λ_ortho⟩
+  · rintro ⟨Λ_proper, Λ_ortho⟩
     sorry
-  . intro h
+  · intro h
     exact ⟨(isProper_on_connected_component h).mp id_IsProper,
            (isOrthochronous_on_connected_component h).mp id_IsOrthochronous⟩
 
