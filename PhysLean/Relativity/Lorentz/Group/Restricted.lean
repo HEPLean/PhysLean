@@ -76,12 +76,7 @@ lemma restricted_eq_identity_component {d : ℕ} :
   . rintro ⟨Λ_proper, Λ_ortho⟩
     sorry
   . intro h
-    have h_proper : IsProper x := by
-      apply (isProper_on_connected_component h).mp
-      exact id_IsProper
-    have h_ortho : IsOrthochronous x := by
-      apply (isOrthochronous_on_connected_component h).mp
-      exact id_IsOrthochronous
-    exact ⟨h_proper, h_ortho⟩
+    exact ⟨(isProper_on_connected_component h).mp id_IsProper,
+           (isOrthochronous_on_connected_component h).mp id_IsOrthochronous⟩
 
 end LorentzGroup
