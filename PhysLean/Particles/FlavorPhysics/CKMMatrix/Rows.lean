@@ -347,7 +347,7 @@ lemma uRow_mul (V : CKMMatrix) (a b c : ℝ) :
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 0 _ = _
   · simp only [Fin.isValue, ud, ofReal_zero, zero_mul, add_zero, uRow, Fin.zero_eta, cons_val_zero]
-  · simp only [Fin.isValue, us, ofReal_zero, zero_mul, add_zero, uRow, Fin.mk_one, cons_val_one,
+  · simp [Fin.isValue, us, ofReal_zero, zero_mul, add_zero, uRow, Fin.mk_one, cons_val_one,
     head_cons]
   · simp only [Fin.isValue, ub, ofReal_zero, zero_mul, add_zero, uRow, Fin.reduceFinMk,
     cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
@@ -359,7 +359,7 @@ lemma cRow_mul (V : CKMMatrix) (a b c : ℝ) :
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 1 _ = _
   · simp only [Fin.isValue, cd, ofReal_zero, zero_mul, add_zero, cRow, Fin.zero_eta, cons_val_zero]
-  · simp only [Fin.isValue, cs, ofReal_zero, zero_mul, add_zero, cRow, Fin.mk_one, cons_val_one,
+  · simp [Fin.isValue, cs, ofReal_zero, zero_mul, add_zero, cRow, Fin.mk_one, cons_val_one,
     head_cons]
   · simp only [Fin.isValue, cb, ofReal_zero, zero_mul, add_zero, cRow, Fin.reduceFinMk,
     cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
@@ -371,7 +371,7 @@ lemma tRow_mul (V : CKMMatrix) (a b c : ℝ) :
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 2 _ = _
   · simp only [Fin.isValue, td, ofReal_zero, zero_mul, add_zero, tRow, Fin.zero_eta, cons_val_zero]
-  · simp only [Fin.isValue, ts, ofReal_zero, zero_mul, add_zero, tRow, Fin.mk_one, cons_val_one,
+  · simp [Fin.isValue, ts, ofReal_zero, zero_mul, add_zero, tRow, Fin.mk_one, cons_val_one,
     head_cons]
   · simp only [Fin.isValue, tb, ofReal_zero, zero_mul, add_zero, tRow, Fin.reduceFinMk,
     cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]

@@ -229,7 +229,7 @@ lemma orderedInsertPos_drop_eq_orderedInsert {I : Type} (le1 : I → I → Prop)
   conv_rhs => simp [orderedInsertPos, List.orderedInsert_eq_take_drop]
   have hr : r = List.takeWhile (fun b => !decide (le1 r0 b)) r ++
       List.dropWhile (fun b => !decide (le1 r0 b)) r := by
-    exact Eq.symm (List.takeWhile_append_dropWhile (fun b => !decide (le1 r0 b)) r)
+    exact Eq.symm (List.takeWhile_append_dropWhile)
   conv_lhs =>
     rhs
     rw [hr]
@@ -444,7 +444,7 @@ lemma get_eq_orderedInsertEquiv {I : Type} (le1 : I → I → Prop) [DecidableRe
           (List.dropWhile (fun b => !decide (le1 r0 b)) r).length := by
         rw [← List.length_append]
         congr
-        exact Eq.symm (List.takeWhile_append_dropWhile (fun b => !decide (le1 r0 b)) r)
+        exact Eq.symm (List.takeWhile_append_dropWhile)
       simp only [hr, add_tsub_cancel_right]
       omega
 
@@ -516,27 +516,9 @@ lemma orderedInsertEquiv_sigma {I : Type} {f : I → Type}
     · rfl
     · rfl
 
-/-- This result is taken from:
-  https://github.com/leanprover/lean4/blob/master/src/Init/Data/List/Nat/InsertIdx.lean
-  with simple modification here to make it run.
-  The file it was taken from is licensed under the Apache License, Version 2.0.
-  and written by Parikshit Khanna, Jeremy Avigad, Leonardo de Moura,
-    Floris van Doorn, Mario Carneiro.
-
-  Once PhysLean is updated to a more recent version of Lean this result will be removed.
--/
-theorem length_insertIdx' : ∀ n as, (List.insertIdx n a as).length =
-    if n ≤ as.length then as.length + 1 else as.length
-  | 0, _ => by simp
-  | n + 1, [] => by rfl
-  | n + 1, a :: as => by
-    simp only [List.insertIdx_succ_cons, List.length_cons, length_insertIdx',
-      Nat.add_le_add_iff_right]
-    split <;> rfl
-
 lemma orderedInsert_eq_insertIdx_orderedInsertPos {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
     (r : List I) (r0 : I) :
-    List.orderedInsert le1 r0 r = List.insertIdx (orderedInsertPos le1 r r0).1 r0 r := by
+    List.orderedInsert le1 r0 r = List.insertIdx r (orderedInsertPos le1 r r0).1 r0 := by
   apply List.ext_get
   · simp only [List.orderedInsert_length]
     rw [List.length_insertIdx]
@@ -559,13 +541,13 @@ lemma orderedInsert_eq_insertIdx_orderedInsertPos {I : Type} (le1 : I → I → 
   | ⟨Nat.succ n', h0⟩ =>
     simp only [Nat.succ_eq_add_one, List.getElem_cons_succ, List.length_cons]
     have hr := orderedInsertEquiv_succ le1 r r0 n' h0
-    trans (List.insertIdx (↑(orderedInsertPos le1 r r0)) r0 r).get
+    trans (List.insertIdx r (↑(orderedInsertPos le1 r r0)) r0).get
       ⟨↑((orderedInsertEquiv le1 r r0) ⟨n' +1, h0⟩), h2⟩
     swap
     · rfl
     rw [Fin.ext_iff] at hr
     have hx : (⟨↑((orderedInsertEquiv le1 r r0) ⟨n' +1, h0⟩), h2⟩ :
-        Fin (List.insertIdx (↑(orderedInsertPos le1 r r0)) r0 r).length) =
+        Fin (List.insertIdx r (↑(orderedInsertPos le1 r r0)) r0).length) =
       ⟨((⟨↑(orderedInsertPos le1 r r0),
       orderedInsertPos_lt_length le1 r r0⟩ : Fin ((r).length + 1))).succAbove
       ⟨n', Nat.succ_lt_succ_iff.mp h0⟩, by

@@ -237,7 +237,7 @@ lemma eigenfunction_normalized (n : ℕ) : ⟪HilbertSpace.mk (Q.eigenfunction_m
   conv_lhs =>
     enter [2, x]
     rw [eigenfunction_conj, Q.eigenfunction_mul_self]
-  rw [MeasureTheory.integral_mul_left, integral_complex_ofReal]
+  rw [MeasureTheory.integral_const_mul, integral_complex_ofReal]
   have hc : (∫ (x : ℝ), physHermite n (x /Q.ξ) ^ 2 * Real.exp (- x ^ 2 / Q.ξ^2))
       = ∫ (x : ℝ), (physHermite n (1/Q.ξ * x) *
       physHermite n (1/Q.ξ * x)) * Real.exp (- (1/Q.ξ)^2 * x ^ 2) := by
@@ -260,7 +260,7 @@ lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :
   conv_lhs =>
     enter [2, x]
     rw [eigenfunction_conj, Q.eigenfunction_mul n p]
-  rw [MeasureTheory.integral_mul_left, integral_complex_ofReal]
+  rw [MeasureTheory.integral_const_mul, integral_complex_ofReal]
   have hc : (∫ (x : ℝ), (physHermite n (x/Q.ξ) * physHermite p (x/Q.ξ)) * Real.exp (-x ^ 2 / Q.ξ^2))
       = ∫ (x : ℝ), (physHermite n (1/Q.ξ * x) * physHermite p (1/Q.ξ * x)) *
       Real.exp (- (1/Q.ξ)^2 * x ^ 2) := by

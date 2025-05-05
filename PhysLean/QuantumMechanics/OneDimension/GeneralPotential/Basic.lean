@@ -5,7 +5,8 @@ Authors: Ammar Husain
 -/
 import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled
+import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Basic
+import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs
 import Mathlib.Analysis.Calculus.Deriv.Add
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
 import PhysLean.Meta.TODO.Basic

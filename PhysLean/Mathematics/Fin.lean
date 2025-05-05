@@ -171,9 +171,8 @@ lemma finExtractOne_apply_eq {n : ℕ} (i : Fin n.succ) :
     finExtractOne i i = Sum.inl 0 := by
   simp only [Nat.succ_eq_add_one, finExtractOne, Equiv.trans_apply, finCongr_apply,
     Equiv.sumCongr_apply, Equiv.coe_trans, Equiv.sumComm_apply, Equiv.coe_refl, Fin.isValue]
-  have h1 : Fin.cast (finExtractOne.proof_1 i) i = Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ :=
-    rfl
-  rw [h1, finSumFinEquiv_symm_apply_castAdd]
+  rw [show Fin.cast _ i =  Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ from rfl,
+    finSumFinEquiv_symm_apply_castAdd]
   simp only [Nat.succ_eq_add_one, Sum.map_inl, Function.comp_apply, Fin.isValue]
   have h2 : @Fin.mk (↑i + 1) ↑i (lt_add_one i.1) = Fin.natAdd i.val 1 := rfl
   rw [h2, finSumFinEquiv_symm_apply_natAdd]
@@ -188,9 +187,10 @@ lemma finExtractOne_symm_inr {n : ℕ} (i : Fin n.succ) :
   change (finSumFinEquiv
     (Sum.map (⇑(finSumFinEquiv.symm.trans (Equiv.sumComm (Fin ↑i) (Fin 1))).symm) id
     ((Equiv.sumAssoc (Fin 1) (Fin ↑i) (Fin (n - i))).symm
-    (Sum.inr (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)))))).val = _
+    (Sum.inr (finSumFinEquiv.symm (Fin.cast _ x)))))).val = _
   by_cases hi : x.1 < i.1
-  · have h1 : (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)) =
+  · generalize_proofs hp
+    have h1 : (finSumFinEquiv.symm (Fin.cast hp x)) =
         Sum.inl ⟨x, hi⟩ := by
       rw [← finSumFinEquiv_symm_apply_castAdd]
       rfl
@@ -205,7 +205,8 @@ lemma finExtractOne_symm_inr {n : ℕ} (i : Fin n.succ) :
     simp_all only [Nat.succ_eq_add_one, not_lt, Fin.le_def, Fin.coe_castSucc, Fin.val_succ,
       left_eq_add, one_ne_zero]
     omega
-  · have h1 : (finSumFinEquiv.symm (Fin.cast (finExtractOne.proof_2 i).symm x)) =
+  · generalize_proofs hp
+    have h1 : (finSumFinEquiv.symm (Fin.cast hp x)) =
         Sum.inr ⟨x - i, by omega⟩ := by
       rw [← finSumFinEquiv_symm_apply_natAdd]
       apply congrArg
