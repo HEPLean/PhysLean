@@ -69,14 +69,35 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
 
 open TopologicalSpace
 
+/-- The group `ℤ₂`. -/
+local notation "ℤ₂" => Multiplicative (ZMod 2)
+
+noncomputable def lorentzMap {d : ℕ} : ContinuousMonoidHom (LorentzGroup d) (ℤ₂ × ℤ₂) where
+  toFun := λ Λ => (detRep Λ, orthchroRep Λ)
+  map_one' := by sorry
+  map_mul' := by sorry
+  continuous_toFun := by sorry
+
+lemma lorentzMap_Continuous {d : ℕ} : Continuous (@lorentzMap d) := by sorry
+lemma lorentzMap_IsOpen {d : ℕ} : IsOpenMap (@lorentzMap d) := by sorry
+lemma lorentzMap_IsInjective {d : ℕ} : Function.Injective (@lorentzMap d) := by sorry
+lemma lorentzMap_Kernel {d : ℕ} : (@lorentzMap d).ker = restricted d := by sorry
+lemma lorentzMap_Identity_Connected {d : ℕ} : IsConnected ({(1, 1)} : Set (ℤ₂ × ℤ₂)) := by sorry
+lemma lorentzMap_Subset {d : ℕ} : ({(1, 1)} : Set (ℤ₂ × ℤ₂)) ⊆ Set.range (@lorentzMap d) := by sorry
+
+lemma lorentzMap_Kernel_IsConnected {d : ℕ} : IsConnected (restricted d : Set (LorentzGroup d))
+    := by
+  rw [← lorentzMap_Kernel]
+  exact @IsConnected.preimage_of_isOpenMap
+    (LorentzGroup d) (ℤ₂ × ℤ₂) _ _ {(1, 1)}
+    (@lorentzMap_Identity_Connected d)
+    (@lorentzMap d)
+    (lorentzMap_IsInjective)
+    (lorentzMap_IsOpen)
+    (lorentzMap_Subset)
+
 lemma restricted_eq_identity_component {d : ℕ} :
     (restricted d) = connectedComponent (1 : LorentzGroup d) := by
-  ext x
-  constructor
-  · rintro ⟨Λ_proper, Λ_ortho⟩
-    sorry
-  · intro h
-    exact ⟨(isProper_on_connected_component h).mp id_IsProper,
-           (isOrthochronous_on_connected_component h).mp id_IsOrthochronous⟩
+  sorry
 
 end LorentzGroup
