@@ -22,6 +22,7 @@ open BigOperators
 /-- The ACC system for the SM plus RHN with no gravitational anomaly. -/
 @[simps!]
 def SMNoGrav (n : ℕ) : ACCSystem where
+  toACCSystemCharges := SMνCharges n
   numberLinear := 2
   linearACCs := fun i =>
     match i with

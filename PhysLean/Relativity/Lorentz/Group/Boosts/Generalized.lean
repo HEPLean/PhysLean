@@ -47,7 +47,6 @@ def genBoostAux₁ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d 
 def genBoostAux₂ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d where
   toFun x := - (⟪x, u.1.1 + v.1.1⟫ₘ / (1 + ⟪u.1.1, v.1.1⟫ₘ)) • (u.1.1 + v.1.1)
   map_add' x y := by
-    simp only
     rw [← add_smul]
     apply congrFun (congrArg _ _)
     field_simp [add_tmul]

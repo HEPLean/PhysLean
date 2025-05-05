@@ -174,7 +174,6 @@ def orthchroRep : LorentzGroup d →* ℤ₂ where
   toFun := orthchroMap
   map_one' := orthchroMap_IsOrthochronous (by simp [IsOrthochronous])
   map_mul' Λ Λ' := by
-    simp only
     by_cases h : IsOrthochronous Λ
       <;> by_cases h' : IsOrthochronous Λ'
     · rw [orthchroMap_IsOrthochronous h, orthchroMap_IsOrthochronous h',

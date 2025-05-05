@@ -39,7 +39,7 @@ def leftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   map_mul' := fun M N => by
     simp only [SpecialLinearGroup.coe_mul]
     ext1 x
-    simp only [LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply, LinearEquiv.apply_symm_apply,
+    simp only [LinearMap.coe_mk, AddHom.coe_mk, Module.End.mul_apply, LinearEquiv.apply_symm_apply,
       mulVec_mulVec]}
 
 /-- The standard basis on left-handed Weyl fermions. -/
@@ -76,7 +76,7 @@ def altLeftHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     simp
   map_mul' := fun M N => by
     ext1 x
-    simp only [SpecialLinearGroup.coe_mul, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply,
+    simp only [SpecialLinearGroup.coe_mul, LinearMap.coe_mk, AddHom.coe_mk, Module.End.mul_apply,
       LinearEquiv.apply_symm_apply, mulVec_mulVec, EmbeddingLike.apply_eq_iff_eq]
     refine (congrFun (congrArg _ ?_) _)
     rw [Matrix.mul_inv_rev]
@@ -117,7 +117,7 @@ def rightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
   map_mul' := fun M N => by
     ext1 x
     simp only [SpecialLinearGroup.coe_mul, RCLike.star_def, Matrix.map_mul, LinearMap.coe_mk,
-      AddHom.coe_mk, LinearMap.mul_apply, LinearEquiv.apply_symm_apply, mulVec_mulVec]}
+      AddHom.coe_mk, Module.End.mul_apply, LinearEquiv.apply_symm_apply, mulVec_mulVec]}
 
 /-- The standard basis on right-handed Weyl fermions. -/
 def rightBasis : Basis (Fin 2) ℂ rightHanded := Basis.ofEquivFun
@@ -154,7 +154,7 @@ def altRightHanded : Rep ℂ SL(2,ℂ) := Rep.of {
     simp
   map_mul' := fun M N => by
     ext1 x
-    simp only [SpecialLinearGroup.coe_mul, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply,
+    simp only [SpecialLinearGroup.coe_mul, LinearMap.coe_mk, AddHom.coe_mk, Module.End.mul_apply,
       LinearEquiv.apply_symm_apply, mulVec_mulVec, EmbeddingLike.apply_eq_iff_eq]
     refine (congrFun (congrArg _ ?_) _)
     rw [Matrix.mul_inv_rev]
