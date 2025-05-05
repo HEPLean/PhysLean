@@ -40,7 +40,7 @@ lemma qHu_eq_quantaTen_map_q_eq_of_card_one_same (𝓜 : MatterContent .same)
     rw [Finset.mem_filter]
     rw [Finset.mem_powerset]
     simp_all only [Finset.card_val, and_true]
-  generalize (Multiset.map QuantaTen.q 𝓜.quantaTen).toFinset = T at hMem h h1  ⊢
+  generalize (Multiset.map QuantaTen.q 𝓜.quantaTen).toFinset = T at hMem h h1 ⊢
   revert T
   have ha := 𝓜.qHu_mem_allowedBarFiveCharges
   generalize 𝓜.qHu = a at ha ⊢

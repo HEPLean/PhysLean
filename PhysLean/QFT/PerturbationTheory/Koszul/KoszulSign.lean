@@ -144,7 +144,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
     congr 1
     let rs := (List.insertionSort le (List.insertIdx φs n φ))
     have hnsL : n < (List.insertIdx φs n φ).length := by
-      rw [List.length_insertIdx ]
+      rw [List.length_insertIdx]
       simp only [List.length_cons, add_le_add_iff_right] at h
       simp only [h, ↓reduceIte]
       omega

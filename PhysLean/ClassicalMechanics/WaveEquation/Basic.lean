@@ -20,4 +20,4 @@ open Time
 /-- The general form of the wave equation where c is the propagation speed. -/
 def WaveEquation (f : Time → Space d → EuclideanSpace ℝ (Fin d))
     (t : Time) (x : Space d) (c : ℝ) : Prop :=
-    c^2 • Δ (f t) x -  ∂ₜ (fun t => (∂ₜ (fun t => f t x) t)) t  = 0
+    c^2 • Δ (f t) x - ∂ₜ (fun t => (∂ₜ (fun t => f t x) t)) t = 0

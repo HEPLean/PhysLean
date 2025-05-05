@@ -204,7 +204,7 @@ protected noncomputable def SchurTriangulationAux.of
             _ = ⟪(bW i' : E), f (bW j')⟫_𝕜 :=
               hf (Equiv.finAddEquivSigmaCond_false hi) (Equiv.finAddEquivSigmaCond_false hj)
             _ = ⟪bW i', g (bW j')⟫_𝕜 := by
-              rw  [coe_comp, ContinuousLinearMap.coe_coe, Function.comp_apply, domRestrict_apply,
+              rw [coe_comp, ContinuousLinearMap.coe_coe, Function.comp_apply, domRestrict_apply,
                 Submodule.inner_orthogonalProjection_eq_of_mem_left]
             _ = toMatrixOrthonormal bW g i' j' := (g.toMatrixOrthonormal_apply_apply ..).symm
             _ = 0 := hg (Nat.sub_lt_sub_right (Nat.le_of_not_lt hj) hji)

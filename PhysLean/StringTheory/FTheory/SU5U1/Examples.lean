@@ -53,8 +53,8 @@ def mkOneTenFourFiveBar (I : CodimensionOneConfig) (M : ChiralityFlux) (N : Hype
     (hq5₂ : q5₂ ∈ I.allowedBarFiveCharges := by decide)
     (h5 : ∀ a ∈ ({(M, N, q5₁), (3 - M, - N, q5₂)} :
       Multiset QuantaBarFive), a.M = 0 → a.N ≠ 0 := by decide)
-    (h10 : ∀ a ∈ ({(3, 0, q10)} : Multiset QuantaTen ), a.M = 0 → a.N ≠ 0 := by decide)
-    (hd5 : DistinctChargedBarFive  {(M, N, q5₁), (3 - M, - N, q5₂)}
+    (h10 : ∀ a ∈ ({(3, 0, q10)} : Multiset QuantaTen), a.M = 0 → a.N ≠ 0 := by decide)
+    (hd5 : DistinctChargedBarFive {(M, N, q5₁), (3 - M, - N, q5₂)}
       (-qHu) qHd := by decide)
     (hd10 : DistinctChargedTen {(3, 0, q10)} := by decide) :
     MatterContent I where

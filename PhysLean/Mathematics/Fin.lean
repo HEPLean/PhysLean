@@ -171,7 +171,7 @@ lemma finExtractOne_apply_eq {n : ℕ} (i : Fin n.succ) :
     finExtractOne i i = Sum.inl 0 := by
   simp only [Nat.succ_eq_add_one, finExtractOne, Equiv.trans_apply, finCongr_apply,
     Equiv.sumCongr_apply, Equiv.coe_trans, Equiv.sumComm_apply, Equiv.coe_refl, Fin.isValue]
-  rw [show Fin.cast _ i =  Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ from rfl,
+  rw [show Fin.cast _ i = Fin.castAdd ((n - ↑i)) ⟨i.1, lt_add_one i.1⟩ from rfl,
     finSumFinEquiv_symm_apply_castAdd]
   simp only [Nat.succ_eq_add_one, Sum.map_inl, Function.comp_apply, Fin.isValue]
   have h2 : @Fin.mk (↑i + 1) ↑i (lt_add_one i.1) = Fin.natAdd i.val 1 := rfl

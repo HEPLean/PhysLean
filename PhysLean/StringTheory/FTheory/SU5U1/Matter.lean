@@ -72,7 +72,7 @@ abbrev QuantaTen.q (a : QuantaTen) : ℤ := a.2.2
 /-- The proposition on `Multiset (QuantaBarFive I)`,
   and two `I.allowedBarFiveCharges` denoted `qHu` and `qHd` which is true
   if none of the (underlying) charges are equal. -/
-def DistinctChargedBarFive  (quantaBarFiveMatter : Multiset QuantaBarFive)
+def DistinctChargedBarFive (quantaBarFiveMatter : Multiset QuantaBarFive)
     (qHu : ℤ) (qHd : ℤ) : Prop :=
   (quantaBarFiveMatter.map QuantaBarFive.q).toFinset.card =
       (quantaBarFiveMatter.map QuantaBarFive.q).card
