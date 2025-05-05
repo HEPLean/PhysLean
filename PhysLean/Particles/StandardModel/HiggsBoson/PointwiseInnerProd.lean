@@ -163,7 +163,10 @@ lemma toHiggsVec_norm (φ : HiggsField) (x : SpaceTime) :
 lemma normSq_expand (φ : HiggsField) :
     φ.normSq = fun x => (conj (φ x 0) * (φ x 0) + conj (φ x 1) * (φ x 1)).re := by
   funext x
-  simp [normSq, add_re, mul_re, conj_re, conj_im, neg_mul, sub_neg_eq_add, @norm_sq_eq_inner ℂ]
+  rw [normSq, normSq_eq_innerProd_self, innerProd_expand]
+  simp only [Fin.isValue, equivRealProdCLM_symm_apply_re, add_re, mul_re, conj_re, conj_im, neg_mul,
+    sub_neg_eq_add]
+  ring
 
 /-- The norm squared of a higgs field at any point is non-negative. -/
 lemma normSq_nonneg (φ : HiggsField) (x : SpaceTime) : 0 ≤ φ.normSq x := by

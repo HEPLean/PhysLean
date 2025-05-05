@@ -648,8 +648,9 @@ lemma mapApp'_naturality {X Y : OverColor C} (f : X ⟶ Y) :
   funext i
   simp only [discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
     eqToIso.inv, LinearEquiv.ofLinear_apply]
+  generalize_proofs h1
   have hn := ModuleCat.hom_ext_iff.mp <| Action.hom_ext_iff.mp <|
-    η.naturality (eqToHom (Discrete.eqToIso.proof_1 (Hom.toEquiv_comp_inv_apply f i)))
+    η.naturality (eqToHom h1)
   have h := LinearMap.congr_fun hn (x ((Hom.toEquiv f).symm i))
   simpa
 

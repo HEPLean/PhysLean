@@ -396,12 +396,12 @@ lemma uncontractedListEmd_surjective_mem_uncontracted {φs : List 𝓕.FieldOp}
     Equiv.coe_toEmbedding, finCongr_apply, Function.Embedding.coe_subtype]
   have hj : ∃ j, φsΛ.uncontractedIndexEquiv j = ⟨i, hi⟩ := by
     exact φsΛ.uncontractedIndexEquiv.surjective ⟨i, hi⟩
+  generalize_proofs h1
   obtain ⟨j, hj⟩ := hj
-  have hj' : ∃ j', Fin.cast uncontractedListEmd.proof_1 j' = j := by
-    exact (finCongr uncontractedListEmd.proof_1).surjective j
-  obtain ⟨j', rfl⟩ := hj'
+  have hj' : ∃ j', Fin.cast h1 j' = j := (finCongr h1).surjective j
+  obtain ⟨j', rfl⟩ := (finCongr h1).surjective j
   use j'
-  rw [hj]
+  erw [hj]
 
 @[simp]
 lemma uncontractedListEmd_finset_disjoint_left {φs : List 𝓕.FieldOp}
