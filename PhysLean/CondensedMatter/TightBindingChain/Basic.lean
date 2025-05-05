@@ -31,6 +31,7 @@ TODO "BBZAB" "Prove results related to the one-dimensional tight binding chain.
 
 namespace CondensedMatter
 
+/-- The physical parameters making up the tight binding chain. -/
 structure TightBindingChain  where
   /-- The number of sites, or atoms, in the chain -/
   N : Nat
