@@ -165,6 +165,7 @@ import PhysLean.QFT.QED.AnomalyCancellation.Permutations
 import PhysLean.QFT.QED.AnomalyCancellation.Sorts
 import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
 import PhysLean.QuantumMechanics.FiniteTarget.Basic
+import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
 import PhysLean.QuantumMechanics.OneDimension.GeneralPotential.Basic
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Completeness

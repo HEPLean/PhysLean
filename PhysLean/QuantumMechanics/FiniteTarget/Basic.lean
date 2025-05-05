@@ -13,6 +13,11 @@ import PhysLean.Meta.TODO.Basic
 
 The phrase 'finite target' is used to describe quantum mechanical systems where the
 Hilbert space is finite.
+
+Physical examples of such systems include:
+- Spin systems.
+- Tight binding chains.
+
 -/
 
 namespace QuantumMechanics
