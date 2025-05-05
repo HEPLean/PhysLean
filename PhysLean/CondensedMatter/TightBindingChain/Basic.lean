@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Meta.TODO.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
+import PhysLean.Meta.Informal.SemiFormal
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 /-!
 
@@ -46,6 +47,9 @@ namespace TightBindingChain
 open InnerProductSpace
 variable (T : TightBindingChain)
 
+TODO "BQS7X" "The definition of the Hilbert space in the tight binding chian
+  should be moved to the generic folder for finite-dimensional quantum mechanical systems."
+
 /-- The Hilbert space of a `TightBindingchain` is the `N`-dimensional finite dimensional
 Hilbert space. -/
 abbrev HilbertSpace := EuclideanSpace ℂ (Fin T.N)
@@ -59,6 +63,9 @@ scoped notation "|" n "⟩" => localizedState n
 
 /-- The inner product of two localized states. -/
 scoped notation "⟨" m "|" n "⟩" => ⟪localizedState m, localizedState n⟫_ℝ
+
+/-- The localized states are normalized. -/
+semiformal_result "BQSYT" localizedState_normalized (n : Fin T.N) : ⟨n|n⟩ = 1
 
 end TightBindingChain
 end CondensedMatter
