@@ -146,7 +146,7 @@ lemma contr_preContrCoUnit {d : ℕ} (x : Co d) :
       = ∑ i, ((coContrContract).hom (x ⊗ₜ[ℝ] contrBasis d i)) ⊗ₜ[ℝ] coBasis d i := by
     simp
   rw [h2]
-  obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun ℝ).mp (Basis.mem_span (coBasis d) x)
+  obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (Basis.mem_span (coBasis d) x)
   have h3 (i : Fin 1 ⊕ Fin d) : (CategoryTheory.ConcreteCategory.hom coContrContract.hom)
         ((∑ i : Fin 1 ⊕ Fin d, c i • (coBasis d) i) ⊗ₜ[ℝ] (contrBasis d) i) = c i := by
       simp only [sum_tmul, smul_tmul, tmul_smul, map_sum, _root_.map_smul, smul_eq_mul]
@@ -173,7 +173,8 @@ lemma contr_preCoContrUnit {d : ℕ} (x : (Contr d)) :
       = ∑ i, ((contrCoContract).hom (x ⊗ₜ[ℝ] coBasis d i)) ⊗ₜ[ℝ] contrBasis d i := by
     simp
   rw [h2]
-  obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun ℝ).mp (Basis.mem_span (contrBasis d) x)
+  obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp
+    (Basis.mem_span (contrBasis d) x)
   have h3 (i : Fin 1 ⊕ Fin d) : (CategoryTheory.ConcreteCategory.hom contrCoContract.hom)
         ((∑ i : Fin 1 ⊕ Fin d, c i • (contrBasis d) i) ⊗ₜ[ℝ] (coBasis d) i) = c i := by
       simp only [sum_tmul, smul_tmul, tmul_smul, map_sum, _root_.map_smul, smul_eq_mul]

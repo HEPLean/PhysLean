@@ -184,7 +184,7 @@ lemma σSA_linearly_independent : LinearIndependent ℝ σSA' := by
 
 /-- The Pauli matrices span all self-adjoint matrices. -/
 lemma σSA_span : ⊤ ≤ Submodule.span ℝ (Set.range σSA') := by
-  refine (top_le_span_range_iff_forall_exists_fun ℝ).mpr ?_
+  refine (Submodule.top_le_span_range_iff_forall_exists_fun ℝ).mpr ?_
   intro A
   let c : Fin 1 ⊕ Fin 3 → ℝ := fun i =>
     match i with
@@ -255,7 +255,7 @@ lemma σSAL_linearly_independent : LinearIndependent ℝ σSAL' := by
 
 /-- The Pauli matrices where `σi` are negated span all Self-adjoint matrices. -/
 lemma σSAL_span : ⊤ ≤ Submodule.span ℝ (Set.range σSAL') := by
-  refine (top_le_span_range_iff_forall_exists_fun ℝ).mpr ?_
+  refine (Submodule.top_le_span_range_iff_forall_exists_fun ℝ).mpr ?_
   intro A
   let c : Fin 1 ⊕ Fin 3 → ℝ := fun i =>
     match i with

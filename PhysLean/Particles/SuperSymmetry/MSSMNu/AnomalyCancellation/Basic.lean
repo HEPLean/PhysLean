@@ -134,14 +134,12 @@ def accGrav : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (6 * Q S i + 3 * U S i + 3 * D S i
     + 2 * L S i + E S i + N S i) + 2 * (Hd S + Hu S)
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
       toSMSpecies_apply, reduceMul, Fin.isValue, mul_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     repeat rw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat rw [(toSMSpecies _).map_smul]
     erw [Hd.map_smul, Hu.map_smul]
     simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
@@ -168,14 +166,12 @@ lemma accGrav_ext {S T : MSSMCharges.Charges}
 def accSU2 : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (3 * Q S i + L S i) + Hd S + Hu S
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
       toSMSpecies_apply, reduceMul, Fin.isValue, mul_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat rw [(toSMSpecies _).map_smul]
     erw [Hd.map_smul, Hu.map_smul]
     simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
@@ -203,14 +199,12 @@ lemma accSU2_ext {S T : MSSMCharges.Charges}
 def accSU3 : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (2 * (Q S i) + (U S i) + (D S i))
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
       toSMSpecies_apply, reduceMul, Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat rw [(toSMSpecies _).map_smul]
     simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
       reduceMul, eq_ratCast, Rat.cast_eq_id, id_eq]
@@ -236,14 +230,12 @@ def accYY : MSSMCharges.Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, ((Q S) i + 8 * (U S) i + 2 * (D S) i + 3 * (L S) i
     + 6 * (E S) i) + 3 * (Hd S + Hu S)
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [MSSMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add,
       toSMSpecies_apply, reduceMul, Fin.isValue, mul_add, Hd_apply, Fin.reduceFinMk, Hu_apply]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat rw [(toSMSpecies _).map_smul]
     erw [Hd.map_smul, Hu.map_smul]
     simp only [MSSMSpecies_numberCharges, HSMul.hSMul, SMul.smul, Fin.isValue, toSMSpecies_apply,
@@ -435,6 +427,7 @@ open MSSMACCs
 /-- The ACCSystem for the MSSM without RHN. -/
 @[simps!]
 def MSSMACC : ACCSystem where
+  toACCSystemCharges := MSSMCharges
   numberLinear := 4
   linearACCs := fun i =>
     match i with

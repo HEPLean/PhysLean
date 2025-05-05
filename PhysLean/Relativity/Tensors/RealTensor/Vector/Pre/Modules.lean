@@ -163,11 +163,11 @@ lemma mulVec_add (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v w : Con
 
 @[simp]
 lemma one_mulVec (v : ContrMod d) : (1 : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) *ᵥ v = v := by
-  simp only [mulVec, _root_.map_one, LinearMap.one_apply]
+  simp [mulVec, _root_.map_one, one_apply]
 
 lemma mulVec_mulVec (M N : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
     M *ᵥ (N *ᵥ v) = (M * N) *ᵥ v := by
-  simp only [mulVec, _root_.map_mul, LinearMap.mul_apply]
+  simp [mulVec, _root_.map_mul, mul_apply]
 
 /-!
 
