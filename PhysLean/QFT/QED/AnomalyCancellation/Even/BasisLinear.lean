@@ -663,7 +663,7 @@ noncomputable def basisaAsBasis :
 
 lemma span_basis (S : (PureU1 (2 * n.succ)).LinSols) :
     ∃ (g : Fin n.succ → ℚ) (f : Fin n → ℚ), S.val = P g + P! f := by
-  have h := (mem_span_range_iff_exists_fun ℚ).mp (Basis.mem_span basisaAsBasis S)
+  have h := (Submodule.mem_span_range_iff_exists_fun ℚ).mp (Basis.mem_span basisaAsBasis S)
   obtain ⟨f, hf⟩ := h
   simp only [succ_eq_add_one, basisaAsBasis, coe_basisOfLinearIndependentOfCardEqFinrank,
     Fintype.sum_sum_type] at hf
@@ -675,7 +675,7 @@ lemma span_basis (S : (PureU1 (2 * n.succ)).LinSols) :
   rfl
 
 lemma P!_in_span (f : Fin n → ℚ) : P! f ∈ Submodule.span ℚ (Set.range basis!AsCharges) := by
-  rw [(mem_span_range_iff_exists_fun ℚ)]
+  rw [(Submodule.mem_span_range_iff_exists_fun ℚ)]
   use f
   rfl
 
@@ -698,7 +698,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
     apply Submodule.add_mem
     exact (P!_in_span f)
     exact (smul_basis!AsCharges_in_span S j)
-  have hXsum := (mem_span_range_iff_exists_fun ℚ).mp hX
+  have hXsum := (Submodule.mem_span_range_iff_exists_fun ℚ).mp hX
   obtain ⟨f', hf'⟩ := hXsum
   use g
   use f'
@@ -714,7 +714,7 @@ lemma vectorLikeEven_in_span (S : (PureU1 (2 * n.succ)).LinSols)
       (FamilyPermutations (2 * n.succ)).linSolRep M S ∈ Submodule.span ℚ (Set.range basis) := by
   use (Tuple.sort S.val).symm
   change sortAFL S ∈ Submodule.span ℚ (Set.range basis)
-  rw [mem_span_range_iff_exists_fun ℚ]
+  rw [Submodule.mem_span_range_iff_exists_fun ℚ]
   let f : Fin n.succ → ℚ := fun i => (sortAFL S).val (evenFst i)
   use f
   apply ACCSystemLinear.LinSols.ext

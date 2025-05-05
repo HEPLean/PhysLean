@@ -204,7 +204,7 @@ lemma koszulSignInsert_eq_exchangeSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] 
     · simp [orderedInsertPos]
 
 lemma koszulSignInsert_insertIdx (i j : 𝓕) (r : List 𝓕) (n : ℕ) (hn : n ≤ r.length) :
-    koszulSignInsert q le j (List.insertIdx n i r) = koszulSignInsert q le j (i :: r) := by
+    koszulSignInsert q le j (List.insertIdx r n i) = koszulSignInsert q le j (i :: r) := by
   apply koszulSignInsert_eq_perm
   exact List.perm_insertIdx i r hn
 
@@ -245,7 +245,7 @@ lemma koszulSignInsert_of_le_mem (φ0 : 𝓕) : (φs : List 𝓕) → (h : ∀ b
     · apply koszulSignInsert_of_le_mem
       · intro b hb
         exact h b (List.mem_cons_of_mem _ hb)
-    · exact h φ1 (List.mem_cons_self _ _)
+    · exact h φ1 List.mem_cons_self
 
 lemma koszulSignInsert_eq_rel_eq_stat {ψ φ : 𝓕} [IsTrans 𝓕 le]
     (h1 : le φ ψ) (h2 : le ψ φ) (hq : q ψ = q φ) : (φs : List 𝓕) →

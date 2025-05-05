@@ -15,7 +15,7 @@ open PhysLean
 variable {n : Nat}
 
 lemma insertIdx_map {I J : Type} (f : I → J) : (i : ℕ) → (r : List I) → (r0 : I) →
-    (List.insertIdx i r0 r).map f = List.insertIdx i (f r0) (r.map f)
+    (List.insertIdx r i r0).map f = List.insertIdx (r.map f) i (f r0)
   | 0, [], r0 => by simp
   | n+1, [], r0 => by simp
   | 0, a::as, r0 => by simp
@@ -70,7 +70,7 @@ lemma mem_eraseIdx_nodup {I : Type} (i : I) :
       simp_all only [not_false_eq_true, and_true]
 
 lemma insertIdx_eq_take_drop {I : Type} (i : I) : (r : List I) → (n : Fin r.length.succ) →
-    List.insertIdx n i r = List.take n r ++ i :: r.drop n
+    List.insertIdx r n i = List.take n r ++ i :: r.drop n
   | [], 0 => by simp
   | a :: as, 0 => by
     simp
@@ -82,7 +82,7 @@ lemma insertIdx_eq_take_drop {I : Type} (i : I) : (r : List I) → (n : Fin r.le
 @[simp]
 lemma insertIdx_length_fin {I : Type} (i : I) :
     (r : List I) → (n : Fin r.length.succ) →
-    (List.insertIdx n i r).length = r.length.succ
+    (List.insertIdx r n i).length = r.length.succ
   | [], 0 => by simp
   | a :: as, 0 => by simp
   | a :: as, ⟨n + 1, h⟩ => by
@@ -92,7 +92,7 @@ lemma insertIdx_length_fin {I : Type} (i : I) :
 @[simp]
 lemma insertIdx_getElem_fin {I : Type} (i : I) :
     (r : List I) → (k : Fin r.length.succ) → (m : Fin r.length) →
-    (List.insertIdx k i r)[(k.succAbove m).val] = r[m.val]
+    (List.insertIdx r k i)[(k.succAbove m).val] = r[m.val]
   | [], 0, m => by exact Fin.elim0 m
   | a :: as, 0, m => by simp
   | a :: as, ⟨n + 1, h⟩, ⟨0, h0⟩ => by
@@ -119,7 +119,7 @@ lemma insertIdx_eraseIdx_fin {I : Type} :
     exact insertIdx_eraseIdx_fin as ⟨n, Nat.lt_of_succ_lt_succ h⟩
 
 lemma insertIdx_length_fst_append {I : Type} (φ : I) : (φs φs' : List I) →
-    List.insertIdx φs.length φ (φs ++ φs') = (φs ++ φ :: φs')
+    List.insertIdx (φs ++ φs') φs.length φ = (φs ++ φ :: φs')
   | [], φs' => by simp
   | φ' :: φs, φs' => by
     simp only [List.length_cons, List.cons_append, List.insertIdx_succ_cons, List.cons.injEq,
@@ -127,14 +127,14 @@ lemma insertIdx_length_fst_append {I : Type} (φ : I) : (φs φs' : List I) →
     exact insertIdx_length_fst_append φ φs φs'
 
 lemma get_eq_insertIdx_succAbove {I : Type} (i : I) (r : List I) (k : Fin r.length.succ) :
-    r.get = (List.insertIdx k i r).get ∘
+    r.get = (List.insertIdx r k i).get ∘
     (finCongr (insertIdx_length_fin i r k).symm) ∘ k.succAbove := by
   funext i
   simp
 
 lemma take_insert_same {I : Type} (i : I) :
     (n : ℕ) → (r : List I) →
-    List.take n (List.insertIdx n i r) = List.take n r
+    List.take n (List.insertIdx r n i) = List.take n r
   | 0, _ => by simp
   | _+1, [] => by simp
   | n+1, a::as => by
@@ -164,7 +164,7 @@ lemma drop_eraseIdx_succ {I : Type} :
 
 lemma take_insert_gt {I : Type} (i : I) :
     (n m : ℕ) → (h : n < m) → (r : List I) →
-    List.take n (List.insertIdx m i r) = List.take n r
+    List.take n (List.insertIdx r m i) = List.take n r
   | 0, 0, _, _ => by simp
   | 0, m + 1, _, _ => by simp
   | n+1, m + 1, _, [] => by simp
@@ -174,7 +174,7 @@ lemma take_insert_gt {I : Type} (i : I) :
 
 lemma take_insert_let {I : Type} (i : I) :
     (n m : ℕ) → (h : m ≤ n) → (r : List I) → (hm : m ≤ r.length) →
-    (List.take (n + 1) (List.insertIdx m i r)).Perm (i :: List.take n r)
+    (List.take (n + 1) (List.insertIdx r m i)).Perm (i :: List.take n r)
   | 0, 0, h, _, _ => by simp
   | m + 1, 0, h, r, _ => by simp
   | n + 1, m + 1, h, [], hm => by

@@ -142,7 +142,7 @@ protected noncomputable def SchurTriangulationAux.of
     let W : Submodule 𝕜 E := Vᗮ
     let m := Module.finrank 𝕜 V
     have hdim : m + Module.finrank 𝕜 W = Module.finrank 𝕜 E := V.finrank_add_finrank_orthogonal
-    let g : Module.End 𝕜 W := orthogonalProjection W ∘ₗ f.domRestrict W
+    let g : Module.End 𝕜 W := Submodule.orthogonalProjection W ∘ₗ f.domRestrict W
     let ⟨n, hn, bW, hg⟩ := SchurTriangulationAux.of g
 
     have bV : OrthonormalBasis (Fin m) 𝕜 V := stdOrthonormalBasis 𝕜 V
@@ -203,9 +203,9 @@ protected noncomputable def SchurTriangulationAux.of
           calc toMatrixOrthonormal basis f i j
             _ = ⟪(bW i' : E), f (bW j')⟫_𝕜 :=
               hf (Equiv.finAddEquivSigmaCond_false hi) (Equiv.finAddEquivSigmaCond_false hj)
-            _ = ⟪bW i', g (bW j')⟫_𝕜 := by simp only [coe_comp, ContinuousLinearMap.coe_coe,
-              Function.comp_apply, domRestrict_apply, inner_orthogonalProjection_eq_of_mem_left, g,
-              B, V, W]
+            _ = ⟪bW i', g (bW j')⟫_𝕜 := by
+              rw  [coe_comp, ContinuousLinearMap.coe_coe, Function.comp_apply, domRestrict_apply,
+                Submodule.inner_orthogonalProjection_eq_of_mem_left]
             _ = toMatrixOrthonormal bW g i' j' := (g.toMatrixOrthonormal_apply_apply ..).symm
             _ = 0 := hg (Nat.sub_lt_sub_right (Nat.le_of_not_lt hj) hji)
     }
