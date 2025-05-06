@@ -158,8 +158,9 @@ lemma energy_localizedState (n : Fin T.N) (htn : 1 < T.N) : ⟪|n⟩, T.hamilton
   This is the set in which wave functions are uniquly defined. -/
 def BrillouinZone : Set ℝ := Set.Ico (- Real.pi / T.a) (Real.pi / T.a)
 
+/-- The wavefunctions associated with the energy eigenstates. -/
 def QuantaWaveNumber : Set ℝ := {x | (∃ n : Fin T.N,
-     2 * Real.pi / (T.a * T.N) * ((n : ℝ) - (T.N / 2 : ℕ)) = x)}
+    2 * Real.pi / (T.a * T.N) * ((n : ℝ) - (T.N / 2 : ℕ)) = x)}
 
 /-- The quantized wavenumbers form a subset of the `BrillouinZone`. -/
 lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.BrillouinZone := by
@@ -171,29 +172,26 @@ lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.Brillouin
   · have ht : T.N ≠ 0 := by exact Ne.symm (NeZero.ne' T.N)
     generalize T.N = x at *
     have hT := T.a_pos
-    have hT : T.a ≠ 0 := by positivity
     generalize T.a = a at *
     apply le_of_eq_of_le (by ring : _ = (Real.pi / a) * (-1 : ℝ))
-    apply le_of_le_of_eq  (b := (Real.pi / a) * (2 * ((n : ℝ) - (x /2 : ℕ))/ x ) )
+    apply le_of_le_of_eq (b := (Real.pi / a) * (2 * ((n : ℝ) - (x /2 : ℕ))/ x))
     · apply mul_le_mul_of_nonneg_left
       · have hk := Nat.even_or_odd' x
         obtain ⟨k, hk⟩ := hk
         rcases hk with ⟨k, rfl⟩ | ⟨k, rfl⟩
         · simp
           have hl : 2 * (↑↑n - (k : ℝ)) / (2 * ↑k) = ↑↑n / ↑k - 1 := by
-            simp at ht
+            simp only [ne_eq, mul_eq_zero, OfNat.ofNat_ne_zero, false_or] at ht
             field_simp
             ring
-          rw [hl]
-          rw [@neg_le_sub_iff_le_add']
-          simp
+          rw [hl, neg_le_sub_iff_le_add']
+          simp only [le_add_iff_nonneg_right]
           positivity
         · have h0 : (2 * k + 1) / 2 = k := by
             omega
-          rw [h0]
-          rw [neg_le_iff_add_nonneg']
-          have hl : 1 + 2 * (↑↑n - (↑k : ℝ)) / ↑(2 * k + 1) = (2 * k + 1 + 2 * (↑↑n - ↑k) ) / ↑(2 * k + 1) := by
-            field_simp
+          rw [h0, neg_le_iff_add_nonneg']
+          have hl : 1 + 2 * (↑↑n - (↑k : ℝ)) / ↑(2 * k + 1) =
+            (2 * k + 1 + 2 * (↑↑n - ↑k)) / ↑(2 * k + 1) := by field_simp
           rw [hl]
           apply div_nonneg
           · have hl : 2 * (k : ℝ) + 1 + 2 * (↑↑n - ↑k) = 1 + 2 * n := by ring
@@ -205,12 +203,11 @@ lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.Brillouin
   · have ht : T.N ≠ 0 := by exact Ne.symm (NeZero.ne' T.N)
     generalize T.N = x at *
     have hT := T.a_pos
-    have hT' : T.a ≠ 0 := by positivity
     generalize T.a = a at *
     apply lt_of_lt_of_eq (b := (Real.pi / a) * (1 : ℝ))
     swap
     · ring
-    apply lt_of_eq_of_lt (b := (Real.pi / a) * (2 * ((n : ℝ) - (x /2 : ℕ))/ x ) )
+    apply lt_of_eq_of_lt (b := (Real.pi / a) * (2 * ((n : ℝ) - (x /2 : ℕ))/ x))
     · ring
     apply mul_lt_mul_of_pos_left
     · have hk := Nat.even_or_odd' x
@@ -221,9 +218,8 @@ lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.Brillouin
           simp at ht
           field_simp
           ring
-        rw [hl]
-        rw [@sub_lt_iff_lt_add']
-        ring
+        rw [hl, sub_lt_iff_lt_add']
+        ring_nf
         field_simp
         refine (div_lt_iff₀' ?_).mpr ?_
         · simp at ht
@@ -236,32 +232,16 @@ lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.Brillouin
         refine (div_lt_one ?_).mpr ?_
         · positivity
         rw [mul_sub]
-        simp
+        simp only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
         rw [sub_lt_iff_lt_add]
-        have hl : 2 * (↑k : ℝ) + 1 + 2 * ↑k = 4 * ↑k  + 1 := by ring
+        have hl : 2 * (↑k : ℝ) + 1 + 2 * ↑k = 4 * ↑k + 1 := by ring
         rw [hl]
-        have hn := n.prop
-        have hn : n.val ≤ 2 * k := by omega
         have hn' : 2 * n.val ≤ 4 * k := by omega
         have hn'' : 2 * (n.val : ℝ) ≤ 4 * (k : ℝ) := by
           simpa using (Nat.cast_le (α := ℝ)).mpr hn'
         apply lt_of_le_of_lt hn''
         simp only [lt_add_iff_pos_right, zero_lt_one]
     · positivity
-
-/--
-
-import Mathlib
-
-lemma test1 (x : Nat) (n : Fin x) (a : Real):
-   -Real.pi / a ≤ 2 * Real.pi / (a * ↑x) * (↑↑n - ↑(x / 2)) := by
-  sorry
-
-lemma test2 (x : Nat) (n : Fin x) (a : Real):
-   -Real.pi / a ≤ 2 * Real.pi / (a * ↑x) * (↑↑n - ↑(x / 2)) := by
-  sorry
-  -/
-
 
 lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
     Complex.exp (Complex.I * k * n * T.N * T.a) = 1 := by
@@ -283,25 +263,23 @@ lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
   simp only [mul_assoc]
   rfl
 
-lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber)  :
+lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
     Complex.exp (Complex.I * k * (n - 1).val * T.a) =
     Complex.exp (Complex.I * k * n * T.a) * Complex.exp (- Complex.I * k * T.a) := by
   rw [Fin.coe_sub]
-  trans Complex.exp (Complex.I * ↑↑k * ↑(((T.N - 1 + n)/T.N) * T.N  + (n - 1).val) * ↑T.a)
+  trans Complex.exp (Complex.I * ↑↑k * ↑(((T.N - 1 + n)/T.N) * T.N + (n - 1).val) * ↑T.a)
   · simp only [Nat.cast_add, Nat.cast_mul]
-    have h0 :  (Complex.I * ↑↑k * (↑((T.N - 1 + ↑n) / T.N) * ↑T.N + (n - 1).val) * ↑T.a)
-      = Complex.I * ↑↑k * ↑((T.N - 1 + ↑n) / T.N) * ↑T.N * ↑T.a + Complex.I * ↑↑k * ((n - 1).val* ↑T.a) := by
-      ring
-    rw [h0]
-    rw [Complex.exp_add]
-    rw [quantaWaveNumber_exp_N]
-    simp
+    have h0 : (Complex.I * ↑↑k * (↑((T.N - 1 + ↑n) / T.N) * ↑T.N + (n - 1).val) * ↑T.a)
+        = Complex.I * ↑↑k * ↑((T.N - 1 + ↑n) / T.N) * ↑T.N * ↑T.a +
+        Complex.I * ↑↑k * ((n - 1).val* ↑T.a) := by ring
+    rw [h0, Complex.exp_add, quantaWaveNumber_exp_N]
+    simp only [Fin.val_one', one_mul]
     congr 1
     simp [mul_assoc]
     left
     left
     rfl
-  · have hx : (((T.N - 1 + n)/T.N) * T.N  + (n - 1).val) =
+  · have hx : (((T.N - 1 + n)/T.N) * T.N + (n - 1).val) =
         (T.N - 1 + n) := by
       conv_rhs => rw [← Nat.div_add_mod' (a := T.N - 1 + n) (b := T.N)]
       congr
@@ -313,47 +291,45 @@ lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber)  :
         simpa using hn
       · rw [@Fin.coe_sub]
         congr
-        simp
+        simp only [Fin.val_one']
         exact Nat.one_mod_eq_one.mpr hn
     rw [hx]
-    have hl : (Complex.I * ↑↑k * ↑(T.N - 1 + ↑n) * ↑T.a)  =
-      Complex.I * ↑↑k * n  * ↑T.a  + Complex.I * ↑↑k * ↑(T.N - 1)  * ↑T.a := by
-      simp
+    have hl : (Complex.I * ↑↑k * ↑(T.N - 1 + ↑n) * ↑T.a) =
+      Complex.I * ↑↑k * n * ↑T.a + Complex.I * ↑↑k * ↑(T.N - 1) * ↑T.a := by
+      simp only [Nat.cast_add]
       ring
-    rw [hl]
-    rw [Complex.exp_add]
+    rw [hl, Complex.exp_add]
     congr 1
-    have hl : Nat.cast (T.N - 1) = (T.N : ℂ) -1 := by
-      refine Nat.cast_pred ?_
-      exact Nat.pos_of_neZero T.N
-    rw [hl]
+    rw [Nat.cast_pred (Nat.pos_of_neZero T.N)]
     have hl : (Complex.I * ↑↑k * (↑T.N - 1) * ↑T.a) =
-      Complex.I * ↑↑k * (1 : ℕ) * ↑T.N * ↑T.a  + (- Complex.I * ↑↑k * ↑T.a) := by
+      Complex.I * ↑↑k * (1 : ℕ) * ↑T.N * ↑T.a + (- Complex.I * ↑↑k * ↑T.a) := by
       ring
-    rw [hl]
-    rw [Complex.exp_add]
-    rw [quantaWaveNumber_exp_N]
+    rw [hl, Complex.exp_add, quantaWaveNumber_exp_N]
     simp
 
-lemma quantaWaveNumber_exp_add_one (n : Fin T.N) (k : T.QuantaWaveNumber)  :
+lemma quantaWaveNumber_exp_add_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
     Complex.exp (Complex.I * k * (n + 1).val * T.a) =
     Complex.exp (Complex.I * k * n * T.a) * Complex.exp (Complex.I * k * T.a) := by
   have hn : n = (n + 1) - 1 := by
     ring
   conv_rhs =>
     rw [hn, quantaWaveNumber_exp_sub_one]
-    rw [mul_assoc,←  Complex.exp_add]
+    rw [mul_assoc, ← Complex.exp_add]
     simp
-
 
 /-- The energy eigenstates of the tight binding chain. -/
 noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
   ∑ n : Fin T.N, Complex.exp (Complex.I * k * n * T.a) • |n⟩
 
+/-- The energy eigenstates of the tight binding chain are orthogonal. -/
+semiformal_result "BUDDT" energyEigenstate_orthogonal :
+  Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0
+
 /-- The energy eigenvalue of the tight binding chain for a `k` in the `BrillouinZone`. -/
 noncomputable def energyEigenvalue (k : T.QuantaWaveNumber) : ℝ :=
   T.E0 - 2 * T.t * Real.cos (k * T.a)
 
+/-- The eenergy eigenstates satisfy the time-independent Schrodinger equation. -/
 lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :
     T.hamiltonian (T.energyEigenstate k) = T.energyEigenvalue k• T.energyEigenstate k := by
   trans (T.energyEigenvalue k : ℂ) • T.energyEigenstate k
@@ -399,7 +375,7 @@ lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :
           rw [smul_comm]
       _ = T.E0 • (∑ n : Fin T.N, Complex.exp (Complex.I * k * n * T.a) • |n⟩)
         - T.t • ((∑ n : Fin T.N, Complex.exp (Complex.I * k * (n - 1).val * T.a) • |n⟩) +
-          (∑ n : Fin T.N, Complex.exp (Complex.I * k * (n + 1).val * T.a) • |n⟩ )) := by
+          (∑ n : Fin T.N, Complex.exp (Complex.I * k * (n + 1).val * T.a) • |n⟩)) := by
         rw [hp1, hm1]
       _ = ∑ n : Fin T.N, (T.E0 * Complex.exp (Complex.I * k * n * T.a) - T.t *
           (Complex.exp (Complex.I * k * (n - 1).val * T.a) +
