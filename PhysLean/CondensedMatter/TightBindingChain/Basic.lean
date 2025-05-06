@@ -355,7 +355,10 @@ noncomputable def energyEigenvalue (k : T.QuantaWaveNumber) : ℝ :=
   T.E0 - 2 * T.t * Real.cos (k * T.a)
 
 lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :
-    T.hamiltonian (T.energyEigenstate k) = (T.energyEigenvalue k : ℂ) • T.energyEigenstate k := by
+    T.hamiltonian (T.energyEigenstate k) = T.energyEigenvalue k• T.energyEigenstate k := by
+  trans (T.energyEigenvalue k : ℂ) • T.energyEigenstate k
+  swap
+  · rfl
   rw [energyEigenstate]
   have hp1 : (∑ n : Fin T.N, Complex.exp (Complex.I * k * n * T.a) • |n + 1⟩)
     = ∑ n : Fin T.N, Complex.exp (Complex.I * k * (n - 1).val * T.a) • |n⟩ := by
