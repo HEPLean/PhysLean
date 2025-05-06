@@ -84,6 +84,13 @@ noncomputable def localizedComp {T : TightBindingChain} (m n : Fin T.N) :
 @[inherit_doc localizedComp]
 scoped notation "|" n "⟩⟨" m "|" => localizedComp n m
 
+lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
+    |m⟩⟨n| |p⟩ = if n = p then |m⟩ else 0 := by
+  rw [localizedComp]
+  simp only [LinearMap.coe_mk, AddHom.coe_mk]
+  rw [orthonormal_iff_ite.mp T.localizedState_orthonormal n p]
+  simp
+
 /-- The Hamiltonian of the tight binding chain is given by
   `E₀ ∑ n, |n⟩⟨n| - t ∑ n,(|n⟩⟨n + 1| + |n + 1⟩⟨n|)`. -/
 noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
