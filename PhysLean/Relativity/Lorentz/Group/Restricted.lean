@@ -85,7 +85,7 @@ lemma lorentzMap_Kernel {d : ℕ} : (@lorentzMap d).ker = restricted d := by sor
 lemma lorentzMap_Identity_Connected {d : ℕ} : IsConnected ({(1, 1)} : Set (ℤ₂ × ℤ₂)) := by sorry
 lemma lorentzMap_Subset {d : ℕ} : ({(1, 1)} : Set (ℤ₂ × ℤ₂)) ⊆ Set.range (@lorentzMap d) := by sorry
 
-lemma lorentzMap_Kernel_IsConnected {d : ℕ} : IsConnected (restricted d : Set (LorentzGroup d))
+lemma restricted.IsConnected {d : ℕ} : IsConnected (restricted d : Set (LorentzGroup d))
     := by
   rw [← lorentzMap_Kernel]
   exact @IsConnected.preimage_of_isOpenMap
@@ -102,8 +102,7 @@ lemma restricted_eq_identity_component {d : ℕ} :
   constructor
   · intro hx
     have h_id : 1 ∈ restricted d := by simp [restricted, IsOrthochronous]
-    exact IsConnected.subset_connectedComponent
-      (@lorentzMap_Kernel_IsConnected d) h_id hx
+    exact IsConnected.subset_connectedComponent (@restricted.IsConnected d) h_id hx
   · intro h
     exact ⟨(isProper_on_connected_component h).mp id_IsProper,
            (isOrthochronous_on_connected_component h).mp id_IsOrthochronous⟩
