@@ -283,19 +283,67 @@ lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
   simp only [mul_assoc]
   rfl
 
-
-
-
-lemma quantaWaveNumber_exp_neg_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
+lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber)  :
     Complex.exp (Complex.I * k * (n - 1).val * T.a) =
     Complex.exp (Complex.I * k * n * T.a) * Complex.exp (- Complex.I * k * T.a) := by
-  have ho (n : ℕ) : n = (n/T.N) * T.N + n % T.N  := by exact Eq.symm (Nat.div_add_mod' n T.N)
   rw [Fin.coe_sub]
-  trans Complex.exp (Complex.I * ↑↑k * ↑(((T.N - ↑1 + ↑n)/T.N) * T.N  + (T.N - ↑1 + ↑n) % T.N) * ↑T.a)
-  · sorry
-  · rw [← ho]
-    sorry
+  trans Complex.exp (Complex.I * ↑↑k * ↑(((T.N - 1 + n)/T.N) * T.N  + (n - 1).val) * ↑T.a)
+  · simp only [Nat.cast_add, Nat.cast_mul]
+    have h0 :  (Complex.I * ↑↑k * (↑((T.N - 1 + ↑n) / T.N) * ↑T.N + (n - 1).val) * ↑T.a)
+      = Complex.I * ↑↑k * ↑((T.N - 1 + ↑n) / T.N) * ↑T.N * ↑T.a + Complex.I * ↑↑k * ((n - 1).val* ↑T.a) := by
+      ring
+    rw [h0]
+    rw [Complex.exp_add]
+    rw [quantaWaveNumber_exp_N]
+    simp
+    congr 1
+    simp [mul_assoc]
+    left
+    left
+    rfl
+  · have hx : (((T.N - 1 + n)/T.N) * T.N  + (n - 1).val) =
+        (T.N - 1 + n) := by
+      conv_rhs => rw [← Nat.div_add_mod' (a := T.N - 1 + n) (b := T.N)]
+      congr
+      by_cases hn : T.N = 1
+      · simp [hn]
+        have h0 : n = 0 := by
+          omega
+        subst h0
+        simpa using hn
+      · rw [@Fin.coe_sub]
+        congr
+        simp
+        exact Nat.one_mod_eq_one.mpr hn
+    rw [hx]
+    have hl : (Complex.I * ↑↑k * ↑(T.N - 1 + ↑n) * ↑T.a)  =
+      Complex.I * ↑↑k * n  * ↑T.a  + Complex.I * ↑↑k * ↑(T.N - 1)  * ↑T.a := by
+      simp
+      ring
+    rw [hl]
+    rw [Complex.exp_add]
+    congr 1
+    have hl : Nat.cast (T.N - 1) = (T.N : ℂ) -1 := by
+      refine Nat.cast_pred ?_
+      exact Nat.pos_of_neZero T.N
+    rw [hl]
+    have hl : (Complex.I * ↑↑k * (↑T.N - 1) * ↑T.a) =
+      Complex.I * ↑↑k * (1 : ℕ) * ↑T.N * ↑T.a  + (- Complex.I * ↑↑k * ↑T.a) := by
+      ring
+    rw [hl]
+    rw [Complex.exp_add]
+    rw [quantaWaveNumber_exp_N]
+    simp
 
+lemma quantaWaveNumber_exp_add_one (n : Fin T.N) (k : T.QuantaWaveNumber)  :
+    Complex.exp (Complex.I * k * (n + 1).val * T.a) =
+    Complex.exp (Complex.I * k * n * T.a) * Complex.exp (Complex.I * k * T.a) := by
+  have hn : n = (n + 1) - 1 := by
+    ring
+  conv_rhs =>
+    rw [hn, quantaWaveNumber_exp_sub_one]
+    rw [mul_assoc,←  Complex.exp_add]
+    simp
 
 
 /-- The energy eigenstates of the tight binding chain. -/
@@ -374,15 +422,8 @@ lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :
   congr 1
   rw [Complex.cos.eq_1]
   field_simp
-  sorry
-
-
-
-
-
-
-
-
+  rw [quantaWaveNumber_exp_add_one, quantaWaveNumber_exp_sub_one]
+  ring_nf
 
 end TightBindingChain
 end CondensedMatter
