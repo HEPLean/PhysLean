@@ -102,6 +102,10 @@ lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
 noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
   T.E0 • ∑ n : Fin T.N, |n⟩⟨n| - T.t • ∑ n : Fin T.N, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)
 
+/-- The hamiltonian of the tight binding chain is hermitian. -/
+semiformal_result "BUEDT" hamiltonian_hermitian (ψ φ : T.HilbertSpace):
+    ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ
+
 /-- The Hamiltonian applied to the localized state `|n⟩` gives
   `T.E0 • |n⟩ - T.t • (|n + 1⟩ + |n - 1⟩)`. -/
 lemma hamiltonian_apply_localizedState (n : Fin T.N) :
