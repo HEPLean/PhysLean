@@ -98,6 +98,14 @@ lemma lorentzMap_Kernel_IsConnected {d : ℕ} : IsConnected (restricted d : Set 
 
 lemma restricted_eq_identity_component {d : ℕ} :
     (restricted d) = connectedComponent (1 : LorentzGroup d) := by
-  sorry
+  ext x
+  constructor
+  · intro hx
+    have h_id : 1 ∈ restricted d := by simp [restricted, IsOrthochronous]
+    exact IsConnected.subset_connectedComponent
+      (@lorentzMap_Kernel_IsConnected d) h_id hx
+  · intro h
+    exact ⟨(isProper_on_connected_component h).mp id_IsProper,
+           (isOrthochronous_on_connected_component h).mp id_IsOrthochronous⟩
 
 end LorentzGroup
