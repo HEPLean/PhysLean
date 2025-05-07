@@ -155,7 +155,6 @@ lemma quantaBarFiveMatter_map_MN_not_both_zero :
   obtain ⟨a, b, c, ha, rfl⟩ := ha
   exact 𝓜.chirality_charge_not_both_zero_bar_five_matter (a, b, c) ha
 
-
 lemma quantaBarFiveMatter_map_q_noDup :
     (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).Nodup :=
   Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaBarFiveMatter.1

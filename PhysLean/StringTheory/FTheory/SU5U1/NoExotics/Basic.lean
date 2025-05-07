@@ -65,7 +65,7 @@ instance : Decidable 𝓜.NoExotics := instDecidableAnd
 
 lemma quantaBarFiveMatter_map_MN_sum_of_noExotics (h : 𝓜.NoExotics) :
     ((𝓜.quantaBarFiveMatter.map QuantaBarFive.MN).map Prod.snd).sum = 0 := by
-  have h1 :=  h.2.1
+  have h1 := h.2.1
   simp only [quantaBarFive, Int.reduceNeg, QuantaBarFive.N, Multiset.map_cons, Multiset.sum_cons,
     add_neg_cancel_left] at h1
   rw [← h1]

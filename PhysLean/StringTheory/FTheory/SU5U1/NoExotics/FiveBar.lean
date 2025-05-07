@@ -35,10 +35,11 @@ lemma quantaBarFiveMatter_chiralityFlux_nonneg' {a : QuantaBarFive}
 
 /-- The chirality flux associated with a 5-bar representation must be non-negative. -/
 lemma quantaBarFiveMatter_chiralityFlux_nonneg {a : ChiralityFlux}
-    (h3 : 𝓜.ThreeChiralFamiles) (h : a ∈ (𝓜.quantaBarFiveMatter).map QuantaBarFive.M) : 0 ≤ a := by
+    (h3 : 𝓜.ThreeChiralFamiles)
+    (h : a ∈ (𝓜.quantaBarFiveMatter).map QuantaBarFive.M) : 0 ≤ a := by
   simp only [Multiset.mem_map] at h
   obtain ⟨a', h', rfl⟩ := h
-  refine h3.2.2.1 a'  ?_
+  refine h3.2.2.1 a' ?_
   simp [quantaBarFive]
   right
   right
@@ -66,7 +67,6 @@ lemma quantaBarFiveMatter_chiralityFlux_le_three {a : QuantaBarFive}
     right
     exact h
 
-
 lemma quantaBarFiveMatter_chiralityFlux_filter_non_zero_sum (h3 : 𝓜.ThreeChiralFamiles) :
     ((𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0)).sum = 3 := by
   have h2 : ((𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => x = 0)).sum = 0 := by
@@ -79,7 +79,7 @@ lemma quantaBarFiveMatter_chiralityFlux_filter_non_zero_sum (h3 : 𝓜.ThreeChir
   · rw [h2]
     simp
   rw [Multiset.sum_filter_add_sum_filter_not]
-  simpa [quantaBarFive, QuantaBarFive.M]  using h3.1
+  simpa [quantaBarFive, QuantaBarFive.M] using h3.1
 
 /-- The number of 5-bar matter representations with non-zero chirality
   flux is less than or equal to three. -/
@@ -147,12 +147,16 @@ lemma quantaBarFiveMatter_chiralityFlux_filter_non_zero_mem (h3 : 𝓜.ThreeChir
     have hl := quantaBarFiveMatter_chiralityFlux_filter_non_zero_sum h3
     rw [ha] at hl ⊢
     simp at hl
-    have a_mem_filter : a ∈ (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
+    have a_mem_filter : a ∈
+        (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
       simp [ha]
-    have b_mem_filter : b ∈ (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
+    have b_mem_filter : b ∈
+        (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
       simp [ha]
-    have a_pos : 0 < a := pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 a_mem_filter
-    have b_pos : 0 < b := pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 b_mem_filter
+    have a_pos : 0 < a :=
+      pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 a_mem_filter
+    have b_pos : 0 < b :=
+      pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 b_mem_filter
     have hab (a b : ℤ) (ha : 0 < a) (hb : 0 < b) (hab : a + b = 3) :
         (a = 2 ∧ b = 1) ∨ (a = 1 ∧ b = 2) := by omega
     rcases hab a b a_pos b_pos hl with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
@@ -165,22 +169,29 @@ lemma quantaBarFiveMatter_chiralityFlux_filter_non_zero_mem (h3 : 𝓜.ThreeChir
     rw [ha] at hl
     simp [← add_assoc] at hl
     rw [ha]
-    have a_mem_filter : a ∈ (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
+    have a_mem_filter : a ∈ (𝓜.quantaBarFiveMatter.map
+        (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
       simp [ha]
-    have b_mem_filter : b ∈ (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
+    have b_mem_filter : b ∈ (𝓜.quantaBarFiveMatter.map
+        (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
       simp [ha]
-    have c_mem_filter : c ∈ (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
+    have c_mem_filter : c ∈ (𝓜.quantaBarFiveMatter.map
+        (QuantaBarFive.M)).filter (fun x => ¬ x = 0) := by
       simp [ha]
-    have a_pos : 0 < a := pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 a_mem_filter
-    have b_pos : 0 < b := pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 b_mem_filter
-    have c_pos : 0 < c := pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 c_mem_filter
+    have a_pos : 0 < a :=
+      pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 a_mem_filter
+    have b_pos : 0 < b :=
+      pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 b_mem_filter
+    have c_pos : 0 < c :=
+      pos_of_mem_quantaBarFiveMatter_chiralityFlux_filter_non_zero h3 c_mem_filter
     have habc (a b c : ℤ) (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (habc : a + b + c = 3) :
         (a = 1 ∧ b = 1 ∧ c = 1) := by omega
     rcases habc a b c a_pos b_pos c_pos hl with ⟨rfl, rfl, rfl⟩
     simp
 
 lemma quantaBarFiveMatter_zero_chiralityFlux_abs_sum_le_three (h3L : 𝓜.ThreeLeptonDoublets) :
-    (Multiset.map (fun a => |a.M + a.N|) (𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0))).sum ≤ 3 := by
+    (Multiset.map (fun a => |a.M + a.N|)
+      (𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0))).sum ≤ 3 := by
   simp [ThreeLeptonDoublets, quantaBarFive, QuantaBarFive.M, QuantaBarFive.N] at h3L
   have h3L : (Multiset.map (fun x => |x.1 + x.2.1|) 𝓜.quantaBarFiveMatter).sum = 3 := by linarith
   have h1 : (Multiset.map (fun a => |a.M + a.N|) 𝓜.quantaBarFiveMatter).sum
@@ -192,14 +203,15 @@ lemma quantaBarFiveMatter_zero_chiralityFlux_abs_sum_le_three (h3L : 𝓜.ThreeL
     rw [Multiset.sum_add]
   rw [h1] at h3L
   have hz_pos : 0 ≤
-      (Multiset.map (fun a => |a.M + a.N|) (𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0))).sum := by
+      (Multiset.map (fun a => |a.M + a.N|)
+        (𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0))).sum := by
     apply Multiset.sum_nonneg
     intro x hx
     simp at hx
     obtain ⟨a, b, hc, d, ha, rfl⟩ := hx
     exact abs_nonneg _
-  have hz_non_zero_pos : 0 ≤
-      (Multiset.map (fun a => |a.M + a.N|) (𝓜.quantaBarFiveMatter.filter (fun x => ¬ x.M = 0))).sum := by
+  have hz_non_zero_pos : 0 ≤ (Multiset.map (fun a => |a.M + a.N|)
+      (𝓜.quantaBarFiveMatter.filter (fun x => ¬ x.M = 0))).sum := by
     apply Multiset.sum_nonneg
     intro x hx
     simp at hx
@@ -212,7 +224,8 @@ lemma quantaBarFiveMatter_zero_chiralityFlux_abs_sum_le_three (h3L : 𝓜.ThreeL
   less than or equal to five. -/
 lemma quantaBarFiveMatter_zero_chiralityFlux_card_le_three (h3L : 𝓜.ThreeLeptonDoublets) :
     ((𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0))).card ≤ 3 := by
-  have h1' : ((𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).card • 1 ≤
+  have h1' : ((𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0)).map
+      (fun a => |a.M + a.N|)).card • 1 ≤
       ((𝓜.quantaBarFiveMatter.filter (fun x => x.M = 0)).map (fun a => |a.M + a.N|)).sum := by
     apply Multiset.card_nsmul_le_sum
     intro x hx
@@ -247,7 +260,8 @@ lemma quantaBarFiveMatter_zero_chiralityFlux_mem (h3L : 𝓜.ThreeLeptonDoublets
     ({replicate 3 0, replicate 2 0, replicate 1 0, replicate 0 0} :
       Finset (Multiset ChiralityFlux)) := by
   have h1 := quantaBarFiveMatter_zero_chiralityFlux_card_mem h3L
-  have hn (n : ℕ) (hr : (filter (fun x => x = 0) (map QuantaBarFive.M 𝓜.quantaBarFiveMatter)).card = n) :
+  have hn (n : ℕ) (hr :
+      (filter (fun x => x = 0) (map QuantaBarFive.M 𝓜.quantaBarFiveMatter)).card = n) :
       (𝓜.quantaBarFiveMatter.map (QuantaBarFive.M)).filter (fun x => x = 0) = replicate n 0 := by
     rw [eq_replicate, hr]
     simp
@@ -287,7 +301,8 @@ lemma quantaBarFiveMatter_card_le_six (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜
 - `{3}`
 with zero to three chirality fluxes equal to zero.
 -/
-lemma quantaBarFiveMatter_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
+lemma quantaBarFiveMatter_chiralityFlux_mem
+    (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFiveMatter.map QuantaBarFive.M ∈
     ({{1, 1, 1, 0, 0}, {1, 1, 1, 0}, {1, 1, 1},
       {1, 2, 0, 0, 0}, {1, 2, 0, 0}, {1, 2, 0}, {1, 2},
@@ -297,8 +312,8 @@ lemma quantaBarFiveMatter_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L 
     rw [Multiset.card_map]
     exact 𝓜.quantaBarFive_card_le_seven
   have hcard : (𝓜.quantaBarFiveMatter.map QuantaBarFive.M).card ≤ 5 := by
-     simp [quantaBarFive] at hcard
-     simpa using hcard
+    simp [quantaBarFive] at hcard
+    simpa using hcard
   rw [← (Multiset.filter_add_not (fun x => x = 0)
     (Multiset.map QuantaBarFive.M 𝓜.quantaBarFiveMatter))] at hcard ⊢
   have hz := quantaBarFiveMatter_zero_chiralityFlux_mem h3L
@@ -330,13 +345,11 @@ lemma quantaBarFiveMatter_one_le_card (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜
   fin_cases hr
     <;> simp
 
-
 /-!
 
 ## With hypercharge flux
 
 -/
-
 
 lemma quantaBarFiveMatter_MN_abs_le_three (h3L : 𝓜.ThreeLeptonDoublets) :
     ∀ a ∈ (𝓜.quantaBarFiveMatter.map QuantaBarFive.MN), |a.1 + a.2| ≤ 3 := by
@@ -350,7 +363,7 @@ lemma quantaBarFiveMatter_MN_abs_le_three (h3L : 𝓜.ThreeLeptonDoublets) :
     exact abs_nonneg (QuantaBarFive.M (a', b, c) + QuantaBarFive.N (a', b, c))
   · simp at ha
     obtain ⟨a, b, c, ha, rfl⟩ := ha
-    simp
+    simp only [Multiset.map_map, Function.comp_apply, Multiset.mem_map, Prod.exists]
     use a, b, c
 
 /-!
@@ -359,8 +372,8 @@ lemma quantaBarFiveMatter_MN_abs_le_three (h3L : 𝓜.ThreeLeptonDoublets) :
 
 -/
 lemma multiset_eq_of_prod_fst_eq_five {c1 c2 c3 c4 c5 : ℤ}
-        (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2, c3, c4, c5}) :
-        ∃ n1 n2 n3 n4 n5, S = {(c1, n1), (c2, n2), (c3, n3), (c4, n4), (c5, n5)} := by
+    (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2, c3, c4, c5}) :
+    ∃ n1 n2 n3 n4 n5, S = {(c1, n1), (c2, n2), (c3, n3), (c4, n4), (c5, n5)} := by
   simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
     Prod.exists, exists_and_right, exists_eq_right] at hprod
   obtain ⟨_, n1, h1, rfl, hi⟩ := hprod
@@ -374,8 +387,8 @@ lemma multiset_eq_of_prod_fst_eq_five {c1 c2 c3 c4 c5 : ℤ}
   simp
 
 lemma multiset_eq_of_prod_fst_eq_four {c1 c2 c3 c4 : ℤ}
-        (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2, c3, c4}) :
-        ∃ n1 n2 n3 n4, S = {(c1, n1), (c2, n2), (c3, n3), (c4, n4)} := by
+    (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2, c3, c4}) :
+    ∃ n1 n2 n3 n4, S = {(c1, n1), (c2, n2), (c3, n3), (c4, n4)} := by
   simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
     Prod.exists, exists_and_right, exists_eq_right] at hprod
   obtain ⟨_, n1, h1, rfl, hi⟩ := hprod
@@ -388,8 +401,8 @@ lemma multiset_eq_of_prod_fst_eq_four {c1 c2 c3 c4 : ℤ}
   simp
 
 lemma multiset_eq_of_prod_fst_eq_three {c1 c2 c3 : ℤ}
-        (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2, c3}) :
-        ∃ n1 n2 n3, S = {(c1, n1), (c2, n2), (c3, n3)} := by
+    (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2, c3}) :
+    ∃ n1 n2 n3, S = {(c1, n1), (c2, n2), (c3, n3)} := by
   simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
     Prod.exists, exists_and_right, exists_eq_right] at hprod
   obtain ⟨_, n1, h1, rfl, hi⟩ := hprod
@@ -400,8 +413,8 @@ lemma multiset_eq_of_prod_fst_eq_three {c1 c2 c3 : ℤ}
   simp
 
 lemma multiset_eq_of_prod_fst_eq_two {c1 c2 : ℤ}
-        (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2}) :
-        ∃ n1 n2, S = {(c1, n1), (c2, n2)} := by
+    (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1, c2}) :
+    ∃ n1 n2, S = {(c1, n1), (c2, n2)} := by
   simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
     Prod.exists, exists_and_right, exists_eq_right] at hprod
   obtain ⟨_, n1, h1, rfl, hi⟩ := hprod
@@ -411,14 +424,13 @@ lemma multiset_eq_of_prod_fst_eq_two {c1 c2 : ℤ}
   simp
 
 lemma multiset_eq_of_prod_fst_eq_one {c1 : ℤ}
-        (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1}) :
-        ∃ n1, S = {(c1, n1)} := by
+    (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {c1}) :
+    ∃ n1, S = {(c1, n1)} := by
   simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
     Prod.exists, exists_and_right, exists_eq_right] at hprod
   obtain ⟨n1, hi⟩ := hprod
   rw [hi]
   use n1
-
 
 -- 30 cases overall.
 lemma quantaBarFiveMatter_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
@@ -463,7 +475,7 @@ lemma quantaBarFiveMatter_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFam
     omega
   have hl1 {m : ℤ} (hm : -1 - 1 ≤ m ∧ m ≤ 3) (hm2 : |1 + m| ≤ 3) :
       m ∈ ({-2, -1, 0, 1, 2} : Finset ℤ) := by
-    have hl1' : m ∈ ({-2, -1, 0, 1, 2, 3} : Finset ℤ)  := by
+    have hl1' : m ∈ ({-2, -1, 0, 1, 2, 3} : Finset ℤ) := by
       simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
       omega
     revert hm
@@ -471,15 +483,15 @@ lemma quantaBarFiveMatter_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFam
     fin_cases hl1' <;> decide
   have hl2 {m : ℤ} (hm : -1 - 2 ≤ m ∧ m ≤ 3) (hm2 : |2 + m| ≤ 3) :
       m ∈ ({-3, -2, -1, 0, 1} : Finset ℤ) := by
-    have hl1' : m ∈ ({-3, -2, -1, 0, 1, 2, 3} : Finset ℤ)  := by
+    have hl1' : m ∈ ({-3, -2, -1, 0, 1, 2, 3} : Finset ℤ) := by
       simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
       omega
     revert hm
     revert hm2
     fin_cases hl1' <;> decide
-  have hl3  {m : ℤ} (hm : -1 - 3 ≤ m ∧ m ≤ 3) (hm2 : |3 + m| ≤ 3) :
+  have hl3 {m : ℤ} (hm : -1 - 3 ≤ m ∧ m ≤ 3) (hm2 : |3 + m| ≤ 3) :
       m ∈ ({-4, -3, -2, -1, 0} : Finset ℤ) := by
-    have hl1' : m ∈ ({-4, -3, -2, -1, 0, 1, 2, 3} : Finset ℤ)  := by
+    have hl1' : m ∈ ({-4, -3, -2, -1, 0, 1, 2, 3} : Finset ℤ) := by
       simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
       omega
     revert hm
@@ -503,7 +515,7 @@ lemma quantaBarFiveMatter_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFam
     revert hC1 hC3
     revert n1; revert n2; revert n3; revert n4; revert n5
     decide
-  ·  /- The case of `{1, 1, 1, 0}` -/
+  · /- The case of `{1, 1, 1, 0}` -/
     obtain ⟨n1, n2, n3, n4, hS⟩ :=
       multiset_eq_of_prod_fst_eq_four (𝓜.quantaBarFiveMatter.map QuantaTen.MN) (by simpa using hr)
     rw [hS] at hC1 hC2 hC3 hC4 hC5 ⊢
@@ -519,7 +531,7 @@ lemma quantaBarFiveMatter_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFam
     revert hC1 hC3
     revert n1; revert n2; revert n3; revert n4
     decide
-  ·  /- The case of `{1, 1, 1}` -/
+  · /- The case of `{1, 1, 1}` -/
     obtain ⟨n1, n2, n3, hS⟩ :=
       multiset_eq_of_prod_fst_eq_three (𝓜.quantaBarFiveMatter.map QuantaTen.MN) (by simpa using hr)
     rw [hS] at hC1 hC2 hC3 hC4 hC5 ⊢
@@ -664,10 +676,10 @@ lemma quantaBarFiveMatter_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFami
     -- card 4 (7 cases)
     {-3, 1, 1, 1}, {-2, -1, 1, 2},
     {-2, 0, 1, 1}, {-1, -1, -1, 3},
-    {-1, -1, 0,  2}, {-1, -1, 1, 1}, {0, 0, -1, 1},
+    {-1, -1, 0, 2}, {-1, -1, 1, 1}, {0, 0, -1, 1},
     -- card 3 (7 cases)
     -- Corresponding to 6 + 6 + 6 + 3 + 3 + 6 + 1 = 31 ACC conditions.
-    {-3, 1, 2},  {-2, -1, 3}, {-2, 0, 2}, {-2, 1, 1},
+    {-3, 1, 2}, {-2, -1, 3}, {-2, 0, 2}, {-2, 1, 1},
     {-1, -1, 2}, {-1, 0, 1}, {0, 0, 0},
     -- card 2 (4 cases)
     -- Corresponding to 2 + 2 + 2 + 1 = 7 ACC conditions.
@@ -677,7 +689,7 @@ lemma quantaBarFiveMatter_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFami
     {0}
     } : Finset (Multiset ℤ)) := by
   have hr := quantaBarFiveMatter_MN_mem he h3 h3L
-  have hn :  𝓜.quantaBarFiveMatter.map QuantaBarFive.N =
+  have hn : 𝓜.quantaBarFiveMatter.map QuantaBarFive.N =
     (Multiset.map QuantaBarFive.MN 𝓜.quantaBarFiveMatter).map Prod.snd := by
     simp
   rw [hn]
