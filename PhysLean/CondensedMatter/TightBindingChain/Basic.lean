@@ -162,7 +162,9 @@ lemma energy_localizedState (n : Fin T.N) (htn : 1 < T.N) : ⟪|n⟩, T.hamilton
   This is the set in which wave functions are uniquly defined. -/
 def BrillouinZone : Set ℝ := Set.Ico (- Real.pi / T.a) (Real.pi / T.a)
 
-/-- The wavefunctions associated with the energy eigenstates. -/
+/-- The wavenumbers associated with the energy eigenstates.
+  This corresponds to the set `2 π / (a N) * (n - ⌊N/2⌋)` for `n : Fin T.N`.
+  It is defined as such so it sits in the Brillouin zone. -/
 def QuantaWaveNumber : Set ℝ := {x | (∃ n : Fin T.N,
     2 * Real.pi / (T.a * T.N) * ((n : ℝ) - (T.N / 2 : ℕ)) = x)}
 
@@ -321,7 +323,8 @@ lemma quantaWaveNumber_exp_add_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
     rw [mul_assoc, ← Complex.exp_add]
     simp
 
-/-- The energy eigenstates of the tight binding chain. -/
+/-- The energy eigenstates of the tight binding chain They are given by
+  `∑ n, exp (I * k * n * T.a) • |n⟩`. -/
 noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
   ∑ n : Fin T.N, Complex.exp (Complex.I * k * n * T.a) • |n⟩
 
@@ -329,11 +332,12 @@ noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
 semiformal_result "BUDDT" energyEigenstate_orthogonal :
   Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0
 
-/-- The energy eigenvalue of the tight binding chain for a `k` in the `BrillouinZone`. -/
+/-- The energy eigenvalue of the tight binding chain for a `k` in `QuantaWaveNumber` is
+  `E0 - 2 * t *  Real.cos (k * T.a)`. -/
 noncomputable def energyEigenvalue (k : T.QuantaWaveNumber) : ℝ :=
   T.E0 - 2 * T.t * Real.cos (k * T.a)
 
-/-- The eenergy eigenstates satisfy the time-independent Schrodinger equation. -/
+/-- The energy eigenstates satisfy the time-independent Schrodinger equation. -/
 lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :
     T.hamiltonian (T.energyEigenstate k) = T.energyEigenvalue k• T.energyEigenstate k := by
   trans (T.energyEigenvalue k : ℂ) • T.energyEigenstate k
