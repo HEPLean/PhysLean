@@ -50,6 +50,9 @@ abbrev QuantaBarFive.M (a : QuantaBarFive) : ChiralityFlux := a.1
 /-- The `HyperChargeFlux` quanta of a 5-bar representation. -/
 abbrev QuantaBarFive.N (a : QuantaBarFive) : HyperChargeFlux := a.2.1
 
+/-- The `ChiralityFlux` and `HyperChargeFlux` quanta of a 5-bar representation. -/
+abbrev QuantaBarFive.MN (a : QuantaBarFive) : ChiralityFlux × HyperChargeFlux := (a.M, a.N)
+
 /-- The extra `U(1)` charge of a 5-bar representation. -/
 abbrev QuantaBarFive.q (a : QuantaBarFive) : ℤ := a.2.2
 
@@ -144,6 +147,14 @@ instance : DecidableEq (MatterContent I) := fun a b =>
 ## Some properties of quantaBarFiveMatter
 
 -/
+
+lemma quantaBarFiveMatter_map_MN_not_both_zero :
+    ∀ a ∈ (𝓜.quantaBarFiveMatter.map QuantaBarFive.MN), (a.1 = 0 → a.2 ≠ 0) := by
+  intro a ha
+  simp at ha
+  obtain ⟨a, b, c, ha, rfl⟩ := ha
+  exact 𝓜.chirality_charge_not_both_zero_bar_five_matter (a, b, c) ha
+
 
 lemma quantaBarFiveMatter_map_q_noDup :
     (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).Nodup :=

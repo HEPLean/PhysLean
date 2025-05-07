@@ -193,7 +193,8 @@ lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
   have hr := quantaTen_chiralityFlux_mem he h3
   simp only [Finset.mem_insert, Finset.mem_singleton] at hr
   rcases hr with hr | hr | hr
-  · have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {1, 1, 1}) :
+  · /- The case of Chirality flux equal to `{1, 1, 1}`. -/
+    have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {1, 1, 1}) :
         ∃ n1 n2 n3, S = {(1, n1), (1, n2), (1, n3)} := by
       simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
         Prod.exists, exists_and_right, exists_eq_right] at hprod
@@ -223,7 +224,8 @@ lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
     revert n2
     revert n3
     decide
-  · have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {1, 2}) :
+  · /- The case of Chirality flux equal to `{1, 2}`. -/
+    have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {1, 2}) :
         ∃ n1 n2, S = {(1, n1), (2, n2)} := by
       simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
         Prod.exists, exists_and_right, exists_eq_right] at hprod
@@ -253,7 +255,8 @@ lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
     revert n1
     revert n2
     decide
-  · have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {3}) :
+  · /- The case of Chirality flux equal to `{3}`. -/
+    have hS (S : Multiset (ℤ × ℤ)) (hprod : S.map Prod.fst = {3}) :
         ∃ n1, S = {(3, n1)} := by
       simp only [Multiset.insert_eq_cons, ← Multiset.map_eq_cons, Multiset.map_eq_singleton,
         Prod.exists, exists_and_right, exists_eq_right] at hprod
