@@ -86,10 +86,11 @@ lemma zip_perm_orderedInsert (l : ℤ) : (r ls : List ℤ) → (h : r.length = (
   | r ::  [], l2 :: ls => by
     aesop
   | r :: r1 :: [], l2 :: ls => by
-    simp
+    simp only [List.length_cons, List.length_nil, zero_add, Nat.reduceAdd, right_eq_add,
+      List.length_eq_zero_iff, List.orderedInsert]
     intro h
     subst h
-    simp
+    simp only [List.orderedInsert]
     split_ifs
     · use [r, r1]
     · use [r1, r]
@@ -99,14 +100,14 @@ lemma zip_perm_orderedInsert (l : ℤ) : (r ls : List ℤ) → (h : r.length = (
         exact List.Perm.swap (r, l2) (r1, l) []
   | r2 :: r1 :: rs, l2 :: ls => by
     intro h
-    simp
+    simp only [List.orderedInsert]
     split_ifs
     · use  r2 :: r1 :: rs
     · have ih := zip_perm_orderedInsert l (r1 :: rs) ls (by simp_all)
       obtain ⟨r', h1, h2⟩ := ih
       have h' : ((r2 :: r1 :: rs).zip (l2 :: List.orderedInsert LE.le l ls)).Perm
           ((r2, l2) :: (r'.zip (l :: ls))) := by
-        simp
+        simp only [List.zip_cons_cons, List.perm_cons]
         exact id (List.Perm.symm h2)
       have hn :  ∃ r'' : List ℤ,
           r''.Perm (r2 :: r') ∧ (r''.zip (l :: l2 :: ls)).Perm
@@ -139,7 +140,7 @@ lemma zip_perm_insertionSort : (r l3 : List ℤ) → (h : r.length = l3.length )
     simp
   | r :: rs, l :: ls => by
     intro h
-    simp
+    simp only [List.insertionSort]
     have h1 := zip_perm_orderedInsert l (r :: rs) (List.insertionSort LE.le ls) (by simp_all)
     obtain ⟨r1, h2, h3⟩ := h1
     have h2 : ∃ r2 : List ℤ, r2.Perm r1 ∧ (r2.zip (l :: ls)).Perm
@@ -183,7 +184,7 @@ lemma zip_perm (l1 l2 l3 : List ℤ)  (hp : l2.Perm l3) (hl : l2.length = l1.len
       (expose_names; exact id (Eq.symm hl))
   have h2 : ((l1.zip l2).insertionSort (fun x y => x.2 ≤ y.2)).unzip.2 =
       l2.insertionSort LE.le := by
-    simp
+    simp only [List.unzip_snd]
     have h1 := List.map_insertionSort (r := (fun x y => x.2 ≤ y.2)) (s := LE.le) Prod.snd
       (l1.zip l2) (by aesop)
     rw [h1]
@@ -255,11 +256,11 @@ lemma mem_multiSetPairs_of_proj {S T : Multiset ℤ} (hlen : S.card = T.card)
       · apply List.Perm.map Prod.fst
         exact h3
       rw [← List.unzip_fst, List.unzip_zip]
-      simp
+      simp only
       trans (Multiset.sort LE.le S)
       · exact h1
       rw [← Multiset.coe_eq_coe]
-      simp
+      simp only [Multiset.sort_eq, Multiset.coe_toList]
       have hL1 := List.Perm.length_eq h1
       have hL2 := List.Perm.length_eq h2
       simp at hL1 hL2
@@ -275,11 +276,11 @@ lemma mem_multiSetPairs_of_proj {S T : Multiset ℤ} (hlen : S.card = T.card)
       · apply List.Perm.map Prod.snd
         exact h3
       rw [← List.unzip_snd, List.unzip_zip]
-      simp
+      simp only
       trans (Multiset.sort LE.le T)
       · exact h2
       rw [← Multiset.coe_eq_coe]
-      simp
+      simp only [Multiset.sort_eq, Multiset.coe_toList]
       have hL1 := List.Perm.length_eq h1
       have hL2 := List.Perm.length_eq h2
       simp at hL1 hL2
@@ -288,12 +289,12 @@ lemma mem_multiSetPairs_of_proj {S T : Multiset ℤ} (hlen : S.card = T.card)
     use (List.map Prod.fst X.toList), (List.map Prod.snd X.toList)
     constructor
     · rw [← Multiset.coe_eq_coe]
-      simp
+      simp only [Multiset.sort_eq]
       rw [← Multiset.map_coe]
       simpa using h.1
     constructor
     · rw [← Multiset.coe_eq_coe]
-      simp
+      simp only [Multiset.sort_eq]
       rw [← Multiset.map_coe]
       simpa using h.2
     · rw [← List.unzip_fst, ← List.unzip_snd, List.zip_unzip]
