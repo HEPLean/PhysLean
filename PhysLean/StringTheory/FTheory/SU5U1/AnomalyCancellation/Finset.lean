@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.FiveBar
+import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Ten
 /-!
 
 # Finsets containing the anomaly coefficients
@@ -36,8 +37,38 @@ Related to zips and projections of multisets.
 
   This is defined in an executable way. -/
 def multiSetPairs (S T : Multiset ℤ)  : Finset (Multiset (ℤ × ℤ)) :=
-  let T'' := (S.sort LE.le).permutations.map (fun S => Multiset.ofList (List.zip S (T.sort LE.le)))
+  let T'' := (S.sort LE.le).permutations.map
+    (fun S => Multiset.ofList (List.zip S (T.sort LE.le)))
   T''.toFinset
+
+def foldAppend (X : Finset (Multiset (ℤ × ℤ))) (S T : Multiset ℤ)
+    (F : Finset (Multiset (ℤ × ℤ))) : Finset (Multiset (ℤ × ℤ)) :=
+  ((X.product F).val.map fun x => (x.1 +  x.2)).toFinset
+
+def multsetProd (S T : Multiset ℤ) : Finset (Multiset (ℤ × ℤ)) := by
+  let S' : Finset (Multiset (ℤ × ℤ)) := ((S.product T).map fun x => {x}).toFinset
+  let f' := foldAppend S' S T
+  if S.card = 0 then
+    exact ∅
+  else
+    exact foldAppend S' S T (foldAppend S' S T S')
+def listPermProd (S T : List ℤ) : Finset (List (ℤ × ℤ)) :=
+  (S.permutations.map (fun S => List.zip S T)).toFinset
+
+
+
+
+#eval multsetProd {1, 2} {3, 4}
+
+example : multsetProd {1, 2} {3, 4} = {{(2, 3), (1, 4)}, {(2, 4), (1, 3)}} := by
+
+
+
+#eval multsetProd {1, 2, 3} {4,5,6, 7}
+example :   (List.map (fun S => ↑(S.zip (Multiset.sort LE.le {4})))
+        (Multiset.sort LE.le {1, 2, 3}).permutations).dedup.isPerm
+      (List.insert {(2, 4)} (List.insert {(3, 4)} [{(1, 4)}])) := by
+  decide
 
 lemma mem_multiSetPairs_iff_mem_list {S T : Multiset ℤ} (X : Multiset (ℤ × ℤ)) :
     X ∈ multiSetPairs S T ↔ X ∈ (S.sort LE.le).permutations.map
@@ -163,7 +194,7 @@ lemma zip_perm_insertionSort : (r l3 : List ℤ) → (h : r.length = l3.length )
     · exact List.Perm.trans h4 h2
     · exact List.Perm.trans h5 h3
 
-lemma zip_perm (l1 l2 l3 : List ℤ)  (hp : l2.Perm l3) (hl : l2.length = l1.length):
+lemma zip_perm (l1 l2 l3 : List ℤ) (hp : l2.Perm l3) (hl : l2.length = l1.length) :
     ∃ (r : List ℤ), r.Perm l1 ∧ (l1.zip l2).Perm (r.zip l3) := by
   have hl' : (l2.insertionSort LE.le) = (l3.insertionSort LE.le) := by
     apply List.eq_of_perm_of_sorted (r := LE.le)
@@ -239,8 +270,9 @@ lemma mem_multiSetPairs_iff_exist_toList_perm {S T : Multiset ℤ} (X : Multiset
 
 lemma mem_multiSetPairs_of_proj {S T : Multiset ℤ} (hlen : S.card = T.card)
     (X : Multiset (ℤ × ℤ)) :
-    X ∈ multiSetPairs S T ↔ X.map Prod.fst = S ∧ X.map Prod.snd = T := by
-  rw [mem_multiSetPairs_iff_exist_toList_perm _ hlen]
+    (∃ (l l2 : List ℤ), l.Perm (Multiset.sort LE.le S) ∧
+    l2.Perm (Multiset.sort LE.le T) ∧ X.toList.Perm (l.zip l2)) ↔
+    X.map Prod.fst = S ∧ X.map Prod.snd = T := by
   constructor
   · intro h
     obtain ⟨l, l2, h1, h2, h3⟩ := h
@@ -299,82 +331,294 @@ lemma mem_multiSetPairs_of_proj {S T : Multiset ℤ} (hlen : S.card = T.card)
       simpa using h.2
     · rw [← List.unzip_fst, ← List.unzip_snd, List.zip_unzip]
 
-/-!
 
-## fiveAnomalyCoefficient membership
-
--/
-
-/-- Given a multiset `N` corresponding to hypercharge fluxes, and a multiset
-  `Q` corresponding to charges for five bar matter, `anomalyCoefficientSet N Q`
-  is the finset of all possible
-  anomaly coefficents that can occur for this `N` and `Q`. -/
-def fiveAnomalyCoefficientSet (N Q : Multiset ℤ ): Finset (ℤ × ℤ) :=
-  ((multiSetPairs N Q).val.map
-      fun Nq => ((Nq.map fun a => a.2 * a.1).sum,
-      (Nq.map fun a => a.2 * a.2 * a.1).sum)).toFinset
-
-lemma fiveAnomalyCoefficient_mem_anomalyCoefficientSet :
-    𝓜.fiveAnomalyCoefficient ∈ fiveAnomalyCoefficientSet (𝓜.quantaBarFiveMatter.map QuantaBarFive.N)
-      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) := by
-  simp [fiveAnomalyCoefficientSet]
-  use 𝓜.quantaBarFiveMatter.map (fun a => (a.N, a.q))
-  constructor
-  · rw [mem_multiSetPairs_of_proj]
-    · simp
-    · simp
-  · rw [fiveAnomalyCoefficient]
+lemma mem_list_of_prod_fst_snd (S T : Multiset ℤ) (hlen : S.card = T.card) (l : List ℤ) (hTl : T = ↑l) (X : Multiset (ℤ × ℤ))
+    (hS : X.map Prod.fst = S) (hT : X.map Prod.snd = T) :
+    X ∈ S.lists.dedup.map (fun l2 => l2.zip l) := by
+  simp
+  have h1 := (mem_multiSetPairs_of_proj hlen X).mpr (by simp_all)
+  obtain ⟨r1, r2, hr1, hr2, hrP⟩ := h1
+  have hr2' : r2.Perm l := by
+    trans (Multiset.sort LE.le T)
+    · exact hr2
+    rw [← @Multiset.coe_eq_coe, ← hTl]
     simp
-
-/-- Given a multiset `N` corresponding to hypercharge fluxes, and a multiset
-  `Q` corresponding to charges for ten-dimension matter, `anomalyCoefficientSet N Q`
-  is the finset of all possible
-  anomaly coefficents that can occur for this `N` and `Q`. -/
-def tenAnomalyCoefficientSet (N Q : Multiset ℤ ): Finset (ℤ × ℤ) :=
-  ((multiSetPairs N Q).val.map
-      fun Nq => ((Nq.map fun a => a.2 * a.1).sum,
-     3 * (Nq.map fun a => a.2 * a.2 * a.1).sum)).toFinset
-
-lemma tenAnomalyCoefficient_mem_anomalyCoefficientSet :
-    𝓜.tenAnomalyCoefficient ∈ tenAnomalyCoefficientSet (𝓜.quantaTen.map QuantaTen.N)
-      (𝓜.quantaTen.map QuantaTen.q) := by
-  simp [tenAnomalyCoefficientSet]
-  use 𝓜.quantaTen.map (fun a => (a.N, a.q))
+  have hr1len : r1.length = S.card := by simp [List.Perm.length_eq hr1]
+  have hr2len : r2.length = T.card := by simp [List.Perm.length_eq hr2]
+  obtain ⟨j1, hjP, hjP2⟩ := zip_perm r1 r2 l hr2' (by omega)
+  use j1
   constructor
-  · rw [mem_multiSetPairs_of_proj]
-    · simp
-    · simp
-  · rw [tenAnomalyCoefficient]
-    simp
+  · simpa [← Multiset.coe_eq_coe] using (hjP.trans hr1).symm
+  · simpa [← Multiset.coe_eq_coe] using (hrP.trans hjP2).symm
 
-/-!
 
-## fiveAnomalyCoefficient membership for different cardinialities
 
--/
+-- The reason this is needed is that `S.lists` does not work well with decide.
+-- #eval ([-1, -2, 1, 1, 1] : List ℤ).permutations.dedup
+def hyperchargeFluxLists (N : Multiset ℤ) : Multiset (List ℤ) :=
+  if N = {-1, -1, -1, 1, 2} then
+     {[1, -1, -1, -1, 2], [-1, 1, -1, -1, 2], [-1, -1, 1, -1, 2], [-1, -1, -1, 1, 2],
+    [1, -1, -1, 2, -1], [-1, 1, -1, 2, -1], [-1, -1, 1, 2, -1], [-1, -1, -1, 2, 1],
+    [1, -1, 2, -1, -1], [-1, 1, 2, -1, -1], [-1, -1, 2, 1, -1], [-1, -1, 2, -1, 1],
+    [1, 2, -1, -1, -1], [-1, 2, 1, -1, -1], [-1, 2, -1, 1, -1], [-1, 2, -1, -1, 1],
+    [2, 1, -1, -1, -1], [2, -1, 1, -1, -1], [2, -1, -1, 1, -1], [2,-1, -1, -1, 1]}
+  else if  N = {-1, -1, 0, 1, 1} then
+    {[1, -1, -1, 0, 1], [-1, 1, -1, 0, 1], [-1, -1, 1, 0, 1], [-1, -1, 0, 1, 1], [1, -1, 0, -1, 1],
+    [-1, 1, 0, -1, 1], [-1, 0, 1, -1, 1], [-1, 0, -1, 1, 1], [1, 0, -1, -1, 1], [0, 1, -1, -1, 1],
+    [0, -1, 1, -1, 1], [0, -1, -1, 1, 1], [-1, 1, 1, 0, -1], [1, 1, -1, 0, -1], [1, -1, 1, 0, -1],
+    [1, 1, 0, -1, -1], [1, -1, 0, 1, -1], [-1, 1, 0, 1, -1],  [-1, 0, 1, 1, -1], [1, 0, -1, 1, -1],
+    [0, -1, 1, 1, -1], [1, 0, 1, -1, -1], [0, 1, 1, -1, -1], [0, 1, -1, 1, -1], [1, 1, -1, -1, 0],
+    [1, -1, -1, 1, 0], [-1, -1, 1, 1, 0], [1, -1, 1, -1, 0], [-1, 1, 1, -1, 0], [-1, 1, -1, 1, 0]}
+  else if N = {-1, -2, 1, 1, 1} then
+    {[1, 1, 1, -2, -1], [-2, 1, 1, 1, -1], [1, 1, -2, 1, -1], [1, -2, 1, 1, -1], [-1, 1, 1, 1, -2],
+    [1, -1, 1, 1, -2], [1, 1, 1, -1, -2], [1, 1, -1, 1, -2], [-1, 1, 1, -2, 1], [1, 1, -1, -2, 1],
+    [1, -1, 1, -2, 1], [1, 1, -2, -1, 1], [1, -1, -2, 1, 1], [-1, 1, -2, 1, 1], [-1, -2, 1, 1, 1],
+    [1, -2, -1, 1, 1], [-2, -1, 1, 1, 1], [1, -2, 1, -1, 1], [-2, 1, 1, -1, 1], [-2, 1, -1, 1, 1]}
+  else if N = {-3, 1, 1, 1} then
+    {[1, 1, -3, 1], [-3, 1, 1, 1], [1, -3, 1, 1], [1, 1, 1, -3]}
+  else if N = {-2, -1, 1, 2} then
+    {[-2, -1, 1, 2], [-1, -2, 1, 2], [1, -1, -2, 2], [-1, 1, -2, 2], [1, -2, -1, 2], [-2, 1, -1, 2],
+    [2, 1, -1, -2], [1, 2, -1, -2], [1, -1, 2, -2], [2, -1, 1, -2], [-1, 2, 1, -2], [-1, 1, 2, -2],
+    [2, -2, -1, 1], [-2, 2, -1, 1], [-2, -1, 2, 1], [2, -1, -2, 1], [-1, 2, -2, 1], [-1, -2, 2, 1],
+    [2, -2, 1, -1], [-2, 2, 1, -1], [-2, 1, 2, -1], [2, 1, -2, -1], [1, 2, -2, -1], [1, -2, 2, -1]}
+  else if N = {-2, 0, 1, 1} then
+    {[1, 1, 0, -2], [1, 0, 1, -2], [0, 1, 1, -2], [1, -2, 0, 1], [-2, 1, 0, 1], [-2, 0, 1, 1],
+    [1, 0, -2, 1], [0, 1, -2, 1], [0, -2, 1, 1], [-2, 1, 1, 0], [1, 1, -2, 0], [1, -2, 1, 0]}
+  else if N = {-1, -1, -1, 3} then
+    {[-1, -1, -1, 3], [3, -1, -1, -1], [-1, 3, -1, -1], [-1, -1, 3, -1]}
+  else if N = {-1, -1, 0, 2} then
+    {[-1, -1, 0, 2], [0, -1, -1, 2], [-1, 0, -1, 2], [2, -1, -1, 0], [-1, 2, -1, 0], [-1, -1, 2, 0],
+    [2, -1, 0, -1],
+    [-1, 2, 0, -1], [-1, 0, 2, -1], [2, 0, -1, -1], [0, 2, -1, -1], [0, -1, 2, -1]}
+  else if N = {-1, -1, 1, 1} then {[1, -1, -1, 1], [-1, 1, -1, 1], [-1, -1, 1, 1], [-1, 1, 1, -1],
+    [1, 1, -1, -1], [1, -1, 1, -1]}
+  else if N = {0, 0, -1, 1}  then  {[0, 0, -1, 1], [-1, 0, 0, 1], [0, -1, 0, 1], [1, 0, 0, -1],
+    [0, 1, 0, -1], [0, 0, 1, -1], [1, 0, -1, 0], [0, 1, -1, 0], [0, -1, 1, 0], [1, -1, 0, 0],
+    [-1, 1, 0, 0], [-1, 0, 1, 0]}
+  else if N = {-3, 1, 2} then {[-3, 1, 2], [1, -3, 2], [2, 1, -3], [1, 2, -3],
+    [2, -3, 1], [-3, 2, 1]}
+  else if N = {-2, -1, 3} then {[-2, -1, 3], [-1, -2, 3], [3, -1, -2], [-1, 3, -2], [3, -2, -1],
+    [-2, 3, -1]}
+  else if N = {-2, 0, 2} then {[-2, 0, 2], [0, -2, 2], [2, 0, -2], [0, 2, -2], [2, -2, 0],
+    [-2, 2, 0]}
+  else if N = {-2, 1, 1} then {[1, 1, -2], [1, -2, 1], [-2, 1, 1]}
+  else if N = {-1, -1, 2} then {[-1, -1, 2], [2, -1, -1], [-1, 2, -1]}
+  else if N = {-1, 0, 1} then {[-1, 0, 1], [0, -1, 1], [1, 0, -1], [0, 1, -1], [1, -1, 0],
+    [-1, 1, 0]}
+  else if N = {0, 0, 0} then {[0 ,0, 0]}
+  else if N = {-3, 3} then {[-3, 3], [3, -3]}
+  else if N = {-2, 2} then {[-2, 2], [2, -2]}
+  else if N = {-1, 1} then {[-1, 1], [1, -1]}
+  else if N = {0, 0} then {[0, 0]}
+  else if N = {0} then {[0]}
+  else ∅
 
-lemma fiveAnomalyCoefficient_mem_anomalyCoefficientSet_card_three
-    (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
-    (h3L : 𝓜.ThreeLeptonDoublets) (hcard : 𝓜.quantaBarFiveMatter.card = 3):
-    𝓜.fiveAnomalyCoefficient ∈
-      fiveAnomalyCoefficientSet {-3, 1, 2} (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∪
-      fiveAnomalyCoefficientSet {-2, -1, 3} (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∪
-      fiveAnomalyCoefficientSet {-2, 0, 2} (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∪
-      fiveAnomalyCoefficientSet {-2, 1, 1} (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∪
-      fiveAnomalyCoefficientSet {-1, -1, 2} (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∪
-      fiveAnomalyCoefficientSet {-1, 0, 1} (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∪
-      fiveAnomalyCoefficientSet {0, 0, 0} (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) := by
-  have h1 :=  𝓜.fiveAnomalyCoefficient_mem_anomalyCoefficientSet
+
+lemma test :  ({-1, -1, -1, 1, 2} : Multiset ℤ).lists.dedup = {
+    [1, -1, -1, -1, 2], [-1, 1, -1, -1, 2], [-1, -1, 1, -1, 2], [-1, -1, -1, 1, 2],
+    [1, -1, -1, 2, -1], [-1, 1, -1, 2, -1], [-1, -1, 1, 2, -1], [-1, -1, -1, 2, 1],
+    [1, -1, 2, -1, -1], [-1, 1, 2, -1, -1], [-1, -1, 2, 1, -1], [-1, -1, 2, -1, 1],
+    [1, 2, -1, -1, -1], [-1, 2, 1, -1, -1], [-1, 2, -1, 1, -1], [-1, 2, -1, -1, 1],
+    [2, 1, -1, -1, -1], [2, -1, 1, -1, -1], [2, -1, -1, 1, -1], [2,-1, -1, -1, 1]} := by
+  refine (Multiset.Nodup.ext ?_ ?_).mpr ?_
+  · exact Multiset.nodup_dedup _
+  · decide
+  · intro l
+    constructor
+    · intro h
+      rw [Multiset.mem_dedup, Multiset.mem_lists_iff] at h
+      rw [Multiset.quot_mk_to_coe] at h
+      have hlength : l.length = 5 := by
+        trans (Multiset.ofList l).card
+        · simp
+        rw [← h]
+        simp
+      match l with
+      | [] =>  simp at h
+      | q1 :: [] => simp at hlength
+      | q1 :: q2 :: [] => simp at hlength
+      | q1 :: q2 :: q3 :: [] => simp at hlength
+      | q1 :: q2 :: q3 :: q4 :: [] => simp at hlength
+      | q1 :: q2 :: q3 :: q4 :: q5 :: q6 :: l => simp at hlength
+      | q1 :: q2 :: q3 :: q4 :: q5 :: []  =>
+      have hq1 : q1 ∈ ({-1, 1, 2} : Finset ℤ) := by
+        have hl : q1 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← h] at hl
+        simpa using hl
+      have hq2 : q2 ∈ ({-1, 1, 2} : Finset ℤ) := by
+        have hl : q2 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← h] at hl
+        simpa using hl
+      have hq3 : q3 ∈ ({-1, 1, 2} : Finset ℤ) := by
+        have hl : q3 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← h] at hl
+        simpa using hl
+      have hq4 : q4 ∈ ({-1, 1, 2} : Finset ℤ) := by
+        have hl : q4 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← h] at hl
+        simpa using hl
+      have hq5 : q5 ∈ ({-1, 1, 2} : Finset ℤ) := by
+        have hl : q5 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← h] at hl
+        simpa using hl
+      clear hlength
+      revert h
+      revert q1; revert q2; revert q3; revert q4; revert q5
+      decide
+    · rw [Multiset.mem_dedup, Multiset.mem_lists_iff]
+      revert l
+      decide
+
+lemma hyperchargeFlux_lists_eq_hyperchargeFluxLists (he : 𝓜.NoExotics)
+    (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
+    (𝓜.quantaBarFiveMatter.map QuantaBarFive.N).lists.dedup =
+    hyperchargeFluxLists (𝓜.quantaBarFiveMatter.map QuantaBarFive.N) := by
   have h2 := 𝓜.quantaBarFiveMatter_N_mem he h3 h3L
-  have hcard' : (𝓜.quantaBarFiveMatter.map QuantaBarFive.N).card = 3 := by
-    simpa using hcard
   generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.N) = N at *
-  fin_cases h2
-  all_goals
-    simp at hcard'
-  all_goals
-    simp_all
+  refine (Multiset.Nodup.ext ?_ ?_).mpr ?_
+  · exact Multiset.nodup_dedup N.lists
+  · revert N
+    decide
+  intro l
+  rw [Multiset.mem_dedup, Multiset.mem_lists_iff, Multiset.quot_mk_to_coe]
+  constructor
+  · intro hNl
+    have hlen : l.length = N.card := by
+      trans (Multiset.ofList l).card
+      · simp
+      rw [← hNl]
+    by_cases hNcard : N.card = 5
+    · match l with
+      | [] => simp [hNcard] at hlen
+      | q1 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: q4 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: q4 :: q5 :: q6 :: l => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: q4 :: q5 :: []  =>
+      have hq1 : q1 ∈ N := by
+        have hl : q1 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq2 : q2 ∈ N.dedup := by
+        have hl : q2 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq3 : q3 ∈ N.dedup := by
+        have hl : q3 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq4 : q4 ∈ N.dedup := by
+        have hl : q4 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq5 : q5 ∈ N.dedup := by
+        have hl : q5 ∈ (Multiset.ofList [q1, q2, q3, q4, q5]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      clear hlen
+      revert hNl
+      revert q1; revert q2; revert q3; revert q4; revert q5
+      revert N
+      decide
+    by_cases hNcard : N.card = 4
+    · match l with
+      | [] => simp [hNcard] at hlen
+      | q1 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: q4 :: q5 ::  l => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: q4 :: []  =>
+      have hq1 : q1 ∈ N := by
+        have hl : q1 ∈ (Multiset.ofList [q1, q2, q3, q4]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq2 : q2 ∈ N.dedup := by
+        have hl : q2 ∈ (Multiset.ofList [q1, q2, q3, q4]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq3 : q3 ∈ N.dedup := by
+        have hl : q3 ∈ (Multiset.ofList [q1, q2, q3, q4]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq4 : q4 ∈ N.dedup := by
+        have hl : q4 ∈ (Multiset.ofList [q1, q2, q3, q4]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      clear hlen
+      revert hNl
+      revert q1; revert q2; revert q3; revert q4;
+      revert N
+      decide
+    by_cases hNcard : N.card = 3
+    · match l with
+      | [] => simp [hNcard] at hlen
+      | q1 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: q4 ::  l => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 :: []  =>
+      have hq1 : q1 ∈ N := by
+        have hl : q1 ∈ (Multiset.ofList [q1, q2, q3]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq2 : q2 ∈ N.dedup := by
+        have hl : q2 ∈ (Multiset.ofList [q1, q2, q3]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq3 : q3 ∈ N.dedup := by
+        have hl : q3 ∈ (Multiset.ofList [q1, q2, q3]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      clear hlen
+      revert hNl
+      revert q1; revert q2; revert q3;
+      revert N
+      decide
+    by_cases hNcard : N.card = 2
+    · match l with
+      | [] => simp [hNcard] at hlen
+      | q1 :: [] => simp [hNcard] at hlen
+      | q1 :: q2 :: q3 ::  l => simp [hNcard] at hlen
+      | q1 :: q2  :: []  =>
+      have hq1 : q1 ∈ N := by
+        have hl : q1 ∈ (Multiset.ofList [q1, q2]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      have hq2 : q2 ∈ N.dedup := by
+        have hl : q2 ∈ (Multiset.ofList [q1, q2]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      clear hlen
+      revert hNl
+      revert q1; revert q2;
+      revert N
+      decide
+    by_cases hNcard : N.card = 1
+    · match l with
+      | [] => simp [hNcard] at hlen
+      | q1 :: q2 ::  l => simp [hNcard] at hlen
+      | q1   :: []  =>
+      have hq1 : q1 ∈ N := by
+        have hl : q1 ∈ (Multiset.ofList [q1]) := by simp
+        rw [← hNl] at hl
+        simpa using hl
+      clear hlen
+      revert hNl
+      revert q1;
+      revert N
+      decide
+    apply False.elim
+    clear hlen hNl
+    revert N
+    decide
+  · revert l
+    revert N
+    decide
 
+
+def chargeMultisetToList (I : CodimensionOneConfig)
+    (S : Multiset ℤ) : List ℤ :=
+   let x := I S
 end MatterContent
 
 end SU5U1

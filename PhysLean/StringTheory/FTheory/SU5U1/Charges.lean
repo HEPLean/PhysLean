@@ -62,6 +62,20 @@ instance : (I : CodimensionOneConfig) → Fintype I.allowedBarFiveCharges
   | nearestNeighbor => inferInstance
   | nextToNearestNeighbor => inferInstance
 
+def allowedBarFiveChargesList : CodimensionOneConfig → List ℤ
+  | same => [-3, -2, -1, 0, 1, 2, 3]
+  | nearestNeighbor => [-14, -9, -4, 1, 6, 11]
+  | nextToNearestNeighbor => [-13, -8, -3, 2, 7, 12]
+
+@[simp]
+lemma mem_allowedBarFiveChargesList_iff {I : CodimensionOneConfig} (x : ℤ) :
+    x ∈ I.allowedBarFiveChargesList ↔ x ∈ I.allowedBarFiveCharges := by
+  cases I <;> simp [allowedBarFiveChargesList, allowedBarFiveCharges]
+
+lemma allowedBarFiveChargesList_nodup (I : CodimensionOneConfig) :
+    I.allowedBarFiveChargesList.Nodup := by
+  cases I <;> decide
+
 /-- The allowed `U(1)`-charges of matter in the 10d representation of `SU(5)`
   given a `CodimensionOneConfig`. -/
 def allowedTenCharges : CodimensionOneConfig → Finset ℤ
