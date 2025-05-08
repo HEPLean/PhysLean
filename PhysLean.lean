@@ -250,6 +250,8 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.Basic
 import PhysLean.StringTheory.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Finse
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
 import PhysLean.StringTheory.FTheory.SU5U1.Examples
 import PhysLean.StringTheory.FTheory.SU5U1.Matter

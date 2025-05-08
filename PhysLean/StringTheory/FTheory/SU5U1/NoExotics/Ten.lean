@@ -279,6 +279,20 @@ lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
     revert n1
     decide
 
+-- 5 cases overall.
+lemma quantaTen_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
+    𝓜.quantaTen.map QuantaTen.N ∈ ({
+    {0, 0, 0}, {1, -1, 0}, {0, 0}, {-1, 1}, {0}} : Finset (Multiset ℤ)) := by
+  have hr := quantaTen_MN_mem he h3
+  have hn : 𝓜.quantaTen.map QuantaTen.N =
+    (Multiset.map QuantaTen.MN 𝓜.quantaTen).map Prod.snd := by
+    simp
+  rw [hn]
+  generalize (Multiset.map QuantaTen.MN 𝓜.quantaTen) = S at *
+  clear hn
+  revert S
+  decide
+
 end MatterContent
 
 end SU5U1

@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
 /-!
 
 # Examples of matter content and show that they satisfy certain conditions

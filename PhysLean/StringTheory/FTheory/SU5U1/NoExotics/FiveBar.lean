@@ -686,8 +686,7 @@ lemma quantaBarFiveMatter_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFami
     {-3, 3}, {-2, 2}, {-1, 1}, {0, 0},
     -- card 1 (1 case)
     -- Corresponding to 1 ACC condition.
-    {0}
-    } : Finset (Multiset ℤ)) := by
+    {0}} : Finset (Multiset ℤ)) := by
   have hr := quantaBarFiveMatter_MN_mem he h3 h3L
   have hn : 𝓜.quantaBarFiveMatter.map QuantaBarFive.N =
     (Multiset.map QuantaBarFive.MN 𝓜.quantaBarFiveMatter).map Prod.snd := by
