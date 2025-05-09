@@ -133,9 +133,9 @@ lemma quantaTen_map_q_powerset_filter_card_three (he : 𝓜.NoExotics)
       rfl
     · rw [Multiset.card_map]
 
-/-- The multiset of chirality fluxes of matter content in the 10d representation
-  satisfying `NoExotics` and
-  `ThreeChiralFamiles` must either be
+/-- Without consideration of `HyperChargeFlux`, the condition of no exotics in the matter spectrum
+  constrains the allowed value of the `ChiralityFlux` carried by the 10d representations to be one
+  of the following Multisets:
 - `{1, 1, 1}`
 - `{1, 2}`
 - `{3}`
@@ -185,6 +185,13 @@ lemma quantaTen_chiralityFlux_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFa
     rcases habc a.M b.M c.M a_pos b_pos c_pos hl.1 with hr
     simp [hr]
 
+/-- The condition of no exotics in the matter spectrum constrains the allowed
+  values of the `ChiralityFlux` and `HyperChargeFlux` carried by the 10d representations to be one
+  of the following Multisets:
+
+ `{(1, 0), (1, 0), (1, 0)}`, `{(1, 1), (1, -1), (1, 0)}`,
+      `{(1, 0), (2, 0)}`, `{(1, -1), (2, 1)}`, `{(1, 1), (2, -1)}, {(3, 0)}`.
+-/
 lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
     𝓜.quantaTen.map QuantaTen.MN
     ∈ ({{(1, 0), (1, 0), (1, 0)}, {(1, 1), (1, -1), (1, 0)},
@@ -279,7 +286,12 @@ lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
     revert n1
     decide
 
--- 5 cases overall.
+/-- The condition of no exotics in the matter spectrum constrains the allowed
+  values of the `HyperChargeFlux` carried by the 10d representations to be one
+  of the following Multisets:
+
+ `{0, 0, 0}`, `{1, -1, 0}`, `{0}`, `{-1, 1}`, `{0}`.
+-/
 lemma quantaTen_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
     𝓜.quantaTen.map QuantaTen.N ∈ ({
     {0, 0, 0}, {1, -1, 0}, {0, 0}, {-1, 1}, {0}} : Finset (Multiset ℤ)) := by

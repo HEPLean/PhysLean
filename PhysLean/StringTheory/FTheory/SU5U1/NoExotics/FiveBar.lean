@@ -667,7 +667,18 @@ lemma quantaBarFiveMatter_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFam
     revert n1;
     decide
 
--- 22 cases overall.
+/-- The condition of no exotics in the matter spectrum constrains the allowed
+  values of the `HyperChargeFlux` carried by the 5bar matter representations to be one
+  of the following 22 different Multisets:
+
+- `{-1, -1, -1, 1, 2}`, `{-1, -1, 0, 1, 1}`, `{-1, -2, 1, 1, 1}`.
+- `{-3, 1, 1, 1}`, `{-2, -1, 1, 2}`, `{-2, 0, 1, 1}`, `{-1, -1, -1, 3}`,
+  `{-1, -1, 0, 2}`, `{-1, -1, 1, 1}`, `{0, 0, -1, 1}`.
+- `{-3, 1, 2}`, `{-2, -1, 3}`, `{-2, 0, 2}`, `{-2, 1, 1}`,
+  `{-1, -1, 2}`, `{-1, 0, 1}`, `{0, 0, 0}`.
+- `{-3, 3}`, `{-2, 2}`, `{-1, 1}`, `{0, 0}`.
+- `{0}`.
+-/
 lemma quantaBarFiveMatter_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
     (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFiveMatter.map QuantaBarFive.N ∈ ({
