@@ -25,7 +25,6 @@ namespace MatterContent
 
 variable {I : CodimensionOneConfig} (𝓜 : MatterContent I)
 
-
 /-- The gauge anomalies coming from the SM gauge group.
 
 These correspond to the conditions
@@ -78,7 +77,7 @@ instance : Decidable (AnomalyFree 𝓜) := instDecidableAnd
 
 /-- The anomaly coefficents assocaited with matter in the five-bar representation. -/
 def fiveAnomalyCoefficient : ℤ × ℤ :=
-   ((𝓜.quantaBarFiveMatter.map fun a => a.q * a.N).sum,
+  ((𝓜.quantaBarFiveMatter.map fun a => a.q * a.N).sum,
     (𝓜.quantaBarFiveMatter.map fun a => a.q * a.q * a.N).sum)
 
 /-- The anomaly coefficents assocaited with matter in the ten-dim representation. -/
@@ -89,7 +88,7 @@ def tenAnomalyCoefficient : ℤ × ℤ :=
 lemma anomalyCoefficent_sum_of_gaugeAnomalyU1YU1U1_gaugeAnomalyU1YU1U1
     (acc1 : 𝓜.GaugeAnomalyU1MSSM) (acc2 : 𝓜.GaugeAnomalyU1YU1U1) :
     𝓜.fiveAnomalyCoefficient + 𝓜.tenAnomalyCoefficient
-    - (𝓜.qHu, 𝓜.qHu * 𝓜.qHu) + (𝓜.qHd, 𝓜.qHd * 𝓜.qHd)  = (0, 0) := by
+    - (𝓜.qHu, 𝓜.qHu * 𝓜.qHu) + (𝓜.qHd, 𝓜.qHd * 𝓜.qHd) = (0, 0) := by
   simp [fiveAnomalyCoefficient, tenAnomalyCoefficient]
   apply And.intro
   · rw [GaugeAnomalyU1MSSM] at acc1

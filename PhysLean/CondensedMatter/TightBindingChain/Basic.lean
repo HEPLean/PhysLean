@@ -333,7 +333,7 @@ semiformal_result "BUDDT" energyEigenstate_orthogonal :
   Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0
 
 /-- The energy eigenvalue of the tight binding chain for a `k` in `QuantaWaveNumber` is
-  `E0 - 2 * t *  Real.cos (k * T.a)`. -/
+  `E0 - 2 * t * Real.cos (k * T.a)`. -/
 noncomputable def energyEigenvalue (k : T.QuantaWaveNumber) : ℝ :=
   T.E0 - 2 * T.t * Real.cos (k * T.a)
 

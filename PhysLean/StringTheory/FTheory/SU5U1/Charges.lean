@@ -63,6 +63,8 @@ instance : (I : CodimensionOneConfig) → Fintype I.allowedBarFiveCharges
   | nearestNeighbor => inferInstance
   | nextToNearestNeighbor => inferInstance
 
+/-- The allowed `U(1)`-charges of matter in the 5-bar representation of `SU(5)`
+  given a `CodimensionOneConfig`, as ordered lists. -/
 def allowedBarFiveChargesList : CodimensionOneConfig → List ℤ
   | same => [-3, -2, -1, 0, 1, 2, 3]
   | nearestNeighbor => [-14, -9, -4, 1, 6, 11]
@@ -89,6 +91,8 @@ instance : (I : CodimensionOneConfig) → Fintype I.allowedTenCharges
   | nearestNeighbor => inferInstance
   | nextToNearestNeighbor => inferInstance
 
+/-- The allowed `U(1)`-charges of matter in the 10d representation of `SU(5)`
+  given a `CodimensionOneConfig`, as ordered lists. -/
 def allowedTenChargesList : CodimensionOneConfig → List ℤ
   | same => [-3, -2, -1, 0, 1, 2, 3]
   | nearestNeighbor => [-12, -7, -2, 3, 8, 13]
@@ -103,23 +107,21 @@ lemma allowedTenChargesList_nodup (I : CodimensionOneConfig) :
     I.allowedTenChargesList.Nodup := by
   cases I <;> decide
 
-
 /-!
 
 ## Multisets of charges
 
 -/
 
-
-/-- Given a multiset `S :  Multiset ℤ` for which all elements are members of
+/-- Given a multiset `S : Multiset ℤ` for which all elements are members of
     `I.allowedBarFiveCharges`, `fiveChargeMultisetToList I S` is a computable
-    list whose underlying multiset is `S`.  -/
+    list whose underlying multiset is `S`. -/
 def fiveChargeMultisetToList (I : CodimensionOneConfig) (S : Multiset ℤ) : List ℤ :=
   I.allowedBarFiveChargesList.flatMap (fun x => List.replicate (S.count x) x)
 
-/-- Given a multiset `S :  Multiset ℤ` for which all elements are members of
+/-- Given a multiset `S : Multiset ℤ` for which all elements are members of
     `I.allowedTenCharges`, `tenChargeMultisetToList I S` is a computable
-    list whose underlying multiset is `S`.  -/
+    list whose underlying multiset is `S`. -/
 def tenChargeMultisetToList (I : CodimensionOneConfig) (S : Multiset ℤ) : List ℤ :=
   I.allowedTenChargesList.flatMap (fun x => List.replicate (S.count x) x)
 
@@ -134,7 +136,7 @@ lemma tenChargeMultisetToList_mem_iff {I : CodimensionOneConfig} {S : Multiset �
   aesop
 
 lemma fiveChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset ℤ} {a : ℤ}
-    (hmem : a ∈  I.allowedBarFiveCharges) :
+    (hmem : a ∈ I.allowedBarFiveCharges) :
     (fiveChargeMultisetToList I S).count a = S.count a := by
   by_cases hS : a ∈ S
   · have hmem : a ∈ (fiveChargeMultisetToList I S) := by
@@ -145,7 +147,7 @@ lemma fiveChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset �
     have hf : (List.count a ∘ fun x => List.replicate (Multiset.count x S) x) =
         fun x => if a = x then Multiset.count x S else 0 := by
       funext x
-      simp
+      simp only [Function.comp_apply]
       rw [@List.count_replicate]
       aesop
     rw [hf]
@@ -156,7 +158,7 @@ lemma fiveChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset �
       rw [fiveChargeMultisetToList_mem_iff] at hmem
       simpa using hmem.2
     rw [hc]
-    simp
+    simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
     simp [ha']
     omega
@@ -166,7 +168,7 @@ lemma fiveChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset �
       simp_all
 
 lemma tenChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset ℤ} {a : ℤ}
-    (hmem : a ∈  I.allowedTenCharges) :
+    (hmem : a ∈ I.allowedTenCharges) :
     (tenChargeMultisetToList I S).count a = S.count a := by
   by_cases hS : a ∈ S
   · have hmem : a ∈ (tenChargeMultisetToList I S) := by
@@ -177,7 +179,7 @@ lemma tenChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset ℤ
     have hf : (List.count a ∘ fun x => List.replicate (Multiset.count x S) x) =
         fun x => if a = x then Multiset.count x S else 0 := by
       funext x
-      simp
+      simp only [Function.comp_apply]
       rw [@List.count_replicate]
       aesop
     rw [hf]
@@ -188,7 +190,7 @@ lemma tenChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset ℤ
       rw [tenChargeMultisetToList_mem_iff] at hmem
       simpa using hmem.2
     rw [hc]
-    simp
+    simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
     simp [ha']
     omega

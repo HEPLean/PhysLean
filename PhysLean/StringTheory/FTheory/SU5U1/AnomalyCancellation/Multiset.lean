@@ -28,13 +28,13 @@ Related to zips and projections of multisets.
 
 -/
 
-lemma zip_perm_orderedInsert (l : ℤ) : (r ls : List ℤ) → (h : r.length = (l :: ls).length ) →
+lemma zip_perm_orderedInsert (l : ℤ) : (r ls : List ℤ) → (h : r.length = (l :: ls).length) →
     ∃ (r' : List ℤ), r'.Perm r ∧ (r'.zip (l :: ls)).Perm (r.zip (ls.orderedInsert LE.le l))
   | rs, [] => by
     aesop
   | [], l2 :: ls => by
     aesop
-  | r ::  [], l2 :: ls => by
+  | r :: [], l2 :: ls => by
     aesop
   | r :: r1 :: [], l2 :: ls => by
     simp only [List.length_cons, List.length_nil, zero_add, Nat.reduceAdd, right_eq_add,
@@ -53,18 +53,18 @@ lemma zip_perm_orderedInsert (l : ℤ) : (r ls : List ℤ) → (h : r.length = (
     intro h
     simp only [List.orderedInsert]
     split_ifs
-    · use  r2 :: r1 :: rs
+    · use r2 :: r1 :: rs
     · have ih := zip_perm_orderedInsert l (r1 :: rs) ls (by simp_all)
       obtain ⟨r', h1, h2⟩ := ih
       have h' : ((r2 :: r1 :: rs).zip (l2 :: List.orderedInsert LE.le l ls)).Perm
           ((r2, l2) :: (r'.zip (l :: ls))) := by
         simp only [List.zip_cons_cons, List.perm_cons]
         exact id (List.Perm.symm h2)
-      have hn :  ∃ r'' : List ℤ,
+      have hn : ∃ r'' : List ℤ,
           r''.Perm (r2 :: r') ∧ (r''.zip (l :: l2 :: ls)).Perm
           ((r2, l2) :: (r'.zip (l :: ls))) := by
         induction r' with
-        | nil =>  simp at h1
+        | nil => simp at h1
         | cons rx r' ih' =>
           use rx :: r2 :: r'
           constructor
@@ -72,7 +72,7 @@ lemma zip_perm_orderedInsert (l : ℤ) : (r ls : List ℤ) → (h : r.length = (
           · simp
             exact List.Perm.swap (r2, l2) (rx, l) (r'.zip ls)
       obtain ⟨r'', h3, h4⟩ := hn
-      use  r''
+      use r''
       constructor
       · trans (r2 :: r')
         · exact h3
@@ -81,7 +81,7 @@ lemma zip_perm_orderedInsert (l : ℤ) : (r ls : List ℤ) → (h : r.length = (
         · exact h4
         · exact id (List.Perm.symm h')
 
-lemma zip_perm_insertionSort : (r l3 : List ℤ) → (h : r.length = l3.length ) →
+lemma zip_perm_insertionSort : (r l3 : List ℤ) → (h : r.length = l3.length) →
     ∃ (r' : List ℤ), r'.Perm r ∧ (r'.zip l3).Perm (r.zip (l3.insertionSort LE.le))
   | [], [] => by
     simp
@@ -97,9 +97,9 @@ lemma zip_perm_insertionSort : (r l3 : List ℤ) → (h : r.length = l3.length )
     have h2 : ∃ r2 : List ℤ, r2.Perm r1 ∧ (r2.zip (l :: ls)).Perm
         (r1.zip (l :: List.insertionSort LE.le ls)) := by
       induction r1 with
-      | nil =>  simp
+      | nil => simp
       | cons rx r1 ih' =>
-        -- r2  perm rx :: r1
+        -- r2 perm rx :: r1
         have hlenrsr1 : r1.length = rs.length := by
           simpa using List.Perm.length_eq h2
         obtain ⟨r2, h4, h5⟩ := zip_perm_insertionSort r1 ls (by simp at h; omega)
@@ -127,7 +127,7 @@ lemma zip_perm (l1 l2 l3 : List ℤ) (hp : l2.Perm l3) (hl : l2.length = l1.leng
     · exact List.sorted_insertionSort LE.le l3
   have h1 : ((l1.zip l2).insertionSort (fun x y => x.2 ≤ y.2)).unzip.1.Perm l1 := by
     simp only [List.unzip_fst]
-    trans  (List.map Prod.fst ( (l1.zip l2)))
+    trans (List.map Prod.fst ((l1.zip l2)))
     · refine List.Perm.map Prod.fst ?_
       exact List.perm_insertionSort (fun x y => x.2 ≤ y.2) (l1.zip l2)
     · rw [← List.unzip_fst]
@@ -222,10 +222,11 @@ lemma mem_multiSetPairs_of_proj {S T : Multiset ℤ} (hlen : S.card = T.card)
       simpa using h.2
     · rw [← List.unzip_fst, ← List.unzip_snd, List.zip_unzip]
 
-lemma mem_list_of_prod_fst_snd (S T : Multiset ℤ) (hlen : S.card = T.card) (l : List ℤ) (hTl : T = ↑l) (X : Multiset (ℤ × ℤ))
+lemma mem_list_of_prod_fst_snd (S T : Multiset ℤ) (hlen : S.card = T.card)
+    (l : List ℤ) (hTl : T = ↑l) (X : Multiset (ℤ × ℤ))
     (hS : X.map Prod.fst = S) (hT : X.map Prod.snd = T) :
     X ∈ S.lists.dedup.map (fun l2 => l2.zip l) := by
-  simp
+  simp only [Multiset.mem_map, Multiset.mem_dedup, Multiset.mem_lists_iff, Multiset.quot_mk_to_coe]
   have h1 := (mem_multiSetPairs_of_proj hlen X).mpr (by simp_all)
   obtain ⟨r1, r2, hr1, hr2, hrP⟩ := h1
   have hr2' : r2.Perm l := by
@@ -240,7 +241,6 @@ lemma mem_list_of_prod_fst_snd (S T : Multiset ℤ) (hlen : S.card = T.card) (l 
   constructor
   · simpa [← Multiset.coe_eq_coe] using (hjP.trans hr1).symm
   · simpa [← Multiset.coe_eq_coe] using (hrP.trans hjP2).symm
-
 
 /-!
 
@@ -273,8 +273,8 @@ lemma quantaBarFiveMatter_NQ_mem (he : 𝓜.NoExotics)
       (fiveChargeMultisetToList I (Multiset.map QuantaBarFive.q 𝓜.quantaBarFiveMatter)) (?_)
       (Multiset.map (fun x => (x.N, x.q)) 𝓜.quantaBarFiveMatter) (by simp) (by simp)
   symm
-  refine
-    coe_fiveChargeMultisetToList_of_all_mem I (Multiset.map QuantaBarFive.q 𝓜.quantaBarFiveMatter) ?_
+  refine coe_fiveChargeMultisetToList_of_all_mem I
+    (Multiset.map QuantaBarFive.q 𝓜.quantaBarFiveMatter) ?_
   intro s hs
   apply 𝓜.quantaBarFiveMatter_map_q_subset_allowedBarFiveCharges
   exact Multiset.mem_toFinset.mpr hs
@@ -340,11 +340,9 @@ lemma tenAnomalyCoefficient_mem_tenAnomalyFreeSet
 
 /-!
 
-
 ## With no-exotics constraints.
 
 -/
-
 
 /--
 Given a multiset `Q` corresponding to `U(1)` charges for five-bar matter, the multiset of possible
@@ -379,7 +377,7 @@ lemma fiveAnomalyCoefficient_mem_fiveAnomalyFreeSetCharge
     𝓜.fiveAnomalyCoefficient ∈ fiveAnomalyFreeSetCharge I
       (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) := by
   have hN := 𝓜.quantaBarFiveMatter_N_mem he h3 h3L
-  have  hN2 := 𝓜.fiveAnomalyCoefficient_mem_fiveAnomalyFreeSet he h3 h3L
+  have hN2 := 𝓜.fiveAnomalyCoefficient_mem_fiveAnomalyFreeSet he h3 h3L
   rw [fiveAnomalyFreeSetCharge]
   have hcard : (Multiset.map QuantaBarFive.q 𝓜.quantaBarFiveMatter).card =
       (Multiset.map QuantaBarFive.N 𝓜.quantaBarFiveMatter).card := by
@@ -388,7 +386,6 @@ lemma fiveAnomalyCoefficient_mem_fiveAnomalyFreeSetCharge
   generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.N) = N at *
   fin_cases hN
   all_goals simp_all
-
 
 /--
 Given a multiset `Q` corresponding to `U(1)` charges for 10d matter, the multiset of possible
@@ -411,7 +408,7 @@ lemma tenAnomalyCoefficient_mem_tenAnomalyFreeSetCharge
     𝓜.tenAnomalyCoefficient ∈ tenAnomalyFreeSetCharge I
       (𝓜.quantaTen.map QuantaTen.q) := by
   have hN := 𝓜.quantaTen_N_mem he h3
-  have  hN2 := 𝓜.tenAnomalyCoefficient_mem_tenAnomalyFreeSet he h3
+  have hN2 := 𝓜.tenAnomalyCoefficient_mem_tenAnomalyFreeSet he h3
   rw [tenAnomalyFreeSetCharge]
   have hcard : (Multiset.map QuantaTen.q 𝓜.quantaTen).card =
       (Multiset.map QuantaTen.N 𝓜.quantaTen).card := by
@@ -436,20 +433,20 @@ For a charges `qHd` and `qHu` and a multiset of `U(1)` charges `Q10` and `Q5`, t
 def AnomalyFreeCharges (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
     Prop :=
   (0, 0) ∈ ((tenAnomalyFreeSetCharge I Q10).product (fiveAnomalyFreeSetCharge I Q5)).map
-    (fun x => (x.1 + x.2  - (qHu, qHu * qHu) + (qHd, qHd * qHd)))
+    (fun x => (x.1 + x.2 - (qHu, qHu * qHu) + (qHd, qHd * qHd)))
 
 instance (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
     Decidable (AnomalyFreeCharges I qHd qHu Q10 Q5) :=
   Multiset.decidableMem _ _
 
 lemma anomalyFreeCharges_of_anomalyFree (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
-    (h3L : 𝓜.ThreeLeptonDoublets) (hU1 :  𝓜.GaugeAnomalyU1MSSM)
+    (h3L : 𝓜.ThreeLeptonDoublets) (hU1 : 𝓜.GaugeAnomalyU1MSSM)
     (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1) :
     AnomalyFreeCharges I 𝓜.qHd 𝓜.qHu (𝓜.quantaTen.map QuantaTen.q)
       (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) := by
   rw [AnomalyFreeCharges]
   simp only [Prod.mk_zero_zero, Multiset.mem_map, Multiset.mem_product,
-     Prod.mk_eq_zero]
+    Prod.mk_eq_zero]
   rw [Prod.exists]
   use 𝓜.tenAnomalyCoefficient
   use 𝓜.fiveAnomalyCoefficient

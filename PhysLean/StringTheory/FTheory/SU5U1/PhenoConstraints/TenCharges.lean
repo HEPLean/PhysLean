@@ -7,7 +7,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.HyperchargeFlux
 import Mathlib.Order.CompleteLattice.Finset
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
-import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Finset
+import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Multiset
 /-!
 
 # Phenomenological constraints on the ten-dimension charges
@@ -31,6 +31,8 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 
 namespace MatterContent
+
+@[nolint unusedArguments]
 instance not_subset_instance (T : Finset ℤ)
   (F : Finset (Multiset ℤ)) : (a : Multiset ℤ) → a ∈ F → Decidable ¬a ⊆ T.val := by
   intro a ha

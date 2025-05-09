@@ -7,7 +7,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.HyperchargeFlux
 import Mathlib.Order.CompleteLattice.Finset
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
-import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Finset
+import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Multiset
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.TenCharges
 /-!
 
@@ -192,11 +192,11 @@ lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three
       (3, -1, {-3, 2}, {2, 0, -3}), (-3, 1, {-2, 3}, {-2, 0, 3}), (-2, 2, {1, 3}, {-1, 1, 3})} :
       Finset (ℤ × ℤ × Multiset ℤ  × Multiset ℤ)) := by
   by_cases hcardTenOne : 𝓜.quantaTen.card = 1
-  · exact charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_one 𝓜 hμ h hx hTop hSpec he h3
-      h3L hU1 hU1U1 hcard hcardTenOne
+  · exact charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_one
+      𝓜 hμ h hx hTop hSpec he h3 h3L hU1 hU1U1 hcard hcardTenOne
   by_cases hcardTenTwo : 𝓜.quantaTen.card = 2
-  · exact charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_two 𝓜 hμ h hx hTop hSpec he h3
-      h3L hU1 hU1U1 hcard hcardTenTwo
+  · exact charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_two
+      𝓜 hμ h hx hTop hSpec he h3 h3L hU1 hU1U1 hcard hcardTenTwo
   have hmem := 𝓜.quantaBarFiveMatter_of_card_three_with_qHd hμ h hx hTop hSpec hcard
   have hcardTenOne : ¬ (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
       𝓜.quantaBarFiveMatter.map QuantaBarFive.q).2.2.1.card = 1 := by simpa using hcardTenOne
