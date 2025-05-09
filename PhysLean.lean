@@ -251,13 +251,11 @@ import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.Basic
 import PhysLean.StringTheory.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Finse
+import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Finset
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
 import PhysLean.StringTheory.FTheory.SU5U1.Examples
 import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.FiveBar
-import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Ten
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSix

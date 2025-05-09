@@ -4,16 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.FiveBar
-import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Ten
+import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.HyperchargeFlux
 /-!
 
-# Finsets containing the anomaly coefficients
-
-This file contains the construction of
-a finiset which carries the anomaly coefficients for
-a multiset of hypercharge fluxes and a multiset of hypercharges,
-not necessarily paired.
+# Anomaly cancellation condistions with constrained hypercharge fluxes
 
 -/
 namespace FTheory
@@ -725,7 +719,7 @@ lemma tenAnomalyCoefficient_mem_tenAnomalyFreeSetCharge
 def AnomalyFreeCharges (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
     Prop :=
   (0, 0) ∈ ((tenAnomalyFreeSetCharge I Q10).product (fiveAnomalyFreeSetCharge I Q5)).map
-      (fun x => (x.1 + x.2  - (qHu, qHu * qHu) + (qHd, qHd * qHd)))
+    (fun x => (x.1 + x.2  - (qHu, qHu * qHu) + (qHd, qHd * qHd)))
 
 instance (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
     Decidable (AnomalyFreeCharges I qHd qHu Q10 Q5) :=
