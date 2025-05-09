@@ -32,17 +32,13 @@ variable {I : CodimensionOneConfig}
 
 namespace MatterContent
 
-@[nolint unusedArguments]
-instance not_subset_instance (T : Finset ℤ)
-  (F : Finset (Multiset ℤ)) : (a : Multiset ℤ) → a ∈ F → Decidable ¬a ⊆ T.val := by
-  intro a ha
-  rw [Multiset.subset_iff]
-  infer_instance
-
-instance (T : Finset ℤ)
-  (F : Finset (Multiset ℤ)) :
-  Decidable (∀ s ∈ F, ¬ s ⊆ T.val) := by
-  apply Finset.decidableDforallFinset (_hp := not_subset_instance T F)
+instance (T : Finset ℤ) (F : Finset (Multiset ℤ)) :
+    Decidable (∀ s ∈ F, ¬ s ⊆ T.val) := by
+  haveI x : (a : Multiset ℤ) → a ∈ F → Decidable ¬a ⊆ T.val := by
+    intro a ha
+    rw [Multiset.subset_iff]
+    infer_instance
+  apply Finset.decidableDforallFinset (_hp := x)
 
 /-!
 
@@ -52,7 +48,7 @@ instance (T : Finset ℤ)
 
 lemma quantaTen_q_not_mem_of_card_two_config_nearestNeighbor (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 2) (h : 𝓜.ProtonDecayU1Constrained) :
-    ∀ S ∈ ({{-12, -2}, {-12, 13}, {-7, -2}, {-7, 3}, {-7, 8} , {-2, 3},
+    ∀ S ∈ ({{-12, -2}, {-12, 13}, {-7, -2}, {-7, 3}, {-7, 8}, {-2, 3},
       {-2, 8}, {-2, 13}, {3, 8}, {-12, -7, 13},
       {-12, 3, 13}, {-12, 8, 13}} : Finset (Multiset ℤ)),
     ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q := by
@@ -108,7 +104,7 @@ lemma qHu_quantaTen_q_mem_of_card_three_config_same
   rw [HasATopYukawa] at hTop
   have hN0 := quantaTen_q_not_mem_of_card_three_config_same 𝓜 hcard h
   rw [quantaTen_map_q_eq_toFinset] at hTop hN0 ⊢
-  generalize (𝓜.quantaTen.map QuantaTen.q).toFinset = T at hmem hTop hN0   ⊢
+  generalize (𝓜.quantaTen.map QuantaTen.q).toFinset = T at hmem hTop hN0 ⊢
   revert T
   have hqHu := 𝓜.qHu_mem_allowedBarFiveCharges
   generalize 𝓜.qHu = Q at hqHu ⊢

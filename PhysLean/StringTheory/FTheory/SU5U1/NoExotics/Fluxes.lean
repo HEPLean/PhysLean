@@ -10,7 +10,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.ChiralityFlux
 
 The condition on the matter content for there to be no exotics in the spectrum
 leads to constraints on the allowed combintation of `ChiralityFlux`
-and  `HyperchargeFlux` of the matter content.
+and `HyperchargeFlux` of the matter content.
 
 This file contains these constraints for the 5-bar and
 10d matter representations.
@@ -361,12 +361,11 @@ lemma quantaBarFiveMatter_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFam
 
 -/
 
-
 /-- The condition of no exotics in the matter spectrum constrains the allowed
   values of the `ChiralityFlux` and `HyperChargeFlux` carried by the 10d representations to be one
   of the following Multisets:
 
- `{(1, 0), (1, 0), (1, 0)}`, `{(1, 1), (1, -1), (1, 0)}`,
+  `{(1, 0), (1, 0), (1, 0)}`, `{(1, 1), (1, -1), (1, 0)}`,
       `{(1, 0), (2, 0)}`, `{(1, -1), (2, 1)}`, `{(1, 1), (2, -1)}, {(3, 0)}`.
 -/
 lemma quantaTen_MN_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :

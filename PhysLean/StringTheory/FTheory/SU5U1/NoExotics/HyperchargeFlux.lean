@@ -9,7 +9,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Fluxes
 # Hypercharge flux and no exotics
 
 The condition on the matter content for there to be no exotics in the spectrum
-leads to constraints on the allowed  `HyperchargeFlux` of the matter content.
+leads to constraints on the allowed `HyperchargeFlux` of the matter content.
 
 This file contains these constraints for the 5-bar and
 10d matter representations.
@@ -26,7 +26,6 @@ namespace SU5U1
 namespace MatterContent
 
 variable {I : CodimensionOneConfig} {𝓜 : MatterContent I}
-
 
 /-- The condition of no exotics in the matter spectrum constrains the allowed
   values of the `HyperChargeFlux` carried by the 5bar matter representations to be one
@@ -69,12 +68,11 @@ lemma quantaBarFiveMatter_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFami
   revert S
   decide
 
-
 /-- The condition of no exotics in the matter spectrum constrains the allowed
   values of the `HyperChargeFlux` carried by the 10d representations to be one
   of the following Multisets:
 
- `{0, 0, 0}`, `{1, -1, 0}`, `{0}`, `{-1, 1}`, `{0}`.
+  `{0, 0, 0}`, `{1, -1, 0}`, `{0}`, `{-1, 1}`, `{0}`.
 -/
 lemma quantaTen_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
     𝓜.quantaTen.map QuantaTen.N ∈ ({
@@ -95,7 +93,6 @@ lemma quantaTen_N_mem (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
 
 -/
 
-
 /--
 For `N` a multiset of `HyperchargeFlux` for 5-bar matter
 valid under the no-exotics constraints, `hyperchargeFluxLists N` is
@@ -107,16 +104,16 @@ This definition was produced with the help of e.g.
 -/
 def hyperchargeFluxLists (N : Multiset ℤ) : Multiset (List ℤ) :=
   if N = {-1, -1, -1, 1, 2} then
-     {[1, -1, -1, -1, 2], [-1, 1, -1, -1, 2], [-1, -1, 1, -1, 2], [-1, -1, -1, 1, 2],
+    {[1, -1, -1, -1, 2], [-1, 1, -1, -1, 2], [-1, -1, 1, -1, 2], [-1, -1, -1, 1, 2],
     [1, -1, -1, 2, -1], [-1, 1, -1, 2, -1], [-1, -1, 1, 2, -1], [-1, -1, -1, 2, 1],
     [1, -1, 2, -1, -1], [-1, 1, 2, -1, -1], [-1, -1, 2, 1, -1], [-1, -1, 2, -1, 1],
     [1, 2, -1, -1, -1], [-1, 2, 1, -1, -1], [-1, 2, -1, 1, -1], [-1, 2, -1, -1, 1],
     [2, 1, -1, -1, -1], [2, -1, 1, -1, -1], [2, -1, -1, 1, -1], [2,-1, -1, -1, 1]}
-  else if  N = {-1, -1, 0, 1, 1} then
+  else if N = {-1, -1, 0, 1, 1} then
     {[1, -1, -1, 0, 1], [-1, 1, -1, 0, 1], [-1, -1, 1, 0, 1], [-1, -1, 0, 1, 1], [1, -1, 0, -1, 1],
     [-1, 1, 0, -1, 1], [-1, 0, 1, -1, 1], [-1, 0, -1, 1, 1], [1, 0, -1, -1, 1], [0, 1, -1, -1, 1],
     [0, -1, 1, -1, 1], [0, -1, -1, 1, 1], [-1, 1, 1, 0, -1], [1, 1, -1, 0, -1], [1, -1, 1, 0, -1],
-    [1, 1, 0, -1, -1], [1, -1, 0, 1, -1], [-1, 1, 0, 1, -1],  [-1, 0, 1, 1, -1], [1, 0, -1, 1, -1],
+    [1, 1, 0, -1, -1], [1, -1, 0, 1, -1], [-1, 1, 0, 1, -1], [-1, 0, 1, 1, -1], [1, 0, -1, 1, -1],
     [0, -1, 1, 1, -1], [1, 0, 1, -1, -1], [0, 1, 1, -1, -1], [0, 1, -1, 1, -1], [1, 1, -1, -1, 0],
     [1, -1, -1, 1, 0], [-1, -1, 1, 1, 0], [1, -1, 1, -1, 0], [-1, 1, 1, -1, 0], [-1, 1, -1, 1, 0]}
   else if N = {-1, -2, 1, 1, 1} then
@@ -140,7 +137,7 @@ def hyperchargeFluxLists (N : Multiset ℤ) : Multiset (List ℤ) :=
     [-1, 2, 0, -1], [-1, 0, 2, -1], [2, 0, -1, -1], [0, 2, -1, -1], [0, -1, 2, -1]}
   else if N = {-1, -1, 1, 1} then {[1, -1, -1, 1], [-1, 1, -1, 1], [-1, -1, 1, 1], [-1, 1, 1, -1],
     [1, 1, -1, -1], [1, -1, 1, -1]}
-  else if N = {0, 0, -1, 1}  then  {[0, 0, -1, 1], [-1, 0, 0, 1], [0, -1, 0, 1], [1, 0, 0, -1],
+  else if N = {0, 0, -1, 1} then {[0, 0, -1, 1], [-1, 0, 0, 1], [0, -1, 0, 1], [1, 0, 0, -1],
     [0, 1, 0, -1], [0, 0, 1, -1], [1, 0, -1, 0], [0, 1, -1, 0], [0, -1, 1, 0], [1, -1, 0, 0],
     [-1, 1, 0, 0], [-1, 0, 1, 0]}
   else if N = {-3, 1, 2} then {[-3, 1, 2], [1, -3, 2], [2, 1, -3], [1, 2, -3],
@@ -153,7 +150,7 @@ def hyperchargeFluxLists (N : Multiset ℤ) : Multiset (List ℤ) :=
   else if N = {-1, -1, 2} then {[-1, -1, 2], [2, -1, -1], [-1, 2, -1]}
   else if N = {-1, 0, 1} then {[-1, 0, 1], [0, -1, 1], [1, 0, -1], [0, 1, -1], [1, -1, 0],
     [-1, 1, 0]}
-  else if N = {0, 0, 0} then {[0 ,0, 0]}
+  else if N = {0, 0, 0} then {[0, 0, 0]}
   else if N = {-3, 3} then {[-3, 3], [3, -3]}
   else if N = {-2, 2} then {[-2, 2], [2, -2]}
   else if N = {-1, 1} then {[-1, 1], [1, -1]}
@@ -187,7 +184,7 @@ lemma hyperchargeFlux_lists_eq_hyperchargeFluxLists (he : 𝓜.NoExotics)
     | q1 :: [] =>
       have hq1 : q1 ∈ N.dedup := by simp [hNl]
       simp only [List.length_cons, List.length_nil, zero_add] at hlen
-      revert hNl; revert q1;  revert N
+      revert hNl; revert q1; revert N
       decide
     | q1 :: q2 :: [] =>
       have hq1 : q1 ∈ N.dedup := by simp [hNl]
@@ -216,7 +213,7 @@ lemma hyperchargeFlux_lists_eq_hyperchargeFluxLists (he : 𝓜.NoExotics)
       revert q1; revert q2; revert q3; revert q4;
       revert N
       decide
-    | q1 :: q2 :: q3 :: q4 :: q5 :: []  =>
+    | q1 :: q2 :: q3 :: q4 :: q5 :: [] =>
       have hq1 : q1 ∈ N.dedup := by simp [hNl]
       have hq2 : q2 ∈ N.dedup := by simp [hNl]
       have hq3 : q3 ∈ N.dedup := by simp [hNl]
@@ -249,7 +246,7 @@ This definition was produced with the help of e.g.
 -/
 def hyperchargeFluxListsTen (N : Multiset ℤ) : Multiset (List ℤ) :=
   if N = {0, 0, 0} then {[0, 0, 0]}
-  else if  N = {1, -1, 0} then {[-1, 1, 0], [1, -1, 0], [0, 1, -1], [1, 0, -1],
+  else if N = {1, -1, 0} then {[-1, 1, 0], [1, -1, 0], [0, 1, -1], [1, 0, -1],
     [0, -1, 1], [-1, 0, 1]}
   else if N = {0, 0} then {[0, 0]}
   else if N = {-1, 1} then {[-1, 1], [1, -1]}
@@ -257,7 +254,7 @@ def hyperchargeFluxListsTen (N : Multiset ℤ) : Multiset (List ℤ) :=
   else ∅
 
 lemma hyperchargeFlux_lists_eq_hyperchargeFluxListsTen (he : 𝓜.NoExotics)
-    (h3 : 𝓜.ThreeChiralFamiles)  :
+    (h3 : 𝓜.ThreeChiralFamiles) :
     (𝓜.quantaTen.map QuantaBarFive.N).lists.dedup =
     hyperchargeFluxListsTen (𝓜.quantaTen.map QuantaBarFive.N) := by
   have h2 := 𝓜.quantaTen_N_mem he h3
@@ -282,7 +279,7 @@ lemma hyperchargeFlux_lists_eq_hyperchargeFluxListsTen (he : 𝓜.NoExotics)
     | q1 :: [] =>
       have hq1 : q1 ∈ N.dedup := by simp [hNl]
       simp only [List.length_cons, List.length_nil, zero_add] at hlen
-      revert hNl; revert q1;  revert N
+      revert hNl; revert q1; revert N
       decide
     | q1 :: q2 :: [] =>
       have hq1 : q1 ∈ N.dedup := by simp [hNl]
