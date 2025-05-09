@@ -88,6 +88,20 @@ instance : (I : CodimensionOneConfig) → Fintype I.allowedTenCharges
   | nearestNeighbor => inferInstance
   | nextToNearestNeighbor => inferInstance
 
+def allowedTenChargesList : CodimensionOneConfig → List ℤ
+  | same => [-3, -2, -1, 0, 1, 2, 3]
+  | nearestNeighbor => [-12, -7, -2, 3, 8, 13]
+  | nextToNearestNeighbor => [-9, -4, 1, 6, 11]
+
+@[simp]
+lemma mem_allowedTenChargesList_iff {I : CodimensionOneConfig} (x : ℤ) :
+    x ∈ I.allowedTenChargesList ↔ x ∈ I.allowedTenCharges := by
+  cases I <;> simp [allowedTenChargesList, allowedTenCharges]
+
+lemma allowedTenChargesList_nodup (I : CodimensionOneConfig) :
+    I.allowedTenChargesList.Nodup := by
+  cases I <;> decide
+
 end CodimensionOneConfig
 end SU5U1
 

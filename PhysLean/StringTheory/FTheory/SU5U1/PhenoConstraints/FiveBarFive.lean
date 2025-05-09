@@ -152,29 +152,100 @@ lemma quantaBarFiveMatter_of_card_three_with_qHd
   all_goals
     decide
 
-lemma quantaBarFiveMatter_of_anomalyFree
+lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_one
     (𝓜 : MatterContent .same)
     (hμ : 𝓜.MuTermU1Constrained)
     (h : 𝓜.ProtonDecayU1Constrained)
     (hx : 𝓜.RParityU1Constrained)
     (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum)
-    (acc : AnomalyFreeCondition 𝓜.qHd 𝓜.qHu (𝓜.quantaTen.map QuantaTen.q)
-      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q))
-    (hcard : 𝓜.quantaBarFiveMatter.card = 3) : (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
+    (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
+    (h3L : 𝓜.ThreeLeptonDoublets) (hU1 :  𝓜.GaugeAnomalyU1MSSM)
+    (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1)
+    (hcard : 𝓜.quantaBarFiveMatter.card = 3)
+    (hcardTen : 𝓜.quantaTen.card = 1) : (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
       𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∈  ({
       (2, -2, {-1}, {-3, -1, 1}), (-2, 2, {1}, {-1, 1, 3}), (2, -2, {-3, -1}, {-3, -1, 1}),
       (3, -1, {-3, 2}, {2, 0, -3}), (-3, 1, {-2, 3}, {-2, 0, 3}), (-2, 2, {1, 3}, {-1, 1, 3})} :
-      Finset (ℤ × ℤ × Multiset ℤ  × Multiset ℤ )) := by
+      Finset (ℤ × ℤ × Multiset ℤ  × Multiset ℤ)) := by
   have hmem := 𝓜.quantaBarFiveMatter_of_card_three_with_qHd hμ h hx hTop hSpec hcard
+  have acc := 𝓜.anomalyFreeCharges_of_anomalyFree he h3 h3L hU1 hU1U1
+  have hcardTen : (𝓜.quantaTen.map QuantaTen.q).card = 1 := by simpa using hcardTen
   generalize 𝓜.qHu = qHu at *
   generalize 𝓜.qHd = qHd at *
   generalize 𝓜.quantaTen.map QuantaTen.q = Q10 at *
   generalize 𝓜.quantaBarFiveMatter.map QuantaBarFive.q = Q5 at *
-  have hacc : AnomalyFreeCondition (qHd, qHu, Q10, Q5).1 (qHd, qHu, Q10, Q5).2.1
+  have hacc : AnomalyFreeCharges .same (qHd, qHu, Q10, Q5).1 (qHd, qHu, Q10, Q5).2.1
     (qHd, qHu, Q10, Q5).2.2.1 (qHd, qHu, Q10, Q5).2.2.2 := acc
-  generalize (qHd, qHu, Q10, Q5) = a at hmem hacc ⊢
+  have hcardTen' : (qHd, qHu, Q10, Q5).2.2.1.card = 1 := hcardTen
+  generalize (qHd, qHu, Q10, Q5) = a at hmem hacc hcardTen' ⊢
+  revert hacc
+  revert hcardTen'
   revert a
-  native_decide
+  decide
+
+
+lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_two
+    (𝓜 : MatterContent .same)
+    (hμ : 𝓜.MuTermU1Constrained)
+    (h : 𝓜.ProtonDecayU1Constrained)
+    (hx : 𝓜.RParityU1Constrained)
+    (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum)
+    (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
+    (h3L : 𝓜.ThreeLeptonDoublets) (hU1 :  𝓜.GaugeAnomalyU1MSSM)
+    (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1)
+    (hcard : 𝓜.quantaBarFiveMatter.card = 3)
+    (hcardTen : 𝓜.quantaTen.card = 2) : (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
+      𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∈  ({
+      (2, -2, {-1}, {-3, -1, 1}), (-2, 2, {1}, {-1, 1, 3}), (2, -2, {-3, -1}, {-3, -1, 1}),
+      (3, -1, {-3, 2}, {2, 0, -3}), (-3, 1, {-2, 3}, {-2, 0, 3}), (-2, 2, {1, 3}, {-1, 1, 3})} :
+      Finset (ℤ × ℤ × Multiset ℤ  × Multiset ℤ)) := by
+  have hmem := 𝓜.quantaBarFiveMatter_of_card_three_with_qHd hμ h hx hTop hSpec hcard
+  have acc := 𝓜.anomalyFreeCharges_of_anomalyFree he h3 h3L hU1 hU1U1
+  have hcardTen : (𝓜.quantaTen.map QuantaTen.q).card = 2 := by simpa using hcardTen
+  generalize 𝓜.qHu = qHu at *
+  generalize 𝓜.qHd = qHd at *
+  generalize 𝓜.quantaTen.map QuantaTen.q = Q10 at *
+  generalize 𝓜.quantaBarFiveMatter.map QuantaBarFive.q = Q5 at *
+  have hacc : AnomalyFreeCharges .same (qHd, qHu, Q10, Q5).1 (qHd, qHu, Q10, Q5).2.1
+    (qHd, qHu, Q10, Q5).2.2.1 (qHd, qHu, Q10, Q5).2.2.2 := acc
+  have hcardTen' : (qHd, qHu, Q10, Q5).2.2.1.card = 2 := hcardTen
+  generalize (qHd, qHu, Q10, Q5) = a at hmem hacc hcardTen' ⊢
+  revert hacc
+  revert hcardTen'
+  revert a
+  decide
+
+lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three
+    (𝓜 : MatterContent .same)
+    (hμ : 𝓜.MuTermU1Constrained)
+    (h : 𝓜.ProtonDecayU1Constrained)
+    (hx : 𝓜.RParityU1Constrained)
+    (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum)
+    (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
+    (h3L : 𝓜.ThreeLeptonDoublets) (hU1 :  𝓜.GaugeAnomalyU1MSSM)
+    (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1)
+    (hcard : 𝓜.quantaBarFiveMatter.card = 3) :
+    (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
+      𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∈  ({
+      (2, -2, {-1}, {-3, -1, 1}), (-2, 2, {1}, {-1, 1, 3}), (2, -2, {-3, -1}, {-3, -1, 1}),
+      (3, -1, {-3, 2}, {2, 0, -3}), (-3, 1, {-2, 3}, {-2, 0, 3}), (-2, 2, {1, 3}, {-1, 1, 3})} :
+      Finset (ℤ × ℤ × Multiset ℤ  × Multiset ℤ)) := by
+  by_cases hcardTenOne : 𝓜.quantaTen.card = 1
+  · exact charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_one 𝓜 hμ h hx hTop hSpec he h3
+      h3L hU1 hU1U1 hcard hcardTenOne
+  by_cases hcardTenTwo : 𝓜.quantaTen.card = 2
+  · exact charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_two 𝓜 hμ h hx hTop hSpec he h3
+      h3L hU1 hU1U1 hcard hcardTenTwo
+  have hmem := 𝓜.quantaBarFiveMatter_of_card_three_with_qHd hμ h hx hTop hSpec hcard
+  have hcardTenOne : ¬ (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
+      𝓜.quantaBarFiveMatter.map QuantaBarFive.q).2.2.1.card = 1 := by simpa using hcardTenOne
+  have hcardTenTwo : ¬ (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
+      𝓜.quantaBarFiveMatter.map QuantaBarFive.q).2.2.1.card = 2 := by simpa using hcardTenTwo
+  generalize (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
+      𝓜.quantaBarFiveMatter.map QuantaBarFive.q) = a at *
+  apply False.elim
+  revert a
+  decide
 
 
 end MatterContent
