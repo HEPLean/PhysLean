@@ -79,26 +79,21 @@ theorem OpticalMedium.gaussLawElectric_of_free (E : ElectricField) (B : Magnetic
     rw [mul_zero, h']
     rfl
   apply mul_left_cancel₀ at h''
-  exact h''
-  exact ne_of_gt OM.eps_ge_zero
+  · exact h''
+  · exact ne_of_gt OM.eps_ge_zero
 
 theorem OpticalMedium.gaussLawMagnetic_of_free (E : ElectricField) (B : MagneticField)
     (h : OM.FreeMaxwellEquations E B) :
     (∇ ⬝ B t) x = 0 := by
-  have h' := h.2.1
-  rw [h']
+  rw [h.2.1]
 
 theorem OpticalMedium.ampereLaw_of_free (E : ElectricField) (B : MagneticField)
     (h : OM.FreeMaxwellEquations E B) :
     (∇ × B t) x = μ • ε • ∂ₜ (fun t => E t x) t := by
-  have h' := h.2.2.1
-  rw [h']
-  simp_all
-  right
-  rfl
+  rw [h.2.2.1]
+  aesop
 
 theorem OpticalMedium.faradayLaw_of_free (E : ElectricField) (B : MagneticField)
     (h : OM.FreeMaxwellEquations E B) :
     (∇ × E t) x = - ∂ₜ (fun t => B t x) t := by
-  have h' := h.2.2.2
-  rw [h']
+  rw [h.2.2.2]
