@@ -400,7 +400,8 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           simp [hby, hfy]
         · aesop
     · simp [hfy, hby]
-  · simp [p]
+  · simp only [TwoSidedIdeal.mem_mk, map_zero, ZeroMemClass.coe_zero, p]
+    exact (RingCon.eq (ringConGen fun a b => a - b ∈ 𝓕.fieldOpIdealSet)).mp rfl
   · intro x y hx hy hpx hpy
     simp_all only [map_add, Submodule.coe_add, p]
     apply TwoSidedIdeal.add_mem

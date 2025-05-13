@@ -55,7 +55,6 @@ def universalLift {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp 
     obtain ⟨y, rfl⟩ := ι_surjective y
     simp [← map_mul]
   map_zero' := by
-    simp only
     rw [show 0 = ι (𝓕 := 𝓕) 0 from rfl, universalLiftMap_ι]
     simp
   map_add' x y := by
@@ -63,7 +62,6 @@ def universalLift {A : Type} [Semiring A] [Algebra ℂ A] (f : 𝓕.CrAnFieldOp 
     obtain ⟨y, rfl⟩ := ι_surjective y
     simp [← map_add]
   commutes' r := by
-    simp only
     rw [Algebra.algebraMap_eq_smul_one r]
     rw [show r • 1 = ι (𝓕 := 𝓕) (r • 1) from rfl, universalLiftMap_ι]
     simp only [map_smul, map_one]

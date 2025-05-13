@@ -165,7 +165,7 @@ lemma orthogonal_physHermite_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
       Complex.ofReal_ofNat, eigenfunction_eq]
     ring
-  rw [← h2, MeasureTheory.integral_mul_left] at h1
+  rw [← h2, MeasureTheory.integral_const_mul] at h1
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
     neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
     Complex.ofReal_ofNat, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
@@ -205,7 +205,7 @@ lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     intro x hx
     simp only [neg_mul, mul_assoc, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
       Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
-    rw [integral_mul_left]
+    rw [MeasureTheory.integral_const_mul]
     simp only [_root_.mul_eq_zero, Complex.ofReal_eq_zero]
     right
     rw [← Q.orthogonal_physHermite_of_mem_orthogonal f hf hOrth x]
@@ -247,7 +247,7 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       (f x * Complex.exp (- x ^ 2 / (2 * Q.ξ^2))))) := by
       funext x
       ring
-    rw [h2, MeasureTheory.integral_mul_left] at h1
+    rw [h2, MeasureTheory.integral_const_mul] at h1
     simp only [one_div, inv_pow, _root_.mul_eq_zero, inv_eq_zero, pow_eq_zero_iff',
       Complex.ofReal_eq_zero, ξ_ne_zero, ne_eq, false_and, false_or] at h1
     rw [← h1]
@@ -410,7 +410,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
           Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
         ring
       rw [hf']
-      rw [MeasureTheory.integral_mul_left]
+      rw [MeasureTheory.integral_const_mul]
       rw [Q.orthogonal_power_of_mem_orthogonal f hf hOrth r]
       simp
     · intro r hr

@@ -140,12 +140,11 @@ def toMatrix : SL(2, ℂ) →* Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ wh
       mul_one, Subtype.coe_eta]
     erw [LinearMap.toMatrix_one]
   map_mul' M N := by
-    simp only
     rw [← LinearMap.toMatrix_mul]
     apply congrArg
     ext1 x
     simp only [toSelfAdjointMap, SpecialLinearGroup.coe_mul, conjTranspose_mul,
-      LinearMap.coe_mk, AddHom.coe_mk, LinearMap.mul_apply, Subtype.mk.injEq]
+      LinearMap.coe_mk, AddHom.coe_mk, Module.End.mul_apply, Subtype.mk.injEq]
     noncomm_ring
 
 open Lorentz in

@@ -133,7 +133,7 @@ lemma contr_contrCoUnit (x : complexCo) :
     ((coContrContraction ▷ complexCo).hom
     ((α_ _ _ complexCo).inv.hom
     (x ⊗ₜ[ℂ] contrCoUnit.hom (1 : ℂ)))) = x := by
-  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span complexCoBasis x)
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span complexCoBasis x)
   subst hc
   rw [contrCoUnit_apply_one, contrCoUnitVal_expand_tmul]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
@@ -167,7 +167,8 @@ lemma contr_coContrUnit (x : complexContr) :
     ((contrCoContraction ▷ complexContr).hom
     ((α_ _ _ complexContr).inv.hom
     (x ⊗ₜ[ℂ] coContrUnit.hom (1 : ℂ)))) = x := by
-  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span complexContrBasis x)
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp
+    (Basis.mem_span complexContrBasis x)
   subst hc
   rw [coContrUnit_apply_one, coContrUnitVal_expand_tmul]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,

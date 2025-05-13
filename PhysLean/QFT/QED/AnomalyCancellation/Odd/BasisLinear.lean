@@ -674,7 +674,7 @@ noncomputable def basisaAsBasis :
 
 lemma span_basis (S : (PureU1 (2 * n.succ + 1)).LinSols) :
     ∃ (g f : Fin n.succ → ℚ), S.val = P g + P! f := by
-  have h := (mem_span_range_iff_exists_fun ℚ).mp (Basis.mem_span basisaAsBasis S)
+  have h := (Submodule.mem_span_range_iff_exists_fun ℚ).mp (Basis.mem_span basisaAsBasis S)
   obtain ⟨f, hf⟩ := h
   simp only [succ_eq_add_one, basisaAsBasis, coe_basisOfLinearIndependentOfCardEqFinrank,
     Fintype.sum_sum_type] at hf
@@ -693,7 +693,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
     (S.val (oddShiftSnd j) - S.val (oddShiftFst j)) • basis!AsCharges j ∧ g' = g := by
   let X := P! f + (S.val (oddShiftSnd j) - S.val (oddShiftFst j)) • basis!AsCharges j
   have hf : P! f ∈ Submodule.span ℚ (Set.range basis!AsCharges) := by
-    rw [(mem_span_range_iff_exists_fun ℚ)]
+    rw [(Submodule.mem_span_range_iff_exists_fun ℚ)]
     use f
     rfl
   have hP : (S.val (oddShiftSnd j) - S.val (oddShiftFst j)) • basis!AsCharges j ∈
@@ -706,7 +706,7 @@ lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
     apply Submodule.add_mem
     exact hf
     exact hP
-  have hXsum := (mem_span_range_iff_exists_fun ℚ).mp hX
+  have hXsum := (Submodule.mem_span_range_iff_exists_fun ℚ).mp hX
   obtain ⟨f', hf'⟩ := hXsum
   use g
   use f'

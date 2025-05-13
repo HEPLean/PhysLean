@@ -21,6 +21,7 @@ open BigOperators
 /-- The ACC system for the standard model without RHN and without the gravitational ACC. -/
 @[simps!]
 def SMNoGrav (n : ℕ) : ACCSystem where
+  toACCSystemCharges := SMCharges n
   numberLinear := 2
   linearACCs := fun i =>
     match i with

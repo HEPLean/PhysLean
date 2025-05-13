@@ -79,7 +79,7 @@ lemma swap_fields : P.toFun Φ1 Φ2 =
   ring_nf
   simp only [one_div, add_left_inj, add_right_inj, mul_eq_mul_left_iff]
   left
-  rw [HiggsField.innerProd, HiggsField.innerProd, ← InnerProductSpace.conj_symm, Complex.norm_conj]
+  rw [HiggsField.innerProd, HiggsField.innerProd, ← inner_conj_symm, Complex.norm_conj]
 
 /-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
 lemma right_zero : P.toFun Φ1 0 =

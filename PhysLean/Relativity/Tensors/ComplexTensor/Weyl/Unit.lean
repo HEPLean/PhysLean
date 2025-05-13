@@ -221,7 +221,7 @@ lemma contr_altLeftLeftUnit (x : leftHanded) :
     (((leftAltContraction) ▷ leftHanded).hom
     ((α_ _ _ leftHanded).inv.hom
     (x ⊗ₜ[ℂ] altLeftLeftUnit.hom (1 : ℂ)))) = x := by
-  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span leftBasis x)
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span leftBasis x)
   subst hc
   rw [altLeftLeftUnit_apply_one, altLeftLeftUnitVal_expand_tmul]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
@@ -249,7 +249,7 @@ lemma contr_leftAltLeftUnit (x : altLeftHanded) :
     (((altLeftContraction) ▷ altLeftHanded).hom
     ((α_ _ _ altLeftHanded).inv.hom
     (x ⊗ₜ[ℂ] leftAltLeftUnit.hom (1 : ℂ)))) = x := by
-  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span altLeftBasis x)
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span altLeftBasis x)
   subst hc
   rw [leftAltLeftUnit_apply_one, leftAltLeftUnitVal_expand_tmul]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
@@ -274,7 +274,7 @@ lemma contr_altRightRightUnit (x : rightHanded) :
     (((rightAltContraction) ▷ rightHanded).hom
     ((α_ _ _ rightHanded).inv.hom
     (x ⊗ₜ[ℂ] altRightRightUnit.hom (1 : ℂ)))) = x := by
-  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span rightBasis x)
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span rightBasis x)
   subst hc
   rw [altRightRightUnit_apply_one, altRightRightUnitVal_expand_tmul]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
@@ -299,7 +299,7 @@ lemma contr_rightAltRightUnit (x : altRightHanded) :
     (((altRightContraction) ▷ altRightHanded).hom
     ((α_ _ _ altRightHanded).inv.hom
     (x ⊗ₜ[ℂ] rightAltRightUnit.hom (1 : ℂ)))) = x := by
-  obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span altRightBasis x)
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span altRightBasis x)
   subst hc
   rw [rightAltRightUnit_apply_one, rightAltRightUnitVal_expand_tmul]
   simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,

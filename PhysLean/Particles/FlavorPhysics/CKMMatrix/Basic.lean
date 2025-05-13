@@ -37,7 +37,7 @@ lemma phaseShiftMatrix_one : phaseShiftMatrix 0 0 0 = 1 := by
   · simp only [phaseShiftMatrix, ofReal_zero, mul_zero, exp_zero, Fin.zero_eta, Fin.isValue,
     cons_val', cons_val_zero, empty_val', cons_val_fin_one, vecCons_const, one_apply_eq]
   · simp only [phaseShiftMatrix, ofReal_zero, mul_zero, exp_zero, Fin.mk_one, Fin.isValue,
-    cons_val', cons_val_one, head_cons, empty_val', cons_val_fin_one, one_apply_eq]
+    cons_val', cons_val_one, cons_val_zero, empty_val', cons_val_fin_one, one_apply_eq]
   · simp only [phaseShiftMatrix, ofReal_zero, mul_zero, exp_zero, Fin.reduceFinMk, cons_val',
     Fin.isValue, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons, empty_val',
     cons_val_fin_one, head_fin_const, one_apply_eq]

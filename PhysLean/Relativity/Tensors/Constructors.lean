@@ -731,7 +731,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
           rw [Pure.prodP_apply_finSumFinEquiv]
         simp
         rfl
-      · simp [Pure.permP]
+      · simp only [Pure.permP]
         conv_lhs =>
           enter [2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 1))
@@ -745,8 +745,11 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
         simp
         rfl
     · intro y1 y2 hx hy
-      simp [P1, P] at hx hy
-      simp [P1, P, tmul_add, add_mul]
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
+        Basis.tensorProduct_repr_tmul_apply, smul_eq_mul, P1, P] at hx hy
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
+        Basis.tensorProduct_repr_tmul_apply, smul_eq_mul, tmul_add, map_add, Finsupp.coe_add,
+        Pi.add_apply, add_mul, P1, P]
       rw [hx, hy]
   · intro x y hx hy
     simp_all [P]

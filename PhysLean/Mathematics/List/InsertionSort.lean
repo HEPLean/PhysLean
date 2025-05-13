@@ -46,8 +46,7 @@ lemma insertionSortMinPos_insertionSortEquiv {α : Type} (r : α → α → Prop
     insertionSortEquiv r (a ::l) (insertionSortMinPos r a l) =
     ⟨0, by simp [List.orderedInsert_length]⟩ := by
   rw [insertionSortMinPos]
-  exact
-    Equiv.apply_symm_apply (insertionSortEquiv r (a :: l)) ⟨0, insertionSortMinPos.proof_1 r a l⟩
+  exact Equiv.apply_symm_apply (insertionSortEquiv r (a :: l)) ⟨0, _⟩
 
 lemma insertionSortEquiv_gt_zero_of_ne_insertionSortMinPos {α : Type} (r : α → α → Prop)
     [DecidableRel r] (a : α) (l : List α) (k : Fin (a :: l).length)
@@ -447,8 +446,8 @@ lemma orderedInsert_filter_of_pos {α : Type} (r : α → α → Prop) [Decidabl
         exact hlf.1
       rw [hl]
       simp only [decide_not, List.nil_append, List.cons.injEq, true_and]
-      conv_lhs => rw [← List.takeWhile_append_dropWhile (fun b => decide ¬r a b)
-        (List.filter (fun b => decide (p b)) l)]
+      conv_lhs => rw [← List.takeWhile_append_dropWhile (p := fun b => decide ¬r a b)
+        (l := List.filter (fun b => decide (p b)) l)]
       rw [hl]
       simp
     · simp only [hab, ↓reduceIte]
@@ -465,7 +464,7 @@ lemma orderedInsert_filter_of_neg {α : Type} (r : α → α → Prop) [Decidabl
   rw [List.filter_cons_of_neg]
   rw [← List.filter_append]
   congr
-  exact List.takeWhile_append_dropWhile (fun b => !decide (r a b)) l
+  exact List.takeWhile_append_dropWhile
   simp [h]
 
 lemma insertionSort_filter {α : Type} (r : α → α → Prop) [DecidableRel r] [IsTotal α r]
@@ -598,8 +597,8 @@ lemma filter_rel_eq_insertionSort {α : Type} (r : α → α → Prop) [Decidabl
       have ih := filter_rel_eq_insertionSort r a l
       simp only [Bool.decide_and] at ih
       rw [← ih]
-      have htd := List.takeWhile_append_dropWhile (fun b_1 => decide ¬r b b_1)
-        (List.filter (fun b => decide (r a b) && decide (r b a)) (List.insertionSort r l))
+      have htd := List.takeWhile_append_dropWhile (p := fun b_1 => decide ¬r b b_1)
+        (l := List.filter (fun b => decide (r a b) && decide (r b a)) (List.insertionSort r l))
       simp only [decide_not] at htd
       conv_rhs => rw [← htd]
       simp only [List.self_eq_append_left, List.takeWhile_eq_nil_iff, List.get_eq_getElem,
@@ -632,8 +631,7 @@ lemma insertionSort_of_eq_list {α : Type} (r : α → α → Prop) [DecidableRe
   have hl : List.insertionSort r (l1 ++ l ++ l2) =
     List.takeWhile (fun c => ¬ r a c) ((l1 ++ l ++ l2).insertionSort r) ++
     List.dropWhile (fun c => ¬ r a c) ((l1 ++ l ++ l2).insertionSort r) := by
-    exact (List.takeWhile_append_dropWhile (fun c => decide ¬r a c)
-          (List.insertionSort r (l1 ++ l ++ l2))).symm
+    exact Eq.symm List.takeWhile_append_dropWhile
   have hlt : List.takeWhile (fun c => ¬ r a c) ((l1 ++ l ++ l2).insertionSort r)
       = List.takeWhile (fun c => ¬ r a c) ((l1 ++ l2).insertionSort r) := by
     rw [takeWhile_sorted_eq_filter, takeWhile_sorted_eq_filter]

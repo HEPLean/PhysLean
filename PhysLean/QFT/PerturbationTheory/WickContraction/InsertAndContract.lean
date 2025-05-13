@@ -273,7 +273,7 @@ lemma succAbove_mem_insertAndContractLiftFinset (φ : 𝓕.FieldOp) {φs : List 
     use j
 
 lemma insert_fin_eq_self (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
-    (i : Fin φs.length.succ) (j : Fin (List.insertIdx i φ φs).length) :
+    (i : Fin φs.length.succ) (j : Fin (List.insertIdx φs i φ).length) :
     j = Fin.cast (insertIdx_length_fin φ φs i).symm i
     ∨ ∃ k, j = Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove k) := by
   obtain ⟨k, hk⟩ := (finCongr (insertIdx_length_fin φ φs i).symm).surjective j
@@ -316,7 +316,7 @@ lemma insertLift_sum (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
 -/
 lemma insertAndContract_uncontractedList_none_map (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
-    [φsΛ ↩Λ φ i none]ᵘᶜ = List.insertIdx (φsΛ.uncontractedListOrderPos i) φ [φsΛ]ᵘᶜ := by
+    [φsΛ ↩Λ φ i none]ᵘᶜ = List.insertIdx [φsΛ]ᵘᶜ (φsΛ.uncontractedListOrderPos i) φ := by
   simp only [Nat.succ_eq_add_one, insertAndContract, uncontractedListGet]
   rw [congr_uncontractedList]
   erw [uncontractedList_extractEquiv_symm_none]
@@ -324,10 +324,7 @@ lemma insertAndContract_uncontractedList_none_map (φ : 𝓕.FieldOp) {φs : Lis
   rw [insertIdx_map, insertIdx_map]
   congr 1
   · simp
-  rw [List.map_map, List.map_map]
-  congr
-  conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
-  rfl
+  · simp
 
 @[simp]
 lemma insertAndContract_uncontractedList_none_zero (φ : 𝓕.FieldOp) {φs : List 𝓕.FieldOp}

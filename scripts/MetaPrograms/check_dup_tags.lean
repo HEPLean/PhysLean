@@ -14,7 +14,7 @@ import PhysLean.Meta.Informal.SemiFormal
 
 -/
 
-open Lean System Meta PhysLean
+open Lean System Meta PhysLean Core
 
 
 def tagsFromTODOs : MetaM (Array String) := do
@@ -46,6 +46,11 @@ unsafe def tagDuplicateTest : MetaM Unit := do
 unsafe def main (args : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   println! "Checking for duplicate tags."
-  let _ ← CoreM.withImportModules #[`PhysLean] (tagDuplicateTest).run'
+  let env ← importModules (loadExts := true) #[`PhysLean] {} 0
+  let fileName := ""
+  let options : Options := {}
+  let ctx : Core.Context := {fileName, options, fileMap := default }
+  let state := {env}
+  let _ ← (Lean.Core.CoreM.toIO · ctx state) do (tagDuplicateTest).run'
   println! "Finish duplicate tag check."
   pure 0

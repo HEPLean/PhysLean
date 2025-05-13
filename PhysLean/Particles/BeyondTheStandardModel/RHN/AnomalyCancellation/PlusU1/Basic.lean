@@ -20,6 +20,7 @@ open BigOperators
 /-- The ACC system for the SM plus RHN with an additional U1. -/
 @[simps!]
 def PlusU1 (n : ℕ) : ACCSystem where
+  toACCSystemCharges := SMνCharges n
   numberLinear := 4
   linearACCs := fun i =>
     match i with

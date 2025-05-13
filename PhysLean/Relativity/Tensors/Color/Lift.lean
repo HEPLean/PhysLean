@@ -84,7 +84,7 @@ def objObj' (f : OverColor C) : Rep k G := Rep.of {
   map_mul' := fun M N => by
     simp only [CategoryTheory.Functor.id_obj, _root_.map_mul]
     ext x : 2
-    simp only [LinearMap.compMultilinearMap_apply, PiTensorProduct.map_tprod, LinearMap.mul_apply]}
+    simp only [LinearMap.compMultilinearMap_apply, PiTensorProduct.map_tprod, Module.End.mul_apply]}
 
 lemma objObj'_ρ (f : OverColor C) (M : G) : (objObj' F f).ρ M =
     PiTensorProduct.map (fun x => (F.obj (Discrete.mk (f.hom x))).ρ M) := rfl
@@ -648,8 +648,9 @@ lemma mapApp'_naturality {X Y : OverColor C} (f : X ⟶ Y) :
   funext i
   simp only [discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
     eqToIso.inv, LinearEquiv.ofLinear_apply]
+  generalize_proofs h1
   have hn := ModuleCat.hom_ext_iff.mp <| Action.hom_ext_iff.mp <|
-    η.naturality (eqToHom (Discrete.eqToIso.proof_1 (Hom.toEquiv_comp_inv_apply f i)))
+    η.naturality (eqToHom h1)
   have h := LinearMap.congr_fun hn (x ((Hom.toEquiv f).symm i))
   simpa
 

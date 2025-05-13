@@ -182,9 +182,8 @@ lemma deriv_deriv_eigenfunction_succ (n : ℕ) (x : ℝ) :
   simp only [differentiableAt_const, deriv_mul, deriv_const', zero_mul, mul_zero, add_zero,
     deriv_add, zero_add]
   rw [deriv_mul (by fun_prop) (by fun_prop)]
-  simp [deriv_mul_const_field', Complex.deriv_ofReal, mul_one]
+  simp only [deriv_div_const, Complex.deriv_ofReal, one_div, Complex.ofReal_one, Complex.ofReal_pow]
   nth_rewrite 2 [deriv_physHermite_characteristic_length]
-  ring_nf
   simp only [one_div, Complex.ofReal_inv, cast_add, cast_one, add_tsub_cancel_right]
   ring
 

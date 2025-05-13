@@ -37,7 +37,6 @@ instance : Group PermGroup := Pi.group
 def chargeMap (f : PermGroup) : MSSMCharges.Charges →ₗ[ℚ] MSSMCharges.Charges where
   toFun S := toSpecies.symm (fun i => toSMSpecies i S ∘ f i, Prod.snd (toSpecies S))
   map_add' S T := by
-    simp only
     rw [charges_eq_toSpecies_eq]
     refine And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
@@ -45,7 +44,6 @@ def chargeMap (f : PermGroup) : MSSMCharges.Charges →ₗ[ℚ] MSSMCharges.Char
     rw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
     rfl
   map_smul' a S := by
-    simp only
     rw [charges_eq_toSpecies_eq]
     apply And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
@@ -67,7 +65,7 @@ def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
     rw [charges_eq_toSpecies_eq]
     refine And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
-    simp only [Pi.mul_apply, Pi.inv_apply, Equiv.Perm.coe_mul, LinearMap.mul_apply]
+    simp only [Pi.mul_apply, Pi.inv_apply, Equiv.Perm.coe_mul, Module.End.mul_apply]
     rw [chargeMap_toSpecies, chargeMap_toSpecies]
     simp only [Pi.mul_apply, Pi.inv_apply]
     rw [chargeMap_toSpecies]

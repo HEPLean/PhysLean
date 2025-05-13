@@ -232,10 +232,17 @@ unsafe def fullTODOYML : MetaM String := do
   let cat ← categoriesToYML
   let todos ← todosToYAML
   return cat ++ todos
+
 unsafe def main (args : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   println! "Generating TODO list."
-  let ymlString ← CoreM.withImportModules #[`PhysLean] (fullTODOYML).run'
+  let env ← importModules (loadExts := true) #[`PhysLean] {} 0
+  let fileName := ""
+  let options : Options := {}
+  let ctx : Core.Context := {fileName, options, fileMap := default }
+  let state := {env}
+  let ymlString' ← (Lean.Core.CoreM.toIO · ctx state) do (fullTODOYML).run'
+  let ymlString := ymlString'.1
   println! ymlString
   let fileOut : System.FilePath := {toString := "./docs/_data/TODO.yml"}
   if "mkFile" ∈ args then

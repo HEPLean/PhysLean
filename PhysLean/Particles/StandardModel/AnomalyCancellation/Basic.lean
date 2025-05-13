@@ -79,14 +79,12 @@ variable {n : ℕ}
 def accGrav : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (6 * Q S i + 3 * U S i + 3 * D S i + 2 * L S i + E S i)
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
       Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat erw [map_smul]
     simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
       eq_ratCast, Rat.cast_eq_id, id_eq]
@@ -111,14 +109,12 @@ lemma accGrav_ext {S T : (SMCharges n).Charges}
 def accSU2 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (3 * Q S i + L S i)
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
       Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat erw [map_smul]
     simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
       eq_ratCast, Rat.cast_eq_id, id_eq]
@@ -142,14 +138,12 @@ lemma accSU2_ext {S T : (SMCharges n).Charges}
 def accSU3 : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (2 * Q S i + U S i + D S i)
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
       Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat erw [map_smul]
     simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
       eq_ratCast, Rat.cast_eq_id, id_eq]
@@ -175,14 +169,12 @@ def accYY : (SMCharges n).Charges →ₗ[ℚ] ℚ where
   toFun S := ∑ i, (Q S i + 8 * U S i + 2 * D S i + 3 * L S i
     + 6 * E S i)
   map_add' S T := by
-    simp only
     repeat rw [map_add]
     simp only [SMSpecies_numberCharges, ACCSystemCharges.chargesAddCommMonoid_add, toSpecies_apply,
       Fin.isValue, mul_add]
     repeat erw [Finset.sum_add_distrib]
     ring
   map_smul' a S := by
-    simp only
     repeat erw [map_smul]
     simp only [SMSpecies_numberCharges, HSMul.hSMul, SMul.smul, toSpecies_apply, Fin.isValue,
       eq_ratCast, Rat.cast_eq_id, id_eq]

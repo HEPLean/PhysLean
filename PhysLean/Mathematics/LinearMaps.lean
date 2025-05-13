@@ -70,7 +70,6 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
     toFun := fun T => f (S, T)
     map_add' := by
       intro T1 T2
-      simp only
       rw [swap, map_add]
       exact Mathlib.Tactic.LinearCombination.add_eq_eq (swap T1 S) (swap T2 S)
     map_smul' := by

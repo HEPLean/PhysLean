@@ -244,10 +244,10 @@ lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → (realLo
   funext x
   simp only [C_eq_color, Nat.succ_eq_add_one, mul_ite, mul_one, mul_zero]
   rw [Finset.sum_eq_single (Fin.cast (by simp) x)]
-  · rw [contr_basis]
+  · erw [contr_basis]
     simp [e]
   · intro y _ hy
-    rw [contr_basis, if_neg]
+    erw [contr_basis, if_neg]
     · dsimp only [ne_eq, C_eq_color, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, e]
       simp
     · dsimp only [OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, C_eq_color, ne_eq, id_eq,

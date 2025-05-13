@@ -350,7 +350,7 @@ lemma integral_physHermite_mul_physHermite_eq_integral_deriv_exp (n m : ℕ) :
     rw [mul_assoc, mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
     ring
   simp only [h1]
-  exact MeasureTheory.integral_mul_left ((-1) ^ m) fun a =>
+  exact MeasureTheory.integral_const_mul ((-1) ^ m) fun a =>
       physHermite n a * deriv^[m] (fun x => Real.exp (-x ^ 2)) a
 
 lemma integral_physHermite_mul_physHermite_eq_integral_deriv_inductive (n m : ℕ) :
@@ -434,7 +434,7 @@ theorem physHermite_norm (n : ℕ) :
     enter [2, x]
     rw [aeval_C]
     simp
-  rw [MeasureTheory.integral_mul_left]
+  rw [MeasureTheory.integral_const_mul]
   have h1 : ∫ (x : ℝ), Real.exp (- x^2) = Real.sqrt (Real.pi) := by
     trans ∫ (x : ℝ), Real.exp (- 1 * x^2)
     · simp

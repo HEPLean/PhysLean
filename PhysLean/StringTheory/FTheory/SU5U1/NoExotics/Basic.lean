@@ -63,6 +63,32 @@ def NoExotics : Prop :=
 
 instance : Decidable 𝓜.NoExotics := instDecidableAnd
 
+lemma quantaBarFiveMatter_map_MN_sum_of_noExotics (h : 𝓜.NoExotics) :
+    ((𝓜.quantaBarFiveMatter.map QuantaBarFive.MN).map Prod.snd).sum = 0 := by
+  have h1 := h.2.1
+  simp only [quantaBarFive, Int.reduceNeg, QuantaBarFive.N, Multiset.map_cons, Multiset.sum_cons,
+    add_neg_cancel_left] at h1
+  rw [← h1]
+  simp
+
+lemma quantaBarFiveMatter_map_MN_bound_N_of_noExotics (h : 𝓜.NoExotics) :
+    ∀ a ∈ (𝓜.quantaBarFiveMatter.map QuantaBarFive.MN), - a.1 - 1 ≤ a.2 ∧ a.2 ≤ 3 := by
+  intro a ha
+  rw [@Multiset.mem_map] at ha
+  obtain ⟨a', h', rfl⟩ := ha
+  refine h.2.2.2 a' ?_
+  simp only [quantaBarFive, Int.reduceNeg, Multiset.mem_cons]
+  right
+  right
+  exact h'
+
+lemma quantaTen_map_MN_bound_N_of_noExotics (h : 𝓜.NoExotics) :
+    ∀ a ∈ (𝓜.quantaTen.map QuantaTen.MN), - a.1 ≤ a.2 ∧ a.2 ≤ a.1 := by
+  intro a ha
+  rw [@Multiset.mem_map] at ha
+  obtain ⟨a', h', rfl⟩ := ha
+  exact h.2.2.1 a' h'
+
 /-- The condition on the matter content for there to be three lepton doublets with
 exactly one pair of Higgs.
 
@@ -76,47 +102,16 @@ def ThreeLeptonDoublets : Prop :=
 
 instance : Decidable 𝓜.ThreeLeptonDoublets := decEq _ _
 
-/-!
-
-## Condition on Higges
-
--/
-
-TODO "ASFXG" "Find a better reference and explaination for the conditions related to these Higges."
-
-/-- The quanta of a bar-5 representation corresponds to an up-type higgs if it has zero
-  chirality flux and negative one hypercharge.
-
-Ref: This is used in arXiv:1507.05961 with no explanation.
-  It is also referenced in arXiv:1011.2212.
--/
-def IsUpHiggs (a : QuantaBarFive I) : Prop :=
-  a.M = 0 ∧ a.N = -1
-
-instance : DecidablePred (IsUpHiggs (I := I)) := fun _ => instDecidableAnd
-
-/--
-The quanta of a bar-5 representation corresponds to an down-type higgs if it has zero
-  chirality flux and positive on hypercharge.
-
-Ref: This is used in arXiv:1507.05961 with no explanation.
-  It is also referenced in arXiv:1011.2212.
--/
-def IsDownHiggs (a : QuantaBarFive I) : Prop :=
-  a.M = 0 ∧ a.N = 1
-
-instance : DecidablePred (IsDownHiggs (I := I)) := fun _ => instDecidableAnd
-
-
-/--
-The condition on the matter content for there to be exactly one
-5-bar representation corresponding to `IsUpHiggs` and one corresponding to `IsDownHiggs`.
--/
-def HasExclusiveHigges : Prop :=
-  𝓜.quantaBarFive.countP IsUpHiggs = 1
-  ∧ 𝓜.quantaBarFive.countP IsDownHiggs = 1
-
-instance : Decidable 𝓜.HasExclusiveHigges := instDecidableAnd
+lemma quantaBarFiveMatter_map_MN_sum_of_threeLeptonDoublets (h : 𝓜.ThreeLeptonDoublets) :
+    ((𝓜.quantaBarFiveMatter.map QuantaBarFive.MN).map fun a => |a.1 + a.2|).sum = 3 := by
+  have h1 := h
+  simp only [ThreeLeptonDoublets, quantaBarFive, Int.reduceNeg, QuantaBarFive.M, QuantaBarFive.N,
+    Multiset.map_cons, zero_add, abs_one, abs_neg, Multiset.sum_cons] at h1
+  ring_nf at h1
+  rw [← eq_neg_add_iff_add_eq] at h1
+  ring_nf at h1
+  rw [← h1]
+  simp
 
 /-!
 
@@ -128,8 +123,7 @@ instance : Decidable 𝓜.HasExclusiveHigges := instDecidableAnd
 def ValidMatterSpectrum : Prop :=
   𝓜.ThreeChiralFamiles ∧
   𝓜.NoExotics ∧
-  𝓜.ThreeLeptonDoublets ∧
-  𝓜.HasExclusiveHigges
+  𝓜.ThreeLeptonDoublets
 
 instance : Decidable 𝓜.ValidMatterSpectrum := instDecidableAnd
 
