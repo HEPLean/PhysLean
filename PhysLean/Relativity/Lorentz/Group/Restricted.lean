@@ -62,11 +62,6 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩
 
-/-
-  Work in progress: Prove that the restricted Lorentz group is the identity component of the
-  Lorentz group.
--/
-
 open TopologicalSpace
 
 /-- The group `ℤ₂`. -/
@@ -78,20 +73,14 @@ noncomputable def lorentzMap {d : ℕ} : ContinuousMonoidHom (LorentzGroup d) (�
   map_mul' := by sorry
   continuous_toFun := by sorry
 
-lemma lorentzMap_Kernel {d : ℕ} : (@lorentzMap d).ker = restricted d := by sorry
-lemma lorentzMap_Identity_Connected {d : ℕ} : IsConnected ({(1, 1)} : Set (ℤ₂ × ℤ₂)) := by sorry
-lemma lorentzMap_IsInjective {d : ℕ} : Function.Injective (@lorentzMap d) := by sorry
-lemma lorentzMap_IsOpen {d : ℕ} : IsOpenMap (@lorentzMap d) := by sorry
-lemma lorentzMap_Subset {d : ℕ} : ({(1, 1)} : Set (ℤ₂ × ℤ₂)) ⊆ Set.range (@lorentzMap d) := by sorry
+/-
+  Work in progress: Prove that the restricted Lorentz group is the identity component of the
+  Lorentz group.
+-/
 
+/-- The restricted Lorentz group is connected. -/
 lemma restricted.IsConnected {d : ℕ} : IsConnected (restricted d : Set (LorentzGroup d)) := by
-  rw [← lorentzMap_Kernel]
-  exact @IsConnected.preimage_of_isOpenMap (LorentzGroup d) (ℤ₂ × ℤ₂) _ _ {(1, 1)}
-    (@lorentzMap_Identity_Connected d)
-    (@lorentzMap d)
-    (lorentzMap_IsInjective)
-    (lorentzMap_IsOpen)
-    (lorentzMap_Subset)
+  sorry
 
 lemma restricted_eq_identity_component {d : ℕ} :
     (restricted d) = connectedComponent (1 : LorentzGroup d) := by
