@@ -265,11 +265,11 @@ lemma quantaBarFiveMatter_NQ_mem (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFiveMatter.map (fun x => (x.N, x.q)) ∈
     (hyperchargeFluxLists (𝓜.quantaBarFiveMatter.map QuantaBarFive.N)).map
-    (fun l => (l.zip (fiveChargeMultisetToList I (𝓜.quantaBarFiveMatter.map QuantaBarFive.q)) :
+    (fun l => (l.zip (fiveChargeMultisetToList I 𝓜.Q5) :
       Multiset (ℤ × ℤ))) := by
   rw [← 𝓜.hyperchargeFlux_lists_eq_hyperchargeFluxLists he h3 h3L]
   refine mem_list_of_prod_fst_snd (Multiset.map QuantaBarFive.N 𝓜.quantaBarFiveMatter)
-    ((𝓜.quantaBarFiveMatter.map QuantaBarFive.q)) (by simp)
+    𝓜.Q5 (by simp)
       (fiveChargeMultisetToList I (Multiset.map QuantaBarFive.q 𝓜.quantaBarFiveMatter)) (?_)
       (Multiset.map (fun x => (x.N, x.q)) 𝓜.quantaBarFiveMatter) (by simp) (by simp)
   symm
@@ -283,7 +283,7 @@ lemma fiveAnomalyCoefficient_mem_fiveAnomalyFreeSet
     (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.fiveAnomalyCoefficient ∈ fiveAnomalyFreeSet I (𝓜.quantaBarFiveMatter.map QuantaBarFive.N)
-      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) := by
+      𝓜.Q5 := by
   rw [fiveAnomalyFreeSet]
   rw [Multiset.mem_map]
   use 𝓜.quantaBarFiveMatter.map (fun x => (x.N, x.q))
@@ -374,8 +374,7 @@ def fiveAnomalyFreeSetCharge (I : CodimensionOneConfig) (Q : Multiset ℤ) :
 
 lemma fiveAnomalyCoefficient_mem_fiveAnomalyFreeSetCharge
     (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
-    𝓜.fiveAnomalyCoefficient ∈ fiveAnomalyFreeSetCharge I
-      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) := by
+    𝓜.fiveAnomalyCoefficient ∈ fiveAnomalyFreeSetCharge I 𝓜.Q5 := by
   have hN := 𝓜.quantaBarFiveMatter_N_mem he h3 h3L
   have hN2 := 𝓜.fiveAnomalyCoefficient_mem_fiveAnomalyFreeSet he h3 h3L
   rw [fiveAnomalyFreeSetCharge]
@@ -442,8 +441,7 @@ instance (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
 lemma anomalyFreeCharges_of_anomalyFree (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
     (h3L : 𝓜.ThreeLeptonDoublets) (hU1 : 𝓜.GaugeAnomalyU1MSSM)
     (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1) :
-    AnomalyFreeCharges I 𝓜.qHd 𝓜.qHu (𝓜.quantaTen.map QuantaTen.q)
-      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q) := by
+    AnomalyFreeCharges I 𝓜.qHd 𝓜.qHu (𝓜.quantaTen.map QuantaTen.q) 𝓜.Q5 := by
   rw [AnomalyFreeCharges]
   simp only [Prod.mk_zero_zero, Multiset.mem_map, Multiset.mem_product,
     Prod.mk_eq_zero]

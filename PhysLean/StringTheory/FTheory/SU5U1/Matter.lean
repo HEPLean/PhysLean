@@ -32,6 +32,12 @@ namespace FTheory
 
 namespace SU5U1
 
+/-!
+
+## Quanta assocaited with matter content
+
+-/
+
 /-- A type for the chirality flux of matter. This is induced by G₄-flux.
   This is often denoted `M`. -/
 abbrev ChiralityFlux : Type := ℤ
@@ -72,6 +78,12 @@ abbrev QuantaTen.MN (a : QuantaTen) : ChiralityFlux × HyperChargeFlux := (a.M, 
 /-- The extra `U(1)` charge of a 10d representation. -/
 abbrev QuantaTen.q (a : QuantaTen) : ℤ := a.2.2
 
+/-!
+
+## Condition for distinct charges
+
+-/
+
 /-- The proposition on `Multiset (QuantaBarFive I)`,
   and two `I.allowedBarFiveCharges` denoted `qHu` and `qHd` which is true
   if none of the (underlying) charges are equal. -/
@@ -93,6 +105,12 @@ def DistinctChargedTen (quantaTen : Multiset QuantaTen) : Prop :=
 
 instance (quantaTen : Multiset QuantaTen) :
     Decidable (DistinctChargedTen quantaTen) := decEq _ _
+
+/-!
+
+## Definition of the matter content
+
+-/
 
 /-- The matter content, assumed to sit in the 5-bar or 10d representation of
   `SU(5)`. -/
@@ -155,31 +173,41 @@ lemma quantaBarFiveMatter_map_MN_not_both_zero :
   obtain ⟨a, b, c, ha, rfl⟩ := ha
   exact 𝓜.chirality_charge_not_both_zero_bar_five_matter (a, b, c) ha
 
-lemma quantaBarFiveMatter_map_q_noDup :
-    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).Nodup :=
+/-!
+
+## The charges associted with the 5-bar matter content
+
+This is related to the multiset of charges associted with the 5-bar matter content, `𝓜.Q5`,
+and its properties.
+
+-/
+
+/-- The multiset of charges associted with the 5-bar matter content. -/
+abbrev Q5 : Multiset ℤ := 𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)
+
+lemma Q5_def : 𝓜.Q5 = 𝓜.quantaBarFiveMatter.map (QuantaBarFive.q) := by
+  rfl
+
+lemma Q5_noDup : 𝓜.Q5.Nodup :=
   Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaBarFiveMatter.1
 
-lemma quantaBarFiveMatter_map_q_eq_toFinset :
-    𝓜.quantaBarFiveMatter.map (QuantaBarFive.q) =
-      (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset.1 := by
-  have h1 := 𝓜.quantaBarFiveMatter_map_q_noDup
+lemma Q5_eq_toFinset : 𝓜.Q5 = 𝓜.Q5.toFinset.1 := by
+  have h1 := 𝓜.Q5_noDup
   rw [← Multiset.dedup_eq_self] at h1
   conv_lhs => rw [← h1]
   rfl
 
-lemma quantaBarFiveMatter_map_q_mem_powerset :
-    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈ I.allowedBarFiveCharges.powerset := by
+lemma Q5_mem_powerset : 𝓜.Q5.toFinset ∈ I.allowedBarFiveCharges.powerset := by
   rw [Finset.mem_powerset]
   exact 𝓜.quantaBarFiveMatter_map_q_subset_allowedBarFiveCharges
 
-lemma quantaBarFiveMatter_map_q_mem_powerset_filter_card {n : ℕ}
-    (hcard : 𝓜.quantaBarFiveMatter.card = n) :
-    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈
+lemma Q5_mem_powerset_filter_card {n : ℕ}
+    (hcard : 𝓜.quantaBarFiveMatter.card = n) : 𝓜.Q5.toFinset ∈
       I.allowedBarFiveCharges.powerset.filter fun x => x.card = n := by
   simp only [Finset.mem_filter, Finset.mem_powerset, Finset.subset_univ, true_and,
-    𝓜.quantaBarFiveMatter_map_q_mem_powerset]
-  trans (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).card
-  · rw [quantaBarFiveMatter_map_q_eq_toFinset]
+    𝓜.Q5_mem_powerset]
+  trans 𝓜.Q5.card
+  · rw [Q5_eq_toFinset]
     simp only [Multiset.toFinset_val, Multiset.toFinset_dedup]
     rfl
   · simpa using hcard
@@ -238,7 +266,7 @@ lemma quantaBarFive_chiralityFlux_two_le_filter_zero_card :
 lemma quantaBarFive_map_q_noDup : (𝓜.quantaBarFive.map (QuantaBarFive.q)).Nodup := by
   simp only [quantaBarFive, Int.reduceNeg, Multiset.map_cons, Multiset.nodup_cons,
     Multiset.mem_cons, Multiset.mem_map, Prod.exists, exists_eq_right, not_or, not_exists,
-    𝓜.quantaBarFiveMatter_map_q_noDup, and_true]
+    𝓜.Q5_noDup, and_true]
   have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter
   simp_all only [DistinctChargedBarFive, QuantaBarFive.q, Multiset.card_map, Multiset.mem_map,
     Prod.exists, exists_eq_right, not_exists, ne_eq, not_false_eq_true, implies_true, and_true]

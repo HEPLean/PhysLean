@@ -112,9 +112,9 @@ lemma not_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
   have h2 := 𝓜.qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_five_mem hcard h hTop hSpec
   rw [h2.2] at hW1
   rw [h2.1] at h1
-  have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset_filter_card hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at hW1 h1
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hmem hW1 h1
+  have hmem := 𝓜.Q5_mem_powerset_filter_card hcard
+  rw [𝓜.Q5_eq_toFinset] at hW1 h1
+  generalize 𝓜.Q5.toFinset = F at hmem hW1 h1
   revert F
   simp only [Finset.card_val, Finset.univ_eq_attach, Finset.mem_filter, Finset.mem_powerset,
     Int.reduceNeg, and_imp]

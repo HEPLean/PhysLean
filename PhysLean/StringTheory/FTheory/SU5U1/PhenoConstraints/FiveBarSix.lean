@@ -88,15 +88,15 @@ lemma qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_
     (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) : (𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-      𝓜.quantaBarFiveMatter.map QuantaBarFive.q) ∈ ({(1, {3, -2},{3, 2, -3, -2}),
+      𝓜.Q5) ∈ ({(1, {3, -2},{3, 2, -3, -2}),
       (-1, {-3, 2},{3, 2, -3, -2})} : Finset (_ × Multiset _ × Multiset _)) := by
   have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter.2.1
   have hL1 := h.2.1
   have hW1 := h.1
   have hK1 := h.2.2.2
-  have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset_filter_card hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at hW1 hK1 hL1 h1 ⊢
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hmem hW1 hK1 hL1 h1 ⊢
+  have hmem := 𝓜.Q5_mem_powerset_filter_card hcard
+  rw [𝓜.Q5_eq_toFinset] at hW1 hK1 hL1 h1 ⊢
+  generalize 𝓜.Q5.toFinset = F at hmem hW1 hK1 hL1 h1 ⊢
   revert F
   have hr := qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem 𝓜 hcard h hTop hSpec
   generalize 𝓜.qHu = qHu at hr ⊢
@@ -120,7 +120,7 @@ lemma not_quantaBarFiveMatter_card_four_same (𝓜 : MatterContent .same)
     𝓜 h hTop hSpec hcard
   generalize 𝓜.qHu = qHu at h hx hr hμ ⊢
   generalize 𝓜.quantaTen.map QuantaTen.q = qTen at h hx hr hμ ⊢
-  generalize 𝓜.quantaBarFiveMatter.map QuantaBarFive.q = qBarFive at h hx hr hμ hd ⊢
+  generalize 𝓜.Q5 = qBarFive at h hx hr hμ hd ⊢
   have hqHd := 𝓜.qHd_mem_allowedBarFiveCharges
   generalize 𝓜.qHd = qHd at hqHd h hx hr hμ hd ⊢
   revert qHd
@@ -203,9 +203,9 @@ lemma not_quantaBarFiveMatter_card_four_nearestNeighbor
   have hL1 := h.2.1
   have hW1 := h.1
   have hK1 := h.2.2.2
-  have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset_filter_card hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at hW1 hK1 hL1 h1
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hmem hW1 hK1 hL1 h1 ⊢
+  have hmem := 𝓜.Q5_mem_powerset_filter_card hcard
+  rw [𝓜.Q5_eq_toFinset] at hW1 hK1 hL1 h1
+  generalize 𝓜.Q5.toFinset = F at hmem hW1 hK1 hL1 h1 ⊢
   revert F
   have hr := qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nearestNeighbor
     𝓜 hcard h hTop hSpec
@@ -283,9 +283,9 @@ lemma not_quantaBarFiveMatter_card_four_nextToNearestNeighbor
   have hL1 := h.2.1
   have hW1 := h.1
   have hK1 := h.2.2.2
-  have hmem := 𝓜.quantaBarFiveMatter_map_q_mem_powerset_filter_card hcard
-  rw [𝓜.quantaBarFiveMatter_map_q_eq_toFinset] at hW1 hK1 hL1 h1
-  generalize (𝓜.quantaBarFiveMatter.map QuantaBarFive.q).toFinset = F at hmem hW1 hK1 hL1 h1 ⊢
+  have hmem := 𝓜.Q5_mem_powerset_filter_card hcard
+  rw [𝓜.Q5_eq_toFinset] at hW1 hK1 hL1 h1
+  generalize 𝓜.Q5.toFinset = F at hmem hW1 hK1 hL1 h1 ⊢
   revert F
   have hr := qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nextToNearestNeighbor
     𝓜 hcard h hTop hSpec
