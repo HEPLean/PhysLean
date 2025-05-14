@@ -32,19 +32,19 @@ namespace MatterContent
 set_option maxRecDepth 2000 in
 lemma zero_not_mem_quantaTen_of_quantaBarFiveMatter_card_four (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    0 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    0 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    1 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    1 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma neg_one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    -1 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    -1 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 20000 in
@@ -53,7 +53,7 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa)
     (hSpec : 𝓜.ValidMatterSpectrum) :
-    (𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q) ∈ ({
+    (𝓜.qHu, 𝓜.Q10) ∈ ({
       (0, {-3, 3}),
       (1, {3, -2}),
       (-1, {-3, 2}),
@@ -67,13 +67,13 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem
       (0, {3, 2, -2}),
       (1, {3, 2, -2})} :
       Finset (_ × Multiset _)) := by
-  have hmem := 𝓜.quantaTen_map_q_powerset_filter_card_three hSpec.2.1 hSpec.1
+  have hmem := 𝓜.Q10_mem_powerset_filter_card_three hSpec.2.1 hSpec.1
   rw [HasATopYukawa] at hTop
   have hN0 := zero_not_mem_quantaTen_of_quantaBarFiveMatter_card_four 𝓜 hcard h
   have hN1 := one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four 𝓜 hcard h
   have hNneg1 := neg_one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four 𝓜 hcard h
-  rw [quantaTen_map_q_eq_toFinset] at hTop hN0 hN1 hNneg1 ⊢
-  generalize (𝓜.quantaTen.map QuantaTen.q).toFinset = T at hmem hTop hN0 hN1 hNneg1 ⊢
+  rw [Q10_eq_toFinset] at hTop hN0 hN1 hNneg1 ⊢
+  generalize 𝓜.Q10.toFinset = T at hmem hTop hN0 hN1 hNneg1 ⊢
   revert T
   have hqHu := 𝓜.qHu_mem_allowedBarFiveCharges
   generalize 𝓜.qHu = Q at hqHu ⊢
@@ -87,8 +87,8 @@ lemma qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_
     (𝓜 : MatterContent .same)
     (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum)
-    (hcard : 𝓜.quantaBarFiveMatter.card = 4) : (𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-      𝓜.Q5) ∈ ({(1, {3, -2},{3, 2, -3, -2}),
+    (hcard : 𝓜.quantaBarFiveMatter.card = 4) : (𝓜.qHu, 𝓜.Q10, 𝓜.Q5) ∈
+      ({(1, {3, -2},{3, 2, -3, -2}),
       (-1, {-3, 2},{3, 2, -3, -2})} : Finset (_ × Multiset _ × Multiset _)) := by
   have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter.2.1
   rw [← 𝓜.Q5_def] at h1
@@ -101,7 +101,7 @@ lemma qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_
   revert F
   have hr := qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem 𝓜 hcard h hTop hSpec
   generalize 𝓜.qHu = qHu at hr ⊢
-  generalize 𝓜.quantaTen.map QuantaTen.q = qTen at hr ⊢
+  generalize 𝓜.Q10 = qTen at hr ⊢
   fin_cases hr
   all_goals
     decide
@@ -121,7 +121,7 @@ lemma not_quantaBarFiveMatter_card_four_same (𝓜 : MatterContent .same)
   have hr := qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_four_mem_same
     𝓜 h hTop hSpec hcard
   generalize 𝓜.qHu = qHu at h hx hr hμ ⊢
-  generalize 𝓜.quantaTen.map QuantaTen.q = qTen at h hx hr hμ ⊢
+  generalize 𝓜.Q10 = qTen at h hx hr hμ ⊢
   generalize 𝓜.Q5 = qBarFive at h hx hr hμ hd ⊢
   have hqHd := 𝓜.qHd_mem_allowedBarFiveCharges
   generalize 𝓜.qHd = qHd at hqHd h hx hr hμ hd ⊢
@@ -143,21 +143,21 @@ set_option maxRecDepth 2000 in
 lemma neg_two_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
     (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    -2 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    -2 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma three_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
     (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    3 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    3 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma eight_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor
     (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    8 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    8 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 -- 10: {-12, -7, 13}
@@ -169,7 +169,7 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nearestNeig
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa)
     (hSpec : 𝓜.ValidMatterSpectrum) :
-    (𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q) ∈ ({
+    (𝓜.qHu, 𝓜.Q10) ∈ ({
       (-14, {-7}),
       (-14, {-7, -12}),
       (-14, {-7, 13}),
@@ -179,13 +179,13 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nearestNeig
       (6, {-12, -7, 13}),
       (1, {-12, -7, 13})} :
       Finset (_ × Multiset _)) := by
-  have hmem := 𝓜.quantaTen_map_q_powerset_filter_card_three hSpec.2.1 hSpec.1
+  have hmem := 𝓜.Q10_mem_powerset_filter_card_three hSpec.2.1 hSpec.1
   rw [HasATopYukawa] at hTop
   have hN0 := neg_two_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor 𝓜 hcard h
   have hN1 := three_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor 𝓜 hcard h
   have hNneg1 := eight_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nearestNeighbor 𝓜 hcard h
-  rw [quantaTen_map_q_eq_toFinset] at hTop hN0 hN1 hNneg1 ⊢
-  generalize (𝓜.quantaTen.map QuantaTen.q).toFinset = T at hmem hTop hN0 hN1 hNneg1 ⊢
+  rw [Q10_eq_toFinset] at hTop hN0 hN1 hNneg1 ⊢
+  generalize 𝓜.Q10.toFinset = T at hmem hTop hN0 hN1 hNneg1 ⊢
   revert T
   have hqHu := 𝓜.qHu_mem_allowedBarFiveCharges
   generalize 𝓜.qHu = Q at hqHu ⊢
@@ -213,7 +213,7 @@ lemma not_quantaBarFiveMatter_card_four_nearestNeighbor
   have hr := qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nearestNeighbor
     𝓜 hcard h hTop hSpec
   generalize 𝓜.qHu = qHu at hr ⊢
-  generalize 𝓜.quantaTen.map QuantaTen.q = qTen at hr ⊢
+  generalize 𝓜.Q10 = qTen at hr ⊢
   fin_cases hr
   all_goals
     decide
@@ -230,21 +230,21 @@ set_option maxRecDepth 2000 in
 lemma neg_four_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
     (𝓜 : MatterContent .nextToNearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    -4 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    -4 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma one_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
     (𝓜 : MatterContent .nextToNearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    1 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    1 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 2000 in
 lemma six_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
     (𝓜 : MatterContent .nextToNearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained) :
-    6 ∉ 𝓜.quantaTen.map QuantaTen.q := by
+    6 ∉ 𝓜.Q10 := by
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 -- Ten charges : {-9, -4, 1, 6, 11}
@@ -256,8 +256,8 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nextToNeare
     (hcard : 𝓜.quantaBarFiveMatter.card = 4) (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa)
     (hSpec : 𝓜.ValidMatterSpectrum) :
-    𝓜.qHu = 2 ∧ 𝓜.quantaTen.map QuantaTen.q = {-9, 11} := by
-  have hmem := 𝓜.quantaTen_map_q_powerset_filter_card_three hSpec.2.1 hSpec.1
+    𝓜.qHu = 2 ∧ 𝓜.Q10 = {-9, 11} := by
+  have hmem := 𝓜.Q10_mem_powerset_filter_card_three hSpec.2.1 hSpec.1
   rw [HasATopYukawa] at hTop
   have hN0 := neg_four_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
     𝓜 hcard h
@@ -265,8 +265,8 @@ lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_four_mem_nextToNeare
     𝓜 hcard h
   have hNneg1 := six_not_mem_quantaTen_of_quantaBarFiveMatter_card_four_nextToNearestNeighbor
     𝓜 hcard h
-  rw [quantaTen_map_q_eq_toFinset] at hTop hN0 hN1 hNneg1 ⊢
-  generalize (𝓜.quantaTen.map QuantaTen.q).toFinset = T at hmem hTop hN0 hN1 hNneg1 ⊢
+  rw [Q10_eq_toFinset] at hTop hN0 hN1 hNneg1 ⊢
+  generalize 𝓜.Q10.toFinset = T at hmem hTop hN0 hN1 hNneg1 ⊢
   revert T
   have hqHu := 𝓜.qHu_mem_allowedBarFiveCharges
   generalize 𝓜.qHu = Q at hqHu ⊢

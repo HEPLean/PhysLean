@@ -33,8 +33,7 @@ lemma quantaBarFiveMatter_of_card_three
     (𝓜 : MatterContent .same)
     (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum)
-    (hcard : 𝓜.quantaBarFiveMatter.card = 3) : (𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-      𝓜.Q5) ∈ ({
+    (hcard : 𝓜.quantaBarFiveMatter.card = 3) : (𝓜.qHu, 𝓜.Q10, 𝓜.Q5) ∈ ({
   (-2, {-1}, {-3, -1, 0}), (-2, {-1}, {-3, -1, 1}), (-2, {-1}, {-3, 0, 2}), (-2, {-1}, {-3, 1, 2}),
   (0, {0}, {-3, -2, -1}), (0, {0}, {-3, -2, 1}), (0, {0}, {-2, -1, 3}), (0, {0}, {-3, -1, 2}),
   (0, {0}, {1, 2, 3}), (0, {0}, {-1, 2, 3}), (0, {0}, {-3, 1, 2}), (0, {0}, {-2, 1, 3}),
@@ -57,7 +56,7 @@ lemma quantaBarFiveMatter_of_card_three
   revert F
   have hr := qHu_quantaTen_q_mem_of_card_three_config_same 𝓜 hcard h hTop hSpec
   generalize 𝓜.qHu = qHu at hr ⊢
-  generalize 𝓜.quantaTen.map QuantaTen.q = qTen at hr ⊢
+  generalize 𝓜.Q10 = qTen at hr ⊢
   generalize ha : (qHu, qTen) = a at hr
   have ha1 :qHu = a.1 := by rw [← ha]
   have ha2 :qTen = a.2 := by rw [← ha]
@@ -72,8 +71,7 @@ lemma quantaBarFiveMatter_of_card_three_with_qHd
     (h : 𝓜.ProtonDecayU1Constrained)
     (hx : 𝓜.RParityU1Constrained)
     (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum)
-    (hcard : 𝓜.quantaBarFiveMatter.card = 3) : (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-      𝓜.Q5) ∈ ({
+    (hcard : 𝓜.quantaBarFiveMatter.card = 3) : (𝓜.qHd, 𝓜.qHu, 𝓜.Q10, 𝓜.Q5) ∈ ({
         (1, -2, {-1}, {-3, -1, 0}), (2, -2, {-1}, {-3, -1, 0}), (0, -2, {-1}, {-3, -1, 1}),
         (2, -2, {-1}, {-3, -1, 1}), (1, -2, {-1}, {-3, 0, 2}), (0, -2, {-1}, {-3, 1, 2}),
         (0, 2, {1}, {-2, -1, 3}), (-1, 2, {1}, {-2, 0, 3}), (-2, 2, {1}, {-1, 1, 3}),
@@ -95,7 +93,7 @@ lemma quantaBarFiveMatter_of_card_three_with_qHd
   rw [← 𝓜.Q5_def] at hd
   have hMem := 𝓜.quantaBarFiveMatter_of_card_three h hTop hSpec hcard
   generalize 𝓜.qHu = qHu at hMem h hx hμ ⊢
-  generalize 𝓜.quantaTen.map QuantaTen.q = qTen at hMem h hx hμ ⊢
+  generalize 𝓜.Q10 = qTen at hMem h hx hμ ⊢
   generalize 𝓜.Q5 = qBarFive at hMem h hx hμ hd ⊢
   generalize ha : (qHu, qTen, qBarFive) = a at hMem
   have ha1 : qHu = a.1 := by rw [← ha]
@@ -123,17 +121,16 @@ lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_one
     (h3L : 𝓜.ThreeLeptonDoublets) (hU1 : 𝓜.GaugeAnomalyU1MSSM)
     (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1)
     (hcard : 𝓜.quantaBarFiveMatter.card = 3)
-    (hcardTen : 𝓜.quantaTen.card = 1) : (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-      𝓜.Q5) ∈ ({
+    (hcardTen : 𝓜.quantaTen.card = 1) : (𝓜.qHd, 𝓜.qHu, 𝓜.Q10, 𝓜.Q5) ∈ ({
       (2, -2, {-1}, {-3, -1, 1}), (-2, 2, {1}, {-1, 1, 3}), (2, -2, {-3, -1}, {-3, -1, 1}),
       (3, -1, {-3, 2}, {2, 0, -3}), (-3, 1, {-2, 3}, {-2, 0, 3}), (-2, 2, {1, 3}, {-1, 1, 3})} :
       Finset (ℤ × ℤ × Multiset ℤ × Multiset ℤ)) := by
   have hmem := 𝓜.quantaBarFiveMatter_of_card_three_with_qHd hμ h hx hTop hSpec hcard
   have acc := 𝓜.anomalyFreeCharges_of_anomalyFree he h3 h3L hU1 hU1U1
-  have hcardTen : (𝓜.quantaTen.map QuantaTen.q).card = 1 := by simpa using hcardTen
+  have hcardTen : 𝓜.Q10.card = 1 := by simpa using hcardTen
   generalize 𝓜.qHu = qHu at *
   generalize 𝓜.qHd = qHd at *
-  generalize 𝓜.quantaTen.map QuantaTen.q = Q10 at *
+  generalize 𝓜.Q10 = Q10 at *
   generalize 𝓜.Q5 = Q5 at *
   have hacc : AnomalyFreeCharges .same (qHd, qHu, Q10, Q5).1 (qHd, qHu, Q10, Q5).2.1
     (qHd, qHu, Q10, Q5).2.2.1 (qHd, qHu, Q10, Q5).2.2.2 := acc
@@ -154,17 +151,16 @@ lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_two
     (h3L : 𝓜.ThreeLeptonDoublets) (hU1 : 𝓜.GaugeAnomalyU1MSSM)
     (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1)
     (hcard : 𝓜.quantaBarFiveMatter.card = 3)
-    (hcardTen : 𝓜.quantaTen.card = 2) : (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-      𝓜.Q5) ∈ ({
+    (hcardTen : 𝓜.quantaTen.card = 2) : (𝓜.qHd, 𝓜.qHu, 𝓜.Q10, 𝓜.Q5) ∈ ({
       (2, -2, {-1}, {-3, -1, 1}), (-2, 2, {1}, {-1, 1, 3}), (2, -2, {-3, -1}, {-3, -1, 1}),
       (3, -1, {-3, 2}, {2, 0, -3}), (-3, 1, {-2, 3}, {-2, 0, 3}), (-2, 2, {1, 3}, {-1, 1, 3})} :
       Finset (ℤ × ℤ × Multiset ℤ × Multiset ℤ)) := by
   have hmem := 𝓜.quantaBarFiveMatter_of_card_three_with_qHd hμ h hx hTop hSpec hcard
   have acc := 𝓜.anomalyFreeCharges_of_anomalyFree he h3 h3L hU1 hU1U1
-  have hcardTen : (𝓜.quantaTen.map QuantaTen.q).card = 2 := by simpa using hcardTen
+  have hcardTen : 𝓜.Q10.card = 2 := by simpa using hcardTen
   generalize 𝓜.qHu = qHu at *
   generalize 𝓜.qHd = qHd at *
-  generalize 𝓜.quantaTen.map QuantaTen.q = Q10 at *
+  generalize 𝓜.Q10 = Q10 at *
   generalize 𝓜.Q5 = Q5 at *
   have hacc : AnomalyFreeCharges .same (qHd, qHu, Q10, Q5).1 (qHd, qHu, Q10, Q5).2.1
     (qHd, qHu, Q10, Q5).2.2.1 (qHd, qHu, Q10, Q5).2.2.2 := acc
@@ -185,7 +181,7 @@ lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three
     (h3L : 𝓜.ThreeLeptonDoublets) (hU1 : 𝓜.GaugeAnomalyU1MSSM)
     (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1)
     (hcard : 𝓜.quantaBarFiveMatter.card = 3) :
-    (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q, 𝓜.Q5) ∈ ({
+    (𝓜.qHd, 𝓜.qHu, 𝓜.Q10, 𝓜.Q5) ∈ ({
       (2, -2, {-1}, {-3, -1, 1}), (-2, 2, {1}, {-1, 1, 3}), (2, -2, {-3, -1}, {-3, -1, 1}),
       (3, -1, {-3, 2}, {2, 0, -3}), (-3, 1, {-2, 3}, {-2, 0, 3}), (-2, 2, {1, 3}, {-1, 1, 3})} :
       Finset (ℤ × ℤ × Multiset ℤ × Multiset ℤ)) := by
@@ -196,11 +192,9 @@ lemma charges_of_anomalyFree_quantaBarFiveMatter_card_three
   · exact charges_of_anomalyFree_quantaBarFiveMatter_card_three_quantaTen_card_two
       𝓜 hμ h hx hTop hSpec he h3 h3L hU1 hU1U1 hcard hcardTenTwo
   have hmem := 𝓜.quantaBarFiveMatter_of_card_three_with_qHd hμ h hx hTop hSpec hcard
-  have hcardTenOne : ¬ (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-      𝓜.Q5).2.2.1.card = 1 := by simpa using hcardTenOne
-  have hcardTenTwo : ¬ (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q,
-    𝓜.Q5).2.2.1.card = 2 := by simpa using hcardTenTwo
-  generalize (𝓜.qHd, 𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q, 𝓜.Q5) = a at *
+  have hcardTenOne : ¬ (𝓜.qHd, 𝓜.qHu, 𝓜.Q10, 𝓜.Q5).2.2.1.card = 1 := by simpa using hcardTenOne
+  have hcardTenTwo : ¬ (𝓜.qHd, 𝓜.qHu, 𝓜.Q10, 𝓜.Q5).2.2.1.card = 2 := by simpa using hcardTenTwo
+  generalize (𝓜.qHd, 𝓜.qHu, 𝓜.Q10, 𝓜.Q5) = a at *
   apply False.elim
   revert a
   decide

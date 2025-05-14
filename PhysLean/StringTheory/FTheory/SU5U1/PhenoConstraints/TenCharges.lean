@@ -51,7 +51,7 @@ lemma quantaTen_q_not_mem_of_card_two_config_nearestNeighbor (𝓜 : MatterConte
     ∀ S ∈ ({{-12, -2}, {-12, 13}, {-7, -2}, {-7, 3}, {-7, 8}, {-2, 3},
       {-2, 8}, {-2, 13}, {3, 8}, {-12, -7, 13},
       {-12, 3, 13}, {-12, 8, 13}} : Finset (Multiset ℤ)),
-    ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q := by
+    ¬ S ⊆ 𝓜.Q10 := by
   intro S hS
   fin_cases hS
   all_goals
@@ -67,7 +67,7 @@ lemma quantaTen_q_not_mem_of_card_two_config_nearestNeighbor (𝓜 : MatterConte
 lemma quantaTen_q_not_mem_of_card_three_config_nearestNeighbor (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 3) (h : 𝓜.ProtonDecayU1Constrained) :
     ∀ S ∈ ({{-2}, {3}, {-12, 13}, {-7, 8}, {-7, 13}, {-12, -7, 13}} : Finset (Multiset ℤ)),
-    ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q := by
+    ¬ S ⊆ 𝓜.Q10 := by
   intro S hS
   fin_cases hS
   all_goals
@@ -78,7 +78,7 @@ lemma quantaTen_q_not_mem_of_card_three_config_same (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 3) (h : 𝓜.ProtonDecayU1Constrained) :
     ∀ S ∈ ({{-3, 0}, {-3, 1}, {-3, 3}, {-2, -1}, {-2, 0}, {-2, 1}, {-2, 2},
     {-1, 0}, {-1, 1}, {-1, 2}, {-1, 3}, {0, 1}, {0, 2}, {0, 3}, {1, 2}} : Finset (Multiset ℤ)),
-    ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q := by
+    ¬ S ⊆ 𝓜.Q10 := by
   intro S hS
   fin_cases hS
   all_goals
@@ -88,7 +88,7 @@ lemma quantaTen_q_not_mem_of_card_three_config_nextToNearestNeighbor
     (𝓜 : MatterContent .nextToNearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 3) (h : 𝓜.ProtonDecayU1Constrained) :
     ∀ S ∈ ({{-4}, {1}, {6}, {-9, 11}} : Finset (Multiset ℤ)),
-    ¬ S ⊆ 𝓜.quantaTen.map QuantaTen.q := by
+    ¬ S ⊆ 𝓜.Q10 := by
   intro S hS
   fin_cases hS
   all_goals
@@ -98,13 +98,13 @@ set_option maxRecDepth 20000 in
 lemma qHu_quantaTen_q_mem_of_card_three_config_same
     (𝓜 : MatterContent .same) (hcard : 𝓜.quantaBarFiveMatter.card = 3)
     (h : 𝓜.ProtonDecayU1Constrained) (hTop : 𝓜.HasATopYukawa) (hSpec : 𝓜.ValidMatterSpectrum) :
-    (𝓜.qHu, 𝓜.quantaTen.map QuantaTen.q) ∈ ({(-2, {-3, -1}), (-2, {-1}), (-1, {-3, 2}),
+    (𝓜.qHu, 𝓜.Q10) ∈ ({(-2, {-3, -1}), (-2, {-1}), (-1, {-3, 2}),
     (0, {0}), (2, {1}), (1, {-2, 3}), (2, {1, 3})} : Finset (ℤ × Multiset ℤ)) := by
-  have hmem := 𝓜.quantaTen_map_q_powerset_filter_card_three hSpec.2.1 hSpec.1
+  have hmem := 𝓜.Q10_mem_powerset_filter_card_three hSpec.2.1 hSpec.1
   rw [HasATopYukawa] at hTop
   have hN0 := quantaTen_q_not_mem_of_card_three_config_same 𝓜 hcard h
-  rw [quantaTen_map_q_eq_toFinset] at hTop hN0 ⊢
-  generalize (𝓜.quantaTen.map QuantaTen.q).toFinset = T at hmem hTop hN0 ⊢
+  rw [Q10_eq_toFinset] at hTop hN0 ⊢
+  generalize 𝓜.Q10.toFinset = T at hmem hTop hN0 ⊢
   revert T
   have hqHu := 𝓜.qHu_mem_allowedBarFiveCharges
   generalize 𝓜.qHu = Q at hqHu ⊢

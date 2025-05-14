@@ -309,11 +309,11 @@ lemma quantaTen_NQ_mem (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) :
     𝓜.quantaTen.map (fun x => (x.N, x.q)) ∈
     (hyperchargeFluxListsTen (𝓜.quantaTen.map QuantaTen.N)).map
-    (fun l => (l.zip (tenChargeMultisetToList I (𝓜.quantaTen.map QuantaTen.q)) :
+    (fun l => (l.zip (tenChargeMultisetToList I 𝓜.Q10) :
       Multiset (ℤ × ℤ))) := by
   rw [← 𝓜.hyperchargeFlux_lists_eq_hyperchargeFluxListsTen he h3]
   refine mem_list_of_prod_fst_snd (Multiset.map QuantaTen.N 𝓜.quantaTen)
-    ((𝓜.quantaTen.map QuantaTen.q)) (by simp)
+    (𝓜.Q10) (by simp)
       (tenChargeMultisetToList I (Multiset.map QuantaTen.q 𝓜.quantaTen)) (?_)
       (Multiset.map (fun x => (x.N, x.q)) 𝓜.quantaTen) (by simp) (by simp)
   symm
@@ -326,8 +326,7 @@ lemma quantaTen_NQ_mem (he : 𝓜.NoExotics)
 lemma tenAnomalyCoefficient_mem_tenAnomalyFreeSet
     (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) :
-    𝓜.tenAnomalyCoefficient ∈ tenAnomalyFreeSet I (𝓜.quantaTen.map QuantaTen.N)
-      (𝓜.quantaTen.map QuantaTen.q) := by
+    𝓜.tenAnomalyCoefficient ∈ tenAnomalyFreeSet I (𝓜.quantaTen.map QuantaTen.N) 𝓜.Q10 := by
   rw [tenAnomalyFreeSet]
   rw [Multiset.mem_map]
   use 𝓜.quantaTen.map (fun x => (x.N, x.q))
@@ -404,8 +403,7 @@ def tenAnomalyFreeSetCharge (I : CodimensionOneConfig) (Q : Multiset ℤ) :
 
 lemma tenAnomalyCoefficient_mem_tenAnomalyFreeSetCharge
     (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles) :
-    𝓜.tenAnomalyCoefficient ∈ tenAnomalyFreeSetCharge I
-      (𝓜.quantaTen.map QuantaTen.q) := by
+    𝓜.tenAnomalyCoefficient ∈ tenAnomalyFreeSetCharge I 𝓜.Q10 := by
   have hN := 𝓜.quantaTen_N_mem he h3
   have hN2 := 𝓜.tenAnomalyCoefficient_mem_tenAnomalyFreeSet he h3
   rw [tenAnomalyFreeSetCharge]
@@ -441,7 +439,7 @@ instance (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
 lemma anomalyFreeCharges_of_anomalyFree (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeChiralFamiles)
     (h3L : 𝓜.ThreeLeptonDoublets) (hU1 : 𝓜.GaugeAnomalyU1MSSM)
     (hU1U1 : 𝓜.GaugeAnomalyU1YU1U1) :
-    AnomalyFreeCharges I 𝓜.qHd 𝓜.qHu (𝓜.quantaTen.map QuantaTen.q) 𝓜.Q5 := by
+    AnomalyFreeCharges I 𝓜.qHd 𝓜.qHu 𝓜.Q10 𝓜.Q5 := by
   rw [AnomalyFreeCharges]
   simp only [Prod.mk_zero_zero, Multiset.mem_map, Multiset.mem_product,
     Prod.mk_eq_zero]

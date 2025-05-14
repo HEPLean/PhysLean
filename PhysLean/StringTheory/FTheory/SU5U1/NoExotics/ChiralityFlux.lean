@@ -451,16 +451,15 @@ lemma quantaTen_card_le_three (he : 𝓜.NoExotics)
     (h3 : 𝓜.ThreeChiralFamiles) : 𝓜.quantaTen.card ≤ 3 := by
   simpa using quantaTen_chiralityFlux_card_le_three he h3
 
-lemma quantaTen_map_q_powerset_filter_card_three (he : 𝓜.NoExotics)
-    (h3 : 𝓜.ThreeChiralFamiles) :
-    (𝓜.quantaTen.map QuantaTen.q).toFinset ∈
+lemma Q10_mem_powerset_filter_card_three (he : 𝓜.NoExotics)
+    (h3 : 𝓜.ThreeChiralFamiles) : 𝓜.Q10.toFinset ∈
     I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 3) := by
   rw [Finset.mem_filter]
   apply And.intro
-  · exact 𝓜.quantaTen_map_q_mem_powerset
+  · exact 𝓜.Q10_mem_powerset
   · apply le_of_eq_of_le _ (𝓜.quantaTen_card_le_three he h3)
-    trans (𝓜.quantaTen.map QuantaTen.q).card
-    · conv_rhs => rw [𝓜.quantaTen_map_q_eq_toFinset]
+    trans 𝓜.Q10.card
+    · conv_rhs => rw [𝓜.Q10_eq_toFinset]
       simp only [Multiset.toFinset_val]
       rfl
     · rw [Multiset.card_map]

@@ -175,7 +175,7 @@ lemma quantaBarFiveMatter_map_MN_not_both_zero :
 
 /-!
 
-## The charges associted with the 5-bar matter content
+## Q5: The charges associted with the 5-bar matter content
 
 This is related to the multiset of charges associted with the 5-bar matter content, `𝓜.Q5`,
 and its properties.
@@ -294,20 +294,30 @@ lemma quantaBarFive_card_le_seven : 𝓜.quantaBarFive.card ≤ 7 := by
 ## Some properties of quantaTen
 
 -/
+/-!
 
-lemma quantaTen_map_q_nodup :
-    (𝓜.quantaTen.map (QuantaTen.q)).Nodup :=
+## Q10: The charges associted with the 10d matter content
+
+This is related to the multiset of charges associted with the 10d matter content, `𝓜.Q10`,
+and its properties.
+
+-/
+
+/-- The multiset of charges associted with the 10d matter content. -/
+abbrev Q10 : Multiset ℤ := 𝓜.quantaTen.map QuantaTen.q
+
+lemma Q10_def : 𝓜.Q10 = 𝓜.quantaTen.map QuantaTen.q := by rfl
+
+lemma Q10_nodup : 𝓜.Q10.Nodup :=
   Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaTen
 
-lemma quantaTen_map_q_eq_toFinset :
-    𝓜.quantaTen.map (QuantaTen.q) = (𝓜.quantaTen.map QuantaTen.q).toFinset.1 := by
-  have h1 := 𝓜.quantaTen_map_q_nodup
+lemma Q10_eq_toFinset : 𝓜.Q10 = 𝓜.Q10.toFinset.1 := by
+  have h1 := 𝓜.Q10_nodup
   rw [← Multiset.dedup_eq_self] at h1
   conv_lhs => rw [← h1]
   rfl
 
-lemma quantaTen_map_q_mem_powerset :
-    (𝓜.quantaTen.map (QuantaTen.q)).toFinset ∈ I.allowedTenCharges.powerset := by
+lemma Q10_mem_powerset : 𝓜.Q10.toFinset ∈ I.allowedTenCharges.powerset := by
   rw [Finset.mem_powerset]
   exact 𝓜.quantaTen_map_q_subset_allowedTenCharges
 
