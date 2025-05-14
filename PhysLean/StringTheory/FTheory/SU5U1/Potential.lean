@@ -103,7 +103,7 @@ def causeProtonDecay : Finset PotentialTerm :=
 - `bottomYukawa` : `qHd × Q5 × Q10`
 -/
 def ChargeType : PotentialTerm → Type
-  /- qHd × qHu -/
+    /- qHd × qHu -/
   | μ => ℤ × ℤ
   /- qHu × Q5 -/
   | β => ℤ × Multiset ℤ
