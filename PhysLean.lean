@@ -264,4 +264,5 @@ import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarFive
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSix
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.TenCharges
+import PhysLean.StringTheory.FTheory.SU5U1.Potential
 import PhysLean.Thermodynamics.Basic
