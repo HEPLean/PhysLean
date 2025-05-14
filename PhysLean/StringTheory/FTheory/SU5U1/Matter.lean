@@ -193,6 +193,10 @@ abbrev Q5 : Multiset ℤ := 𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)
 lemma Q5_def : 𝓜.Q5 = 𝓜.quantaBarFiveMatter.map (QuantaBarFive.q) := by
   rfl
 
+lemma Q5_subset_allowedBarFiveCharges : 𝓜.Q5.toFinset ⊆ I.allowedBarFiveCharges := by
+  rw [Q5_def]
+  exact 𝓜.quantaBarFiveMatter_map_q_subset_allowedBarFiveCharges
+
 lemma Q5_noDup : 𝓜.Q5.Nodup :=
   Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaBarFiveMatter.1
 
@@ -312,6 +316,10 @@ and its properties.
 abbrev Q10 : Multiset ℤ := 𝓜.quantaTen.map QuantaTen.q
 
 lemma Q10_def : 𝓜.Q10 = 𝓜.quantaTen.map QuantaTen.q := by rfl
+
+lemma Q10_subset_allowedTenCharges : 𝓜.Q10.toFinset ⊆ I.allowedTenCharges := by
+  rw [Q10_def]
+  exact 𝓜.quantaTen_map_q_subset_allowedTenCharges
 
 lemma Q10_nodup : 𝓜.Q10.Nodup :=
   Multiset.dedup_card_eq_card_iff_nodup.mp 𝓜.distinctly_charged_quantaTen

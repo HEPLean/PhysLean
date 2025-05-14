@@ -24,7 +24,7 @@ variable {I : CodimensionOneConfig}
 namespace MatterContent
 
 set_option maxRecDepth 1000 in
-lemma qHu_eq_quantaTen_map_q_eq_of_card_one_same (𝓜 : MatterContent .same)
+lemma qHu_eq_Q10_eq_of_card_one_same (𝓜 : MatterContent .same)
     (h : 𝓜.HasATopYukawa) (h1 : 𝓜.quantaTen.card = 1) :
     (𝓜.qHu = 0 ∧ 𝓜.Q10 = {0}) ∨
     (𝓜.qHu = 2 ∧ 𝓜.Q10 = {1}) ∨
@@ -34,7 +34,7 @@ lemma qHu_eq_quantaTen_map_q_eq_of_card_one_same (𝓜 : MatterContent .same)
     exact h1
   rw [HasATopYukawa] at h
   rw [Q10_eq_toFinset] at h h1 ⊢
-  have hSubset := 𝓜.quantaTen_map_q_subset_allowedTenCharges
+  have hSubset := 𝓜.Q10_subset_allowedTenCharges
   have hMem : (Multiset.map QuantaTen.q 𝓜.quantaTen).toFinset ∈ (Finset.powerset
       (CodimensionOneConfig.same.allowedTenCharges)).filter (fun x => x.card = 1) := by
     rw [Finset.mem_filter]
@@ -78,7 +78,7 @@ lemma two_not_mem_quantaTen_of_quantaBarFiveMatter_card_five (𝓜 : MatterConte
   exact 𝓜.lambdaTerm_K1Term_W1Term_singleton_check hcard h _
 
 set_option maxRecDepth 20000 in
-lemma qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_five_mem
+lemma qHu_eq_Q10_eq_of_quantaBarFiveMatter_card_five_mem
     (𝓜 : MatterContent .same)
     (hcard : 𝓜.quantaBarFiveMatter.card = 5) (h : 𝓜.ProtonDecayU1Constrained)
     (hTop : 𝓜.HasATopYukawa)
@@ -109,7 +109,7 @@ lemma not_quantaBarFiveMatter_card_five (𝓜 : MatterContent .same)
   intro hcard
   have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter.2.1
   have hW1 := h.1
-  have h2 := 𝓜.qHu_eq_quantaTen_map_q_eq_of_quantaBarFiveMatter_card_five_mem hcard h hTop hSpec
+  have h2 := 𝓜.qHu_eq_Q10_eq_of_quantaBarFiveMatter_card_five_mem hcard h hTop hSpec
   rw [h2.2] at hW1
   rw [h2.1] at h1
   have hmem := 𝓜.Q5_mem_powerset_filter_card hcard

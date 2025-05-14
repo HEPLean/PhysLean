@@ -276,7 +276,7 @@ lemma quantaBarFiveMatter_NQ_mem (he : 𝓜.NoExotics)
   refine coe_fiveChargeMultisetToList_of_all_mem I
     (Multiset.map QuantaBarFive.q 𝓜.quantaBarFiveMatter) ?_
   intro s hs
-  apply 𝓜.quantaBarFiveMatter_map_q_subset_allowedBarFiveCharges
+  apply 𝓜.Q5_subset_allowedBarFiveCharges
   exact Multiset.mem_toFinset.mpr hs
 
 lemma fiveAnomalyCoefficient_mem_fiveAnomalyFreeSet
@@ -320,7 +320,7 @@ lemma quantaTen_NQ_mem (he : 𝓜.NoExotics)
   refine
     coe_tenChargeMultisetToList_of_all_mem I (Multiset.map QuantaTen.q 𝓜.quantaTen) ?_
   intro s hs
-  apply 𝓜.quantaTen_map_q_subset_allowedTenCharges
+  apply 𝓜.Q10_subset_allowedTenCharges
   exact Multiset.mem_toFinset.mpr hs
 
 lemma tenAnomalyCoefficient_mem_tenAnomalyFreeSet
