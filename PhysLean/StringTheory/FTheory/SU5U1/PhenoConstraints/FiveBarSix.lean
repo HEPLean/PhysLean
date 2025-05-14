@@ -91,6 +91,7 @@ lemma qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_
       𝓜.Q5) ∈ ({(1, {3, -2},{3, 2, -3, -2}),
       (-1, {-3, 2},{3, 2, -3, -2})} : Finset (_ × Multiset _ × Multiset _)) := by
   have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter.2.1
+  rw [← 𝓜.Q5_def] at h1
   have hL1 := h.2.1
   have hW1 := h.1
   have hK1 := h.2.2.2
@@ -116,6 +117,7 @@ lemma not_quantaBarFiveMatter_card_four_same (𝓜 : MatterContent .same)
   rw [RParityU1Constrained] at hx
   rw [ProtonDecayU1Constrained] at h
   have hd := 𝓜.distinctly_charged_quantaBarFiveMatter.2.2.1
+  rw [← 𝓜.Q5_def] at hd
   have hr := qHu_eq_quantaTen_quantaBarFiveMatter_map_q_eq_of_quantaBarFiveMatter_card_four_mem_same
     𝓜 h hTop hSpec hcard
   generalize 𝓜.qHu = qHu at h hx hr hμ ⊢
@@ -200,6 +202,7 @@ lemma not_quantaBarFiveMatter_card_four_nearestNeighbor
     ¬ 𝓜.quantaBarFiveMatter.card = 4 := by
   intro hcard
   have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter.2.1
+  rw [← 𝓜.Q5_def] at h1
   have hL1 := h.2.1
   have hW1 := h.1
   have hK1 := h.2.2.2
@@ -284,6 +287,7 @@ lemma not_quantaBarFiveMatter_card_four_nextToNearestNeighbor
   have hW1 := h.1
   have hK1 := h.2.2.2
   have hmem := 𝓜.Q5_mem_powerset_filter_card hcard
+  rw [← 𝓜.Q5_def] at h1
   rw [𝓜.Q5_eq_toFinset] at hW1 hK1 hL1 h1
   generalize 𝓜.Q5.toFinset = F at hmem hW1 hK1 hL1 h1 ⊢
   revert F

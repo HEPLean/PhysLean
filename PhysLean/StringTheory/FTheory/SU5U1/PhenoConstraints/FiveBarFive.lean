@@ -47,6 +47,7 @@ lemma quantaBarFiveMatter_of_card_three
   (2, {1, 3}, {-2, 0, 3}), (2, {1, 3}, {-1, 1, 3}), (2, {1, 3}, {0, 1, 3})} :
     Finset (ℤ × Multiset ℤ × Multiset ℤ)) := by
   have h1 := 𝓜.distinctly_charged_quantaBarFiveMatter.2.1
+  rw [← 𝓜.Q5_def] at h1
   have hL1 := h.2.1
   have hW1 := h.1
   have hK1 := h.2.2.2
@@ -91,6 +92,7 @@ lemma quantaBarFiveMatter_of_card_three_with_qHd
   rw [RParityU1Constrained] at hx
   rw [ProtonDecayU1Constrained] at h
   have hd := 𝓜.distinctly_charged_quantaBarFiveMatter.2.2.1 -- qHd not in quantaBarFiveMatter
+  rw [← 𝓜.Q5_def] at hd
   have hMem := 𝓜.quantaBarFiveMatter_of_card_three h hTop hSpec hcard
   generalize 𝓜.qHu = qHu at hMem h hx hμ ⊢
   generalize 𝓜.quantaTen.map QuantaTen.q = qTen at hMem h hx hμ ⊢
