@@ -16,6 +16,11 @@ import Mathlib.Data.Finset.Powerset
 This module contains the data of the matter content of the SU(5) GUT model in F-theory
 with an additional U(1) symmetry.
 
+## Important results
+
+- `Q5` and `Q10` are the multiset of charges associated with the 5-bar and 10d representations
+  respectively.
+
 ## References
 
   Krippendorf, Schafer-Nameki and Wong.
