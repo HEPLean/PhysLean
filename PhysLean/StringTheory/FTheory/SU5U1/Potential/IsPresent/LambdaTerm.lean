@@ -83,7 +83,7 @@ def termLambdaPermitExe (I : CodimensionOneConfig) : Finset (Finset ℤ × Finse
 /-- An executable function which gives, for a given `CodimensionOneConfig`, gives
   the finite sets for which if contained in `Q5` and `Q10` permit a `Λ`-coupling.  -/
 def termLambdaPermitSubsetExe (I : CodimensionOneConfig) : Finset (Finset ℤ × Finset ℤ) :=
-  let X1 := termLambdaHiggsMapExe I
+  let X1 := termLambdaPermitExe I
   let X2 := X1.filter (fun x => ∀ y ∈ X1, x = y ∨ ¬ (y.1 ⊆ x.1 ∧ y.2 ⊆ x.2))
   X2
 
@@ -92,7 +92,7 @@ def termLambdaPermitSubsetExe (I : CodimensionOneConfig) : Finset (Finset ℤ ×
   then `Q5` and `Q10` permit a `Λ` coupling.
 
   These subsets can be found with: e.g.
-  `#eval (termLambdaHiggsMapSubsetExe .nextToNearestNeighbor)`
+  `#eval (termLambdaPermitSubsetExe .nextToNearestNeighbor)`
 -/
 def termLambdaPresentSubsets : (I : CodimensionOneConfig) → Finset (Finset ℤ × Finset ℤ)
   | same => {({-1}, {2}), ({-2, -1}, {3}), ({0}, {0}), ({-3, 0}, {3}), ({-2, 0}, {2}),
