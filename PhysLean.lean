@@ -265,6 +265,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSix
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.TenCharges
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.IsPresent.K1Term
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.IsPresent.LambdaTerm
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.IsPresent.TopYukawa
 import PhysLean.Thermodynamics.Basic

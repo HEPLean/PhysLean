@@ -8,7 +8,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 
 # Presence of Lambda term
 
-This module contains results related to the presence of a λ coupling
+This module contains results related to the presence of a `Λ` coupling
 based on the additional `U(1)` charges carried by the `SU(5)` representations.
 
 ## Key results
