@@ -79,7 +79,7 @@ def topYukawaPresentSubsets : (I : CodimensionOneConfig) → (qHu : ℤ) → Fin
   | nearestNeighbor, 11 => {{3, 8}, {-2, 13}}
   | nearestNeighbor, _ => ∅
   | nextToNearestNeighbor, -13 =>{{-9, -4}}
-  | nextToNearestNeighbor, -8 =>  {{-4}, {-9, 1}}
+  | nextToNearestNeighbor, -8 => {{-4}, {-9, 1}}
   | nextToNearestNeighbor, -3 => {{-4, 1}, {-9, 6}}
   | nextToNearestNeighbor, 2 => {{1}, {-4, 6}, {-9, 11}}
   | nextToNearestNeighbor, 7 => {{1, 6}, {-4, 11}}
@@ -97,7 +97,8 @@ lemma isPresent_topYukawa_iff_topYukawaPresentSubsets_mem_of_same (Q10 : Finset 
   revert qHu
   decide
 
-lemma isPresent_topYukawa_iff_topYukawaPresentSubsets_mem_of_nearestNeighbor (Q10 : Finset ℤ) (qHu : ℤ)
+lemma isPresent_topYukawa_iff_topYukawaPresentSubsets_mem_of_nearestNeighbor
+    (Q10 : Finset ℤ) (qHu : ℤ)
     (hmem : Q10 ∈ nearestNeighbor.allowedTenCharges.powerset.filter (fun x => x.card ≤ 2))
     (hqHu : qHu ∈ nearestNeighbor.allowedBarFiveCharges) :
     IsPresent topYukawa (qHu, Q10.val) ↔
@@ -155,7 +156,7 @@ lemma isPresent_topYukawa_iff_topYukawaPresentSubsets_mem (I : CodimensionOneCon
         exact fun ⦃a⦄ a_1 => hmem (hSubset a_1)
       · exact hCard
   · intro ⟨x, hSubset⟩
-    rw [isPresent_topYukawa_iff_subset_card_two ]
+    rw [isPresent_topYukawa_iff_subset_card_two]
     use x
     have hxcard : x.1.card ≤ 2 := by
       clear hSubset

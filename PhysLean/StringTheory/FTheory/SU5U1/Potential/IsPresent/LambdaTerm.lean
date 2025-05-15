@@ -25,7 +25,6 @@ variable {I : CodimensionOneConfig}
 
 open PotentialTerm CodimensionOneConfig
 
-
 lemma isPresent_Λ_iff_Q5_subset_card_two (Q5 Q10 : Finset ℤ) :
     IsPresent Λ (Q5.val, Q10.val) ↔
       ∃ x ⊆ Q5, x.card ≤ 2 ∧ IsPresent Λ (x.val, Q10.val) := by
@@ -73,7 +72,7 @@ lemma isPresent_Λ_iff_Q10_subset_card_one (Q5 Q10 : Finset ℤ) :
 
 /-- An executable function which gives, for a given `CodimensionOneConfig`, all finite sets
   of 5bar-charges and 10d-charges of cardiniality less then or equal to 5 and 3 respectively,
-  which permit the `Λ` coupling.  -/
+  which permit the `Λ` coupling. -/
 def termLambdaPermitExe (I : CodimensionOneConfig) : Finset (Finset ℤ × Finset ℤ) :=
   let prod1 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 5)
   let prod2 := prod1.val.product (I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 3)).val
@@ -81,7 +80,7 @@ def termLambdaPermitExe (I : CodimensionOneConfig) : Finset (Finset ℤ × Finse
   prod3
 
 /-- An executable function which gives, for a given `CodimensionOneConfig`, gives
-  the finite sets for which if contained in `Q5` and `Q10` permit a `Λ`-coupling.  -/
+  the finite sets for which if contained in `Q5` and `Q10` permit a `Λ`-coupling. -/
 def termLambdaPermitSubsetExe (I : CodimensionOneConfig) : Finset (Finset ℤ × Finset ℤ) :=
   let X1 := termLambdaPermitExe I
   let X2 := X1.filter (fun x => ∀ y ∈ X1, x = y ∨ ¬ (y.1 ⊆ x.1 ∧ y.2 ⊆ x.2))
@@ -105,7 +104,6 @@ def termLambdaPresentSubsets : (I : CodimensionOneConfig) → Finset (Finset ℤ
   | nextToNearestNeighbor => {({-3}, {6}), ({-8, -3}, {11}), ({2}, {-4}), ({-13, 2}, {11}),
     ({-8, 2}, {6}), ({-3, 2}, {1}), ({-13, 7}, {6}), ({-8, 7}, {1}), ({-3, 7}, {-4}),
     ({2, 7}, {-9}), ({-13, 12}, {1}), ({-8, 12}, {-4}), ({-3, 12}, {-9})}
-
 
 lemma isPresent_Λ_iff_termLambdaPresentSubsets_mem_of_same (Q5 Q10 : Finset ℤ)
     (h5 : Q5 ∈ same.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 2))
@@ -195,7 +193,7 @@ lemma isPresent_Λ_iff_termLambdaPresentSubsets_mem (Q5 Q10 : Finset ℤ)
     rw [isPresent_Λ_iff_Q10_subset_card_one]
     use x.2
     simp_all
-    rw [isPresent_Λ_iff_termLambdaPresentSubsets_mem_of_card ]
+    rw [isPresent_Λ_iff_termLambdaPresentSubsets_mem_of_card]
     use ⟨x, hx⟩
     simp_all
     exact fun ⦃a⦄ a_1 => h5 (hx5 a_1)

@@ -139,9 +139,9 @@ def charges : (T : PotentialTerm) → T.ChargeType → Multiset ℤ
     (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
   | W2 => fun (qHd, Q10) => (Q10.product (Q10.product Q10)).map
     (fun x => x.1 + x.2.1 + x.2.2 + qHd)
-  | W3 =>  fun (qHu, Q5) => (Q5.product Q5).map
+  | W3 => fun (qHu, Q5) => (Q5.product Q5).map
     (fun x => x.1 + x.2 - qHu - qHu)
-  | W4 =>  fun (qHd, qHu, Q5) => Q5.map (fun x => x + qHd + (- qHu) + (- qHu))
+  | W4 => fun (qHd, qHu, Q5) => Q5.map (fun x => x + qHd + (- qHu) + (- qHu))
   | K1 => fun (Q5, Q10) => (Q10.product (Q10.product Q5)).map
     (fun x => x.1 + x.2.1 + (- x.2.2))
   | K2 => fun (qHd, qHu, Q10) => Q10.map (fun x => qHu + qHd + x)
@@ -206,7 +206,7 @@ lemma isExcluded_Λ_iff_Q5_intersect_Q5 (Q5Q10 : Multiset ℤ × Multiset ℤ) :
   · intro h
     simp only [IsExcluded, charges, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
       Prod.exists, not_exists, not_and, and_imp]
-    intro  q51 q52 q10 hq51 hq52 hq10 hsum
+    intro q51 q52 q10 hq51 hq52 hq10 hsum
     simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero,
       Multiset.eq_zero_iff_forall_not_mem, Multiset.mem_inter, Multiset.mem_map, Prod.exists,
       Finset.mem_val, not_and, forall_exists_index, and_imp] at h
@@ -217,7 +217,7 @@ lemma isExcluded_Λ_iff_Q5_intersect_Q5 (Q5Q10 : Multiset ℤ × Multiset ℤ) :
   `K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ` in terms of the intersection of finite sets. -/
 lemma isExcluded_K1_iff_Q10_intersect_Q10 (Q5Q10 : Multiset ℤ × Multiset ℤ) :
     IsExcluded K1 Q5Q10 ↔
-    ((Q5Q10.2.product Q5Q10.2).map (fun x => x.1 + x.2) ∩ Q5Q10.1 = ∅)  := by
+    ((Q5Q10.2.product Q5Q10.2).map (fun x => x.1 + x.2) ∩ Q5Q10.1 = ∅) := by
   constructor
   · intro h
     simp only [IsExcluded, charges, Multiset.mem_map, Multiset.mem_product, Prod.exists, not_exists,
@@ -270,7 +270,6 @@ they carry.
 Of particular intrest is the presence of the top Yukawa term.
 
 -/
-
 
 /-- Given a potential term `T` with an element of it's associated `ChargeType`, the proposition
   corresonding to there been `zero` in the charges of that term. That is to say, it is present
