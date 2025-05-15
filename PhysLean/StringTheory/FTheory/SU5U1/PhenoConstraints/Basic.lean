@@ -110,67 +110,6 @@ def chargeLambdaTerm (q5bar : Multiset ℤ) (q10 : Multiset ℤ) : Multiset ℤ 
   (Multiset.product q5bar (Multiset.product q5bar q10)).map
   (fun x => x.1 + x.2.1 + x.2.2)
 
-/-- A rewriting of the condition for `0` is not in the charges associated with the term
-  `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ` in terms of the intersection of finite sets. -/
-lemma zero_not_mem_chargeLambdaTerm_iff_intersect_Q5_with_Q5 (Q5 Q10 : Multiset ℤ) :
-    0 ∉ chargeLambdaTerm Q5 Q10 ↔
-    ((Q5.product Q5).map (fun x => - (x.1 + x.2)) ∩ Q10 = ∅)  := by
-  constructor
-  · intro h
-    simp only [chargeLambdaTerm, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp] at h
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero]
-    rw [Multiset.eq_zero_iff_forall_not_mem]
-    simp only [Multiset.mem_inter, Multiset.mem_map, Prod.exists, Finset.mem_val, not_and,
-      forall_exists_index, and_imp]
-    intro q10 q51 q52 hq5 hsum hq10
-    simp only [SProd.sprod, Multiset.mem_product, Finset.mem_val] at hq5
-    have h1 := h q51 q52 q10 hq5.1 hq5.2 hq10
-    omega
-  · intro h
-    simp only [chargeLambdaTerm, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp]
-    intro  q51 q52 q10 hq51 hq52 hq10 hsum
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero,
-      Multiset.eq_zero_iff_forall_not_mem, Multiset.mem_inter, Multiset.mem_map, Prod.exists,
-      Finset.mem_val, not_and, forall_exists_index, and_imp] at h
-    have h1 := (h q10 q51 q52 (by simpa [SProd.sprod] using ⟨hq51, hq52⟩)).mt (by simpa using hq10)
-    omega
-
-instance chargeLambdaTerm_decidable (Q5 Q10 : Multiset ℤ) :
-    Decidable (0 ∉ chargeLambdaTerm Q5 Q10) :=
-  decidable_of_decidable_of_iff
-    (zero_not_mem_chargeLambdaTerm_iff_intersect_Q5_with_Q5 Q5 Q10).symm
-
--- #synth Decidable (0 ∉ chargeLambdaTerm (Finset.val _) (Finset.val _))
-
-/-- A rewriting of the condition for `0` is not in the charges associated with the term
-  `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ` in terms of the intersection of finite sets. -/
-lemma zero_not_mem_chargeLambdaTerm_iff_intersect_Q5_with_Q10 (Q5 Q10 : Multiset ℤ) :
-    0 ∉ chargeLambdaTerm Q5 Q10 ↔
-    ((Q5.product Q10).map (fun x => - (x.1 + x.2)) ∩ Q5 = ∅)  := by
-  constructor
-  · intro h
-    simp only [chargeLambdaTerm, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp] at h
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero]
-    rw [Multiset.eq_zero_iff_forall_not_mem]
-    simp only [Multiset.mem_inter, Multiset.mem_map, Prod.exists, Finset.mem_val, not_and,
-      forall_exists_index, and_imp]
-    intro q52 q51 q10 hprod hsum hq52
-    simp only [SProd.sprod, Multiset.mem_product, Finset.mem_val] at hprod
-    have h1 := h q51 q52 q10 hprod.1 hq52 hprod.2
-    omega
-  · intro h
-    simp only [chargeLambdaTerm, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp]
-    intro  q51 q52 q10 hq51 hq52 hq10 hsum
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero,
-      Multiset.eq_zero_iff_forall_not_mem, Multiset.mem_inter, Multiset.mem_map, Prod.exists,
-      Finset.mem_val, not_and, forall_exists_index, and_imp] at h
-    have h1 := (h q51 q52 q10 (by simpa [SProd.sprod] using ⟨hq52, hq10⟩)).mt (by simpa using hq51)
-    omega
-
 lemma chargeLambdaTerm_subset_of_subset_ten (q5bar : Multiset ℤ)
     (q10 q10' : Multiset ℤ)
     (h : q10 ⊆ q10') :
@@ -211,33 +150,6 @@ def chargeK1Term (q5bar : Multiset ℤ)
     (q10 : Multiset ℤ) : Multiset ℤ :=
   (Multiset.product q10 (Multiset.product q10 q5bar)).map
   (fun x => x.1 + x.2.1 + (- x.2.2))
-
-/-- A rewriting of the condition for `0` is not in the charges associated with the term
-  `K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ` in terms of the intersection of finite sets. -/
-lemma zero_not_mem_chargeK1Term_iff_intersect_Q10_with_Q10 (Q5 Q10 : Multiset ℤ) :
-    0 ∉ chargeK1Term Q5 Q10 ↔
-    ((Q10.product Q10).map (fun x => x.1 + x.2) ∩ Q5 = ∅)  := by
-  constructor
-  · intro h
-    simp only [chargeK1Term, Multiset.mem_map, Multiset.mem_product, Finset.mem_val, Prod.exists,
-      not_exists, not_and, and_imp] at h
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero]
-    rw [Multiset.eq_zero_iff_forall_not_mem]
-    simp only [Multiset.mem_inter, Multiset.mem_map, Prod.exists, Finset.mem_val, not_and,
-      forall_exists_index, and_imp]
-    intro q5 q101 q102 hq10 hsum hq5
-    simp only [SProd.sprod, Multiset.mem_product, Finset.mem_val] at hq10
-    have h1 := h q101 q102 q5 hq10.1 hq10.2 hq5
-    omega
-  · intro h
-    simp only [chargeK1Term, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp]
-    intro q51 q52 q10 hq51 hq52 hq10 hsum
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero,
-      Multiset.eq_zero_iff_forall_not_mem, Multiset.mem_inter, Multiset.mem_map, Prod.exists,
-      Finset.mem_val, not_and, forall_exists_index, and_imp] at h
-    have h1 := (h q10 q51 q52 (by simpa [SProd.sprod] using ⟨hq51, hq52⟩)).mt (by simpa using hq10)
-    omega
 
 lemma chargeK1Term_subset_of_subset_ten (q5bar : Multiset ℤ)
     (q10 q10' : Multiset ℤ)
