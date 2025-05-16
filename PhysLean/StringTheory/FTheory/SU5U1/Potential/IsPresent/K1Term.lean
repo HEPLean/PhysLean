@@ -80,7 +80,7 @@ def termK1PermitExe (I : CodimensionOneConfig) : Finset (Finset ℤ × Finset �
   prod3
 
 /-- An executable function which gives, for a given `CodimensionOneConfig`, gives
-  the finite sets for which if contained in `Q5` and `Q10` permit a `Λ`-coupling. -/
+  the finite sets for which if contained in `Q5` and `Q10` permit a `K1`-coupling. -/
 def termK1PermitSubsetExe (I : CodimensionOneConfig) : Finset (Finset ℤ × Finset ℤ) :=
   let X1 := termK1PermitExe I
   let X2 := X1.filter (fun x => ∀ y ∈ X1, x = y ∨ ¬ (y.1 ⊆ x.1 ∧ y.2 ⊆ x.2))
