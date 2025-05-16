@@ -25,6 +25,22 @@ variable {I : CodimensionOneConfig}
 
 open PotentialTerm CodimensionOneConfig
 
+lemma isPresent_Λ_of_Q10_subset {Q5 Q10' Q10 : Finset ℤ} (h : Q10' ⊆ Q10)
+    (hPres : IsPresent Λ (Q5.val, Q10'.val)) : IsPresent Λ (Q5.val, Q10.val) := by
+  simp [IsPresent, charges] at hPres ⊢
+  obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := hPres
+  use q1, q2, q3
+  simp_all
+  exact h h3
+
+lemma isPresent_Λ_of_Q5_subset {Q5' Q5 Q10 : Finset ℤ} (h : Q5' ⊆ Q5)
+    (hPres : IsPresent Λ (Q5'.val, Q10.val)) : IsPresent Λ (Q5.val, Q10.val) := by
+  simp [IsPresent, charges] at hPres ⊢
+  obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := hPres
+  use q1, q2, q3
+  simp_all
+  exact ⟨h h1, h h2⟩
+
 lemma isPresent_Λ_iff_Q5_subset_card_two (Q5 Q10 : Finset ℤ) :
     IsPresent Λ (Q5.val, Q10.val) ↔
       ∃ x ⊆ Q5, x.card ≤ 2 ∧ IsPresent Λ (x.val, Q10.val) := by
