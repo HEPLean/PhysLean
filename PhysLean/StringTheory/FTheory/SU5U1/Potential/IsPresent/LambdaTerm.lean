@@ -145,6 +145,9 @@ lemma isPresent_Λ_iff_termLambdaPresentSubsets_mem_of_card (Q5 Q10 : Finset ℤ
   case nextToNearestNeighbor =>
     exact isPresent_Λ_iff_termLambdaPresentSubsets_mem_of_nextToNearestNeighbor Q5 Q10 h5 h10
 
+/-- The term `Λ` is present for `Q5` and `Q10` if and only if there is a pair of finite sets
+  in `termLambdaPresentSubsets I` with the first a subset of `Q5` and the second a
+  subset of `Q10`. -/
 lemma isPresent_Λ_iff_termLambdaPresentSubsets_mem (Q5 Q10 : Finset ℤ)
     (h5 : Q5 ∈ I.allowedBarFiveCharges.powerset) (h10 : Q10 ∈ I.allowedTenCharges.powerset) :
     IsPresent Λ (Q5.val, Q10.val) ↔

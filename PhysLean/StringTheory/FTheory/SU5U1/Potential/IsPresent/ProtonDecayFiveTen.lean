@@ -202,6 +202,9 @@ lemma isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_nextToNea
   · decide
   · decide
 
+/-- The proton decay contributing term is present for `Q5` and `Q10` if and only if there is a
+  pair of finite sets in `protonDecayFiveTenPresentSubsets I` with the first a subset of
+  `Q5` and the second a subset of `Q10`. -/
 lemma isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem {I : CodimensionOneConfig}
     (Q5 Q10 : Finset ℤ)
     (h5 : Q5 ∈ I.allowedBarFiveCharges.powerset)

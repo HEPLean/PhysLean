@@ -158,6 +158,8 @@ lemma isPresent_W1_iff_termW1PresentSubsets_mem_of_card (Q5 Q10 : Finset ℤ)
     exact isPresent_W1_iff_termW1PresentSubsets_mem_of_nextToNearestNeighbor Q5 Q10 h5 h10
 
 set_option maxRecDepth 1000 in
+/-- The term `W1` is present for `Q5` and `Q10` if and only if there is a pair of finite sets
+  in `termW1PresentSubsets I` with the first a subset of `Q5` and the second a subset of `Q10`. -/
 lemma isPresent_W1_iff_termW1PresentSubsets_mem (Q5 Q10 : Finset ℤ)
     (h5 : Q5 ∈ I.allowedBarFiveCharges.powerset) (h10 : Q10 ∈ I.allowedTenCharges.powerset) :
     IsPresent W1 (Q5.val, Q10.val) ↔
