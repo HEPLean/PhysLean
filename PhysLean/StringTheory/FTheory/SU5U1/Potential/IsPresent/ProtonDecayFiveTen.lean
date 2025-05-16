@@ -131,13 +131,14 @@ lemma isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_subset_co
   let X1 := termK1PresentSubsets I ∪ termW1PresentSubsets I ∪ termLambdaPresentSubsets I
   have h4 :  (∃ x,
     x ∈ termK1PresentSubsets I ∧ x.1 ⊆ Q5 ∧ x.2 ⊆ Q10 ∨
-      x ∈ termW1PresentSubsets I ∧ x.1 ⊆ Q5 ∧ x.2 ⊆ Q10 ∨ x ∈ termLambdaPresentSubsets I ∧ x.1 ⊆ Q5 ∧ x.2 ⊆ Q10)
+      x ∈ termW1PresentSubsets I ∧ x.1 ⊆ Q5 ∧ x.2 ⊆ Q10 ∨
+      x ∈ termLambdaPresentSubsets I ∧ x.1 ⊆ Q5 ∧ x.2 ⊆ Q10)
       ↔ ∃ (x : X1 ), x.1.1 ⊆ Q5 ∧ x.1.2 ⊆ Q10 := by
     rw [Finset.exists_coe]
     refine exists_congr ?_
     intro x
-    simp_all only [Finset.mem_powerset, Subtype.exists, exists_and_left, exists_prop, Prod.exists, Finset.union_assoc,
-      Finset.mem_union, X1]
+    simp_all only [Finset.mem_powerset, Subtype.exists, exists_and_left, exists_prop, Prod.exists,
+      Finset.union_assoc, Finset.mem_union, X1]
     apply Iff.intro
     · intro a
       cases a with
@@ -195,7 +196,8 @@ lemma isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_nextToNea
     (h10 : Q10 ∈ nextToNearestNeighbor.allowedTenCharges.powerset) :
     IsPresent K1 (Q5.val, Q10.val) ∨ IsPresent W1 (Q5.val, Q10.val) ∨
     IsPresent Λ (Q5.val, Q10.val) ↔
-    (∃ (x : protonDecayFiveTenPresentSubsets .nextToNearestNeighbor), x.1.1 ⊆ Q5 ∧ x.1.2 ⊆ Q10) := by
+    (∃ (x : protonDecayFiveTenPresentSubsets .nextToNearestNeighbor),
+    x.1.1 ⊆ Q5 ∧ x.1.2 ⊆ Q10) := by
   apply isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_subset_cond Q5 Q10 h5 h10
   · decide
   · decide
@@ -211,9 +213,11 @@ lemma isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem {I : Codimen
   | same =>
     exact isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_same Q5 Q10 h5 h10
   | nearestNeighbor =>
-    exact isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_nearestNeighbor Q5 Q10 h5 h10
+    exact isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_nearestNeighbor
+      Q5 Q10 h5 h10
   | nextToNearestNeighbor =>
-    exact isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_nextToNearestNeighbor Q5 Q10 h5 h10
+    exact isPresent_protonDecay_for_five_ten_iff_termPresentSubsets_mem_of_nextToNearestNeighbor
+      Q5 Q10 h5 h10
 
 /-
 def test (Q10 : Finset ℤ): Finset (Finset ℤ) :=
