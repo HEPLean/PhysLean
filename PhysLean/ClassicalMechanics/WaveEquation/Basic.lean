@@ -203,3 +203,46 @@ theorem planeWave_isWave (c : ℝ) (s : Space d) (hs : inner s s = 1)
     rw [hs]
   rw [hsj]
   simp
+
+lemma wave_fderiv_inner_coord_sub {f₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {s : Space} {u v : Fin 3}
+    {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace ℝ (Fin 3)} (h' : ∀ x, HasFDerivAt f₀ (f₀' x) x) :
+    c * ((fun x' => (fderiv ℝ (fun x => inner (f₀ (inner x s - c * t))
+    (EuclideanSpace.single u 1)) x') (EuclideanSpace.single v 1)) x -
+    (fun x' => (fderiv ℝ (fun x => inner (f₀ (inner x s - c * t))
+    (EuclideanSpace.single v 1)) x') (EuclideanSpace.single u 1)) x)
+    =
+    s u * ∂ₜ (fun t => f₀ (inner x s - c * t)) t v -
+    s v * ∂ₜ (fun t => f₀ (inner x s - c * t)) t u := by
+  rw [wave_dx h', wave_dx h', wave_dt h']
+  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, EuclideanSpace.single_apply,
+    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, PiLp.smul_apply,
+    smul_eq_mul, neg_mul, mul_neg, sub_neg_eq_add]
+  rw [← mul_one (s u), ← smul_eq_mul (s u), ContinuousLinearMap.map_smul]
+  rw [← mul_one (s v), ← smul_eq_mul (s v), ContinuousLinearMap.map_smul]
+  simp only [PiLp.smul_apply, smul_eq_mul, mul_one]
+  ring
+
+lemma differentiable_if_planewave {s : Space} {hs : inner s s = (1:ℝ)}
+    {f₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace ℝ (Fin 3)}
+    {f : Time → Space → EuclideanSpace ℝ (Fin 3)} (h' : ∀ x, HasFDerivAt f₀ (f₀' x) x)
+    (hf : f = planeWave f₀ c s hs) :
+    Differentiable ℝ fun t => f t x := by
+  rw [hf]
+  unfold planeWave
+  intro x
+  repeat fun_prop
+
+lemma differentiable_curl_if_planewave {s : Space} {hs : inner s s = (1:ℝ)}
+    {f₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace ℝ (Fin 3)}
+    {f : Time → Space → EuclideanSpace ℝ (Fin 3)} (h' : ∀ x, HasFDerivAt f₀ (f₀' x) x)
+    (hf : f = planeWave f₀ c s hs) :
+    DifferentiableAt ℝ (fun t => !₂[s 1 * f t x 2 - s 2 * f t x 1,
+    s 2 * f t x 0 - s 0 * f t x 2, s 0 * f t x 1 - s 1 * f t x 0]) t := by
+  rw [hf]
+  unfold planeWave
+  apply differentiable_pi''
+  intro i
+  fin_cases i <;>
+  · simp
+    intro x
+    repeat fun_prop

@@ -6,6 +6,8 @@ Authors: Zhi Kai Pong, Joseph Tooby-Smith
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.ClassicalMechanics.Space.VectorIdentities
 import PhysLean.ClassicalMechanics.Time.Basic
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.LinearAlgebra.CrossProduct
 import Mathlib.Tactic.FunProp.Differentiable
 /-!
 # Classical vector calculus properties
@@ -158,3 +160,36 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
       repeat
         apply differentiableAt_fderiv_coord_single
         exact hf
+
+open Matrix
+
+/-- Cross product and time derivative commute. -/
+lemma time_deriv_cross_commute {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
+    (hf : Differentiable ℝ f) :
+    (WithLp.equiv 2 (Fin 3 → ℝ)).symm
+    (WithLp.equiv _ _ s ×₃ WithLp.equiv _ _ (∂ₜ (fun t => f t) t))
+    =
+    ∂ₜ (fun t => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
+    (WithLp.equiv _ _ s ×₃ WithLp.equiv _ _ (f t))) t := by
+  have h (u v : Fin 3): s u * ∂ₜ (fun t => f t) t v - s v * ∂ₜ (fun t => f t) t u =
+      ∂ₜ (fun t => s u * f t v - s v * f t u) t := by
+    repeat rw [Time.deriv]
+    rw [fderiv_sub, fderiv_const_mul, fderiv_const_mul]
+    rw [fderiv_pi]
+    rfl
+    intro i
+    repeat fun_prop
+  rw [crossProduct]
+  ext i
+  fin_cases i <;>
+  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, LinearMap.mk₂_apply,
+    WithLp.equiv_pi_apply, Fin.reduceFinMk, WithLp.equiv_symm_pi_apply, cons_val]
+    rw [h]
+    repeat rw [Time.deriv]
+    simp only [Fin.isValue, fderiv_eq_smul_deriv, smul_eq_mul, one_mul, PiLp.smul_apply]
+    rw [deriv_pi]
+    simp only [Fin.isValue, WithLp.equiv_symm_pi_apply, cons_val]
+    intro i
+    fin_cases i <;>
+    · simp only [Fin.isValue, Fin.reduceFinMk, WithLp.equiv_symm_pi_apply, cons_val]
+      fun_prop
