@@ -62,7 +62,7 @@ inductive PotentialTerm
   | topYukawa : PotentialTerm
   /-- The term `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd`. -/
   | bottomYukawa : PotentialTerm
-deriving DecidableEq
+deriving DecidableEq, Fintype
 
 namespace PotentialTerm
 
@@ -105,48 +105,232 @@ def causeProtonDecay : Finset PotentialTerm :=
 -/
 def ChargeType : PotentialTerm → Type
     /- qHd × qHu -/
-  | μ => ℤ × ℤ
+  | μ => Option ℤ × Option ℤ
   /- qHu × Q5 -/
-  | β => ℤ × Multiset ℤ
+  | β => Option ℤ × Finset ℤ
   /- Q5 × Q10 -/
-  | Λ => Multiset ℤ × Multiset ℤ
+  | Λ => Finset ℤ × Finset ℤ
   /- Q5 × Q10 -/
-  | W1 => Multiset ℤ × Multiset ℤ
+  | W1 => Finset ℤ × Finset ℤ
   /- qHd × Q10 -/
-  | W2 => ℤ × Multiset ℤ
+  | W2 => Option ℤ × Finset ℤ
   /- qHu × Q5 -/
-  | W3 => ℤ × Multiset ℤ
+  | W3 => Option ℤ × Finset ℤ
   /- qHd × qHu × Q5 -/
-  | W4 => ℤ × ℤ × Multiset ℤ
+  | W4 =>Option ℤ × Option ℤ × Finset ℤ
   /- Q5 × Q10 -/
-  | K1 => Multiset ℤ × Multiset ℤ
+  | K1 => Finset ℤ × Finset ℤ
   /- qHd × qHu × Q10 -/
-  | K2 => ℤ × ℤ × Multiset ℤ
+  | K2 => Option ℤ × Option ℤ × Finset ℤ
   /- qHu × Q10 -/
-  | topYukawa => ℤ × Multiset ℤ
+  | topYukawa => Option ℤ × Finset ℤ
   /- qHd × Q5 × Q10 -/
-  | bottomYukawa => ℤ × Multiset ℤ × Multiset ℤ
+  | bottomYukawa => Option ℤ × Finset ℤ × Finset ℤ
+
+instance : (T : PotentialTerm) → DecidableEq T.ChargeType
+  | μ => inferInstanceAs (DecidableEq (Option ℤ × Option ℤ))
+  | β => inferInstanceAs (DecidableEq (Option ℤ × Finset ℤ))
+  | Λ => inferInstanceAs (DecidableEq (Finset ℤ × Finset ℤ))
+  | W1 => inferInstanceAs (DecidableEq (Finset ℤ × Finset ℤ))
+  | W2 => inferInstanceAs (DecidableEq (Option ℤ × Finset ℤ))
+  | W3 => inferInstanceAs (DecidableEq (Option ℤ × Finset ℤ))
+  | W4 => inferInstanceAs (DecidableEq (Option ℤ × Option ℤ × Finset ℤ))
+  | K1 => inferInstanceAs (DecidableEq (Finset ℤ × Finset ℤ))
+  | K2 => inferInstanceAs (DecidableEq (Option ℤ × Option ℤ × Finset ℤ))
+  | topYukawa => inferInstanceAs (DecidableEq (Option ℤ × Finset ℤ))
+  | bottomYukawa => inferInstanceAs (DecidableEq (Option ℤ × Finset ℤ × Finset ℤ))
+
+/-!
+
+## Subset relation on `ChargeType`
+
+-/
+
+instance (T : PotentialTerm) : HasSubset T.ChargeType where Subset x y :=
+  match T with
+  | μ => x.1.toFinset ⊆ y.1.toFinset ∧ x.2.toFinset ⊆ y.2.toFinset
+  | β => x.1.toFinset ⊆ y.1.toFinset ∧ x.2 ⊆ y.2
+  | Λ => x.1 ⊆ y.1 ∧ x.2 ⊆ y.2
+  | W1 => x.1 ⊆ y.1 ∧ x.2 ⊆ y.2
+  | W2 => x.1.toFinset ⊆ y.1.toFinset ∧ x.2 ⊆ y.2
+  | W3 => x.1.toFinset ⊆ y.1.toFinset ∧ x.2 ⊆ y.2
+  | W4 => x.1.toFinset ⊆ y.1.toFinset  ∧ x.2.1.toFinset ⊆ y.2.1.toFinset  ∧ x.2.2 ⊆ y.2.2
+  | K1 => x.1 ⊆ y.1 ∧ x.2 ⊆ y.2
+  | K2 => x.1.toFinset ⊆ y.1.toFinset ∧ x.2.1.toFinset ⊆ y.2.1.toFinset ∧ x.2.2 ⊆ y.2.2
+  | topYukawa => x.1.toFinset ⊆ y.1.toFinset  ∧ x.2 ⊆ y.2
+  | bottomYukawa => x.1.toFinset ⊆ y.1.toFinset  ∧ x.2.1 ⊆ y.2.1 ∧ x.2.2 ⊆ y.2.2
+
+instance subsetDecidable : (T : PotentialTerm) → (x y : T.ChargeType) → Decidable (x ⊆ y)
+  | μ, _, _ => instDecidableAnd
+  | β, _, _ => instDecidableAnd
+  | Λ, _, _ => instDecidableAnd
+  | W1, _, _ => instDecidableAnd
+  | W2, _, _ => instDecidableAnd
+  | W3, _, _ => instDecidableAnd
+  | W4, _, _ => instDecidableAnd
+  | K1, _, _ => instDecidableAnd
+  | K2, _, _ => instDecidableAnd
+  | topYukawa, _, _ => instDecidableAnd
+  | bottomYukawa, _, _ => instDecidableAnd
+
+@[simp, refl]
+lemma subset_refl {T : PotentialTerm} (x : T.ChargeType) : x ⊆ x := by
+  fin_cases T <;> simp [Subset]
+
+@[trans]
+lemma subset_trans {T : PotentialTerm} {x y z : T.ChargeType} (h1 : x ⊆ y) (h2 : y ⊆ z) :
+    x ⊆ z := by
+  fin_cases T <;>
+    simp_all [Subset]
+
+/-!
+
+## The charges associated with the potential terms
+
+-/
 
 /-- The U(1) charges of each potential term given an element of the corresponding `ChargeType`.
   For example, for the term `𝛽ᵢ 5̄Mⁱ5Hu` and `Q5 = {0, 2}` and `qHu = 3` then
   the charges of this term would be `{-3, -1}`. -/
 def charges : (T : PotentialTerm) → T.ChargeType → Multiset ℤ
-  | μ => fun (qHd, qHu) => {- qHu + qHd}
-  | β => fun (qHu, Q5) => Q5.map (fun x => x + (- qHu))
-  | Λ => fun (Q5, Q10) => (Q5.product (Q5.product Q10)).map
-    (fun x => x.1 + x.2.1 + x.2.2)
-  | W1 => fun (Q5, Q10) => (Q10.product (Q10.product (Q10.product Q5))).map
+  | μ, (qHd, qHu) => (qHd.toFinset.product <| qHu.toFinset).val.map (fun x => x.1 - x.2)
+  | β, (qHu, Q5) => (qHu.toFinset.product <| Q5).val.map (fun x => - x.1 + x.2)
+  | Λ, (Q5, Q10)  => (Q5.product <| Q5.product <| Q10).val.map (fun x => x.1 + x.2.1 + x.2.2)
+  | W1, (Q5, Q10) => (Q5.product <| Q10.product <| Q10.product <| Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
-  | W2 => fun (qHd, Q10) => (Q10.product (Q10.product Q10)).map
-    (fun x => x.1 + x.2.1 + x.2.2 + qHd)
-  | W3 => fun (qHu, Q5) => (Q5.product Q5).map
-    (fun x => x.1 + x.2 - qHu - qHu)
-  | W4 => fun (qHd, qHu, Q5) => Q5.map (fun x => x + qHd + (- qHu) + (- qHu))
-  | K1 => fun (Q5, Q10) => (Q10.product (Q10.product Q5)).map
-    (fun x => x.1 + x.2.1 + (- x.2.2))
-  | K2 => fun (qHd, qHu, Q10) => Q10.map (fun x => qHu + qHd + x)
-  | topYukawa => fun (qHu, Q10) => ((Q10.product Q10)).map (fun x => x.1 + x.2 + (- qHu))
-  | bottomYukawa => fun (qHd, Q5, Q10) => (Q10.product Q5).map (fun x => x.1 + x.2 + qHd)
+  | W2, (qHd, Q10) => (qHd.toFinset.product <| Q10.product <| Q10.product <| Q10).val.map
+    (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
+  | W3, (qHu, Q5) => (qHu.toFinset.product <| Q5.product <| Q5).val.map
+    (fun x => -x.1 - x.1 + x.2.1 + x.2.2)
+  | W4, (qHd, qHu, Q5) => (qHd.toFinset.product <| qHu.toFinset.product <| Q5).val.map
+    (fun x => x.1 - x.2.1 - x.2.1 + x.2.2)
+  | K1, (Q5, Q10) => (Q5.product <| Q10.product  <| Q10).val.map
+    (fun x => - x.1 + x.2.1 + x.2.2)
+  | K2, (qHd, qHu, Q10) => (qHd.toFinset.product <| qHu.toFinset.product <| Q10).val.map
+    (fun x => x.1 + x.2.1 + x.2.2)
+  | topYukawa, (qHu, Q10) => (qHu.toFinset.product <| Q10.product <| Q10).val.map
+    (fun x => -x.1 + x.2.1 + x.2.2)
+  | bottomYukawa, (qHd, Q5, Q10)  => (qHd.toFinset.product <| Q5.product <| Q10).val.map
+    (fun x => x.1 + x.2.1 + x.2.2)
+
+lemma charges_of_subset (T : PotentialTerm) {x y : T.ChargeType} (h : x ⊆ y) :
+    charges T x ⊆ charges T y := by
+  match T, x, y with
+  | μ, (qHd, qHu), (qHd', qHu') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2 h'.2⟩
+  | β, (qHu, Q5), (qHu', Q5') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2 h'.2⟩
+  | Λ, (Q5, Q10), (Q5', Q10') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.1 h'.2.1, h.2 h'.2.2⟩
+  | W1, (Q5, Q10), (Q5', Q10') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3, q4) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product, Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2 h'.2.1, h.2 h'.2.2.1, h.2 h'.2.2.2⟩
+  | W2, (qHd, Q10), (qHd', Q10') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3, q4) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product, Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2 h'.2.1, h.2 h'.2.2.1, h.2 h'.2.2.2⟩
+  | W3, (qHu, Q5), (qHu', Q5') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2 h'.2.1, h.2 h'.2.2⟩
+  | W4, (qHd, qHu, Q5), (qHd', qHu', Q5') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2.1 h'.2.1, h.2.2 h'.2.2⟩
+  | K1, (Q5, Q10), (Q5', Q10') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2 h'.2.1, h.2 h'.2.2⟩
+  | K2, (qHd, qHu, Q10), (qHd', qHu', Q10') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2.1 h'.2.1, h.2.2 h'.2.2⟩
+  | topYukawa, (qHu, Q10), (qHu', Q10') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2 h'.2.1, h.2 h'.2.2⟩
+  | bottomYukawa, (qHd, Q5, Q10), (qHd', Q5', Q10') =>
+    simp only [charges, Finset.product_eq_sprod]
+    simp only [Subset, instHasSubsetChargeType] at h
+    apply Multiset.map_subset_map
+    refine Multiset.subset_iff.mpr ?_
+    intro (q1, q2, q3) h'
+    rw [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product,
+      Finset.mem_product] at ⊢ h'
+    exact ⟨h.1 h'.1, h.2.1 h'.2.1, h.2.2 h'.2.2⟩
+
+def chargeSubsetFull (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T.ChargeType :=
+  let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SQ5 := I.allowedBarFiveCharges.powerset
+  let SQ10 := I.allowedTenCharges.powerset
+  match T with
+  | μ => SqHd.product SqHu
+  | K2 => SqHd.product (SqHu.product SQ10)
+  | K1 => SQ5.product SQ10
+  | W4 => SqHd.product (SqHu.product SQ5)
+  | W3 => SqHu.product SQ5
+  | W2 => SqHd.product SQ10
+  | W1 => SQ5.product SQ10
+  | Λ => SQ5.product SQ10
+  | β => SqHu.product SQ5
+  | topYukawa => SqHu.product SQ10
+  | bottomYukawa => SqHd.product (SQ5.product SQ10)
 
 /-!
 
@@ -180,67 +364,6 @@ def IsExcluded : (T : PotentialTerm) → T.ChargeType → Prop
 
 /-!
 
-### Equivalent conditions to `IsExcluded`
-
-For different potential terms, the `IsExcluded` condition can be expressed in different ways,
-which are faster to check with `decide`.
-
--/
-
-lemma isExcluded_Λ_iff_Q5_intersect_Q5 (Q5Q10 : Multiset ℤ × Multiset ℤ) :
-    IsExcluded Λ Q5Q10 ↔
-    ((Q5Q10.1.product Q5Q10.1).map (fun x => - (x.1 + x.2)) ∩ Q5Q10.2 = ∅) := by
-  obtain ⟨Q5, Q10⟩ := Q5Q10
-  constructor
-  · intro h
-    simp only [IsExcluded, charges, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp] at h
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero]
-    rw [Multiset.eq_zero_iff_forall_not_mem]
-    simp only [Multiset.mem_inter, Multiset.mem_map, Prod.exists, Finset.mem_val, not_and,
-      forall_exists_index, and_imp]
-    intro q10 q51 q52 hq5 hsum hq10
-    simp only [SProd.sprod, Multiset.mem_product, Finset.mem_val] at hq5
-    have h1 := h q51 q52 q10 hq5.1 hq5.2 hq10
-    omega
-  · intro h
-    simp only [IsExcluded, charges, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp]
-    intro q51 q52 q10 hq51 hq52 hq10 hsum
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero,
-      Multiset.eq_zero_iff_forall_not_mem, Multiset.mem_inter, Multiset.mem_map, Prod.exists,
-      Finset.mem_val, not_and, forall_exists_index, and_imp] at h
-    have h1 := (h q10 q51 q52 (by simpa [SProd.sprod] using ⟨hq51, hq52⟩)).mt (by simpa using hq10)
-    omega
-
-/-- A rewriting of the condition for `0` is not in the charges associated with the term
-  `K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ` in terms of the intersection of finite sets. -/
-lemma isExcluded_K1_iff_Q10_intersect_Q10 (Q5Q10 : Multiset ℤ × Multiset ℤ) :
-    IsExcluded K1 Q5Q10 ↔
-    ((Q5Q10.2.product Q5Q10.2).map (fun x => x.1 + x.2) ∩ Q5Q10.1 = ∅) := by
-  constructor
-  · intro h
-    simp only [IsExcluded, charges, Multiset.mem_map, Multiset.mem_product, Prod.exists, not_exists,
-      not_and, and_imp] at h
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero]
-    rw [Multiset.eq_zero_iff_forall_not_mem]
-    simp only [Multiset.mem_inter, Multiset.mem_map, Prod.exists, Finset.mem_val, not_and,
-      forall_exists_index, and_imp]
-    intro q5 q101 q102 hq10 hsum hq5
-    simp only [SProd.sprod, Multiset.mem_product, Finset.mem_val] at hq10
-    have h1 := h q101 q102 q5 hq10.1 hq10.2 hq5
-    omega
-  · intro h
-    simp only [IsExcluded, charges, Multiset.mem_map, Multiset.mem_product, Finset.mem_val,
-      Prod.exists, not_exists, not_and, and_imp]
-    intro q51 q52 q10 hq51 hq52 hq10 hsum
-    simp only [Finset.product_eq_sprod, Finset.product_val, neg_add_rev, Multiset.empty_eq_zero,
-      Multiset.eq_zero_iff_forall_not_mem, Multiset.mem_inter, Multiset.mem_map, Prod.exists,
-      Finset.mem_val, not_and, forall_exists_index, and_imp] at h
-    have h1 := (h q10 q51 q52 (by simpa [SProd.sprod] using ⟨hq51, hq52⟩)).mt (by simpa using hq10)
-    omega
-/-!
-
 ### Decidability of `IsExcluded`
 
 -/
@@ -249,13 +372,12 @@ lemma isExcluded_K1_iff_Q10_intersect_Q10 (Q5Q10 : Multiset ℤ × Multiset ℤ)
 instance : (T : PotentialTerm) → DecidablePred T.IsExcluded
   | μ => fun _ => instDecidableNot
   | β => fun _ => instDecidableNot
-  | Λ => fun Q5Q10 => decidable_of_decidable_of_iff (isExcluded_Λ_iff_Q5_intersect_Q5 Q5Q10).symm
+  | Λ => fun _ => instDecidableNot
   | W1 => fun _ => instDecidableNot
   | W2 => fun _ => instDecidableNot
   | W3 => fun _ => instDecidableNot
   | W4 => fun _ => instDecidableNot
-  | K1 => fun Q5Q10 =>
-    decidable_of_decidable_of_iff (isExcluded_K1_iff_Q10_intersect_Q10 Q5Q10).symm
+  | K1 => fun _ =>instDecidableNot
   | K2 => fun _ => instDecidableNot
   | topYukawa => fun _ => instDecidableNot
   | bottomYukawa => fun _ => instDecidableNot
@@ -279,18 +401,8 @@ Of particular intrest is the presence of the top Yukawa term.
   the charges of this term are `{-2, 0}`, and this is excluded by the `U(1)` charges.
   Thus `IsPresent β (3, {0, 2})` would be `true`.
   -/
-def IsPresent : (T : PotentialTerm) → T.ChargeType → Prop
-  | μ => fun (qHd, qHu) => 0 ∈ charges μ (qHd, qHu)
-  | β => fun (qHu, Q5) => 0 ∈ charges β (qHu, Q5)
-  | Λ => fun (Q5, Q10) => 0 ∈ charges Λ (Q5, Q10)
-  | W1 => fun (Q5, Q10) => 0 ∈ charges W1 (Q5, Q10)
-  | W2 => fun (qHd, Q10) => 0 ∈ charges W2 (qHd, Q10)
-  | W3 => fun (qHu, Q5) => 0 ∈ charges W3 (qHu, Q5)
-  | W4 => fun (qHd, qHu, Q5) => 0 ∈ charges W4 (qHd, qHu, Q5)
-  | K1 => fun (Q5, Q10) => 0 ∈ charges K1 (Q5, Q10)
-  | K2 => fun (qHd, qHu, Q10) => 0 ∈ charges K2 (qHd, qHu, Q10)
-  | topYukawa => fun (qHu, Q10) => 0 ∈ charges topYukawa (qHu, Q10)
-  | bottomYukawa => fun (qHd, Q5, Q10) => 0 ∈ charges bottomYukawa (qHd, Q5, Q10)
+def IsPresent (T : PotentialTerm) (x : T.ChargeType) : Prop :=
+  0 ∈ T.charges x
 
 lemma not_isExcluded_iff_isPresent : (T : PotentialTerm) → (x : T.ChargeType) →
     ¬ T.IsExcluded x ↔ T.IsPresent x
@@ -306,35 +418,11 @@ lemma not_isExcluded_iff_isPresent : (T : PotentialTerm) → (x : T.ChargeType) 
   | topYukawa => fun (qHu, Q10) => by simp [IsExcluded, IsPresent]
   | bottomYukawa => fun (qHd, Q5, Q10) => by simp [IsExcluded, IsPresent]
 
-lemma isPresent_topYukawa_iff_Q10_product_Q10 (qHuQ10 : ℤ × Multiset ℤ) :
-    IsPresent topYukawa qHuQ10 ↔
-      qHuQ10.1 ∈ (qHuQ10.2.product qHuQ10.2).map (fun x => x.1 + x.2) := by
-  obtain ⟨qHu, Q10⟩ := qHuQ10
-  constructor
-  · simp [IsPresent, charges]
-    intro q1 q2 h1 h2 hsum
-    use q1, q2
-    simp_all
-    omega
-  · simp [IsPresent, charges]
-    intro q1 q2 h1 h2 hsum
-    use q1, q2
-    simp_all
-
 /-- The decidability of `IsPresent` for the potential terms. -/
-instance : (T : PotentialTerm) → DecidablePred T.IsPresent
-  | μ => fun _ => Multiset.decidableMem _ _
-  | β => fun _ => Multiset.decidableMem _ _
-  | Λ => fun _ => Multiset.decidableMem _ _
-  | W1 => fun _ => Multiset.decidableMem _ _
-  | W2 => fun _ => Multiset.decidableMem _ _
-  | W3 => fun _ => Multiset.decidableMem _ _
-  | W4 => fun _ => Multiset.decidableMem _ _
-  | K1 => fun _ => Multiset.decidableMem _ _
-  | K2 => fun _ => Multiset.decidableMem _ _
-  | topYukawa => fun qHuQ10 =>
-    decidable_of_decidable_of_iff (isPresent_topYukawa_iff_Q10_product_Q10 qHuQ10).symm
-  | bottomYukawa => fun _ => Multiset.decidableMem _ _
+instance (T : PotentialTerm) :  DecidablePred T.IsPresent := fun _ => Multiset.decidableMem _ _
+
+lemma isPresent_of_subset (T : PotentialTerm) {y x : T.ChargeType}
+    (h : y ⊆ x) (hy : T.IsPresent y) : T.IsPresent x := T.charges_of_subset h hy
 
 end PotentialTerm
 

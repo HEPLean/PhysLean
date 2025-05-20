@@ -51,6 +51,12 @@ deriving DecidableEq
 
 namespace CodimensionOneConfig
 
+instance : Fintype CodimensionOneConfig where
+  elems := {same, nearestNeighbor, nextToNearestNeighbor}
+  complete := by
+    intro I
+    cases I <;> decide
+
 /-- The allowed `U(1)`-charges of matter in the 5-bar representation of `SU(5)`
   given a `CodimensionOneConfig`. -/
 def allowedBarFiveCharges : CodimensionOneConfig → Finset ℤ
