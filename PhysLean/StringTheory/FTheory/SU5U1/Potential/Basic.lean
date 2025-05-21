@@ -349,18 +349,8 @@ they carry.
   the charges of this term are `{-3, -1}`, and this is excluded by the `U(1)` charges.
   Thus `IsExcluded β (3, {0, 2})` would be `true`.
   -/
-def IsExcluded : (T : PotentialTerm) → T.ChargeType → Prop
-  | μ => fun (qHd, qHu) => 0 ∉ charges μ (qHd, qHu)
-  | β => fun (qHu, Q5) => 0 ∉ charges β (qHu, Q5)
-  | Λ => fun (Q5, Q10) => 0 ∉ charges Λ (Q5, Q10)
-  | W1 => fun (Q5, Q10) => 0 ∉ charges W1 (Q5, Q10)
-  | W2 => fun (qHd, Q10) => 0 ∉ charges W2 (qHd, Q10)
-  | W3 => fun (qHu, Q5) => 0 ∉ charges W3 (qHu, Q5)
-  | W4 => fun (qHd, qHu, Q5) => 0 ∉ charges W4 (qHd, qHu, Q5)
-  | K1 => fun (Q5, Q10) => 0 ∉ charges K1 (Q5, Q10)
-  | K2 => fun (qHd, qHu, Q10) => 0 ∉ charges K2 (qHd, qHu, Q10)
-  | topYukawa => fun (qHu, Q10) => 0 ∉ charges topYukawa (qHu, Q10)
-  | bottomYukawa => fun (qHd, Q5, Q10) => 0 ∉ charges bottomYukawa (qHd, Q5, Q10)
+def IsExcluded  (T : PotentialTerm) (x : T.ChargeType) : Prop :=
+  0 ∉ T.charges x
 
 /-!
 

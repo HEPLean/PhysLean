@@ -3,19 +3,19 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.ReducedCharges
 /-!
 
-# Presence of W1 term
+# The irreducible subsets of charges for a present term
 
-This module contains results related to the presence of a `W1` coupling
-based on the additional `U(1)` charges carried by the `SU(5)` representations.
+For a given `CodimensionOneConfig`, `I`, and a `PotentialTerm`, `T`,
+we define the finite set of `T.ChargeType` such that a
+`T.reducedChargesIsPresent I` is present if it contains a subset in this list.
 
-## Key results
-
-- `termW1PresentSubsets`: The irreducible set of pairs of finite sets
-  which if the first is a subset of `Q5` and the second is a subset of `Q10`,
-  then `Q5` and `Q10` permit a `W1` coupling.
+We define this finite set of irreducible subsets of charges both in an
+simple form ` presentIrredSetExe I T` which has the disavantage of being
+slow to use `decide` with, and an explicit form `presentIrredSetExe I T`
+which is faster to use `decide` with.
 
 -/
 namespace FTheory
@@ -28,62 +28,17 @@ namespace PotentialTerm
 open CodimensionOneConfig
 
 
-def chargeSubsetReduced (I : CodimensionOneConfig) : (T : PotentialTerm) → Finset T.ChargeType
-  | μ =>
-    let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    SqHd.product SqHu
-  | K2 =>
-    let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SQ10 := I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 1)
-    SqHd.product (SqHu.product SQ10)
-  | K1 =>
-    let SQ5 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 1)
-    let SQ10 := I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 2)
-    SQ5.product SQ10
-  | W4 =>
-    let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SQ5 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 1)
-    SqHd.product (SqHu.product SQ5)
-  | W3 =>
-    let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SQ5 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 2)
-    SqHu.product SQ5
-  | W2 =>
-    let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SQ10 := I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 3)
-    SqHd.product SQ10
-  | W1 =>
-    let SQ5 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 1)
-    let SQ10 := I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 3)
-    SQ5.product SQ10
-  | Λ =>
-    let SQ5 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 2)
-    let SQ10 := I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 1)
-    SQ5.product SQ10
-  | β =>
-    let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SQ5 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 1)
-    SqHu.product SQ5
-  | topYukawa =>
-    let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SQ10 := I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 2)
-    SqHu.product SQ10
-  | bottomYukawa =>
-    let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-    let SQ5 := I.allowedBarFiveCharges.powerset.filter (fun x => x.card ≤ 1)
-    let SQ10 := I.allowedTenCharges.powerset.filter (fun x => x.card ≤ 1)
-    SqHd.product (SQ5.product SQ10)
+/-- For a `I : CodimensionOneConfig` and a `T : PotentialTerm`, the irreducible
+  elements in `T.ChargeType` which if one occurs as a subset of
+  `x : T.ChargeType` then `x` permits the term `T`.
+  They are irreducible in the sense that they can't be broken down into smaller subsets which
+  are also lead to the term `T`.
 
-def presentReducSubsetExe (I : CodimensionOneConfig)  (T : PotentialTerm) : Finset T.ChargeType :=
-  (chargeSubsetReduced I T).filter fun x => IsPresent T x
-
-def presentSubsetExe (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T.ChargeType :=
-  let X1 := T.presentReducSubsetExe I
-  let X2 := X1.filter (fun x => ∀ y ∈ X1, x = y ∨ ¬ (y ⊆ x))
-  X2
+  The result `presentIrredSet` is an explicit version of these irreducible elements.
+  -/
+def presentIrredSetExe (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T.ChargeType :=
+  (T.reducedChargesIsPresent I).filter (fun x =>
+    ∀ y ∈ (T.reducedChargesIsPresent I), x = y ∨ ¬ (y ⊆ x))
 
 local instance (n : ℕ) : OfNat (Option ℤ) n where
   ofNat := some n
@@ -93,7 +48,12 @@ local instance : Neg (Option ℤ) where
     | none => none
     | some n => some (-n)
 
-def presentSubsetSame : (T : PotentialTerm) → Finset T.ChargeType
+/-- For a `I = same` and a `T : PotentialTerm`, the irreducible
+  elements in `T.ChargeType` which if one occurs as a subset of
+  `x : T.ChargeType` then `x` permits the term `T`.
+  They are irreducible in the sense that they can't be broken down into smaller subsets which
+  are also lead to the term. -/
+def presentIrredSetSame : (T : PotentialTerm) → Finset T.ChargeType
   | μ => {(-3, -3), (-2, -2), (-1, -1), (0, 0), (1, 1), (2, 2), (3, 3)}
   | K2 => {(-3, 0, {3}), (-3, 1, {2}), (-3, 2, {1}), (-3, 3, {0}), (-2, -1, {3}),
     (-2, 0, {2}), (-2, 1, {1}), (-2, 2, {0}), (-2, 3, {-1}), (-1, -2, {3}), (-1, -1, {2}),
@@ -149,7 +109,12 @@ def presentSubsetSame : (T : PotentialTerm) → Finset T.ChargeType
     (2, {1}, {-3}), (3, {-3}, {0}), (3, {-2}, {-1}), (3, {-1}, {-2}), (3, {0}, {-3})}
 
 -- #eval  (presentSubsetExe .nextToNearestNeighbor bottomYukawa)
-def presentSubsetNearest :  (T : PotentialTerm) → Finset T.ChargeType
+/-- For a `I = nearestNeighbor` and a `T : PotentialTerm`, the irreducible
+  elements in `T.ChargeType` which if one occurs as a subset of
+  `x : T.ChargeType` then `x` permits the term `T`.
+  They are irreducible in the sense that they can't be broken down into smaller subsets which
+  are also lead to the term `T`. -/
+def presentIrredSetNN :  (T : PotentialTerm) → Finset T.ChargeType
   | μ => {(-14, -14), (-9, -9), (-4, -4), (1, 1), (6, 6), (11, 11)}
   | K2 => {(-14, 1, {13}), (-14, 6, {8}), (-14, 11, {3}), (-9, -4, {13}),
     (-9, 1, {8}), (-9, 6, {3}), (-9, 11, {-2}), (-4, -9, {13}), (-4, -4, {8}), (-4, 1, {3}),
@@ -193,8 +158,12 @@ def presentSubsetNearest :  (T : PotentialTerm) → Finset T.ChargeType
     (6, {-14}, {8}), (6, {-9}, {3}), (6, {-4}, {-2}), (6, {1}, {-7}), (6, {6}, {-12}),
     (11, {-14}, {3}), (11, {-9}, {-2}), (11, {-4}, {-7}), (11, {1}, {-12})}
 
-
-def presentSubsetNextToNearest : (T : PotentialTerm) → Finset T.ChargeType
+/-- For a `I = nextToNearestNeighbor` and a `T : PotentialTerm`, the irreducible
+  elements in `T.ChargeType` which if one occurs as a subset of
+  `x : T.ChargeType` then `x` permits the term `T`.
+  They are irreducible in the sense that they can't be broken down into smaller subsets which
+  are also lead to the term `T`. -/
+def presentIrredSetNToNN : (T : PotentialTerm) → Finset T.ChargeType
   | μ => {(-13, -13), (-8, -8), (-3, -3), (2, 2), (7, 7), (12, 12)}
   | K2 => {(-13, 2, {11}), (-13, 7, {6}), (-13, 12, {1}), (-8, -3, {11}),
     (-8, 2, {6}), (-8, 7, {1}), (-8, 12, {-4}), (-3, -8, {11}), (-3, -3, {6}), (-3, 2, {1}),
@@ -235,19 +204,23 @@ def presentSubsetNextToNearest : (T : PotentialTerm) → Finset T.ChargeType
     (2, {-8}, {6}), (2, {-3}, {1}), (2, {2}, {-4}), (2, {7}, {-9}), (7, {-13}, {6}), (7, {-8}, {1}),
     (7, {-3}, {-4}), (7, {2}, {-9}), (12, {-13}, {1}), (12, {-8}, {-4}), (12, {-3}, {-9})}
 
-def presentSubset : (I : CodimensionOneConfig) → (T : PotentialTerm) → Finset T.ChargeType
-  | same, T => presentSubsetSame T
-  | nearestNeighbor, T => presentSubsetNearest T
-  | nextToNearestNeighbor, T => presentSubsetNextToNearest T
+/-- For a `I : CodimensionOneConfig` and a `T : PotentialTerm`, the irreducible
+  elements in `T.ChargeType` which if one occurs as a subset of
+  `x : T.ChargeType` then `x` permits the term `T`.
+  They are irreducible in the sense that they can't be broken down into smaller subsets which
+  are also lead to the term `T`. -/
+def presentIrredSet: (I : CodimensionOneConfig) → (T : PotentialTerm) → Finset T.ChargeType
+  | same, T => presentIrredSetSame T
+  | nearestNeighbor, T => presentIrredSetNN T
+  | nextToNearestNeighbor, T => presentIrredSetNToNN T
 
 set_option maxRecDepth 2000 in
-lemma isPresent_of_mem_presentSubset
-    {I : CodimensionOneConfig} {T : PotentialTerm} (x : T.ChargeType) (h : x ∈ presentSubset I T) :
-    IsPresent T x := by
+lemma isPresent_of_mem_presentIrredSet
+    {I : CodimensionOneConfig} {T : PotentialTerm} (x : T.ChargeType)
+    (h : x ∈ presentIrredSet I T) : IsPresent T x := by
   revert x
   revert T I
   decide
-
 
 end PotentialTerm
 end SU5U1

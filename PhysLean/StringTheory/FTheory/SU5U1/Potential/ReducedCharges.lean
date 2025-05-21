@@ -375,7 +375,19 @@ lemma isPresent_iff_subset_reducedCharges
       simp [IsPresent, charges]
       omega
 
+/-!
 
+## Ispresent
+
+-/
+
+/-- The finite set of reduced charges for which the corresponding potential term is present. -/
+def reducedChargesIsPresent (I : CodimensionOneConfig)  (T : PotentialTerm) : Finset T.ChargeType :=
+  (reducedCharges I T).filter fun x => IsPresent T x
+
+lemma reducedChargesIsPresent_subset_reducedCharges (I : CodimensionOneConfig) (T : PotentialTerm) :
+    T.reducedChargesIsPresent I ⊆ T.reducedCharges I := by
+  simp [reducedChargesIsPresent, reducedCharges]
 
 end PotentialTerm
 end SU5U1
