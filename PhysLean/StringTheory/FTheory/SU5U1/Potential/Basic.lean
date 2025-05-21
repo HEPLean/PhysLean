@@ -185,28 +185,6 @@ lemma subset_trans {T : PotentialTerm} {x y z : T.ChargeType} (h1 : x ⊆ y) (h2
 
 /-!
 
-## Power set
-
--/
-
-def ChargeType.powerSet : (T : PotentialTerm) → (x : T.ChargeType) → Finset T.ChargeType
-  | μ, (qHd, qHu) => {(qHd, qHu)}
-  | β, (qHu, Q5) => ({qHu} : Finset (Option ℤ)).product Q5.powerset
-  | Λ, (Q5, Q10) => Q5.powerset.product Q10.powerset
-  | W1, (Q5, Q10) => Q5.powerset.product Q10.powerset
-  | W2, (qHd, Q10) => ({qHd} : Finset (Option ℤ)).product Q10.powerset
-  | W3, (qHu, Q5) => ({qHu} : Finset (Option ℤ)).product Q5.powerset
-  | W4, (qHd, qHu, Q5) =>
-    ({qHd} : Finset (Option ℤ)).product (({qHu} : Finset (Option ℤ)).product Q5.powerset)
-  | K1, (Q5, Q10) => Q5.powerset.product Q10.powerset
-  | K2, (qHd, qHu, Q10) => ({qHd} : Finset (Option ℤ)).product
-    (({qHu} : Finset (Option ℤ)).product Q10.powerset)
-  | topYukawa, (qHu, Q10) => ({qHu} : Finset (Option ℤ)).product Q10.powerset
-  | bottomYukawa, (qHd, Q5, Q10) =>
-    ({qHd} : Finset (Option ℤ)).product (Q5.powerset.product Q10.powerset)
-
-/-!
-
 ## The charges associated with the potential terms
 
 -/
@@ -336,6 +314,8 @@ lemma charges_of_subset (T : PotentialTerm) {x y : T.ChargeType} (h : x ⊆ y) :
       Finset.mem_product] at ⊢ h'
     exact ⟨h.1 h'.1, h.2.1 h'.2.1, h.2.2 h'.2.2⟩
 
+/-- Given a `I : CodimensionOneConfig`, and a potential term `PotentialTerm`, the
+  possible finite set of elements of `T.ChargeType` which orginate from charges allowed by `I`. -/
 def chargeSubsetFull (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T.ChargeType :=
   let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
   let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩

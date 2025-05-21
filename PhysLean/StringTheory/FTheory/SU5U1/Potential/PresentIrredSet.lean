@@ -39,9 +39,11 @@ def presentIrredSetExe (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T
   (T.reducedChargesIsPresent I).filter (fun x =>
     ∀ y ∈ (T.reducedChargesIsPresent I), x = y ∨ ¬ (y ⊆ x))
 
+/-- OfNat instance on `Option ℤ`. -/
 local instance (n : ℕ) : OfNat (Option ℤ) n where
   ofNat := some n
 
+/-- Negation on `Option ℤ`. -/
 local instance : Neg (Option ℤ) where
   neg x := match x with
     | none => none
