@@ -4,6 +4,26 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
+/-!
+
+# Reduced charges of a potential term
+
+For a `I : CodimensionOneConfig` and a `T : PotentialTerm`,
+if `x : T.ChargeType` then `x` may have more (say) Q10 charges then 10d representations appearing
+in `T`. The type `T.reducedCharges I` is the finite set of `T.ChargeType` that have
+less then or equal to the number of `Q10` charges appearing in `T`, likwise for
+`Q5`.
+
+## Important results
+
+- `reducedCharges`: The subset of `Finset T.ChargeType` of those sets of charges with
+  with a number of 5-bar or 10d charges less then or
+  equal to the times these representations appear in the term `T`.
+- `isPresent_iff_subset_reducedCharges` the statement that a charge `x : T.ChargeType`
+  leads to a potential term `T` if and only if there is a reduced charge `y : T.reducedCharges I`
+  such that `y.1 ⊆ x` and `T.IsPresent y`.
+
+-/
 namespace FTheory
 
 namespace SU5U1
@@ -14,6 +34,9 @@ namespace PotentialTerm
 open CodimensionOneConfig
 
 
+/-- The subset of `Finset T.ChargeType` of those sets of charges with
+  with a number of 5-bar or 10d charges less then or
+  equal to the times these representations appear in the term `T`. -/
 def reducedCharges (I : CodimensionOneConfig) : (T : PotentialTerm) → Finset T.ChargeType
   | μ =>
     let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
@@ -125,6 +148,8 @@ lemma reducedCharges_subset_chargeSubsetFull (I : CodimensionOneConfig) (T : Pot
       · exact Finset.filter_subset (fun x => x.card ≤ 1) I.allowedBarFiveCharges.powerset
       · exact Finset.filter_subset (fun x => x.card ≤ 1) I.allowedTenCharges.powerset
 
+/-- A charge `x : T.ChargeType` leads to a potential term `T` if and only if
+  there is a reduced charge `y : T.reducedCharges I`  such that `y.1 ⊆ x` and `T.IsPresent y`. -/
 lemma isPresent_iff_subset_reducedCharges
     (I : CodimensionOneConfig) (T : PotentialTerm) (x : T.ChargeType)
     (hmem : x ∈ T.chargeSubsetFull I) :
@@ -184,7 +209,8 @@ lemma isPresent_iff_subset_reducedCharges
       simp [IsPresent, charges]
       use q2, q3
       rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp
+      simp only [Multiset.mem_ndinsert, Multiset.mem_singleton, true_or, or_true, and_self,
+        true_and]
       omega
   | W4, (qHd, qHu, Q5) =>
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at h
@@ -232,7 +258,8 @@ lemma isPresent_iff_subset_reducedCharges
       simp [IsPresent, charges]
       use q2, q3
       rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp
+      simp only [Multiset.mem_ndinsert, Multiset.mem_singleton, true_or, or_true, and_self,
+        true_and]
       omega
   | W2, (qHd, Q10) =>
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at h
@@ -258,7 +285,8 @@ lemma isPresent_iff_subset_reducedCharges
       simp [IsPresent, charges]
       use q2, q3, q4
       repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp
+      simp only [Multiset.mem_ndinsert, Multiset.mem_singleton, true_or, or_true, and_self,
+        true_and]
       omega
   | W1, (Q5, Q10) =>
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at h
@@ -279,7 +307,8 @@ lemma isPresent_iff_subset_reducedCharges
       simp [IsPresent, charges]
       use q2, q3, q4
       repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp
+      simp only [Multiset.mem_ndinsert, Multiset.mem_singleton, true_or, or_true, and_self,
+        true_and]
       omega
   | Λ, (Q5, Q10) =>
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at h
@@ -300,7 +329,8 @@ lemma isPresent_iff_subset_reducedCharges
       simp [IsPresent, charges]
       use q1, q2, q3
       rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp
+      simp only [Multiset.mem_ndinsert, Multiset.mem_singleton, true_or, Prod.mk.injEq, and_true,
+        or_true, and_self, true_and]
       omega
   | β, (qHu, Q5) =>
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at h
@@ -349,7 +379,8 @@ lemma isPresent_iff_subset_reducedCharges
       simp [IsPresent, charges]
       use q2, q3
       repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp
+      simp only [Multiset.mem_ndinsert, Multiset.mem_singleton, true_or, or_true, and_self,
+        true_and]
       omega
   | bottomYukawa, (qHd, Q5, Q10) =>
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at h
@@ -377,7 +408,7 @@ lemma isPresent_iff_subset_reducedCharges
 
 /-!
 
-## Ispresent
+## IsPresent
 
 -/
 
