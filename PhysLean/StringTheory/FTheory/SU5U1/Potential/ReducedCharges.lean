@@ -33,7 +33,6 @@ namespace PotentialTerm
 
 open CodimensionOneConfig
 
-
 /-- The subset of `Finset T.ChargeType` of those sets of charges with
   with a number of 5-bar or 10d charges less then or
   equal to the times these representations appear in the term `T`. -/
@@ -149,7 +148,7 @@ lemma reducedCharges_subset_chargeSubsetFull (I : CodimensionOneConfig) (T : Pot
       · exact Finset.filter_subset (fun x => x.card ≤ 1) I.allowedTenCharges.powerset
 
 /-- A charge `x : T.ChargeType` leads to a potential term `T` if and only if
-  there is a reduced charge `y : T.reducedCharges I`  such that `y.1 ⊆ x` and `T.IsPresent y`. -/
+  there is a reduced charge `y : T.reducedCharges I` such that `y.1 ⊆ x` and `T.IsPresent y`. -/
 lemma isPresent_iff_subset_reducedCharges
     (I : CodimensionOneConfig) (T : PotentialTerm) (x : T.ChargeType)
     (hmem : x ∈ T.chargeSubsetFull I) :
@@ -160,7 +159,7 @@ lemma isPresent_iff_subset_reducedCharges
   | μ, (qHd, qHu) =>
     refine ⟨⟨(qHd, qHu), ?_⟩, ?_, ?_⟩
     · -- Member of the reduced charges
-      simp  [reducedCharges]
+      simp [reducedCharges]
       simp [chargeSubsetFull] at hmem
       rw [Finset.mem_product] at hmem ⊢
       simp_all [Finset.insert_subset_iff]
@@ -413,7 +412,7 @@ lemma isPresent_iff_subset_reducedCharges
 -/
 
 /-- The finite set of reduced charges for which the corresponding potential term is present. -/
-def reducedChargesIsPresent (I : CodimensionOneConfig)  (T : PotentialTerm) : Finset T.ChargeType :=
+def reducedChargesIsPresent (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T.ChargeType :=
   (reducedCharges I T).filter fun x => IsPresent T x
 
 lemma reducedChargesIsPresent_subset_reducedCharges (I : CodimensionOneConfig) (T : PotentialTerm) :

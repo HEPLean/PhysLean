@@ -154,11 +154,11 @@ instance (T : PotentialTerm) : HasSubset T.ChargeType where Subset x y :=
   | W1 => x.1 ⊆ y.1 ∧ x.2 ⊆ y.2
   | W2 => x.1.toFinset ⊆ y.1.toFinset ∧ x.2 ⊆ y.2
   | W3 => x.1.toFinset ⊆ y.1.toFinset ∧ x.2 ⊆ y.2
-  | W4 => x.1.toFinset ⊆ y.1.toFinset  ∧ x.2.1.toFinset ⊆ y.2.1.toFinset  ∧ x.2.2 ⊆ y.2.2
+  | W4 => x.1.toFinset ⊆ y.1.toFinset ∧ x.2.1.toFinset ⊆ y.2.1.toFinset ∧ x.2.2 ⊆ y.2.2
   | K1 => x.1 ⊆ y.1 ∧ x.2 ⊆ y.2
   | K2 => x.1.toFinset ⊆ y.1.toFinset ∧ x.2.1.toFinset ⊆ y.2.1.toFinset ∧ x.2.2 ⊆ y.2.2
-  | topYukawa => x.1.toFinset ⊆ y.1.toFinset  ∧ x.2 ⊆ y.2
-  | bottomYukawa => x.1.toFinset ⊆ y.1.toFinset  ∧ x.2.1 ⊆ y.2.1 ∧ x.2.2 ⊆ y.2.2
+  | topYukawa => x.1.toFinset ⊆ y.1.toFinset ∧ x.2 ⊆ y.2
+  | bottomYukawa => x.1.toFinset ⊆ y.1.toFinset ∧ x.2.1 ⊆ y.2.1 ∧ x.2.2 ⊆ y.2.2
 
 instance subsetDecidable : (T : PotentialTerm) → (x y : T.ChargeType) → Decidable (x ⊆ y)
   | μ, _, _ => instDecidableAnd
@@ -189,20 +189,20 @@ lemma subset_trans {T : PotentialTerm} {x y z : T.ChargeType} (h1 : x ⊆ y) (h2
 
 -/
 
-def ChargeType.powerSet : (T : PotentialTerm) → (x : T.ChargeType) →  Finset T.ChargeType
+def ChargeType.powerSet : (T : PotentialTerm) → (x : T.ChargeType) → Finset T.ChargeType
   | μ, (qHd, qHu) => {(qHd, qHu)}
   | β, (qHu, Q5) => ({qHu} : Finset (Option ℤ)).product Q5.powerset
-  | Λ, (Q5, Q10)  => Q5.powerset.product Q10.powerset
-  | W1, (Q5, Q10) =>  Q5.powerset.product Q10.powerset
+  | Λ, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | W1, (Q5, Q10) => Q5.powerset.product Q10.powerset
   | W2, (qHd, Q10) => ({qHd} : Finset (Option ℤ)).product Q10.powerset
   | W3, (qHu, Q5) => ({qHu} : Finset (Option ℤ)).product Q5.powerset
   | W4, (qHd, qHu, Q5) =>
     ({qHd} : Finset (Option ℤ)).product (({qHu} : Finset (Option ℤ)).product Q5.powerset)
-  | K1, (Q5, Q10) =>  Q5.powerset.product Q10.powerset
-  | K2, (qHd, qHu, Q10) =>  ({qHd} : Finset (Option ℤ)).product
+  | K1, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | K2, (qHd, qHu, Q10) => ({qHd} : Finset (Option ℤ)).product
     (({qHu} : Finset (Option ℤ)).product Q10.powerset)
-  | topYukawa, (qHu, Q10) =>  ({qHu} : Finset (Option ℤ)).product Q10.powerset
-  | bottomYukawa, (qHd, Q5, Q10)  =>
+  | topYukawa, (qHu, Q10) => ({qHu} : Finset (Option ℤ)).product Q10.powerset
+  | bottomYukawa, (qHd, Q5, Q10) =>
     ({qHd} : Finset (Option ℤ)).product (Q5.powerset.product Q10.powerset)
 
 /-!
@@ -217,7 +217,7 @@ def ChargeType.powerSet : (T : PotentialTerm) → (x : T.ChargeType) →  Finset
 def charges : (T : PotentialTerm) → T.ChargeType → Multiset ℤ
   | μ, (qHd, qHu) => (qHd.toFinset.product <| qHu.toFinset).val.map (fun x => x.1 - x.2)
   | β, (qHu, Q5) => (qHu.toFinset.product <| Q5).val.map (fun x => - x.1 + x.2)
-  | Λ, (Q5, Q10)  => (Q5.product <| Q5.product <| Q10).val.map (fun x => x.1 + x.2.1 + x.2.2)
+  | Λ, (Q5, Q10) => (Q5.product <| Q5.product <| Q10).val.map (fun x => x.1 + x.2.1 + x.2.2)
   | W1, (Q5, Q10) => (Q5.product <| Q10.product <| Q10.product <| Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
   | W2, (qHd, Q10) => (qHd.toFinset.product <| Q10.product <| Q10.product <| Q10).val.map
@@ -226,13 +226,13 @@ def charges : (T : PotentialTerm) → T.ChargeType → Multiset ℤ
     (fun x => -x.1 - x.1 + x.2.1 + x.2.2)
   | W4, (qHd, qHu, Q5) => (qHd.toFinset.product <| qHu.toFinset.product <| Q5).val.map
     (fun x => x.1 - x.2.1 - x.2.1 + x.2.2)
-  | K1, (Q5, Q10) => (Q5.product <| Q10.product  <| Q10).val.map
+  | K1, (Q5, Q10) => (Q5.product <| Q10.product <| Q10).val.map
     (fun x => - x.1 + x.2.1 + x.2.2)
   | K2, (qHd, qHu, Q10) => (qHd.toFinset.product <| qHu.toFinset.product <| Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2)
   | topYukawa, (qHu, Q10) => (qHu.toFinset.product <| Q10.product <| Q10).val.map
     (fun x => -x.1 + x.2.1 + x.2.2)
-  | bottomYukawa, (qHd, Q5, Q10)  => (qHd.toFinset.product <| Q5.product <| Q10).val.map
+  | bottomYukawa, (qHd, Q5, Q10) => (qHd.toFinset.product <| Q5.product <| Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2)
 
 lemma charges_of_subset (T : PotentialTerm) {x y : T.ChargeType} (h : x ⊆ y) :
@@ -371,7 +371,7 @@ they carry.
   the charges of this term are `{-3, -1}`, and this is excluded by the `U(1)` charges.
   Thus `IsExcluded β (3, {0, 2})` would be `true`.
   -/
-def IsExcluded  (T : PotentialTerm) (x : T.ChargeType) : Prop :=
+def IsExcluded (T : PotentialTerm) (x : T.ChargeType) : Prop :=
   0 ∉ T.charges x
 
 /-!
@@ -431,7 +431,7 @@ lemma not_isExcluded_iff_isPresent : (T : PotentialTerm) → (x : T.ChargeType) 
   | bottomYukawa => fun (qHd, Q5, Q10) => by simp [IsExcluded, IsPresent]
 
 /-- The decidability of `IsPresent` for the potential terms. -/
-instance (T : PotentialTerm) :  DecidablePred T.IsPresent := fun _ => Multiset.decidableMem _ _
+instance (T : PotentialTerm) : DecidablePred T.IsPresent := fun _ => Multiset.decidableMem _ _
 
 lemma isPresent_of_subset (T : PotentialTerm) {y x : T.ChargeType}
     (h : y ⊆ x) (hy : T.IsPresent y) : T.IsPresent x := T.charges_of_subset h hy

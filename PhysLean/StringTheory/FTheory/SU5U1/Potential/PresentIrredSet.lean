@@ -27,7 +27,6 @@ namespace PotentialTerm
 
 open CodimensionOneConfig
 
-
 /-- For a `I : CodimensionOneConfig` and a `T : PotentialTerm`, the irreducible
   elements in `T.ChargeType` which if one occurs as a subset of
   `x : T.ChargeType` then `x` permits the term `T`.
@@ -73,7 +72,7 @@ def presentIrredSetSame : (T : PotentialTerm) → Finset T.ChargeType
   | W3 => {(-3, {-3}), (-2, {-2}), (-2, {-3, -1}), (-1, {-1}), (-1, {-2, 0}), (-1, {-3, 1}),
     (0, {0}), (0, {-1, 1}), (0, {-2, 2}), (0, {-3, 3}), (1, {1}), (1, {0, 2}), (1, {-1, 3}),
     (2, {2}), (2, {1, 3}), (3, {3})}
-   | W2 => {(-3, {1}), (-3, {-1, 2}), (-3, {-3, 3}), (-3, {0, 3}), (-3, {-2, 2, 3}),
+  | W2 => {(-3, {1}), (-3, {-1, 2}), (-3, {-3, 3}), (-3, {0, 3}), (-3, {-2, 2, 3}),
     (-2, {0, 1}), (-2, {-2, 2}), (-2, {0, 2}), (-2, {-1, 1, 2}), (-2, {-1, 0, 3}),
     (-2, {-2, 1, 3}), (-2, {-3, 2, 3}), (-1, {-1, 1}), (-1, {0, 1}), (-1, {-3, 2}),
     (-1, {-1, 0, 2}), (-1, {-2, 1, 2}), (-1, {-1, 3}), (-1, {-2, 0, 3}), (-1, {-3, 1, 3}),
@@ -108,13 +107,13 @@ def presentIrredSetSame : (T : PotentialTerm) → Finset T.ChargeType
     (1, {1}, {-2}), (1, {2}, {-3}), (2, {-3}, {1}), (2, {-2}, {0}), (2, {-1}, {-1}), (2, {0}, {-2}),
     (2, {1}, {-3}), (3, {-3}, {0}), (3, {-2}, {-1}), (3, {-1}, {-2}), (3, {0}, {-3})}
 
--- #eval  (presentSubsetExe .nextToNearestNeighbor bottomYukawa)
+-- #eval (presentSubsetExe .nextToNearestNeighbor bottomYukawa)
 /-- For a `I = nearestNeighbor` and a `T : PotentialTerm`, the irreducible
   elements in `T.ChargeType` which if one occurs as a subset of
   `x : T.ChargeType` then `x` permits the term `T`.
   They are irreducible in the sense that they can't be broken down into smaller subsets which
   are also lead to the term `T`. -/
-def presentIrredSetNN :  (T : PotentialTerm) → Finset T.ChargeType
+def presentIrredSetNN : (T : PotentialTerm) → Finset T.ChargeType
   | μ => {(-14, -14), (-9, -9), (-4, -4), (1, 1), (6, 6), (11, 11)}
   | K2 => {(-14, 1, {13}), (-14, 6, {8}), (-14, 11, {3}), (-9, -4, {13}),
     (-9, 1, {8}), (-9, 6, {3}), (-9, 11, {-2}), (-4, -9, {13}), (-4, -4, {8}), (-4, 1, {3}),
