@@ -4,12 +4,14 @@ on:
     branches:
       - master
   pull_request:
+    branches:
+      - master
 
-name: continuous integration
+name: Style linters
 
 jobs:
   doc_lint:
-    name: doc lint
+    name: Lean based style linters
     runs-on: ubuntu-latest
     steps:
 
