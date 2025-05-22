@@ -1,0 +1,770 @@
+---
+layout: default
+---
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Informal dependency graph for PhysLean</title>
+    <style>
+        /* Optional styling for the message display */
+        #message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        /* Optional: Hide the text content divs */
+        .node-text {
+            display: none;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include D3.js -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- Include hpcc-js/wasm for Graphviz layout -->
+    <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+    <!-- Include d3-graphviz for rendering Graphviz graphs -->
+    <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+
+    <!-- Add a title to the page -->
+    <h1 style="text-align: center;">Informal dependency graph for PhysLean</h1>
+    <p style="text-align: center;">Click on a node to display the text associated with it.</p>
+    <p style="text-align: center;">This graph only shows informal results (gray) and their direct formal dependencies (blue).
+    It does not show all results formalised into PhysLean.</p>
+    <!-- Div to display the graph -->
+    <div id="graph" style="width: 75vw; height: 75vh; border: 1px solid black"></div>
+
+    <!-- Hidden divs containing the text to display when nodes are clicked -->
+
+    <!-- Add more divs for other nodes as needed, each with id equal to the node name -->
+    <div id="includedContent"></div>
+    <!-- Div to display the message when a node is clicked -->
+    <div id="message"></div>
+
+<div id="IndexNotation.OverColor.forget" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\Color\Lift.lean#L821">IndexNotation.OverColor.forget</a></b><br>
+<b>Description: </b>The forgetful map from `BraidedFunctor (OverColor C) (Rep k G)` to `Discrete C ⥤ Rep k G`
+built on the inclusion `incl` and forgetting the monoidal structure. 
+
+</div>
+
+<div id="SpaceTime" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\SpaceTime\Basic.lean#L20">SpaceTime</a></b><br>
+<b>Description: </b>The space-time 
+
+</div>
+
+<div id="Fermion.rightHanded" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\ComplexTensor\Weyl\Basic.lean#L102">Fermion.rightHanded</a></b><br>
+<b>Description: </b>The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
+In index notation corresponds to a Weyl fermion with indices ψ^{dot a}. 
+
+</div>
+
+<div id="StandardModel.HiggsField.Potential" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\Potential.lean#L34">StandardModel.HiggsField.Potential</a></b><br>
+<b>Description: </b>The structure `Potential` is defined with two fields, `μ2` corresponding
+to the mass-squared of the Higgs boson, and `l` corresponding to the coefficent
+of the quartic term in the Higgs potential. Note that `l` is usually denoted `λ`. 
+
+</div>
+
+<div id="TensorSpecies.Tensor.prodT" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\Product.lean#L198">TensorSpecies.Tensor.prodT</a></b><br>
+<b>Description: </b>The tensor product of two tensors as a bi-linear map from
+`S.Tensor c` and `S.Tensor c1` to `S.Tensor (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)`. 
+
+</div>
+
+<div id="StandardModel.HiggsField.zero" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\Basic.lean#L176">StandardModel.HiggsField.zero</a></b><br>
+<b>Description: </b>The higgs field which is all zero. 
+
+</div>
+
+<div id="StandardModel.GaugeGroupQuot" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L83">StandardModel.GaugeGroupQuot</a></b><br>
+<b>Description: </b>Specifies the allowed quotients of `SU(3) x SU(2) x U(1)` which give a valid
+gauge group of the Standard Model. 
+
+</div>
+
+<div id="StandardModel.HiggsVec.rotate_fst_zero_snd_real" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L175">StandardModel.HiggsVec.rotate_fst_zero_snd_real</a></b><br>
+<b>Description: </b>For every Higgs vector there exists an element of the gauge group which rotates that
+Higgs vector to have `0` in the first component and be a non-negative real in the second
+component. 
+
+</div>
+
+<div id="complexLorentzTensor.rightMetric" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\ComplexTensor\Metrics\Basic.lean#L43">complexLorentzTensor.rightMetric</a></b><br>
+<b>Description: </b>The metric `ε^{dot a}^{dot a}` as a complex Lorentz tensor. 
+
+</div>
+
+<div id="StandardModel.HiggsVec" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\Basic.lean#L37">StandardModel.HiggsVec</a></b><br>
+<b>Description: </b>The vector space `HiggsVec` is defined to be the complex Euclidean space of dimension 2.
+For a given spacetime point a Higgs field gives a value in `HiggsVec`. 
+
+</div>
+
+<div id="Lorentz.SL2C.toLorentzGroup" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\SL2C\Basic.lean#L177">Lorentz.SL2C.toLorentzGroup</a></b><br>
+<b>Description: </b>The group homomorphism from `SL(2, ℂ)` to the Lorentz group `𝓛`. 
+
+</div>
+
+<div id="Fermion.altRightHanded" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\ComplexTensor\Weyl\Basic.lean#L139">Fermion.altRightHanded</a></b><br>
+<b>Description: </b>The vector space ℂ^2 carrying the representation of SL(2,C) given by
+M → (M⁻¹)^†.
+In index notation this corresponds to a Weyl fermion with index `ψ_{dot a}`. 
+
+</div>
+
+<div id="TwoHDM.prodMatrix" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\TwoHDM\GaugeOrbits.lean#L29">TwoHDM.prodMatrix</a></b><br>
+<b>Description: </b>For two Higgs fields `Φ₁` and `Φ₂`, the map from space time to 2 x 2 complex matrices
+defined by `((Φ₁^†Φ₁, Φ₂^†Φ₁), (Φ₁^†Φ₂, Φ₂^†Φ₂))`. 
+
+</div>
+
+<div id="LorentzGroup.restricted" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Lorentz\Group\Restricted.lean#L28">LorentzGroup.restricted</a></b><br>
+<b>Description: </b>The restricted Lorentz group comprises the proper and orthochronous elements of the
+Lorentz group. 
+
+</div>
+
+<div id="complexLorentzTensor.leftMetric" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\ComplexTensor\Metrics\Basic.lean#L40">complexLorentzTensor.leftMetric</a></b><br>
+<b>Description: </b>The metric `εᵃᵃ` as a complex Lorentz tensor. 
+
+</div>
+
+<div id="complexLorentzTensor.coBispinorDown" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Bispinors\Basic.lean#L47">complexLorentzTensor.coBispinorDown</a></b><br>
+<b>Description: </b>A bispinor `pₐₐ` created from a lorentz vector `p_μ`. 
+
+</div>
+
+<div id="Lorentz.SL2C.toLorentzGroup_det_one" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\SL2C\Basic.lean#L286">Lorentz.SL2C.toLorentzGroup_det_one</a></b><br>
+<b>Description: </b>The determinant of the image of `SL(2, ℂ)` in the Lorentz group is one. 
+
+</div>
+
+<div id="StandardModel.HiggsVec.rep" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L79">StandardModel.HiggsVec.rep</a></b><br>
+<b>Description: </b>The representation of the gauge group acting on `higgsVec`. 
+
+</div>
+
+<div id="Lorentz.SL2C.toLorentzGroup_isOrthochronous" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\SL2C\Basic.lean#L262">Lorentz.SL2C.toLorentzGroup_isOrthochronous</a></b><br>
+<b>Description: </b>The image of `SL(2, ℂ)` in the Lorentz group is orthochronous. 
+
+</div>
+
+<div id="complexLorentzTensor.contrBispinorDown" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Bispinors\Basic.lean#L39">complexLorentzTensor.contrBispinorDown</a></b><br>
+<b>Description: </b>A bispinor `pₐₐ` created from a lorentz vector `p^μ`. 
+
+</div>
+
+<div id="complexLorentzTensor.contrBispinorUp" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Bispinors\Basic.lean#L35">complexLorentzTensor.contrBispinorUp</a></b><br>
+<b>Description: </b>A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. 
+
+</div>
+
+<div id="complexLorentzTensor.coBispinorUp" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Bispinors\Basic.lean#L43">complexLorentzTensor.coBispinorUp</a></b><br>
+<b>Description: </b>A bispinor `pᵃᵃ` created from a lorentz vector `p_μ`. 
+
+</div>
+
+<div id="SpaceTime.space" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\SpaceTime\Basic.lean#L37">SpaceTime.space</a></b><br>
+<b>Description: </b>The space part of spacetime. 
+
+</div>
+
+<div id="TensorSpecies.Tensor.permT" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\Basic.lean#L622">TensorSpecies.Tensor.permT</a></b><br>
+<b>Description: </b>Given a permutation `σ : Fin m → Fin n` of indices satisfying `PermCond` through `h`,
+and a tensor `t`, `permT σ h t` is the tensor tensor permuted accordinge to `σ`. 
+
+</div>
+
+<div id="IndexNotation.OverColor.lift" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\Color\Lift.lean#L715">IndexNotation.OverColor.lift</a></b><br>
+<b>Description: </b>The functor taking functors in `Discrete C ⥤ Rep k G` to monoidal functors in
+`BraidedFunctor (OverColor C) (Rep k G)`, built on the PiTensorProduct. 
+
+</div>
+
+<div id="StandardModel.HiggsField" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\Basic.lean#L91">StandardModel.HiggsField</a></b><br>
+<b>Description: </b>The type `HiggsField` is defined such that elements are smooth sections of the trivial
+vector bundle `HiggsBundle`. Such elements are Higgs fields. Since `HiggsField` is
+trivial as a vector bundle, a Higgs field is equivalent to a smooth map
+from `SpaceTime` to `HiggsVec`. 
+
+</div>
+
+<div id="TensorSpecies.Tensor.evalT" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\Evaluation.lean#L112">TensorSpecies.Tensor.evalT</a></b><br>
+<b>Description: </b>Given a `i : Fin (n + 1)`, a `b : Fin (S.repDim (c i))` and a tensor
+`t : Tensor S c`, `evalT i b t` is the tensor formed by evaluating the `i`th index
+of `t` at `b`. 
+
+</div>
+
+<div id="TwoHDM.prodMatrix_smooth" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\TwoHDM\GaugeOrbits.lean#L74">TwoHDM.prodMatrix_smooth</a></b><br>
+<b>Description: </b>The map `prodMatrix` is a smooth function on spacetime. 
+
+</div>
+
+<div id="StandardModel.GaugeGroupI" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L25">StandardModel.GaugeGroupI</a></b><br>
+<b>Description: </b>The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. 
+
+</div>
+
+<div id="TensorSpecies.Tensor.contrT" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\Contraction\Basic.lean#L37">TensorSpecies.Tensor.contrT</a></b><br>
+<b>Description: </b>For `c : Fin (n + 1 + 1) → S.C`, `i j : Fin (n + 1 + 1)` with dual color, and a tensor
+`t : Tensor S c`, `contrT i j _ t` is the tensor
+formed by contracting the `i`th index of `t`
+with the `j`th index. 
+
+</div>
+
+<div id="SpecialRelativity.InstantaneousTwinParadox.ageGap" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Special\TwinParadox\Basic.lean#L61">SpecialRelativity.InstantaneousTwinParadox.ageGap</a></b><br>
+<b>Description: </b>The proper time of twin A minus the proper time of twin B. 
+
+</div>
+
+<div id="StandardModel.HiggsField.Potential.IsBounded" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\Potential.lean#L296">StandardModel.HiggsField.Potential.IsBounded</a></b><br>
+<b>Description: </b>Given a element `P` of `Potential`, the proposition `IsBounded P` is true if and only if
+there exists a real `c` such that for all Higgs fields `φ` and spacetime points `x`,
+the Higgs potential corresponding to `φ` at `x` is greater then or equal to`c`. I.e.
+
+`∀ Φ x, c ≤ P.toFun Φ x`. 
+
+</div>
+
+<div id="Cosmology.SpatialGeometry.limit_S_saddle" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Cosmology\FLRW\Basic.lean#L37">Cosmology.SpatialGeometry.limit_S_saddle</a></b><br>
+<b>Description: </b>The limit of `S (Saddle k) r` as `k → ∞` is equal to `S (Flat) r`. 
+
+</div>
+
+<div id="Cosmology.SpatialGeometry.limit_S_sphere" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Cosmology\FLRW\Basic.lean#L42">Cosmology.SpatialGeometry.limit_S_sphere</a></b><br>
+<b>Description: </b>The limit of `S (Sphere k) r` as `k → ∞` is equal to `S (Flat) r`. 
+
+</div>
+
+<div id="Cosmology.FLRW.hubbleConstant" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Cosmology\FLRW\Basic.lean#L61">Cosmology.FLRW.hubbleConstant</a></b><br>
+<b>Description: </b>The hubble constant defined in terms of the scale factor
+as `(dₜ a) / a`.
+
+The notation `H` is used for the `hubbleConstant`.
+
+Semiformal implementation note: Implement also scoped notation. 
+
+</div>
+
+<div id="Cosmology.FLRW.decelerationParameter" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Cosmology\FLRW\Basic.lean#L71">Cosmology.FLRW.decelerationParameter</a></b><br>
+<b>Description: </b>The deceleration parameter defined in terms of the scale factor
+as `- (dₜdₜ a) a / (dₜ a)^2`.
+
+The notation `q` is used for the `decelerationParameter`.
+
+Semiformal implementation note: Implement also scoped notation. 
+
+</div>
+
+<div id="Cosmology.FLRW.decelerationParameter_eq_one_plus_hubbleConstant" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Cosmology\FLRW\Basic.lean#L81">Cosmology.FLRW.decelerationParameter_eq_one_plus_hubbleConstant</a></b><br>
+<b>Description: </b>The deceleration parameter is equal to `- (1 + (dₜ H)/H^2)`. 
+
+</div>
+
+<div id="Cosmology.FLRW.time_evolution_hubbleConstant" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Cosmology\FLRW\Basic.lean#L86">Cosmology.FLRW.time_evolution_hubbleConstant</a></b><br>
+<b>Description: </b>The time evolution of the hubble parameter is equal to `dₜ H = - H^2 (1 + q)`. 
+
+</div>
+
+<div id="Cosmology.FLRW.hubbleConstant_decrease_iff" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Cosmology\FLRW\Basic.lean#L91">Cosmology.FLRW.hubbleConstant_decrease_iff</a></b><br>
+<b>Description: </b>There exists a time at which the hubble constant decreases if and only if
+there exists a time where the deceleration parameter is less then `-1`. 
+
+</div>
+
+<div id="GeorgiGlashow.GaugeGroupI" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\GeorgiGlashow\Basic.lean#L20">GeorgiGlashow.GaugeGroupI</a></b><br>
+<b>Description: </b>The gauge group of the Georgi-Glashow model, i.e., `SU(5)`. 
+
+</div>
+
+<div id="GeorgiGlashow.inclSM" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\GeorgiGlashow\Basic.lean#L25">GeorgiGlashow.inclSM</a></b><br>
+<b>Description: </b>The homomorphism of the Standard Model gauge group into the Georgi-Glashow gauge group, i.e.,
+the group homomorphism `SU(3) × SU(2) × U(1) → SU(5)` taking `(h, g, α)` to
+`blockdiag (α ^ 3 g, α ^ (-2) h)`.
+
+See page 34 of https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="GeorgiGlashow.inclSM_ker" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\GeorgiGlashow\Basic.lean#L35">GeorgiGlashow.inclSM_ker</a></b><br>
+<b>Description: </b>The kernel of the map `inclSM` is equal to the subgroup `StandardModel.gaugeGroupℤ₆SubGroup`.
+
+See page 34 of https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="GeorgiGlashow.embedSMℤ₆" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\GeorgiGlashow\Basic.lean#L43">GeorgiGlashow.embedSMℤ₆</a></b><br>
+<b>Description: </b>The group embedding from `StandardModel.GaugeGroupℤ₆` to `GaugeGroupI` induced by `inclSM` by
+quotienting by the kernel `inclSM_ker`.
+
+
+</div>
+
+<div id="PatiSalam.GaugeGroupI" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L25">PatiSalam.GaugeGroupI</a></b><br>
+<b>Description: </b>The gauge group of the Pati-Salam model (unquotiented by ℤ₂), i.e., `SU(4) × SU(2) × SU(2)`. 
+
+</div>
+
+<div id="PatiSalam.inclSM" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L30">PatiSalam.inclSM</a></b><br>
+<b>Description: </b>The homomorphism of the Standard Model gauge group into the Pati-Salam gauge group, i.e., the
+group homomorphism `SU(3) × SU(2) × U(1) → SU(4) × SU(2) × SU(2)` taking `(h, g, α)` to
+`(blockdiag (α h, α ^ (-3)), g, diag (α ^ 3, α ^(-3))`.
+
+See page 54 of https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="PatiSalam.inclSM_ker" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L40">PatiSalam.inclSM_ker</a></b><br>
+<b>Description: </b>The kernel of the map `inclSM` is equal to the subgroup `StandardModel.gaugeGroupℤ₃SubGroup`.
+
+See footnote 10 of https://arxiv.org/pdf/2201.07245
+
+
+</div>
+
+<div id="PatiSalam.embedSMℤ₃" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L48">PatiSalam.embedSMℤ₃</a></b><br>
+<b>Description: </b>The group embedding from `StandardModel.GaugeGroupℤ₃` to `GaugeGroupI` induced by `inclSM` by
+quotienting by the kernel `inclSM_ker`.
+
+
+</div>
+
+<div id="PatiSalam.gaugeGroupISpinEquiv" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L55">PatiSalam.gaugeGroupISpinEquiv</a></b><br>
+<b>Description: </b>The equivalence between `GaugeGroupI` and `Spin(6) × Spin(4)`. 
+
+</div>
+
+<div id="PatiSalam.gaugeGroupℤ₂SubGroup" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L60">PatiSalam.gaugeGroupℤ₂SubGroup</a></b><br>
+<b>Description: </b>The ℤ₂-subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` with the non-trivial element `(-1, -1, -1)`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="PatiSalam.GaugeGroupℤ₂" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L69">PatiSalam.GaugeGroupℤ₂</a></b><br>
+<b>Description: </b>The gauge group of the Pati-Salam model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI`
+by the ℤ₂-subgroup `gaugeGroupℤ₂SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L78">PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup</a></b><br>
+<b>Description: </b>The group `StandardModel.gaugeGroupℤ₆SubGroup` under the homomorphism `embedSM` factors through
+the subgroup `gaugeGroupℤ₂SubGroup`.
+
+
+</div>
+
+<div id="PatiSalam.embedSMℤ₆Toℤ₂" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\PatiSalam\Basic.lean#L85">PatiSalam.embedSMℤ₆Toℤ₂</a></b><br>
+<b>Description: </b>The group homomorphism from `StandardModel.GaugeGroupℤ₆` to `GaugeGroupℤ₂` induced by `embedSM`.
+
+
+</div>
+
+<div id="Spin10Model.GaugeGroupI" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\Spin10\Basic.lean#L19">Spin10Model.GaugeGroupI</a></b><br>
+<b>Description: </b>The gauge group of the Spin(10) model, i.e., the group `Spin(10)`. 
+
+</div>
+
+<div id="Spin10Model.inclPatiSalam" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\Spin10\Basic.lean#L24">Spin10Model.inclPatiSalam</a></b><br>
+<b>Description: </b>The inclusion of the Pati-Salam gauge group into Spin(10), i.e., the lift of the embedding
+`SO(6) × SO(4) → SO(10)` to universal covers, giving a homomorphism `Spin(6) × Spin(4) → Spin(10)`.
+Precomposed with the isomorphism, `PatiSalam.gaugeGroupISpinEquiv`, between `SU(4) × SU(2) × SU(2)`
+and `Spin(6) × Spin(4)`.
+
+See page 56 of https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="Spin10Model.inclSM" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\Spin10\Basic.lean#L35">Spin10Model.inclSM</a></b><br>
+<b>Description: </b>The inclusion of the Standard Model gauge group into Spin(10), i.e., the composition of
+`embedPatiSalam` and `PatiSalam.inclSM`.
+
+See page 56 of https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="Spin10Model.inclGeorgiGlashow" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\Spin10\Basic.lean#L44">Spin10Model.inclGeorgiGlashow</a></b><br>
+<b>Description: </b>The inclusion of the Georgi-Glashow gauge group into Spin(10), i.e., the Lie group homomorphism
+from `SU(n) → Spin(2n)` discussed on page 46 of https://math.ucr.edu/home/baez/guts.pdf for `n = 5`.
+
+
+</div>
+
+<div id="Spin10Model.inclSMThruGeorgiGlashow" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\Spin10\Basic.lean#L51">Spin10Model.inclSMThruGeorgiGlashow</a></b><br>
+<b>Description: </b>The inclusion of the Standard Model gauge group into Spin(10), i.e., the composition of
+`inclGeorgiGlashow` and `GeorgiGlashow.inclSM`.
+
+
+</div>
+
+<div id="Spin10Model.inclSM_eq_inclSMThruGeorgiGlashow" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\Spin10\Basic.lean#L58">Spin10Model.inclSM_eq_inclSMThruGeorgiGlashow</a></b><br>
+<b>Description: </b>The inclusion `inclSM` is equal to the inclusion `inclSMThruGeorgiGlashow`. 
+
+</div>
+
+<div id="TwoHDM.prodMatrix_invariant" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\TwoHDM\GaugeOrbits.lean#L86">TwoHDM.prodMatrix_invariant</a></b><br>
+<b>Description: </b>The map `prodMatrix` is invariant under the simultaneous action of `gaugeAction` on the two
+Higgs fields. 
+
+</div>
+
+<div id="TwoHDM.prodMatrix_to_higgsField" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\BeyondTheStandardModel\TwoHDM\GaugeOrbits.lean#L92">TwoHDM.prodMatrix_to_higgsField</a></b><br>
+<b>Description: </b>Given any smooth map `f` from spacetime to 2-by-2 complex matrices landing on positive
+semi-definite matrices, there exist smooth Higgs fields `Φ1` and `Φ2` such that `f` is equal to
+`prodMatrix Φ1 Φ2`.
+
+See https://arxiv.org/pdf/hep-ph/0605184
+
+
+</div>
+
+<div id="StandardModel.gaugeGroupℤ₂SubGroup" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L45">StandardModel.gaugeGroupℤ₂SubGroup</a></b><br>
+<b>Description: </b>The ℤ₂subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` derived from the ℤ₂ subgroup of
+`gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="StandardModel.GaugeGroupℤ₂" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L55">StandardModel.GaugeGroupℤ₂</a></b><br>
+<b>Description: </b>The gauge group of the Standard Model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI` by
+the ℤ₂-subgroup `gaugeGroupℤ₂SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="StandardModel.gaugeGroupℤ₃SubGroup" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L64">StandardModel.gaugeGroupℤ₃SubGroup</a></b><br>
+<b>Description: </b>The ℤ₃-subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₃-subgroup of `GaugeGroupI` derived from the ℤ₃ subgroup of
+`gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="StandardModel.GaugeGroupℤ₃" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L74">StandardModel.GaugeGroupℤ₃</a></b><br>
+<b>Description: </b>The gauge group of the Standard Model with a ℤ₃-quotient, i.e., the quotient of `GaugeGroupI` by
+the ℤ₃-subgroup `gaugeGroupℤ₃SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="StandardModel.GaugeGroup" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L98">StandardModel.GaugeGroup</a></b><br>
+<b>Description: </b>The (global) gauge group of the Standard Model given a choice of quotient, i.e., the map from
+`GaugeGroupQuot` to `Type` which gives the gauge group of the Standard Model for a given choice of
+quotient.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+
+
+</div>
+
+<div id="StandardModel.gaugeGroupI_lie" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L115">StandardModel.gaugeGroupI_lie</a></b><br>
+<b>Description: </b>The gauge group `GaugeGroupI` is a Lie group. 
+
+</div>
+
+<div id="StandardModel.gaugeGroup_lie" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L120">StandardModel.gaugeGroup_lie</a></b><br>
+<b>Description: </b>For every `q` in `GaugeGroupQuot` the group `GaugeGroup q` is a Lie group. 
+
+</div>
+
+<div id="StandardModel.gaugeBundleI" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L125">StandardModel.gaugeBundleI</a></b><br>
+<b>Description: </b>The trivial principal bundle over SpaceTime with structure group `GaugeGroupI`. 
+
+</div>
+
+<div id="StandardModel.gaugeTransformI" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\Basic.lean#L130">StandardModel.gaugeTransformI</a></b><br>
+<b>Description: </b>A global section of `gaugeBundleI`. 
+
+</div>
+
+<div id="StandardModel.HiggsField.zero_is_zero_section" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\Basic.lean#L179">StandardModel.HiggsField.zero_is_zero_section</a></b><br>
+<b>Description: </b>The zero Higgs field is the zero section of the Higgs bundle, i.e., the HiggsField `zero`
+defined by `ofReal 0` is the constant zero-section of the bundle `HiggsBundle`.
+
+
+</div>
+
+<div id="StandardModel.HiggsVec.guage_orbit" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L219">StandardModel.HiggsVec.guage_orbit</a></b><br>
+<b>Description: </b>There exists a `g` in `GaugeGroupI` such that `rep g φ = φ'` iff `‖φ‖ = ‖φ'‖`. 
+
+</div>
+
+<div id="StandardModel.HiggsVec.stability_group_single" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L224">StandardModel.HiggsVec.stability_group_single</a></b><br>
+<b>Description: </b>The Higgs boson breaks electroweak symmetry down to the electromagnetic force, i.e., the
+stability group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`, for non-zero `‖φ‖`, is the
+`SU(3) × U(1)` subgroup of `gaugeGroup := SU(3) × SU(2) × U(1)` with the embedding given by
+`(g, e^{i θ}) ↦ (g, diag (e ^ {3 * i θ}, e ^ {- 3 * i θ}), e^{i θ})`.
+
+
+</div>
+
+<div id="StandardModel.HiggsVec.stability_group" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L233">StandardModel.HiggsVec.stability_group</a></b><br>
+<b>Description: </b>The subgroup of `gaugeGroup := SU(3) × SU(2) × U(1)` which preserves every `HiggsVec` by the
+action of `StandardModel.HiggsVec.rep` is given by `SU(3) × ℤ₆` where `ℤ₆` is the subgroup of
+`SU(2) × U(1)` with elements `(α^(-3) * I₂, α)` where `α` is a sixth root of unity.
+
+
+</div>
+
+<div id="StandardModel.HiggsField.gaugeAction" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L255">StandardModel.HiggsField.gaugeAction</a></b><br>
+<b>Description: </b>The action of `gaugeTransformI` on `HiggsField` acting pointwise through `HiggsVec.rep`. 
+
+</div>
+
+<div id="StandardModel.HiggsField.guage_orbit" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L260">StandardModel.HiggsField.guage_orbit</a></b><br>
+<b>Description: </b>There exists a `g` in `gaugeTransformI` such that `gaugeAction g φ = φ'` iff
+`φ(x)^† φ(x) = φ'(x)^† φ'(x)`.
+
+
+</div>
+
+<div id="StandardModel.HiggsField.gauge_orbit_surject" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\GaugeAction.lean#L267">StandardModel.HiggsField.gauge_orbit_surject</a></b><br>
+<b>Description: </b>For every smooth map `f` from `SpaceTime` to `ℝ` such that `f` is positive semidefinite, there
+exists a Higgs field `φ` such that `f = φ^† φ`.
+
+
+</div>
+
+<div id="StandardModel.HiggsField.Potential.isBounded_iff_of_𝓵_zero" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Particles\StandardModel\HiggsBoson\Potential.lean#L360">StandardModel.HiggsField.Potential.isBounded_iff_of_𝓵_zero</a></b><br>
+<b>Description: </b>When there is no quartic coupling, the potential is bounded iff the mass squared is
+non-positive, i.e., for `P : Potential` then `P.IsBounded` iff `P.μ2 ≤ 0`. That is to say
+`- P.μ2 * ‖φ‖_H^2 x` is bounded below iff `P.μ2 ≤ 0`. 
+
+</div>
+
+<div id="complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Bispinors\Basic.lean#L57">complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown</a></b><br>
+<b>Description: </b>`{contrBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ contrBispinorDown p | α' β' }ᵀ`.
+
+Proof: expand `contrBispinorDown` and use fact that metrics contract to the identity.
+
+
+</div>
+
+<div id="complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Bispinors\Basic.lean#L65">complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown</a></b><br>
+<b>Description: </b>`{coBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ coBispinorDown p | α' β' }ᵀ`.
+
+proof: expand `coBispinorDown` and use fact that metrics contract to the identity.
+
+
+</div>
+
+<div id="Lorentz.SL2C.toRestrictedLorentzGroup" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\SL2C\Basic.lean#L309">Lorentz.SL2C.toRestrictedLorentzGroup</a></b><br>
+<b>Description: </b>The homomorphism from `SL(2, ℂ)` to the restricted Lorentz group. 
+
+</div>
+
+<div id="SpaceTime.space_equivariant" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\SpaceTime\Basic.lean#L56">SpaceTime.space_equivariant</a></b><br>
+<b>Description: </b>The function `space` is equivariant with respect to rotations. 
+
+</div>
+
+<div id="SpecialRelativity.InstantaneousTwinParadox.ageGap_nonneg" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Special\TwinParadox\Basic.lean#L66">SpecialRelativity.InstantaneousTwinParadox.ageGap_nonneg</a></b><br>
+<b>Description: </b>In the twin paradox with instantous acceleration, Twin A is always older
+then Twin B. 
+
+</div>
+
+<div id="IndexNotation.OverColor.forgetLift" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\Color\Lift.lean#L927">IndexNotation.OverColor.forgetLift</a></b><br>
+<b>Description: </b>The natural isomorphism between `lift (C := C) ⋙ forget` and
+`Functor.id (Discrete C ⥤ Rep k G)`.
+
+
+</div>
+
+<div id="Fermion.rightHandedWeylAltEquiv" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\ComplexTensor\Weyl\Basic.lean#L287">Fermion.rightHandedWeylAltEquiv</a></b><br>
+<b>Description: </b>The linear equivalence between `rightHandedWeyl` and `altRightHandedWeyl` given by multiplying
+an element of `rightHandedWeyl` by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`.
+
+
+</div>
+
+<div id="Fermion.rightHandedWeylAltEquiv_equivariant" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\ComplexTensor\Weyl\Basic.lean#L294">Fermion.rightHandedWeylAltEquiv_equivariant</a></b><br>
+<b>Description: </b>The linear equivalence `rightHandedWeylAltEquiv` is equivariant with respect to the action of
+`SL(2,C)` on `rightHandedWeyl` and `altRightHandedWeyl`.
+
+
+</div>
+
+<div id="realLorentzTensor.toComplex_injective" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\RealTensor\ToComplex.lean#L37">realLorentzTensor.toComplex_injective</a></b><br>
+<b>Description: </b>The map `toComplex` is injective. 
+
+</div>
+
+<div id="realLorentzTensor.toComplex_equivariant" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\RealTensor\ToComplex.lean#L42">realLorentzTensor.toComplex_equivariant</a></b><br>
+<b>Description: </b>The map `toComplex` is equivariant. 
+
+</div>
+
+<div id="realLorentzTensor.permT_toComplex" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\RealTensor\ToComplex.lean#L53">realLorentzTensor.permT_toComplex</a></b><br>
+<b>Description: </b>The map `toComplex` commutes with permT. 
+
+</div>
+
+<div id="realLorentzTensor.prodT_toComplex" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\RealTensor\ToComplex.lean#L58">realLorentzTensor.prodT_toComplex</a></b><br>
+<b>Description: </b>The map `toComplex` commutes with prodT. 
+
+</div>
+
+<div id="realLorentzTensor.contrT_toComplex" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\RealTensor\ToComplex.lean#L63">realLorentzTensor.contrT_toComplex</a></b><br>
+<b>Description: </b>The map `toComplex` commutes with contrT. 
+
+</div>
+
+<div id="realLorentzTensor.evalT_toComplex" class="node-text">
+<b><a href="https://github.com/HEPLean/PhysLean/blob/master/PhysLean\Relativity\Tensors\RealTensor\ToComplex.lean#L68">realLorentzTensor.evalT_toComplex</a></b><br>
+<b>Description: </b>The map `toComplex` commutes with evalT. 
+
+</div>
+
+  <script type="text/javascript">
+        // Load the DOT file and render the graph
+        d3.text("InformalDot.dot").then(function(dotSrc) {
+            var width = 0.75 * window.innerWidth;
+            var height = 0.75 * window.innerHeight;
+
+            // Initialize the graphviz renderer
+            var graphviz = d3.select("#graph")
+                .graphviz()
+                .width(width)
+                .height(height)
+                .fit(true);
+
+            // Render the graph and attach event listeners
+            graphviz.renderDot(dotSrc).on("end", function() {
+                // Attach click event to nodes
+                d3.selectAll('.node').on('click', function() {
+                    // Get the node's name from the title element
+                    var nodeName = d3.select(this).select('title').text();
+
+                    // Get the text associated with the nodeName
+                    var nodeTextElement = document.getElementById(nodeName);
+
+                    if (nodeTextElement) {
+                        var nodeText = nodeTextElement.innerHTML;
+                        // Display the text in the #message div
+                        document.getElementById('message').innerHTML = nodeText;
+                    } else {
+                        // If no element with the nodeName ID exists
+                        document.getElementById('message').innerHTML = 'No information available for node: ' + nodeName;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

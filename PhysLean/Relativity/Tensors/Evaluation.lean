@@ -33,7 +33,7 @@ variable {n : ℕ} {c : Fin (n + 1) → S.C}
 
 /-- Given a `i : Fin (n + 1)`, a `b : Fin (S.repDim (c i))` and a pure tensor
   `p : Pure S c`, `evalPCoeff i b p` is the `b`th component of `p i`. -/
-def evalPCoeff (i : Fin (n + 1)) (b : Fin (S.repDim (c i))) (p : Pure S c) : k :=
+noncomputable def evalPCoeff (i : Fin (n + 1)) (b : Fin (S.repDim (c i))) (p : Pure S c) : k :=
   (S.basis (c i)).repr (p i) b
 
 @[simp]

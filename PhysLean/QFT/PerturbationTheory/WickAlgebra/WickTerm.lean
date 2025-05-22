@@ -151,7 +151,7 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     · have hg := hg hg'
       simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, Algebra.smul_mul_assoc,
         instCommGroup.eq_1, contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-        Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+        Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply, Fin.coe_cast,
         List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
         uncontractedListGet]
       by_cases h1 : i < i.succAbove ↑k
@@ -209,7 +209,7 @@ lemma mul_wickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (i : Fin
   | none =>
     rw [wickTerm_insert_none]
     simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-      Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1,
+      Equiv.coe_trans, Option.map_none, one_mul, Algebra.smul_mul_assoc, instCommGroup.eq_1,
       smul_smul]
     congr 1
     rw [← mul_assoc, exchangeSign_mul_self]
@@ -217,7 +217,7 @@ lemma mul_wickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (i : Fin
   | some n =>
     rw [wickTerm_insert_some _ _ _ _ _
       (fun k => hlt k) (fun k a => hn k a)]
-    simp only [uncontractedFieldOpEquiv, Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some',
+    simp only [uncontractedFieldOpEquiv, Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some,
       Function.comp_apply, finCongr_apply, Algebra.smul_mul_assoc, instCommGroup.eq_1, smul_smul]
     congr 1
     · rw [← mul_assoc, exchangeSign_mul_self]

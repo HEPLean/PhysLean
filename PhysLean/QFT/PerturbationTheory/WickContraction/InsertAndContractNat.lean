@@ -452,8 +452,8 @@ lemma insertAndContractNat_some_getDual?_of_neq (c : WickContraction n) (i : Fin
     have h2 :(c.getDual? k) = some ((c.getDual? k).get h) := by simp
     conv_rhs => rw [h2]
     rw [@Option.map_coe']
-  · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at h
-    simp only [Nat.succ_eq_add_one, h, Option.map_none']
+  · simp only [Bool.not_eq_true, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none] at h
+    simp only [Nat.succ_eq_add_one, h, Option.map_none]
     simp only [ne_eq, hkj, not_false_eq_true, insertAndContractNat_some_getDual?_neq_none]
     exact h
 

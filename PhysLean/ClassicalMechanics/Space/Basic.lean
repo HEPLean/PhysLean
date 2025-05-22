@@ -43,7 +43,7 @@ noncomputable def basis : OrthonormalBasis (Fin d) ℝ (Space d) :=
 
 The notation `𝔁 μ p` can be used for this. -/
 noncomputable def coord (μ : Fin d) (p : Space d) : ℝ :=
-  inner p (basis μ)
+  inner ℝ p (basis μ)
 
 @[inherit_doc coord]
 scoped notation "𝔁" => coord

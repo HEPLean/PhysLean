@@ -134,7 +134,7 @@ These instances are defined locally to be used when a specific Riemannian metric
 and point `x` are in context. They are not global instances to avoid typeclass conflicts
 and to respect the fact that a manifold might not have a canonical Riemannian metric,
 or might be studied with an indefinite (pseudo-Riemannian) metric where these
-standard norm structures are not appropriate.-/
+standard norm structures are not appropriate. -/
 
 /-- Creates a `NormedAddCommGroup` structure on `TₓM` from a Riemannian metric `g`. -/
 noncomputable def TangentSpace.metricNormedAddCommGroup (g : RiemannianMetric I n M) (x : M) :

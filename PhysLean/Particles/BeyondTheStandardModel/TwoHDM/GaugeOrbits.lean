@@ -63,7 +63,7 @@ local instance : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) := Matrix.normedSp
 /-- The matrix `prodMatrix` is positive semi-definite. -/
 lemma prodMatrix_posSemiDef (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
     (prodMatrix Φ1 Φ2 x).PosSemidef := by
-  rw [Matrix.posSemidef_iff_eq_transpose_mul_self]
+  rw [Matrix.posSemidef_iff_eq_conjTranspose_mul_self]
   use (fieldCompMatrix Φ1 Φ2 x).conjTranspose
   simpa using prodMatrix_eq_fieldCompMatrix_sq Φ1 Φ2 x
 

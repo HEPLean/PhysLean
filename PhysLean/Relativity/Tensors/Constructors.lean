@@ -811,7 +811,8 @@ lemma actionT_fromConstTriple {c1 c2 c3 : S.C}
 -/
 
 /-- A general constant node. -/
-def fromConst {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c)) :
+noncomputable def fromConst {n : ℕ} {c : Fin n → S.C}
+    (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c)) :
     Tensor S c := (T.hom (1 : k))
 
 /-!

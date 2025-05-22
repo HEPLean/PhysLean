@@ -30,7 +30,7 @@ lemma extractEquiv_equiv {c1 c2 : (c : WickContraction n) × Option c.uncontract
   match a with
   | none => simp
   | some a =>
-    simp only [Option.map_some', Option.some.injEq]
+    simp only [Option.map_some, Option.some.injEq]
     ext
     simp
 

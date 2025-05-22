@@ -102,7 +102,7 @@ lemma staticWickTerm_insert_zero_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
     · simp_all only [Finset.mem_univ, not_not, instCommGroup.eq_1, forall_const]
       have h1 : contractStateAtIndex φ [φsΛ]ᵘᶜ (uncontractedFieldOpEquiv φs φsΛ k) = 0 := by
         simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-          Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
+          Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply,
           instCommGroup.eq_1, Fin.coe_cast, Fin.getElem_fin, smul_eq_zero]
         right
         simp only [uncontractedListGet, List.getElem_map,
@@ -142,7 +142,7 @@ lemma mul_staticWickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   match n with
   | none =>
     simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-      Equiv.coe_trans, Option.map_none', one_mul, Algebra.smul_mul_assoc, Nat.succ_eq_add_one,
+      Equiv.coe_trans, Option.map_none, one_mul, Algebra.smul_mul_assoc, Nat.succ_eq_add_one,
       Fin.zero_eta, Fin.val_zero, List.insertIdx_zero, staticContract_insert_none,
       insertAndContract_uncontractedList_none_zero]
     rw [staticWickTerm_insert_zero_none]

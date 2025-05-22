@@ -44,7 +44,7 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldO
     obtain ⟨a, ha, rfl⟩ := h
     apply And.intro
     · simp_all only [signFinset, Finset.mem_filter, Finset.mem_univ, true_and,
-      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none', Option.isSome_map']
+      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none_iff, Option.isSome_map]
       apply And.intro
       · exact uncontractedListEmd_strictMono ha.1
       · apply And.intro
@@ -64,7 +64,7 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldO
     obtain ⟨a, rfl⟩ := h2'
     use a
     simp_all only [signFinset, Finset.mem_filter, Finset.mem_univ,
-      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none', Option.isSome_map', true_and,
+      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none_iff, Option.isSome_map, true_and,
       and_true, and_self]
     apply And.intro
     · have h1 := h.1

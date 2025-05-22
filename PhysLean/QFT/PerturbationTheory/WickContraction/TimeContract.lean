@@ -101,7 +101,7 @@ lemma timeContract_insert_some_of_lt
   rw [timeContract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-    Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+    Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc, uncontractedListGet]
   · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
@@ -145,7 +145,7 @@ lemma timeContract_insert_some_of_not_lt
   rw [timeContract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-    Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+    Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc, uncontractedListGet]
   simp only [hik, ↓reduceIte, MulMemClass.coe_mul]

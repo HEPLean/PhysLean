@@ -547,11 +547,11 @@ lemma join_getDual?_apply_uncontractedListEmb {φs : List 𝓕.FieldOp}
     have h1 : (φsucΛ.getDual? i) = (φsucΛ.getDual? i).get (by simpa using h) :=
       Eq.symm (Option.some_get h)
     conv_rhs => rw [h1]
-    simp only [Option.map_some']
+    simp only [Option.map_some]
     exact (join_getDual?_apply_uncontractedListEmb_isSome_iff φsΛ φsucΛ i).mpr h
-  · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at h
+  · simp only [Bool.not_eq_true, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none] at h
     rw [h]
-    simp only [Option.map_none', join_getDual?_apply_uncontractedListEmb_eq_none_iff]
+    simp only [Option.map_none, join_getDual?_apply_uncontractedListEmb_eq_none_iff]
     exact h
 
 /-!

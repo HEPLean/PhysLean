@@ -1,0 +1,57 @@
+---
+layout: default
+---
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stats for PhysLean</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <style>
+        /* Style the progress bar to be wider and take up more space */
+        progress {
+            width: 80%; /* Adjust to take up more horizontal space */
+            height: 30px; /* Increase height to make it wider */
+            appearance: none; /* Remove default browser styles */
+        }
+
+        /* Change the color for WebKit browsers (Chrome, Safari, etc.) */
+        progress::-webkit-progress-bar {
+            background-color: #f3f3f3; /* Background color */
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        progress::-webkit-progress-value {
+            background-color: #157878; /* Change this to your desired color */
+            border-radius: 5px;
+        }
+
+        /* Change the color for Firefox */
+        progress::-moz-progress-bar {
+            background-color: #157878; /* Change this to your desired color */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Stats for PhysLean</h1>
+<h3>Number of Files 📄: 272</h3>
+<h3>Number of lines 💻: 67329</h3>
+<h3>Number of Definitions (incl. instances): 1651</h3>
+<p>- Of which 1592 have doc-strings:</p>
+<progress value="1592" max="1651"></progress>
+<p>- Of which 1624 are not <a href="https://heplean.github.io/HepLean/InformalGraph.html">informal definitions</a>:</p>
+<progress value="1624" max="1651"></progress>
+
+<h3>Number of Lemmas: 3824</h3>
+<p>- Of which 700 have doc-strings:</p>
+<progress value="700" max="3824"></progress>
+<p>- Of which 3792 are not <a href="https://heplean.github.io/HepLean/InformalGraph.html">informal lemmas</a>:</p>
+<progress value="3792" max="3824"></progress>
+<h3>Number of <a href="https://heplean.github.io/HepLean/TODOList">TODOs</a>: 53</h3>
+<p>- There are 232 (of 272) files which are TODO free:</p>
+<progress value="232" max="272"></progress>
+   
+
+</body>
+</html>

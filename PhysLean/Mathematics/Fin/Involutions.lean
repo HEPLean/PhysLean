@@ -164,7 +164,7 @@ def involutionCons (n : ℕ) : {f : Fin n.succ → Fin n.succ // Function.Involu
           exact rfl
       · simp only [hs, Bool.false_eq_true, ↓reduceDIte, Fin.cons_zero, not_true_eq_false,
         IsEmpty.exists_iff, false_iff]
-        simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at hs
+        simp only [Bool.not_eq_true, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none] at hs
         subst hs
         exact ne_of_beq_false rfl
 
@@ -220,9 +220,9 @@ lemma involutionAddEquiv_none_image_zero {n : ℕ} :
     → involutionAddEquiv (involutionCons n f).1 (involutionCons n f).2 = none
     → f.1 ⟨0, Nat.zero_lt_succ n⟩ = ⟨0, Nat.zero_lt_succ n⟩ := by
   intro f h
-  simp only [Nat.succ_eq_add_one, involutionCons, Equiv.coe_fn_mk, involutionAddEquiv,
+  simp only [succ_eq_add_one, involutionCons, Equiv.coe_fn_mk, involutionAddEquiv,
     Option.isSome_some, Option.get_some, Option.isSome_none, Equiv.trans_apply,
-    Equiv.optionCongr_apply, Equiv.coe_trans, RelIso.coe_fn_toEquiv, Option.map_eq_none'] at h
+    Equiv.optionCongr_apply, Equiv.coe_trans, RelIso.coe_fn_toEquiv, Option.map_eq_none_iff] at h
   simp_all only [List.length_cons, Fin.zero_eta]
   obtain ⟨val, property⟩ := f
   simp_all only [List.length_cons]

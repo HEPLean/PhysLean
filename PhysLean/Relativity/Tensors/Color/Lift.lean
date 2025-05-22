@@ -816,6 +816,8 @@ end lift
 def incl : Discrete C ⥤ OverColor C := Discrete.functor fun c =>
   OverColor.mk (fun (_ : Fin 1) => c)
 
+noncomputable section
+
 /-- The forgetful map from `BraidedFunctor (OverColor C) (Rep k G)` to `Discrete C ⥤ Rep k G`
   built on the inclusion `incl` and forgetting the monoidal structure. -/
 def forget : LaxBraidedFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k G) where
@@ -823,8 +825,6 @@ def forget : LaxBraidedFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k
   map η := Discrete.natTrans fun c => η.hom.app (incl.obj c)
 
 variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
-
-noncomputable section
 
 /--
 The `forgetLiftAppV` function takes an object `c` of type `C` and returns a linear equivalence

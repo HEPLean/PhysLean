@@ -74,7 +74,7 @@ lemma coe_mk_ae {f : ℝ → ℂ} (hf : MemHS f) : (mk hf : ℝ → ℂ) =ᵐ[Me
   AEEqFun.coeFn_mk f hf.1
 
 lemma inner_mk_mk {f g : ℝ → ℂ} {hf : MemHS f} {hg : MemHS g} :
-    inner (mk hf) (mk hg) = ∫ x : ℝ, starRingEnd ℂ (f x) * g x := by
+    inner ℂ (mk hf) (mk hg) = ∫ x : ℝ, starRingEnd ℂ (f x) * g x := by
   apply MeasureTheory.integral_congr_ae
   filter_upwards [coe_mk_ae hf, coe_mk_ae hg] with _ hf hg
   simp [hf, hg, mul_comm]

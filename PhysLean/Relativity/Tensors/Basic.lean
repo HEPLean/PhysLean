@@ -190,7 +190,7 @@ lemma μ_toTensor_tmul_toTensor {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.
   the component of `p` in the direction `b`.
 
   For example, if `p = v ⊗ₜ w` and `b = ⟨0, 1⟩` then `component p b = v⁰ ⊗ₜ w¹`. -/
-def component {n : ℕ} {c : Fin n → S.C} (p : Pure S c) (b : ComponentIdx c) : k :=
+noncomputable def component {n : ℕ} {c : Fin n → S.C} (p : Pure S c) (b : ComponentIdx c) : k :=
     ∏ i, (S.basis (c i)).repr (p i) (b i)
 
 lemma component_eq {n : ℕ} {c : Fin n → S.C} (p : Pure S c) (b : ComponentIdx c) :
