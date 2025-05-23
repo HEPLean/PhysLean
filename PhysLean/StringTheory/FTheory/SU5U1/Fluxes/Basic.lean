@@ -91,6 +91,9 @@ def FluxesFive : Type := {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}
 
 namespace FluxesFive
 
+instance : DecidableEq FluxesFive :=
+  inferInstanceAs (DecidableEq {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x})
+
 /-- The multiset of chiral indices of the representation `L = (1,2)_{-1/2}`
   arrising from the matter 5d representations. -/
 def chiralIndicesOfL (F : FluxesFive) : Multiset ℤ := F.1.map (fun f => f.1 + f.2)
@@ -127,6 +130,9 @@ def numAntiChiralD (F : FluxesFive) : ℤ :=
 def NoExotics (F : FluxesFive) : Prop :=
   F.numChiralL = 3 ∧ F.numAntiChiralL = 0 ∧ F.numChiralD = 3 ∧ F.numAntiChiralD = 0
 
+instance (F : FluxesFive) : Decidable (F.NoExotics) :=
+  instDecidableAnd
+
 end FluxesFive
 
 /-!
@@ -139,6 +145,9 @@ end FluxesFive
 def FluxesTen : Type := {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}
 
 namespace FluxesTen
+
+instance : DecidableEq FluxesTen :=
+  inferInstanceAs (DecidableEq {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x})
 
 /-- The multiset of chiral indices of the representation `Q = (3,2)_{1/6}`
   arrising from the matter 10d representations, corresponding to `M`. -/
@@ -186,6 +195,9 @@ def NoExotics (F : FluxesTen) : Prop :=
   F.numChiralQ = 3 ∧ F.numAntiChiralQ = 0 ∧
   F.numChiralU = 3 ∧ F.numAntiChiralU = 0 ∧
   F.numChiralE = 3 ∧ F.numAntiChiralE = 0
+
+instance (F : FluxesTen) : Decidable (F.NoExotics) :=
+  instDecidableAnd
 
 end FluxesTen
 
