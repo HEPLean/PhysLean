@@ -59,11 +59,14 @@ namespace OverColor
 /-- Make an object of `OverColor C` from a map `X → C`. -/
 def mk (f : X → C) : OverColor C := ⟨Over.mk f⟩
 
+/-- The underlying morphism in the category of Types of a object `f` in `OverColor C`. -/
 abbrev hom (f : OverColor C) := f.of.hom
 
+/-- The underlying object in the category of Types of a object `f` in `OverColor C`. -/
 abbrev left (f : OverColor C) := f.of.left
 
 lemma mk_hom (f : X → C) : (mk f).hom = f := rfl
+
 open MonoidalCategory
 
 lemma mk_left (f : X → C) : (mk f).left = X := rfl
@@ -78,14 +81,19 @@ namespace Hom
 
 variable {C : Type} {f g h : OverColor C}
 
+/-- The underlying morphism in the category of Types of a morphism `m` in `OverColor C`. -/
 abbrev _root_.CategoryTheory.CoreHom.hom (m : f ⟶ g) := m.iso.hom
 
+/-- The underlying inverse-morphism in the category of Types of a morphism `m` in `OverColor C`. -/
 abbrev _root_.CategoryTheory.CoreHom.inv (m : f ⟶ g) := m.iso.inv
 
-abbrev _root_.CategoryTheory.CoreHom.hom_inv_id (m : f ⟶ g) := m.iso.hom_inv_id
+lemma _root_.CategoryTheory.CoreHom.hom_inv_id (m : f ⟶ g) : m.iso.hom ≫ m.iso.inv = 𝟙 f.of :=
+  m.iso.hom_inv_id
 
-abbrev _root_.CategoryTheory.CoreHom.inv_hom_id (m : f ⟶ g) := m.iso.inv_hom_id
+lemma _root_.CategoryTheory.CoreHom.inv_hom_id (m : f ⟶ g) : m.iso.inv ≫ m.iso.hom = 𝟙 g.of :=
+  m.iso.inv_hom_id
 
+/-- The inverse of a morphism in `OverColor C`. -/
 abbrev _root_.CategoryTheory.CoreHom.symm (m : f ⟶ g) : g ⟶ f := ⟨m.iso.symm⟩
 
 /-- If `m` and `n` are morphisms in `OverColor C`, they are equal if their underlying
@@ -267,7 +275,7 @@ instance (C : Type) : MonoidalCategory (OverColor C) where
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl
     leftUnitor_naturality f :=
-      CoreHom.ext_iff.mpr <|  CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+      CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
         funext fun x => by
       match x with
       | Sum.inl x => exact Empty.elim x

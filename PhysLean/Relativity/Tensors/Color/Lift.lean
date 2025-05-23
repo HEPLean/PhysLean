@@ -417,8 +417,8 @@ lemma left_unitality (X : OverColor C) : (leftUnitor (objObj' F X)).hom =
     ((PiTensorProduct.tprod k) _ ⊗ₜ[k] (PiTensorProduct.tprod k) q))
   rw [μ_tmul_tprod]
   erw [objMap'_tprod]
-  simp only [objObj'_V_carrier,  discreteFunctorMapEqIso, eqToIso_refl,
-    Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+  simp only [objObj'_V_carrier, discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl,
+    Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
   rfl
 
 lemma right_unitality (X : OverColor C) : (rightUnitor (objObj' F X)).hom =
@@ -630,9 +630,7 @@ lemma mapApp'_tensor (X Y : OverColor C) :
   ext1
   refine ModuleCat.hom_ext ?_
   refine PhysLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp only [obj', objObj'_V_carrier, Functor.id_obj, CategoryStruct.comp,
-    Action.Hom.comp_hom,  LinearMap.coe_comp,
-    Function.comp_apply, Action.instMonoidalCategory_tensorHom_hom]
+  simp only [obj', objObj'_V_carrier, CategoryStruct.comp, Action.Hom.comp_hom]
   rw [ModuleCat.Hom.hom, ConcreteCategory.hom, ModuleCat.Hom.hom, ConcreteCategory.hom]
   simp only [ModuleCat.instConcreteCategoryLinearMapIdCarrier, LinearMap.coe_comp,
     Function.comp_apply]
