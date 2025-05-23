@@ -4,14 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.SpecialFunctions.PhysHermite
-import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 import Mathlib.MeasureTheory.Function.L2Space
-import Mathlib.Analysis.Fourier.FourierTransform
 import Mathlib.Analysis.Fourier.Inversion
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 import Mathlib.Analysis.Convolution
-import Mathlib.Algebra.Star.Basic
 /-!
 
 # Hilbert space for one dimension quantum mechanics

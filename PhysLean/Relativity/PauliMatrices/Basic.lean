@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Lemmas
 import PhysLean.Relativity.PauliMatrices.AsTensor
-import PhysLean.Relativity.Tensors.Contraction.Basis
 /-!
 
 ## Pauli matrices

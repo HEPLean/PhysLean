@@ -7,7 +7,6 @@ import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.HyperchargeFlux
 import Mathlib.Order.CompleteLattice.Finset
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
-import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Multiset
 /-!
 
 # Phenomenological constraints on the ten-dimension charges

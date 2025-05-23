@@ -4,10 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Informal.Basic
-import PhysLean.Relativity.Lorentz.Group.Basic
 import PhysLean.Relativity.Lorentz.Group.Orthochronous
-import PhysLean.Relativity.Lorentz.Group.Proper
-
 /-!
 # The Restricted Lorentz Group
 
