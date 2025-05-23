@@ -5,8 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.List.InsertIdx
 import Mathlib.Tactic.FinCases
-import Mathlib.Algebra.BigOperators.Group.List.Defs
-import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 import Mathlib.Data.Fintype.Card
 import Mathlib.Algebra.FreeMonoid.Basic

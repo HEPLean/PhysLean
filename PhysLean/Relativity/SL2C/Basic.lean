@@ -4,9 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.SL2C.SelfAdjoint
-import Mathlib.Analysis.Complex.Polynomial.Basic -- Complex.isAlgClosed
-import PhysLean.Meta.Informal.Basic
-import PhysLean.Relativity.Lorentz.Group.Orthochronous
+import Mathlib.Analysis.Complex.Polynomial.Basic
 import PhysLean.Relativity.Lorentz.Group.Restricted
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group

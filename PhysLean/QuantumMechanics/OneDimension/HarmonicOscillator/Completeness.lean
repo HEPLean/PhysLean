@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
 import Mathlib.Analysis.Fourier.FourierTransform
 /-!

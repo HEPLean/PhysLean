@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.SpaceTime.Basic
 import PhysLean.ClassicalMechanics.Momentum.Basic
-import PhysLean.QFT.PerturbationTheory.FieldStatistics.Basic
 import PhysLean.QFT.PerturbationTheory.FieldStatistics.OfFinset
 /-!
 

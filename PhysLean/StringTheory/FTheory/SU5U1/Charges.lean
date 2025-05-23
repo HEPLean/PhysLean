@@ -3,9 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Data.Finset.Insert
 import PhysLean.Meta.TODO.Basic
-import Mathlib.Data.Fintype.Defs
 import Mathlib.Data.Fintype.Sets
 import Mathlib.Algebra.BigOperators.Group.List.Basic
 /-!

@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.ChiralityFlux
-import Mathlib.Order.CompleteLattice.Finset
 /-!
 
 ## Excluding seven 5-bar representations.
