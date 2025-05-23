@@ -142,10 +142,12 @@ lemma toEquiv_comp_apply (m : f ⟶ g) (i : f.left) :
 def toIso (m : f ⟶ g) : f ≅ g := {
   hom := m
   inv := m.symm
-  hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+  hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+      funext fun x => by
     simp only [CategoryStruct.comp, Iso.self_symm_id, Iso.refl_hom, Over.id_left, types_id_apply]
     rfl
-  inv_hom_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+  inv_hom_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+      funext fun x => by
     simp only [CategoryStruct.comp, Iso.symm_self_id, Iso.refl_hom, Over.id_left, types_id_apply]
     rfl}
 
@@ -197,7 +199,8 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl)).symm⟩
-    hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+        funext fun x => by
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
@@ -238,43 +241,52 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
 
 /-- The category `OverColor C` carries an instance of a Monoidal category. -/
 instance (C : Type) : MonoidalCategory (OverColor C) where
-    tensorHom_def f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => rfl
+    tensorHom_def f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+        funext fun x => rfl
     tensor_id X Y :=CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| (Iso.eq_inv_comp _).mp rfl
-    tensor_comp f1 f2 g1 g2 := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    tensor_comp f1 f2 g1 g2 := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+        Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl
-    whiskerLeft_id X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    whiskerLeft_id X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
+        <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl
-    id_whiskerRight X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    id_whiskerRight X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
+        <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl
     associator_naturality {X1 X2 X3 Y1 Y2 Y3} f1 f2 f3 :=
-        CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+        CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+          funext fun x => by
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl
     leftUnitor_naturality f :=
-       CoreHom.ext_iff.mpr <|  CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+      CoreHom.ext_iff.mpr <|  CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+        funext fun x => by
       match x with
       | Sum.inl x => exact Empty.elim x
       | Sum.inr x => rfl
     rightUnitor_naturality f :=
-        CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+        CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
+          funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => exact Empty.elim x
-    pentagon f g h i := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    pentagon f g h i := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+        Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl (Sum.inl (Sum.inl x)) => rfl
       | Sum.inl (Sum.inl (Sum.inr x)) => rfl
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl
-    triangle f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    triangle f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+        Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => exact Empty.elim x
@@ -283,23 +295,27 @@ instance (C : Type) : MonoidalCategory (OverColor C) where
 /-- The category `OverColor C` carries an instance of a braided category. -/
 instance (C : Type) : BraidedCategory (OverColor C) where
   braiding f g := {
-    hom := ⟨Over.isoMk (Equiv.sumComm f.left g.left).toIso (by simp only [OverColor.left, mk]; aesop_cat)⟩
-    inv := ⟨(Over.isoMk (Equiv.sumComm f.left g.left).toIso (by simp only [OverColor.left, mk]; aesop_cat)).symm⟩
-    hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    hom := ⟨Over.isoMk (Equiv.sumComm f.left g.left).toIso
+      (by simp only [OverColor.left, mk]; aesop_cat)⟩
+    inv := ⟨(Over.isoMk (Equiv.sumComm f.left g.left).toIso
+      (by simp only [OverColor.left, mk]; aesop_cat)).symm⟩
+    hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+        Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl,
-    inv_hom_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    inv_hom_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+        Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl}
-  braiding_naturality_right X Y1 Y2 f := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
-      <| funext fun x => by
+  braiding_naturality_right X Y1 Y2 f := CoreHom.ext_iff.mpr <|
+      CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
     match x with
     | Sum.inl x => rfl
     | Sum.inr x => rfl
-  braiding_naturality_left X f := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
-      <| funext fun x => by
+  braiding_naturality_left X f := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext
+      <| Over.OverMorphism.ext <| funext fun x => by
     match x with
     | Sum.inl x => rfl
     | Sum.inr x => rfl
@@ -319,7 +335,8 @@ instance (C : Type) : BraidedCategory (OverColor C) where
 /-- The category `OverColor C` carries an instance of a symmetric monoidal category. -/
 instance (C : Type) : SymmetricCategory (OverColor C) where
   toBraidedCategory := instBraidedCategory C
-  symmetry X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+  symmetry X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+      Over.OverMorphism.ext <| funext fun x => by
     match x with
     | Sum.inl x => rfl
     | Sum.inr x => rfl
