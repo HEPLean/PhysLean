@@ -3,9 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Matter
-import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import PhysLean.Relativity.SpaceTime.Basic
+import Mathlib.Algebra.BigOperators.Group.Multiset.Defs
+import Mathlib.Algebra.Group.Int.Defs
 /-!
 
 # Fluxes
