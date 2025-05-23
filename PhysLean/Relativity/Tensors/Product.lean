@@ -219,8 +219,7 @@ lemma prodT_pure {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C}
     rw [Pure.μ_toTensor_tmul_toTensor]
   change prodEquiv.toEquiv _ = _
   rw [Equiv.apply_eq_iff_eq_symm_apply]
-  simp only [instMonoidalCategoryStruct_tensorObj_left, instMonoidalCategoryStruct_tensorObj_hom,
-    Functor.id_obj, LinearEquiv.coe_toEquiv_symm, EquivLike.coe_coe]
+  simp only [Functor.id_obj, LinearEquiv.coe_toEquiv_symm, EquivLike.coe_coe]
   rw [prodEquiv_symm_pure]
   congr
   simp only [Pure.prodP, Equiv.apply_symm_apply]

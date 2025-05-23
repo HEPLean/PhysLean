@@ -156,7 +156,6 @@ lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : W
     apply And.intro
     · simp only [id_eq, eq_mpr_eq_cast, φsucΛ]
       rw [eqTimeOnly_congr (φs := [(φsΛ.subContraction {a} (by simpa using ha))]ᵘᶜ)]
-      simp only [id_eq, eq_mpr_eq_cast]
       exact quotContraction_eqTimeOnly h1 _ _
       rw [← subContraction_singleton_eq_singleton]
     · simp only [id_eq, eq_mpr_eq_cast, card_congr, φsucΛ]
