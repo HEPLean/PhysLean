@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldSpecification.NormalOrder
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.SuperCommute
-import PhysLean.QFT.PerturbationTheory.Koszul.KoszulSign
 /-!
 
 # Normal Ordering in the FieldOpFreeAlgebra

@@ -7,7 +7,6 @@ import Mathlib.Analysis.SpecialFunctions.Integrals
 import Mathlib.Analysis.SpecialFunctions.PolarCoord
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Informal.SemiFormal
-import PhysLean.Meta.Informal.Basic
 import PhysLean.ClassicalMechanics.Time.Basic
 /-!
 

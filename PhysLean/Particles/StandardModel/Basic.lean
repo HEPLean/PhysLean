@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Geometry.Manifold.Instances.Real
 import PhysLean.Relativity.SpaceTime.Basic
-import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.SemiFormal
 /-!
 # The Standard Model

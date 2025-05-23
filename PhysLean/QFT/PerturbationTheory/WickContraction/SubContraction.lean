@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
 import PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
-import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeContraction
 /-!
 
 # Sub contractions

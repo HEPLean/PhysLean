@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Basic
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
 import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
 import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract

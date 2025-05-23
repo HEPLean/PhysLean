@@ -6,7 +6,6 @@ Authors: Zhi Kai Pong, Joseph Tooby-Smith
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.ClassicalMechanics.Space.VectorIdentities
 import PhysLean.ClassicalMechanics.Time.Basic
-import Mathlib.Tactic.FunProp.Differentiable
 /-!
 # Classical vector calculus properties
 

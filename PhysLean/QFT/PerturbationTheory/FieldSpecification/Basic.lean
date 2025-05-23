@@ -3,8 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Basic
-import PhysLean.QFT.PerturbationTheory.FieldStatistics.ExchangeSign
 import PhysLean.Relativity.SpaceTime.Basic
 import PhysLean.QFT.PerturbationTheory.FieldStatistics.OfFinset
 import PhysLean.Meta.Remark.Basic

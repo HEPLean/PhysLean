@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.QED.AnomalyCancellation.Basic
 import PhysLean.QFT.AnomalyCancellation.GroupActions
-import Mathlib.Logic.Equiv.Fintype
 /-!
 # Permutations of Pure U(1) ACC
 
