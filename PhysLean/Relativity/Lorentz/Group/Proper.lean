@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.Group.Basic
+import Mathlib.Topology.Connected.PathConnected
 /-!
 # The Proper Lorentz Group
 

@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 /-!
 
 # The tight binding chain

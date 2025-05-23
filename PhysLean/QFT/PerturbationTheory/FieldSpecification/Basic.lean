@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.SpaceTime.Basic
-import PhysLean.QFT.PerturbationTheory.FieldStatistics.OfFinset
-import PhysLean.Meta.Remark.Basic
 import PhysLean.ClassicalMechanics.Momentum.Basic
+import PhysLean.QFT.PerturbationTheory.FieldStatistics.Basic
+import PhysLean.QFT.PerturbationTheory.FieldStatistics.OfFinset
 /-!
 
 # Field specification

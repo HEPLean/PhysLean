@@ -5,6 +5,7 @@ Authors: Zhi Kai Pong
 -/
 import PhysLean.ClassicalMechanics.Space.Basic
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 
 /-!
 

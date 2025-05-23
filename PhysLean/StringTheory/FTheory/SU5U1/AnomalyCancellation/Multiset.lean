@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.HyperchargeFlux
+import Mathlib.Data.Multiset.Sort
 /-!
 
 # Multisets of anomaly cancellation coefficents

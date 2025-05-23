@@ -4,8 +4,9 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 -- import DocGen4.Output.DocString
-import PhysLean.Meta.Informal.Post
-import PhysLean.Meta.Notes.NoteFile
+import PhysLean.Meta.Basic
+import PhysLean.Meta.Notes.Basic
+import PhysLean.Meta.Informal.Basic
 /-!
 
 ## Turns a delaration into a html note structure.

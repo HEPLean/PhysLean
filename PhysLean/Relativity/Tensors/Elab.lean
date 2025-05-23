@@ -3,6 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
+import Mathlib.Data.List.Defs
+import Mathlib.Data.List.Monad
 import PhysLean.Relativity.Tensors.Contraction.Basic
 import PhysLean.Relativity.Tensors.Evaluation
 import PhysLean.Relativity.Tensors.Product
@@ -49,7 +51,7 @@ import PhysLean.Relativity.Tensors.Product
   this information.
 
 -/
-open Lean Meta Elab Tactic Term IndexNotation
+open Lean Meta Elab Tactic Term
 namespace TensorSpecies
 namespace Tensor
 

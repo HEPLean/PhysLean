@@ -4,6 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.WickContraction.SubContraction
+import PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
+import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
+import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Basic
 /-!
 
 # Singleton of contractions

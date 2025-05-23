@@ -4,6 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
+import Mathlib.RepresentationTheory.Basic
+import PhysLean.Relativity.Lorentz.Group.Basic
+import Mathlib.Analysis.InnerProductSpace.PiL2
 /-!
 
 ## Modules associated with Real Lorentz vectors

@@ -28,12 +28,6 @@ namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
 open PhysLean.List
 
-remark contraction_notation := "Given a field specification `𝓕`, and a list `φs`
-  of `𝓕.FieldOp`, a Wick contraction of `φs` will mean a Wick contraction in
-  `WickContraction φs.length`. The notation `φsΛ` will be used for such contractions.
-  The terminology that `φsΛ` contracts pairs within of `φs` will also be used, even though
-  `φsΛ` is really contains positions of `φs`."
-
 /-- Wick contractions are decidable. -/
 instance : DecidableEq (WickContraction n) := Subtype.instDecidableEq
 

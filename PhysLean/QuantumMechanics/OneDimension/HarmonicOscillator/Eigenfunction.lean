@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
 import Mathlib.Topology.Algebra.Polynomial
+import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 /-!
 
 # Eigenfunction of the Harmonic Oscillator

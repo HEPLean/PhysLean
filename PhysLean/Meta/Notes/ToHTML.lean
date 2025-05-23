@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Notes.HTMLNote
+import PhysLean.Meta.Notes.NoteFile
 /-!
 
 ## Turns a declaration into a html note structure.

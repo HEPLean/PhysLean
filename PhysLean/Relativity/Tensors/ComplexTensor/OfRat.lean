@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.ComplexTensor.Basic
 import PhysLean.Relativity.Tensors.Contraction.Basis
 import PhysLean.Mathematics.RatComplexNum
+import PhysLean.Relativity.Tensors.Dual
 /-!
 
 # Basis for tensors in a tensor species

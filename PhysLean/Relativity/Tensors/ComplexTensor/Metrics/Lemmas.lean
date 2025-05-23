@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Basic
-import PhysLean.Relativity.Tensors.ComplexTensor.Units.Symm
+import PhysLean.Relativity.Tensors.ComplexTensor.Units.Basic
+import PhysLean.Relativity.Tensors.Elab
 /-!
 
 ## Basic lemmas regarding metrics

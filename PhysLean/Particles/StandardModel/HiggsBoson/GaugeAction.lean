@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Particles.StandardModel.HiggsBoson.Basic
 import PhysLean.Particles.StandardModel.Basic
 import PhysLean.Particles.StandardModel.Representations
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-!
 
 # The action of the gauge group on the Higgs field

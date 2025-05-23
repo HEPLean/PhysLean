@@ -5,7 +5,7 @@ Authors: Matteo Cipollina
 -/
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 /-!
 # Riemannian Metric Definitions
 

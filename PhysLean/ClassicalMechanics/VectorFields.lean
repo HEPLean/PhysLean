@@ -4,8 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.FDerivCurry
-import PhysLean.ClassicalMechanics.Space.VectorIdentities
 import PhysLean.ClassicalMechanics.Time.Basic
+import Mathlib.Tactic.FunProp.Differentiable
+import PhysLean.ClassicalMechanics.Space.Basic
 /-!
 # Classical vector calculus properties
 

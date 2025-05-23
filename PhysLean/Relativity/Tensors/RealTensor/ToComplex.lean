@@ -5,6 +5,10 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Basic
 import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.Relativity.Tensors.ComplexTensor.Basic
+import PhysLean.Relativity.Tensors.Product
+import PhysLean.Relativity.Tensors.Contraction.Basic
+import PhysLean.Relativity.Tensors.Evaluation
 /-!
 
 ## Complex Lorentz tensors from Real Lorentz tensors

@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Data.Finset.Option
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Finset.Prod
-import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.DeriveFintype
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
