@@ -62,4 +62,35 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩
 
+open TopologicalSpace
+
+/-- The group `ℤ₂`. -/
+local notation "ℤ₂" => Multiplicative (ZMod 2)
+
+noncomputable def lorentzMap {d : ℕ} : ContinuousMonoidHom (LorentzGroup d) (ℤ₂ × ℤ₂) where
+  toFun := λ Λ => (detRep Λ, orthchroRep Λ)
+  map_one' := by sorry
+  map_mul' := by sorry
+  continuous_toFun := by sorry
+
+/-
+  Work in progress: Prove that the restricted Lorentz group is the identity component of the
+  Lorentz group.
+-/
+
+/-- The restricted Lorentz group is connected. -/
+lemma restricted.IsConnected {d : ℕ} : IsConnected (restricted d : Set (LorentzGroup d)) := by
+  sorry
+
+lemma restricted_eq_identity_component {d : ℕ} :
+    (restricted d) = connectedComponent (1 : LorentzGroup d) := by
+  ext x
+  constructor
+  · intro hx
+    have h_id : 1 ∈ restricted d := by simp [restricted, IsOrthochronous]
+    exact IsConnected.subset_connectedComponent (@restricted.IsConnected d) h_id hx
+  · intro h
+    exact ⟨(isProper_on_connected_component h).mp id_IsProper,
+           (isOrthochronous_on_connected_component h).mp id_IsOrthochronous⟩
+
 end LorentzGroup
