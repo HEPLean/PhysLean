@@ -102,9 +102,8 @@ lemma objObj'_ρ_empty (g : G) : (objObj' F (𝟙_ (OverColor C))).ρ g = Linear
   ext x
   refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
     simp_all
-  simp only [OverColor.instMonoidalCategoryStruct_tensorUnit_left, Functor.id_obj,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.tprodCoeff_eq_smul_tprod,
-    _root_.map_smul, PiTensorProduct.map_tprod, LinearMap.id_coe, id_eq]
+  simp only [Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod, map_smul,
+    PiTensorProduct.map_tprod, LinearMap.id_coe, id_eq]
   apply congrArg
   apply congrArg
   funext i
@@ -116,8 +115,7 @@ lemma objObj'_ρ_from_fin0 (c : Fin 0 → C) (g : G) :
   ext x
   refine PiTensorProduct.induction_on' x (fun r x => ?_) <| fun x y hx hy => by
     simp_all
-  simp only [OverColor.instMonoidalCategoryStruct_tensorUnit_left, Functor.id_obj,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.tprodCoeff_eq_smul_tprod,
+  simp only [Functor.id_obj, PiTensorProduct.tprodCoeff_eq_smul_tprod,
     _root_.map_smul, PiTensorProduct.map_tprod, LinearMap.id_coe, id_eq]
   apply congrArg
   apply congrArg
@@ -194,17 +192,12 @@ def ε : 𝟙_ (Rep k G) ≅ objObj' F (𝟙_ (OverColor C)) :=
     intro g
     refine ModuleCat.hom_ext ?_
     refine LinearMap.ext (fun x => ?_)
-    simp only [objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorUnit_left,
-      OverColor.instMonoidalCategoryStruct_tensorUnit_hom,
-      Action.instMonoidalCategory_tensorUnit_V, Action.tensorUnit_ρ, Functor.id_obj,
-      Category.id_comp, LinearEquiv.coe_coe, ModuleCat.comp_apply]
+    simp only [objObj'_V_carrier]
     rw [ModuleCat.hom_comp]
-    simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorUnit_left,
-      instMonoidalCategoryStruct_tensorUnit_hom, LinearEquiv.toModuleIso_hom, ModuleCat.hom_ofHom,
+    simp only [objObj'_V_carrier, LinearEquiv.toModuleIso_hom, ModuleCat.hom_ofHom,
       LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply]
     change _ = (objObj' F (𝟙_ (OverColor C))).ρ g ((PiTensorProduct.isEmptyEquiv Empty).symm x)
-    simp only [objObj'_ρ_empty F g, instMonoidalCategoryStruct_tensorUnit_hom,
-      instMonoidalCategoryStruct_tensorUnit_left, Functor.id_obj,
+    simp only [objObj'_ρ_empty F g, Functor.id_obj,
       PiTensorProduct.isEmptyEquiv_symm_apply, map_smul, LinearMap.id_coe, id_eq]
     rfl)
 
@@ -237,10 +230,7 @@ lemma μModEquiv_tmul_tprod {X Y : OverColor C}
     PiTensorProduct.tprod k fun i =>
     (discreteSumEquiv' F i) (PhysLean.PiTensorProduct.elimPureTensor p q i) := by
   rw [μModEquiv]
-  simp only [objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
-    Functor.id_obj, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj]
+  simp only [objObj'_V_carrier]
   rw [LinearEquiv.trans_apply]
   rw [PhysLean.PiTensorProduct.tmulEquiv_tmul_tprod]
   change PiTensorProduct.congr (discreteSumEquiv' F)
@@ -292,9 +282,8 @@ lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
   ext1
   refine ModuleCat.hom_ext ?_
   refine PhysLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp only [objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
-    Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V,
+  simp only [objObj'_V_carrier, Functor.id_obj, CategoryStruct.comp,
+    Action.Hom.comp_hom,
     Action.instMonoidalCategory_whiskerRight_hom, LinearMap.coe_comp, Function.comp_apply]
   change _ = (objMap' F (MonoidalCategory.whiskerRight f Z)).hom
     ((μ F X Z).hom.hom ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q))
@@ -304,8 +293,7 @@ lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
     (PhysLean.PiTensorProduct.elimPureTensor p q i))
   rw [objMap'_tprod]
   change ((μ F Y Z).hom.hom.hom' ∘ₗ ((objMap' F f).hom ▷ (objObj' F Z).V).hom') _ = _
-  simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
-    instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
+  simp only [objObj'_V_carrier,
     LinearMap.coe_comp, Function.comp_apply, Functor.id_obj]
   conv_lhs =>
     right
@@ -319,11 +307,11 @@ lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
   match i with
   | Sum.inl i => rfl
   | Sum.inr i =>
-    simp only [instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inr, Functor.id_obj,
+    simp only [Sum.elim_inr, Functor.id_obj,
       discreteSumEquiv, Hom.toEquiv, Equiv.coe_fn_symm_mk, discreteFunctorMapEqIso,
       Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv, eqToIso.inv, LinearEquiv.ofLinear_apply,
-      LinearEquiv.refl_apply, instMonoidalCategoryStruct_tensorObj_left,
-      instMonoidalCategoryStruct_whiskerRight_inv_left, Sum.map_inr, id_eq, eqToIso_refl,
+      LinearEquiv.refl_apply,
+      Sum.map_inr, id_eq, eqToIso_refl,
       Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv]
     rfl
 
@@ -333,10 +321,8 @@ lemma μ_natural_right {X Y : OverColor C} (X' : OverColor C) (f : X ⟶ Y) :
   ext1
   refine ModuleCat.hom_ext ?_
   refine PhysLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp only [objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
-    Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V,
-    Action.instMonoidalCategory_whiskerLeft_hom, LinearMap.coe_comp, Function.comp_apply]
+  simp only [objObj'_V_carrier, Functor.id_obj, CategoryStruct.comp,
+    Action.Hom.comp_hom, LinearMap.coe_comp, Function.comp_apply]
   change _ = (objMap' F (X' ◁ f)).hom ((μ F X' X).hom.hom
     ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q))
   rw [μ_tmul_tprod]
@@ -357,9 +343,9 @@ lemma μ_natural_right {X Y : OverColor C} (X' : OverColor C) (f : X ⟶ Y) :
   funext i
   match i with
   | Sum.inl i =>
-    simp only [instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inl, Functor.id_obj,
+    simp only [Sum.elim_inl, Functor.id_obj,
       discreteFunctorMapEqIso, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv, eqToIso.inv,
-      LinearEquiv.ofLinear_apply, instMonoidalCategoryStruct_tensorObj_left, eqToIso_refl,
+      LinearEquiv.ofLinear_apply, eqToIso_refl,
       Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv]
     rfl
   | Sum.inr i => rfl
@@ -372,11 +358,7 @@ lemma associativity (X Y Z : OverColor C) :
   ext1
   refine ModuleCat.hom_ext ?_
   refine PhysLean.PiTensorProduct.induction_assoc' (fun p q m => ?_)
-  simp only [objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
-    Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V,
-    Action.instMonoidalCategory_whiskerRight_hom, LinearMap.coe_comp, Function.comp_apply,
-    Action.instMonoidalCategory_whiskerLeft_hom, Action.instMonoidalCategory_associator_hom_hom]
+  simp only [objObj'_V_carrier, CategoryStruct.comp, Action.Hom.comp_hom]
   change (objMap' F (α_ X Y Z).hom).hom ((μ F (X ⊗ Y) Z).hom.hom
     ((((μ F X Y).hom.hom ((PiTensorProduct.tprod k) p ⊗ₜ[k]
     (PiTensorProduct.tprod k) q)) ⊗ₜ[k] (PiTensorProduct.tprod k) m))) =
@@ -394,20 +376,19 @@ lemma associativity (X Y Z : OverColor C) :
   funext i
   match i with
   | Sum.inl i =>
-    simp only [Functor.id_obj, instMonoidalCategoryStruct_tensorObj_left,
-      instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inl, discreteFunctorMapEqIso, eqToIso_refl,
-      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+    simp only [Functor.id_obj,
+      discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom,
+      Iso.refl_inv, LinearEquiv.ofLinear_apply, Sum.elim_inl]
     rfl
   | Sum.inr (Sum.inl i) =>
-    simp only [Functor.id_obj, instMonoidalCategoryStruct_tensorObj_left,
-      instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inr, Sum.elim_inl, discreteFunctorMapEqIso,
-      eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv,
-      LinearEquiv.ofLinear_apply]
+    simp only [Functor.id_obj,
+      discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom,
+      Iso.refl_inv, LinearEquiv.ofLinear_apply, Sum.elim_inr]
     rfl
   | Sum.inr (Sum.inr i) =>
-    simp only [Functor.id_obj, instMonoidalCategoryStruct_tensorObj_left,
-      instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inr, discreteFunctorMapEqIso, eqToIso_refl,
-      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
+    simp only [Functor.id_obj,
+      discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom,
+      Iso.refl_inv, LinearEquiv.ofLinear_apply, Sum.elim_inr]
     rfl
 
 lemma left_unitality (X : OverColor C) : (leftUnitor (objObj' F X)).hom =
@@ -420,20 +401,14 @@ lemma left_unitality (X : OverColor C) : (leftUnitor (objObj' F X)).hom =
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     Action.instMonoidalCategory_tensorUnit_V, Functor.id_obj,
     Action.instMonoidalCategory_leftUnitor_hom_hom, CategoryStruct.comp, Action.Hom.comp_hom,
-    Action.instMonoidalCategory_tensorObj_V, OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom,
+
     Action.instMonoidalCategory_whiskerRight_hom, LinearMap.coe_comp, Function.comp_apply]
   change TensorProduct.lid k (objObj' F X) (x ⊗ₜ[k] (PiTensorProduct.tprod k) q) =
     (objMap' F (λ_ X).hom).hom ((μ F (𝟙_ (OverColor C)) X).hom.hom
     ((((PiTensorProduct.isEmptyEquiv Empty).symm x) ⊗ₜ[k] (PiTensorProduct.tprod k) q)))
-  simp only [Functor.id_obj, lid_tmul, objObj'_V_carrier,
-    OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
+  simp only [objObj'_V_carrier, lid_tmul,
     Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.isEmptyEquiv,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, PiTensorProduct.isEmptyEquiv,
     LinearEquiv.coe_symm_mk]
   rw [TensorProduct.smul_tmul, TensorProduct.tmul_smul]
   erw [LinearMap.map_smul, LinearMap.map_smul]
@@ -442,11 +417,8 @@ lemma left_unitality (X : OverColor C) : (leftUnitor (objObj' F X)).hom =
     ((PiTensorProduct.tprod k) _ ⊗ₜ[k] (PiTensorProduct.tprod k) q))
   rw [μ_tmul_tprod]
   erw [objMap'_tprod]
-  simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
-    instMonoidalCategoryStruct_tensorUnit_left, instMonoidalCategoryStruct_tensorObj_hom,
-    discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom,
-    Iso.refl_inv, Functor.id_obj, instMonoidalCategoryStruct_tensorUnit_hom,
-    LinearEquiv.ofLinear_apply]
+  simp only [objObj'_V_carrier,  discreteFunctorMapEqIso, eqToIso_refl,
+    Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
   rfl
 
 lemma right_unitality (X : OverColor C) : (rightUnitor (objObj' F X)).hom =
@@ -455,24 +427,13 @@ lemma right_unitality (X : OverColor C) : (rightUnitor (objObj' F X)).hom =
   ext1
   refine ModuleCat.hom_ext ?_
   apply PhysLean.PiTensorProduct.induction_tmul_mod (fun p x => ?_)
-  simp only [objObj'_ρ, Functor.id_obj, Equivalence.symm_inverse,
-    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_rightUnitor_hom_hom,
-    CategoryStruct.comp, Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V,
-    OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_whiskerLeft_hom,
-    LinearMap.coe_comp, Function.comp_apply]
+  simp only [Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, CategoryStruct.comp, Action.Hom.comp_hom]
   change TensorProduct.rid k (objObj' F X) ((PiTensorProduct.tprod k) p ⊗ₜ[k] x) =
     (objMap' F (ρ_ X).hom).hom ((μ F X (𝟙_ (OverColor C))).hom.hom
     ((((PiTensorProduct.tprod k) p ⊗ₜ[k] ((PiTensorProduct.isEmptyEquiv Empty).symm x)))))
-  simp only [Functor.id_obj, rid_tmul, objObj'_ρ,
-    OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
-    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj,
-    OverColor.instMonoidalCategoryStruct_tensorUnit_hom, PiTensorProduct.isEmptyEquiv,
+  simp only [rid_tmul, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, PiTensorProduct.isEmptyEquiv,
     LinearEquiv.coe_symm_mk, tmul_smul]
   erw [LinearMap.map_smul, LinearMap.map_smul]
   apply congrArg
@@ -480,11 +441,8 @@ lemma right_unitality (X : OverColor C) : (rightUnitor (objObj' F X)).hom =
     ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) _))
   rw [μ_tmul_tprod]
   erw [objMap'_tprod]
-  simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
-    instMonoidalCategoryStruct_tensorUnit_left, instMonoidalCategoryStruct_tensorObj_hom,
-    discreteFunctorMapEqIso, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom, Action.id_hom,
-    Iso.refl_inv, Functor.id_obj, instMonoidalCategoryStruct_tensorUnit_hom,
-    LinearEquiv.ofLinear_apply]
+  simp only [objObj'_V_carrier, discreteFunctorMapEqIso, eqToIso_refl,
+    Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
   rfl
 
 lemma braided' (X Y : OverColor C) : (μ F X Y).hom ≫ (objMap' F) (β_ X Y).hom =
@@ -492,10 +450,7 @@ lemma braided' (X Y : OverColor C) : (μ F X Y).hom ≫ (objMap' F) (β_ X Y).ho
   ext1
   refine ModuleCat.hom_ext ?_
   apply PhysLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp only [objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
-    instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
-    Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V, LinearMap.coe_comp,
-    Function.comp_apply]
+  simp only [objObj'_V_carrier, CategoryStruct.comp, Action.Hom.comp_hom]
   change (objMap' F (β_ X Y).hom).hom ((μ F X Y).hom.hom
     ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q)) = (μ F Y X).hom.hom
     ((PiTensorProduct.tprod k) q ⊗ₜ[k] (PiTensorProduct.tprod k) p)
@@ -505,13 +460,11 @@ lemma braided' (X Y : OverColor C) : (μ F X Y).hom ≫ (objMap' F) (β_ X Y).ho
   funext i
   match i with
   | Sum.inl i =>
-    simp only [Functor.id_obj, instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inl,
-      instMonoidalCategoryStruct_tensorObj_left, discreteFunctorMapEqIso, eqToIso_refl,
+    simp only [Functor.id_obj, Sum.elim_inl, discreteFunctorMapEqIso, eqToIso_refl,
       Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
     rfl
   | Sum.inr i =>
-    simp only [Functor.id_obj, instMonoidalCategoryStruct_tensorObj_hom, Sum.elim_inr,
-      instMonoidalCategoryStruct_tensorObj_left, discreteFunctorMapEqIso, eqToIso_refl,
+    simp only [Functor.id_obj, Sum.elim_inr, discreteFunctorMapEqIso, eqToIso_refl,
       Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
     rfl
 
@@ -657,8 +610,7 @@ lemma mapApp'_naturality {X Y : OverColor C} (f : X ⟶ Y) :
 lemma mapApp'_unit : Functor.LaxMonoidal.ε (obj' F) ≫ mapApp' η (𝟙_ (OverColor C)) =
     Functor.LaxMonoidal.ε (obj' F') := by
   ext
-  simp only [obj', ε, instMonoidalCategoryStruct_tensorUnit_left, Functor.id_obj,
-    instMonoidalCategoryStruct_tensorUnit_hom, objObj'_V_carrier,
+  simp only [obj', ε, Functor.id_obj, objObj'_V_carrier,
     Action.instMonoidalCategory_tensorUnit_V, CategoryStruct.comp, Action.Hom.comp_hom,
     Action.mkIso_hom_hom]
   rw [ModuleCat.Hom.hom, ConcreteCategory.hom, ModuleCat.Hom.hom, ConcreteCategory.hom]
@@ -678,9 +630,8 @@ lemma mapApp'_tensor (X Y : OverColor C) :
   ext1
   refine ModuleCat.hom_ext ?_
   refine PhysLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp only [obj', objObj'_V_carrier, instMonoidalCategoryStruct_tensorObj_left,
-    instMonoidalCategoryStruct_tensorObj_hom, Functor.id_obj, CategoryStruct.comp,
-    Action.Hom.comp_hom, Action.instMonoidalCategory_tensorObj_V, LinearMap.coe_comp,
+  simp only [obj', objObj'_V_carrier, Functor.id_obj, CategoryStruct.comp,
+    Action.Hom.comp_hom,  LinearMap.coe_comp,
     Function.comp_apply, Action.instMonoidalCategory_tensorHom_hom]
   rw [ModuleCat.Hom.hom, ConcreteCategory.hom, ModuleCat.Hom.hom, ConcreteCategory.hom]
   simp only [ModuleCat.instConcreteCategoryLinearMapIdCarrier, LinearMap.coe_comp,

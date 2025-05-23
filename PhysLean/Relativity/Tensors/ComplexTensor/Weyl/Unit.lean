@@ -235,11 +235,9 @@ lemma contr_altLeftLeftUnit (x : leftHanded) :
     (leftAltContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
   erw [h1, h1, h1, h1]
   repeat rw [leftAltContraction_basis]
-  simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
-    CategoryTheory.Iso.trans_hom, ModuleCat.ofSelfIso_hom,
-    CategoryTheory.Category.comp_id, Action.instMonoidalCategory_tensorUnit_V, Fin.val_zero,
-    ↓reduceIte, Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one,
-    zero_add]
+  simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor,
+    LinearEquiv.toModuleIso_hom, ModuleCat.hom_ofHom, Fin.val_zero, ↓reduceIte, LinearEquiv.coe_coe,
+    Fin.val_one, one_ne_zero, zero_tmul, map_zero, smul_zero, add_zero, zero_ne_one, zero_add]
   erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul]
   simp only [Fin.isValue, one_smul]
 

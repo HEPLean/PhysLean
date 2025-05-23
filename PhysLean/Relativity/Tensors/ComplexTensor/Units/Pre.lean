@@ -151,11 +151,10 @@ lemma contr_contrCoUnit (x : complexCo) :
     (coContrContraction.hom ▷ complexCo.V) (z ⊗ₜ[ℂ] y) = (coContrContraction.hom z) ⊗ₜ[ℂ] y := rfl
   repeat rw (config := { transparency := .instances }) [h1'']
   repeat rw [coContrContraction_basis']
-  simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor, ModuleCat.of_coe,
-    CategoryTheory.Iso.trans_hom, ModuleCat.ofSelfIso_hom,
-    CategoryTheory.Category.comp_id, ↓reduceIte,
-    reduceCtorEq, zero_tmul, map_zero, smul_zero, add_zero, Sum.inr.injEq, one_ne_zero,
-    Fin.reduceEq, zero_add, zero_ne_one]
+  simp only [Fin.isValue, leftUnitor, ModuleCat.MonoidalCategory.leftUnitor,
+    LinearEquiv.toModuleIso_hom, ModuleCat.hom_ofHom, Action.instMonoidalCategory_tensorUnit_V,
+    ↓reduceIte, LinearEquiv.coe_coe, reduceCtorEq, zero_tmul, map_zero, smul_zero, add_zero,
+    Sum.inr.injEq, one_ne_zero, Fin.reduceEq, zero_add, zero_ne_one]
   erw [TensorProduct.lid_tmul, TensorProduct.lid_tmul, TensorProduct.lid_tmul,
     TensorProduct.lid_tmul]
   simp only [Fin.isValue, one_smul]

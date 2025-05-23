@@ -57,7 +57,11 @@ instance (C : Type) : Groupoid (OverColor C) := coreCategory
 namespace OverColor
 
 /-- Make an object of `OverColor C` from a map `X → C`. -/
-def mk (f : X → C) : OverColor C := Over.mk f
+def mk (f : X → C) : OverColor C := ⟨Over.mk f⟩
+
+abbrev hom (f : OverColor C) := f.of.hom
+
+abbrev left (f : OverColor C) := f.of.left
 
 lemma mk_hom (f : X → C) : (mk f).hom = f := rfl
 open MonoidalCategory
@@ -74,9 +78,22 @@ namespace Hom
 
 variable {C : Type} {f g h : OverColor C}
 
+abbrev _root_.CategoryTheory.CoreHom.hom (m : f ⟶ g) := m.iso.hom
+
+abbrev _root_.CategoryTheory.CoreHom.inv (m : f ⟶ g) := m.iso.inv
+
+abbrev _root_.CategoryTheory.CoreHom.hom_inv_id (m : f ⟶ g) := m.iso.hom_inv_id
+
+abbrev _root_.CategoryTheory.CoreHom.inv_hom_id (m : f ⟶ g) := m.iso.inv_hom_id
+
+abbrev _root_.CategoryTheory.CoreHom.symm (m : f ⟶ g) : g ⟶ f := ⟨m.iso.symm⟩
+
 /-- If `m` and `n` are morphisms in `OverColor C`, they are equal if their underlying
   morphisms in `Over C` are equal. -/
-lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := CategoryTheory.Iso.ext h
+lemma ext (m n : f ⟶ g) (h : m.hom = n.hom) : m = n := by
+  have h1 := CategoryTheory.Iso.ext h
+  rw [← CoreHom.ext_iff] at h1
+  exact h1
 
 lemma ext_iff (m n : f ⟶ g) : (∀ x, m.hom.left x = n.hom.left x) ↔ m = n := by
   refine Iff.intro (fun h => ?_) (fun h => ?_)
@@ -123,12 +140,12 @@ lemma toEquiv_comp_apply (m : f ⟶ g) (i : f.left) :
 
 /-- Given a morphism in `OverColor C`, the corresponding isomorphism. -/
 def toIso (m : f ⟶ g) : f ≅ g := {
-  hom := m,
-  inv := m.symm,
-  hom_inv_id := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+  hom := m
+  inv := m.symm
+  hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
     simp only [CategoryStruct.comp, Iso.self_symm_id, Iso.refl_hom, Over.id_left, types_id_apply]
-    rfl,
-  inv_hom_id := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    rfl
+  inv_hom_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
     simp only [CategoryStruct.comp, Iso.symm_self_id, Iso.refl_hom, Over.id_left, types_id_apply]
     rfl}
 
@@ -151,105 +168,113 @@ symmetric monoidal category.
 /-- The category `OverColor C` carries an instance of a Monoidal category structure. -/
 @[simps!]
 instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
-  tensorObj f g := Over.mk (Sum.elim f.hom g.hom)
-  tensorUnit := Over.mk Empty.elim
-  whiskerLeft X Y1 Y2 m := Over.isoMk (Equiv.sumCongr (Equiv.refl X.left) (Hom.toEquiv m)).toIso
+  tensorObj f g := mk (Sum.elim f.hom g.hom)
+  tensorUnit := mk Empty.elim
+  whiskerLeft X Y1 Y2 m := ⟨Over.isoMk (Equiv.sumCongr (Equiv.refl X.left) (Hom.toEquiv m)).toIso
     (by
       ext x
-      simp only [Functor.id_obj, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom, Over.mk_hom,
-        types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
+      simp only [Functor.id_obj, mk, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom,
+        Over.mk_hom, types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
       rw [Sum.elim_map, Hom.toEquiv_comp_hom]
-      rfl)
-  whiskerRight m X := Over.isoMk (Equiv.sumCongr (Hom.toEquiv m) (Equiv.refl X.left)).toIso
+      rfl)⟩
+  whiskerRight m X := ⟨Over.isoMk (Equiv.sumCongr (Hom.toEquiv m) (Equiv.refl X.left)).toIso
     (by
       ext x
-      simp only [Functor.id_obj, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom, Over.mk_hom,
-        types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
+      simp only [Functor.id_obj, mk, Functor.const_obj_obj, Over.mk_left, Equiv.toIso_hom,
+        Over.mk_hom, types_comp_apply, Equiv.sumCongr_apply, Equiv.coe_refl]
       rw [Sum.elim_map, Hom.toEquiv_comp_hom]
-      rfl)
+      rfl)⟩
   associator X Y Z := {
-    hom := Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
+    hom := ⟨Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
       ext x
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
-      | Sum.inr x => rfl),
-    inv := (Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
+      | Sum.inr x => rfl)⟩
+    inv := ⟨(Over.isoMk (Equiv.sumAssoc X.left Y.left Z.left).toIso (by
       ext x
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
-      | Sum.inr x => rfl)).symm,
-    hom_inv_id := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+      | Sum.inr x => rfl)).symm⟩
+    hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl,
     inv_hom_id := by
+      rw [CoreHom.ext_iff]
       apply CategoryTheory.Iso.ext
-      rw [Hom.hom_comp]
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.inv_hom_id]
+      simp only [Functor.id_obj, Hom.hom_comp]
+      simp only [mk, Over.mk_left, CoreHom.hom, Iso.symm_hom, Iso.inv_hom_id]
       rfl}
   leftUnitor X := {
-    hom := Over.isoMk (Equiv.emptySum Empty X.left).toIso
-    inv := (Over.isoMk (Equiv.emptySum Empty X.left).toIso).symm
+    hom := ⟨Over.isoMk (Equiv.emptySum Empty X.left).toIso (by
+      simp only [OverColor.left, mk]
+      aesop_cat)⟩
+    inv := ⟨(Over.isoMk (Equiv.emptySum Empty X.left).toIso
+      (by simp only [OverColor.left, mk]; aesop_cat)).symm⟩
     hom_inv_id := by
+      rw [CoreHom.ext_iff]
       apply CategoryTheory.Iso.ext
-      rw [Hom.hom_comp]
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
-      rfl,
+      simp only [Functor.id_obj, Hom.hom_comp]
+      simp only [mk, Over.mk_left, CoreHom.hom, Iso.symm_hom, Iso.hom_inv_id]
+      rfl
     inv_hom_id := by
       rfl}
   rightUnitor X := {
-    hom := Over.isoMk (Equiv.sumEmpty X.left Empty).toIso
-    inv := (Over.isoMk (Equiv.sumEmpty X.left Empty).toIso).symm
+    hom := ⟨Over.isoMk (Equiv.sumEmpty X.left Empty).toIso
+      (by simp only [OverColor.left, mk]; aesop_cat)⟩
+    inv := ⟨(Over.isoMk (Equiv.sumEmpty X.left Empty).toIso
+      (by simp only [OverColor.left, mk]; aesop_cat)).symm⟩
     hom_inv_id := by
+      rw [CoreHom.ext_iff]
       apply CategoryTheory.Iso.ext
-      rw [Hom.hom_comp]
-      simp only [Functor.id_obj, Over.mk_left, Over.mk_hom, Iso.symm_hom, Iso.hom_inv_id]
-      rfl,
+      simp only [Functor.id_obj, Hom.hom_comp]
+      simp only [mk, Over.mk_left, CoreHom.hom, Iso.symm_hom, Iso.hom_inv_id]
+      rfl
     inv_hom_id := by
       rfl}
 
 /-- The category `OverColor C` carries an instance of a Monoidal category. -/
 instance (C : Type) : MonoidalCategory (OverColor C) where
-    tensorHom_def f g := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => rfl
-    tensor_id X Y := CategoryTheory.Iso.ext <| (Iso.eq_inv_comp _).mp rfl
-    tensor_comp f1 f2 g1 g2 := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    tensorHom_def f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => rfl
+    tensor_id X Y :=CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| (Iso.eq_inv_comp _).mp rfl
+    tensor_comp f1 f2 g1 g2 := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl
-    whiskerLeft_id X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    whiskerLeft_id X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl
-    id_whiskerRight X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    id_whiskerRight X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl
     associator_naturality {X1 X2 X3 Y1 Y2 Y3} f1 f2 f3 :=
-        CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+        CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl
     leftUnitor_naturality f :=
-        CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+       CoreHom.ext_iff.mpr <|  CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => exact Empty.elim x
       | Sum.inr x => rfl
     rightUnitor_naturality f :=
-        CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+        CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => exact Empty.elim x
-    pentagon f g h i := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    pentagon f g h i := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl (Sum.inl (Sum.inl x)) => rfl
       | Sum.inl (Sum.inl (Sum.inr x)) => rfl
       | Sum.inl (Sum.inr x) => rfl
       | Sum.inr x => rfl
-    triangle f g := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    triangle f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl (Sum.inl x) => rfl
       | Sum.inl (Sum.inr x) => exact Empty.elim x
@@ -258,33 +283,33 @@ instance (C : Type) : MonoidalCategory (OverColor C) where
 /-- The category `OverColor C` carries an instance of a braided category. -/
 instance (C : Type) : BraidedCategory (OverColor C) where
   braiding f g := {
-    hom := Over.isoMk (Equiv.sumComm f.left g.left).toIso
-    inv := (Over.isoMk (Equiv.sumComm f.left g.left).toIso).symm
-    hom_inv_id := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    hom := ⟨Over.isoMk (Equiv.sumComm f.left g.left).toIso (by simp only [OverColor.left, mk]; aesop_cat)⟩
+    inv := ⟨(Over.isoMk (Equiv.sumComm f.left g.left).toIso (by simp only [OverColor.left, mk]; aesop_cat)).symm⟩
+    hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl,
-    inv_hom_id := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+    inv_hom_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
       match x with
       | Sum.inl x => rfl
       | Sum.inr x => rfl}
-  braiding_naturality_right X Y1 Y2 f := CategoryTheory.Iso.ext <| Over.OverMorphism.ext
+  braiding_naturality_right X Y1 Y2 f := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
       <| funext fun x => by
     match x with
     | Sum.inl x => rfl
     | Sum.inr x => rfl
-  braiding_naturality_left X f := CategoryTheory.Iso.ext <| Over.OverMorphism.ext
+  braiding_naturality_left X f := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
       <| funext fun x => by
     match x with
     | Sum.inl x => rfl
     | Sum.inr x => rfl
-  hexagon_forward X1 X2 X3 := CategoryTheory.Iso.ext <| Over.OverMorphism.ext
+  hexagon_forward X1 X2 X3 := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
       <| funext fun x => by
     match x with
     | Sum.inl (Sum.inl x) => rfl
     | Sum.inl (Sum.inr x) => rfl
     | Sum.inr x => rfl
-  hexagon_reverse X1 X2 X3 := CategoryTheory.Iso.ext <| Over.OverMorphism.ext
+  hexagon_reverse X1 X2 X3 := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext
       <| funext fun x => by
     match x with
     | Sum.inr (Sum.inl x) => rfl
@@ -294,7 +319,7 @@ instance (C : Type) : BraidedCategory (OverColor C) where
 /-- The category `OverColor C` carries an instance of a symmetric monoidal category. -/
 instance (C : Type) : SymmetricCategory (OverColor C) where
   toBraidedCategory := instBraidedCategory C
-  symmetry X Y := CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
+  symmetry X Y := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <| funext fun x => by
     match x with
     | Sum.inl x => rfl
     | Sum.inr x => rfl
@@ -321,15 +346,15 @@ lemma β_inv_toEquiv (f : X → C) (g : Y → C) :
 lemma whiskeringLeft_toEquiv (f : X → C) (g : Y → C) (h : Z → C)
     (σ : OverColor.mk f ⟶ OverColor.mk g) :
     Hom.toEquiv (OverColor.mk h ◁ σ) = (Equiv.refl Z).sumCongr (Hom.toEquiv σ) := by
-  simp only [instMonoidalCategoryStruct_tensorObj_left, mk_left, MonoidalCategory.whiskerLeft,
-    Functor.id_obj, mk_hom]
+  simp only [instMonoidalCategoryStruct_tensorObj_of_left, mk_left,
+    MonoidalCategoryStruct.whiskerLeft, Functor.id_obj, mk_hom]
   rfl
 
 @[simp]
 lemma whiskeringRight_toEquiv (f : X → C) (g : Y → C) (h : Z → C)
     (σ : OverColor.mk f ⟶ OverColor.mk g) :
     Hom.toEquiv (σ ▷ OverColor.mk h) = (Hom.toEquiv σ).sumCongr (Equiv.refl Z) := by
-  simp only [instMonoidalCategoryStruct_tensorObj_left, mk_left]
+  simp only [instMonoidalCategoryStruct_tensorObj_of_left, mk_left]
   rfl
 
 @[simp]
@@ -353,7 +378,7 @@ lemma α_inv_toEquiv (f : X → C) (g : Y → C) (h : Z → C) :
 /-- The isomorphism between `c : X → C` and `c ∘ e.symm` as objects in `OverColor C` for an
   equivalence `e`. -/
 def equivToIso {c : X → C} (e : X ≃ Y) : mk c ≅ mk (c ∘ e.symm) :=
-  Hom.toIso (Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl))
+  Hom.toIso ⟨Over.isoMk e.toIso ((Iso.eq_inv_comp e.toIso).mp rfl)⟩
 
 @[simp]
 lemma equivToIso_homToEquiv {c : X → C} (e : X ≃ Y) :
@@ -372,11 +397,11 @@ def equivToHom {c : X → C} (e : X ≃ Y) : mk c ⟶ mk (c ∘ e.symm) :=
 
 /-- Given a map `X ⊕ Y → C`, the isomorphism `mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr)`. -/
 def mkSum (c : X ⊕ Y → C) : mk c ≅ mk (c ∘ Sum.inl) ⊗ mk (c ∘ Sum.inr) :=
-  Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
+  Hom.toIso ⟨Over.isoMk (Equiv.refl _).toIso (by
     ext x
     match x with
     | Sum.inl x => rfl
-    | Sum.inr x => rfl))
+    | Sum.inr x => rfl)⟩
 
 @[simp]
 lemma mkSum_homToEquiv {c : X ⊕ Y → C}:
@@ -390,9 +415,9 @@ lemma mkSum_inv_homToEquiv {c : X ⊕ Y → C}:
 
 /-- The isomorphism between objects in `OverColor C` given equality of maps. -/
 def mkIso {c1 c2 : X → C} (h : c1 = c2) : mk c1 ≅ mk c2 :=
-  Hom.toIso (Over.isoMk (Equiv.refl _).toIso (by
+  Hom.toIso ⟨Over.isoMk (Equiv.refl _).toIso (by
     subst h
-    rfl))
+    rfl)⟩
 
 lemma mkIso_refl_hom {c : X → C} : (mkIso (by rfl : c =c)).hom = 𝟙 _ := by
   rw [mkIso]
@@ -426,7 +451,7 @@ TODO "6VZTR" "In the definition equivToHomEq the tactic `try {simp; decide}; try
   an equality lemma. -/
 def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y)
     (h : ∀ x, c1 x = (c ∘ e.symm) x := by try {simp; decide}; try decide) : mk c ⟶ mk c1 :=
-  (equivToHom e).trans (mkIso (funext fun x => (h x).symm)).hom
+  (equivToHom e) ≫ (mkIso (funext fun x => (h x).symm)).hom
 
 @[simp]
 lemma equivToHomEq_hom_left {c : X → C} {c1 : Y → C} (e : X ≃ Y)

@@ -163,14 +163,14 @@ lemma μ_toTensor_tmul_toTensor {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.
     PiTensorProduct.tprod k (fun | Sum.inl i => t i | Sum.inr i => t1 i) := by
   change lift.μModEquiv _ _ _ (t.toTensor ⊗ₜ t1.toTensor) = _
   rw [lift.μModEquiv]
-  simp only [lift.objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
+  simp only [lift.objObj'_V_carrier, Action.instMonoidalCategory_tensorObj_V,
     Functor.id_obj, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj]
   rw [LinearEquiv.trans_apply]
   rw [toTensor, toTensor]
   rw [PhysLean.PiTensorProduct.tmulEquiv_tmul_tprod]
-  simp only [PiTensorProduct.congr_tprod]
+  simp only [instMonoidalCategoryStruct_tensorObj_of_left,
+    instMonoidalCategoryStruct_tensorObj_of_hom, PiTensorProduct.congr_tprod]
   congr
   funext i
   match i with

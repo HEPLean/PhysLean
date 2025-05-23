@@ -107,7 +107,7 @@ lemma deriv_commute [NormedAddCommGroup M] [NormedSpace ℝ M]
   unfold deriv
   ext x
   rw [fderiv_clm_apply, fderiv_clm_apply]
-  simp only [fderiv_const, Pi.zero_apply, ContinuousLinearMap.comp_zero, zero_add,
+  simp only [fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.comp_zero, zero_add,
     ContinuousLinearMap.flip_apply]
   rw [IsSymmSndFDerivAt.eq]
   apply ContDiffAt.isSymmSndFDerivAt
@@ -230,14 +230,15 @@ lemma grad_zero : ∇ (0 : Space d → ℝ) = 0 := by
 @[simp]
 lemma div_zero : ∇ ⬝ (0 : Space d → EuclideanSpace ℝ (Fin d)) = 0 := by
   unfold div Space.deriv Finset.sum
-  simp only [Pi.zero_apply, fderiv_const, ContinuousLinearMap.zero_apply, Multiset.map_const',
+  simp only [Pi.ofNat_apply, fderiv_fun_const, ContinuousLinearMap.zero_apply, Multiset.map_const',
     Finset.card_val, Finset.card_univ, Fintype.card_fin, Multiset.sum_replicate, smul_zero]
   rfl
 
 @[simp]
 lemma curl_zero : ∇ × (0 : Space → EuclideanSpace ℝ (Fin 3)) = 0 := by
   unfold curl Space.deriv
-  simp only [Fin.isValue, Pi.zero_apply, fderiv_const, ContinuousLinearMap.zero_apply, sub_self]
+  simp only [Fin.isValue, Pi.ofNat_apply, fderiv_fun_const, ContinuousLinearMap.zero_apply,
+    sub_self]
   ext x i
   fin_cases i <;>
   rfl

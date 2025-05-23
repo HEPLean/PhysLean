@@ -52,7 +52,7 @@ lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
   rw [LinearMap.toMatrix_apply]
   simp only [leftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (M.1 *ᵥ (Pi.single j 1)) i = _
-  simp only [mulVec_single, MulOpposite.op_one, Pi.smul_apply, transpose_apply, one_smul]
+  simp
 
 @[simp]
 lemma leftBasis_toFin2ℂ (i : Fin 2) : (leftBasis i).toFin2ℂ = Pi.single i 1 := by
@@ -97,7 +97,7 @@ lemma altLeftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
   rw [LinearMap.toMatrix_apply]
   simp only [altLeftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
   change ((M.1⁻¹)ᵀ *ᵥ (Pi.single j 1)) i = _
-  simp only [mulVec_single, MulOpposite.op_one, transpose_transpose, Pi.smul_apply, one_smul]
+  simp
 
 /-- The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
   In index notation corresponds to a Weyl fermion with indices ψ^{dot a}. -/

@@ -229,7 +229,8 @@ lemma boost_inverse (i : Fin d) {β : ℝ} (hβ : |β| < 1) :
     split
     · simp
       rw [if_pos]
-      simp_all
+      simp_all only [not_true_eq_false, imp_false, IsEmpty.forall_iff]
+      omega
     · rename_i h
       conv_rhs =>
         rw [if_neg (fun a => h (And.symm a))]
