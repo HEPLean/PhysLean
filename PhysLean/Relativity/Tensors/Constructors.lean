@@ -461,6 +461,7 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : S.C)
   conv_rhs => rw [fromPairT_tmul]
   simp only [permT_permT, map_smul]
 
+set_option maxHeartbeats 400000 in
 lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : S.C)
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
