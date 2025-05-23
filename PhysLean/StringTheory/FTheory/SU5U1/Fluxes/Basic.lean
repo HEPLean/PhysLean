@@ -24,16 +24,16 @@ the presence of a Higgs like-particle.
 
 For a 10d representation matter curve the non-zero chiral indices can be parameterized in terms
 of two integers `M : ℤ` and `N : ℤ`. For the SM representation
--  `(3,2)_{1/6}` the chirality index is `M`
--  `(bar 3,1)_{-2/3}` the chirality index is `M - N`
--  `(1,1)_{1}` the chirality index is `M + N`
+-  `Q = (3,2)_{1/6}` the chirality index is `M`
+-  `U = (bar 3,1)_{-2/3}` the chirality index is `M - N`
+-  `E = (1,1)_{1}` the chirality index is `M + N`
 We call refer to `M` as the chirality flux of the 10d representation, and
 `N` as the hypercharge flux. There exact definitions are given in (eq 19 of [1]).
 
 Similarly, for the 5-bar representation matter curve the non-zero chiral indices can be
 likewise be parameterized in terms of two integers `M : ℤ` and `N : ℤ`. For the SM representation
--  `(bar 3,1)_{1/3}` the chirality index is `M`
-- `(1,2)_{-1/2}` the chirality index is `M + N`
+-  `D = (bar 3,1)_{1/3}` the chirality index is `M`
+- `L = (1,2)_{-1/2}` the chirality index is `M + N`
 We again refer to `M` as the chirality flux of the 5-bar representation, and
 `N` as the hypercharge flux. The exact definitions are given in (eq 19 of [1]).
 
@@ -61,10 +61,12 @@ See the conditions in equation 26 - 28 of [1].
 ## Implmentation
 
 The above theory is implemented by defining two data structures:
-- `FluxesTen` of type `Multiset (ℤ × ℤ)` which contains the chirality `M` and hypercharge fluxes
-  `N` of the 10d-matter curves.
-- `FluxesFive` of type `Multiset (ℤ × ℤ)` which contains the chirality `M` and hypercharge fluxes
-  `N` of the 5-bar-matter curves (excluding the higges).
+- `FluxesTen` of type `{x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}`
+  which contains the chirality `M` and hypercharge fluxes
+  `N` of the 10d-matter curves which lead to chiral matter (the condition `(0, 0) ∉ x`).
+- `FluxesFive` of type `{x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}`
+  which contains the chirality `M` and hypercharge fluxes
+  `N` of the 5-bar-matter curves (excluding the higges) which lead to chiral matter content.
 
 Note: Neither `FluxesTen` or `FluxesFive` are fundamental to the theory,
 they can be derived from other data structures.
@@ -77,6 +79,116 @@ they can be derived from other data structures.
 namespace FTheory
 
 namespace SU5U1
+
+/-!
+
+## Fluxes of the 5d matter representation
+
+-/
+
+/-- The fluxes `(M, N)` of the 5-bar matter curves of a theory which lead to chiral matter
+  content in the MSSM. -/
+def FluxesFive : Type := {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}
+
+namespace FluxesFive
+
+/-- The multiset of chiral indices of the representation `L = (1,2)_{-1/2}`
+  arrising from the matter 5d representations. -/
+def chiralIndicesOfL (F : FluxesFive) : Multiset ℤ := F.1.map (fun f => f.1 + f.2)
+
+/-- The multiset of chiral indices of the representation `D = (bar 3,1)_{1/3}`
+  arrising from the matter 5d representations. -/
+def chiralIndicesOfD (F : FluxesFive) : Multiset ℤ := F.1.map (fun f => f.1)
+
+/-- The total number of chiral `L` representations arrising from the matter 5d
+  representations. -/
+def numChiralL (F : FluxesFive) : ℤ :=
+  ((chiralIndicesOfL F).filter (fun x => 0 ≤ x)).sum
+
+/-- The total number of anti-chiral `L` representations arrising from the matter 5d
+  representations. -/
+def numAntiChiralL (F : FluxesFive) : ℤ :=
+  ((chiralIndicesOfL F).filter (fun x => x < 0)).sum
+
+/-- The total number of chiral `D` representations arrising from the matter 5d
+  representations. -/
+def numChiralD (F : FluxesFive) : ℤ :=
+  ((chiralIndicesOfD F).filter (fun x => 0 ≤ x)).sum
+
+/-- The total number of anti-chiral `D` representations arrising from the matter 5d
+  representations. -/
+def numAntiChiralD (F : FluxesFive) : ℤ :=
+  ((chiralIndicesOfD F).filter (fun x => x < 0)).sum
+
+/-- The condition that the 5d-matter represenations do not lead to exotic chiral matter in the
+  MSSM spectrum. This corresponds to the conditions that:
+- There are 3 chiral `L` representations and no anti-chiral `L` representations.
+- There are 3 chiral `D` representations and no anti-chiral `D` representations.
+-/
+def NoExotics (F : FluxesFive) : Prop :=
+  F.numChiralL = 3 ∧ F.numAntiChiralL = 0 ∧ F.numChiralD = 3 ∧ F.numAntiChiralD = 0
+
+end FluxesFive
+
+/-!
+
+## Fluxes of the 10d matter representation
+
+-/
+/-- The fluxes `(M, N)` of the 10d matter curves of a theory which lead to chiral matter
+  content in the MSSM. -/
+def FluxesTen : Type := {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}
+
+namespace FluxesTen
+
+/-- The multiset of chiral indices of the representation `Q = (3,2)_{1/6}`
+  arrising from the matter 10d representations, corresponding to `M`. -/
+def chiralIndicesOfQ (F : FluxesTen) : Multiset ℤ := F.1.map (fun f => f.1)
+
+/-- The multiset of chiral indices of the representation `U = (bar 3,1)_{-2/3}`
+  arrising from the matter 10d representations, corresponding to `M - N` -/
+def chiralIndicesOfU (F : FluxesTen) : Multiset ℤ := F.1.map (fun f => f.1 - f.2)
+
+/-- The multiset of chiral indices of the representation `E = (1,1)_{1}`
+  arrising from the matter 10d representations, corresponding to `M + N` -/
+def chiralIndicesOfE (F : FluxesTen) : Multiset ℤ := F.1.map (fun f => f.1 + f.2)
+
+/-- The total number of chiral `Q` representations arrising from the matter 10d
+  representations. -/
+def numChiralQ (F : FluxesTen) : ℤ := ((chiralIndicesOfQ F).filter (fun x => 0 ≤ x)).sum
+
+/-- The total number of anti-chiral `Q` representations arrising from the matter 10d
+  representations. -/
+def numAntiChiralQ (F : FluxesTen) : ℤ := ((chiralIndicesOfQ F).filter (fun x => x < 0)).sum
+
+/-- The total number of chiral `U` representations arrising from the matter 10d
+  representations. -/
+def numChiralU (F : FluxesTen) : ℤ := ((chiralIndicesOfU F).filter (fun x => 0 ≤ x)).sum
+
+/-- The total number of anti-chiral `U` representations arrising from the matter 10d
+  representations. -/
+def numAntiChiralU (F : FluxesTen) : ℤ := ((chiralIndicesOfU F).filter (fun x => x < 0)).sum
+
+/-- The total number of chiral `E` representations arrising from the matter 10d
+  representations. -/
+def numChiralE (F : FluxesTen) : ℤ := ((chiralIndicesOfE F).filter (fun x => 0 ≤ x)).sum
+
+/-- The total number of anti-chiral `E` representations arrising from the matter 10d
+  representations. -/
+def numAntiChiralE (F : FluxesTen) : ℤ := ((chiralIndicesOfE F).filter (fun x => x < 0)).sum
+
+/-- The condition that the 10d-matter represenations do not lead to exotic chiral matter in the
+  MSSM spectrum. This corresponds to the conditions that:
+- There are 3 chiral `Q` representations and no anti-chiral `Q` representations.
+- There are 3 chiral `U` representations and no anti-chiral `U` representations.
+- There are 3 chiral `E` representations and no anti-chiral `E` representations.
+-/
+def NoExotics (F : FluxesTen) : Prop :=
+  F.numChiralQ = 3 ∧ F.numAntiChiralQ = 0 ∧
+  F.numChiralU = 3 ∧ F.numAntiChiralU = 0 ∧
+  F.numChiralE = 3 ∧ F.numAntiChiralE = 0
+
+end FluxesTen
 
 end SU5U1
 
