@@ -22,7 +22,6 @@ def main (_: List String) : IO UInt32 := do
   let todoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_dup_tags"]}
   println! todoCheck.stdout
 
-
   println! "Transitive imports ... "
   let todoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "redundent_imports"]}
   println! todoCheck.stdout
