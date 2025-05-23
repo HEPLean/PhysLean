@@ -22,6 +22,7 @@ def WaveEquation (f : Time → Space d → EuclideanSpace ℝ (Fin d))
     (t : Time) (x : Space d) (c : ℝ) : Prop :=
     c^2 • Δ (f t) x - ∂ₜ (fun t => (∂ₜ (fun t => f t x) t)) t = 0
 
+set_option linter.unusedVariables false in
 /-- A vector-valued plane wave travelling in the direction of `s` with propagation speed `c`. -/
 @[nolint unusedArguments]
 noncomputable def planeWave (f₀ : ℝ → EuclideanSpace ℝ (Fin d))
