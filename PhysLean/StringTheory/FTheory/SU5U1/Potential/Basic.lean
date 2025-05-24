@@ -184,6 +184,53 @@ lemma subset_trans {T : PotentialTerm} {x y z : T.ChargeType} (h1 : x ⊆ y) (h2
   fin_cases T <;>
     simp_all [Subset]
 
+def _root_.Option.powerset (x : Option ℤ) : Finset (Option ℤ) :=
+  match x with
+  | none => {none}
+  | some x => {none, some x}
+
+@[simp]
+lemma _root_.Option.mem_powerset_iff {x : Option ℤ} (y : Option ℤ) :
+    y ∈ x.powerset ↔ y.toFinset ⊆ x.toFinset :=
+  match x, y with
+  | none, none => by
+    simp [Option.powerset]
+  | none, some _ => by
+    simp [Option.powerset]
+  | some _, none => by
+    simp [Option.powerset]
+  | some _, some _ => by
+    simp [Option.powerset]
+
+def powerset {T : PotentialTerm} (x : T.ChargeType) : Finset T.ChargeType :=
+  match T, x with
+  | μ, (qHd, qHu) => qHd.powerset.product qHu.powerset
+  | β, (qHu, Q5) => qHu.powerset.product Q5.powerset
+  | Λ, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | W1, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | W2, (qHd, Q10) => qHd.powerset.product Q10.powerset
+  | W3, (qHu, Q5) => qHu.powerset.product Q5.powerset
+  | W4, (qHd, qHu, Q5) => qHd.powerset.product (qHu.powerset.product Q5.powerset)
+  | K1, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | K2, (qHd, qHu, Q10) => qHd.powerset.product (qHu.powerset.product Q10.powerset)
+  | topYukawa, (qHu, Q10) => qHu.powerset.product Q10.powerset
+  | bottomYukawa, (qHd, Q5, Q10) => qHd.powerset.product (Q5.powerset.product Q10.powerset)
+
+lemma subset_of_iff_mem_powerset {T : PotentialTerm} {x y : T.ChargeType} :
+    x ⊆ y ↔ x ∈ powerset y := by
+  fin_cases T
+  all_goals
+    cases x
+    cases y
+    simp only [powerset, Finset.product_eq_sprod]
+    rw [Finset.mem_product]
+    simp_all [Subset]
+
+@[simp]
+lemma self_mem_powerset {T : PotentialTerm} (x : T.ChargeType) :
+    x ∈ powerset x := by
+  rw [← subset_of_iff_mem_powerset]
+
 /-!
 
 ## The charges associated with the potential terms
