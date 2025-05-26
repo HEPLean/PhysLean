@@ -256,6 +256,8 @@ import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
 import PhysLean.StringTheory.FTheory.SU5U1.Examples
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices
+import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.PresentIrredSet
