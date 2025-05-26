@@ -17,7 +17,7 @@ For example:
 - They must be non-negative.
 - They must be less than or equal to `3`.
 
-This module proves thes constraints.
+This module proves these constraints.
 
 -/
 namespace FTheory
