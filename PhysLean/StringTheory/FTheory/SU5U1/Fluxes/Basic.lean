@@ -70,6 +70,9 @@ The above theory is implemented by defining two data structures:
 Note: Neither `FluxesTen` or `FluxesFive` are fundamental to the theory,
 they can be derived from other data structures.
 
+## Previous version
+
+A previous version of this code was replaced in the PR #569.
 ## References
 
 - [1] arXiv:1401.5084
