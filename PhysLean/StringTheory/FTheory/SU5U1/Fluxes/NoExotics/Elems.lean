@@ -4,13 +4,25 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
+/-!
 
+# Elements of `FluxesFive` and `FluxesTen` with no chiral exotics
+
+There are only a finite number of elements of `FluxesFive` and `FluxesTen` which
+do not lead to chiral exotics in the spectrum.
+
+These elements are given in the definitions `elemsNoExotics` in the respective namespaces.
+
+For `FluxesFive` there are `30` such elements, and for `FluxesTen` there are `6` such elements.
+
+-/
 namespace FTheory
 
 namespace SU5U1
 
 namespace FluxesFive
 
+/-- The elements of `FluxesFive` for which the `NoExotics` condition holds. -/
 def elemsNoExotics : Multiset FluxesFive := {
     -- {1, 1, 1, 0, 0} (2 cases)
     ⟨{(1, -1), (1, -1), (1, -1), (0, 1), (0, 2)}, by decide⟩,
@@ -60,6 +72,7 @@ end FluxesFive
 
 namespace FluxesTen
 
+/-- The elements of `FluxesTen` for which the `NoExotics` condition holds. -/
 def elemsNoExotics : Multiset FluxesTen := {⟨{(1, 0), (1, 0), (1, 0)}, by decide⟩,
   ⟨{(1, 1), (1, -1), (1, 0)}, by decide⟩, ⟨{(1, 0), (2, 0)}, by decide⟩,
   ⟨{(1, -1), (2, 1)}, by decide⟩, ⟨{(1, 1), (2, -1)}, by decide⟩,
