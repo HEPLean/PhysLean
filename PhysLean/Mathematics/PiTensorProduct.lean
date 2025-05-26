@@ -32,25 +32,13 @@ open TensorProduct
 ## induction principals for pi tensor products
 
 -/
+attribute [local ext] TensorProduct.ext
+
 lemma induction_tmul {f g : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M}
     (h : ∀ p q, f (PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q)
     = g (PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q)) : f = g := by
-  apply TensorProduct.ext'
-  refine fun x ↦
-  PiTensorProduct.induction_on' x ?_ (by
-    intro a b hx hy y
-    simp [map_add, add_tmul, hx, hy])
-  intro rx fx
-  refine fun y ↦
-    PiTensorProduct.induction_on' y ?_ (by
-      intro a b hx hy
-      simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod] at hx hy
-      simp [map_add, tmul_add, hx, hy])
-  intro ry fy
-  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, tmul_smul, LinearMapClass.map_smul]
-  apply congrArg
-  simp only [smul_tmul, tmul_smul, LinearMapClass.map_smul]
-  exact congrArg (HSMul.hSMul rx) (h fx fy)
+  ext
+  exact h _ _
 
 lemma induction_assoc
     {f g : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M}
@@ -58,97 +46,31 @@ lemma induction_assoc
     PiTensorProduct.tprod R q ⊗ₜ[R] PiTensorProduct.tprod R m)
     = g (PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q
     ⊗ₜ[R] PiTensorProduct.tprod R m)) : f = g := by
-  apply TensorProduct.ext'
-  refine fun x ↦
-  PiTensorProduct.induction_on' x ?_ (by
-    intro a b hx hy y
-    simp [map_add, add_tmul, hx, hy])
-  intro rx fx
-  intro y
-  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod]
-  simp only [smul_tmul, tmul_smul, LinearMapClass.map_smul]
-  apply congrArg
-  let f' : ((⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M := {
-    toFun := fun y => f (PiTensorProduct.tprod R fx ⊗ₜ[R] y),
-    map_add' := fun y1 y2 => by
-      simp [tmul_add]
-    map_smul' := fun r y => by
-      simp [tmul_smul]}
-  let g' : ((⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M := {
-    toFun := fun y => g (PiTensorProduct.tprod R fx ⊗ₜ[R] y),
-    map_add' := fun y1 y2 => by
-      simp [tmul_add]
-    map_smul' := fun r y => by
-      simp [tmul_smul]}
-  change f' y = g' y
-  apply congrFun
-  refine DFunLike.coe_fn_eq.mpr ?H.h.h.a
-  apply induction_tmul
-  intro p q
-  exact h fx p q
+  ext
+  exact h _ _ _
 
 lemma induction_assoc'
     {f g : (((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M}
     (h : ∀ p q m, f ((PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q) ⊗ₜ[R]
     PiTensorProduct.tprod R m) = g ((PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q)
     ⊗ₜ[R] PiTensorProduct.tprod R m)) : f = g := by
-  apply TensorProduct.ext'
-  intro x
-  refine fun y ↦
-  PiTensorProduct.induction_on' y ?_ (by
-    intro a b hy hx
-    simp [map_add, add_tmul, tmul_add, hy, hx])
-  intro ry fy
-  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, tmul_smul, map_smul]
-  apply congrArg
-  let f' : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M := {
-    toFun := fun y => f (y ⊗ₜ[R] PiTensorProduct.tprod R fy),
-    map_add' := fun y1 y2 => by
-      simp [add_tmul]
-    map_smul' := fun r y => by
-      simp [smul_tmul]}
-  let g' : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M := {
-    toFun := fun y => g (y ⊗ₜ[R] PiTensorProduct.tprod R fy),
-    map_add' := fun y1 y2 => by
-      simp [add_tmul]
-    map_smul' := fun r y => by
-      simp [smul_tmul]}
-  change f' x = g' x
-  apply congrFun
-  refine DFunLike.coe_fn_eq.mpr ?H.h.h.a
-  apply induction_tmul
-  intro p q
-  exact h p q fy
+  ext
+  exact h _ _ _
 
 lemma induction_tmul_mod
     {f g : ((⨂[R] i : ι1, s1 i) ⊗[R] N) →ₗ[R] M}
     (h : ∀ p m, f (PiTensorProduct.tprod R p ⊗ₜ[R] m) = g (PiTensorProduct.tprod R p ⊗ₜ[R] m)) :
     f = g := by
-  apply TensorProduct.ext'
-  refine fun y ↦
-  PiTensorProduct.induction_on' y ?_ (by
-    intro a b hy hx
-    simp [map_add, add_tmul, tmul_add, hy, hx])
-  intro ry fy
-  intro x
-  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, smul_tmul, tmul_smul, map_smul]
-  apply congrArg
-  exact h fy x
+  ext
+  exact h _ _
 
 lemma induction_mod_tmul
     {f g : (N ⊗[R] ⨂[R] i : ι1, s1 i) →ₗ[R] M}
     (h : ∀ m p, f (m ⊗ₜ[R] PiTensorProduct.tprod R p) = g (m ⊗ₜ[R] PiTensorProduct.tprod R p)) :
     f = g := by
-  apply TensorProduct.ext'
-  intro x
-  refine fun y ↦
-  PiTensorProduct.induction_on' y ?_ (by
-    intro a b hy hx
-    simp [map_add, add_tmul, tmul_add, hy, hx])
-  intro ry fy
-  simp only [PiTensorProduct.tprodCoeff_eq_smul_tprod, smul_tmul, tmul_smul, map_smul]
-  apply congrArg
-  exact h x fy
+  ext
+  exact h _ _
+
 /-!
 
 # Dependent type version of PiTensorProduct.tmulEquiv
