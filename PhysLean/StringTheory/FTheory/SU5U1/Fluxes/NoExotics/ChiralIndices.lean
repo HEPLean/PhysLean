@@ -176,6 +176,35 @@ lemma nonZeroChiralIndicesOfD_mem_of_noExotics (F : FluxesFive) (hF : NoExotics 
   · subst hr
     simp at hsum
 
+lemma chiralIndicesOfD_subset_sum_le_three_of_noExotics (F : FluxesFive)
+    (hF : NoExotics F) (S : Multiset (ℤ × ℤ))
+    (hSle : S ≤ F.1) : (S.map (fun x => x.1)).sum ≤ 3 := by
+  have h1 : (S.map (fun x => x.1)) ≤ F.chiralIndicesOfD := by
+    simp [chiralIndicesOfD]
+    exact Multiset.map_le_map hSle
+  rw [← F.chiralIndicesOfD_sum_eq_three_of_noExotics hF]
+  have h1 : F.1 = S + (F.1 - S)  := by exact Eq.symm (add_tsub_cancel_of_le hSle)
+  have hpos : 0 ≤ ((F.1 - S).map (fun x => x.1)).sum := by
+    refine Multiset.sum_nonneg ?_
+    intro x hx
+    simp at hx
+    obtain ⟨N, h⟩ := hx
+    have hl : (x, N) ∈ F.1 := by
+      apply Multiset.mem_of_subset (t := F.1) at h
+      exact h
+      refine Multiset.subset_of_le ?_
+      rw [@Multiset.sub_le_iff_le_add']
+      simp
+    have hx : x ∈ F.chiralIndicesOfD := by
+      simp [chiralIndicesOfD]
+      use N
+    exact chiralIndicesOfD_noneg_of_noExotics F hF x hx
+  rw [chiralIndicesOfD]
+  rw [h1]
+  rw [Multiset.map_add, Multiset.sum_add]
+  omega
+
+
 /-!
 
 ## Constraints on the chiral indices of `L = (1,2)_{-1/2}`
@@ -324,6 +353,35 @@ lemma nonZeroChiralIndicesOfL_mem_of_noExotics (F : FluxesFive) (hF : NoExotics 
     decide
   · subst hr
     simp at hsum
+
+lemma chiralIndicesOfL_subset_sum_le_three_of_noExotics (F : FluxesFive)
+    (hF : NoExotics F) (S : Multiset (ℤ × ℤ))
+    (hSle : S ≤ F.1) : (S.map (fun x => (x.1 + x.2))).sum ≤ 3 := by
+  have h1 : (S.map (fun x => (x.1 + x.2))) ≤ F.chiralIndicesOfL := by
+    simp [chiralIndicesOfL]
+    exact Multiset.map_le_map hSle
+  rw [← F.chiralIndicesOfL_sum_eq_three_of_noExotics hF]
+  have h1 : F.1 = S + (F.1 - S)  := by exact Eq.symm (add_tsub_cancel_of_le hSle)
+  have hpos : 0 ≤ ((F.1 - S).map (fun x => (x.1 + x.2))).sum := by
+    refine Multiset.sum_nonneg ?_
+    intro x hx
+    simp at hx
+    obtain ⟨M, N, hmem, hsum⟩ := hx
+    have hl : (M, N) ∈ F.1 := by
+      apply Multiset.mem_of_subset (t := F.1) at hmem
+      exact hmem
+      refine Multiset.subset_of_le ?_
+      rw [@Multiset.sub_le_iff_le_add']
+      simp
+    have hx : x ∈ F.chiralIndicesOfL := by
+      simp [chiralIndicesOfL]
+      use M, N
+    exact chiralIndicesOfL_noneg_of_noExotics F hF x hx
+  rw [chiralIndicesOfL]
+  rw [h1]
+  rw [Multiset.map_add, Multiset.sum_add]
+  omega
+
 
 end FluxesFive
 

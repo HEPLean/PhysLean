@@ -24,6 +24,7 @@ namespace FluxesFive
 
 /-- The elements of `FluxesFive` for which the `NoExotics` condition holds. -/
 def elemsNoExotics : Multiset FluxesFive := {
+   ⟨{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}, by decide⟩,
     -- {1, 1, 1, 0, 0} (2 cases)
     ⟨{(1, -1), (1, -1), (1, -1), (0, 1), (0, 2)}, by decide⟩,
     ⟨{(1, -1), (1, -1), (1, 0), (0, 1), (0, 1)}, by decide⟩,
@@ -57,7 +58,7 @@ def elemsNoExotics : Multiset FluxesFive := {
     -- {3} (1 cases)
     ⟨{(3, 0)}, by decide⟩}
 
-lemma elemsNoExotics_card : elemsNoExotics.card = 30 := by
+lemma elemsNoExotics_card : elemsNoExotics.card = 31 := by
   decide
 
 lemma elemsNoExotics_nodup : elemsNoExotics.Nodup := by

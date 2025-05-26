@@ -97,6 +97,8 @@ namespace FluxesFive
 instance : DecidableEq FluxesFive :=
   inferInstanceAs (DecidableEq {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x})
 
+lemma zero_not_mem (F : FluxesFive) : (0, 0) ∉ F.1 := F.2
+
 /-!
 
 ## The SM representation `D = (bar 3,1)_{1/3}`
