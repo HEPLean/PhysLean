@@ -156,7 +156,7 @@ open Matrix
 set_option quotPrecheck false in
 /-- Cross product in `EuclideanSpace ℝ (Fin 3)`. Uses `⨯` which is typed using `\X` or
 `\vectorproduct` or `\crossproduct`. -/
-infixl:70 " ⨯ₑ₃ "  => fun a b => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
+infixl:70 " ⨯ₑ₃ " => fun a b => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
     (WithLp.equiv 2 (Fin 3 → ℝ) a ×₃ WithLp.equiv 2 (Fin 3 → ℝ) b)
 
 /-- Cross product and time derivative commute. -/
@@ -165,7 +165,7 @@ lemma time_deriv_cross_commute {s : Space} {f : Time → EuclideanSpace ℝ (Fin
     s ⨯ₑ₃ (∂ₜ (fun t => f t) t)
     =
     ∂ₜ (fun t => s ⨯ₑ₃ (f t)) t := by
-  have h (u v : Fin 3): s u * ∂ₜ (fun t => f t) t v - s v * ∂ₜ (fun t => f t) t u =
+  have h (u v : Fin 3) : s u * ∂ₜ (fun t => f t) t v - s v * ∂ₜ (fun t => f t) t u =
       ∂ₜ (fun t => s u * f t v - s v * f t u) t := by
     repeat rw [Time.deriv]
     rw [fderiv_sub, fderiv_const_mul, fderiv_const_mul]

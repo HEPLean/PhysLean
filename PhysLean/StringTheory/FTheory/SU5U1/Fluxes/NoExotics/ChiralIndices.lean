@@ -78,7 +78,7 @@ lemma chiralIndicesOfD_le_three_of_noExotics (F : FluxesFive) (hF : NoExotics F)
     use ci
     simp [s]
     exact ⟨hci, hn⟩
-  have hsum : s.card • 4 ≤  s.sum := by
+  have hsum : s.card • 4 ≤ s.sum := by
     apply Multiset.card_nsmul_le_sum
     simp [s]
     omega

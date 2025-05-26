@@ -263,7 +263,7 @@ lemma time_deriv_electricPlaneWave_eq_cross_time_deriv_magneticPlaneWave
 /-- The time derivative of an electric planewave induces a magnetic field with
 time derivative equal to `s ⨯ₑ₃ E'`. -/
 lemma time_deriv_magneticPlaneWave_eq_cross_time_deriv_electricPlaneWave
-    {t : Time} {x : Space}  {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
+    {t : Time} {x : Space} {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
     {s : Space} {hs : inner ℝ s s = 1} {E : ElectricField} {B : MagneticField}
     (hc : c = (√(μ • ε))⁻¹) (hEwave : E = electricPlaneWave E₀ c s hs)
     (h' : Differentiable ℝ E₀) (hm : OM.FreeMaxwellEquations E B) :
@@ -290,7 +290,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
   have h : ∀ t x, ∂ₜ (fun t => (√(μ • ε)) • (E t x)) t + ∂ₜ (fun t => s ⨯ₑ₃ (B t x)) t = 0 := by
     intro t x
     rw [deriv_smul, time_deriv_electricPlaneWave_eq_cross_time_deriv_magneticPlaneWave
-         OM hc hBwave h' hm]
+        OM hc hBwave h' hm]
     rw [time_deriv_cross_commute]
     simp only [neg_add_cancel]
     · exact time_differentiable_of_eq_planewave h' hBwave
