@@ -5,6 +5,7 @@ Authors: Zhi Kai Pong
 -/
 import PhysLean.ClassicalMechanics.Space.Basic
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 
 /-!
 
@@ -221,6 +222,8 @@ lemma curl_of_curl (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ
       try apply contDiff_euclidean.mp
       exact hf
 
+section Const
+
 @[simp]
 lemma grad_zero : ∇ (0 : Space d → ℝ) = 0 := by
   unfold grad Space.deriv
@@ -242,6 +245,32 @@ lemma curl_zero : ∇ × (0 : Space → EuclideanSpace ℝ (Fin 3)) = 0 := by
   ext x i
   fin_cases i <;>
   rfl
+
+variable (c : ℝ) (v : EuclideanSpace ℝ (Fin d)) (v₃ : EuclideanSpace ℝ (Fin 3))
+
+@[simp]
+lemma grad_const : ∇ (fun _ : Space d => c) = 0 := by
+  unfold grad Space.deriv
+  simp only [fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.zero_apply]
+  rfl
+
+@[simp]
+lemma div_const : ∇ ⬝ (fun _ : Space d => v) = 0 := by
+  unfold div Space.deriv Finset.sum
+  simp only [fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.zero_apply, Multiset.map_const',
+    Finset.card_val, Finset.card_univ, Fintype.card_fin, Multiset.sum_replicate, smul_zero]
+  rfl
+
+@[simp]
+lemma curl_const : ∇ × (fun _ : Space => v₃) = 0 := by
+  unfold curl Space.deriv
+  simp only [Fin.isValue, fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.zero_apply,
+    sub_self]
+  ext x i
+  fin_cases i <;>
+  rfl
+
+end Const
 
 /-!
 

@@ -4,6 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.Color.Basic
+import Mathlib.RepresentationTheory.Rep
+import PhysLean.Mathematics.PiTensorProduct
+import Mathlib.Algebra.Lie.OfAssociative
+import PhysLean.Meta.Informal.Basic
 /-!
 
 ## Lifting functors.

@@ -3,13 +3,10 @@ Copyright (c) 2025 Ammar Husain. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ammar Husain
 -/
-import PhysLean.Mathematics.SpecialFunctions.PhysHermite
-import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Basic
-import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs
-import Mathlib.Analysis.Calculus.Deriv.Add
-import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
 import PhysLean.Meta.TODO.Basic
+import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.Calculus.Deriv.Add
+import Mathlib.Analysis.Calculus.Deriv.Mul
 /-!
 
 # The 1d QM system with general potential
@@ -21,7 +18,6 @@ namespace QuantumMechanics
 namespace OneDimension
 
 open PhysLean HilbertSpace
-open MeasureTheory
 
 /-- The momentum operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
   `ψ` to `- i ℏ ψ'`.

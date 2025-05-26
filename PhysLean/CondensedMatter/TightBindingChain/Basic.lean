@@ -3,12 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Meta.TODO.Basic
-import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 /-!
 
 # The tight binding chain

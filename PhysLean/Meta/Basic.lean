@@ -4,7 +4,6 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Lean.Expr.Basic
-import ImportGraph.RequiredModules
 /-!
 
 ## Basic Lean meta programming commands

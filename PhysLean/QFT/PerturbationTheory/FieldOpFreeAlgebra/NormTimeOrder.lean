@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldSpecification.TimeOrder
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.Basic
-import PhysLean.QFT.PerturbationTheory.Koszul.KoszulSign
 /-!
 
 # Norm-time Ordering in the FieldOpFreeAlgebra

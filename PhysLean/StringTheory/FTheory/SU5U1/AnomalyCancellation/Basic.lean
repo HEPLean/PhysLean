@@ -4,8 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Matter
-import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import PhysLean.Relativity.SpaceTime.Basic
+import Mathlib.Analysis.Normed.Ring.Lemmas
 /-!
 
 # Gauge anomalies

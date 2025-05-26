@@ -5,6 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.MinkowskiMatrix
 import PhysLean.Meta.TODO.Basic
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.Topology.Instances.Matrix
 /-!
 # The Lorentz Group
 

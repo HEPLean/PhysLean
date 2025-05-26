@@ -49,7 +49,7 @@ import PhysLean.Relativity.Tensors.Product
   this information.
 
 -/
-open Lean Meta Elab Tactic Term IndexNotation
+open Lean Meta Elab Tactic Term
 namespace TensorSpecies
 namespace Tensor
 

@@ -3,9 +3,10 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
+import Mathlib.Analysis.Matrix
+import PhysLean.Particles.StandardModel.HiggsBoson.PointwiseInnerProd
+import Mathlib.LinearAlgebra.Matrix.PosDef
 import PhysLean.Particles.StandardModel.HiggsBoson.GaugeAction
-import Mathlib.Analysis.CStarAlgebra.Matrix
 /-!
 
 # Gauge orbits for the 2HDM

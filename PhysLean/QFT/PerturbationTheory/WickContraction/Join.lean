@@ -3,12 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
-import PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
-import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeContraction
-import PhysLean.QFT.PerturbationTheory.WickContraction.SubContraction
 import PhysLean.QFT.PerturbationTheory.WickContraction.Singleton
-
 /-!
 
 # Join of contractions

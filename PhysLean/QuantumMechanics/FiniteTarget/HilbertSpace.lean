@@ -4,9 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Normed.Algebra.Exponential
-import Mathlib.LinearAlgebra.Matrix.Hermitian
 import PhysLean.Meta.TODO.Basic
+import Mathlib.Analysis.InnerProductSpace.PiL2
 /-!
 
 # The Hilbert space of a finite target quantum mechanical system

@@ -65,7 +65,7 @@ lemma trans (h12 : Perm φsΛ₁ φsΛ₂) (h23 : Perm φsΛ₂ φsΛ₃) :
   then `φsΛ₂` is a full Wick contraction..
 
 Implementation note: Please contact JTS before attempting this. -/
-semiformal_result "ABLGD"isFull_of_isFull (h : Perm φsΛ₁ φsΛ₂) (hf : IsFull φsΛ₁) : IsFull φsΛ₂
+semiformal_result "ABLGD" isFull_of_isFull (h : Perm φsΛ₁ φsΛ₂) (hf : IsFull φsΛ₁) : IsFull φsΛ₂
 
 /-- If `Perm φsΛ₁ φsΛ₂` then the uncontracted lists of
   `φsΛ₁` and `φsΛ₂` are permutations of each other.

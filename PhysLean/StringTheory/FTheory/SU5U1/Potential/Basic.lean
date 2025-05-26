@@ -3,10 +3,11 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Matter
-import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import PhysLean.Relativity.SpaceTime.Basic
-import PhysLean.Meta.Informal.SemiFormal
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Finset.Prod
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.DeriveFintype
+import PhysLean.StringTheory.FTheory.SU5U1.Charges
 /-!
 
 # Potential of the SU(5) + U(1) GUT for F-Theory

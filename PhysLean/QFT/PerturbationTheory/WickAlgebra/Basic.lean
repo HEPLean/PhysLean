@@ -500,9 +500,6 @@ lemma ofFieldOpList_eq_sum (φs : List 𝓕.FieldOp) :
   rw [ofFieldOpList, ofFieldOpListF_sum]
   aesop
 
-remark notation_drop := "In doc-strings we will often drop explicit applications of `ofCrAnOp`,
-`ofCrAnList`, `ofFieldOp`, and `ofFieldOpList`"
-
 /-- For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
   annihilation part of `𝓕.FieldOp` as an element of `𝓕.WickAlgebra`.
   Thus for `φ`

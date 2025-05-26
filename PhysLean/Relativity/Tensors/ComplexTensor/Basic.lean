@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Pre
 import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Metric
-import PhysLean.Relativity.Tensors.Dual
+import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 /-!
 
 ## Complex Lorentz tensors

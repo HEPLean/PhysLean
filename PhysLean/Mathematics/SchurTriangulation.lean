@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gordon Hsu
 -/
 import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-import Mathlib.LinearAlgebra.Matrix.Spectrum
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-! # Schur triangulation
 
 Schur triangulation is more commonly known as Schur decomposition or Schur triangularization, but

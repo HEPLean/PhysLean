@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldStatistics.Basic
+import Mathlib.Analysis.Complex.Basic
 /-!
 
 # Exchange sign for field statistics

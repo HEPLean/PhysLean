@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldSpecification.CrAnFieldOp
 import PhysLean.QFT.PerturbationTheory.FieldSpecification.CrAnSection
 /-!
 
@@ -39,13 +38,6 @@ variable {𝓕 : FieldSpecification}
 abbrev FieldOpFreeAlgebra (𝓕 : FieldSpecification) : Type := FreeAlgebra ℂ 𝓕.CrAnFieldOp
 
 namespace FieldOpFreeAlgebra
-
-remark naming_convention := "
-  For mathematical objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
-  may be given to
-  their names to indicate that they are related to the free algebra.
-  This is to avoid confusion when working within the context of `WickAlgebra` which is defined
-  as a quotient of `FieldOpFreeAlgebra`."
 
 /-- For a field specification `𝓕`, and a element `φ` of `𝓕.CrAnFieldOp`,
   `ofCrAnOpF φ` is defined as the element of `𝓕.FieldOpFreeAlgebra` formed by `φ`. -/
@@ -107,9 +99,6 @@ def ofFieldOpF (φ : 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 :=
   obtained by the product of `ofFieldOpF φ` for each `φ` in `φs`.
   For example `ofFieldOpListF [φ₁, φ₂, φ₃] = ofFieldOpF φ₁ * ofFieldOpF φ₂ * ofFieldOpF φ₃`. -/
 def ofFieldOpListF (φs : List 𝓕.FieldOp) : FieldOpFreeAlgebra 𝓕 := (List.map ofFieldOpF φs).prod
-
-remark notation_drop := "In doc-strings explicit applications of `ofCrAnOpF`,
-`ofCrAnListF`, `ofFieldOpF`, and `ofFieldOpListF` will often be dropped."
 
 /-- Coercion from `List 𝓕.FieldOp` to `FieldOpFreeAlgebra 𝓕` through `ofFieldOpListF`. -/
 instance : Coe (List 𝓕.FieldOp) (FieldOpFreeAlgebra 𝓕) := ⟨ofFieldOpListF⟩

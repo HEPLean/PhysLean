@@ -3,9 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Lemmas
 import PhysLean.Relativity.PauliMatrices.AsTensor
-import PhysLean.Relativity.Tensors.Contraction.Basis
+import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Basic
+import PhysLean.Relativity.Tensors.Elab
 /-!
 
 ## Pauli matrices

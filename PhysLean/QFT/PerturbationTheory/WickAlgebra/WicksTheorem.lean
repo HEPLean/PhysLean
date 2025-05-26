@@ -3,12 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
-import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
-import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
-import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.WickContractions
 import PhysLean.QFT.PerturbationTheory.WickAlgebra.WickTerm
-import PhysLean.Meta.Remark.Basic
 /-!
 
 # Wick's theorem
@@ -45,21 +40,6 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') :
     = ∑ (φs'Λ : WickContraction φs'.length), φs'Λ.wickTerm := by
   subst h
   rfl
-
-remark wicks_theorem_context := "
-  In perturbative quantum field theory, Wick's theorem allows
-  us to expand expectation values of time-ordered products of fields in terms of normal-orders
-  and time contractions.
-  The theorem is used to simplify the calculation of scattering amplitudes, and is the precursor
-  to Feynman diagrams.
-
-  There are actually three different versions of Wick's theorem used.
-  The static version, the time-dependent version, and the normal-ordered time-dependent version.
-  PhysLean contains a formalization of all three of these theorems in complete generality for
-  mixtures of bosonic and fermionic fields.
-
-  The statement of these theorems for bosons is simpler then when fermions are involved, since
-  one does not have to worry about the minus-signs picked up on exchanging fields."
 
 /--
 For a list `φs` of `𝓕.FieldOp`, Wick's theorem states that
