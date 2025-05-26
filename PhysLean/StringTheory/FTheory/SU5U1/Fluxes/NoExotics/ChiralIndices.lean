@@ -5,7 +5,21 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Normed.Ring.Lemmas
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
+/-!
 
+## Constraints on chiral indices from the condition of no chiral exotics
+
+On the types `FluxesFive` and `FluxesTen`, we have the conditions `NoExotics`,
+corresponding to the non-existence of chiral exotics in the spectrum.
+
+These conditions lead to constraints of the chiral indices of the SM representations.
+For example:
+- They must be non-negative.
+- They must be less than or equal to `3`.
+
+This module proves thes constraints.
+
+-/
 namespace FTheory
 
 namespace SU5U1

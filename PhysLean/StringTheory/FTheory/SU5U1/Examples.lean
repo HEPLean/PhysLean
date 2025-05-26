@@ -262,19 +262,6 @@ def allCases : Finset (Σ I, MatterContent I) :=
 
 lemma allCases_anomalyFree : ∀ 𝓒 ∈ allCases, 𝓒.2.AnomalyFree := by decide
 
-lemma allCases_validMatterSpectrum : ∀ 𝓒 ∈ allCases, 𝓒.2.ValidMatterSpectrum := by decide
-
-lemma allCases_muTermU1Constrained : ∀ 𝓒 ∈ allCases, 𝓒.2.MuTermU1Constrained := by decide
-
-lemma allCases_RParityU1Constrained : ∀ 𝓒 ∈ allCases, 𝓒.2.RParityU1Constrained := by decide
-
-lemma allCases_protonDecayU1Constrained : ∀ 𝓒 ∈ allCases, 𝓒.2.ProtonDecayU1Constrained := by decide
-
-lemma allCases_hasATopYukawa : ∀ 𝓒 ∈ allCases, 𝓒.2.HasATopYukawa := by decide
-
-/-- Not all the examples have a bottom Yukawa. -/
-lemma not_allCases_hasABottomYukawa : ¬ ∀ 𝓒 ∈ allCases, 𝓒.2.HasABottomYukawa := by decide
-
 end MatterContent
 
 end SU5U1
