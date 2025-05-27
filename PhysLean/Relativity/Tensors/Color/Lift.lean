@@ -40,13 +40,9 @@ def homToIso {c1 c2 : Discrete C} (h : c1 ⟶ c2) : c1 ≅ c2 :=
 
 end Discrete
 
-
-
 namespace lift
 noncomputable section
 variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
-
-
 
 section toRep
 /-!
@@ -60,9 +56,8 @@ we get an object of `Rep k G` by taking the tensor product of the representation
 
 variable (F : Discrete C ⥤ Rep k G)
 
-
 /-- Given an object `f : OverColor C` and a function `F : Discrete C ⥤ Rep k G`, the object
-  in `Rep k G` obtained by taking the tensor product of all colors in `f`.  -/
+  in `Rep k G` obtained by taking the tensor product of all colors in `f`. -/
 def toRep (f : OverColor C) : Rep k G := Rep.of {
   toFun := fun M => PiTensorProduct.map (ι := f.left) (fun x =>
     (F.obj (Discrete.mk (f.hom x))).ρ M),
@@ -146,7 +141,7 @@ lemma linearIsoOfEq_comm_ρ {c1 c2 : Discrete C} (h : c1.as = c2.as) (M : G)
   rfl
 
 /-- Given a morphism in `OverColor C`, `m : f ⟶ g` and a functor `F : Discrete C ⥤ Rep k G`,
-   the linear equivalence `(toRep F f).V ≃ₗ[k] (toRep F g).V` formed by reindexing. -/
+  the linear equivalence `(toRep F f).V ≃ₗ[k] (toRep F g).V` formed by reindexing. -/
 def linearIsoOfHom {f g : OverColor C} (m : f ⟶ g) : (toRep F f).V ≃ₗ[k] (toRep F g).V :=
   (PiTensorProduct.reindex k (fun x => (F.obj (Discrete.mk (f.hom x))))
     (OverColor.Hom.toEquiv m)).trans
@@ -167,7 +162,7 @@ lemma linearIsoOfHom_tprod {f g : OverColor C} (m : f ⟶ g)
   rfl
 
 /-- Given a morphism in `OverColor C`, `m : f ⟶ g` and a functor `F : Discrete C ⥤ Rep k G`,
-   the morphism `(toRep F f) ⟶ (toRep F g)` formed by reindexing. -/
+  the morphism `(toRep F f) ⟶ (toRep F g)` formed by reindexing. -/
 def homToRepHom {f g : OverColor C} (m : f ⟶ g) : toRep F f ⟶ toRep F g where
   hom := ModuleCat.ofHom (linearIsoOfHom F m).toLinearMap
   comm M := by
@@ -235,7 +230,7 @@ lemma homToRepHom_comp {X Y Z : OverColor C} (f : X ⟶ Y) (g : Y ⟶ Z) :
   refine congrArg _ (funext (fun i => ?_))
   simp only [linearIsoOfEq, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
     eqToIso.inv, LinearEquiv.ofLinear_apply]
-  have hX  {c1 c2 c3 : Discrete C} (h1 : c1 = c2) (h2 : c2 = c3)
+  have hX {c1 c2 c3 : Discrete C} (h1 : c1 = c2) (h2 : c2 = c3)
     (v : F.obj c1) : (F.map (eqToHom h2)).hom ((F.map (eqToHom h1)).hom v)
     = (F.map (eqToHom (h1.trans h2))).hom v := by
     subst h2 h1
@@ -260,7 +255,6 @@ def toRepFunc : Functor (OverColor C) (Rep k G) where
   map_comp := homToRepHom_comp F
   map_id := homToRepHom_id F
 
-
 /-!
 
 ## The braiding of toRepFunc
@@ -271,8 +265,8 @@ This is made manifest in the result
 
 -/
 
-/-- The unit isomorphism between  `𝟙_ (Rep k G)` and `toRep F (𝟙_ (OverColor C))`
-  generated using `PiTensorProduct.isEmptyEquiv`.  -/
+/-- The unit isomorphism between `𝟙_ (Rep k G)` and `toRep F (𝟙_ (OverColor C))`
+  generated using `PiTensorProduct.isEmptyEquiv`. -/
 def toRepUnitIso : 𝟙_ (Rep k G) ≅ toRep F (𝟙_ (OverColor C)) :=
   Action.mkIso (PiTensorProduct.isEmptyEquiv Empty).symm.toModuleIso
   (by
@@ -419,10 +413,9 @@ lemma μ_natural_right {X Y : OverColor C} (X' : OverColor C) (f : X ⟶ Y) :
   funext i
   match i with
   | Sum.inl i =>
-    simp only [Sum.elim_inl, Functor.id_obj,
-      linearIsoOfEq, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv, eqToIso.inv,
-      LinearEquiv.ofLinear_apply, eqToIso_refl,
-      Functor.mapIso_refl, Iso.refl_hom, Action.id_hom, Iso.refl_inv]
+    simp only [Sum.elim_inl, linearIsoOfEq, Functor.mapIso_hom, eqToIso.hom, Functor.mapIso_inv,
+      eqToIso.inv, LinearEquiv.ofLinear_apply, eqToIso_refl, Functor.mapIso_refl, Iso.refl_hom,
+      Action.id_hom, Iso.refl_inv, Functor.id_obj]
     rfl
   | Sum.inr i => rfl
 
@@ -619,7 +612,8 @@ def repNatTransOfColorApp (X : OverColor C) : (toRepFunc F).obj X ⟶ (toRepFunc
     have h := ModuleCat.hom_ext_iff.mp ((η.app (Discrete.mk (X.hom i))).comm M)
     simpa using LinearMap.congr_fun h (x i)
 
-lemma repNatTransOfColorApp_tprod (X : OverColor C) (p : (i : X.left) → F.obj (Discrete.mk (X.hom i))) :
+lemma repNatTransOfColorApp_tprod (X : OverColor C)
+    (p : (i : X.left) → F.obj (Discrete.mk (X.hom i))) :
     (repNatTransOfColorApp η X).hom (PiTensorProduct.tprod k p) =
     PiTensorProduct.tprod k fun i => (η.app (Discrete.mk (X.hom i))).hom (p i) := by
   simp only [repNatTransOfColorApp]
@@ -627,7 +621,8 @@ lemma repNatTransOfColorApp_tprod (X : OverColor C) (p : (i : X.left) → F.obj 
   rfl
 
 lemma repNatTransOfColorApp_naturality {X Y : OverColor C} (f : X ⟶ Y) :
-    (toRepFunc F).map f ≫ repNatTransOfColorApp η Y = repNatTransOfColorApp η X ≫ (toRepFunc F').map f := by
+    (toRepFunc F).map f ≫ repNatTransOfColorApp η Y =
+    repNatTransOfColorApp η X ≫ (toRepFunc F').map f := by
   ext x
   refine PiTensorProduct.induction_on' x ?_ (by
       intro x y hx hy
@@ -652,7 +647,6 @@ lemma repNatTransOfColorApp_naturality {X Y : OverColor C} (f : X ⟶ Y) :
   have h := LinearMap.congr_fun hn (x ((Hom.toEquiv f).symm i))
   simpa
 
-
 /-- Given a natural transformation between `F F' : Discrete C ⥤ Rep k G` the
   monoidal natural transformation between `toRepFunc F` and `toRepFunc F'`. -/
 def repNatTransOfColor : (toRepFunc F) ⟶ (toRepFunc F') where
@@ -667,7 +661,6 @@ which is made manifest in the results
 - `repNatTransOfColor_isMonoidal`.
 
 -/
-
 
 lemma repNatTransOfColorApp_unit : Functor.LaxMonoidal.ε (toRepFunc F) ≫
     repNatTransOfColorApp η (𝟙_ (OverColor C)) = Functor.LaxMonoidal.ε (toRepFunc F') := by
@@ -688,7 +681,8 @@ lemma repNatTransOfColorApp_unit : Functor.LaxMonoidal.ε (toRepFunc F) ≫
 
 lemma repNatTransOfColorApp_tensor (X Y : OverColor C) :
     (Functor.LaxMonoidal.μ (toRepFunc F)) X Y ≫ repNatTransOfColorApp η (X ⊗ Y) =
-    (repNatTransOfColorApp η X ⊗ repNatTransOfColorApp η Y) ≫ (Functor.LaxMonoidal.μ (toRepFunc F')) X Y := by
+    (repNatTransOfColorApp η X ⊗ repNatTransOfColorApp η Y) ≫
+    (Functor.LaxMonoidal.μ (toRepFunc F')) X Y := by
   ext1
   refine ModuleCat.hom_ext ?_
   refine PhysLean.PiTensorProduct.induction_tmul (fun p q => ?_)
@@ -761,8 +755,8 @@ noncomputable def lift : (Discrete C ⥤ Rep k G) ⥤ LaxBraidedFunctor (OverCol
     apply congrArg
     simp only [repNatTransOfColor]
     erw [repNatTransOfColorApp_tprod]
-    change _ =
-      (repNatTransOfColorApp θ X).hom ((repNatTransOfColorApp η X).hom ((PiTensorProduct.tprod k) y))
+    change _ = (repNatTransOfColorApp θ X).hom
+      ((repNatTransOfColorApp η X).hom ((PiTensorProduct.tprod k) y))
     rw [lift.repNatTransOfColorApp_tprod]
     erw [lift.repNatTransOfColorApp_tprod]
     rfl
