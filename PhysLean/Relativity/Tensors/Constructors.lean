@@ -75,7 +75,7 @@ lemma fromSingleT_symm_pure {c : S.C} (p : Pure S ![c]) :
     erw [lift.map_tprod S.FD]
   congr
   funext i
-  simp [lift.discreteFunctorMapEqIso, Pure.fromSingleP]
+  simp [lift.linearIsoOfEq, Pure.fromSingleP]
   change (ConcreteCategory.hom ((FD S).map (eqToHom _))) (p _) = p 0
   apply Pure.congr_right
   ext

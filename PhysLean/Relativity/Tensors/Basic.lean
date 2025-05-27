@@ -164,7 +164,7 @@ lemma μ_toTensor_tmul_toTensor {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.
     PiTensorProduct.tprod k (fun | Sum.inl i => t i | Sum.inr i => t1 i) := by
   change lift.μModEquiv _ _ _ (t.toTensor ⊗ₜ t1.toTensor) = _
   rw [lift.μModEquiv]
-  simp only [lift.objObj'_V_carrier, Action.instMonoidalCategory_tensorObj_V,
+  simp only [lift.toRep_V_carrier, Action.instMonoidalCategory_tensorObj_V,
     Functor.id_obj, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
     Action.FunctorCategoryEquivalence.functor_obj_obj]
   rw [LinearEquiv.trans_apply]
@@ -454,8 +454,8 @@ lemma actionT_eq {g : G} {t : S.Tensor c} : g • t = (S.F.obj (OverColor.mk c))
 lemma actionT_pure {g : G} {p : Pure S c} :
     g • p.toTensor = Pure.toTensor (g • p) := by
   rw [actionT_eq, Pure.toTensor]
-  simp only [F_def, lift, lift.obj', LaxBraidedFunctor.of_toFunctor]
-  rw [OverColor.lift.objObj'_ρ_tprod]
+  simp only [F_def, lift, lift.toRepFunc, LaxBraidedFunctor.of_toFunctor]
+  rw [lift.toRep_ρ_tprod]
   rfl
 
 @[simp]
