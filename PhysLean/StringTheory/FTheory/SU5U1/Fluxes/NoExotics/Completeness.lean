@@ -53,7 +53,7 @@ lemma mem_mem_finset_of_noExotics (F : FluxesFive) (hF : F.NoExotics)
   have hN : M + N ∈ F.chiralIndicesOfL := by
     simp [chiralIndicesOfL]
     use M, N
-  simp
+  simp only [Int.reduceNeg, Finset.mem_insert, Prod.mk.injEq, Finset.mem_singleton]
   have hL1 := F.mem_chiralIndicesOfL_mem_of_noExotics hF (M + N) hN
   have hD1 := F.mem_chiralIndicesOfD_mem_of_noExotics hF M hM
   have h0 : ¬ (M = 0 ∧ N = 0) := by
@@ -467,7 +467,7 @@ lemma mem_mem_finset_of_noExotics (F : FluxesTen) (hF : F.NoExotics)
   have hE : M + N ∈ F.chiralIndicesOfE := by
     simp [chiralIndicesOfE]
     use M, N
-  simp
+  simp only [Int.reduceNeg, Finset.mem_insert, Prod.mk.injEq, Finset.mem_singleton]
   have hQ1 := F.mem_chiralIndicesOfQ_mem_of_noExotics hF M hQ
   have hU1 := F.mem_chiralIndicesOfU_mem_of_noExotics hF (M - N) hU
   have hE1 := F.mem_chiralIndicesOfE_mem_of_noExotics hF (M + N) hE
