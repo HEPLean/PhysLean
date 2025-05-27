@@ -112,78 +112,11 @@ lemma mem_chiralIndicesOfD_mem_of_noExotics (F : FluxesFive)
   simp only [Finset.mem_insert, Finset.mem_singleton]
   omega
 
-lemma nonZeroChiralIndicesOfD_ge_one_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfD) : 1 ≤ ci := by
-  have h0 := (Multiset.mem_filter.mp hci).2
-  have h1 := chiralIndicesOfD_noneg_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
-  omega
-
-lemma mem_nonZeroChiralIndicesOfD_mem_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfD) :
-    ci ∈ ({1, 2, 3} : Finset ℤ) := by
-  have hr := mem_chiralIndicesOfD_mem_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
-  simp only [Finset.mem_insert, Finset.mem_singleton] at hr
-  have h0 := nonZeroChiralIndicesOfD_ge_one_of_noExotics F hF ci hci
-  simp only [Finset.mem_insert, Finset.mem_singleton]
-  omega
-
-lemma nonZeroChiralIndicesOfD_sum_eq_three_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfD.sum = 3 := by
-  rw [← F.chiralIndicesOfD_sum_eq_nonZeroChiralIndicesOfD_sum]
-  exact F.chiralIndicesOfD_sum_eq_three_of_noExotics hF
-
-lemma nonZeroChiralIndicesOfD_card_le_three_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfD.card ≤ 3 := by
-  have h1 := Multiset.card_nsmul_le_sum (nonZeroChiralIndicesOfD_ge_one_of_noExotics F hF)
-  rw [F.nonZeroChiralIndicesOfD_sum_eq_three_of_noExotics hF] at h1
-  simp only [nsmul_eq_mul, mul_one, Nat.cast_le_ofNat] at h1
-  omega
-
-lemma nonZeroChiralIndicesOfD_card_mem_range_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfD.card ∈ Finset.range 4 :=
-  Finset.mem_range.mpr <| Nat.lt_add_one_of_le <|
-  nonZeroChiralIndicesOfD_card_le_three_of_noExotics F hF
-
-lemma nonZeroChiralIndicesOfD_mem_of_noExotics (F : FluxesFive) (hF : NoExotics F) :
-    F.nonZeroChiralIndicesOfD ∈ ({{1, 1, 1}, {1, 2}, {3}} : Finset (Multiset ℤ)) := by
-  have hsum := F.nonZeroChiralIndicesOfD_sum_eq_three_of_noExotics hF
-  have hf := F.nonZeroChiralIndicesOfD_card_mem_range_of_noExotics hF
-  have hmin := F.mem_nonZeroChiralIndicesOfD_mem_of_noExotics hF
-  simp [Finset.range] at hf
-  generalize F.nonZeroChiralIndicesOfD = S at *
-  rcases hf with hr | hr | hr | hr
-  · rw [Multiset.card_eq_three] at hr
-    obtain ⟨x, y, z, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    have hz := hmin z (by simp)
-    clear hmin
-    revert hsum; revert x; revert y; revert z
-    decide
-  · rw [Multiset.card_eq_two] at hr
-    obtain ⟨x, y, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    clear hmin
-    revert hsum; revert x; revert y
-    decide
-  · rw [Multiset.card_eq_one] at hr
-    obtain ⟨x, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    clear hmin
-    revert hsum; revert x
-    decide
-  · subst hr
-    simp at hsum
-
 lemma chiralIndicesOfD_subset_sum_le_three_of_noExotics (F : FluxesFive)
     (hF : NoExotics F) (S : Multiset (ℤ × ℤ))
     (hSle : S ≤ F.1) : (S.map (fun x => x.1)).sum ≤ 3 := by
-  have h1 : (S.map (fun x => x.1)) ≤ F.chiralIndicesOfD := by
-    simp [chiralIndicesOfD]
-    exact Multiset.map_le_map hSle
   rw [← F.chiralIndicesOfD_sum_eq_three_of_noExotics hF]
-  have h1 : F.1 = S + (F.1 - S)  := by exact Eq.symm (add_tsub_cancel_of_le hSle)
+  have h1 : F.1 = S + (F.1 - S) := Eq.symm (add_tsub_cancel_of_le hSle)
   have hpos : 0 ≤ ((F.1 - S).map (fun x => x.1)).sum := by
     refine Multiset.sum_nonneg ?_
     intro x hx
@@ -203,7 +136,6 @@ lemma chiralIndicesOfD_subset_sum_le_three_of_noExotics (F : FluxesFive)
   rw [h1]
   rw [Multiset.map_add, Multiset.sum_add]
   omega
-
 
 /-!
 
@@ -290,78 +222,11 @@ lemma mem_chiralIndicesOfL_mem_of_noExotics (F : FluxesFive)
   simp only [Finset.mem_insert, Finset.mem_singleton]
   omega
 
-lemma nonZeroChiralIndicesOfL_ge_one_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfL) : 1 ≤ ci := by
-  have h0 := (Multiset.mem_filter.mp hci).2
-  have h1 := chiralIndicesOfL_noneg_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
-  omega
-
-lemma mem_nonZeroChiralIndicesOfL_mem_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfL) :
-    ci ∈ ({1, 2, 3} : Finset ℤ) := by
-  have hr := mem_chiralIndicesOfL_mem_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
-  simp only [Finset.mem_insert, Finset.mem_singleton] at hr
-  have h0 := nonZeroChiralIndicesOfL_ge_one_of_noExotics F hF ci hci
-  simp only [Finset.mem_insert, Finset.mem_singleton]
-  omega
-
-lemma nonZeroChiralIndicesOfL_sum_eq_three_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfL.sum = 3 := by
-  rw [← F.chiralIndicesOfL_sum_eq_nonZeroChiralIndicesOfL_sum]
-  exact F.chiralIndicesOfL_sum_eq_three_of_noExotics hF
-
-lemma nonZeroChiralIndicesOfL_card_le_three_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfL.card ≤ 3 := by
-  have h1 := Multiset.card_nsmul_le_sum (nonZeroChiralIndicesOfL_ge_one_of_noExotics F hF)
-  rw [F.nonZeroChiralIndicesOfL_sum_eq_three_of_noExotics hF] at h1
-  simp only [nsmul_eq_mul, mul_one, Nat.cast_le_ofNat] at h1
-  omega
-
-lemma nonZeroChiralIndicesOfL_card_mem_range_of_noExotics (F : FluxesFive)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfL.card ∈ Finset.range 4 :=
-  Finset.mem_range.mpr <| Nat.lt_add_one_of_le <|
-  nonZeroChiralIndicesOfL_card_le_three_of_noExotics F hF
-
-lemma nonZeroChiralIndicesOfL_mem_of_noExotics (F : FluxesFive) (hF : NoExotics F) :
-    F.nonZeroChiralIndicesOfL ∈ ({{1, 1, 1}, {1, 2}, {3}} : Finset (Multiset ℤ)) := by
-  have hsum := F.nonZeroChiralIndicesOfL_sum_eq_three_of_noExotics hF
-  have hf := F.nonZeroChiralIndicesOfL_card_mem_range_of_noExotics hF
-  have hmin := F.mem_nonZeroChiralIndicesOfL_mem_of_noExotics hF
-  simp [Finset.range] at hf
-  generalize F.nonZeroChiralIndicesOfL = S at *
-  rcases hf with hr | hr | hr | hr
-  · rw [Multiset.card_eq_three] at hr
-    obtain ⟨x, y, z, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    have hz := hmin z (by simp)
-    clear hmin
-    revert hsum; revert x; revert y; revert z
-    decide
-  · rw [Multiset.card_eq_two] at hr
-    obtain ⟨x, y, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    clear hmin
-    revert hsum; revert x; revert y
-    decide
-  · rw [Multiset.card_eq_one] at hr
-    obtain ⟨x, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    clear hmin
-    revert hsum; revert x
-    decide
-  · subst hr
-    simp at hsum
-
 lemma chiralIndicesOfL_subset_sum_le_three_of_noExotics (F : FluxesFive)
     (hF : NoExotics F) (S : Multiset (ℤ × ℤ))
     (hSle : S ≤ F.1) : (S.map (fun x => (x.1 + x.2))).sum ≤ 3 := by
-  have h1 : (S.map (fun x => (x.1 + x.2))) ≤ F.chiralIndicesOfL := by
-    simp [chiralIndicesOfL]
-    exact Multiset.map_le_map hSle
   rw [← F.chiralIndicesOfL_sum_eq_three_of_noExotics hF]
-  have h1 : F.1 = S + (F.1 - S)  := by exact Eq.symm (add_tsub_cancel_of_le hSle)
+  have h1 : F.1 = S + (F.1 - S) := Eq.symm (add_tsub_cancel_of_le hSle)
   have hpos : 0 ≤ ((F.1 - S).map (fun x => (x.1 + x.2))).sum := by
     refine Multiset.sum_nonneg ?_
     intro x hx
@@ -381,7 +246,6 @@ lemma chiralIndicesOfL_subset_sum_le_three_of_noExotics (F : FluxesFive)
   rw [h1]
   rw [Multiset.map_add, Multiset.sum_add]
   omega
-
 
 end FluxesFive
 
@@ -472,69 +336,30 @@ lemma mem_chiralIndicesOfQ_mem_of_noExotics (F : FluxesTen)
   simp only [Finset.mem_insert, Finset.mem_singleton]
   omega
 
-lemma nonZeroChiralIndicesOfQ_ge_one_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfQ) : 1 ≤ ci := by
-  have h0 := (Multiset.mem_filter.mp hci).2
-  have h1 := chiralIndicesOfQ_noneg_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
+lemma chiralIndicesOfQ_subset_sum_le_three_of_noExotics (F : FluxesTen)
+    (hF : NoExotics F) (S : Multiset (ℤ × ℤ))
+    (hSle : S ≤ F.1) : (S.map (fun x => x.1)).sum ≤ 3 := by
+  rw [← F.chiralIndicesOfQ_sum_eq_three_of_noExotics hF]
+  have h1 : F.1 = S + (F.1 - S) := Eq.symm (add_tsub_cancel_of_le hSle)
+  have hpos : 0 ≤ ((F.1 - S).map (fun x => x.1)).sum := by
+    refine Multiset.sum_nonneg ?_
+    intro x hx
+    simp at hx
+    obtain ⟨N, h⟩ := hx
+    have hl : (x, N) ∈ F.1 := by
+      apply Multiset.mem_of_subset (t := F.1) at h
+      exact h
+      refine Multiset.subset_of_le ?_
+      rw [@Multiset.sub_le_iff_le_add']
+      simp
+    have hx : x ∈ F.chiralIndicesOfQ := by
+      simp [chiralIndicesOfQ]
+      use N
+    exact chiralIndicesOfQ_noneg_of_noExotics F hF x hx
+  rw [chiralIndicesOfQ]
+  rw [h1]
+  rw [Multiset.map_add, Multiset.sum_add]
   omega
-
-lemma mem_nonZeroChiralIndicesOfQ_mem_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfQ) :
-    ci ∈ ({1, 2, 3} : Finset ℤ) := by
-  have hr := mem_chiralIndicesOfQ_mem_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
-  simp only [Finset.mem_insert, Finset.mem_singleton] at hr
-  have h0 := nonZeroChiralIndicesOfQ_ge_one_of_noExotics F hF ci hci
-  simp only [Finset.mem_insert, Finset.mem_singleton]
-  omega
-
-lemma nonZeroChiralIndicesOfQ_sum_eq_three_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfQ.sum = 3 := by
-  rw [← F.chiralIndicesOfQ_sum_eq_nonZeroChiralIndicesOfQ_sum]
-  exact F.chiralIndicesOfQ_sum_eq_three_of_noExotics hF
-
-lemma nonZeroChiralIndicesOfQ_card_le_three_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfQ.card ≤ 3 := by
-  have h1 := Multiset.card_nsmul_le_sum (nonZeroChiralIndicesOfQ_ge_one_of_noExotics F hF)
-  rw [F.nonZeroChiralIndicesOfQ_sum_eq_three_of_noExotics hF] at h1
-  simp only [nsmul_eq_mul, mul_one, Nat.cast_le_ofNat] at h1
-  omega
-
-lemma nonZeroChiralIndicesOfQ_card_mem_range_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfQ.card ∈ Finset.range 4 :=
-  Finset.mem_range.mpr <| Nat.lt_add_one_of_le <|
-  nonZeroChiralIndicesOfQ_card_le_three_of_noExotics F hF
-
-lemma nonZeroChiralIndicesOfQ_mem_of_noExotics (F : FluxesTen) (hF : NoExotics F) :
-    F.nonZeroChiralIndicesOfQ ∈ ({{1, 1, 1}, {1, 2}, {3}} : Finset (Multiset ℤ)) := by
-  have hsum := F.nonZeroChiralIndicesOfQ_sum_eq_three_of_noExotics hF
-  have hf := F.nonZeroChiralIndicesOfQ_card_mem_range_of_noExotics hF
-  have hmin := F.mem_nonZeroChiralIndicesOfQ_mem_of_noExotics hF
-  simp [Finset.range] at hf
-  generalize F.nonZeroChiralIndicesOfQ = S at *
-  rcases hf with hr | hr | hr | hr
-  · rw [Multiset.card_eq_three] at hr
-    obtain ⟨x, y, z, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    have hz := hmin z (by simp)
-    clear hmin
-    revert hsum; revert x; revert y; revert z
-    decide
-  · rw [Multiset.card_eq_two] at hr
-    obtain ⟨x, y, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    clear hmin
-    revert hsum; revert x; revert y
-    decide
-  · rw [Multiset.card_eq_one] at hr
-    obtain ⟨x, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    clear hmin
-    revert hsum; revert x
-    decide
-  · subst hr
-    simp at hsum
 
 /-!
 
@@ -621,69 +446,30 @@ lemma mem_chiralIndicesOfU_mem_of_noExotics (F : FluxesTen)
   simp only [Finset.mem_insert, Finset.mem_singleton]
   omega
 
-lemma nonZeroChiralIndicesOfU_ge_one_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfU) : 1 ≤ ci := by
-  have h0 := (Multiset.mem_filter.mp hci).2
-  have h1 := chiralIndicesOfU_noneg_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
+lemma chiralIndicesOfU_subset_sum_le_three_of_noExotics (F : FluxesTen)
+    (hF : NoExotics F) (S : Multiset (ℤ × ℤ))
+    (hSle : S ≤ F.1) : (S.map (fun x => (x.1 - x.2))).sum ≤ 3 := by
+  rw [← F.chiralIndicesOfU_sum_eq_three_of_noExotics hF]
+  have h1 : F.1 = S + (F.1 - S) := Eq.symm (add_tsub_cancel_of_le hSle)
+  have hpos : 0 ≤ ((F.1 - S).map (fun x => (x.1 - x.2))).sum := by
+    refine Multiset.sum_nonneg ?_
+    intro x hx
+    simp at hx
+    obtain ⟨M, N, hmem, hsum⟩ := hx
+    have hl : (M, N) ∈ F.1 := by
+      apply Multiset.mem_of_subset (t := F.1) at hmem
+      exact hmem
+      refine Multiset.subset_of_le ?_
+      rw [@Multiset.sub_le_iff_le_add']
+      simp
+    have hx : x ∈ F.chiralIndicesOfU := by
+      simp [chiralIndicesOfU]
+      use M, N
+    exact chiralIndicesOfU_noneg_of_noExotics F hF x hx
+  rw [chiralIndicesOfU]
+  rw [h1]
+  rw [Multiset.map_add, Multiset.sum_add]
   omega
-
-lemma mem_nonZeroChiralIndicesOfU_mem_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfU) :
-    ci ∈ ({1, 2, 3} : Finset ℤ) := by
-  have hr := mem_chiralIndicesOfU_mem_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
-  simp only [Finset.mem_insert, Finset.mem_singleton] at hr
-  have h0 := nonZeroChiralIndicesOfU_ge_one_of_noExotics F hF ci hci
-  simp only [Finset.mem_insert, Finset.mem_singleton]
-  omega
-
-lemma nonZeroChiralIndicesOfU_sum_eq_three_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfU.sum = 3 := by
-  rw [← F.chiralIndicesOfU_sum_eq_nonZeroChiralIndicesOfU_sum]
-  exact F.chiralIndicesOfU_sum_eq_three_of_noExotics hF
-
-lemma nonZeroChiralIndicesOfU_card_le_three_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfU.card ≤ 3 := by
-  have h1 := Multiset.card_nsmul_le_sum (nonZeroChiralIndicesOfU_ge_one_of_noExotics F hF)
-  rw [F.nonZeroChiralIndicesOfU_sum_eq_three_of_noExotics hF] at h1
-  simp only [nsmul_eq_mul, mul_one, Nat.cast_le_ofNat] at h1
-  omega
-
-lemma nonZeroChiralIndicesOfU_card_mem_range_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfU.card ∈ Finset.range 4 :=
-  Finset.mem_range.mpr <| Nat.lt_add_one_of_le <|
-  nonZeroChiralIndicesOfU_card_le_three_of_noExotics F hF
-
-lemma nonZeroChiralIndicesOfU_mem_of_noExotics (F : FluxesTen) (hF : NoExotics F) :
-    F.nonZeroChiralIndicesOfU ∈ ({{1, 1, 1}, {1, 2}, {3}} : Finset (Multiset ℤ)) := by
-  have hsum := F.nonZeroChiralIndicesOfU_sum_eq_three_of_noExotics hF
-  have hf := F.nonZeroChiralIndicesOfU_card_mem_range_of_noExotics hF
-  have hmin := F.mem_nonZeroChiralIndicesOfU_mem_of_noExotics hF
-  simp [Finset.range] at hf
-  generalize F.nonZeroChiralIndicesOfU = S at *
-  rcases hf with hr | hr | hr | hr
-  · rw [Multiset.card_eq_three] at hr
-    obtain ⟨x, y, z, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    have hz := hmin z (by simp)
-    clear hmin
-    revert hsum; revert x; revert y; revert z
-    decide
-  · rw [Multiset.card_eq_two] at hr
-    obtain ⟨x, y, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    clear hmin
-    revert hsum; revert x; revert y
-    decide
-  · rw [Multiset.card_eq_one] at hr
-    obtain ⟨x, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    clear hmin
-    revert hsum; revert x
-    decide
-  · subst hr
-    simp at hsum
 
 /-!
 
@@ -768,69 +554,30 @@ lemma mem_chiralIndicesOfE_mem_of_noExotics (F : FluxesTen)
   simp only [Finset.mem_insert, Finset.mem_singleton]
   omega
 
-lemma nonZeroChiralIndicesOfE_ge_one_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfE) : 1 ≤ ci := by
-  have h0 := (Multiset.mem_filter.mp hci).2
-  have h1 := chiralIndicesOfE_noneg_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
+lemma chiralIndicesOfE_subset_sum_le_three_of_noExotics (F : FluxesTen)
+    (hF : NoExotics F) (S : Multiset (ℤ × ℤ))
+    (hSle : S ≤ F.1) : (S.map (fun x => (x.1 + x.2))).sum ≤ 3 := by
+  rw [← F.chiralIndicesOfE_sum_eq_three_of_noExotics hF]
+  have h1 : F.1 = S + (F.1 - S) := by exact Eq.symm (add_tsub_cancel_of_le hSle)
+  have hpos : 0 ≤ ((F.1 - S).map (fun x => (x.1 + x.2))).sum := by
+    refine Multiset.sum_nonneg ?_
+    intro x hx
+    simp at hx
+    obtain ⟨M, N, hmem, hsum⟩ := hx
+    have hl : (M, N) ∈ F.1 := by
+      apply Multiset.mem_of_subset (t := F.1) at hmem
+      exact hmem
+      refine Multiset.subset_of_le ?_
+      rw [@Multiset.sub_le_iff_le_add']
+      simp
+    have hx : x ∈ F.chiralIndicesOfE := by
+      simp [chiralIndicesOfE]
+      use M, N
+    exact chiralIndicesOfE_noneg_of_noExotics F hF x hx
+  rw [chiralIndicesOfE]
+  rw [h1]
+  rw [Multiset.map_add, Multiset.sum_add]
   omega
-
-lemma mem_nonZeroChiralIndicesOfE_mem_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) (ci : ℤ) (hci : ci ∈ F.nonZeroChiralIndicesOfE) :
-    ci ∈ ({1, 2, 3} : Finset ℤ) := by
-  have hr := mem_chiralIndicesOfE_mem_of_noExotics F hF ci (Multiset.mem_filter.mp hci).1
-  simp only [Finset.mem_insert, Finset.mem_singleton] at hr
-  have h0 := nonZeroChiralIndicesOfE_ge_one_of_noExotics F hF ci hci
-  simp only [Finset.mem_insert, Finset.mem_singleton]
-  omega
-
-lemma nonZeroChiralIndicesOfE_sum_eq_three_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfE.sum = 3 := by
-  rw [← F.chiralIndicesOfE_sum_eq_nonZeroChiralIndicesOfE_sum]
-  exact F.chiralIndicesOfE_sum_eq_three_of_noExotics hF
-
-lemma nonZeroChiralIndicesOfE_card_le_three_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfE.card ≤ 3 := by
-  have h1 := Multiset.card_nsmul_le_sum (nonZeroChiralIndicesOfE_ge_one_of_noExotics F hF)
-  rw [F.nonZeroChiralIndicesOfE_sum_eq_three_of_noExotics hF] at h1
-  simp only [nsmul_eq_mul, mul_one, Nat.cast_le_ofNat] at h1
-  omega
-
-lemma nonZeroChiralIndicesOfE_card_mem_range_of_noExotics (F : FluxesTen)
-    (hF : NoExotics F) : F.nonZeroChiralIndicesOfE.card ∈ Finset.range 4 :=
-  Finset.mem_range.mpr <| Nat.lt_add_one_of_le <|
-  nonZeroChiralIndicesOfE_card_le_three_of_noExotics F hF
-
-lemma nonZeroChiralIndicesOfE_mem_of_noExotics (F : FluxesTen) (hF : NoExotics F) :
-    F.nonZeroChiralIndicesOfE ∈ ({{1, 1, 1}, {1, 2}, {3}} : Finset (Multiset ℤ)) := by
-  have hsum := F.nonZeroChiralIndicesOfE_sum_eq_three_of_noExotics hF
-  have hf := F.nonZeroChiralIndicesOfE_card_mem_range_of_noExotics hF
-  have hmin := F.mem_nonZeroChiralIndicesOfE_mem_of_noExotics hF
-  simp [Finset.range] at hf
-  generalize F.nonZeroChiralIndicesOfE = S at *
-  rcases hf with hr | hr | hr | hr
-  · rw [Multiset.card_eq_three] at hr
-    obtain ⟨x, y, z, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    have hz := hmin z (by simp)
-    clear hmin
-    revert hsum; revert x; revert y; revert z
-    decide
-  · rw [Multiset.card_eq_two] at hr
-    obtain ⟨x, y, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    have hy := hmin y (by simp)
-    clear hmin
-    revert hsum; revert x; revert y
-    decide
-  · rw [Multiset.card_eq_one] at hr
-    obtain ⟨x, rfl⟩ := hr
-    have hx := hmin x (by simp)
-    clear hmin
-    revert hsum; revert x
-    decide
-  · subst hr
-    simp at hsum
 
 end FluxesTen
 

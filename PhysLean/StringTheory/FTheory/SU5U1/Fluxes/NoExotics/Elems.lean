@@ -24,38 +24,27 @@ namespace FluxesFive
 
 /-- The elements of `FluxesFive` for which the `NoExotics` condition holds. -/
 def elemsNoExotics : Multiset FluxesFive := {
-   ⟨{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}, by decide⟩,
-    -- {1, 1, 1, 0, 0} (2 cases)
+    ⟨{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}, by decide⟩,
     ⟨{(1, -1), (1, -1), (1, -1), (0, 1), (0, 2)}, by decide⟩,
     ⟨{(1, -1), (1, -1), (1, 0), (0, 1), (0, 1)}, by decide⟩,
-    -- {1, 1, 1, 0} (4 cases)
     ⟨{(1, 1), (1, -1), (1, -1), (0, 1)}, by decide⟩,
     ⟨{(1, 0), (1, 0), (1, -1), (0, 1)}, by decide⟩,
     ⟨{(1, -1), (1, 0), (1, -1), (0, 2)}, by decide⟩,
     ⟨{(1, -1), (1, -1), (1, -1), (0, 3)}, by decide⟩,
-    -- {1, 1, 1} (3 cases)
     ⟨{(1, -1), (1, -1), (1, 2)}, by decide⟩,
     ⟨{(1, -1), (1, 0), (1, 1)}, by decide⟩, ⟨{(1, 0), (1, 0), (1, 0)}, by decide⟩,
-    -- {1, 2, 0, 0, 0} (1 case)
     ⟨{(1, -1), (2, -2), (0, 1), (0, 1), (0, 1)}, by decide⟩,
-    -- {1, 2, 0, 0} (3 cases)
     ⟨{(1, -1), (2, -2), (0, 1), (0, 2)}, by decide⟩,
     ⟨{(1, -1), (2, -1), (0, 1), (0, 1)}, by decide⟩,
     ⟨{(1, 0), (2, -2), (0, 1), (0, 1)}, by decide⟩,
-    -- {1, 2, 0} (6 cases)
     ⟨{(1, 1), (2, -2), (0, 1)}, by decide⟩, ⟨{(1, 0), (2, -1), (0, 1)}, by decide⟩,
     ⟨{(1, 0), (2, -2), (0, 2)}, by decide⟩, ⟨{(1, -1), (2, 0), (0, 1)}, by decide⟩,
     ⟨{(1, -1), (2, -1), (0, 2)}, by decide⟩, ⟨{(1, -1), (2, -2), (0, 3)}, by decide⟩,
-    -- {1, 2} (4 cases)
     ⟨{(1, -1), (2, 1)}, by decide⟩, ⟨{(1, 0), (2, 0)}, by decide⟩, ⟨{(1, 1), (2, -1)}, by decide⟩,
     ⟨{(1, 2), (2, -2)}, by decide⟩,
-    -- {3, 0, 0, 0} (1 cases)
     ⟨{(3, -3), (0, 1), (0, 1), (0, 1)}, by decide⟩,
-    -- {3, 0, 0} (2 cases)
     ⟨{(3, -3), (0, 1), (0, 2)}, by decide⟩, ⟨{(3, -2), (0, 1), (0, 1)}, by decide⟩,
-    -- {3, 0} (3 cases)
     ⟨{(3, -3), (0, 3)}, by decide⟩, ⟨{(3, -2), (0, 2)}, by decide⟩, ⟨{(3, -1), (0, 1)}, by decide⟩,
-    -- {3} (1 cases)
     ⟨{(3, 0)}, by decide⟩}
 
 lemma elemsNoExotics_card : elemsNoExotics.card = 31 := by
@@ -71,6 +60,11 @@ lemma noExotics_of_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics
 
 lemma toFinset_card_le_four_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics) :
     F.1.toFinset.card ≤ 4 := by
+  revert F h
+  decide
+
+lemma sum_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics) :
+    F.1.sum = (3, 0) := by
   revert F h
   decide
 
@@ -97,6 +91,11 @@ lemma noExotics_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics)
 
 lemma toFinset_card_le_three_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics) :
     F.1.toFinset.card ≤ 3 := by
+  revert F h
+  decide
+
+lemma sum_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics) :
+    F.1.sum = (3, 0) := by
   revert F h
   decide
 
