@@ -13,7 +13,7 @@ do not lead to chiral exotics in the spectrum.
 
 These elements are given in the definitions `elemsNoExotics` in the respective namespaces.
 
-For `FluxesFive` there are `30` such elements, and for `FluxesTen` there are `6` such elements.
+For `FluxesFive` there are `31` such elements, and for `FluxesTen` there are `6` such elements.
 
 -/
 namespace FTheory
@@ -69,6 +69,11 @@ lemma noExotics_of_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics
   revert F
   decide
 
+lemma toFinset_card_le_four_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics) :
+    F.1.toFinset.card ≤ 4 := by
+  revert F h
+  decide
+
 end FluxesFive
 
 namespace FluxesTen
@@ -88,6 +93,11 @@ lemma elemsNoExotics_nodup : elemsNoExotics.Nodup := by
 lemma noExotics_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics) :
     NoExotics F := by
   revert F
+  decide
+
+lemma toFinset_card_le_three_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics) :
+    F.1.toFinset.card ≤ 3 := by
+  revert F h
   decide
 
 end FluxesTen

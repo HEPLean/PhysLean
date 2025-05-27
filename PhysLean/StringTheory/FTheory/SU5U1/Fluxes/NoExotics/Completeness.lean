@@ -407,6 +407,44 @@ lemma noExotics_iff_mem_elemsNoExotics (F : FluxesFive) :
 
 end FluxesFive
 
+namespace FluxesTen
+
+
+lemma mem_mem_finset_of_noExotics (F : FluxesTen) (hF : F.NoExotics)
+    (x : ℤ × ℤ) (hx : x ∈ F.1) :
+    x ∈ ({(1, -1), (1, 0), (1, 1), (2, -1), (2, 0), (2, 1), (3, 0)} : Finset (ℤ × ℤ)) := by
+  rcases x with ⟨M, N⟩
+  have hQ : M ∈ F.chiralIndicesOfQ := by
+    simp [chiralIndicesOfQ]
+    use N
+  have hU : M - N ∈ F.chiralIndicesOfU := by
+    simp [chiralIndicesOfU]
+    use M, N
+  have hE : M + N ∈ F.chiralIndicesOfE := by
+    simp [chiralIndicesOfE]
+    use M, N
+  simp
+  have hQ1 := F.mem_chiralIndicesOfQ_mem_of_noExotics hF M hQ
+  have hU1 := F.mem_chiralIndicesOfU_mem_of_noExotics hF (M - N) hU
+  have hE1 := F.mem_chiralIndicesOfE_mem_of_noExotics hF (M + N) hE
+  have h0 : ¬ (M = 0 ∧ N = 0) := by
+    have hF2 := F.2
+    by_contra hn
+    rcases hn with ⟨hn1, hn2⟩
+    subst hn1 hn2
+    exact hF2 hx
+  let D := M + N
+  have hd : N = D - M := by omega
+  generalize D = D' at *
+  subst hd
+  simp only [add_sub_cancel] at hE1
+  clear hU hE hQ hx D
+  revert h0 hU1
+  revert D'
+  revert M
+  decide
+
+end FluxesTen
 end SU5U1
 
 end FTheory
