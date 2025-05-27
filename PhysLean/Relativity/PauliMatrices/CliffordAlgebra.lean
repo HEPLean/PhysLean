@@ -1,0 +1,39 @@
+/-
+Copyright (c) 2025 Eric Wieser. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Eric Wieser
+-/
+import PhysLean.Relativity.PauliMatrices.Matrix
+import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
+
+/-!
+# The pauli matrices, interpreted as a clifford algebra
+-/
+noncomputable section
+
+namespace PauliMatrix
+
+/-- The euclidean norm as a quadratic form. -/
+@[simps!]
+protected noncomputable def form : QuadraticForm ℝ (Fin 3 → ℝ) :=
+  ∑ i, QuadraticMap.sq.comp (LinearMap.proj i)
+
+def ofCliffordAlgebra :
+    CliffordAlgebra PauliMatrix.form →ₐ[ℝ] Algebra.adjoin ℝ {σ1, σ2, σ3} :=
+  CliffordAlgebra.lift _
+    ⟨∑ i, (LinearMap.proj i).smulRight
+      ⟨![σ1, σ2, σ3] i, Algebra.subset_adjoin <| by fin_cases i <;> simp⟩, fun v => by
+      ext : 1
+      simp [Fin.sum_univ_three, mul_add, add_mul, smul_mul_smul, ← map_mul, ← map_sub, ← map_add,
+        Algebra.algebraMap_eq_smul_one]
+      module⟩
+
+/-- The generators of the Clifford algebra correspond to the elements `σ`. -/
+@[simp]
+theorem ofCliffordAlgebra_ι_single (i : Fin 3) (r : ℝ) :
+    ofCliffordAlgebra (CliffordAlgebra.ι _ (Pi.single i r)) =
+        r • ⟨![σ1, σ2, σ3] i, Algebra.subset_adjoin <| by fin_cases i <;> simp⟩ :=
+  CliffordAlgebra.lift_ι_apply _ _ _ |>.trans <| Subtype.ext <| by
+    simp +contextual [Fintype.sum_eq_single i]
+
+end PauliMatrix
