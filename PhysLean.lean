@@ -261,6 +261,8 @@ import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.PresentIrredSet
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.ReducedCharges
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Completenss
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
 import PhysLean.Thermodynamics.Basic
