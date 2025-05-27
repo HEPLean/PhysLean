@@ -191,7 +191,7 @@ def irreducibleElems: (I : CodimensionOneConfig) → (T : PotentialTerm) → Mul
   | nextToNearestNeighbor, T => irreducibleElemsOfNToNN T
 
 lemma irreducibleElems_countP_not_isIrreducible
-     (I : CodimensionOneConfig) (T : PotentialTerm) :
+    (I : CodimensionOneConfig) (T : PotentialTerm) :
     ((irreducibleElems I T).countP (fun x => ¬ x.IsIrreducible)) = 0 := by
   revert T I
   decide
@@ -215,7 +215,7 @@ lemma isPresent_of_mem_irreducibleElems
   exact isIrreducible_of_mem_irreducibleElems x h
 
 lemma irreducibleElems_subset_finsetOfCodimensionOneConfig
-   (I : CodimensionOneConfig) (T : PotentialTerm) :
+    (I : CodimensionOneConfig) (T : PotentialTerm) :
     irreducibleElems I T ⊆ (finsetOfCodimensionOneConfig I T).val := by
   refine Multiset.subset_iff.mpr ?_
   intro x hx

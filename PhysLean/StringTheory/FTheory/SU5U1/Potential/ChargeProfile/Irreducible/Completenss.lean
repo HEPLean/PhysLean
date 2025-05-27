@@ -157,7 +157,7 @@ lemma mem_toMultisetsThree_iff {s : Finset ℤ} (X : Multiset ℤ) :
         use b
         simp_all
         use a
-        simp
+        simp only [and_true]
         refine (Multiset.mem_erase_of_ne (by omega)).mpr ?_
         simp_all
       · by_cases hbc : b = c
