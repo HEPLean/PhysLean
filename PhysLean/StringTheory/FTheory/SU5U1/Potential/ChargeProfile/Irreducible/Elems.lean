@@ -227,7 +227,6 @@ lemma irreducibleElems_subset_finsetOfCodimensionOneConfig
     revert I x
     decide
 
-
 /-!
 
 ## Cardinalities of irreducibleElems

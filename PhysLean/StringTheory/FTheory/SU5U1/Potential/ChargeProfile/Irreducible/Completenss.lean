@@ -4,7 +4,29 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
+/-!
 
+# Completeness of irreducibleElems
+
+This module proves the result
+- `isIrreducible_iff_mem_irreducibleElems`
+which states that an `x : T.ChargeProfile` which is in
+`finsetOfCodimensionOneConfig I T` is irreducible if and only if it is in
+`irreducibleElems I T`.
+
+That is to say, that the multisets `irreducibleElems I T` contain all the irreducible
+charge profiles for the given `CodimensionOneConfig` `I`.
+
+The proof of this result is done by defining
+`irreducibleElems'`
+which is a multiset of all charge profiles for the given `CodimensionOneConfig` `I`
+We show that all irreducible charge profiles are in `irreducibleElems' I T`.
+Indeed, `irreducibleElems'` is defined to make easy.
+
+We then show that `irreducibleElems' I T` has the same cardinality as `irreducibleElems I T`,
+and therefore that the two are equal.
+
+-/
 namespace FTheory
 
 namespace SU5U1
@@ -154,11 +176,11 @@ lemma mem_toMultisetsThree_iff {s : Finset ℤ} (X : Multiset ℤ) :
 
 /-!
 
-## irreducibleSet'
+## irreducibleElems'
 
 -/
 
-def irreducibleSet' (I : CodimensionOneConfig) : (T : PotentialTerm) → Multiset T.ChargeProfile
+def irreducibleElems' (I : CodimensionOneConfig) : (T : PotentialTerm) → Multiset T.ChargeProfile
   | μ =>
     let SqHd := I.allowedBarFiveCharges.val
     let SqHu := I.allowedBarFiveCharges.val
@@ -229,17 +251,17 @@ def irreducibleSet' (I : CodimensionOneConfig) : (T : PotentialTerm) → Multise
     let Filt := prod.filter (fun x => x.1 + x.2.1.sum + x.2.2.sum = 0)
     (Filt.map (fun x => (x.1, x.2.1.toFinset, x.2.2.toFinset)))
 
-lemma irreducibleSet'_card_eq (I : CodimensionOneConfig) (T : PotentialTerm) :
-    (irreducibleSet' I T).card = irreducibleElemsCard I T := by
+lemma irreducibleElems'_card_eq (I : CodimensionOneConfig) (T : PotentialTerm) :
+    (irreducibleElems' I T).card = irreducibleElemsCard I T := by
   revert I T
   decide
 
-lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : PotentialTerm}
+lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : PotentialTerm}
     (x : ChargeProfile T) (h : IsIrreducible x) (hx : x ∈ finsetOfCodimensionOneConfig I T) :
-    x ∈ irreducibleSet' I T := by
+    x ∈ irreducibleElems' I T := by
   match T, x with
   | μ, (qHd, qHu) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -268,7 +290,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         true_and]
       omega
   | K1, (Q5, Q10) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -299,7 +321,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         true_or, or_true, and_self, true_and]
       omega
   | K2, (qHd, qHu, Q10) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -330,7 +352,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | W1, (Q5, Q10) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     apply And.intro _ h
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
@@ -362,7 +384,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         true_or, or_true, and_self, true_and]
       omega
   | W2, (qHd, Q10) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     apply And.intro _ h
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
@@ -394,7 +416,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | W3, (qHu, Q5) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -425,7 +447,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | W4, (qHd, qHu, Q5) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -456,7 +478,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | Λ, (Q5, Q10) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -487,7 +509,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         true_or, or_true, and_self, true_and]
       omega
   | β, (qHu, Q5) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -518,7 +540,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | topYukawa, (qHu, Q10) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -549,7 +571,7 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
         Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | bottomYukawa, (qHd, Q5, Q10) =>
-    simp [irreducibleSet']
+    simp [irreducibleElems']
     have x_isPresent := isPresent_of_isIrreducible h
     simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
@@ -586,18 +608,18 @@ lemma mem_irreducibleSet'_of_irreducible {I : CodimensionOneConfig} {T : Potenti
 
 -/
 
-lemma irreducibleElems_eq_irreducibleSet' (I : CodimensionOneConfig) (T : PotentialTerm) :
-    irreducibleElems I T = irreducibleSet' I T := by
+lemma irreducibleElems_eq_irreducibleElems' (I : CodimensionOneConfig) (T : PotentialTerm) :
+    irreducibleElems I T = irreducibleElems' I T := by
   apply Multiset.eq_of_le_of_card_le
   · refine (Multiset.le_iff_subset ?_).mpr ?_
     · exact irreducibleElems_nodup I T
     refine Multiset.subset_iff.mpr ?_
     intro x hx
-    apply mem_irreducibleSet'_of_irreducible
+    apply mem_irreducibleElems'_of_irreducible
     · exact isIrreducible_of_mem_irreducibleElems x hx
     · apply irreducibleElems_subset_finsetOfCodimensionOneConfig
       exact hx
-  · rw [irreducibleSet'_card_eq, irreducibleElems_card_eq]
+  · rw [irreducibleElems'_card_eq, irreducibleElems_card_eq]
 
 lemma isIrreducible_iff_mem_irreducibleElems {I : CodimensionOneConfig} {T : PotentialTerm}
     (x : ChargeProfile T) (hx : x ∈ finsetOfCodimensionOneConfig I T) :
@@ -608,8 +630,8 @@ lemma isIrreducible_iff_mem_irreducibleElems {I : CodimensionOneConfig} {T : Pot
     apply isIrreducible_of_mem_irreducibleElems
     exact h
   · intro h
-    rw [irreducibleElems_eq_irreducibleSet']
-    apply mem_irreducibleSet'_of_irreducible
+    rw [irreducibleElems_eq_irreducibleElems']
+    apply mem_irreducibleElems'_of_irreducible
     · exact h
     · exact hx
 
