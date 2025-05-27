@@ -3,41 +3,30 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.ReducedCharges
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Basic
 /-!
 
-# The irreducible subsets of charges for a present term
+# Elements of irreducible Charge Profiles
 
-For a given `CodimensionOneConfig`, `I`, and a `PotentialTerm`, `T`,
-we define the finite set of `T.ChargeType` such that a
-`T.reducedChargesIsPresent I` is present if it contains a subset in this list.
+In this module we define, for a given `I : CodimensionOneConfig`,
+we give the multisets containing irreducible charge profiles for each potential term.
 
-We define this finite set of irreducible subsets of charges both in an
-simple form ` presentIrredSetExe I T` which has the disavantage of being
-slow to use `decide` with, and an explicit form `presentIrredSetExe I T`
-which is faster to use `decide` with.
+These multisets are complete, in the sense that they contain all irreducible charge profiles.
+
+## Related PRs
+
+- See #562 for a first version of code related to charge profiles.
 
 -/
 namespace FTheory
 
 namespace SU5U1
-variable {I : CodimensionOneConfig}
 
+variable {I : CodimensionOneConfig}
 namespace PotentialTerm
 
-open CodimensionOneConfig
+namespace ChargeProfile
 
-/-- For a `I : CodimensionOneConfig` and a `T : PotentialTerm`, the irreducible
-  elements in `T.ChargeType` which if one occurs as a subset of
-  `x : T.ChargeType` then `x` permits the term `T`.
-  They are irreducible in the sense that they can't be broken down into smaller subsets which
-  are also lead to the term `T`.
-
-  The result `presentIrredSet` is an explicit version of these irreducible elements.
-  -/
-def presentIrredSetExe (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T.ChargeType :=
-  (T.reducedChargesIsPresent I).filter (fun x =>
-    ∀ y ∈ (T.reducedChargesIsPresent I), x = y ∨ ¬ (y ⊆ x))
 
 /-- OfNat instance on `Option ℤ`. -/
 local instance (n : ℕ) : OfNat (Option ℤ) n where
@@ -49,12 +38,8 @@ local instance : Neg (Option ℤ) where
     | none => none
     | some n => some (-n)
 
-/-- For a `I = same` and a `T : PotentialTerm`, the irreducible
-  elements in `T.ChargeType` which if one occurs as a subset of
-  `x : T.ChargeType` then `x` permits the term `T`.
-  They are irreducible in the sense that they can't be broken down into smaller subsets which
-  are also lead to the term. -/
-def presentIrredSetSame : (T : PotentialTerm) → Finset T.ChargeType
+/--  Irreducible charge profiles for when `CodimensionOneConfig = same`. -/
+def irreducibleElemsOfSame : (T : PotentialTerm) → Multiset T.ChargeProfile
   | μ => {(-3, -3), (-2, -2), (-1, -1), (0, 0), (1, 1), (2, 2), (3, 3)}
   | K2 => {(-3, 0, {3}), (-3, 1, {2}), (-3, 2, {1}), (-3, 3, {0}), (-2, -1, {3}),
     (-2, 0, {2}), (-2, 1, {1}), (-2, 2, {0}), (-2, 3, {-1}), (-1, -2, {3}), (-1, -1, {2}),
@@ -109,13 +94,8 @@ def presentIrredSetSame : (T : PotentialTerm) → Finset T.ChargeType
     (1, {1}, {-2}), (1, {2}, {-3}), (2, {-3}, {1}), (2, {-2}, {0}), (2, {-1}, {-1}), (2, {0}, {-2}),
     (2, {1}, {-3}), (3, {-3}, {0}), (3, {-2}, {-1}), (3, {-1}, {-2}), (3, {0}, {-3})}
 
--- #eval (presentSubsetExe .nextToNearestNeighbor bottomYukawa)
-/-- For a `I = nearestNeighbor` and a `T : PotentialTerm`, the irreducible
-  elements in `T.ChargeType` which if one occurs as a subset of
-  `x : T.ChargeType` then `x` permits the term `T`.
-  They are irreducible in the sense that they can't be broken down into smaller subsets which
-  are also lead to the term `T`. -/
-def presentIrredSetNN : (T : PotentialTerm) → Finset T.ChargeType
+/--  Irreducible charge profiles for when `CodimensionOneConfig = nearestNeighbor`. -/
+def irreducibleElemsOfNN : (T : PotentialTerm) → Multiset T.ChargeProfile
   | μ => {(-14, -14), (-9, -9), (-4, -4), (1, 1), (6, 6), (11, 11)}
   | K2 => {(-14, 1, {13}), (-14, 6, {8}), (-14, 11, {3}), (-9, -4, {13}),
     (-9, 1, {8}), (-9, 6, {3}), (-9, 11, {-2}), (-4, -9, {13}), (-4, -4, {8}), (-4, 1, {3}),
@@ -159,12 +139,8 @@ def presentIrredSetNN : (T : PotentialTerm) → Finset T.ChargeType
     (6, {-14}, {8}), (6, {-9}, {3}), (6, {-4}, {-2}), (6, {1}, {-7}), (6, {6}, {-12}),
     (11, {-14}, {3}), (11, {-9}, {-2}), (11, {-4}, {-7}), (11, {1}, {-12})}
 
-/-- For a `I = nextToNearestNeighbor` and a `T : PotentialTerm`, the irreducible
-  elements in `T.ChargeType` which if one occurs as a subset of
-  `x : T.ChargeType` then `x` permits the term `T`.
-  They are irreducible in the sense that they can't be broken down into smaller subsets which
-  are also lead to the term `T`. -/
-def presentIrredSetNToNN : (T : PotentialTerm) → Finset T.ChargeType
+/--  Irreducible charge profiles for when `CodimensionOneConfig = nextToNearestNeighbor`. -/
+def irreducibleElemsOfNToNN : (T : PotentialTerm) → Multiset T.ChargeProfile
   | μ => {(-13, -13), (-8, -8), (-3, -3), (2, 2), (7, 7), (12, 12)}
   | K2 => {(-13, 2, {11}), (-13, 7, {6}), (-13, 12, {1}), (-8, -3, {11}),
     (-8, 2, {6}), (-8, 7, {1}), (-8, 12, {-4}), (-3, -8, {11}), (-3, -3, {6}), (-3, 2, {1}),
@@ -205,24 +181,42 @@ def presentIrredSetNToNN : (T : PotentialTerm) → Finset T.ChargeType
     (2, {-8}, {6}), (2, {-3}, {1}), (2, {2}, {-4}), (2, {7}, {-9}), (7, {-13}, {6}), (7, {-8}, {1}),
     (7, {-3}, {-4}), (7, {2}, {-9}), (12, {-13}, {1}), (12, {-8}, {-4}), (12, {-3}, {-9})}
 
-/-- For a `I : CodimensionOneConfig` and a `T : PotentialTerm`, the irreducible
-  elements in `T.ChargeType` which if one occurs as a subset of
-  `x : T.ChargeType` then `x` permits the term `T`.
-  They are irreducible in the sense that they can't be broken down into smaller subsets which
-  are also lead to the term `T`. -/
-def presentIrredSet: (I : CodimensionOneConfig) → (T : PotentialTerm) → Finset T.ChargeType
-  | same, T => presentIrredSetSame T
-  | nearestNeighbor, T => presentIrredSetNN T
-  | nextToNearestNeighbor, T => presentIrredSetNToNN T
+open CodimensionOneConfig
 
-set_option maxRecDepth 2000 in
-lemma isPresent_of_mem_presentIrredSet
-    {I : CodimensionOneConfig} {T : PotentialTerm} (x : T.ChargeType)
-    (h : x ∈ presentIrredSet I T) : IsPresent T x := by
-  revert x
+/--  Irreducible charge profiles for a given `CodimensionOneConfig`. -/
+def irreducibleElems: (I : CodimensionOneConfig) → (T : PotentialTerm) → Multiset T.ChargeProfile
+  | same, T => irreducibleElemsOfSame T
+  | nearestNeighbor, T => irreducibleElemsOfNN T
+  | nextToNearestNeighbor, T => irreducibleElemsOfNToNN T
+
+lemma irreducibleElems_countP_not_isIrreducible
+     (I : CodimensionOneConfig) (T : PotentialTerm) :
+    ((irreducibleElems I T).countP (fun x => ¬ x.IsIrreducible)) = 0 := by
   revert T I
   decide
 
+lemma isIrreducible_of_mem_irreducibleElems
+    {I : CodimensionOneConfig} {T : PotentialTerm} (x : T.ChargeProfile)
+    (h : x ∈ irreducibleElems I T) : IsIrreducible x := by
+  have h1 := irreducibleElems_countP_not_isIrreducible I T
+  simp only [Multiset.countP_eq_zero, Decidable.not_not] at h1
+  exact h1 x h
+
+lemma irreducibleElems_nodup (I : CodimensionOneConfig) (T : PotentialTerm) :
+    (irreducibleElems I T).Nodup := by
+  revert T I
+  decide
+
+lemma isPresent_of_mem_irreducibleElems
+    {I : CodimensionOneConfig} {T : PotentialTerm} (x : T.ChargeProfile)
+    (h : x ∈ irreducibleElems I T) : IsPresent T x :=  by
+  apply isPresent_of_isIrreducible
+  exact isIrreducible_of_mem_irreducibleElems x h
+
+end ChargeProfile
+
 end PotentialTerm
+
 end SU5U1
+
 end FTheory
