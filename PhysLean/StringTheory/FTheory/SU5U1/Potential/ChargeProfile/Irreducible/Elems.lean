@@ -11,7 +11,8 @@ import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.B
 In this module we define, for a given `I : CodimensionOneConfig`,
 we give the multisets containing irreducible charge profiles for each potential term.
 
-These multisets are complete, in the sense that they contain all irreducible charge profiles.
+These multisets are complete, in the sense that they contain all irreducible charge profiles
+within `finsetOfCodimensionOneConfig I T`.
 
 ## Related PRs
 
@@ -212,6 +213,69 @@ lemma isPresent_of_mem_irreducibleElems
     (h : x ∈ irreducibleElems I T) : IsPresent T x :=  by
   apply isPresent_of_isIrreducible
   exact isIrreducible_of_mem_irreducibleElems x h
+
+lemma irreducibleElems_subset_finsetOfCodimensionOneConfig
+   (I : CodimensionOneConfig) (T : PotentialTerm) :
+    irreducibleElems I T ⊆ (finsetOfCodimensionOneConfig I T).val := by
+  refine Multiset.subset_iff.mpr ?_
+  intro x hx
+  fin_cases T
+  all_goals
+    simp only [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.product_val]
+    repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
+    simp only [Finset.mem_val, Finset.mem_powerset]
+    revert I x
+    decide
+
+
+/-!
+
+## Cardinalities of irreducibleElems
+
+-/
+
+/-- For  `I : CodimensionOneConfig` and `T : PotentialTerm`, the cardinality of
+  `irreducibleElems I T`.  -/
+def irreducibleElemsCard (I : CodimensionOneConfig) (T : PotentialTerm) : ℕ :=
+  match I, T with
+  | same, μ => 7
+  | nearestNeighbor, μ => 6
+  | nextToNearestNeighbor, μ =>  6
+  | same, K2 => 37
+  | nearestNeighbor, K2 => 27
+  | nextToNearestNeighbor, K2 => 24
+  | same, K1 => 20
+  | nearestNeighbor, K1 => 15
+  | nextToNearestNeighbor, K1 => 12
+  | same, W4 => 25
+  | nearestNeighbor, W4 => 18
+  | nextToNearestNeighbor, W4 => 18
+  | same, W3 => 16
+  | nearestNeighbor, W3 => 12
+  | nextToNearestNeighbor, W3 => 12
+  | same, W2 => 45
+  | nearestNeighbor, W2 => 30
+  | nextToNearestNeighbor, W2 => 21
+  | same, W1 => 45
+  | nearestNeighbor, W1 => 30
+  | nextToNearestNeighbor, W1 => 21
+  | same, Λ => 20
+  | nearestNeighbor, Λ => 15
+  | nextToNearestNeighbor, Λ => 13
+  | same, β => 7
+  | nearestNeighbor, β => 6
+  | nextToNearestNeighbor, β => 6
+  | same, topYukawa => 20
+  | nearestNeighbor, topYukawa => 15
+  | nextToNearestNeighbor, topYukawa => 12
+  | same, bottomYukawa => 37
+  | nearestNeighbor, bottomYukawa => 27
+  | nextToNearestNeighbor, bottomYukawa => 24
+
+lemma irreducibleElems_card_eq (I : CodimensionOneConfig) (T : PotentialTerm) :
+    (irreducibleElems I T).card = irreducibleElemsCard I T := by
+  revert T I
+  decide
 
 end ChargeProfile
 

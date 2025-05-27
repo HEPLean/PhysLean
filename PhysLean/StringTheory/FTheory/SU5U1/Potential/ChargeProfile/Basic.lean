@@ -266,26 +266,6 @@ lemma charges_of_subset {T : PotentialTerm} {x y : T.ChargeProfile} (h : x ⊆ y
       Finset.mem_product] at ⊢ h'
     exact ⟨h.1 h'.1, h.2.1 h'.2.1, h.2.2 h'.2.2⟩
 
-/-- Given a `I : CodimensionOneConfig`, and a potential term `PotentialTerm`, the
-  possible finite set of elements of `T.ChargeProfile` which orginate from charges allowed by `I`. -/
-def chargeSubsetFull (I : CodimensionOneConfig) (T : PotentialTerm) : Finset T.ChargeProfile :=
-  let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-  let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-  let SQ5 := I.allowedBarFiveCharges.powerset
-  let SQ10 := I.allowedTenCharges.powerset
-  match T with
-  | μ => SqHd.product SqHu
-  | K2 => SqHd.product (SqHu.product SQ10)
-  | K1 => SQ5.product SQ10
-  | W4 => SqHd.product (SqHu.product SQ5)
-  | W3 => SqHu.product SQ5
-  | W2 => SqHd.product SQ10
-  | W1 => SQ5.product SQ10
-  | Λ => SQ5.product SQ10
-  | β => SqHu.product SQ5
-  | topYukawa => SqHu.product SQ10
-  | bottomYukawa => SqHd.product (SQ5.product SQ10)
-
 /-!
 
 ## Excluded terms based on `U(1)` charges
@@ -425,6 +405,32 @@ lemma subset_of_iff_mem_powerset {T : PotentialTerm} {x y : T.ChargeProfile} :
 lemma self_mem_powerset {T : PotentialTerm} (x : T.ChargeProfile) :
     x ∈ powerset x := by
   rw [← subset_of_iff_mem_powerset]
+
+/-!
+
+## Finsets of charge profiles from `CodimensionOneConfig`
+-/
+
+/-- Given a `I : CodimensionOneConfig`, and a potential term `PotentialTerm`, the
+  finite set of elements of `T.ChargeProfile` which orginate from charges allowed by `I`. -/
+def finsetOfCodimensionOneConfig (I : CodimensionOneConfig) (T : PotentialTerm) :
+    Finset T.ChargeProfile :=
+  let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SQ5 := I.allowedBarFiveCharges.powerset
+  let SQ10 := I.allowedTenCharges.powerset
+  match T with
+  | μ => SqHd.product SqHu
+  | K2 => SqHd.product (SqHu.product SQ10)
+  | K1 => SQ5.product SQ10
+  | W4 => SqHd.product (SqHu.product SQ5)
+  | W3 => SqHu.product SQ5
+  | W2 => SqHd.product SQ10
+  | W1 => SQ5.product SQ10
+  | Λ => SQ5.product SQ10
+  | β => SqHu.product SQ5
+  | topYukawa => SqHu.product SQ10
+  | bottomYukawa => SqHd.product (SQ5.product SQ10)
 
 end ChargeProfile
 
