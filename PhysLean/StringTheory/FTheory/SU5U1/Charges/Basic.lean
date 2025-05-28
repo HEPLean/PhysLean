@@ -101,6 +101,51 @@ lemma subset_of_empty_iff_empty {x : Charges} :
 
 /-!
 
+## Powerset
+
+-/
+
+
+/-- The powerset of a charge . Given a charge `x : Charges`
+  it's powerset is the finite set of all `Charges` which are subsets of `x`. -/
+def powerset (x : Charges): Finset Charges :=
+  x.1.powerset.product <| x.2.1.powerset.product <| x.2.2.1.powerset.product <| x.2.2.2.powerset
+
+@[simp]
+lemma mem_powerset_iff_subset {x y : Charges} :
+    x ∈ powerset y ↔ x ⊆ y := by
+  cases x
+  cases y
+  simp only [powerset, Finset.product_eq_sprod]
+  rw [Finset.mem_product]
+  simp_all [Subset]
+
+lemma self_mem_powerset (x : Charges) :
+    x ∈ powerset x := by simp
+
+lemma empty_mem_powerset (x : Charges) :
+    ∅ ∈ powerset x := by simp
+
+@[simp]
+lemma powerset_of_empty :
+    powerset ∅ = {∅} := by
+  ext x
+  simp
+
+lemma powerset_subset_iff_subset {x y : Charges} :
+    powerset x ⊆ powerset y ↔ x ⊆ y := by
+  constructor
+  · intro h
+    rw [← mem_powerset_iff_subset]
+    apply h
+    simp
+  · intro h z
+    simp only [mem_powerset_iff_subset]
+    intro h1
+    exact subset_trans h1 h
+
+/-!
+
 ## Relationship to charge profiles
 
 -/
@@ -192,36 +237,6 @@ lemma fromChargeProfile_subset_iff_subset {T : PotentialTerm} {x y : T.ChargePro
   · intro h
     simpa using toChargeProfile_subset_of_subset T h
   · exact fun h => fromChargeProfile_subset_of_subset h
-
-/-!
-
-## Has Empty
-
--/
-
-/-- A collection of charges `x : Charges` satisfies `HasEmpty` if one of its
-  entries is empty. That is to say, it has either no `qHd`, `qHu`, `Q5` or `Q10` particles. -/
-def HasEmpty (x : Charges) : Prop :=
-  if x.1.isNone ∨ x.2.1.isNone ∨ x.2.2.1 = ∅ ∨ x.2.2.2 = ∅ then
-    true
-  else
-    false
-
-@[simp]
-lemma empty_hasEmpty : HasEmpty ∅ := by
-  simp only [HasEmpty, Option.isNone_iff_eq_none, Bool.if_false_right, Bool.decide_or,
-    Bool.and_true, Bool.or_eq_true, decide_eq_true_eq]
-  left
-  rfl
-
-@[simp]
-lemma fromChargeProfile_hasEmpty {T : PotentialTerm} (cp : T.ChargeProfile) :
-    HasEmpty (fromChargeProfile T cp) := by
-  fin_cases T
-  all_goals
-    simp only [HasEmpty, Option.isNone_iff_eq_none, Bool.if_false_right, Bool.decide_or,
-      Bool.and_true, Bool.or_eq_true, decide_eq_true_eq]
-    aesop
 
 /-!
 
