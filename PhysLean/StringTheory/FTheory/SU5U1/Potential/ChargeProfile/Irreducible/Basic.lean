@@ -50,7 +50,7 @@ lemma isIrreducible_iff_powerset_filter_eq {T : PotentialTerm} {x : T.ChargeProf
   constructor
   · intro h
     ext y
-    simp
+    simp only [Finset.mem_filter, mem_powerset_iff_subset, Finset.mem_singleton]
     simp [IsIrreducible] at h
     constructor
     · exact fun ⟨h1, h2⟩ => (h y h1).mpr h2
@@ -76,22 +76,22 @@ lemma isIrreducible_iff_powerset_countP_eq_one {T : PotentialTerm} {x : T.Charge
     x.IsIrreducible ↔ x.powerset.val.countP (IsPresent T) = 1 := by
   rw [isIrreducible_iff_powerset_filter_eq]
   constructor
-  · intro  h
+  · intro h
     trans (Finset.filter (IsPresent T) x.powerset).card
     · change _ = (Multiset.filter (IsPresent T) x.powerset.val).card
       exact Multiset.countP_eq_card_filter (IsPresent T) x.powerset.val
     · rw [h]
       simp
   · intro h
-    have h1 : (Multiset.filter (IsPresent T) x.powerset.val).card  = 1 := by
+    have h1 : (Multiset.filter (IsPresent T) x.powerset.val).card = 1 := by
       rw [← h]
       exact Eq.symm (Multiset.countP_eq_card_filter (IsPresent T) x.powerset.val)
     rw [Multiset.card_eq_one] at h1
     obtain ⟨a, ha⟩ := h1
-    have haMem : a ∈   Multiset.filter (IsPresent T) x.powerset.val  := by
+    have haMem : a ∈ Multiset.filter (IsPresent T) x.powerset.val := by
       simp [ha]
     simp at haMem
-    have hxMem  : x ∈  Multiset.filter (IsPresent T) x.powerset.val := by
+    have hxMem : x ∈ Multiset.filter (IsPresent T) x.powerset.val := by
       simpa using isPresent_of_subset haMem.1 haMem.2
     rw [ha] at hxMem
     simp at hxMem
@@ -111,13 +111,14 @@ lemma subset_isIrreducible_of_isPresent {T : PotentialTerm} {x : T.ChargeProfile
   rw [isIrreducible_iff_powerset_filter_eq]
   rw [← h2]
   ext z
-  simp
+  simp only [Finset.mem_filter, mem_powerset_iff_subset, Finset.mem_inter, and_congr_right_iff,
+    iff_and_self]
   intro hzy hzpres
   exact subset_trans hzy h1.1
 
 lemma isPresent_iff_subest_isIrreducible {T : PotentialTerm} {x : T.ChargeProfile} :
     IsPresent T x ↔ ∃ y ∈ powerset x, IsIrreducible y :=
-  ⟨fun h => subset_isIrreducible_of_isPresent h, fun h=> isPresent_of_has_isIrreducible_subset h⟩
+  ⟨fun h => subset_isIrreducible_of_isPresent h, fun h => isPresent_of_has_isIrreducible_subset h⟩
 
 end ChargeProfile
 

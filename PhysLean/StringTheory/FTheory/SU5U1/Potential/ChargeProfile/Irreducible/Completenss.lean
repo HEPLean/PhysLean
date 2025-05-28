@@ -36,7 +36,6 @@ namespace PotentialTerm
 
 namespace ChargeProfile
 
-
 /-!
 
 ## Auxillary results: Multisets from Finsets of given cardinality.
@@ -257,7 +256,6 @@ def irreducibleElems' (I : CodimensionOneConfig) : (T : PotentialTerm) → Multi
     let Filt := prod.filter (fun x => x.1 + x.2.1.sum + x.2.2.sum = 0)
     (Filt.map (fun x => (x.1, x.2.1.toFinset, x.2.2.toFinset)))
 
-
 /-- Elements of `irreducibleElems'` are irreducible. -/
 lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : PotentialTerm}
     (x : ChargeProfile T) (h : IsIrreducible x) (hx : x ∈ finsetOfCodimensionOneConfig I T) :
@@ -271,26 +269,18 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, ⟨h1, h2⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, q2, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, q2, ⟨?_, by omega⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1 h2
       subst h1 h2
       rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
       simpa using hx
-    · -- sum
-      omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod]
-      simp only [Multiset.instSProd]
-      rw [Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton, and_self,
-        true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val, Multiset.mem_product,
+        Multiset.mem_singleton, and_self, true_and]
       omega
   | K1, (Q5, Q10) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -300,7 +290,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := x_isPresent
-    refine ⟨{q1}, {q2, q3}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨{q1}, {q2, q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       simp [Finset.insert_subset_iff]
       simp [finsetOfCodimensionOneConfig] at hx
@@ -311,17 +301,13 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Multiset.toFinset_singleton, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Finset.insert_val, Multiset.mem_ndinsert,
-        true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Multiset.toFinset_singleton, Finset.singleton_val,
+        Multiset.insert_eq_cons, Multiset.toFinset_cons, Finset.insert_val, Multiset.mem_product,
+        Multiset.mem_singleton, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | K2, (qHd, qHu, Q10) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -331,7 +317,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, q2, {q3}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, q2, {q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1 h2
       subst h1 h2
@@ -342,17 +328,13 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Multiset.toFinset_singleton,
-        Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val,
+        Multiset.toFinset_singleton, Multiset.mem_product, Multiset.mem_singleton, and_self,
+        true_and]
       omega
   | W1, (Q5, Q10) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -363,7 +345,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, q4, ⟨h1, h2, h3, h4⟩, hsum⟩ := x_isPresent
-    refine ⟨{q1}, {q2, q3, q4}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨{q1}, {q2, q3, q4}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       simp [Finset.insert_subset_iff]
       simp [finsetOfCodimensionOneConfig] at hx
@@ -374,17 +356,13 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3, q4
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Multiset.toFinset_singleton, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Finset.insert_val, Multiset.mem_ndinsert,
-        true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Multiset.toFinset_singleton, Finset.singleton_val,
+        Multiset.insert_eq_cons, Multiset.toFinset_cons, Finset.insert_val, Multiset.mem_product,
+        Multiset.mem_singleton, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
       omega
   | W2, (qHd, Q10) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -395,7 +373,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, q4, ⟨h1, h2, h3, h4⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, {q2, q3, q4}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, {q2, q3, q4}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
@@ -406,17 +384,14 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3, q4
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Multiset.toFinset_singleton,
-        Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val, Multiset.insert_eq_cons,
+        Multiset.toFinset_cons, Multiset.toFinset_singleton, Finset.insert_val,
+        Multiset.mem_product, Multiset.mem_singleton, Multiset.mem_ndinsert, true_or, or_true,
+        and_self, true_and]
       omega
   | W3, (qHu, Q5) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -426,7 +401,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, {q2, q3}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, {q2, q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
@@ -437,17 +412,14 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Multiset.toFinset_singleton,
-        Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val, Multiset.insert_eq_cons,
+        Multiset.toFinset_cons, Multiset.toFinset_singleton, Finset.insert_val,
+        Multiset.mem_product, Multiset.mem_singleton, Multiset.mem_ndinsert, true_or, or_true,
+        and_self, true_and]
       omega
   | W4, (qHd, qHu, Q5) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -457,7 +429,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, q2, {q3}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, q2, {q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1 h2
       subst h1 h2
@@ -468,17 +440,13 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Multiset.toFinset_singleton,
-        Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val,
+        Multiset.toFinset_singleton, Multiset.mem_product, Multiset.mem_singleton, and_self,
+        true_and]
       omega
   | Λ, (Q5, Q10) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -488,7 +456,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := x_isPresent
-    refine ⟨{q1, q2}, {q3}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨{q1, q2}, {q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       simp [Finset.insert_subset_iff]
       simp [finsetOfCodimensionOneConfig] at hx
@@ -499,17 +467,13 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Multiset.toFinset_singleton, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Finset.insert_val, Multiset.mem_ndinsert,
-        true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Multiset.insert_eq_cons, Multiset.toFinset_cons,
+        Multiset.toFinset_singleton, Finset.insert_val, Finset.singleton_val, Multiset.mem_product,
+        Multiset.mem_ndinsert, Multiset.mem_singleton, true_or, or_true, and_self, true_and]
       omega
   | β, (qHu, Q5) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -519,7 +483,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, ⟨h1, h2⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, {q2}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, {q2}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
@@ -530,17 +494,13 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Multiset.toFinset_singleton,
-        Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val,
+        Multiset.toFinset_singleton, Multiset.mem_product, Multiset.mem_singleton, and_self,
+        true_and]
       omega
   | topYukawa, (qHu, Q10) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -550,7 +510,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, {q2, q3}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, {q2, q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
@@ -561,17 +521,14 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Multiset.toFinset_singleton,
-        Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val, Multiset.insert_eq_cons,
+        Multiset.toFinset_cons, Multiset.toFinset_singleton, Finset.insert_val,
+        Multiset.mem_product, Multiset.mem_singleton, Multiset.mem_ndinsert, true_or, or_true,
+        and_self, true_and]
       omega
   | bottomYukawa, (qHd, Q5, Q10) =>
     simp only [irreducibleElems', Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
@@ -581,7 +538,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
       Prod.exists] at x_isPresent
     simp only [← Multiset.mem_toFinset, Finset.val_toFinset, Finset.mem_product] at x_isPresent
     obtain ⟨q1, q2, q3, ⟨h1, h2, h3⟩, hsum⟩ := x_isPresent
-    refine ⟨q1, {q2}, {q3}, ⟨?_, ?_⟩, (h _ ?_).mpr ?_⟩
+    refine ⟨q1, {q2}, {q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
@@ -592,19 +549,14 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- sum
       simp only [Multiset.sum_singleton, Multiset.insert_eq_cons, Multiset.sum_cons]
       omega
-    · -- mem powerset
-      apply subset_of_iff_mem_powerset.mp
-      simp_all [Subset]
     · -- is present
-      simp only [IsPresent, charges, Finset.product_eq_sprod, Multiset.mem_map, Prod.exists]
+      simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
+        Prod.exists]
       use q1, q2, q3
-      simp only [Finset.product_val]
-      repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-      simp only [Option.toFinset_some, Finset.singleton_val, Multiset.mem_singleton,
-        Multiset.insert_eq_cons, Multiset.toFinset_cons, Multiset.toFinset_singleton,
-        Finset.insert_val, Multiset.mem_ndinsert, true_or, or_true, and_self, true_and]
+      simp only [SProd.sprod, Option.toFinset_some, Finset.singleton_val,
+        Multiset.toFinset_singleton, Multiset.mem_product, Multiset.mem_singleton, and_self,
+        true_and]
       omega
-
 
 /-!
 

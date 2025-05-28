@@ -36,14 +36,13 @@ def γ3 : Matrix (Fin 4) (Fin 4) ℂ :=
   !![0, 0, 1, 0; 0, 0, 0, -1; -1, 0, 0, 0; 0, 1, 0, 0]
 
 theorem _root_.Matrix.one_fin_four {α} [Zero α] [One α] :
-    (1 : Matrix  (Fin 4) (Fin 4) α) = !![1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1] :=
+    (1 : Matrix (Fin 4) (Fin 4) α) = !![1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1] :=
   Matrix.etaExpand_eq _ |>.symm
 
 @[simp] lemma γ0_mul_γ0 : γ0 * γ0 = 1 := by simp [γ0, Matrix.one_fin_four]
 @[simp] lemma γ1_mul_γ1 : γ1 * γ1 = -1 := by simp [γ1, Matrix.one_fin_four]
 @[simp] lemma γ2_mul_γ2 : γ2 * γ2 = -1 := by simp [γ2, Matrix.one_fin_four]
-@[simp] lemma γ3_mul_γ3 : γ3 * γ3 = -1 :=  by simp [γ3, Matrix.one_fin_four]
-
+@[simp] lemma γ3_mul_γ3 : γ3 * γ3 = -1 := by simp [γ3, Matrix.one_fin_four]
 
 @[simp] lemma γ1_mul_γ0 : γ1 * γ0 = -(γ0 * γ1) := by simp [γ0, γ1]
 @[simp] lemma γ2_mul_γ0 : γ2 * γ0 = -(γ0 * γ2) := by simp [γ0, γ2]

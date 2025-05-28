@@ -28,7 +28,6 @@ namespace PotentialTerm
 
 namespace ChargeProfile
 
-
 /-- OfNat instance on `Option ℤ`. -/
 local instance (n : ℕ) : OfNat (Option ℤ) n where
   ofNat := some n
@@ -39,7 +38,7 @@ local instance : Neg (Option ℤ) where
     | none => none
     | some n => some (-n)
 
-/--  Irreducible charge profiles for when `CodimensionOneConfig = same`. -/
+/-- Irreducible charge profiles for when `CodimensionOneConfig = same`. -/
 def irreducibleElemsOfSame : (T : PotentialTerm) → Multiset T.ChargeProfile
   | μ => {(-3, -3), (-2, -2), (-1, -1), (0, 0), (1, 1), (2, 2), (3, 3)}
   | K2 => {(-3, 0, {3}), (-3, 1, {2}), (-3, 2, {1}), (-3, 3, {0}), (-2, -1, {3}),
@@ -95,7 +94,7 @@ def irreducibleElemsOfSame : (T : PotentialTerm) → Multiset T.ChargeProfile
     (1, {1}, {-2}), (1, {2}, {-3}), (2, {-3}, {1}), (2, {-2}, {0}), (2, {-1}, {-1}), (2, {0}, {-2}),
     (2, {1}, {-3}), (3, {-3}, {0}), (3, {-2}, {-1}), (3, {-1}, {-2}), (3, {0}, {-3})}
 
-/--  Irreducible charge profiles for when `CodimensionOneConfig = nearestNeighbor`. -/
+/-- Irreducible charge profiles for when `CodimensionOneConfig = nearestNeighbor`. -/
 def irreducibleElemsOfNN : (T : PotentialTerm) → Multiset T.ChargeProfile
   | μ => {(-14, -14), (-9, -9), (-4, -4), (1, 1), (6, 6), (11, 11)}
   | K2 => {(-14, 1, {13}), (-14, 6, {8}), (-14, 11, {3}), (-9, -4, {13}),
@@ -140,7 +139,7 @@ def irreducibleElemsOfNN : (T : PotentialTerm) → Multiset T.ChargeProfile
     (6, {-14}, {8}), (6, {-9}, {3}), (6, {-4}, {-2}), (6, {1}, {-7}), (6, {6}, {-12}),
     (11, {-14}, {3}), (11, {-9}, {-2}), (11, {-4}, {-7}), (11, {1}, {-12})}
 
-/--  Irreducible charge profiles for when `CodimensionOneConfig = nextToNearestNeighbor`. -/
+/-- Irreducible charge profiles for when `CodimensionOneConfig = nextToNearestNeighbor`. -/
 def irreducibleElemsOfNToNN : (T : PotentialTerm) → Multiset T.ChargeProfile
   | μ => {(-13, -13), (-8, -8), (-3, -3), (2, 2), (7, 7), (12, 12)}
   | K2 => {(-13, 2, {11}), (-13, 7, {6}), (-13, 12, {1}), (-8, -3, {11}),
@@ -184,7 +183,7 @@ def irreducibleElemsOfNToNN : (T : PotentialTerm) → Multiset T.ChargeProfile
 
 open CodimensionOneConfig
 
-/--  Irreducible charge profiles for a given `CodimensionOneConfig`. -/
+/-- Irreducible charge profiles for a given `CodimensionOneConfig`. -/
 def irreducibleElems: (I : CodimensionOneConfig) → (T : PotentialTerm) → Multiset T.ChargeProfile
   | same, T => irreducibleElemsOfSame T
   | nearestNeighbor, T => irreducibleElemsOfNN T
@@ -213,7 +212,7 @@ lemma irreducibleElems_nodup (I : CodimensionOneConfig) (T : PotentialTerm) :
 
 lemma isPresent_of_mem_irreducibleElems
     {I : CodimensionOneConfig} {T : PotentialTerm} (x : T.ChargeProfile)
-    (h : x ∈ irreducibleElems I T) : IsPresent T x :=  by
+    (h : x ∈ irreducibleElems I T) : IsPresent T x := by
   apply isPresent_of_isIrreducible
   exact isIrreducible_of_mem_irreducibleElems x h
 
@@ -236,13 +235,13 @@ lemma irreducibleElems_subset_finsetOfCodimensionOneConfig
 
 -/
 
-/-- For  `I : CodimensionOneConfig` and `T : PotentialTerm`, the cardinality of
-  `irreducibleElems I T`.  -/
+/-- For `I : CodimensionOneConfig` and `T : PotentialTerm`, the cardinality of
+  `irreducibleElems I T`. -/
 def irreducibleElemsCard (I : CodimensionOneConfig) (T : PotentialTerm) : ℕ :=
   match I, T with
   | same, μ => 7
   | nearestNeighbor, μ => 6
-  | nextToNearestNeighbor, μ =>  6
+  | nextToNearestNeighbor, μ => 6
   | same, K2 => 37
   | nearestNeighbor, K2 => 27
   | nextToNearestNeighbor, K2 => 24

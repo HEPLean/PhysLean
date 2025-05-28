@@ -89,7 +89,6 @@ instance : (T : PotentialTerm) → DecidableEq T.ChargeProfile
   | topYukawa => inferInstanceAs (DecidableEq (Option ℤ × Finset ℤ))
   | bottomYukawa => inferInstanceAs (DecidableEq (Option ℤ × Finset ℤ × Finset ℤ))
 
-
 /-!
 
 ## Subset relation on `ChargeProfile`
@@ -137,9 +136,9 @@ lemma subset_trans {T : PotentialTerm} {x y z : T.ChargeProfile} (h1 : x ⊆ y) 
 lemma _root_.Option.toFinset_inj {x y : Option ℤ} :
     x = y ↔ x.toFinset = y.toFinset := by
   match x, y with
-  | none, none =>  simp [Option.toFinset]
+  | none, none => simp [Option.toFinset]
   | none, some a =>
-    rw [show (none = some a) ↔ False by simp ]
+    rw [show (none = some a) ↔ False by simp]
     simp only [Option.toFinset_none, Option.toFinset_some, false_iff, ne_eq]
     rw [Finset.eq_singleton_iff_unique_mem]
     simp
@@ -233,7 +232,7 @@ lemma subset_antisymm {T : PotentialTerm} {x y : T.ChargeProfile} (h1 : x ⊆ y)
 
 -/
 
-instance emptyInst (T : PotentialTerm) :  EmptyCollection T.ChargeProfile  where
+instance emptyInst (T : PotentialTerm) : EmptyCollection T.ChargeProfile where
   emptyCollection :=
   match T with
   | μ => (none, none)
@@ -272,7 +271,7 @@ lemma subset_of_empty_iff_empty {T : PotentialTerm} {x : T.ChargeProfile} :
 -/
 
 /-- The powerset of `x : Option ℤ` defined as `{none}` if `x` is `none`
-  and `{none, some y}` is `x` is `some y`.-/
+  and `{none, some y}` is `x` is `some y`. -/
 def _root_.Option.powerset (x : Option ℤ) : Finset (Option ℤ) :=
   match x with
   | none => {none}
@@ -357,8 +356,8 @@ lemma min_exists_inductive {T : PotentialTerm} (S : Finset T.ChargeProfile) (hS 
     have hSremo : (S.erase y).card = n + 1 := by
       rw [Finset.card_erase_eq_ite]
       simp_all
-    have hSeraseNeEmpty : (S.erase y) ≠ ∅  := by
-        simp
+    have hSeraseNeEmpty : (S.erase y) ≠ ∅ := by
+        simp only [ne_eq]
         rw [← Finset.card_eq_zero]
         omega
     obtain ⟨x, hx1, hx2⟩ := min_exists_inductive (S.erase y) hSeraseNeEmpty (n + 1) hSremo
@@ -374,18 +373,15 @@ lemma min_exists_inductive {T : PotentialTerm} (S : Finset T.ChargeProfile) (hS 
         constructor
         · intro hz
           simp at hz
-          simp
+          simp only [Finset.mem_singleton]
           rw [Finset.inter_erase] at hx2
-          have hl : z ∈ x.powerset ∩ S := by
-            simp_all
-            exact subset_trans hz.1  hyPx
           by_cases hn : z = y
           · exact hn
           apply False.elim
           have hlz : z ∈ (x.powerset ∩ S).erase y := by
             simp [hn, hz.2]
             simp at hyPx
-            exact subset_trans hz.1  hyPx
+            exact subset_trans hz.1 hyPx
           rw [hx2] at hlz
           simp at hlz
           simp_all
@@ -404,7 +400,8 @@ lemma min_exists_inductive {T : PotentialTerm} (S : Finset T.ChargeProfile) (hS 
         exact hx1
       · rw [← hx2]
         ext z
-        simp
+        simp only [Finset.mem_inter, mem_powerset_iff_subset, Finset.mem_erase, ne_eq,
+          and_congr_right_iff, iff_and_self]
         intro hzx hzS hzy
         subst hzy
         simp_all
