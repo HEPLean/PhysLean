@@ -426,17 +426,17 @@ lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
 
 lemma same_eq_det_toSelfAdjoint (x : ContrMod 3) :
     ⟪x, x⟫ₘ = det (ContrMod.toSelfAdjoint x).1 := by
-  rw [ContrMod.toSelfAdjoint_apply_coe]
-  simp only [Fin.isValue, as_sum_toSpace,
-    PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial, Fin.sum_univ_three,
-    ofReal_sub, ofReal_mul, ofReal_add]
-  simp only [Fin.isValue, PauliMatrix.σ0, smul_of, smul_cons, real_smul, mul_one, smul_zero,
-    smul_empty, PauliMatrix.σ1, of_sub_of, sub_cons, head_cons, sub_zero, tail_cons, zero_sub,
-    sub_self, zero_empty, PauliMatrix.σ2, smul_neg, sub_neg_eq_add, PauliMatrix.σ3, det_fin_two_of]
+  rw [ContrMod.toSelfAdjoint_apply_coe, as_sum_toSpace, det_fin_two,
+    PauliMatrix.σ1, PauliMatrix.σ2, PauliMatrix.σ3, ContrMod.toSpace,
+    ContrMod.toFin1dℝ_eq_val]
+  simp [Fin.sum_univ_three] says
+    simp only [Fin.isValue, PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial,
+      Fin.sum_univ_three, ofReal_sub, ofReal_mul, ofReal_add, smul_of, smul_cons, smul_zero,
+      real_smul, mul_one, smul_empty, smul_neg, sub_apply, smul_apply, one_apply_eq, of_apply,
+      cons_val', cons_val_zero, cons_val_fin_one, sub_zero, cons_val_one, sub_neg_eq_add, ne_eq,
+      zero_ne_one, not_false_eq_true, one_apply_ne, zero_sub, one_ne_zero]
   ring_nf
-  simp only [Fin.isValue, ContrMod.toFin1dℝ_eq_val, I_sq, mul_neg, mul_one, ContrMod.toSpace,
-    Function.comp_apply]
-  ring
+  simp
 
 end contrContrContractField
 
