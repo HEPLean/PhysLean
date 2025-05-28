@@ -103,7 +103,7 @@ def ofCliffordAlgebra : CliffordAlgebra diracForm →ₐ[ℝ] diracAlgebra :=
 
 /-- The generators of the clifford algebra correspond to the elements `γ`. -/
 @[simp]
-theorem ofCliffordAlgebra_ι_single (i : Fin 4) (r : ℝ) :
+lemma ofCliffordAlgebra_ι_single (i : Fin 4) (r : ℝ) :
     ofCliffordAlgebra (CliffordAlgebra.ι _ (Pi.single i r)) = r • ⟨γ i, γ_in_diracAlgebra _⟩ :=
   CliffordAlgebra.lift_ι_apply _ _ _ |>.trans <| Subtype.ext <| by
     simp +contextual [Fintype.sum_eq_single i, -γ]
