@@ -253,6 +253,7 @@ import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.Basic
 import PhysLean.StringTheory.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import PhysLean.StringTheory.FTheory.SU5U1.Examples
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
