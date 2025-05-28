@@ -429,7 +429,7 @@ lemma same_eq_det_toSelfAdjoint (x : ContrMod 3) :
   rw [ContrMod.toSelfAdjoint_apply_coe, as_sum_toSpace, det_fin_two,
     PauliMatrix.σ1, PauliMatrix.σ2, PauliMatrix.σ3, ContrMod.toSpace,
     ContrMod.toFin1dℝ_eq_val]
-  simp [Fin.sum_univ_three] says
+  simp? [Fin.sum_univ_three] says
     simp only [Fin.isValue, PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial,
       Fin.sum_univ_three, ofReal_sub, ofReal_mul, ofReal_add, smul_of, smul_cons, smul_zero,
       real_smul, mul_one, smul_empty, smul_neg, sub_apply, smul_apply, one_apply_eq, of_apply,
