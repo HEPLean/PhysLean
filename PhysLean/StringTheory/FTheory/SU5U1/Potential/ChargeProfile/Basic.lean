@@ -640,7 +640,7 @@ lemma isPresent_of_subset {T : PotentialTerm} {y x : T.ChargeProfile}
 
 /-!
 
-## Finsets of charge profiles from `CodimensionOneConfig`
+## Finsets of charge profiles
 
 -/
 
