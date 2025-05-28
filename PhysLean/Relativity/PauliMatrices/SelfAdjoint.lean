@@ -16,88 +16,26 @@ open Matrix
 /-- The trace of `σ0` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ0 * A.1)).re = Matrix.trace (σ0 * A.1) := by
-  rw [eta_fin_two A.1]
-  simp only [σ0, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
-    one_smul, tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul,
-    Equiv.symm_apply_apply, trace_fin_two_of, Complex.add_re, Complex.ofReal_add]
-  have hA : IsSelfAdjoint A.1 := A.2
-  rw [isSelfAdjoint_iff, star_eq_conjTranspose] at hA
-  rw [eta_fin_two (A.1)ᴴ] at hA
-  simp only [Fin.isValue, conjTranspose_apply, RCLike.star_def, of_apply, cons_val', cons_val_zero,
-    empty_val', cons_val_fin_one, cons_val_one, head_cons, head_fin_const] at hA
-  have h00 := congrArg (fun f => f 0 0) hA
-  simp only [Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one] at h00
-  have hA00 : A.1 0 0 = (A.1 0 0).re := by
-    exact Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) h00)
-  rw [hA00]
-  simp only [Fin.isValue, Complex.ofReal_re, add_right_inj]
-  have h11 := congrArg (fun f => f 1 1) hA
-  simp only [Fin.isValue, of_apply, cons_val', cons_val_one, head_cons, empty_val',
-    cons_val_fin_one, head_fin_const] at h11
-  exact Complex.conj_eq_iff_re.mp h11
+  rw [← Complex.conj_eq_iff_re, starRingEnd_apply, ← trace_conjTranspose, conjTranspose_mul,
+    σ0_selfAdjoint, ← star_eq_conjTranspose, A.2, trace_mul_comm]
 
 /-- The trace of `σ1` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ1 * A.1)).re = Matrix.trace (σ1 * A.1) := by
-  rw [eta_fin_two A.1]
-  simp only [σ1, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
-    one_smul, tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul,
-    Equiv.symm_apply_apply, trace_fin_two_of, Complex.add_re, Complex.ofReal_add]
-  have hA : IsSelfAdjoint A.1 := A.2
-  rw [isSelfAdjoint_iff, star_eq_conjTranspose] at hA
-  rw [eta_fin_two (A.1)ᴴ] at hA
-  simp only [Fin.isValue, conjTranspose_apply, RCLike.star_def] at hA
-  have h01 := congrArg (fun f => f 0 1) hA
-  simp only [Fin.isValue, of_apply, cons_val', cons_val_one, head_cons, empty_val',
-    cons_val_fin_one, cons_val_zero] at h01
-  rw [← h01]
-  simp only [Fin.isValue, Complex.conj_re]
-  rw [Complex.add_conj]
-  simp only [Fin.isValue, Complex.ofReal_mul, Complex.ofReal_ofNat]
-  ring
+  rw [← Complex.conj_eq_iff_re, starRingEnd_apply, ← trace_conjTranspose, conjTranspose_mul,
+    σ1_selfAdjoint, ← star_eq_conjTranspose, A.2, trace_mul_comm]
 
 /-- The trace of `σ2` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ2_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ2 * A.1)).re = Matrix.trace (σ2 * A.1) := by
-  rw [eta_fin_two A.1]
-  simp only [σ2, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
-    one_smul, tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul,
-    Equiv.symm_apply_apply, trace_fin_two_of, Complex.add_re, Complex.ofReal_add]
-  have hA : IsSelfAdjoint A.1 := A.2
-  rw [isSelfAdjoint_iff, star_eq_conjTranspose, eta_fin_two (A.1)ᴴ] at hA
-  simp only [Fin.isValue, conjTranspose_apply, RCLike.star_def] at hA
-  have h10 := congrArg (fun f => f 1 0) hA
-  simp only [Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
-    cons_val_one, head_fin_const] at h10
-  rw [← h10]
-  simp only [Fin.isValue, neg_smul, smul_cons, smul_eq_mul, smul_empty, neg_cons, neg_empty,
-    trace_fin_two_of, Complex.add_re, Complex.neg_re, Complex.mul_re, Complex.I_re, Complex.conj_re,
-    zero_mul, Complex.I_im, Complex.conj_im, mul_neg, one_mul, sub_neg_eq_add, zero_add, zero_sub,
-    Complex.ofReal_add, Complex.ofReal_neg]
-  trans Complex.I * (A.1 0 1 - (starRingEnd ℂ) (A.1 0 1))
-  · rw [Complex.sub_conj]
-    ring_nf
-    simp
-  · ring
+  rw [← Complex.conj_eq_iff_re, starRingEnd_apply, ← trace_conjTranspose, conjTranspose_mul,
+    σ2_selfAdjoint, ← star_eq_conjTranspose, A.2, trace_mul_comm]
 
 /-- The trace of `σ3` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ3_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ3 * A.1)).re = Matrix.trace (σ3 * A.1) := by
-  rw [eta_fin_two A.1]
-  simp only [σ3, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
-    one_smul, tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul,
-    Equiv.symm_apply_apply, trace_fin_two_of, Complex.add_re, Complex.ofReal_add]
-  have hA : IsSelfAdjoint A.1 := A.2
-  rw [isSelfAdjoint_iff, star_eq_conjTranspose, eta_fin_two (A.1)ᴴ] at hA
-  simp only [Fin.isValue, conjTranspose_apply, RCLike.star_def] at hA
-  have h00 := congrArg (fun f => f 0 0) hA
-  have h11 := congrArg (fun f => f 1 1) hA
-  have hA00 : A.1 0 0 = (A.1 0 0).re := Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) h00)
-  have hA11 : A.1 1 1 = (A.1 1 1).re := Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) h11)
-  simp only [Fin.isValue, neg_smul, one_smul, neg_cons, neg_empty, trace_fin_two_of, Complex.add_re,
-    Complex.neg_re, Complex.ofReal_add, Complex.ofReal_neg]
-  rw [hA00, hA11]
-  simp
+  rw [← Complex.conj_eq_iff_re, starRingEnd_apply, ← trace_conjTranspose, conjTranspose_mul,
+    σ3_selfAdjoint, ← star_eq_conjTranspose, A.2, trace_mul_comm]
 
 open Complex
 
