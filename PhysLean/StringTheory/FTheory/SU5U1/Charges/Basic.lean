@@ -223,6 +223,42 @@ lemma fromChargeProfile_hasEmpty {T : PotentialTerm} (cp : T.ChargeProfile) :
       Bool.and_true, Bool.or_eq_true, decide_eq_true_eq]
     aesop
 
+/-!
+
+## ofFinset
+
+-/
+
+/-- Given `S5 S10 : Finset ℤ` the finite set of charges associated with
+  for which the 5-bar representation charges sit in `S5` and
+  the 10d representation charges sit in `S10`. -/
+def ofFinset (S5 S10 : Finset ℤ) : Finset Charges :=
+  let SqHd := {none} ∪ S5.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SqHu := {none} ∪ S5.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SQ5 := S5.powerset
+  let SQ10 := S10.powerset
+  SqHd.product (SqHu.product (SQ5.product SQ10))
+
+lemma mem_ofFinset_of_subset (S5 S10 : Finset ℤ)
+    {x y : Charges} (h : x ⊆ y) (hy : y ∈ ofFinset S5 S10) :
+    x ∈ ofFinset S5 S10 := by
+  have hoption (x : Option ℤ) (S : Finset ℤ) :
+      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
+      x.toFinset ⊆ S := by
+    match x with
+    | none => simp
+    | some x => simp
+  rw [ofFinset] at hy ⊢
+  cases x
+  cases y
+  repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hy
+  repeat rw [Finset.product_eq_sprod, Finset.mem_product]
+  dsimp only at hy ⊢
+  rw [Subset] at h
+  dsimp only [hasSubset] at h
+  simp only [hoption, Finset.mem_powerset] at hy ⊢
+  exact ⟨h.1.trans hy.1, h.2.1.trans hy.2.1, h.2.2.1.trans hy.2.2.1,  h.2.2.2.trans hy.2.2.2⟩
+
 end Charges
 
 end SU5U1
