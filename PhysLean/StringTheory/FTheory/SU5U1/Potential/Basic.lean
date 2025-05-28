@@ -7,7 +7,7 @@ import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Finset.Prod
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.DeriveFintype
-import PhysLean.StringTheory.FTheory.SU5U1.Charges
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 /-!
 
 # Potential of the SU(5) + U(1) GUT for F-Theory
