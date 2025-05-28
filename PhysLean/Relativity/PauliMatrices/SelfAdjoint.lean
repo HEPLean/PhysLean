@@ -16,9 +16,8 @@ open Matrix
 /-- The trace of `σ0` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ0 * A.1)).re = Matrix.trace (σ0 * A.1) := by
-  have hi (i) : star (A.1 i i) = A.1 i i := by simpa using congrArg (fun f => f i i) A.2
-  simp_rw [← starRingEnd_apply, Complex.conj_eq_iff_re] at hi
-  simp_rw [Matrix.trace, Fin.sum_univ_two, one_mul, diag, Complex.add_re, Complex.ofReal_add, hi]
+  rw [one_mul, ← Complex.conj_eq_iff_re, starRingEnd_apply, ← trace_conjTranspose,
+    ← star_eq_conjTranspose, A.2]
 
 /-- The trace of `σ1` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
