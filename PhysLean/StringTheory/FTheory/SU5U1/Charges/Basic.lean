@@ -259,6 +259,55 @@ lemma mem_ofFinset_of_subset (S5 S10 : Finset ℤ)
   simp only [hoption, Finset.mem_powerset] at hy ⊢
   exact ⟨h.1.trans hy.1, h.2.1.trans hy.2.1, h.2.2.1.trans hy.2.2.1,  h.2.2.2.trans hy.2.2.2⟩
 
+lemma toChargeProfile_mem_ofFinset_of_mem_ofFinset (T : PotentialTerm)
+    {x : Charges} (S5 S10 : Finset ℤ) (hx : x ∈ ofFinset S5 S10) :
+    toChargeProfile T x ∈ ChargeProfile.ofFinset T S5 S10 := by
+  have hoption (x : Option ℤ) (S : Finset ℤ) :
+      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
+      x.toFinset ⊆ S := by
+    match x with
+    | none => simp
+    | some x => simp
+  rw [ofFinset] at hx
+  cases x
+  repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hx
+  dsimp at hx
+  simp only [hoption, Finset.mem_powerset] at hx
+  fin_cases T
+  all_goals
+    rw [ChargeProfile.ofFinset, toChargeProfile]
+    repeat rw [Finset.product_eq_sprod, Finset.mem_product]
+    dsimp only
+    simp only [hoption, Finset.mem_powerset]
+    aesop
+
+@[simp]
+lemma fromChargeProfile_mem_ofFinset_iff_mem_ofFinset {T : PotentialTerm}
+    {x : T.ChargeProfile} (S5 S10 : Finset ℤ) :
+    fromChargeProfile T x ∈ ofFinset S5 S10 ↔ x ∈ ChargeProfile.ofFinset T S5 S10 := by
+  constructor
+  · intro h
+    simpa using toChargeProfile_mem_ofFinset_of_mem_ofFinset T S5 S10 h
+  · intro h
+    have hoption (x : Option ℤ) (S : Finset ℤ) :
+      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
+      x.toFinset ⊆ S := by
+      match x with
+      | none => simp
+      | some x => simp
+    fin_cases T
+    all_goals
+      cases x
+      dsimp [fromChargeProfile, ofFinset]
+      repeat rw [Finset.mem_product]
+      dsimp only
+      simp only [hoption, Finset.mem_powerset]
+      rw [ChargeProfile.ofFinset] at h
+      repeat rw [Finset.product_eq_sprod, Finset.mem_product] at h
+      dsimp only at h
+      simp only [hoption, Finset.mem_powerset] at h
+      aesop
+
 end Charges
 
 end SU5U1
