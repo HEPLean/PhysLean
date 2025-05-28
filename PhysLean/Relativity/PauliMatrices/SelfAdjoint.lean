@@ -16,25 +16,9 @@ open Matrix
 /-- The trace of `σ0` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ0 * A.1)).re = Matrix.trace (σ0 * A.1) := by
-  rw [eta_fin_two A.1]
-  simp only [σ0, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
-    one_smul, tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul,
-    Equiv.symm_apply_apply, trace_fin_two_of, Complex.add_re, Complex.ofReal_add]
-  have hA : IsSelfAdjoint A.1 := A.2
-  rw [isSelfAdjoint_iff, star_eq_conjTranspose] at hA
-  rw [eta_fin_two (A.1)ᴴ] at hA
-  simp only [Fin.isValue, conjTranspose_apply, RCLike.star_def, of_apply, cons_val', cons_val_zero,
-    empty_val', cons_val_fin_one, cons_val_one, head_cons, head_fin_const] at hA
-  have h00 := congrArg (fun f => f 0 0) hA
-  simp only [Fin.isValue, of_apply, cons_val', cons_val_zero, empty_val', cons_val_fin_one] at h00
-  have hA00 : A.1 0 0 = (A.1 0 0).re := by
-    exact Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) h00)
-  rw [hA00]
-  simp only [Fin.isValue, Complex.ofReal_re, add_right_inj]
-  have h11 := congrArg (fun f => f 1 1) hA
-  simp only [Fin.isValue, of_apply, cons_val', cons_val_one, head_cons, empty_val',
-    cons_val_fin_one, head_fin_const] at h11
-  exact Complex.conj_eq_iff_re.mp h11
+  have hi (i) : star (A.1 i i) = A.1 i i := by simpa using congrArg (fun f => f i i) A.2
+  simp_rw [← starRingEnd_apply, Complex.conj_eq_iff_re] at hi
+  simp_rw [Matrix.trace, Fin.sum_univ_two, one_mul, diag, Complex.add_re, Complex.ofReal_add, hi]
 
 /-- The trace of `σ1` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
@@ -110,7 +94,7 @@ lemma selfAdjoint_ext_complex {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
     (h3 : Matrix.trace (PauliMatrix.σ3 * A.1) = Matrix.trace (PauliMatrix.σ3 * B.1)) : A = B := by
   ext i j
   rw [eta_fin_two A.1, eta_fin_two B.1] at h0 h1 h2 h3
-  simp only [PauliMatrix.σ0, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons,
+  simp only [one_mul, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons,
     head_cons, one_smul, tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul,
     Equiv.symm_apply_apply, trace_fin_two_of] at h0
   simp only [σ1, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
