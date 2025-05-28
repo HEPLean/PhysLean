@@ -63,13 +63,13 @@ These lemmas try to put the terms in numerical order.
 We skip `σ0` since it's just `1` anyway.
 -/
 
-@[simp] theorem σ1_mul_σ1 : σ1 * σ1 = 1 := by simp [σ1, one_fin_two]
-@[simp] theorem σ2_mul_σ2 : σ2 * σ2 = 1 := by simp [σ2, one_fin_two]
-@[simp] theorem σ3_mul_σ3 : σ3 * σ3 = 1 := by simp [σ3, one_fin_two]
+@[simp] lemma σ1_mul_σ1 : σ1 * σ1 = 1 := by simp [σ1, one_fin_two]
+@[simp] lemma σ2_mul_σ2 : σ2 * σ2 = 1 := by simp [σ2, one_fin_two]
+@[simp] lemma σ3_mul_σ3 : σ3 * σ3 = 1 := by simp [σ3, one_fin_two]
 
-@[simp] theorem σ2_mul_σ1 : σ2 * σ1 = -(σ1 * σ2) := by simp [σ1, σ2]
-@[simp] theorem σ3_mul_σ1 : σ3 * σ1 = -(σ1 * σ3) := by simp [σ1, σ3]
-@[simp] theorem σ3_mul_σ2 : σ3 * σ2 = -(σ2 * σ3) := by simp [σ2, σ3]
+@[simp] lemma σ2_mul_σ1 : σ2 * σ1 = -(σ1 * σ2) := by simp [σ1, σ2]
+@[simp] lemma σ3_mul_σ1 : σ3 * σ1 = -(σ1 * σ3) := by simp [σ1, σ3]
+@[simp] lemma σ3_mul_σ2 : σ3 * σ2 = -(σ2 * σ3) := by simp [σ2, σ3]
 
 /-!
 
