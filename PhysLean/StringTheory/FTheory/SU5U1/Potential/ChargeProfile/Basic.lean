@@ -641,16 +641,17 @@ lemma isPresent_of_subset {T : PotentialTerm} {y x : T.ChargeProfile}
 /-!
 
 ## Finsets of charge profiles from `CodimensionOneConfig`
+
 -/
 
-/-- Given a `I : CodimensionOneConfig`, and a potential term `PotentialTerm`, the
-  finite set of elements of `T.ChargeProfile` which orginate from charges allowed by `I`. -/
-def finsetOfCodimensionOneConfig (I : CodimensionOneConfig) (T : PotentialTerm) :
-    Finset T.ChargeProfile :=
-  let SqHd := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-  let SqHu := {none} ∪ I.allowedBarFiveCharges.map ⟨Option.some, Option.some_injective ℤ⟩
-  let SQ5 := I.allowedBarFiveCharges.powerset
-  let SQ10 := I.allowedTenCharges.powerset
+/-- Given `S5 S10 : Finset ℤ` the finite set of charge profiles associated with
+  a potential term `T` for which the 5-bar representation charges sit in `S5` and
+  the 10d representation charges sit in `S10`. -/
+def ofFinset (T : PotentialTerm) (S5 S10 : Finset ℤ) : Finset T.ChargeProfile :=
+  let SqHd := {none} ∪ S5.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SqHu := {none} ∪ S5.map ⟨Option.some, Option.some_injective ℤ⟩
+  let SQ5 := S5.powerset
+  let SQ10 := S10.powerset
   match T with
   | μ => SqHd.product SqHu
   | K2 => SqHd.product (SqHu.product SQ10)
@@ -663,6 +664,35 @@ def finsetOfCodimensionOneConfig (I : CodimensionOneConfig) (T : PotentialTerm) 
   | β => SqHu.product SQ5
   | topYukawa => SqHu.product SQ10
   | bottomYukawa => SqHd.product (SQ5.product SQ10)
+
+lemma mem_ofFinset_of_subset {T : PotentialTerm} (S5 S10 : Finset ℤ)
+    {x y : T.ChargeProfile} (h : x ⊆ y) (hy : y ∈ ofFinset T S5 S10) :
+    x ∈ ofFinset T S5 S10 := by
+  have hoption (x : Option ℤ) (S : Finset ℤ) :
+      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
+      x.toFinset ⊆ S := by
+    match x with
+    | none => simp
+    | some x => simp
+  fin_cases T
+  all_goals
+    rw [ofFinset] at hy ⊢
+    cases x
+    cases y
+    repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hy
+    repeat rw [Finset.product_eq_sprod, Finset.mem_product]
+    dsimp only at hy ⊢
+    rw [Subset] at h
+    dsimp only [instHasSubset] at h
+    simp only [hoption, Finset.mem_powerset] at hy ⊢
+    try exact ⟨h.1.trans hy.1, h.2.trans hy.2⟩
+    try exact ⟨h.1.trans hy.1, h.2.1.trans hy.2.1, h.2.2.trans hy.2.2⟩
+
+/-- Given a `I : CodimensionOneConfig`, and a potential term `PotentialTerm`, the
+  finite set of elements of `T.ChargeProfile` which orginate from charges allowed by `I`. -/
+def finsetOfCodimensionOneConfig (I : CodimensionOneConfig) (T : PotentialTerm) :
+    Finset T.ChargeProfile :=
+  ofFinset T I.allowedBarFiveCharges I.allowedTenCharges
 
 end ChargeProfile
 

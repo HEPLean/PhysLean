@@ -264,6 +264,6 @@ import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Completenss
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
 import PhysLean.Thermodynamics.Basic

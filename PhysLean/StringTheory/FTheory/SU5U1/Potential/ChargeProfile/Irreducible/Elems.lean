@@ -223,7 +223,7 @@ lemma irreducibleElems_subset_finsetOfCodimensionOneConfig
   intro x hx
   fin_cases T
   all_goals
-    simp only [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.product_val]
+    simp only [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.product_val]
     repeat rw [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
     simp only [Finset.mem_val, Finset.mem_powerset]
     revert I x

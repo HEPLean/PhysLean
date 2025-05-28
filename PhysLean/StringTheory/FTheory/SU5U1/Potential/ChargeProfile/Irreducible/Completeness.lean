@@ -273,7 +273,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1 h2
       subst h1 h2
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simpa using hx
     · -- is present
       simp only [IsPresent, charges, Finset.product_eq_sprod, Finset.product_val, Multiset.mem_map,
@@ -293,7 +293,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     refine ⟨{q1}, {q2, q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       simp [Finset.insert_subset_iff]
-      simp [finsetOfCodimensionOneConfig] at hx
+      simp [finsetOfCodimensionOneConfig, ofFinset] at hx
       rw [Finset.mem_product] at hx
       obtain ⟨h5, h10⟩ := hx
       simp at h5 h10
@@ -321,7 +321,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1 h2
       subst h1 h2
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simp at hx
       obtain ⟨ha, hb, hc⟩ := hx
       simpa [Finset.insert_subset_iff] using ⟨ha, hb, hc h3⟩
@@ -348,7 +348,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     refine ⟨{q1}, {q2, q3, q4}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       simp [Finset.insert_subset_iff]
-      simp [finsetOfCodimensionOneConfig] at hx
+      simp [finsetOfCodimensionOneConfig, ofFinset] at hx
       rw [Finset.mem_product] at hx
       obtain ⟨h5, h10⟩ := hx
       simp at h5 h10
@@ -377,7 +377,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simp at hx
       obtain ⟨ha, hb⟩ := hx
       simpa [Finset.insert_subset_iff] using ⟨ha, hb h2, hb h3, hb h4⟩
@@ -405,7 +405,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simp at hx
       obtain ⟨ha, hb⟩ := hx
       simpa [Finset.insert_subset_iff] using ⟨ha, hb h2, hb h3⟩
@@ -433,7 +433,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1 h2
       subst h1 h2
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simp at hx
       obtain ⟨ha, hb, hc⟩ := hx
       simpa [Finset.insert_subset_iff] using ⟨ha, hb, hc h3⟩
@@ -459,7 +459,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     refine ⟨{q1, q2}, {q3}, ⟨?_, ?_⟩, (h _ (by simp_all [Subset])).mpr ?_⟩
     · -- membership of Multiset
       simp [Finset.insert_subset_iff]
-      simp [finsetOfCodimensionOneConfig] at hx
+      simp [finsetOfCodimensionOneConfig, ofFinset] at hx
       rw [Finset.mem_product] at hx
       obtain ⟨h5, h10⟩ := hx
       simp at h5 h10
@@ -487,7 +487,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simp at hx
       obtain ⟨ha, hb⟩ := hx
       simpa [Finset.insert_subset_iff] using ⟨ha, hb h2⟩
@@ -514,7 +514,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simp at hx
       obtain ⟨ha, hb⟩ := hx
       simpa [Finset.insert_subset_iff] using ⟨ha, hb h2, hb h3⟩
@@ -542,7 +542,7 @@ lemma mem_irreducibleElems'_of_irreducible {I : CodimensionOneConfig} {T : Poten
     · -- membership of Multiset
       rw [Option.mem_toFinset, Option.mem_def] at h1
       subst h1
-      rw [finsetOfCodimensionOneConfig, Finset.product_eq_sprod, Finset.mem_product] at hx
+      rw [finsetOfCodimensionOneConfig, ofFinset, Finset.product_eq_sprod, Finset.mem_product] at hx
       simp at hx
       obtain ⟨ha, hb, hc⟩ := hx
       simpa [Finset.insert_subset_iff] using ⟨ha, hb h2, hc h3⟩
