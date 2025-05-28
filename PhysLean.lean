@@ -188,6 +188,7 @@ import PhysLean.Relativity.Lorentz.Group.Rotations
 import PhysLean.Relativity.Lorentz.MinkowskiMatrix
 import PhysLean.Relativity.PauliMatrices.AsTensor
 import PhysLean.Relativity.PauliMatrices.Basic
+import PhysLean.Relativity.PauliMatrices.CliffordAlgebra
 import PhysLean.Relativity.PauliMatrices.Matrix
 import PhysLean.Relativity.PauliMatrices.Relations
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
