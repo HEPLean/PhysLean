@@ -134,6 +134,298 @@ lemma subset_trans {T : PotentialTerm} {x y z : T.ChargeProfile} (h1 : x ⊆ y) 
   fin_cases T <;>
     simp_all [Subset]
 
+lemma _root_.Option.toFinset_inj {x y : Option ℤ} :
+    x = y ↔ x.toFinset = y.toFinset := by
+  match x, y with
+  | none, none =>  simp [Option.toFinset]
+  | none, some a =>
+    rw [show (none = some a) ↔ False by simp ]
+    simp only [Option.toFinset_none, Option.toFinset_some, false_iff, ne_eq]
+    rw [Finset.eq_singleton_iff_unique_mem]
+    simp
+  | some _, none => simp [Option.toFinset]
+  | some _, some _ => simp [Option.toFinset]
+
+lemma subset_antisymm {T : PotentialTerm} {x y : T.ChargeProfile} (h1 : x ⊆ y) (h2 : y ⊆ x) :
+    x = y := by
+  match T, x, y with
+  | μ, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2.toFinset = y2.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    rw [← Option.toFinset_inj] at hx1 hx2
+    simp_all
+  | β, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    rw [← Option.toFinset_inj] at hx1
+    simp_all
+  | Λ, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1 = y1 := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    simp_all
+  | W1, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1 = y1 := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    simp_all
+  | W2, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    rw [← Option.toFinset_inj] at hx1
+    simp_all
+  | W3, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    rw [← Option.toFinset_inj] at hx1
+    simp_all
+  | W4, (x1, x2, x3), (y1, y2, y3) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2.toFinset = y2.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.2.1, h2.2.1⟩
+    have hx3 : x3 = y3 := Finset.Subset.antisymm_iff.mpr ⟨h1.2.2, h2.2.2⟩
+    rw [← Option.toFinset_inj] at hx1 hx2
+    simp_all
+  | K1, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1 = y1 := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    simp_all
+  | K2, (x1, x2, x3), (y1, y2, y3) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2.toFinset = y2.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.2.1, h2.2.1⟩
+    have hx3 : x3 = y3 := Finset.Subset.antisymm_iff.mpr ⟨h1.2.2, h2.2.2⟩
+    rw [← Option.toFinset_inj] at hx1 hx2
+    simp_all
+  | topYukawa, (x1, x2), (y1, y2) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2, h2.2⟩
+    rw [← Option.toFinset_inj] at hx1
+    simp_all
+  | bottomYukawa, (x1, x2, x3), (y1, y2, y3) =>
+    rw [Subset] at h1 h2
+    dsimp [instHasSubset] at h1 h2
+    have hx1 : x1.toFinset = y1.toFinset := Finset.Subset.antisymm_iff.mpr ⟨h1.1, h2.1⟩
+    have hx2 : x2 = y2 := Finset.Subset.antisymm_iff.mpr ⟨h1.2.1, h2.2.1⟩
+    have hx3 : x3 = y3 := Finset.Subset.antisymm_iff.mpr ⟨h1.2.2, h2.2.2⟩
+    rw [← Option.toFinset_inj] at hx1
+    simp_all
+
+/-!
+
+## The empty charge profile
+
+-/
+
+instance emptyInst (T : PotentialTerm) :  EmptyCollection T.ChargeProfile  where
+  emptyCollection :=
+  match T with
+  | μ => (none, none)
+  | β => (none, ∅)
+  | Λ => (∅, ∅)
+  | W1 => (∅, ∅)
+  | W2 => (none, ∅)
+  | W3 => (none, ∅)
+  | W4 => (none, none, ∅)
+  | K1 => (∅, ∅)
+  | K2 => (none, none, ∅)
+  | topYukawa => (none, ∅)
+  | bottomYukawa => (none, ∅, ∅)
+
+@[simp]
+lemma empty_subset {T : PotentialTerm} (x : T.ChargeProfile) :
+    ∅ ⊆ x := by
+  fin_cases T <;>
+    simp [Subset, instHasSubset, emptyInst]
+
+@[simp]
+lemma subset_of_empty_iff_empty {T : PotentialTerm} {x : T.ChargeProfile} :
+    x ⊆ ∅ ↔ x = ∅ := by
+  constructor
+  · intro h
+    apply subset_antisymm
+    · exact h
+    · exact empty_subset x
+  · intro h
+    subst h
+    simp
+/-!
+
+## Powersets of charge profiles
+
+-/
+
+/-- The powerset of `x : Option ℤ` defined as `{none}` if `x` is `none`
+  and `{none, some y}` is `x` is `some y`.-/
+def _root_.Option.powerset (x : Option ℤ) : Finset (Option ℤ) :=
+  match x with
+  | none => {none}
+  | some x => {none, some x}
+
+@[simp]
+lemma _root_.Option.mem_powerset_iff {x : Option ℤ} (y : Option ℤ) :
+    y ∈ x.powerset ↔ y.toFinset ⊆ x.toFinset :=
+  match x, y with
+  | none, none => by
+    simp [Option.powerset]
+  | none, some _ => by
+    simp [Option.powerset]
+  | some _, none => by
+    simp [Option.powerset]
+  | some _, some _ => by
+    simp [Option.powerset]
+
+/-- The powerset of a charge profile. Given a charge profile `x : T.ChargeProfile`
+  it's powerset is the finite set of all `T.ChargeProfile` which are subsets of `x`. -/
+def powerset {T : PotentialTerm} (x : T.ChargeProfile) : Finset T.ChargeProfile :=
+  match T, x with
+  | μ, (qHd, qHu) => qHd.powerset.product qHu.powerset
+  | β, (qHu, Q5) => qHu.powerset.product Q5.powerset
+  | Λ, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | W1, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | W2, (qHd, Q10) => qHd.powerset.product Q10.powerset
+  | W3, (qHu, Q5) => qHu.powerset.product Q5.powerset
+  | W4, (qHd, qHu, Q5) => qHd.powerset.product (qHu.powerset.product Q5.powerset)
+  | K1, (Q5, Q10) => Q5.powerset.product Q10.powerset
+  | K2, (qHd, qHu, Q10) => qHd.powerset.product (qHu.powerset.product Q10.powerset)
+  | topYukawa, (qHu, Q10) => qHu.powerset.product Q10.powerset
+  | bottomYukawa, (qHd, Q5, Q10) => qHd.powerset.product (Q5.powerset.product Q10.powerset)
+
+@[simp]
+lemma mem_powerset_iff_subset {T : PotentialTerm} {x y : T.ChargeProfile} :
+    x ∈ powerset y ↔ x ⊆ y := by
+  fin_cases T
+  all_goals
+    cases x
+    cases y
+    simp only [powerset, Finset.product_eq_sprod]
+    rw [Finset.mem_product]
+    simp_all [Subset]
+
+lemma self_mem_powerset {T : PotentialTerm} (x : T.ChargeProfile) :
+    x ∈ powerset x := by simp
+
+lemma empty_mem_powerset {T : PotentialTerm} (x : T.ChargeProfile) :
+    ∅ ∈ powerset x := by simp
+
+@[simp]
+lemma powerset_of_empty {T : PotentialTerm} :
+    powerset (∅ : T.ChargeProfile) = {∅} := by
+  ext x
+  simp
+
+lemma powerset_subset_iff_subset {T : PotentialTerm} {x y : T.ChargeProfile} :
+    powerset x ⊆ powerset y ↔ x ⊆ y := by
+  constructor
+  · intro h
+    rw [← mem_powerset_iff_subset]
+    apply h
+    simp
+  · intro h z
+    simp only [mem_powerset_iff_subset]
+    intro h1
+    exact subset_trans h1 h
+
+lemma min_exists_inductive {T : PotentialTerm} (S : Finset T.ChargeProfile) (hS : S ≠ ∅) :
+    (n : ℕ) → (hn : S.card = n) →
+    ∃ y ∈ S, powerset y ∩ S = {y}
+  | 0, h => by simp_all
+  | 1, h => by
+    rw [Finset.card_eq_one] at h
+    obtain ⟨y, rfl⟩ := h
+    use y
+    simp
+  | n + 1 + 1, h => by
+    rw [← Finset.nonempty_iff_ne_empty] at hS
+    obtain ⟨y, hy⟩ := hS
+    have hSremo : (S.erase y).card = n + 1 := by
+      rw [Finset.card_erase_eq_ite]
+      simp_all
+    have hSeraseNeEmpty : (S.erase y) ≠ ∅  := by
+        simp
+        rw [← Finset.card_eq_zero]
+        omega
+    obtain ⟨x, hx1, hx2⟩ := min_exists_inductive (S.erase y) hSeraseNeEmpty (n + 1) hSremo
+    have hxy : x ≠ y := by
+      by_contra hn
+      subst hn
+      simp at hx1
+    by_cases hyPx : y ∈ powerset x
+    · use y
+      constructor
+      · exact hy
+      · ext z
+        constructor
+        · intro hz
+          simp at hz
+          simp
+          rw [Finset.inter_erase] at hx2
+          have hl : z ∈ x.powerset ∩ S := by
+            simp_all
+            exact subset_trans hz.1  hyPx
+          by_cases hn : z = y
+          · exact hn
+          apply False.elim
+          have hlz : z ∈ (x.powerset ∩ S).erase y := by
+            simp [hn, hz.2]
+            simp at hyPx
+            exact subset_trans hz.1  hyPx
+          rw [hx2] at hlz
+          simp at hlz
+          simp_all
+          have hx : y = x := by
+            apply subset_antisymm
+            · exact hyPx
+            · exact hz
+          exact hxy (id (Eq.symm hx))
+        · intro hz
+          simp at hz
+          subst hz
+          simp_all
+    · use x
+      constructor
+      · apply Finset.erase_subset y S
+        exact hx1
+      · rw [← hx2]
+        ext z
+        simp
+        intro hzx hzS hzy
+        subst hzy
+        simp_all
+
+lemma min_exists {T : PotentialTerm} (S : Finset T.ChargeProfile) (hS : S ≠ ∅) :
+    ∃ y ∈ S, powerset y ∩ S = {y} := min_exists_inductive S hS S.card rfl
+
+/-!
+
+## PartialOrder on `ChargeProfile`
+
+The subset relation on `ChargeProfile` is a partial order.
+It is not a linear order because subset inclusion is not total.
+
+-/
+
+instance {T : PotentialTerm} : PartialOrder T.ChargeProfile where
+  le := (· ⊆ ·)
+  le_refl := subset_refl
+  le_antisymm := fun a b => subset_antisymm
+  le_trans := fun a b c => subset_trans
 
 /-!
 
@@ -348,63 +640,6 @@ instance (T : PotentialTerm) : DecidablePred (IsPresent (T := T)) :=
 
 lemma isPresent_of_subset {T : PotentialTerm} {y x : T.ChargeProfile}
     (h : y ⊆ x) (hy : y.IsPresent) : x.IsPresent := charges_of_subset h hy
-
-/-!
-
-## Powersets of charge profiles
-
--/
-
-/-- The powerset of `x : Option ℤ` defined as `{none}` if `x` is `none`
-  and `{none, some y}` is `x` is `some y`.-/
-def _root_.Option.powerset (x : Option ℤ) : Finset (Option ℤ) :=
-  match x with
-  | none => {none}
-  | some x => {none, some x}
-
-@[simp]
-lemma _root_.Option.mem_powerset_iff {x : Option ℤ} (y : Option ℤ) :
-    y ∈ x.powerset ↔ y.toFinset ⊆ x.toFinset :=
-  match x, y with
-  | none, none => by
-    simp [Option.powerset]
-  | none, some _ => by
-    simp [Option.powerset]
-  | some _, none => by
-    simp [Option.powerset]
-  | some _, some _ => by
-    simp [Option.powerset]
-
-/-- The powerset of a charge profile. Given a charge profile `x : T.ChargeProfile`
-  it's powerset is the finite set of all `T.ChargeProfile` which are subsets of `x`. -/
-def powerset {T : PotentialTerm} (x : T.ChargeProfile) : Finset T.ChargeProfile :=
-  match T, x with
-  | μ, (qHd, qHu) => qHd.powerset.product qHu.powerset
-  | β, (qHu, Q5) => qHu.powerset.product Q5.powerset
-  | Λ, (Q5, Q10) => Q5.powerset.product Q10.powerset
-  | W1, (Q5, Q10) => Q5.powerset.product Q10.powerset
-  | W2, (qHd, Q10) => qHd.powerset.product Q10.powerset
-  | W3, (qHu, Q5) => qHu.powerset.product Q5.powerset
-  | W4, (qHd, qHu, Q5) => qHd.powerset.product (qHu.powerset.product Q5.powerset)
-  | K1, (Q5, Q10) => Q5.powerset.product Q10.powerset
-  | K2, (qHd, qHu, Q10) => qHd.powerset.product (qHu.powerset.product Q10.powerset)
-  | topYukawa, (qHu, Q10) => qHu.powerset.product Q10.powerset
-  | bottomYukawa, (qHd, Q5, Q10) => qHd.powerset.product (Q5.powerset.product Q10.powerset)
-
-lemma subset_of_iff_mem_powerset {T : PotentialTerm} {x y : T.ChargeProfile} :
-    x ⊆ y ↔ x ∈ powerset y := by
-  fin_cases T
-  all_goals
-    cases x
-    cases y
-    simp only [powerset, Finset.product_eq_sprod]
-    rw [Finset.mem_product]
-    simp_all [Subset]
-
-@[simp]
-lemma self_mem_powerset {T : PotentialTerm} (x : T.ChargeProfile) :
-    x ∈ powerset x := by
-  rw [← subset_of_iff_mem_powerset]
 
 /-!
 

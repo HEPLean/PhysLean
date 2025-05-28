@@ -193,6 +193,9 @@ def irreducibleElems: (I : CodimensionOneConfig) → (T : PotentialTerm) → Mul
 lemma irreducibleElems_countP_not_isIrreducible
     (I : CodimensionOneConfig) (T : PotentialTerm) :
     ((irreducibleElems I T).countP (fun x => ¬ x.IsIrreducible)) = 0 := by
+  conv_lhs =>
+    enter [1, x]
+    rw [isIrreducible_iff_powerset_countP_eq_one]
   revert T I
   decide
 

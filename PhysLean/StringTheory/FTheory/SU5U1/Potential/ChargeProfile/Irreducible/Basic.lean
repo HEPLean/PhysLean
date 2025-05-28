@@ -35,15 +35,89 @@ instance {T : PotentialTerm} (x : T.ChargeProfile) : Decidable x.IsIrreducible :
 
 lemma isPresent_of_isIrreducible {T : PotentialTerm} {x : T.ChargeProfile} (h : IsIrreducible x) :
     IsPresent T x := by
-  simp [IsIrreducible] at h
+  simp only [IsIrreducible] at h
   simpa using h x (self_mem_powerset x)
 
 lemma isPresent_of_has_isIrreducible_subset {T : PotentialTerm} {x : T.ChargeProfile}
     (hx : ∃ y ∈ powerset x, IsIrreducible y) : IsPresent T x := by
   obtain ⟨y, hy⟩ := hx
-  rw [← subset_of_iff_mem_powerset] at hy
+  simp only [mem_powerset_iff_subset] at hy
   apply isPresent_of_subset hy.1
   exact isPresent_of_isIrreducible hy.2
+
+lemma isIrreducible_iff_powerset_filter_eq {T : PotentialTerm} {x : T.ChargeProfile} :
+    x.IsIrreducible ↔ x.powerset.filter (IsPresent T) = {x} := by
+  constructor
+  · intro h
+    ext y
+    simp
+    simp [IsIrreducible] at h
+    constructor
+    · exact fun ⟨h1, h2⟩ => (h y h1).mpr h2
+    · intro h1
+      subst h1
+      simp
+      exact (h y (by simp)).mp rfl
+  · intro h
+    simp [IsIrreducible]
+    intro y hy
+    rw [Finset.eq_singleton_iff_unique_mem] at h
+    simp at h
+    constructor
+    · intro h1
+      subst h1
+      exact h.1
+    · intro h1
+      apply h.2
+      · exact hy
+      · exact h1
+
+lemma isIrreducible_iff_powerset_countP_eq_one {T : PotentialTerm} {x : T.ChargeProfile} :
+    x.IsIrreducible ↔ x.powerset.val.countP (IsPresent T) = 1 := by
+  rw [isIrreducible_iff_powerset_filter_eq]
+  constructor
+  · intro  h
+    trans (Finset.filter (IsPresent T) x.powerset).card
+    · change _ = (Multiset.filter (IsPresent T) x.powerset.val).card
+      exact Multiset.countP_eq_card_filter (IsPresent T) x.powerset.val
+    · rw [h]
+      simp
+  · intro h
+    have h1 : (Multiset.filter (IsPresent T) x.powerset.val).card  = 1 := by
+      rw [← h]
+      exact Eq.symm (Multiset.countP_eq_card_filter (IsPresent T) x.powerset.val)
+    rw [Multiset.card_eq_one] at h1
+    obtain ⟨a, ha⟩ := h1
+    have haMem : a ∈   Multiset.filter (IsPresent T) x.powerset.val  := by
+      simp [ha]
+    simp at haMem
+    have hxMem  : x ∈  Multiset.filter (IsPresent T) x.powerset.val := by
+      simpa using isPresent_of_subset haMem.1 haMem.2
+    rw [ha] at hxMem
+    simp at hxMem
+    subst hxMem
+    exact Eq.symm ((fun {α} {s t} => Finset.val_inj.mp) (id (Eq.symm ha)))
+
+lemma subset_isIrreducible_of_isPresent {T : PotentialTerm} {x : T.ChargeProfile}
+    (hx : IsPresent T x) : ∃ y ∈ powerset x, IsIrreducible y := by
+  have hPresent : (x.powerset.filter (IsPresent T)) ≠ ∅ := by
+    rw [← @Finset.nonempty_iff_ne_empty]
+    use x
+    simp [hx]
+  obtain ⟨y, h1, h2⟩ := min_exists (x.powerset.filter (IsPresent T)) hPresent
+  use y
+  simp at h1
+  simp_all
+  rw [isIrreducible_iff_powerset_filter_eq]
+  rw [← h2]
+  ext z
+  simp
+  intro hzy hzpres
+  exact subset_trans hzy h1.1
+
+lemma isPresent_iff_subest_isIrreducible {T : PotentialTerm} {x : T.ChargeProfile} :
+    IsPresent T x ↔ ∃ y ∈ powerset x, IsIrreducible y :=
+  ⟨fun h => subset_isIrreducible_of_isPresent h, fun h=> isPresent_of_has_isIrreducible_subset h⟩
 
 end ChargeProfile
 
