@@ -593,6 +593,21 @@ def completions (S5 S10 : Finset ℤ) (x : Charges) : Multiset Charges :=
   let SQ10 := if x.2.2.2 ≠ ∅ then {x.2.2.2} else S10.val.map fun y => {y}
   (SqHd.product (SqHu.product (SQ5.product SQ10)))
 
+@[simp]
+lemma self_mem_completions_iff_isComplete {S5 S10 : Finset ℤ} (x : Charges) :
+    x ∈ completions S5 S10 x ↔ IsComplete x := by
+  simp [completions, IsComplete]
+  repeat rw [Multiset.mem_product]
+  by_cases h1 : x.1.isSome
+  case' neg => simp_all
+  by_cases h2 : x.2.1.isSome
+  case' neg => simp_all
+  by_cases h3 : x.2.2.1 ≠ ∅
+  case' neg => simp_all
+  by_cases h4 : x.2.2.2 ≠ ∅
+  case' neg => simp_all
+  simp_all
+
 lemma mem_completions_isComplete {S5 S10 : Finset ℤ} {x y : Charges}
     (hx : y ∈ completions S5 S10 x) : IsComplete y := by
   match y with
@@ -629,6 +644,39 @@ lemma mem_completions_isComplete {S5 S10 : Finset ℤ} {x y : Charges}
     · simp_all
       obtain ⟨a, h, rfl⟩ := hx.2.2.2
       simp
+
+lemma self_subset_mem_completions (S5 S10 : Finset ℤ) (x y : Charges)
+    (hy : y ∈ completions S5 S10 x) : x ⊆ y := by
+  simp [completions] at hy
+  repeat rw [Multiset.mem_product] at hy
+  rw [Subset]
+  dsimp [hasSubset]
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · by_cases h : x.1.isSome
+    · simp_all
+    · simp_all
+  · by_cases h : x.2.1.isSome
+    · simp_all
+    · simp_all
+  · by_cases h : x.2.2.1 ≠ ∅
+    · simp_all
+    · simp_all
+  · by_cases h : x.2.2.2 ≠ ∅
+    · simp_all
+    · simp_all
+
+lemma exist_completions_subset_of_complete (S5 S10 : Finset ℤ) (x y : Charges)
+  (hsubset : x ⊆ y) (hycomplete : IsComplete y) :
+    ∃ z ∈ completions S5 S10 x, z ⊆ y := by
+  by_cases hx : IsComplete x
+  · use x
+    simp_all
+  rw [Subset] at hsubset
+  dsimp [hasSubset] at hsubset
+  match x, y with
+  | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
+  simp at hsubset
+  sorry
 
 end Charges
 
