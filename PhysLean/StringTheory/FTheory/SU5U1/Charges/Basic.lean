@@ -118,10 +118,9 @@ lemma subset_of_empty_iff_empty {x : Charges} :
 
 -/
 
-
 /-- The powerset of a charge . Given a charge `x : Charges`
   it's powerset is the finite set of all `Charges` which are subsets of `x`. -/
-def powerset (x : Charges): Finset Charges :=
+def powerset (x : Charges) : Finset Charges :=
   x.1.powerset.product <| x.2.1.powerset.product <| x.2.2.1.powerset.product <| x.2.2.2.powerset
 
 @[simp]
@@ -268,7 +267,7 @@ def ofFinset (S5 S10 : Finset ℤ) : Finset Charges :=
   SqHd.product (SqHu.product (SQ5.product SQ10))
 
 lemma qHd_mem_ofFinset (S5 S10 : Finset ℤ) (z : ℤ) (x2 : Option ℤ × Finset ℤ × Finset ℤ)
-    (hsub : (some z, x2) ∈ ofFinset S5 S10):
+    (hsub : (some z, x2) ∈ ofFinset S5 S10) :
     z ∈ S5 := by
   have hoption (x : Option ℤ) (S : Finset ℤ) :
       x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
@@ -284,7 +283,7 @@ lemma qHd_mem_ofFinset (S5 S10 : Finset ℤ) (z : ℤ) (x2 : Option ℤ × Finse
   simp_all
 
 lemma qHu_mem_ofFinset (S5 S10 : Finset ℤ) (z : ℤ) (x1 : Option ℤ) (x2 : Finset ℤ × Finset ℤ)
-    (hsub : (x1, some z, x2) ∈ ofFinset S5 S10):
+    (hsub : (x1, some z, x2) ∈ ofFinset S5 S10) :
     z ∈ S5 := by
   have hoption (x : Option ℤ) (S : Finset ℤ) :
       x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
@@ -312,7 +311,7 @@ lemma mem_ofFinset_Q5_subset (S5 S10 : Finset ℤ)
   cases x
   repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hx
   dsimp only at hx
-  simp only [ Finset.mem_powerset] at hx
+  simp only [Finset.mem_powerset] at hx
   exact hx.2.2.1
 
 lemma mem_ofFinset_Q10_subset (S5 S10 : Finset ℤ)
@@ -328,7 +327,7 @@ lemma mem_ofFinset_Q10_subset (S5 S10 : Finset ℤ)
   cases x
   repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hx
   dsimp only at hx
-  simp only [ Finset.mem_powerset] at hx
+  simp only [Finset.mem_powerset] at hx
   exact hx.2.2.2
 
 lemma mem_ofFinset_of_subset (S5 S10 : Finset ℤ)
@@ -349,7 +348,7 @@ lemma mem_ofFinset_of_subset (S5 S10 : Finset ℤ)
   rw [Subset] at h
   dsimp only [hasSubset] at h
   simp only [hoption, Finset.mem_powerset] at hy ⊢
-  exact ⟨h.1.trans hy.1, h.2.1.trans hy.2.1, h.2.2.1.trans hy.2.2.1,  h.2.2.2.trans hy.2.2.2⟩
+  exact ⟨h.1.trans hy.1, h.2.1.trans hy.2.1, h.2.2.1.trans hy.2.2.1, h.2.2.2.trans hy.2.2.2⟩
 
 lemma toChargeProfile_mem_ofFinset_of_mem_ofFinset (T : PotentialTerm)
     {x : Charges} (S5 S10 : Finset ℤ) (hx : x ∈ ofFinset S5 S10) :
@@ -409,14 +408,14 @@ lemma fromChargeProfile_mem_ofFinset_iff_mem_ofFinset {T : PotentialTerm}
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x`. -/
 def minimalSuperSet (S5 S10 : Finset ℤ) (x : Charges) : Finset Charges :=
-  let SqHd := if x.1.isSome then ∅  else S5.val.map fun y => (some y, x.2)
+  let SqHd := if x.1.isSome then ∅ else S5.val.map fun y => (some y, x.2)
   let SqHu := if x.2.1.isSome then ∅ else S5.val.map fun y => (x.1, some y, x.2.2)
   let SQ5 := S5.val.map (fun y => (x.1, x.2.1, insert y x.2.2.1, x.2.2.2))
   let SQ10 := S10.val.map (fun y => (x.1, x.2.1, x.2.2.1, insert y x.2.2.2))
   (SqHd ∪ SqHu ∪ SQ5 ∪ SQ10).toFinset.erase x
 
 lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x y : Charges)
-    (hy : y ∈ minimalSuperSet S5 S10 x)  : x ⊆ y := by
+    (hy : y ∈ minimalSuperSet S5 S10 x) : x ⊆ y := by
   simp [minimalSuperSet] at hy
   rcases hy with ⟨hy1, hr | hr | hr | hr⟩
   · match x with
@@ -454,7 +453,7 @@ lemma self_not_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x : Charges) :
   simp [minimalSuperSet]
 
 lemma self_neq_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x y : Charges)
-    (hy : y ∈ minimalSuperSet S5 S10 x)  : x ≠ y := by
+    (hy : y ∈ minimalSuperSet S5 S10 x) : x ≠ y := by
   by_contra h
   subst h
   simp at hy
@@ -487,22 +486,22 @@ lemma insert_Q10_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
 
 lemma some_qHd_mem_minimalSuperSet_of_none {S5 S10 : Finset ℤ} {x2 : Option ℤ × Finset ℤ × Finset ℤ}
     (z : ℤ) (hz : z ∈ S5) :
-    (some z, x2) ∈ minimalSuperSet S5 S10 (none, x2):= by
+    (some z, x2) ∈ minimalSuperSet S5 S10 (none, x2) := by
   simp_all [minimalSuperSet]
 
-lemma some_qHu_mem_minimalSuperSet_of_none {S5 S10 : Finset ℤ} {x1 : Option ℤ} {x2 : Finset ℤ × Finset ℤ}
-    (z : ℤ) (hz : z ∈ S5) :
-    (x1, some z, x2) ∈ minimalSuperSet S5 S10 (x1, none, x2):= by
+lemma some_qHu_mem_minimalSuperSet_of_none {S5 S10 : Finset ℤ}
+    {x1 : Option ℤ} {x2 : Finset ℤ × Finset ℤ} (z : ℤ) (hz : z ∈ S5) :
+    (x1, some z, x2) ∈ minimalSuperSet S5 S10 (x1, none, x2) := by
   simp_all [minimalSuperSet]
 
-lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y  : Charges}
+lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y : Charges}
     (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y)
     (hxneqy : x ≠ y) : ∃ z ∈ minimalSuperSet S5 S10 x, z ⊆ y := by
   rw [Subset] at hsubset
   dsimp [hasSubset] at hsubset
   match x, y with
   | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
-  simp [Prod.ext_iff]  at hxneqy
+  simp [Prod.ext_iff] at hxneqy
   repeat rw [Prod.ext_iff] at hxneqy
   by_cases h3 : x3 ≠ y3
   · have h3Strict : x3 ⊂ y3 := by
@@ -514,7 +513,7 @@ lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y  : Charges}
     constructor
     · apply insert_Q5_mem_minimalSuperSet
       · apply mem_ofFinset_Q5_subset S5 S10 hy
-        simp
+        simp only
         exact hz3
       · exact h3
     · rw [Subset]
@@ -534,7 +533,7 @@ lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y  : Charges}
     constructor
     · apply insert_Q10_mem_minimalSuperSet
       · apply mem_ofFinset_Q10_subset S5 S10 hy
-        simp
+        simp only
         exact hz4
       · exact h4
     · rw [Subset]
@@ -553,7 +552,7 @@ lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y  : Charges}
     use (some y1, x2, x3, x4)
     constructor
     · apply some_qHd_mem_minimalSuperSet_of_none
-      exact qHd_mem_ofFinset S5 S10  _ _ hy
+      exact qHd_mem_ofFinset S5 S10 _ _ hy
     · simp_all [hasSubset]
   | x1, y1, some x2, none =>
     simp at hsubset
@@ -562,7 +561,7 @@ lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y  : Charges}
     use (x1, some y2, x3, x4)
     constructor
     · apply some_qHu_mem_minimalSuperSet_of_none
-      exact qHu_mem_ofFinset S5 S10  _ _ _ hy
+      exact qHu_mem_ofFinset S5 S10 _ _ _ hy
     · simp_all [hasSubset]
   | none, none, none, none =>
     simp_all
@@ -589,9 +588,25 @@ def IsComplete (x : Charges) : Prop :=
 def completions (S5 S10 : Finset ℤ) (x : Charges) : Multiset Charges :=
   let SqHd := if x.1.isSome then {x.1} else S5.val.map fun y => some y
   let SqHu := if x.2.1.isSome then {x.2.1} else S5.val.map fun y => some y
-  let SQ5 :=  if x.2.2.1 ≠ ∅ then {x.2.2.1} else S5.val.map fun y => {y}
+  let SQ5 := if x.2.2.1 ≠ ∅ then {x.2.2.1} else S5.val.map fun y => {y}
   let SQ10 := if x.2.2.2 ≠ ∅ then {x.2.2.2} else S10.val.map fun y => {y}
   (SqHd.product (SqHu.product (SQ5.product SQ10)))
+
+lemma completions_eq_singleton_of_complete {S5 S10 : Finset ℤ} (x : Charges)
+    (hcomplete : IsComplete x) :
+    completions S5 S10 x = {x} := by
+  simp [completions]
+  simp [IsComplete] at hcomplete
+  by_cases h1 : x.1.isSome
+  case' neg => simp_all
+  by_cases h2 : x.2.1.isSome
+  case' neg => simp_all
+  by_cases h3 : x.2.2.1 ≠ ∅
+  case' neg => simp_all
+  by_cases h4 : x.2.2.2 ≠ ∅
+  case' neg => simp_all
+  simp_all
+  rfl
 
 @[simp]
 lemma self_mem_completions_iff_isComplete {S5 S10 : Finset ℤ} (x : Charges) :
@@ -666,7 +681,7 @@ lemma self_subset_mem_completions (S5 S10 : Finset ℤ) (x y : Charges)
     · simp_all
 
 lemma exist_completions_subset_of_complete (S5 S10 : Finset ℤ) (x y : Charges)
-  (hsubset : x ⊆ y) (hycomplete : IsComplete y) :
+    (hsubset : x ⊆ y) (hy : y ∈ ofFinset S5 S10) (hycomplete : IsComplete y) :
     ∃ z ∈ completions S5 S10 x, z ⊆ y := by
   by_cases hx : IsComplete x
   · use x
@@ -675,8 +690,80 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset ℤ) (x y : Charges)
   dsimp [hasSubset] at hsubset
   match x, y with
   | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
-  simp at hsubset
-  sorry
+  simp [IsComplete] at hycomplete
+  rw [Option.isSome_iff_exists, Option.isSome_iff_exists] at hycomplete
+  obtain ⟨y1, rfl⟩ := hycomplete.1
+  obtain ⟨y2, rfl⟩ := hycomplete.2.1
+  rw [Finset.eq_empty_iff_forall_not_mem, Finset.eq_empty_iff_forall_not_mem] at hycomplete
+  simp at hycomplete
+  obtain ⟨z3, hz3⟩ := hycomplete.1
+  obtain ⟨z4, hz4⟩ := hycomplete.2
+  have hz3Mem : z3 ∈ S5 := by
+    apply mem_ofFinset_Q5_subset S5 S10 hy
+    simp_all
+  have hz4Mem : z4 ∈ S10 := by
+    apply mem_ofFinset_Q10_subset S5 S10 hy
+    simp_all
+  have hy1' : some y1 ∈ if x1.isSome = true then {x1} else
+      Multiset.map (fun y => some y) S5.val := by
+    by_cases h1 : x1.isSome
+    · simp_all
+      rw [Option.isSome_iff_exists] at h1
+      obtain ⟨a, rfl⟩ := h1
+      simp_all
+    · simp_all
+      exact qHd_mem_ofFinset S5 S10 y1 (some y2, y3, y4) hy
+  have hy2' : some y2 ∈ if x2.isSome = true then {x2} else
+      Multiset.map (fun y => some y) S5.val := by
+    by_cases h2 : x2.isSome
+    · simp_all
+      rw [Option.isSome_iff_exists] at h2
+      obtain ⟨a, rfl⟩ := h2
+      simp_all
+    · simp_all
+      exact qHu_mem_ofFinset S5 S10 y2 (some y1) (y3, y4) hy
+  simp_all
+  by_cases h3 : x3 ≠ ∅
+  · by_cases h4 : x4 ≠ ∅
+    · use (y1, y2, x3, x4)
+      constructor
+      · simp_all [completions]
+        repeat rw [Multiset.mem_product]
+        simp_all
+      · rw [Subset]
+        dsimp [hasSubset]
+        simp_all
+    · simp at h4
+      subst h4
+      use (y1, y2, x3, {z4})
+      constructor
+      · simp [completions]
+        repeat rw [Multiset.mem_product]
+        simp_all
+      · rw [Subset]
+        dsimp [hasSubset]
+        simp_all
+  · simp at h3
+    subst h3
+    by_cases h4 : x4 ≠ ∅
+    · use (y1, y2, {z3}, x4)
+      constructor
+      · simp [completions]
+        repeat rw [Multiset.mem_product]
+        simp_all
+      · rw [Subset]
+        dsimp [hasSubset]
+        simp_all
+    · simp at h4
+      subst h4
+      use (y1, y2, {z3}, {z4})
+      constructor
+      · simp [completions]
+        repeat rw [Multiset.mem_product]
+        simp_all
+      · rw [Subset]
+        dsimp [hasSubset]
+        simp_all
 
 end Charges
 
