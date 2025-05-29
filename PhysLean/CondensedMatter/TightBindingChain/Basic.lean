@@ -87,9 +87,10 @@ lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
   rw [localizedComp, LinearMap.coe_mk, AddHom.coe_mk,
     orthonormal_iff_ite.mp T.localizedState_orthonormal n p, ite_smul, one_smul, zero_smul]
 
-/-- The Hamiltonian of the tight binding chain is given by
-  `E₀ ∑ n, |n⟩⟨n| - t ∑ n, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)`, with periodic
-  boundary conditions. -/
+/-- The Hamiltonian of the tight binding chain with periodic
+  boundary conditions is given by `E₀ ∑ n, |n⟩⟨n| - t ∑ n, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)`.
+  The periodic boundary conditions is manifested by the `+` in `n + 1` being
+  within `Fin T.N` (that is modulo `T.N`). -/
 noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
   T.E0 • ∑ n : Fin T.N, |n⟩⟨n| - T.t • ∑ n : Fin T.N, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)
 
