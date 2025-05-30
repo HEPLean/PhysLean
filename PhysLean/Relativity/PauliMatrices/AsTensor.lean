@@ -43,7 +43,7 @@ lemma asTensor_expand_complexContrBasis : asTensor =
 lemma leftRightToMatrix_σSA_inl_0_expand : leftRightToMatrix.symm (σSA (Sum.inl 0)) =
     leftBasis 0 ⊗ₜ rightBasis 0 + leftBasis 1 ⊗ₜ rightBasis 1 := by
   rw [leftRightToMatrix_symm_expand_tmul]
-  simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ0, of_apply, cons_val', empty_val',
+  simp only [σSA, Fin.isValue, Basis.coe_mk, σSA', σ0, one_fin_two, of_apply, cons_val', empty_val',
     cons_val_fin_one, Fin.sum_univ_two, cons_val_zero, cons_val_one, head_cons, one_smul, zero_smul,
     add_zero, head_fin_const, zero_add, CategoryTheory.Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
