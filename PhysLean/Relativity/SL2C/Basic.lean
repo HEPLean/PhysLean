@@ -85,7 +85,8 @@ lemma toSelfAdjointMap_apply_σSAL_inl (M : SL(2, ℂ)) :
       PauliMatrix.σSAL (Sum.inr 2) := by
   simp only [toSelfAdjointMap, PauliMatrix.σSAL, Fin.isValue, Basis.coe_mk, PauliMatrix.σSAL',
     PauliMatrix.σ0, LinearMap.coe_mk, AddHom.coe_mk, neg_add_rev, PauliMatrix.σ1,
-    neg_of, neg_cons, neg_zero, neg_empty, neg_mul, PauliMatrix.σ2, neg_neg, PauliMatrix.σ3]
+    neg_of, neg_cons, neg_zero, neg_empty, neg_mul, PauliMatrix.σ2, neg_neg, PauliMatrix.σ3,
+    one_fin_two]
   ext1
   simp only [Fin.isValue, AddSubgroup.coe_add, selfAdjoint.val_smul, smul_of, smul_cons, real_smul,
     ofReal_div, ofReal_add, ofReal_pow, ofReal_ofNat, mul_one, smul_zero, smul_empty, smul_neg,
