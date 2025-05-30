@@ -6,7 +6,7 @@ _A project to digitalize physics._
 - [![](https://img.shields.io/badge/Getting-Started-green)](https://physlean.com/GettingStarted.html)
 [![](https://img.shields.io/badge/The-Website-green)](https://physlean.com)
 [![](https://img.shields.io/badge/How_To-Get_Involved-green)](https://physlean.com/GetInvolved.html)
-[![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/)
+[![](https://img.shields.io/badge/PhysLean_Zulip-Discussion-green)](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/)
 [![](https://img.shields.io/badge/TODO-List-green)](https://physlean.com/TODOList)
 
 - [![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
