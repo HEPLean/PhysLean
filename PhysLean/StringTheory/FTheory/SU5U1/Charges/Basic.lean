@@ -250,6 +250,14 @@ lemma fromChargeProfile_subset_iff_subset {T : PotentialTerm} {x y : T.ChargePro
     simpa using toChargeProfile_subset_of_subset T h
   · exact fun h => fromChargeProfile_subset_of_subset h
 
+lemma toChargeProfile_fromChargeProfile_subset {T : PotentialTerm} {x : Charges} :
+    fromChargeProfile T (toChargeProfile T x) ⊆ x := by
+  simp [toChargeProfile, fromChargeProfile]
+  fin_cases T
+  all_goals
+    cases x
+    simp [ChargeProfile.instHasSubset, hasSubset]
+
 /-!
 
 ## ofFinset
