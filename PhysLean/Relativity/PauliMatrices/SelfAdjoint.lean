@@ -16,8 +16,8 @@ open Matrix
 /-- The trace of `σ0` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ0_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     (Matrix.trace (σ0 * A.1)).re = Matrix.trace (σ0 * A.1) := by
-  rw [← Complex.conj_eq_iff_re, starRingEnd_apply, ← trace_conjTranspose, conjTranspose_mul,
-    σ0_selfAdjoint, ← star_eq_conjTranspose, A.2, trace_mul_comm]
+  rw [one_mul, ← Complex.conj_eq_iff_re, starRingEnd_apply, ← trace_conjTranspose,
+    ← star_eq_conjTranspose, A.2]
 
 /-- The trace of `σ1` multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma selfAdjoint_trace_σ1_real (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
@@ -48,7 +48,7 @@ lemma selfAdjoint_ext_complex {A B : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)}
     (h3 : Matrix.trace (PauliMatrix.σ3 * A.1) = Matrix.trace (PauliMatrix.σ3 * B.1)) : A = B := by
   ext i j
   rw [eta_fin_two A.1, eta_fin_two B.1] at h0 h1 h2 h3
-  simp only [PauliMatrix.σ0, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons,
+  simp only [one_mul, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons,
     head_cons, one_smul, tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul,
     Equiv.symm_apply_apply, trace_fin_two_of] at h0
   simp only [σ1, Fin.isValue, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
