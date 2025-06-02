@@ -114,6 +114,51 @@ lemma subset_of_empty_iff_empty {x : Charges} :
 
 /-!
 
+## Card
+
+-/
+
+def card (x : Charges) : Nat :=
+  x.1.toFinset.card + x.2.1.toFinset.card + x.2.2.1.card + x.2.2.2.card
+
+@[simp]
+lemma card_empty : card (∅ : Charges) = 0 := by
+  simp [card, emptyInst]
+
+lemma card_subset_le {x y : Charges} (h : x ⊆ y) : card x ≤ card y := by
+  simp [card, hasSubset] at h
+  have h1 := Finset.card_le_card h.1
+  have h2 := Finset.card_le_card h.2.1
+  have h3 := Finset.card_le_card h.2.2.1
+  have h4 := Finset.card_le_card h.2.2.2
+  simp [card]
+  omega
+
+lemma eq_of_subset_card {x y : Charges} (h : x ⊆ y) (hcard : card x = card y) : x = y := by
+  simp [card] at hcard
+  have h1 := Finset.card_le_card h.1
+  have h2 := Finset.card_le_card h.2.1
+  have h3 := Finset.card_le_card h.2.2.1
+  have h4 := Finset.card_le_card h.2.2.2
+  have h1 : x.1.toFinset = y.1.toFinset := by
+    apply Finset.eq_of_subset_of_card_le h.1
+    omega
+  have h2 : x.2.1.toFinset = y.2.1.toFinset := by
+    apply Finset.eq_of_subset_of_card_le h.2.1
+    omega
+  have h3 : x.2.2.1 = y.2.2.1 := by
+    apply Finset.eq_of_subset_of_card_le h.2.2.1
+    omega
+  have h4 : x.2.2.2 = y.2.2.2 := by
+    apply Finset.eq_of_subset_of_card_le h.2.2.2
+    omega
+  match x, y with
+  | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
+  rw [← Option.toFinset_inj] at h1 h2
+  simp_all
+
+/-!
+
 ## Powerset
 
 -/
@@ -454,6 +499,48 @@ lemma self_neq_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x y : Charges)
   subst h
   simp at hy
 
+lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
+    (y : Charges) (hy : y ∈ minimalSuperSet S5 S10 x) :
+    card y = card x + 1 := by
+  simp [minimalSuperSet] at hy
+  rcases hy with ⟨hy1, hr | hr | hr | hr⟩
+  · match x with
+    | (none, _, _, _) =>
+      simp at hr
+      obtain ⟨a, ha, rfl⟩ := hr
+      simp [card]
+      omega
+    | (some x1, _, _, _) =>
+      simp at hr
+  · match x with
+    | (_, none, _, _) =>
+      simp at hr
+      obtain ⟨a, ha, rfl⟩ := hr
+      simp [card]
+      omega
+    | (_, some x2, _, _) =>
+      simp at hr
+  · match x with
+    | (_, _, Q5, _) =>
+      simp at hr
+      obtain ⟨a, ha, rfl⟩ := hr
+      simp [card]
+      rw [Finset.card_insert_of_not_mem ]
+      omega
+      by_contra h
+      rw [Finset.insert_eq_of_mem h] at hy1
+      simp at hy1
+  · match x with
+    | (_, _, _, Q10) =>
+      simp at hr
+      obtain ⟨a, ha, rfl⟩ := hr
+      simp [card]
+      rw [Finset.card_insert_of_not_mem]
+      omega
+      by_contra h
+      rw [Finset.insert_eq_of_mem h] at hy1
+      simp at hy1
+
 lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
     (z : ℤ) (hz : z ∈ S5) (hznot : z ∉ x.2.2.1) :
     (x.1, x.2.1, insert z x.2.2.1, x.2.2.2) ∈ minimalSuperSet S5 S10 x := by
@@ -568,6 +655,30 @@ lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y : Charges}
   | some x1, some y1, some x2, some y2 =>
     simp_all
 
+lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset ℤ}
+    (p : Charges → Prop) (hp : (x : Charges) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
+    (x : Charges) (hbase : p x)
+    (y : Charges) (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y) :
+    (n : ℕ) → (hn : n = y.card - x.card) → p y
+  | 0, hn => by
+    have hxy : x = y := by
+      refine eq_of_subset_card hsubset ?_
+      have hl : card x ≤ card y := card_subset_le hsubset
+      omega
+    subst hxy
+    simp_all
+  | Nat.succ n, hn => by
+    have hxy : x ≠ y := by
+      intro h
+      subst h
+      simp at hn
+    obtain ⟨z, hz, hsubsetz⟩ := exists_minimalSuperSet S5 S10 hy hsubset hxy
+    refine minimalSuperSet_induction_on_inductive p hp z ?_  y hy ?_ n ?_
+    · exact hp x hbase z hz
+    · exact hsubsetz
+    · rw [card_of_mem_minimalSuperSet z hz]
+      omega
+
 /-!
 
 ## Completions
@@ -577,6 +688,9 @@ lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y : Charges}
 /-- A collection of charges is complete if it has all types of fields. -/
 def IsComplete (x : Charges) : Prop :=
   x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅
+
+instance (x : Charges) : Decidable (IsComplete x) :=
+  inferInstanceAs (Decidable (x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅))
 
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x` and are

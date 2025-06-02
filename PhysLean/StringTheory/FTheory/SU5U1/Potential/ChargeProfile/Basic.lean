@@ -555,6 +555,86 @@ lemma charges_of_subset {T : PotentialTerm} {x y : T.ChargeProfile} (h : x ⊆ y
       Finset.mem_product] at ⊢ h'
     exact ⟨h.1 h'.1, h.2.1 h'.2.1, h.2.2 h'.2.2⟩
 
+
+/-!
+
+## Charges and inserting
+
+-/
+
+lemma charges_β_of_insert_Q5 {qHu : Option ℤ} {Q5 : Finset ℤ} (q5 : ℤ) :
+    (charges (T := β) (qHu, insert q5 Q5)).toFinset =
+    (charges (T := β) (qHu, Q5)).toFinset ∪
+    (charges (T := β) (qHu, {q5})).toFinset := by
+  simp [charges]
+  ext x
+  simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
+    simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
+      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
+      Finset.mem_union]
+  aesop
+
+lemma charges_Λ_of_insert_Q10 {Q5 Q10 : Finset ℤ} (q10 : ℤ) :
+    (charges (T := Λ) (Q5, insert q10 Q10)).toFinset =
+    (charges (T := Λ) (Q5, Q10)).toFinset ∪
+    (charges (T := Λ) (Q5, {q10})).toFinset := by
+  simp [charges]
+  ext x
+  simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
+    simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
+      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
+      Finset.mem_union]
+  aesop
+
+lemma charges_W1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
+    (charges (T := W1) (insert q5 Q5,  Q10)).toFinset =
+    (charges (T := W1) (Q5, Q10)).toFinset ∪
+    (charges (T := W1) ({q5}, Q10)).toFinset := by
+  simp [charges]
+  ext x
+  simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
+    simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
+      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
+      Finset.mem_union]
+  aesop
+
+lemma charges_W4_of_insert_Q5 {qHd qHu : Option ℤ} {Q5 : Finset ℤ} (q5 : ℤ) :
+    (charges (T := W4) (qHd, qHu, insert q5 Q5)).toFinset =
+    (charges (T := W4) (qHd, qHu, Q5)).toFinset ∪
+    (charges (T := W4) (qHd, qHu, {q5})).toFinset := by
+  simp [charges]
+  ext x
+  simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
+    simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
+      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
+      Finset.mem_union]
+  aesop
+
+lemma charges_K1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
+    (charges (T := K1) (insert q5 Q5, Q10)).toFinset =
+    (charges (T := K1) (Q5, Q10)).toFinset ∪
+    (charges (T := K1) ({q5}, Q10)).toFinset := by
+  simp [charges]
+  ext x
+  simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
+    simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
+      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
+      Finset.mem_union]
+  aesop
+
+lemma charges_K2_of_insert_Q10 {qHd qHu : Option ℤ} {Q10 : Finset ℤ} (q10 : ℤ) :
+    (charges (T := K2) (qHd, qHu, insert q10 Q10)).toFinset =
+    (charges (T := K2) (qHd, qHu, Q10)).toFinset ∪
+    (charges (T := K2) (qHd, qHu, {q10})).toFinset := by
+  simp [charges]
+  ext x
+  simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
+    simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
+      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
+      Finset.mem_union]
+  aesop
+
+
 /-!
 
 ## Excluded terms based on `U(1)` charges
@@ -637,6 +717,55 @@ instance (T : PotentialTerm) : DecidablePred (IsPresent (T := T)) :=
 
 lemma isPresent_of_subset {T : PotentialTerm} {y x : T.ChargeProfile}
     (h : y ⊆ x) (hy : y.IsPresent) : x.IsPresent := charges_of_subset h hy
+
+/-!
+
+## Is present conditions and insert
+
+-/
+
+lemma isPresent_β_of_insert_Q5 {qHu : Option ℤ} {Q5 : Finset ℤ} (q5 : ℤ) :
+    IsPresent β (qHu, insert q5 Q5) ↔
+    IsPresent β (qHu, Q5) ∨ IsPresent β (qHu, {q5}) := by
+  simp only [IsPresent, ← Multiset.mem_toFinset]
+  rw [charges_β_of_insert_Q5 q5]
+  simp
+
+lemma isPresent_Λ_of_insert_Q10 {Q5 Q10 : Finset ℤ} (q10 : ℤ) :
+    IsPresent Λ (Q5, insert q10 Q10) ↔
+    IsPresent Λ (Q5, Q10) ∨ IsPresent Λ (Q5, {q10}) := by
+  simp only [IsPresent, ← Multiset.mem_toFinset]
+  rw [charges_Λ_of_insert_Q10 q10]
+  simp
+
+lemma isPresent_W1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
+    IsPresent W1 (insert q5 Q5, Q10) ↔
+    IsPresent W1 (Q5, Q10) ∨ IsPresent W1 ({q5}, Q10) := by
+  simp only [IsPresent, ← Multiset.mem_toFinset]
+  rw [charges_W1_of_insert_Q5 q5]
+  simp
+
+lemma isPresent_W4_of_insert_Q5 {qHd qHu : Option ℤ} {Q5 : Finset ℤ} (q5 : ℤ) :
+    IsPresent W4 (qHd, qHu, insert q5 Q5) ↔
+    IsPresent W4 (qHd, qHu, Q5) ∨ IsPresent W4 (qHd, qHu, {q5}) := by
+  simp only [IsPresent, ← Multiset.mem_toFinset]
+  rw [charges_W4_of_insert_Q5 q5]
+  simp
+
+lemma isPresent_K1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
+    IsPresent K1 (insert q5 Q5, Q10) ↔
+    IsPresent K1 (Q5, Q10) ∨ IsPresent K1 ({q5}, Q10) := by
+  simp only [IsPresent, ← Multiset.mem_toFinset]
+  rw [charges_K1_of_insert_Q5 q5]
+  simp
+
+lemma isPresent_K2_of_insert_Q10 {qHd qHu : Option ℤ} {Q10 : Finset ℤ} (q10 : ℤ) :
+    IsPresent K2 (qHd, qHu, insert q10 Q10) ↔
+    IsPresent K2 (qHd, qHu, Q10) ∨ IsPresent K2 (qHd, qHu, {q10}) := by
+  simp only [IsPresent, ← Multiset.mem_toFinset]
+  rw [charges_K2_of_insert_Q10 q10]
+  simp
+
 
 /-!
 
