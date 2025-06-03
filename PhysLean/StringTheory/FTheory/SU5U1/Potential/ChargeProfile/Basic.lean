@@ -581,8 +581,8 @@ lemma charges_Λ_of_insert_Q10 {Q5 Q10 : Finset ℤ} (q10 : ℤ) :
   ext x
   simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
     simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
-      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
-      Finset.mem_union]
+      Finset.mem_val, Multiset.mem_ndinsert, Prod.exists, Finset.mem_union, Prod.mk.injEq,
+      existsAndEq, true_and, and_true]
   aesop
 
 lemma charges_W1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
@@ -593,8 +593,7 @@ lemma charges_W1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
   ext x
   simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
     simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
-      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
-      Finset.mem_union]
+      Multiset.mem_ndinsert, Finset.mem_val, Prod.exists, Finset.mem_union]
   aesop
 
 lemma charges_W4_of_insert_Q5 {qHd qHu : Option ℤ} {Q5 : Finset ℤ} (q5 : ℤ) :
@@ -606,7 +605,7 @@ lemma charges_W4_of_insert_Q5 {qHd qHu : Option ℤ} {Q5 : Finset ℤ} (q5 : ℤ
   simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
     simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
       Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
-      Finset.mem_union]
+      Finset.mem_union, Prod.mk.injEq, existsAndEq, true_and, and_true]
   aesop
 
 lemma charges_K1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
@@ -617,8 +616,7 @@ lemma charges_K1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
   ext x
   simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
     simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
-      Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
-      Finset.mem_union]
+      Multiset.mem_ndinsert, Finset.mem_val, Prod.exists, Finset.mem_union]
   aesop
 
 lemma charges_K2_of_insert_Q10 {qHd qHu : Option ℤ} {Q10 : Finset ℤ} (q10 : ℤ) :
@@ -630,7 +628,7 @@ lemma charges_K2_of_insert_Q10 {qHd qHu : Option ℤ} {Q10 : Finset ℤ} (q10 : 
   simp? [SProd.sprod, Multiset.instSProd, Multiset.mem_product] says
     simp only [SProd.sprod, Multiset.mem_toFinset, Multiset.mem_map, Multiset.mem_product,
       Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
-      Finset.mem_union]
+      Finset.mem_union, Prod.mk.injEq, existsAndEq, true_and, and_true]
   aesop
 
 /-!
