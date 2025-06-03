@@ -3,8 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Basic
 /-!
 
@@ -16,6 +14,16 @@ and prove properties about them.
 These trees are complete in the sense that they contain all the non pheno-constrained, complete,
 charges which are in `ofFinset I.allowedBarFiveCharges I.allowedTenCharges`.
 We use the `Tree` type defined in `FTheory.SU5U1.Charges.Tree.Basic` here for efficiency.
+
+We break the properties of these trees into smaller modules, to aid in
+speed of building.
+
+## Comment on proofs
+
+Note a lot of proofs related to `nonPhenoConstrainedCharges` depend on `decide`.
+These proofs like all proofs are still constrained by `maxHeartBeats`, which prevents
+them from being too time consuming. See e.g.
+https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/.E2.9C.94.20count_heartbeat.20and.20decide/near/521743784
 
 -/
 namespace FTheory
@@ -35,17 +43,17 @@ open Tree Leaf Twig Branch Trunk
   and therefore not good when using `decide` etc.
 -/
 def nonPhenoConstrainedChargesExt (I : CodimensionOneConfig) : Tree :=
-  let completionTopYukawa :=  ((((irreducibleElems I topYukawa).map
+  let completionTopYukawa := ((((irreducibleElems I topYukawa).map
     (fromChargeProfile topYukawa)).bind
     (completions I.allowedBarFiveCharges I.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
   let addOneTopYukawa := (((completionTopYukawa).bind (fun x =>
     (minimalSuperSet I.allowedBarFiveCharges I.allowedTenCharges x).val)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
-  let addTwoTopYukawa :=  (((addOneTopYukawa).bind (fun x =>
+  let addTwoTopYukawa := (((addOneTopYukawa).bind (fun x =>
     (minimalSuperSet I.allowedBarFiveCharges I.allowedTenCharges x).val)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
-  let addThreeTopYukawa :=  (((addTwoTopYukawa).bind (fun x =>
+  let addThreeTopYukawa := (((addTwoTopYukawa).bind (fun x =>
     (minimalSuperSet I.allowedBarFiveCharges I.allowedTenCharges x).val)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
   Tree.fromMultiset (completionTopYukawa + addOneTopYukawa + addTwoTopYukawa + addThreeTopYukawa)
@@ -416,176 +424,6 @@ def nonPhenoConstrainedCharges : (I : CodimensionOneConfig) → Tree
       branch (some 7) {twig {-13} {leaf {6}, leaf {11, 6}},
       twig {-8} {leaf {6}, leaf {1, 11}, leaf {11, 6}},
       twig {-13, -8} {leaf {6}, leaf {11, 6}}}}}
-
-/-!
-
-## Properties of the charges in nonPhenoConstrainedCharges
-
--/
-
-/-!
-
-### Cardinalities
-
--/
-
-lemma nonPhenoConstrainedCharges_same_card : (nonPhenoConstrainedCharges same).card = 480 := by
-  rfl
-
-lemma nonPhenoConstrainedCharges_nearestNeighbor_card :
-    (nonPhenoConstrainedCharges nearestNeighbor).card = 169 := by
-  rfl
-
-lemma nonPhenoConstrainedCharges_nextToNearestNeighbor_card :
-    (nonPhenoConstrainedCharges nextToNearestNeighbor).card = 117 := by
-  rfl
-
-/-!
-
-### Each charge is complete
-
--/
-
-set_option maxRecDepth 2000 in
-lemma isComplete_of_mem_nonPhenoConstrainedCharge_same :
-    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.IsComplete := by
-  decide
-
-set_option maxRecDepth 2000 in
-lemma isComplete_of_mem_nonPhenoConstrainedCharge_nearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, x.IsComplete := by
-  decide
-
-set_option maxRecDepth 2000 in
-lemma isComplete_of_mem_nonPhenoConstrainedCharge_nextToNearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset, x.IsComplete := by
-  decide
-
-lemma isComplete_of_mem_nonPhenoConstrainedCharge (I : CodimensionOneConfig) :
-    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.IsComplete :=
-  match I with
-  | same =>  isComplete_of_mem_nonPhenoConstrainedCharge_same
-  | nearestNeighbor => isComplete_of_mem_nonPhenoConstrainedCharge_nearestNeighbor
-  | nextToNearestNeighbor => isComplete_of_mem_nonPhenoConstrainedCharge_nextToNearestNeighbor
-
-/-!
-
-### Each change is not pheno-constrained
-
--/
-
-set_option maxRecDepth 2000 in
-lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same :
-    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, ¬ x.IsPhenoConstrained := by
-  decide
-
-set_option maxRecDepth 2000 in
-lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, ¬ x.IsPhenoConstrained := by
-  decide
-
-set_option maxRecDepth 2000 in
-lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset, ¬ x.IsPhenoConstrained := by
-  decide
-
-lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
-    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, ¬ x.IsPhenoConstrained :=
-  match I with
-  | same => not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same
-  | nearestNeighbor => not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor
-  | nextToNearestNeighbor => not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor
-
-/-!
-
-### Each change has a top Yukawa coupling
-
--/
-
-set_option maxRecDepth 2000 in
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
-    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) := by
-  decide
-
-set_option maxRecDepth 2000 in
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) := by
-  decide
-
-set_option maxRecDepth 2000 in
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) := by
-  decide
-
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
-    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) :=
-  match I with
-  | same => isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same
-  | nearestNeighbor => isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor
-  | nextToNearestNeighbor => isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor
-
-/-!
-
-### phenoInsertQ10 on nonPhenoConstrainedCharges is empty
-
-This result is used to help show completeness.
-
--/
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ10_card_zero_same : ∀ q10 ∈ same.allowedTenCharges,
-    (phenoInsertQ10 (nonPhenoConstrainedCharges same) q10).card = 0 := by
-  decide
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ10_card_zero_nearestNeighbor : ∀ q10 ∈ nearestNeighbor.allowedTenCharges,
-    (phenoInsertQ10 (nonPhenoConstrainedCharges nearestNeighbor) q10).card = 0 := by
-  decide
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ10_card_zero_nextToNearestNeighbor :
-    ∀ q10 ∈ nextToNearestNeighbor.allowedTenCharges,
-    (phenoInsertQ10 (nonPhenoConstrainedCharges nextToNearestNeighbor) q10).card = 0 := by
-  decide
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ10_card_zero (I : CodimensionOneConfig) :
-    ∀ q10 ∈ I.allowedTenCharges,
-    (phenoInsertQ10 (nonPhenoConstrainedCharges I) q10).card = 0 :=
-  match I with
-  | same => nonPhenoConstrainedCharges_phenoInsertQ10_card_zero_same
-  | nearestNeighbor => nonPhenoConstrainedCharges_phenoInsertQ10_card_zero_nearestNeighbor
-  | nextToNearestNeighbor => nonPhenoConstrainedCharges_phenoInsertQ10_card_zero_nextToNearestNeighbor
-
-/-!
-
-### phenoInsertQ5 on nonPhenoConstrainedCharges is empty
-
-This result is used to help show completeness.
-
--/
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same : ∀ q5 ∈ same.allowedBarFiveCharges,
-    (phenoInsertQ5 (nonPhenoConstrainedCharges same) (q5)).card = 0 := by
-  decide
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_nearestNeighbor :
-    ∀ q5 ∈ nearestNeighbor.allowedBarFiveCharges,
-    (phenoInsertQ5 (nonPhenoConstrainedCharges nearestNeighbor) (q5)).card = 0 := by
-  decide
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_nextToNearestNeighbor :
-    ∀ q5 ∈ nextToNearestNeighbor.allowedBarFiveCharges,
-    (phenoInsertQ5 (nonPhenoConstrainedCharges nextToNearestNeighbor) (q5)).card = 0 := by
-  decide
-
-lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero (I : CodimensionOneConfig) :
-    ∀ q5 ∈ I.allowedBarFiveCharges,
-    (phenoInsertQ5 (nonPhenoConstrainedCharges I) (q5)).card = 0 :=
-  match I with
-  | same => nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same
-  | nearestNeighbor => nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_nearestNeighbor
-  | nextToNearestNeighbor => nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_nextToNearestNeighbor
 
 end Charges
 

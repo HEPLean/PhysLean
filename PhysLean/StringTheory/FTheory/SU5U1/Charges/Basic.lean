@@ -118,6 +118,8 @@ lemma subset_of_empty_iff_empty {x : Charges} :
 
 -/
 
+/-- The cardinality of a `Charges` is defined to be the sum of the cardinalities
+  of each of the underlying finite sets of charges, with `Option ℤ` turned to finsets. -/
 def card (x : Charges) : Nat :=
   x.1.toFinset.card + x.2.1.toFinset.card + x.2.2.1.card + x.2.2.2.card
 
@@ -525,7 +527,7 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
       simp at hr
       obtain ⟨a, ha, rfl⟩ := hr
       simp [card]
-      rw [Finset.card_insert_of_not_mem ]
+      rw [Finset.card_insert_of_not_mem]
       omega
       by_contra h
       rw [Finset.insert_eq_of_mem h] at hy1
@@ -673,7 +675,7 @@ lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset ℤ}
       subst h
       simp at hn
     obtain ⟨z, hz, hsubsetz⟩ := exists_minimalSuperSet S5 S10 hy hsubset hxy
-    refine minimalSuperSet_induction_on_inductive p hp z ?_  y hy ?_ n ?_
+    refine minimalSuperSet_induction_on_inductive p hp z ?_ y hy ?_ n ?_
     · exact hp x hbase z hz
     · exact hsubsetz
     · rw [card_of_mem_minimalSuperSet z hz]

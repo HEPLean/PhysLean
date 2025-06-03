@@ -257,8 +257,15 @@ import PhysLean.StringTheory.FTheory.SU5U1.AnomalyCancellation.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness.Same
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Card
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.IsComplete
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoConstrained
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ10
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ5
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Insert
 import PhysLean.StringTheory.FTheory.SU5U1.Examples
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices

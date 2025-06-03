@@ -3,9 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Insert
 /-!
 
 # Pheno constrained charges
@@ -26,7 +25,7 @@ open PotentialTerm
 open ChargeProfile
 
 /-- A charge is pheno-constrained if it leads to the presence of any term causing proton decay
-  ` {W1, Λ, W2, K1}` or R-parity violation `{β, Λ, W2, W4, K1, K2}`.   -/
+  ` {W1, Λ, W2, K1}` or R-parity violation `{β, Λ, W2, W4, K1, K2}`. -/
 def IsPhenoConstrained (x : Charges) : Prop :=
   IsPresent μ (toChargeProfile μ x) ∨
   IsPresent β (toChargeProfile β x) ∨
@@ -55,114 +54,30 @@ lemma isPhenoConstrained_of_subset {x y : Charges} (h : x ⊆ y)
     have h' := isPresent_of_subset (toChargeProfile_subset_of_subset _ h) hr
     simp_all
 
-
 /-!
 
-## For trees
+## Inserting charges into trees, with pheno constraints
+
+We define two functions `phenoInsertQ10` and `phenoInsertQ5` which for a tree
+`T` respectively give all not pheno-constrained new charges obtained by inserting a
+`q10` or `q5` charge into the charges in `T`.
+
+This is related to the `insertQ10` and `insertQ5` functions, which insert a charge into a tree
+`T`, but do not check if the new charges is pheno-constrained.
 
 -/
 
-def Tree.Trunk.IsPhenoConstrained (t : Tree.Trunk) : Prop :=
-  match t with
-  | Tree.Trunk.trunk qHd branches =>
-    ∀ b ∈ branches,
-      match b with
-      | Tree.Branch.branch qHu twigs =>
-      IsPresent μ (qHd, qHu) ∨
-      ∀ t ∈ twigs,
-        match t with
-        | Tree.Twig.twig Q5 leafs =>
-        IsPresent β (qHu, Q5) ∨
-        IsPresent W4 (qHd, qHu, Q5) ∨
-        ∀ l ∈ leafs,
-          match l with
-          | Tree.Leaf.leaf Q10 =>
-          IsPresent W2 (qHd, Q10) ∨ IsPresent K2 (qHd, qHu, Q10) ∨
-          IsPresent W1 (Q5, Q10) ∨ IsPresent Λ (Q5, Q10)
-          ∨ IsPresent K1 (Q5, Q10)
-
-instance (t : Tree.Trunk) : Decidable (Tree.Trunk.IsPhenoConstrained t) :=
-  match t with
-  | Tree.Trunk.trunk qHd branches =>
-    inferInstanceAs (Decidable (∀ b ∈ branches,
-      match b with
-      | Tree.Branch.branch qHu twigs =>
-        IsPresent μ (qHd, qHu) ∨
-        ∀ t ∈ twigs,
-          match t with
-          | Tree.Twig.twig Q5 leafs =>
-            IsPresent β (qHu, Q5) ∨
-            IsPresent W4 (qHd, qHu, Q5) ∨
-            ∀ l ∈ leafs,
-              match l with
-              | Tree.Leaf.leaf Q10 =>
-                IsPresent W2 (qHd, Q10) ∨ IsPresent K2 (qHd, qHu, Q10) ∨
-                IsPresent W1 (Q5, Q10) ∨ IsPresent Λ (Q5, Q10)
-                ∨ IsPresent K1 (Q5, Q10)))
-
-def Tree.IsPhenoConstrained (T : Tree) : Prop :=
-  match T with
-  | Tree.root trunks =>
-    ∀ t ∈ trunks,
-      t.IsPhenoConstrained
-
-instance (T : Tree) : Decidable (Tree.IsPhenoConstrained T) :=
-  match T with
-  | Tree.root trunks =>
-    inferInstanceAs (Decidable (∀ t ∈ trunks, t.IsPhenoConstrained))
-
-
-
-def Tree.Trunk.IsPhenoConstrainedQ10 (t : Tree.Trunk) : Prop :=
-  match t with
-  | Tree.Trunk.trunk qHd branches =>
-    ∀ b ∈ branches,
-      match b with
-      | Tree.Branch.branch qHu twigs =>
-      ∀ t ∈ twigs,
-        match t with
-        | Tree.Twig.twig Q5 leafs =>
-        ∀ l ∈ leafs,
-          match l with
-          | Tree.Leaf.leaf Q10 =>
-          IsPresent W2 (qHd, Q10) ∨ IsPresent K2 (qHd, qHu, Q10) ∨
-          IsPresent W1 (Q5, Q10) ∨ IsPresent Λ (Q5, Q10)
-          ∨ IsPresent K1 (Q5, Q10)
-
-instance (t : Tree.Trunk) : Decidable (Tree.Trunk.IsPhenoConstrainedQ10 t) :=
-  match t with
-  | Tree.Trunk.trunk qHd branches =>
-    inferInstanceAs (Decidable (∀ b ∈ branches,
-      match b with
-      | Tree.Branch.branch qHu twigs =>
-        ∀ t ∈ twigs,
-          match t with
-          | Tree.Twig.twig Q5 leafs =>
-            ∀ l ∈ leafs,
-              match l with
-              | Tree.Leaf.leaf Q10 =>
-                IsPresent W2 (qHd, Q10) ∨ IsPresent K2 (qHd, qHu, Q10) ∨
-                IsPresent W1 (Q5, Q10) ∨ IsPresent Λ (Q5, Q10)
-                ∨ IsPresent K1 (Q5, Q10)))
-
-def Tree.IsPhenoConstrainedQ10 (T : Tree) : Prop :=
-  match T with
-  | Tree.root trunks =>
-    ∀ t ∈ trunks,
-      t.IsPhenoConstrainedQ10
-
-instance (T : Tree) : Decidable (Tree.IsPhenoConstrainedQ10 T) :=
-  match T with
-  | Tree.root trunks =>
-    inferInstanceAs (Decidable (∀ t ∈ trunks, t.IsPhenoConstrainedQ10))
-
-/-!
-
-## phenoInsert10
-
--/
 namespace Tree
 
+/-!
+
+### Inserting `q10` charges into trees
+
+-/
+
+/-- The twig obtained by taking the new, not pheno-constrained, charges obtained by inserting
+  `q10` into all leafs of a twig. This assumes that all existing charges in the twig are
+  already not pheno constrained. -/
 def Twig.phenoInsertQ10 (t : Twig) (qHd : Option ℤ) (x : ℤ) : Twig :=
   match t with
   | .twig Q5 leafs =>
@@ -180,19 +95,28 @@ def Twig.phenoInsertQ10 (t : Twig) (qHd : Option ℤ) (x : ℤ) : Twig :=
         ∧ ¬ IsPresent W2 (qHd, ys))
       .twig Q5 (subFilter.map (fun ys => .leaf ys))
 
+/-- The branch obtained by taking the new, not pheno-constrained, charges obtained by inserting
+  `q10` into all leafs of a branch. This assumes that all existing charges in the branch are
+  already not pheno constrained. -/
 def Branch.phenoInsertQ10 (b : Branch) (qHd : Option ℤ) (x : ℤ) : Branch :=
   match b with
   | .branch qHu twigs =>
-     if IsPresent K2 (qHd, qHu, {x}) then
+      if IsPresent K2 (qHd, qHu, {x}) then
           .branch qHu {}
       else
         .branch qHu (twigs.map fun t => Twig.phenoInsertQ10 t qHd x)
 
+/-- The trunk obtained by taking the new, not pheno-constrained, charges obtained by inserting
+  `q10` into all leafs of a trunk. This assumes that all existing charges in the trunk are
+  already not pheno constrained. -/
 def Trunk.phenoInsertQ10 (T : Trunk) (x : ℤ) : Trunk :=
   match T with
   | .trunk qHd branches =>
     .trunk qHd (branches.map fun b => Branch.phenoInsertQ10 b qHd x)
 
+/-- The tree obtained by taking the new, not pheno-constrained, charges obtained by inserting
+  `q10` into all leafs of a tree. This assumes that all existing charges in the tree are
+  already not pheno constrained. -/
 def phenoInsertQ10 (T : Tree) (x : ℤ) : Tree :=
   match T with
   | .root trunks =>
@@ -341,7 +265,7 @@ lemma mem_phenoInsertQ10_of_mem_isPresent (T : Tree) (q10 : ℤ) (C : Charges)
       simp_all [Trunk.phenoInsertQ10]
   · subst C_eq
     simp [Trunk.phenoInsertQ10, Branch.phenoInsertQ10]
-    rw [if_neg ]
+    rw [if_neg]
     swap
     · simp_all
     simp [Twig.phenoInsertQ10]
@@ -350,33 +274,40 @@ lemma mem_phenoInsertQ10_of_mem_isPresent (T : Tree) (q10 : ℤ) (C : Charges)
 
 /-!
 
-## phenoInsertQ5
+### Inserting `q5` charges into trees
 
 -/
 
+/-- The branch obtained by taking the new, not pheno-constrained, charges obtained by inserting
+  `q5` into all leafs of a branch. This assumes that all existing charges in the branch are
+  already not pheno constrained. -/
 def Branch.phenoInsertQ5 (b : Branch) (qHd : Option ℤ) (x : ℤ) : Branch :=
   match b with
   | .branch qHu twigs =>
-    if IsPresent β (qHu, {x}) ∨ IsPresent W4 (qHd, qHu, {x})  then
+    if IsPresent β (qHu, {x}) ∨ IsPresent W4 (qHd, qHu, {x}) then
           .branch qHu {}
         else
           let insertTwigs := twigs.map (fun (.twig Q5 leafs) => Twig.twig (insert x Q5)
             (leafs.filter (fun (.leaf Q10) => ¬ IsPresent W1 ({x}, Q10) ∧ ¬ IsPresent K1 ({x}, Q10)
-             ∧ ¬ IsPresent Λ ((insert x Q5), Q10)  ∧
-             ¬  Branch.mem (.branch qHu twigs) (qHu, (insert x Q5), Q10))))
+              ∧ ¬ IsPresent Λ ((insert x Q5), Q10) ∧
+              ¬ Branch.mem (.branch qHu twigs) (qHu, (insert x Q5), Q10))))
           .branch qHu <| insertTwigs
 
+/-- The trunk obtained by taking the new, not pheno-constrained, charges obtained by inserting
+  `q5` into all leafs of a trunk. This assumes that all existing charges in the trunk are
+  already not pheno constrained. -/
 def Trunk.phenoInsertQ5 (T : Trunk) (x : ℤ) : Trunk :=
   match T with
   | .trunk qHd branches =>
     .trunk qHd (branches.map fun b => b.phenoInsertQ5 qHd x)
 
-
+/-- The tree obtained by taking the new, not pheno-constrained, charges obtained by inserting
+  `q5` into all leafs of a tree. This assumes that all existing charges in the tree are
+  already not pheno constrained. -/
 def phenoInsertQ5 (T : Tree) (x : ℤ) : Tree :=
   match T with
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ5 ts x))
-
 
 lemma mem_phenoInsertQ5_of_mem_isPresent (T : Tree) (q5 : ℤ) (C : Charges)
     (h : C ∈ (T.insertQ5 q5)) (hC : ¬ IsPresent β (C.2.1, {q5})
@@ -422,7 +353,8 @@ lemma mem_phenoInsertQ5_of_mem_isPresent (T : Tree) (q5 : ℤ) (C : Charges)
     (Twig.twig (insert q5 twigT.1)
         (Multiset.filter (fun (.leaf Q10) =>
         ¬ IsPresent W1 ({q5}, Q10) ∧ ¬ IsPresent K1 ({q5}, Q10)
-             ∧ ¬ IsPresent Λ ((insert q5 twigT.1), Q10)  ∧ ¬(Branch.branch branchT.1 branchT.2).mem (branchT.1, insert q5 twigT.1, Q10))
+          ∧ ¬ IsPresent Λ ((insert q5 twigT.1), Q10) ∧
+          ¬(Branch.branch branchT.1 branchT.2).mem (branchT.1, insert q5 twigT.1, Q10))
           twigT.2)) (leafI)
   · simp [phenoInsertQ5]
     use trunkT
@@ -438,7 +370,7 @@ lemma mem_phenoInsertQ5_of_mem_isPresent (T : Tree) (q5 : ℤ) (C : Charges)
   · simp
     subst C_eq
     simp [Trunk.phenoInsertQ5, Branch.phenoInsertQ5]
-    rw [if_neg ]
+    rw [if_neg]
     simp_all
 
 end Tree

@@ -555,7 +555,6 @@ lemma charges_of_subset {T : PotentialTerm} {x y : T.ChargeProfile} (h : x ⊆ y
       Finset.mem_product] at ⊢ h'
     exact ⟨h.1 h'.1, h.2.1 h'.2.1, h.2.2 h'.2.2⟩
 
-
 /-!
 
 ## Charges and inserting
@@ -587,7 +586,7 @@ lemma charges_Λ_of_insert_Q10 {Q5 Q10 : Finset ℤ} (q10 : ℤ) :
   aesop
 
 lemma charges_W1_of_insert_Q5 {Q5 Q10 : Finset ℤ} (q5 : ℤ) :
-    (charges (T := W1) (insert q5 Q5,  Q10)).toFinset =
+    (charges (T := W1) (insert q5 Q5, Q10)).toFinset =
     (charges (T := W1) (Q5, Q10)).toFinset ∪
     (charges (T := W1) ({q5}, Q10)).toFinset := by
   simp [charges]
@@ -633,7 +632,6 @@ lemma charges_K2_of_insert_Q10 {qHd qHu : Option ℤ} {Q10 : Finset ℤ} (q10 : 
       Finset.mem_val, Option.mem_toFinset, Option.mem_def, Multiset.mem_ndinsert, Prod.exists,
       Finset.mem_union]
   aesop
-
 
 /-!
 
@@ -765,7 +763,6 @@ lemma isPresent_K2_of_insert_Q10 {qHd qHu : Option ℤ} {Q10 : Finset ℤ} (q10 
   simp only [IsPresent, ← Multiset.mem_toFinset]
   rw [charges_K2_of_insert_Q10 q10]
   simp
-
 
 /-!
 
