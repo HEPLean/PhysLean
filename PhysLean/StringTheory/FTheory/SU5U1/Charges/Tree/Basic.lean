@@ -244,19 +244,19 @@ lemma mem_iff_mem_toMultiset (T : Tree) (x : Charges) :
     | .trunk qHd branches =>
     simp [Trunk.mem] at hbranch
     obtain ⟨hqHu, branch, hBranchMem, htwig⟩ := hbranch
-    simp
+    simp only
     refine ⟨branch, hBranchMem, ?_⟩
     match branch with
     | .branch qHu twigs =>
     simp [Branch.mem] at htwig
     obtain ⟨hqHu, twig, hTwigMem, hleaf⟩ := htwig
-    simp
+    simp only
     refine ⟨twig, hTwigMem, ?_⟩
     match twig with
     | .twig Q5 leafs =>
     simp [Twig.mem] at hleaf
     obtain ⟨hqHu, leaf, hLeafMem, hxs⟩ := hleaf
-    simp
+    simp only
     refine ⟨leaf, hLeafMem, ?_⟩
     match leaf with
     | .leaf Q10 =>

@@ -258,7 +258,9 @@ lemma mem_phenoInsertQ10_of_mem_isPresent (T : Tree) (q10 : ℤ) (C : Charges)
     swap
     · rw [← hC21]
       exact hC.2.1
-    simp
+    simp only [Multiset.mem_map, Multiset.mem_filter, Multiset.mem_filterMap,
+      Option.ite_none_right_eq_some, Option.some.injEq, exists_exists_and_eq_and, Leaf.leaf.injEq,
+      exists_eq_right]
     constructor
     · use leafT
     · rw [← hC21, ← hC22]

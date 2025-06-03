@@ -228,7 +228,7 @@ lemma insert_mem_insertQ5 {T : Tree} (x : Charges) (hx : x ∈ T) (q5 : ℤ) :
   constructor
   · simp [Branch.insertQ5]
     use .twig Q5 leafs
-  simp
+  simp only [Multiset.mem_filter]
   use leaf
   simp_all
   constructor
@@ -282,7 +282,7 @@ lemma exists_of_mem_insertQ5 {T : Tree} (C : Charges) (q5 : ℤ)
   -- The goal
   subst C_eq
   use trunkT.1, branchT.1, twigT.1, leafI.1
-  simp
+  simp only [true_and]
   apply mem_of_parts trunkT branchT twigT leafI
   all_goals simp_all
 

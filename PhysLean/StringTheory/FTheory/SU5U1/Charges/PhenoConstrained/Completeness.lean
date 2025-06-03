@@ -57,7 +57,7 @@ lemma nonPhenoConstrainedCharges_insertQ10_filter (I : CodimensionOneConfig) :
       Multiset.filter (fun x => ¬x.IsPhenoConstrained)
       ((nonPhenoConstrainedCharges I).insertQ10 ↑q10).toMultiset = ∅ := by
   intro ⟨q10, hq10⟩
-  simp
+  simp only [Multiset.empty_eq_zero]
   rw [Multiset.filter_eq_nil]
   intro C hC
   intro hn
@@ -97,7 +97,7 @@ lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
       Multiset.filter (fun x => ¬x.IsPhenoConstrained)
       ((nonPhenoConstrainedCharges I).insertQ5 ↑q5).toMultiset = ∅ := by
   intro ⟨q5, hq5⟩
-  simp
+  simp only [Multiset.empty_eq_zero]
   rw [Multiset.filter_eq_nil]
   intro C hC
   intro hn
@@ -332,7 +332,7 @@ lemma completionTopYukawa_complete_of_nearestNeighbor :
   decide
 
 lemma completionTopYukawa_complete_of_nextToNearestNeighbor :
-  ∀ x ∈ (irreducibleElems .nextToNearestNeighbor topYukawa).map
+    ∀ x ∈ (irreducibleElems .nextToNearestNeighbor topYukawa).map
     (fromChargeProfile topYukawa), ¬ x.IsPhenoConstrained →
     ∀ y ∈ completions nextToNearestNeighbor.allowedBarFiveCharges
       nextToNearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
@@ -362,9 +362,9 @@ lemma exists_subset_completionTopYukawa_of_not_isPhenoConstrained {x : Charges}
       obtain ⟨y, hPower, hIrre⟩ := htopYukawa
       use fromChargeProfile topYukawa y
       constructor
-      · simp
+      · simp only [Multiset.mem_map]
         use y
-        simp
+        simp only [and_true]
         rw [← isIrreducible_iff_mem_irreducibleElems]
         · exact hIrre
         · rw [finsetOfCodimensionOneConfig]
@@ -415,7 +415,7 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
     I.allowedBarFiveCharges I.allowedTenCharges (fun x => ¬x.IsPhenoConstrained)
     ?_ ?_ y ?_ x hyx hsub ?_ ?_
   · intro x y hxy
-    simp
+    simp only [Decidable.not_not]
     exact fun a => isPhenoConstrained_of_subset hxy a
   · intro x
     rw [mem_iff_mem_toMultiset]
