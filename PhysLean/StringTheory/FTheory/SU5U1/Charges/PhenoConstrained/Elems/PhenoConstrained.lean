@@ -29,7 +29,7 @@ open Tree Leaf Twig Branch Trunk
 
 -/
 
-set_option maxRecDepth 2400 in
+set_option maxRecDepth 2000 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, ¬ x.IsPhenoConstrained := by
   intro x hx
@@ -42,7 +42,7 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same :
   rw [hl] at hx
   simp at hx
 
-set_option maxRecDepth 900 in
+set_option maxRecDepth 2000 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, ¬ x.IsPhenoConstrained := by
   intro x hx
@@ -55,7 +55,7 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
   rw [hl] at hx
   simp at hx
 
-set_option maxRecDepth 900 in
+set_option maxRecDepth 2000 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset,
       ¬ x.IsPhenoConstrained := by
@@ -83,7 +83,7 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionO
 
 -/
 
-set_option maxRecDepth 2400 in
+set_option maxRecDepth 2500 in
 lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset,
       IsPresent topYukawa (toChargeProfile topYukawa x) := by
@@ -97,7 +97,7 @@ lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
   rw [hl] at hx
   simp at hx
 
-set_option maxRecDepth 900 in
+set_option maxRecDepth 2000 in
 lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset,
       IsPresent topYukawa (toChargeProfile topYukawa x) := by
