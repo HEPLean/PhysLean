@@ -29,21 +29,45 @@ open Tree Leaf Twig Branch Trunk
 
 -/
 
-set_option maxRecDepth 5000 in
+set_option maxRecDepth 2400 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, ¬ x.IsPhenoConstrained := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter
+      fun x => x.IsPhenoConstrained := by
+    simp_all
+  have hl : Multiset.filter (fun x => x.IsPhenoConstrained)
+    (nonPhenoConstrainedCharges same).toMultiset = ∅ := by decide
+  rw [hl] at hx
+  simp at hx
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 900 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, ¬ x.IsPhenoConstrained := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset.filter
+      fun x => x.IsPhenoConstrained := by
+    simp_all
+  have hl : Multiset.filter (fun x => x.IsPhenoConstrained)
+    (nonPhenoConstrainedCharges nearestNeighbor).toMultiset = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 900 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset,
       ¬ x.IsPhenoConstrained := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset.filter
+      fun x => x.IsPhenoConstrained := by
+    simp_all
+  have hl : Multiset.filter (fun x => x.IsPhenoConstrained)
+    (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, ¬ x.IsPhenoConstrained :=
@@ -59,23 +83,47 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionO
 
 -/
 
-set_option maxRecDepth 5000 in
+set_option maxRecDepth 2400 in
 lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset,
       IsPresent topYukawa (toChargeProfile topYukawa x) := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter
+      fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
+    simp_all
+  have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
+    (nonPhenoConstrainedCharges same).toMultiset  = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 900 in
 lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset,
       IsPresent topYukawa (toChargeProfile topYukawa x) := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset.filter
+      fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
+    simp_all
+  have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
+    (nonPhenoConstrainedCharges nearestNeighbor).toMultiset  = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
 set_option maxRecDepth 2000 in
 lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset,
       IsPresent topYukawa (toChargeProfile topYukawa x) := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset.filter
+      fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
+    simp_all
+  have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
+    (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
 lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset,

@@ -23,20 +23,43 @@ open ChargeProfile
 open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
-set_option maxRecDepth 5000 in
+set_option maxRecDepth 2400 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.IsComplete := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter fun x => ¬ x.IsComplete:= by
+    simp_all
+  have hl : Multiset.filter (fun x => ¬ x.IsComplete)
+    (nonPhenoConstrainedCharges same).toMultiset = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 900 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_nearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, x.IsComplete := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset.filter
+      fun x => ¬ x.IsComplete:= by
+    simp_all
+  have hl : Multiset.filter (fun x => ¬ x.IsComplete)
+    (nonPhenoConstrainedCharges nearestNeighbor).toMultiset = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 1000 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_nextToNearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset, x.IsComplete := by
-  decide
+  intro x hx
+  by_contra hnot
+  have hx : x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset.filter
+      fun x => ¬ x.IsComplete:= by
+    simp_all
+  have hl : Multiset.filter (fun x => ¬ x.IsComplete)
+    (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset = ∅ := by rfl
+  rw [hl] at hx
+  simp at hx
 
 lemma isComplete_of_mem_nonPhenoConstrainedCharge (I : CodimensionOneConfig) :
     ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.IsComplete :=

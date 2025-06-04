@@ -39,7 +39,7 @@ lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same_of_neg :
 
 lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same_of_pos :
     ∀ q5 ∈ same.allowedBarFiveCharges,
-    0 ≤ q5 →  (phenoInsertQ5 (nonPhenoConstrainedCharges same) q5).card = 0 := by
+    0 ≤ q5 → (phenoInsertQ5 (nonPhenoConstrainedCharges same) q5).card = 0 := by
   decide
 
 lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same :
