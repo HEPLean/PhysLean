@@ -34,22 +34,22 @@ Computable permutations of lists of length at most 3.
   list of permutations of `l`. If the length of `l` is greater then three
   then this returns `[]`. This is defined so one can use `decide` with such permutations. -/
 def _root_.List.lowPermutations : (l : List (ℤ × ℤ)) → List (List (ℤ × ℤ))
-| [] => [[]]
-| x :: [] => [[x]]
-| x1 :: x2 :: [] => if x1 = x2 then [[x1, x2]] else
-  [[x1, x2], [x2, x1]]
-| x1 :: x2 :: x3 :: [] =>
-  if x1 = x2 ∧ x2 = x3 then
-    [[x1, x2, x3]]
-  else if x1 = x2 then
-    [[x1, x2, x3], [x1, x3, x2], [x3, x1, x2]]
-  else if x2 = x3 then
-    [[x1, x2, x3], [x2, x1, x3], [x2, x3, x1]]
-  else if x1 = x3 then
-    [[x1, x2, x3], [x2, x1, x3], [x1, x3, x2]]
-  else
-    [[x1, x2, x3], [x1, x3, x2], [x2, x1, x3], [x2, x3, x1], [x3, x1, x2], [x3, x2, x1]]
-| _ :: _ :: _ :: _ => []
+  | [] => [[]]
+  | x :: [] => [[x]]
+  | x1 :: x2 :: [] => if x1 = x2 then [[x1, x2]] else
+    [[x1, x2], [x2, x1]]
+  | x1 :: x2 :: x3 :: [] =>
+    if x1 = x2 ∧ x2 = x3 then
+      [[x1, x2, x3]]
+    else if x1 = x2 then
+      [[x1, x2, x3], [x1, x3, x2], [x3, x1, x2]]
+    else if x2 = x3 then
+      [[x1, x2, x3], [x2, x1, x3], [x2, x3, x1]]
+    else if x1 = x3 then
+      [[x1, x2, x3], [x2, x1, x3], [x1, x3, x2]]
+    else
+      [[x1, x2, x3], [x1, x3, x2], [x2, x1, x3], [x2, x3, x1], [x3, x1, x2], [x3, x2, x1]]
+  | _ :: _ :: _ :: _ => []
 
 lemma _root_.List.lowPermutations_perm_mem_of_length_le_three :
     (l l1 : List (ℤ × ℤ)) → (h : l.Perm l1) → (hl : l.length ≤ 3) → l1 ∈ l.lowPermutations
@@ -280,9 +280,10 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
     (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card = charges.card := by
   intro F hF
-  simp [fromParts] at hF
+  simp? [fromParts]  at hF says
+    simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
-  simp
+  simp only [Multiset.coe_card, List.length_zip]
   rw [CodimensionOneConfig.fiveChargeMultisetToList_length I charges hc]
   rw [hcard]
   have hflux : fluxes.toList.length ≤ 3 := by
@@ -316,10 +317,11 @@ lemma card_le_three_of_mem_fromPart (I : CodimensionOneConfig) (charges : Multis
   intro F hF
   rw [card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F hF]
   by_contra hn
-  simp [fromParts] at hF
+  simp? [fromParts]  at hF says
+    simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
   rw [List.lowPermutations_empty_of_not_le_three] at hperm
-  simp at hperm
+  simp only [List.not_mem_nil] at hperm
   rw [FluxesFive.toList_length fluxes hf]
   exact hn
 
@@ -340,7 +342,9 @@ lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) 
       (expose_names; rw [FluxesFive.toList_length fluxes hf])
       rw [← card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F h]
       exact F_card
-    simp [fromParts] at h
+    simp? [fromParts]  at h says
+      simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right,
+        List.mem_map] at h
     obtain ⟨hcard, l, hperm, rfl⟩ := h
     have hlflux : l.Perm fluxes.toList := by
       apply List.perm_of_mem_lowPermutations_of_length_le_three
@@ -380,7 +384,7 @@ lemma fromParts_eq_preimage_of_charges_card_le_three (I : CodimensionOneConfig)
     (F : FiveQuanta) (hcard : charges.card ≤ 3) :
     F.toCharges = charges ∧ F.toFluxesFive = fluxes ↔ F ∈ fromParts I charges fluxes := by
   rw [← fromParts_eq_preimage I charges fluxes hf hc F]
-  simp
+  simp only [and_congr_right_iff, iff_self_and]
   intro h1 h2
   have hx : Multiset.card F = charges.card := by
     rw [← h1]
@@ -440,9 +444,10 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
     (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card = charges.card := by
   intro F hF
-  simp [fromParts] at hF
+  simp? [fromParts] at hF says
+    simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
-  simp
+  simp only [Multiset.coe_card, List.length_zip]
   rw [CodimensionOneConfig.tenChargeMultisetToList_length I charges hc]
   rw [hcard]
   have hflux : fluxes.toList.length ≤ 3 := by
@@ -539,7 +544,7 @@ lemma fromParts_eq_preimage_of_charges_card_le_three (I : CodimensionOneConfig)
     (F : TenQuanta) (hcard : charges.card ≤ 3) :
     F.toCharges = charges ∧ F.toFluxesTen = fluxes ↔ F ∈ fromParts I charges fluxes := by
   rw [← fromParts_eq_preimage I charges fluxes hf hc F]
-  simp
+  simp only [and_congr_right_iff, iff_self_and]
   intro h1 h2
   have hx : Multiset.card F = charges.card := by
     rw [← h1]

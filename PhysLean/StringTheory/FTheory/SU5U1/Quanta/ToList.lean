@@ -48,10 +48,11 @@ lemma mem_allowedElems_of_mem (F : FiveQuanta)
   use x.1
   constructor
   · apply hc x.1
-    simp [toCharges]
+    simp? [toCharges] says
+      simp only [toCharges, Multiset.mem_map, Prod.exists, exists_and_right, exists_eq_right]
     use x.2.1, x.2.2
   · use x.2.1, x.2.2
-    simp
+    simp only [Prod.mk.eta, and_true]
     refine FluxesFive.mem_allowedPairs_of_mem_noExotics F.toFluxesFive hf x.2 ?_
     simp [toFluxesFive]
     use x.1
@@ -183,10 +184,11 @@ lemma toList_prod_fst_eq {I : CodimensionOneConfig} {F : FiveQuanta}
     symm
     apply Finset.sum_subset
     · intro z
-      simp
+      simp only [Multiset.toFinset_filter, Finset.mem_filter, Multiset.mem_toFinset, Finset.mem_map,
+        List.mem_toFinset, Prod.exists, and_imp]
       intro hz hxz
       use z.2.1, z.2.2
-      simp [e, hxz]
+      simp? [e, hxz] says simp only [Prod.mk.eta, hxz, Function.Embedding.coeFn_mk, and_true, e]
       apply snd_mem_allowedPairs_of_mem_toList I F
       rw [(mem_toList_iff F hf hc)]
       exact hz
@@ -234,10 +236,11 @@ lemma mem_allowedElems_of_mem {I : CodimensionOneConfig} (F : TenQuanta)
   use x.1
   constructor
   · apply hc x.1
-    simp [toCharges]
+    simp? [toCharges] says
+      simp only [toCharges, Multiset.mem_map, Prod.exists, exists_and_right, exists_eq_right]
     use x.2.1, x.2.2
   · use x.2.1, x.2.2
-    simp
+    simp only [Prod.mk.eta, and_true]
     refine FluxesTen.mem_allowedPairs_of_mem_noExotics F.toFluxesTen hf x.2 ?_
     simp [toFluxesTen]
     use x.1
@@ -369,7 +372,8 @@ lemma toList_prod_fst_eq {I : CodimensionOneConfig} {F : TenQuanta}
     symm
     apply Finset.sum_subset
     · intro z
-      simp
+      simp only [Multiset.toFinset_filter, Finset.mem_filter, Multiset.mem_toFinset, Finset.mem_map,
+        List.mem_toFinset, Prod.exists, and_imp]
       intro hz hxz
       use z.2.1, z.2.2
       simp [e, hxz]
