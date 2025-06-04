@@ -59,12 +59,12 @@ See the conditions in equation 26 - 28 of [1].
 ## Implmentation
 
 The above theory is implemented by defining two data structures:
-- `FluxesTen` of type `{x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}`
+- `FluxesTen` of type `Multiset (ℤ × ℤ)`
   which contains the chirality `M` and hypercharge fluxes
-  `N` of the 10d-matter curves which lead to chiral matter (the condition `(0, 0) ∉ x`).
-- `FluxesFive` of type `{x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}`
+  `N` of the 10d-matter curves.
+- `FluxesFive` of type `Multiset (ℤ × ℤ)`
   which contains the chirality `M` and hypercharge fluxes
-  `N` of the 5-bar-matter curves (excluding the higges) which lead to chiral matter content.
+  `N` of the 5-bar-matter curves (excluding the higges).
 
 Note: Neither `FluxesTen` or `FluxesFive` are fundamental to the theory,
 they can be derived from other data structures.
@@ -88,16 +88,17 @@ namespace SU5U1
 
 -/
 
-/-- The fluxes `(M, N)` of the 5-bar matter curves of a theory which lead to chiral matter
-  content in the MSSM. -/
-def FluxesFive : Type := {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}
+/-- The fluxes `(M, N)` of the 5-bar matter curves of a theory. -/
+abbrev FluxesFive : Type := Multiset (ℤ × ℤ)
 
 namespace FluxesFive
 
 instance : DecidableEq FluxesFive :=
-  inferInstanceAs (DecidableEq {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x})
+  inferInstanceAs (DecidableEq (Multiset (ℤ × ℤ)))
 
-lemma zero_not_mem (F : FluxesFive) : (0, 0) ∉ F.1 := F.2
+/-- The proposition on `FluxesFive` such that `(0, 0)` is not in `F`
+  and as such each component in `F` leads to chiral matter.  -/
+abbrev HasNoZero (F : FluxesFive) : Prop := (0, 0) ∉ F
 
 /-!
 
@@ -107,7 +108,7 @@ lemma zero_not_mem (F : FluxesFive) : (0, 0) ∉ F.1 := F.2
 
 /-- The multiset of chiral indices of the representation `D = (bar 3,1)_{1/3}`
   arrising from the matter 5d representations. -/
-def chiralIndicesOfD (F : FluxesFive) : Multiset ℤ := F.1.map (fun f => f.1)
+def chiralIndicesOfD (F : FluxesFive) : Multiset ℤ := F.map (fun f => f.1)
 
 /-- The total number of chiral `D` representations arrising from the matter 5d
   representations. -/
@@ -127,7 +128,7 @@ def numAntiChiralD (F : FluxesFive) : ℤ :=
 
 /-- The multiset of chiral indices of the representation `L = (1,2)_{-1/2}`
   arrising from the matter 5d representations. -/
-def chiralIndicesOfL (F : FluxesFive) : Multiset ℤ := F.1.map (fun f => f.1 + f.2)
+def chiralIndicesOfL (F : FluxesFive) : Multiset ℤ := F.map (fun f => f.1 + f.2)
 
 /-- The total number of chiral `L` representations arrising from the matter 5d
   representations. -/
@@ -163,14 +164,15 @@ end FluxesFive
 ## Fluxes of the 10d matter representation
 
 -/
-/-- The fluxes `(M, N)` of the 10d matter curves of a theory which lead to chiral matter
-  content in the MSSM. -/
-def FluxesTen : Type := {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x}
+
+/-- The fluxes `(M, N)` of the 10d matter curves of a theory. -/
+abbrev FluxesTen : Type :=  Multiset (ℤ × ℤ)
 
 namespace FluxesTen
 
-instance : DecidableEq FluxesTen :=
-  inferInstanceAs (DecidableEq {x : Multiset (ℤ × ℤ) | (0, 0) ∉ x})
+/-- The proposition on `FluxesTen` such that `(0, 0)` is not in `F`
+  and as such each component in `F` leads to chiral matter.  -/
+abbrev HasNoZero (F : FluxesTen) : Prop := (0, 0) ∉ F
 
 /-!
 
@@ -180,7 +182,7 @@ instance : DecidableEq FluxesTen :=
 
 /-- The multiset of chiral indices of the representation `Q = (3,2)_{1/6}`
   arrising from the matter 10d representations, corresponding to `M`. -/
-def chiralIndicesOfQ (F : FluxesTen) : Multiset ℤ := F.1.map (fun f => f.1)
+def chiralIndicesOfQ (F : FluxesTen) : Multiset ℤ := F.map (fun f => f.1)
 
 /-- The total number of chiral `Q` representations arrising from the matter 10d
   representations. -/
@@ -198,7 +200,7 @@ def numAntiChiralQ (F : FluxesTen) : ℤ := ((chiralIndicesOfQ F).filter (fun x 
 
 /-- The multiset of chiral indices of the representation `U = (bar 3,1)_{-2/3}`
   arrising from the matter 10d representations, corresponding to `M - N` -/
-def chiralIndicesOfU (F : FluxesTen) : Multiset ℤ := F.1.map (fun f => f.1 - f.2)
+def chiralIndicesOfU (F : FluxesTen) : Multiset ℤ := F.map (fun f => f.1 - f.2)
 
 /-- The total number of chiral `U` representations arrising from the matter 10d
   representations. -/
@@ -216,7 +218,7 @@ def numAntiChiralU (F : FluxesTen) : ℤ := ((chiralIndicesOfU F).filter (fun x 
 
 /-- The multiset of chiral indices of the representation `E = (1,1)_{1}`
   arrising from the matter 10d representations, corresponding to `M + N` -/
-def chiralIndicesOfE (F : FluxesTen) : Multiset ℤ := F.1.map (fun f => f.1 + f.2)
+def chiralIndicesOfE (F : FluxesTen) : Multiset ℤ := F.map (fun f => f.1 + f.2)
 
 /-- The total number of chiral `E` representations arrising from the matter 10d
   representations. -/

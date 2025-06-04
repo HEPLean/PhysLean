@@ -229,6 +229,20 @@ lemma coe_tenChargeMultisetToList_of_all_mem (I : CodimensionOneConfig) (S : Mul
     · simp [tenChargeMultisetToList_mem_iff]
       aesop
 
+lemma fiveChargeMultisetToList_length (I : CodimensionOneConfig) (S : Multiset ℤ)
+    (hs : ∀ s ∈ S, s ∈ I.allowedBarFiveCharges) :
+    (fiveChargeMultisetToList I S).length = S.card := by
+  trans Multiset.card (Multiset.ofList (fiveChargeMultisetToList I S))
+  · rfl
+  rw [coe_fiveChargeMultisetToList_of_all_mem I S hs]
+
+lemma tenChargeMultisetToList_length (I : CodimensionOneConfig) (S : Multiset ℤ)
+    (hs : ∀ s ∈ S, s ∈ I.allowedTenCharges) :
+    (I.tenChargeMultisetToList S).length = S.card := by
+  trans Multiset.card (Multiset.ofList (tenChargeMultisetToList I S))
+  · rfl
+  rw [coe_tenChargeMultisetToList_of_all_mem I S hs]
+
 end CodimensionOneConfig
 end SU5U1
 
