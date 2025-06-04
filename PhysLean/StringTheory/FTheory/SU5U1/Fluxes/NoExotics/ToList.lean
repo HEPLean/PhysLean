@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Basic
 /-!
@@ -25,12 +24,11 @@ namespace SU5U1
 
 /-!
 
-##  `FluxesFive` to lists
+## `FluxesFive` to lists
 
 -/
 
 namespace FluxesFive
-
 
 /-- The allowed pairs of fluxes in `FluxesFive` which have no exotics.
 
@@ -78,7 +76,7 @@ lemma mem_toList_iff {F : FluxesFive}
   obtain ⟨fst, snd⟩ := a
   exact mem_allowedPairs_of_mem_noExotics F hf (fst, snd) a_1
 
-lemma toList_count  {F : FluxesFive} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.HasNoZero)
+lemma toList_count {F : FluxesFive} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.HasNoZero)
     (hmema : a ∈ allowedPairs) : F.toList.count a = F.count a := by
   by_cases hS : a ∈ F
   · have hmem : a ∈ F.toList := by
@@ -94,7 +92,7 @@ lemma toList_count  {F : FluxesFive} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.Ha
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs  = 1 := by
+    have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs = 1 := by
       revert hmema
       clear * -
       intro h
@@ -122,10 +120,10 @@ lemma coe_toList(F : FluxesFive) (h : F.NoExotics ∧ F.HasNoZero) : ↑(F.toLis
     rw [toList_count h ha]
   · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
     · by_contra hn
-      exact ha ( mem_allowedPairs_of_mem_noExotics F h a hn)
+      exact ha (mem_allowedPairs_of_mem_noExotics F h a hn)
     · by_contra hn
       rw [Multiset.mem_coe, mem_toList_iff h] at hn
-      exact ha ( mem_allowedPairs_of_mem_noExotics F h a hn)
+      exact ha (mem_allowedPairs_of_mem_noExotics F h a hn)
 
 lemma toList_length (F : FluxesFive) (h : F.NoExotics ∧ F.HasNoZero) :
     F.toList.length = F.card := by
@@ -136,7 +134,7 @@ end FluxesFive
 
 /-!
 
-##  `FluxesTen` to lists
+## `FluxesTen` to lists
 
 -/
 
@@ -187,7 +185,7 @@ lemma mem_toList_iff {F : FluxesTen}
   obtain ⟨fst, snd⟩ := a
   exact mem_allowedPairs_of_mem_noExotics F hf (fst, snd) a_1
 
-lemma toList_count  {F : FluxesTen} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.HasNoZero)
+lemma toList_count {F : FluxesTen} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.HasNoZero)
     (hmema : a ∈ allowedPairs) : F.toList.count a = F.count a := by
   by_cases hS : a ∈ F
   · have hmem : a ∈ F.toList := by
@@ -203,7 +201,7 @@ lemma toList_count  {F : FluxesTen} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.Has
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs  = 1 := by
+    have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs = 1 := by
       revert hmema
       clear * -
       intro h
@@ -231,10 +229,10 @@ lemma coe_toList(F : FluxesTen) (h : F.NoExotics ∧ F.HasNoZero) : ↑(F.toList
     rw [toList_count h ha]
   · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
     · by_contra hn
-      exact ha ( mem_allowedPairs_of_mem_noExotics F h a hn)
+      exact ha (mem_allowedPairs_of_mem_noExotics F h a hn)
     · by_contra hn
       rw [Multiset.mem_coe, mem_toList_iff h] at hn
-      exact ha ( mem_allowedPairs_of_mem_noExotics F h a hn)
+      exact ha (mem_allowedPairs_of_mem_noExotics F h a hn)
 
 lemma toList_length (F : FluxesTen) (h : F.NoExotics ∧ F.HasNoZero) :
     F.toList.length = F.card := by

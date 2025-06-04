@@ -156,7 +156,7 @@ lemma _root_.List.lowPermutations_perm_mem_of_length_le_three :
           split_ifs <;> simp_all
 
 lemma _root_.List.perm_of_mem_lowPermutations_of_length_le_three :
-     (l l1 : List (ℤ × ℤ)) → (h : l1 ∈ l.lowPermutations) → (hl : l.length ≤ 3) → l1.Perm l
+    (l l1 : List (ℤ × ℤ)) → (h : l1 ∈ l.lowPermutations) → (hl : l.length ≤ 3) → l1.Perm l
   | [], l1, h, hl => by
     simpa [List.lowPermutations] using h
   | x :: [], l1, h, hl => by
@@ -229,7 +229,6 @@ lemma _root_.List.lowPermutations_empty_of_not_le_three :
 | x1 :: x2 :: x3 :: [], hl => by simp at hl
 | _ :: _ :: _ :: _ :: _, hl => rfl
 
-
 namespace FTheory
 
 namespace SU5U1
@@ -271,7 +270,7 @@ lemma self_mem_fromParts_of_toCharges_toFluxesFive (I : CodimensionOneConfig) (F
     · rw [FluxesFive.toList_length F.toFluxesFive hf]
       simp [toFluxesFive]
       exact hcard
-  · rw [← toList_prod_fst_eq  hf hc]
+  · rw [← toList_prod_fst_eq hf hc]
     conv_rhs => rw [← coe_toList hf hc]
     congr
     exact Eq.symm (List.zip_of_prod rfl rfl)
@@ -310,7 +309,7 @@ lemma card_eq_fluxes_card_of_mem_fromParts (I : CodimensionOneConfig) (charges :
   simp [fromParts] at hF
   exact hF.1
 
-lemma card_le_three_of_mem_fromPart  (I : CodimensionOneConfig) (charges : Multiset ℤ)
+lemma card_le_three_of_mem_fromPart (I : CodimensionOneConfig) (charges : Multiset ℤ)
     (fluxes : FluxesFive) (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
     (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card ≤ 3 := by
@@ -327,7 +326,7 @@ lemma card_le_three_of_mem_fromPart  (I : CodimensionOneConfig) (charges : Multi
 lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : FluxesFive)
     (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
     (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges)
-    (F : FiveQuanta)  :
+    (F : FiveQuanta) :
     F.toCharges = charges ∧ F.toFluxesFive = fluxes ∧ F.card ≤ 3 ↔
       F ∈ fromParts I charges fluxes := by
   constructor
@@ -404,7 +403,6 @@ end FiveQuanta
 
 namespace TenQuanta
 
-
 /-- The list of `TenQuanta` which arise from `charges` and `fluxes`.
   Note: This gives junk unless `charges` has length less than or equal to `3`,
   the charges correspond to a `CodimensionOneConfig`
@@ -432,7 +430,7 @@ lemma self_mem_fromParts_of_toCharges_toFluxesTen (I : CodimensionOneConfig) (F 
     · rw [FluxesTen.toList_length F.toFluxesTen hf]
       simp [toFluxesTen]
       exact hcard
-  · rw [← toList_prod_fst_eq  hf hc]
+  · rw [← toList_prod_fst_eq hf hc]
     conv_rhs => rw [← coe_toList hf hc]
     congr
     exact Eq.symm (List.zip_of_prod rfl rfl)
@@ -471,7 +469,7 @@ lemma card_eq_fluxes_card_of_mem_fromParts (I : CodimensionOneConfig) (charges :
   simp [fromParts] at hF
   exact hF.1
 
-lemma card_le_three_of_mem_fromPart  (I : CodimensionOneConfig) (charges : Multiset ℤ)
+lemma card_le_three_of_mem_fromPart (I : CodimensionOneConfig) (charges : Multiset ℤ)
     (fluxes : FluxesTen) (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
     (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card ≤ 3 := by
@@ -487,7 +485,7 @@ lemma card_le_three_of_mem_fromPart  (I : CodimensionOneConfig) (charges : Multi
 
 lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : FluxesTen)
     (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
-    (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) (F : TenQuanta)  :
+    (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) (F : TenQuanta) :
     F.toCharges = charges ∧ F.toFluxesTen = fluxes ∧ F.card ≤ 3 ↔
       F ∈ fromParts I charges fluxes := by
   constructor

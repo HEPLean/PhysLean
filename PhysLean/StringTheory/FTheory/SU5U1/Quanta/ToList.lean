@@ -13,7 +13,7 @@ in some instances it is good to have them as lists. Usually turning
 a multiset into a list is done using choice, and therefore is not computable.
 However, in the cases when `NoExotics` and `HasNoZero` hold,
 and all the charges in the `FiveQuanta` and `TenQuanta` correspond to
-some  `CodimensionOneConfig` then possible elements of
+some `CodimensionOneConfig` then possible elements of
 `FluxesFive` and `FluxesTen` are known. Thus we can use those
 elements to construct a list of the fluxes from multisets, in a way which is computable.
 This file provides the definitions and lemmas needed to do this.
@@ -34,8 +34,8 @@ variable {I : CodimensionOneConfig}
 namespace FiveQuanta
 
 /-- The allowed elements of a `FiveQuanta` for which the underlying `FluxesFive` obeys
-  `NoExotics` and `HasNoZero`  and for which the charges are determined by
-  a `CodimensionOneConfig`.  -/
+  `NoExotics` and `HasNoZero` and for which the charges are determined by
+  a `CodimensionOneConfig`. -/
 def allowedElems (I : CodimensionOneConfig) : List (ℤ × ℤ × ℤ) :=
   I.allowedBarFiveChargesList.flatMap fun x =>
     FluxesFive.allowedPairs.map (fun y => (x, y.1, y.2))
@@ -69,7 +69,7 @@ lemma mem_allowedElems_of_mem_toList (I : CodimensionOneConfig) (F : FiveQuanta)
   exact h.1
 
 lemma snd_mem_allowedPairs_of_mem_toList (I : CodimensionOneConfig) (F : FiveQuanta)
-    (x : ℤ × ℤ × ℤ) (h : x ∈ F.toList I) : x.2 ∈ FluxesFive.allowedPairs  := by
+    (x : ℤ × ℤ × ℤ) (h : x ∈ F.toList I) : x.2 ∈ FluxesFive.allowedPairs := by
   have h1 := mem_allowedElems_of_mem_toList I F x h
   simp [allowedElems] at h1
   obtain ⟨x1, hx1, ⟨x2, x3, h2, rfl⟩⟩ := h1
@@ -86,7 +86,7 @@ lemma mem_toList_iff {I : CodimensionOneConfig} (F : FiveQuanta)
 
 set_option maxRecDepth 2000 in
 lemma toList_count {I : CodimensionOneConfig} {F : FiveQuanta}
-     {a : ℤ × ℤ × ℤ}
+    {a : ℤ × ℤ × ℤ}
     (hf : F.toFluxesFive.NoExotics ∧ F.toFluxesFive.HasNoZero)
     (hc : ∀ s ∈ F.toCharges, s ∈ I.allowedBarFiveCharges)
     (hmema : a ∈ allowedElems I) :
@@ -105,7 +105,7 @@ lemma toList_count {I : CodimensionOneConfig} {F : FiveQuanta}
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I)  = 1 := by
+    have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I) = 1 := by
       revert hmema
       clear * -
       intro h
@@ -136,7 +136,7 @@ lemma coe_toList {I : CodimensionOneConfig} {F : FiveQuanta}
     rw [toList_count hf hc ha]
   · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
     · by_contra hn
-      exact ha ( mem_allowedElems_of_mem F hf hc a hn)
+      exact ha (mem_allowedElems_of_mem F hf hc a hn)
     · by_contra hn
       rw [Multiset.mem_coe, mem_toList_iff F hf hc] at hn
       exact ha (mem_allowedElems_of_mem F hf hc a hn)
@@ -205,7 +205,7 @@ lemma toList_prod_snd_perm {I : CodimensionOneConfig} {F : FiveQuanta}
   rw [← Multiset.coe_eq_coe]
   rw [FluxesFive.coe_toList F.toFluxesFive hf]
   rw [show ((List.map Prod.snd (toList I F)) : Multiset _) =
-      Multiset.map Prod.snd (Multiset.ofList (F.toList I))  from rfl]
+      Multiset.map Prod.snd (Multiset.ofList (F.toList I)) from rfl]
   rw [coe_toList hf hc]
   rfl
 
@@ -220,8 +220,8 @@ end FiveQuanta
 namespace TenQuanta
 
 /-- The allowed elements of a `FiveQuanta` for which the underlying `FluxesFive` obeys
-  `NoExotics` and `HasNoZero`  and for which the charges are determined by
-  a `CodimensionOneConfig`.  -/
+  `NoExotics` and `HasNoZero` and for which the charges are determined by
+  a `CodimensionOneConfig`. -/
 def allowedElems (I : CodimensionOneConfig) : List (ℤ × ℤ × ℤ) :=
   I.allowedTenChargesList.flatMap fun x =>
     FluxesTen.allowedPairs.map (fun y => (x, y.1, y.2))
@@ -255,7 +255,7 @@ lemma mem_allowedElems_of_mem_toList (I : CodimensionOneConfig) (F : TenQuanta)
   exact h.1
 
 lemma snd_mem_allowedPairs_of_mem_toList (I : CodimensionOneConfig) (F : TenQuanta)
-    (x : ℤ × ℤ × ℤ) (h : x ∈ F.toList I) : x.2 ∈ FluxesTen.allowedPairs  := by
+    (x : ℤ × ℤ × ℤ) (h : x ∈ F.toList I) : x.2 ∈ FluxesTen.allowedPairs := by
   have h1 := mem_allowedElems_of_mem_toList I F x h
   simp [allowedElems] at h1
   obtain ⟨x1, hx1, ⟨x2, x3, h2, rfl⟩⟩ := h1
@@ -272,7 +272,7 @@ lemma mem_toList_iff {I : CodimensionOneConfig} (F : TenQuanta)
 
 set_option maxRecDepth 2000 in
 lemma toList_count {I : CodimensionOneConfig} {F : TenQuanta}
-     {a : ℤ × ℤ × ℤ}
+    {a : ℤ × ℤ × ℤ}
     (hf : F.toFluxesTen.NoExotics ∧ F.toFluxesTen.HasNoZero)
     (hc : ∀ s ∈ F.toCharges, s ∈ I.allowedTenCharges)
     (hmema : a ∈ allowedElems I) :
@@ -291,7 +291,7 @@ lemma toList_count {I : CodimensionOneConfig} {F : TenQuanta}
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I)  = 1 := by
+    have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I) = 1 := by
       revert hmema
       clear * -
       intro h
@@ -322,7 +322,7 @@ lemma coe_toList {I : CodimensionOneConfig} {F : TenQuanta}
     rw [toList_count hf hc ha]
   · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
     · by_contra hn
-      exact ha ( mem_allowedElems_of_mem F hf hc a hn)
+      exact ha (mem_allowedElems_of_mem F hf hc a hn)
     · by_contra hn
       rw [Multiset.mem_coe, mem_toList_iff F hf hc] at hn
       exact ha (mem_allowedElems_of_mem F hf hc a hn)
@@ -391,7 +391,7 @@ lemma toList_prod_snd_perm {I : CodimensionOneConfig} {F : TenQuanta}
   rw [← Multiset.coe_eq_coe]
   rw [FluxesTen.coe_toList F.toFluxesTen hf]
   rw [show ((List.map Prod.snd (toList I F)) : Multiset _) =
-      Multiset.map Prod.snd (Multiset.ofList (F.toList I))  from rfl]
+      Multiset.map Prod.snd (Multiset.ofList (F.toList I)) from rfl]
   rw [coe_toList hf hc]
   rfl
 
