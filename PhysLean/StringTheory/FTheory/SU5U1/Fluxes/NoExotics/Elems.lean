@@ -104,7 +104,6 @@ lemma sum_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics) :
   revert F h
   decide
 
-
 lemma hasNoZero_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics) :
     F.HasNoZero := by
   revert F h

@@ -97,7 +97,7 @@ instance : DecidableEq FluxesFive :=
   inferInstanceAs (DecidableEq (Multiset (ℤ × ℤ)))
 
 /-- The proposition on `FluxesFive` such that `(0, 0)` is not in `F`
-  and as such each component in `F` leads to chiral matter.  -/
+  and as such each component in `F` leads to chiral matter. -/
 abbrev HasNoZero (F : FluxesFive) : Prop := (0, 0) ∉ F
 
 /-!
@@ -166,12 +166,12 @@ end FluxesFive
 -/
 
 /-- The fluxes `(M, N)` of the 10d matter curves of a theory. -/
-abbrev FluxesTen : Type :=  Multiset (ℤ × ℤ)
+abbrev FluxesTen : Type := Multiset (ℤ × ℤ)
 
 namespace FluxesTen
 
 /-- The proposition on `FluxesTen` such that `(0, 0)` is not in `F`
-  and as such each component in `F` leads to chiral matter.  -/
+  and as such each component in `F` leads to chiral matter. -/
 abbrev HasNoZero (F : FluxesTen) : Prop := (0, 0) ∉ F
 
 /-!

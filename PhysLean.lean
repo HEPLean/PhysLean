@@ -261,6 +261,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Card
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.IsComplete
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Lemmas
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoConstrained
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ10
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ5
@@ -271,10 +272,14 @@ import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Elems
+import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Matter
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.ToList
 import PhysLean.Thermodynamics.Basic

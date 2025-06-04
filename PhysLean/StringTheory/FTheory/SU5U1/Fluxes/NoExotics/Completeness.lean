@@ -169,7 +169,7 @@ lemma subset_le_mem_of_card_eq_three {F : FluxesFive} (hF : F.NoExotics) (hnZ : 
     simp
   rw [Multiset.card_cons] at hcard
   simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a  hmem
+  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
   have hS := subset_le_mem_of_card_eq_two hF hnZ S hcard hsub
   clear hle ih hmem hcard hsub
   revert hSum1 hSum2
