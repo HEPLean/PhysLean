@@ -21,13 +21,42 @@ open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
 set_option maxRecDepth 5000 in
-lemma card_Q5_le_three_of_nonPhenoConstrainedCharges :
-    ∀ I, ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.1.card ≤ 4 := by
+lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_same :
+    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.2.2.1.card ≤ 4 := by
   decide
 
+set_option maxRecDepth 2000 in
+lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_nearestNeighbor :
+    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, x.2.2.1.card ≤ 4 := by
+  decide
+
+set_option maxRecDepth 2000 in
+lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_nextToNearestNeighbor :
+    ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset, x.2.2.1.card ≤ 4 := by
+  decide
+
+lemma card_Q5_le_three_of_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
+     ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.1.card ≤ 4 :=
+  match I with
+  | same => card_Q5_le_three_of_nonPhenoConstrainedCharges_of_same
+  | nearestNeighbor => card_Q5_le_three_of_nonPhenoConstrainedCharges_of_nearestNeighbor
+  | nextToNearestNeighbor =>
+    card_Q5_le_three_of_nonPhenoConstrainedCharges_of_nextToNearestNeighbor
+
+
 set_option maxRecDepth 5000 in
-lemma card_Q10_le_three_of_nonPhenoConstrainedCharges :
-    ∀ I, ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.2.card ≤ 3 := by
+lemma card_Q10_le_three_of_nonPhenoConstrainedCharges_of_same :
+    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.2.2.2.card ≤ 3 := by
+  decide
+
+set_option maxRecDepth 2000 in
+lemma card_Q10_le_three_of_nonPhenoConstrainedCharges_of_nearestNeighbor :
+    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, x.2.2.2.card ≤ 3 := by
+  decide
+
+set_option maxRecDepth 2000 in
+lemma card_Q10_le_three_of_nonPhenoConstrainedCharges_of_nextToNearestNeighbor :
+    ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset, x.2.2.2.card ≤ 3 := by
   decide
 
 end Charges
