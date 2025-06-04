@@ -29,7 +29,7 @@ open Tree Leaf Twig Branch Trunk
 
 -/
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 5000 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, ¬ x.IsPhenoConstrained := by
   decide
@@ -59,7 +59,7 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionO
 
 -/
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 5000 in
 lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset,
       IsPresent topYukawa (toChargeProfile topYukawa x) := by

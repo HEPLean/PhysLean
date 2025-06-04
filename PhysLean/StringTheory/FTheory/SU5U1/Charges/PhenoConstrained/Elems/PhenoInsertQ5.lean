@@ -32,9 +32,24 @@ This result is used to help show completeness.
 
 -/
 
-lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same : ∀ q5 ∈ same.allowedBarFiveCharges,
-    (phenoInsertQ5 (nonPhenoConstrainedCharges same) q5).card = 0 := by
+lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same_of_neg :
+    ∀ q5 ∈ same.allowedBarFiveCharges,
+    q5 < 0 → (phenoInsertQ5 (nonPhenoConstrainedCharges same) q5).card = 0 := by
   decide
+
+lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same_of_pos :
+    ∀ q5 ∈ same.allowedBarFiveCharges,
+    0 ≤ q5 →  (phenoInsertQ5 (nonPhenoConstrainedCharges same) q5).card = 0 := by
+  decide
+
+lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same :
+    ∀ q5 ∈ same.allowedBarFiveCharges,
+    (phenoInsertQ5 (nonPhenoConstrainedCharges same) q5).card = 0 := by
+  intro q5 hq5
+  by_cases hq5_neg : q5 < 0
+  · exact nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same_of_neg q5 hq5 hq5_neg
+  · simp at hq5_neg
+    exact nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_same_of_pos q5 hq5 hq5_neg
 
 lemma nonPhenoConstrainedCharges_phenoInsertQ5_card_zero_nearestNeighbor :
     ∀ q5 ∈ nearestNeighbor.allowedBarFiveCharges,

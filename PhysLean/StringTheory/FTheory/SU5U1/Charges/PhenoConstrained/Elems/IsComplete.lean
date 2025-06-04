@@ -23,7 +23,7 @@ open ChargeProfile
 open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 5000 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.IsComplete := by
   decide

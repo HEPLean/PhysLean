@@ -220,7 +220,7 @@ def fromChargeProfile : (T : PotentialTerm) → T.ChargeProfile → Charges
   | W4, (qHd, qHu, Q5) => (qHd, qHu, Q5, {})
   | K1, (Q5, Q10) => (none, none, Q5, Q10)
   | K2, (qHd, qHu, Q10) => (qHd, qHu, {}, Q10)
-  | topYukawa, (qHu, Q10) => (qHu, none, {}, Q10)
+  | topYukawa, (qHu, Q10) => (none, qHu, {}, Q10)
   | bottomYukawa, (qHd, Q5, Q10) => (qHd, none, Q5, Q10)
 
 /-- For a given potential term `T`, the charge profile associated with a collection of charges. -/
@@ -234,7 +234,7 @@ def toChargeProfile : (T : PotentialTerm) → Charges → T.ChargeProfile
   | W4, (qHd, qHu, Q5, _) => (qHd, qHu, Q5)
   | K1, (_, _, Q5, Q10) => (Q5, Q10)
   | K2, (qHd, qHu, _, Q10) => (qHd, qHu, Q10)
-  | topYukawa, (qHu, _, _, Q10) => (qHu, Q10)
+  | topYukawa, (_, qHu, _, Q10) => (qHu, Q10)
   | bottomYukawa, (qHd, _, Q5, Q10) => (qHd, Q5, Q10)
 
 @[simp]
@@ -392,6 +392,22 @@ lemma mem_ofFinset_of_subset (S5 S10 : Finset ℤ)
   dsimp only [hasSubset] at h
   simp only [hoption, Finset.mem_powerset] at hy ⊢
   exact ⟨h.1.trans hy.1, h.2.1.trans hy.2.1, h.2.2.1.trans hy.2.2.1, h.2.2.2.trans hy.2.2.2⟩
+
+lemma mem_ofFinset_iff {S5 S10 : Finset ℤ} {x : Charges} :
+    x ∈ ofFinset S5 S10 ↔ x.1.toFinset ⊆ S5 ∧ x.2.1.toFinset ⊆ S5 ∧
+      x.2.2.1 ⊆ S5 ∧ x.2.2.2 ⊆ S10 := by
+  match x with
+  | (qHd, qHu, Q5, Q10) =>
+  have hoption (x : Option ℤ) (S : Finset ℤ) :
+      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
+      x.toFinset ⊆ S := by
+    match x with
+    | none => simp
+    | some x => simp
+  rw [ofFinset]
+  repeat rw [Finset.product_eq_sprod, Finset.mem_product]
+  rw [hoption, hoption]
+  simp
 
 lemma toChargeProfile_mem_ofFinset_of_mem_ofFinset (T : PotentialTerm)
     {x : Charges} (S5 S10 : Finset ℤ) (hx : x ∈ ofFinset S5 S10) :

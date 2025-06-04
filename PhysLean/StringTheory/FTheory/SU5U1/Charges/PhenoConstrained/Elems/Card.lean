@@ -20,15 +20,15 @@ open ChargeProfile
 open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
-lemma nonPhenoConstrainedCharges_same_card : (nonPhenoConstrainedCharges same).card = 480 := by
+lemma nonPhenoConstrainedCharges_same_card : (nonPhenoConstrainedCharges same).card = 1148 := by
   rfl
 
 lemma nonPhenoConstrainedCharges_nearestNeighbor_card :
-    (nonPhenoConstrainedCharges nearestNeighbor).card = 169 := by
+    (nonPhenoConstrainedCharges nearestNeighbor).card = 407 := by
   rfl
 
 lemma nonPhenoConstrainedCharges_nextToNearestNeighbor_card :
-    (nonPhenoConstrainedCharges nextToNearestNeighbor).card = 117 := by
+    (nonPhenoConstrainedCharges nextToNearestNeighbor).card = 234 := by
   rfl
 
 end Charges

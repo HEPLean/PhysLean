@@ -20,12 +20,12 @@ open ChargeProfile
 open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 5000 in
 lemma card_Q5_le_three_of_nonPhenoConstrainedCharges :
-    ∀ I, ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.1.card ≤ 3 := by
+    ∀ I, ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.1.card ≤ 4 := by
   decide
 
-set_option maxRecDepth 2000 in
+set_option maxRecDepth 5000 in
 lemma card_Q10_le_three_of_nonPhenoConstrainedCharges :
     ∀ I, ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.2.card ≤ 3 := by
   decide
