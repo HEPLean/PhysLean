@@ -49,8 +49,10 @@ def _root_.List.lowPermutations : (l : List (ℤ × ℤ)) → List (List (ℤ ×
       [[x1, x2, x3], [x2, x1, x3], [x1, x3, x2]]
     else
       [[x1, x2, x3], [x1, x3, x2], [x2, x1, x3], [x2, x3, x1], [x3, x1, x2], [x3, x2, x1]]
-  | _ :: _ :: _ :: _ => []
+  | x1 :: x2 :: x3 :: x4 :: xs =>[]
 
+
+example : List.permutations' [1, 2] = [[1, 2], [2, 1]] := by decide
 lemma _root_.List.lowPermutations_perm_mem_of_length_le_three :
     (l l1 : List (ℤ × ℤ)) → (h : l.Perm l1) → (hl : l.length ≤ 3) → l1 ∈ l.lowPermutations
   | [], l1, h, hl => by
@@ -252,24 +254,19 @@ def fromParts (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : Flux
   if charges.card ≠ fluxes.card then {} else
   let chargesList : List ℤ := I.fiveChargeMultisetToList charges
   let fluxesList : List (ℤ × ℤ) := FluxesFive.toList fluxes
-  let fluxesPerms : List (List (ℤ × ℤ)) := fluxesList.lowPermutations
+  let fluxesPerms : List (List (ℤ × ℤ)) := fluxesList.permutations'.dedup
   fluxesPerms.map (fun l => chargesList.zip l)
 
 lemma self_mem_fromParts_of_toCharges_toFluxesFive (I : CodimensionOneConfig) (F : FiveQuanta)
     (hf : F.toFluxesFive.NoExotics ∧ F.toFluxesFive.HasNoZero)
-    (hc : ∀ s ∈ F.toCharges, s ∈ I.allowedBarFiveCharges)
-    (hcard : Multiset.card F ≤ 3) :
+    (hc : ∀ s ∈ F.toCharges, s ∈ I.allowedBarFiveCharges) :
     F ∈ fromParts I F.toCharges F.toFluxesFive := by
   simp [fromParts]
   apply And.intro
   · simp [toCharges, toFluxesFive]
   use (F.toList I).map Prod.snd
   constructor
-  · apply List.lowPermutations_perm_mem_of_length_le_three
-    · exact List.Perm.symm (toList_prod_snd_perm hf hc)
-    · rw [FluxesFive.toList_length F.toFluxesFive hf]
-      simp [toFluxesFive]
-      exact hcard
+  · exact (toList_prod_snd_perm hf hc)
   · rw [← toList_prod_fst_eq hf hc]
     conv_rhs => rw [← coe_toList hf hc]
     congr
@@ -286,15 +283,8 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
   simp only [Multiset.coe_card, List.length_zip]
   rw [CodimensionOneConfig.fiveChargeMultisetToList_length I charges hc]
   rw [hcard]
-  have hflux : fluxes.toList.length ≤ 3 := by
-    by_contra hn
-    rw [List.lowPermutations_empty_of_not_le_three] at hperm
-    simp at hperm
-    exact hn
-  have hl : l.Perm fluxes.toList := by
-    apply List.perm_of_mem_lowPermutations_of_length_le_three
-    · exact hperm
-    · exact hflux
+  rw [List.mem_dedup] at hperm
+  have hl : l.Perm fluxes.toList := List.mem_permutations'.mp hperm
   have hl : l.length = fluxes.toList.length := by
     rw [List.Perm.length_eq hl]
   rw [FluxesFive.toList_length fluxes hf] at hl
@@ -310,46 +300,24 @@ lemma card_eq_fluxes_card_of_mem_fromParts (I : CodimensionOneConfig) (charges :
   simp [fromParts] at hF
   exact hF.1
 
-lemma card_le_three_of_mem_fromPart (I : CodimensionOneConfig) (charges : Multiset ℤ)
-    (fluxes : FluxesFive) (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
-    (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges) :
-    ∀ F ∈ fromParts I charges fluxes, F.card ≤ 3 := by
-  intro F hF
-  rw [card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F hF]
-  by_contra hn
-  simp? [fromParts]  at hF says
-    simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
-  obtain ⟨hcard, l, hperm, rfl⟩ := hF
-  rw [List.lowPermutations_empty_of_not_le_three] at hperm
-  simp only [List.not_mem_nil] at hperm
-  rw [FluxesFive.toList_length fluxes hf]
-  exact hn
-
 lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : FluxesFive)
     (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
     (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges)
     (F : FiveQuanta) :
-    F.toCharges = charges ∧ F.toFluxesFive = fluxes ∧ F.card ≤ 3 ↔
+    F.toCharges = charges ∧ F.toFluxesFive = fluxes ↔
       F ∈ fromParts I charges fluxes := by
   constructor
-  · intro ⟨h1, h2, h3⟩
+  · intro ⟨h1, h2⟩
     subst h1 h2
-    (expose_names; exact self_mem_fromParts_of_toCharges_toFluxesFive I F hf hc h3)
+    exact self_mem_fromParts_of_toCharges_toFluxesFive I F hf hc
   · intro h
-    have F_card := card_le_three_of_mem_fromPart I charges fluxes hf hc F h
-    simp only [F_card, and_true]
-    have fluxes_length : fluxes.toList.length ≤ 3 := by
-      (expose_names; rw [FluxesFive.toList_length fluxes hf])
-      rw [← card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F h]
-      exact F_card
     simp? [fromParts]  at h says
       simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right,
         List.mem_map] at h
     obtain ⟨hcard, l, hperm, rfl⟩ := h
+    rw [List.mem_dedup] at hperm
     have hlflux : l.Perm fluxes.toList := by
-      apply List.perm_of_mem_lowPermutations_of_length_le_three
-      · exact hperm
-      · exact fluxes_length
+      exact List.mem_permutations'.mp hperm
     have l_length: l.length = charges.card := by
       rw [List.Perm.length_eq hlflux]
       rw [hcard]
@@ -377,25 +345,52 @@ lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) 
         refine Multiset.coe_eq_coe.mpr ?_
         exact hlflux
 
-lemma fromParts_eq_preimage_of_charges_card_le_three (I : CodimensionOneConfig)
-    (charges : Multiset ℤ) (fluxes : FluxesFive)
-    (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
-    (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges)
-    (F : FiveQuanta) (hcard : charges.card ≤ 3) :
-    F.toCharges = charges ∧ F.toFluxesFive = fluxes ↔ F ∈ fromParts I charges fluxes := by
-  rw [← fromParts_eq_preimage I charges fluxes hf hc F]
-  simp only [and_congr_right_iff, iff_self_and]
-  intro h1 h2
-  have hx : Multiset.card F = charges.card := by
-    rw [← h1]
-    simp [toCharges]
-  rw [hx]
-  exact hcard
-
 /-- The multiset of `FiveQuanta` obtained from a mutliset of charges `Multiset ℤ`,
   which have a `FluxesFive` in `FluxesFive.elemsNoExotics`. -/
 def ofCharges (I : CodimensionOneConfig) (c : Multiset ℤ) : Multiset FiveQuanta :=
   FluxesFive.elemsNoExotics.bind fun f => fromParts I c f
+
+lemma mem_ofCharges_iff (I : CodimensionOneConfig) (charges : Multiset ℤ)
+    (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges) (F : FiveQuanta) :
+    F ∈ ofCharges I charges ↔
+      F.toCharges = charges ∧ F.toFluxesFive.NoExotics ∧ F.toFluxesFive.HasNoZero := by
+  constructor
+  · intro h
+    simp [ofCharges] at h
+    obtain ⟨f, hf, hF⟩ := h
+    rw [← fromParts_eq_preimage] at hF
+    obtain ⟨h1, h2⟩ := hF
+    subst h1 h2
+    simp
+    constructor
+    · exact FluxesFive.noExotics_of_mem_elemsNoExotics F.toFluxesFive hf
+    · exact FluxesFive.hasNoZero_of_mem_elemsNoExotics F.toFluxesFive hf
+    constructor
+    · exact FluxesFive.noExotics_of_mem_elemsNoExotics f hf
+    · exact FluxesFive.hasNoZero_of_mem_elemsNoExotics f hf
+    · exact hc
+  · intro ⟨rfl, h2, h3⟩
+    simp [ofCharges]
+    use F.toFluxesFive
+    refine ⟨FluxesFive.mem_elemsNoExotics_of_noExotics F.toFluxesFive h2 h3, ?_⟩
+    rw [← fromParts_eq_preimage I F.toCharges F.toFluxesFive]
+    · simp
+    · simp_all
+      exact h3
+    · exact hc
+
+lemma mem_ofCharges_self (I : CodimensionOneConfig) (c : FiveQuanta)
+    (h : c.toFluxesFive.NoExotics) (hnz : c.toFluxesFive.HasNoZero)
+    (hc : ∀ s ∈ c.toCharges, s ∈ I.allowedBarFiveCharges) :
+    c ∈ ofCharges I c.toCharges := by
+  simp [ofCharges]
+  use c.toFluxesFive
+  refine ⟨FluxesFive.mem_elemsNoExotics_of_noExotics c.toFluxesFive h hnz, ?_⟩
+  rw [← fromParts_eq_preimage I c.toCharges c.toFluxesFive]
+  simp
+  exact ⟨h, hnz⟩
+  exact hc
+
 
 end FiveQuanta
 
@@ -416,24 +411,19 @@ def fromParts (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : Flux
   if charges.card ≠ fluxes.card then {} else
   let chargesList : List ℤ := I.tenChargeMultisetToList charges
   let fluxesList : List (ℤ × ℤ) := FluxesTen.toList fluxes
-  let fluxesPerms : List (List (ℤ × ℤ)) := fluxesList.lowPermutations
+  let fluxesPerms : List (List (ℤ × ℤ)) := fluxesList.permutations'.dedup
   fluxesPerms.map (fun l => chargesList.zip l)
 
 lemma self_mem_fromParts_of_toCharges_toFluxesTen (I : CodimensionOneConfig) (F : TenQuanta)
     (hf : F.toFluxesTen.NoExotics ∧ F.toFluxesTen.HasNoZero)
-    (hc : ∀ s ∈ F.toCharges, s ∈ I.allowedTenCharges)
-    (hcard : Multiset.card F ≤ 3) :
+    (hc : ∀ s ∈ F.toCharges, s ∈ I.allowedTenCharges) :
     F ∈ fromParts I F.toCharges F.toFluxesTen := by
   simp [fromParts]
   apply And.intro
   · simp [toCharges, toFluxesTen]
   use (F.toList I).map Prod.snd
   constructor
-  · apply List.lowPermutations_perm_mem_of_length_le_three
-    · exact List.Perm.symm (toList_prod_snd_perm hf hc)
-    · rw [FluxesTen.toList_length F.toFluxesTen hf]
-      simp [toFluxesTen]
-      exact hcard
+  ·  exact (toList_prod_snd_perm hf hc)
   · rw [← toList_prod_fst_eq hf hc]
     conv_rhs => rw [← coe_toList hf hc]
     congr
@@ -450,15 +440,9 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
   simp only [Multiset.coe_card, List.length_zip]
   rw [CodimensionOneConfig.tenChargeMultisetToList_length I charges hc]
   rw [hcard]
-  have hflux : fluxes.toList.length ≤ 3 := by
-    by_contra hn
-    rw [List.lowPermutations_empty_of_not_le_three] at hperm
-    simp at hperm
-    exact hn
+  rw [List.mem_dedup] at hperm
   have hl : l.Perm fluxes.toList := by
-    apply List.perm_of_mem_lowPermutations_of_length_le_three
-    · exact hperm
-    · exact hflux
+    exact List.mem_permutations'.mp hperm
   have hl : l.length = fluxes.toList.length := by
     rw [List.Perm.length_eq hl]
   rw [FluxesTen.toList_length fluxes hf] at hl
@@ -474,42 +458,20 @@ lemma card_eq_fluxes_card_of_mem_fromParts (I : CodimensionOneConfig) (charges :
   simp [fromParts] at hF
   exact hF.1
 
-lemma card_le_three_of_mem_fromPart (I : CodimensionOneConfig) (charges : Multiset ℤ)
-    (fluxes : FluxesTen) (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
-    (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) :
-    ∀ F ∈ fromParts I charges fluxes, F.card ≤ 3 := by
-  intro F hF
-  rw [card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F hF]
-  by_contra hn
-  simp [fromParts] at hF
-  obtain ⟨hcard, l, hperm, rfl⟩ := hF
-  rw [List.lowPermutations_empty_of_not_le_three] at hperm
-  simp at hperm
-  rw [FluxesTen.toList_length fluxes hf]
-  exact hn
-
 lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : FluxesTen)
     (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
     (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) (F : TenQuanta) :
-    F.toCharges = charges ∧ F.toFluxesTen = fluxes ∧ F.card ≤ 3 ↔
+    F.toCharges = charges ∧ F.toFluxesTen = fluxes  ↔
       F ∈ fromParts I charges fluxes := by
   constructor
-  · intro ⟨h1, h2, h3⟩
+  · intro ⟨h1, h2⟩
     subst h1 h2
-    (expose_names; exact self_mem_fromParts_of_toCharges_toFluxesTen I F hf hc h3)
+    exact self_mem_fromParts_of_toCharges_toFluxesTen I F hf hc
   · intro h
-    have F_card := card_le_three_of_mem_fromPart I charges fluxes hf hc F h
-    simp only [F_card, and_true]
-    have fluxes_length : fluxes.toList.length ≤ 3 := by
-      (expose_names; rw [FluxesTen.toList_length fluxes hf])
-      rw [← card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F h]
-      exact F_card
     simp [fromParts] at h
     obtain ⟨hcard, l, hperm, rfl⟩ := h
     have hlflux : l.Perm fluxes.toList := by
-      apply List.perm_of_mem_lowPermutations_of_length_le_three
-      · exact hperm
-      · exact fluxes_length
+      exact hperm
     have l_length: l.length = charges.card := by
       rw [List.Perm.length_eq hlflux]
       rw [hcard]
@@ -537,27 +499,64 @@ lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) 
         refine Multiset.coe_eq_coe.mpr ?_
         exact hlflux
 
-lemma fromParts_eq_preimage_of_charges_card_le_three (I : CodimensionOneConfig)
-    (charges : Multiset ℤ) (fluxes : FluxesTen)
-    (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
-    (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges)
-    (F : TenQuanta) (hcard : charges.card ≤ 3) :
-    F.toCharges = charges ∧ F.toFluxesTen = fluxes ↔ F ∈ fromParts I charges fluxes := by
-  rw [← fromParts_eq_preimage I charges fluxes hf hc F]
-  simp only [and_congr_right_iff, iff_self_and]
-  intro h1 h2
-  have hx : Multiset.card F = charges.card := by
-    rw [← h1]
-    simp [toCharges]
-  rw [hx]
-  exact hcard
-
 /-- The multiset of `TenQuanta` obtained from a mutliset of charges `Multiset ℤ`,
   which have a `FluxesTen` in `FluxesTen.elemsNoExotics`. -/
-def ofCharges (I : CodimensionOneConfig) (c : Multiset ℤ) : Multiset FiveQuanta :=
+def ofCharges (I : CodimensionOneConfig) (c : Multiset ℤ) : Multiset TenQuanta :=
   FluxesTen.elemsNoExotics.bind fun f => fromParts I c f
 
+
+lemma mem_ofCharges_iff (I : CodimensionOneConfig) (charges : Multiset ℤ)
+    (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) (F : TenQuanta) :
+    F ∈ ofCharges I charges ↔
+      F.toCharges = charges ∧ F.toFluxesTen.NoExotics ∧ F.toFluxesTen.HasNoZero := by
+  constructor
+  · intro h
+    simp [ofCharges] at h
+    obtain ⟨f, hf, hF⟩ := h
+    rw [← fromParts_eq_preimage] at hF
+    obtain ⟨h1, h2⟩ := hF
+    subst h1 h2
+    simp
+    constructor
+    · exact FluxesTen.noExotics_of_mem_elemsNoExotics F.toFluxesTen hf
+    · exact FluxesTen.hasNoZero_of_mem_elemsNoExotics F.toFluxesTen hf
+    constructor
+    · exact FluxesTen.noExotics_of_mem_elemsNoExotics f hf
+    · exact FluxesTen.hasNoZero_of_mem_elemsNoExotics f hf
+    · exact hc
+  · intro ⟨rfl, h2, h3⟩
+    simp [ofCharges]
+    use F.toFluxesTen
+    refine ⟨FluxesTen.mem_elemsNoExotics_of_noExotics F.toFluxesTen h2 h3, ?_⟩
+    rw [← fromParts_eq_preimage I F.toCharges F.toFluxesTen]
+    · simp
+    · simp_all
+      exact h3
+    · exact hc
+
+lemma mem_ofCharges_self (I : CodimensionOneConfig) (c : TenQuanta)
+    (h : c.toFluxesTen.NoExotics) (hnz : c.toFluxesTen.HasNoZero)
+    (hc : ∀ s ∈ c.toCharges, s ∈ I.allowedTenCharges) :
+    c ∈ ofCharges I c.toCharges := by
+  simp [ofCharges]
+  use c.toFluxesTen
+  refine ⟨FluxesTen.mem_elemsNoExotics_of_noExotics c.toFluxesTen h hnz, ?_⟩
+  rw [← fromParts_eq_preimage I c.toCharges c.toFluxesTen]
+  simp
+  exact ⟨h, hnz⟩
+  exact hc
+
+
 end TenQuanta
+
+namespace Quanta
+
+def ofCharges (I : CodimensionOneConfig) (c : Charges) : Multiset Quanta :=
+    let c1 := FiveQuanta.ofCharges I c.2.2.1.val
+    let c2 := TenQuanta.ofCharges I c.2.2.2.val
+    (c1.product c2).map fun (F, T) => (c.1, c.2.1, F, T)
+
+end Quanta
 
 end SU5U1
 

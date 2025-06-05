@@ -50,6 +50,18 @@ def toCharges (x : TenQuanta) : Multiset ℤ := x.map Prod.fst
 
 end TenQuanta
 
+abbrev Quanta : Type := Option ℤ × Option ℤ × FiveQuanta × TenQuanta
+
+namespace Quanta
+open PotentialTerm ChargeProfile Charges
+
+instance : DecidableEq Quanta := instDecidableEqProd
+
+def toCharges (x : Quanta) : Charges :=
+  (x.1, x.2.1, x.2.2.1.toCharges.toFinset, x.2.2.2.toCharges.toFinset)
+
+end Quanta
+
 end SU5U1
 
 end FTheory
