@@ -6,24 +6,24 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Basic
 /-!
 
-# Elements of the non pheno-constrained charges
+# Elements of the non pheno-constrained charges for `same`
 
-For each `CodimensionOneConfig`, `I`, we give trees of charges which are not pheno-constrained,
+For the `CodimensionOneConfig`, `same`, we give trees of charges which are not pheno-constrained,
 and prove properties about them.
 
 These trees are complete in the sense that they contain all the non pheno-constrained, complete,
-charges which are in `ofFinset I.allowedBarFiveCharges I.allowedTenCharges`.
+charges which are in `ofFinset same.allowedBarFiveCharges same.allowedTenCharges`.
 We use the `Tree` type defined in `FTheory.SU5U1.Charges.Tree.Basic` here for efficiency.
 
 We break the properties of these trees into smaller modules, to aid in
 speed of building.
 
-## Comment on proofs
+## Note on large definition
 
-Note a lot of proofs related to `nonPhenoConstrainedCharges` depend on `decide`.
-These proofs like all proofs are still constrained by `maxHeartBeats`, which prevents
-them from being too time consuming. See e.g.
-https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/.E2.9C.94.20count_heartbeat.20and.20decide/near/521743784
+A discussion about the possible consequences of large definitions like the one in this file can be
+found at:
+
+https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/Potential.20consequences.20of.20large.20definitions.3F/with/522326293
 
 -/
 namespace FTheory
@@ -37,7 +37,7 @@ open ChargeProfile
 open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
-/-- For a given `I : CodimensionOneConfig` the tree of charges containing all
+/-- For `I = same` the tree of charges containing all
   charges which are not phenomenlogically constrained, and which permit a top
   Yukawa coupling.
 
@@ -57,7 +57,8 @@ def nonPhenoConstrainedChargesSame :  Tree :=
     twig {-3, 2} {leaf {0}},
     twig {1, 2} {leaf {0}},
     twig {2} {leaf {0}, leaf {-3, 0}},
-    twig {-3} {leaf {0}, leaf {-2, 2}, leaf {-2, 0}, leaf {-1, 0}, leaf {2, 0}, leaf {-3, -2, 2}, leaf {-2, 2, 0}},
+    twig {-3} {leaf {0}, leaf {-2, 2}, leaf {-2, 0}, leaf {-1, 0}, leaf {2, 0},
+      leaf {-3, -2, 2}, leaf {-2, 2, 0}},
     twig {-3, -2, -1} {leaf {0}},
     twig {-2, -1} {leaf {0}, leaf {-3, 0}},
     twig {-3, -1} {leaf {0}, leaf {-2, 0}},

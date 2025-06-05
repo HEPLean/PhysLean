@@ -12,7 +12,8 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.NextTo
 # Elements of the non pheno-constrained charges
 
 For each `CodimensionOneConfig`, `I`, we give trees of charges which are not pheno-constrained,
-and prove properties about them.
+by combining the trees of `nonPhenoConstrainedChargesSame`,
+`nonPhenoConstrainedChargesNearestNeighbor`, and `nonPhenoConstrainedChargesNextToNearestNeighbor`.
 
 These trees are complete in the sense that they contain all the non pheno-constrained, complete,
 charges which are in `ofFinset I.allowedBarFiveCharges I.allowedTenCharges`.

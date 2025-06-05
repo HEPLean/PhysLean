@@ -44,7 +44,7 @@ lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_nextToNearestNeighbor :
   decide
 
 lemma card_Q5_le_three_of_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
-     ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.1.card ≤ 4 :=
+    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.1.card ≤ 4 :=
   match I with
   | same => card_Q5_le_three_of_nonPhenoConstrainedCharges_of_same
   | nearestNeighbor => card_Q5_le_three_of_nonPhenoConstrainedCharges_of_nearestNeighbor
@@ -75,7 +75,7 @@ lemma card_Q10_le_three_of_nonPhenoConstrainedCharges_of_nextToNearestNeighbor :
   decide
 
 lemma card_Q10_le_three_of_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
-     ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.2.card ≤ 3 :=
+    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.2.2.2.card ≤ 3 :=
   match I with
   | same => card_Q10_le_three_of_nonPhenoConstrainedCharges_of_same
   | nearestNeighbor => card_Q10_le_three_of_nonPhenoConstrainedCharges_of_nearestNeighbor

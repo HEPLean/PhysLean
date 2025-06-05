@@ -6,24 +6,18 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Basic
 /-!
 
-# Elements of the non pheno-constrained charges
+# Elements of the non pheno-constrained charges for `nearestNeighbor`
 
-For each `CodimensionOneConfig`, `I`, we give trees of charges which are not pheno-constrained,
-and prove properties about them.
+For the `CodimensionOneConfig`, `nearestNeighbor`, we give trees of charges which
+are not pheno-constrained, and prove properties about them.
 
 These trees are complete in the sense that they contain all the non pheno-constrained, complete,
-charges which are in `ofFinset I.allowedBarFiveCharges I.allowedTenCharges`.
+charges which are in
+`ofFinset nearestNeighbor.allowedBarFiveCharges nearestNeighbor.allowedTenCharges`.
 We use the `Tree` type defined in `FTheory.SU5U1.Charges.Tree.Basic` here for efficiency.
 
 We break the properties of these trees into smaller modules, to aid in
 speed of building.
-
-## Comment on proofs
-
-Note a lot of proofs related to `nonPhenoConstrainedCharges` depend on `decide`.
-These proofs like all proofs are still constrained by `maxHeartBeats`, which prevents
-them from being too time consuming. See e.g.
-https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/.E2.9C.94.20count_heartbeat.20and.20decide/near/521743784
 
 -/
 namespace FTheory
@@ -37,7 +31,7 @@ open ChargeProfile
 open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
-/-- For a given `I : CodimensionOneConfig` the tree of charges containing all
+/-- For `I = nearestNeighbor` the tree of charges containing all
   charges which are not phenomenlogically constrained, and which permit a top
   Yukawa coupling.
 
