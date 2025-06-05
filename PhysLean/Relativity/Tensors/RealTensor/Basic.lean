@@ -101,25 +101,9 @@ def realLorentzTensor (d : ℕ := 3) : TensorSpecies ℝ (LorentzGroup d) where
   contr_metric := fun c =>
     match c with
     | Color.up => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Lorentz.contrCoContract_apply_metric
+      simpa using Lorentz.contrCoContract_apply_metric
     | Color.down => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Lorentz.coContrContract_apply_metric
+      simpa using Lorentz.coContrContract_apply_metric
 
 namespace realLorentzTensor
 
@@ -203,8 +187,8 @@ lemma contr_basis {d : ℕ} {c : (realLorentzTensor d).C}
     change Lorentz.coContrContract.hom
       (Lorentz.coBasisFin d i ⊗ₜ Lorentz.contrBasisFin d j) = _
     rw [Lorentz.coContrContract_hom_tmul]
-    simp only [Action.instMonoidalCategory_tensorUnit_V, Lorentz.coBasisFin_toFin1dℝ,
-      Lorentz.contrBasisFin_toFin1dℝ, dotProduct_single, mul_one]
+    simp only [Lorentz.coBasisFin_toFin1dℝ, Lorentz.contrBasisFin_toFin1dℝ, dotProduct_single,
+      mul_one]
     rw [Pi.single_apply]
     refine ite_congr ?_ (congrFun rfl) (congrFun rfl)
     simp only [eq_comm, EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, repDim_up]
