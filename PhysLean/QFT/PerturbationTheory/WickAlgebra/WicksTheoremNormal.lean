@@ -196,7 +196,7 @@ lemma wicks_theorem_normal_order_empty : 𝓣(𝓝(ofFieldOpList [])) =
         apply Subtype.eq
         simp only [empty]
         ext i
-        simp only [Finset.not_mem_empty, false_iff]
+        simp only [Finset.notMem_empty, false_iff]
         by_contra hn
         have h2 := a.1.2.1 i hn
         rw [@Finset.card_eq_two] at h2
