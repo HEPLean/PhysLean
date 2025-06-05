@@ -93,7 +93,7 @@ lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
       fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
     simp_all
   have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
-    (nonPhenoConstrainedCharges same).toMultiset  = ∅ := by rfl
+    (nonPhenoConstrainedCharges same).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
@@ -107,7 +107,7 @@ lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
       fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
     simp_all
   have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
-    (nonPhenoConstrainedCharges nearestNeighbor).toMultiset  = ∅ := by rfl
+    (nonPhenoConstrainedCharges nearestNeighbor).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 

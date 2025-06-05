@@ -280,7 +280,7 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
     (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card = charges.card := by
   intro F hF
-  simp? [fromParts]  at hF says
+  simp? [fromParts] at hF says
     simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
   simp only [Multiset.coe_card, List.length_zip]
@@ -317,7 +317,7 @@ lemma card_le_three_of_mem_fromPart (I : CodimensionOneConfig) (charges : Multis
   intro F hF
   rw [card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F hF]
   by_contra hn
-  simp? [fromParts]  at hF says
+  simp? [fromParts] at hF says
     simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
   rw [List.lowPermutations_empty_of_not_le_three] at hperm
@@ -342,7 +342,7 @@ lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) 
       (expose_names; rw [FluxesFive.toList_length fluxes hf])
       rw [← card_eq_fluxes_card_of_mem_fromParts I charges fluxes hf hc F h]
       exact F_card
-    simp? [fromParts]  at h says
+    simp? [fromParts] at h says
       simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right,
         List.mem_map] at h
     obtain ⟨hcard, l, hperm, rfl⟩ := h

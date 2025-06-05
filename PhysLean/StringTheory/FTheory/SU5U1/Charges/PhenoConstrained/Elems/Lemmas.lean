@@ -20,7 +20,6 @@ open ChargeProfile
 open CodimensionOneConfig
 open Tree Leaf Twig Branch Trunk
 
-
 set_option maxRecDepth 2400 in
 lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.2.2.1.card ≤ 4 := by
@@ -29,7 +28,7 @@ lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_same :
   have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter fun x => 4 < x.2.2.1.card := by
     simp_all
   have hl : Multiset.filter (fun x => 4 < x.2.2.1.card)
-    (nonPhenoConstrainedCharges same).toMultiset  = ∅ := by rfl
+    (nonPhenoConstrainedCharges same).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
@@ -51,7 +50,6 @@ lemma card_Q5_le_three_of_nonPhenoConstrainedCharges (I : CodimensionOneConfig) 
   | nextToNearestNeighbor =>
     card_Q5_le_three_of_nonPhenoConstrainedCharges_of_nextToNearestNeighbor
 
-
 set_option maxRecDepth 2400 in
 lemma card_Q10_le_three_of_nonPhenoConstrainedCharges_of_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.2.2.2.card ≤ 3 := by
@@ -60,7 +58,7 @@ lemma card_Q10_le_three_of_nonPhenoConstrainedCharges_of_same :
   have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter fun x => 3 < x.2.2.2.card := by
     simp_all
   have hl : Multiset.filter (fun x => 3 < x.2.2.2.card)
-    (nonPhenoConstrainedCharges same).toMultiset  = ∅ := by rfl
+    (nonPhenoConstrainedCharges same).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
