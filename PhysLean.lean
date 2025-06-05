@@ -267,8 +267,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoC
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ10
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ5
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Same
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree.Insert
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Completeness
@@ -281,5 +280,9 @@ import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.C
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Cases
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Completeness
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.ToList
 import PhysLean.Thermodynamics.Basic

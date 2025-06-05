@@ -18,7 +18,7 @@ namespace Charges
 open PotentialTerm
 open ChargeProfile
 open CodimensionOneConfig
-open Tree Leaf Twig Branch Trunk
+open Tree
 
 set_option maxRecDepth 2400 in
 lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_same :

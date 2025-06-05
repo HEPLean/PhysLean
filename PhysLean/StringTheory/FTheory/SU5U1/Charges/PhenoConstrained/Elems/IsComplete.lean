@@ -21,48 +21,48 @@ namespace Charges
 open PotentialTerm
 open ChargeProfile
 open CodimensionOneConfig
-open Tree Leaf Twig Branch Trunk
+open Tree
 
 set_option maxRecDepth 2400 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_same :
-    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, x.IsComplete := by
+    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, IsComplete x := by
   intro x hx
   by_contra hnot
-  have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter fun x => ¬ x.IsComplete:= by
+  have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter fun x => ¬ IsComplete x := by
     simp_all
-  have hl : Multiset.filter (fun x => ¬ x.IsComplete)
+  have hl : Multiset.filter (fun x => ¬ IsComplete x)
     (nonPhenoConstrainedCharges same).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
 set_option maxRecDepth 900 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_nearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, x.IsComplete := by
+    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, IsComplete x := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset.filter
-      fun x => ¬ x.IsComplete:= by
+      fun x => ¬ IsComplete x := by
     simp_all
-  have hl : Multiset.filter (fun x => ¬ x.IsComplete)
+  have hl : Multiset.filter (fun x => ¬ IsComplete x)
     (nonPhenoConstrainedCharges nearestNeighbor).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
 set_option maxRecDepth 1000 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_nextToNearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset, x.IsComplete := by
+    ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset, IsComplete x := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset.filter
-      fun x => ¬ x.IsComplete:= by
+      fun x => ¬ IsComplete x := by
     simp_all
-  have hl : Multiset.filter (fun x => ¬ x.IsComplete)
+  have hl : Multiset.filter (fun x => ¬ IsComplete x)
     (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
 lemma isComplete_of_mem_nonPhenoConstrainedCharge (I : CodimensionOneConfig) :
-    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, x.IsComplete :=
+    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, IsComplete x :=
   match I with
   | same => isComplete_of_mem_nonPhenoConstrainedCharge_same
   | nearestNeighbor => isComplete_of_mem_nonPhenoConstrainedCharge_nearestNeighbor

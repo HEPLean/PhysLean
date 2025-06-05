@@ -11,12 +11,11 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 namespace Charges
 
-open Tree Trunk Branch Twig Leaf
+open PhysLean  Tree
 -- #eval Tree.fromMultiset (filterAnomalyCancellation .nextToNearestNeighbor (nonPhenoConstrainedCharges .nextToNearestNeighbor)).toMultiset
 
-open Trunk Branch Twig Leaf
 
-def elemsAnomalyFree : (I :CodimensionOneConfig) →  Tree
+def elemsAnomalyFree : (I :CodimensionOneConfig) →  FourTree  (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)
  | .same => root {trunk (some (-3)) {branch (some 0) {twig {-2, -1} {leaf {0}, leaf {-3, 0}}},
       branch (some 1) {twig {-2, 0} {leaf {-2, 3}}, twig {-2, 0, 3} {leaf {-2, 3}}}},
     trunk (some 2) {branch (some (-2)) {twig {-3, -1} {leaf {-3, -1}}, twig {-1, 1} {leaf {-1}, leaf {-3, -1}}, twig {-3, -1, 1} {leaf {-1}, leaf {-3, -1}}},
@@ -42,7 +41,7 @@ example : ∀ x ∈ (filterAnomalyCancellation .same (nonPhenoConstrainedCharges
     x ∈ testTree := by
   decide-/
 open Quanta
-
+open FourTree
 set_option maxRecDepth 2000
 lemma filterAnomalyCancellation_nonPhenoConstrainedCharges_subset_elemsAnomalyFree_of_same :
     (filterAnomalyCancellation .same (nonPhenoConstrainedCharges .same)).toMultiset ⊆
@@ -100,6 +99,7 @@ open Charges
 ## Lifting to Quanta
 
 -/
+open PhysLean FourTree
 
 set_option maxRecDepth 2000 in
 lemma  mem_viableElems_of_ofCharges_elemsAnomalyFree_of_same :
@@ -133,7 +133,7 @@ lemma mem_viableElems_of_isViable
     (I : CodimensionOneConfig) (𝓠 : Quanta) (h : IsViable I 𝓠) :
     𝓠 ∈ viableElems I := by
   apply mem_viableElems_of_ofCharges I 𝓠.toCharges
-  · rw [← Charges.Tree.mem_iff_mem_toMultiset]
+  · rw [← mem_iff_mem_toMultiset]
     exact toCharges_mem_elemsAnomalyFree_of_isViable I 𝓠 h
   · exact mem_ofCharges_self_of_isViable I 𝓠 h
   · exact anomalyCancellation_of_isViable I 𝓠 h

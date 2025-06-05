@@ -29,7 +29,7 @@ namespace Charges
 open PotentialTerm
 open ChargeProfile
 open CodimensionOneConfig
-open Tree Leaf Twig Branch Trunk
+open PhysLean Tree
 
 /-- For `I = nearestNeighbor` the tree of charges containing all
   charges which are not phenomenlogically constrained, and which permit a top
@@ -37,7 +37,8 @@ open Tree Leaf Twig Branch Trunk
 
   These trees can be found with e.g.
   `#eval nonPhenoConstrainedChargesExt nextToNearestNeighbor`. -/
-def nonPhenoConstrainedChargesNearestNeighbor : Tree :=
+def nonPhenoConstrainedChargesNearestNeighbor :
+    FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   root {trunk (some (-14)) {branch (some 1) {twig {-14} {leaf {-2, 3}},
     twig {11} {leaf {-2, 3}, leaf {-7, 8}}},
     branch (some 11) {twig {-14} {leaf {-2, 13}}},

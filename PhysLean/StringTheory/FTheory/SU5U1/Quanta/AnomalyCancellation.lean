@@ -85,9 +85,9 @@ lemma five_anomalyCoefficent_mod_three_zero_of_anomalyCancellation
 -/
 namespace Charges
 namespace Tree
-
+open PhysLean FourTree
 def Twig.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd qHu : Option ℤ) :
-    Twig → Twig := fun (.twig Q5 leafsList) =>
+    Twig (Finset ℤ) (Finset ℤ) → Twig (Finset ℤ) (Finset ℤ) := fun (.twig Q5 leafsList) =>
   -- Anomaly cancellation on ust qHd, qHu and Q5 by mod 3.
   let l := ((FiveQuanta.ofCharges I Q5.val).filter fun F =>
     ((HdAnomalyCoefficent qHd).2 + (HuAnomalyCoefficent qHu).2
@@ -103,18 +103,23 @@ def Twig.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd qHu : Option 
       l10 ≠ 0
 
 def Branch.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd : Option ℤ) :
-    Branch → Branch := fun (.branch qHu twigsList) =>
-  .branch qHu <| twigsList.map fun t => t.filterAnomalyCancellation I qHd qHu
+    Branch (Option ℤ) (Finset ℤ) (Finset ℤ) →
+    Branch (Option ℤ) (Finset ℤ) (Finset ℤ) := fun (.branch qHu twigsList) =>
+  .branch qHu <| twigsList.map fun t => Twig.filterAnomalyCancellation I qHd qHu t
 
-def Trunk.filterAnomalyCancellation  (I : CodimensionOneConfig) : Trunk → Trunk :=
+def Trunk.filterAnomalyCancellation  (I : CodimensionOneConfig) :
+    Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) →
+    Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
     fun (.trunk qHd branchList) =>
-  .trunk qHd <| branchList.map fun b => b.filterAnomalyCancellation I qHd
+  .trunk qHd <| branchList.map fun b => Branch.filterAnomalyCancellation I qHd b
 
 def filterAnomalyCancellation (I : CodimensionOneConfig) :
-    Tree → Tree := fun (root tunksList) =>
-  root <| tunksList.map fun t => t.filterAnomalyCancellation I
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) →
+    FourTree  (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) := fun (.root tunksList) =>
+  root <| tunksList.map fun t => Trunk.filterAnomalyCancellation I t
 
-lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig} {T : Tree} {x : Charges}  :
+lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig}
+    {T :  FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)} {x : Charges}  :
     x ∈ filterAnomalyCancellation I T ↔ x ∈ T ∧
     ∃ F : FiveQuanta, ∃ T : TenQuanta,
       F ∈ FiveQuanta.ofCharges I x.2.2.1.val ∧ T ∈ TenQuanta.ofCharges I x.2.2.2.val ∧
@@ -124,7 +129,7 @@ lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig} {T : Tree} {x
     rw [mem_iff_mem_toMultiset] at h
     simp [toMultiset] at h
     obtain ⟨trunkA, htrunkA, branchA, hbranchA, twigA, htwigA, leafA, hleafA, heq⟩ := h
-    simp [filterAnomalyCancellation] at htrunkA
+    simp [filterAnomalyCancellation, root] at htrunkA
     obtain ⟨trunkT, trunkT_mem, trunkA_eq⟩ := htrunkA
     subst trunkA_eq
     simp [Trunk.filterAnomalyCancellation] at hbranchA
@@ -156,10 +161,10 @@ lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig} {T : Tree} {x
     rw [mem_iff_mem_toMultiset] at h
     simp [toMultiset] at h
     obtain ⟨trunkT, htrunkT, branchT, hbranchT, twigT, htwigT, leafT, hleafT, heq⟩ := h
-    refine mem_of_parts (trunkT.filterAnomalyCancellation I)
-      (branchT.filterAnomalyCancellation I trunkT.1)
-      (twigT.filterAnomalyCancellation I trunkT.1 branchT.1) leafT ?_ ?_ ?_ ?_ ?_
-    · simp [filterAnomalyCancellation]
+    refine mem_of_parts (Trunk.filterAnomalyCancellation I trunkT)
+      (Branch.filterAnomalyCancellation I trunkT.1 branchT)
+      (Twig.filterAnomalyCancellation I trunkT.1 branchT.1 twigT) leafT ?_ ?_ ?_ ?_ ?_
+    · simp [filterAnomalyCancellation, root]
       use trunkT
     · simp [Trunk.filterAnomalyCancellation]
       use branchT

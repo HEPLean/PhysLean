@@ -22,7 +22,7 @@ namespace Charges
 open PotentialTerm
 open ChargeProfile
 open CodimensionOneConfig
-open Tree Leaf Twig Branch Trunk
+open PhysLean Tree
 
 /-!
 

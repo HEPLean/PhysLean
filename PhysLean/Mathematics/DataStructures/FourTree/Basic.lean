@@ -3,18 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Combinatorics.Additive.Dissociation
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
+import Mathlib.Data.Multiset.Bind
+import Mathlib.Data.Multiset.Sort
 
-namespace FTheory
-
-namespace SU5U1
-
-variable {I : CodimensionOneConfig}
-
-namespace Quanta
-
-open PotentialTerm
+namespace PhysLean
 
 /-!
 
@@ -22,7 +14,7 @@ open PotentialTerm
 
 -/
 
-namespace Tree
+namespace FourTree
 
 inductive Leaf (α4 : Type)
   | leaf : α4 → Leaf α4
@@ -40,16 +32,16 @@ inductive Branch (α2 α3 α4 : Type)
 inductive Trunk (α1 α2 α3 α4 : Type)
   | trunk : α1 → Multiset (Branch α2 α3 α4) → Trunk α1 α2 α3 α4
 
-end Tree
+end FourTree
 
 /-- A charge tree contains is an inductive type equivalent to
   `Option ℤ × Multiset (Option ℤ × Multiset (Finset ℤ × Multiset (Finset ℤ)))`.
   It contains charges in a tree-like structure to make membership tests etc. easier, and
   storage smaller. -/
-inductive Tree (α1 α2 α3 α4 : Type)
-  | root : Multiset (Tree.Trunk α1 α2 α3 α4) → Tree α1 α2 α3 α4
+inductive FourTree (α1 α2 α3 α4 : Type)
+  | root : Multiset (FourTree.Trunk α1 α2 α3 α4) → FourTree α1 α2 α3 α4
 
-namespace Tree
+namespace FourTree
 
 open Leaf Twig Branch Trunk
 
@@ -85,7 +77,7 @@ unsafe instance (α1 α2 α3 α4: Type) [Repr α1] [Repr α2] [Repr α3] [Repr �
     | .trunk xa a => "trunk (" ++ reprStr xa ++ ") " ++ reprStr a
 
 unsafe instance (α1 α2 α3 α4: Type) [Repr α1] [Repr α2] [Repr α3] [Repr α4] :
-    Repr (Tree α1 α2 α3 α4) where
+    Repr (FourTree α1 α2 α3 α4) where
   reprPrec x _ :=
     match x with
     | .root xs => "root " ++ reprStr xs
@@ -99,7 +91,7 @@ unsafe instance (α1 α2 α3 α4: Type) [Repr α1] [Repr α2] [Repr α3] [Repr �
 /-- A charge tree from a multiset of charges. -/
 def fromMultiset {α1 α2 α3 α4 : Type} [DecidableEq α1]
     [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]
-    (l : Multiset (α1 × α2 × α3 × α4)) : Tree α1 α2 α3 α4 :=
+    (l : Multiset (α1 × α2 × α3 × α4)) : FourTree α1 α2 α3 α4 :=
   let A1 : Multiset α1 := (l.map fun x => x.1).dedup
   root <| A1.map fun xa => trunk xa <|
     let B2 := (l.filter fun y => y.1 = xa)
@@ -115,7 +107,7 @@ def fromMultiset {α1 α2 α3 α4 : Type} [DecidableEq α1]
         C4.map fun xd => leaf xd
 
 /-- A charge tree to a multiset of charges. -/
-def toMultiset {α1 α2 α3 α4 : Type} (T : Tree α1 α2 α3 α4) : Multiset (α1 × α2 × α3 × α4) :=
+def toMultiset {α1 α2 α3 α4 : Type} (T : FourTree α1 α2 α3 α4) : Multiset (α1 × α2 × α3 × α4) :=
   match T with
   | .root trunks =>
     trunks.bind fun (trunk xT branches) =>
@@ -145,11 +137,11 @@ def Trunk.card {α1 α2 α3 α4 : Type} (T : Trunk α1 α2 α3 α4) : Nat :=
   | .trunk _ branches => (branches.map Branch.card).sum
 
 /-- The cardinality of a `tree` is the total number of leafs. -/
-def card {α1 α2 α3 α4 : Type} (T : Tree α1 α2 α3 α4) : Nat :=
+def card {α1 α2 α3 α4 : Type} (T : FourTree α1 α2 α3 α4) : Nat :=
   match T with
   | .root trunks => (trunks.map Trunk.card).sum
 
-lemma card_eq_toMultiset_card (T : Tree α1 α2 α3 α4s) : T.card = T.toMultiset.card := by
+lemma card_eq_toMultiset_card (T : FourTree α1 α2 α3 α4s) : T.card = T.toMultiset.card := by
   match T with
   | .root trunks =>
     simp only [card, toMultiset, Multiset.card_bind, Function.comp_apply, Multiset.card_map]
@@ -205,21 +197,21 @@ instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]
     instDecidableAnd
 
 /-- Membership criterion for `Charges` in a tree. -/
-def mem (T : Tree α1 α2 α3 α4) (x :  α1 × α2 × α3 × α4) : Prop :=
+def mem (T : FourTree α1 α2 α3 α4) (x :  α1 × α2 × α3 × α4) : Prop :=
   match T with
   | .root trunks => ∃ trunk ∈ trunks, trunk.mem x
 
 instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]
-    (T : Tree α1 α2 α3 α4) (x :  α1 × α2 × α3 × α4) : Decidable (T.mem x) :=
+    (T : FourTree α1 α2 α3 α4) (x :  α1 × α2 × α3 × α4) : Decidable (T.mem x) :=
   Multiset.decidableExistsMultiset
 
-instance : Membership ( α1 × α2 × α3 × α4) (Tree α1 α2 α3 α4)where
+instance : Membership ( α1 × α2 × α3 × α4) (FourTree α1 α2 α3 α4)where
   mem := mem
 
-instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]  (T : Tree α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) : Decidable (x ∈ T) :=
+instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]  (T : FourTree α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) : Decidable (x ∈ T) :=
   Multiset.decidableExistsMultiset
 
-lemma mem_iff_mem_toMultiset (T : Tree α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) :
+lemma mem_iff_mem_toMultiset (T : FourTree α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) :
     x ∈ T ↔ x ∈ T.toMultiset := by
   match T with
   | .root trunks =>
@@ -267,10 +259,24 @@ lemma mem_iff_mem_toMultiset (T : Tree α1 α2 α3 α4) (x : α1 × α2 × α3 �
     refine ⟨hleafMem, ?_⟩
     simp [Leaf.mem]
 
-end Tree
-end Quanta
 
+lemma mem_of_parts {T : FourTree α1 α2 α3 α4} {C : α1 × α2 × α3 × α4} (trunk : Trunk α1 α2 α3 α4)
+    (branch : Branch α2 α3 α4)
+    (twig : Twig α3 α4) (leaf : Leaf α4)
+    (trunk_mem : trunk ∈ T.1) (branch_mem : branch ∈ trunk.2)
+    (twig_mem : twig ∈ branch.2) (leaf_mem : leaf ∈ twig.2)
+    (heq : C = (trunk.1, branch.1, twig.1, leaf.1)) :
+    C ∈ T := by
+  rw [mem_iff_mem_toMultiset]
+  simp [toMultiset]
+  use trunk
+  simp_all
+  use branch
+  simp_all
+  use twig
+  simp_all
+  use leaf
 
-end SU5U1
+end FourTree
 
-end FTheory
+end PhysLean

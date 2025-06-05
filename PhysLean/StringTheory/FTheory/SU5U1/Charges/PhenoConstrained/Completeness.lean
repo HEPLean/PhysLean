@@ -48,22 +48,22 @@ namespace Charges
 open PotentialTerm ChargeProfile
 open CodimensionOneConfig
 
-open Tree Leaf Twig Branch Trunk
+open PhysLean Tree
 
 set_option maxRecDepth 2000
 
 lemma nonPhenoConstrainedCharges_insertQ10_filter (I : CodimensionOneConfig) :
     ∀ (q10 : { x // x ∈ I.allowedTenCharges }),
-      Multiset.filter (fun x => ¬x.IsPhenoConstrained)
-      ((nonPhenoConstrainedCharges I).insertQ10 ↑q10).toMultiset = ∅ := by
+      Multiset.filter (fun x => ¬ IsPhenoConstrained x)
+      ((nonPhenoConstrainedCharges I).uniqueMap4 (insert q10.1)).toMultiset = ∅ := by
   intro ⟨q10, hq10⟩
   simp only [Multiset.empty_eq_zero]
   rw [Multiset.filter_eq_nil]
   intro C hC
   intro hn
   have hmemP : C ∈ (phenoInsertQ10 (nonPhenoConstrainedCharges I) q10) := by
-    rw [← mem_iff_mem_toMultiset] at hC
-    obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := exists_of_mem_insertQ10 C q10 hC
+    rw [← FourTree.mem_iff_mem_toMultiset] at hC
+    obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := FourTree.exists_of_mem_uniqueMap4 (insert q10) C hC
     apply mem_phenoInsertQ10_of_mem_isPresent
     · exact hC
     simp [IsPhenoConstrained, toChargeProfile] at hn
@@ -84,26 +84,26 @@ lemma nonPhenoConstrainedCharges_insertQ10_filter (I : CodimensionOneConfig) :
       simp_all
     · by_contra hc
       simp_all
-  have hemp : ((nonPhenoConstrainedCharges I).phenoInsertQ10 q10).toMultiset = ∅ := by
+  have hemp : (phenoInsertQ10 (nonPhenoConstrainedCharges I) q10).toMultiset = ∅ := by
     rw [Multiset.empty_eq_zero, ← Multiset.card_eq_zero]
     have hx := nonPhenoConstrainedCharges_phenoInsertQ10_card_zero I q10 hq10
     rw [← hx]
-    rw [Tree.card_eq_toMultiset_card]
-  rw [mem_iff_mem_toMultiset] at hmemP
+    rw [FourTree.card_eq_toMultiset_card]
+  rw [FourTree.mem_iff_mem_toMultiset] at hmemP
   simp_all
 
 lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
     ∀ (q5 : { x // x ∈ I.allowedBarFiveCharges }),
-      Multiset.filter (fun x => ¬x.IsPhenoConstrained)
-      ((nonPhenoConstrainedCharges I).insertQ5 ↑q5).toMultiset = ∅ := by
+      Multiset.filter (fun x => ¬  IsPhenoConstrained x)
+      ((nonPhenoConstrainedCharges I).uniqueMap3 (insert q5.1)).toMultiset = ∅ := by
   intro ⟨q5, hq5⟩
   simp only [Multiset.empty_eq_zero]
   rw [Multiset.filter_eq_nil]
   intro C hC
   intro hn
   have hmemP : C ∈ (phenoInsertQ5 (nonPhenoConstrainedCharges I) q5) := by
-    rw [← mem_iff_mem_toMultiset] at hC
-    obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := exists_of_mem_insertQ5 C q5 hC
+    rw [← FourTree.mem_iff_mem_toMultiset] at hC
+    obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := FourTree.exists_of_mem_uniqueMap3 _ C hC
     apply mem_phenoInsertQ5_of_mem_isPresent
     · exact hC
     simp [IsPhenoConstrained, toChargeProfile] at hn
@@ -130,12 +130,12 @@ lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
       simp_all
     · by_contra hc
       simp_all
-  have hemp : ((nonPhenoConstrainedCharges I).phenoInsertQ5 q5).toMultiset = ∅ := by
+  have hemp : (Tree.phenoInsertQ5 (nonPhenoConstrainedCharges I) q5).toMultiset = ∅ := by
     rw [Multiset.empty_eq_zero, ← Multiset.card_eq_zero]
     have hx := nonPhenoConstrainedCharges_phenoInsertQ5_card_zero I q5 hq5
     rw [← hx]
-    rw [Tree.card_eq_toMultiset_card]
-  rw [mem_iff_mem_toMultiset] at hmemP
+    rw [FourTree.card_eq_toMultiset_card]
+  rw [FourTree.mem_iff_mem_toMultiset] at hmemP
   simp_all
 
 /--
@@ -148,7 +148,8 @@ Tree.fromMultiset ((((irreducibleElems same topYukawa).map (fromChargeProfile to
     (completions same.allowedBarFiveCharges same.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
 -/
-private def completionTopYukawa (I : CodimensionOneConfig) : Tree :=
+private def completionTopYukawa (I : CodimensionOneConfig) :
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)  :=
   match I with
   | same => root {trunk (some 3) {branch (some (-2)) {twig {-3} {leaf {-2, 0}},
       twig {-1} {leaf {-2, 0}, leaf {-3, 1}},
@@ -465,6 +466,8 @@ private def completionTopYukawa (I : CodimensionOneConfig) : Tree :=
   branch (some 12) {twig {-13} {leaf {6}}, twig {2} {leaf {6}}, twig {-8} {leaf {6}, leaf {1, 11}},
     twig {7} {leaf {6}, leaf {1, 11}}}}}
 
+
+
 lemma completionTopYukawa_complete_of_same :
     ∀ x ∈ (irreducibleElems .same topYukawa).map (fromChargeProfile topYukawa),
     ¬ x.IsPhenoConstrained →
@@ -504,7 +507,7 @@ lemma exists_subset_completionTopYukawa_of_not_isPhenoConstrained {x : Charges}
     (hx : ¬ x.IsPhenoConstrained)
     (htopYukawa : IsPresent topYukawa (toChargeProfile topYukawa x))
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
-    (hcomplete : IsComplete x) : ∃ y ∈ completionTopYukawa I, y ⊆ x := by
+    (hcomplete : IsComplete x) : ∃ (y : Charges), y ∈ completionTopYukawa I ∧ y ⊆ x := by
   have hIrreducible :
         ∃ y ∈ (irreducibleElems I topYukawa).map (fromChargeProfile topYukawa), y ⊆ x := by
       rw [isPresent_iff_subest_isIrreducible] at htopYukawa
@@ -567,10 +570,10 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
     simp only [Decidable.not_not]
     exact fun a => isPhenoConstrained_of_subset hxy a
   · intro x
-    rw [mem_iff_mem_toMultiset]
+    rw [FourTree.mem_iff_mem_toMultiset]
     exact fun a => isComplete_of_mem_nonPhenoConstrainedCharge I x a
   · apply completionTopYukawa_subset_nonPhenoConstrainedCharges
-    rw [mem_iff_mem_toMultiset] at y_mem
+    rw [FourTree.mem_iff_mem_toMultiset] at y_mem
     exact y_mem
   · exact nonPhenoConstrainedCharges_insertQ10_filter I
   · exact nonPhenoConstrainedCharges_insertQ5_filter I
@@ -586,7 +589,7 @@ lemma not_isPhenoConstrained_iff_mem_nonPhenoConstrainedCharge {x : Charges}
     apply not_isPhenoConstrained_mem_nonPhenoConstrainedCharges hPheno hsub hComplete hn
     simp_all
   · intro h
-    rw [mem_iff_mem_toMultiset] at h
+    rw [FourTree.mem_iff_mem_toMultiset] at h
     refine ⟨?_, ?_, ?_⟩
     · exact isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges I x h
     · exact not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges I x h

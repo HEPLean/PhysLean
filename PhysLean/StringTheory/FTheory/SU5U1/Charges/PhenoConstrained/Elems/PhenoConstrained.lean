@@ -21,7 +21,7 @@ namespace Charges
 open PotentialTerm
 open ChargeProfile
 open CodimensionOneConfig
-open Tree Leaf Twig Branch Trunk
+open Tree
 
 /-!
 
@@ -31,26 +31,26 @@ open Tree Leaf Twig Branch Trunk
 
 set_option maxRecDepth 2000 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same :
-    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, ¬ x.IsPhenoConstrained := by
+    ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset, ¬ IsPhenoConstrained x := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter
-      fun x => x.IsPhenoConstrained := by
+      fun x => IsPhenoConstrained x := by
     simp_all
-  have hl : Multiset.filter (fun x => x.IsPhenoConstrained)
+  have hl : Multiset.filter (fun x => IsPhenoConstrained x)
     (nonPhenoConstrainedCharges same).toMultiset = ∅ := by decide
   rw [hl] at hx
   simp at hx
 
 set_option maxRecDepth 2000 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
-    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, ¬ x.IsPhenoConstrained := by
+    ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset, ¬ IsPhenoConstrained x := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset.filter
-      fun x => x.IsPhenoConstrained := by
+      fun x => IsPhenoConstrained x := by
     simp_all
-  have hl : Multiset.filter (fun x => x.IsPhenoConstrained)
+  have hl : Multiset.filter (fun x => IsPhenoConstrained x)
     (nonPhenoConstrainedCharges nearestNeighbor).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
@@ -58,19 +58,19 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
 set_option maxRecDepth 2000 in
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset,
-      ¬ x.IsPhenoConstrained := by
+      ¬ IsPhenoConstrained x := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset.filter
-      fun x => x.IsPhenoConstrained := by
+      fun x => IsPhenoConstrained x := by
     simp_all
-  have hl : Multiset.filter (fun x => x.IsPhenoConstrained)
+  have hl : Multiset.filter (fun x => IsPhenoConstrained x)
     (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
 lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
-    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, ¬ x.IsPhenoConstrained :=
+    ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset, ¬ IsPhenoConstrained x :=
   match I with
   | same => not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_same
   | nearestNeighbor => not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges_nearestNeighbor

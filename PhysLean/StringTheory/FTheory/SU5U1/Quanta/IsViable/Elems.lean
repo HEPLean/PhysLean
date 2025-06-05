@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Tree
+import PhysLean.Mathematics.DataStructures.FourTree.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Basic
 namespace FTheory
 
@@ -13,20 +13,20 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Quanta
-open Tree Leaf Twig Branch Trunk
+open PhysLean FourTree Leaf Twig Branch Trunk
 
-def viableElemsExe (I : CodimensionOneConfig) : Tree (Option ℤ) (Option ℤ) FiveQuanta TenQuanta :=
+def viableElemsExe (I : CodimensionOneConfig) : FourTree (Option ℤ) (Option ℤ) FiveQuanta TenQuanta :=
   let C : Multiset Charges := (Charges.nonPhenoConstrainedChargesExt I).toMultiset
   let F : Multiset (Option ℤ × Option ℤ × FiveQuanta × TenQuanta) :=
     C.bind fun c =>
       let X1 := (FiveQuanta.ofCharges I c.2.2.1.val).product (TenQuanta.ofCharges I c.2.2.2.val)
       X1.map fun x => (c.1, c.2.1, x.1, x.2)
-  Tree.fromMultiset (F.filter fun x => AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2)
+  FourTree.fromMultiset (F.filter fun x => AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2)
 
 -- set_option pp.deepTerms true
 -- #eval (viableElemsExe .nextToNearestNeighbor)
 
-def viableElems  : (I : CodimensionOneConfig) →  Tree (Option ℤ) (Option ℤ) FiveQuanta TenQuanta
+def viableElems  : (I : CodimensionOneConfig) →  FourTree (Option ℤ) (Option ℤ) FiveQuanta TenQuanta
   | .same => root {trunk (some (-3)) {branch (some 0) {twig {(-2, 3, -3), (-1, 0, 3)} {leaf {(0, 3, 0)}, leaf {(-3, 1, 0), (0, 2, 0)}, leaf {(-3, 2, 0), (0, 1, 0)}}},
     branch (some 1) {twig {(-2, 2, -2), (0, 1, 2)} {leaf {(-2, 1, 0), (3, 2, 0)}, leaf {(-2, 2, 0), (3, 1, 0)}},
     twig {(-2, 3, -2), (0, 0, 2)} {leaf {(-2, 1, 0), (3, 2, 0)}, leaf {(-2, 2, 0), (3, 1, 0)}},
