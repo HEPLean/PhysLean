@@ -37,9 +37,8 @@ lemma unit_app_eq_dual_unit_app (c : S.C) :
   ext
   change (ConcreteCategory.hom (S.unit.app { as := c }).hom) (1 : k) = _
   rw [S.unit_symm c]
-  simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_whiskerLeft_hom,
-    Action.β_hom_hom, Monoidal.tensorUnit_obj, Action.instMonoidalCategory_tensorUnit_V,
-    Action.comp_hom, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply]
+  simp only [Action.β_hom_hom, Monoidal.tensorUnit_obj, Action.comp_hom, ModuleCat.hom_comp,
+    LinearMap.coe_comp, Function.comp_apply]
   rfl
 
 /-- The unit tensor is symmetric on dualing the color. -/
