@@ -43,7 +43,7 @@ lemma exists_pair_of_not_eq_empty (c : WickContraction n) (h : c ≠ empty) :
   simp only [not_exists] at hn
   have hc : c.1 = ∅ := by
     ext a
-    simp only [Finset.not_mem_empty, iff_false]
+    simp only [Finset.notMem_empty, iff_false]
     by_contra hn'
     have hc := c.2.1 a hn'
     rw [@Finset.card_eq_two] at hc
@@ -505,7 +505,7 @@ def sigmaContractedEquiv : (a : c.1) × a ≃ {x : Fin n // (c.getDual? x).isSom
     · have hc := c.2.2 a.1 a.2 {i.1, (c.getDual? ↑i).get (getDual?_isSome_of_mem c a i)}
         (self_getDual?_get_mem c (↑i) (getDual?_isSome_of_mem c a i))
       have hn : ¬ Disjoint a.1 {i.1, (c.getDual? ↑i).get (getDual?_isSome_of_mem c a i)} := by
-        rw [Finset.disjoint_iff_inter_eq_empty, @Finset.eq_empty_iff_forall_not_mem]
+        rw [Finset.disjoint_iff_inter_eq_empty, @Finset.eq_empty_iff_forall_notMem]
         simp only [Finset.coe_mem, Finset.inter_insert_of_mem, Finset.mem_insert, Finset.mem_inter,
           Finset.mem_singleton, not_or, not_and, not_forall, Classical.not_imp, Decidable.not_not]
         exact ⟨i, fun x ↦ (x rfl).elim⟩
