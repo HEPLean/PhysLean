@@ -28,8 +28,8 @@ lemma preContrMetricVal_expand_tmul {d : ℕ} : preContrMetricVal d =
     ∑ i, contrBasis d (Sum.inr i) ⊗ₜ[ℝ] contrBasis d (Sum.inr i) := by
   simp only [preContrMetricVal, Fin.isValue]
   rw [contrContrToMatrixRe_symm_expand_tmul]
-  simp only [Action.instMonoidalCategory_tensorObj_V, Fintype.sum_sum_type, Finset.univ_unique,
-    Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, ne_eq, reduceCtorEq, not_false_eq_true,
+  simp only [Action.tensorObj_V, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+    Fin.isValue, Finset.sum_singleton, ne_eq, reduceCtorEq, not_false_eq_true,
     minkowskiMatrix.off_diag_zero, zero_smul, Finset.sum_const_zero, add_zero,
     minkowskiMatrix.inl_0_inl_0, one_smul, zero_add]
   congr
@@ -49,9 +49,9 @@ lemma preContrMetricVal_expand_tmul {d : ℕ} : preContrMetricVal d =
 lemma preContrMetricVal_expand_tmul_minkowskiMatrix {d : ℕ} : preContrMetricVal d =
     ∑ i, (minkowskiMatrix i i) • (contrBasis d i ⊗ₜ[ℝ] contrBasis d i) := by
   rw [preContrMetricVal_expand_tmul]
-  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue, Fintype.sum_sum_type,
-    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0,
-    one_smul, minkowskiMatrix.inr_i_inr_i, neg_smul, Finset.sum_neg_distrib]
+  simp only [Action.tensorObj_V, Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique,
+    Fin.default_eq_zero, Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0, one_smul,
+    minkowskiMatrix.inr_i_inr_i, neg_smul, Finset.sum_neg_distrib]
   abel
 
 /-- The metric `ηᵃᵃ` as a morphism `𝟙_ (Rep ℝ (LorentzGroup d)) ⟶ Contr d ⊗ Contr d`,
@@ -67,12 +67,14 @@ def preContrMetric (d : ℕ := 3) : 𝟙_ (Rep ℝ (LorentzGroup d)) ⟶ Contr d
   comm M := by
     refine ModuleCat.hom_ext ?_
     refine LinearMap.ext fun x : ℝ => ?_
-    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ, CategoryTheory.Category.id_comp, Action.tensor_ρ, ModuleCat.hom_comp,
+    simp only [Action.tensorObj_V, Action.tensorUnit_V, Action.tensorUnit_ρ,
+      CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, CategoryTheory.Category.id_comp,
+      ModuleCat.hom_ofHom, Action.tensor_ρ, ModuleCat.hom_comp, LinearMap.coe_comp,
       Function.comp_apply]
     change x • (preContrMetricVal d) =
       (TensorProduct.map ((Contr d).ρ M) ((Contr d).ρ M)) (x • (preContrMetricVal d))
-    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
+    simp only [Action.tensorObj_V, map_smul]
     apply congrArg
     simp only [preContrMetricVal]
     conv_rhs =>
@@ -112,9 +114,9 @@ lemma preCoMetricVal_expand_tmul {d : ℕ} : preCoMetricVal d =
 lemma preCoMetricVal_expand_tmul_minkowskiMatrix {d : ℕ} : preCoMetricVal d =
     ∑ i, (minkowskiMatrix i i) • (coBasis d i ⊗ₜ[ℝ] coBasis d i) := by
   rw [preCoMetricVal_expand_tmul]
-  simp only [Action.instMonoidalCategory_tensorObj_V, Fin.isValue, Fintype.sum_sum_type,
-    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0,
-    one_smul, minkowskiMatrix.inr_i_inr_i, neg_smul, Finset.sum_neg_distrib]
+  simp only [Action.tensorObj_V, Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique,
+    Fin.default_eq_zero, Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0, one_smul,
+    minkowskiMatrix.inr_i_inr_i, neg_smul, Finset.sum_neg_distrib]
   abel
 
 /-- The metric `ηᵢᵢ` as a morphism `𝟙_ (Rep ℂ (LorentzGroup d))) ⟶ Co d ⊗ Co d`,
@@ -130,12 +132,12 @@ def preCoMetric (d : ℕ := 3) : 𝟙_ (Rep ℝ (LorentzGroup d)) ⟶ Co d ⊗ C
   comm M := by
     refine ModuleCat.hom_ext ?_
     refine LinearMap.ext fun x : ℝ => ?_
-    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ, CategoryTheory.Category.id_comp, Action.tensor_ρ, ModuleCat.hom_comp,
-      Function.comp_apply]
+    simp only [CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, ModuleCat.hom_ofHom,
+      LinearMap.coe_comp, Function.comp_apply]
     change x • preCoMetricVal d =
       (TensorProduct.map ((Co d).ρ M) ((Co d).ρ M)) (x • preCoMetricVal d)
-    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
+    simp only [_root_.map_smul]
     apply congrArg
     simp only [preCoMetricVal]
     rw [coCoToMatrixRe_ρ_symm]

@@ -140,8 +140,7 @@ lemma leftAltContraction_hom_tmul (ψ : leftHanded) (φ : altLeftHanded) :
 lemma leftAltContraction_basis (i j : Fin 2) :
     leftAltContraction.hom (leftBasis i ⊗ₜ altLeftBasis j) = if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [leftAltContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, leftBasis_toFin2ℂ, altLeftBasis_toFin2ℂ,
-    dotProduct_single, mul_one]
+  simp only [leftBasis_toFin2ℂ, altLeftBasis_toFin2ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   simp only [Fin.ext_iff]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
@@ -166,8 +165,7 @@ lemma altLeftContraction_hom_tmul (φ : altLeftHanded) (ψ : leftHanded) :
 lemma altLeftContraction_basis (i j : Fin 2) :
     altLeftContraction.hom (altLeftBasis i ⊗ₜ leftBasis j) = if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [altLeftContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, leftBasis_toFin2ℂ, altLeftBasis_toFin2ℂ,
-    dotProduct_single, mul_one]
+  simp only [altLeftBasis_toFin2ℂ, leftBasis_toFin2ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   simp only [Fin.ext_iff]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
@@ -206,8 +204,7 @@ lemma rightAltContraction_basis (i j : Fin 2) :
     rightAltContraction.hom (rightBasis i ⊗ₜ altRightBasis j) =
     if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [rightAltContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, rightBasis_toFin2ℂ, altRightBasis_toFin2ℂ,
-    dotProduct_single, mul_one]
+  simp only [rightBasis_toFin2ℂ, altRightBasis_toFin2ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   simp only [Fin.ext_iff]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
@@ -246,8 +243,7 @@ lemma altRightContraction_basis (i j : Fin 2) :
     altRightContraction.hom (altRightBasis i ⊗ₜ rightBasis j) =
     if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [altRightContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, rightBasis_toFin2ℂ, altRightBasis_toFin2ℂ,
-    dotProduct_single, mul_one]
+  simp only [altRightBasis_toFin2ℂ, rightBasis_toFin2ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   simp only [Fin.ext_iff]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)

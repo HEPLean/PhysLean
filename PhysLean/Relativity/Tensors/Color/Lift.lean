@@ -355,9 +355,8 @@ lemma μ_natural_left {X Y : OverColor C} (f : X ⟶ Y) (Z : OverColor C) :
   ext1
   refine ModuleCat.hom_ext ?_
   refine PhysLean.PiTensorProduct.induction_tmul (fun p q => ?_)
-  simp only [toRep_V_carrier, Functor.id_obj, CategoryStruct.comp,
-    Action.Hom.comp_hom,
-    Action.instMonoidalCategory_whiskerRight_hom, LinearMap.coe_comp, Function.comp_apply]
+  simp only [toRep_V_carrier, tensorObj_of_left, tensorObj_of_hom, Action.tensorObj_V,
+    CategoryStruct.comp, Action.Hom.comp_hom, Action.whiskerRight_hom]
   change _ = (homToRepHom F (MonoidalCategory.whiskerRight f Z)).hom
     ((μ F X Z).hom.hom ((PiTensorProduct.tprod k) p ⊗ₜ[k] (PiTensorProduct.tprod k) q))
   rw [μ_tmul_tprod]
@@ -466,11 +465,10 @@ lemma left_unitality (X : OverColor C) : (leftUnitor (toRep F X)).hom =
   ext1
   refine ModuleCat.hom_ext ?_
   apply PhysLean.PiTensorProduct.induction_mod_tmul (fun x q => ?_)
-  simp only [toRep_V_carrier, Equivalence.symm_inverse,
-    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    Action.instMonoidalCategory_tensorUnit_V, Functor.id_obj,
-    Action.instMonoidalCategory_leftUnitor_hom_hom, CategoryStruct.comp, Action.Hom.comp_hom,
-    Action.instMonoidalCategory_whiskerRight_hom, LinearMap.coe_comp, Function.comp_apply]
+  simp only [toRep_V_carrier, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+    Action.FunctorCategoryEquivalence.functor_obj_obj, Action.tensorUnit_V, Action.tensorObj_V,
+    Action.leftUnitor_hom_hom, CategoryStruct.comp, Action.Hom.comp_hom, tensorObj_of_left,
+    tensorUnit_of_left, tensorObj_of_hom, Action.whiskerRight_hom]
   change TensorProduct.lid k (toRep F X) (x ⊗ₜ[k] (PiTensorProduct.tprod k) q) =
     (homToRepHom F (λ_ X).hom).hom ((μ F (𝟙_ (OverColor C)) X).hom.hom
     ((((PiTensorProduct.isEmptyEquiv Empty).symm x) ⊗ₜ[k] (PiTensorProduct.tprod k) q)))
@@ -665,9 +663,8 @@ which is made manifest in the results
 lemma repNatTransOfColorApp_unit : Functor.LaxMonoidal.ε (toRepFunc F) ≫
     repNatTransOfColorApp η (𝟙_ (OverColor C)) = Functor.LaxMonoidal.ε (toRepFunc F') := by
   ext
-  simp only [toRepFunc, toRepUnitIso, Functor.id_obj, toRep_V_carrier,
-    Action.instMonoidalCategory_tensorUnit_V, CategoryStruct.comp, Action.Hom.comp_hom,
-    Action.mkIso_hom_hom]
+  simp only [toRepFunc, toRep_V_carrier, tensorUnit_of_left, tensorUnit_of_hom, Action.tensorUnit_V,
+    CategoryStruct.comp, Action.Hom.comp_hom]
   rw [ModuleCat.Hom.hom, ConcreteCategory.hom, ModuleCat.Hom.hom, ConcreteCategory.hom]
   simp only [ModuleCat.instConcreteCategoryLinearMapIdCarrier, LinearMap.coe_comp,
     Function.comp_apply]

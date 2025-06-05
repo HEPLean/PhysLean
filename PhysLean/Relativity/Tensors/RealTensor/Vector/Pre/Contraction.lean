@@ -83,7 +83,6 @@ def contrCoContract : Contr d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
       vecMul_transpose, mulVec_mulVec, LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [one_mulVec, CategoryTheory.Equivalence.symm_inverse,
       Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
       Action.tensorUnit_ρ, CategoryTheory.Category.comp_id, lift.tmul]
     rfl
 
@@ -106,7 +105,6 @@ def coContrContract : Co d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
       LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [vecMul_one, CategoryTheory.Equivalence.symm_inverse,
       Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
       Action.tensorUnit_ρ, CategoryTheory.Category.comp_id, lift.tmul]
     rfl
 
@@ -151,11 +149,7 @@ scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrContrContractField (ψ
 
 lemma contrContrContract_hom_tmul (φ : Contr d) (ψ : Contr d) :
     ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ η *ᵥ ψ.toFin1dℝ:= by
-  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-    contrContrContractField, Action.comp_hom, Action.instMonoidalCategory_whiskerLeft_hom,
-    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
-    ModuleCat.MonoidalCategory.whiskerLeft_apply]
+  simp only [contrContrContractField]
   erw [contrCoContract_hom_tmul]
   rfl
 
@@ -169,11 +163,8 @@ scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => coCoContract.hom (ψ ⊗ₜ
 
 lemma coCoContract_hom_tmul (φ : Co d) (ψ : Co d) :
     ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ η *ᵥ ψ.toFin1dℝ:= by
-  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-    contrContrContract, Action.comp_hom, Action.instMonoidalCategory_whiskerLeft_hom,
-    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ModuleCat.hom_comp, Function.comp_apply,
-    ModuleCat.MonoidalCategory.whiskerLeft_apply]
+  simp only [Action.tensorUnit_V, Action.tensorObj_V, Equivalence.symm_inverse,
+    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
   erw [coContrContract_hom_tmul]
   rfl
 
@@ -232,7 +223,7 @@ lemma symm : ⟪x, y⟫ₘ = ⟪y, x⟫ₘ := by
 
 lemma dual_mulVec_right : ⟪x, dual Λ *ᵥ y⟫ₘ = ⟪Λ *ᵥ x, y⟫ₘ := by
   rw [contrContrContract_hom_tmul, contrContrContract_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, ContrMod.mulVec_toFin1dℝ, mulVec_mulVec]
+  simp only [ContrMod.mulVec_toFin1dℝ, mulVec_mulVec]
   simp only [dual, ← mul_assoc, minkowskiMatrix.sq, one_mul]
   rw [← mulVec_mulVec, dotProduct_mulVec, vecMul_transpose]
 
@@ -241,8 +232,8 @@ lemma dual_mulVec_left : ⟪dual Λ *ᵥ x, y⟫ₘ = ⟪x, Λ *ᵥ y⟫ₘ := b
 
 lemma right_parity : ⟪x, (Contr d).ρ LorentzGroup.parity y⟫ₘ = ∑ i, x.val i * y.val i := by
   rw [as_sum]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, Fin.isValue, Fintype.sum_sum_type,
-    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
+  simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+    Finset.sum_singleton]
   trans x.val (Sum.inl 0) * (((Contr d).ρ LorentzGroup.parity) y).val (Sum.inl 0) +
     ∑ i : Fin d, - (x.val (Sum.inr i) * (((Contr d).ρ LorentzGroup.parity) y).val (Sum.inr i))
   · simp only [Fin.isValue, Finset.sum_neg_distrib]
@@ -268,9 +259,7 @@ lemma self_parity_eq_zero_iff : ⟪y, (Contr d).ρ LorentzGroup.parity y⟫ₘ =
     funext i
     simpa using congrFun hn i
   · rw [h]
-    simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-      Action.FunctorCategoryEquivalence.functor_obj_obj, map_zero, tmul_zero]
+    simp only [map_zero, tmul_zero]
 
 /-- The metric tensor is non-degenerate. -/
 lemma nondegenerate : (∀ (x : Contr d), ⟪x, y⟫ₘ = 0) ↔ y = 0 := by
@@ -303,9 +292,7 @@ lemma matrix_eq_iff_eq_forall : Λ = Λ' ↔ ∀ (w v : Contr d), ⟪v, Λ *ᵥ 
 
 lemma matrix_eq_id_iff : Λ = 1 ↔ ∀ (w v : Contr d), ⟪v, Λ *ᵥ w⟫ₘ = ⟪v, w⟫ₘ := by
   rw [matrix_eq_iff_eq_forall]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-    Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, ContrMod.one_mulVec]
+  simp only [ContrMod.one_mulVec]
 
 lemma _root_.LorentzGroup.mem_iff_invariant : Λ ∈ LorentzGroup d ↔
     ∀ (w v : Contr d), ⟪Λ *ᵥ v, Λ *ᵥ w⟫ₘ = ⟪v, w⟫ₘ := by
@@ -314,9 +301,7 @@ lemma _root_.LorentzGroup.mem_iff_invariant : Λ ∈ LorentzGroup d ↔
     rw [← dual_mulVec_right, ContrMod.mulVec_mulVec]
     have h1 := LorentzGroup.mem_iff_dual_mul_self.mp h
     rw [h1]
-    simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-      Action.FunctorCategoryEquivalence.functor_obj_obj, ContrMod.one_mulVec]
+    rw [ContrMod.one_mulVec]
   · conv at h =>
       intro x y
       rw [← dual_mulVec_right, ContrMod.mulVec_mulVec]
@@ -338,10 +323,10 @@ lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
   apply e.injective
   have hp' := e.injective.eq_iff.mpr hp
   have hn' := e.injective.eq_iff.mpr hn
-  simp only [Action.instMonoidalCategory_tensorUnit_V, map_add, map_sub] at hp' hn'
+  simp only [Action.tensorUnit_V, map_add, map_sub] at hp' hn'
   linear_combination (norm := ring_nf) (1 / 4) * hp' + (-1/ 4) * hn'
   rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x]
-  simp only [Action.instMonoidalCategory_tensorUnit_V]
+  simp only [Action.tensorUnit_V]
   ring
 
 /-!
@@ -392,10 +377,9 @@ lemma basis_left {v : Contr d} (μ : Fin 1 ⊕ Fin d) :
       ContrMod.stdBasis_inl_apply_inr, zero_mul, Finset.sum_const_zero, sub_zero, minkowskiMatrix,
       LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_apply_eq, Sum.elim_inl]
     rfl
-  · simp only [Action.instMonoidalCategory_tensorUnit_V, Fin.isValue, ContrMod.stdBasis_apply,
-    reduceCtorEq, ↓reduceIte, zero_mul, Sum.inr.injEq, ite_mul, one_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, zero_sub, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal,
-    diagonal_apply_eq, Sum.elim_inr, neg_mul, neg_inj]
+  · simp only [Fin.isValue, ContrMod.stdBasis_apply, reduceCtorEq, ↓reduceIte, zero_mul,
+    Sum.inr.injEq, ite_mul, one_mul, Finset.sum_ite_eq, Finset.mem_univ, zero_sub, minkowskiMatrix,
+    LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_apply_eq, Sum.elim_inr, neg_mul, neg_inj]
     rfl
 
 lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) :
@@ -410,8 +394,7 @@ lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, ContrMod.std
   by_cases h : μ = ν
   · subst h
     simp
-  · simp only [Action.instMonoidalCategory_tensorUnit_V, ne_eq, h, not_false_eq_true, one_apply_ne,
-    mul_zero, off_diag_zero]
+  · simp only [ne_eq, h, not_false_eq_true, one_apply_ne, mul_zero, off_diag_zero]
 
 lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
     Λ ν μ = η ν ν * ⟪ContrMod.stdBasis ν, Λ *ᵥ ContrMod.stdBasis μ⟫ₘ := by
@@ -449,8 +432,7 @@ end contrContrContractField
 lemma contrCoContract_basis {d : ℕ} (i j : Fin 1 ⊕ Fin d) :
     contrCoContract.hom (contrBasis d i ⊗ₜ coBasis d j) = if i = j then (1 : ℝ) else 0 := by
   rw [contrCoContract_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, contrBasis_toFin1dℝ, coBasis_toFin1dℝ,
-    dotProduct_single, mul_one]
+  simp only [Action.tensorUnit_V, contrBasis_toFin1dℝ, coBasis_toFin1dℝ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   congr 1
   simp [eq_comm]
@@ -458,8 +440,7 @@ lemma contrCoContract_basis {d : ℕ} (i j : Fin 1 ⊕ Fin d) :
 lemma coContrContract_basis {d : ℕ} (i j : Fin 1 ⊕ Fin d) :
     coContrContract.hom (coBasis d i ⊗ₜ[ℝ] contrBasis d j) = if i = j then (1 : ℝ) else 0 := by
   rw [coContrContract_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, coBasis_toFin1dℝ, contrBasis_toFin1dℝ,
-    dotProduct_single, mul_one]
+  simp only [Action.tensorUnit_V, coBasis_toFin1dℝ, contrBasis_toFin1dℝ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   congr 1
   simp [eq_comm]

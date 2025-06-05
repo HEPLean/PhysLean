@@ -135,7 +135,7 @@ lemma coe_toList {I : CodimensionOneConfig} {F : FiveQuanta}
     · congr
       exact lawful_beq_subsingleton instBEqOfDecidableEq instBEqProd
     rw [toList_count hf hc ha]
-  · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
+  · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
     · by_contra hn
       exact ha (mem_allowedElems_of_mem F hf hc a hn)
     · by_contra hn
@@ -323,7 +323,7 @@ lemma coe_toList {I : CodimensionOneConfig} {F : TenQuanta}
     · congr
       exact lawful_beq_subsingleton instBEqOfDecidableEq instBEqProd
     rw [toList_count hf hc ha]
-  · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
+  · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
     · by_contra hn
       exact ha (mem_allowedElems_of_mem F hf hc a hn)
     · by_contra hn
