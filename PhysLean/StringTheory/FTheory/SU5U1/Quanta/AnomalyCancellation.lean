@@ -17,7 +17,7 @@ variable {I : CodimensionOneConfig}
 
   The first components is for the mixed U(1)-MSSM, see equation (22) of arXiv:1401.5084.
   The second component is for the mixed U(1)Y-U(1)-U(1) gauge anomaly,
-    see equation (23) of arXiv:1401.5084.
+  see equation (23) of arXiv:1401.5084.
 -/
 def FiveQuanta.anomalyCoefficent (F : FiveQuanta) : ℤ × ℤ :=
   ((F.map fun x => x.1 * x.2.2).sum, (F.map fun x => x.1 * x.1 * x.2.2).sum)
@@ -101,6 +101,7 @@ def Twig.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd qHu : Option 
       let l10 :=  (TenQuanta.ofCharges I Q10.val).countP fun T =>
         - T.anomalyCoefficent ∈ l
       l10 ≠ 0
+
 def Branch.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd : Option ℤ) :
     Branch → Branch := fun (.branch qHu twigsList) =>
   .branch qHu <| twigsList.map fun t => t.filterAnomalyCancellation I qHd qHu
@@ -194,10 +195,6 @@ lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig} {T : Tree} {x
       use F
       simp_all
       exact five_anomalyCoefficent_mod_three_zero_of_anomalyCancellation hacc
-
-
-
-
 
 end Tree
 end Charges
