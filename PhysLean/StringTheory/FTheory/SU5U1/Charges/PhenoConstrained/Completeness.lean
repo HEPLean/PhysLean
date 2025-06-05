@@ -138,7 +138,6 @@ lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
   rw [mem_iff_mem_toMultiset] at hmemP
   simp_all
 
-
 /--
 The tree of charges which contains all `completions` of elements `irreducibleElems .same topYukawa`
 which are not pheno-constrained.
@@ -427,7 +426,8 @@ private def completionTopYukawa (I : CodimensionOneConfig) : Tree :=
     twig {12} {leaf {-9, 1}}},
   branch (some 2) {twig {-13} {leaf {1}}, twig {7} {leaf {1}}, twig {-3} {leaf {-9, 11}},
     twig {12} {leaf {1}, leaf {-9, 11}}}},
- trunk (some (-13)) {branch (some (-8)) {twig {7} {leaf {-4}}, twig {-13} {leaf {-4}, leaf {-9, 1}},
+  trunk (some (-13)) {branch (some (-8)) {twig {7} {leaf {-4}},
+    twig {-13} {leaf {-4}, leaf {-9, 1}},
     twig {12} {leaf {-9, 1}}},
   branch (some (-3)) {twig {-13} {leaf {-4, 1}, leaf {-9, 6}}, twig {-8} {leaf {-9, 6}},
     twig {2} {leaf {-9, 6}}},
@@ -436,13 +436,13 @@ private def completionTopYukawa (I : CodimensionOneConfig) : Tree :=
   branch (some 7) {twig {-13} {leaf {-4, 11}}},
   branch (some 12) {twig {-13} {leaf {6}}, twig {-8} {leaf {6}}, twig {2} {leaf {6}},
     twig {7} {leaf {6}}}},
- trunk (some (-3)) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
+  trunk (some (-3)) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
   branch (some (-8)) {twig {-3} {leaf {-4}}, twig {7} {leaf {-4}}},
   branch (some 2) {twig {-13} {leaf {-4, 6}}, twig {-8} {leaf {-9, 11}}, twig {-3} {leaf {-9, 11}},
     twig {12} {leaf {-9, 11}}},
   branch (some 12) {twig {-13} {leaf {6}}, twig {-8} {leaf {6}}, twig {2} {leaf {6}},
     twig {7} {leaf {6}}}},
- trunk (some (-8)) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
+  trunk (some (-8)) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
   branch (some (-3)) {twig {-13} {leaf {-4, 1}, leaf {-9, 6}}, twig {-8} {leaf {-9, 6}},
     twig {7} {leaf {-9, 6}}},
   branch (some 2) {twig {-13} {leaf {1}}, twig {7} {leaf {1}}, twig {-8} {leaf {1}, leaf {-9, 11}},
@@ -450,14 +450,14 @@ private def completionTopYukawa (I : CodimensionOneConfig) : Tree :=
   branch (some 7) {twig {-13} {leaf {-4, 11}}},
   branch (some 12) {twig {-13} {leaf {6}}, twig {2} {leaf {6}}, twig {-8} {leaf {6}, leaf {1, 11}},
     twig {7} {leaf {6}, leaf {1, 11}}}},
- trunk (some 2) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
+  trunk (some 2) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
   branch (some (-8)) {twig {-3} {leaf {-4}}, twig {7} {leaf {-4}},
     twig {-13} {leaf {-4}, leaf {-9, 1}}, twig {12} {leaf {-9, 1}}},
   branch (some (-3)) {twig {-13} {leaf {-9, 6}}, twig {2} {leaf {-9, 6}}, twig {7} {leaf {-9, 6}}},
   branch (some 7) {twig {-13} {leaf {-4, 11}}},
   branch (some 12) {twig {-13} {leaf {6}}, twig {2} {leaf {6}}, twig {-8} {leaf {6}, leaf {1, 11}},
     twig {7} {leaf {6}, leaf {1, 11}}}},
- trunk (some 7) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
+  trunk (some 7) {branch (some (-13)) {twig {-3} {leaf {-9, -4}}, twig {7} {leaf {-9, -4}}},
   branch (some (-8)) {twig {-13} {leaf {-4}}, twig {-3} {leaf {-4}}, twig {7} {leaf {-4}}},
   branch (some (-3)) {twig {-8} {leaf {-9, 6}}, twig {2} {leaf {-9, 6}}, twig {7} {leaf {-9, 6}}},
   branch (some 2) {twig {-8} {leaf {1}}, twig {12} {leaf {1}}, twig {-13} {leaf {1}, leaf {-4, 6}},

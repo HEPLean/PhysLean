@@ -543,7 +543,7 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
       simp at hr
       obtain ⟨a, ha, rfl⟩ := hr
       simp [card]
-      rw [Finset.card_insert_of_not_mem]
+      rw [Finset.card_insert_of_notMem]
       omega
       by_contra h
       rw [Finset.insert_eq_of_mem h] at hy1
@@ -553,7 +553,7 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
       simp at hr
       obtain ⟨a, ha, rfl⟩ := hr
       simp [card]
-      rw [Finset.card_insert_of_not_mem]
+      rw [Finset.card_insert_of_notMem]
       omega
       by_contra h
       rw [Finset.insert_eq_of_mem h] at hy1
@@ -822,7 +822,7 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset ℤ) (x y : Charges)
   rw [Option.isSome_iff_exists, Option.isSome_iff_exists] at hycomplete
   obtain ⟨y1, rfl⟩ := hycomplete.1
   obtain ⟨y2, rfl⟩ := hycomplete.2.1
-  rw [Finset.eq_empty_iff_forall_not_mem, Finset.eq_empty_iff_forall_not_mem] at hycomplete
+  rw [Finset.eq_empty_iff_forall_notMem, Finset.eq_empty_iff_forall_notMem] at hycomplete
   simp at hycomplete
   obtain ⟨z3, hz3⟩ := hycomplete.1
   obtain ⟨z4, hz4⟩ := hycomplete.2

@@ -37,10 +37,7 @@ def genBoostAux₁ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d 
   map_add' x y := by
     simp [map_add, LinearMap.add_apply, tmul_add, add_tmul, mul_add, add_smul]
   map_smul' c x := by
-    simp only [Action.instMonoidalCategory_tensorObj_V,
-      Action.instMonoidalCategory_tensorUnit_V, CategoryTheory.Equivalence.symm_inverse,
-      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      smul_tmul, tmul_smul, map_smul, smul_eq_mul, RingHom.id_apply]
+    simp only [smul_tmul, tmul_smul, map_smul, smul_eq_mul, RingHom.id_apply]
     rw [← mul_assoc, mul_comm 2 c, mul_assoc, mul_smul]
 
 /-- An auxiliary linear map used in the definition of a generalised boost. -/
@@ -100,10 +97,7 @@ lemma genBoost_mul_one_plus_contr (u v : FuturePointing d) (x : Contr d) :
       congr 1
       ring
     · rw [genBoostAux₂]
-      simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-        CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj, neg_smul, LinearMap.coe_mk,
-        AddHom.coe_mk, smul_neg]
+      simp only [neg_smul, LinearMap.coe_mk, AddHom.coe_mk, smul_neg]
       rw [smul_smul]
       congr
       have h1 := FuturePointing.one_add_metric_non_zero u v
@@ -144,10 +138,7 @@ lemma toMatrix_apply (u v : FuturePointing d) (μ ν : Fin 1 ⊕ Fin d) :
     LinearMap.id_apply, LinearMap.coe_mk, AddHom.coe_mk, contrContrContractField.basis_left,
     map_add, map_smul, map_neg, mul_eq_mul_left_iff]
   ring_nf
-  simp only [Pi.add_apply, Action.instMonoidalCategory_tensorObj_V,
-    Action.instMonoidalCategory_tensorUnit_V, CategoryTheory.Equivalence.symm_inverse,
-    Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-    Pi.smul_apply, smul_eq_mul, Pi.sub_apply, Pi.neg_apply]
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.sub_apply, Pi.neg_apply]
   left
   ring
 
@@ -163,15 +154,11 @@ lemma toMatrix_continuous (u : FuturePointing d) : Continuous (toMatrix u) := by
     exact FuturePointing.metric_continuous _
   refine .mul ?_ ?_
   · refine .mul ?_ ?_
-    · simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-      Action.FunctorCategoryEquivalence.functor_obj_obj, tmul_add, map_add]
+    · simp only [tmul_add, map_add]
       refine .comp' ?_ ?_
       · exact continuous_add_left _
       · exact FuturePointing.metric_continuous _
-    · simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-      Action.FunctorCategoryEquivalence.functor_obj_obj, tmul_add, map_add]
+    · simp only [tmul_add, map_add]
       refine .comp' ?_ ?_
       · exact continuous_add_left _
       · exact FuturePointing.metric_continuous _

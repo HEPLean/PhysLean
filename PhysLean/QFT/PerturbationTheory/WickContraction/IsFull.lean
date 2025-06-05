@@ -32,7 +32,7 @@ instance : Decidable (IsFull c) := decEq c.uncontracted ∅
 lemma isFull_iff_equivInvolution_no_fixed_point :
     IsFull c ↔ ∀ (i : Fin n), (equivInvolution c).1 i ≠ i := by
   simp only [IsFull, ne_eq]
-  rw [Finset.eq_empty_iff_forall_not_mem]
+  rw [Finset.eq_empty_iff_forall_notMem]
   simp [equivInvolution, toInvolution, uncontracted]
 
 /-- The equivalence between full contractions and fixed-point free involutions. -/

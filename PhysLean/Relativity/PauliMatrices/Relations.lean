@@ -54,11 +54,10 @@ lemma pauliCo_contr_pauliContr :
     enter [2, x]
     rw [prodT_basis_repr_apply]
     simp only [pauliCo_eq_ofRat, pauliContr_eq_ofRat]
-    simp only [Fin.isValue, Function.comp_apply, ofRat_basis_repr_apply, Monoidal.tensorUnit_obj,
-      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
-      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Functor.comp_obj, Discrete.functor_obj_eq_as, Fin.zero_succAbove, Fin.reduceSucc,
-      Fin.cast_eq_self, Nat.cast_ofNat, mul_ite, mul_neg, mul_one, mul_zero]
+    simp only [Fin.isValue, ofRat_basis_repr_apply, Function.comp_apply, Monoidal.tensorUnit_obj,
+      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj,
+      Discrete.functor_obj_eq_as, Fin.cast_eq_self]
     left
     rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
   conv_lhs =>

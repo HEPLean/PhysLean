@@ -43,9 +43,7 @@ variable (v w : NormOne d)
 /-- The negative of a `NormOne` as a `NormOne`. -/
 def neg : NormOne d := ⟨- v, by
   rw [mem_iff]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-    CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, tmul_neg, neg_tmul, neg_neg]
+  simp only [tmul_neg, neg_tmul, neg_neg]
   exact v.2⟩
 
 /-- The first column of a Lorentz matrix as a `NormOneLorentzVector`. -/

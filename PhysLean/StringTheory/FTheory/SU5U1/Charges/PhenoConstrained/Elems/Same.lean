@@ -43,7 +43,7 @@ open Tree Leaf Twig Branch Trunk
 
   These trees can be found with e.g.
   `#eval nonPhenoConstrainedChargesExt nextToNearestNeighbor`. -/
-def nonPhenoConstrainedChargesSame :  Tree :=
+def nonPhenoConstrainedChargesSame : Tree :=
   root {trunk (some (-3)) {branch (some 2) {twig {0} {leaf {-1, 3}},
     twig {1} {leaf {0, 2}, leaf {-1, 3}},
     twig {-3} {leaf {0, 2}, leaf {-1, 3}, leaf {-2, 0, 2}},

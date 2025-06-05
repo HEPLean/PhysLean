@@ -13,7 +13,7 @@ _A project to digitalize physics._
 [![](https://img.shields.io/badge/PhysLean-Online-purple)](https://live.physlean.com)
 
 - [![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
-[![](https://img.shields.io/badge/Lean-v4.20.0--rc5-blue)](https://github.com/leanprover/lean4/releases/tag/v4.20.0-rc5)
+[![](https://img.shields.io/badge/Lean-v4.20.1-blue)](https://github.com/leanprover/lean4/releases/tag/v4.20.1)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
 
 ## Aims of this project
@@ -26,9 +26,9 @@ into Lean 4.
 
 🎯 Create good documentation so that the project can be used for __pedagogical__ purposes.
 
-## How to get involved 
+## How to get involved
 
-See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. Some suggestions: 
+See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. Some suggestions:
 
 📣 write **informal** results - no need to learn Lean for this - see the [Getting Started](https://physlean.com/GettingStarted) page for more details,
 

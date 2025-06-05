@@ -8,12 +8,12 @@ defaultTargets = ["PhysLean"]
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "9c86e62be6ea5be3842cbecf6d441a72037563dc"
+rev = "v4.20.1"
 
 [[require]]
 name = "«doc-gen4»"
 git = "https://github.com/leanprover/doc-gen4"
-rev = "v4.20.0-rc5"
+rev = "v4.20.1"
 
 [[lean_lib]]
 name = "PhysLean"

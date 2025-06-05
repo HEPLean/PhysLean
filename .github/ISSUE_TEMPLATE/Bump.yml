@@ -22,7 +22,7 @@ body:
       - label: Update doc-gen4 rev in lakefile.toml.
       - label: Run `rm -rf .lake; lake update`.
       - label: Check `lean-toolchain` updates correctly.
-      - label: Update the `README.md` file.
+      - label: Update the Lean version badge in the `README.md` file.
   validations:
     required: false
 - type: checkboxes
@@ -40,11 +40,12 @@ body:
     label: Scripts
     description: Please check off these items as you complete them
     options:
-      - label: Ensure `lake exe style_lint` runs without errors.
+      - label: Ensure `lake exe lint_all` runs without errors.
       - label: Ensure `lake exe TODO_to_yml mkFile` runs without errors.
       - label: Ensure `lake exe stats mkHTML` runs without errors.
       - label: Ensure `lake exe informal mkFile mkDot mkHTML` runs without errors.
       - label: Ensure `lake exe make_tag` runs without errors.
+      - label: Remove the created files `rm ./docs/Informal.md; rm ./docs/InformalDot.dot; rm ./docs/InformalGraph.html; rm ./docs/Stats.html; rm ./docs/_data/TODO.yml`.
   validations:
     required: false
 - type: checkboxes
@@ -56,3 +57,13 @@ body:
       - label: Create a tag for the new version.
   validations:
     required: false
+- type: textarea
+  id: examples of previus bumps
+  attributes:
+    label: Previous bump
+    description: Please do not modify this text.
+    value: |
+      [v4.20.0](https://github.com/HEPLean/PhysLean/pull/591),
+      [v4.20.0-rc5](https://github.com/HEPLean/PhysLean/pull/566)
+  validations:
+    required: true

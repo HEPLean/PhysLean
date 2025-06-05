@@ -211,7 +211,7 @@ lemma coe_fiveChargeMultisetToList_of_all_mem (I : CodimensionOneConfig) (S : Mu
   by_cases ha : a ∈ I.allowedBarFiveCharges
   · simp
     rw [fiveChargeMultisetToList_count ha]
-  · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
+  · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
     · aesop
     · simp [fiveChargeMultisetToList_mem_iff]
       aesop
@@ -224,7 +224,7 @@ lemma coe_tenChargeMultisetToList_of_all_mem (I : CodimensionOneConfig) (S : Mul
   by_cases ha : a ∈ I.allowedTenCharges
   · simp
     rw [tenChargeMultisetToList_count ha]
-  · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
+  · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
     · aesop
     · simp [tenChargeMultisetToList_mem_iff]
       aesop

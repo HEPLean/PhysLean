@@ -118,7 +118,7 @@ lemma coe_toList(F : FluxesFive) (h : F.NoExotics ∧ F.HasNoZero) : ↑(F.toLis
     · congr
       exact lawful_beq_subsingleton instBEqOfDecidableEq instBEqProd
     rw [toList_count h ha]
-  · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
+  · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
     · by_contra hn
       exact ha (mem_allowedPairs_of_mem_noExotics F h a hn)
     · by_contra hn
@@ -227,7 +227,7 @@ lemma coe_toList(F : FluxesTen) (h : F.NoExotics ∧ F.HasNoZero) : ↑(F.toList
     · congr
       exact lawful_beq_subsingleton instBEqOfDecidableEq instBEqProd
     rw [toList_count h ha]
-  · rw [Multiset.count_eq_zero_of_not_mem, Multiset.count_eq_zero_of_not_mem]
+  · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
     · by_contra hn
       exact ha (mem_allowedPairs_of_mem_noExotics F h a hn)
     · by_contra hn

@@ -171,8 +171,7 @@ lemma contrT_basis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin
         simp
         rfl
       · intro b'' _ hb
-        simp only [Basis.repr_self, Monoidal.tensorUnit_obj,
-          Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+        simp only [Basis.repr_self, Monoidal.tensorUnit_obj, Equivalence.symm_inverse,
           Action.functorCategoryEquivalence_functor,
           Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj,
           Discrete.functor_obj_eq_as, Function.comp_apply]

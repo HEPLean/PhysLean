@@ -372,15 +372,14 @@ lemma β_inv_toEquiv (f : X → C) (g : Y → C) :
 lemma whiskeringLeft_toEquiv (f : X → C) (g : Y → C) (h : Z → C)
     (σ : OverColor.mk f ⟶ OverColor.mk g) :
     Hom.toEquiv (OverColor.mk h ◁ σ) = (Equiv.refl Z).sumCongr (Hom.toEquiv σ) := by
-  simp only [instMonoidalCategoryStruct_tensorObj_of_left, mk_left,
-    MonoidalCategoryStruct.whiskerLeft, Functor.id_obj, mk_hom]
+  simp only [MonoidalCategoryStruct.whiskerLeft, mk_left, Functor.id_obj, mk_hom]
   rfl
 
 @[simp]
 lemma whiskeringRight_toEquiv (f : X → C) (g : Y → C) (h : Z → C)
     (σ : OverColor.mk f ⟶ OverColor.mk g) :
     Hom.toEquiv (σ ▷ OverColor.mk h) = (Hom.toEquiv σ).sumCongr (Equiv.refl Z) := by
-  simp only [instMonoidalCategoryStruct_tensorObj_of_left, mk_left]
+  simp only [mk_left]
   rfl
 
 @[simp]
