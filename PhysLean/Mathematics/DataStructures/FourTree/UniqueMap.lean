@@ -4,14 +4,18 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.DataStructures.FourTree.Basic
-
-namespace PhysLean
-
 /-!
 
-## Definition of the tree type
+## Unique maps for `FourTree`
+
+We define the `uniqueMap4` and `uniqueMap3` functions for `FourTree`.
+For a given `f : α4 → α4` or `f : α3 → α3`, these functions the elements of a `FourTree`,
+and leave only new elements which are not already present in the tree (if
+the tree has no duplicates).
 
 -/
+
+namespace PhysLean
 
 namespace FourTree
 
@@ -25,9 +29,13 @@ section uniqueMap4
 
 variable {α1 α2 α3 α4 : Type} [DecidableEq α4] (f : α4 → α4)
 
+/-- Given a map `f : α4 → α4` the map from `Leaf α4 → Leaf α4` mapping the underlying
+  elements. -/
 def Leaf.uniqueMap4 : Leaf α4 → Leaf α4
   | .leaf x => .leaf (f x)
 
+/-- Given a map `f : α4 → α4` the map from `Twig α3 α4 → Twig α3 α4` mapping the underlying
+  leafs and deleting any that appear in the original Twig. -/
 def Twig.uniqueMap4 (T : Twig α3 α4)  : Twig α3 α4 :=
   match T with
   | .twig xs leafs =>
@@ -40,18 +48,24 @@ def Twig.uniqueMap4 (T : Twig α3 α4)  : Twig α3 α4 :=
         none)
     .twig xs (sub.map (fun ys => .leaf ys))
 
-
+/-- Given a map `f : α4 → α4` the map from `Branch α2 α3 α4 → Branch α2 α3 α4`
+  mapping the underlying leafs and deleting any that appear in the original Twig. -/
 def Branch.uniqueMap4 (T : Branch α2 α3 α4) :
     Branch α2 α3 α4:=
   match T with
   | .branch xo twigs =>
     .branch xo (twigs.map fun ts => (Twig.uniqueMap4 f ts))
 
+/-- Given a map `f : α4 → α4` the map from `Trunk α1 α2 α3 α4 → Trunk α1 α2 α3 α4`
+  mapping the underlying leafs and deleting any that appear in the original Twig. -/
 def Trunk.uniqueMap4 (T : Trunk α1 α2 α3 α4) : Trunk α1 α2 α3 α4 :=
   match T with
   | .trunk xo branches =>
     .trunk xo (branches.map fun bs => (Branch.uniqueMap4 f bs))
 
+/-- Given a map `f : α4 → α4` the map from `FourTree α1 α2 α3 α4 → FourTree α1 α2 α3 α4`
+  mapping the underlying leafs and deleting any that appear in the original twig of that
+  leaf. -/
 def uniqueMap4 (T : FourTree α1 α2 α3 α4) : FourTree α1 α2 α3 α4  :=
   match T with
   | .root trunks =>
@@ -161,11 +175,16 @@ section uniqueMap3
 variable {α1 α2 α3 α4 : Type} [DecidableEq α2] [DecidableEq α3] [DecidableEq α4] (f : α3 → α3)
 
 
+/-- Given a map `f : α3 → α3` the map from `Twig α3 α4 → Twig α3 α4` mapping the underlying
+  first value of the twig. -/
 def Twig.uniqueMap3 (T : Twig α3 α4) : Twig α3 α4 :=
   match T with
   | .twig xs leafs => .twig (f xs) leafs
 
 
+/-- Given a map `f : α3 → α3` the map from `Branch α2 α3 α4 → Branch α2 α3 α4` mapping the
+  underlying first value of the twig, and deleting any new leafs that appeared
+  in the old branch. -/
 def Branch.uniqueMap3 (T : Branch α2 α3 α4) : Branch α2 α3 α4 :=
   match T with
   | .branch qHu twigs =>
@@ -174,13 +193,17 @@ def Branch.uniqueMap3 (T : Branch α2 α3 α4) : Branch α2 α3 α4 :=
       (qHu, (f Q5), Q10))))
     .branch qHu insertTwigs
 
+/-- Given a map `f : α3 → α3` the map from `Trunk α1 α2 α3 α4 → Trunk α1 α2 α3 α4` mapping the
+  underlying first value of the twig, and deleting any new leafs that appeared
+  in the old branch. -/
 def Trunk.uniqueMap3 (T : Trunk α1 α2 α3 α4) : Trunk α1 α2 α3 α4 :=
   match T with
   | .trunk qHd branches =>
     .trunk qHd (branches.map fun bs => (bs.uniqueMap3 f))
 
-/-- The tree obtained by taking the new charges obtained by inserting `q5` into the
-  all the twigs. -/
+/-- Given a map `f : α3 → α3` the map from `FourTree α1 α2 α3 α4 → FourTree α1 α2 α3 α4` mapping the
+  underlying first value of the twig, and deleting any new leafs that appeared
+  in the old branch. -/
 def uniqueMap3 (T : FourTree α1 α2 α3 α4) : FourTree α1 α2 α3 α4:=
   match T with
   | .root trunks =>
