@@ -6,7 +6,22 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Basic
 namespace FTheory
+/-!
 
+# Anomaly cancellation
+
+There are two anomaly cancellation conditions in the SU(5)×U(1) model which involve the
+`U(1)` charges. These are
+
+- `∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar represenations and the second
+  is over all 10d representations.
+- `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar represenations and the
+  second is over all 10d representations.
+
+According to arXiv:1401.5084 it is unclear whether this second condition should necessarily be
+imposed.
+
+-/
 namespace SU5U1
 
 variable {I : CodimensionOneConfig}
@@ -40,16 +55,26 @@ def TenQuanta.anomalyCoefficent (F : TenQuanta) : ℤ × ℤ :=
 
 -/
 
+/-- The pair of anomaly cancellation coefficents associated with the `Hd` particle. -/
 def HdAnomalyCoefficent (qHd : Option ℤ) : ℤ × ℤ :=
   match qHd with
   | none => (0, 0)
   | some qHd => (qHd, qHd ^ 2)
 
+/-- The pair of anomaly cancellation coefficents associated with the `Hu` particle. -/
 def HuAnomalyCoefficent (qHu : Option ℤ) : ℤ × ℤ :=
   match qHu with
   | none => (0, 0)
   | some qHu => (-qHu, -qHu ^ 2)
 
+/-- The anomaly cancellation conditions on quanta making up the fields present in
+  the theory. This corresponds to the conditions that:
+
+- `∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar represenations and the second
+  is over all 10d representations.
+- `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar represenations and the
+  second is over all 10d representations.
+-/
 def AnomalyCancellation (qHd qHu : Option ℤ) (F : FiveQuanta) (T : TenQuanta) : Prop :=
   HdAnomalyCoefficent qHd + HuAnomalyCoefficent qHu + F.anomalyCoefficent +
     T.anomalyCoefficent = (0, 0)
@@ -83,9 +108,13 @@ lemma five_anomalyCoefficent_mod_three_zero_of_anomalyCancellation
 ## Anomaly cancellation on charges tree
 
 -/
+
 namespace Charges
 namespace Tree
 open PhysLean FourTree
+
+/-- Given charges `qHd` and `qHu` filters a twig of `Q5` and `Q10` charges
+  by the anomaly cancellation condition. -/
 def Twig.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd qHu : Option ℤ) :
     Twig (Finset ℤ) (Finset ℤ) → Twig (Finset ℤ) (Finset ℤ) := fun (.twig Q5 leafsList) =>
   -- Anomaly cancellation on ust qHd, qHu and Q5 by mod 3.
@@ -102,17 +131,23 @@ def Twig.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd qHu : Option 
         - T.anomalyCoefficent ∈ l
       l10 ≠ 0
 
+/-- Given charges `qHd` filters a branch of `qHu`, `Q5` and `Q10` charges
+  by the anomaly cancellation condition. -/
 def Branch.filterAnomalyCancellation (I : CodimensionOneConfig) (qHd : Option ℤ) :
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) →
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) := fun (.branch qHu twigsList) =>
   .branch qHu <| twigsList.map fun t => Twig.filterAnomalyCancellation I qHd qHu t
 
+/-- Filters a trunk of `qHd`, `qHu`, `Q5` and `Q10` charges
+  by the anomaly cancellation condition. -/
 def Trunk.filterAnomalyCancellation  (I : CodimensionOneConfig) :
     Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) →
     Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
     fun (.trunk qHd branchList) =>
   .trunk qHd <| branchList.map fun b => Branch.filterAnomalyCancellation I qHd b
 
+/-- Filters a tree of `qHd`, `qHu`, `Q5` and `Q10` charges
+  by the anomaly cancellation condition. -/
 def filterAnomalyCancellation (I : CodimensionOneConfig) :
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) →
     FourTree  (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) := fun (.root tunksList) =>
