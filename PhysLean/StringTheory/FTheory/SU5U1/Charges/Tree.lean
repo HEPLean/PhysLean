@@ -10,7 +10,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
 # Trees of charges
 
 It is convient to use `FourTree` to store charges. In this file we make
-some auxillary definitions  and lemmas which will help us in proofs
+some auxillary definitions and lemmas which will help us in proofs
 and make things faster.
 
 In particular we define the `root`, `trunk`, `branch`, `twig` and `leaf`
@@ -31,12 +31,10 @@ namespace Charges
 
 open PotentialTerm
 
-
 namespace Tree
 open PhysLean FourTree
 
-
-instance (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) ) (x : Charges) :
+instance (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : Charges) :
     Decidable (x ∈ T) :=
   inferInstanceAs (Decidable (x.toProd ∈ T))
 
@@ -45,7 +43,7 @@ def root : Multiset (Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) 
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) := fun b => .root b
 
 /-- An explicit form of `FourTree.Trunk.trunk` for charges. -/
-def trunk : (Option ℤ) → Multiset (Branch (Option ℤ ) (Finset ℤ) (Finset ℤ)) →
+def trunk : (Option ℤ) → Multiset (Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) →
     Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) := fun qHd b => .trunk qHd b
 
 /-- An explicit form of `FourTree.Branch.branch` for charges. -/

@@ -38,7 +38,7 @@ open PhysLean Tree
   These trees can be found with e.g.
   `#eval nonPhenoConstrainedChargesExt nextToNearestNeighbor`. -/
 def nonPhenoConstrainedChargesNearestNeighbor :
-    FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   root {trunk (some (-14)) {branch (some 1) {twig {-14} {leaf {-2, 3}},
     twig {11} {leaf {-2, 3}, leaf {-7, 8}}},
     branch (some 11) {twig {-14} {leaf {-2, 13}}},

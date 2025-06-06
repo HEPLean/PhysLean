@@ -44,7 +44,7 @@ open Tree
   These trees can be found with e.g.
   `#eval nonPhenoConstrainedChargesExt nextToNearestNeighbor`. -/
 def nonPhenoConstrainedChargesSame :
-    FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   root {trunk (some (-3)) {branch (some 2) {twig {0} {leaf {-1, 3}},
     twig {1} {leaf {0, 2}, leaf {-1, 3}},
     twig {-3} {leaf {0, 2}, leaf {-1, 3}, leaf {-2, 0, 2}},

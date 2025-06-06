@@ -111,8 +111,8 @@ def Branch.phenoInsertQ10 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (q
 /-- The trunk obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q10` into all leafs of a trunk. This assumes that all existing charges in the trunk are
   already not pheno constrained. -/
-def Trunk.phenoInsertQ10 (T : Trunk (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
-    Trunk (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def Trunk.phenoInsertQ10 (T : Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
+    Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match T with
   | .trunk qHd branches =>
     .trunk qHd (branches.map fun b => Branch.phenoInsertQ10 b qHd x)
@@ -120,14 +120,14 @@ def Trunk.phenoInsertQ10 (T : Trunk (Option ℤ)  (Option ℤ) (Finset ℤ) (Fin
 /-- The tree obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q10` into all leafs of a tree. This assumes that all existing charges in the tree are
   already not pheno constrained. -/
-def phenoInsertQ10 (T : FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
+def phenoInsertQ10 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match T with
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ10 ts x))
 
 lemma mem_insertQ10_and_not_isPresent_of_mem_phenoInsertQ10
-    (T : FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)) (q10 : ℤ) (C : Charges)
+    (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (q10 : ℤ) (C : Charges)
     (h : C ∈ phenoInsertQ10 T q10) : C ∈ (T.uniqueMap4 (insert q10))
       ∧ ¬ IsPresent K2 (C.1, C.2.1, {q10})
       ∧ ¬ IsPresent Λ (C.2.2.1, {q10})
@@ -207,7 +207,7 @@ lemma mem_insertQ10_and_not_isPresent_of_mem_phenoInsertQ10
   simp_all
 
 lemma mem_phenoInsertQ10_of_mem_isPresent
-    (T : FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ))  (q10 : ℤ) (C : Charges)
+    (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (q10 : ℤ) (C : Charges)
     (h : C ∈ (T.uniqueMap4 (insert q10))) (hC : ¬ IsPresent K2 (C.1, C.2.1, {q10})
       ∧ ¬ IsPresent Λ (C.2.2.1, {q10})
       ∧ ¬ IsPresent W1 (C.2.2.1, C.2.2.2) ∧ ¬ IsPresent K1 (C.2.2.1, C.2.2.2)
@@ -306,8 +306,8 @@ def Branch.phenoInsertQ5 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (qH
 /-- The trunk obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q5` into all leafs of a trunk. This assumes that all existing charges in the trunk are
   already not pheno constrained. -/
-def Trunk.phenoInsertQ5 (T : Trunk  (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
-    Trunk  (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def Trunk.phenoInsertQ5 (T : Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
+    Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match T with
   | .trunk qHd branches =>
     .trunk qHd (branches.map fun b => Branch.phenoInsertQ5 b qHd x)
@@ -315,13 +315,14 @@ def Trunk.phenoInsertQ5 (T : Trunk  (Option ℤ)  (Option ℤ) (Finset ℤ) (Fin
 /-- The tree obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q5` into all leafs of a tree. This assumes that all existing charges in the tree are
   already not pheno constrained. -/
-def phenoInsertQ5 (T : FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
-    FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def phenoInsertQ5 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match T with
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ5 ts x))
 
-lemma mem_phenoInsertQ5_of_mem_isPresent (T : FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)) (q5 : ℤ) (C : Charges)
+lemma mem_phenoInsertQ5_of_mem_isPresent (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ))
+    (q5 : ℤ) (C : Charges)
     (h : C ∈ (T.uniqueMap3 (insert q5))) (hC : ¬ IsPresent β (C.2.1, {q5})
       ∧ ¬ IsPresent W4 (C.1, C.2.1, {q5}) ∧
       ¬ IsPresent W1 ({q5}, C.2.2.2) ∧ ¬ IsPresent K1 ({q5}, C.2.2.2)

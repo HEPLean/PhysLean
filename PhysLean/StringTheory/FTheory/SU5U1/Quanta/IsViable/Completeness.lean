@@ -28,7 +28,7 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 namespace Charges
 
-open PhysLean  Tree
+open PhysLean Tree
 
 /-- For a given `I :CodimensionOneConfig` the `Charges` which are not
   phenomenologically constrained and can be lifted to `Quanta` that is anomaly free.
@@ -40,7 +40,7 @@ open PhysLean  Tree
 -/
 def elemsAnomalyFree : (I :CodimensionOneConfig) →
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)
- | .same => root {trunk (some (-3)) {branch (some 0) {twig {-2, -1} {leaf {0}, leaf {-3, 0}}},
+  | .same => root {trunk (some (-3)) {branch (some 0) {twig {-2, -1} {leaf {0}, leaf {-3, 0}}},
       branch (some 1) {twig {-2, 0} {leaf {-2, 3}}, twig {-2, 0, 3} {leaf {-2, 3}}}},
     trunk (some 2) {branch (some (-2)) {twig {-3, -1} {leaf {-3, -1}},
         twig {-1, 1} {leaf {-1}, leaf {-3, -1}}, twig {-3, -1, 1} {leaf {-1}, leaf {-3, -1}}},
@@ -131,13 +131,13 @@ open Charges
 open PhysLean FourTree
 
 set_option maxRecDepth 2000 in
-lemma  mem_viableElems_of_ofCharges_elemsAnomalyFree_of_same :
+lemma mem_viableElems_of_ofCharges_elemsAnomalyFree_of_same :
     ∀ x ∈ (elemsAnomalyFree .same).toMultiset, ∀ y ∈ Quanta.ofCharges .same x,
       AnomalyCancellation y.1 y.2.1 y.2.2.1 y.2.2.2 → y ∈ viableElems .same := by
   decide
 
 set_option maxRecDepth 2000 in
-lemma  mem_viableElems_of_ofCharges_elemsAnomalyFree_of_NN :
+lemma mem_viableElems_of_ofCharges_elemsAnomalyFree_of_NN :
     ∀ x ∈ (elemsAnomalyFree .nearestNeighbor).toMultiset, ∀ y ∈ Quanta.ofCharges .nearestNeighbor x,
       AnomalyCancellation y.1 y.2.1 y.2.2.1 y.2.2.2 → y ∈ viableElems .nearestNeighbor := by
   decide

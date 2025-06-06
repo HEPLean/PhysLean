@@ -32,7 +32,7 @@ namespace Quanta
 open PotentialTerm ChargeProfile Charges
 
 /-- For a given `I : CodimensionOneConfig` the condition on a `Quanta` for it to be
-  phenomenologically viable.  -/
+  phenomenologically viable. -/
 def IsViable (I : CodimensionOneConfig) (x : Quanta) : Prop :=
   x.toCharges.IsComplete ∧
   ¬ x.toCharges.IsPhenoConstrained ∧
@@ -47,7 +47,7 @@ def IsViable (I : CodimensionOneConfig) (x : Quanta) : Prop :=
   x.2.2.2.toCharges.Nodup
 
 lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
-    IsViable I x  ↔
+    IsViable I x ↔
       x.toCharges.IsComplete ∧
   ¬ x.toCharges.IsPhenoConstrained ∧
   IsPresent topYukawa (toChargeProfile topYukawa x.toCharges) ∧
@@ -60,7 +60,7 @@ lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
       x.toCharges.2.2.1 ⊆ I.allowedBarFiveCharges ∧ x.toCharges.2.2.2 ⊆ I.allowedTenCharges)
       ∧
     x.2.2.1.toCharges.Nodup ∧
-    x.2.2.2.toCharges.Nodup   := by
+    x.2.2.2.toCharges.Nodup := by
   rw [IsViable, Charges.mem_ofFinset_iff]
   simp [toCharges]
 
@@ -104,7 +104,7 @@ lemma toFluxesTen_hasNoZero_of_isViable
 
 lemma Q10_charges_mem_allowedBarTenCharges_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-     ∀ s ∈ x.2.2.2.toCharges, s ∈ I.allowedTenCharges := by
+    ∀ s ∈ x.2.2.2.toCharges, s ∈ I.allowedTenCharges := by
   have h1 := toCharges_mem_ofFinset_of_isViable I x h
   rw [Charges.mem_ofFinset_iff] at h1
   have h2 := h1.2.2.2
@@ -115,7 +115,7 @@ lemma Q10_charges_mem_allowedBarTenCharges_of_isViable
 
 lemma Q5_charges_mem_allowedBarFiveCharges_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-     ∀ s ∈ x.2.2.1.toCharges, s ∈ I.allowedBarFiveCharges := by
+    ∀ s ∈ x.2.2.1.toCharges, s ∈ I.allowedBarFiveCharges := by
   have h1 := toCharges_mem_ofFinset_of_isViable I x h
   rw [Charges.mem_ofFinset_iff] at h1
   have h2 := h1.2.2.1

@@ -68,7 +68,7 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
     (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card = charges.card := by
   intro F hF
-  simp? [fromParts]  at hF says
+  simp? [fromParts] at hF says
     simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
   simp only [Multiset.coe_card, List.length_zip]
@@ -102,7 +102,7 @@ lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) 
     subst h1 h2
     exact self_mem_fromParts_of_toCharges_toFluxesFive I F hf hc
   · intro h
-    simp? [fromParts]  at h says
+    simp? [fromParts] at h says
       simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right,
         List.mem_map] at h
     obtain ⟨hcard, l, hperm, rfl⟩ := h
@@ -182,7 +182,6 @@ lemma mem_ofCharges_self (I : CodimensionOneConfig) (c : FiveQuanta)
   exact ⟨h, hnz⟩
   exact hc
 
-
 end FiveQuanta
 
 /-!
@@ -214,7 +213,7 @@ lemma self_mem_fromParts_of_toCharges_toFluxesTen (I : CodimensionOneConfig) (F 
   · simp [toCharges, toFluxesTen]
   use (F.toList I).map Prod.snd
   constructor
-  ·  exact (toList_prod_snd_perm hf hc)
+  · exact (toList_prod_snd_perm hf hc)
   · rw [← toList_prod_fst_eq hf hc]
     conv_rhs => rw [← coe_toList hf hc]
     congr
@@ -252,7 +251,7 @@ lemma card_eq_fluxes_card_of_mem_fromParts (I : CodimensionOneConfig) (charges :
 lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : FluxesTen)
     (hf : fluxes.NoExotics ∧ fluxes.HasNoZero)
     (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) (F : TenQuanta) :
-    F.toCharges = charges ∧ F.toFluxesTen = fluxes  ↔
+    F.toCharges = charges ∧ F.toFluxesTen = fluxes ↔
       F ∈ fromParts I charges fluxes := by
   constructor
   · intro ⟨h1, h2⟩
@@ -294,7 +293,6 @@ lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) 
   which have a `FluxesTen` in `FluxesTen.elemsNoExotics`. -/
 def ofCharges (I : CodimensionOneConfig) (c : Multiset ℤ) : Multiset TenQuanta :=
   FluxesTen.elemsNoExotics.bind fun f => fromParts I c f
-
 
 lemma mem_ofCharges_iff (I : CodimensionOneConfig) (charges : Multiset ℤ)
     (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) (F : TenQuanta) :

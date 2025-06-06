@@ -30,7 +30,6 @@ variable {I : CodimensionOneConfig}
 namespace Quanta
 open PhysLean FourTree Leaf Twig Branch Trunk
 
-
 /-- The `FourTree` of elements of `Quanta` for which the `IsViable` condition holds for a given
   `I : CodimensionOneConfig`. This is an excutable version used to generate `viableElems`,
   but not useful in proofs.
@@ -51,7 +50,7 @@ def viableElemsExe (I : CodimensionOneConfig) :
   `set_option pp.deepTerms true`
   `#eval (viableElemsExe .nextToNearestNeighbor)`
 -/
-def viableElems  : (I : CodimensionOneConfig) →
+def viableElems : (I : CodimensionOneConfig) →
     FourTree (Option ℤ) (Option ℤ) FiveQuanta TenQuanta
   | .same => root {trunk (some (-3)) {branch (some 0) {twig {(-2, 3, -3), (-1, 0, 3)}
       {leaf {(0, 3, 0)}, leaf {(-3, 1, 0), (0, 2, 0)}, leaf {(-3, 2, 0), (0, 1, 0)}}},
@@ -108,14 +107,14 @@ def viableElems  : (I : CodimensionOneConfig) →
   | .nearestNeighbor => root {trunk (some (-9)) {branch (some (-14))
     {twig {(-9, 0, 2), (-4, 3, -3), (1, 0, 1)} {leaf {(-7, 3, 0)},
       leaf {(-12, 1, 0), (-7, 2, 0)}, leaf {(-12, 2, 0), (-7, 1, 0)}}}},
- trunk (some 1) {branch (some (-14)) {twig {(-9, 0, 3), (-4, 3, -3)} {leaf {(-7, 3, 0)},
-  leaf {(-12, 1, 0), (-7, 2, 0)}, leaf {(-12, 2, 0), (-7, 1, 0)}}}},
- trunk (some 6) {branch (some (-14)) {twig {(-9, 1, 2), (1, 2, -2)} {leaf {(-7, 3, 0)},
+  trunk (some 1) {branch (some (-14)) {twig {(-9, 0, 3), (-4, 3, -3)} {leaf {(-7, 3, 0)},
+    leaf {(-12, 1, 0), (-7, 2, 0)}, leaf {(-12, 2, 0), (-7, 1, 0)}}}},
+  trunk (some 6) {branch (some (-14)) {twig {(-9, 1, 2), (1, 2, -2)} {leaf {(-7, 3, 0)},
     leaf {(-12, 1, 0), (-7, 2, 0)}, leaf {(-12, 2, 0), (-7, 1, 0)}},
-   twig {(-9, 0, 2), (1, 3, -2)} {leaf {(-7, 3, 0)}, leaf {(-12, 1, 0), (-7, 2, 0)},
+    twig {(-9, 0, 2), (1, 3, -2)} {leaf {(-7, 3, 0)}, leaf {(-12, 1, 0), (-7, 2, 0)},
     leaf {(-12, 2, 0), (-7, 1, 0)}},
-   twig {(-9, 0, 2), (1, 2, -2), (11, 1, 0)} {leaf {(-7, 3, 0)}},
-   twig {(-9, 0, 2), (-4, 1, 0), (1, 2, -2)} {leaf {(-7, 3, 0)},
+    twig {(-9, 0, 2), (1, 2, -2), (11, 1, 0)} {leaf {(-7, 3, 0)}},
+    twig {(-9, 0, 2), (-4, 1, 0), (1, 2, -2)} {leaf {(-7, 3, 0)},
     leaf {(-12, 1, 0), (-7, 2, 0)}, leaf {(-12, 2, 0), (-7, 1, 0)}}}}}
   | .nextToNearestNeighbor =>root {trunk (some (-3)) {branch (some 12) {
       twig {(2, 3, -3), (7, 0, 3)} {leaf {(6, 3, 0)}, leaf {(6, 1, 0), (11, 2, 0)},

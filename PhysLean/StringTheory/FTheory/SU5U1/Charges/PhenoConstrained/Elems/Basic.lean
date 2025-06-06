@@ -46,7 +46,7 @@ open PhysLean
   and therefore not good when using `decide` etc.
 -/
 def nonPhenoConstrainedChargesExt (I : CodimensionOneConfig) :
-    FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   let completionTopYukawa := ((((irreducibleElems I topYukawa).map
     (fromChargeProfile topYukawa)).bind
     (completions I.allowedBarFiveCharges I.allowedTenCharges)).dedup.filter
@@ -60,7 +60,8 @@ def nonPhenoConstrainedChargesExt (I : CodimensionOneConfig) :
   let addThreeTopYukawa := (((addTwoTopYukawa).bind (fun x =>
     (minimalSuperSet I.allowedBarFiveCharges I.allowedTenCharges x).val)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
-  FourTree.fromMultiset (completionTopYukawa + addOneTopYukawa + addTwoTopYukawa + addThreeTopYukawa)
+  FourTree.fromMultiset (completionTopYukawa + addOneTopYukawa +
+    addTwoTopYukawa + addThreeTopYukawa)
 
 /-- For a given `I : CodimensionOneConfig` the tree of charges containing all
   charges which are not phenomenlogically constrained, and which permit a top
@@ -69,7 +70,7 @@ def nonPhenoConstrainedChargesExt (I : CodimensionOneConfig) :
   These trees can be found with e.g.
   `#eval nonPhenoConstrainedChargesExt nextToNearestNeighbor`. -/
 def nonPhenoConstrainedCharges : (I : CodimensionOneConfig) →
-    FourTree (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)
   | same => nonPhenoConstrainedChargesSame
   | nearestNeighbor => nonPhenoConstrainedChargesNearestNeighbor
   | nextToNearestNeighbor => nonPhenoConstrainedChargesNextToNearestNeighbor

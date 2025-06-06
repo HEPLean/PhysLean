@@ -94,7 +94,7 @@ lemma nonPhenoConstrainedCharges_insertQ10_filter (I : CodimensionOneConfig) :
 
 lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
     ∀ (q5 : { x // x ∈ I.allowedBarFiveCharges }),
-      Multiset.filter (fun x => ¬  IsPhenoConstrained x)
+      Multiset.filter (fun x => ¬ IsPhenoConstrained x)
       ((nonPhenoConstrainedCharges I).uniqueMap3 (insert q5.1)).toMultiset = ∅ := by
   intro ⟨q5, hq5⟩
   simp only [Multiset.empty_eq_zero]
@@ -149,7 +149,7 @@ Tree.fromMultiset ((((irreducibleElems same topYukawa).map (fromChargeProfile to
     (fun x => ¬ IsPhenoConstrained x))
 -/
 private def completionTopYukawa (I : CodimensionOneConfig) :
-    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)  :=
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match I with
   | same => root {trunk (some 3) {branch (some (-2)) {twig {-3} {leaf {-2, 0}},
       twig {-1} {leaf {-2, 0}, leaf {-3, 1}},
@@ -465,8 +465,6 @@ private def completionTopYukawa (I : CodimensionOneConfig) :
     twig {7} {leaf {1}, leaf {-4, 6}}},
   branch (some 12) {twig {-13} {leaf {6}}, twig {2} {leaf {6}}, twig {-8} {leaf {6}, leaf {1, 11}},
     twig {7} {leaf {6}, leaf {1, 11}}}}}
-
-
 
 lemma completionTopYukawa_complete_of_same :
     ∀ x ∈ (irreducibleElems .same topYukawa).map (fromChargeProfile topYukawa),
