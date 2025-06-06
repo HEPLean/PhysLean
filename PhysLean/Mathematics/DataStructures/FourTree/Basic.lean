@@ -297,7 +297,6 @@ lemma mem_of_parts {T : FourTree α1 α2 α3 α4} {C : α1 × α2 × α3 × α4}
   simp_all
   use leaf
 
-
 end FourTree
 
 end PhysLean

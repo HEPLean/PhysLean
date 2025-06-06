@@ -6,7 +6,24 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
 namespace FTheory
+/-!
 
+# Viable Quanta
+
+We say a term of a type `Quanta` is viable for a given `I : CodimensionOneConfig`,
+  if it satisfies the following properties:
+- It has a `Hd`, `Hu` and at leat one matter particle in the 5 and 10 representation.
+- It has no exotic chiral particles.
+- It leads to a top Yukawa coupling.
+- It does not lead to a pheno constraining terms.
+- It satisfies anomaly cancellation.
+- The charges are allowed by the `I` configuration.
+
+This somes with one caveat, the `IsViable` constraint enforces the anomaly cancellation condition:
+`∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0`
+to hold, which is not always necessary, see arXiv:1401.5084.
+
+-/
 namespace SU5U1
 
 variable {I : CodimensionOneConfig}
@@ -14,6 +31,8 @@ variable {I : CodimensionOneConfig}
 namespace Quanta
 open PotentialTerm ChargeProfile Charges
 
+/-- For a given `I : CodimensionOneConfig` the condition on a `Quanta` for it to be
+  phenomenologically viable.  -/
 def IsViable (I : CodimensionOneConfig) (x : Quanta) : Prop :=
   x.toCharges.IsComplete ∧
   ¬ x.toCharges.IsPhenoConstrained ∧
@@ -26,7 +45,6 @@ def IsViable (I : CodimensionOneConfig) (x : Quanta) : Prop :=
   x.toCharges ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges ∧
   x.2.2.1.toCharges.Nodup ∧
   x.2.2.2.toCharges.Nodup
-
 
 lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
     IsViable I x  ↔
@@ -48,8 +66,6 @@ lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
 
 instance (I : CodimensionOneConfig) (x : Quanta) : Decidable (IsViable I x) :=
   decidable_of_iff _ (isViable_iff_expand_ofFinset I x).symm
-
-
 
 lemma toCharges_five_nodup_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
@@ -152,8 +168,6 @@ lemma anomalyCancellation_of_isViable
 ## toCharges mem
 
 -/
-
-
 
 lemma toCharges_mem_nonPhenoConstrainedCharges_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :

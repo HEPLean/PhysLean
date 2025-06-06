@@ -94,11 +94,13 @@ end Charges
 
 namespace Quanta
 open Charges
+
 /-!
 
 ## Lifting to Quanta
 
 -/
+
 open PhysLean FourTree
 
 set_option maxRecDepth 2000 in
