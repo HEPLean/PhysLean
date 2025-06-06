@@ -37,7 +37,7 @@ variable {I : CodimensionOneConfig}
 namespace FiveQuanta
 
 /-- The list of `FiveQuanta` which arise from `charges` and `fluxes`.
-  Note: This gives junk unless `charges` has length less than or equal to `3`,
+  Note: This gives junk unless
   the charges correspond to a `CodimensionOneConfig`
   and `fluxes` has no exotics and no zero entries. -/
 def fromParts (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : FluxesFive) :
@@ -194,7 +194,7 @@ end FiveQuanta
 namespace TenQuanta
 
 /-- The list of `TenQuanta` which arise from `charges` and `fluxes`.
-  Note: This gives junk unless `charges` has length less than or equal to `3`,
+  Note: This gives junk unless `charges`
   the charges correspond to a `CodimensionOneConfig`
   and `fluxes` has no exotics and no zero entries. -/
 def fromParts (I : CodimensionOneConfig) (charges : Multiset ℤ) (fluxes : FluxesTen) :
@@ -337,11 +337,12 @@ lemma mem_ofCharges_self (I : CodimensionOneConfig) (c : TenQuanta)
   exact ⟨h, hnz⟩
   exact hc
 
-
 end TenQuanta
 
 namespace Quanta
 
+/-- The multiset of `Quanta` obtained from a `Charges`,
+  which have a `Fluxes` which do not permit exotics. -/
 def ofCharges (I : CodimensionOneConfig) (c : Charges) : Multiset Quanta :=
     let c1 := FiveQuanta.ofCharges I c.2.2.1.val
     let c2 := TenQuanta.ofCharges I c.2.2.2.val

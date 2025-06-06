@@ -4,6 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Elems
+/-!
+
+# Cases of `Quanta` in `viableElems`
+
+In `arXiv:1507.05961`, there are a number of specific cases of `Quanta` which are
+viable given. These are named based on convention, we give some of those cases in this
+paper and prove that they are in `viableElems` for the appropriate `I : CodimensionOneConfig`.
+
+-/
 namespace FTheory
 
 namespace SU5U1
