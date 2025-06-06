@@ -68,8 +68,7 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
     (hc : ∀ s ∈ charges, s ∈ I.allowedBarFiveCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card = charges.card := by
   intro F hF
-  simp? [fromParts] at hF says
-    simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
+  simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
   simp only [Multiset.coe_card, List.length_zip]
   rw [CodimensionOneConfig.fiveChargeMultisetToList_length I charges hc]
@@ -102,8 +101,7 @@ lemma fromParts_eq_preimage (I : CodimensionOneConfig) (charges : Multiset ℤ) 
     subst h1 h2
     exact self_mem_fromParts_of_toCharges_toFluxesFive I F hf hc
   · intro h
-    simp? [fromParts] at h says
-      simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right,
+    simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right,
         List.mem_map] at h
     obtain ⟨hcard, l, hperm, rfl⟩ := h
     rw [List.mem_dedup] at hperm
@@ -224,8 +222,7 @@ lemma card_eq_charges_card_of_mem_fromParts (I : CodimensionOneConfig) (charges 
     (hc : ∀ s ∈ charges, s ∈ I.allowedTenCharges) :
     ∀ F ∈ fromParts I charges fluxes, F.card = charges.card := by
   intro F hF
-  simp? [fromParts] at hF says
-    simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
+  simp only [fromParts, ne_eq, List.empty_eq, ite_not, List.mem_ite_nil_right, List.mem_map] at hF
   obtain ⟨hcard, l, hperm, rfl⟩ := hF
   simp only [Multiset.coe_card, List.length_zip]
   rw [CodimensionOneConfig.tenChargeMultisetToList_length I charges hc]
