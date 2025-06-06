@@ -7,13 +7,18 @@ import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
 /-!
 
-# Inserting charges into trees
+# Trees of charges
 
-For a tree of charges `T` we make two definitions.
-One corresponding to getting all the new charges when
-inserting a `q10` into each of the `Q10` finsets in `T`.
-The other corresponding to getting all the new charges when
-inserting a `q5` into each of the `Q5` finsets in `T`.
+It is convient to use `FourTree` to store charges. In this file we make
+some auxillary definitions  and lemmas which will help us in proofs
+and make things faster.
+
+In particular we define the `root`, `trunk`, `branch`, `twig` and `leaf`
+specifically for `FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)`, this
+allows Lean to read in large trees of charges more quickly.
+
+We also prove some results related to `(T.uniqueMap3 (insert q5.1))` and
+`(T.uniqueMap4 (insert q10.1))`, and their filters by a predicate `p : Charges → Prop`.
 
 -/
 namespace FTheory
@@ -35,19 +40,25 @@ instance (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) ) (x 
     Decidable (x ∈ T) :=
   inferInstanceAs (Decidable (x.toProd ∈ T))
 
+/-- An explicit form of `FourTree.root` for charges. -/
 def root : Multiset (Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) →
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) := fun b => .root b
 
+/-- An explicit form of `FourTree.Trunk.trunk` for charges. -/
 def trunk : (Option ℤ) → Multiset (Branch (Option ℤ ) (Finset ℤ) (Finset ℤ)) →
     Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) := fun qHd b => .trunk qHd b
 
+/-- An explicit form of `FourTree.Branch.branch` for charges. -/
 def branch : (Option ℤ) → Multiset (Twig (Finset ℤ) (Finset ℤ)) →
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) := fun qHu b => .branch qHu b
 
+/-- An explicit form of `FourTree.Twig.twig` for charges. -/
 def twig : Finset ℤ → Multiset (Leaf (Finset ℤ)) → Twig (Finset ℤ) (Finset ℤ) :=
   fun q5 q10s => .twig q5 q10s
 
+/-- An explicit form of `FourTree.Leaf.leaf` for charges. -/
 def leaf : Finset ℤ → Leaf (Finset ℤ) := fun q10 => .leaf q10
+
 /-!
 
 ## Inserting charges and minimal super sets
@@ -129,8 +140,8 @@ lemma subset_insert_filter_card_zero_inductive
       omega
     · exact hnot_in_T
 
-/-- For a proposition `p` if `(insertQ10 T q10).toMultiset.filter p`
-  and `(insertQ5 T q5).toMultiset.filter p` for all `q5 ∈ S5` and `q10 ∈ S10` then
+/-- For a proposition `p` if `(T.uniqueMap4 (insert q10.1)).toMultiset.filter p`
+  and `(T.uniqueMap3 (insert q5.1)).toMultiset.filter p` for all `q5 ∈ S5` and `q10 ∈ S10` then
   if `x ∈ T` and `x ⊆ y` if `y ∉ T` then `¬ p y`.
   This assumes that all charges in `T` are complete, and that `p` satisfies
   `x ⊆ y → ¬ p x → ¬ p y`. -/
