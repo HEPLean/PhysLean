@@ -4,6 +4,23 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Elems
+/-!
+
+# Completeness of viableElems
+
+In this module we prove that the `viableElems` for a given
+`I : CodimensionOneConfig` is complete, in the sense that it contains all
+viable `Quanta` for that `I`. This main result is contained within the lemma
+`isViable_iff_mem_viableElems`.
+
+## Comment on proof
+
+The proof of this result is done by first obtaining `elemsAnomalyFree` which contains
+the `Charges` which are not
+phenomenologically constrained and can be lifted to `Quanta` that is anomaly free.
+We then find all anomaly-free lifts of these charges to `Quanta` explicitly.
+
+-/
 namespace FTheory
 
 namespace SU5U1
@@ -12,34 +29,44 @@ variable {I : CodimensionOneConfig}
 namespace Charges
 
 open PhysLean  Tree
--- #eval Tree.fromMultiset (filterAnomalyCancellation .nextToNearestNeighbor (nonPhenoConstrainedCharges .nextToNearestNeighbor)).toMultiset
 
+/-- For a given `I :CodimensionOneConfig` the `Charges` which are not
+  phenomenologically constrained and can be lifted to `Quanta` that is anomaly free.
 
-def elemsAnomalyFree : (I :CodimensionOneConfig) →  FourTree  (Option ℤ)  (Option ℤ) (Finset ℤ) (Finset ℤ)
+  The Trees here can be found using e.g.
+  `#eval FourTree.fromMultiset (filterAnomalyCancellation`
+    `.same (nonPhenoConstrainedCharges .same)).toMultiset`
+
+-/
+def elemsAnomalyFree : (I :CodimensionOneConfig) →
+    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)
  | .same => root {trunk (some (-3)) {branch (some 0) {twig {-2, -1} {leaf {0}, leaf {-3, 0}}},
       branch (some 1) {twig {-2, 0} {leaf {-2, 3}}, twig {-2, 0, 3} {leaf {-2, 3}}}},
-    trunk (some 2) {branch (some (-2)) {twig {-3, -1} {leaf {-3, -1}}, twig {-1, 1} {leaf {-1}, leaf {-3, -1}}, twig {-3, -1, 1} {leaf {-1}, leaf {-3, -1}}},
+    trunk (some 2) {branch (some (-2)) {twig {-3, -1} {leaf {-3, -1}},
+        twig {-1, 1} {leaf {-1}, leaf {-3, -1}}, twig {-3, -1, 1} {leaf {-1}, leaf {-3, -1}}},
       branch (some (-1)) {twig {0, 1} {leaf {-3, 2}}},
       branch (some 0) {twig {1, 3} {leaf {2, 0}}},
       branch (some 1) {twig {3} {leaf {0, 1}}}},
     trunk (some (-2)) {branch (some (-1)) {twig {-3} {leaf {-1, 0}}},
       branch (some 0) {twig {-3, -1} {leaf {-2, 0}}},
       branch (some 1) {twig {-1, 0} {leaf {-2, 3}}},
-      branch (some 2) {twig {-1, 1} {leaf {1}, leaf {3, 1}}, twig {1, 3} {leaf {3, 1}}, twig {-1, 1, 3} {leaf {1}, leaf {3, 1}}}},
+      branch (some 2) {twig {-1, 1} {leaf {1}, leaf {3, 1}},
+        twig {1, 3} {leaf {3, 1}}, twig {-1, 1, 3} {leaf {1}, leaf {3, 1}}}},
     trunk (some (-1)) {branch (some 0) {twig {-3, -2, -1} {leaf {0}}},
       branch (some 2) {twig {0, 1} {leaf {1}, leaf {2, 1}, leaf {3, 1}, leaf {2, 3, 1}}}},
-    trunk (some 1) {branch (some (-2)) {twig {-1, 0} {leaf {-1}, leaf {-3, -1}, leaf {-2, -1}, leaf {-3, -2, -1}}},
+    trunk (some 1) {branch (some (-2)) {twig {-1, 0} {leaf {-1}, leaf {-3, -1}, leaf {-2, -1},
+        leaf {-3, -2, -1}}},
       branch (some 0) {twig {1, 2, 3} {leaf {0}}}},
     trunk (some 3) {branch (some 0) {twig {1, 2} {leaf {0}, leaf {3, 0}}},
       branch (some (-1)) {twig {0, 2} {leaf {-3, 2}}, twig {-3, 0, 2} {leaf {-3, 2}}}}}
-  | .nearestNeighbor => root {trunk (some (-9)) {branch (some (-14)) {twig {-9, -4, 1} {leaf {-7}, leaf {-12, -7}}}},
+  | .nearestNeighbor => root {trunk (some (-9)) {branch (some (-14))
+      {twig {-9, -4, 1} {leaf {-7}, leaf {-12, -7}}}},
     trunk (some 1) {branch (some (-14)) {twig {-9, -4} {leaf {-7}, leaf {-12, -7}}}},
-    trunk (some 6) {branch (some (-14)) {twig {-9, 1} {leaf {-7}, leaf {-12, -7}}, twig {-9, 1, 11} {leaf {-7}}, twig {-9, -4, 1} {leaf {-7}, leaf {-12, -7}}}}}
-  | .nextToNearestNeighbor => root {trunk (some (-3)) {branch (some 12) {twig {2, 7} {leaf {6}, leaf {11, 6}}}}}
-/- set_option maxRecDepth 2000
-example : ∀ x ∈ (filterAnomalyCancellation .same (nonPhenoConstrainedCharges .same)).toMultiset,
-    x ∈ testTree := by
-  decide-/
+    trunk (some 6) {branch (some (-14)) {twig {-9, 1} {leaf {-7}, leaf {-12, -7}},
+      twig {-9, 1, 11} {leaf {-7}}, twig {-9, -4, 1} {leaf {-7}, leaf {-12, -7}}}}}
+  | .nextToNearestNeighbor => root {trunk (some (-3)) {branch (some 12)
+    {twig {2, 7} {leaf {6}, leaf {11, 6}}}}}
+
 open Quanta
 open FourTree
 set_option maxRecDepth 2000
