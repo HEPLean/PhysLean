@@ -14,7 +14,7 @@ not pheno-constrained, and prove properties about them.
 These trees are complete in the sense that they contain all the non pheno-constrained, complete,
 charges which are in
 `ofFinset nextToNearestNeighbor.allowedBarFiveCharges nextToNearestNeighbor.allowedTenCharges`.
-We use the `Tree` type defined in `FTheory.SU5U1.Charges.Tree.Basic` here for efficiency.
+We use the `FourTree` type  here for efficiency.
 
 We break the properties of these trees into smaller modules, to aid in
 speed of building.
