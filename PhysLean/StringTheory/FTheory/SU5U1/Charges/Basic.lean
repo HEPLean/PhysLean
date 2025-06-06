@@ -45,7 +45,10 @@ unsafe instance : Repr Charges where
       let s10 := reprStr Q10
       s!"({s1}, {s2}, {s5}, {s10})"
 
-def toProd (x : Charges) : (Option ℤ × Option ℤ × Finset ℤ × Finset ℤ) := x
+/-- The explicit casting of a term of `Charges` to a term of
+  `Option ℤ × Option ℤ × Finset ℤ × Finset ℤ`. -/
+def toProd (x : Charges) : Option ℤ × Option ℤ × Finset ℤ × Finset ℤ := x
+
 /-!
 
 ## Subsest relation

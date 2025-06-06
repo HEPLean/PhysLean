@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Basic
-namespace FTheory
 /-!
 
 # Anomaly cancellation
@@ -22,6 +21,9 @@ According to arXiv:1401.5084 it is unclear whether this second condition should 
 imposed.
 
 -/
+
+namespace FTheory
+
 namespace SU5U1
 
 variable {I : CodimensionOneConfig}
@@ -212,7 +214,8 @@ lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig}
       rw [if_neg]
       · simp_all
         rw [Multiset.countP_eq_zero]
-        simp
+        simp only [Multiset.mem_map, Multiset.mem_filter, not_exists, not_and, and_imp, not_forall,
+          Classical.not_imp, Decidable.not_not]
         use T10
         simp_all
         use F
@@ -221,7 +224,7 @@ lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig}
         · exact five_anomalyCoefficent_mod_three_zero_of_anomalyCancellation hacc
         · exact Eq.symm (neg_eq_of_add_eq_zero_left hacc)
       · rw [Multiset.filter_eq_nil]
-        simp
+        simp only [not_forall, Classical.not_imp, Decidable.not_not]
         use F
         simp_all
         exact five_anomalyCoefficent_mod_three_zero_of_anomalyCancellation hacc
@@ -230,7 +233,7 @@ lemma mem_filterAnomalyCancellation_iff {I : CodimensionOneConfig}
         Twig.filterAnomalyCancellation, filterAnomalyCancellation]
       rw [if_neg]
       rw [Multiset.filter_eq_nil]
-      simp
+      simp only [not_forall, Classical.not_imp, Decidable.not_not]
       obtain ⟨F, T10, F_mem, T10_mem, hacc⟩ := h2
       use F
       simp_all

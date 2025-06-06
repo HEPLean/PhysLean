@@ -18,6 +18,8 @@ import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Wave
+import PhysLean.Mathematics.DataStructures.FourTree.Basic
+import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
@@ -278,6 +280,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Basic

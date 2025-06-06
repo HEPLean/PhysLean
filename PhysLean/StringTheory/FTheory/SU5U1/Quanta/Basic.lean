@@ -50,6 +50,11 @@ def toCharges (x : TenQuanta) : Multiset ℤ := x.map Prod.fst
 
 end TenQuanta
 
+/-- The quanta associated with the representations in a `SU(5) x U(1)` F-theory.
+  This contains the value of the charges and the flux intergers `(M, N)` for the
+  5-bar matter content and the 10d matter content, and the charges of the `Hd` and
+  `Hu` particles (there values of `(M,N)` are not included as they are
+  forced to be `(0, 1)` and `(0, -1)` respectively. -/
 abbrev Quanta : Type := Option ℤ × Option ℤ × FiveQuanta × TenQuanta
 
 namespace Quanta
@@ -57,6 +62,7 @@ open PotentialTerm ChargeProfile Charges
 
 instance : DecidableEq Quanta := instDecidableEqProd
 
+/-- The underlying `Charges` of a `Quanta`. -/
 def toCharges (x : Quanta) : Charges :=
   (x.1, x.2.1, x.2.2.1.toCharges.toFinset, x.2.2.2.toCharges.toFinset)
 

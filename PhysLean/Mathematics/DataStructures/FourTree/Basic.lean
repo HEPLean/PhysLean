@@ -5,8 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Multiset.Bind
 import Mathlib.Data.Multiset.Sort
-
-namespace PhysLean
 /-!
 
 ## The data type FourTree
@@ -22,6 +20,8 @@ It is defined recursively, with the following structure:
 - A `FourTree` contains a multiset of `trunk`s.
 
 -/
+
+namespace PhysLean
 
 namespace FourTree
 

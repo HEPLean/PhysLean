@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
-namespace FTheory
 /-!
 
 # Viable Quanta
@@ -24,6 +23,8 @@ This somes with one caveat, the `IsViable` constraint enforces the anomaly cance
 to hold, which is not always necessary, see arXiv:1401.5084.
 
 -/
+namespace FTheory
+
 namespace SU5U1
 
 variable {I : CodimensionOneConfig}
