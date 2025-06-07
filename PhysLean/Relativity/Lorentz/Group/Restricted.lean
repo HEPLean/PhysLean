@@ -64,19 +64,15 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
 
 open TopologicalSpace
 
-/-- The group `ℤ₂`. -/
-local notation "ℤ₂" => Multiplicative (ZMod 2)
-
-noncomputable def lorentzMap {d : ℕ} : ContinuousMonoidHom (LorentzGroup d) (ℤ₂ × ℤ₂) where
-  toFun := λ Λ => (detRep Λ, orthchroRep Λ)
-  map_one' := by sorry
-  map_mul' := by sorry
-  continuous_toFun := by sorry
-
 /-
   Work in progress: Prove that the restricted Lorentz group is the identity component of the
   Lorentz group.
 -/
+
+instance : TopologicalSpace (SpecialLinearGroup (Fin 2) ℝ) := instTopologicalSpaceSubtype
+
+lemma SL2R.IsConnected : ConnectedSpace (SpecialLinearGroup (Fin 2) ℝ) := by
+  sorry
 
 /-- The restricted Lorentz group is connected. -/
 lemma restricted.IsConnected {d : ℕ} : IsConnected (restricted d : Set (LorentzGroup d)) := by
@@ -93,4 +89,5 @@ lemma restricted_eq_identity_component {d : ℕ} :
     exact ⟨(isProper_on_connected_component h).mp id_IsProper,
            (isOrthochronous_on_connected_component h).mp id_IsOrthochronous⟩
 
+-- TODO?: restricted Lorentz group isomorphic to Klein four-group
 end LorentzGroup
