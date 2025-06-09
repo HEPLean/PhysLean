@@ -70,6 +70,7 @@ inductive PotentialTerm
   | bottomYukawa : PotentialTerm
 deriving DecidableEq, Fintype
 
+/-- The types of field present in SU(5) F-Theory. -/
 inductive FieldKinds
   | fiveBarHu
   | fiveHu
@@ -80,8 +81,20 @@ inductive FieldKinds
   | tenMatter
 deriving DecidableEq, Fintype
 
+/-- The R-Parity of a field, landding on `1` if it is in the non-trivial representation
+  and `0` otherwise. -/
+def FieldKinds.RParity : FieldKinds → Fin 2
+  | fiveBarHu => 0
+  | fiveHu => 0
+  | fiveBarHd => 0
+  | fiveHd => 0
+  | fiveBarMatter => 1
+  | fiveMatter => 1
+  | tenMatter => 1
+
 namespace PotentialTerm
 
+/-- The fields contained within a given term of the potential. -/
 def toFieldKinds : PotentialTerm → List FieldKinds
   | μ => [.fiveBarHd, .fiveHu]
   | β => [.fiveHu, .fiveBarMatter]
@@ -95,23 +108,22 @@ def toFieldKinds : PotentialTerm → List FieldKinds
   | topYukawa => [.tenMatter, .tenMatter, .fiveHu]
   | bottomYukawa => [.tenMatter, .fiveBarMatter, .fiveBarHd]
 
+/-- The degree of a term in the potential. -/
 def degree (T : PotentialTerm) : ℕ := T.toFieldKinds.length
 
 lemma degree_le_four (T : PotentialTerm) : T.degree ≤ 4 := by
   cases T
   all_goals simp [toFieldKinds, degree]
 
-/-- The finite set of terms in the superpotential and Kahler potential which violate R-parity.
-- `𝛽ᵢ 5̄Mⁱ5Hu`
-- `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ`
-- `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`
-- `W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu`
-- `K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ`
-- `K²ᵢ 5̄Hu 5̄Hd 10ⁱ`
-These correspond to the terms with an odd number of matter fields.
--/
-def violateRParity : Finset PotentialTerm :=
-  {β, Λ, W2, W4, K1, K2}
+/-- The R-parity of a term in the potential. -/
+def RParity (T : PotentialTerm) : Fin 2 :=
+  (T.toFieldKinds.map FieldKinds.RParity).foldl (· + ·) 0
+
+/- The terms which violate R-parity are those with an odd-number of matter fields. -/
+lemma violates_RParity_iff_mem {T : PotentialTerm} :
+    T.RParity = 1 ↔ T ∈ ({β, Λ, W2, W4, K1, K2} : Finset PotentialTerm) := by
+  revert T
+  decide
 
 /-- The finite set of terms in the superpotential and Kahler potential which are involved in
   proton decay.

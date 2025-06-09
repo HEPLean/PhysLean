@@ -55,7 +55,6 @@ def ofPotentialTerm (x : Charges) (T : PotentialTerm) : Multiset ℤ :=
       fun (x, y) => x + y
   (T.toFieldKinds.map fun F => (ofFieldKind x F).val).foldl add {0}
 
-
 lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ y.ofPotentialTerm T := by
   have h1 {S1 S2 T1 T2 : Multiset ℤ} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
@@ -465,7 +464,6 @@ lemma isPresent_iff_isPresentFast {x : Charges} {T : PotentialTerm} :
   constructor
   · exact fun a => isPresentFast_of_isPresent T a
   · exact fun a => isPresent_of_isPresentFast T a
-
 
 
 instance (x : Charges) (T : PotentialTerm) : Decidable (x.IsPresentFast T) :=
