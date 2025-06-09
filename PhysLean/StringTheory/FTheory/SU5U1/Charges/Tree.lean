@@ -29,8 +29,6 @@ variable {I : CodimensionOneConfig}
 
 namespace Charges
 
-open PotentialTerm
-
 namespace Tree
 open PhysLean FourTree
 

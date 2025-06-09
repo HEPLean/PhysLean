@@ -3,8 +3,11 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Basic
+import Mathlib.Data.Finset.Option
+import Mathlib.Data.Finset.Powerset
+import Mathlib.Data.Finset.Prod
 import Mathlib.Data.Finset.Sort
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 /-!
 
 # Charges
@@ -13,8 +16,6 @@ One of the data structures associated with the F-theory SU(5)+U(1) GUT model
 are the charges assocatied with the matter fields. In this module we define
 the type `Charges`, the elements of which correspond to the collection of
 charges associated with the matter content of a theory.
-
-We relate this type to the charge profiles of the potential terms.
 
 -/
 
@@ -30,8 +31,6 @@ variable {I : CodimensionOneConfig}
 def Charges : Type := Option ℤ × Option ℤ × Finset ℤ × Finset ℤ
 
 namespace Charges
-
-open PotentialTerm
 
 instance : DecidableEq Charges := inferInstanceAs
   (DecidableEq (Option ℤ × Option ℤ × Finset ℤ × Finset ℤ))
@@ -86,6 +85,19 @@ lemma subset_refl (x : Charges) : x ⊆ x := by
     · constructor
       · rfl
       · rfl
+
+lemma _root_.Option.toFinset_inj {x y : Option ℤ} :
+    x = y ↔ x.toFinset = y.toFinset := by
+  match x, y with
+  | none, none => simp [Option.toFinset]
+  | none, some a =>
+    rw [show (none = some a) ↔ False by simp]
+    simp only [Option.toFinset_none, Option.toFinset_some, false_iff, ne_eq]
+    rw [Finset.eq_singleton_iff_unique_mem]
+    simp
+  | some _, none => simp [Option.toFinset]
+  | some _, some _ => simp [Option.toFinset]
+
 
 lemma subset_trans {x y z : Charges} (hxy : x ⊆ y) (hyz : y ⊆ z) : x ⊆ z := by
   simp_all [Subset]
@@ -179,6 +191,27 @@ lemma eq_of_subset_card {x y : Charges} (h : x ⊆ y) (hcard : card x = card y) 
 ## Powerset
 
 -/
+
+
+/-- The powerset of `x : Option ℤ` defined as `{none}` if `x` is `none`
+  and `{none, some y}` is `x` is `some y`. -/
+def _root_.Option.powerset (x : Option ℤ) : Finset (Option ℤ) :=
+  match x with
+  | none => {none}
+  | some x => {none, some x}
+
+@[simp]
+lemma _root_.Option.mem_powerset_iff {x : Option ℤ} (y : Option ℤ) :
+    y ∈ x.powerset ↔ y.toFinset ⊆ x.toFinset :=
+  match x, y with
+  | none, none => by
+    simp [Option.powerset]
+  | none, some _ => by
+    simp [Option.powerset]
+  | some _, none => by
+    simp [Option.powerset]
+  | some _, some _ => by
+    simp [Option.powerset]
 
 /-- The powerset of a charge . Given a charge `x : Charges`
   it's powerset is the finite set of all `Charges` which are subsets of `x`. -/
