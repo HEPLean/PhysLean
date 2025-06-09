@@ -556,3 +556,5 @@ theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     rw [real_inner_comm, inner_self_cross]
     simp
   · exact s.norm
+
+end Electromagnetism

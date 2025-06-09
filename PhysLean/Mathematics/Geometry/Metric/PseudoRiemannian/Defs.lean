@@ -615,3 +615,7 @@ lemma cotangentToBilinForm_nondegenerate (g : PseudoRiemannianMetric E H M n I) 
   exact hω v
 
 end Cotangent
+
+end PseudoRiemannianMetric
+end
+end PseudoRiemannianMetric

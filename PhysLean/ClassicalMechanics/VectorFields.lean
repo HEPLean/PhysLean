@@ -211,3 +211,5 @@ lemma inner_self_cross (v w : EuclideanSpace ℝ (Fin 3)) :
   cases w using WithLp.rec with | _ w =>
   simp only [Equiv.apply_symm_apply, EuclideanSpace.inner_piLp_equiv_symm, star_trivial]
   rw [dotProduct_comm, dot_self_cross]
+
+end ClassicalMechanics

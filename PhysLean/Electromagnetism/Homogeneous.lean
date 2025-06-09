@@ -96,3 +96,5 @@ theorem OpticalMedium.faradayLaw_of_free {t : Time} {x : Space}
     (E : ElectricField) (B : MagneticField) (h : OM.FreeMaxwellEquations E B) :
     (∇ × E t) x = - ∂ₜ (fun t => B t x) t := by
   rw [h.2.2.2]
+
+end Electromagnetism

@@ -396,3 +396,5 @@ lemma curl_linear_map (f : W → Space 3 → EuclideanSpace ℝ (Fin 3))
     rw [hf'.map_smul]
     rw [curl_smul]
     fun_prop
+
+end Space

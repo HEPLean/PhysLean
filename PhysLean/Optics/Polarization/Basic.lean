@@ -111,3 +111,5 @@ theorem polarizationEllipse (hx : E₀x ≠ 0) (hy : E₀y ≠ 0) (h : τ = ω *
   trans (cos τ ^ 2 + sin τ ^ 2) * sin (δy - δx) ^ 2
   · ring
   simp
+
+end Optics

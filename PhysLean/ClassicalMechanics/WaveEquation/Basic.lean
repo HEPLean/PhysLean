@@ -321,3 +321,5 @@ lemma differentiable_uncurry_of_eq_planewave {s : Direction d}
     · apply Differentiable.inner
       repeat fun_prop
     · fun_prop
+
+end ClassicalMechanics

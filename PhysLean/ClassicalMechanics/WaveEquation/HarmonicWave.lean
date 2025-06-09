@@ -85,3 +85,5 @@ lemma transverseHarmonicPlaneWave_eq_planeWave {c : ℝ} {k : WaveVector} {f₀x
 
 TODO "EGU3E" "Show that any disturbance (subject to certian conditions) can be expressed
     as a superposition of harmonic plane waves via Fourier integral."
+
+end ClassicalMechanics
