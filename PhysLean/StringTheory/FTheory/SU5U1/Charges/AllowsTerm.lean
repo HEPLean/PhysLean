@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfPotentialTerm
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 /-!
 
 # Charges allowing terms
@@ -52,9 +51,9 @@ lemma allowsTerm_of_subset {T : PotentialTerm} {y x : Charges}
   and if any over charge `x` allows `T` then it is due to a subset of the form
   `allowsTermForm a b c T`. -/
 def allowsTermForm (a b c : ℤ) : (T : PotentialTerm) → Charges
-  | .μ =>  (some a, some a, ∅ , ∅)
-  | .β =>  (none, some a, {a} , ∅)
-  | .Λ =>  (none, none, {a, b}, {- a - b})
+  | .μ => (some a, some a, ∅, ∅)
+  | .β => (none, some a, {a}, ∅)
+  | .Λ => (none, none, {a, b}, {- a - b})
   | .W1 => (none, none, {- a - b - c}, {a, b, c})
   | .W2 => (some (- a - b - c), none, ∅, {a, b, c})
   | .W3 => (none, some (- a), {b, - b - 2 * a}, ∅)
@@ -131,7 +130,7 @@ lemma allowsTerm_of_eq_allowsTermForm {T : PotentialTerm}
 open PotentialTerm in
 
 lemma allowsTermForm_eq_of_subset {a b c a' b' c' : ℤ} {T : PotentialTerm}
-    (h : allowsTermForm a b c T ⊆ allowsTermForm a' b' c' T) (hT : T ≠ W1 ∧ T ≠ W2):
+    (h : allowsTermForm a b c T ⊆ allowsTermForm a' b' c' T) (hT : T ≠ W1 ∧ T ≠ W2) :
     allowsTermForm a b c T = allowsTermForm a' b' c' T := by
   cases T
   case' W1 | W2 => simp at hT
@@ -154,13 +153,13 @@ lemma allowsTermForm_eq_of_subset {a b c a' b' c' : ℤ} {T : PotentialTerm}
     obtain ⟨rfl, rfl, h2⟩ := h
     rfl
   case' Λ => obtain ⟨h2, h1⟩ := h
-  case' K1 =>  obtain ⟨rfl, h2⟩ := h
+  case' K1 => obtain ⟨rfl, h2⟩ := h
   case' topYukawa => obtain ⟨rfl, h2⟩ := h
   case' W3 => obtain ⟨rfl, h2⟩ := h
-  case' topYukawa | W3 | K1 | Λ  =>
+  case' topYukawa | W3 | K1 | Λ =>
     rw [Finset.insert_subset_iff] at h2
     simp at h2
-    obtain ⟨rfl | rfl , h1 | h2 ⟩ := h2
+    obtain ⟨rfl | rfl, h1 | h2⟩ := h2
     all_goals simp_all [Finset.pair_comm]
 
 lemma allowsTermForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
@@ -172,13 +171,13 @@ lemma allowsTermForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
   case' Λ =>
     have h1 : Finset.card {a, b} ≤ 2 := Finset.card_le_two
     omega
-  case' W3  =>
+  case' W3 =>
     have h1 : Finset.card {b, -b - 2 * a} ≤ 2 := Finset.card_le_two
     omega
-  case' K1  =>
+  case' K1 =>
     have h1 : Finset.card {b, -a - b} ≤ 2 := Finset.card_le_two
     omega
-  case' topYukawa  =>
+  case' topYukawa =>
     have h1 : Finset.card {b, -a - b} ≤ 2 := Finset.card_le_two
     omega
   all_goals
@@ -192,8 +191,8 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
   cases T
   all_goals
     simp [PotentialTerm.toFieldLabel] at h
-    obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩ , rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
-  case' μ | β =>  obtain ⟨rfl⟩ := h3
+    obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩, rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
+  case' μ | β => obtain ⟨rfl⟩ := h3
   case' Λ | W1 | W2 | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>
     obtain ⟨f5, f6, ⟨h4, f6_mem⟩, rfl⟩ := h3
   case' Λ | K1 | K2 | topYukawa | bottomYukawa => obtain ⟨rfl⟩ := h4
@@ -201,13 +200,13 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
   -- The cases which are present
   case' μ => use f4, (f2), 0
   case' β => use (- f4), f2, 0
-  case' Λ => use  f4, f6, f2
-  case' W1 => use  f4, f6, f8
+  case' Λ => use f4, f6, f2
+  case' W1 => use f4, f6, f8
   case' W2 => use f4, f6, f8
   case' W3 => use (f2), f6, f8
   case' W4 => use f6, (f2), f8
   case' K1 => use f2, f4, f6
-  case' K2 => use  f4, f6, f2
+  case' K2 => use f4, f6, f2
   case' topYukawa => use (f2), f4, f6
   case' bottomYukawa => use f2, f4, f6
   all_goals
@@ -217,7 +216,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     simp [AllowsTerm, ofPotentialTerm, PotentialTerm.toFieldLabel, ofFieldLabel]
   -- Replacements of equalities
   case' W1 | W2 =>
-    have hf2 : f2 =  -f4 - f6 - f8 := by omega
+    have hf2 : f2 = -f4 - f6 - f8 := by omega
     subst hf2
     simp_all
   case' β =>
@@ -244,25 +243,25 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
   -- AllowsTerm
   any_goals omega
   case' W3 =>
-    use (- f6 -2 * f4 ) + f6
+    use (- f6 -2 * f4) + f6
     apply And.intro ?_ (by omega)
     try simp
-    use (- f6 -2 * f4 ), f6
+    use (- f6 -2 * f4), f6
     simp only [true_or, and_true]
-    use 0, (- f6 -2 * f4 )
+    use 0, (- f6 -2 * f4)
     simp
-  case' W1 | W2   =>
+  case' W1 | W2 =>
     use f8 + f6 + f4
     apply And.intro ?_ (by omega)
     use f8 + f6, f4
-  case' W1 | W2   =>
+  case' W1 | W2 =>
     apply And.intro ?_ (by omega)
     try simp
     use f8, f6
     simp only [true_or, or_true, and_true]
     use 0, f8
     simp
-  case' K1  =>
+  case' K1 =>
     have hf6 : f6 = - f2 - f4 := by omega
     subst hf6
     simp_all
@@ -273,11 +272,11 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     simp only [true_or, and_true]
     use 0, (-f2 - f4)
     simp
-  case' topYukawa   =>
+  case' topYukawa =>
     have hf2 : f2 = - f4 - f6 := by omega
     subst hf2
     simp_all
-  case' topYukawa | Λ  =>
+  case' topYukawa | Λ =>
     use f6 + f4
     apply And.intro ?_ (by omega)
     use f6, f4

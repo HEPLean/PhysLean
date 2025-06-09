@@ -67,7 +67,7 @@ lemma minimallyAllowsTerm_iff_powerset_filter_eq :
       · exact hy
       · exact h1
 
-lemma minimallyAllowsTerm_iff_powerset_countP_eq_one  :
+lemma minimallyAllowsTerm_iff_powerset_countP_eq_one :
     x.MinimallyAllowsTerm T ↔ x.powerset.val.countP (fun y => y.AllowsTerm T) = 1 := by
   rw [minimallyAllowsTerm_iff_powerset_filter_eq]
   constructor
@@ -120,7 +120,7 @@ lemma card_le_degree_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) :
     x.card ≤ T.degree := by
   obtain ⟨y, y_mem_power, y_card,y_present⟩ :=
     subset_card_le_degree_allowsTerm_of_allowsTerm (allowsTerm_of_minimallyAllowsTerm h)
-  have hy : y ∈ x.powerset.filter (fun y => y.AllowsTerm T)  := by
+  have hy : y ∈ x.powerset.filter (fun y => y.AllowsTerm T) := by
     simp_all
   rw [minimallyAllowsTerm_iff_powerset_filter_eq] at h
   rw [h] at hy
@@ -130,10 +130,10 @@ lemma card_le_degree_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) :
 
 lemma eq_allowsTermForm_of_minimallyAllowsTerm (h1 : x.MinimallyAllowsTerm T) :
     ∃ a b c, x = allowsTermForm a b c T := by
-  obtain ⟨a, b, c,  h2, h3⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm
+  obtain ⟨a, b, c, h2, h3⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm
     (allowsTerm_of_minimallyAllowsTerm h1)
   use a, b, c
-  have hy : allowsTermForm a b c T ∈ x.powerset.filter (fun y => y.AllowsTerm T)  := by
+  have hy : allowsTermForm a b c T ∈ x.powerset.filter (fun y => y.AllowsTerm T) := by
     simp_all
   rw [minimallyAllowsTerm_iff_powerset_filter_eq] at h1
   rw [h1] at hy
@@ -141,7 +141,7 @@ lemma eq_allowsTermForm_of_minimallyAllowsTerm (h1 : x.MinimallyAllowsTerm T) :
   exact hy.symm
 
 open PotentialTerm in
-lemma allowsTermForm_minimallyAllowsTerm  {a b c  : ℤ} {T : PotentialTerm}
+lemma allowsTermForm_minimallyAllowsTerm {a b c : ℤ} {T : PotentialTerm}
     (hT : T ≠ W1 ∧ T ≠ W2) :
     MinimallyAllowsTerm (allowsTermForm a b c T) T := by
   simp [MinimallyAllowsTerm]
@@ -152,7 +152,7 @@ lemma allowsTermForm_minimallyAllowsTerm  {a b c  : ℤ} {T : PotentialTerm}
     exact allowsTermForm_allowsTerm
   · intro h
     obtain ⟨a', b', c', hsub, hAllowsTerm⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm h
-    have hEq : allowsTermForm a' b' c' T  = allowsTermForm a b c T :=
+    have hEq : allowsTermForm a' b' c' T = allowsTermForm a b c T :=
       allowsTermForm_eq_of_subset (subset_trans hsub hy) hT
     apply subset_antisymm hy
     rw [← hEq]

@@ -20,7 +20,7 @@ namespace SU5U1
 
 namespace Charges
 
-/-- Given an  `x : Charges`, the charges associated with a given `FieldLabel`. -/
+/-- Given an `x : Charges`, the charges associated with a given `FieldLabel`. -/
 def ofFieldLabel (x : Charges) : FieldLabel → Finset ℤ
   | .fiveBarHd => x.1.toFinset
   | .fiveBarHu => x.2.1.toFinset

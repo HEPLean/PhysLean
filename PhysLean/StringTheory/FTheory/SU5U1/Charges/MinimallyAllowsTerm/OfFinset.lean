@@ -170,7 +170,8 @@ lemma mem_toMultisetsThree_iff {s : Finset ℤ} (X : Multiset ℤ) :
 
 open PotentialTerm
 
-
+/-- The multiset of all charges within `ofFinset S5 S10` which minimally allow the
+  potential term `T`. -/
 def minimallyAllowsTermsOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) → Multiset Charges
   | μ =>
     let SqHd := S5.val
@@ -250,7 +251,7 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ}
   all_goals
     simp [minimallyAllowsTermsOfFinset] at hx
   case' W1 | W2 => have hx := hx.1
-  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ :=  hx
+  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ := hx
   case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
   all_goals
     try rw [Multiset.card_eq_one] at h
@@ -260,7 +261,7 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ}
     obtain ⟨q51, rfl⟩ := h.1.1.2
     obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
   case' W2 =>
-    obtain ⟨q101, q102, q103, rfl⟩  := h.1.2.2
+    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
   case' W3 =>
     obtain ⟨q51, q52, rfl⟩ := h.1.2.2
   case' W4 =>
@@ -275,7 +276,7 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ}
   case' bottomYukawa =>
     obtain ⟨q51, rfl⟩ := h.1.2.1.2
     rw [Multiset.card_eq_one] at h
-    obtain ⟨q101, rfl⟩  := h.1.2.2.2
+    obtain ⟨q101, rfl⟩ := h.1.2.2.2
   case' Λ =>
     obtain ⟨q101, rfl⟩ := h.1.2.2
     obtain ⟨q51, q52, rfl⟩ := h.1.1.2
@@ -310,7 +311,7 @@ lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : P
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
   exact allowsTermForm_allowsTerm
 
-lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10  : Finset ℤ }
+lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset ℤ }
     {T : PotentialTerm} (x : Charges) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
     x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_minimallyAllowsTerm h
@@ -364,7 +365,7 @@ lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset �
     {T : PotentialTerm} {x : Charges}
     (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.MinimallyAllowsTerm T := by
-  by_cases hT : T ≠  W1 ∧ T ≠ W2
+  by_cases hT : T ≠ W1 ∧ T ≠ W2
   · obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
     exact allowsTermForm_minimallyAllowsTerm hT
   · simp at hT
@@ -384,7 +385,7 @@ lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T :
   all_goals
     simp [minimallyAllowsTermsOfFinset] at hx
   case' W1 | W2 => have hx := hx.1
-  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ :=  hx
+  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ := hx
   case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
   all_goals
     try rw [Multiset.card_eq_one] at h
@@ -394,7 +395,7 @@ lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T :
     obtain ⟨q51, rfl⟩ := h.1.1.2
     obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
   case' W2 =>
-    obtain ⟨q101, q102, q103, rfl⟩  := h.1.2.2
+    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
   case' W3 =>
     obtain ⟨q51, q52, rfl⟩ := h.1.2.2
   case' W4 =>
@@ -409,7 +410,7 @@ lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T :
   case' bottomYukawa =>
     obtain ⟨q51, rfl⟩ := h.1.2.1.2
     rw [Multiset.card_eq_one] at h
-    obtain ⟨q101, rfl⟩  := h.1.2.2.2
+    obtain ⟨q101, rfl⟩ := h.1.2.2.2
   case' Λ =>
     obtain ⟨q101, rfl⟩ := h.1.2.2
     obtain ⟨q51, q52, rfl⟩ := h.1.1.2
@@ -445,7 +446,6 @@ lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10'} {T : Potent
   exact (minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset h1).mpr hx
 
 end Charges
-
 
 end SU5U1
 

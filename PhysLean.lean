@@ -257,7 +257,12 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.Basic
 import PhysLean.StringTheory.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.AllowsTerm
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.MinimallyAllowsTerm.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.MinimallyAllowsTerm.OfFinset
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfFieldLabel
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfPotentialTerm
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness

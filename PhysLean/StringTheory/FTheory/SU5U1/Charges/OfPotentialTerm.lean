@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfFieldLabel
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 /-!
 
 # Charges associated with a potential term
@@ -41,6 +40,12 @@ lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : Potent
     simp
 
 open PotentialTerm
+/-- Given a charges `x : Charges` associated to the representations, and a potential
+  term `T`, the charges associated with instances of that potential term.
+
+  This is a more explicit form of `PotentialTerm`, which has the benifit that
+  it is quick with `decide`, but it is not defined based on more fundamental
+  concepts, like `ofPotentialTerm` is. -/
 def ofPotentialTerm' (y : Charges) (T : PotentialTerm) : Multiset ℤ :=
   let qHd := y.1
   let qHu := y.2.1
@@ -74,8 +79,8 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges} (T : PotentialTerm) 
   cases T
   all_goals
     simp [PotentialTerm.toFieldLabel] at h
-    obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩ , rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
-  case' μ | β =>  obtain ⟨rfl⟩ := h3
+    obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩, rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
+  case' μ | β => obtain ⟨rfl⟩ := h3
   case' Λ | W1 | W2 | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>
     obtain ⟨f5, f6, ⟨h4, f6_mem⟩, rfl⟩ := h3
   case' Λ | K1 | K2 | topYukawa | bottomYukawa => obtain ⟨rfl⟩ := h4
@@ -85,8 +90,8 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges} (T : PotentialTerm) 
     simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
     simp_all [ofFieldLabel]
   case' W1 => use f2, f4, f6, f8
-  case' W2 =>  use f2, f4, f6, f8
-  case' W3 =>  use (-f2), f6, f8
+  case' W2 => use f2, f4, f6, f8
+  case' W3 => use (-f2), f6, f8
   case' W4 => use f6, (-f4), f8
   case' K1 => use (-f2), f4, f6
   case' K2 => use f4, f6, f2
@@ -147,7 +152,7 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm {x : Charges} (T : PotentialTerm) 
     simp only [true_and, zero_add, exists_eq_right]
     omega
   case' W3P =>
-    use  2 * q1 + n
+    use 2 * q1 + n
     apply And.intro ?_ (by omega)
     use - q2 + 2 * q1 + n, q2
     apply And.intro ?_ (by omega)
