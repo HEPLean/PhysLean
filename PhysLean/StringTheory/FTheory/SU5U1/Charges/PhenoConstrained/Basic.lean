@@ -26,19 +26,19 @@ open PotentialTerm
 /-- A charge is pheno-constrained if it leads to the presence of any term causing proton decay
   ` {W1, Λ, W2, K1}` or R-parity violation `{β, Λ, W2, W4, K1, K2}`. -/
 def IsPhenoConstrained (x : Charges) : Prop :=
-  x.IsPresent μ ∨ x.IsPresent β ∨ x.IsPresent Λ ∨ x.IsPresent W2 ∨ x.IsPresent W4 ∨
-  x.IsPresent K1 ∨ x.IsPresent K2 ∨ x.IsPresent W1
+  x.AllowsTerm μ ∨ x.AllowsTerm β ∨ x.AllowsTerm Λ ∨ x.AllowsTerm W2 ∨ x.AllowsTerm W4 ∨
+  x.AllowsTerm K1 ∨ x.AllowsTerm K2 ∨ x.AllowsTerm W1
 
 instance decidableIsPhenoConstrained (x : Charges) : Decidable x.IsPhenoConstrained :=
-  inferInstanceAs (Decidable (x.IsPresent μ ∨ x.IsPresent β ∨ x.IsPresent Λ ∨ x.IsPresent W2
-    ∨ x.IsPresent W4 ∨ x.IsPresent K1 ∨ x.IsPresent K2 ∨ x.IsPresent W1))
+  inferInstanceAs (Decidable (x.AllowsTerm μ ∨ x.AllowsTerm β ∨ x.AllowsTerm Λ ∨ x.AllowsTerm W2
+    ∨ x.AllowsTerm W4 ∨ x.AllowsTerm K1 ∨ x.AllowsTerm K2 ∨ x.AllowsTerm W1))
 
 lemma isPhenoConstrained_of_subset {x y : Charges} (h : x ⊆ y)
     (hx : x.IsPhenoConstrained) : y.IsPhenoConstrained := by
   simp [IsPhenoConstrained] at *
   rcases hx with hr | hr | hr | hr | hr | hr | hr | hr
   all_goals
-    have h' := isPresent_of_subset h hr
+    have h' := allowsTerm_of_subset h hr
     simp_all
 
 /-!
@@ -69,7 +69,7 @@ def Twig.phenoInsertQ10 (t : Twig (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) 
     Twig (Finset ℤ) (Finset ℤ) :=
   match t with
   | .twig Q5 leafs =>
-    if IsPresent (none, none, Q5, {x}) Λ then
+    if AllowsTerm (none, none, Q5, {x}) Λ then
       .twig Q5 {}
     else
       let leafFinst := leafs.map (fun (.leaf ys) => ys)
@@ -79,8 +79,8 @@ def Twig.phenoInsertQ10 (t : Twig (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) 
         else
           none)
       let subFilter := sub.filter (fun ys =>
-        ¬ IsPresent (none, none, Q5, ys) W1  ∧ ¬ IsPresent (none, none, Q5, ys) K1
-        ∧ ¬ IsPresent (qHd, none, ∅, ys) W2)
+        ¬ AllowsTerm (none, none, Q5, ys) W1  ∧ ¬ AllowsTerm (none, none, Q5, ys) K1
+        ∧ ¬ AllowsTerm (qHd, none, ∅, ys) W2)
       .twig Q5 (subFilter.map (fun ys => .leaf ys))
 
 /-- The branch obtained by taking the new, not pheno-constrained, charges obtained by inserting
@@ -90,7 +90,7 @@ def Branch.phenoInsertQ10 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (q
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match b with
   | .branch qHu twigs =>
-      if IsPresent (qHd, qHu, ∅, {x}) K2 then
+      if AllowsTerm (qHd, qHu, ∅, {x}) K2 then
           .branch qHu {}
       else
         .branch qHu (twigs.map fun t => Twig.phenoInsertQ10 t qHd x)
@@ -113,13 +113,13 @@ def phenoInsertQ10 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset 
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ10 ts x))
 
-lemma mem_phenoInsertQ10_of_mem_isPresent
+lemma mem_phenoInsertQ10_of_mem_allowsTerm
     (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (q10 : ℤ) (C : Charges)
-    (h : C ∈ (T.uniqueMap4 (insert q10))) (hC : ¬ IsPresent (C.1, C.2.1, ∅, {q10}) K2
-      ∧ ¬ IsPresent (none, none, C.2.2.1, {q10}) Λ
-      ∧ ¬ IsPresent (none, none, C.2.2.1, C.2.2.2) W1 ∧
-      ¬ IsPresent (none, none, C.2.2.1, C.2.2.2) K1
-      ∧ ¬ IsPresent (C.1, none, ∅, C.2.2.2) W2) :
+    (h : C ∈ (T.uniqueMap4 (insert q10))) (hC : ¬ AllowsTerm (C.1, C.2.1, ∅, {q10}) K2
+      ∧ ¬ AllowsTerm (none, none, C.2.2.1, {q10}) Λ
+      ∧ ¬ AllowsTerm (none, none, C.2.2.1, C.2.2.2) W1 ∧
+      ¬ AllowsTerm (none, none, C.2.2.1, C.2.2.2) K1
+      ∧ ¬ AllowsTerm (C.1, none, ∅, C.2.2.2) W2) :
     C ∈ phenoInsertQ10 T q10 := by
   rw [mem_iff_mem_toMultiset] at h
   simp [toMultiset] at h
@@ -202,13 +202,13 @@ def Branch.phenoInsertQ5 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (qH
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match b with
   | .branch qHu twigs =>
-    if IsPresent  (none, qHu, {x}, ∅) β ∨ IsPresent (qHd, qHu, {x}, ∅) W4 then
+    if AllowsTerm  (none, qHu, {x}, ∅) β ∨ AllowsTerm (qHd, qHu, {x}, ∅) W4 then
           .branch qHu {}
         else
           let insertTwigs := twigs.map (fun (.twig Q5 leafs) => Twig.twig (insert x Q5)
-            (leafs.filter (fun (.leaf Q10) => ¬ IsPresent (none, none, {x}, Q10) W1 ∧
-              ¬ IsPresent (none, none, {x}, Q10) K1
-              ∧ ¬ IsPresent (none, none, (insert x Q5), Q10) Λ ∧
+            (leafs.filter (fun (.leaf Q10) => ¬ AllowsTerm (none, none, {x}, Q10) W1 ∧
+              ¬ AllowsTerm (none, none, {x}, Q10) K1
+              ∧ ¬ AllowsTerm (none, none, (insert x Q5), Q10) Λ ∧
               ¬ Branch.mem (.branch qHu twigs) (qHu, (insert x Q5), Q10))))
           .branch qHu <| insertTwigs
 
@@ -230,12 +230,12 @@ def phenoInsertQ5 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset �
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ5 ts x))
 
-lemma mem_phenoInsertQ5_of_mem_isPresent (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ))
+lemma mem_phenoInsertQ5_of_mem_allowsTerm (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ))
     (q5 : ℤ) (C : Charges)
-    (h : C ∈ (T.uniqueMap3 (insert q5))) (hC : ¬ IsPresent (none, C.2.1, {q5}, ∅) β
-      ∧ ¬ IsPresent (C.1, C.2.1, {q5}, ∅) W4 ∧
-      ¬ IsPresent (none, none, {q5}, C.2.2.2) W1 ∧ ¬ IsPresent (none, none, {q5}, C.2.2.2) K1
-      ∧ ¬ IsPresent (none, none, C.2.2.1, C.2.2.2) Λ) :
+    (h : C ∈ (T.uniqueMap3 (insert q5))) (hC : ¬ AllowsTerm (none, C.2.1, {q5}, ∅) β
+      ∧ ¬ AllowsTerm (C.1, C.2.1, {q5}, ∅) W4 ∧
+      ¬ AllowsTerm (none, none, {q5}, C.2.2.2) W1 ∧ ¬ AllowsTerm (none, none, {q5}, C.2.2.2) K1
+      ∧ ¬ AllowsTerm (none, none, C.2.2.1, C.2.2.2) Λ) :
     C ∈ phenoInsertQ5 T q5 := by
   rw [mem_iff_mem_toMultiset] at h
   simp [toMultiset] at h
@@ -274,8 +274,8 @@ lemma mem_phenoInsertQ5_of_mem_isPresent (T : FourTree (Option ℤ) (Option ℤ)
     (Trunk.phenoInsertQ5 trunkT q5).1 q5)
     (Twig.twig (insert q5 twigT.1)
         (Multiset.filter (fun (.leaf Q10) =>
-        ¬ IsPresent (none, none, {q5}, Q10) W1 ∧ ¬ IsPresent (none, none, {q5}, Q10) K1
-          ∧ ¬ IsPresent (none, none, (insert q5 twigT.1), Q10) Λ ∧
+        ¬ AllowsTerm (none, none, {q5}, Q10) W1 ∧ ¬ AllowsTerm (none, none, {q5}, Q10) K1
+          ∧ ¬ AllowsTerm (none, none, (insert q5 twigT.1), Q10) Λ ∧
           ¬(Branch.branch branchT.1 branchT.2).mem (branchT.1, insert q5 twigT.1, Q10))
           twigT.2)) (leafI)
   · simp [phenoInsertQ5]

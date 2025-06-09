@@ -29,7 +29,7 @@ The terms of the Kahler potential are (arXiv:0912.0853) :
   `β`, `λ`, `W²`, `W⁴`, `K¹`, `K²`
 - `causeProtonDecay` : The finite set of terms which contribute to proton decay.
   `W¹`, `W²`, `K¹`, `λ`
-- `IsPresent`: The condition on the potential terms for them to be present
+- `AllowsTerm`: The condition on the potential terms for them to be present
   based on the `U(1)` charges.
 
 ## Previous versions

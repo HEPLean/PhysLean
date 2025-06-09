@@ -233,9 +233,9 @@ def irreducibleOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) → Multiset
     let Filt := prod.filter (fun x => x.1 + x.2.1.sum + x.2.2.sum = 0)
     (Filt.map (fun x => (x.1, none,x.2.1.toFinset, x.2.2.toFinset)))
 
-lemma eq_isPresentForm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+lemma eq_allowsTermForm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
     {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
-    ∃ a b c, x = isPresentForm a b c T := by
+    ∃ a b c, x = allowsTermForm a b c T := by
   cases T
   all_goals
     simp [irreducibleOfFinset] at hx
@@ -272,7 +272,7 @@ lemma eq_isPresentForm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : Pot
   case' β =>
     obtain ⟨q51, rfl⟩ := h.1.2.2
   all_goals
-    simp [isPresentForm]
+    simp [allowsTermForm]
   case' bottomYukawa => use a, q51
   case' K2 => use a, b
   case' K1 => use -q51, q101
@@ -294,68 +294,68 @@ lemma eq_isPresentForm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : Pot
     congr 2
     omega
 
-lemma isPresent_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+lemma allowsTerm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
     {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
-    x.IsPresent T := by
-  obtain ⟨a, b, c, rfl⟩ := eq_isPresentForm_of_mem_irreducibleOfFinset hx
-  exact isPresentForm_isPresent
+    x.AllowsTerm T := by
+  obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_irreducibleOfFinset hx
+  exact allowsTermForm_allowsTerm
 
 lemma mem_irreducibleOfFinset_of_irreducible {S5 S10  : Finset ℤ } {T : PotentialTerm}
     (x : Charges) (h : x.IsIrreducible T) (hx : x ∈ ofFinset S5 S10) :
     x ∈ irreducibleOfFinset S5 S10 T := by
-  obtain ⟨a, b, c, rfl⟩ := eq_isPresentForm_of_isIrreducible h
+  obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_isIrreducible h
   cases T
   all_goals
-    simp [isPresentForm, irreducibleOfFinset]
+    simp [allowsTermForm, irreducibleOfFinset]
     rw [mem_ofFinset_iff] at hx
   case' μ =>
     use a, a
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
   case' β =>
     use a, {a}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
   case' Λ =>
     use {a, b}, {- a - b}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
   case' W1 =>
     apply And.intro
     · use {- a - b - c}, {a, b, c}
-      simp_all [isPresentForm]
+      simp_all [allowsTermForm]
       omega
     · exact h
   case' W2 =>
     apply And.intro
     · use (- a - b - c), {a, b, c}
-      simp_all [isPresentForm]
+      simp_all [allowsTermForm]
       omega
     · exact h
   case' W3 =>
     use (-a), {b, - b - 2 * a}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
     omega
   case' W4 =>
     use (- c - 2 * b), (-b), {c}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
     omega
   case' K1 =>
     use {-a}, {b, - a - b}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
   case' K2 =>
     use a, b, {- a - b}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
   case' topYukawa =>
     use (-a), {b, - a - b}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
   case' bottomYukawa =>
     use a, {b}, {- a - b}
-    simp_all [isPresentForm]
+    simp_all [allowsTermForm]
 
 lemma isIrreducible_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
     {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
     x.IsIrreducible T := by
   by_cases hT : T ≠  W1 ∧ T ≠ W2
-  · obtain ⟨a, b, c, rfl⟩ := eq_isPresentForm_of_mem_irreducibleOfFinset hx
-    exact isPresentForm_isIrreducible hT
+  · obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_irreducibleOfFinset hx
+    exact allowsTermForm_isIrreducible hT
   · simp at hT
     by_cases h : T = W1
     · subst h

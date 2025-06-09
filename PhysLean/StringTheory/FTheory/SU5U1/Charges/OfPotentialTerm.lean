@@ -183,7 +183,6 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm {T : PotentialTerm} {n : ℤ} 
   · exact fun h => ofPotentialTerm_subset_ofPotentialTerm' T h
   · exact fun h => ofPotentialTerm'_subset_ofPotentialTerm T h
 
-
 end Charges
 
 end SU5U1

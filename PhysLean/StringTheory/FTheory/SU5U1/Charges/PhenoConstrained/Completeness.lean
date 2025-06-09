@@ -63,33 +63,33 @@ lemma nonPhenoConstrainedCharges_insertQ10_filter (I : CodimensionOneConfig) :
   have hmemP : C ∈ (phenoInsertQ10 (nonPhenoConstrainedCharges I) q10) := by
     rw [← FourTree.mem_iff_mem_toMultiset] at hC
     obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := FourTree.exists_of_mem_uniqueMap4 (insert q10) C hC
-    apply mem_phenoInsertQ10_of_mem_isPresent
+    apply mem_phenoInsertQ10_of_mem_allowsTerm
     · exact hC
     simp [IsPhenoConstrained] at hn
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) K2 := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) K2 := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) Λ:= by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) Λ:= by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) W1 := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) W1 := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) K1 := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) K1 := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) W2 := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) W2 := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
   have hemp : (phenoInsertQ10 (nonPhenoConstrainedCharges I) q10).toMultiset = ∅ := by
@@ -112,33 +112,33 @@ lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
   have hmemP : C ∈ (phenoInsertQ5 (nonPhenoConstrainedCharges I) q5) := by
     rw [← FourTree.mem_iff_mem_toMultiset] at hC
     obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := FourTree.exists_of_mem_uniqueMap3 _ C hC
-    apply mem_phenoInsertQ5_of_mem_isPresent
+    apply mem_phenoInsertQ5_of_mem_allowsTerm
     · exact hC
     simp [IsPhenoConstrained] at hn
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) β := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) β := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) W4 := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) W4 := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) W1 := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) W1 := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) K1 := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) K1 := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) Λ := by
-        apply isPresent_of_subset _ hc
+      have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) Λ := by
+        apply allowsTerm_of_subset _ hc
         simp [Subset]
       simp_all
   have hemp : (Tree.phenoInsertQ5 (nonPhenoConstrainedCharges I) q5).toMultiset = ∅ := by
@@ -518,13 +518,13 @@ lemma completionTopYukawa_complete {I : CodimensionOneConfig} (x : Charges)
 set_option maxRecDepth 2000 in
 lemma exists_subset_completionTopYukawa_of_not_isPhenoConstrained {x : Charges}
     (hx : ¬ x.IsPhenoConstrained)
-    (htopYukawa : IsPresent x topYukawa)
+    (htopYukawa : AllowsTerm x topYukawa)
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
     (hcomplete : IsComplete x) : ∃ (y : Charges), y ∈ completionTopYukawa I ∧ y ⊆ x := by
   have hIrreducible :
         ∃ y ∈ (irreducibleOfFinset I.allowedBarFiveCharges
         I.allowedTenCharges topYukawa), y ⊆ x := by
-      rw [isPresent_iff_subset_isIrreducible] at htopYukawa
+      rw [allowsTerm_iff_subset_isIrreducible] at htopYukawa
       obtain ⟨y, hPower, hIrre⟩ := htopYukawa
       use y
       constructor
@@ -558,8 +558,8 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
     (hcomplete : IsComplete x) :
     x ∉ nonPhenoConstrainedCharges I → ¬ (¬ IsPhenoConstrained x ∧
-      IsPresent x topYukawa ) := by
-  by_cases hn : ¬ (IsPresent x topYukawa)
+      AllowsTerm x topYukawa ) := by
+  by_cases hn : ¬ (AllowsTerm x topYukawa)
   · simp [hn]
   simp only [not_and, hn, imp_false]
   simp at hn
@@ -582,7 +582,7 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
 
 lemma not_isPhenoConstrained_iff_mem_nonPhenoConstrainedCharge {x : Charges}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges) :
-    IsPresent x topYukawa ∧
+    AllowsTerm x topYukawa ∧
     ¬ IsPhenoConstrained x ∧ IsComplete x ↔
     x ∈ nonPhenoConstrainedCharges I := by
   constructor
@@ -593,7 +593,7 @@ lemma not_isPhenoConstrained_iff_mem_nonPhenoConstrainedCharge {x : Charges}
   · intro h
     rw [FourTree.mem_iff_mem_toMultiset] at h
     refine ⟨?_, ?_, ?_⟩
-    · exact isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges I x h
+    · exact allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges I x h
     · exact not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges I x h
     · exact isComplete_of_mem_nonPhenoConstrainedCharge I x h
 

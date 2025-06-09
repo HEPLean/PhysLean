@@ -16,17 +16,26 @@ namespace SU5U1
 
 namespace Charges
 
-def IsPresent (x : Charges) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
+def AllowsTerm (x : Charges) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
 
-lemma isPresent_iff_zero_mem_ofPotentialTerm' {x : Charges} {T : PotentialTerm} :
-    x.IsPresent T ↔ 0 ∈ x.ofPotentialTerm' T := by
-  rw [IsPresent]
+lemma allowsTerm_iff_zero_mem_ofPotentialTerm' {x : Charges} {T : PotentialTerm} :
+    x.AllowsTerm T ↔ 0 ∈ x.ofPotentialTerm' T := by
+  rw [AllowsTerm]
   exact mem_ofPotentialTerm_iff_mem_ofPotentialTerm
 
-lemma isPresent_of_subset {T : PotentialTerm} {y x : Charges}
-    (h : y ⊆ x) (hy : y.IsPresent T) : x.IsPresent T := ofPotentialTerm_subset_of_subset h T hy
+instance (x : Charges) (T : PotentialTerm) : Decidable (x.AllowsTerm T) :=
+  decidable_of_iff (0 ∈ x.ofPotentialTerm' T) allowsTerm_iff_zero_mem_ofPotentialTerm'.symm
 
-def isPresentForm (a b c : ℤ) : (T : PotentialTerm) → Charges
+lemma allowsTerm_of_subset {T : PotentialTerm} {y x : Charges}
+    (h : y ⊆ x) (hy : y.AllowsTerm T) : x.AllowsTerm T := ofPotentialTerm_subset_of_subset h T hy
+
+/-!
+
+## allowsTermForm
+
+-/
+
+def allowsTermForm (a b c : ℤ) : (T : PotentialTerm) → Charges
   | .μ =>  (some a, some a, ∅ , ∅)
   | .β =>  (none, some a, {a} , ∅)
   | .Λ =>  (none, none, {a, b}, {- a - b})
@@ -39,9 +48,9 @@ def isPresentForm (a b c : ℤ) : (T : PotentialTerm) → Charges
   | .topYukawa => (none, some (-a), ∅, {b, - a - b})
   | .bottomYukawa => (some a, none, {b}, {- a - b})
 
-lemma isPresentForm_isPresent {a b c : ℤ} {T : PotentialTerm} :
-    (isPresentForm a b c T).IsPresent T := by
-  simp [IsPresent, ofPotentialTerm, isPresentForm]
+lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
+    (allowsTermForm a b c T).AllowsTerm T := by
+  simp [AllowsTerm, ofPotentialTerm, allowsTermForm]
   cases T
   all_goals
     simp [PotentialTerm.toFieldLabel, ofFieldLabel, ofPotentialTerm]
@@ -98,21 +107,21 @@ lemma isPresentForm_isPresent {a b c : ℤ} {T : PotentialTerm} :
     use 0, a
     simp
 
-lemma isPresent_of_eq_isPresentForm {T : PotentialTerm}
-    (x : Charges) (h : ∃ a b c, x = isPresentForm a b c T) :
-    x.IsPresent T := by
+lemma allowsTerm_of_eq_allowsTermForm {T : PotentialTerm}
+    (x : Charges) (h : ∃ a b c, x = allowsTermForm a b c T) :
+    x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := h
-  exact isPresentForm_isPresent
+  exact allowsTermForm_allowsTerm
 open PotentialTerm in
 
-lemma isPresentForm_eq_of_subset {a b c a' b' c' : ℤ} {T : PotentialTerm}
-    (h : isPresentForm a b c T ⊆ isPresentForm a' b' c' T) (hT : T ≠ W1 ∧ T ≠ W2):
-    isPresentForm a b c T = isPresentForm a' b' c' T := by
+lemma allowsTermForm_eq_of_subset {a b c a' b' c' : ℤ} {T : PotentialTerm}
+    (h : allowsTermForm a b c T ⊆ allowsTermForm a' b' c' T) (hT : T ≠ W1 ∧ T ≠ W2):
+    allowsTermForm a b c T = allowsTermForm a' b' c' T := by
   cases T
   case' W1 | W2 => simp at hT
   all_goals
     rw [subset_def] at h
-    simp [isPresentForm] at h ⊢
+    simp [allowsTermForm] at h ⊢
   case' μ =>
     subst h
     rfl
@@ -138,12 +147,11 @@ lemma isPresentForm_eq_of_subset {a b c a' b' c' : ℤ} {T : PotentialTerm}
     obtain ⟨rfl | rfl , h1 | h2 ⟩ := h2
     all_goals simp_all [Finset.pair_comm]
 
-
-lemma isPresentForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
-    (isPresentForm a b c T).card ≤ T.degree := by
+lemma allowsTermForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
+    (allowsTermForm a b c T).card ≤ T.degree := by
   cases T
   all_goals
-    simp [isPresentForm, PotentialTerm.toFieldLabel, ofFieldLabel, ofPotentialTerm, card,
+    simp [allowsTermForm, PotentialTerm.toFieldLabel, ofFieldLabel, ofPotentialTerm, card,
       PotentialTerm.degree]
   case' Λ =>
     have h1 : Finset.card {a, b} ≤ 2 := Finset.card_le_two
@@ -161,10 +169,10 @@ lemma isPresentForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
     have h1 : Finset.card {a, b, c} ≤ 3 := Finset.card_le_three
     omega
 
-lemma isPresentForm_subset_isPresent_of_isPresent {T : PotentialTerm} {x : Charges}
-    (h : x.IsPresent T) :
-    ∃ a b c, isPresentForm a b c T ⊆ x ∧ (isPresentForm a b c T).IsPresent T := by
-  simp [IsPresent, ofPotentialTerm] at h
+lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges}
+    (h : x.AllowsTerm T) :
+    ∃ a b c, allowsTermForm a b c T ⊆ x ∧ (allowsTermForm a b c T).AllowsTerm T := by
+  simp [AllowsTerm, ofPotentialTerm] at h
   cases T
   all_goals
     simp [PotentialTerm.toFieldLabel] at h
@@ -188,9 +196,9 @@ lemma isPresentForm_subset_isPresent_of_isPresent {T : PotentialTerm} {x : Charg
   case' bottomYukawa => use f2, f4, f6
   all_goals
     rw [subset_def]
-    simp_all [ofFieldLabel, ofPotentialTerm, Finset.insert_subset_iff, isPresentForm]
+    simp_all [ofFieldLabel, ofPotentialTerm, Finset.insert_subset_iff, allowsTermForm]
   all_goals
-    simp [IsPresent, ofPotentialTerm, PotentialTerm.toFieldLabel, ofFieldLabel]
+    simp [AllowsTerm, ofPotentialTerm, PotentialTerm.toFieldLabel, ofFieldLabel]
   -- Replacements of equalities
   case' W1 | W2 =>
     have hf2 : f2 =  -f4 - f6 - f8 := by omega
@@ -217,7 +225,7 @@ lemma isPresentForm_subset_isPresent_of_isPresent {T : PotentialTerm} {x : Charg
     have hf6 : f6 = - f2 - f4 := by omega
     subst hf6
     simp_all
-  -- IsPresent
+  -- AllowsTerm
   any_goals omega
   case' W3 =>
     use (- f6 -2 * f4 ) + f6
@@ -262,15 +270,13 @@ lemma isPresentForm_subset_isPresent_of_isPresent {T : PotentialTerm} {x : Charg
     use 0, f6
     simp
 
-lemma subset_card_le_degree_isPresent_of_isPresent {T : PotentialTerm} {x : Charges}
-    (h : x.IsPresent T) : ∃ y ∈ x.powerset, y.card ≤ T.degree ∧ y.IsPresent T := by
-  obtain ⟨a, b, c, h1, h2⟩ := isPresentForm_subset_isPresent_of_isPresent h
-  use isPresentForm a b c T
+lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges}
+    (h : x.AllowsTerm T) : ∃ y ∈ x.powerset, y.card ≤ T.degree ∧ y.AllowsTerm T := by
+  obtain ⟨a, b, c, h1, h2⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm h
+  use allowsTermForm a b c T
   simp_all
-  exact isPresentForm_card_le_degree
+  exact allowsTermForm_card_le_degree
 
-instance (x : Charges) (T : PotentialTerm) : Decidable (x.IsPresent T) :=
-  decidable_of_iff (0 ∈ x.ofPotentialTerm' T) isPresent_iff_zero_mem_ofPotentialTerm'.symm
 
 end Charges
 
