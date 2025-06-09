@@ -50,6 +50,7 @@ lemma ofFieldKind_subset_of_subset {x y : Charges} (h : x ⊆ y) (F : FieldKinds
   cases F
   all_goals simp_all [ofFieldKind]
 
+
 def ofPotentialTerm (x : Charges) (T : PotentialTerm) : Multiset ℤ :=
   let add : Multiset ℤ → Multiset ℤ → Multiset ℤ := fun a b => (a.product b).map
       fun (x, y) => x + y
@@ -69,12 +70,10 @@ lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : Potent
         h1 _ (Finset.subset_def.mp (ofFieldKind_subset_of_subset h _))
     simp
 
-def IsPresent  (x : Charges) (T : PotentialTerm) : Prop :=
-    0 ∈ ofPotentialTerm x T
+def IsPresent (x : Charges) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
 
 lemma isPresent_of_subset {T : PotentialTerm} {y x : Charges}
-    (h : y ⊆ x) (hy : y.IsPresent T) :
-    x.IsPresent T := ofPotentialTerm_subset_of_subset h T hy
+    (h : y ⊆ x) (hy : y.IsPresent T) : x.IsPresent T := ofPotentialTerm_subset_of_subset h T hy
 
 def isPresentForm (a b c : ℤ) : (T : PotentialTerm) → Charges
   | .μ =>  (some a, some a, ∅ , ∅)
@@ -488,11 +487,8 @@ instance (x : Charges) (T : PotentialTerm) : Decidable (x.IsPresentFast T) :=
   | bottomYukawa => inferInstanceAs (Decidable (0 ∈ (x.1.toFinset.product <| x.2.2.1.product <| x.2.2.2).val.map
       (fun x => x.1 + x.2.1 + x.2.2)))
 
-
-
 instance (x : Charges) (T : PotentialTerm) : Decidable (x.IsPresent T) :=
   decidable_of_iff (x.IsPresentFast T) isPresent_iff_isPresentFast.symm
-
 
 end Charges
 

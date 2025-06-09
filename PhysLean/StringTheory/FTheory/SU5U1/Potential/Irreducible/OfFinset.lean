@@ -294,13 +294,11 @@ lemma eq_isPresentForm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : Pot
     congr 2
     omega
 
-
 lemma isPresent_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
     {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
     x.IsPresent T := by
   obtain ⟨a, b, c, rfl⟩ := eq_isPresentForm_of_mem_irreducibleOfFinset hx
   exact isPresentForm_isPresent
-
 
 lemma mem_irreducibleOfFinset_of_irreducible {S5 S10  : Finset ℤ } {T : PotentialTerm}
     (x : Charges) (h : x.IsIrreducible T) (hx : x ∈ ofFinset S5 S10) :
@@ -368,6 +366,47 @@ lemma isIrreducible_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : Potent
       simp [irreducibleOfFinset] at hx
       exact hx.2
 
+lemma ofFinset_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+    {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
+    x ∈ ofFinset S5 S10 := by
+  cases T
+  all_goals
+    simp [irreducibleOfFinset] at hx
+  case' W1 | W2 => have hx := hx.1
+  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ :=  hx
+  case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
+  all_goals
+    try rw [Multiset.card_eq_one] at h
+    try rw [Multiset.card_eq_two] at h
+    try rw [Multiset.card_eq_three] at h
+  case' W1 =>
+    obtain ⟨q51, rfl⟩ := h.1.1.2
+    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
+  case' W2 =>
+    obtain ⟨q101, q102, q103, rfl⟩  := h.1.2.2
+  case' W3 =>
+    obtain ⟨q51, q52, rfl⟩ := h.1.2.2
+  case' W4 =>
+    obtain ⟨q51, rfl⟩ := h.1.2.2.2
+  case' K1 =>
+    obtain ⟨q51, rfl⟩ := h.1.1.2
+    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
+  case' K2 =>
+    obtain ⟨q101, rfl⟩ := h.1.2.2.2
+  case' topYukawa =>
+    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
+  case' bottomYukawa =>
+    obtain ⟨q51, rfl⟩ := h.1.2.1.2
+    rw [Multiset.card_eq_one] at h
+    obtain ⟨q101, rfl⟩  := h.1.2.2.2
+  case' Λ =>
+    obtain ⟨q101, rfl⟩ := h.1.2.2
+    obtain ⟨q51, q52, rfl⟩ := h.1.1.2
+  case' β =>
+    obtain ⟨q51, rfl⟩ := h.1.2.2
+  all_goals
+    rw [mem_ofFinset_iff]
+    simp_all
 
 lemma isIrreducible_iff_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
     {x : Charges} (hx : x ∈ ofFinset S5 S10) :
