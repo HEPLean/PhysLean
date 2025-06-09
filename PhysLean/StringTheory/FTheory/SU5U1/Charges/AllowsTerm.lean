@@ -7,7 +7,17 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfPotentialTerm
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 /-!
 
-# Charges associated with a potential term
+# Charges allowing terms
+
+The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
+if the zero charge is in the set of charges associated with that potential term.
+
+We define this proposition `AllowsTerm` and prove results about it.
+
+We also define `allowsTermForm`, which is a function that takes three integers `a`, `b`, and `c`
+and a potential term `T`, and returns a `Charges` that allows the term `T`.
+We prove that any charges that allows a term `T` has a
+subset which can be expressed as `allowsTermForm a b c T` for some integers `a`, `b`, and `c`.
 
 -/
 
@@ -16,6 +26,8 @@ namespace SU5U1
 
 namespace Charges
 
+/-- The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
+if the zero charge is in the set of charges associated with that potential term. -/
 def AllowsTerm (x : Charges) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
 
 lemma allowsTerm_iff_zero_mem_ofPotentialTerm' {x : Charges} {T : PotentialTerm} :
@@ -35,6 +47,10 @@ lemma allowsTerm_of_subset {T : PotentialTerm} {y x : Charges}
 
 -/
 
+/-- A element of `Charges` from three intergers `a b c : ℤ` for a given potential term `T`.
+  Defined such that `allowsTermForm a b c T` always allows the potential term `T`,
+  and if any over charge `x` allows `T` then it is due to a subset of the form
+  `allowsTermForm a b c T`. -/
 def allowsTermForm (a b c : ℤ) : (T : PotentialTerm) → Charges
   | .μ =>  (some a, some a, ∅ , ∅)
   | .β =>  (none, some a, {a} , ∅)
@@ -276,7 +292,6 @@ lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
   use allowsTermForm a b c T
   simp_all
   exact allowsTermForm_card_le_degree
-
 
 end Charges
 
