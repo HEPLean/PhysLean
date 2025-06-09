@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfPotentialTerm
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 /-!
 
@@ -16,61 +16,12 @@ namespace SU5U1
 
 namespace Charges
 
-def ofFieldKind (x : Charges) : FieldKinds → Finset ℤ
-  | .fiveBarHd => x.1.toFinset
-  | .fiveBarHu => x.2.1.toFinset
-  | .fiveBarMatter => x.2.2.1
-  | .tenMatter => x.2.2.2
-  | .fiveHd => x.1.toFinset.map ⟨Neg.neg, neg_injective⟩
-  | .fiveHu => x.2.1.toFinset.map ⟨Neg.neg, neg_injective⟩
-  | .fiveMatter => x.2.2.1.map ⟨Neg.neg, neg_injective⟩
-
-@[simp]
-lemma mem_ofFieldKind_fiveHd (x : ℤ) (y : Charges) :
-    x ∈ y.ofFieldKind FieldKinds.fiveHd ↔ -x ∈ y.ofFieldKind .fiveBarHd := by
-  simp [ofFieldKind, FieldKinds.fiveHd]
-  aesop
-
-@[simp]
-lemma mem_ofFieldKind_fiveHu (x : ℤ) (y : Charges) :
-    x ∈ y.ofFieldKind FieldKinds.fiveHu ↔ -x ∈ y.ofFieldKind .fiveBarHu := by
-  simp [ofFieldKind, FieldKinds.fiveHu]
-  aesop
-
-@[simp]
-lemma mem_ofFieldKind_fiveMatter (x : ℤ) (y : Charges) :
-    x ∈ y.ofFieldKind FieldKinds.fiveMatter ↔ -x ∈ y.ofFieldKind .fiveBarMatter := by
-  simp [ofFieldKind, FieldKinds.fiveBarHd]
-  aesop
-
-lemma ofFieldKind_subset_of_subset {x y : Charges} (h : x ⊆ y) (F : FieldKinds) :
-    x.ofFieldKind F ⊆ y.ofFieldKind F := by
-  rw [subset_def] at h
-  obtain ⟨h1, h2, h3, h4⟩ := h
-  cases F
-  all_goals simp_all [ofFieldKind]
-
-
-def ofPotentialTerm (x : Charges) (T : PotentialTerm) : Multiset ℤ :=
-  let add : Multiset ℤ → Multiset ℤ → Multiset ℤ := fun a b => (a.product b).map
-      fun (x, y) => x + y
-  (T.toFieldKinds.map fun F => (ofFieldKind x F).val).foldl add {0}
-
-lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : PotentialTerm) :
-    x.ofPotentialTerm T ⊆ y.ofPotentialTerm T := by
-  have h1 {S1 S2 T1 T2 : Multiset ℤ} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
-      (S1.product T1) ⊆ S2.product T2 :=
-    Multiset.subset_iff.mpr (fun x => by simpa using fun h1' h2' => ⟨h1 h1', h2 h2'⟩)
-  rw [subset_def] at h
-  cases T
-  all_goals
-    simp [ofPotentialTerm, PotentialTerm.toFieldKinds]
-    repeat'
-      apply Multiset.map_subset_map <| Multiset.subset_iff.mpr <|
-        h1 _ (Finset.subset_def.mp (ofFieldKind_subset_of_subset h _))
-    simp
-
 def IsPresent (x : Charges) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
+
+lemma isPresent_iff_zero_mem_ofPotentialTerm' {x : Charges} {T : PotentialTerm} :
+    x.IsPresent T ↔ 0 ∈ x.ofPotentialTerm' T := by
+  rw [IsPresent]
+  exact mem_ofPotentialTerm_iff_mem_ofPotentialTerm
 
 lemma isPresent_of_subset {T : PotentialTerm} {y x : Charges}
     (h : y ⊆ x) (hy : y.IsPresent T) : x.IsPresent T := ofPotentialTerm_subset_of_subset h T hy
@@ -93,7 +44,7 @@ lemma isPresentForm_isPresent {a b c : ℤ} {T : PotentialTerm} :
   simp [IsPresent, ofPotentialTerm, isPresentForm]
   cases T
   all_goals
-    simp [PotentialTerm.toFieldKinds, ofFieldKind, ofPotentialTerm]
+    simp [PotentialTerm.toFieldLabel, ofFieldLabel, ofPotentialTerm]
   any_goals omega
   case' Λ =>
     use a + b
@@ -192,7 +143,7 @@ lemma isPresentForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
     (isPresentForm a b c T).card ≤ T.degree := by
   cases T
   all_goals
-    simp [isPresentForm, PotentialTerm.toFieldKinds, ofFieldKind, ofPotentialTerm, card,
+    simp [isPresentForm, PotentialTerm.toFieldLabel, ofFieldLabel, ofPotentialTerm, card,
       PotentialTerm.degree]
   case' Λ =>
     have h1 : Finset.card {a, b} ≤ 2 := Finset.card_le_two
@@ -216,7 +167,7 @@ lemma isPresentForm_subset_isPresent_of_isPresent {T : PotentialTerm} {x : Charg
   simp [IsPresent, ofPotentialTerm] at h
   cases T
   all_goals
-    simp [PotentialTerm.toFieldKinds] at h
+    simp [PotentialTerm.toFieldLabel] at h
     obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩ , rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
   case' μ | β =>  obtain ⟨rfl⟩ := h3
   case' Λ | W1 | W2 | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>
@@ -237,9 +188,9 @@ lemma isPresentForm_subset_isPresent_of_isPresent {T : PotentialTerm} {x : Charg
   case' bottomYukawa => use f2, f4, f6
   all_goals
     rw [subset_def]
-    simp_all [ofFieldKind, ofPotentialTerm, Finset.insert_subset_iff, isPresentForm]
+    simp_all [ofFieldLabel, ofPotentialTerm, Finset.insert_subset_iff, isPresentForm]
   all_goals
-    simp [IsPresent, ofPotentialTerm, PotentialTerm.toFieldKinds, ofFieldKind]
+    simp [IsPresent, ofPotentialTerm, PotentialTerm.toFieldLabel, ofFieldLabel]
   -- Replacements of equalities
   case' W1 | W2 =>
     have hf2 : f2 =  -f4 - f6 - f8 := by omega
@@ -318,177 +269,8 @@ lemma subset_card_le_degree_isPresent_of_isPresent {T : PotentialTerm} {x : Char
   simp_all
   exact isPresentForm_card_le_degree
 
-/-!
-
-## Is Present decidable
-
--/
-
-open PotentialTerm
-def IsPresentFast (y : Charges) (T : PotentialTerm)  : Prop :=
-  let qHd := y.1
-  let qHu := y.2.1
-  let Q5 := y.2.2.1
-  let Q10 := y.2.2.2
-  match T with
-  | μ => 0 ∈ (qHd.toFinset.product <| qHu.toFinset).val.map (fun x => x.1 - x.2)
-  | β => 0 ∈  (qHu.toFinset.product <| Q5).val.map (fun x => - x.1 + x.2)
-  | Λ => 0 ∈ (Q5.product <| Q5.product <| Q10).val.map (fun x => x.1 + x.2.1 + x.2.2)
-  | W1 => 0 ∈ (Q5.product <| Q10.product <| Q10.product <| Q10).val.map
-    (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
-  | W2 => 0 ∈ (qHd.toFinset.product <| Q10.product <| Q10.product <| Q10).val.map
-    (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
-  | W3 => 0 ∈ (qHu.toFinset.product <| Q5.product <| Q5).val.map
-    (fun x => -x.1 - x.1 + x.2.1 + x.2.2)
-  | W4 => 0 ∈ (qHd.toFinset.product <| qHu.toFinset.product <| Q5).val.map
-    (fun x => x.1 - x.2.1 - x.2.1 + x.2.2)
-  | K1 => 0 ∈ (Q5.product <| Q10.product <| Q10).val.map
-    (fun x => - x.1 + x.2.1 + x.2.2)
-  | K2 => 0 ∈  (qHd.toFinset.product <| qHu.toFinset.product <| Q10).val.map
-    (fun x => x.1 + x.2.1 + x.2.2)
-  | topYukawa => 0 ∈ (qHu.toFinset.product <| Q10.product <| Q10).val.map
-    (fun x => -x.1 + x.2.1 + x.2.2)
-  | bottomYukawa => 0 ∈ (qHd.toFinset.product <| Q5.product <| Q10).val.map
-    (fun x => x.1 + x.2.1 + x.2.2)
-
-lemma isPresentFast_of_isPresent {x : Charges} (T : PotentialTerm) (h : x.IsPresent T) :
-    x.IsPresentFast T := by
-  simp [IsPresent, ofPotentialTerm] at h
-  cases T
-  all_goals
-    simp [PotentialTerm.toFieldKinds] at h
-    obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩ , rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
-  case' μ | β =>  obtain ⟨rfl⟩ := h3
-  case' Λ | W1 | W2 | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>
-    obtain ⟨f5, f6, ⟨h4, f6_mem⟩, rfl⟩ := h3
-  case' Λ | K1 | K2 | topYukawa | bottomYukawa => obtain ⟨rfl⟩ := h4
-  case' W1 | W2 | W3 | W4 => obtain ⟨f7, f8, ⟨rfl, f8_mem⟩, rfl⟩ := h4
-  all_goals
-    simp [IsPresentFast]
-    simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
-    simp_all [ofFieldKind]
-  case' W1 => use f2, f4, f6, f8
-  case' W2 =>  use f2, f4, f6, f8
-  case' W3 =>  use (-f2), f6, f8
-  case' W4 => use f6, (-f4), f8
-  case' K1 => use (-f2), f4, f6
-  case' K2 => use f4, f6, f2
-  case' Λ => use f4, f6, f2
-  case' topYukawa => use (-f2), f4, f6
-  case' bottomYukawa => use f2, f4, f6
-  case' β => use (-f4), f2
-  all_goals simp_all
-  all_goals omega
-
-lemma isPresent_of_isPresentFast {x : Charges} (T : PotentialTerm) (h : x.IsPresentFast T) :
-    x.IsPresent T := by
-  cases T
-  all_goals
-    simp [IsPresentFast] at h
-    simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h
-  case' μ | β =>
-    obtain ⟨q1, q2, ⟨q1_mem, q2_mem⟩, q_sum⟩ := h
-  case' Λ | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>
-    obtain ⟨q1, q2, q3, ⟨q1_mem, q2_mem, q3_mem⟩, q_sum⟩ := h
-  case' W1 | W2 =>
-    obtain ⟨q1, q2, q3, q4, ⟨q1_mem, q2_mem, q3_mem, q4_mem⟩, q_sum⟩ := h
-  case' μ => refine isPresent_of_subset (y := (q1, q2, ∅, ∅)) ?μSub ?μP
-  case' β => refine isPresent_of_subset (y := (none, q1, {q2}, ∅)) ?βSub ?βP
-  case' Λ => refine isPresent_of_subset (y := (none, none, {q1, q2}, {q3})) ?ΛSub ?ΛP
-  case' W1 => refine isPresent_of_subset (y := (none, none, {q1}, {q2, q3, q4})) ?W1Sub ?W1P
-  case' W2 => refine isPresent_of_subset (y := (q1, none, ∅, {q2, q3, q4})) ?W2Sub ?W2P
-  case' W3 => refine isPresent_of_subset (y := (none, q1, {q2, q3}, ∅)) ?W3Sub ?W3P
-  case' W4 => refine isPresent_of_subset (y := (q1, q2, {q3}, ∅)) ?W4Sub ?W4P
-  case' K1 => refine isPresent_of_subset (y := (none, none, {q1}, {q2, q3})) ?K1Sub ?K1P
-  case' K2 => refine isPresent_of_subset (y := (q1, q2, ∅, {q3})) ?K2Sub ?K2P
-  case' topYukawa => refine isPresent_of_subset (y := (none, q1, ∅, {q2, q3})) ?topYukawaSub ?topYukawaP
-  case' bottomYukawa => refine isPresent_of_subset (y := (q1, none, {q2}, {q3})) ?bottomYukawaSub ?bottomYukawaP
-  case' μSub | βSub | ΛSub | W1Sub | W2Sub | W3Sub | W4Sub | K1Sub | K2Sub |
-      topYukawaSub | bottomYukawaSub =>
-    rw [subset_def]
-    simp_all [Finset.insert_subset]
-  all_goals
-    simp [IsPresent, ofPotentialTerm, PotentialTerm.toFieldKinds, ofFieldKind]
-  any_goals omega
-  case' ΛP =>
-    use - q3
-    simp
-    use - q1 - q3, q1
-    apply And.intro ?_ (by omega)
-    simp
-    use 0
-    simp
-    omega
-  case' W3P =>
-    use  2 * q1
-    apply And.intro ?_ (by omega)
-    use - q2 + 2 * q1, q2
-    apply And.intro ?_ (by omega)
-    simp
-    use 0, q3
-    simp
-    omega
-  case' K1P =>
-    use q1
-    apply And.intro ?_ (by omega)
-    use q1 - q2, q2
-    apply And.intro ?_ (by omega)
-    simp
-    use 0, q3
-    simp
-    omega
-  case' topYukawaP =>
-    use q1
-    apply And.intro ?_ (by omega)
-    use q1 - q2, q2
-    apply And.intro ?_ (by omega)
-    simp
-    use 0, q3
-    simp
-    omega
-  case' W1P | W2P =>
-    use - q1
-    apply And.intro ?_ (by omega)
-    use - q1 - q2, q2
-    apply And.intro ?_ (by omega)
-    simp
-    use -q1 - q2 - q3, q3
-    simp
-    use 0, q4
-    simp
-    omega
-
-lemma isPresent_iff_isPresentFast {x : Charges} {T : PotentialTerm} :
-    x.IsPresent T ↔ x.IsPresentFast T := by
-  constructor
-  · exact fun a => isPresentFast_of_isPresent T a
-  · exact fun a => isPresent_of_isPresentFast T a
-
-
-instance (x : Charges) (T : PotentialTerm) : Decidable (x.IsPresentFast T) :=
-  match T with
-  | μ => inferInstanceAs (Decidable (0 ∈ (x.1.toFinset.product <| x.2.1.toFinset).val.map (fun x => x.1 - x.2)))
-  | β => inferInstanceAs (Decidable (0 ∈ (x.2.1.toFinset.product <| x.2.2.1).val.map (fun x => - x.1 + x.2)))
-  | Λ => inferInstanceAs (Decidable (0 ∈ (x.2.2.1.product <| x.2.2.1.product <| x.2.2.2).val.map (fun x => x.1 + x.2.1 + x.2.2)))
-  | W1 => inferInstanceAs (Decidable (0 ∈ (x.2.2.1.product <| x.2.2.2.product <| x.2.2.2.product <| x.2.2.2).val.map
-      (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)))
-  | W2 => inferInstanceAs (Decidable (0 ∈ (x.1.toFinset.product <| x.2.2.2.product <| x.2.2.2.product <| x.2.2.2).val.map
-      (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)))
-  | W3 => inferInstanceAs (Decidable (0 ∈ (x.2.1.toFinset.product <| x.2.2.1.product <| x.2.2.1).val.map
-      (fun x => -x.1 - x.1 + x.2.1 + x.2.2)))
-  | W4 => inferInstanceAs (Decidable (0 ∈ (x.1.toFinset.product <| x.2.1.toFinset.product <| x.2.2.1).val.map
-      (fun x => x.1 - x.2.1 - x.2.1 + x.2.2)))
-  | K1 => inferInstanceAs (Decidable (0 ∈ (x.2.2.1.product <| x.2.2.2.product <| x.2.2.2).val.map
-      (fun x => - x.1 + x.2.1 + x.2.2)))
-  | K2 => inferInstanceAs (Decidable (0 ∈ (x.1.toFinset.product <| x.2.1.toFinset.product <| x.2.2.2).val.map
-      (fun x => x.1 + x.2.1 + x.2.2)))
-  | topYukawa => inferInstanceAs (Decidable (0 ∈ (x.2.1.toFinset.product <| x.2.2.2.product <| x.2.2.2).val.map
-      (fun x => -x.1 + x.2.1 + x.2.2)))
-  | bottomYukawa => inferInstanceAs (Decidable (0 ∈ (x.1.toFinset.product <| x.2.2.1.product <| x.2.2.2).val.map
-      (fun x => x.1 + x.2.1 + x.2.2)))
-
 instance (x : Charges) (T : PotentialTerm) : Decidable (x.IsPresent T) :=
-  decidable_of_iff (x.IsPresentFast T) isPresent_iff_isPresentFast.symm
+  decidable_of_iff (0 ∈ x.ofPotentialTerm' T) isPresent_iff_zero_mem_ofPotentialTerm'.symm
 
 end Charges
 

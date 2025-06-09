@@ -71,7 +71,7 @@ inductive PotentialTerm
 deriving DecidableEq, Fintype
 
 /-- The types of field present in SU(5) F-Theory. -/
-inductive FieldKinds
+inductive FieldLabel
   | fiveBarHu
   | fiveHu
   | fiveBarHd
@@ -83,7 +83,7 @@ deriving DecidableEq, Fintype
 
 /-- The R-Parity of a field, landding on `1` if it is in the non-trivial representation
   and `0` otherwise. -/
-def FieldKinds.RParity : FieldKinds → Fin 2
+def FieldLabel.RParity : FieldLabel → Fin 2
   | fiveBarHu => 0
   | fiveHu => 0
   | fiveBarHd => 0
@@ -95,7 +95,7 @@ def FieldKinds.RParity : FieldKinds → Fin 2
 namespace PotentialTerm
 
 /-- The fields contained within a given term of the potential. -/
-def toFieldKinds : PotentialTerm → List FieldKinds
+def toFieldLabel : PotentialTerm → List FieldLabel
   | μ => [.fiveBarHd, .fiveHu]
   | β => [.fiveHu, .fiveBarMatter]
   | Λ => [.fiveBarMatter, .fiveBarMatter, .tenMatter]
@@ -109,15 +109,15 @@ def toFieldKinds : PotentialTerm → List FieldKinds
   | bottomYukawa => [.tenMatter, .fiveBarMatter, .fiveBarHd]
 
 /-- The degree of a term in the potential. -/
-def degree (T : PotentialTerm) : ℕ := T.toFieldKinds.length
+def degree (T : PotentialTerm) : ℕ := T.toFieldLabel.length
 
 lemma degree_le_four (T : PotentialTerm) : T.degree ≤ 4 := by
   cases T
-  all_goals simp [toFieldKinds, degree]
+  all_goals simp [toFieldLabel, degree]
 
 /-- The R-parity of a term in the potential. -/
 def RParity (T : PotentialTerm) : Fin 2 :=
-  (T.toFieldKinds.map FieldKinds.RParity).foldl (· + ·) 0
+  (T.toFieldLabel.map FieldLabel.RParity).foldl (· + ·) 0
 
 /- The terms which violate R-parity are those with an odd-number of matter fields. -/
 lemma violates_RParity_iff_mem {T : PotentialTerm} :
