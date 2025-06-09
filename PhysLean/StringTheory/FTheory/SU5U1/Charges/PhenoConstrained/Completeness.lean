@@ -157,7 +157,7 @@ which are not pheno-constrained.
 This can be constructed via
 
 Tree.fromMultiset (((minimallyAllowsTermOfFinset same.allowedBarFiveCharges
-       same.allowedTenCharges topYukawa).bind
+      same.allowedTenCharges topYukawa).bind
     (completions same.allowedBarFiveCharges same.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
 -/
@@ -481,32 +481,35 @@ private def completionTopYukawa (I : CodimensionOneConfig) :
 
 lemma completionTopYukawa_complete_of_same :
     ∀ x ∈ (minimallyAllowsTermsOfFinset CodimensionOneConfig.same.allowedBarFiveCharges
-       CodimensionOneConfig.same.allowedTenCharges topYukawa),
+      CodimensionOneConfig.same.allowedTenCharges topYukawa),
     ¬ x.IsPhenoConstrained →
     ∀ y ∈ completions same.allowedBarFiveCharges same.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa .same := by
   decide
 
-
 lemma completionTopYukawa_complete_of_nearestNeighbor :
-    ∀ x ∈ (minimallyAllowsTermsOfFinset CodimensionOneConfig.nearestNeighbor.allowedBarFiveCharges
-       CodimensionOneConfig.nearestNeighbor.allowedTenCharges topYukawa),
+    ∀ x ∈ (minimallyAllowsTermsOfFinset
+      CodimensionOneConfig.nearestNeighbor.allowedBarFiveCharges
+      CodimensionOneConfig.nearestNeighbor.allowedTenCharges topYukawa),
     ¬ x.IsPhenoConstrained →
-    ∀ y ∈ completions nearestNeighbor.allowedBarFiveCharges nearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
+    ∀ y ∈ completions nearestNeighbor.allowedBarFiveCharges
+      nearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa .nearestNeighbor := by
   decide
 
 lemma completionTopYukawa_complete_of_nextToNearestNeighbor :
-    ∀ x ∈ (minimallyAllowsTermsOfFinset CodimensionOneConfig.nextToNearestNeighbor.allowedBarFiveCharges
-       CodimensionOneConfig.nextToNearestNeighbor.allowedTenCharges topYukawa),
+    ∀ x ∈ (minimallyAllowsTermsOfFinset
+      CodimensionOneConfig.nextToNearestNeighbor.allowedBarFiveCharges
+      CodimensionOneConfig.nextToNearestNeighbor.allowedTenCharges topYukawa),
     ¬ x.IsPhenoConstrained →
-    ∀ y ∈ completions nextToNearestNeighbor.allowedBarFiveCharges nextToNearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
+    ∀ y ∈ completions nextToNearestNeighbor.allowedBarFiveCharges
+      nextToNearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa .nextToNearestNeighbor := by
   decide
 
 lemma completionTopYukawa_complete {I : CodimensionOneConfig} (x : Charges)
     (hx : x ∈ (minimallyAllowsTermsOfFinset I.allowedBarFiveCharges
-       I.allowedTenCharges topYukawa))
+      I.allowedTenCharges topYukawa))
     (hPheno : ¬ x.IsPhenoConstrained) :
     ∀ y ∈ completions I.allowedBarFiveCharges I.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa I := by
@@ -559,7 +562,7 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
     (hcomplete : IsComplete x) :
     x ∉ nonPhenoConstrainedCharges I → ¬ (¬ IsPhenoConstrained x ∧
-      AllowsTerm x topYukawa ) := by
+      AllowsTerm x topYukawa) := by
   by_cases hn : ¬ (AllowsTerm x topYukawa)
   · simp [hn]
   simp only [not_and, hn, imp_false]

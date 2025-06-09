@@ -49,7 +49,7 @@ open PhysLean
 def nonPhenoConstrainedChargesExt (I : CodimensionOneConfig) :
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   let completionTopYukawa := (((minimallyAllowsTermsOfFinset I.allowedBarFiveCharges
-       I.allowedTenCharges topYukawa).bind
+      I.allowedTenCharges topYukawa).bind
     (completions I.allowedBarFiveCharges I.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
   let addOneTopYukawa := (((completionTopYukawa).bind (fun x =>

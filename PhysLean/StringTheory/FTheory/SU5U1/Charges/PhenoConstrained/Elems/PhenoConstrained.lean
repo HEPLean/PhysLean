@@ -85,7 +85,7 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionO
 set_option maxRecDepth 2500 in
 lemma allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset,
-      AllowsTerm x topYukawa  := by
+      AllowsTerm x topYukawa := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter
@@ -113,11 +113,11 @@ lemma allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
 set_option maxRecDepth 2000 in
 lemma allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset,
-      AllowsTerm  x topYukawa := by
+      AllowsTerm x topYukawa := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset.filter
-      fun x => ¬ AllowsTerm  x topYukawa := by
+      fun x => ¬ AllowsTerm x topYukawa := by
     simp_all
   have hl : Multiset.filter (fun x => ¬ AllowsTerm x topYukawa)
     (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset = ∅ := by rfl

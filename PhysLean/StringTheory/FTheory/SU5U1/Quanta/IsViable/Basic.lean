@@ -30,7 +30,7 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 
 namespace Quanta
-open PotentialTerm  Charges
+open PotentialTerm Charges
 
 /-- For a given `I : CodimensionOneConfig` the condition on a `Quanta` for it to be
   phenomenologically viable. -/

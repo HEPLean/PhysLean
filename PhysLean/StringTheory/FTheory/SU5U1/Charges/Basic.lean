@@ -54,7 +54,6 @@ lemma eq_of_parts {x y : Charges} (h1 : x.1 = y.1) (h2 : x.2.1 = y.2.1)
   | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
     simp_all
 
-
 /-!
 
 ## Subsest relation
@@ -97,7 +96,6 @@ lemma _root_.Option.toFinset_inj {x y : Option ℤ} :
     simp
   | some _, none => simp [Option.toFinset]
   | some _, some _ => simp [Option.toFinset]
-
 
 lemma subset_trans {x y z : Charges} (hxy : x ⊆ y) (hyz : y ⊆ z) : x ⊆ z := by
   simp_all [Subset]
@@ -192,7 +190,6 @@ lemma eq_of_subset_card {x y : Charges} (h : x ⊆ y) (hcard : card x = card y) 
 
 -/
 
-
 /-- The powerset of `x : Option ℤ` defined as `{none}` if `x` is `none`
   and `{none, some y}` is `x` is `some y`. -/
 def _root_.Option.powerset (x : Option ℤ) : Finset (Option ℤ) :=
@@ -250,7 +247,6 @@ lemma powerset_subset_iff_subset {x y : Charges} :
     simp only [mem_powerset_iff_subset]
     intro h1
     exact subset_trans h1 h
-
 
 lemma min_exists_inductive (S : Finset Charges) (hS : S ≠ ∅) :
     (n : ℕ) → (hn : S.card = n) →
@@ -429,7 +425,7 @@ lemma ofFinset_subset_of_subset {S5 S5' S10 S10' : Finset ℤ}
     ofFinset S5 S10 ⊆ ofFinset S5' S10' := by
   intro x hx
   rw [mem_ofFinset_iff] at hx ⊢
-  exact ⟨hx.1.trans h5, hx.2.1.trans h5, hx.2.2.1.trans h5,  hx.2.2.2.trans h10⟩
+  exact ⟨hx.1.trans h5, hx.2.1.trans h5, hx.2.2.1.trans h5, hx.2.2.2.trans h10⟩
 
 /-!
 

@@ -79,7 +79,7 @@ def Twig.phenoInsertQ10 (t : Twig (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) 
         else
           none)
       let subFilter := sub.filter (fun ys =>
-        ¬ AllowsTerm (none, none, Q5, ys) W1  ∧ ¬ AllowsTerm (none, none, Q5, ys) K1
+        ¬ AllowsTerm (none, none, Q5, ys) W1 ∧ ¬ AllowsTerm (none, none, Q5, ys) K1
         ∧ ¬ AllowsTerm (qHd, none, ∅, ys) W2)
       .twig Q5 (subFilter.map (fun ys => .leaf ys))
 
@@ -202,7 +202,7 @@ def Branch.phenoInsertQ5 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (qH
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match b with
   | .branch qHu twigs =>
-    if AllowsTerm  (none, qHu, {x}, ∅) β ∨ AllowsTerm (qHd, qHu, {x}, ∅) W4 then
+    if AllowsTerm (none, qHu, {x}, ∅) β ∨ AllowsTerm (qHd, qHu, {x}, ∅) W4 then
           .branch qHu {}
         else
           let insertTwigs := twigs.map (fun (.twig Q5 leafs) => Twig.twig (insert x Q5)

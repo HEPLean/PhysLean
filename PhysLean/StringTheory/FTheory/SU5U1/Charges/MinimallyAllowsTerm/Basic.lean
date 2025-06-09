@@ -19,6 +19,8 @@ namespace SU5U1
 
 namespace Charges
 
+/-- A collection of charges `x : Charges` is said to minimally allow
+  the potential term `T` if it allows `T` and no strict subset of it allows `T`. -/
 def MinimallyAllowsTerm (x : Charges) (T : PotentialTerm) : Prop :=
   ∀ y ∈ x.powerset, y = x ↔ y.AllowsTerm T
 
