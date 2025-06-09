@@ -33,8 +33,8 @@ lemma allowsTerm_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) : x.Allows
   simp only [MinimallyAllowsTerm] at h
   simpa using h x (self_mem_powerset x)
 
-lemma allowsTerm_of_has_minimallyAllowsTerm_subset (hx : ∃ y ∈ powerset x, y.MinimallyAllowsTerm T) :
-    x.AllowsTerm T := by
+lemma allowsTerm_of_has_minimallyAllowsTerm_subset
+    (hx : ∃ y ∈ powerset x, y.MinimallyAllowsTerm T) : x.AllowsTerm T := by
   obtain ⟨y, hy⟩ := hx
   simp only [mem_powerset_iff_subset] at hy
   apply allowsTerm_of_subset hy.1
@@ -113,7 +113,8 @@ lemma subset_minimallyAllowsTerm_of_allowsTerm
 
 lemma allowsTerm_iff_subset_minimallyAllowsTerm :
     x.AllowsTerm T ↔ ∃ y ∈ powerset x, y.MinimallyAllowsTerm T :=
-  ⟨fun h => subset_minimallyAllowsTerm_of_allowsTerm h, fun h => allowsTerm_of_has_minimallyAllowsTerm_subset h⟩
+  ⟨fun h => subset_minimallyAllowsTerm_of_allowsTerm h, fun h =>
+    allowsTerm_of_has_minimallyAllowsTerm_subset h⟩
 
 lemma card_le_degree_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) :
     x.card ≤ T.degree := by

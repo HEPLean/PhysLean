@@ -73,9 +73,9 @@ lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
   any_goals omega
   case' Λ =>
     use a + b
-    simp
+    simp only [add_add_sub_cancel, add_neg_cancel, and_true]
     use a, b
-    simp
+    simp only [or_true, and_true]
     use 0, a
     simp
   case' W3 =>
@@ -83,7 +83,7 @@ lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
     apply And.intro ?_ (by omega)
     use b, -b - 2 * a
     apply And.intro ?_ (by omega)
-    simp
+    simp only [or_true, and_true]
     use 0, b
     simp
   case' K1 =>
@@ -91,7 +91,7 @@ lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
     apply And.intro ?_ (by omega)
     use b, - a - b
     apply And.intro ?_ (by omega)
-    simp
+    simp only [or_true, and_true]
     use 0, b
     simp
   case' topYukawa =>
@@ -99,7 +99,7 @@ lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
     apply And.intro ?_ (by omega)
     use b, - a - b
     apply And.intro ?_ (by omega)
-    simp
+    simp only [or_true, and_true]
     use 0, b
     simp
   case' W1 =>
@@ -107,9 +107,9 @@ lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
     apply And.intro ?_ (by omega)
     use a + b, c
     apply And.intro ?_ (by omega)
-    simp
+    simp only [or_true, and_true]
     use a, b
-    simp
+    simp only [true_or, or_true, and_true]
     use 0, a
     simp
   case' W2 =>
@@ -117,9 +117,9 @@ lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
     apply And.intro ?_ (by omega)
     use a + b, c
     apply And.intro ?_ (by omega)
-    simp
+    simp only [or_true, and_true]
     use a, b
-    simp
+    simp only [true_or, or_true, and_true]
     use 0, a
     simp
 
@@ -248,7 +248,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     apply And.intro ?_ (by omega)
     try simp
     use (- f6 -2 * f4 ), f6
-    simp
+    simp only [true_or, and_true]
     use 0, (- f6 -2 * f4 )
     simp
   case' W1 | W2   =>
@@ -259,7 +259,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     apply And.intro ?_ (by omega)
     try simp
     use f8, f6
-    simp
+    simp only [true_or, or_true, and_true]
     use 0, f8
     simp
   case' K1  =>
@@ -270,7 +270,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     apply And.intro ?_ (by omega)
     use (-f2 - f4), f4
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, and_true]
     use 0, (-f2 - f4)
     simp
   case' topYukawa   =>
@@ -282,7 +282,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     apply And.intro ?_ (by omega)
     use f6, f4
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, and_true]
     use 0, f6
     simp
 

@@ -112,15 +112,24 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm {x : Charges} (T : PotentialTerm) 
     obtain ⟨q1, q2, q3, q4, ⟨q1_mem, q2_mem, q3_mem, q4_mem⟩, q_sum⟩ := h
   case' μ => refine ofPotentialTerm_subset_of_subset (x := (q1, q2, ∅, ∅)) ?μSub _ ?μP
   case' β => refine ofPotentialTerm_subset_of_subset (x := (none, q1, {q2}, ∅)) ?βSub _ ?βP
-  case' Λ => refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1, q2}, {q3})) ?ΛSub _ ?ΛP
-  case' W1 => refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1}, {q2, q3, q4})) ?W1Sub _ ?W1P
-  case' W2 => refine ofPotentialTerm_subset_of_subset (x := (q1, none, ∅, {q2, q3, q4})) ?W2Sub _ ?W2P
+  case' Λ =>
+    refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1, q2}, {q3})) ?ΛSub _ ?ΛP
+  case' W1 =>
+    refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1}, {q2, q3, q4})) ?W1Sub _ ?W1P
+  case' W2 =>
+    refine ofPotentialTerm_subset_of_subset (x := (q1, none, ∅, {q2, q3, q4})) ?W2Sub _ ?W2P
   case' W3 => refine ofPotentialTerm_subset_of_subset (x := (none, q1, {q2, q3}, ∅)) ?W3Sub _ ?W3P
   case' W4 => refine ofPotentialTerm_subset_of_subset (x := (q1, q2, {q3}, ∅)) ?W4Sub _ ?W4P
-  case' K1 => refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1}, {q2, q3})) ?K1Sub _ ?K1P
+  case' K1 =>
+    refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1}, {q2, q3}))
+      ?K1Sub _ ?K1P
   case' K2 => refine ofPotentialTerm_subset_of_subset (x := (q1, q2, ∅, {q3})) ?K2Sub _ ?K2P
-  case' topYukawa => refine ofPotentialTerm_subset_of_subset (x := (none, q1, ∅, {q2, q3})) ?topYukawaSub _ ?topYukawaP
-  case' bottomYukawa => refine ofPotentialTerm_subset_of_subset (x := (q1, none, {q2}, {q3})) ?bottomYukawaSub _ ?bottomYukawaP
+  case' topYukawa =>
+    refine ofPotentialTerm_subset_of_subset (x := (none, q1, ∅, {q2, q3}))
+      ?topYukawaSub _ ?topYukawaP
+  case' bottomYukawa =>
+    refine ofPotentialTerm_subset_of_subset (x := (q1, none, {q2}, {q3}))
+      ?bottomYukawaSub _ ?bottomYukawaP
   case' μSub | βSub | ΛSub | W1Sub | W2Sub | W3Sub | W4Sub | K1Sub | K2Sub |
       topYukawaSub | bottomYukawaSub =>
     rw [subset_def]
@@ -130,51 +139,51 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm {x : Charges} (T : PotentialTerm) 
   any_goals omega
   case' ΛP =>
     use - q3 + n
-    simp
+    simp only [neg_add_cancel_comm, and_true]
     use - q1 - q3 + n, q1
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, and_true]
     use 0
-    simp
+    simp only [true_and, zero_add, exists_eq_right]
     omega
   case' W3P =>
     use  2 * q1 + n
     apply And.intro ?_ (by omega)
     use - q2 + 2 * q1 + n, q2
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, and_true]
     use 0, q3
-    simp
+    simp only [or_true, and_self, zero_add, true_and]
     omega
   case' K1P =>
     use q1 + n
     apply And.intro ?_ (by omega)
     use q1 - q2 + n, q2
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, and_true]
     use 0, q3
-    simp
+    simp only [or_true, and_self, zero_add, true_and]
     omega
   case' topYukawaP =>
     use q1 + n
     apply And.intro ?_ (by omega)
     use q1 - q2 + n, q2
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, and_true]
     use 0, q3
-    simp
+    simp only [or_true, and_self, zero_add, true_and]
     omega
   case' W1P | W2P =>
     use - q1 + n
     apply And.intro ?_ (by omega)
     use - q1 - q2 + n, q2
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, and_true]
     use -q1 - q2 - q3 + n, q3
     apply And.intro ?_ (by omega)
-    simp
+    simp only [true_or, or_true, and_true]
     use 0, q4
-    simp
+    simp only [or_true, and_self, zero_add, true_and]
     omega
 
 lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm {T : PotentialTerm} {n : ℤ} {y : Charges} :

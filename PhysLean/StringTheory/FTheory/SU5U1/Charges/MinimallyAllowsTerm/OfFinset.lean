@@ -4,7 +4,18 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.MinimallyAllowsTerm.Basic
+/-!
 
+# Minimally allows terms given sets of allowed charges
+
+In this module our main definition is `minimallyAllowsTermsOfFinset S5 S10 T`,
+which is the set of charges that minimally allows the potential term `T`
+which live in `ofFinset S5 S10`.
+
+To define this function we need some auxiliary functions that take a finite set of integers
+and return multisets of integers of a given cardinality containing only those elements.
+
+-/
 namespace FTheory
 
 namespace SU5U1
@@ -204,7 +215,8 @@ def minimallyAllowsTermsOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) →
     let Q10 := toMultisetsThree S10
     let Prod := Q5.product Q10
     let Filt := Prod.filter (fun x => x.1.sum + x.2.sum = 0)
-    (Filt.map (fun x => (none, none, x.1.toFinset, x.2.toFinset))).filter fun x => MinimallyAllowsTerm x W1
+    (Filt.map (fun x =>
+      (none, none, x.1.toFinset, x.2.toFinset))).filter fun x => MinimallyAllowsTerm x W1
   | Λ =>
     let Q5 := toMultisetsTwo S5
     let Q10 := toMultisetsOne S10
@@ -298,8 +310,8 @@ lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : P
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
   exact allowsTermForm_allowsTerm
 
-lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10  : Finset ℤ } {T : PotentialTerm}
-    (x : Charges) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
+lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10  : Finset ℤ }
+    {T : PotentialTerm} (x : Charges) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
     x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_minimallyAllowsTerm h
   cases T
@@ -348,8 +360,9 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10  : Finset �
     use a, {b}, {- a - b}
     simp_all [allowsTermForm]
 
-lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ}
+    {T : PotentialTerm} {x : Charges}
+    (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.MinimallyAllowsTerm T := by
   by_cases hT : T ≠  W1 ∧ T ≠ W2
   · obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
@@ -412,7 +425,8 @@ lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset ℤ} {T : Pot
   rw [Finset.mem_val]
   exact mem_ofFinset_of_mem_minimallyAllowsTermOfFinset hx
 
-lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
+    {S5 S10 : Finset ℤ} {T : PotentialTerm}
     {x : Charges} (hx : x ∈ ofFinset S5 S10) :
     x.MinimallyAllowsTerm T ↔ x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   constructor
