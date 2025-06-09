@@ -424,6 +424,13 @@ lemma mem_ofFinset_iff {S5 S10 : Finset ℤ} {x : Charges} :
   rw [hoption, hoption]
   simp
 
+lemma ofFinset_subset_of_subset {S5 S5' S10 S10' : Finset ℤ}
+    (h5 : S5 ⊆ S5') (h10 : S10 ⊆ S10') :
+    ofFinset S5 S10 ⊆ ofFinset S5' S10' := by
+  intro x hx
+  rw [mem_ofFinset_iff] at hx ⊢
+  exact ⟨hx.1.trans h5, hx.2.1.trans h5, hx.2.2.1.trans h5,  hx.2.2.2.trans h10⟩
+
 /-!
 
 ## Minimal super set

@@ -4,39 +4,47 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.AllowsTerm
+/-!
 
+# Minimally allows terms
+
+Given a set of charges `x : Charges` corresponding to charges of the representations
+present in the thoery, and a potential term `T : PotentialTerm`, we say that `x`
+minimally allows `T` if it allows the term `T` and no proper subset of `x` allows `T`.
+
+-/
 
 namespace FTheory
 namespace SU5U1
 
 namespace Charges
 
-def IsIrreducible (x : Charges) (T : PotentialTerm) : Prop :=
+def MinimallyAllowsTerm (x : Charges) (T : PotentialTerm) : Prop :=
   ∀ y ∈ x.powerset, y = x ↔ y.AllowsTerm T
 
-instance (x : Charges) (T : PotentialTerm) : Decidable (x.IsIrreducible T) :=
+instance (x : Charges) (T : PotentialTerm) : Decidable (x.MinimallyAllowsTerm T) :=
   inferInstanceAs (Decidable (∀ y ∈ powerset x, y = x ↔ y.AllowsTerm T))
 
 variable {T : PotentialTerm} {x : Charges}
 
-lemma allowsTerm_of_isIrreducible (h : x.IsIrreducible T) : x.AllowsTerm T := by
-  simp only [IsIrreducible] at h
+lemma allowsTerm_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) : x.AllowsTerm T := by
+  simp only [MinimallyAllowsTerm] at h
   simpa using h x (self_mem_powerset x)
 
-lemma allowsTerm_of_has_isIrreducible_subset (hx : ∃ y ∈ powerset x, y.IsIrreducible T) :
+lemma allowsTerm_of_has_minimallyAllowsTerm_subset (hx : ∃ y ∈ powerset x, y.MinimallyAllowsTerm T) :
     x.AllowsTerm T := by
   obtain ⟨y, hy⟩ := hx
   simp only [mem_powerset_iff_subset] at hy
   apply allowsTerm_of_subset hy.1
-  exact allowsTerm_of_isIrreducible hy.2
+  exact allowsTerm_of_minimallyAllowsTerm hy.2
 
-lemma isIrreducible_iff_powerset_filter_eq :
-    x.IsIrreducible T ↔ x.powerset.filter (fun y => y.AllowsTerm T) = {x} := by
+lemma minimallyAllowsTerm_iff_powerset_filter_eq :
+    x.MinimallyAllowsTerm T ↔ x.powerset.filter (fun y => y.AllowsTerm T) = {x} := by
   constructor
   · intro h
     ext y
     simp only [Finset.mem_filter, mem_powerset_iff_subset, Finset.mem_singleton]
-    simp [IsIrreducible] at h
+    simp [MinimallyAllowsTerm] at h
     constructor
     · exact fun ⟨h1, h2⟩ => (h y h1).mpr h2
     · intro h1
@@ -44,7 +52,7 @@ lemma isIrreducible_iff_powerset_filter_eq :
       simp
       exact (h y (by simp)).mp rfl
   · intro h
-    simp [IsIrreducible]
+    simp [MinimallyAllowsTerm]
     intro y hy
     rw [Finset.eq_singleton_iff_unique_mem] at h
     simp at h
@@ -57,9 +65,9 @@ lemma isIrreducible_iff_powerset_filter_eq :
       · exact hy
       · exact h1
 
-lemma isIrreducible_iff_powerset_countP_eq_one  :
-    x.IsIrreducible T ↔ x.powerset.val.countP (fun y => y.AllowsTerm T) = 1 := by
-  rw [isIrreducible_iff_powerset_filter_eq]
+lemma minimallyAllowsTerm_iff_powerset_countP_eq_one  :
+    x.MinimallyAllowsTerm T ↔ x.powerset.val.countP (fun y => y.AllowsTerm T) = 1 := by
+  rw [minimallyAllowsTerm_iff_powerset_filter_eq]
   constructor
   · intro h
     trans (Finset.filter (fun y => y.AllowsTerm T) x.powerset).card
@@ -83,8 +91,8 @@ lemma isIrreducible_iff_powerset_countP_eq_one  :
     subst hxMem
     exact Finset.val_inj.mp ha
 
-lemma subset_isIrreducible_of_allowsTerm
-    (hx : x.AllowsTerm T) : ∃ y ∈ powerset x, y.IsIrreducible T := by
+lemma subset_minimallyAllowsTerm_of_allowsTerm
+    (hx : x.AllowsTerm T) : ∃ y ∈ powerset x, y.MinimallyAllowsTerm T := by
   have hPresent : (x.powerset.filter (fun y => y.AllowsTerm T)) ≠ ∅ := by
     rw [← @Finset.nonempty_iff_ne_empty]
     use x
@@ -93,7 +101,7 @@ lemma subset_isIrreducible_of_allowsTerm
   use y
   simp at h1
   simp_all
-  rw [isIrreducible_iff_powerset_filter_eq]
+  rw [minimallyAllowsTerm_iff_powerset_filter_eq]
   rw [← h2]
   ext z
   simp only [Finset.mem_filter, mem_powerset_iff_subset, Finset.mem_inter, and_congr_right_iff,
@@ -101,39 +109,39 @@ lemma subset_isIrreducible_of_allowsTerm
   intro hzy hzpres
   exact subset_trans hzy h1.1
 
-lemma allowsTerm_iff_subset_isIrreducible :
-    x.AllowsTerm T ↔ ∃ y ∈ powerset x, y.IsIrreducible T :=
-  ⟨fun h => subset_isIrreducible_of_allowsTerm h, fun h => allowsTerm_of_has_isIrreducible_subset h⟩
+lemma allowsTerm_iff_subset_minimallyAllowsTerm :
+    x.AllowsTerm T ↔ ∃ y ∈ powerset x, y.MinimallyAllowsTerm T :=
+  ⟨fun h => subset_minimallyAllowsTerm_of_allowsTerm h, fun h => allowsTerm_of_has_minimallyAllowsTerm_subset h⟩
 
-lemma card_le_degree_of_isIrreducible (h : x.IsIrreducible T) :
+lemma card_le_degree_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) :
     x.card ≤ T.degree := by
   obtain ⟨y, y_mem_power, y_card,y_present⟩ :=
-    subset_card_le_degree_allowsTerm_of_allowsTerm (allowsTerm_of_isIrreducible h)
+    subset_card_le_degree_allowsTerm_of_allowsTerm (allowsTerm_of_minimallyAllowsTerm h)
   have hy : y ∈ x.powerset.filter (fun y => y.AllowsTerm T)  := by
     simp_all
-  rw [isIrreducible_iff_powerset_filter_eq] at h
+  rw [minimallyAllowsTerm_iff_powerset_filter_eq] at h
   rw [h] at hy
   simp at hy
   subst hy
   exact y_card
 
-lemma eq_allowsTermForm_of_isIrreducible (h1 : x.IsIrreducible T) :
+lemma eq_allowsTermForm_of_minimallyAllowsTerm (h1 : x.MinimallyAllowsTerm T) :
     ∃ a b c, x = allowsTermForm a b c T := by
   obtain ⟨a, b, c,  h2, h3⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm
-    (allowsTerm_of_isIrreducible h1)
+    (allowsTerm_of_minimallyAllowsTerm h1)
   use a, b, c
   have hy : allowsTermForm a b c T ∈ x.powerset.filter (fun y => y.AllowsTerm T)  := by
     simp_all
-  rw [isIrreducible_iff_powerset_filter_eq] at h1
+  rw [minimallyAllowsTerm_iff_powerset_filter_eq] at h1
   rw [h1] at hy
   simp at hy
   exact hy.symm
 
 open PotentialTerm in
-lemma allowsTermForm_isIrreducible  {a b c  : ℤ} {T : PotentialTerm}
+lemma allowsTermForm_minimallyAllowsTerm  {a b c  : ℤ} {T : PotentialTerm}
     (hT : T ≠ W1 ∧ T ≠ W2) :
-    IsIrreducible (allowsTermForm a b c T) T := by
-  simp [IsIrreducible]
+    MinimallyAllowsTerm (allowsTermForm a b c T) T := by
+  simp [MinimallyAllowsTerm]
   intro y hy
   constructor
   · intro h

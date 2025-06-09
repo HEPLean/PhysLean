@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Same
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.NearestNeighbor
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.NextToNearestNeighbor
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.Irreducible.OfFinset
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.MinimallyAllowsTerm.OfFinset
 /-!
 
 # Elements of the non pheno-constrained charges
@@ -48,7 +48,7 @@ open PhysLean
 -/
 def nonPhenoConstrainedChargesExt (I : CodimensionOneConfig) :
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
-  let completionTopYukawa := (((irreducibleOfFinset I.allowedBarFiveCharges
+  let completionTopYukawa := (((minimallyAllowsTermsOfFinset I.allowedBarFiveCharges
        I.allowedTenCharges topYukawa).bind
     (completions I.allowedBarFiveCharges I.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))

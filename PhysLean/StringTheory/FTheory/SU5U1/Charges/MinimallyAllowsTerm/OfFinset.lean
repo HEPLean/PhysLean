@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.Irreducible.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.MinimallyAllowsTerm.Basic
 
 namespace FTheory
 
@@ -152,17 +152,15 @@ lemma mem_toMultisetsThree_iff {s : Finset ℤ} (X : Multiset ℤ) :
           · simp
             omega
           · exact Multiset.dedup_subset'.mp hsub
-
 /-!
 
-## irreducibleElems'
-
+# minimallyAllowsTermOfFinset
 -/
 
 open PotentialTerm
 
 
-def irreducibleOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) → Multiset Charges
+def minimallyAllowsTermsOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) → Multiset Charges
   | μ =>
     let SqHd := S5.val
     let SqHu := S5.val
@@ -200,13 +198,13 @@ def irreducibleOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) → Multiset
     let Q10 := toMultisetsThree S10
     let prod := SqHd.product Q10
     let Filt := prod.filter (fun x => x.1 + x.2.sum = 0)
-    (Filt.map (fun x => (x.1, none, ∅, x.2.toFinset))).filter fun x => IsIrreducible x W2
+    (Filt.map (fun x => (x.1, none, ∅, x.2.toFinset))).filter fun x => MinimallyAllowsTerm x W2
   | W1 =>
     let Q5 := toMultisetsOne S5
     let Q10 := toMultisetsThree S10
     let Prod := Q5.product Q10
     let Filt := Prod.filter (fun x => x.1.sum + x.2.sum = 0)
-    (Filt.map (fun x => (none, none, x.1.toFinset, x.2.toFinset))).filter fun x => IsIrreducible x W1
+    (Filt.map (fun x => (none, none, x.1.toFinset, x.2.toFinset))).filter fun x => MinimallyAllowsTerm x W1
   | Λ =>
     let Q5 := toMultisetsTwo S5
     let Q10 := toMultisetsOne S10
@@ -233,12 +231,12 @@ def irreducibleOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) → Multiset
     let Filt := prod.filter (fun x => x.1 + x.2.1.sum + x.2.2.sum = 0)
     (Filt.map (fun x => (x.1, none,x.2.1.toFinset, x.2.2.toFinset)))
 
-lemma eq_allowsTermForm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
+lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     ∃ a b c, x = allowsTermForm a b c T := by
   cases T
   all_goals
-    simp [irreducibleOfFinset] at hx
+    simp [minimallyAllowsTermsOfFinset] at hx
   case' W1 | W2 => have hx := hx.1
   case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ :=  hx
   case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
@@ -294,19 +292,19 @@ lemma eq_allowsTermForm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : Po
     congr 2
     omega
 
-lemma allowsTerm_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
+lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.AllowsTerm T := by
-  obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_irreducibleOfFinset hx
+  obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
   exact allowsTermForm_allowsTerm
 
-lemma mem_irreducibleOfFinset_of_irreducible {S5 S10  : Finset ℤ } {T : PotentialTerm}
-    (x : Charges) (h : x.IsIrreducible T) (hx : x ∈ ofFinset S5 S10) :
-    x ∈ irreducibleOfFinset S5 S10 T := by
-  obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_isIrreducible h
+lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10  : Finset ℤ } {T : PotentialTerm}
+    (x : Charges) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
+    x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
+  obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_minimallyAllowsTerm h
   cases T
   all_goals
-    simp [allowsTermForm, irreducibleOfFinset]
+    simp [allowsTermForm, minimallyAllowsTermsOfFinset]
     rw [mem_ofFinset_iff] at hx
   case' μ =>
     use a, a
@@ -350,28 +348,28 @@ lemma mem_irreducibleOfFinset_of_irreducible {S5 S10  : Finset ℤ } {T : Potent
     use a, {b}, {- a - b}
     simp_all [allowsTermForm]
 
-lemma isIrreducible_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
-    x.IsIrreducible T := by
+lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+    x.MinimallyAllowsTerm T := by
   by_cases hT : T ≠  W1 ∧ T ≠ W2
-  · obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_irreducibleOfFinset hx
-    exact allowsTermForm_isIrreducible hT
+  · obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
+    exact allowsTermForm_minimallyAllowsTerm hT
   · simp at hT
     by_cases h : T = W1
     · subst h
-      simp [irreducibleOfFinset] at hx
+      simp [minimallyAllowsTermsOfFinset] at hx
       exact hx.2
     · simp_all
       subst hT
-      simp [irreducibleOfFinset] at hx
+      simp [minimallyAllowsTermsOfFinset] at hx
       exact hx.2
 
-lemma ofFinset_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ irreducibleOfFinset S5 S10 T) :
+lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x ∈ ofFinset S5 S10 := by
   cases T
   all_goals
-    simp [irreducibleOfFinset] at hx
+    simp [minimallyAllowsTermsOfFinset] at hx
   case' W1 | W2 => have hx := hx.1
   case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ :=  hx
   case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
@@ -408,15 +406,29 @@ lemma ofFinset_of_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTe
     rw [mem_ofFinset_iff]
     simp_all
 
-lemma isIrreducible_iff_mem_irreducibleOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
+lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset ℤ} {T : PotentialTerm} :
+    minimallyAllowsTermsOfFinset S5 S10 T ⊆ (ofFinset S5 S10).val := by
+  refine Multiset.subset_iff.mpr (fun x hx => ?_)
+  rw [Finset.mem_val]
+  exact mem_ofFinset_of_mem_minimallyAllowsTermOfFinset hx
+
+lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
     {x : Charges} (hx : x ∈ ofFinset S5 S10) :
-    x.IsIrreducible T ↔ x ∈ irreducibleOfFinset S5 S10 T := by
+    x.MinimallyAllowsTerm T ↔ x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   constructor
   · intro h
-    exact mem_irreducibleOfFinset_of_irreducible x h hx
+    exact mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm x h hx
   · intro h
-    exact isIrreducible_of_mem_irreducibleOfFinset h
+    exact minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset h
 
+lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10'} {T : PotentialTerm}
+    (h5 : S5' ⊆ S5) (h10 : S10' ⊆ S10) :
+    minimallyAllowsTermsOfFinset S5' S10' T ⊆ minimallyAllowsTermsOfFinset S5 S10 T := by
+  intro x hx
+  have h1 : x ∈ ofFinset S5' S10' := mem_ofFinset_of_mem_minimallyAllowsTermOfFinset hx
+  rw [← minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
+    (ofFinset_subset_of_subset h5 h10 h1)]
+  exact (minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset h1).mpr hx
 
 end Charges
 

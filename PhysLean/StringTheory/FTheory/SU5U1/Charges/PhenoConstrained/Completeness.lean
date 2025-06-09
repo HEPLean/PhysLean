@@ -20,7 +20,7 @@ which is not pheno-constrained, permits a top yukawa and is complete.
 The method of our proof is the following.
 
 1. We define `completionTopYukawa` which contains all `completions` of elements
-  `irreducibleElems I topYukawa` which are not pheno-constrained. We show
+  which minimally allow the top Yukawa, which are not pheno-constrained. We show
   that every charge in `ofFinset I.allowedBarFiveCharges I.allowedTenCharges`
   which is not pheno-constrained and complete must contain an element
   of `completionTopYukawaSame` as a subset.
@@ -150,12 +150,13 @@ lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
   simp_all
 
 /--
-The tree of charges which contains all `completions` of elements `irreducibleElems .same topYukawa`
+The tree of charges which contains all `completions` of
+charges which minimally allow the top Yukawa,
 which are not pheno-constrained.
 
 This can be constructed via
 
-Tree.fromMultiset (((irreducibleOfFinset same.allowedBarFiveCharges
+Tree.fromMultiset (((minimallyAllowsTermOfFinset same.allowedBarFiveCharges
        same.allowedTenCharges topYukawa).bind
     (completions same.allowedBarFiveCharges same.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
@@ -479,7 +480,7 @@ private def completionTopYukawa (I : CodimensionOneConfig) :
     twig {7} {leaf {6}, leaf {1, 11}}}}}
 
 lemma completionTopYukawa_complete_of_same :
-    ∀ x ∈ (irreducibleOfFinset CodimensionOneConfig.same.allowedBarFiveCharges
+    ∀ x ∈ (minimallyAllowsTermsOfFinset CodimensionOneConfig.same.allowedBarFiveCharges
        CodimensionOneConfig.same.allowedTenCharges topYukawa),
     ¬ x.IsPhenoConstrained →
     ∀ y ∈ completions same.allowedBarFiveCharges same.allowedTenCharges x, ¬ y.IsPhenoConstrained
@@ -488,7 +489,7 @@ lemma completionTopYukawa_complete_of_same :
 
 
 lemma completionTopYukawa_complete_of_nearestNeighbor :
-    ∀ x ∈ (irreducibleOfFinset CodimensionOneConfig.nearestNeighbor.allowedBarFiveCharges
+    ∀ x ∈ (minimallyAllowsTermsOfFinset CodimensionOneConfig.nearestNeighbor.allowedBarFiveCharges
        CodimensionOneConfig.nearestNeighbor.allowedTenCharges topYukawa),
     ¬ x.IsPhenoConstrained →
     ∀ y ∈ completions nearestNeighbor.allowedBarFiveCharges nearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
@@ -496,7 +497,7 @@ lemma completionTopYukawa_complete_of_nearestNeighbor :
   decide
 
 lemma completionTopYukawa_complete_of_nextToNearestNeighbor :
-    ∀ x ∈ (irreducibleOfFinset CodimensionOneConfig.nextToNearestNeighbor.allowedBarFiveCharges
+    ∀ x ∈ (minimallyAllowsTermsOfFinset CodimensionOneConfig.nextToNearestNeighbor.allowedBarFiveCharges
        CodimensionOneConfig.nextToNearestNeighbor.allowedTenCharges topYukawa),
     ¬ x.IsPhenoConstrained →
     ∀ y ∈ completions nextToNearestNeighbor.allowedBarFiveCharges nextToNearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
@@ -504,7 +505,7 @@ lemma completionTopYukawa_complete_of_nextToNearestNeighbor :
   decide
 
 lemma completionTopYukawa_complete {I : CodimensionOneConfig} (x : Charges)
-    (hx : x ∈ (irreducibleOfFinset I.allowedBarFiveCharges
+    (hx : x ∈ (minimallyAllowsTermsOfFinset I.allowedBarFiveCharges
        I.allowedTenCharges topYukawa))
     (hPheno : ¬ x.IsPhenoConstrained) :
     ∀ y ∈ completions I.allowedBarFiveCharges I.allowedTenCharges x, ¬ y.IsPhenoConstrained
@@ -522,13 +523,13 @@ lemma exists_subset_completionTopYukawa_of_not_isPhenoConstrained {x : Charges}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
     (hcomplete : IsComplete x) : ∃ (y : Charges), y ∈ completionTopYukawa I ∧ y ⊆ x := by
   have hIrreducible :
-        ∃ y ∈ (irreducibleOfFinset I.allowedBarFiveCharges
+        ∃ y ∈ (minimallyAllowsTermsOfFinset I.allowedBarFiveCharges
         I.allowedTenCharges topYukawa), y ⊆ x := by
-      rw [allowsTerm_iff_subset_isIrreducible] at htopYukawa
+      rw [allowsTerm_iff_subset_minimallyAllowsTerm] at htopYukawa
       obtain ⟨y, hPower, hIrre⟩ := htopYukawa
       use y
       constructor
-      · rw [← isIrreducible_iff_mem_irreducibleOfFinset]
+      · rw [← minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset]
         · exact hIrre
         · simp at hPower
           exact mem_ofFinset_of_subset I.allowedBarFiveCharges I.allowedTenCharges hPower hsub
