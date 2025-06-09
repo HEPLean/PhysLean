@@ -70,7 +70,36 @@ inductive PotentialTerm
   | bottomYukawa : PotentialTerm
 deriving DecidableEq, Fintype
 
+inductive FieldKinds
+  | fiveBarHu
+  | fiveHu
+  | fiveBarHd
+  | fiveHd
+  | fiveBarMatter
+  | fiveMatter
+  | tenMatter
+deriving DecidableEq, Fintype
+
 namespace PotentialTerm
+
+def toFieldKinds : PotentialTerm → List FieldKinds
+  | μ => [.fiveBarHd, .fiveHu]
+  | β => [.fiveHu, .fiveBarMatter]
+  | Λ => [.fiveBarMatter, .fiveBarMatter, .tenMatter]
+  | W1 => [.tenMatter, .tenMatter, .tenMatter, .fiveBarMatter]
+  | W2 => [.tenMatter, .tenMatter, .tenMatter, .fiveBarHd]
+  | W3 => [.fiveBarMatter, .fiveBarMatter, .fiveHu, .fiveHu]
+  | W4 => [.fiveBarMatter, .fiveBarHd, .fiveHu, .fiveHu]
+  | K1 => [.tenMatter, .tenMatter, .fiveMatter]
+  | K2 => [.fiveBarHu, .fiveBarHd, .tenMatter]
+  | topYukawa => [.tenMatter, .tenMatter, .fiveHu]
+  | bottomYukawa => [.tenMatter, .fiveBarMatter, .fiveBarHd]
+
+def degree (T : PotentialTerm) : ℕ := T.toFieldKinds.length
+
+lemma degree_le_four (T : PotentialTerm) : T.degree ≤ 4 := by
+  cases T
+  all_goals simp [toFieldKinds, degree]
 
 /-- The finite set of terms in the superpotential and Kahler potential which violate R-parity.
 - `𝛽ᵢ 5̄Mⁱ5Hu`

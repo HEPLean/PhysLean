@@ -16,7 +16,6 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 namespace Charges
 open PotentialTerm
-open ChargeProfile
 open CodimensionOneConfig
 open Tree
 

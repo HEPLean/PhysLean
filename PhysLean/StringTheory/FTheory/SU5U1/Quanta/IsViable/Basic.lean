@@ -30,14 +30,14 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 
 namespace Quanta
-open PotentialTerm ChargeProfile Charges
+open PotentialTerm  Charges
 
 /-- For a given `I : CodimensionOneConfig` the condition on a `Quanta` for it to be
   phenomenologically viable. -/
 def IsViable (I : CodimensionOneConfig) (x : Quanta) : Prop :=
   x.toCharges.IsComplete ∧
   ¬ x.toCharges.IsPhenoConstrained ∧
-  IsPresent topYukawa (toChargeProfile topYukawa x.toCharges) ∧
+  IsPresent x.toCharges topYukawa ∧
   x.2.2.1.toFluxesFive.NoExotics ∧
   x.2.2.1.toFluxesFive.HasNoZero ∧
   x.2.2.2.toFluxesTen.NoExotics ∧
@@ -51,7 +51,7 @@ lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
     IsViable I x ↔
       x.toCharges.IsComplete ∧
   ¬ x.toCharges.IsPhenoConstrained ∧
-  IsPresent topYukawa (toChargeProfile topYukawa x.toCharges) ∧
+  IsPresent x.toCharges topYukawa ∧
   x.2.2.1.toFluxesFive.NoExotics ∧
   x.2.2.1.toFluxesFive.HasNoZero ∧
   x.2.2.2.toFluxesTen.NoExotics ∧
@@ -147,7 +147,7 @@ lemma tenQuanta_mem_ofCharges_of_isViable
 
 lemma topYukawa_isPresent_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    IsPresent topYukawa (toChargeProfile topYukawa x.toCharges) := by
+    IsPresent x.toCharges topYukawa := by
   exact h.2.2.1
 
 lemma not_isPhenoConstrained_of_isViable

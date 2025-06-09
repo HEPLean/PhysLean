@@ -19,7 +19,7 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Quanta
-open PotentialTerm ChargeProfile Charges
+open PotentialTerm Charges
 
 /-- A case of `Quanta` with one 10d representation and 4 5-bar representations.
   This corresponds to example I.1.4.a in table 1 of arXiv:1507.05961. -/

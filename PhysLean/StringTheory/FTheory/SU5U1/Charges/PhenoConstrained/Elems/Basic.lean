@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Same
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.NearestNeighbor
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.NextToNearestNeighbor
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.Irreducible.OfFinset
 /-!
 
 # Elements of the non pheno-constrained charges
@@ -36,10 +37,10 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 namespace Charges
 open PotentialTerm
-open ChargeProfile
 open CodimensionOneConfig
 open Tree
 open PhysLean
+
 /-- For a given `I : CodimensionOneConfig` the tree of charges containing all
   charges which are not phenomenlogically constrained, and which permit a top
   Yukawa coupling. Unlike `nonPhenoConstrainedCharges`, these trees are calculated
@@ -47,8 +48,8 @@ open PhysLean
 -/
 def nonPhenoConstrainedChargesExt (I : CodimensionOneConfig) :
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
-  let completionTopYukawa := ((((irreducibleElems I topYukawa).map
-    (fromChargeProfile topYukawa)).bind
+  let completionTopYukawa := (((irreducibleOfFinset I.allowedBarFiveCharges
+       I.allowedTenCharges topYukawa).bind
     (completions I.allowedBarFiveCharges I.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
   let addOneTopYukawa := (((completionTopYukawa).bind (fun x =>

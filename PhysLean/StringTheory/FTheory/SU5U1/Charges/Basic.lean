@@ -49,6 +49,13 @@ unsafe instance : Repr Charges where
   `Option ℤ × Option ℤ × Finset ℤ × Finset ℤ`. -/
 def toProd (x : Charges) : Option ℤ × Option ℤ × Finset ℤ × Finset ℤ := x
 
+lemma eq_of_parts {x y : Charges} (h1 : x.1 = y.1) (h2 : x.2.1 = y.2.1)
+    (h3 : x.2.2.1 = y.2.2.1) (h4 : x.2.2.2 = y.2.2.2) : x = y := by
+  match x, y with
+  | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
+    simp_all
+
+
 /-!
 
 ## Subsest relation
@@ -65,6 +72,10 @@ instance hasSSubset : HasSSubset Charges where
   SSubset x y := x ⊆ y ∧ x ≠ y
 
 instance subsetDecidable (x y : Charges) : Decidable (x ⊆ y) := instDecidableAnd
+
+lemma subset_def {x y : Charges} : x ⊆ y ↔ x.1.toFinset ⊆ y.1.toFinset ∧
+    x.2.1.toFinset ⊆ y.2.1.toFinset ∧ x.2.2.1 ⊆ y.2.2.1 ∧ x.2.2.2 ⊆ y.2.2.2 := by
+  rfl
 
 @[simp, refl]
 lemma subset_refl (x : Charges) : x ⊆ x := by
@@ -207,107 +218,74 @@ lemma powerset_subset_iff_subset {x y : Charges} :
     intro h1
     exact subset_trans h1 h
 
-/-!
 
-## Relationship to charge profiles
+lemma min_exists_inductive (S : Finset Charges) (hS : S ≠ ∅) :
+    (n : ℕ) → (hn : S.card = n) →
+    ∃ y ∈ S, powerset y ∩ S = {y}
+  | 0, h => by simp_all
+  | 1, h => by
+    rw [Finset.card_eq_one] at h
+    obtain ⟨y, rfl⟩ := h
+    use y
+    simp
+  | n + 1 + 1, h => by
+    rw [← Finset.nonempty_iff_ne_empty] at hS
+    obtain ⟨y, hy⟩ := hS
+    have hSremo : (S.erase y).card = n + 1 := by
+      rw [Finset.card_erase_eq_ite]
+      simp_all
+    have hSeraseNeEmpty : (S.erase y) ≠ ∅ := by
+        simp only [ne_eq]
+        rw [← Finset.card_eq_zero]
+        omega
+    obtain ⟨x, hx1, hx2⟩ := min_exists_inductive (S.erase y) hSeraseNeEmpty (n + 1) hSremo
+    have hxy : x ≠ y := by
+      by_contra hn
+      subst hn
+      simp at hx1
+    by_cases hyPx : y ∈ powerset x
+    · use y
+      constructor
+      · exact hy
+      · ext z
+        constructor
+        · intro hz
+          simp at hz
+          simp only [Finset.mem_singleton]
+          rw [Finset.inter_erase] at hx2
+          by_cases hn : z = y
+          · exact hn
+          apply False.elim
+          have hlz : z ∈ (x.powerset ∩ S).erase y := by
+            simp [hn, hz.2]
+            simp at hyPx
+            exact subset_trans hz.1 hyPx
+          rw [hx2] at hlz
+          simp at hlz
+          simp_all
+          have hx : y = x := by
+            apply subset_antisymm
+            · exact hyPx
+            · exact hz
+          exact hxy (id (Eq.symm hx))
+        · intro hz
+          simp at hz
+          subst hz
+          simp_all
+    · use x
+      constructor
+      · apply Finset.erase_subset y S
+        exact hx1
+      · rw [← hx2]
+        ext z
+        simp only [Finset.mem_inter, mem_powerset_iff_subset, Finset.mem_erase, ne_eq,
+          and_congr_right_iff, iff_and_self]
+        intro hzx hzS hzy
+        subst hzy
+        simp_all
 
--/
-
-/-- The collection of charges associated with a charge profile. -/
-def fromChargeProfile : (T : PotentialTerm) → T.ChargeProfile → Charges
-  | μ, (qHd, qHu) => (qHd, qHu, {}, {})
-  | β, (qHu, Q5) => (none, qHu, Q5, {})
-  | Λ, (Q5, Q10) => (none, none, Q5, Q10)
-  | W1, (Q5, Q10) => (none, none, Q5, Q10)
-  | W2, (qHd, Q10) => (qHd, none, {}, Q10)
-  | W3, (qHu, Q5) => (none, qHu, Q5, {})
-  | W4, (qHd, qHu, Q5) => (qHd, qHu, Q5, {})
-  | K1, (Q5, Q10) => (none, none, Q5, Q10)
-  | K2, (qHd, qHu, Q10) => (qHd, qHu, {}, Q10)
-  | topYukawa, (qHu, Q10) => (none, qHu, {}, Q10)
-  | bottomYukawa, (qHd, Q5, Q10) => (qHd, none, Q5, Q10)
-
-/-- For a given potential term `T`, the charge profile associated with a collection of charges. -/
-def toChargeProfile : (T : PotentialTerm) → Charges → T.ChargeProfile
-  | μ, (qHd, qHu, _, _) => (qHd, qHu)
-  | β, (_, qHu, Q5, _) => (qHu, Q5)
-  | Λ, (_, _, Q5, Q10) => (Q5, Q10)
-  | W1, (_, _, Q5, Q10) => (Q5, Q10)
-  | W2, (qHd, _, _, Q10) => (qHd, Q10)
-  | W3, (_, qHu, Q5, _) => (qHu, Q5)
-  | W4, (qHd, qHu, Q5, _) => (qHd, qHu, Q5)
-  | K1, (_, _, Q5, Q10) => (Q5, Q10)
-  | K2, (qHd, qHu, _, Q10) => (qHd, qHu, Q10)
-  | topYukawa, (_, qHu, _, Q10) => (qHu, Q10)
-  | bottomYukawa, (qHd, _, Q5, Q10) => (qHd, Q5, Q10)
-
-@[simp]
-lemma fromChargeProfile_toChargeProfile (T : PotentialTerm) (cp : T.ChargeProfile) :
-    toChargeProfile T (fromChargeProfile T cp) = cp := by
-  cases T <;> rfl
-
-lemma fromChargeProfile_injective (T : PotentialTerm) :
-    Function.Injective (fromChargeProfile T) := by
-  intro cp1 cp2 h
-  have h' := congrArg (toChargeProfile T) h
-  rw [fromChargeProfile_toChargeProfile, fromChargeProfile_toChargeProfile] at h'
-  exact h'
-
-lemma toChargeProfile_surjective (T : PotentialTerm) :
-    Function.Surjective (toChargeProfile T) := by
-  intro cp
-  use fromChargeProfile T cp
-  rw [fromChargeProfile_toChargeProfile]
-
-@[simp]
-lemma toChargeProfile_empty (T : PotentialTerm) :
-    toChargeProfile T ∅ = ∅ := by
-  cases T <;> rfl
-
-@[simp]
-lemma fromChargeProfile_empty (T : PotentialTerm) :
-    fromChargeProfile T ∅ = ∅ := by
-  cases T <;> rfl
-
-lemma toChargeProfile_subset_of_subset (T : PotentialTerm) {x y : Charges} (h : x ⊆ y) :
-    toChargeProfile T x ⊆ toChargeProfile T y := by
-  rcases x with ⟨x1, x2, x3, x4⟩
-  rcases y with ⟨y1, y2, y3, y4⟩
-  rw [Subset] at h
-  dsimp [hasSubset] at h
-  fin_cases T
-  all_goals
-    rw [Subset]
-    dsimp [ChargeProfile.instHasSubset, toChargeProfile]
-    simp_all
-
-lemma fromChargeProfile_subset_of_subset {T : PotentialTerm} {x y : T.ChargeProfile} (h : x ⊆ y) :
-    fromChargeProfile T x ⊆ fromChargeProfile T y := by
-  rw [Subset]
-  dsimp [hasSubset, fromChargeProfile]
-  fin_cases T
-  all_goals
-    cases x
-    cases y
-    rw [Subset] at h
-    dsimp [ChargeProfile.instHasSubset] at h
-    simp_all
-
-@[simp]
-lemma fromChargeProfile_subset_iff_subset {T : PotentialTerm} {x y : T.ChargeProfile} :
-    fromChargeProfile T x ⊆ fromChargeProfile T y ↔ x ⊆ y := by
-  constructor
-  · intro h
-    simpa using toChargeProfile_subset_of_subset T h
-  · exact fun h => fromChargeProfile_subset_of_subset h
-
-lemma toChargeProfile_fromChargeProfile_subset {T : PotentialTerm} {x : Charges} :
-    fromChargeProfile T (toChargeProfile T x) ⊆ x := by
-  simp [toChargeProfile, fromChargeProfile]
-  fin_cases T
-  all_goals
-    cases x
-    simp [ChargeProfile.instHasSubset, hasSubset]
+lemma min_exists (S : Finset Charges) (hS : S ≠ ∅) :
+    ∃ y ∈ S, powerset y ∩ S = {y} := min_exists_inductive S hS S.card rfl
 
 /-!
 
@@ -412,55 +390,6 @@ lemma mem_ofFinset_iff {S5 S10 : Finset ℤ} {x : Charges} :
   repeat rw [Finset.product_eq_sprod, Finset.mem_product]
   rw [hoption, hoption]
   simp
-
-lemma toChargeProfile_mem_ofFinset_of_mem_ofFinset (T : PotentialTerm)
-    {x : Charges} (S5 S10 : Finset ℤ) (hx : x ∈ ofFinset S5 S10) :
-    toChargeProfile T x ∈ ChargeProfile.ofFinset T S5 S10 := by
-  have hoption (x : Option ℤ) (S : Finset ℤ) :
-      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
-      x.toFinset ⊆ S := by
-    match x with
-    | none => simp
-    | some x => simp
-  rw [ofFinset] at hx
-  cases x
-  repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hx
-  dsimp at hx
-  simp only [hoption, Finset.mem_powerset] at hx
-  fin_cases T
-  all_goals
-    rw [ChargeProfile.ofFinset, toChargeProfile]
-    repeat rw [Finset.product_eq_sprod, Finset.mem_product]
-    dsimp only
-    simp only [hoption, Finset.mem_powerset]
-    aesop
-
-@[simp]
-lemma fromChargeProfile_mem_ofFinset_iff_mem_ofFinset {T : PotentialTerm}
-    {x : T.ChargeProfile} (S5 S10 : Finset ℤ) :
-    fromChargeProfile T x ∈ ofFinset S5 S10 ↔ x ∈ ChargeProfile.ofFinset T S5 S10 := by
-  constructor
-  · intro h
-    simpa using toChargeProfile_mem_ofFinset_of_mem_ofFinset T S5 S10 h
-  · intro h
-    have hoption (x : Option ℤ) (S : Finset ℤ) :
-      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
-      x.toFinset ⊆ S := by
-      match x with
-      | none => simp
-      | some x => simp
-    fin_cases T
-    all_goals
-      cases x
-      dsimp [fromChargeProfile, ofFinset]
-      repeat rw [Finset.mem_product]
-      dsimp only
-      simp only [hoption, Finset.mem_powerset]
-      rw [ChargeProfile.ofFinset] at h
-      repeat rw [Finset.product_eq_sprod, Finset.mem_product] at h
-      dsimp only at h
-      simp only [hoption, Finset.mem_powerset] at h
-      aesop
 
 /-!
 

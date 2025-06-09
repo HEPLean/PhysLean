@@ -8,6 +8,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.IsComp
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoConstrained
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ10
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ5
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.Irreducible.OfFinset
 /-!
 
 # Complete of `nonPhenoConstrainedCharges I`
@@ -45,7 +46,7 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 
 namespace Charges
-open PotentialTerm ChargeProfile
+open PotentialTerm
 open CodimensionOneConfig
 
 open PhysLean Tree
@@ -66,23 +67,32 @@ lemma nonPhenoConstrainedCharges_insertQ10_filter (I : CodimensionOneConfig) :
     obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := FourTree.exists_of_mem_uniqueMap4 (insert q10) C hC
     apply mem_phenoInsertQ10_of_mem_isPresent
     · exact hC
-    simp [IsPhenoConstrained, toChargeProfile] at hn
+    simp [IsPhenoConstrained] at hn
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · by_contra hc
-      have hc' : IsPresent K2 (qHd, qHu, insert q10 Q10) := by
+      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) K2 := by
         apply isPresent_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent Λ (Q5, insert q10 Q10) := by
+      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) Λ:= by
         apply isPresent_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
+      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) W1 := by
+        apply isPresent_of_subset _ hc
+        simp [Subset]
       simp_all
     · by_contra hc
+      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) K1 := by
+        apply isPresent_of_subset _ hc
+        simp [Subset]
       simp_all
     · by_contra hc
+      have hc' : IsPresent (qHd, qHu, Q5, insert q10 Q10) W2 := by
+        apply isPresent_of_subset _ hc
+        simp [Subset]
       simp_all
   have hemp : (phenoInsertQ10 (nonPhenoConstrainedCharges I) q10).toMultiset = ∅ := by
     rw [Multiset.empty_eq_zero, ← Multiset.card_eq_zero]
@@ -106,29 +116,32 @@ lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
     obtain ⟨qHd, qHu, Q5, Q10, rfl, h1⟩ := FourTree.exists_of_mem_uniqueMap3 _ C hC
     apply mem_phenoInsertQ5_of_mem_isPresent
     · exact hC
-    simp [IsPhenoConstrained, toChargeProfile] at hn
+    simp [IsPhenoConstrained] at hn
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · by_contra hc
-      have hc' : IsPresent β (qHu, insert q5 Q5) := by
+      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) β := by
         apply isPresent_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent W4 (qHd, qHu, insert q5 Q5) := by
+      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) W4 := by
         apply isPresent_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent W1 (insert q5 Q5, Q10) := by
+      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) W1 := by
         apply isPresent_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
-      have hc' : IsPresent K1 (insert q5 Q5, Q10) := by
+      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) K1 := by
         apply isPresent_of_subset _ hc
         simp [Subset]
       simp_all
     · by_contra hc
+      have hc' : IsPresent (qHd, qHu, insert q5 Q5, Q10) Λ := by
+        apply isPresent_of_subset _ hc
+        simp [Subset]
       simp_all
   have hemp : (Tree.phenoInsertQ5 (nonPhenoConstrainedCharges I) q5).toMultiset = ∅ := by
     rw [Multiset.empty_eq_zero, ← Multiset.card_eq_zero]
@@ -144,7 +157,8 @@ which are not pheno-constrained.
 
 This can be constructed via
 
-Tree.fromMultiset ((((irreducibleElems same topYukawa).map (fromChargeProfile topYukawa)).bind
+Tree.fromMultiset (((irreducibleOfFinset same.allowedBarFiveCharges
+       same.allowedTenCharges topYukawa).bind
     (completions same.allowedBarFiveCharges same.allowedTenCharges)).dedup.filter
     (fun x => ¬ IsPhenoConstrained x))
 -/
@@ -467,30 +481,33 @@ private def completionTopYukawa (I : CodimensionOneConfig) :
     twig {7} {leaf {6}, leaf {1, 11}}}}}
 
 lemma completionTopYukawa_complete_of_same :
-    ∀ x ∈ (irreducibleElems .same topYukawa).map (fromChargeProfile topYukawa),
+    ∀ x ∈ (irreducibleOfFinset CodimensionOneConfig.same.allowedBarFiveCharges
+       CodimensionOneConfig.same.allowedTenCharges topYukawa),
     ¬ x.IsPhenoConstrained →
     ∀ y ∈ completions same.allowedBarFiveCharges same.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa .same := by
   decide
 
+
 lemma completionTopYukawa_complete_of_nearestNeighbor :
-    ∀ x ∈ (irreducibleElems .nearestNeighbor topYukawa).map
-    (fromChargeProfile topYukawa), ¬ x.IsPhenoConstrained →
-    ∀ y ∈ completions nearestNeighbor.allowedBarFiveCharges nearestNeighbor.allowedTenCharges x,
-    ¬ y.IsPhenoConstrained
+    ∀ x ∈ (irreducibleOfFinset CodimensionOneConfig.nearestNeighbor.allowedBarFiveCharges
+       CodimensionOneConfig.nearestNeighbor.allowedTenCharges topYukawa),
+    ¬ x.IsPhenoConstrained →
+    ∀ y ∈ completions nearestNeighbor.allowedBarFiveCharges nearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa .nearestNeighbor := by
   decide
 
 lemma completionTopYukawa_complete_of_nextToNearestNeighbor :
-    ∀ x ∈ (irreducibleElems .nextToNearestNeighbor topYukawa).map
-    (fromChargeProfile topYukawa), ¬ x.IsPhenoConstrained →
-    ∀ y ∈ completions nextToNearestNeighbor.allowedBarFiveCharges
-      nextToNearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
+    ∀ x ∈ (irreducibleOfFinset CodimensionOneConfig.nextToNearestNeighbor.allowedBarFiveCharges
+       CodimensionOneConfig.nextToNearestNeighbor.allowedTenCharges topYukawa),
+    ¬ x.IsPhenoConstrained →
+    ∀ y ∈ completions nextToNearestNeighbor.allowedBarFiveCharges nextToNearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa .nextToNearestNeighbor := by
   decide
 
 lemma completionTopYukawa_complete {I : CodimensionOneConfig} (x : Charges)
-    (hx : x ∈ (irreducibleElems I topYukawa).map (fromChargeProfile topYukawa))
+    (hx : x ∈ (irreducibleOfFinset I.allowedBarFiveCharges
+       I.allowedTenCharges topYukawa))
     (hPheno : ¬ x.IsPhenoConstrained) :
     ∀ y ∈ completions I.allowedBarFiveCharges I.allowedTenCharges x, ¬ y.IsPhenoConstrained
     → y ∈ completionTopYukawa I := by
@@ -503,32 +520,21 @@ lemma completionTopYukawa_complete {I : CodimensionOneConfig} (x : Charges)
 set_option maxRecDepth 2000 in
 lemma exists_subset_completionTopYukawa_of_not_isPhenoConstrained {x : Charges}
     (hx : ¬ x.IsPhenoConstrained)
-    (htopYukawa : IsPresent topYukawa (toChargeProfile topYukawa x))
+    (htopYukawa : IsPresent x topYukawa)
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
     (hcomplete : IsComplete x) : ∃ (y : Charges), y ∈ completionTopYukawa I ∧ y ⊆ x := by
   have hIrreducible :
-        ∃ y ∈ (irreducibleElems I topYukawa).map (fromChargeProfile topYukawa), y ⊆ x := by
-      rw [isPresent_iff_subest_isIrreducible] at htopYukawa
+        ∃ y ∈ (irreducibleOfFinset I.allowedBarFiveCharges
+        I.allowedTenCharges topYukawa), y ⊆ x := by
+      rw [isPresent_iff_subset_isIrreducible] at htopYukawa
       obtain ⟨y, hPower, hIrre⟩ := htopYukawa
-      use fromChargeProfile topYukawa y
+      use y
       constructor
-      · simp only [Multiset.mem_map]
-        use y
-        simp only [and_true]
-        rw [← isIrreducible_iff_mem_irreducibleElems]
+      · rw [← isIrreducible_iff_mem_irreducibleOfFinset]
         · exact hIrre
-        · rw [finsetOfCodimensionOneConfig]
-          simp at hPower
-          apply ChargeProfile.mem_ofFinset_of_subset _ _ hPower
-          apply toChargeProfile_mem_ofFinset_of_mem_ofFinset topYukawa I.allowedBarFiveCharges
-            I.allowedTenCharges
-          exact hsub
-      · simp at hPower
-        have hx : fromChargeProfile topYukawa y ⊆
-            fromChargeProfile topYukawa (toChargeProfile topYukawa x) := by
-          simpa using hPower
-        apply subset_trans hx
-        exact toChargeProfile_fromChargeProfile_subset
+        · simp at hPower
+          exact mem_ofFinset_of_subset I.allowedBarFiveCharges I.allowedTenCharges hPower hsub
+      · simpa using hPower
   obtain ⟨y, hyMem, hysubsetx⟩ := hIrreducible
   obtain ⟨z, hz1, hz2⟩ := exist_completions_subset_of_complete
     I.allowedBarFiveCharges I.allowedTenCharges y x hysubsetx hsub hcomplete
@@ -554,8 +560,8 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
     (hcomplete : IsComplete x) :
     x ∉ nonPhenoConstrainedCharges I → ¬ (¬ IsPhenoConstrained x ∧
-      IsPresent topYukawa (toChargeProfile topYukawa x)) := by
-  by_cases hn : ¬ (IsPresent topYukawa (toChargeProfile topYukawa x))
+      IsPresent x topYukawa ) := by
+  by_cases hn : ¬ (IsPresent x topYukawa)
   · simp [hn]
   simp only [not_and, hn, imp_false]
   simp at hn
@@ -578,7 +584,7 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
 
 lemma not_isPhenoConstrained_iff_mem_nonPhenoConstrainedCharge {x : Charges}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges) :
-    IsPresent topYukawa (toChargeProfile topYukawa x) ∧
+    IsPresent x topYukawa ∧
     ¬ IsPhenoConstrained x ∧ IsComplete x ↔
     x ∈ nonPhenoConstrainedCharges I := by
   constructor
@@ -598,3 +604,4 @@ end Charges
 end SU5U1
 
 end FTheory
+#min_imports

@@ -58,7 +58,7 @@ end TenQuanta
 abbrev Quanta : Type := Option ℤ × Option ℤ × FiveQuanta × TenQuanta
 
 namespace Quanta
-open PotentialTerm ChargeProfile Charges
+open PotentialTerm Charges
 
 instance : DecidableEq Quanta := instDecidableEqProd
 

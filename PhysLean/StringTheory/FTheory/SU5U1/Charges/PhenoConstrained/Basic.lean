@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Potential.ChargeProfile.Irreducible.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree
+import PhysLean.StringTheory.FTheory.SU5U1.Potential.Charges
 /-!
 
 # Pheno constrained charges
@@ -22,36 +23,23 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 namespace Charges
 open PotentialTerm
-open ChargeProfile
 
 /-- A charge is pheno-constrained if it leads to the presence of any term causing proton decay
   ` {W1, Λ, W2, K1}` or R-parity violation `{β, Λ, W2, W4, K1, K2}`. -/
 def IsPhenoConstrained (x : Charges) : Prop :=
-  IsPresent μ (toChargeProfile μ x) ∨
-  IsPresent β (toChargeProfile β x) ∨
-  IsPresent Λ (toChargeProfile Λ x) ∨
-  IsPresent W2 (toChargeProfile W2 x) ∨
-  IsPresent W4 (toChargeProfile W4 x) ∨
-  IsPresent K1 (toChargeProfile K1 x) ∨
-  IsPresent K2 (toChargeProfile K2 x) ∨
-  IsPresent W1 (toChargeProfile W1 x)
+  x.IsPresent μ ∨ x.IsPresent β ∨ x.IsPresent Λ ∨ x.IsPresent W2 ∨ x.IsPresent W4 ∨
+  x.IsPresent K1 ∨ x.IsPresent K2 ∨ x.IsPresent W1
 
 instance decidableIsPhenoConstrained (x : Charges) : Decidable x.IsPhenoConstrained :=
-  inferInstanceAs (Decidable (IsPresent μ (toChargeProfile μ x) ∨
-    IsPresent β (toChargeProfile β x) ∨
-    IsPresent Λ (toChargeProfile Λ x) ∨
-    IsPresent W2 (toChargeProfile W2 x) ∨
-    IsPresent W4 (toChargeProfile W4 x) ∨
-    IsPresent K1 (toChargeProfile K1 x) ∨
-    IsPresent K2 (toChargeProfile K2 x) ∨
-    IsPresent W1 (toChargeProfile W1 x)))
+  inferInstanceAs (Decidable (x.IsPresent μ ∨ x.IsPresent β ∨ x.IsPresent Λ ∨ x.IsPresent W2
+    ∨ x.IsPresent W4 ∨ x.IsPresent K1 ∨ x.IsPresent K2 ∨ x.IsPresent W1))
 
 lemma isPhenoConstrained_of_subset {x y : Charges} (h : x ⊆ y)
     (hx : x.IsPhenoConstrained) : y.IsPhenoConstrained := by
   simp [IsPhenoConstrained] at *
   rcases hx with hr | hr | hr | hr | hr | hr | hr | hr
   all_goals
-    have h' := isPresent_of_subset (toChargeProfile_subset_of_subset _ h) hr
+    have h' := isPresent_of_subset h hr
     simp_all
 
 /-!
@@ -82,7 +70,7 @@ def Twig.phenoInsertQ10 (t : Twig (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) 
     Twig (Finset ℤ) (Finset ℤ) :=
   match t with
   | .twig Q5 leafs =>
-    if IsPresent Λ (Q5, {x}) then
+    if IsPresent (none, none, Q5, {x}) Λ then
       .twig Q5 {}
     else
       let leafFinst := leafs.map (fun (.leaf ys) => ys)
@@ -92,8 +80,8 @@ def Twig.phenoInsertQ10 (t : Twig (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) 
         else
           none)
       let subFilter := sub.filter (fun ys =>
-        ¬ IsPresent W1 (Q5, ys) ∧ ¬ IsPresent K1 (Q5, ys)
-        ∧ ¬ IsPresent W2 (qHd, ys))
+        ¬ IsPresent (none, none, Q5, ys) W1  ∧ ¬ IsPresent (none, none, Q5, ys) K1
+        ∧ ¬ IsPresent (qHd, none, ∅, ys) W2)
       .twig Q5 (subFilter.map (fun ys => .leaf ys))
 
 /-- The branch obtained by taking the new, not pheno-constrained, charges obtained by inserting
@@ -103,7 +91,7 @@ def Branch.phenoInsertQ10 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (q
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match b with
   | .branch qHu twigs =>
-      if IsPresent K2 (qHd, qHu, {x}) then
+      if IsPresent (qHd, qHu, ∅, {x}) K2 then
           .branch qHu {}
       else
         .branch qHu (twigs.map fun t => Twig.phenoInsertQ10 t qHd x)
@@ -126,92 +114,13 @@ def phenoInsertQ10 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset 
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ10 ts x))
 
-lemma mem_insertQ10_and_not_isPresent_of_mem_phenoInsertQ10
-    (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (q10 : ℤ) (C : Charges)
-    (h : C ∈ phenoInsertQ10 T q10) : C ∈ (T.uniqueMap4 (insert q10))
-      ∧ ¬ IsPresent K2 (C.1, C.2.1, {q10})
-      ∧ ¬ IsPresent Λ (C.2.2.1, {q10})
-      ∧ ¬ IsPresent W1 (C.2.2.1, C.2.2.2) ∧ ¬ IsPresent K1 (C.2.2.1, C.2.2.2)
-      ∧ ¬ IsPresent W2 (C.1, C.2.2.2) := by
-  -- We first recover the trunk, branch, twig and leaf in T which corresponds to C.
-  simp [phenoInsertQ10, Membership.mem, mem] at h
-  obtain ⟨trunkP, trunkP_mem, hC⟩ := h
-  change trunkP ∈ (Multiset.map (fun ts => Trunk.phenoInsertQ10 ts q10) T.1) at trunkP_mem
-  simp [Multiset.mem_map] at trunkP_mem
-  -- trunkT is the trunk in T which corresponds to C. C does not live in this trunk.
-  obtain ⟨trunkT, trunkT_mem, rfl⟩ := trunkP_mem
-  simp [Trunk.mem] at hC
-  obtain ⟨C_fst, branchP, branchP_mem, hC⟩ := hC
-  simp [Trunk.phenoInsertQ10] at branchP_mem
-  -- branchT is the branch in trunkT which corresponds to C. C does not live in this branch.
-  -- C lives in branchP
-  obtain ⟨branchT, branchT_mem, branchP_eq⟩ := branchP_mem
-  by_cases hK2 : IsPresent K2 (trunkT.1, branchT.1, {q10})
-  · simp_all [Branch.phenoInsertQ10]
-    rw [← branchP_eq] at hC
-    simp [Branch.mem] at hC
-  simp_all [Branch.phenoInsertQ10]
-  match branchP with
-  | .branch qHu twigsP =>
-  simp at branchP_eq
-  obtain ⟨rfl, twigsP_eq⟩ := branchP_eq
-  simp [Branch.mem] at hC
-  obtain ⟨c_qHu_eq, twigP, twigP_mem, hC⟩ := hC
-  -- getting twigT
-  rw [← twigsP_eq] at twigP_mem
-  simp at twigP_mem
-  obtain ⟨twigT, twigT_mem, twigP_eq⟩ := twigP_mem
-  -- The condition on Λ
-  by_cases hΛ : IsPresent Λ (twigT.1, {q10})
-  · simp_all [Twig.phenoInsertQ10]
-    rw [← twigP_eq] at hC
-    simp [Twig.mem] at hC
-  simp_all [Twig.phenoInsertQ10]
-  -- Getting leafP
-  match twigP with
-  | .twig Q5 leafsP =>
-  simp at twigP_eq
-  obtain ⟨rfl, leafsP_eq⟩ := twigP_eq
-  simp [Twig.mem] at hC
-  obtain ⟨c_Q5_eq, leafP, leafP_mem, hC⟩ := hC
-  -- Getting leafT
-  rw [← leafsP_eq] at leafP_mem
-  simp at leafP_mem
-  obtain ⟨Q10P, ⟨⟨leafT, leafT_mem, h1⟩, hPresent⟩, h2⟩ := leafP_mem
-  have hQ10P : Q10P = C.2.2.2 := by
-    simp [Leaf.mem] at hC
-    rw [← hC, ← h2]
-  -- The goal
-  apply And.intro
-  · apply mem_of_parts (trunkT.uniqueMap4 (insert q10)) (branchT.uniqueMap4 (insert q10))
-      (twigT.uniqueMap4 (insert q10)) (leafT.uniqueMap4 (insert q10))
-    · simp [uniqueMap4]
-      use trunkT
-    · simp [Trunk.uniqueMap4]
-      use branchT
-    · simp [Branch.uniqueMap4]
-      use twigT
-    · simp [Twig.uniqueMap4]
-      use Q10P
-      constructor
-      · use leafT
-      · rw [← h1.2]
-        rfl
-    · simp_all only [Trunk.uniqueMap4, Branch.uniqueMap4, Twig.uniqueMap4, Leaf.uniqueMap4,
-        Trunk.phenoInsertQ10]
-      simp [Leaf.mem] at hC
-      rw [hC]
-      rfl
-  simp_all
-  simp [Trunk.phenoInsertQ10] at C_fst
-  simp_all
-
 lemma mem_phenoInsertQ10_of_mem_isPresent
     (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (q10 : ℤ) (C : Charges)
-    (h : C ∈ (T.uniqueMap4 (insert q10))) (hC : ¬ IsPresent K2 (C.1, C.2.1, {q10})
-      ∧ ¬ IsPresent Λ (C.2.2.1, {q10})
-      ∧ ¬ IsPresent W1 (C.2.2.1, C.2.2.2) ∧ ¬ IsPresent K1 (C.2.2.1, C.2.2.2)
-      ∧ ¬ IsPresent W2 (C.1, C.2.2.2)) :
+    (h : C ∈ (T.uniqueMap4 (insert q10))) (hC : ¬ IsPresent (C.1, C.2.1, ∅, {q10}) K2
+      ∧ ¬ IsPresent (none, none, C.2.2.1, {q10}) Λ
+      ∧ ¬ IsPresent (none, none, C.2.2.1, C.2.2.2) W1 ∧
+      ¬ IsPresent (none, none, C.2.2.1, C.2.2.2) K1
+      ∧ ¬ IsPresent (C.1, none, ∅, C.2.2.2) W2) :
     C ∈ phenoInsertQ10 T q10 := by
   rw [mem_iff_mem_toMultiset] at h
   simp [toMultiset] at h
@@ -294,12 +203,13 @@ def Branch.phenoInsertQ5 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (qH
     Branch (Option ℤ) (Finset ℤ) (Finset ℤ) :=
   match b with
   | .branch qHu twigs =>
-    if IsPresent β (qHu, {x}) ∨ IsPresent W4 (qHd, qHu, {x}) then
+    if IsPresent  (none, qHu, {x}, ∅) β ∨ IsPresent (qHd, qHu, {x}, ∅) W4 then
           .branch qHu {}
         else
           let insertTwigs := twigs.map (fun (.twig Q5 leafs) => Twig.twig (insert x Q5)
-            (leafs.filter (fun (.leaf Q10) => ¬ IsPresent W1 ({x}, Q10) ∧ ¬ IsPresent K1 ({x}, Q10)
-              ∧ ¬ IsPresent Λ ((insert x Q5), Q10) ∧
+            (leafs.filter (fun (.leaf Q10) => ¬ IsPresent (none, none, {x}, Q10) W1 ∧
+              ¬ IsPresent (none, none, {x}, Q10) K1
+              ∧ ¬ IsPresent (none, none, (insert x Q5), Q10) Λ ∧
               ¬ Branch.mem (.branch qHu twigs) (qHu, (insert x Q5), Q10))))
           .branch qHu <| insertTwigs
 
@@ -323,10 +233,10 @@ def phenoInsertQ5 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset �
 
 lemma mem_phenoInsertQ5_of_mem_isPresent (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ))
     (q5 : ℤ) (C : Charges)
-    (h : C ∈ (T.uniqueMap3 (insert q5))) (hC : ¬ IsPresent β (C.2.1, {q5})
-      ∧ ¬ IsPresent W4 (C.1, C.2.1, {q5}) ∧
-      ¬ IsPresent W1 ({q5}, C.2.2.2) ∧ ¬ IsPresent K1 ({q5}, C.2.2.2)
-      ∧ ¬ IsPresent Λ (C.2.2.1, C.2.2.2)) :
+    (h : C ∈ (T.uniqueMap3 (insert q5))) (hC : ¬ IsPresent (none, C.2.1, {q5}, ∅) β
+      ∧ ¬ IsPresent (C.1, C.2.1, {q5}, ∅) W4 ∧
+      ¬ IsPresent (none, none, {q5}, C.2.2.2) W1 ∧ ¬ IsPresent (none, none, {q5}, C.2.2.2) K1
+      ∧ ¬ IsPresent (none, none, C.2.2.1, C.2.2.2) Λ) :
     C ∈ phenoInsertQ5 T q5 := by
   rw [mem_iff_mem_toMultiset] at h
   simp [toMultiset] at h
@@ -365,8 +275,8 @@ lemma mem_phenoInsertQ5_of_mem_isPresent (T : FourTree (Option ℤ) (Option ℤ)
     (Trunk.phenoInsertQ5 trunkT q5).1 q5)
     (Twig.twig (insert q5 twigT.1)
         (Multiset.filter (fun (.leaf Q10) =>
-        ¬ IsPresent W1 ({q5}, Q10) ∧ ¬ IsPresent K1 ({q5}, Q10)
-          ∧ ¬ IsPresent Λ ((insert q5 twigT.1), Q10) ∧
+        ¬ IsPresent (none, none, {q5}, Q10) W1 ∧ ¬ IsPresent (none, none, {q5}, Q10) K1
+          ∧ ¬ IsPresent (none, none, (insert q5 twigT.1), Q10) Λ ∧
           ¬(Branch.branch branchT.1 branchT.2).mem (branchT.1, insert q5 twigT.1, Q10))
           twigT.2)) (leafI)
   · simp [phenoInsertQ5]
