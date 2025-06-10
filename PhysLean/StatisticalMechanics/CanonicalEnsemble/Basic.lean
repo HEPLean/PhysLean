@@ -143,7 +143,7 @@ noncomputable def probability [Fintype ι] (i : microstates 𝓒) (T : Temperatu
   exp (- β (T) * 𝓒.energy i) / partitionFunction 𝓒 T
 
 /-- Probability of a microstate in a canonical ensemble is less then or equal to `1`. -/
-semiformal_result "ERBG6" probability_nsmul [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
+semiformal_result "ERDAR" probability_nsmul [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
     𝓒.probability i T ≤ 1
 
 /-- Probability of a microstate in a canonical ensemble is non-negative. -/
@@ -168,7 +168,7 @@ lemma probability_add [Fintype ι] [Fintype ι1]
 
 /-- The probability of a microstate in `n` copies of a canonical ensemble is
   equal to the product of the probability of the corresponding individual microstates. -/
-semiformal_result "ERBAH" probability_nsmul [Fintype ι] (n : ℕ)
+semiformal_result "ERDAE" probability_nsmul [Fintype ι] (n : ℕ)
     (f : microstates (nsmul n 𝓒)) (T : Temperature) :
     (nsmul n 𝓒).probability f T = ∏ i, 𝓒.probability (f i) T
 
@@ -217,7 +217,10 @@ lemma meanEnergy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) 
     simp
 
 /-- The mean energy of `n` copies of a canonical ensemble is equal
-  to `n` times the mean energy of the canonical ensemble. -/
+  to `n` times the mean energy of the canonical ensemble.
+
+  Note, can't make this `SMul` since the target type depends on the
+  value of `n`. -/
 semiformal_result "ERBAH" meanEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T
 
@@ -283,6 +286,7 @@ lemma entropy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) [Fi
   to `n` times the entropy of the canonical ensemble. -/
 semiformal_result "ERBCV" entropy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).entropy T = n * 𝓒.entropy T
+
 /-!
 
 ## Helmholtz free energy
@@ -303,7 +307,7 @@ lemma helmholtzFreeEnergy_add [Fintype ι] [Nonempty ι]
 
 /-- The free energy of `n` copies of a canonical ensemble is equal
   to `n` times the entropy of the canonical ensemble. -/
-semiformal_result "ERBCV" helmholtzFreeEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+semiformal_result "ERC72" helmholtzFreeEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).helmholtzFreeEnergy T = n * 𝓒.helmholtzFreeEnergy T
 
 end CanonicalEnsemble
