@@ -106,18 +106,18 @@ lemma toList_count {I : CodimensionOneConfig} {F : FiveQuanta}
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I) = 1 := by
-      revert hmema
-      clear * -
-      intro h
-      revert a I
-      decide
-    rw [hc]
-    simp only [↓reduceIte, one_nsmul]
-    intro a' ha' hx
-    simp [ha']
-    intro hn
-    exact fun a_1 => ha' (id (Eq.symm hn))
+    · have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I) = 1 := by
+        revert hmema
+        clear * -
+        intro h
+        revert a I
+        decide
+      rw [hc]
+      simp only [↓reduceIte, one_nsmul]
+    · intro a' ha' hx
+      simp [ha']
+      intro hn
+      exact fun a_1 => ha' (id (Eq.symm hn))
   · rw [List.count_eq_zero_of_not_mem]
     · exact (Multiset.count_eq_zero.mpr hS).symm
     · rw [mem_toList_iff F hf hc]
@@ -294,18 +294,18 @@ lemma toList_count {I : CodimensionOneConfig} {F : TenQuanta}
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I) = 1 := by
-      revert hmema
-      clear * -
-      intro h
-      revert a I
-      decide
-    rw [hc]
-    simp only [↓reduceIte, one_nsmul]
-    intro a' ha' hx
-    simp [ha']
-    intro hn
-    exact fun a_1 => ha' (id (Eq.symm hn))
+    · have hc : @List.count (ℤ × ℤ × ℤ) instBEqOfDecidableEq a (allowedElems I) = 1 := by
+        revert hmema
+        clear * -
+        intro h
+        revert a I
+        decide
+      rw [hc]
+      simp only [↓reduceIte, one_nsmul]
+    · intro a' ha' hx
+      simp [ha']
+      intro hn
+      exact fun a_1 => ha' (id (Eq.symm hn))
   · rw [List.count_eq_zero_of_not_mem]
     · exact (Multiset.count_eq_zero.mpr hS).symm
     · rw [mem_toList_iff F hf hc]

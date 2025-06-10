@@ -60,7 +60,7 @@ lemma harmonicElectromagneticPlaneWave_eq_electricplaneWave {c : ℝ} {k : WaveV
     (WaveVector.toDirection k (by rw [hk]; simp [ne_of_gt, hc_ge_zero, hω_ge_zero])) := by
   unfold harmonicElectromagneticPlaneWave monochromX monochromY electricPlaneWave
   trans transverseHarmonicPlaneWave k E₀x E₀y ω δx δy hk
-  rfl
+  · rfl
   rw [transverseHarmonicPlaneWave_eq_planeWave hc_ge_zero hω_ge_zero]
 
 /-!

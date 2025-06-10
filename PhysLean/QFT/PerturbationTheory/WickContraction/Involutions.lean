@@ -63,8 +63,8 @@ def fromInvolution (f : {f : Fin n → Fin n // Function.Involutive f}) : WickCo
       · apply And.intro
         · exact fun a => hi a.symm
         · rw [Function.Injective.eq_iff]
-          exact fun a => h (id (Eq.symm a))
-          exact Function.Involutive.injective f.2⟩
+          · exact fun a => h (id (Eq.symm a))
+          · exact Function.Involutive.injective f.2⟩
 
 @[simp]
 lemma fromInvolution_getDual?_isSome (f : {f : Fin n → Fin n // Function.Involutive f})

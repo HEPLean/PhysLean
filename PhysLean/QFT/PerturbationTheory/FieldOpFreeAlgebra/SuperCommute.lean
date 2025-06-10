@@ -731,32 +731,32 @@ lemma superCommuteF_ofCrAnListF_ofCrAnListF_bosonic_or_fermionic (φs φs' : Lis
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h1
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h2
+    · exact ofCrAnListF_mem_statisticSubmodule_of _ _ h1
+    exact ofCrAnListF_mem_statisticSubmodule_of _ _ h2
   · right
     have h : fermionic = bosonic + fermionic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h1
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h2)
+    · exact ofCrAnListF_mem_statisticSubmodule_of _ _ h1
+    exact ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h2)
   · right
     have h : fermionic = fermionic + bosonic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h1)
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ h2
+    · exact ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h1)
+    exact ofCrAnListF_mem_statisticSubmodule_of _ _ h2
   · left
     have h : bosonic = fermionic + fermionic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     rw [h]
     apply superCommuteF_grade
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h1)
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h2)
+    · exact ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h1)
+    exact ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h2)
 
 lemma superCommuteF_ofCrAnOpF_ofCrAnOpF_bosonic_or_fermionic (φ φ' : 𝓕.CrAnFieldOp) :
     [ofCrAnOpF φ, ofCrAnOpF φ']ₛF ∈ statisticSubmodule bosonic ∨
@@ -871,7 +871,7 @@ lemma statistic_neq_of_superCommuteF_fermionic {φs φs' : List 𝓕.CrAnFieldOp
       rfl
     rw [h1]
     apply superCommuteF_grade
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _ hc
+    · apply ofCrAnListF_mem_statisticSubmodule_of _ _ hc
     apply ofCrAnListF_mem_statisticSubmodule_of _ _
     rw [← hn, hc]
   · have h1 : bosonic = fermionic + fermionic := by
@@ -879,8 +879,8 @@ lemma statistic_neq_of_superCommuteF_fermionic {φs φs' : List 𝓕.CrAnFieldOp
       rfl
     rw [h1]
     apply superCommuteF_grade
-    apply ofCrAnListF_mem_statisticSubmodule_of _ _
-    simpa using hc
+    · apply ofCrAnListF_mem_statisticSubmodule_of _ _
+      simpa using hc
     apply ofCrAnListF_mem_statisticSubmodule_of _ _
     rw [← hn]
     simpa using hc

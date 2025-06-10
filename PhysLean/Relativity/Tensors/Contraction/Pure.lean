@@ -710,18 +710,18 @@ lemma contrPCoeff_symm {n : ℕ} {c : Fin n → S.C} {i j : Fin n} {hij : i ≠ 
   rw [contrPCoeff, contrPCoeff]
   erw [S.contr_tmul_symm]
   rw [S.contr_congr (S.τ (c i)) (c j)]
-  simp only [Monoidal.tensorUnit_obj, Equivalence.symm_inverse,
+  · simp only [Monoidal.tensorUnit_obj, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     Functor.comp_obj, Discrete.functor_obj_eq_as, Function.comp_apply]
-  change _ = (ConcreteCategory.hom (S.contr.app { as := c j }).hom) _
-  congr 2
-  · change ((S.FD.map (eqToHom _) ≫ S.FD.map (eqToHom _)).hom) _ = _
-    rw [← S.FD.map_comp]
-    simp
-  · change ((S.FD.map (eqToHom _) ≫ S.FD.map (eqToHom _)).hom) _ = _
-    rw [← S.FD.map_comp]
-    simp only [eqToHom_trans]
-    rfl
+    change _ = (ConcreteCategory.hom (S.contr.app { as := c j }).hom) _
+    congr 2
+    · change ((S.FD.map (eqToHom _) ≫ S.FD.map (eqToHom _)).hom) _ = _
+      rw [← S.FD.map_comp]
+      simp
+    · change ((S.FD.map (eqToHom _) ≫ S.FD.map (eqToHom _)).hom) _ = _
+      rw [← S.FD.map_comp]
+      simp only [eqToHom_trans]
+      rfl
   · simp [hij.2]
 
 lemma contrPCoeff_mul_dropPair {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}

@@ -224,13 +224,13 @@ lemma directSum_eq_bosonic_plus_fermionic
     | bosonic =>
       simp only [DirectSum.of_eq_same, left_eq_add]
       rw [DirectSum.of_eq_of_ne]
-      simp only [map_zero]
-      simp
+      · simp
+      · simp
     | fermionic =>
       simp only [DirectSum.of_eq_same, add_zero]
       rw [DirectSum.of_eq_of_ne]
-      simp only [map_zero, zero_add]
-      simp
+      · simp
+      · simp
   · intro x y hx hy
     simp only [DirectSum.add_apply, map_add, C] at hx hy ⊢
     conv_lhs => rw [hx, hy]
@@ -350,14 +350,14 @@ lemma bosonicProjF_mul (a b : 𝓕.FieldOpFreeAlgebra) :
       apply fieldOpFreeAlgebraGrade.mul_mem
       simp only [SetLike.coe_mem]
       simp)]
-  simp only [ZeroMemClass.coe_zero, add_zero, zero_add]
+  · simp
   · have h1 : bosonic = bosonic + bosonic := by
       simp only [add_eq_mul, instCommGroup, mul_self]
       rfl
     conv_lhs => rw [h1]
     apply fieldOpFreeAlgebraGrade.mul_mem
-    simp only [SetLike.coe_mem]
-    simp
+    · simp
+    · simp
 
 lemma fermionicProjF_mul (a b : 𝓕.FieldOpFreeAlgebra) :
     (a * b).fermionicProjF.1 = a.bosonicProjF.1 * b.fermionicProjF.1

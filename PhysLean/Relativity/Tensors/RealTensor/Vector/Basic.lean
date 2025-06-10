@@ -155,8 +155,8 @@ lemma innerProduct_toCoord {d : ℕ} (p q : Vector d) :
     minkowskiMatrix.off_diag_zero, zero_mul, Finset.sum_const_zero, _root_.add_zero,
     _root_.zero_add]
   congr 1
-  rw [minkowskiMatrix.inl_0_inl_0]
-  simp only [Fin.isValue, one_mul]
+  · rw [minkowskiMatrix.inl_0_inl_0]
+    simp only [Fin.isValue, one_mul]
   rw [← Finset.sum_neg_distrib]
   congr
   funext x

@@ -205,18 +205,18 @@ lemma stdBasis_inl {d : ℕ} :
     ⟪@ContrMod.stdBasis d (Sum.inl 0), ContrMod.stdBasis (Sum.inl 0)⟫ₘ = (1 : ℝ) := by
   rw [as_sum]
   trans (1 : ℝ) - (0 : ℝ)
-  congr
-  · rw [ContrMod.stdBasis_apply_same]
-    simp
-  · rw [Fintype.sum_eq_zero]
-    intro a
-    simp
+  · congr
+    · rw [ContrMod.stdBasis_apply_same]
+      simp
+    · rw [Fintype.sum_eq_zero]
+      intro a
+      simp
   · ring
 
 lemma symm : ⟪x, y⟫ₘ = ⟪y, x⟫ₘ := by
   rw [as_sum, as_sum]
   congr 1
-  rw [mul_comm]
+  · rw [mul_comm]
   congr
   funext i
   rw [mul_comm]

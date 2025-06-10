@@ -18,6 +18,11 @@ rev = "v4.20.1"
 [[lean_lib]]
 name = "PhysLean"
 
+[leanOptions]
+weak.linter.style.multiGoal = true
+weak.linter.style.longLine = true
+weak.linter.style.missingEnd = true
+
 ## Scripts
 
 ### Core linting scripts

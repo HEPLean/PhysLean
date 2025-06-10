@@ -513,7 +513,7 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
       obtain ⟨a, ha, rfl⟩ := hr
       simp [card]
       rw [Finset.card_insert_of_notMem]
-      omega
+      · omega
       by_contra h
       rw [Finset.insert_eq_of_mem h] at hy1
       simp at hy1
@@ -523,7 +523,7 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
       obtain ⟨a, ha, rfl⟩ := hr
       simp [card]
       rw [Finset.card_insert_of_notMem]
-      omega
+      · omega
       by_contra h
       rw [Finset.insert_eq_of_mem h] at hy1
       simp at hy1

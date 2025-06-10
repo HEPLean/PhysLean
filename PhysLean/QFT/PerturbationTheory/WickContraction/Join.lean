@@ -263,7 +263,7 @@ lemma join_card {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
     (join φsΛ φsucΛ).1.card = φsΛ.1.card + φsucΛ.1.card := by
   simp only [join, Finset.le_eq_subset]
   rw [Finset.card_union_of_disjoint]
-  simp only [Finset.card_map]
+  · simp only [Finset.card_map]
   rw [@Finset.disjoint_left]
   intro a ha
   simp only [Finset.mem_map, RelEmbedding.coe_toEmbedding, not_exists, not_and]
@@ -296,14 +296,14 @@ lemma empty_join {φs : List 𝓕.FieldOp} (φsΛ : WickContraction [empty (n :=
     rw [Finset.map_map]
     apply Set.mem_of_eq_of_mem _ ha
     trans Finset.map (Equiv.refl _).toEmbedding a
-    rfl
+    · rfl
     simp
   · intro h
     use Finset.map (finCongr (by simp)).toEmbedding a
     simp only [h, true_and]
     trans Finset.map (Equiv.refl _).toEmbedding a
-    rw [Finset.mapEmbedding_apply, Finset.map_map]
-    rfl
+    · rw [Finset.mapEmbedding_apply, Finset.map_map]
+      rfl
     simp
 
 @[simp]
@@ -392,16 +392,16 @@ lemma join_uncontractedList {φs : List 𝓕.FieldOp} (φsΛ : WickContraction �
   rw [uncontractedList_eq_sort]
   rw [uncontractedList_eq_sort]
   rw [fin_finset_sort_map_monotone]
-  congr
-  ext a
-  simp only [Finset.mem_map]
-  apply Iff.intro
-  · intro h
-    obtain ⟨a, rfl, ha⟩ := exists_mem_right_uncontracted_of_mem_join_uncontracted _ _ a h
-    use a, ha
-  · intro h
-    obtain ⟨a, ha, rfl⟩ := h
-    exact mem_join_uncontracted_of_mem_right_uncontracted φsΛ φsucΛ a ha
+  · congr
+    ext a
+    simp only [Finset.mem_map]
+    apply Iff.intro
+    · intro h
+      obtain ⟨a, rfl, ha⟩ := exists_mem_right_uncontracted_of_mem_join_uncontracted _ _ a h
+      use a, ha
+    · intro h
+      obtain ⟨a, ha, rfl⟩ := h
+      exact mem_join_uncontracted_of_mem_right_uncontracted φsΛ φsucΛ a ha
   · intro a b h
     exact uncontractedListEmd_strictMono h
 
@@ -539,11 +539,11 @@ lemma join_getDual?_apply_uncontractedListEmb {φs : List 𝓕.FieldOp}
     Option.map uncontractedListEmd (φsucΛ.getDual? i) := by
   by_cases h : (φsucΛ.getDual? i).isSome
   · rw [join_getDual?_apply_uncontractedListEmb_some]
-    have h1 : (φsucΛ.getDual? i) = (φsucΛ.getDual? i).get (by simpa using h) :=
-      Eq.symm (Option.some_get h)
-    conv_rhs => rw [h1]
-    simp only [Option.map_some]
-    exact (join_getDual?_apply_uncontractedListEmb_isSome_iff φsΛ φsucΛ i).mpr h
+    · have h1 : (φsucΛ.getDual? i) = (φsucΛ.getDual? i).get (by simpa using h) :=
+        Eq.symm (Option.some_get h)
+      conv_rhs => rw [h1]
+      simp only [Option.map_some]
+    · exact (join_getDual?_apply_uncontractedListEmb_isSome_iff φsΛ φsucΛ i).mpr h
   · simp only [Bool.not_eq_true, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none] at h
     rw [h]
     simp only [Option.map_none, join_getDual?_apply_uncontractedListEmb_eq_none_iff]
@@ -637,8 +637,8 @@ lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : W
     apply And.intro
     · simp only [id_eq, eq_mpr_eq_cast, φsucΛ]
       rw [gradingCompliant_congr (φs' := [(φsΛ.subContraction {a} (by simpa using ha))]ᵘᶜ)]
-      simp only [id_eq, eq_mpr_eq_cast, congr_trans_apply, congr_refl]
-      exact quotContraction_gradingCompliant hc
+      · simp only [id_eq, eq_mpr_eq_cast, congr_trans_apply, congr_refl]
+        exact quotContraction_gradingCompliant hc
       rw [← subContraction_singleton_eq_singleton]
     · simp only [id_eq, eq_mpr_eq_cast, card_congr, φsucΛ]
       have h1 := subContraction_card_plus_quotContraction_card_eq _ {a} (by simpa using ha)

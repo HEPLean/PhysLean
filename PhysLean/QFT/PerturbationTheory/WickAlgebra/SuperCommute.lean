@@ -83,8 +83,8 @@ lemma superCommuteRight_eq_of_equiv (a1 a2 : 𝓕.FieldOpFreeAlgebra) (h : a1 �
     exact (ι_eq_zero_iff_mem_ideal (a1 - a2)).mpr h
   simp_all only [superCommuteRight_apply_ι, map_sub, LinearMap.sub_apply]
   trans ι ((superCommuteF a2) b) + 0
-  rw [← ha1b1]
-  simp only [add_sub_cancel]
+  · rw [← ha1b1]
+    simp
   simp
 
 /-- For a field specification `𝓕`, `superCommute` is the linear map

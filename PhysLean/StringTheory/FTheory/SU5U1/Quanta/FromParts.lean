@@ -148,15 +148,15 @@ lemma mem_ofCharges_iff (I : CodimensionOneConfig) (charges : Multiset ℤ)
     simp [ofCharges] at h
     obtain ⟨f, hf, hF⟩ := h
     rw [← fromParts_eq_preimage] at hF
-    obtain ⟨h1, h2⟩ := hF
-    subst h1 h2
-    simp only [true_and]
-    constructor
-    · exact FluxesFive.noExotics_of_mem_elemsNoExotics F.toFluxesFive hf
-    · exact FluxesFive.hasNoZero_of_mem_elemsNoExotics F.toFluxesFive hf
-    constructor
-    · exact FluxesFive.noExotics_of_mem_elemsNoExotics f hf
-    · exact FluxesFive.hasNoZero_of_mem_elemsNoExotics f hf
+    · obtain ⟨h1, h2⟩ := hF
+      subst h1 h2
+      simp only [true_and]
+      constructor
+      · exact FluxesFive.noExotics_of_mem_elemsNoExotics F.toFluxesFive hf
+      · exact FluxesFive.hasNoZero_of_mem_elemsNoExotics F.toFluxesFive hf
+    · constructor
+      · exact FluxesFive.noExotics_of_mem_elemsNoExotics f hf
+      · exact FluxesFive.hasNoZero_of_mem_elemsNoExotics f hf
     · exact hc
   · intro ⟨rfl, h2, h3⟩
     simp [ofCharges]
@@ -176,9 +176,9 @@ lemma mem_ofCharges_self (I : CodimensionOneConfig) (c : FiveQuanta)
   use c.toFluxesFive
   refine ⟨FluxesFive.mem_elemsNoExotics_of_noExotics c.toFluxesFive h hnz, ?_⟩
   rw [← fromParts_eq_preimage I c.toCharges c.toFluxesFive]
-  simp only [and_self]
-  exact ⟨h, hnz⟩
-  exact hc
+  · simp only [and_self]
+  · exact ⟨h, hnz⟩
+  · exact hc
 
 end FiveQuanta
 
@@ -300,15 +300,15 @@ lemma mem_ofCharges_iff (I : CodimensionOneConfig) (charges : Multiset ℤ)
     simp [ofCharges] at h
     obtain ⟨f, hf, hF⟩ := h
     rw [← fromParts_eq_preimage] at hF
-    obtain ⟨h1, h2⟩ := hF
-    subst h1 h2
-    simp only [true_and]
-    constructor
-    · exact FluxesTen.noExotics_of_mem_elemsNoExotics F.toFluxesTen hf
-    · exact FluxesTen.hasNoZero_of_mem_elemsNoExotics F.toFluxesTen hf
-    constructor
-    · exact FluxesTen.noExotics_of_mem_elemsNoExotics f hf
-    · exact FluxesTen.hasNoZero_of_mem_elemsNoExotics f hf
+    · obtain ⟨h1, h2⟩ := hF
+      subst h1 h2
+      simp only [true_and]
+      constructor
+      · exact FluxesTen.noExotics_of_mem_elemsNoExotics F.toFluxesTen hf
+      · exact FluxesTen.hasNoZero_of_mem_elemsNoExotics F.toFluxesTen hf
+    · constructor
+      · exact FluxesTen.noExotics_of_mem_elemsNoExotics f hf
+      · exact FluxesTen.hasNoZero_of_mem_elemsNoExotics f hf
     · exact hc
   · intro ⟨rfl, h2, h3⟩
     simp [ofCharges]
@@ -328,9 +328,9 @@ lemma mem_ofCharges_self (I : CodimensionOneConfig) (c : TenQuanta)
   use c.toFluxesTen
   refine ⟨FluxesTen.mem_elemsNoExotics_of_noExotics c.toFluxesTen h hnz, ?_⟩
   rw [← fromParts_eq_preimage I c.toCharges c.toFluxesTen]
-  simp only [and_self]
-  exact ⟨h, hnz⟩
-  exact hc
+  · simp only [and_self]
+  · exact ⟨h, hnz⟩
+  · exact hc
 
 end TenQuanta
 

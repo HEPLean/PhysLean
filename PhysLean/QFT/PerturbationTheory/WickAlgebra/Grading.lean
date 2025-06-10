@@ -371,13 +371,13 @@ lemma directSum_eq_bosonic_plus_fermionic
     | bosonic =>
       simp only [DirectSum.of_eq_same, left_eq_add]
       rw [DirectSum.of_eq_of_ne]
-      simp only [map_zero]
-      simp
+      · simp
+      · simp
     | fermionic =>
       simp only [DirectSum.of_eq_same, add_zero]
       rw [DirectSum.of_eq_of_ne]
-      simp only [map_zero, zero_add]
-      simp
+      · simp
+      · simp
   · intro x y hx hy
     simp only [DirectSum.add_apply, map_add, C] at hx hy ⊢
     conv_lhs => rw [hx, hy]

@@ -89,8 +89,8 @@ lemma wickTerm_insert_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   · simp only [Nat.succ_eq_add_one, timeContract_insert_none, Algebra.smul_mul_assoc,
     instCommGroup.eq_1]
     rw [timeContract_of_not_gradingCompliant]
-    simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
-    exact hg
+    · simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero]
+    · exact hg
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
   `𝓕.FieldOp`, `i ≤ φs.length` and a `k` in `φsΛ.uncontracted`,
@@ -156,22 +156,21 @@ lemma wickTerm_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
       by_cases h1 : i < i.succAbove ↑k
       · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
-        simp only [zero_mul, smul_zero]
-        rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
-        simp only [zero_mul, smul_zero]
-        exact hg
+        · simp only [zero_mul, smul_zero]
+          rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
+          · simp only [zero_mul, smul_zero]
+          · exact hg
         exact hg
       · simp only [h1, ↓reduceIte, MulMemClass.coe_mul]
         rw [timeContract_zero_of_diff_grade]
-        simp only [zero_mul, smul_zero]
-        rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
-        simp only [zero_mul, smul_zero]
-        exact hg
+        · simp only [zero_mul, smul_zero]
+          rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
+          · simp only [zero_mul, smul_zero]
+          · exact hg
         exact fun a => hg (id (Eq.symm a))
     · rw [timeContract_of_not_gradingCompliant]
-      simp only [Nat.succ_eq_add_one, Fin.getElem_fin, mul_zero, ZeroMemClass.coe_zero, smul_zero,
-        zero_mul, instCommGroup.eq_1]
-      exact hg'
+      · simp
+      · exact hg'
 
 /--
 For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of

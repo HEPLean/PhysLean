@@ -66,8 +66,8 @@ lemma basis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
   rw [Finsupp.single_apply, toComplexNum]
   simp only [RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk]
   split
-  simp only [Rat.cast_one, Rat.cast_zero, zero_mul, add_zero]
-  simp
+  · simp
+  · simp
 
 lemma contr_basis_ratComplexNum {c : complexLorentzTensor.C}
     (i : Fin (complexLorentzTensor.repDim c))

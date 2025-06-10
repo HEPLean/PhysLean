@@ -27,10 +27,10 @@ lemma stat_signFinset_right {φs : List 𝓕.FieldOp} (φsΛ : WickContraction �
   simp only [ofFinset]
   congr 1
   rw [← fin_finset_sort_map_monotone]
-  simp only [List.map_map, List.map_inj_left, Finset.mem_sort, List.get_eq_getElem,
-    Function.comp_apply, getElem_uncontractedListEmd, implies_true]
-  intro i j h
-  exact uncontractedListEmd_strictMono h
+  · simp only [List.map_map, List.map_inj_left, Finset.mem_sort, List.get_eq_getElem,
+      Function.comp_apply, getElem_uncontractedListEmd, implies_true]
+  · intro i j h
+    exact uncontractedListEmd_strictMono h
 
 lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length)
@@ -69,13 +69,13 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldO
     apply And.intro
     · have h1 := h.1
       rw [StrictMono.lt_iff_lt] at h1
-      exact h1
-      exact fun _ _ h => uncontractedListEmd_strictMono h
+      · exact h1
+      · exact fun _ _ h => uncontractedListEmd_strictMono h
     · apply And.intro
       · have h1 := h.2.1
         rw [StrictMono.lt_iff_lt] at h1
-        exact h1
-        exact fun _ _ h => uncontractedListEmd_strictMono h
+        · exact h1
+        · exact fun _ _ h => uncontractedListEmd_strictMono h
       · have h1 := h.2.2
         simp_all only [and_true]
         rcases h1 with h1 | h1
@@ -87,8 +87,8 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldO
             apply lt_of_lt_of_eq h1'
             simp [Option.get_map]
           rw [StrictMono.lt_iff_lt] at hl
-          exact hl
-          exact fun _ _ h => uncontractedListEmd_strictMono h
+          · exact hl
+          · exact fun _ _ h => uncontractedListEmd_strictMono h
 
 lemma sign_right_eq_prod_mul_prod {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length)
     (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length) :
@@ -368,11 +368,11 @@ lemma joinSignLeftExtra_eq_joinSignRightExtra {φs : List 𝓕.FieldOp}
           have hj2 : ¬ uncontractedListEmd (φsucΛ.sndFieldOfContract a) < j := by omega
           simp only [hj2, ↓reduceIte, map_one]
           rw [← ofFinset_union_disjoint]
-          simp only [instCommGroup, ofFinset_singleton, List.get_eq_getElem, hs]
-          erw [hs]
-          simp only [Fin.getElem_fin, mul_self, map_one]
-          simp only [Finset.disjoint_singleton_right, Finset.mem_singleton]
-          exact Fin.ne_of_lt h
+          · simp only [instCommGroup, ofFinset_singleton, List.get_eq_getElem, hs]
+            erw [hs]
+            simp only [Fin.getElem_fin, mul_self, map_one]
+          · simp only [Finset.disjoint_singleton_right, Finset.mem_singleton]
+            exact Fin.ne_of_lt h
 
 lemma join_sign_singleton {φs : List 𝓕.FieldOp}
     {i j : Fin φs.length} (h : i < j) (hs : (𝓕 |>ₛ φs[i]) = (𝓕 |>ₛ φs[j]))

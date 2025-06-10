@@ -222,6 +222,9 @@ lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
       Fin.getElem_fin]
     rw [ofList_cons_eq_mul]
     rw [ofList_map_eq_finset_prod s (φ :: φs) l]
+    swap
+    · simp only [List.length_cons, List.nodup_cons] at hl
+      exact hl.2
     have h1 : s (φ :: φs)[↑i] = ∏ (j : Fin (φ :: φs).length),
       if j = i then s (φ :: φs)[↑i] else 1 := by
       rw [Fintype.prod_ite_eq']
@@ -233,13 +236,11 @@ lemma ofList_map_eq_finset_prod (s : 𝓕 → FieldStatistic) :
     by_cases ha : a = i
     · simp only [ha, ↓reduceIte, mul_self, true_or]
       rw [if_neg]
-      rfl
-      simp only [List.length_cons, List.nodup_cons] at hl
-      exact hl.1
+      · rfl
+      · simp only [List.length_cons, List.nodup_cons] at hl
+        exact hl.1
     · simp only [ha, ↓reduceIte, false_or]
       rfl
-    simp only [List.length_cons, List.nodup_cons] at hl
-    exact hl.2
 
 lemma ofList_pair (s : 𝓕 → FieldStatistic) (φ1 φ2 : 𝓕) :
     ofList s [φ1, φ2] = s φ1 * s φ2 := by

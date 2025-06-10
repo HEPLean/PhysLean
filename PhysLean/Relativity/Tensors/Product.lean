@@ -83,8 +83,8 @@ def ComponentIdx.splitEquiv {n1 n2 : ℕ} {c : Fin n1 → S.C} {c1 : Fin n2 → 
       rfl
   right_inv p := by
     ext i
-    simp only
-    · rw [prodEquiv]
+    · simp only
+      rw [prodEquiv]
       rw [Equiv.piCongr_symm_apply]
       simp only [Function.comp_apply, Sum.elim_inl, finCongr_symm,
         finCongr_apply, Fin.coe_cast]

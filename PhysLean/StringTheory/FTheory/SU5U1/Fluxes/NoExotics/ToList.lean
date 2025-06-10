@@ -91,14 +91,14 @@ lemma toList_count {F : FluxesFive} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.Has
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs = 1 := by
-      revert hmema
-      clear * -
-      intro h
-      revert a
-      decide
-    rw [hc]
-    simp only [↓reduceIte, one_nsmul]
+    · have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs = 1 := by
+        revert hmema
+        clear * -
+        intro h
+        revert a
+        decide
+      rw [hc]
+      simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
     simp [ha']
     intro hn
@@ -200,14 +200,14 @@ lemma toList_count {F : FluxesTen} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.HasN
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs = 1 := by
-      revert hmema
-      clear * -
-      intro h
-      revert a
-      decide
-    rw [hc]
-    simp only [↓reduceIte, one_nsmul]
+    · have hc : @List.count (ℤ × ℤ) instBEqOfDecidableEq a allowedPairs = 1 := by
+        revert hmema
+        clear * -
+        intro h
+        revert a
+        decide
+      rw [hc]
+      simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
     simp [ha']
     intro hn

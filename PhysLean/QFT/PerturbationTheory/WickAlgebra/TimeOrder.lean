@@ -129,15 +129,15 @@ lemma ι_timeOrderF_superCommuteF_superCommuteF_eq_time_ofCrAnListF {φ1 φ2 φ3
   rw [← sub_mul, ← sub_mul, ← sub_mul]
   trans ι (ofCrAnListF l1) * ι [ofCrAnOpF φ1, [ofCrAnOpF φ2, ofCrAnOpF φ3]ₛF]ₛF *
     ι (ofCrAnListF l2)
-  rw [mul_assoc]
-  congr
-  rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
-  rw [superCommuteF_ofCrAnListF_ofCrAnListF]
-  simp only [List.singleton_append, instCommGroup.eq_1, ofList_singleton, map_sub, map_smul]
-  rw [superCommuteF_ofCrAnListF_ofCrAnListF, superCommuteF_ofCrAnListF_ofCrAnListF]
-  simp only [List.cons_append, List.nil_append, instCommGroup.eq_1, ofList_singleton, map_sub,
-    map_smul, smul_sub]
-  simp_all
+  · rw [mul_assoc]
+    congr
+    rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton, ← ofCrAnListF_singleton]
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp only [List.singleton_append, instCommGroup.eq_1, ofList_singleton, map_sub, map_smul]
+    rw [superCommuteF_ofCrAnListF_ofCrAnListF, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp only [List.cons_append, List.nil_append, instCommGroup.eq_1, ofList_singleton, map_sub,
+      map_smul, smul_sub]
+  · simp_all
 
 lemma ι_timeOrderF_superCommuteF_superCommuteF_ofCrAnListF {φ1 φ2 φ3 : 𝓕.CrAnFieldOp}
     (φs1 φs2 : List 𝓕.CrAnFieldOp) :
@@ -261,12 +261,12 @@ lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnFieldOp}
       · rw [ι_superCommuteF_of_diff_statistic hq]
         simp
       · rw [crAnTimeOrderSign, Wick.koszulSign_eq_rel_eq_stat _ _, ← crAnTimeOrderSign]
-        rw [timeOrderF_ofCrAnListF]
-        simp only [map_smul, Algebra.mul_smul_comm]
-        simp only [List.nil_append]
-        exact hψφ
-        exact hφψ
-        simpa using hq
+        · rw [timeOrderF_ofCrAnListF]
+          simp only [map_smul, Algebra.mul_smul_comm]
+          simp only [List.nil_append]
+        · exact hψφ
+        · exact hφψ
+        · simpa using hq
     · simp only [map_mul, zero_mul, map_zero, mul_zero, pa]
     · intro x y hx hy hpx hpy
       simp_all [pa,mul_add, add_mul]
@@ -286,14 +286,14 @@ lemma ι_timeOrderF_superCommuteF_neq_time {φ ψ : 𝓕.CrAnFieldOp}
     exact Decidable.not_and_iff_or_not.mp hφψ
   rcases hφψ with hφψ | hφψ
   · rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel]
-    simp_all only [false_and, not_false_eq_true, false_or, mul_zero, zero_mul, map_zero]
-    simp_all
+    · simp_all
+    · simp_all
   · rw [superCommuteF_ofCrAnOpF_ofCrAnOpF_symm]
     simp only [instCommGroup.eq_1, neg_smul, map_neg, map_smul, mul_neg, Algebra.mul_smul_comm,
       neg_mul, Algebra.smul_mul_assoc, neg_eq_zero, smul_eq_zero]
     rw [timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel]
-    simp only [mul_zero, zero_mul, map_zero, or_true]
-    simp_all
+    · simp
+    · simp_all
 
 /-!
 
@@ -321,11 +321,11 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
       obtain ⟨φa, hφa, φb, hφb, rfl⟩ := hc
       by_cases heqt : (crAnTimeOrderRel φa φb ∧ crAnTimeOrderRel φb φa)
       · rw [ι_timeOrderF_superCommuteF_eq_time]
-        simp only [map_mul]
-        rw [ι_superCommuteF_of_create_create]
-        simp only [zero_mul]
-        · exact hφa
-        · exact hφb
+        · simp only [map_mul]
+          rw [ι_superCommuteF_of_create_create]
+          · simp only [zero_mul]
+          · exact hφa
+          · exact hφb
         · exact heqt.1
         · exact heqt.2
       · rw [ι_timeOrderF_superCommuteF_neq_time heqt]
@@ -333,11 +333,11 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
       obtain ⟨φa, hφa, φb, hφb, rfl⟩ := hc
       by_cases heqt : (crAnTimeOrderRel φa φb ∧ crAnTimeOrderRel φb φa)
       · rw [ι_timeOrderF_superCommuteF_eq_time]
-        simp only [map_mul]
-        rw [ι_superCommuteF_of_annihilate_annihilate]
-        simp only [zero_mul]
-        · exact hφa
-        · exact hφb
+        · simp only [map_mul]
+          rw [ι_superCommuteF_of_annihilate_annihilate]
+          · simp only [zero_mul]
+          · exact hφa
+          · exact hφb
         · exact heqt.1
         · exact heqt.2
       · rw [ι_timeOrderF_superCommuteF_neq_time heqt]
@@ -345,10 +345,10 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
       obtain ⟨φa, φb, hdiff, rfl⟩ := hc
       by_cases heqt : (crAnTimeOrderRel φa φb ∧ crAnTimeOrderRel φb φa)
       · rw [ι_timeOrderF_superCommuteF_eq_time]
-        simp only [map_mul]
-        rw [ι_superCommuteF_of_diff_statistic]
-        simp only [zero_mul]
-        · exact hdiff
+        · simp only [map_mul]
+          rw [ι_superCommuteF_of_diff_statistic]
+          · simp
+          · exact hdiff
         · exact heqt.1
         · exact heqt.2
       · rw [ι_timeOrderF_superCommuteF_neq_time heqt]
@@ -455,7 +455,7 @@ lemma timeOrder_superCommute_eq_time_mid {φ ψ : 𝓕.CrAnFieldOp}
   obtain ⟨b, rfl⟩ := ι_surjective b
   rw [← map_mul, ← map_mul, timeOrder_eq_ι_timeOrderF]
   rw [ι_timeOrderF_superCommuteF_eq_time]
-  rfl
+  · rfl
   · simp_all
   · simp_all
 
@@ -464,7 +464,7 @@ lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnFieldOp}
     𝓣([ofCrAnOp φ, ofCrAnOp ψ]ₛ * b) =
     [ofCrAnOp φ, ofCrAnOp ψ]ₛ * 𝓣(b) := by
   trans 𝓣(1 * [ofCrAnOp φ, ofCrAnOp ψ]ₛ * b)
-  simp only [one_mul]
+  · simp only [one_mul]
   rw [timeOrder_superCommute_eq_time_mid hφψ hψφ]
   simp
 
@@ -475,7 +475,7 @@ lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnFieldOp}
   rw [superCommute_eq_ι_superCommuteF]
   rw [timeOrder_eq_ι_timeOrderF]
   trans ι (timeOrderF (1 * (superCommuteF (ofCrAnOpF φ)) (ofCrAnOpF ψ) * 1))
-  simp only [one_mul, mul_one]
+  · simp only [one_mul, mul_one]
   rw [ι_timeOrderF_superCommuteF_neq_time]
   exact hφψ
 
@@ -511,14 +511,14 @@ lemma timeOrder_timeOrder_mid (a b c : 𝓕.WickAlgebra) :
 lemma timeOrder_timeOrder_left (b c : 𝓕.WickAlgebra) :
     𝓣(b * c) = 𝓣(𝓣(b) * c) := by
   trans 𝓣(1 * b * c)
-  simp only [one_mul]
+  · simp only [one_mul]
   rw [timeOrder_timeOrder_mid]
   simp
 
 lemma timeOrder_timeOrder_right (a b : 𝓕.WickAlgebra) :
     𝓣(a * b) = 𝓣(a * 𝓣(b)) := by
   trans 𝓣(a * b * 1)
-  simp only [mul_one]
+  · simp only [mul_one]
   rw [timeOrder_timeOrder_mid]
   simp
 

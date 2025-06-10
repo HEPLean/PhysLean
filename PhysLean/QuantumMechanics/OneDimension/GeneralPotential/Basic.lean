@@ -47,14 +47,14 @@ lemma momentumOperator_linear (ℏ : ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   ext x
   have h : deriv ((a1 •ψ1) + (a2 •ψ2)) x = deriv (fun y ↦ ((a1 •ψ1) y) + ((a2 •ψ2) y)) x := rfl
   rw [h, deriv_add]
-  have ht1 : deriv (a1 •ψ1) x = deriv (fun y ↦ (a1 •ψ1 y)) x := rfl
-  have ht2 : deriv (a2 •ψ2) x = deriv (fun y ↦ (a2 •ψ2 y)) x := rfl
-  rw [ht1, ht2, deriv_const_smul, deriv_const_smul, mul_add]
-  simp only [mul_comm, mul_assoc]
-  rw [← mul_assoc, ← mul_assoc, ← mul_assoc a1, ← mul_assoc a2, mul_assoc, mul_assoc]
-  · rfl
-  · exact hψ2_x x
-  · exact hψ1_x x
+  · have ht1 : deriv (a1 •ψ1) x = deriv (fun y ↦ (a1 •ψ1 y)) x := rfl
+    have ht2 : deriv (a2 •ψ2) x = deriv (fun y ↦ (a2 •ψ2 y)) x := rfl
+    rw [ht1, ht2, deriv_const_smul, deriv_const_smul, mul_add]
+    · simp only [mul_comm, mul_assoc]
+      rw [← mul_assoc, ← mul_assoc, ← mul_assoc a1, ← mul_assoc a2, mul_assoc, mul_assoc]
+      · rfl
+    · exact hψ2_x x
+    · exact hψ1_x x
   · exact (hψ1_x x).const_smul a1
   · exact (hψ2_x x).const_smul a2
 
@@ -125,7 +125,7 @@ lemma schrodingerOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
     schrodingerOperator Q ((a1 • ψ1) + (a2 • ψ2)) =
     a1 • schrodingerOperator Q ψ1 + a2 • schrodingerOperator Q ψ2 := by
   unfold schrodingerOperator
-  rw [momentumOperator_sq_linear]
+  rw [momentumOperator_sq_linear _ _ _ _ _ hψ1_x hψ2_x hψ1_xx hψ2_xx]
   rw [fun_smul a1 (fun x ↦ 1 / (2 * Q.m) *
     (momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ1) x) + (Q.V x) * ψ1 x)]
   rw [fun_smul a2 (fun x ↦ 1 / (2 * Q.m) *
@@ -153,10 +153,6 @@ lemma schrodingerOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
         a2 * ((momentumOperator Q.ℏ (momentumOperator Q.ℏ ψ2)) x) := rfl
     rw [ht2_t, ← mul_assoc, mul_comm _ a2, mul_assoc]
   rw [ht1, ht2]
-  · exact hψ1_x
-  · exact hψ2_x
-  · exact hψ1_xx
-  · exact hψ2_xx
 
 end GeneralPotential
 

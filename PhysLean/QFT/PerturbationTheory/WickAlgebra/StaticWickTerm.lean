@@ -97,8 +97,8 @@ lemma staticWickTerm_insert_zero_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
   · simp only [Fin.getElem_fin, not_and] at hn
     by_cases h0 : ¬ GradingCompliant φs φsΛ
     · rw [staticContract_of_not_gradingCompliant]
-      simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero, instCommGroup.eq_1, mul_zero]
-      exact h0
+      · simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero, instCommGroup.eq_1, mul_zero]
+      · exact h0
     · simp_all only [Finset.mem_univ, not_not, instCommGroup.eq_1, forall_const]
       have h1 : contractStateAtIndex φ [φsΛ]ᵘᶜ (uncontractedFieldOpEquiv φs φsΛ k) = 0 := by
         simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,

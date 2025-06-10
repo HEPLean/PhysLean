@@ -106,21 +106,21 @@ lemma timeContract_insert_some_of_lt
     Algebra.smul_mul_assoc, uncontractedListGet]
   · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
     rw [timeContract_of_timeOrderRel]
-    trans (1 : ℂ) • ((superCommute (anPart φ)) (ofFieldOp φs[k.1]) * ↑φsΛ.timeContract)
-    · simp
-    simp only [smul_smul]
-    congr 1
-    have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
-        (List.map φs.get φsΛ.uncontractedList))
-        = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
-      simp only [ofFinset]
-      congr
-      rw [← List.map_take]
-      congr
-      rw [take_uncontractedIndexEquiv_symm]
-      rw [filter_uncontractedList]
-    rw [h1]
-    simp only [exchangeSign_mul_self]
+    · trans (1 : ℂ) • ((superCommute (anPart φ)) (ofFieldOp φs[k.1]) * ↑φsΛ.timeContract)
+      · simp
+      simp only [smul_smul]
+      congr 1
+      have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
+          (List.map φs.get φsΛ.uncontractedList))
+          = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
+        simp only [ofFinset]
+        congr
+        rw [← List.map_take]
+        congr
+        rw [take_uncontractedIndexEquiv_symm]
+        rw [filter_uncontractedList]
+      rw [h1]
+      simp only [exchangeSign_mul_self]
     · exact ht
 
 /-- For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
@@ -150,41 +150,42 @@ lemma timeContract_insert_some_of_not_lt
     Algebra.smul_mul_assoc, uncontractedListGet]
   simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
   rw [timeContract_of_not_timeOrderRel, timeContract_of_timeOrderRel]
-  simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, smul_smul]
-  congr
-  have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
-      (List.map φs.get φsΛ.uncontractedList))
-      = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
-    simp only [ofFinset]
+
+  · simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc, smul_smul]
     congr
-    rw [← List.map_take]
+    have h1 : ofList 𝓕.fieldOpStatistic (List.take (↑(φsΛ.uncontractedIndexEquiv.symm k))
+        (List.map φs.get φsΛ.uncontractedList))
+        = (𝓕 |>ₛ ⟨φs.get, (Finset.filter (fun x => x < k) φsΛ.uncontracted)⟩) := by
+      simp only [ofFinset]
+      congr
+      rw [← List.map_take]
+      congr
+      rw [take_uncontractedIndexEquiv_symm, filter_uncontractedList]
+    rw [h1]
+    trans 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
+    · rw [exchangeSign_symm, ofFinset_singleton]
+      simp
+    rw [← map_mul]
     congr
-    rw [take_uncontractedIndexEquiv_symm, filter_uncontractedList]
-  rw [h1]
-  trans 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ⟨φs.get, {k.1}⟩)
-  · rw [exchangeSign_symm, ofFinset_singleton]
-    simp
-  rw [← map_mul]
-  congr
-  rw [ofFinset_union]
-  congr
-  ext a
-  simp only [Finset.mem_singleton, Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter,
-    Finset.mem_inter, not_and, not_lt, and_imp]
-  apply Iff.intro
-  · intro h
-    subst h
-    simp
-  · intro h
-    have h1 := h.1
-    rcases h1 with h1 | h1
-    · have h2' := h.2 h1.1 h1.2 h1.1
-      omega
-    · have h2' := h.2 h1.1 (by omega) h1.1
-      omega
-  have ht := IsTotal.total (r := timeOrderRel) φs[k.1] φ
-  simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
-  exact ht
+    rw [ofFinset_union]
+    congr
+    ext a
+    simp only [Finset.mem_singleton, Finset.mem_sdiff, Finset.mem_union, Finset.mem_filter,
+      Finset.mem_inter, not_and, not_lt, and_imp]
+    apply Iff.intro
+    · intro h
+      subst h
+      simp
+    · intro h
+      have h1 := h.1
+      rcases h1 with h1 | h1
+      · have h2' := h.2 h1.1 h1.2 h1.1
+        omega
+      · have h2' := h.2 h1.1 (by omega) h1.1
+        omega
+  · have ht := IsTotal.total (r := timeOrderRel) φs[k.1] φ
+    simp_all only [Fin.getElem_fin, Nat.succ_eq_add_one, not_lt, false_or]
+  · exact ht
 
 lemma timeContract_of_not_gradingCompliant (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (h : ¬ GradingCompliant φs φsΛ) :
@@ -194,7 +195,7 @@ lemma timeContract_of_not_gradingCompliant (φs : List 𝓕.FieldOp)
   obtain ⟨a, ha⟩ := h
   obtain ⟨ha, ha2⟩ := ha
   apply Finset.prod_eq_zero (i := ⟨a, ha⟩)
-  simp only [Finset.univ_eq_attach, Finset.mem_attach]
+  · simp only [Finset.univ_eq_attach, Finset.mem_attach]
   apply Subtype.eq
   simp only [List.get_eq_getElem, ZeroMemClass.coe_zero]
   rw [timeContract_zero_of_diff_grade]

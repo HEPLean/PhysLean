@@ -558,34 +558,35 @@ lemma erase_insert (c : WickContraction n.succ) (i : Fin n.succ) :
   apply Subtype.eq
   by_cases hi : (c.getDual? i).isSome
   · rw [insertAndContractNat_of_isSome]
+    swap
+    · exact (getDualErase_isSome_iff_getDual?_isSome c i).mpr hi
     simp only [Nat.succ_eq_add_one, getDualErase, hi, ↓reduceDIte, Option.get_some,
       Finset.le_eq_subset]
     rw [succsAbove_predAboveI]
-    ext a
-    apply Iff.intro
-    · simp only [Finset.mem_insert, Finset.mem_map, RelEmbedding.coe_toEmbedding]
-      intro ha
-      rcases ha with ha | ha
-      · subst ha
-        simp
-      · obtain ⟨a', ha', ha''⟩ := ha
-        subst ha''
-        simpa [erase] using ha'
-    · intro ha
-      simp only [Finset.mem_insert, Finset.mem_map, RelEmbedding.coe_toEmbedding]
-      by_cases hia : a = {i, (c.getDual? i).get hi}
-      · subst hia
-        simp
-      · apply Or.inr
-        simp only [erase, Nat.succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, true_and]
-        obtain ⟨a', ha'⟩ := c.mem_not_eq_erase_of_isSome (a := a) i hi ha hia
-        use a'
-        simp_all only [Nat.succ_eq_add_one, true_and]
-        obtain ⟨left, right⟩ := ha'
-        subst right
-        rfl
+    · ext a
+      apply Iff.intro
+      · simp only [Finset.mem_insert, Finset.mem_map, RelEmbedding.coe_toEmbedding]
+        intro ha
+        rcases ha with ha | ha
+        · subst ha
+          simp
+        · obtain ⟨a', ha', ha''⟩ := ha
+          subst ha''
+          simpa [erase] using ha'
+      · intro ha
+        simp only [Finset.mem_insert, Finset.mem_map, RelEmbedding.coe_toEmbedding]
+        by_cases hia : a = {i, (c.getDual? i).get hi}
+        · subst hia
+          simp
+        · apply Or.inr
+          simp only [erase, Nat.succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, true_and]
+          obtain ⟨a', ha'⟩ := c.mem_not_eq_erase_of_isSome (a := a) i hi ha hia
+          use a'
+          simp_all only [Nat.succ_eq_add_one, true_and]
+          obtain ⟨left, right⟩ := ha'
+          subst right
+          rfl
     simp only [Nat.succ_eq_add_one, ne_eq, self_neq_getDual?_get, not_false_eq_true]
-    exact (getDualErase_isSome_iff_getDual?_isSome c i).mpr hi
   · simp only [Nat.succ_eq_add_one, insertAndContractNat, getDualErase, hi, Bool.false_eq_true,
     ↓reduceDIte, Finset.le_eq_subset]
     ext a

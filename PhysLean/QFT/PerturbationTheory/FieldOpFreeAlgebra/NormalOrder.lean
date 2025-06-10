@@ -263,23 +263,27 @@ lemma normalOrderF_swap_crPartF_anPartF (φ φ' : 𝓕.FieldOp) (a b : FieldOpFr
   | .position φ, .position φ' =>
     simp only [crPartF_position, anPartF_position, instCommGroup.eq_1]
     rw [normalOrderF_swap_create_annihilate]
-    simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
-    rfl; rfl
+    · simp [crAnStatistics]
+    · rfl
+    · rfl
   | .inAsymp φ, .outAsymp φ' =>
     simp only [crPartF_negAsymp, anPartF_posAsymp, instCommGroup.eq_1]
     rw [normalOrderF_swap_create_annihilate]
-    simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
-    rfl; rfl
+    · simp [crAnStatistics]
+    · rfl
+    · rfl
   | .inAsymp φ, .position φ' =>
     simp only [crPartF_negAsymp, anPartF_position, instCommGroup.eq_1]
     rw [normalOrderF_swap_create_annihilate]
-    simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
-    rfl; rfl
+    · simp [crAnStatistics]
+    · rfl
+    · rfl
   | .position φ, .outAsymp φ' =>
     simp only [crPartF_position, anPartF_posAsymp, instCommGroup.eq_1]
     rw [normalOrderF_swap_create_annihilate]
-    simp only [instCommGroup.eq_1, crAnStatistics, Function.comp_apply, crAnFieldOpToFieldOp_prod]
-    rfl; rfl
+    · simp [crAnStatistics]
+    · rfl
+    · rfl
 
 /-!
 

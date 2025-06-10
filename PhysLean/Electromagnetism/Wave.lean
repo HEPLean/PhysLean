@@ -32,45 +32,45 @@ theorem waveEquation_electricField_of_freeMaxwellEquations
     (hE : ContDiff ℝ 2 ↿E) (hB : ContDiff ℝ 2 ↿B) :
     WaveEquation E t x ((√(μ • ε))⁻¹) := by
   rw [WaveEquation, ← Real.sqrt_inv, Real.sq_sqrt]
-  have hdt : ∀ t, (∂ₜ (fun t => E t x) t) = (μ • ε)⁻¹ • (∇ × B t) x := by
-    intro t
-    rw [OM.ampereLaw_of_free E B]
-    · simp [← smul_assoc, mul_assoc, OM.mu_ge_zero, ne_of_gt, OM.eps_ge_zero, h]
-    · exact h
-  have hdt2 : ∂ₜ (fun t => ∂ₜ (fun t => E t x) t) t =
-      ∂ₜ (fun t => (μ • ε)⁻¹ • (∇ × B t) x) t := by aesop
-  rw [hdt2]
-  have hd0 : (∇ ⬝ (E t)) = 0 := by
-    ext x
-    simp [OM.gaussLawElectric_of_free E B, h]
-  have hlpE : Δ (E t) = - ((fun x => ∇ (∇ ⬝ (E t)) - Δ (E t)) x) := by simp [hd0]
-  rw [hlpE, ← curl_of_curl]
-  have hcE : curl (E t) = fun x => - ∂ₜ (fun t => B t x) t := by
-    funext x
-    simp [OM.faradayLaw_of_free E B, h]
-  rw [hcE]
-  have hcn : curl (fun x => -∂ₜ (fun t => B t x) t) =
-      - curl (fun x => ∂ₜ (fun t => B t x) t) := by
-    trans - (1:ℝ) • curl (fun x => ∂ₜ (fun t => B t x) t)
-    rw [← curl_smul, neg_smul, one_smul]
-    rfl
-    · exact fun x ↦ fderiv_curry_differentiableAt_fst_comp_snd (hf := hB) ..
-    · exact neg_one_smul ..
-  simp only [smul_eq_mul, mul_inv_rev, hcn, Pi.neg_apply, neg_neg]
-  rw [← time_deriv_curl_commute]
-  have hdt_smul : ∂ₜ (fun t => (OM.ε⁻¹ * OM.μ⁻¹) • curl (B t) x) t =
-      (OM.ε⁻¹ * OM.μ⁻¹) • ∂ₜ (fun t => curl (B t) x) t := by
-    rw [deriv_smul]
-    unfold curl Space.deriv coord basis
-    simp only [Fin.isValue, EuclideanSpace.basisFun_apply, PiLp.inner_apply,
-      EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
-    apply differentiable_pi''
-    intro i
-    fin_cases i <;> fun_prop
-  rw [hdt_smul, sub_self]
-  · exact hB
-  · exact hE.uncurry ..
+  · have hdt : ∀ t, (∂ₜ (fun t => E t x) t) = (μ • ε)⁻¹ • (∇ × B t) x := by
+      intro t
+      rw [OM.ampereLaw_of_free E B]
+      · simp [← smul_assoc, mul_assoc, OM.mu_ge_zero, ne_of_gt, OM.eps_ge_zero, h]
+      · exact h
+    have hdt2 : ∂ₜ (fun t => ∂ₜ (fun t => E t x) t) t =
+        ∂ₜ (fun t => (μ • ε)⁻¹ • (∇ × B t) x) t := by aesop
+    rw [hdt2]
+    have hd0 : (∇ ⬝ (E t)) = 0 := by
+      ext x
+      simp [OM.gaussLawElectric_of_free E B, h]
+    have hlpE : Δ (E t) = - ((fun x => ∇ (∇ ⬝ (E t)) - Δ (E t)) x) := by simp [hd0]
+    rw [hlpE, ← curl_of_curl]
+    · have hcE : curl (E t) = fun x => - ∂ₜ (fun t => B t x) t := by
+        funext x
+        simp [OM.faradayLaw_of_free E B, h]
+      rw [hcE]
+      have hcn : curl (fun x => -∂ₜ (fun t => B t x) t) =
+          - curl (fun x => ∂ₜ (fun t => B t x) t) := by
+        trans - (1:ℝ) • curl (fun x => ∂ₜ (fun t => B t x) t)
+        rw [← curl_smul, neg_smul, one_smul]
+        rfl
+        · exact fun x ↦ fderiv_curry_differentiableAt_fst_comp_snd (hf := hB) ..
+        · exact neg_one_smul ..
+      simp only [smul_eq_mul, mul_inv_rev, hcn, Pi.neg_apply, neg_neg]
+      rw [← time_deriv_curl_commute]
+      · have hdt_smul : ∂ₜ (fun t => (OM.ε⁻¹ * OM.μ⁻¹) • curl (B t) x) t =
+            (OM.ε⁻¹ * OM.μ⁻¹) • ∂ₜ (fun t => curl (B t) x) t := by
+          rw [deriv_smul]
+          unfold curl Space.deriv coord basis
+          simp only [Fin.isValue, EuclideanSpace.basisFun_apply, PiLp.inner_apply,
+            EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul,
+            zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
+          apply differentiable_pi''
+          intro i
+          fin_cases i <;> fun_prop
+        rw [hdt_smul, sub_self]
+      · exact hB
+    · exact hE.uncurry ..
   · rw [inv_nonneg]
     exact smul_nonneg (le_of_lt OM.mu_ge_zero) (le_of_lt OM.eps_ge_zero)
 
@@ -80,6 +80,9 @@ theorem waveEquation_magneticField_of_freeMaxwellEquations
     (hE : ContDiff ℝ 2 ↿E) (hB : ContDiff ℝ 2 ↿B) :
     WaveEquation B t x ((√(μ • ε))⁻¹) := by
   rw [WaveEquation, ← Real.sqrt_inv, Real.sq_sqrt]
+  swap
+  · rw [inv_nonneg]
+    exact smul_nonneg (le_of_lt OM.mu_ge_zero) (le_of_lt OM.eps_ge_zero)
   have hdt : ∀ t, (∂ₜ (fun t => B t x) t) = - (∇ × E t) x := by
     intro t
     rwa [OM.faradayLaw_of_free E B, neg_neg]
@@ -105,6 +108,8 @@ theorem waveEquation_magneticField_of_freeMaxwellEquations
     simp [Pi.zero_apply, OM.gaussLawMagnetic_of_free E B, h]
   have hlpB : Δ (B t) = - ((fun x => ∇ (∇ ⬝ (B t)) - Δ (B t)) x) := by simp [hd0]
   rw [hlpB, ← curl_of_curl]
+  swap
+  · exact hB.uncurry (x := t)
   have hcB : curl (B t) = OM.μ • OM.ε • fun x => ∂ₜ (fun t => E t x) t := by
     funext x
     rw [OM.ampereLaw_of_free E B]
@@ -124,10 +129,7 @@ theorem waveEquation_magneticField_of_freeMaxwellEquations
       change Differentiable ℝ (fun x => (OM.μ • OM.ε) • (fderiv ℝ (fun t => E t x) t) 1)
       fun_prop
   rw [time_deriv_curl_commute, hcn, sub_self]
-  · exact hE
-  · exact hB.uncurry (x := t)
-  · rw [inv_nonneg]
-    exact smul_nonneg (le_of_lt OM.mu_ge_zero) (le_of_lt OM.eps_ge_zero)
+  exact hE
 
 /-- An electric plane wave travelling in the direction of `s` with propagation speed `c`. -/
 noncomputable def electricPlaneWave (E₀ : ℝ → EuclideanSpace ℝ (Fin 3))
@@ -177,14 +179,14 @@ lemma transverse_upto_time_fun_of_eq_electricPlaneWave {E₀ : ℝ → Euclidean
   intro t x
   have hx' := E'eqzero t
   apply is_const_of_fderiv_eq_zero at hx'
-  rw [hx' x 0]
+  · rw [hx' x 0]
   apply Differentiable.inner
-  rw [hEwave, electricPlaneWave]
-  unfold planeWave
-  apply Differentiable.comp
-  fun_prop
-  exact fun x => wave_differentiable
-  fun_prop
+  · rw [hEwave, electricPlaneWave]
+    unfold planeWave
+    apply Differentiable.comp
+    · fun_prop
+    exact fun x => wave_differentiable
+  · fun_prop
 
 /-- An magnetic plane wave minus a constant field is transverse for all x. -/
 lemma transverse_upto_time_fun_of_eq_magneticPlaneWave {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
@@ -224,13 +226,13 @@ lemma transverse_upto_time_fun_of_eq_magneticPlaneWave {B₀ : ℝ → Euclidean
   intro t x
   have hx' := B'eqzero t
   apply is_const_of_fderiv_eq_zero at hx'
-  rw [hx' x 0]
+  · rw [hx' x 0]
   apply Differentiable.inner
-  rw [hBwave, magneticPlaneWave]
-  unfold planeWave
-  apply Differentiable.comp
-  fun_prop
-  exact fun x => wave_differentiable
+  · rw [hBwave, magneticPlaneWave]
+    unfold planeWave
+    apply Differentiable.comp
+    · fun_prop
+    exact fun x => wave_differentiable
   fun_prop
 
 /-- The time derivative of a magnetic planewave induces an electric field with
@@ -275,15 +277,16 @@ lemma time_deriv_magneticPlaneWave_eq_cross_time_deriv_electricPlaneWave
     simp [ne_of_gt, OM.mu_ge_zero, OM.eps_ge_zero]
   rw [← neg_neg (∂ₜ (fun t => B t x) t),
       ← OM.faradayLaw_of_free E B, hEwave, electricPlaneWave, h, crossProduct]
-  unfold planeWave curl coord basis Space.deriv
-  ext i
-  fin_cases i <;>
-  · simp [-PiLp.inner_apply]
-    rw [← mul_right_inj' hc_non_zero, mul_sub,
-      space_fderiv_of_inner_product_wave_eq_space_fderiv h',
-      space_fderiv_of_inner_product_wave_eq_space_fderiv h',
-      ← mul_assoc, mul_inv_cancel₀ hc_non_zero]
-    ring
+  · unfold planeWave curl coord basis Space.deriv
+    ext i
+    fin_cases i
+    all_goals
+      simp [-PiLp.inner_apply]
+      rw [← mul_right_inj' hc_non_zero, mul_sub,
+        space_fderiv_of_inner_product_wave_eq_space_fderiv h',
+        space_fderiv_of_inner_product_wave_eq_space_fderiv h',
+        ← mul_assoc, mul_inv_cancel₀ hc_non_zero]
+      ring
   exact hm
 
 /-- A magnetic planewave induces an electric field equal to `- s ⨯ₑ₃ B` plus a constant field. -/
@@ -317,9 +320,9 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
   intro t x
   have ht' := fun t => hderiv t x
   apply is_const_of_deriv_eq_zero at ht'
-  simp only
-  rw [ht' 0 t]
-  simp only [smul_eq_mul, neg_smul, neg_add_cancel_comm_assoc]
+  · simp only
+    rw [ht' 0 t]
+    simp only [smul_eq_mul, neg_smul, neg_add_cancel_comm_assoc]
   · intro x
     apply DifferentiableAt.add
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
@@ -361,10 +364,10 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
   intro t x
   have ht' := fun t => hderiv t x
   apply is_const_of_fderiv_eq_zero at ht'
-  simp only
-  rw [ht' 0 t]
-  simp only [smul_eq_mul, WithLp.equiv_smul, map_smul, LinearMap.smul_apply,
-    WithLp.equiv_symm_smul, add_sub_cancel]
+  · simp only
+    rw [ht' 0 t]
+    simp only [smul_eq_mul, WithLp.equiv_smul, map_smul, LinearMap.smul_apply,
+      WithLp.equiv_symm_smul, add_sub_cancel]
   · intro x
     apply DifferentiableAt.sub
     · exact function_differentiableAt_fst (hf := by fun_prop) ..

@@ -221,9 +221,9 @@ lemma mem_ofCharges_self_of_isViable (I : CodimensionOneConfig) (𝓠 : Quanta)
       exact toCharges_five_nodup_of_isViable I 𝓠 h
     rw [h1]
     apply FiveQuanta.mem_ofCharges_self
-    exact toFluxesFive_noExotics_of_isViable I 𝓠 h
-    exact toFluxesFive_hasNoZero_of_isViable I 𝓠 h
-    exact fun s a => Q5_charges_mem_allowedBarFiveCharges_of_isViable I 𝓠 h s a
+    · exact toFluxesFive_noExotics_of_isViable I 𝓠 h
+    · exact toFluxesFive_hasNoZero_of_isViable I 𝓠 h
+    · exact fun s a => Q5_charges_mem_allowedBarFiveCharges_of_isViable I 𝓠 h s a
   · simp [toCharges]
     have h1 : TenQuanta.ofCharges I 𝓠.2.2.2.toCharges.dedup =
         TenQuanta.ofCharges I 𝓠.2.2.2.toCharges := by
@@ -232,9 +232,9 @@ lemma mem_ofCharges_self_of_isViable (I : CodimensionOneConfig) (𝓠 : Quanta)
       exact toCharges_ten_nodup_of_isViable I 𝓠 h
     rw [h1]
     apply TenQuanta.mem_ofCharges_self
-    exact toFluxesTen_noExotics_of_isViable I 𝓠 h
-    exact toFluxesTen_hasNoZero_of_isViable I 𝓠 h
-    exact fun s a => Q10_charges_mem_allowedBarTenCharges_of_isViable I 𝓠 h s a
+    · exact toFluxesTen_noExotics_of_isViable I 𝓠 h
+    · exact toFluxesTen_hasNoZero_of_isViable I 𝓠 h
+    · exact fun s a => Q10_charges_mem_allowedBarTenCharges_of_isViable I 𝓠 h s a
   · simp [toCharges]
 
 end Quanta

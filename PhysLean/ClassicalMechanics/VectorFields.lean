@@ -35,7 +35,7 @@ lemma fderiv_coord_dt (f : Time → Space → EuclideanSpace ℝ (Fin 3)) (t dt 
     (fun x => (fderiv ℝ (fun t => f t x) t) dt i) := by
   ext x
   rw [fderiv_pi]
-  rfl
+  · rfl
   · fun_prop
 
 /-- Derivatives along space coordinates and time commute. -/
@@ -61,9 +61,16 @@ lemma fderiv_swap_time_space_coord
   simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp',
     Function.comp_apply]
   rw [fderiv_comp']
+  swap
+  · fun_prop
+  swap
+  · apply fderiv_curry_differentiableAt_snd_comp_fst
+    exact hf
   simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp',
     Function.comp_apply]
   rw [h']
+  swap
+  · fun_prop
   change _ =
       (fderiv ℝ (fun x' => (fderiv ℝ ((EuclideanSpace.proj i) ∘
       (fun t' => f t' x')) t) dt) x) dx
@@ -79,17 +86,12 @@ lemma fderiv_swap_time_space_coord
       exact hf.two_differentiable
   simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp',
     Function.comp_apply]
-  rw [fderiv_comp']
-  simp only [PiLp.proj_apply, ContinuousLinearMap.fderiv,
-    ContinuousLinearMap.coe_comp', Function.comp_apply]
-  /- Start of differentiablity conditions. -/
-  · fun_prop
+  rw [fderiv_comp' _ (by fun_prop)]
+  · simp only [PiLp.proj_apply, ContinuousLinearMap.fderiv,
+      ContinuousLinearMap.coe_comp', Function.comp_apply]
   · apply fderiv_curry_differentiableAt_fst_comp_snd
     exact hf
-  · fun_prop
-  · fun_prop
-  · apply fderiv_curry_differentiableAt_snd_comp_fst
-    exact hf
+
 
 lemma differentiableAt_fderiv_coord_single
     (ft : Time → Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 ↿ft) :
@@ -191,9 +193,7 @@ lemma fderiv_cross_commute {u : ℝ} {s : Space} {f : ℝ → EuclideanSpace ℝ
 /-- Cross product and time derivative commute. -/
 lemma time_deriv_cross_commute {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
     (hf : Differentiable ℝ f) :
-    s ⨯ₑ₃ (∂ₜ (fun t => f t) t)
-    =
-    ∂ₜ (fun t => s ⨯ₑ₃ (f t)) t := by
+    s ⨯ₑ₃ (∂ₜ (fun t => f t) t) = ∂ₜ (fun t => s ⨯ₑ₃ (f t)) t := by
   repeat rw [Time.deriv]
   rw [fderiv_cross_commute]
   fun_prop

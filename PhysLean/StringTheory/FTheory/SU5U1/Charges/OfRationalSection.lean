@@ -156,13 +156,13 @@ lemma fiveChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset �
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : List.count a I.allowedBarFiveChargesList = 1 := by
-      refine List.count_eq_one_of_mem ?_ ?_
-      exact CodimensionOneConfig.allowedBarFiveChargesList_nodup I
-      rw [fiveChargeMultisetToList_mem_iff] at hmem
-      simpa using hmem.2
-    rw [hc]
-    simp only [↓reduceIte, one_nsmul]
+    · have hc : List.count a I.allowedBarFiveChargesList = 1 := by
+        refine List.count_eq_one_of_mem ?_ ?_
+        exact CodimensionOneConfig.allowedBarFiveChargesList_nodup I
+        rw [fiveChargeMultisetToList_mem_iff] at hmem
+        simpa using hmem.2
+      rw [hc]
+      simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
     simp [ha']
     omega
@@ -188,13 +188,13 @@ lemma tenChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset ℤ
       aesop
     rw [hf]
     rw [List.sum_map_eq_nsmul_single a]
-    have hc : List.count a I.allowedTenChargesList = 1 := by
-      refine List.count_eq_one_of_mem ?_ ?_
-      exact CodimensionOneConfig.allowedTenChargesList_nodup I
-      rw [tenChargeMultisetToList_mem_iff] at hmem
-      simpa using hmem.2
-    rw [hc]
-    simp only [↓reduceIte, one_nsmul]
+    · have hc : List.count a I.allowedTenChargesList = 1 := by
+        refine List.count_eq_one_of_mem ?_ ?_
+        exact CodimensionOneConfig.allowedTenChargesList_nodup I
+        rw [tenChargeMultisetToList_mem_iff] at hmem
+        simpa using hmem.2
+      rw [hc]
+      simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
     simp [ha']
     omega

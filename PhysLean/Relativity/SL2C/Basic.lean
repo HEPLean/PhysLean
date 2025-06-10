@@ -31,12 +31,12 @@ Possibly to be moved to mathlib at some point.
 
 lemma inverse_coe (M : SL(2, ℂ)) : M.1⁻¹ = (M⁻¹).1 := by
   apply Matrix.inv_inj
-  simp only [SpecialLinearGroup.det_coe, isUnit_iff_ne_zero, ne_eq, one_ne_zero, not_false_eq_true,
-    nonsing_inv_nonsing_inv, SpecialLinearGroup.coe_inv]
-  have h1 : IsUnit M.1.det := by
-    simp
-  rw [Matrix.inv_adjugate M.1 h1]
-  · simp
+  · simp only [SpecialLinearGroup.det_coe, isUnit_iff_ne_zero, ne_eq, one_ne_zero,
+    not_false_eq_true, nonsing_inv_nonsing_inv, SpecialLinearGroup.coe_inv]
+    have h1 : IsUnit M.1.det := by
+      simp
+    rw [Matrix.inv_adjugate M.1 h1]
+    · simp
   · simp
 
 lemma transpose_coe (M : SL(2, ℂ)) : M.1ᵀ = (M.transpose).1 := rfl

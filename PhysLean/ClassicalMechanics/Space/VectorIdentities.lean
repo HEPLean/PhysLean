@@ -68,7 +68,7 @@ lemma deriv_add [NormedAddCommGroup M] [NormedSpace ℝ M]
   simp only
   ext x
   rw [fderiv_add']
-  rfl
+  · rfl
   repeat fun_prop
 
 /-- Derivatives on space distiribute coordinate-wise over addition. -/
@@ -80,7 +80,7 @@ lemma deriv_coord_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
   simp only
   ext x
   rw [fderiv_add]
-  simp only [ContinuousLinearMap.add_apply, Pi.add_apply]
+  · simp only [ContinuousLinearMap.add_apply, Pi.add_apply]
   repeat fun_prop
 
 /-- Scalar multiplication on space derivatives. -/
@@ -90,7 +90,7 @@ lemma deriv_smul [NormedAddCommGroup M] [NormedSpace ℝ M]
   unfold deriv
   ext x
   rw [fderiv_const_smul']
-  rfl
+  · rfl
   fun_prop
 
 /-- Coordinate-wise scalar multiplication on space derivatives. -/
@@ -99,7 +99,7 @@ lemma deriv_coord_smul (f : Space d → EuclideanSpace ℝ (Fin d)) (k : ℝ)
     ∂[u] (fun x => k * f x i) x= (k • ∂[u] (fun x => f x i)) x:= by
   unfold deriv
   rw [fderiv_const_mul]
-  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
+  · simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
   fun_prop
 
 /-- Derivatives on space commute with one another. -/
@@ -108,12 +108,12 @@ lemma deriv_commute [NormedAddCommGroup M] [NormedSpace ℝ M]
   unfold deriv
   ext x
   rw [fderiv_clm_apply, fderiv_clm_apply]
-  simp only [fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.comp_zero, zero_add,
-    ContinuousLinearMap.flip_apply]
-  rw [IsSymmSndFDerivAt.eq]
-  apply ContDiffAt.isSymmSndFDerivAt
-  exact ContDiff.contDiffAt hf
-  simp only [minSmoothness_of_isRCLikeNormedField, le_refl]
+  · simp only [fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.comp_zero, zero_add,
+      ContinuousLinearMap.flip_apply]
+    rw [IsSymmSndFDerivAt.eq]
+    apply ContDiffAt.isSymmSndFDerivAt
+    · exact ContDiff.contDiffAt hf
+    simp only [minSmoothness_of_isRCLikeNormedField, le_refl]
   repeat
   · apply Differentiable.differentiableAt
     apply ContDiff.differentiable_fderiv
@@ -143,8 +143,8 @@ lemma deriv_coord_2nd_add (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
   unfold deriv
   ext x
   rw [fderiv_add, fderiv_add]
-  simp only [ContinuousLinearMap.add_apply, Pi.add_apply]
-  ring
+  · simp only [ContinuousLinearMap.add_apply, Pi.add_apply]
+    ring
   repeat
     try apply DifferentiableAt.add
     apply Differentiable.differentiableAt
@@ -161,7 +161,7 @@ lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
   ext x
   simp only [Pi.sub_apply]
   rw [fderiv_sub]
-  simp only [ContinuousLinearMap.coe_sub', Pi.sub_apply]
+  · simp only [ContinuousLinearMap.coe_sub', Pi.sub_apply]
   repeat
     apply Differentiable.differentiableAt
     apply Differentiable.clm_apply
@@ -194,13 +194,14 @@ lemma div_of_curl_eq_zero (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
     Fin.succ_zero_eq_one, Fin.succ_one_eq_two, List.ofFn_zero, Multiset.sum_coe, List.sum_cons,
     List.sum_nil, add_zero, Pi.zero_apply]
   rw [deriv_coord_2nd_sub, deriv_coord_2nd_sub, deriv_coord_2nd_sub]
-  simp only [Fin.isValue, Pi.sub_apply]
-  rw [deriv_commute fun x => f x 0, deriv_commute fun x => f x 1,
-    deriv_commute fun x => f x 2]
-  simp only [Fin.isValue, sub_add_sub_cancel', sub_add_sub_cancel, sub_self]
-  repeat
-    try apply contDiff_euclidean.mp
-    exact hf
+  · simp only [Fin.isValue, Pi.sub_apply]
+    rw [deriv_commute fun x => f x 0, deriv_commute fun x => f x 1,
+      deriv_commute fun x => f x 2]
+    · simp only [Fin.isValue, sub_add_sub_cancel', sub_add_sub_cancel, sub_self]
+    all_goals
+      apply contDiff_euclidean.mp
+      exact hf
+  all_goals exact hf
 
 lemma curl_of_curl (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f) :
     ∇ × (∇ × f) = ∇ (∇ ⬝ f) - Δ f := by
@@ -285,9 +286,9 @@ lemma grad_add (f1 f2 : Space d → ℝ)
   ext x i
   simp only [Pi.add_apply]
   rw [deriv_add]
-  rfl
-  exact hf1
-  exact hf2
+  · rfl
+  · exact hf1
+  · exact hf2
 
 lemma div_add (f1 f2 : Space → EuclideanSpace ℝ (Fin 3))
     (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
@@ -300,8 +301,8 @@ lemma div_add (f1 f2 : Space → EuclideanSpace ℝ (Fin 3))
     Fin.succ_zero_eq_one, Fin.succ_one_eq_two, List.ofFn_zero, Multiset.sum_coe, List.sum_cons,
     List.sum_nil, add_zero]
   repeat rw [deriv_coord_add]
-  simp only [Fin.isValue, Pi.add_apply]
-  ring
+  · simp only [Fin.isValue, Pi.add_apply]
+    ring
   repeat assumption
 
 lemma curl_add (f1 f2 : Space → EuclideanSpace ℝ (Fin 3))
@@ -331,8 +332,8 @@ lemma grad_smul (f : Space d → ℝ) (k : ℝ)
   ext x i
   simp only [Pi.smul_apply, smul_eq_mul]
   rw [deriv_smul]
-  rfl
-  exact hf
+  · rfl
+  · exact hf
 
 lemma div_smul (f : Space → EuclideanSpace ℝ (Fin 3)) (k : ℝ)
     (hf : Differentiable ℝ f) :
@@ -345,7 +346,7 @@ lemma div_smul (f : Space → EuclideanSpace ℝ (Fin 3)) (k : ℝ)
     Fin.isValue, Fin.succ_zero_eq_one, Fin.succ_one_eq_two, List.ofFn_zero, Multiset.sum_coe,
     List.sum_cons, List.sum_nil, add_zero]
   repeat rw [deriv_coord_smul]
-  simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, mul_add]
+  · simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, mul_add]
   repeat fun_prop
 
 lemma curl_smul (f : Space → EuclideanSpace ℝ (Fin 3)) (k : ℝ)

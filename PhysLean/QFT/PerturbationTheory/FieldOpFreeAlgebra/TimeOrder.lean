@@ -152,11 +152,10 @@ lemma timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered {φ ψ : 𝓕.FieldOp} (h : �
 lemma timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered_eq_timeOrderF {φ ψ : 𝓕.FieldOp}
     (h : ¬ timeOrderRel φ ψ) :
     𝓣ᶠ(ofFieldOpF φ * ofFieldOpF ψ) = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • 𝓣ᶠ(ofFieldOpF ψ * ofFieldOpF φ) := by
-  rw [timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered h]
-  rw [timeOrderF_ofFieldOpF_ofFieldOpF_ordered]
-  simp only [instCommGroup.eq_1, Algebra.smul_mul_assoc]
-  have hx := IsTotal.total (r := timeOrderRel) ψ φ
-  simp_all
+  rw [timeOrderF_ofFieldOpF_ofFieldOpF_not_ordered h, timeOrderF_ofFieldOpF_ofFieldOpF_ordered]
+  · simp
+  · have hx := IsTotal.total (r := timeOrderRel) ψ φ
+    simp_all
 
 lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel
     {φ ψ : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ ψ) :
@@ -171,8 +170,8 @@ lemma timeOrderF_superCommuteF_ofCrAnOpF_ofCrAnOpF_not_crAnTimeOrderRel
   have h1 := IsTotal.total (r := crAnTimeOrderRel) φ ψ
   congr
   · rw [crAnTimeOrderSign_pair_ordered, exchangeSign_symm]
-    simp only [instCommGroup.eq_1, mul_one]
-    simp_all
+    · simp
+    · simp_all
   · rw [crAnTimeOrderList_pair_ordered]
     simp_all
 

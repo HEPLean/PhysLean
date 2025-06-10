@@ -45,7 +45,7 @@ def extractEquiv (i : Fin n.succ) : WickContraction n.succ ≃
     simp
   right_inv f := by
     refine extractEquiv_equiv ?_ ?_
-    simp only [insertAndContractNat_erase]
+    · simp only [insertAndContractNat_erase]
     simp only [Nat.succ_eq_add_one]
     have h1 := insertAndContractNat_getDualErase f.fst i f.snd
     exact insertAndContractNat_getDualErase _ i _
@@ -84,7 +84,7 @@ instance fintype_zero : Fintype (WickContraction 0) where
 lemma sum_WickContraction_nil (f : WickContraction 0 → M) [AddCommMonoid M] :
     ∑ c, f c = f empty := by
   rw [Finset.sum_eq_single_of_mem]
-  simp only [Finset.mem_univ]
+  · simp only [Finset.mem_univ]
   intro b hb
   fin_cases b
   simp

@@ -295,7 +295,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
     rcases fermionicProjF_mem_fieldOpIdealSet_or_zero y hy with hfy | hfy
       <;> rcases bosonicProjF_mem_fieldOpIdealSet_or_zero y hy with hby | hby
     · apply TwoSidedIdeal.add_mem
-      apply TwoSidedIdeal.add_mem
+        <;> apply TwoSidedIdeal.add_mem
       · /- boson, boson, boson mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
         refine Set.mem_of_mem_of_subset ?_ AddSubgroup.subset_closure
@@ -320,7 +320,6 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           use (fermionicProjF y).1
           simp [hby, hfy]
         · aesop
-      apply TwoSidedIdeal.add_mem
       · /- boson, fermion, fermion mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
         refine Set.mem_of_mem_of_subset ?_ AddSubgroup.subset_closure

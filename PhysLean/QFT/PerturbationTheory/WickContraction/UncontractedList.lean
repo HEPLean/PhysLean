@@ -42,7 +42,7 @@ lemma fin_list_sorted_monotone_sorted {n m : ℕ} (l: List (Fin n)) (hl : l.Sort
 lemma fin_list_sorted_succAboveEmb_sorted (l: List (Fin n)) (hl : l.Sorted (· ≤ ·))
     (i : Fin n.succ) : ((List.map i.succAboveEmb l)).Sorted (· ≤ ·) := by
   apply fin_list_sorted_monotone_sorted
-  exact hl
+  · exact hl
   simp only [Fin.coe_succAboveEmb]
   exact Fin.strictMono_succAbove i
 
@@ -74,8 +74,8 @@ lemma fin_list_sorted_split :
     · conv_lhs => rw [fin_list_sorted_split l hl.2 i]
       rw [← List.cons_append]
       rw [List.filter_cons_of_pos, List.filter_cons_of_neg]
-      simp only [decide_eq_true_eq, not_le, ha]
-      simp [ha]
+      · simp only [decide_eq_true_eq, not_le, ha]
+      · simp [ha]
     · have hx : List.filter (fun x => decide (x.1 < i)) (a :: l) = [] := by
         simp only [ha, decide_false, Bool.false_eq_true, not_false_eq_true, List.filter_cons_of_neg,
           List.filter_eq_nil_iff, decide_eq_true_eq, not_lt]
@@ -84,17 +84,17 @@ lemma fin_list_sorted_split :
         omega
       simp only [hx, List.nil_append]
       rw [List.filter_cons_of_pos]
-      simp only [List.cons.injEq, true_and]
-      have hl' := fin_list_sorted_split l hl.2 i
-      have hx : List.filter (fun x => decide (x.1 < i)) (l) = [] := by
-        simp only [List.filter_eq_nil_iff, decide_eq_true_eq, not_lt]
-        intro b hb
-        have hb' := hl.1 b hb
+      · simp only [List.cons.injEq, true_and]
+        have hl' := fin_list_sorted_split l hl.2 i
+        have hx : List.filter (fun x => decide (x.1 < i)) (l) = [] := by
+          simp only [List.filter_eq_nil_iff, decide_eq_true_eq, not_lt]
+          intro b hb
+          have hb' := hl.1 b hb
+          omega
+        simp only [hx, List.nil_append] at hl'
+        conv_lhs => rw [hl']
+      · simp only [decide_eq_true_eq]
         omega
-      simp only [hx, List.nil_append] at hl'
-      conv_lhs => rw [hl']
-      simp only [decide_eq_true_eq]
-      omega
 
 lemma fin_list_sorted_indexOf_filter_le_mem :
     (l : List (Fin n)) → (hl : l.Sorted (· ≤ ·)) → (i : Fin n) →
@@ -129,8 +129,8 @@ lemma fin_list_sorted_indexOf_mem :
   intro l hl i hi
   conv_lhs => rw [fin_list_sorted_split l hl i]
   rw [List.idxOf_append_of_notMem]
-  erw [fin_list_sorted_indexOf_filter_le_mem l hl i hi]
-  · simp
+  · erw [fin_list_sorted_indexOf_filter_le_mem l hl i hi]
+    simp
   · simp
 
 lemma orderedInsert_of_fin_list_sorted :
@@ -155,10 +155,10 @@ lemma orderedInsert_of_fin_list_sorted :
     · simp only [List.orderedInsert, ha, ↓reduceIte, Fin.val_fin_lt, Fin.val_fin_le, decide_false,
       Bool.false_eq_true, not_false_eq_true, List.filter_cons_of_neg]
       rw [List.filter_cons_of_pos]
-      rw [orderedInsert_of_fin_list_sorted l hl.2 i]
-      simp only [Fin.val_fin_lt, Fin.val_fin_le, List.cons_append]
-      simp only [decide_eq_true_eq]
-      omega
+      · rw [orderedInsert_of_fin_list_sorted l hl.2 i]
+        simp only [Fin.val_fin_lt, Fin.val_fin_le, List.cons_append]
+      · simp only [decide_eq_true_eq]
+        omega
 
 lemma orderedInsert_eq_insertIdx_of_fin_list_sorted (l : List (Fin n)) (hl : l.Sorted (· ≤ ·))
     (i : Fin n) :
@@ -169,7 +169,7 @@ lemma orderedInsert_eq_insertIdx_of_fin_list_sorted (l : List (Fin n)) (hl : l.S
     omega⟩
   simp only [Fin.val_fin_lt]
   conv_rhs => rw [insertIdx_eq_take_drop _ _ n]
-  rw [orderedInsert_of_fin_list_sorted]
+  rw [orderedInsert_of_fin_list_sorted _ hl]
   congr
   · conv_rhs =>
       rhs
@@ -179,7 +179,6 @@ lemma orderedInsert_eq_insertIdx_of_fin_list_sorted (l : List (Fin n)) (hl : l.S
       rhs
       rw [fin_list_sorted_split l hl i]
     simp [n]
-  exact hl
 
 /-!
 
@@ -512,6 +511,8 @@ lemma uncontractedList_succAboveEmb_eraseIdx_toFinset (c : WickContraction n) (i
   simp only [Fin.coe_succAboveEmb, List.mem_toFinset, Fin.succAboveEmb_apply, Finset.mem_erase,
     ne_eq, Finset.mem_map]
   rw [mem_eraseIdx_nodup _ _ _ (by simpa using hk)]
+  swap
+  · exact uncontractedList_succAboveEmb_nodup c i
   simp_all only [List.mem_map, List.getElem_map, ne_eq]
   apply Iff.intro
   · intro a_1
@@ -530,7 +531,7 @@ lemma uncontractedList_succAboveEmb_eraseIdx_toFinset (c : WickContraction n) (i
     subst right
     use w
     simp_all [uncontractedList]
-  exact uncontractedList_succAboveEmb_nodup c i
+
 
 lemma uncontractedList_succAboveEmb_eraseIdx_sorted (c : WickContraction n) (i : Fin n.succ)
     (k: ℕ) : ((List.map i.succAboveEmb c.uncontractedList).eraseIdx k).Sorted (· ≤ ·) := by
@@ -559,7 +560,7 @@ lemma uncontractedList_extractEquiv_symm_some (c : WickContraction n) (i : Fin n
   rw [uncontractedList_eq_sort]
   rw [uncontractedList_succAboveEmb_eraseIdx_eq_sort]
   swap
-  simp only [Fin.is_lt]
+  · simp only [Fin.is_lt]
   congr
   simp only [Nat.succ_eq_add_one, extractEquiv, Equiv.coe_fn_symm_mk,
     uncontractedList_getElem_uncontractedIndexEquiv_symm, Fin.succAboveEmb_apply]
@@ -600,8 +601,8 @@ lemma take_uncontractedListOrderPos_eq_filter (c : WickContraction n) (i : Fin n
     (c.uncontractedList.take (c.uncontractedListOrderPos i)) =
     c.uncontractedList.filter (fun x => x.1 < i.1) := by
   nth_rewrite 1 [fin_list_sorted_split c.uncontractedList _ i]
-  simp only [uncontractedListOrderPos, Nat.succ_eq_add_one, List.take_left']
-  exact uncontractedList_sorted c
+  · simp only [uncontractedListOrderPos, Nat.succ_eq_add_one, List.take_left']
+  · exact uncontractedList_sorted c
 
 lemma take_uncontractedListOrderPos_eq_filter_sort (c : WickContraction n) (i : Fin n.succ) :
     (c.uncontractedList.take (c.uncontractedListOrderPos i)) =

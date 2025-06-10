@@ -58,9 +58,9 @@ lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
   congr
   funext x
   rw [staticContract_eq_timeContract_of_eqTimeOnly]
-  rw [timeOrder_timeContract_mul_of_eqTimeOnly_left]
-  exact x.2
-  exact x.2
+  · rw [timeOrder_timeContract_mul_of_eqTimeOnly_left]
+    exact x.2
+  · exact x.2
 
 lemma timeOrder_ofFieldOpList_eq_eqTimeOnly_empty (φs : List 𝓕.FieldOp) :
     𝓣(ofFieldOpList φs) = 𝓣(𝓝(ofFieldOpList φs)) +

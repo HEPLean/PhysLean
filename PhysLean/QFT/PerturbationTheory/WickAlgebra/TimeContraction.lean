@@ -88,7 +88,7 @@ lemma timeContract_mem_center (φ ψ : 𝓕.FieldOp) :
   · rw [timeContract_of_not_timeOrderRel _ _ h]
     refine Subalgebra.smul_mem (Subalgebra.center ℂ _) ?_ 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ)
     rw [timeContract_of_timeOrderRel]
-    exact superCommute_anPart_ofFieldOp_mem_center _ _
+    · exact superCommute_anPart_ofFieldOp_mem_center _ _
     have h1 := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
     simp_all
 
@@ -100,9 +100,9 @@ lemma timeContract_zero_of_diff_grade (φ ψ : 𝓕.FieldOp) (h : (𝓕 |>ₛ φ
     exact h
   · rw [timeContract_of_not_timeOrderRel _ _ h1]
     rw [timeContract_of_timeOrderRel _ _ _]
-    rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
-    simp only [instCommGroup.eq_1, smul_zero]
-    exact h.symm
+    · rw [superCommute_anPart_ofFieldOpF_diff_grade_zero]
+      · simp only [instCommGroup.eq_1, smul_zero]
+      · exact h.symm
     have ht := IsTotal.total (r := 𝓕.timeOrderRel) φ ψ
     simp_all
 
@@ -133,21 +133,21 @@ lemma timeOrder_timeContract_eq_time_mid {φ ψ : 𝓕.FieldOp}
   | .position φ =>
     simp only [anPart_position, instCommGroup.eq_1]
     apply timeOrder_superCommute_eq_time_mid _ _
-    simp only [crAnTimeOrderRel, h1]
-    simp [crAnTimeOrderRel, h2]
+    · simp only [crAnTimeOrderRel, h1]
+    · simp [crAnTimeOrderRel, h2]
   | .outAsymp φ =>
     simp only [anPart_outAsymp, instCommGroup.eq_1]
     apply timeOrder_superCommute_eq_time_mid _ _
-    simp only [crAnTimeOrderRel, h1]
-    simp [crAnTimeOrderRel, h2]
+    · simp only [crAnTimeOrderRel, h1]
+    · simp [crAnTimeOrderRel, h2]
 
 lemma timeOrder_timeContract_eq_time_left {φ ψ : 𝓕.FieldOp}
     (h1 : timeOrderRel φ ψ) (h2 : timeOrderRel ψ φ) (b : 𝓕.WickAlgebra) :
     𝓣(timeContract φ ψ * b) = timeContract φ ψ * 𝓣(b) := by
   trans 𝓣(1 * timeContract φ ψ * b)
-  simp only [one_mul]
-  rw [timeOrder_timeContract_eq_time_mid h1 h2]
-  simp
+  · simp only [one_mul]
+  · rw [timeOrder_timeContract_eq_time_mid h1 h2]
+    simp
 
 lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
     (h1 : ¬ (timeOrderRel φ ψ ∧ timeOrderRel ψ φ)) :
