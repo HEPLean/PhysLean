@@ -9,6 +9,7 @@ import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import PhysLean.StatisticalMechanics.Temperature
+import PhysLean.Meta.Informal.SemiFormal
 /-!
 
 # Canonical ensemble
@@ -43,11 +44,21 @@ instance {ι1 ι2 : Type} : HAdd (CanonicalEnsemble ι1) (CanonicalEnsemble ι2)
     (CanonicalEnsemble (ι1 × ι2)) where
   hAdd := fun 𝓒1 𝓒2 => fun (i : ι1 × ι2) => 𝓒1 i.1 + 𝓒2 i.2
 
+/-- Scalar multiplication of `CanonicalEnsemble`, defined such that
+  `nsmul n 𝓒` is `n` coppies of the canonical ensemble `𝓒`. -/
+def nsmul (n : ℕ) (𝓒1 : CanonicalEnsemble ι) : CanonicalEnsemble (Fin n → ι) :=
+  fun f => ∑ i, 𝓒1 (f i)
+
 set_option linter.unusedVariables false in
 /-- The microstates of a the canonical ensemble -/
 @[nolint unusedArguments]
 abbrev microstates {ι : Type} (𝓒 : CanonicalEnsemble ι) : Type := ι
 
+/-!
+
+## The energy of the microstates
+
+-/
 /-- The energy of associated with a mircrostate of the canonical ensemble. -/
 abbrev energy (𝓒 : CanonicalEnsemble ι) : microstates 𝓒 → ℝ := 𝓒
 
@@ -56,6 +67,11 @@ lemma energy_add_apply (i : microstates (𝓒 + 𝓒1)) :
     (𝓒 + 𝓒1).energy i = 𝓒.energy i.1 + 𝓒1.energy i.2 := by
   simp [energy]
   rfl
+
+@[simp]
+lemma energy_nsmul_apply (n : ℕ) (f : Fin n → microstates 𝓒) :
+    (nsmul n 𝓒).energy f = ∑ i, 𝓒.energy (f i) := by
+  simp [energy, nsmul]
 
 /-!
 
@@ -81,6 +97,10 @@ lemma partitionFunction_add [Fintype ι] [Fintype ι1] :
   congr
   simp [energy]
   ring
+
+/-- The partition function of `n` copies of a canonical ensemble. -/
+semiformal_result "ERA5D" partitionFunction_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).partitionFunction T = (𝓒.partitionFunction T) ^ n
 
 lemma partitionFunction_pos [Fintype ι] [Nonempty ι] (T : Temperature) :
     0 < partitionFunction 𝓒 T := by
@@ -122,6 +142,14 @@ lemma partitionFunction_eq_partitionFunctionβ [Fintype ι] (T : Temperature) :
 noncomputable def probability [Fintype ι] (i : microstates 𝓒) (T : Temperature) : ℝ :=
   exp (- β (T) * 𝓒.energy i) / partitionFunction 𝓒 T
 
+/-- Probability of a microstate in a canonical ensemble is less then or equal to `1`. -/
+semiformal_result "ERBG6" probability_nsmul [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
+    𝓒.probability i T ≤ 1
+
+/-- Probability of a microstate in a canonical ensemble is non-negative. -/
+semiformal_result "ERBG6" probability_nsmul [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
+    0 ≤ 𝓒.probability i T
+
 lemma probability_neq_zero [Fintype ι] [Nonempty ι] (i : microstates 𝓒) (T : Temperature) :
     probability 𝓒 i T ≠ 0 := by
   rw [probability]
@@ -137,6 +165,12 @@ lemma probability_add [Fintype ι] [Fintype ι1]
   congr
   rw [← Real.exp_add]
   ring_nf
+
+/-- The probability of a microstate in `n` copies of a canonical ensemble is
+  equal to the product of the probability of the corresponding individual microstates. -/
+semiformal_result "ERBAH" probability_nsmul [Fintype ι] (n : ℕ)
+    (f : microstates (nsmul n 𝓒)) (T : Temperature) :
+    (nsmul n 𝓒).probability f T = ∏ i, 𝓒.probability (f i) T
 
 @[simp]
 lemma sum_probability_eq_one [Fintype ι] [Nonempty ι] (T : Temperature) :
@@ -181,6 +215,11 @@ lemma meanEnergy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) 
     funext i
     rw [← Finset.mul_sum, ← Finset.sum_mul]
     simp
+
+/-- The mean energy of `n` copies of a canonical ensemble is equal
+  to `n` times the mean energy of the canonical ensemble. -/
+semiformal_result "ERBAH" meanEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T
 
 lemma meanEnergy_eq_logDeriv_partitionFunctionβ [Fintype ι] (T : Temperature) :
     meanEnergy 𝓒 T = - logDeriv (partitionFunctionβ 𝓒) (β T) := by
@@ -240,6 +279,10 @@ lemma entropy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) [Fi
     rw [← Finset.sum_mul, ← Finset.sum_mul]
     simp
 
+/-- The entropy of `n` copies of a canonical ensemble is equal
+  to `n` times the entropy of the canonical ensemble. -/
+semiformal_result "ERBCV" entropy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).entropy T = n * 𝓒.entropy T
 /-!
 
 ## Helmholtz free energy
@@ -257,5 +300,10 @@ lemma helmholtzFreeEnergy_add [Fintype ι] [Nonempty ι]
     (𝓒 + 𝓒1).helmholtzFreeEnergy T = 𝓒.helmholtzFreeEnergy T + 𝓒1.helmholtzFreeEnergy T := by
   simp [helmholtzFreeEnergy]
   ring
+
+/-- The free energy of `n` copies of a canonical ensemble is equal
+  to `n` times the entropy of the canonical ensemble. -/
+semiformal_result "ERBCV" helmholtzFreeEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).helmholtzFreeEnergy T = n * 𝓒.helmholtzFreeEnergy T
 
 end CanonicalEnsemble
