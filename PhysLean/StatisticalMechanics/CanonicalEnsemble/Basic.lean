@@ -39,7 +39,7 @@ open Real Temperature
 variable {ι ι1 : Type} (𝓒 : CanonicalEnsemble ι) (𝓒1 : CanonicalEnsemble ι1)
 
 /-- The addition of two `CanonicalEnsemble`. -/
-instance {ι1 ι2 : Type} : HAdd  (CanonicalEnsemble ι1) (CanonicalEnsemble ι2)
+instance {ι1 ι2 : Type} : HAdd (CanonicalEnsemble ι1) (CanonicalEnsemble ι2)
     (CanonicalEnsemble (ι1 × ι2)) where
   hAdd := fun 𝓒1 𝓒2 => fun (i : ι1 × ι2) => 𝓒1 i.1 + 𝓒2 i.2
 
@@ -65,7 +65,7 @@ lemma energy_add_apply (i : microstates (𝓒 + 𝓒1)) :
 
 /-- The partition function of the canonical ensemble. -/
 noncomputable def partitionFunction [Fintype ι] (T : Temperature) : ℝ :=
-  ∑ i, exp (- β (T) * 𝓒.energy i )
+  ∑ i, exp (- β (T) * 𝓒.energy i)
 
 lemma partitionFunction_add [Fintype ι] [Fintype ι1] :
     (𝓒 + 𝓒1).partitionFunction T = 𝓒.partitionFunction T * 𝓒1.partitionFunction T := by
@@ -98,14 +98,14 @@ lemma partitionFunction_neq_zero [Fintype ι] [Nonempty ι] (T : Temperature) :
 
 /-- The partition function of the canonical ensemble as a function of `β` -/
 noncomputable def partitionFunctionβ [Fintype ι] (β : ℝ) : ℝ :=
-  ∑ i, exp (- β * 𝓒.energy i )
+  ∑ i, exp (- β * 𝓒.energy i)
 
 lemma partitionFunctionβ_def [Fintype ι]:
-    partitionFunctionβ 𝓒 = fun β => ∑ i, exp (- β * 𝓒.energy i ) := by rfl
+    partitionFunctionβ 𝓒 = fun β => ∑ i, exp (- β * 𝓒.energy i) := by rfl
 
 @[fun_prop]
 lemma partitionFunctionβ_differentiable [Fintype ι] :
-    Differentiable ℝ 𝓒.partitionFunctionβ  := by
+    Differentiable ℝ 𝓒.partitionFunctionβ := by
   rw [partitionFunctionβ_def]
   fun_prop
 
@@ -128,7 +128,7 @@ lemma probability_neq_zero [Fintype ι] [Nonempty ι] (i : microstates 𝓒) (T 
   field_simp
 
 @[simp]
-lemma probability_add [Fintype ι]  [Fintype ι1]
+lemma probability_add [Fintype ι] [Fintype ι1]
     (i : microstates (𝓒 + 𝓒1)) (T : Temperature) :
     (𝓒 + 𝓒1).probability i T = 𝓒.probability i.1 T * 𝓒1.probability i.2 T := by
   simp [probability]
@@ -169,27 +169,27 @@ lemma meanEnergy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) 
   rw [Finset.sum_add_distrib]
   congr 1
   · rw [Fintype.sum_prod_type]
-    simp
+    simp only
     congr
     funext i
     rw [← Finset.mul_sum, ← Finset.mul_sum]
     simp
   · rw [Fintype.sum_prod_type]
     rw [Finset.sum_comm]
-    simp
+    simp only
     congr
     funext i
     rw [← Finset.mul_sum, ← Finset.sum_mul]
     simp
 
 lemma meanEnergy_eq_logDeriv_partitionFunctionβ [Fintype ι] (T : Temperature) :
-    meanEnergy 𝓒 T = - logDeriv (partitionFunctionβ 𝓒) (β T):= by
+    meanEnergy 𝓒 T = - logDeriv (partitionFunctionβ 𝓒) (β T) := by
   rw [logDeriv_apply]
   nth_rewrite 1 [partitionFunctionβ_def]
   rw [deriv_sum]
   · simp [meanEnergy]
     rw [@neg_div]
-    simp
+    simp only [neg_neg]
     rw [Finset.sum_div]
     congr
     funext i
@@ -209,7 +209,7 @@ open Constants
 
 /-- The entropy of the canonical ensemble. -/
 noncomputable def entropy [Fintype ι] (T : Temperature) : ℝ :=
-  - kB *  ∑ i, probability 𝓒 i T * log (probability 𝓒 i T)
+  - kB * ∑ i, probability 𝓒 i T * log (probability 𝓒 i T)
 
 /-- Entropy is addative on adding canonical ensembles. -/
 @[simp]
@@ -226,14 +226,14 @@ lemma entropy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) [Fi
   · simp
     left
     rw [Fintype.sum_prod_type]
-    simp
+    simp only
     congr
     funext i
     rw [← Finset.sum_mul, ← Finset.mul_sum]
     simp
   · rw [Fintype.sum_prod_type]
     rw [Finset.sum_comm]
-    simp
+    simp only [neg_inj, mul_eq_mul_left_iff, NNReal.coe_eq_zero]
     left
     congr
     funext i
