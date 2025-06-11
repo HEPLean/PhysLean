@@ -41,6 +41,11 @@ lemma isPhenoConstrained_of_subset {x y : Charges} (h : x ⊆ y)
     have h' := allowsTerm_of_subset h hr
     simp_all
 
+/-- The collection of charges of super-potential terms leading to a pheno-constrained model. -/
+def phenoConstrainingChargesSP (x : Charges) : Multiset ℤ :=
+  x.ofPotentialTerm μ + x.ofPotentialTerm β + x.ofPotentialTerm Λ +
+  x.ofPotentialTerm W2 + x.ofPotentialTerm W4 + x.ofPotentialTerm W1
+
 /-!
 
 ## Inserting charges into trees, with pheno constraints
