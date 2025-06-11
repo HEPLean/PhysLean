@@ -110,7 +110,7 @@ def toFieldLabel : PotentialTerm → List FieldLabel
 
 /-- The proposition which is true on those terms which are members of the
   super potential. -/
-def InSuperPotential : PotentialTerm →  Prop
+def InSuperPotential : PotentialTerm → Prop
   | μ => True
   | β => True
   | Λ => True
@@ -123,7 +123,7 @@ def InSuperPotential : PotentialTerm →  Prop
   | topYukawa => True
   | bottomYukawa => True
 
-instance :  (T : PotentialTerm) → Decidable (InSuperPotential  T)
+instance :  (T : PotentialTerm) → Decidable (InSuperPotential T)
   | μ => inferInstanceAs (Decidable True)
   | β => inferInstanceAs (Decidable True)
   | Λ => inferInstanceAs (Decidable True)
@@ -139,10 +139,9 @@ instance :  (T : PotentialTerm) → Decidable (InSuperPotential  T)
 /-- The terms within the super-potential contain no conjugate fields. -/
 lemma no_conjugate_in_toFieldLabel_of_inSuperPotential {T : PotentialTerm}
     (h : T.InSuperPotential) : FieldLabel.fiveMatter ∉ T.toFieldLabel ∧
-    FieldLabel.fiveHd ∉ T.toFieldLabel ∧ FieldLabel.fiveBarHu ∉  T.toFieldLabel:= by
+    FieldLabel.fiveHd ∉ T.toFieldLabel ∧ FieldLabel.fiveBarHu ∉ T.toFieldLabel:= by
   revert T
   decide
-
 
 /-- The degree of a term in the potential. -/
 def degree (T : PotentialTerm) : ℕ := T.toFieldLabel.length
