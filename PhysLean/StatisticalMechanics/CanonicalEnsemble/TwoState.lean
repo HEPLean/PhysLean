@@ -68,5 +68,4 @@ lemma twoState_meanEnergy_eq (E : ℝ) (T : Temperature) :
   field_simp [Real.sinh_eq, Real.cosh_eq]
   ring_nf
 
-
 end CanonicalEnsemble

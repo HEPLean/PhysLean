@@ -143,11 +143,11 @@ noncomputable def probability [Fintype ι] (i : microstates 𝓒) (T : Temperatu
   exp (- β (T) * 𝓒.energy i) / partitionFunction 𝓒 T
 
 /-- Probability of a microstate in a canonical ensemble is less then or equal to `1`. -/
-semiformal_result "ERDAR" probability_nsmul [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
+semiformal_result "ERDAR" probability_le_one [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
     𝓒.probability i T ≤ 1
 
 /-- Probability of a microstate in a canonical ensemble is non-negative. -/
-semiformal_result "ERBG6" probability_nsmul [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
+semiformal_result "ERBG6" probability_nonneg [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
     0 ≤ 𝓒.probability i T
 
 lemma probability_neq_zero [Fintype ι] [Nonempty ι] (i : microstates 𝓒) (T : Temperature) :
