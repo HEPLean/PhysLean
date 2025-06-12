@@ -79,7 +79,7 @@ informal_lemma twoState_entropy_eq where
 
 /-- A simplification of the `helmholtzFreeEnergy` of the two-state canonical ensemble. -/
 informal_lemma twoState_helmholtzFreeEnergy_eq where
-  tag := "EVJJI"
+  tag := "EVMPR"
   deps := [``twoState, ``helmholtzFreeEnergy]
 
 end CanonicalEnsemble
