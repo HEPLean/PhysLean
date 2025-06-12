@@ -3,10 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Algebra.Group.Nat.Defs
-import Mathlib.Data.Finset.Insert
-import Mathlib.Data.Fintype.Defs
-import Mathlib.Tactic.DeriveFintype
+import PhysLean.Particles.SuperSymmetry.SU5.FieldLabels
 /-!
 
 # Potential of the SU(5) + U(1) GUT
@@ -63,29 +60,6 @@ inductive PotentialTerm
   /-- The term `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd`. -/
   | bottomYukawa : PotentialTerm
 deriving DecidableEq, Fintype
-
-/-- The types of field present in SU(5). -/
-inductive FieldLabel
-  | fiveBarHu
-  | fiveHu
-  | fiveBarHd
-  | fiveHd
-  | fiveBarMatter
-  | fiveMatter
-  | tenMatter
-
-deriving DecidableEq, Fintype
-
-/-- The R-Parity of a field, landding on `1` if it is in the non-trivial representation
-  and `0` otherwise. -/
-def FieldLabel.RParity : FieldLabel → Fin 2
-  | fiveBarHu => 0
-  | fiveHu => 0
-  | fiveBarHd => 0
-  | fiveHd => 0
-  | fiveBarMatter => 1
-  | fiveMatter => 1
-  | tenMatter => 1
 
 namespace PotentialTerm
 

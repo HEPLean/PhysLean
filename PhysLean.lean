@@ -98,6 +98,7 @@ import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.OrthogY3B3.Pl
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.OrthogY3B3.ToSols
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.Permutations
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.Y3
+import PhysLean.Particles.SuperSymmetry.SU5.FieldLabels
 import PhysLean.Particles.SuperSymmetry.SU5.Potential
 import PhysLean.QFT.AnomalyCancellation.Basic
 import PhysLean.QFT.AnomalyCancellation.GroupActions
