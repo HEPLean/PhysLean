@@ -257,6 +257,7 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
+import PhysLean.StatisticalMechanics.CanonicalEnsemble.TwoState
 import PhysLean.StatisticalMechanics.Temperature
 import PhysLean.StringTheory.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.AllowsTerm
