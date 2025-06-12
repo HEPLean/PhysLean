@@ -13,7 +13,8 @@ This module contains the details of F-theory with a SU(5) x U(1) gauge group.
 
 The main data structures part of this theory are:
 - `PotentialTerm`: An inductive type containing the terms in the super and
-  Kahler potential of the theory.
+  Kahler potential of the theory. This can be found in
+  `PhysLean.Particles.SuperSymmetry.SU5.Potential`, as not specific to F-theory.
 - `Fluxes`: Contains the fluxes associated with each representation present in the theory.
 - `Charges`: Contains the charges associated with each representation present in the theory.
 - `Quanta`: Contains the fluxes and charges of each representation present in the theory.
