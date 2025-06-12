@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+import PhysLean.Meta.Informal.Basic
 /-!
 
 # Two-state canonical ensemble
@@ -18,6 +19,9 @@ namespace CanonicalEnsemble
 
 open Temperature
 open Real
+
+TODO "EVJNH" "Generalize the results for the two-state canonical ensemble so that the two
+  states have arbitary energies, rather than one state having energy `0`."
 
 /-- The canonical ensemble corresponding to state system, with one state of energy
   `E` and the other state of energy `0`. -/
@@ -67,5 +71,15 @@ lemma twoState_meanEnergy_eq (E : ℝ) (T : Temperature) :
   rw [h1, Real.tanh_eq_sinh_div_cosh]
   field_simp [Real.sinh_eq, Real.cosh_eq]
   ring_nf
+
+/-- A simplification of the `entropy` of the two-state canonical ensemble. -/
+informal_lemma twoState_entropy_eq where
+  tag := "EVJJI"
+  deps := [``twoState, ``entropy]
+
+/-- A simplification of the `helmholtzFreeEnergy` of the two-state canonical ensemble. -/
+informal_lemma twoState_helmholtzFreeEnergy_eq where
+  tag := "EVJJI"
+  deps := [``twoState, ``helmholtzFreeEnergy]
 
 end CanonicalEnsemble
