@@ -98,6 +98,7 @@ import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.OrthogY3B3.Pl
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.OrthogY3B3.ToSols
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.Permutations
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.Y3
+import PhysLean.Particles.SuperSymmetry.SU5.Potential
 import PhysLean.QFT.AnomalyCancellation.Basic
 import PhysLean.QFT.AnomalyCancellation.GroupActions
 import PhysLean.QFT.PerturbationTheory.CreateAnnihilate
@@ -285,7 +286,6 @@ import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ToList
-import PhysLean.StringTheory.FTheory.SU5U1.Potential.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
