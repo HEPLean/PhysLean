@@ -19,6 +19,7 @@ namespace FTheory
 namespace SU5U1
 
 namespace Charges
+open SuperSymmetry.SU5
 
 /-- Given an `x : Charges`, the charges associated with a given `FieldLabel`. -/
 def ofFieldLabel (x : Charges) : FieldLabel → Finset ℤ

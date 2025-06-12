@@ -25,8 +25,6 @@ namespace FTheory
 
 namespace SU5U1
 
-variable {I : CodimensionOneConfig}
-
 namespace Charges
 
 namespace Tree

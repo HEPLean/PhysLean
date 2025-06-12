@@ -44,6 +44,7 @@ namespace SU5U1
 variable {I : CodimensionOneConfig}
 
 namespace Charges
+open SuperSymmetry.SU5
 open PotentialTerm
 open CodimensionOneConfig
 

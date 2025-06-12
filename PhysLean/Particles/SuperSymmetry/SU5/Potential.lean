@@ -3,11 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Data.Finset.Prod
-import Mathlib.Tactic.FinCases
+import Mathlib.Algebra.Group.Nat.Defs
+import Mathlib.Data.Finset.Insert
+import Mathlib.Data.Fintype.Defs
 import Mathlib.Tactic.DeriveFintype
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 /-!
 
 # Potential of the SU(5) + U(1) GUT
@@ -35,11 +34,9 @@ A previous version of this code was replaced in PR #569.
 
 -/
 
-namespace FTheory
+namespace SuperSymmetry
 
-namespace SU5U1
-
-variable {I : CodimensionOneConfig}
+namespace SU5
 
 /-- Relevant terms part of the superpotential and Kahler potential of the `SU(5)` SUSY GUT. -/
 inductive PotentialTerm
@@ -170,6 +167,6 @@ def causeProtonDecay : Finset PotentialTerm :=
 
 end PotentialTerm
 
-end SU5U1
+end SU5
 
-end FTheory
+end SuperSymmetry

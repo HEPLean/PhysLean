@@ -19,8 +19,8 @@ namespace FTheory
 
 namespace SU5U1
 
-variable {I : CodimensionOneConfig}
 namespace Charges
+open SuperSymmetry.SU5
 open PotentialTerm
 
 /-- A charge is pheno-constrained if it leads to the presence of any term causing proton decay

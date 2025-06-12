@@ -25,6 +25,7 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Quanta
+open SuperSymmetry.SU5
 open PotentialTerm Charges CodimensionOneConfig
 
 /-- The set of charges of singlets needed to regenerate

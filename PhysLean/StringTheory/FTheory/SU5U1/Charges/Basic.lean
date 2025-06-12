@@ -7,7 +7,7 @@ import Mathlib.Data.Finset.Option
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Finset.Prod
 import Mathlib.Data.Finset.Sort
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
+import PhysLean.Particles.SuperSymmetry.SU5.Potential
 /-!
 
 # Charges
@@ -22,8 +22,6 @@ charges associated with the matter content of a theory.
 namespace FTheory
 
 namespace SU5U1
-
-variable {I : CodimensionOneConfig}
 
 /-- The type such that an element corresponds to the collection of
   charges associated with the matter content of the theory.

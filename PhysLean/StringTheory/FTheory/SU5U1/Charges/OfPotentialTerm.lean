@@ -17,6 +17,8 @@ namespace FTheory
 namespace SU5U1
 
 namespace Charges
+open SuperSymmetry.SU5
+open PotentialTerm
 
 /-- Given a charges `x : Charges` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term. -/
@@ -39,7 +41,6 @@ lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : Potent
         h1 _ (Finset.subset_def.mp (ofFieldLabel_subset_of_subset h _))
     simp
 
-open PotentialTerm
 /-- Given a charges `x : Charges` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term.
 

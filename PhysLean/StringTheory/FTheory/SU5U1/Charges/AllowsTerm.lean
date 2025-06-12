@@ -24,6 +24,7 @@ namespace FTheory
 namespace SU5U1
 
 namespace Charges
+open SuperSymmetry.SU5
 
 /-- The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
 if the zero charge is in the set of charges associated with that potential term. -/

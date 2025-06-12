@@ -58,6 +58,7 @@ end TenQuanta
 abbrev Quanta : Type := Option ℤ × Option ℤ × FiveQuanta × TenQuanta
 
 namespace Quanta
+open SuperSymmetry.SU5
 open PotentialTerm Charges
 
 instance : DecidableEq Quanta := instDecidableEqProd

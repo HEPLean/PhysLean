@@ -19,6 +19,7 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Quanta
+open SuperSymmetry.SU5
 open PotentialTerm Charges
 
 /-- A case of `Quanta` with one 10d representation and 4 5-bar representations.

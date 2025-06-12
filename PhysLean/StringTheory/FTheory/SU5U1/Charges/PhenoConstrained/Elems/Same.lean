@@ -30,10 +30,9 @@ namespace FTheory
 
 namespace SU5U1
 
-variable {I : CodimensionOneConfig}
 namespace Charges
+open SuperSymmetry.SU5
 open PotentialTerm
-open CodimensionOneConfig
 open PhysLean
 open Tree
 /-- For `I = same` the tree of charges containing all
