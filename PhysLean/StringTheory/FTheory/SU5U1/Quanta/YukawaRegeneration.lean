@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Elems
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
 /-!
 
 # Generation of Yukawa couplings
@@ -28,27 +29,6 @@ namespace Quanta
 open SuperSymmetry.SU5
 open PotentialTerm Charges CodimensionOneConfig
 
-/-- The set of charges of singlets needed to regenerate
-  all the Yukawa terms in the potential. -/
-def yukawaSingletCharges (x : Quanta) : Multiset ℤ :=
-  x.toCharges.ofPotentialTerm topYukawa + x.toCharges.ofPotentialTerm bottomYukawa
-
-/-- The set of charges of `n` choices of singlets which regenerate the Yukawa terms. -/
-def yukawaSingletChargesInsertions (x : Quanta) : ℕ → Multiset ℤ
-  | 0 => {0}
-  | n + 1 => (x.yukawaSingletChargesInsertions n).bind fun sSum =>
-    (x.yukawaSingletCharges.map fun s => sSum + s)
-
-/-- The proposition which states that the singlets needed to regenerate the Yukawa
-  couplings regenerate a dangerous coupling at `n`-insertions of the singlets. -/
-def YukawaSingletsRegenerateDangerousInsertion (x : Quanta) (n : ℕ) : Prop :=
-  (x.yukawaSingletChargesInsertions n).toFinset
-  ∩ x.toCharges.phenoConstrainingChargesSP.toFinset ≠ ∅
-
-instance : Decidable (YukawaSingletsRegenerateDangerousInsertion x n) :=
-  inferInstanceAs (Decidable ((x.yukawaSingletChargesInsertions n).toFinset
-    ∩ x.toCharges.phenoConstrainingChargesSP.toFinset ≠ ∅))
-
 /-!
 
 ## One insertion
@@ -60,7 +40,8 @@ insertion of the Yukawa singlets.
 
 set_option maxRecDepth 2000 in
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_same :
-    (viableElems same).toMultiset.filter (fun x => ¬ YukawaSingletsRegenerateDangerousInsertion x 1)
+    (viableElems same).toMultiset.filter (fun x =>
+      ¬ (toCharges x).YukawaGeneratesDangerousAtLevel 1)
     = {(some 2, some (-2), {(-1, 1, 2), (1, 2, -2)}, {(-1, 3, 0)}),
     (some 2, some (-2), {(-1, 0, 2), (1, 3, -2)}, {(-1, 3, 0)}),
     (some (-2), some 2, {(-1, 2, -2), (1, 1, 2)}, {(1, 3, 0)}),
@@ -70,14 +51,14 @@ lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_sa
 set_option maxRecDepth 2000 in
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_NN :
     (viableElems nearestNeighbor).toMultiset.filter
-      (fun x => ¬ YukawaSingletsRegenerateDangerousInsertion x 1)
+      (fun x => ¬ (toCharges x).YukawaGeneratesDangerousAtLevel 1)
     = {(some 6, some (-14), {(-9, 1, 2), (1, 2, -2)}, {(-7, 3, 0)}),
     (some 6, some (-14), {(-9, 0, 2), (1, 3, -2)}, {(-7, 3, 0)})}:= by
   decide
 
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_NtoNN :
     (viableElems nextToNearestNeighbor).toMultiset.filter
-    (fun x => ¬ YukawaSingletsRegenerateDangerousInsertion x 1) = ∅ := by
+    (fun x => ¬ (toCharges x).YukawaGeneratesDangerousAtLevel 1) = ∅ := by
   decide
 
 /-!
@@ -92,21 +73,19 @@ insertions of the Yukawa singlets.
 set_option maxRecDepth 2000 in
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_two_eq_of_same :
     (viableElems same).toMultiset.filter (fun x =>
-    ¬ YukawaSingletsRegenerateDangerousInsertion x 1 ∧
-    ¬ YukawaSingletsRegenerateDangerousInsertion x 2) = ∅ := by
+    ¬ (toCharges x).YukawaGeneratesDangerousAtLevel 2) = ∅ := by
   decide
 
 set_option maxRecDepth 2000 in
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_two_eq_of_NN :
     (viableElems nearestNeighbor).toMultiset.filter (fun x =>
-    ¬ YukawaSingletsRegenerateDangerousInsertion x 1 ∧
-    ¬ YukawaSingletsRegenerateDangerousInsertion x 2) = ∅ := by
+    ¬ (toCharges x).YukawaGeneratesDangerousAtLevel 2) = ∅ := by
   decide
 
+set_option maxRecDepth 2000 in
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_two_eq_of_NtoNN :
     (viableElems nextToNearestNeighbor).toMultiset.filter (fun x =>
-    ¬ YukawaSingletsRegenerateDangerousInsertion x 1 ∧
-    ¬ YukawaSingletsRegenerateDangerousInsertion x 2) = ∅ := by
+    ¬ (toCharges x).YukawaGeneratesDangerousAtLevel 2) = ∅ := by
   decide
 
 end Quanta

@@ -158,10 +158,11 @@ which are not pheno-constrained.
 
 This can be constructed via
 
-Tree.fromMultiset (((minimallyAllowsTermOfFinset same.allowedBarFiveCharges
-      same.allowedTenCharges topYukawa).bind
-    (completions same.allowedBarFiveCharges same.allowedTenCharges)).dedup.filter
-    (fun x => ¬ IsPhenoConstrained x))
+#eval FourTree.fromMultiset <|
+    ((minimallyAllowsTermsOfFinset same.allowedBarFiveCharges
+        same.allowedTenCharges topYukawa).bind <|
+      completions same.allowedBarFiveCharges same.allowedTenCharges).dedup.filter
+    fun x => ¬ IsPhenoConstrained x
 -/
 private def completionTopYukawa (I : CodimensionOneConfig) :
     FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=

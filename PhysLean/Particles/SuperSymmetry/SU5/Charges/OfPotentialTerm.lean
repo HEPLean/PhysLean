@@ -40,6 +40,13 @@ lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : Potent
         h1 _ (Finset.subset_def.mp (ofFieldLabel_subset_of_subset h _))
     simp
 
+@[simp]
+lemma ofPotentialTerm_empty (T : PotentialTerm) :
+    ofPotentialTerm ∅ T = ∅ := by
+  cases T
+  all_goals
+    rfl
+
 /-- Given a charges `x : Charges` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term.
 

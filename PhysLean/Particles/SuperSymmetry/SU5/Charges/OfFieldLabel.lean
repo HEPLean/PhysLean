@@ -31,6 +31,13 @@ def ofFieldLabel (x : Charges) : FieldLabel → Finset ℤ
   | .fiveMatter => x.2.2.1.map ⟨Neg.neg, neg_injective⟩
 
 @[simp]
+lemma ofFieldLabel_empty (F : FieldLabel) :
+    ofFieldLabel ∅ F = ∅ := by
+  cases F
+  all_goals
+    rfl
+
+@[simp]
 lemma mem_ofFieldLabel_fiveHd (x : ℤ) (y : Charges) :
     x ∈ y.ofFieldLabel FieldLabel.fiveHd ↔ -x ∈ y.ofFieldLabel .fiveBarHd := by
   simp [ofFieldLabel, FieldLabel.fiveHd]

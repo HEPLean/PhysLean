@@ -46,6 +46,23 @@ def phenoConstrainingChargesSP (x : Charges) : Multiset ℤ :=
   x.ofPotentialTerm μ + x.ofPotentialTerm β + x.ofPotentialTerm Λ +
   x.ofPotentialTerm W2 + x.ofPotentialTerm W4 + x.ofPotentialTerm W1
 
+@[simp]
+lemma phenoConstrainingChargesSP_empty :
+    phenoConstrainingChargesSP ∅ = ∅ := by
+  simp [phenoConstrainingChargesSP]
+
+lemma phenoConstrainingChargesSP_of_subset {x y : Charges} (h : x ⊆ y) :
+    x.phenoConstrainingChargesSP ⊆ y.phenoConstrainingChargesSP := by
+  simp only [phenoConstrainingChargesSP]
+  refine Multiset.subset_iff.mpr ?_
+  intro z
+  simp [or_assoc]
+  intro hr
+  rcases hr with hr | hr | hr | hr | hr | hr
+  all_goals
+    have h' := ofPotentialTerm_subset_of_subset h _ hr
+    simp_all
+
 /-!
 
 ## Inserting charges into trees, with pheno constraints
