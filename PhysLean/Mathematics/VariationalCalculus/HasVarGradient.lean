@@ -6,6 +6,12 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 
+/-! Variational gradient
+
+Definition of variational gradient that allows for formal treatement of variational calculus
+as used in physics textbooks.
+-/
+
 open MeasureTheory ContDiff InnerProductSpace
 
 variable
@@ -61,11 +67,12 @@ inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u 
 
 
 
-/-- Variation of `S(x) = ∫ 1/2*m*‖ẋ‖² - V(x)` gives Newton's law of motion `δS(x) = - m*ẍ - V'(x)` -/
-example (m : ℝ) (u V : ℝ → ℝ) (hu : ContDiff ℝ ∞ u) (hV : ContDiff ℝ ∞ V) : HasVarGradientAt
-    (fun (u : ℝ → ℝ) (t : ℝ) => 1/2 * m * deriv u t ^ 2 - V (u t))
-    (fun t => - m * deriv (deriv u) t - deriv V (u t))
-    u := by
+/-- Variation of `S(x) = ∫ 1/2*m*‖ẋ‖² - V(x)` gives Newton's law of motion `δS(x) = - m*ẍ - V'(x)`-/
+example (m : ℝ) (u V : ℝ → ℝ) (hu : ContDiff ℝ ∞ u) (hV : ContDiff ℝ ∞ V) :
+    HasVarGradientAt
+      (fun (u : ℝ → ℝ) (t : ℝ) => 1/2 * m * deriv u t ^ 2 - V (u t))
+      (fun t => - m * deriv (deriv u) t - deriv V (u t))
+      u := by
   apply HasVarGradientAt.intro
   case adjoint =>
     eta_expand

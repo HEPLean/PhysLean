@@ -6,6 +6,10 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 
 import Mathlib
 
+/-! Test function
+
+Definition of test function, smooth and compactly supported function, and theorems about them.
+-/
 section IsTestFunction
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -71,12 +75,12 @@ theorem IsTestFunction.mul_right {f g : X → ℝ} (hf : IsTestFunction f) (hg :
 
 @[fun_prop]
 theorem IsTestFunction.smul_left {f : X → ℝ} {g : X → U}
-   (hf : ContDiff ℝ ∞ f) (hg : IsTestFunction g) : IsTestFunction (fun x => f x • g x) where
+    (hf : ContDiff ℝ ∞ f) (hg : IsTestFunction g) : IsTestFunction (fun x => f x • g x) where
   smooth := ContDiff.smul hf hg.smooth
   supp := HasCompactSupport.smul_left hg.supp
 
 @[fun_prop]
 theorem IsTestFunction.smul_right {f : X → ℝ} {g : X → U}
-   (hf : IsTestFunction f) (hg : ContDiff ℝ ∞ g) : IsTestFunction (fun x => f x • g x) where
+    (hf : IsTestFunction f) (hg : ContDiff ℝ ∞ g) : IsTestFunction (fun x => f x • g x) where
   smooth := ContDiff.smul hf.smooth hg
   supp := HasCompactSupport.smul_right hf.supp
