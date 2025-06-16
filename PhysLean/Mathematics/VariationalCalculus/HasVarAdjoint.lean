@@ -1,0 +1,258 @@
+/-
+Copyright (c) 2025 Tomas Skrivan. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Tomas Skrivan, Joseph Tooby-Smith
+-/
+
+import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
+
+open InnerProductSpace MeasureTheory ContDiff
+
+variable
+  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasurableSpace X]
+  {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
+  {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+  {W} [NormedAddCommGroup W] [InnerProductSpace ℝ W]
+
+/-- Map `F` from `(X → U)` to `(X → V)` has a variational adjoint `F'` if it preserves
+test functions and satisfies the adjoint relation `⟪F φ, ψ⟫ = ⟪φ, F' ψ⟫`for all test functions
+`φ` and `ψ` for `⟪φ, ψ⟫ = ∫ x, ⟪φ x, ψ x⟫_ℝ ∂μ`.
+
+The canonical example is the function `F = deriv` that has adjoint `F' = - deriv`.
+
+This notion of adjoint allows us to do formally variational calculus as often encountered in physics
+textbooks. In mathematical literature, the adjoint is often defined for unbounded operators, but
+such formal treatement is unnecessarily complicated for physics applications.
+-/
+structure HasVarAdjoint
+    (F : (X → U) → (X → V)) (F' : (X → V) → (X → U)) (μ : Measure X := by volume_tac) where
+  test_fun_preserving  : ∀ φ, IsTestFunction φ → IsTestFunction (F φ)
+  test_fun_preserving' : ∀ φ, IsTestFunction φ → IsTestFunction (F' φ)
+  adjoint : ∀ φ ψ, IsTestFunction φ → IsTestFunction ψ →
+    ∫ x, ⟪F φ x, ψ x⟫_ℝ ∂μ = ∫ x, ⟪φ x, F' ψ x⟫_ℝ ∂μ
+
+namespace HasVarAdjoint
+
+variable {μ : Measure X}
+
+theorem id : HasVarAdjoint (fun φ : X → U => φ) (fun φ => φ) μ where
+  test_fun_preserving  _ hφ := hφ
+  test_fun_preserving' _ hφ := hφ
+  adjoint _ _ _ _ := rfl
+
+theorem comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
+    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
+    HasVarAdjoint (fun φ => F (G φ)) (fun φ => G' (F' φ)) μ where
+  test_fun_preserving  _ hφ := hF.test_fun_preserving _ (hG.test_fun_preserving _ hφ)
+  test_fun_preserving' _ hφ := hG.test_fun_preserving' _ (hF.test_fun_preserving' _ hφ)
+  adjoint φ ψ hφ hψ := by
+    rw [hF.adjoint _ _ (hG.test_fun_preserving φ hφ) hψ]
+    rw [hG.adjoint _ _ hφ (hF.test_fun_preserving' _ hψ)]
+
+protected theorem deriv :
+    HasVarAdjoint (fun φ : ℝ → ℝ => deriv φ) (fun φ => - deriv φ) where
+  test_fun_preserving  _ hφ := by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · fun_prop
+    · exact HasCompactSupport.deriv h'
+  test_fun_preserving' _ hφ := by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · eta_expand; dsimp; fun_prop
+    · apply HasCompactSupport.neg'
+      apply HasCompactSupport.deriv h'
+  adjoint φ ψ hφ hψ := by
+    dsimp
+    trans ∫ (x : ℝ), ψ x * deriv φ x
+    · congr
+    rw [MeasureTheory.integral_mul_deriv_eq_deriv_mul_of_integrable (u := ψ) (v := φ)
+      (u' := deriv ψ) ]
+    · simp
+      rw [@MeasureTheory.integral_neg]
+    · intro x
+      simpa using hψ.1.differentiable (by exact ENat.LEInfty.out) x
+    · intro x
+      simpa using hφ.1.differentiable (by exact ENat.LEInfty.out) x
+    · refine IsTestFunction.integrable ?_ _
+      apply IsTestFunction.mul
+      · exact hψ
+      · exact IsTestFunction.deriv hφ
+    · refine IsTestFunction.integrable ?_ _
+      apply IsTestFunction.mul
+      · exact IsTestFunction.deriv hψ
+      · exact hφ
+    · refine IsTestFunction.integrable ?_ _
+      exact IsTestFunction.mul hψ hφ
+
+theorem congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {μ : Measure X}
+    (h : HasVarAdjoint G F' μ) (h' : ∀ φ, IsTestFunction φ → F φ = G φ) :
+    HasVarAdjoint F F' μ where
+  test_fun_preserving  φ hφ := by
+    rw[h' _ hφ]
+    exact h.test_fun_preserving φ hφ
+  test_fun_preserving' φ hφ := h.test_fun_preserving' φ hφ
+  adjoint φ ψ hφ hψ := by
+    rw [h' φ hφ]
+    exact h.adjoint φ ψ hφ hψ
+
+theorem congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U)} {μ : Measure X}
+    (h : HasVarAdjoint F G' μ) (h' : ∀ φ, IsTestFunction φ → F' φ = G' φ) :
+    HasVarAdjoint F F' μ where
+  test_fun_preserving  φ hφ := h.test_fun_preserving φ hφ
+  test_fun_preserving' φ hφ := by
+    rw [h' φ hφ]
+    exact h.test_fun_preserving' φ hφ
+  adjoint φ ψ hφ hψ := by
+    rw [h' ψ hψ]
+    exact h.adjoint φ ψ hφ hψ
+
+theorem neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) :
+    HasVarAdjoint (fun φ x => - F φ x) (fun φ x => - F' φ x) μ where
+  test_fun_preserving  _ hφ := by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · apply ContDiff.neg
+      apply (hF.test_fun_preserving _ hφ).smooth
+    · apply HasCompactSupport.neg'
+      apply (hF.test_fun_preserving _ hφ).supp
+  test_fun_preserving' _ hφ := by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · apply ContDiff.neg
+      apply (hF.test_fun_preserving' _ hφ).smooth
+    · apply HasCompactSupport.neg'
+      apply (hF.test_fun_preserving' _ hφ).supp
+  adjoint _ _ _ _ := by
+    simp [integral_neg]
+    rw[hF.adjoint _ _ (by assumption) (by assumption)]
+
+theorem add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
+    HasVarAdjoint (fun φ x => F φ x + G φ x) (fun φ x => F' φ x + G' φ x) μ where
+  test_fun_preserving  _ hφ := by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · apply ContDiff.add
+      apply (hF.test_fun_preserving _ hφ).smooth
+      apply (hG.test_fun_preserving _ hφ).smooth
+    · apply HasCompactSupport.add
+      apply (hF.test_fun_preserving _ hφ).supp
+      apply (hG.test_fun_preserving _ hφ).supp
+  test_fun_preserving' _ hφ :=  by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · apply ContDiff.add
+      apply (hF.test_fun_preserving' _ hφ).smooth
+      apply (hG.test_fun_preserving' _ hφ).smooth
+    · apply HasCompactSupport.add
+      apply (hF.test_fun_preserving' _ hφ).supp
+      apply (hG.test_fun_preserving' _ hφ).supp
+  adjoint _ _ _ _ := by
+    simp[inner_add_left,inner_add_right]
+    rw[MeasureTheory.integral_add ]
+    rw[MeasureTheory.integral_add ]
+    rw[hF.adjoint _ _ (by assumption) (by assumption)]
+    rw[hG.adjoint _ _ (by assumption) (by assumption)]
+    · apply IsTestFunction.integrable
+      apply IsTestFunction.inner
+      · (expose_names; exact h)
+      · (expose_names; exact hF.test_fun_preserving' x_1 h_1)
+    · apply IsTestFunction.integrable
+      apply IsTestFunction.inner
+      · (expose_names; exact h)
+      · (expose_names; exact hG.test_fun_preserving' x_1 h_1)
+    · apply IsTestFunction.integrable
+      apply IsTestFunction.inner
+      · (expose_names; exact hF.test_fun_preserving x h)
+      · (expose_names; exact h_1)
+    · apply IsTestFunction.integrable
+      apply IsTestFunction.inner
+      · (expose_names; exact hG.test_fun_preserving x h)
+      · (expose_names; exact h_1)
+
+theorem sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
+    HasVarAdjoint (fun φ x => F φ x - G φ x) (fun φ x => F' φ x - G' φ x) μ := by
+  simp [sub_eq_add_neg]
+  apply add hF (neg hG)
+
+theorem mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
+    HasVarAdjoint (fun φ x => ψ x * F φ x) (fun φ x => F' (fun x => ψ x * φ x) x) μ where
+  test_fun_preserving  φ hφ := by
+    apply IsTestFunction.mul_left
+    · exact hψ
+    · exact hF.test_fun_preserving φ hφ
+  test_fun_preserving' φ hφ := by
+    apply hF.test_fun_preserving'
+    apply IsTestFunction.mul_left
+    · exact hψ
+    · exact hφ
+  adjoint φ ψ' hφ hψ' := by
+    rw [← hF.adjoint]
+    · congr; funext x; simp; ring
+    · exact hφ
+    · apply IsTestFunction.mul_left
+      · exact hψ
+      · exact hψ'
+
+theorem mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
+    HasVarAdjoint (fun φ x => F φ x * ψ x) (fun φ x => F' (fun x => φ x * ψ x) x) μ where
+  test_fun_preserving  φ hφ := by
+    apply IsTestFunction.mul_right
+    · exact hF.test_fun_preserving φ hφ
+    · exact hψ
+  test_fun_preserving' φ hφ := by
+    apply hF.test_fun_preserving'
+    apply IsTestFunction.mul_right
+    · exact hφ
+    · exact hψ
+  adjoint φ ψ' hφ hψ' := by
+    rw [← hF.adjoint]
+    · congr; funext x; simp; ring
+    · exact hφ
+    · apply IsTestFunction.mul_right
+      · exact hψ'
+      · exact hψ
+
+theorem smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
+    HasVarAdjoint (fun φ x => ψ x • F φ x) (fun φ x => F' (fun x' => ψ x' • φ x') x) μ where
+  test_fun_preserving  φ hφ := by
+    have := hF.test_fun_preserving φ hφ
+    fun_prop
+  test_fun_preserving' φ hφ := by
+    apply hF.test_fun_preserving' _ _
+    fun_prop
+  adjoint φ ψ hφ hψ := by
+    simp_rw[inner_smul_left, ← inner_smul_right]
+    rw [hF.adjoint]
+    · rfl
+    · exact hφ
+    · simp; fun_prop
+
+theorem smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
+    HasVarAdjoint (fun φ x => ψ x • F φ x) (fun φ x => F' (fun x' => ψ x' • φ x') x) μ where
+  test_fun_preserving  φ hφ := by
+    have := hF.test_fun_preserving φ hφ
+    fun_prop
+  test_fun_preserving' φ hφ := by
+    apply hF.test_fun_preserving' _ _
+    fun_prop
+  adjoint φ ψ hφ hψ := by
+    simp_rw[inner_smul_left, ← inner_smul_right]
+    rw [hF.adjoint]
+    · rfl
+    · exact hφ
+    · simp; fun_prop
