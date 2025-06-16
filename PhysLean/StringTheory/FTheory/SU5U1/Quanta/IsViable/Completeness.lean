@@ -27,7 +27,8 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Charges
-
+open SuperSymmetry.SU5
+open SuperSymmetry.SU5.Charges
 open PhysLean Tree
 
 /-- For a given `I :CodimensionOneConfig` the `Charges` which are not

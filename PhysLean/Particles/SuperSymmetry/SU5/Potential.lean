@@ -92,7 +92,7 @@ def InSuperPotential : PotentialTerm → Prop
   | topYukawa => True
   | bottomYukawa => True
 
-instance :  (T : PotentialTerm) → Decidable (InSuperPotential T)
+instance : (T : PotentialTerm) → Decidable (InSuperPotential T)
   | μ => inferInstanceAs (Decidable True)
   | β => inferInstanceAs (Decidable True)
   | Λ => inferInstanceAs (Decidable True)

@@ -19,7 +19,8 @@ namespace SU5U1
 
 namespace Charges
 open CodimensionOneConfig
-open PhysLean Tree
+open SuperSymmetry.SU5.Charges
+open Tree
 
 /-!
 

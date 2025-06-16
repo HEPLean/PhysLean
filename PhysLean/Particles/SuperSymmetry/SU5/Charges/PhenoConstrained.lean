@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Tree
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.AllowsTerm
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Tree
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
 /-!
 
 # Pheno constrained charges
@@ -15,9 +15,9 @@ R-parity violating terms.
 We are actually intrested in the charges which are not pheno-constrained.
 
 -/
-namespace FTheory
+namespace SuperSymmetry
 
-namespace SU5U1
+namespace SU5
 
 namespace Charges
 open SuperSymmetry.SU5
@@ -304,6 +304,6 @@ end Tree
 
 end Charges
 
-end SU5U1
+end SU5
 
-end FTheory
+end SuperSymmetry

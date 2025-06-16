@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
-import PhysLean.Particles.SuperSymmetry.SU5.Potential
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Basic
 /-!
 
 # Charges assocated with field labels
@@ -15,8 +14,8 @@ This is done by the function `ofFieldLabel`, which returns a `Finset ℤ`.
 
 -/
 
-namespace FTheory
-namespace SU5U1
+namespace SuperSymmetry
+namespace SU5
 
 namespace Charges
 open SuperSymmetry.SU5
@@ -72,5 +71,5 @@ lemma ext_ofFieldLabel {x y : Charges} (h : ∀ F, x.ofFieldLabel F = y.ofFieldL
 
 end Charges
 
-end SU5U1
-end FTheory
+end SU5
+end SuperSymmetry

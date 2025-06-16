@@ -17,6 +17,8 @@ The main data structures part of this theory are:
   `PhysLean.Particles.SuperSymmetry.SU5.Potential`, as not specific to F-theory.
 - `Fluxes`: Contains the fluxes associated with each representation present in the theory.
 - `Charges`: Contains the charges associated with each representation present in the theory.
+  This can be found in `PhysLean.Particles.SuperSymmetry.SU5.Potential`, as not specific to
+  F-theory.
 - `Quanta`: Contains the fluxes and charges of each representation present in the theory.
 
 ## Propositions

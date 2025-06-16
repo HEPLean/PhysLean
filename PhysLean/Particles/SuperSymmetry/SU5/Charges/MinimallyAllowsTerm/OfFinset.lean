@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.MinimallyAllowsTerm.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
 /-!
 
 # Minimally allows terms given sets of allowed charges
@@ -16,12 +16,11 @@ To define this function we need some auxiliary functions that take a finite set 
 and return multisets of integers of a given cardinality containing only those elements.
 
 -/
-namespace FTheory
+namespace SuperSymmetry
 
-namespace SU5U1
+namespace SU5
 
 namespace Charges
-open SuperSymmetry.SU5
 
 /-!
 
@@ -446,6 +445,6 @@ lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10'} {T : Potent
 
 end Charges
 
-end SU5U1
+end SU5
 
-end FTheory
+end SuperSymmetry

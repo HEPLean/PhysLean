@@ -18,10 +18,10 @@ namespace FTheory
 namespace SU5U1
 
 namespace Charges
-open SuperSymmetry.SU5
-open PotentialTerm
+
+open SuperSymmetry.SU5.Charges
 open CodimensionOneConfig
-open PhysLean Tree
+open Tree
 
 /-!
 

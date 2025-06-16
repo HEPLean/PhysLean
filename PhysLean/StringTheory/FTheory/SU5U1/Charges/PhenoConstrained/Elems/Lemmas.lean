@@ -14,10 +14,8 @@ namespace FTheory
 namespace SU5U1
 
 namespace Charges
-open SuperSymmetry.SU5
-open PotentialTerm
+
 open CodimensionOneConfig
-open Tree
 
 set_option maxRecDepth 2400 in
 lemma card_Q5_le_three_of_nonPhenoConstrainedCharges_of_same :

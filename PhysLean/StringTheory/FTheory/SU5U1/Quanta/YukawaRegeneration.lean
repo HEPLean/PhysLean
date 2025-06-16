@@ -29,12 +29,12 @@ open SuperSymmetry.SU5
 open PotentialTerm Charges CodimensionOneConfig
 
 /-- The set of charges of singlets needed to regenerate
-  all the Yukawa terms in the potential.  -/
+  all the Yukawa terms in the potential. -/
 def yukawaSingletCharges (x : Quanta) : Multiset ℤ :=
   x.toCharges.ofPotentialTerm topYukawa + x.toCharges.ofPotentialTerm bottomYukawa
 
 /-- The set of charges of `n` choices of singlets which regenerate the Yukawa terms. -/
-def yukawaSingletChargesInsertions (x : Quanta) : ℕ →  Multiset ℤ
+def yukawaSingletChargesInsertions (x : Quanta) : ℕ → Multiset ℤ
   | 0 => {0}
   | n + 1 => (x.yukawaSingletChargesInsertions n).bind fun sSum =>
     (x.yukawaSingletCharges.map fun s => sSum + s)
@@ -70,14 +70,14 @@ lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_sa
 set_option maxRecDepth 2000 in
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_NN :
     (viableElems nearestNeighbor).toMultiset.filter
-      (fun x => ¬  YukawaSingletsRegenerateDangerousInsertion x 1)
+      (fun x => ¬ YukawaSingletsRegenerateDangerousInsertion x 1)
     = {(some 6, some (-14), {(-9, 1, 2), (1, 2, -2)}, {(-7, 3, 0)}),
     (some 6, some (-14), {(-9, 0, 2), (1, 3, -2)}, {(-7, 3, 0)})}:= by
   decide
 
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_NtoNN :
     (viableElems nextToNearestNeighbor).toMultiset.filter
-    (fun x => ¬ YukawaSingletsRegenerateDangerousInsertion x 1)  = ∅ := by
+    (fun x => ¬ YukawaSingletsRegenerateDangerousInsertion x 1) = ∅ := by
   decide
 
 /-!
@@ -86,7 +86,6 @@ lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_one_eq_of_Nt
 
 The viable `Quanta` which do not regenerate a dangerous coupling with one or two
 insertions of the Yukawa singlets.
-
 
 -/
 
@@ -107,7 +106,7 @@ lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_two_eq_of_NN
 lemma viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_two_eq_of_NtoNN :
     (viableElems nextToNearestNeighbor).toMultiset.filter (fun x =>
     ¬ YukawaSingletsRegenerateDangerousInsertion x 1 ∧
-    ¬ YukawaSingletsRegenerateDangerousInsertion x 2)  = ∅ := by
+    ¬ YukawaSingletsRegenerateDangerousInsertion x 2) = ∅ := by
   decide
 
 end Quanta

@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfFieldLabel
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
 /-!
 
 # Charges associated with a potential term
@@ -13,11 +13,10 @@ we can extract the set of charges associated with instances of that potential te
 
 -/
 
-namespace FTheory
-namespace SU5U1
+namespace SuperSymmetry
+namespace SU5
 
 namespace Charges
-open SuperSymmetry.SU5
 open PotentialTerm
 
 /-- Given a charges `x : Charges` associated to the representations, and a potential
@@ -200,5 +199,5 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm {T : PotentialTerm} {n : ℤ} 
 
 end Charges
 
-end SU5U1
-end FTheory
+end SU5
+end SuperSymmetry

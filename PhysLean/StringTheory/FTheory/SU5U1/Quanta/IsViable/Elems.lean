@@ -26,6 +26,7 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Quanta
+open SuperSymmetry.SU5
 open PhysLean FourTree Leaf Twig Branch Trunk
 
 /-- The `FourTree` of elements of `Quanta` for which the `IsViable` condition holds for a given

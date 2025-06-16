@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfPotentialTerm
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
 /-!
 
 # Charges allowing terms
@@ -20,11 +20,10 @@ subset which can be expressed as `allowsTermForm a b c T` for some integers `a`,
 
 -/
 
-namespace FTheory
-namespace SU5U1
+namespace SuperSymmetry
+namespace SU5
 
 namespace Charges
-open SuperSymmetry.SU5
 
 /-- The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
 if the zero charge is in the set of charges associated with that potential term. -/
@@ -295,5 +294,5 @@ lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
 
 end Charges
 
-end SU5U1
-end FTheory
+end SU5
+end SuperSymmetry

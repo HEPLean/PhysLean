@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Data.Fintype.Defs
 import Mathlib.Tactic.DeriveFintype
 /-!
 
@@ -27,7 +26,6 @@ inductive FieldLabel
   | fiveMatter
   | tenMatter
 deriving DecidableEq, Fintype
-
 
 /-- The R-Parity of a field, landding on `1` if it is in the non-trivial representation
   and `0` otherwise. -/

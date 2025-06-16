@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.AllowsTerm
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
 /-!
 
 # Minimally allows terms
@@ -14,8 +14,8 @@ minimally allows `T` if it allows the term `T` and no proper subset of `x` allow
 
 -/
 
-namespace FTheory
-namespace SU5U1
+namespace SuperSymmetry
+namespace SU5
 
 namespace Charges
 
@@ -162,5 +162,5 @@ lemma allowsTermForm_minimallyAllowsTerm {a b c : ℤ} {T : PotentialTerm}
 
 end Charges
 
-end SU5U1
-end FTheory
+end SU5
+end SuperSymmetry

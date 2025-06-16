@@ -336,6 +336,8 @@ end TenQuanta
 
 namespace Quanta
 
+open SuperSymmetry.SU5
+
 /-- The multiset of `Quanta` obtained from a `Charges`,
   which have a `Fluxes` which do not permit exotics. -/
 def ofCharges (I : CodimensionOneConfig) (c : Charges) : Multiset Quanta :=

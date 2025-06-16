@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
 /-!
 
 # Trees of charges
@@ -21,9 +21,9 @@ We also prove some results related to `(T.uniqueMap3 (insert q5.1))` and
 `(T.uniqueMap4 (insert q10.1))`, and their filters by a predicate `p : Charges → Prop`.
 
 -/
-namespace FTheory
+namespace SuperSymmetry
 
-namespace SU5U1
+namespace SU5
 
 namespace Charges
 
@@ -158,6 +158,6 @@ end Tree
 
 end Charges
 
-end SU5U1
+end SU5
 
-end FTheory
+end SuperSymmetry

@@ -24,7 +24,7 @@ imposed.
 namespace FTheory
 
 namespace SU5U1
-
+open SuperSymmetry.SU5
 variable {I : CodimensionOneConfig}
 
 /--

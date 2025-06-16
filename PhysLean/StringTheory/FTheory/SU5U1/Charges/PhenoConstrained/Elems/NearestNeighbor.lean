@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 /-!
 
 # Elements of the non pheno-constrained charges for `nearestNeighbor`
@@ -26,6 +26,7 @@ namespace SU5U1
 
 namespace Charges
 open SuperSymmetry.SU5
+open SuperSymmetry.SU5.Charges
 open PotentialTerm
 open PhysLean Tree
 
