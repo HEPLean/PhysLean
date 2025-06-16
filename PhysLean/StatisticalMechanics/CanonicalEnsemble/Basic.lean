@@ -81,7 +81,7 @@ lemma energy_nsmul_apply (n : ℕ) (f : Fin n → microstates 𝓒) :
 
 /-- The partition function of the canonical ensemble. -/
 noncomputable def partitionFunction [Fintype ι] (T : Temperature) : ℝ :=
-  ∑ i, exp (- β (T) * 𝓒.energy i)
+  ∑ i, exp (- β T * 𝓒.energy i)
 
 lemma partitionFunction_add [Fintype ι] [Fintype ι1] :
     (𝓒 + 𝓒1).partitionFunction T = 𝓒.partitionFunction T * 𝓒1.partitionFunction T := by
@@ -140,7 +140,7 @@ lemma partitionFunction_eq_partitionFunctionβ [Fintype ι] (T : Temperature) :
 
 /-- The probability of been in a given microstate. -/
 noncomputable def probability [Fintype ι] (i : microstates 𝓒) (T : Temperature) : ℝ :=
-  exp (- β (T) * 𝓒.energy i) / partitionFunction 𝓒 T
+  exp (- β T * 𝓒.energy i) / partitionFunction 𝓒 T
 
 /-- Probability of a microstate in a canonical ensemble is less then or equal to `1`. -/
 semiformal_result "ERDAR" probability_le_one [Fintype ι] (i : microstates 𝓒) (T : Temperature) :

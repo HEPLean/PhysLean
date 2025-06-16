@@ -40,7 +40,7 @@ lemma contrBasis_ρ_apply {d : ℕ} (M : LorentzGroup d) (i j : Fin 1 ⊕ Fin d)
   simp
 
 @[simp]
-lemma contrBasis_toFin1dℝ {d : ℕ} (i : Fin (1) ⊕ Fin d) :
+lemma contrBasis_toFin1dℝ {d : ℕ} (i : Fin 1 ⊕ Fin d) :
     (contrBasis d i).toFin1dℝ = Pi.single i 1 := by
   simp only [ContrMod.toFin1dℝ, contrBasis, Basis.coe_ofEquivFun]
   rfl
@@ -91,7 +91,7 @@ lemma coBasis_ρ_apply {d : ℕ} (M : LorentzGroup d) (i j : Fin 1 ⊕ Fin d) :
   simp [LorentzGroup.transpose, ← LorentzGroup.coe_inv]
 
 @[simp]
-lemma coBasis_toFin1dℝ {d : ℕ} (i : Fin (1) ⊕ Fin d) :
+lemma coBasis_toFin1dℝ {d : ℕ} (i : Fin 1 ⊕ Fin d) :
     (coBasis d i).toFin1dℝ = Pi.single i 1 := by
   simp only [ContrMod.toFin1dℝ, coBasis, Basis.coe_ofEquivFun]
   rfl
