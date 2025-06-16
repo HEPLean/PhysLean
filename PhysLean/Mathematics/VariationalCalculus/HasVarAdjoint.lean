@@ -59,12 +59,12 @@ namespace HasVarAdjoint
 
 variable {μ : Measure X}
 
-theorem id : HasVarAdjoint (fun φ : X → U => φ) (fun φ => φ) μ where
+lemma id : HasVarAdjoint (fun φ : X → U => φ) (fun φ => φ) μ where
   test_fun_preserving  _ hφ := hφ
   test_fun_preserving' _ hφ := hφ
   adjoint _ _ _ _ := rfl
 
-theorem comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
+lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
     (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
     HasVarAdjoint (fun φ => F (G φ)) (fun φ => G' (F' φ)) μ where
   test_fun_preserving  _ hφ := hF.test_fun_preserving _ (hG.test_fun_preserving _ hφ)
@@ -73,7 +73,7 @@ theorem comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
     rw [hF.adjoint _ _ (hG.test_fun_preserving φ hφ) hψ]
     rw [hG.adjoint _ _ hφ (hF.test_fun_preserving' _ hψ)]
 
-protected theorem deriv :
+protected lemma deriv :
     HasVarAdjoint (fun φ : ℝ → ℝ => deriv φ) (fun φ => - deriv φ) where
   test_fun_preserving  _ hφ := by
     have ⟨h,h'⟩ := hφ
@@ -109,7 +109,7 @@ protected theorem deriv :
     · refine IsTestFunction.integrable ?_ _
       exact IsTestFunction.mul hψ hφ
 
-theorem congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {μ : Measure X}
+lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {μ : Measure X}
     (h : HasVarAdjoint G F' μ) (h' : ∀ φ, IsTestFunction φ → F φ = G φ) :
     HasVarAdjoint F F' μ where
   test_fun_preserving  φ hφ := by
@@ -120,7 +120,7 @@ theorem congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
     rw [h' φ hφ]
     exact h.adjoint φ ψ hφ hψ
 
-theorem congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U)} {μ : Measure X}
+lemma congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U)} {μ : Measure X}
     (h : HasVarAdjoint F G' μ) (h' : ∀ φ, IsTestFunction φ → F' φ = G' φ) :
     HasVarAdjoint F F' μ where
   test_fun_preserving  φ hφ := h.test_fun_preserving φ hφ
@@ -131,7 +131,7 @@ theorem congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U
     rw [h' ψ hψ]
     exact h.adjoint φ ψ hφ hψ
 
-theorem neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
+lemma neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) :
     HasVarAdjoint (fun φ x => - F φ x) (fun φ x => - F' φ x) μ where
@@ -153,7 +153,7 @@ theorem neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
     simp [integral_neg]
     rw[hF.adjoint _ _ (by assumption) (by assumption)]
 
-theorem add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
+lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
     HasVarAdjoint (fun φ x => F φ x + G φ x) (fun φ x => F' φ x + G' φ x) μ where
@@ -198,14 +198,14 @@ theorem add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
       · (expose_names; exact hG.test_fun_preserving x h)
       · (expose_names; exact h_1)
 
-theorem sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
+lemma sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
     HasVarAdjoint (fun φ x => F φ x - G φ x) (fun φ x => F' φ x - G' φ x) μ := by
   simp [sub_eq_add_neg]
   apply add hF (neg hG)
 
-theorem mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
+lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => ψ x * F φ x) (fun φ x => F' (fun x => ψ x * φ x) x) μ where
@@ -226,7 +226,7 @@ theorem mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X →
       · exact hψ
       · exact hψ'
 
-theorem mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
+lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => F φ x * ψ x) (fun φ x => F' (fun x => φ x * ψ x) x) μ where
@@ -247,7 +247,7 @@ theorem mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X �
       · exact hψ'
       · exact hψ
 
-theorem smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
+lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => ψ x • F φ x) (fun φ x => F' (fun x' => ψ x' • φ x') x) μ where
@@ -264,7 +264,7 @@ theorem smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V)
     · exact hφ
     · simp; fun_prop
 
-theorem smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
+lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => ψ x • F φ x) (fun φ x => F' (fun x' => ψ x' • φ x') x) μ where
