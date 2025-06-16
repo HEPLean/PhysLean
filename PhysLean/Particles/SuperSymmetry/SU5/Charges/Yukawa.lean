@@ -129,9 +129,8 @@ lemma yukawaGeneratesDangerousAtLevel_add_of_left {x : Charges} {n k : ℕ}
 lemma yukawaGeneratesDangerousAtLevel_of_le {x : Charges} {n m : ℕ}
     (h : n ≤ m) (hx : x.YukawaGeneratesDangerousAtLevel n) :
     x.YukawaGeneratesDangerousAtLevel m := by
-  let k := m - n
+  generalize hk : m - n = k at *
   have h1 : n + k = m := by omega
-  generalize k = k' at *
   subst h1
   exact yukawaGeneratesDangerousAtLevel_add_of_left hx
 
