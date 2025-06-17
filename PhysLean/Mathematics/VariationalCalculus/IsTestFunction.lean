@@ -3,13 +3,17 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
+import Mathlib.Analysis.Calculus.Deriv.Support
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Geometry.Manifold.IsManifold.Basic
+import Mathlib.MeasureTheory.Function.LocallyIntegrable
+/-!
 
-import Mathlib
-
-/-! Test function
+# Test functions
 
 Definition of test function, smooth and compactly supported function, and theorems about them.
 -/
+
 section IsTestFunction
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -44,7 +48,6 @@ lemma IsTestFunction.deriv {f : ℝ → U} (hf : IsTestFunction f) :
   smooth := deriv' hf.smooth
   supp := HasCompactSupport.deriv hf.supp
 
-
 @[fun_prop]
 lemma IsTestFunction.mul {f g : X → ℝ} (hf : IsTestFunction f) (hg : IsTestFunction g) :
     IsTestFunction (fun x => f x * g x) where
@@ -67,11 +70,10 @@ lemma IsTestFunction.mul_left {f g : X → ℝ} (hf : ContDiff ℝ ∞ f) (hg : 
   supp := HasCompactSupport.mul_left hg.supp
 
 @[fun_prop]
-lemma IsTestFunction.mul_right {f g : X → ℝ} (hf : IsTestFunction f) (hg : ContDiff ℝ ∞  g) :
+lemma IsTestFunction.mul_right {f g : X → ℝ} (hf : IsTestFunction f) (hg : ContDiff ℝ ∞ g) :
     IsTestFunction (fun x => f x * g x) where
   smooth := ContDiff.mul hf.smooth hg
   supp := HasCompactSupport.mul_right hf.supp
-
 
 @[fun_prop]
 lemma IsTestFunction.smul_left {f : X → ℝ} {g : X → U}

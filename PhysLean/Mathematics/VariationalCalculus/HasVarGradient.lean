@@ -3,10 +3,11 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
-
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
+import Mathlib.Tactic.FunProp.Differentiable
+/-!
 
-/-! Variational gradient
+# Variational gradient
 
 Definition of variational gradient that allows for formal treatement of variational calculus
 as used in physics textbooks.
@@ -17,7 +18,6 @@ open MeasureTheory ContDiff InnerProductSpace
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasurableSpace X]
   {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
-
 
 /-- Function `grad` is variational gradient of functional `S` at point `u`.
 
@@ -64,9 +64,6 @@ inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u 
       (adjoint : HasVarAdjoint (fun δu t => deriv (fun s : ℝ => S' (u + s • δu) t) 0) F' μ)
       (eq : F' (fun _ => 1) = grad)
 
-
-
-
 /-- Variation of `S(x) = ∫ 1/2*m*‖ẋ‖² - V(x)` gives Newton's law of motion `δS(x) = - m*ẍ - V'(x)`-/
 example (m : ℝ) (u V : ℝ → ℝ) (hu : ContDiff ℝ ∞ u) (hV : ContDiff ℝ ∞ V) :
     HasVarGradientAt
@@ -78,7 +75,6 @@ example (m : ℝ) (u V : ℝ → ℝ) (hu : ContDiff ℝ ∞ u) (hV : ContDiff �
     eta_expand
     have := hu.differentiable ENat.LEInfty.out
     have := hV.differentiable ENat.LEInfty.out
-
     apply HasVarAdjoint.congr_fun
     case h' =>
       intro δu hδu; funext t
@@ -93,13 +89,11 @@ example (m : ℝ) (u V : ℝ → ℝ) (hu : ContDiff ℝ ∞ u) (hV : ContDiff �
         lhs
         simp (disch:=fun_prop (config:={maxTransitionDepth:=2}) (disch:=simp)) [deriv_add,hd]
         ring_nf
-
     case h =>
-     apply HasVarAdjoint.sub
-     · apply HasVarAdjoint.mul_left (hψ:=by fun_prop)
-       apply HasVarAdjoint.deriv
-     · apply HasVarAdjoint.mul_left (hψ:=by fun_prop)
-       apply HasVarAdjoint.id
-
+      apply HasVarAdjoint.sub
+      · apply HasVarAdjoint.mul_left (ψ := fun x => m * deriv u x) (hψ := by fun_prop)
+        apply HasVarAdjoint.deriv
+      · apply HasVarAdjoint.mul_left (hψ := by fun_prop)
+        apply HasVarAdjoint.id
   case eq =>
-    simp
+    simp only [mul_one, deriv_const_mul_field', Pi.neg_apply, neg_mul]
