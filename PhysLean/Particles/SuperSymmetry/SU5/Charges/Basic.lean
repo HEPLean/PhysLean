@@ -133,6 +133,22 @@ lemma subset_of_empty_iff_empty {x : Charges} :
     subst h
     simp
 
+@[simp]
+lemma empty_qHd : (∅ : Charges).1 = none := by
+  simp [emptyInst]
+
+@[simp]
+lemma empty_qHu : (∅ : Charges).2.1 = none := by
+  simp [emptyInst]
+
+@[simp]
+lemma empty_Q5 : (∅ : Charges).2.2.1 = ∅ := by
+  simp [emptyInst]
+
+@[simp]
+lemma empty_Q10 : (∅ : Charges).2.2.2 = ∅ := by
+  simp [emptyInst]
+
 /-!
 
 ## Card

@@ -38,6 +38,10 @@ def IsComplete (x : Charges) : Prop :=
 instance (x : Charges) : Decidable (IsComplete x) :=
   inferInstanceAs (Decidable (x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅))
 
+@[simp]
+lemma not_isComplete_empty : ¬ IsComplete ∅ := by
+  simp [IsComplete]
+
 lemma isComplete_mono {x y : Charges} (h : x ⊆ y) (hx : IsComplete x) :
     IsComplete y := by
   simp [IsComplete] at *
