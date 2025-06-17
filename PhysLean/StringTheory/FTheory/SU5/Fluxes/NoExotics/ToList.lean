@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Completeness
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Completeness
 /-!
 
 # Fluxes into list
@@ -19,7 +19,7 @@ This file provides the definitions and lemmas needed to do this.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 /-!
 
@@ -240,6 +240,6 @@ lemma toList_length (F : FluxesTen) (h : F.NoExotics ∧ F.HasNoZero) :
 
 end FluxesTen
 
-end SU5U1
+end SU5
 
 end FTheory

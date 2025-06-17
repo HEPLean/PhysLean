@@ -101,9 +101,9 @@ import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.Y3
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Basic
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
@@ -273,6 +273,11 @@ import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.TwoState
 import PhysLean.StatisticalMechanics.Temperature
 import PhysLean.StringTheory.Basic
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ChiralIndices
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Completeness
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
@@ -286,11 +291,6 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoC
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ10
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ5
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Same
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Completeness
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Elems
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts

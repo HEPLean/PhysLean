@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ToList
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Lemmas
 /-!
 
@@ -19,7 +19,7 @@ properties thereof.
 namespace FTheory
 
 namespace SU5U1
-
+open SU5
 variable {I : CodimensionOneConfig}
 
 /-- The quanta of 5-bar representations corresponding to a multiset of

@@ -25,8 +25,7 @@ We do this only in the very restrictive case when:
 namespace FTheory
 
 namespace SU5U1
-
-variable {I : CodimensionOneConfig}
+open SU5
 
 /-!
 

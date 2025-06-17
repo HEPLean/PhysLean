@@ -80,7 +80,7 @@ A previous version of this code was replaced in the PR #569.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 /-!
 
@@ -250,6 +250,6 @@ instance (F : FluxesTen) : Decidable (F.NoExotics) :=
 
 end FluxesTen
 
-end SU5U1
+end SU5
 
 end FTheory

@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic
 import Mathlib.Tactic.FinCases
 /-!
 
@@ -23,7 +23,7 @@ This module proves these constraints.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 namespace FluxesFive
 
@@ -581,6 +581,6 @@ lemma chiralIndicesOfE_subset_sum_le_three_of_noExotics (F : FluxesTen)
 
 end FluxesTen
 
-end SU5U1
+end SU5
 
 end FTheory

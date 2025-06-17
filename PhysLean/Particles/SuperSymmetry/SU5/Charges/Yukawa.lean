@@ -26,7 +26,7 @@ open PotentialTerm
   Correspondingly, the (negative) of the charges of the singlets needed to regenerate all
   Yukawa terms in the potential. -/
 def ofYukawaTerms (x : Charges) : Multiset ℤ :=
-   x.ofPotentialTerm topYukawa + x.ofPotentialTerm bottomYukawa
+  x.ofPotentialTerm topYukawa + x.ofPotentialTerm bottomYukawa
 
 lemma ofYukawaTerms_subset_of_subset {x y : Charges} (h : x ⊆ y) :
     x.ofYukawaTerms ⊆ y.ofYukawaTerms := by

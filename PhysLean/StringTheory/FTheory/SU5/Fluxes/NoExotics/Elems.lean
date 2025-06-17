@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.Basic
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic
 /-!
 
 # Elements of `FluxesFive` and `FluxesTen` with no chiral exotics
@@ -18,7 +18,7 @@ For `FluxesFive` there are `31` such elements, and for `FluxesTen` there are `6`
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 namespace FluxesFive
 
@@ -111,6 +111,6 @@ lemma hasNoZero_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics)
 
 end FluxesTen
 
-end SU5U1
+end SU5
 
 end FTheory

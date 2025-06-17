@@ -3,15 +3,15 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.ChiralIndices
-import PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Elems
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ChiralIndices
+import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems
 /-!
 
 # Completeness of `Elems` with regard to the `NoExotics` condition
 
 In the module:
 
-- `PhysLean.StringTheory.FTheory.SU5U1.Fluxes.NoExotics.Elems`
+- `PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems`
 
 we define finite sets of elements of `FluxesFive` and `FluxesTen` which satisfy the
 `NoExotics` condition.
@@ -33,7 +33,7 @@ are only constrained by `2` SM representations `D` and `L`.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 /-!
 
@@ -671,6 +671,6 @@ lemma noExotics_iff_mem_elemsNoExotics (F : FluxesTen) :
   · exact fun h => ⟨noExotics_of_mem_elemsNoExotics F h, hasNoZero_of_mem_elemsNoExotics F h⟩
 
 end FluxesTen
-end SU5U1
+end SU5
 
 end FTheory
