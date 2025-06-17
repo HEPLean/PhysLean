@@ -37,8 +37,8 @@ lemma allowsTerm_iff_zero_mem_ofPotentialTerm' {x : Charges} {T : PotentialTerm}
 instance (x : Charges) (T : PotentialTerm) : Decidable (x.AllowsTerm T) :=
   decidable_of_iff (0 ∈ x.ofPotentialTerm' T) allowsTerm_iff_zero_mem_ofPotentialTerm'.symm
 
-lemma allowsTerm_of_subset {T : PotentialTerm} {y x : Charges}
-    (h : y ⊆ x) (hy : y.AllowsTerm T) : x.AllowsTerm T := ofPotentialTerm_subset_of_subset h T hy
+lemma allowsTerm_mono {T : PotentialTerm} {y x : Charges}
+    (h : y ⊆ x) (hy : y.AllowsTerm T) : x.AllowsTerm T := ofPotentialTerm_mono h T hy
 
 /-!
 

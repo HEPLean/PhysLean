@@ -71,27 +71,27 @@ lemma nonPhenoConstrainedCharges_insertQ10_filter (I : CodimensionOneConfig) :
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) K2 := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) Λ:= by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) W1 := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) K1 := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) W2 := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
   have hemp : (phenoInsertQ10 (nonPhenoConstrainedCharges I) q10).toMultiset = ∅ := by
@@ -120,27 +120,27 @@ lemma nonPhenoConstrainedCharges_insertQ5_filter (I : CodimensionOneConfig) :
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) β := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) W4 := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) W1 := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) K1 := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
     · by_contra hc
       have hc' : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) Λ := by
-        apply allowsTerm_of_subset _ hc
+        apply allowsTerm_mono _ hc
         simp [Subset]
       simp_all
   have hemp : (Tree.phenoInsertQ5 (nonPhenoConstrainedCharges I) q5).toMultiset = ∅ := by
@@ -538,7 +538,7 @@ lemma exists_subset_completionTopYukawa_of_not_isPhenoConstrained {x : Charges}
       · rw [← minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset]
         · exact hIrre
         · simp at hPower
-          exact mem_ofFinset_of_subset I.allowedBarFiveCharges I.allowedTenCharges hPower hsub
+          exact mem_ofFinset_antitone I.allowedBarFiveCharges I.allowedTenCharges hPower hsub
       · simpa using hPower
   obtain ⟨y, hyMem, hysubsetx⟩ := hIrreducible
   obtain ⟨z, hz1, hz2⟩ := exist_completions_subset_of_complete
@@ -547,10 +547,10 @@ lemma exists_subset_completionTopYukawa_of_not_isPhenoConstrained {x : Charges}
   constructor
   · refine completionTopYukawa_complete y hyMem ?_ z hz1 ?_
     · by_contra hn
-      have h' := isPhenoConstrained_of_subset hysubsetx hn
+      have h' := isPhenoConstrained_mono hysubsetx hn
       simp_all
     · by_contra hn
-      have h' := isPhenoConstrained_of_subset hz2 hn
+      have h' := isPhenoConstrained_mono hz2 hn
       simp_all
   · simp_all
 
@@ -577,7 +577,7 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
     ?_ ?_ y ?_ x hyx hsub ?_ ?_
   · intro x y hxy
     simp only [Decidable.not_not]
-    exact fun a => isPhenoConstrained_of_subset hxy a
+    exact fun a => isPhenoConstrained_mono hxy a
   · intro x
     rw [FourTree.mem_iff_mem_toMultiset]
     exact fun a => isComplete_of_mem_nonPhenoConstrainedCharge I x a

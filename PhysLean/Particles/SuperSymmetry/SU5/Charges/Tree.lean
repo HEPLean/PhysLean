@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 /-!
 
 # Trees of charges
@@ -109,7 +110,7 @@ lemma subset_insert_filter_card_zero_inductive
   | 0, hn, hnot_in_T => by
     have hxy : x = y := by
       refine eq_of_subset_card hsubset ?_
-      have hl : x.card ≤ y.card := card_subset_le hsubset
+      have hl : x.card ≤ y.card := card_mono hsubset
       omega
     subst hxy
     simp_all

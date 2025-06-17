@@ -37,6 +37,13 @@ lemma ofFieldLabel_empty (F : FieldLabel) :
   all_goals
     rfl
 
+lemma ofFieldLabel_mono {x y : Charges} (h : x ⊆ y) (F : FieldLabel) :
+    x.ofFieldLabel F ⊆ y.ofFieldLabel F := by
+  rw [subset_def] at h
+  obtain ⟨h1, h2, h3, h4⟩ := h
+  cases F
+  all_goals simp_all [ofFieldLabel]
+
 @[simp]
 lemma mem_ofFieldLabel_fiveHd (x : ℤ) (y : Charges) :
     x ∈ y.ofFieldLabel FieldLabel.fiveHd ↔ -x ∈ y.ofFieldLabel .fiveBarHd := by
@@ -54,13 +61,6 @@ lemma mem_ofFieldLabel_fiveMatter (x : ℤ) (y : Charges) :
     x ∈ y.ofFieldLabel FieldLabel.fiveMatter ↔ -x ∈ y.ofFieldLabel .fiveBarMatter := by
   simp [ofFieldLabel, FieldLabel.fiveBarHd]
   aesop
-
-lemma ofFieldLabel_subset_of_subset {x y : Charges} (h : x ⊆ y) (F : FieldLabel) :
-    x.ofFieldLabel F ⊆ y.ofFieldLabel F := by
-  rw [subset_def] at h
-  obtain ⟨h1, h2, h3, h4⟩ := h
-  cases F
-  all_goals simp_all [ofFieldLabel]
 
 /-- Two charges are equal if they are equal on all field labels. -/
 lemma ext_ofFieldLabel {x y : Charges} (h : ∀ F, x.ofFieldLabel F = y.ofFieldLabel F) :

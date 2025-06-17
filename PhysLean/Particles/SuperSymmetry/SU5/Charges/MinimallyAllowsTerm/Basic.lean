@@ -39,7 +39,7 @@ lemma allowsTerm_of_has_minimallyAllowsTerm_subset
     (hx : ∃ y ∈ powerset x, y.MinimallyAllowsTerm T) : x.AllowsTerm T := by
   obtain ⟨y, hy⟩ := hx
   simp only [mem_powerset_iff_subset] at hy
-  apply allowsTerm_of_subset hy.1
+  apply allowsTerm_mono hy.1
   exact allowsTerm_of_minimallyAllowsTerm hy.2
 
 lemma minimallyAllowsTerm_iff_powerset_filter_eq :
@@ -89,7 +89,7 @@ lemma minimallyAllowsTerm_iff_powerset_countP_eq_one :
       simp [ha]
     simp at haMem
     have hxMem : x ∈ Multiset.filter (fun y => y.AllowsTerm T) x.powerset.val := by
-      simpa using allowsTerm_of_subset haMem.1 haMem.2
+      simpa using allowsTerm_mono haMem.1 haMem.2
     rw [ha] at hxMem
     simp at hxMem
     subst hxMem

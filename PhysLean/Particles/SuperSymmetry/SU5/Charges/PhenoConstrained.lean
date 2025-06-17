@@ -33,12 +33,17 @@ instance decidableIsPhenoConstrained (x : Charges) : Decidable x.IsPhenoConstrai
   inferInstanceAs (Decidable (x.AllowsTerm μ ∨ x.AllowsTerm β ∨ x.AllowsTerm Λ ∨ x.AllowsTerm W2
     ∨ x.AllowsTerm W4 ∨ x.AllowsTerm K1 ∨ x.AllowsTerm K2 ∨ x.AllowsTerm W1))
 
-lemma isPhenoConstrained_of_subset {x y : Charges} (h : x ⊆ y)
+@[simp]
+lemma not_isPhenoConstrained_empty :
+    ¬ IsPhenoConstrained ∅ := by
+  simp [IsPhenoConstrained, AllowsTerm, ofPotentialTerm_empty]
+
+lemma isPhenoConstrained_mono {x y : Charges} (h : x ⊆ y)
     (hx : x.IsPhenoConstrained) : y.IsPhenoConstrained := by
   simp [IsPhenoConstrained] at *
   rcases hx with hr | hr | hr | hr | hr | hr | hr | hr
   all_goals
-    have h' := allowsTerm_of_subset h hr
+    have h' := allowsTerm_mono h hr
     simp_all
 
 /-- The collection of charges of super-potential terms leading to a pheno-constrained model. -/
@@ -51,7 +56,7 @@ lemma phenoConstrainingChargesSP_empty :
     phenoConstrainingChargesSP ∅ = ∅ := by
   simp [phenoConstrainingChargesSP]
 
-lemma phenoConstrainingChargesSP_of_subset {x y : Charges} (h : x ⊆ y) :
+lemma phenoConstrainingChargesSP_mono {x y : Charges} (h : x ⊆ y) :
     x.phenoConstrainingChargesSP ⊆ y.phenoConstrainingChargesSP := by
   simp only [phenoConstrainingChargesSP]
   refine Multiset.subset_iff.mpr ?_
@@ -60,7 +65,7 @@ lemma phenoConstrainingChargesSP_of_subset {x y : Charges} (h : x ⊆ y) :
   intro hr
   rcases hr with hr | hr | hr | hr | hr | hr
   all_goals
-    have h' := ofPotentialTerm_subset_of_subset h _ hr
+    have h' := ofPotentialTerm_mono h _ hr
     simp_all
 
 /-!

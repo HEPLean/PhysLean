@@ -26,7 +26,7 @@ def ofPotentialTerm (x : Charges) (T : PotentialTerm) : Multiset ℤ :=
       fun (x, y) => x + y
   (T.toFieldLabel.map fun F => (ofFieldLabel x F).val).foldl add {0}
 
-lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : PotentialTerm) :
+lemma ofPotentialTerm_mono {x y : Charges} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ y.ofPotentialTerm T := by
   have h1 {S1 S2 T1 T2 : Multiset ℤ} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
       (S1.product T1) ⊆ S2.product T2 :=
@@ -37,7 +37,7 @@ lemma ofPotentialTerm_subset_of_subset {x y : Charges} (h : x ⊆ y) (T : Potent
     simp [ofPotentialTerm, PotentialTerm.toFieldLabel]
     repeat'
       apply Multiset.map_subset_map <| Multiset.subset_iff.mpr <|
-        h1 _ (Finset.subset_def.mp (ofFieldLabel_subset_of_subset h _))
+        h1 _ (Finset.subset_def.mp (ofFieldLabel_mono h _))
     simp
 
 @[simp]
@@ -122,25 +122,25 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm {x : Charges} (T : PotentialTerm) 
     obtain ⟨q1, q2, q3, ⟨q1_mem, q2_mem, q3_mem⟩, q_sum⟩ := h
   case' W1 | W2 =>
     obtain ⟨q1, q2, q3, q4, ⟨q1_mem, q2_mem, q3_mem, q4_mem⟩, q_sum⟩ := h
-  case' μ => refine ofPotentialTerm_subset_of_subset (x := (q1, q2, ∅, ∅)) ?μSub _ ?μP
-  case' β => refine ofPotentialTerm_subset_of_subset (x := (none, q1, {q2}, ∅)) ?βSub _ ?βP
+  case' μ => refine ofPotentialTerm_mono (x := (q1, q2, ∅, ∅)) ?μSub _ ?μP
+  case' β => refine ofPotentialTerm_mono (x := (none, q1, {q2}, ∅)) ?βSub _ ?βP
   case' Λ =>
-    refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1, q2}, {q3})) ?ΛSub _ ?ΛP
+    refine ofPotentialTerm_mono (x := (none, none, {q1, q2}, {q3})) ?ΛSub _ ?ΛP
   case' W1 =>
-    refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1}, {q2, q3, q4})) ?W1Sub _ ?W1P
+    refine ofPotentialTerm_mono (x := (none, none, {q1}, {q2, q3, q4})) ?W1Sub _ ?W1P
   case' W2 =>
-    refine ofPotentialTerm_subset_of_subset (x := (q1, none, ∅, {q2, q3, q4})) ?W2Sub _ ?W2P
-  case' W3 => refine ofPotentialTerm_subset_of_subset (x := (none, q1, {q2, q3}, ∅)) ?W3Sub _ ?W3P
-  case' W4 => refine ofPotentialTerm_subset_of_subset (x := (q1, q2, {q3}, ∅)) ?W4Sub _ ?W4P
+    refine ofPotentialTerm_mono (x := (q1, none, ∅, {q2, q3, q4})) ?W2Sub _ ?W2P
+  case' W3 => refine ofPotentialTerm_mono (x := (none, q1, {q2, q3}, ∅)) ?W3Sub _ ?W3P
+  case' W4 => refine ofPotentialTerm_mono (x := (q1, q2, {q3}, ∅)) ?W4Sub _ ?W4P
   case' K1 =>
-    refine ofPotentialTerm_subset_of_subset (x := (none, none, {q1}, {q2, q3}))
+    refine ofPotentialTerm_mono (x := (none, none, {q1}, {q2, q3}))
       ?K1Sub _ ?K1P
-  case' K2 => refine ofPotentialTerm_subset_of_subset (x := (q1, q2, ∅, {q3})) ?K2Sub _ ?K2P
+  case' K2 => refine ofPotentialTerm_mono (x := (q1, q2, ∅, {q3})) ?K2Sub _ ?K2P
   case' topYukawa =>
-    refine ofPotentialTerm_subset_of_subset (x := (none, q1, ∅, {q2, q3}))
+    refine ofPotentialTerm_mono (x := (none, q1, ∅, {q2, q3}))
       ?topYukawaSub _ ?topYukawaP
   case' bottomYukawa =>
-    refine ofPotentialTerm_subset_of_subset (x := (q1, none, {q2}, {q3}))
+    refine ofPotentialTerm_mono (x := (q1, none, {q2}, {q3}))
       ?bottomYukawaSub _ ?bottomYukawaP
   case' μSub | βSub | ΛSub | W1Sub | W2Sub | W3Sub | W4Sub | K1Sub | K2Sub |
       topYukawaSub | bottomYukawaSub =>

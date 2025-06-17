@@ -37,10 +37,10 @@ lemma ofYukawaTerms_subset_of_subset {x y : Charges} (h : x ⊆ y) :
   intro hr
   rcases hr with hr | hr
   · left
-    apply ofPotentialTerm_subset_of_subset h
+    apply ofPotentialTerm_mono h
     exact hr
   · right
-    apply ofPotentialTerm_subset_of_subset h
+    apply ofPotentialTerm_mono h
     exact hr
 
 /-- The charges of those terms which can be regenerated with up-to `n`
@@ -98,7 +98,7 @@ lemma yukawaGeneratesDangerousAtLevel_of_subset {x y : Charges} {n : ℕ} (h : x
     trans (x.ofYukawaTermsNSum n).toFinset ∩ y.phenoConstrainingChargesSP.toFinset
     · apply Finset.inter_subset_inter_left
       simp only [Multiset.toFinset_subset]
-      exact phenoConstrainingChargesSP_of_subset h
+      exact phenoConstrainingChargesSP_mono h
     · apply Finset.inter_subset_inter_right
       simp only [Multiset.toFinset_subset]
       exact ofYukawaTermsNSum_subset_of_subset h n

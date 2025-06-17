@@ -38,6 +38,40 @@ def IsComplete (x : Charges) : Prop :=
 instance (x : Charges) : Decidable (IsComplete x) :=
   inferInstanceAs (Decidable (x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅))
 
+lemma isComplete_mono {x y : Charges} (h : x ⊆ y) (hx : IsComplete x) :
+    IsComplete y := by
+  simp [IsComplete] at *
+  rw [subset_def] at h
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · by_contra hn
+    simp only [Bool.not_eq_true, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none] at hn
+    have h1 := h.1
+    have hx1 := hx.1
+    rw [Option.isSome_iff_exists] at hx1
+    obtain ⟨a, ha⟩ := hx1
+    rw [hn, ha] at h1
+    simp at h1
+  · by_contra hn
+    simp only [Bool.not_eq_true, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none] at hn
+    have h1 := h.2.1
+    have hx1 := hx.2.1
+    rw [Option.isSome_iff_exists] at hx1
+    obtain ⟨a, ha⟩ := hx1
+    rw [hn, ha] at h1
+    simp at h1
+  · by_contra hn
+    simp_all
+  · by_contra hn
+    simp_all
+
+/-!
+
+## Completions
+
+Note the completions are not monotonic with respect to the subset relation.
+
+-/
+
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x` and are
   complete. -/
