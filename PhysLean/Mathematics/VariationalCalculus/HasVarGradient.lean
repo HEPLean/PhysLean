@@ -13,7 +13,7 @@ Definition of variational gradient that allows for formal treatement of variatio
 as used in physics textbooks.
 -/
 
-/-! Variational gradient
+# Variational gradient
 
 Definition of variational gradient that allows for formal treatement of variational calculus
 as used in physics textbooks.

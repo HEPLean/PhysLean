@@ -53,7 +53,6 @@ other functions one would have to invoke continuity and density of test function
 appropriate function space.
 -/
 
-
 open InnerProductSpace MeasureTheory ContDiff
 
 variable

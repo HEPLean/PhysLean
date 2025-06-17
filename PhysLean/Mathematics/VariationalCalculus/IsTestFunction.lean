@@ -18,6 +18,7 @@ Definition of test function, smooth and compactly supported function, and theore
 
 Definition of test function, smooth and compactly supported function, and theorems about them.
 -/
+
 section IsTestFunction
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X]
