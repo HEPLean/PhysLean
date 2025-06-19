@@ -6,7 +6,6 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import PhysLean.Mathematics.VariationalCalculus.Basic
 /-!
-
 # Variational adjoint
 
 Definition of adjoint of linear function between function spaces. It is inspired by the definition
