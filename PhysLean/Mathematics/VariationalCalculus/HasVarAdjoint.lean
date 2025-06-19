@@ -46,12 +46,6 @@ The key results are:
   - variational adjoint of algebraic operations is algebraic operation of adjoints,
     `HasVarAdjoint.neg`, `HasVarAdjoint.add`, `HasVarAdjoint.sub`, `HasVarAdjoint.mul_left`,
     `HasVarAdjoint.mul_right`, `HasVarAdjoint.smul_left`, `HasVarAdjoint.smul_right`
-
-The variational adjoint is not uniquelly defined, having `HasVarAdjoint F F'` and
-`HasVarAdjoint F G'` does not imply `F' = G'`. Further investigation needs to be done. Likely
-the adjoint is unique almost everywhere when applied to test functions. To extend it to
-other functions one would have to invoke continuity and density of test function in some
-appropriate function space.
 -/
 
 open InnerProductSpace MeasureTheory ContDiff
