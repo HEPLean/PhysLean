@@ -5,6 +5,7 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
+import PhysLean.Meta.Informal.SemiFormal
 /-!
 
 # Fundamental lemma of the calculus of variations
@@ -45,7 +46,7 @@ lemma fundamental_theorem_of_variational_calculus {f : X → V}
 
 
 -- The assumption `IsTestFunction f` can be weakened to `Continuous f`
-proof_wanted fundamental_theorem_of_variational_calculus' {f : X → V}
+semiformal_result "FIE3I"  fundamental_theorem_of_variational_calculus' {f : X → V}
   (μ : Measure X)  [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
   [OpensMeasurableSpace X]
   (hf : Continuous f) (hg : ∀ g, IsTestFunction g → ∫ x, ⟪f x, g x⟫_ℝ ∂μ = 0) :
