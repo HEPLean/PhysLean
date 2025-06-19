@@ -150,10 +150,7 @@ lemma unique {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
       conv_lhs =>
         enter [1, 2, a]
         rw [← inner_conj_symm]
-      simp
-      rw [← F'_adjoint ψ φ hψ hφ]
-      rw [G'_adjoint ψ φ hψ hφ]
-      simp
+      simp[← F'_adjoint ψ φ hψ hφ,G'_adjoint ψ φ hψ hφ]
     · apply IsTestFunction.integrable
       apply IsTestFunction.inner
       · exact F'_preserve_test φ hφ
