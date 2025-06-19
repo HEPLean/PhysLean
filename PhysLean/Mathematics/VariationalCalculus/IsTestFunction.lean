@@ -49,6 +49,12 @@ lemma IsTestFunction.deriv {f : ℝ → U} (hf : IsTestFunction f) :
   supp := HasCompactSupport.deriv hf.supp
 
 @[fun_prop]
+lemma IsTestFunction.zero :
+    IsTestFunction (fun _ : X => (0 : U)) where
+  smooth := by fun_prop
+  supp := HasCompactSupport.zero
+
+@[fun_prop]
 lemma IsTestFunction.add {f g : X → V} (hf : IsTestFunction f) (hg : IsTestFunction g) :
     IsTestFunction (fun x => f x + g x) where
   smooth := ContDiff.add hf.smooth hg.smooth
