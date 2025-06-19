@@ -14,11 +14,6 @@ import Mathlib.MeasureTheory.Function.LocallyIntegrable
 Definition of test function, smooth and compactly supported function, and theorems about them.
 -/
 
-/-! Test function
-
-Definition of test function, smooth and compactly supported function, and theorems about them.
--/
-
 section IsTestFunction
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X]

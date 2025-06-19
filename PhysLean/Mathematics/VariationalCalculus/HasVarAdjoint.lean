@@ -23,29 +23,6 @@ The key results are:
   - variational adjoint of algebraic operations is algebraic operation of adjoints,
     `HasVarAdjoint.neg`, `HasVarAdjoint.add`, `HasVarAdjoint.sub`, `HasVarAdjoint.mul_left`,
     `HasVarAdjoint.mul_right`, `HasVarAdjoint.smul_left`, `HasVarAdjoint.smul_right`
-
-The variational adjoint is not uniquelly defined, having `HasVarAdjoint F F'` and
-`HasVarAdjoint F G'` does not imply `F' = G'`. Further investigation needs to be done. Likely
-the adjoint is unique almost everywhere when applied to test functions. To extend it to
-other functions one would have to invoke continuity and density of test function in some
-appropriate function space.
--/
-
-/-! Variational adjoint
-
-Definition of adjoint of linear function between function spaces. It is inspired by the definition
-of distributional adjoint of linear maps between test functions as described here:
-https://en.wikipedia.org/wiki/Distribution_(mathematics) under 'Preliminaries: Transpose of a linear
-operator' but we require that the adjoint is function between test functions too.
-
-The key results are:
-  - variational adjoint of identity is identity, `HasVarAdjoint.id`
-  - variational adjoint of composition is composition of adjoint in reverse order,
-    `HasVarAdjoint.comp`
-  - variational adjoint of deriv is `- deriv`, `HasVarAdjoint.deriv`
-  - variational adjoint of algebraic operations is algebraic operation of adjoints,
-    `HasVarAdjoint.neg`, `HasVarAdjoint.add`, `HasVarAdjoint.sub`, `HasVarAdjoint.mul_left`,
-    `HasVarAdjoint.mul_right`, `HasVarAdjoint.smul_left`, `HasVarAdjoint.smul_right`
 -/
 
 open InnerProductSpace MeasureTheory ContDiff
@@ -103,7 +80,7 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
 
 protected lemma deriv :
     HasVarAdjoint (fun φ : ℝ → ℝ => deriv φ) (fun φ x => - deriv φ x) where
-  test_fun_preserving  _ hφ := by
+  test_fun_preserving _ hφ := by
     have ⟨h,h'⟩ := hφ
     constructor
     · fun_prop
