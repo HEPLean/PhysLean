@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
+import Mathlib.Analysis.InnerProductSpace.ProdL2
 /-!
 # Variational adjoint derivative
 
@@ -64,8 +65,8 @@ lemma const (u : X → U) (v : X → V) (hu : ContDiff ℝ ∞ u) (hv : ContDiff
   linearize := by simp
   adjoint := by simp; exact HasVarAdjoint.zero
 
-lemma comp (F : (X → V) → (X → W)) (G : (X → U) → (X → V)) (u : X → U)
-    (F' G') (hF : HasVarAdjDerivAt F F' (G u)) (hG : HasVarAdjDerivAt G G' u) :
+lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {u : X → U}
+    {F' G'} (hF : HasVarAdjDerivAt F F' (G u)) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun u => F (G u)) (fun ψ => G' (F' ψ)) u where
 
   smooth_at := hG.smooth_at
@@ -119,3 +120,132 @@ lemma comp (F : (X → V) → (X → W)) (G : (X → U) → (X → V)) (u : X �
           rw[deriv_smul_const (by fun_prop)]
           simp
         apply hφ
+
+lemma unique
+    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
+    [OpensMeasurableSpace X]
+    (F : (X → U) → (X → V)) (u : X → U)
+    (F' G') (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
+    (φ : X → V) (hφ : IsTestFunction φ) :
+    F' φ = G' φ := HasVarAdjoint.unique (μ:=volume) hF.adjoint hG.adjoint φ hφ
+
+
+attribute [fun_prop] differentiableAt_id'
+
+lemma deriv' (u : ℝ → ℝ) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt (fun φ : ℝ → ℝ => deriv φ) (fun φ x => - deriv φ x) u where
+
+  smooth_at := hu
+  diff := by intros; fun_prop [deriv]
+  linearize := by
+    intros
+    sorry
+  adjoint := by
+    simp (disch:=fun_prop) [deriv_add]
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ
+      have := hφ.smooth.differentiable (ENat.LEInfty.out)
+      have := hu.differentiable (ENat.LEInfty.out)
+      simp (disch:=fun_prop) [deriv_add]
+      rfl
+    case h =>
+      apply HasVarAdjoint.deriv
+
+
+protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
+    HasVarAdjDerivAt (fun φ : ℝ → U => deriv (F φ)) (fun ψ x => F' (fun x' => - deriv ψ x') x) u :=
+  comp (F:=deriv) (G:=F) (hF := deriv' (F u) sorry) (hG := hF)
+
+lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
+    HasVarAdjDerivAt (fun φ x => -F φ x) (fun ψ x => - F' ψ x) u where
+
+  smooth_at := hF.smooth_at
+  diff := by intro φ hφ; apply ContDiff.neg; apply hF.diff; assumption
+  linearize := by intros; rw[deriv.neg']; simp; rw[hF.linearize]; assumption
+  adjoint := by
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ; funext x
+      have := hφ.smooth; have := hF.smooth_at
+      conv =>
+        lhs
+        rw[deriv.neg']
+        simp [hF.linearize (fun s x' => u x' + s • φ x') (by fun_prop)]
+        simp[deriv_smul_const]
+    case h =>
+      apply HasVarAdjoint.neg
+      apply hF.adjoint
+
+
+lemma add
+    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure] [OpensMeasurableSpace X]
+    (F G : (X → U) → (X → V)) (F' G') (u)
+    (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
+    HasVarAdjDerivAt (fun φ x => F φ x + G φ x) (fun ψ x => F' ψ x + G' ψ x) u where
+
+  smooth_at := hF.smooth_at
+  diff := by
+    intro φ hφ
+    apply ContDiff.add
+    · apply hF.diff; assumption
+    · apply hG.diff; assumption
+  linearize := by
+    intro φ hφ x; rw[deriv_add]; rw[deriv_add]; rw[hF.linearize _ hφ, hG.linearize _ hφ]
+    sorry
+    sorry
+    sorry
+    sorry
+  adjoint := by
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ; funext x
+      have := hφ.smooth; have := hF.smooth_at
+      conv =>
+        lhs
+        rw[deriv_add sorry sorry]
+        simp [hF.linearize (fun s x' => u x' + s • φ x') (by fun_prop)]
+        simp [hG.linearize (fun s x' => u x' + s • φ x') (by fun_prop)]
+        simp[deriv_smul_const]
+    case h =>
+      apply HasVarAdjoint.add
+      apply hF.adjoint
+      apply hG.adjoint
+
+
+lemma mul
+    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure] [OpensMeasurableSpace X]
+    (F G : (X → ℝ) → (X → ℝ)) (F' G') (u)
+    (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
+    HasVarAdjDerivAt (fun φ x => F φ x * G φ x) (fun ψ x => F' (fun x' => ψ x' * G u x') x + G' (fun x' => F u x' * ψ x') x) u where
+
+  smooth_at := hF.smooth_at
+  diff := by
+    intro φ hφ
+    apply ContDiff.mul
+    · apply hF.diff; assumption
+    · apply hG.diff; assumption
+  linearize := by
+    intro φ hφ x; rw[deriv_mul]; rw[deriv_mul]; rw[hF.linearize _ hφ, hG.linearize _ hφ]; simp
+    sorry
+    sorry
+    sorry
+    sorry
+  adjoint := by
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ; funext x
+      have := hφ.smooth; have := hF.smooth_at
+      conv =>
+        lhs
+        rw[deriv_mul sorry sorry]
+        simp [hF.linearize (fun s x' => u x' + s • φ x') (by fun_prop)]
+        simp [hG.linearize (fun s x' => u x' + s • φ x') (by fun_prop)]
+    case h =>
+      apply HasVarAdjoint.add
+      · apply HasVarAdjoint.mul_right
+        apply hF.adjoint
+        sorry
+      · apply HasVarAdjoint.mul_left
+        apply hG.adjoint
+        sorry
