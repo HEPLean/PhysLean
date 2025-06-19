@@ -4,7 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+import Mathlib.Analysis.InnerProductSpace.Adjoint
+import Mathlib.Analysis.Calculus.Gradient.Basic
 import PhysLean.Mathematics.VariationalCalculus.Basic
+import PhysLean.ClassicalMechanics.Space.Basic
+
 /-!
 # Variational adjoint
 
@@ -78,7 +82,7 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
     rw [hG.adjoint _ _ hφ (hF.test_fun_preserving' _ hψ)]
 
 protected lemma deriv :
-    HasVarAdjoint (fun φ : ℝ → ℝ => deriv φ) (fun φ x => - deriv φ x) where
+    HasVarAdjoint (fun φ : ℝ → U => deriv φ) (fun φ x => - deriv φ x) where
   test_fun_preserving _ hφ := by
     have ⟨h,h'⟩ := hφ
     constructor
@@ -91,27 +95,16 @@ protected lemma deriv :
     · apply HasCompactSupport.neg'
       apply HasCompactSupport.deriv h'
   adjoint φ ψ hφ hψ := by
-    dsimp
-    trans ∫ (x : ℝ), ψ x * deriv φ x
+    trans ∫ (x : ℝ), ⟪deriv φ x, ψ x⟫_ℝ
     · congr
-    rw [MeasureTheory.integral_mul_deriv_eq_deriv_mul_of_integrable (u := ψ) (v := φ)
-      (u' := deriv ψ)]
+    suffices ∫ (x : ℝ), deriv (fun x' => ⟪φ x', ψ x'⟫_ℝ) x = 0 by sorry
+    rw[MeasureTheory.integral_of_hasDerivAt_of_tendsto (m:=0) (n:=0)
+       (f:=(fun x' => ⟪φ x', ψ x'⟫_ℝ))]
     · simp
-      rw [@MeasureTheory.integral_neg]
-    · intro x
-      simpa using hψ.1.differentiable (by exact ENat.LEInfty.out) x
-    · intro x
-      simpa using hφ.1.differentiable (by exact ENat.LEInfty.out) x
-    · refine IsTestFunction.integrable ?_ _
-      apply IsTestFunction.mul
-      · exact hψ
-      · exact IsTestFunction.deriv hφ
-    · refine IsTestFunction.integrable ?_ _
-      apply IsTestFunction.mul
-      · exact IsTestFunction.deriv hψ
-      · exact hφ
-    · refine IsTestFunction.integrable ?_ _
-      exact IsTestFunction.mul hψ hφ
+    · sorry
+    · sorry
+    · sorry
+    · sorry
 
 lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {μ : Measure X}
     (h : HasVarAdjoint G F' μ) (h' : ∀ φ, IsTestFunction φ → F φ = G φ) :
@@ -322,3 +315,15 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
     · rfl
     · exact hφ
     · simp; fun_prop
+
+
+lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X}(f : X → (U →L[ℝ] V)) :
+    HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => (f x).adjoint (ψ x)) μ := sorry
+
+lemma gradient {d} :
+    HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) :=
+  sorry
+
+lemma fderiv_apply {dx} :
+    HasVarAdjoint (fun φ : Space d → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) :=
+  sorry

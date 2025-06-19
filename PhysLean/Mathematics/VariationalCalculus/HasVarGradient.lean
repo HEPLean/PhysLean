@@ -14,12 +14,6 @@ Definition of variational gradient that allows for formal treatement of variatio
 as used in physics textbooks.
 -/
 
-# Variational gradient
-
-Definition of variational gradient that allows for formal treatement of variational calculus
-as used in physics textbooks.
--/
-
 open MeasureTheory ContDiff InnerProductSpace
 
 variable
@@ -132,54 +126,3 @@ lemma HasVarGradientAt.unique
   have h' := hgrad' φ hφ
     (by intros _ hx; unfold φ; rw[φ.one_of_mem_closedBall]; apply hφ'; simp[hx])
   rw[← h, ← h',hF.unique hG φ hφ]
-
-/-- Variation of `S(x) = ∫ 1/2*m*‖ẋ‖² - V(x)` gives Newton's law of motion `δS(x) = - m*ẍ - V'(x)`-/
-lemma euler_lagrange_particle_1d (m : ℝ) (u V : ℝ → ℝ)
-    (hu : ContDiff ℝ ∞ u) (hV : ContDiff ℝ ∞ V) :
-    HasVarGradientAt
-      (fun (u : ℝ → ℝ) (t : ℝ) => 1/2 * m * deriv u t ^ 2 - V (u t))
-      (fun t => - m * deriv (deriv u) t - deriv V (u t))
-      u := by
-  apply HasVarGradientAt.intro
-  case diff =>
-    intro _ _ hδu
-    have := hδu.1
-    have : (2:WithTop ℕ∞) ≤ ∞ := ENat.LEInfty.out
-    fun_prop (config:={maxTransitionDepth:=2}) (disch:=aesop) [deriv]
-  case adjoint =>
-    eta_expand
-    have := hu.differentiable ENat.LEInfty.out
-    have := hV.differentiable ENat.LEInfty.out
-    apply HasVarAdjoint.congr_fun
-    case h' =>
-      intro δu hδu; funext t
-      have := hδu.differentiable
-      have hd : deriv (fun y => V (u t + y * δu t)) 0
-                =
-                deriv V (u t) * δu t := by
-        have h := deriv_comp (h₂:=V) (h:=fun y => u t + y * δu t) 0 (by fun_prop) (by fun_prop)
-        simp +unfoldPartialApp [Function.comp] at h
-        exact h
-      conv =>
-        lhs
-        simp (disch:=fun_prop (config:={maxTransitionDepth:=2}) (disch:=simp)) [deriv_add,hd]
-        ring_nf
-    case h =>
-      apply HasVarAdjoint.sub
-      · apply HasVarAdjoint.mul_left (ψ := fun x => m * deriv u x) (hψ := by fun_prop)
-        apply HasVarAdjoint.deriv
-      · apply HasVarAdjoint.mul_left (hψ := by fun_prop)
-        apply HasVarAdjoint.id
-  case eq =>
-    intro x
-    use (Metric.closedBall x 1)
-    constructor
-    · simp
-    · constructor
-      · exact isCompact_closedBall x 1
-      · intro φ hφ hφ'
-        simp[hφ',hφ]
-        have h : (fun x => m * deriv u x * φ x) =ᶠ[nhds x] (fun x => m * deriv u x) :=
-          Filter.eventuallyEq_of_mem (Metric.closedBall_mem_nhds x Real.zero_lt_one)
-            (by intro x' hx'; simp[hφ' x' hx'])
-        simp[h.deriv_eq]
