@@ -49,16 +49,6 @@ structure HasVarAdjoint
   adjoint : ∀ φ ψ, IsTestFunction φ → IsTestFunction ψ →
     ∫ x, ⟪F φ x, ψ x⟫_ℝ ∂μ = ∫ x, ⟪φ x, F' ψ x⟫_ℝ ∂μ
 
-structure HasVarDual
-    (F : (X → U) → ℝ) (F' : X → U) (μ : Measure X := by volume_tac) where
-  adjoint : ∀ φ, IsTestFunction φ →
-    F φ = ∫ x, ⟪F' x, φ x⟫_ℝ ∂μ
-
-structure HasVarDual'
-    (F : X → U) (F' : (X → U) → ℝ) (μ : Measure X := by volume_tac) where
-  adjoint : ∀ φ, IsTestFunction φ →
-    ∫ x, ⟪F x, φ x⟫_ℝ ∂μ = F' φ
-
 namespace HasVarAdjoint
 
 variable {μ : Measure X}
