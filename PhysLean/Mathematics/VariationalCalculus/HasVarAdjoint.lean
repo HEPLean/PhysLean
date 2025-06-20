@@ -457,12 +457,12 @@ lemma fderiv_apply {dx} :
     HasVarAdjoint (fun φ : Space d → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) :=
   sorry
 
-lemma gradient {d} :
+protected lemma gradient {d} :
     HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
   test_fun_preserving φ hφ := by sorry
   test_fun_preserving' φ hφ := by sorry
   adjoint φ ψ hφ hψ := by
-    simp [_root_.gradient,Space.div,Space.deriv,Space.coord]
+    simp [gradient,Space.div,Space.deriv,Space.coord]
     have := hψ.differentiable
     conv =>
       rhs;
