@@ -134,8 +134,8 @@ lemma unique
     [FiniteDimensional ℝ X] [MeasureSpace X]
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
     [OpensMeasurableSpace X]
-    (F : (X → U) → (X → V)) (u : X → U)
-    (F' G') (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
+    {F : (X → U) → (X → V)} {u : X → U}
+    {F' G'} (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
     (φ : X → V) (hφ : ContDiff ℝ ∞ φ) :
     F' φ = G' φ := HasVarAdjoint.unique (μ:=volume) hF.adjoint hG.adjoint φ hφ
 
