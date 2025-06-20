@@ -48,7 +48,7 @@ lemma fundamental_theorem_of_variational_calculus {f : X → V}
 weakened to `Continuous f`.
 
 The proof is by contradiction, assume that there is `x₀` such that `f x₀` then you can easily
- construct `g` test function with support on the neighborhood of `x₀` such that `⟪f x, g x⟫ ≥ 0`. -/
+construct `g` test function with support on the neighborhood of `x₀` such that `⟪f x, g x⟫ ≥ 0`. -/
 semiformal_result "FIE3I" fundamental_theorem_of_variational_calculus' {f : X → V}
     (μ : Measure X) [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
     [OpensMeasurableSpace X]
