@@ -67,12 +67,11 @@ inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u 
       (adjoint : HasVarAdjoint (fun δu x => deriv (fun s : ℝ => S' (u + s • δu) x) 0) F' μ)
       /- This condition is effectivelly saying that `F' (fun _ => 1) = grad` but `F'` is not
       guaranteed to produce meaningful result for `fun _ => 1` as it is not test function.
-      Therefore we require that it is possible to glue `grad` together by  -/
+      Therefore we require that it is possible to glue `grad` together by -/
       (eq : ∀ (x : X), ∃ D : Set X,
         x ∈ D ∧ IsCompact D
         ∧
         ∀ (φ : X → ℝ), IsTestFunction φ → (∀ x ∈ D, φ x = 1) → F' φ x = grad x)
-
 
 lemma HasVarGradientAt.unique
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
@@ -91,11 +90,11 @@ lemma HasVarGradientAt.unique
   -- prepare test function that is one on `D ∪ D'`
   let r := sSup ((fun x => ‖x‖) '' (D ∪ D'))
   have : 0 ≤ r := by
-    obtain ⟨x, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s :=  D ∪ D')
+    obtain ⟨x, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s := D ∪ D')
       (IsCompact.union hD hD') (Set.Nonempty.inl (Set.nonempty_of_mem hm))
       (f := fun x => ‖x‖) (by fun_prop)
     unfold r
-    apply le_of_le_of_eq  (b := ‖x‖)
+    apply le_of_le_of_eq (b := ‖x‖)
     · exact norm_nonneg x
     · rw [← h2]
 
@@ -114,7 +113,7 @@ lemma HasVarGradientAt.unique
   have hφ' : ∀ x, x ∈ D ∪ D' → x ∈ Metric.closedBall 0 φ.rIn := by
     intro x hx
     simp [φ, r]
-    obtain ⟨y, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s :=  D ∪ D')
+    obtain ⟨y, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s := D ∪ D')
       (IsCompact.union hD hD') (Set.Nonempty.inl (Set.nonempty_of_mem hm))
       (f := fun x => ‖x‖) (by fun_prop)
     rw [h2]
@@ -125,4 +124,4 @@ lemma HasVarGradientAt.unique
     (by intros _ hx; unfold φ; rw[φ.one_of_mem_closedBall]; apply hφ'; simp[hx])
   have h' := hgrad' φ hφ
     (by intros _ hx; unfold φ; rw[φ.one_of_mem_closedBall]; apply hφ'; simp[hx])
-  rw[← h, ← h',hF.unique hG φ hφ]
+  rw[← h, ← h',hF.unique hG φ (ContDiffBump.contDiff φ)]
