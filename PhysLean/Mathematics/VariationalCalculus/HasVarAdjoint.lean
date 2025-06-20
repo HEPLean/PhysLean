@@ -119,6 +119,7 @@ protected lemma deriv :
     · sorry
     · sorry
     · sorry
+  ext := sorry
 
 lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {μ : Measure X}
     (h : HasVarAdjoint G F' μ) (h' : ∀ φ, IsTestFunction φ → F φ = G φ) :
@@ -247,44 +248,6 @@ lemma unique
     · apply hφ'; simp [hx]
 
   simp only [hK f ψ hψK x rfl, hL f ψ hψL x rfl, unique_on_test_functions hF hG ψ hψ]
-
-/-- Variational adjoint is unique only when applied to test functions. -/
-lemma unique {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
-    {μ : Measure X} [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
-    [OpensMeasurableSpace X] (hF' : HasVarAdjoint F F' μ) (hG' : HasVarAdjoint F G' μ)  :
-    ∀ φ, IsTestFunction φ → F' φ = G' φ := by
-  obtain ⟨F_preserve_test, F'_preserve_test, F'_adjoint⟩ := hF'
-  obtain ⟨F_preserve_test, G'_preserve_test, G'_adjoint⟩ := hG'
-  intro φ hφ
-  rw [← zero_add (G' φ)]
-  rw [← sub_eq_iff_eq_add]
-  change (F' - G') φ = 0
-  apply fundamental_theorem_of_variational_calculus μ
-  · simp
-    apply IsTestFunction.sub
-    · exact F'_preserve_test φ hφ
-    · exact G'_preserve_test φ hφ
-  · intro ψ hψ
-    simp [inner_sub_left]
-    rw [MeasureTheory.integral_sub]
-    · conv_lhs =>
-        enter [2, 2, a]
-        rw [← inner_conj_symm]
-      conv_lhs =>
-        enter [1, 2, a]
-        rw [← inner_conj_symm]
-      simp
-      rw [← F'_adjoint ψ φ hψ hφ]
-      rw [G'_adjoint ψ φ hψ hφ]
-      simp
-    · apply IsTestFunction.integrable
-      apply IsTestFunction.inner
-      · exact F'_preserve_test φ hφ
-      · exact hψ
-    · apply IsTestFunction.integrable
-      apply IsTestFunction.inner
-      · exact G'_preserve_test φ hφ
-      · exact hψ
 
 lemma neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
     {μ : Measure X}
