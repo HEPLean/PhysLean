@@ -133,7 +133,7 @@ protected lemma deriv :
         refine mem_interior_iff_mem_nhds.mp ?_
         rw [@mem_interior]
         use Metric.thickening 1 K
-        simp
+        simp only [subset_refl, true_and]
         apply And.intro
         · exact Metric.isOpen_thickening
         · rw [@Metric.mem_thickening_iff_exists_edist_lt]
