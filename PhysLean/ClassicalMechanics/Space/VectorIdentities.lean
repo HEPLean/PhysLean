@@ -175,14 +175,13 @@ lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
 
 -/
 
-
 lemma grad_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
     ∇ f x = ∑ i, deriv i f x • basis i := by
   funext i
   rw [grad, deriv_eq]
-  simp
+  simp only
   rw [Fintype.sum_apply]
-  simp
+  simp only [PiLp.smul_apply, smul_eq_mul]
   rw [Finset.sum_eq_single i]
   · simp [basis]
     rfl
@@ -197,9 +196,9 @@ lemma grad_eq_gradiant {d} (f : Space d → ℝ) :
   funext x
   simp [grad, gradient, deriv_eq]
   have hx (y : Space d) : ⟪(InnerProductSpace.toDual ℝ (Space d)).symm (fderiv ℝ f x), y⟫_ℝ =
-      ⟪∇ f x, y⟫_ℝ  := by
+      ⟪∇ f x, y⟫_ℝ := by
     rw [toDual_symm_apply]
-    have hy : y = ∑ i, y i • basis  i  := by
+    have hy : y = ∑ i, y i • basis i := by
       conv_lhs => rw [← OrthonormalBasis.sum_repr basis y]
       dsimp [basis]
     rw [hy]
@@ -211,7 +210,7 @@ lemma grad_eq_gradiant {d} (f : Space d → ℝ) :
     congr
     rw [grad_eq_sum]
     rw [← inner_conj_symm]
-    simp only [ conj_trivial, inner_sum]
+    simp only [conj_trivial, inner_sum]
     simp only [inner_smul_right]
     rw [Finset.sum_eq_single i]
     · have h1 : ⟪basis i, basis i⟫_ℝ = 1 := by
