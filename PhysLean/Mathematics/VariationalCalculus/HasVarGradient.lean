@@ -5,7 +5,6 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 import Mathlib.Tactic.FunProp.Differentiable
-import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 /-!
 
 # Variational gradient
@@ -124,7 +123,7 @@ lemma HasVarGradientAt.unique
     (by intros _ hx; unfold φ; rw[φ.one_of_mem_closedBall]; apply hφ'; simp[hx])
   have h' := hgrad' φ hφ
     (by intros _ hx; unfold φ; rw[φ.one_of_mem_closedBall]; apply hφ'; simp[hx])
-  rw[← h, ← h',hF.unique hG φ hφ]
+  rw[← h, ← h',hF.unique hG φ (ContDiffBump.contDiff φ)]
 
 /-- Variation of `S(x) = ∫ 1/2*m*‖ẋ‖² - V(x)` gives Newton's law of motion `δS(x) = - m*ẍ - V'(x)`-/
 lemma euler_lagrange_particle_1d (m : ℝ) (u V : ℝ → ℝ)
