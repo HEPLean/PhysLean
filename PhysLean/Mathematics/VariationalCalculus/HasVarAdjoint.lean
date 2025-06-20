@@ -7,6 +7,7 @@ import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 import PhysLean.ClassicalMechanics.Space.Basic
 import PhysLean.Mathematics.VariationalCalculus.Basic
@@ -459,7 +460,7 @@ lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X} (f : X → 
    intro K cK
    exact ⟨K, cK, subset_refl _, by intro _ _ hφ _ _; simp_all⟩
 
-lemma fderiv_apply {dx} :
+lemma fderiv_apply {d} {dx} :
     HasVarAdjoint (fun φ : Space d → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) :=
   sorry
 
@@ -529,3 +530,29 @@ protected lemma gradient {d} :
       simp [Space.div,Space.deriv]
       congr; funext i; congr 1
       exact Filter.EventuallyEq.fderiv_eq (h _ _ hx)
+
+lemma div {d} :
+    HasVarAdjoint
+      (fun (φ : Space d → Space d) x => Space.div φ x)
+      (fun ψ x => - gradient ψ x) := sorry
+
+lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
+    HasVarAdjoint
+      (fun φ x => (WithLp.equiv 2 _).symm (F φ x, G φ x))
+      (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) μ := sorry
+
+lemma fst {F : (X → U) → (X → WithLp 2 (W×V))}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) :
+    HasVarAdjoint
+      (fun φ x => (F φ x).1)
+      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (φ x', 0)) x) μ := sorry
+
+lemma snd {F : (X → U) → (X → WithLp 2 (W×V))}
+    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+    (hF : HasVarAdjoint F F' μ) :
+    HasVarAdjoint
+      (fun φ x => (F φ x).2)
+      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (0, φ x')) x) μ := sorry
