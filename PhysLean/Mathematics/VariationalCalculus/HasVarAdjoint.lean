@@ -66,6 +66,12 @@ lemma id : HasVarAdjoint (fun φ : X → U => φ) (fun φ => φ) μ where
   adjoint _ _ _ _ := rfl
   ext := fun K cK => ⟨K,cK,subset_refl _,fun _ _ h => h⟩
 
+lemma zero : HasVarAdjoint (fun (_ : X → U) _ => (0 : V)) (fun _ _ => 0) μ where
+  test_fun_preserving _ hφ := by fun_prop
+  test_fun_preserving' _ hφ := by fun_prop
+  adjoint _ _ _ _ := by simp
+  ext := fun K cK => ⟨K,cK,subset_refl _,fun _ _ h _ _ => rfl⟩
+
 lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
     (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
     HasVarAdjoint (fun φ => F (G φ)) (fun φ => G' (F' φ)) μ where
