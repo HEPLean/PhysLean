@@ -52,7 +52,6 @@ structure HasVarAdjoint
   ext : ∀ (K : Set X) (_ : IsCompact K), ∃ L : Set X,
     IsCompact L ∧ K ⊆ L ∧ ∀ (φ φ' : X → V), (∀ x ∈ L, φ x = φ' x) → ∀ x ∈ K, F' φ x = F' φ' x
 
-
 namespace HasVarAdjoint
 
 variable {μ : Measure X}
@@ -88,7 +87,6 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
     · exact sK'.trans sK''
     · intro φ φ' hφ
       apply h' _ _ (fun _ hx' => h'' _ _ hφ _ hx')
-
 
 protected lemma deriv :
     HasVarAdjoint (fun φ : ℝ → ℝ => deriv φ) (fun φ x => - deriv φ x) where
@@ -164,9 +162,9 @@ lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {
   ext := h.ext
 
 /-- Variational adjoint is unique only when applied to test functions. -/
-lemma unique_on_test_functions {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
+lemma unique_on_test_functions {F : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     {μ : Measure X} [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
-    [OpensMeasurableSpace X] (hF' : HasVarAdjoint F F' μ) (hG' : HasVarAdjoint F G' μ)  :
+    [OpensMeasurableSpace X] (hF' : HasVarAdjoint F F' μ) (hG' : HasVarAdjoint F G' μ) :
     ∀ φ, IsTestFunction φ → F' φ = G' φ := by
   obtain ⟨F_preserve_test, F'_preserve_test, F'_adjoint⟩ := hF'
   obtain ⟨F_preserve_test, G'_preserve_test, G'_adjoint⟩ := hG'
@@ -202,9 +200,9 @@ lemma unique_on_test_functions {F : (X → U) → (X → V)} {F' G'  : (X → V)
 lemma unique
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     [FiniteDimensional ℝ X] [MeasurableSpace X]
-    {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
+    {F : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     {μ : Measure X} [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure] [OpensMeasurableSpace X]
-    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint F G' μ)  :
+    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint F G' μ) :
     ∀ f, ContDiff ℝ ∞ f → F' f = G' f := by
 
   intro f hf; funext x
@@ -212,7 +210,7 @@ lemma unique
   obtain ⟨K, cK, sK, hK⟩ := hF.ext {x} (isCompact_singleton)
   obtain ⟨L, cL, sL, hL⟩ := hG.ext {x} (isCompact_singleton)
   -- have hK : x ∈ {x} K := by
-  --   exact? Set.mem_singleton x
+  -- exact? Set.mem_singleton x
   have hnonempty : Set.Nonempty (K ∪ L) := by
     apply Set.Nonempty.inl
     use x; simp_all only [Set.singleton_subset_iff, Set.mem_singleton_iff, forall_eq]
@@ -352,7 +350,6 @@ lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
         intro x hx; apply hφ; simp_all
       simp +contextual (disch:=assumption) [h φ φ', h' φ φ']
 
-
 lemma sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
@@ -409,7 +406,6 @@ lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → 
     intro K cK
     obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
     exact ⟨L,cL,sL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
-
 
 lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
     {μ : Measure X}

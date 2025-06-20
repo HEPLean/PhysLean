@@ -36,6 +36,7 @@ import PhysLean.Mathematics.SO3.Basic
 import PhysLean.Mathematics.SchurTriangulation
 import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 import PhysLean.Mathematics.VariationalCalculus.Basic
+import PhysLean.Mathematics.VariationalCalculus.HasVarAdjDeriv
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
 import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
