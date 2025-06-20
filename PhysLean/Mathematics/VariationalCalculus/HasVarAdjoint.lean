@@ -202,7 +202,9 @@ lemma unique_on_test_functions {F : (X → U) → (Y → V)} {F' G' : (Y → V) 
 lemma unique
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     [FiniteDimensional ℝ X] [MeasureSpace X] [OpensMeasurableSpace X]
-    {F : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+    [FiniteDimensional ℝ Y] [MeasureSpace Y]
+    {F : (X → U) → (Y → V)} {F' G' : (Y → V) → (X → U)}
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
     (hF : HasVarAdjoint F F') (hG : HasVarAdjoint F G') :
     ∀ f, ContDiff ℝ ∞ f → F' f = G' f := by
@@ -226,7 +228,7 @@ lemma unique
     · exact norm_nonneg x
     · rw [← h2]
 
-  let φ : ContDiffBump (0 : X) := {
+  let φ : ContDiffBump (0 : Y) := {
     rIn := r + 1,
     rOut := r + 2,
     rIn_pos := by linarith,
@@ -234,7 +236,7 @@ lemma unique
 
   -- few properties about `φ`
   let φ' := fun x => φ.toFun x
-  have hφ : IsTestFunction (fun x : X => φ x) := by
+  have hφ : IsTestFunction (fun x : Y => φ x) := by
     constructor
     apply ContDiffBump.contDiff
     apply ContDiffBump.hasCompactSupport
@@ -250,7 +252,7 @@ lemma unique
     simp
 
   let ψ := fun x => φ x • f x
-  have hψ : IsTestFunction (fun x : X => ψ x) := by fun_prop
+  have hψ : IsTestFunction (fun x : Y => ψ x) := by fun_prop
   have hψK : ∀ x ∈ K, f x = ψ x := by
     intros x hx; unfold ψ
     rw[ContDiffBump.one_of_mem_closedBall]
@@ -358,6 +360,8 @@ lemma sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
   simp [sub_eq_add_neg]
   apply add hF (neg hG)
 
+end OnFiniteMeasures
+
 lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
     (hF : HasVarAdjoint F F') (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => ψ x * F φ x) (fun φ x => F' (fun x => ψ x * φ x) x) where
@@ -381,8 +385,6 @@ lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → �
     intro K cK
     obtain ⟨L,cL,h⟩ := hF.ext K cK
     exact ⟨L,cL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
-
-end OnFiniteMeasures
 
 lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
     (hF : HasVarAdjoint F F') (hψ : ContDiff ℝ ∞ ψ) :

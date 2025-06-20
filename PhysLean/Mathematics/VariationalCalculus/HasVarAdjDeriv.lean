@@ -128,17 +128,19 @@ lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {u : X �
 lemma unique_on_test_functions
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
     [OpensMeasurableSpace X]
-    (F : (X → U) → (X → V)) (u : X → U)
+    (F : (X → U) → (Y → V)) (u : X → U)
     (F' G') (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
-    (φ : X → V) (hφ : IsTestFunction φ) :
+    (φ : Y → V) (hφ : IsTestFunction φ) :
     F' φ = G' φ := HasVarAdjoint.unique_on_test_functions hF.adjoint hG.adjoint φ hφ
 
 lemma unique {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     [FiniteDimensional ℝ X] [MeasureSpace X] [OpensMeasurableSpace X]
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
-    {F : (X → U) → (X → V)} {u : X → U}
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+    [FiniteDimensional ℝ Y] [MeasureSpace Y]
+    {F : (X → U) → (Y → V)} {u : X → U}
     {F' G'} (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
-    (φ : X → V) (hφ : ContDiff ℝ ∞ φ) :
+    (φ : Y → V) (hφ : ContDiff ℝ ∞ φ) :
     F' φ = G' φ :=
   HasVarAdjoint.unique hF.adjoint hG.adjoint φ hφ
 
