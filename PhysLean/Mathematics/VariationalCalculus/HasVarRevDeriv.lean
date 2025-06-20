@@ -51,9 +51,6 @@ structure HasVarAdjDerivAt (F : (X → U) → (X → V)) (F' : (X → V) → (X 
 
 namespace HasVarAdjDerivAt
 
-variable {μ : Measure X}
-
-
 lemma apply_smooth_of_smooth {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {u v : X → U}
     (h : HasVarAdjDerivAt F F' u) (hv : ContDiff ℝ ∞ v) : ContDiff ℝ ∞ (F v) := by
   have := h.smooth_at
