@@ -163,19 +163,6 @@ lemma congr_fun {F G : (X → U) → (Y → V)} {F' : (Y → V) → (X → U)}
     exact h.adjoint φ ψ hφ hψ
   ext := h.ext
 
-/-
-lemma congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U)} {μ : Measure X}
-    (h : HasVarAdjoint F G' μ) (h' : ∀ φ, IsTestFunction φ → F' φ = G' φ) :
-    HasVarAdjoint F F' μ where
-  test_fun_preserving φ hφ := h.test_fun_preserving φ hφ
-  test_fun_preserving' φ hφ := by
-    rw [h' φ hφ]
-    exact h.test_fun_preserving' φ hφ
-  adjoint φ ψ hφ hψ := by
-    rw [h' ψ hψ]
-    exact h.adjoint φ ψ hφ hψ
-  ext := sorry
--/
 /-- Variational adjoint is unique only when applied to test functions. -/
 lemma unique_on_test_functions {F : (X → U) → (Y → V)} {F' G' : (Y → V) → (X → U)}
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
