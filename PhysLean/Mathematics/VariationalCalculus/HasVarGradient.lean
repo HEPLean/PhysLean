@@ -16,7 +16,7 @@ as used in physics textbooks.
 open MeasureTheory ContDiff InnerProductSpace
 
 variable
-  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasurableSpace X]
+  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
   {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
 
 /-- Function `grad` is variational gradient of functional `S` at point `u`.
@@ -58,12 +58,11 @@ HasVarGradientAt
   u
 ```
 -/
-inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u : X → U)
-    (μ : Measure X := by volume_tac) : Prop
+inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u : X → U) : Prop
   | intro (F')
       (diff : ∀ δu x, IsTestFunction δu →
         Differentiable ℝ (fun s : ℝ => S' (fun x' => u x' + s • δu x') x))
-      (adjoint : HasVarAdjoint (fun δu x => deriv (fun s : ℝ => S' (u + s • δu) x) 0) F' μ)
+      (adjoint : HasVarAdjoint (fun δu x => deriv (fun s : ℝ => S' (u + s • δu) x) 0) F')
       /- This condition is effectivelly saying that `F' (fun _ => 1) = grad` but `F'` is not
       guaranteed to produce meaningful result for `fun _ => 1` as it is not test function.
       Therefore we require that it is possible to glue `grad` together by -/
@@ -74,10 +73,10 @@ inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u 
 
 lemma HasVarGradientAt.unique
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
-    [FiniteDimensional ℝ X] [MeasurableSpace X]
-    {S' : (X → U) → (X → ℝ)} {grad grad' : X → U} {u : X → U} {μ : Measure X}
-    [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure] [OpensMeasurableSpace X]
-    (h : HasVarGradientAt S' grad u μ) (h' : HasVarGradientAt S' grad' u μ) :
+    [FiniteDimensional ℝ X] [MeasureSpace X]
+    [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)]
+    {S' : (X → U) → (X → ℝ)} {grad grad' : X → U} {u : X → U}
+    (h : HasVarGradientAt S' grad u) (h' : HasVarGradientAt S' grad' u) :
     grad = grad' := by
 
   obtain ⟨F,_,hF,eq⟩ := h

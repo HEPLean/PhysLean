@@ -26,6 +26,8 @@ open MeasureTheory ContDiff InnerProductSpace
 
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
+  {Y} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [MeasureSpace Y]
+  {Z} [NormedAddCommGroup Z] [NormedSpace ℝ Z] [MeasureSpace Z]
   {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
   {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   {W} [NormedAddCommGroup W] [InnerProductSpace ℝ W]
@@ -34,11 +36,11 @@ variable
 
 This definition is useful as we can prove composition theorem for it and `HasVarGradient F grad u`
 can be computed by `grad := F' (fun _ => 1)`. -/
-structure HasVarAdjDerivAt (F : (X → U) → (X → V)) (F' : (X → V) → (X → U)) (u : X → U) : Prop
+structure HasVarAdjDerivAt (F : (X → U) → (Y → V)) (F' : (Y → V) → (X → U)) (u : X → U) : Prop
     where
   smooth_at : ContDiff ℝ ∞ u
   diff : ∀ (φ : ℝ → X → U), ContDiff ℝ ∞ ↿φ →
-    ContDiff ℝ ∞ (fun sx : ℝ×X => F (φ sx.1) sx.2)
+    ContDiff ℝ ∞ (fun sx : ℝ×Y => F (φ sx.1) sx.2)
   linearize :
     ∀ (φ : ℝ → X → U), ContDiff ℝ ∞ ↿φ →
       ∀ x,
@@ -96,7 +98,7 @@ lemma const (u : X → U) (v : X → V) (hu : ContDiff ℝ ∞ u) (hv : ContDiff
   linearize := by simp
   adjoint := by simp; exact HasVarAdjoint.zero
 
-lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {u : X → U}
+lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {u : X → U}
     {F' G'} (hF : HasVarAdjDerivAt F F' (G u)) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun u => F (G u)) (fun ψ => G' (F' ψ)) u where
   smooth_at := hG.smooth_at
@@ -129,7 +131,7 @@ lemma unique_on_test_functions
     (F : (X → U) → (X → V)) (u : X → U)
     (F' G') (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
     (φ : X → V) (hφ : IsTestFunction φ) :
-    F' φ = G' φ := HasVarAdjoint.unique_on_test_functions (μ:=volume) hF.adjoint hG.adjoint φ hφ
+    F' φ = G' φ := HasVarAdjoint.unique_on_test_functions hF.adjoint hG.adjoint φ hφ
 
 lemma unique {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     [FiniteDimensional ℝ X] [MeasureSpace X] [OpensMeasurableSpace X]
@@ -138,7 +140,7 @@ lemma unique {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     (F' G') (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
     (φ : X → V) (hφ : ContDiff ℝ ∞ φ) :
     F' φ = G' φ :=
-  HasVarAdjoint.unique (μ:=volume) hF.adjoint hG.adjoint φ hφ
+  HasVarAdjoint.unique hF.adjoint hG.adjoint φ hφ
 
 attribute [fun_prop] differentiableAt_id'
 
@@ -202,9 +204,11 @@ lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) 
       apply HasVarAdjoint.neg
       apply hF.adjoint
 
+section OnFiniteMeasures
+
+variable [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)]
+
 lemma add
-    [IsFiniteMeasureOnCompacts (@volume X _)]
-    [OpensMeasurableSpace X]
     (F G : (X → U) → (X → V)) (F' G') (u)
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun φ x => F φ x + G φ x) (fun ψ x => F' ψ x + G' ψ x) u where
@@ -251,8 +255,6 @@ lemma add
       apply hG.adjoint
 
 lemma mul
-    [IsFiniteMeasureOnCompacts (@volume X _)]
-    [OpensMeasurableSpace X]
     (F G : (X → ℝ) → (X → ℝ)) (F' G') (u)
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun φ x => F φ x * G φ x)
@@ -302,3 +304,5 @@ lemma mul
       · apply HasVarAdjoint.mul_left
         apply hG.adjoint
         exact apply_smooth_self hF
+
+end OnFiniteMeasures
