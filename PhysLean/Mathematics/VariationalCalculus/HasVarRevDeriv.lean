@@ -131,7 +131,7 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {u : X �
         enter [1,x]
         rw[hF.linearize _ (by apply hG.diff (fun s x' => u x' + s • φ x');
                               simp[Function.HasUncurry.uncurry]; fun_prop)]
-      simp
+      simp only [zero_smul, add_zero]
       apply hF.adjoint.test_fun_preserving
       apply hG.adjoint.test_fun_preserving
       apply hφ
@@ -139,12 +139,12 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {u : X �
     · intro φ ψ hφ hψ
       have hFψ := (hF.adjoint.test_fun_preserving' _ hψ)
       have h := hG.adjoint.adjoint φ (F' ψ) hφ (hF.adjoint.test_fun_preserving' _ hψ)
-      rw[←hG.adjoint.adjoint φ (F' ψ) hφ hFψ]
-      rw[←hF.adjoint.adjoint _ ψ ?ts1 hψ]
+      rw[← hG.adjoint.adjoint φ (F' ψ) hφ hFψ]
+      rw[← hF.adjoint.adjoint _ ψ ?ts1 hψ]
       congr; funext x; congr 1
       rw[hF.linearize _ (by apply hG.diff (fun s x' => u x' + s • φ x');
                             simp[Function.HasUncurry.uncurry]; fun_prop) x]
-      simp
+      simp only [zero_smul, add_zero]
       case ts1 =>
         conv =>
           enter [1,x]
