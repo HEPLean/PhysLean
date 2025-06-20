@@ -49,7 +49,7 @@ structure HasVarAdjoint
   adjoint : ∀ φ ψ, IsTestFunction φ → IsTestFunction ψ →
     ∫ x, ⟪F φ x, ψ x⟫_ℝ ∂μ = ∫ x, ⟪φ x, F' ψ x⟫_ℝ ∂μ
   ext : ∀ (K : Set X) (_ : IsCompact K), ∃ L : Set X,
-    IsCompact L ∧ K ⊆ L ∧ ∀ (φ φ' : X → U), (∀ x ∈ L, φ x = φ' x) → ∀ x ∈ K, F φ x = F φ' x
+    IsCompact L ∧ K ⊆ L ∧ ∀ (φ φ' : X → V), (∀ x ∈ L, φ x = φ' x) → ∀ x ∈ K, F' φ x = F' φ' x
 
 
 namespace HasVarAdjoint
@@ -72,8 +72,8 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
     rw [hG.adjoint _ _ hφ (hF.test_fun_preserving' _ hψ)]
   ext := by
     intro K cK
-    obtain ⟨K', cK', sK', h'⟩ := hF.ext K cK
-    obtain ⟨K'', cK'', sK'', h''⟩ := hG.ext K' cK'
+    obtain ⟨K', cK', sK', h'⟩ := hG.ext K cK
+    obtain ⟨K'', cK'', sK'', h''⟩ := hF.ext K' cK'
     use K''
     constructor
     · exact cK''
@@ -118,7 +118,17 @@ protected lemma deriv :
       · exact hφ
     · refine IsTestFunction.integrable ?_ _
       exact IsTestFunction.mul hψ hφ
-  ext := sorry
+  ext := by
+    intro K cK
+    use (Metric.cthickening 1 K)
+    constructor
+    · exact IsCompact.cthickening cK
+    constructor
+    · exact Metric.self_subset_cthickening K
+    · intro φ φ' hφ
+      have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := sorry
+      intro x hx; congr 1
+      apply (h x hx).deriv_eq
 
 lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {μ : Measure X}
     (h : HasVarAdjoint G F' μ) (h' : ∀ φ, IsTestFunction φ → F φ = G φ) :
@@ -130,19 +140,19 @@ lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {
   adjoint φ ψ hφ hψ := by
     rw [h' φ hφ]
     exact h.adjoint φ ψ hφ hψ
-  ext := sorry
+  ext := h.ext
 
-lemma congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U)} {μ : Measure X}
-    (h : HasVarAdjoint F G' μ) (h' : ∀ φ, IsTestFunction φ → F' φ = G' φ) :
-    HasVarAdjoint F F' μ where
-  test_fun_preserving φ hφ := h.test_fun_preserving φ hφ
-  test_fun_preserving' φ hφ := by
-    rw [h' φ hφ]
-    exact h.test_fun_preserving' φ hφ
-  adjoint φ ψ hφ hψ := by
-    rw [h' ψ hψ]
-    exact h.adjoint φ ψ hφ hψ
-  ext := sorry
+-- lemma congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U)} {μ : Measure X}
+--     (h : HasVarAdjoint F G' μ) (h' : ∀ φ, IsTestFunction φ → F' φ = G' φ) :
+--     HasVarAdjoint F F' μ where
+--   test_fun_preserving φ hφ := h.test_fun_preserving φ hφ
+--   test_fun_preserving' φ hφ := by
+--     rw [h' φ hφ]
+--     exact h.test_fun_preserving' φ hφ
+--   adjoint φ ψ hφ hψ := by
+--     rw [h' ψ hψ]
+--     exact h.adjoint φ ψ hφ hψ
+--   ext := sorry
 
 /-- Variational adjoint is unique only when applied to test functions. -/
 lemma unique {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
@@ -200,7 +210,10 @@ lemma neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
   adjoint _ _ _ _ := by
     simp [integral_neg]
     rw[hF.adjoint _ _ (by assumption) (by assumption)]
-  ext := sorry
+  ext := by
+    intro K cK
+    obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
+    exact ⟨L,cL,sL,by intro _ _ _ _ _; congr 1; apply h <;> simp_all⟩
 
 lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
@@ -246,7 +259,22 @@ lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
       apply IsTestFunction.inner
       · (expose_names; exact hG.test_fun_preserving x h)
       · (expose_names; exact h_1)
-  ext := sorry
+  ext := by
+    intro K cK
+    obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
+    obtain ⟨L',cL',sL',h'⟩ := hG.ext K cK
+    use L ∪ L'
+    constructor
+    · exact cL.union cL'
+    constructor
+    · exact Set.subset_union_of_subset_left sL _
+    · intro φ φ' hφ
+      have hL : ∀ x ∈ L, φ x = φ' x := by
+        intro x hx; apply hφ; simp_all
+      have hL' : ∀ x ∈ L', φ x = φ' x := by
+        intro x hx; apply hφ; simp_all
+      simp +contextual (disch:=assumption) [h φ φ', h' φ φ']
+
 
 lemma sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
@@ -275,7 +303,10 @@ lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → �
     · apply IsTestFunction.mul_left
       · exact hψ
       · exact hψ'
-  ext := sorry
+  ext := by
+    intro K cK
+    obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
+    exact ⟨L,cL,sL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
 
 lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
     {μ : Measure X}
@@ -297,7 +328,11 @@ lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → 
     · apply IsTestFunction.mul_right
       · exact hψ'
       · exact hψ
-  ext := sorry
+  ext := by
+    intro K cK
+    obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
+    exact ⟨L,cL,sL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
+
 
 lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
     {μ : Measure X}
@@ -315,7 +350,10 @@ lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) �
     · rfl
     · exact hφ
     · simp; fun_prop
-  ext := sorry
+  ext := by
+    intro K cK
+    obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
+    exact ⟨L,cL,sL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
 
 lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) → (X → U)}
     {μ : Measure X}
@@ -333,4 +371,7 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
     · rfl
     · exact hφ
     · simp; fun_prop
-  ext := sorry
+  ext := by
+    intro K cK
+    obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
+    exact ⟨L,cL,sL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
