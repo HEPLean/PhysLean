@@ -3,9 +3,7 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
-import Mathlib.Tactic.FunProp.Differentiable
-import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
+import PhysLean.Mathematics.VariationalCalculus.HasVarRevDeriv
 /-!
 
 # Variational gradient
@@ -17,7 +15,7 @@ as used in physics textbooks.
 open MeasureTheory ContDiff InnerProductSpace
 
 variable
-  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasurableSpace X]
+  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
   {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
 
 /-- Function `grad` is variational gradient of functional `S` at point `u`.
@@ -59,19 +57,13 @@ HasVarGradientAt
   u
 ```
 -/
-inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u : X → U)
-    (μ : Measure X := by volume_tac) : Prop
-  | intro (F')
-      (diff : ∀ δu x, IsTestFunction δu →
-        Differentiable ℝ (fun s : ℝ => S' (fun x' => u x' + s • δu x') x))
-      (adjoint : HasVarAdjoint (fun δu x => deriv (fun s : ℝ => S' (u + s • δu) x) 0) F' μ)
-      /- This condition is effectivelly saying that `F' (fun _ => 1) = grad` but `F'` is not
-      guaranteed to produce meaningful result for `fun _ => 1` as it is not test function.
-      Therefore we require that it is possible to glue `grad` together by -/
-      (eq : ∀ (x : X), ∃ D : Set X,
-        x ∈ D ∧ IsCompact D
-        ∧
-        ∀ (φ : X → ℝ), IsTestFunction φ → (∀ x ∈ D, φ x = 1) → F' φ x = grad x)
+inductive HasVarGradientAt (S : (X → U) → ℝ) (grad : X → U) (u : X → U) : Prop where
+  | intro
+    (F : (X → U) → (X → ℝ))
+    (hF : ∀ φ, IsTestFunction φ → S φ = ∫ x, F φ x)
+    (F' : (X → ℝ) → (X → U))
+    (hF' : HasVarAdjDerivAt F F' u)
+    (hgrad : grad = F' (fun _ => 1))
 
 lemma HasVarGradientAt.unique
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]

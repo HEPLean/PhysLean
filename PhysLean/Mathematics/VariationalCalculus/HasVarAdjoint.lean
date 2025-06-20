@@ -63,10 +63,11 @@ lemma id : HasVarAdjoint (fun φ : X → U => φ) (fun φ => φ) μ where
   adjoint _ _ _ _ := rfl
   ext := fun K cK => ⟨K,cK,subset_refl _,fun _ _ h => h⟩
 
-lemma zero : HasVarAdjoint (fun (φ : X → U) x => (0 : V)) (fun ψ x => 0) μ where
+lemma zero : HasVarAdjoint (fun (_ : X → U) _ => (0 : V)) (fun _ _ => 0) μ where
   test_fun_preserving _ hφ := by fun_prop
   test_fun_preserving' _ hφ := by fun_prop
   adjoint _ _ _ _ := by simp
+  ext := fun K cK => ⟨K,cK,subset_refl _,fun _ _ h _ _ => rfl⟩
 
 lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {F' G'}
     (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
@@ -161,18 +162,6 @@ lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {
     rw [h' φ hφ]
     exact h.adjoint φ ψ hφ hψ
   ext := h.ext
-
--- lemma congr_adjoint {F : (X → U) → (X → V)} {G' : (X → V) → (X → U)} {μ : Measure X}
---     (h : HasVarAdjoint F G' μ) (h' : ∀ φ, IsTestFunction φ → F' φ = G' φ) :
---     HasVarAdjoint F F' μ where
---   test_fun_preserving φ hφ := h.test_fun_preserving φ hφ
---   test_fun_preserving' φ hφ := by
---     rw [h' φ hφ]
---     exact h.test_fun_preserving' φ hφ
---   adjoint φ ψ hφ hψ := by
---     rw [h' ψ hψ]
---     exact h.adjoint φ ψ hφ hψ
---   ext := sorry
 
 /-- Variational adjoint is unique only when applied to test functions. -/
 lemma unique_on_test_functions {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
