@@ -438,8 +438,45 @@ lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X}(f : X → (
     HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => (f x).adjoint (ψ x)) μ := sorry
 
 lemma gradient {d} :
-    HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) :=
-  sorry
+    HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
+  test_fun_preserving φ hφ := by sorry
+  test_fun_preserving' φ hφ := by sorry
+  adjoint φ ψ hφ hψ := by
+    simp [_root_.gradient,Space.div,Space.deriv,Space.coord]
+    have := hψ.differentiable
+    conv =>
+      rhs;
+      enter [2,x,1,1,2,i]
+      rw[fderiv_sum (by fun_prop)]
+      enter [1,2,j]
+      rw[fderiv_const_mul (by fun_prop)]
+
+    conv =>
+      rhs;
+      enter [2,x]
+      rw[Finset.sum_mul]
+      enter [1,2,i]
+      rw[ContinuousLinearMap.sum_apply]
+      rw[Finset.sum_mul]
+
+    simp [integral_neg, integral_finset_sum _ (by sorry), mul_assoc, integral_const_mul]
+    simp [Space.basis]
+
+    have h : ∀ (i : Fin d),
+      ∫ (x : Space d), (fderiv ℝ (ψ · i) x) (EuclideanSpace.single i 1) * φ x ∂volume
+      =
+      - ∫ (x : Space d), (ψ x i) * fderiv ℝ φ x (EuclideanSpace.single i 1) ∂volume := sorry
+
+    simp [h]
+    rw[← integral_finset_sum _ (by sorry)]
+    simp only [← smul_eq_mul, ← map_smul, ← map_sum]
+    congr; funext x; congr
+    ext j
+    rw[Finset.sum_apply]
+    simp
+
+  ext := sorry
+
 
 lemma fderiv_apply {dx} :
     HasVarAdjoint (fun φ : Space d → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) :=
