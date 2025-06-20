@@ -35,7 +35,8 @@ variable
 
 This definition is useful as we can prove composition theorem for it and `HasVarGradient F grad u`
 can be computed by `grad := F' (fun _ => 1)`. -/
-structure HasVarAdjDerivAt (F : (X → U) → (X → V)) (F' : (X → V) → (X → U)) (u : X → U) : Prop where
+structure HasVarAdjDerivAt (F : (X → U) → (X → V)) (F' : (X → V) → (X → U)) (u : X → U) : Prop
+    where
   smooth_at : ContDiff ℝ ∞ u
   diff : ∀ (φ : ℝ → X → U), ContDiff ℝ ∞ ↿φ →
     ContDiff ℝ ∞ (fun sx : ℝ×X => F (φ sx.1) sx.2)
@@ -230,7 +231,8 @@ lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) 
 
 
 lemma add
-    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure] [OpensMeasurableSpace X]
+    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
+    [OpensMeasurableSpace X]
     (F G : (X → U) → (X → V)) (F' G') (u)
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun φ x => F φ x + G φ x) (fun ψ x => F' ψ x + G' ψ x) u where
@@ -261,9 +263,11 @@ lemma add
       intro φ hφ; funext x
       have := hφ.smooth; have := hF.smooth_at
       have h1 : DifferentiableAt ℝ (fun s => F (fun x' => u x' + s • φ x') x) (0 : ℝ) :=
-        (hF.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x).differentiable ENat.LEInfty.out 0
+        (hF.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x)
+          |>.differentiable ENat.LEInfty.out 0
       have h2 : DifferentiableAt ℝ (fun s => G (fun x' => u x' + s • φ x') x) (0 : ℝ) :=
-        (hG.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x).differentiable ENat.LEInfty.out 0
+        (hG.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x)
+          |>.differentiable ENat.LEInfty.out 0
       conv =>
         lhs
         rw[deriv_add h1 h2]
@@ -277,10 +281,12 @@ lemma add
 
 
 lemma mul
-    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure] [OpensMeasurableSpace X]
+    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
+    [OpensMeasurableSpace X]
     (F G : (X → ℝ) → (X → ℝ)) (F' G') (u)
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
-    HasVarAdjDerivAt (fun φ x => F φ x * G φ x) (fun ψ x => F' (fun x' => ψ x' * G u x') x + G' (fun x' => F u x' * ψ x') x) u where
+    HasVarAdjDerivAt (fun φ x => F φ x * G φ x)
+      (fun ψ x => F' (fun x' => ψ x' * G u x') x + G' (fun x' => F u x' * ψ x') x) u where
 
   smooth_at := hF.smooth_at
   diff := by
@@ -309,9 +315,11 @@ lemma mul
       have := hφ.smooth; have := hF.smooth_at
       -- Same two results as the `add` case
       have h1 : DifferentiableAt ℝ (fun s => F (fun x' => u x' + s • φ x') x) (0 : ℝ) :=
-        (hF.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x).differentiable ENat.LEInfty.out 0
+        (hF.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x)
+          |>.differentiable ENat.LEInfty.out 0
       have h2 : DifferentiableAt ℝ (fun s => G (fun x' => u x' + s • φ x') x) (0 : ℝ) :=
-        (hG.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x).differentiable ENat.LEInfty.out 0
+        (hG.smooth_R (φ:=fun s x' => u x' + s • φ x') (by fun_prop) x)
+          |>.differentiable ENat.LEInfty.out 0
       conv =>
         lhs
         rw[deriv_mul h1 h2]
