@@ -122,47 +122,24 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {u : X �
     fun_prop [deriv]
 
   adjoint := by
-
     have : ContDiff ℝ ∞ u := hG.smooth_at
-
-    constructor
-    · intro φ hφ
-      conv =>
-        enter [1,x]
-        rw[hF.linearize _ (by apply hG.diff (fun s x' => u x' + s • φ x');
-                              simp[Function.HasUncurry.uncurry]; fun_prop)]
-      simp only [zero_smul, add_zero]
-      apply hF.adjoint.test_fun_preserving
-      apply hG.adjoint.test_fun_preserving
-      apply hφ
-    · intro φ hφ; apply hG.adjoint.test_fun_preserving' _ (hF.adjoint.test_fun_preserving' _ hφ)
-    · intro φ ψ hφ hψ
-      have hFψ := (hF.adjoint.test_fun_preserving' _ hψ)
-      have h := hG.adjoint.adjoint φ (F' ψ) hφ (hF.adjoint.test_fun_preserving' _ hψ)
-      rw[← hG.adjoint.adjoint φ (F' ψ) hφ hFψ]
-      rw[← hF.adjoint.adjoint _ ψ ?ts1 hψ]
-      congr; funext x; congr 1
-      rw[hF.linearize _ (by apply hG.diff (fun s x' => u x' + s • φ x');
-                            simp[Function.HasUncurry.uncurry]; fun_prop) x]
-      simp only [zero_smul, add_zero]
-      case ts1 =>
-        conv =>
-          enter [1,x]
-          rw[hG.linearize _ (by fun_prop)]
-          simp
-        apply hG.adjoint.test_fun_preserving
-        conv =>
-          enter [1,x]
-          rw[deriv_smul_const (by fun_prop)]
-          simp
-        apply hφ
+    have h := hF.adjoint.comp hG.adjoint
+    apply h.congr_fun
+    intro φ hφ; funext x
+    rw[hF.linearize]
+    · simp
+    · simp [Function.HasUncurry.uncurry];
+      apply hG.diff (φ := (fun s x => u x + s • φ x))
+      fun_prop
 
 lemma unique
+    {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [FiniteDimensional ℝ X] [MeasureSpace X]
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
     [OpensMeasurableSpace X]
     (F : (X → U) → (X → V)) (u : X → U)
     (F' G') (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
-    (φ : X → V) (hφ : IsTestFunction φ) :
+    (φ : X → V) (hφ : ContDiff ℝ ∞ φ) :
     F' φ = G' φ := HasVarAdjoint.unique (μ:=volume) hF.adjoint hG.adjoint φ hφ
 
 
