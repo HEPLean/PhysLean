@@ -5,6 +5,7 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import PhysLean.Mathematics.VariationalCalculus.Basic
+import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 /-!
 # Variational adjoint
 
@@ -126,7 +127,21 @@ protected lemma deriv :
     constructor
     · exact Metric.self_subset_cthickening K
     · intro φ φ' hφ
-      have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := sorry
+      have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := by
+        intro x hx
+        apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+        refine mem_interior_iff_mem_nhds.mp ?_
+        rw [@mem_interior]
+        use Metric.thickening 1 K
+        simp
+        apply And.intro
+        · exact Metric.isOpen_thickening
+        · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+          use x
+          simpa using hx
+        · intro x hx
+          have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+          exact hφ x hx'
       intro x hx; congr 1
       apply (h x hx).deriv_eq
 
@@ -155,7 +170,7 @@ lemma congr_fun {F G : (X → U) → (X → V)} {F' : (X → V) → (X → U)} {
 --   ext := sorry
 
 /-- Variational adjoint is unique only when applied to test functions. -/
-lemma unique {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
+lemma unique_on_test_functions {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
     {μ : Measure X} [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
     [OpensMeasurableSpace X] (hF' : HasVarAdjoint F F' μ) (hG' : HasVarAdjoint F G' μ)  :
     ∀ φ, IsTestFunction φ → F' φ = G' φ := by
@@ -188,6 +203,74 @@ lemma unique {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
       apply IsTestFunction.inner
       · exact G'_preserve_test φ hφ
       · exact hψ
+
+/-- Variational adjoint is unique only when applied to smooth functions. -/
+lemma unique
+    {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [FiniteDimensional ℝ X] [MeasurableSpace X]
+    {F : (X → U) → (X → V)} {F' G'  : (X → V) → (X → U)}
+    {μ : Measure X} [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure] [OpensMeasurableSpace X]
+    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint F G' μ)  :
+    ∀ f, ContDiff ℝ ∞ f → F' f = G' f := by
+
+  intro f hf; funext x
+
+  obtain ⟨K, cK, sK, hK⟩ := hF.ext {x} (isCompact_singleton)
+  obtain ⟨L, cL, sL, hL⟩ := hG.ext {x} (isCompact_singleton)
+  -- have hK : x ∈ {x} K := by
+  --   exact? Set.mem_singleton x
+  have hnonempty : Set.Nonempty (K ∪ L) := by
+    apply Set.Nonempty.inl
+    use x; simp_all only [Set.singleton_subset_iff, Set.mem_singleton_iff, forall_eq]
+
+  -- prepare test function that is one on `D ∪ D'`
+  let r := sSup ((fun x => ‖x‖) '' (K ∪ L))
+  have : 0 ≤ r := by
+    obtain ⟨x, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s := K ∪ L)
+      (IsCompact.union cK cL) hnonempty
+      (f := fun x => ‖x‖) (by fun_prop)
+    unfold r
+    apply le_of_le_of_eq (b := ‖x‖)
+    · exact norm_nonneg x
+    · rw [← h2]
+
+  let φ : ContDiffBump (0 : X) := {
+    rIn := r + 1,
+    rOut := r + 2,
+    rIn_pos := by linarith,
+    rIn_lt_rOut := by linarith}
+
+  -- few properties about `φ`
+  let φ' := fun x => φ.toFun x
+  have hφ : IsTestFunction (fun x : X => φ x) := by
+    constructor
+    apply ContDiffBump.contDiff
+    apply ContDiffBump.hasCompactSupport
+  have hφ' : ∀ x, x ∈ K ∪ L → x ∈ Metric.closedBall 0 φ.rIn := by
+    intro x hx
+    simp [φ, r]
+    obtain ⟨y, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s := K ∪ L)
+      (IsCompact.union cK cL) hnonempty
+      (f := fun x => ‖x‖) (by fun_prop)
+    rw [h2]
+    have h3' := h3 x hx
+    apply le_trans h3'
+    simp
+
+  let ψ := fun x => φ x • f x
+  have hψ : IsTestFunction (fun x : X => ψ x) := by fun_prop
+  have hψK : ∀ x ∈ K, f x = ψ x := by
+    intros x hx; unfold ψ
+    rw[ContDiffBump.one_of_mem_closedBall]
+    · simp
+    · apply hφ'; simp [hx]
+  have hψL : ∀ x ∈ L, f x = ψ x := by
+    intros x hx; unfold ψ
+    rw[ContDiffBump.one_of_mem_closedBall]
+    · simp
+    · apply hφ'; simp [hx]
+
+  simp only [hK f ψ hψK x rfl, hL f ψ hψL x rfl, unique_on_test_functions hF hG ψ hψ]
 
 lemma neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
     {μ : Measure X}
