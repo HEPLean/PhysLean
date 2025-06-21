@@ -134,7 +134,7 @@ lemma unique_on_test_functions
     F' φ = G' φ := HasVarAdjoint.unique_on_test_functions hF.adjoint hG.adjoint φ hφ
 
 lemma unique {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
-    [FiniteDimensional ℝ X] [MeasureSpace X] [OpensMeasurableSpace X]
+    [MeasureSpace X] [OpensMeasurableSpace X]
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
     {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
     [FiniteDimensional ℝ Y] [MeasureSpace Y]
