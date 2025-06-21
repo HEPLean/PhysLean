@@ -41,7 +41,6 @@ def IsLocalizedFunctionTransform (F : (X → U) → (Y → V)) : Prop :=
   ∀ (K : Set Y) (_ : IsCompact K), ∃ L : Set X,
     IsCompact L ∧ ∀ (φ φ' : X → U), (∀ x ∈ L, φ x = φ' x) → ∀ x ∈ K, F φ x = F φ' x
 
-
 /-- Map `F` from `(X → U)` to `(X → V)` has a variational adjoint `F'` if it preserves
 test functions and satisfies the adjoint relation `⟪F φ, ψ⟫ = ⟪φ, F' ψ⟫`for all test functions
 `φ` and `ψ` for `⟪φ, ψ⟫ = ∫ x, ⟪φ x, ψ x⟫_ℝ ∂μ`.
@@ -201,7 +200,7 @@ lemma unique_on_test_functions {F : (X → U) → (Y → V)} {F' G' : (Y → V) 
 /-- Variational adjoint is unique only when applied to smooth functions. -/
 lemma unique
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
-    [FiniteDimensional ℝ X] [MeasureSpace X] [OpensMeasurableSpace X]
+    [MeasureSpace X] [OpensMeasurableSpace X]
     {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
     [FiniteDimensional ℝ Y] [MeasureSpace Y]
     {F : (X → U) → (Y → V)} {F' G' : (Y → V) → (X → U)}
