@@ -11,6 +11,7 @@ import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 import PhysLean.ClassicalMechanics.Space.Basic
 import PhysLean.Mathematics.VariationalCalculus.Basic
+import PhysLean.Mathematics.Calculus.ProdL2
 /-!
 # Variational adjoint
 
@@ -538,19 +539,19 @@ lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F') (hG : HasVarAdjoint G G') :
     HasVarAdjoint
-      (fun φ x => (WithLp.equiv 2 _).symm (F φ x, G φ x))
-      (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) := sorry
+      (fun φ x => (F φ x, G φ x)₂)
+      (fun φ x => F' (fun x' => (φ x').fst) x + G' (fun x' => (φ x').snd) x) := sorry
 
-lemma fst {F : (X → U) → (X → WithLp 2 (W×V))}
+lemma fst {F : (X → U) → (X → (W×₂V))}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F') :
     HasVarAdjoint
       (fun φ x => (F φ x).1)
-      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (φ x', 0)) x) := sorry
+      (fun φ x => F' (fun x' => (φ x', 0)₂) x) := sorry
 
-lemma snd {F : (X → U) → (X → WithLp 2 (W×V))}
+lemma snd {F : (X → U) → (X → (W×₂V))}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F') :
     HasVarAdjoint
-      (fun φ x => (F φ x).2)
-      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (0, φ x')) x) := sorry
+      (fun φ x => (F φ x).snd)
+      (fun φ x => F' (fun x' => (0, φ x')₂) x) := sorry

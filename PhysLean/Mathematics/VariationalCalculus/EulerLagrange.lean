@@ -10,17 +10,53 @@ open MeasureTheory ContDiff InnerProductSpace
 
 variable {X} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
 
+#check HasVarAdjDerivAt.deriv
 
 theorem hasVarGradient_action_eq_euler_lagrange
     (L : ℝ → X → X → ℝ) (q : ℝ → X)
-    (hq : ContDiff ℝ ∞ u) (hL : ContDiff ℝ ∞ ↿L) :
-    HasVarGradientAt
-      (fun (q : ℝ → X) (t : ℝ) => L t (q t) (deriv q t))
-      (fun t =>
-        gradient (L t · (deriv q t)) (q t)
-        -
-        deriv (fun t' => gradient (L t' (q t') ·) (deriv q t')) t)
-      u := sorry
+    (hq : ContDiff ℝ ∞ q) (hL : ContDiff ℝ ∞ ↿L) :
+    (δ (q':=q), ∫ t, L t (q' t) (deriv q' t))
+    =
+    (fun t =>
+      gradient (L t · (deriv q t)) (q t)
+      -
+      deriv (fun t' => gradient (L t' (q t') ·) (deriv q t')) t) := by
+
+  apply HasVarGradientAt.varGradient
+  constructor
+  case hF' =>
+    apply HasVarAdjDerivAt.comp
+      (F := fun (φ : ℝ → (X×₂X)) t => L t (φ t).fst (φ t).snd)
+      (G := fun (φ : ℝ → X) t => (φ t, deriv φ t)₂)
+
+    · apply HasVarAdjDerivAt.fmap (f := fun t (xv : X×₂X) => L t xv.fst xv.snd) _ (fun t => (q t, deriv q t)₂) _
+      · simp[Function.HasUncurry.uncurry];
+        sorry --fun_prop -- fixed in #26244
+      · sorry
+    · apply HasVarAdjDerivAt.prod (F:=fun φ => φ) (G:=fun φ => deriv φ)
+      · apply HasVarAdjDerivAt.id _ hq
+      · apply HasVarAdjDerivAt.deriv
+        · apply HasVarAdjDerivAt.id _ hq
+  case hgrad =>
+    simp
+    have h := fun t xy => adjFDeriv_uncurry (𝕜:=ℝ) (f:=fun u v => L t u v) (xy:=xy)
+    simp only [WithLp.HasUncurry.uncurry,id] at h
+    conv in (adjFDeriv _ (fun _ => L _ _ _) _) =>
+      rw[h _ _ (by sorry)]
+    conv in (adjFDeriv _ (fun _ => L _ _ _) _) =>
+      rw[h _ _ (by sorry)]
+
+
+    -- simp only
+    have h'' := fun t => fderiv_comp' (𝕜:=ℝ) (g:=fun uv : ℝ×ℝ => L t uv.1 uv.2) (f:=fun uv : ℝ×₂ℝ => (uv.fst, uv.snd))
+    -- have h := fun t => fderiv_comp' (𝕜:=ℝ) (f:=WithLp.equiv 2 (ℝ × ℝ)) (g:=fun uv : ℝ×ℝ => L t uv.fst uv.snd)
+    conv in (fderiv _ _ _) =>
+      rw[h'' _ _ sorry sorry]; simp
+      rw[h' _ (by sorry)]
+      simp
+      simp (disch:=sorry) only [fderiv_clm_apply]
+    simp
+
 
 
 /-- Euler-Lagrange equations for fields

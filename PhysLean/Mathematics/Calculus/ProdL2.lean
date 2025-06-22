@@ -49,10 +49,10 @@ class HasUncurry (α : Type*) (β : outParam Type*) (γ : outParam Type*) where
 notation:arg "↿₂" x:arg => WithLp.HasUncurry.uncurry x
 
 instance hasUncurryBase : HasUncurry (α → β) α β :=
-  ⟨id⟩
+  ⟨fun x => x⟩
 
 instance hasUncurryInduction {β γ δ} [HasUncurry β γ δ] : HasUncurry (α → β) (α ×₂ γ) δ :=
-  ⟨fun f p ↦ (↿₂(f p.1)) p.2⟩
+  ⟨fun f p ↦ (↿₂(f p.fst)) p.snd⟩
 
 
 variable

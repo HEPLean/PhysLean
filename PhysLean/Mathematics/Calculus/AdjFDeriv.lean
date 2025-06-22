@@ -140,7 +140,7 @@ theorem hasAdjFDerivAt_uncurry {f : E → F → G} {x y} {fx' fy'}
   eq_adjoint_fderiv := by
     sorry
 
-theorem adjFDeriv_uncurry {f : E → F → G} {xy}
+theorem adjFDeriv_uncurry {f : E → F → G} {xy : E×₂F}
     (hfx : DifferentiableAt 𝕜 (↿f) xy) :
     adjFDeriv 𝕜 (↿₂f) xy = fun dz => (adjFDeriv 𝕜 (f · xy.snd) xy.fst dz,
                                          adjFDeriv 𝕜 (f xy.fst ·) xy.snd dz)₂ := by
