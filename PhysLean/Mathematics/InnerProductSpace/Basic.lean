@@ -1,7 +1,9 @@
 import Mathlib.Analysis.Normed.Module.Basic
 import Mathlib.Analysis.Normed.Lp.ProdLp
+import Mathlib.Analysis.Normed.Lp.PiLp
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.ProdL2
+import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Normed.Lp.WithLp
 
 class Norm₂ (E : Type*) where
@@ -65,21 +67,18 @@ scoped instance toInnerWithL2 : Inner 𝕜 (WithLp 2 E) where
   inner x y := ⟪WithLp.equiv 2 E x, WithLp.equiv 2 E y⟫
 
 noncomputable
-scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) :=
-  {
-    dist_self := sorry
-    dist_comm := sorry
-    dist_triangle := sorry
-    eq_of_dist_eq_zero := sorry
-  }
+scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) where
+  dist_self := by simp[norm,InnerProductSpace.Core.inner_zero_left]
+  dist_comm := sorry
+  dist_triangle := sorry
+  eq_of_dist_eq_zero := sorry
 
 noncomputable
 scoped instance toNormedSpaceWithL2 : NormedSpace 𝕜 (WithLp 2 E) where
   norm_smul_le := sorry
 
 noncomputable
-instance toInnerProductSpaceWithL2 :
-     InnerProductSpace 𝕜 (WithLp 2 E) where
+instance toInnerProductSpaceWithL2 : InnerProductSpace 𝕜 (WithLp 2 E) where
   norm_sq_eq_re_inner := by intros; simp [norm, Real.sq_sqrt,hE.core.re_inner_nonneg]; rfl
   conj_inner_symm := hE.core.conj_inner_symm
   add_left := hE.core.add_left
@@ -162,51 +161,27 @@ variable
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
-open InnerProductSpace'
+open InnerProductSpace' in
 noncomputable
 instance : InnerProductSpace' 𝕜 (E×F) where
   norm₂ := (WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)).toNorm.norm
-  core := {
-    -- let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (WithLp 2 E) (WithLp 2 F)).toCore
-    inner := fun xy xy' => ⟪xy.1,xy'.1⟫ + ⟪xy.2,xy'.2⟫
-    conj_inner_symm := by intros; simp[inner,PreInnerProductSpace.Core.conj_inner_symm]
-    re_inner_nonneg := by
-      intro (x,y);
-      have := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) inferInstance x
-      have := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) inferInstance y
-      simp[inner,PreInnerProductSpace.Core.re_inner_nonneg]
-      linarith
-    add_left := by
-      intros; simp[PreInnerProductSpace.Core.add_left]; ring
-    smul_left := by
-      intros; simp[PreInnerProductSpace.Core.smul_left]; ring
-    definite := by
-      intros; sorry
-  }
+  core :=
+    let _ := WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)
+    let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (WithLp 2 E) (WithLp 2 F)).toCore
+    inst
   inner_top_equiv_norm := sorry
 
+@[simp]
+theorem prod_inner_apply' (x y : (E × F)) : ⟪x, y⟫ = ⟪x.fst, y.fst⟫ + ⟪x.snd, y.snd⟫ := rfl
 
-variable {ι : Type*} [Fintype ι]
-
+open InnerProductSpace' in
 noncomputable
-instance : InnerProductSpace' 𝕜 (ι → E) where
-  norm₂ := fun x => √ (∑ i, ‖x i‖₂)
-  core := {
-    inner := fun x x' => ∑ i, ⟪x i, x' i⟫
-    conj_inner_symm := by intros; simp[inner,PreInnerProductSpace.Core.conj_inner_symm]
-    re_inner_nonneg := by
-      intro x;
-      have := fun i => PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) inferInstance (x i)
-      simp[inner,PreInnerProductSpace.Core.re_inner_nonneg]
-      sorry
-    add_left := by
-      intros; simp[PreInnerProductSpace.Core.add_left,Finset.sum_add_distrib]
-    smul_left := by
-      intros; simp[PreInnerProductSpace.Core.smul_left,Finset.mul_sum]
-    definite := by
-      intros; sorry
-  }
+instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
+  norm₂ := (PiLp.seminormedAddCommGroup 2 (fun _ : ι => (WithLp 2 E))).toNorm.norm
+  core :=
+    let _ := PiLp.normedAddCommGroup 2 (fun _ : ι => (WithLp 2 E))
+    let inst := (PiLp.innerProductSpace (𝕜:=𝕜) (fun _ : ι => (WithLp 2 E)))
+    inst.toCore
   inner_top_equiv_norm := sorry
-
 
 end Constructions
