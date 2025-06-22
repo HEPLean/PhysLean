@@ -440,12 +440,12 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
     · simp; fun_prop
   ext := by
     intro K cK
-    obtain ⟨L,cL,sL,h⟩ := hF.ext K cK
-    exact ⟨L,cL,sL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
+    obtain ⟨L,cL,h⟩ := hF.ext K cK
+    exact ⟨L,cL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
 
 lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X} (f : X → (U →L[ℝ] V))
     (hf : ContDiff ℝ ∞ f) :
-    HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => (f x).adjoint (ψ x)) μ  where
+    HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => (f x).adjoint (ψ x)) where
   test_fun_preserving φ hφ := by
     constructor
     · fun_prop
@@ -458,7 +458,7 @@ lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X} (f : X → 
     simp[ContinuousLinearMap.adjoint_inner_right]
   ext := by
    intro K cK
-   exact ⟨K, cK, subset_refl _, by intro _ _ hφ _ _; simp_all⟩
+   exact ⟨K, cK, by intro _ _ hφ _ _; simp_all⟩
 
 lemma fderiv_apply {d} {dx} :
     HasVarAdjoint (fun φ : Space d → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) :=
@@ -507,8 +507,6 @@ protected lemma gradient {d} :
     use (Metric.cthickening 1 K)
     constructor
     · exact IsCompact.cthickening cK
-    constructor
-    · exact Metric.self_subset_cthickening K
     · intro φ φ' hφ
       have h : ∀ (i : Fin d), ∀ x ∈ K,
           (fun x => Space.coord i (φ x)) =ᶠ[nhds x] fun x => Space.coord i (φ' x) := by
@@ -526,7 +524,7 @@ protected lemma gradient {d} :
         · intro x hx
           have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
           simp_all [hφ]
-      intro x hx; congr 1
+      intro x hx; dsimp; congr 1
       simp [Space.div,Space.deriv]
       congr; funext i; congr 1
       exact Filter.EventuallyEq.fderiv_eq (h _ _ hx)
@@ -538,21 +536,21 @@ lemma div {d} :
 
 lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
-    (hF : HasVarAdjoint F F' μ) (hG : HasVarAdjoint G G' μ) :
+    (hF : HasVarAdjoint F F') (hG : HasVarAdjoint G G') :
     HasVarAdjoint
       (fun φ x => (WithLp.equiv 2 _).symm (F φ x, G φ x))
-      (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) μ := sorry
+      (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) := sorry
 
 lemma fst {F : (X → U) → (X → WithLp 2 (W×V))}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
-    (hF : HasVarAdjoint F F' μ) :
+    (hF : HasVarAdjoint F F') :
     HasVarAdjoint
       (fun φ x => (F φ x).1)
-      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (φ x', 0)) x) μ := sorry
+      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (φ x', 0)) x) := sorry
 
 lemma snd {F : (X → U) → (X → WithLp 2 (W×V))}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
-    (hF : HasVarAdjoint F F' μ) :
+    (hF : HasVarAdjoint F F') :
     HasVarAdjoint
       (fun φ x => (F φ x).2)
-      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (0, φ x')) x) μ := sorry
+      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (0, φ x')) x) := sorry
