@@ -3,9 +3,7 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
-import Mathlib.Tactic.FunProp.Differentiable
-import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
+import PhysLean.Mathematics.VariationalCalculus.HasVarAdjDeriv
 /-!
 
 # Variational gradient
@@ -17,7 +15,7 @@ as used in physics textbooks.
 open MeasureTheory ContDiff InnerProductSpace
 
 variable
-  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasurableSpace X]
+  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
   {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
 
 /-- Function `grad` is variational gradient of functional `S` at point `u`.
@@ -59,69 +57,43 @@ HasVarGradientAt
   u
 ```
 -/
-inductive HasVarGradientAt (S' : (X → U) → (X → ℝ)) (grad : X → U) (u : X → U)
-    (μ : Measure X := by volume_tac) : Prop
-  | intro (F')
-      (diff : ∀ δu x, IsTestFunction δu →
-        Differentiable ℝ (fun s : ℝ => S' (fun x' => u x' + s • δu x') x))
-      (adjoint : HasVarAdjoint (fun δu x => deriv (fun s : ℝ => S' (u + s • δu) x) 0) F' μ)
-      /- This condition is effectivelly saying that `F' (fun _ => 1) = grad` but `F'` is not
-      guaranteed to produce meaningful result for `fun _ => 1` as it is not test function.
-      Therefore we require that it is possible to glue `grad` together by -/
-      (eq : ∀ (x : X), ∃ D : Set X,
-        x ∈ D ∧ IsCompact D
-        ∧
-        ∀ (φ : X → ℝ), IsTestFunction φ → (∀ x ∈ D, φ x = 1) → F' φ x = grad x)
+inductive HasVarGradientAt (F : (X → U) → (X → ℝ)) (grad : X → U) (u : X → U) : Prop
+  | intro (F') (hF' : HasVarAdjDerivAt F F' u) (hgrad : grad = F' (fun _ => 1))
 
-lemma HasVarGradientAt.unique
+open Classical in
+noncomputable def varGradient (F : (X → U) → (X → ℝ)) (u : X → U) : X → U :=
+  if h : ∃ grad, HasVarGradientAt F grad u then
+    choose h
+  else
+    0
+
+macro "δ" u:term ", " "∫ " x:term ", " b:term : term =>
+  `(varGradient (fun $u $x => $b))
+macro "δ" "(" u:term " := " u':term ")" ", " "∫ " x:term ", " b:term : term =>
+  `(varGradient (fun $u $x => $b) $u')
+
+namespace HasVarGradientAt
+
+variable
     {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
-    [FiniteDimensional ℝ X] [MeasurableSpace X]
-    {S' : (X → U) → (X → ℝ)} {grad grad' : X → U} {u : X → U} {μ : Measure X}
-    [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure] [OpensMeasurableSpace X]
-    (h : HasVarGradientAt S' grad u μ) (h' : HasVarGradientAt S' grad' u μ) :
+    [FiniteDimensional ℝ X] [MeasureSpace X] [OpensMeasurableSpace X]
+    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
+
+lemma unique
+    {S' : (X → U) → (X → ℝ)} {grad grad' : X → U} {u : X → U}
+    (h : HasVarGradientAt S' grad u) (h' : HasVarGradientAt S' grad' u) :
     grad = grad' := by
 
-  obtain ⟨F,_,hF,eq⟩ := h
-  obtain ⟨G,_,hG,eq'⟩ := h'
-  funext x
-  obtain ⟨D,hm,hD,hgrad⟩ := eq x
-  obtain ⟨D',_,hD',hgrad'⟩ := eq' x
+  obtain ⟨F,hF,eq⟩ := h
+  obtain ⟨G,hG,eq'⟩ := h'
+  rw[eq,eq',hF.unique hG (fun _ => 1) (by fun_prop)]
 
-  -- prepare test function that is one on `D ∪ D'`
-  let r := sSup ((fun x => ‖x‖) '' (D ∪ D'))
-  have : 0 ≤ r := by
-    obtain ⟨x, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s := D ∪ D')
-      (IsCompact.union hD hD') (Set.Nonempty.inl (Set.nonempty_of_mem hm))
-      (f := fun x => ‖x‖) (by fun_prop)
-    unfold r
-    apply le_of_le_of_eq (b := ‖x‖)
-    · exact norm_nonneg x
-    · rw [← h2]
+open Classical in
+protected lemma varGradient
+    (F : (X → U) → (X → ℝ)) (grad : X → U) (u : X → U)
+    (hF : HasVarGradientAt F grad u) :
+    varGradient F u = grad := by
 
-  let φ : ContDiffBump (0 : X) := {
-    rIn := r + 1,
-    rOut := r + 2,
-    rIn_pos := by linarith,
-    rIn_lt_rOut := by linarith}
-
-  -- few properties about `φ`
-  let f := fun x => φ.toFun x
-  have hφ : IsTestFunction (fun x : X => φ x) := by
-    constructor
-    apply ContDiffBump.contDiff
-    apply ContDiffBump.hasCompactSupport
-  have hφ' : ∀ x, x ∈ D ∪ D' → x ∈ Metric.closedBall 0 φ.rIn := by
-    intro x hx
-    simp [φ, r]
-    obtain ⟨y, h1, h2, h3⟩ := IsCompact.exists_sSup_image_eq_and_ge (s := D ∪ D')
-      (IsCompact.union hD hD') (Set.Nonempty.inl (Set.nonempty_of_mem hm))
-      (f := fun x => ‖x‖) (by fun_prop)
-    rw [h2]
-    have h3' := h3 x hx
-    apply le_trans h3'
-    simp
-  have h := hgrad φ hφ
-    (by intros _ hx; unfold φ; rw[φ.one_of_mem_closedBall]; apply hφ'; simp[hx])
-  have h' := hgrad' φ hφ
-    (by intros _ hx; unfold φ; rw[φ.one_of_mem_closedBall]; apply hφ'; simp[hx])
-  rw[← h, ← h',hF.unique hG φ (ContDiffBump.contDiff φ)]
+  have h := Exists.intro grad hF (p:= fun grad' => HasVarGradientAt F grad' u)
+  unfold varGradient;
+  simp[h, hF.unique h.choose_spec]
