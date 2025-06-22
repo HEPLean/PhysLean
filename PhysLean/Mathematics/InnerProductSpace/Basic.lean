@@ -80,24 +80,23 @@ scoped instance toNormedSpaceWithL2 : NormedSpace 𝕜 (WithLp 2 E) where
 noncomputable
 instance toInnerProductSpaceWithL2 :
      InnerProductSpace 𝕜 (WithLp 2 E) where
-  norm_sq_eq_re_inner := sorry --by intros; simp [norm, Real.sq_sqrt,hE.core.re_inner_nonneg]
+  norm_sq_eq_re_inner := by intros; simp [norm, Real.sq_sqrt,hE.core.re_inner_nonneg]; rfl
   conj_inner_symm := hE.core.conj_inner_symm
   add_left := hE.core.add_left
   smul_left := hE.core.smul_left
 
 instance [CompleteSpace E] : CompleteSpace (WithLp 2 E) := sorry
 
+variable (𝕜) in
+noncomputable
+def toL2 : E →L[𝕜] WithLp 2 E := ⟨⟨⟨(WithLp.equiv 2 _).symm, by simp⟩, by simp⟩, sorry⟩
 
 variable (𝕜) in
 noncomputable
-def toL2 : E →L[𝕜] WithLp 2 E := ⟨⟨⟨(WithLp.equiv 2 _).symm, sorry⟩, sorry⟩, sorry⟩
+def fromL2 : WithLp 2 E →L[𝕜] E := ⟨⟨⟨(WithLp.equiv 2 _), by simp⟩, by simp⟩, sorry⟩
 
-variable (𝕜) in
-noncomputable
-def fromL2 : WithLp 2 E →L[𝕜] E := ⟨⟨⟨(WithLp.equiv 2 _), sorry⟩, sorry⟩, sorry⟩
-
-theorem inner_fromL2_left (x : WithLp 2 E) (y : E) : ⟪fromL2 𝕜 x, y⟫ = ⟪x, toL2 𝕜 y⟫ := rfl
-theorem inner_toL2_left (x : E) (y : WithLp 2 E) : ⟪toL2 𝕜 x, y⟫ = ⟪x, fromL2 𝕜 y⟫ := rfl
+theorem fromL2_inner_left (x : WithLp 2 E) (y : E) : ⟪fromL2 𝕜 x, y⟫ = ⟪x, toL2 𝕜 y⟫ := rfl
+theorem toL2_inner_left (x : E) (y : WithLp 2 E) : ⟪toL2 𝕜 x, y⟫ = ⟪x, fromL2 𝕜 y⟫ := rfl
 
 @[simp]
 theorem toL2_fromL2 (x : WithLp 2 E) : toL2 𝕜 (fromL2 𝕜 x) = x := rfl

@@ -63,7 +63,7 @@ protected theorem DifferentiableAt.hasAdjFDerivAt [CompleteSpace E] [CompleteSpa
     unfold adjFDeriv
     apply HasAdjoint.congr_adj
     · apply ContinuousLinearMap.hasAdjoint
-    · funext y; rw[ContinuousLinearMap.adjoint_eq_clm_adjoint]
+    · funext y; rw[adjoint_eq_clm_adjoint]
 
 theorem gradient_eq_adjFDeriv
     {f : U → 𝕜} {x : U} (hf : DifferentiableAt 𝕜 f x) :

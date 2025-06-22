@@ -20,75 +20,18 @@ def adjoint (f : E → F) :=
     choose h
   else 0
 
-
--- evaluate ContinuousLinearMap.adjoint on normal function `f : E → F`
-open Classical InnerProductSpace' in
-variable (𝕜) in
-noncomputable
-def adjoint' [CompleteSpace E] [CompleteSpace F] (f : E → F) : F → E :=
-  if h : IsLinearMap 𝕜 f ∧ Continuous f then
-    let f : (WithLp 2 E) →L[𝕜] (WithLp 2 F) :=
-      ⟨⟨⟨f,h.1.1⟩, h.1.2⟩,
-       (by eta_expand; simp; rw[(by rfl : f = fun x => toL2 𝕜 (f (fromL2 𝕜 x)))];
-           have := h.2
-           apply Continuous.comp; fun_prop
-           apply Continuous.comp; apply h.2
-           fun_prop)⟩
-    fun y => fromL2 𝕜 (f.adjoint (toL2 𝕜 y))
-  else
-    0
-
-
 open InnerProductSpace' in
 theorem ContinuousLinearMap.hasAdjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
     HasAdjoint 𝕜 f (fun y => fromL2 𝕜 (((toL2 𝕜) ∘L f ∘L (fromL2 𝕜)).adjoint (toL2 𝕜 y))) where
-  adjoint_inner_left := by intros; simp[inner_fromL2_left,adjoint_inner_left]; rfl
-
+  adjoint_inner_left := by intros; simp[fromL2_inner_left,adjoint_inner_left]; rfl
 
 open InnerProductSpace' in
-theorem ContinuousLinearMap.adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
+theorem adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
     _root_.adjoint 𝕜 f = fun y => fromL2 𝕜 ((toL2 𝕜 ∘L f ∘L fromL2 𝕜).adjoint (toL2 𝕜 y)) := by
   funext y; apply ext_inner_right' 𝕜; intro x
   rw [f.hasAdjoint.adjoint_inner_left]
   have h : ∃ f', HasAdjoint 𝕜 f f' := ⟨_,f.hasAdjoint⟩
   simp[_root_.adjoint,h,h.choose_spec.adjoint_inner_left]
-
--- section InnerProductSpace
-
--- variable {𝕜 : Type*} {E F G : Type*} [RCLike 𝕜]
---   [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
---   [NormedAddCommGroup F] [InnerProductSpace 𝕜 F] [CompleteSpace F]
---   [NormedAddCommGroup G] [InnerProductSpace 𝕜 G] [CompleteSpace G]
-
--- theorem ContinuousLinearMap.hasAdjoint (f : E →L[𝕜] F) : HasAdjoint 𝕜 f f.adjoint where
---   adjoint_inner_left := f.adjoint_inner_left
-
--- theorem ContinuousLinearMap.exists_hasAdjoint (f : E →L[𝕜] F) : ∃ f', HasAdjoint 𝕜 f f' :=
---   ⟨f.adjoint,f.hasAdjoint⟩
-
--- open InnerProductSpace' in
--- theorem clm_adjoint_eq_adjoint (f : E →L[𝕜] F) :
---     f.adjoint = _root_.adjoint 𝕜 f := by
---   ext y; apply ext_inner_right 𝕜; intro x
---   have h : ∃ f', HasAdjoint 𝕜 f f' := ⟨f.adjoint, f.hasAdjoint⟩
---   simp [_root_.adjoint]
---   simp[ContinuousLinearMap.adjoint_inner_left,h,h.choose_spec.adjoint_inner_left]
-
-
--- open InnerProductSpace' in
--- theorem clm_adjoint_eq_adjoint' (f : E →L[𝕜] F) :
---     f.adjoint = _root_.adjoint' 𝕜 f := by
---   ext y; apply ext_inner_right 𝕜; intro x
---   have h₁ : IsLinearMap 𝕜 f := ⟨f.1.1.2,f.1.2⟩
---   have h₂ : Continuous f := by fun_prop
---   simp [_root_.adjoint', h₁, h₂];
---   rw[ContinuousLinearMap.adjoint_inner_left]
---   have h (x y : WithLp 2 E) : inner 𝕜 (E:=E) x y = inner 𝕜 (E:=WithLp 2 E) x y := by rfl
---   conv => rhs; rw[h]
---   rw[ ContinuousLinearMap.adjoint_inner_left]
---   rfl
-
--- end InnerProductSpace
 
 theorem HasAdjoint.adjoint
     {f : E → F} {f' : F → E}
