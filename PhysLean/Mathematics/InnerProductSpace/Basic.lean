@@ -1,10 +1,11 @@
-import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.Analysis.Normed.Lp.ProdLp
-import Mathlib.Analysis.Normed.Lp.PiLp
 import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.InnerProductSpace.ProdL2
+import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Analysis.InnerProductSpace.ProdL2
+import Mathlib.Analysis.Normed.Lp.PiLp
+import Mathlib.Analysis.Normed.Lp.ProdLp
 import Mathlib.Analysis.Normed.Lp.WithLp
+import Mathlib.Analysis.Normed.Module.Basic
 
 class Norm₂ (E : Type*) where
   norm₂ : E → ℝ
@@ -115,6 +116,10 @@ variable (𝕜) in
 theorem ext_inner_right' {x y : E} (h : ∀ v, ⟪x, v⟫ = ⟪y, v⟫) : x = y :=
   ext_inner_right (E:=WithLp 2 E) 𝕜 h
 
+@[simp]
+theorem inner_conj_symm' (x y : E) : ⟪y, x⟫† = ⟪x, y⟫ :=
+  inner_conj_symm (E:=WithLp 2 E) x y
+
 theorem inner_smul_left' (x y : E) (r : 𝕜) : ⟪r • x, y⟫ = r† * ⟪x, y⟫ :=
   inner_smul_left (E:=WithLp 2 E) x y r
 
@@ -136,6 +141,12 @@ theorem inner_add_left' (x y z : E) : ⟪x + y, z⟫ = ⟪x, z⟫ + ⟪y, z⟫ :
 theorem inner_add_right' (x y z : E) : ⟪x, y + z⟫ = ⟪x, y⟫ + ⟪x, z⟫ :=
   inner_add_right (E:=WithLp 2 E) x y z
 
+theorem inner_sub_left' (x y z : E) : ⟪x - y, z⟫ = ⟪x, z⟫ - ⟪y, z⟫ :=
+  inner_sub_left (E:=WithLp 2 E) x y z
+
+theorem inner_sub_right' (x y z : E) : ⟪x, y - z⟫ = ⟪x, y⟫ - ⟪x, z⟫ :=
+  inner_sub_right (E:=WithLp 2 E) x y z
+
 @[simp]
 theorem inner_neg_left' (x y : E) : ⟪-x, y⟫ = -⟪x, y⟫ :=
   inner_neg_left (E:=WithLp 2 E) x y
@@ -147,6 +158,42 @@ theorem inner_neg_right' (x y : E) : ⟪x, -y⟫ = -⟪x, y⟫ :=
 @[simp]
 theorem inner_self_eq_zero' {x : E} : ⟪x, x⟫ = 0 ↔ x = 0 :=
   inner_self_eq_zero (E:=WithLp 2 E)
+
+@[fun_prop]
+theorem Continuous.inner' {α} [TopologicalSpace α] (f g : α → E)
+    (hf : Continuous f) (hg : Continuous g) : Continuous (fun a => ⟪f a, g a⟫) :=
+  have hf : Continuous (fun x => toL2 𝕜 (f x)) := by fun_prop
+  have hg : Continuous (fun x => toL2 𝕜 (g x)) := by fun_prop
+  Continuous.inner (𝕜:=𝕜) (E:=WithLp 2 E) hf hg
+
+section Real
+
+variable
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [InnerProductSpace' ℝ F]
+
+local notation "⟪" x ", " y "⟫" => inner ℝ x y
+
+theorem real_inner_self_nonneg' {x : F} : 0 ≤ re (⟪x, x⟫) :=
+  real_inner_self_nonneg (F:=WithLp 2 F)
+
+@[fun_prop]
+theorem ContDiffAt.inner' {f g : E → F} {x : E}
+    (hf : ContDiffAt ℝ n f x) (hg : ContDiffAt ℝ n g x) :
+    ContDiffAt ℝ n (fun x => ⟪f x, g x⟫) x :=
+  have hf : ContDiffAt ℝ n (fun x => toL2 ℝ (f x)) x := by fun_prop
+  have hg : ContDiffAt ℝ n (fun x => toL2 ℝ (g x)) x := by fun_prop
+  hf.inner ℝ hg
+
+@[fun_prop]
+theorem ContDiff.inner' {f g : E → F}
+    (hf : ContDiff ℝ n f) (hg : ContDiff ℝ n g) :
+    ContDiff ℝ n (fun x => ⟪f x, g x⟫) :=
+  have hf : ContDiff ℝ n (fun x => toL2 ℝ (f x)) := by fun_prop
+  have hg : ContDiff ℝ n (fun x => toL2 ℝ (g x)) := by fun_prop
+  hf.inner ℝ hg
+
+end Real
 
 end InnerProductSpace'
 

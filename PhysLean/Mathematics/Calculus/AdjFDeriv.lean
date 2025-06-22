@@ -203,7 +203,6 @@ theorem adjFDeriv_add [CompleteSpace E] [CompleteSpace F]
   apply hf.hasAdjFDerivAt
   apply hg.hasAdjFDerivAt
 
-
 theorem HasAdjFDerivAt.sub
     {f g : E → F} {f' g'} {x : E}
     (hf : HasAdjFDerivAt 𝕜 f f' x) (hg : HasAdjFDerivAt 𝕜 g g' x) :

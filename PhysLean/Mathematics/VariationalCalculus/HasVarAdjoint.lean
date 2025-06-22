@@ -3,9 +3,11 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-import PhysLean.Mathematics.VariationalCalculus.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
+import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+
+import PhysLean.Mathematics.InnerProductSpace.Adjoint
+import PhysLean.Mathematics.VariationalCalculus.Basic
 /-!
 # Variational adjoint
 
@@ -31,9 +33,9 @@ variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
   {Y} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [MeasureSpace Y]
   {Z} [NormedAddCommGroup Z] [NormedSpace ℝ Z] [MeasureSpace Z]
-  {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
-  {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-  {W} [NormedAddCommGroup W] [InnerProductSpace ℝ W]
+  {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
+  {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
+  {W} [NormedAddCommGroup W] [NormedSpace ℝ W] [InnerProductSpace' ℝ W]
 
 /-- Function transformation `F` is localizable if the values of the transformed function `F φ` on
 some compact set `K` can depend only on the values of `φ` on some another compact set `L`. -/
@@ -179,14 +181,14 @@ lemma unique_on_test_functions {F : (X → U) → (Y → V)} {F' G' : (Y → V) 
     · exact F'_preserve_test φ hφ
     · exact G'_preserve_test φ hφ
   · intro ψ hψ
-    simp [inner_sub_left]
+    simp [inner_sub_left']
     rw [MeasureTheory.integral_sub]
     · conv_lhs =>
         enter [2, 2, a]
-        rw [← inner_conj_symm]
+        rw [← inner_conj_symm']
       conv_lhs =>
         enter [1, 2, a]
-        rw [← inner_conj_symm]
+        rw [← inner_conj_symm']
       simp[← F'_adjoint ψ φ hψ hφ,G'_adjoint ψ φ hψ hφ]
     · apply IsTestFunction.integrable
       apply IsTestFunction.inner
@@ -318,7 +320,7 @@ lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
       apply (hF.test_fun_preserving' _ hφ).supp
       apply (hG.test_fun_preserving' _ hφ).supp
   adjoint _ _ _ _ := by
-    simp[inner_add_left,inner_add_right]
+    simp[inner_add_left',inner_add_right']
     rw[MeasureTheory.integral_add]
     rw[MeasureTheory.integral_add]
     rw[hF.adjoint _ _ (by assumption) (by assumption)]
@@ -419,7 +421,7 @@ lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) �
     apply hF.test_fun_preserving' _ _
     fun_prop
   adjoint φ ψ hφ hψ := by
-    simp_rw[inner_smul_left, ← inner_smul_right]
+    simp_rw[inner_smul_left', ← inner_smul_right']
     rw [hF.adjoint]
     · rfl
     · exact hφ
@@ -439,7 +441,7 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
     apply hF.test_fun_preserving' _ _
     fun_prop
   adjoint φ ψ hφ hψ := by
-    simp_rw[inner_smul_left, ← inner_smul_right]
+    simp_rw[inner_smul_left', ← inner_smul_right']
     rw [hF.adjoint]
     · rfl
     · exact hφ
