@@ -6,6 +6,7 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import PhysLean.Mathematics.FDerivCurry
+import PhysLean.Mathematics.Calculus.AdjFDeriv
 /-!
 # Variational adjoint derivative
 
@@ -185,6 +186,37 @@ protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarA
     HasVarAdjDerivAt (fun φ : ℝ → U => deriv (F φ))
     (fun ψ x => F' (fun x' => - deriv ψ x') x) u :=
   comp (F:=deriv) (G:=F) (hF := deriv' (F u) hF.apply_smooth_self) (hG := hF)
+
+lemma fmap (f : X → U → V) {f' : X → _ }
+    (u : X → U) (hu : ContDiff ℝ ∞ u)
+    (hf' : ContDiff ℝ ∞ ↿f) (hf : ∀ x, HasAdjFDerivAt ℝ (f x) (f' x) (u x)) :
+    HasVarAdjDerivAt (fun (φ : X → U) x => f x (φ x)) (fun ψ x => f' x (ψ x)) u where
+  smooth_at := hu
+  diff := by fun_prop
+  linearize := sorry
+  adjoint := by
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ; funext x
+      unfold deriv
+      conv =>
+        lhs
+        rw[fderiv_comp' (𝕜:=ℝ) (g:=_) (f:=fun s : ℝ => u x + s • φ x) _
+          (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop)) (by fun_prop)]
+        simp[deriv_smul]
+    case h =>
+      constructor
+      · intros;
+        constructor
+        · fun_prop
+        · sorry
+      · intros; sorry
+      · intros
+        congr 1; funext x
+        rw[← PreInnerProductSpace.Core.conj_inner_symm]
+        rw[← (hf x).hasAdjoint_fderiv.adjoint_inner_left]
+        rw[PreInnerProductSpace.Core.conj_inner_symm]
+      · intros K cK; use K; simp_all
 
 lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
     HasVarAdjDerivAt (fun φ x => -F φ x) (fun ψ x => - F' ψ x) u where

@@ -226,7 +226,7 @@ theorem HasAdjFDerivAt.smul {f : E → F} {g : E → 𝕜} {f' g'}
     HasAdjFDerivAt 𝕜 (fun x => g x • f x ) (fun dy => conj (g x) • f' dy + g' (conj (inner 𝕜 dy (f x)))) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
-    simp (disch:=fun_prop) [fderiv_smul]
+    simp (disch:=fun_prop) [fderiv_smul,-inner_conj_symm']
     apply HasAdjoint.add
     · apply hf.hasAdjoint_fderiv.smul_left
     · apply hg.hasAdjoint_fderiv.smul_right
