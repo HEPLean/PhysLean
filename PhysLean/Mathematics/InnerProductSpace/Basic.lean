@@ -27,7 +27,8 @@ only required that they are equivalent `∃ (c > 0) (d > 0), c • ‖x‖^2 ≤
 If you want to access L₂ norm use `‖x‖₂ := √⟪x,x⟫`.
 
 This class induces `InnerProductSpace 𝕜 (WithLp 2 E)` which equips `‖·‖` on `X` with L₂ norm.
-This is very useful when translating results from `InnerProductSpace` to `InnerProductSpace'`.
+This is very useful when translating results from `InnerProductSpace` to `InnerProductSpace'`
+together with `toL2 : E →L[𝕜] (WithLp 2 E)` and `fromL2 : (WithL2 2 E) →L[𝕜] E`.
 
 In short we have these implications:
 ```
