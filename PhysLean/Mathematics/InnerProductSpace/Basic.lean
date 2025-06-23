@@ -7,6 +7,10 @@ import Mathlib.Analysis.Normed.Lp.ProdLp
 import Mathlib.Analysis.Normed.Lp.WithLp
 import Mathlib.Analysis.Normed.Module.Basic
 
+/-- L₂ norm on `E`
+
+In particular, on product types `X×Y` and pi types `ι → X` this class provides L₂ norm unlike `‖·‖`.
+ -/
 class Norm₂ (E : Type*) where
   norm₂ : E → ℝ
 
@@ -17,9 +21,25 @@ notation:max "‖" x "‖₂" => norm₂ x
 
 open RCLike ComplexConjugate
 
+/-- Effectivelly as `InnerProductSpace 𝕜 E` but it does not requires that `‖x‖^2 = ⟪x,x⟫`. It is
+only required that they are equivalent `∃ (c > 0) (d > 0), c • ‖x‖^2 ≤ ⟪x,x⟫ ≤ d • ‖x‖^2`.
+
+If you want to access L₂ norm use `‖x‖₂ := √⟪x,x⟫`.
+
+This class induces `InnerProductSpace 𝕜 (WithLp 2 E)` which equips `‖·‖` on `X` with L₂ norm.
+This is very useful when translating results from `InnerProductSpace` to `InnerProductSpace'`.
+
+The reasong behind this type class is that with current mathlib design the requirement
+`‖x‖^2 = ⟪x,x⟫` prevents us to give inner product space structure on product type `X×Y` and pi
+type `ι → X` as they are equipped with max norm. One has to work with `WithLp 2 (X×Y)` and
+`WithLp 2 (ι → X)`. This places quite a bit inconvenience on users in certain scenarios,
+in particular the main motivation behing this class is to make computations of `adjFDeriv` and
+`gradient` easy.
+-/
 class InnerProductSpace' (𝕜 : Type*) (E : Type*) [RCLike 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     extends Norm₂ E where
   core : InnerProductSpace.Core 𝕜 E
+  norm₂_sq_eq_re_inner : ∀ x : E, ‖x‖₂ ^ 2 = re (core.inner x x)
   /-- Norm induced by inner is topologicaly equivalent to the given norm -/
   inner_top_equiv_norm : ∃ c d : ℝ,
     c > 0 ∧ d > 0 ∧
@@ -37,6 +57,7 @@ instance {𝕜 : Type*} {E : Type*} [RCLike 𝕜] [NormedAddCommGroup E] [inst :
     InnerProductSpace' 𝕜 E where
   norm₂ x := ‖x‖
   core := inst.toCore
+  norm₂_sq_eq_re_inner := norm_sq_eq_re_inner
   inner_top_equiv_norm := by
     use 1; use 1
     simp[← norm_sq_eq_re_inner]
