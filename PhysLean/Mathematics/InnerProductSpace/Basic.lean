@@ -308,15 +308,16 @@ instance : InnerProductSpace' 𝕜 (E×F) where
     inst
   norm₂_sq_eq_re_inner := by
     intro (x,y)
-    simp [norm]
-    have h := WithLp.prod_inner_apply (𝕜:=𝕜) (E:=WithLp 2 E) (F:=WithLp 2 F) (x,y) (x,y)
-    have := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) (F:=E)
-    have := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) (F:=F)
-    rw [Real.sq_sqrt (by aesop)]; rw [Real.sq_sqrt (by aesop)]
+    have hx : re ⟪(WithLp.equiv 2 E) x, (WithLp.equiv 2 E) x⟫ = re ⟪x,x⟫ := rfl
+    have hy : re ⟪(WithLp.equiv 2 F) y, (WithLp.equiv 2 F) y⟫ = re ⟪y,y⟫ := rfl
+    have : 0 ≤ re ⟪x,x⟫ := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) (F:=E) _ x
+    have : 0 ≤ re ⟪y,y⟫ := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) (F:=F) _ y
+    simp only [norm, OfNat.ofNat_ne_zero, ↓reduceDIte, ENNReal.ofNat_ne_top, ↓reduceIte, hx,
+         ENNReal.toReal_ofNat, Real.rpow_two, hy, one_div, prod_inner_apply', map_add]
+    repeat rw [Real.sq_sqrt (by assumption)]
     norm_num
-    rw[← Real.rpow_mul_natCast (by sorry)]
+    rw[← Real.rpow_mul_natCast (by linarith)]
     simp
-    rfl
   inner_top_equiv_norm := by
     obtain ⟨c₁,d₁,hc₁,hd₁,h₁⟩ := inner_top_equiv_norm (𝕜:=𝕜) (E:=E)
     have h₁₁ := fun x => (h₁ x).1
@@ -335,11 +336,11 @@ instance : InnerProductSpace' 𝕜 (E×F) where
       simp
       constructor
       · by_cases h : ‖x‖ ≤ ‖y‖
-        · have : max ‖x‖ ‖y‖ ≤ ‖y‖ := sorry
+        · have : max ‖x‖ ‖y‖ ≤ ‖y‖ := by simp[h]
           calc _ ≤ c₂ * ‖y‖ ^ 2 := by gcongr; simp
                _ ≤ re ⟪y,y⟫ := h₂₁ y
                _ ≤ _ := by simpa
-        · have : max ‖x‖ ‖y‖ ≤ ‖x‖ := sorry
+        · have : max ‖x‖ ‖y‖ ≤ ‖x‖ := by simp at h; simp[h]; linarith
           calc _ ≤ c₁ * ‖x‖ ^ 2 := by gcongr; simp
                _ ≤ re ⟪x,x⟫ := h₁₁ x
                _ ≤ _ := by simpa
