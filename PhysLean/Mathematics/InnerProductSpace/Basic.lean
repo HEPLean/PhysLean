@@ -29,6 +29,12 @@ If you want to access L₂ norm use `‖x‖₂ := √⟪x,x⟫`.
 This class induces `InnerProductSpace 𝕜 (WithLp 2 E)` which equips `‖·‖` on `X` with L₂ norm.
 This is very useful when translating results from `InnerProductSpace` to `InnerProductSpace'`.
 
+In short we have these implications:
+```
+  InnerProductSpace 𝕜 E → InnerProductSpace' 𝕜 E
+  InnerProductSpace' 𝕜 E → InnerProductSpace 𝕜 (WithLp 2 E)
+```
+
 The reason behind this type class is that with current mathlib design the requirement
 `‖x‖^2 = ⟪x,x⟫` prevents us to give inner product space structure on product type `X×Y` and pi
 type `ι → X` as they are equipped with max norm. One has to work with `WithLp 2 (X×Y)` and
