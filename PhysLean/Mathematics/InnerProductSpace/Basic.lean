@@ -246,6 +246,11 @@ instance : InnerProductSpace' 𝕜 (E×F) where
     let _ := WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)
     let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (WithLp 2 E) (WithLp 2 F)).toCore
     inst
+  norm₂_sq_eq_re_inner := by
+    intro (x,y)
+    simp [norm]
+    have h := WithLp.prod_inner_apply (𝕜:=𝕜) (E:=WithLp 2 E) (F:=WithLp 2 F) (x,y) (x,y)
+    sorry
   inner_top_equiv_norm := sorry
 
 @[simp]
@@ -259,6 +264,7 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
     let _ := PiLp.normedAddCommGroup 2 (fun _ : ι => (WithLp 2 E))
     let inst := (PiLp.innerProductSpace (𝕜:=𝕜) (fun _ : ι => (WithLp 2 E)))
     inst.toCore
+  norm₂_sq_eq_re_inner := sorry
   inner_top_equiv_norm := sorry
 
 end Constructions
