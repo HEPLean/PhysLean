@@ -293,6 +293,11 @@ variable
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
+local instance : Inner 𝕜 (E×F) := ⟨fun (x,y) (x',y') => ⟪x,x'⟫ + ⟪y,y'⟫⟩
+
+@[simp]
+theorem prod_inner_apply' (x y : (E × F)) : ⟪x, y⟫ = ⟪x.fst, y.fst⟫ + ⟪x.snd, y.snd⟫ := rfl
+
 open InnerProductSpace' in
 noncomputable
 instance : InnerProductSpace' 𝕜 (E×F) where
@@ -305,11 +310,48 @@ instance : InnerProductSpace' 𝕜 (E×F) where
     intro (x,y)
     simp [norm]
     have h := WithLp.prod_inner_apply (𝕜:=𝕜) (E:=WithLp 2 E) (F:=WithLp 2 F) (x,y) (x,y)
-    sorry
-  inner_top_equiv_norm := sorry
+    have := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) (F:=E)
+    have := PreInnerProductSpace.Core.re_inner_nonneg (𝕜:=𝕜) (F:=F)
+    rw [Real.sq_sqrt (by aesop)]; rw [Real.sq_sqrt (by aesop)]
+    norm_num
+    rw[← Real.rpow_mul_natCast (by sorry)]
+    simp
+    rfl
+  inner_top_equiv_norm := by
+    obtain ⟨c₁,d₁,hc₁,hd₁,h₁⟩ := inner_top_equiv_norm (𝕜:=𝕜) (E:=E)
+    have h₁₁ := fun x => (h₁ x).1
+    have h₁₂ := fun x => (h₁ x).2
+    obtain ⟨c₂,d₂,hc2,hd₂,h₂⟩ := inner_top_equiv_norm (𝕜:=𝕜) (E:=F)
+    have h₂₁ := fun x => (h₂ x).1
+    have h₂₂ := fun x => (h₂ x).2
+    use min c₁ c₂; use 2 * max d₁ d₂
+    constructor
+    · positivity
+    constructor
+    · positivity
+    · intro (x,y)
+      have : 0 ≤ re ⟪y, y⟫ := by apply PreInnerProductSpace.Core.re_inner_nonneg
+      have : 0 ≤ re ⟪x, x⟫ := by apply PreInnerProductSpace.Core.re_inner_nonneg
+      simp
+      constructor
+      · by_cases h : ‖x‖ ≤ ‖y‖
+        · have : max ‖x‖ ‖y‖ ≤ ‖y‖ := sorry
+          calc _ ≤ c₂ * ‖y‖ ^ 2 := by gcongr; simp
+               _ ≤ re ⟪y,y⟫ := h₂₁ y
+               _ ≤ _ := by simpa
+        · have : max ‖x‖ ‖y‖ ≤ ‖x‖ := sorry
+          calc _ ≤ c₁ * ‖x‖ ^ 2 := by gcongr; simp
+               _ ≤ re ⟪x,x⟫ := h₁₁ x
+               _ ≤ _ := by simpa
+      · by_cases h : re ⟪x,x⟫ ≤ re ⟪y,y⟫
+        · calc _ ≤ re ⟪y,y⟫ + re ⟪y,y⟫ := by simp[h]
+               _ ≤ d₂ * ‖y‖ ^ 2 + d₂ * ‖y‖ ^ 2 := by gcongr <;> exact h₂₂ y
+               _ ≤ _ := by ring_nf; gcongr <;> simp
+        · have h : re ⟪y,y⟫ ≤ re ⟪x,x⟫ := by linarith
+          calc _ ≤ re ⟪x,x⟫ + re ⟪x,x⟫ := by simp[h]
+               _ ≤ d₁ * ‖x‖ ^ 2 + d₁ * ‖x‖ ^ 2 := by gcongr <;> exact h₁₂ x
+               _ ≤ _ := by ring_nf; gcongr <;> simp
 
-@[simp]
-theorem prod_inner_apply' (x y : (E × F)) : ⟪x, y⟫ = ⟪x.fst, y.fst⟫ + ⟪x.snd, y.snd⟫ := rfl
 
 open InnerProductSpace' in
 noncomputable
