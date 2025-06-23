@@ -2,8 +2,8 @@ import PhysLean.Mathematics.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 variable {𝕜 : Type*} {E F G : Type*} [RCLike 𝕜]
-  [NormedAddCommGroup E] [NormedSpace 𝕜 E] [hE : InnerProductSpace' 𝕜 E]
-  [NormedAddCommGroup F] [NormedSpace 𝕜 F] [hF : InnerProductSpace' 𝕜 F]
+  [NormedAddCommGroup E] [NormedSpace 𝕜 E] [InnerProductSpace' 𝕜 E]
+  [NormedAddCommGroup F] [NormedSpace 𝕜 F] [InnerProductSpace' 𝕜 F]
   [NormedAddCommGroup G] [NormedSpace 𝕜 G] [InnerProductSpace' 𝕜 G]
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y

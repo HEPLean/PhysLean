@@ -6,6 +6,7 @@ import Mathlib.Analysis.Normed.Lp.PiLp
 import Mathlib.Analysis.Normed.Lp.ProdLp
 import Mathlib.Analysis.Normed.Lp.WithLp
 import Mathlib.Analysis.Normed.Module.Basic
+import Mathlib.Analysis.NormedSpace.HahnBanach.SeparatingDual
 
 /-- L₂ norm on `E`.
 
@@ -51,7 +52,7 @@ class InnerProductSpace' (𝕜 : Type*) (E : Type*) [RCLike 𝕜] [NormedAddComm
   norm₂_sq_eq_re_inner : ∀ x : E, ‖x‖₂ ^ 2 = re (core.inner x x)
   /-- Norm induced by inner is topologicaly equivalent to the given norm -/
   inner_top_equiv_norm : ∃ c d : ℝ,
-    c > 0 ∧ d > 0 ∧
+    0 < c ∧ 0 < d ∧
     ∀ x : E, (c • ‖x‖^2 ≤ re (core.inner x x)) ∧ (re (core.inner x x) ≤ d • ‖x‖^2)
 
 section BasicInstances
@@ -98,15 +99,21 @@ scoped instance toInnerWithL2 : Inner 𝕜 (WithLp 2 E) where
   inner x y := ⟪WithLp.equiv 2 E x, WithLp.equiv 2 E y⟫
 
 noncomputable
-scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) where
-  dist_self := by simp[norm,InnerProductSpace.Core.inner_zero_left]
-  dist_comm := sorry
-  dist_triangle := sorry
-  eq_of_dist_eq_zero := sorry
+scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) :=
+  let core : InnerProductSpace.Core (𝕜:=𝕜) (F:=E) := by infer_instance
+  {
+  dist_self := core.toNormedAddCommGroup.dist_self
+  dist_comm := core.toNormedAddCommGroup.dist_comm
+  dist_triangle := core.toNormedAddCommGroup.dist_triangle
+  eq_of_dist_eq_zero := fun {x y} => core.toNormedAddCommGroup.eq_of_dist_eq_zero (x:=x) (y:=y)
+  }
 
 noncomputable
 scoped instance toNormedSpaceWithL2 : NormedSpace 𝕜 (WithLp 2 E) where
-  norm_smul_le := sorry
+  norm_smul_le := by
+    let core : InnerProductSpace.Core (𝕜:=𝕜) (F:=E) := by infer_instance
+    apply core.toNormedSpace.norm_smul_le
+
 
 noncomputable
 instance toInnerProductSpaceWithL2 : InnerProductSpace 𝕜 (WithLp 2 E) where
@@ -115,15 +122,45 @@ instance toInnerProductSpaceWithL2 : InnerProductSpace 𝕜 (WithLp 2 E) where
   add_left := hE.core.add_left
   smul_left := hE.core.smul_left
 
-instance [CompleteSpace E] : CompleteSpace (WithLp 2 E) := sorry
+variable (𝕜) in
+noncomputable
+def toL2 : E →L[𝕜] WithLp 2 E where
+  toFun := (WithLp.equiv 2 _).symm
+  map_add' := by simp
+  map_smul' := by simp
+  cont := by
+    apply IsBoundedLinearMap.continuous (𝕜:=𝕜)
+    constructor
+    · constructor <;> simp
+    · obtain ⟨c,d,hc,hd,h⟩ := InnerProductSpace'.inner_top_equiv_norm (𝕜:=𝕜) (E:=E)
+      use √d
+      constructor
+      · apply Real.sqrt_pos.2 hd
+      · intro x
+        have h := Real.sqrt_le_sqrt (h x).2
+        simp [smul_eq_mul] at h
+        exact h
 
 variable (𝕜) in
 noncomputable
-def toL2 : E →L[𝕜] WithLp 2 E := ⟨⟨⟨(WithLp.equiv 2 _).symm, by simp⟩, by simp⟩, sorry⟩
-
-variable (𝕜) in
-noncomputable
-def fromL2 : WithLp 2 E →L[𝕜] E := ⟨⟨⟨(WithLp.equiv 2 _), by simp⟩, by simp⟩, sorry⟩
+def fromL2 : WithLp 2 E →L[𝕜] E where
+  toFun := (WithLp.equiv 2 _)
+  map_add' := by simp
+  map_smul' := by simp
+  cont := by
+    apply IsBoundedLinearMap.continuous (𝕜:=𝕜)
+    constructor
+    · constructor <;> simp
+    · obtain ⟨c,d,hc,hd,h⟩ := InnerProductSpace'.inner_top_equiv_norm (𝕜:=𝕜) (E:=E)
+      use (√c)⁻¹
+      have hc : 0 < √c := Real.sqrt_pos.2 hc
+      constructor
+      · apply inv_pos.2 hc
+      · intro x
+        have h := Real.sqrt_le_sqrt (h x).1
+        simp [smul_eq_mul,norm] at h
+        apply (le_inv_mul_iff₀' hc).2
+        exact h
 
 theorem fromL2_inner_left (x : WithLp 2 E) (y : E) : ⟪fromL2 𝕜 x, y⟫ = ⟪x, toL2 𝕜 y⟫ := rfl
 theorem toL2_inner_left (x : E) (y : WithLp 2 E) : ⟪toL2 𝕜 x, y⟫ = ⟪x, fromL2 𝕜 y⟫ := rfl
@@ -132,6 +169,24 @@ theorem toL2_inner_left (x : E) (y : WithLp 2 E) : ⟪toL2 𝕜 x, y⟫ = ⟪x, 
 theorem toL2_fromL2 (x : WithLp 2 E) : toL2 𝕜 (fromL2 𝕜 x) = x := rfl
 @[simp]
 theorem fromL2_toL2 (x : E) : fromL2 𝕜 (toL2 𝕜 x) = x := rfl
+
+variable (𝕜 E) in
+noncomputable
+def equivL2 : (WithLp 2 E) ≃L[𝕜] E where
+  toFun := fromL2 𝕜
+  invFun := toL2 𝕜
+  map_add' := (fromL2 𝕜).1.1.2
+  map_smul' := (fromL2 𝕜).1.2
+  left_inv := by intro _; rfl
+  right_inv := by intro _; rfl
+  continuous_toFun := (fromL2 𝕜).2
+  continuous_invFun := (toL2 𝕜).2
+
+instance [CompleteSpace E] : CompleteSpace (WithLp 2 E) := by
+  have e := (equivL2 𝕜 E)
+  have he := ContinuousLinearEquiv.isUniformEmbedding e
+  apply (completeSpace_congr (α:=WithLp 2 E) (β:=E) (e:=e) he).2
+  infer_instance
 
 end InnerProductSpace'
 
@@ -268,3 +323,4 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
   inner_top_equiv_norm := sorry
 
 end Constructions
+#check NormedSpace
