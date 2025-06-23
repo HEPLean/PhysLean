@@ -193,7 +193,15 @@ lemma fmap (f : X → U → V) {f' : X → _ }
     HasVarAdjDerivAt (fun (φ : X → U) x => f x (φ x)) (fun ψ x => f' x (ψ x)) u where
   smooth_at := hu
   diff := by fun_prop
-  linearize := sorry
+  linearize := by
+    intro φ hφ x
+    unfold deriv
+    conv => lhs; rw[fderiv_comp' (𝕜:=ℝ) (g:=(fun u : U => f _ u)) _
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop))
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop))]
+    conv => rhs; rw[fderiv_comp' (𝕜:=ℝ) (g:=(fun u : U => f _ u)) _
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop)) (by fun_prop)]
+    simp[deriv_smul]
   adjoint := by
     apply HasVarAdjoint.congr_fun
     case h' =>
