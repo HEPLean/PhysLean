@@ -41,8 +41,8 @@ In short we have these implications:
 The reason behind this type class is that with current mathlib design the requirement
 `‖x‖^2 = ⟪x,x⟫` prevents us to give inner product space structure on product type `E×F` and pi
 type `ι → E` as they are equipped with max norm. One has to work with `WithLp 2 (E×F)` and
-`WithLp 2 (ι → E)`. This places quite a bit inconvenience on users in certain scenarios,
-in particular the main motivation behind this class is to make computations of `adjFDeriv` and
+`WithLp 2 (ι → E)`. This places quite a bit inconvenience on users in certain scenarios.
+In particular, the main motivation behind this class is to make computations of `adjFDeriv` and
 `gradient` easy.
 -/
 class InnerProductSpace' (𝕜 : Type*) (E : Type*) [RCLike 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
