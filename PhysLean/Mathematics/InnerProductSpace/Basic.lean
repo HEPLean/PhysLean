@@ -22,7 +22,9 @@ notation:max "‖" x "‖₂" => norm₂ x
 open RCLike ComplexConjugate
 
 /-- Effectively as `InnerProductSpace 𝕜 E` but it does not requires that `‖x‖^2 = ⟪x,x⟫`. It is
-only required that they are equivalent `∃ (c > 0) (d > 0), c • ‖x‖^2 ≤ ⟪x,x⟫ ≤ d • ‖x‖^2`.
+only required that they are equivalent `∃ (c > 0) (d > 0), c • ‖x‖^2 ≤ ⟪x,x⟫ ≤ d • ‖x‖^2`. The main
+purpose of this class is to provide inner product space structure on product types `ExF` and
+pi types `ι → E` without using `WithLp` gadget.
 
 If you want to access L₂ norm use `‖x‖₂ := √⟪x,x⟫`.
 
@@ -37,9 +39,9 @@ In short we have these implications:
 ```
 
 The reason behind this type class is that with current mathlib design the requirement
-`‖x‖^2 = ⟪x,x⟫` prevents us to give inner product space structure on product type `X×Y` and pi
-type `ι → X` as they are equipped with max norm. One has to work with `WithLp 2 (X×Y)` and
-`WithLp 2 (ι → X)`. This places quite a bit inconvenience on users in certain scenarios,
+`‖x‖^2 = ⟪x,x⟫` prevents us to give inner product space structure on product type `E×F` and pi
+type `ι → E` as they are equipped with max norm. One has to work with `WithLp 2 (E×F)` and
+`WithLp 2 (ι → E)`. This places quite a bit inconvenience on users in certain scenarios,
 in particular the main motivation behind this class is to make computations of `adjFDeriv` and
 `gradient` easy.
 -/
