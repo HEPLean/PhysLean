@@ -6,6 +6,8 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
 import PhysLean.Meta.Informal.SemiFormal
+
+import PhysLean.Mathematics.InnerProductSpace.Adjoint
 /-!
 
 # Fundamental lemma of the calculus of variations
@@ -22,7 +24,7 @@ open MeasureTheory InnerProductSpace
 
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasurableSpace X]
-  {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+  {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
 
 lemma fundamental_theorem_of_variational_calculus {f : X → V}
     (μ : Measure X) [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
@@ -40,7 +42,7 @@ lemma fundamental_theorem_of_variational_calculus {f : X → V}
     · fun_prop
   · intro x
     simp only [Pi.zero_apply]
-    exact real_inner_self_nonneg
+    apply real_inner_self_nonneg'
   · apply IsTestFunction.integrable
     exact IsTestFunction.inner hf hf
 

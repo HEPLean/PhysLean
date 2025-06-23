@@ -7,11 +7,10 @@ import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 import PhysLean.ClassicalMechanics.Space.Basic
+import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.VariationalCalculus.Basic
-import PhysLean.Mathematics.Calculus.ProdL2
 /-!
 # Variational adjoint
 
@@ -37,9 +36,9 @@ variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
   {Y} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [MeasureSpace Y]
   {Z} [NormedAddCommGroup Z] [NormedSpace ℝ Z] [MeasureSpace Z]
-  {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
-  {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-  {W} [NormedAddCommGroup W] [InnerProductSpace ℝ W]
+  {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
+  {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
+  {W} [NormedAddCommGroup W] [NormedSpace ℝ W] [InnerProductSpace' ℝ W]
 
 /-- Function transformation `F` is localizable if the values of the transformed function `F φ` on
 some compact set `K` can depend only on the values of `φ` on some another compact set `L`. -/
@@ -174,14 +173,14 @@ lemma unique_on_test_functions {F : (X → U) → (Y → V)} {F' G' : (Y → V) 
     · exact F'_preserve_test φ hφ
     · exact G'_preserve_test φ hφ
   · intro ψ hψ
-    simp [inner_sub_left]
+    simp [inner_sub_left']
     rw [MeasureTheory.integral_sub]
     · conv_lhs =>
         enter [2, 2, a]
-        rw [← inner_conj_symm]
+        rw [← inner_conj_symm']
       conv_lhs =>
         enter [1, 2, a]
-        rw [← inner_conj_symm]
+        rw [← inner_conj_symm']
       simp[← F'_adjoint ψ φ hψ hφ,G'_adjoint ψ φ hψ hφ]
     · apply IsTestFunction.integrable
       apply IsTestFunction.inner
@@ -313,7 +312,7 @@ lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
       apply (hF.test_fun_preserving' _ hφ).supp
       apply (hG.test_fun_preserving' _ hφ).supp
   adjoint _ _ _ _ := by
-    simp[inner_add_left,inner_add_right]
+    simp[inner_add_left',inner_add_right']
     rw[MeasureTheory.integral_add]
     rw[MeasureTheory.integral_add]
     rw[hF.adjoint _ _ (by assumption) (by assumption)]
@@ -414,7 +413,7 @@ lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) �
     apply hF.test_fun_preserving' _ _
     fun_prop
   adjoint φ ψ hφ hψ := by
-    simp_rw[inner_smul_left, ← inner_smul_right]
+    simp_rw[inner_smul_left', ← inner_smul_right']
     rw [hF.adjoint]
     · rfl
     · exact hφ
@@ -434,7 +433,7 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
     apply hF.test_fun_preserving' _ _
     fun_prop
   adjoint φ ψ hφ hψ := by
-    simp_rw[inner_smul_left, ← inner_smul_right]
+    simp_rw[inner_smul_left', ← inner_smul_right']
     rw [hF.adjoint]
     · rfl
     · exact hφ
@@ -446,7 +445,7 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
 
 lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X} (f : X → (U →L[ℝ] V))
     (hf : ContDiff ℝ ∞ f) :
-    HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => (f x).adjoint (ψ x)) where
+    HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => _root_.adjoint ℝ (f x) (ψ x)) where
   test_fun_preserving φ hφ := by
     constructor
     · fun_prop
@@ -456,7 +455,7 @@ lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X} (f : X → 
     · sorry
     · sorry
   adjoint φ ψ hφ hψ := by
-    simp[ContinuousLinearMap.adjoint_inner_right]
+    sorry
   ext := by
    intro K cK
    exact ⟨K, cK, by intro _ _ hφ _ _; simp_all⟩
@@ -539,19 +538,19 @@ lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F') (hG : HasVarAdjoint G G') :
     HasVarAdjoint
-      (fun φ x => (F φ x, G φ x)₂)
+      (fun φ x => (F φ x, G φ x))
       (fun φ x => F' (fun x' => (φ x').fst) x + G' (fun x' => (φ x').snd) x) := sorry
 
-lemma fst {F : (X → U) → (X → (W×₂V))}
+lemma fst {F : (X → U) → (X → (W×V))}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F') :
     HasVarAdjoint
       (fun φ x => (F φ x).1)
-      (fun φ x => F' (fun x' => (φ x', 0)₂) x) := sorry
+      (fun φ x => F' (fun x' => (φ x', 0)) x) := sorry
 
-lemma snd {F : (X → U) → (X → (W×₂V))}
+lemma snd {F : (X → U) → (X → (W×V))}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjoint F F') :
     HasVarAdjoint
       (fun φ x => (F φ x).snd)
-      (fun φ x => F' (fun x' => (0, φ x')₂) x) := sorry
+      (fun φ x => F' (fun x' => (0, φ x')) x) := sorry
