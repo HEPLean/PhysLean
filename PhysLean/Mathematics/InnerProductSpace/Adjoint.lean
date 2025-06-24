@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2025 Tomas Skrivan. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Tomas Skrivan, Joseph Tooby-Smith
+-/
 import PhysLean.Mathematics.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 
