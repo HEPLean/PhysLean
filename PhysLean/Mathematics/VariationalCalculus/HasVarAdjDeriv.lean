@@ -226,9 +226,18 @@ lemma fmap (f : X → U → V) {f' : X → _ }
           intro x hx
           rw [hK x hx]
           simp
-      · intros;
-
-        sorry
+      · intro φ hφ
+        constructor
+        · sorry
+        · rw [← exists_compact_iff_hasCompactSupport]
+          have h1 := hφ.supp
+          rw [← exists_compact_iff_hasCompactSupport] at h1
+          obtain ⟨K, cK, hK⟩ := h1
+          refine ⟨K, cK, ?_⟩
+          intro x hx
+          rw [hK x hx]
+          have hfx := (hf x).hasAdjoint_fderiv
+          exact HasAdjoint.adjoint_apply_zero hfx
       · intros
         congr 1; funext x
         rw[← PreInnerProductSpace.Core.conj_inner_symm]

@@ -33,6 +33,10 @@ theorem adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[�
   have h : ∃ f', HasAdjoint 𝕜 f f' := ⟨_,f.hasAdjoint⟩
   simp[_root_.adjoint,h,h.choose_spec.adjoint_inner_left]
 
+lemma HasAdjoint.adjoint_apply_zero {f : E → F} {f' : F → E}
+    (hf : HasAdjoint 𝕜 f f') : f' 0 = 0 := by
+  simpa using hf.adjoint_inner_left  (f' 0) 0
+
 theorem HasAdjoint.adjoint
     {f : E → F} {f' : F → E}
     (hf : HasAdjoint 𝕜 f f') : adjoint 𝕜 f = f' := by
