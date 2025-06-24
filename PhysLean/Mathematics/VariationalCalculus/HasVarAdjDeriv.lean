@@ -217,8 +217,18 @@ lemma fmap (f : X → U → V) {f' : X → _ }
       · intros;
         constructor
         · fun_prop
-        · sorry
-      · intros; sorry
+        · expose_names
+          rw [← exists_compact_iff_hasCompactSupport]
+          have h1 := h.supp
+          rw [← exists_compact_iff_hasCompactSupport] at h1
+          obtain ⟨K, cK, hK⟩ := h1
+          refine ⟨K, cK, ?_⟩
+          intro x hx
+          rw [hK x hx]
+          simp
+      · intros;
+
+        sorry
       · intros
         congr 1; funext x
         rw[← PreInnerProductSpace.Core.conj_inner_symm]
