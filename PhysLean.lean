@@ -2,9 +2,6 @@ import PhysLean.ClassicalMechanics.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Momentum.Basic
-import PhysLean.SpaceAndTime.Space.Basic
-import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.ClassicalMechanics.VectorFields
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.ClassicalMechanics.WaveEquation.HarmonicWave
@@ -198,6 +195,7 @@ import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
 import PhysLean.Relativity.Bispinors.Basic
+import PhysLean.Relativity.CliffordAlgebra
 import PhysLean.Relativity.Lorentz.Algebra.Basic
 import PhysLean.Relativity.Lorentz.Algebra.Basis
 import PhysLean.Relativity.Lorentz.Group.Basic
@@ -216,10 +214,7 @@ import PhysLean.Relativity.PauliMatrices.Relations
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
 import PhysLean.Relativity.SL2C.Basic
 import PhysLean.Relativity.SL2C.SelfAdjoint
-import PhysLean.SpaceAndTime.SpaceTime.Basic
-import PhysLean.Relativity.CliffordAlgebra
 import PhysLean.Relativity.Special.ProperTime
-import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Relativity.Special.TwinParadox.Basic
 import PhysLean.Relativity.Tensors.Basic
 import PhysLean.Relativity.Tensors.Color.Basic
@@ -273,6 +268,11 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Modules
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.NormOne
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor
+import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Space.VectorIdentities
+import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
+import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.TwoState
