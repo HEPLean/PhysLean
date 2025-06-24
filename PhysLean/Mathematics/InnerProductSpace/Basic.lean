@@ -362,7 +362,26 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
     let _ := PiLp.normedAddCommGroup 2 (fun _ : ι => (WithLp 2 E))
     let inst := (PiLp.innerProductSpace (𝕜:=𝕜) (fun _ : ι => (WithLp 2 E)))
     inst.toCore
-  norm₂_sq_eq_re_inner := sorry
+  norm₂_sq_eq_re_inner := by
+    intro x
+    simp only [norm, OfNat.ofNat_ne_zero, ↓reduceIte, ENNReal.ofNat_ne_top, ENNReal.toReal_ofNat,
+      Real.rpow_two, one_div]
+    conv_rhs => rw [inner]
+    simp [InnerProductSpace.toCore, InnerProductSpace.toInner, PiLp.innerProductSpace]
+    rw [← Real.rpow_two, ← Real.rpow_mul]
+    swap
+    · apply Finset.sum_nonneg
+      intro i hi
+      exact sq_nonneg √(re ⟪(WithLp.equiv 2 E) (x i), (WithLp.equiv 2 E) (x i)⟫)
+    simp only [isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+      IsUnit.inv_mul_cancel, Real.rpow_one]
+    congr
+    funext i
+    rw [Real.sqrt_eq_rpow, ← Real.rpow_two,
+      ← Real.rpow_mul InnerProductSpace.Core.inner_self_nonneg]
+    simp only [one_div, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+      IsUnit.inv_mul_cancel, Real.rpow_one]
+    rfl
   inner_top_equiv_norm := sorry
 
 end Constructions
