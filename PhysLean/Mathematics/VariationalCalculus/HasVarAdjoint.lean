@@ -5,8 +5,6 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-
-import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.VariationalCalculus.Basic
 /-!
 # Variational adjoint

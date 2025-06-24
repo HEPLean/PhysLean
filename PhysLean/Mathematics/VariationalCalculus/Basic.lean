@@ -6,8 +6,6 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
 import PhysLean.Meta.Informal.SemiFormal
-
-import PhysLean.Mathematics.InnerProductSpace.Adjoint
 /-!
 
 # Fundamental lemma of the calculus of variations

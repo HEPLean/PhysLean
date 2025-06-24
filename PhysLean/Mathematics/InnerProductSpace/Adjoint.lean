@@ -21,12 +21,12 @@ def adjoint (f : E → F) :=
   else 0
 
 open InnerProductSpace' in
-theorem ContinuousLinearMap.hasAdjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
+lemma ContinuousLinearMap.hasAdjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
     HasAdjoint 𝕜 f (fun y => fromL2 𝕜 (((toL2 𝕜) ∘L f ∘L (fromL2 𝕜)).adjoint (toL2 𝕜 y))) where
   adjoint_inner_left := by intros; simp[fromL2_inner_left,adjoint_inner_left]; rfl
 
 open InnerProductSpace' in
-theorem adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
+lemma adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
     _root_.adjoint 𝕜 f = fun y => fromL2 𝕜 ((toL2 𝕜 ∘L f ∘L fromL2 𝕜).adjoint (toL2 𝕜 y)) := by
   funext y; apply ext_inner_right' 𝕜; intro x
   rw [f.hasAdjoint.adjoint_inner_left]
@@ -35,9 +35,9 @@ theorem adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[�
 
 lemma HasAdjoint.adjoint_apply_zero {f : E → F} {f' : F → E}
     (hf : HasAdjoint 𝕜 f f') : f' 0 = 0 := by
-  simpa using hf.adjoint_inner_left  (f' 0) 0
+  simpa using hf.adjoint_inner_left (f' 0) 0
 
-theorem HasAdjoint.adjoint
+lemma HasAdjoint.adjoint
     {f : E → F} {f' : F → E}
     (hf : HasAdjoint 𝕜 f f') : adjoint 𝕜 f = f' := by
   funext y
@@ -48,66 +48,66 @@ theorem HasAdjoint.adjoint
   simp_all
   simp [hf.adjoint_inner_left]
 
-theorem HasAdjoint.congr_adj (f : E → F) (f' g')
-   (adjoint : HasAdjoint 𝕜 f g')
-   (eq : g' = f') : HasAdjoint 𝕜 f f' := by simp[← eq,adjoint]
+lemma HasAdjoint.congr_adj (f : E → F) (f' g')
+    (adjoint : HasAdjoint 𝕜 f g')
+    (eq : g' = f') : HasAdjoint 𝕜 f f' := by simp[← eq,adjoint]
 
-theorem hasAdjoint_id : HasAdjoint 𝕜 (fun x : E => x) (fun x => x) := by
+lemma hasAdjoint_id : HasAdjoint 𝕜 (fun x : E => x) (fun x => x) := by
   constructor; intros; rfl
 
-theorem hasAdjoint_zero : HasAdjoint 𝕜 (fun _ : E => (0 : F)) (fun _ => 0) := by
+lemma hasAdjoint_zero : HasAdjoint 𝕜 (fun _ : E => (0 : F)) (fun _ => 0) := by
   constructor; intros; simp
 
-theorem HasAdjoint.comp {f : F → G} {g : E → F} {f' g'}
+lemma HasAdjoint.comp {f : F → G} {g : E → F} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => f (g x)) (fun x => g' (f' x)) := by
   constructor; intros; simp[hf.adjoint_inner_left, hg.adjoint_inner_left]
 
-theorem HasAdjoint.prodMk {f : E → F} {g : E → G} {f' g'}
+lemma HasAdjoint.prodMk {f : E → F} {g : E → G} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => (f x, g x)) (fun yz => f' yz.1 + g' yz.2) := by
   constructor; intros
-  simp[inner,inner_add_left',
-       hf.adjoint_inner_left, hg.adjoint_inner_left]
+  simp [inner,inner_add_left',
+      hf.adjoint_inner_left, hg.adjoint_inner_left]
 
-theorem HasAdjoint.fst {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
+lemma HasAdjoint.fst {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => (f x).1) (fun y => f' (y, 0)) := by
   constructor; intros
   simp[inner, hf.adjoint_inner_left]
 
-theorem HasAdjoint.snd {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
+lemma HasAdjoint.snd {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => (f x).2) (fun z => f' (0, z)) := by
   constructor; intros
   simp[inner, hf.adjoint_inner_left]
 
-theorem HasAdjoint.neg {f : E → F} {f'} (hf : HasAdjoint 𝕜 f f') :
+lemma HasAdjoint.neg {f : E → F} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => -f x) (fun y => -f' y) := by
   constructor; intros
   simp[inner, hf.adjoint_inner_left]
 
-theorem HasAdjoint.add {f g : E → F} {f' g'}
+lemma HasAdjoint.add {f g : E → F} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => f x + g x) (fun y => f' y + g' y) := by
   constructor; intros
   simp[inner, inner_add_left', inner_add_right',
-       hf.adjoint_inner_left, hg.adjoint_inner_left]
+      hf.adjoint_inner_left, hg.adjoint_inner_left]
 
-theorem HasAdjoint.sub {f g : E → F} {f' g'}
+lemma HasAdjoint.sub {f g : E → F} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => f x - g x) (fun y => f' y - g' y) := by
   constructor; intros
   simp[inner, sub_eq_add_neg, inner_add_left', inner_add_right',
-       hf.adjoint_inner_left, hg.adjoint_inner_left]
+      hf.adjoint_inner_left, hg.adjoint_inner_left]
 
 open ComplexConjugate in
-theorem HasAdjoint.smul_left {f : E → F} {f'} (c : 𝕜)
+lemma HasAdjoint.smul_left {f : E → F} {f'} (c : 𝕜)
     (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => c • f x) (fun y => (conj c) • f' y) := by
   constructor; intros
   simp[inner, inner_smul_left', inner_smul_right', hf.adjoint_inner_left]
 
 open ComplexConjugate in
-theorem HasAdjoint.smul_right {f : E → 𝕜} {f'} (v : F)
+lemma HasAdjoint.smul_right {f : E → 𝕜} {f'} (v : F)
     (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => f x • v) (fun y => f' (conj ⟪y, v⟫)) := by
   constructor; intros

@@ -19,6 +19,7 @@ import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Wave
+import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.DataStructures.FourTree.Basic
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Mathematics.FDerivCurry
@@ -26,6 +27,8 @@ import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
+import PhysLean.Mathematics.InnerProductSpace.Adjoint
+import PhysLean.Mathematics.InnerProductSpace.Basic
 import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
