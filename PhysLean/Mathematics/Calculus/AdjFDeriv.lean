@@ -64,6 +64,52 @@ protected theorem DifferentiableAt.hasAdjFDerivAt [CompleteSpace E] [CompleteSpa
     · apply ContinuousLinearMap.hasAdjoint
     · funext y; rw[adjoint_eq_clm_adjoint]
 
+namespace ContinuousLinearMap
+
+variable
+  {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
+  {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y]
+
+theorem adjoint.isBoundedBilinearMap_real :
+  IsBoundedBilinearMap ℝ (fun (fy : (X →L[ℝ] Y)×Y) => fy.1.adjoint fy.2) :=
+{
+  add_left := by simp
+  smul_left := by simp
+  add_right := by simp
+  smul_right := by simp
+  bound := by
+    simp
+    use 1
+    constructor
+    · simp
+    · intro f y
+      trans ‖f.adjoint‖ * ‖y‖
+      apply ContinuousLinearMap.le_opNorm
+      simp
+}
+
+end ContinuousLinearMap
+
+open InnerProductSpace' in
+protected theorem HasAdjFDerivAt.contDiffAt_deriv
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [InnerProductSpace' ℝ F]
+    {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G] [InnerProductSpace' ℝ G]
+    [CompleteSpace F] [CompleteSpace G]
+    {f : E → F → G} {f' : E → F → _} (hf : ∀ x y, HasAdjFDerivAt ℝ (f x) (f' x y) y)
+    (hf' : ContDiff ℝ (n+1) (↿f)) :
+    ContDiff ℝ n (fun x : E×F×G => f' x.1 x.2.1 x.2.2) := by
+  simp[← fun x y => (hf x y).adjFDeriv]
+  unfold adjFDeriv
+  simp[adjoint_eq_clm_adjoint]
+  apply ContDiff.fun_comp
+  · fun_prop
+  · apply ContDiff.fun_comp (𝕜:=ℝ) (n:=n)
+      (g := fun fx : ((WithLp 2 F) →L[ℝ] (WithLp 2 G))×(WithLp 2 G) => fx.1.adjoint fx.2)
+      (f := fun x : E×F×G => (((toL2 ℝ) ∘L ((fderiv ℝ (f x.1) x.2.1) ∘L (fromL2 ℝ))), (toL2 ℝ) x.2.2))
+    · apply ContinuousLinearMap.adjoint.isBoundedBilinearMap_real.contDiff
+    · fun_prop
+
 theorem gradient_eq_adjFDeriv
     {f : U → 𝕜} {x : U} (hf : DifferentiableAt 𝕜 f x) :
     gradient f x = adjFDeriv 𝕜 f x 1 := by

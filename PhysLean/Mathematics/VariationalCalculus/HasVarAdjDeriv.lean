@@ -187,10 +187,11 @@ protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarA
     (fun ψ x => F' (fun x' => - deriv ψ x') x) u :=
   comp (F:=deriv) (G:=F) (hF := deriv' (F u) hF.apply_smooth_self) (hG := hF)
 
-lemma fmap (f : X → U → V) {f' : X → _ }
+lemma fmap [CompleteSpace U] [CompleteSpace V]
+    (f : X → U → V) {f' : X → U → _ }
     (u : X → U) (hu : ContDiff ℝ ∞ u)
-    (hf' : ContDiff ℝ ∞ ↿f) (hf : ∀ x, HasAdjFDerivAt ℝ (f x) (f' x) (u x)) :
-    HasVarAdjDerivAt (fun (φ : X → U) x => f x (φ x)) (fun ψ x => f' x (ψ x)) u where
+    (hf' : ContDiff ℝ ∞ ↿f) (hf : ∀ x u, HasAdjFDerivAt ℝ (f x) (f' x u) u) :
+    HasVarAdjDerivAt (fun (φ : X → U) x => f x (φ x)) (fun ψ x => f' x (u x) (ψ x)) u where
   smooth_at := hu
   diff := by fun_prop
   linearize := by
@@ -228,7 +229,11 @@ lemma fmap (f : X → U → V) {f' : X → _ }
           simp
       · intro φ hφ
         constructor
-        · sorry
+        · apply ContDiff.fun_comp
+            (g:= fun x : X×U×V => f' x.1 x.2.1 x.2.2)
+            (f:= fun x => (x, u x, φ x))
+          · apply HasAdjFDerivAt.contDiffAt_deriv <;> assumption
+          · fun_prop
         · rw [← exists_compact_iff_hasCompactSupport]
           have h1 := hφ.supp
           rw [← exists_compact_iff_hasCompactSupport] at h1
@@ -236,12 +241,12 @@ lemma fmap (f : X → U → V) {f' : X → _ }
           refine ⟨K, cK, ?_⟩
           intro x hx
           rw [hK x hx]
-          have hfx := (hf x).hasAdjoint_fderiv
+          have hfx := (hf x (u x)).hasAdjoint_fderiv
           exact HasAdjoint.adjoint_apply_zero hfx
       · intros
         congr 1; funext x
         rw[← PreInnerProductSpace.Core.conj_inner_symm]
-        rw[← (hf x).hasAdjoint_fderiv.adjoint_inner_left]
+        rw[← (hf x (u x)).hasAdjoint_fderiv.adjoint_inner_left]
         rw[PreInnerProductSpace.Core.conj_inner_symm]
       · intros K cK; use K; simp_all
 
