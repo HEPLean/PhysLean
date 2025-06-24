@@ -33,10 +33,26 @@ variable
   {U : Type*} [NormedAddCommGroup U] [InnerProductSpace 𝕜 U] [CompleteSpace U]
 
 variable (𝕜) in
+/-- Adjoint Fréchet derivative
+
+  `adjFDeriv 𝕜 f x = (fderiv 𝕜 f x).adjoint`
+
+The main purpose of this function is to compute `gradient f x = adjFDeriv 𝕜 f x 1`. We provide
+easy to use API to compute `adjFDeriv`.
+-/
 noncomputable
 def adjFDeriv (f : E → F) (x : E) (dy : F) : E := adjoint 𝕜 (fderiv 𝕜 f x) dy
 
 variable (𝕜) in
+/-- Function `f` has adjoint Fréchet derivative `f'` at `x`
+
+  `f' = adjFDeriv 𝕜 f x = (fderiv 𝕜 f x).adjoint`
+
+The main purpose is to compute `gradient f x = f' 1 = adjFDeriv 𝕜 f x 1`.
+
+This structure is analogous to `HasFDerivAt` and it is often easier to use as theorems for
+`HasAdjFDeriv` do not require differentiability assumptions unlike theorems for `adjFDeriv`.
+-/
 @[fun_prop]
 structure HasAdjFDerivAt (f : E → F) (f' : F → E) (x : E) where
   differentiableAt : DifferentiableAt 𝕜 f x

@@ -9,11 +9,19 @@ variable {𝕜 : Type*} {E F G : Type*} [RCLike 𝕜]
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
 variable (𝕜) in
+/-- Adjoint of a linear map `f` such that `∀ x y, ⟪adjoint 𝕜 f y, x⟫ = ⟪y, f x⟫`.
+
+This computes adjoint of a liner map the same way as `ContinuousLinearMap.adjoint` but it is
+defined over `InnerProductSpace', which is a generalization of `InnerProductSpace` that provides
+instances for products and function types. These instances make it easier to perform computations
+compared to using the standard `InnerProductSpace` class.
+-/
 structure HasAdjoint (f : E → F) (f' : F → E) where
   adjoint_inner_left (x : E) (y : F) : ⟪f' y, x⟫ = ⟪y, f x⟫
 
 open Classical in
 variable (𝕜) in
+@[inherit_doc HasAdjoint]
 noncomputable
 def adjoint (f : E → F) :=
   if h : ∃ f', HasAdjoint 𝕜 f f' then

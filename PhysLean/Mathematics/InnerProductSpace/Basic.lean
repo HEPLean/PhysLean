@@ -11,6 +11,9 @@ class Norm₂ (E : Type*) where
 
 export Norm₂ (norm₂)
 
+attribute [inherit_doc Norm₂] norm₂
+
+@[inherit_doc Norm₂]
 notation:max "‖" x "‖₂" => norm₂ x
 
 open RCLike ComplexConjugate
@@ -41,9 +44,11 @@ In particular, the main motivation behind this class is to make computations of 
 -/
 class InnerProductSpace' (𝕜 : Type*) (E : Type*) [RCLike 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     extends Norm₂ E where
+  /-- Core inner product properties. -/
   core : InnerProductSpace.Core 𝕜 E
+  /-- The inner product induces the L₂ norm. -/
   norm₂_sq_eq_re_inner : ∀ x : E, ‖x‖₂ ^ 2 = re (core.inner x x)
-  /-- Norm induced by inner is topologicaly equivalent to the given norm -/
+  /-- Norm induced by inner product is topologicaly equivalent to the given norm on E. -/
   inner_top_equiv_norm : ∃ c d : ℝ,
     0 < c ∧ 0 < d ∧
     ∀ x : E, (c • ‖x‖^2 ≤ re (core.inner x x)) ∧ (re (core.inner x x) ≤ d • ‖x‖^2)
@@ -81,14 +86,17 @@ local postfix:90 "†" => starRingEnd _
 
 namespace InnerProductSpace'
 
+/-- Attach L₂ norm to `WithLp 2 E` -/
 noncomputable
 scoped instance toNormWithL2 : Norm (WithLp 2 E) where
   norm x := √ (RCLike.re ⟪WithLp.equiv 2 E x, WithLp.equiv 2 E x⟫)
 
+/-- Attach inner product to `WithLp 2 E` -/
 noncomputable
 scoped instance toInnerWithL2 : Inner 𝕜 (WithLp 2 E) where
   inner x y := ⟪WithLp.equiv 2 E x, WithLp.equiv 2 E y⟫
 
+/-- Attach normed group structure to `WithLp 2 E` with L₂ norm. -/
 noncomputable
 scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) :=
   let core : InnerProductSpace.Core (𝕜:=𝕜) (F:=E) := by infer_instance
@@ -99,12 +107,14 @@ scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) :=
   eq_of_dist_eq_zero := fun {x y} => core.toNormedAddCommGroup.eq_of_dist_eq_zero (x:=x) (y:=y)
   }
 
+/-- Attach normed space structure to `WithLp 2 E` with L₂ norm. -/
 noncomputable
 scoped instance toNormedSpaceWithL2 : NormedSpace 𝕜 (WithLp 2 E) where
   norm_smul_le := by
     let core : InnerProductSpace.Core (𝕜:=𝕜) (F:=E) := by infer_instance
     apply core.toNormedSpace.norm_smul_le
 
+/-- Attach inner product space structure to `WithLp 2 E`.-/
 noncomputable
 instance toInnerProductSpaceWithL2 : InnerProductSpace 𝕜 (WithLp 2 E) where
   norm_sq_eq_re_inner := by intros; simp [norm, Real.sq_sqrt,hE.core.re_inner_nonneg]; rfl
@@ -113,6 +123,9 @@ instance toInnerProductSpaceWithL2 : InnerProductSpace 𝕜 (WithLp 2 E) where
   smul_left := hE.core.smul_left
 
 variable (𝕜) in
+/-- Continuous linear map from `E` to `WithLp 2 E`.
+
+This map is continuous because we require topological equivalence between `‖·‖` and `‖·‖₂`. -/
 noncomputable
 def toL2 : E →L[𝕜] WithLp 2 E where
   toFun := (WithLp.equiv 2 _).symm
@@ -132,6 +145,10 @@ def toL2 : E →L[𝕜] WithLp 2 E where
         exact h
 
 variable (𝕜) in
+/-- Continuous linear map from `WithLp 2 E` to `E`.
+
+This map is continuous because we require topological equivalence between `‖·‖` and `‖·‖₂`.
+-/
 noncomputable
 def fromL2 : WithLp 2 E →L[𝕜] E where
   toFun := (WithLp.equiv 2 _)
@@ -161,6 +178,7 @@ lemma toL2_fromL2 (x : WithLp 2 E) : toL2 𝕜 (fromL2 𝕜 x) = x := rfl
 lemma fromL2_toL2 (x : E) : fromL2 𝕜 (toL2 𝕜 x) = x := rfl
 
 variable (𝕜 E) in
+/-- Continuous linear equivalence between `WithLp 2 E` and `E` under `InnerProductSpace' 𝕜 E`. -/
 noncomputable
 def equivL2 : (WithLp 2 E) ≃L[𝕜] E where
   toFun := fromL2 𝕜
@@ -281,6 +299,10 @@ variable
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
+/-- Inner product on product types `E×F` defined as `⟪x,y⟫ = ⟪x.fst,y.fst⟫ + ⟪x.snd,y.snd⟫`.
+
+This is just local instance as it is superseded by the following instance for
+`InnerProductSpace'`. -/
 local instance : Inner 𝕜 (E×F) := ⟨fun (x,y) (x',y') => ⟪x,x'⟫ + ⟪y,y'⟫⟩
 
 @[simp]
@@ -435,3 +457,5 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
       simp [InnerProductSpace.toCore, InnerProductSpace.toInner, PiLp.innerProductSpace]
 
 end Constructions
+
+#check instInnerProd_physLean
