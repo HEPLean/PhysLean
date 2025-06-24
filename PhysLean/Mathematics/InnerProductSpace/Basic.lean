@@ -382,7 +382,69 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
     simp only [one_div, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
       IsUnit.inv_mul_cancel, Real.rpow_one]
     rfl
-  inner_top_equiv_norm := sorry
+  inner_top_equiv_norm := by
+    rename_i i1 i2 i3 i4 i5 i6 i7 i8
+    by_cases hnEmpty : Nonempty ι
+    · obtain ⟨c, d, c_pos, d_pos, h⟩ := i1.inner_top_equiv_norm
+      use c, Fintype.card ι * d
+      simp_all
+      constructor
+      · positivity
+      intro x
+      obtain ⟨i, hi⟩ : ∃ i, ‖x‖  = ‖x i‖  := by
+          simp  [norm]
+          obtain ⟨i,_, hi⟩:= Finset.exists_mem_eq_sup (Finset.univ : Finset ι) (
+            Finset.univ_nonempty_iff.mpr hnEmpty) (fun i => ‖x i‖₊)
+          rw [hi]
+          use i
+          simp
+      have hj : ∀ j,  ‖x j‖ ≤ ‖x i‖ := by
+        rw [← hi]
+        exact fun j => norm_le_pi_norm x j
+      rw [hi]
+      constructor
+      · apply le_trans (h (x i)).1
+        conv_rhs => rw [inner]
+        simp [InnerProductSpace.toCore, InnerProductSpace.toInner, PiLp.innerProductSpace]
+        have h1 := Finset.sum_le_univ_sum_of_nonneg  (f := fun i => re (@inner 𝕜 (WithLp 2 E) toInnerProductSpaceWithL2.2 (x i) (x i)))
+          (s := {i}) (by
+            intro i
+            simp
+            exact InnerProductSpace.Core.inner_self_nonneg)
+        apply le_trans _ h1
+        simp
+      · have h2 := (h (x i)).2
+        conv_lhs => rw [inner]
+        simp [InnerProductSpace.toCore, InnerProductSpace.toInner, PiLp.innerProductSpace]
+        trans ∑ j, d * ‖x j‖ ^ 2
+        · refine Finset.sum_le_sum ?_
+          intro j _
+          exact (h (x j)).2
+        trans (Fintype.card ι) • (d * ‖x i‖ ^ 2)
+        swap
+        · apply le_of_eq
+          ring
+        apply Finset.sum_le_card_nsmul
+        intro j _
+        refine mul_le_mul_of_nonneg (by simp) ?_ (by positivity) (by positivity)
+        refine (sq_le_sq₀ ?_ ?_).mpr (hj j)
+        · exact norm_nonneg (x j)
+        · exact norm_nonneg (x i)
+    · simp at hnEmpty
+      use 1, 1
+      simp
+      intro x
+      refine le_antisymm_iff.mp ?_
+      have h1 : x = fun _ => 0 := by
+        funext i
+        have hn : ¬ IsEmpty ι := by
+          simp
+          use i
+        exact False.elim (hn hnEmpty)
+      subst h1
+      simp [norm]
+      rw [inner]
+      simp [InnerProductSpace.toCore, InnerProductSpace.toInner, PiLp.innerProductSpace]
 
 end Constructions
 #check NormedSpace
