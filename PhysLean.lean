@@ -2,9 +2,9 @@ import PhysLean.ClassicalMechanics.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Momentum.Basic
-import PhysLean.ClassicalMechanics.Space.Basic
-import PhysLean.ClassicalMechanics.Space.VectorIdentities
-import PhysLean.ClassicalMechanics.Time.Basic
+import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Space.VectorIdentities
+import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.ClassicalMechanics.VectorFields
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.ClassicalMechanics.WaveEquation.HarmonicWave
@@ -216,10 +216,10 @@ import PhysLean.Relativity.PauliMatrices.Relations
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
 import PhysLean.Relativity.SL2C.Basic
 import PhysLean.Relativity.SL2C.SelfAdjoint
-import PhysLean.Relativity.SpaceTime.Basic
-import PhysLean.Relativity.SpaceTime.CliffordAlgebra
-import PhysLean.Relativity.SpaceTime.ProperTime
-import PhysLean.Relativity.SpaceTime.TimeSlice
+import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.Relativity.CliffordAlgebra
+import PhysLean.Relativity.Special.ProperTime
+import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Relativity.Special.TwinParadox.Basic
 import PhysLean.Relativity.Tensors.Basic
 import PhysLean.Relativity.Tensors.Color.Basic

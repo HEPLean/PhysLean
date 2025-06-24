@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
-import PhysLean.ClassicalMechanics.Space.Basic
-import PhysLean.ClassicalMechanics.Time.Basic
+import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Time.Basic
 /-!
 # Space time
 
@@ -17,7 +17,9 @@ noncomputable section
 
 TODO "6V2DR" "SpaceTime should be refactored into a structure, or similar, to prevent casting."
 
-/-- The space-time -/
+/-- `SpaceTime d` corresponds to `d+1` dimensional space-time.
+  This is equipped with an instaance of the action of a Lorentz group,
+  corresponding to Minkowski-spacetime. -/
 abbrev SpaceTime (d : ℕ := 3) := Lorentz.Vector d
 
 namespace SpaceTime

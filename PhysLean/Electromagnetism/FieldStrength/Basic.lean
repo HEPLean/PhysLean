@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Basic
-import PhysLean.Relativity.SpaceTime.TimeSlice
+import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 /-!
 
 # The field strength tensor
