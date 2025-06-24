@@ -1,6 +1,9 @@
 
 ![PhysLean](./docs/PhysLeanLogo.jpeg)
-_A project to digitalize physics._
+<p align="center"> <i><b>
+An open-source, community, project to digitalize results from physics into Lean 4.</b>
+</i>
+</p>
 
 
 - [![](https://img.shields.io/badge/Getting-Started-green)](https://physlean.com/GettingStarted.html)
