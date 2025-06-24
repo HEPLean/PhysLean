@@ -16,7 +16,7 @@ open MeasureTheory ContDiff InnerProductSpace
 
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
-  {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
+  {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
 
 /-- Function `grad` is variational gradient of functional `S` at point `u`.
 

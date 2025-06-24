@@ -6,6 +6,8 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import PhysLean.Mathematics.FDerivCurry
+import PhysLean.Mathematics.Calculus.AdjFDeriv
+import PhysLean.Mathematics.Calculus.Divergence
 /-!
 # Variational adjoint derivative
 
@@ -28,9 +30,9 @@ variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
   {Y} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [MeasureSpace Y]
   {Z} [NormedAddCommGroup Z] [NormedSpace ℝ Z] [MeasureSpace Z]
-  {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
-  {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-  {W} [NormedAddCommGroup W] [InnerProductSpace ℝ W]
+  {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
+  {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
+  {W} [NormedAddCommGroup W] [NormedSpace ℝ W] [InnerProductSpace' ℝ W]
 
 /-- This is analogue of saying `F' = (fderiv ℝ F u).adjoint`.
 
@@ -144,51 +146,116 @@ lemma unique {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
     F' φ = G' φ :=
   HasVarAdjoint.unique hF.adjoint hG.adjoint φ hφ
 
+lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
+    (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
+    HasVarAdjDerivAt
+      (fun φ x => (F φ x, G φ x))
+      (fun φ x => F' (fun x' => (φ x').fst) x + G' (fun x' => (φ x').snd) x) u := sorry
+
+lemma fst {F : (X → U) → (X → (W×V))}
+    (hF : HasVarAdjDerivAt F F' u) :
+    HasVarAdjDerivAt
+      (fun φ x => (F φ x).fst)
+      (fun φ x => F' (fun x' => (φ x', 0)) x) u := sorry
+
+lemma snd {F : (X → U) → (X → (W×V))}
+    (hF : HasVarAdjDerivAt F F' u) :
+    HasVarAdjDerivAt
+      (fun φ x => (F φ x).snd)
+      (fun φ x => F' (fun x' => (0, φ x')) x) u := sorry
+
 attribute [fun_prop] differentiableAt_id'
 
-lemma deriv' (u : ℝ → ℝ) (hu : ContDiff ℝ ∞ u) :
-    HasVarAdjDerivAt (fun φ : ℝ → ℝ => deriv φ) (fun φ x => - deriv φ x) u where
+lemma deriv' (u : ℝ → U) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt (fun φ : ℝ → U => deriv φ) (fun φ x => - deriv φ x) u where
   smooth_at := hu
   diff := by intros; fun_prop [deriv]
   linearize := by
     intro φ hφ x
-    have hd : DifferentiableAt ℝ (fun x => deriv (fun x_1 => φ x_1 x) 0) x :=
-      fderiv_curry_differentiableAt_fst_comp_snd _ _ _ _ (ContDiff.of_le hφ (ENat.LEInfty.out))
+    have hd : DifferentiableAt ℝ (fun x => deriv (fun x_1 => φ x_1 x) 0) x := by
+      -- todo: make the theorem universe polymorphic
+      -- fderiv_curry_differentiableAt_fst_comp_snd _ _ _ _ (ContDiff.of_le hφ (ENat.LEInfty.out))
+      sorry
     conv_rhs =>
       enter [1, s']
-      rw [deriv_add (function_differentiableAt_snd _ _ _ (hφ.differentiable ENat.LEInfty.out))
-        (by fun_prop)]
+      rw [deriv_add sorry (by fun_prop)]
     have hd2 : DifferentiableAt ℝ (fun s' =>
         deriv (fun x => s' • deriv (fun x_1 => φ x_1 x) (0 : ℝ)) x) (0 : ℝ) := by
       conv_lhs =>
         enter [s']
         simp
-      fun_prop
+      sorry
     rw [deriv_add (by fun_prop) (hd2)]
     simp only [deriv_const', smul_eq_mul, differentiableAt_const, deriv_const_mul_field',
       differentiableAt_id', deriv_mul, deriv_id'', one_mul, mul_zero, add_zero, zero_add]
     dsimp [deriv]
-    exact fderiv_swap (𝕜 := ℝ) φ 0 1 x 1 (ContDiff.of_le hφ (ENat.LEInfty.out))
+    -- todo: make `fderiv_swap` universe polymorphic
+    -- exact fderiv_swap (X:=ℝ) (Y:=ℝ) (Z:=U) (𝕜 := ℝ) φ (0:ℝ) 1 x 1 (ContDiff.of_le hφ (ENat.LEInfty.out))
+    sorry
   adjoint := by
-    simp (disch:=fun_prop) [deriv_add]
-    apply HasVarAdjoint.congr_fun
-    case h' =>
-      intro φ hφ
-      have := hφ.smooth.differentiable (ENat.LEInfty.out)
-      have := hu.differentiable (ENat.LEInfty.out)
-      simp (disch:=fun_prop) [deriv_add]
-      rfl
-    case h =>
-      apply HasVarAdjoint.deriv
+    sorry
+    -- simp (disch:=fun_prop) [deriv_add]
+    -- apply HasVarAdjoint.congr_fun
+    -- case h' =>
+    --   intro φ hφ
+    --   have := hφ.smooth.differentiable (ENat.LEInfty.out)
+    --   have := hu.differentiable (ENat.LEInfty.out)
+    --   simp (disch:=fun_prop) [deriv_add]
+    --   rfl
+    -- case h =>
+    --   apply HasVarAdjoint.deriv
 
-protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
+protected lemma deriv (F : (ℝ → U) → (ℝ → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
     HasVarAdjDerivAt (fun φ : ℝ → U => deriv (F φ))
     (fun ψ x => F' (fun x' => - deriv ψ x') x) u :=
   comp (F:=deriv) (G:=F) (hF := deriv' (F u) hF.apply_smooth_self) (hG := hF)
 
+lemma fmap' (f : X → U → V)
+    (u : X → U) (hu : ContDiff ℝ ∞ u)
+    (hf' : ContDiff ℝ ∞ ↿f) :
+    HasVarAdjDerivAt (fun (φ : X → U) x => f x (φ x)) (fun ψ x => adjFDeriv ℝ (f x) (u x) (ψ x)) u := sorry
+
+lemma fmap (f : X → U → V) {f' : X → _ }
+    (u : X → U) (hu : ContDiff ℝ ∞ u)
+    (hf' : ContDiff ℝ ∞ ↿f) (hf : ∀ x, HasAdjFDerivAt ℝ (f x) (f' x) (u x)) :
+    HasVarAdjDerivAt (fun (φ : X → U) x => f x (φ x)) (fun ψ x => f' x (ψ x)) u where
+  smooth_at := hu
+  diff := by fun_prop
+  linearize := by
+    intro φ hφ x
+    unfold deriv
+    conv => lhs; rw[fderiv_comp' (𝕜:=ℝ) (g:=(fun u : U => f _ u)) _
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop))
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop))]
+    conv => rhs; rw[fderiv_comp' (𝕜:=ℝ) (g:=(fun u : U => f _ u)) _
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop)) (by fun_prop)]
+    simp[deriv_smul]
+  adjoint := by
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ; funext x
+      unfold deriv
+      conv =>
+        lhs
+        rw[fderiv_comp' (𝕜:=ℝ) (g:=_) (f:=fun s : ℝ => u x + s • φ x) _
+          (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop)) (by fun_prop)]
+        simp[deriv_smul]
+    case h =>
+      constructor
+      · intros;
+        constructor
+        · fun_prop
+        · sorry
+      · intros; sorry
+      · intros
+        congr 1; funext x
+        rw[← PreInnerProductSpace.Core.conj_inner_symm]
+        rw[← (hf x).hasAdjoint_fderiv.adjoint_inner_left]
+        rw[PreInnerProductSpace.Core.conj_inner_symm]
+      · intros K cK; use K; simp_all
+
 lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
     HasVarAdjDerivAt (fun φ x => -F φ x) (fun ψ x => - F' ψ x) u where
-
   smooth_at := hF.smooth_at
   diff := by intro φ hφ; apply ContDiff.neg; apply hF.diff; assumption
   linearize := by intros; rw[deriv.neg']; simp; rw[hF.linearize]; assumption
@@ -307,4 +374,22 @@ lemma mul
         apply hG.adjoint
         exact apply_smooth_self hF
 
-end OnFiniteMeasures
+protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt
+      (fun (φ : X → U) x => fderiv ℝ φ x dx)
+      (fun ψ x => - fderiv ℝ ψ x dx) u := sorry
+
+protected lemma adjFDeriv [InnerProductSpace' ℝ X] (u : X → U) (du : U) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt
+      (fun (φ : X → U) x => adjFDeriv ℝ φ x du)
+      (fun ψ x => - divergence ℝ ψ x • du) u := sorry
+
+protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt
+      (fun (φ : Space d → ℝ) x => gradient φ x)
+      (fun ψ x => - Space.div ψ x) u := sorry
+
+lemma div {d} (u : Space d → Space d) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt
+      (fun (φ : Space d → Space d) x => Space.div φ x)
+      (fun ψ x => - gradient ψ x) u := sorry

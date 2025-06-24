@@ -11,8 +11,8 @@ import PhysLean.Meta.TODO.Basic
 Various lemmas related to fderiv on curried/uncurried functions.
 
 -/
-variable {𝕜 : Type} [NontriviallyNormedField 𝕜]
-    {X Y Z : Type} [NormedAddCommGroup X] [NormedSpace 𝕜 X]
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+    {X Y Z : Type*} [NormedAddCommGroup X] [NormedSpace 𝕜 X]
     [NormedAddCommGroup Y] [NormedSpace 𝕜 Y]
     [NormedAddCommGroup Z] [NormedSpace 𝕜 Z]
 
