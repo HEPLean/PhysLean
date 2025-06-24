@@ -29,7 +29,7 @@ theorem hasVarGradient_action_eq_euler_lagrange
     · apply HasVarAdjDerivAt.fmap' (f := fun t => ↿(L t))
       · fun_prop
       · fun_prop
-    · apply HasVarAdjDerivAt.prod (F:=fun φ => φ) (G:=fun φ => deriv φ)
+    · apply HasVarAdjDerivAt.prod
       · apply HasVarAdjDerivAt.id _ hq
       · apply HasVarAdjDerivAt.deriv
         · apply HasVarAdjDerivAt.id _ hq
@@ -58,5 +58,43 @@ theorem hasVarGradient_action_eq_euler_lagrange_field
            deriv (fun t' => deriv (fun dudt => L t' x (u t' x) dudt (gradient (u t' ·) x)) (deriv (u · x) t')) t
            -
            -- divₓ ∂L/∂(∂ₓu)
-           Space.div (fun x' => gradient (fun dudx => L t x' (u t x') (deriv (u · x') t) dudx) (gradient (u t ·) x')) x)
-      (↿u) := sorry
+           divergence ℝ (fun x' => gradient (fun dudx => L t x' (u t x') (deriv (u · x') t) dudx) (gradient (u t ·) x')) x)
+      (↿u) := by
+
+  constructor
+  case hF' =>
+    apply HasVarAdjDerivAt.comp
+      (F := fun (φ : ℝ×Space d → ℝ×ℝ×Space d) tx => L tx.1 tx.2 (φ tx).1 (φ tx).2.1 (φ tx).2.2)
+      (G := fun (φ : ℝ×Space d → ℝ) tx => (φ tx, deriv (fun t' => φ (t',tx.2)) tx.1, gradient (fun x' => φ (tx.1,x')) tx.2))
+    · apply HasVarAdjDerivAt.fmap' (f := fun tx:ℝ×Space d => ↿(L tx.1 tx.2))
+      · sorry
+      · fun_prop
+    · apply HasVarAdjDerivAt.prod
+      · apply HasVarAdjDerivAt.id _
+        fun_prop
+      · apply HasVarAdjDerivAt.prod
+        · conv in deriv _ _ =>
+            unfold deriv
+            rw[fderiv_comp' (g:=φ) _ sorry sorry]
+            rw[DifferentiableAt.fderiv_prodMk sorry sorry]
+            simp
+          apply HasVarAdjDerivAt.fderiv
+          · fun_prop
+        · conv in gradient _ _ =>
+            rw[gradient_eq_adjFDeriv sorry]
+            rw[adjFDeriv_comp sorry sorry]
+            rw[adjFDeriv_prodMk sorry sorry]; dsimp
+            rw[adjFDeriv_fst sorry]; dsimp
+            simp[adjFDeriv_id, adjFDeriv_const]
+          apply HasVarAdjDerivAt.snd
+          apply HasVarAdjDerivAt.adjFDeriv
+          fun_prop
+  case hgrad =>
+    funext (t,x)
+    simp
+    simp (disch:=sorry) only [gradient_eq_adjFDeriv]
+    simp (disch:=sorry) only [adjFDeriv_uncurry3]
+    simp[divergence_prodMk,Function.HasUncurry.uncurry,sub_eq_add_neg]
+    rw[add_assoc]
+    ring_nf
+    sorry

@@ -36,6 +36,7 @@ variable
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [InnerProductSpace' 𝕜 E]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [InnerProductSpace' 𝕜 F]
   {G : Type*} [NormedAddCommGroup G] [NormedSpace 𝕜 G] [InnerProductSpace' 𝕜 G]
+  {H : Type*} [NormedAddCommGroup H] [NormedSpace 𝕜 H] [InnerProductSpace' 𝕜 H]
   {U : Type*} [NormedAddCommGroup U] [InnerProductSpace 𝕜 U] [CompleteSpace U]
 
 variable (𝕜) in
@@ -121,6 +122,15 @@ theorem HasAdjFDerivAt.prodMk {f : E → F} {g : E → G} {f' g'} {x : E}
     · exact hf.hasAdjoint_fderiv
     · exact hg.hasAdjoint_fderiv
 
+theorem adjFDeriv_prodMk [CompleteSpace E] [CompleteSpace F] [CompleteSpace G]
+    {f : E → F} {g : E → G} {x : E}
+    (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :
+    adjFDeriv 𝕜 (fun x => (f x, g x)) x = fun dyz => adjFDeriv 𝕜 f x dyz.fst + adjFDeriv 𝕜 g x dyz.snd := by
+  apply HasAdjFDerivAt.adjFDeriv
+  apply HasAdjFDerivAt.prodMk
+  apply hf.hasAdjFDerivAt
+  apply hg.hasAdjFDerivAt
+
 theorem HasAjdFDerivAt.fst {f : E → F×G} {f'} {x : E} (hf : HasAdjFDerivAt 𝕜 f f' x) :
     HasAdjFDerivAt 𝕜 (fun x => (f x).fst) (fun dy => f' (dy, 0)) x where
   differentiableAt := by fun_prop
@@ -173,6 +183,11 @@ theorem adjFDeriv_uncurry [CompleteSpace E] [CompleteSpace F] [CompleteSpace G]
   apply DifferentiableAt.hasAdjFDerivAt (by fun_prop)
   apply DifferentiableAt.hasAdjFDerivAt (by fun_prop)
 
+theorem adjFDeriv_uncurry3 [CompleteSpace E] [CompleteSpace F] [CompleteSpace G]
+    {f : E → F → G → H} {xy} (hfx : DifferentiableAt 𝕜 (↿f) xy) :
+    adjFDeriv 𝕜 (↿f) xy = fun dz => (adjFDeriv 𝕜 (f · xy.2.1 xy.2.2) xy.1 dz,
+                                     adjFDeriv 𝕜 (f xy.1 · xy.2.2) xy.2.1 dz,
+                                     adjFDeriv 𝕜 (f xy.1 xy.2.1 ·) xy.2.2 dz) := sorry
 
 theorem HasAdjFDerivAt.neg {f : E → F} {f'} {x : E} (hf : HasAdjFDerivAt 𝕜 f f' x) :
     HasAdjFDerivAt 𝕜 (fun x => - f x) (fun dy => - f' dy) x where

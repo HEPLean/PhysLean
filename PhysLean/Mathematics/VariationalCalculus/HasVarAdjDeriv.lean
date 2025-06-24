@@ -7,6 +7,7 @@ import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Calculus.AdjFDeriv
+import PhysLean.Mathematics.Calculus.Divergence
 /-!
 # Variational adjoint derivative
 
@@ -377,6 +378,11 @@ protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt
       (fun (φ : X → U) x => fderiv ℝ φ x dx)
       (fun ψ x => - fderiv ℝ ψ x dx) u := sorry
+
+protected lemma adjFDeriv [InnerProductSpace' ℝ X] (u : X → U) (du : U) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt
+      (fun (φ : X → U) x => adjFDeriv ℝ φ x du)
+      (fun ψ x => - divergence ℝ ψ x • du) u := sorry
 
 protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt
