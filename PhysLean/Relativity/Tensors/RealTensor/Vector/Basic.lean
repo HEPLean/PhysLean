@@ -350,7 +350,7 @@ lemma minkowskiProductMap_symm {d : ℕ} (p q : Vector d) :
 lemma minkowskiProductMap_add_fst {d : ℕ} (p q r : Vector d) :
     minkowskiProductMap (p + q) r = minkowskiProductMap p r + minkowskiProductMap q r := by
   rw [minkowskiProductMap_toCoord, minkowskiProductMap_toCoord, minkowskiProductMap_toCoord]
-  simp
+  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add, Pi.add_apply]
   conv_lhs =>
     enter [2, 2, x]
     simp [add_mul]
