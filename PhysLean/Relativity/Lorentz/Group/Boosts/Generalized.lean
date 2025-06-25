@@ -32,8 +32,9 @@ open TensorProduct
 
 variable {d : ℕ}
 
-TODO "FXQ45" "Update the definition of generalized boosts to use `Vector d` instead of
-  `ContrMod d`. This will involve updating the definition of `FuturePointing d`."
+TODO "FXQ45" "Update the definition of generalized boosts to use
+  `Vector d` and `Velocity d` instead of
+  `ContrMod d` and `FuturePointing d`."
 
 /-- An auxiliary linear map used in the definition of a generalised boost. -/
 def genBoostAux₁ (u v : FuturePointing d) : ContrMod d →ₗ[ℝ] ContrMod d where
