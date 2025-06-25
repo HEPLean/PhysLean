@@ -18,10 +18,10 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Charges
+open SuperSymmetry.SU5
+open SuperSymmetry.SU5.Charges
 open PotentialTerm
-open ChargeProfile
 open CodimensionOneConfig
-open Tree
 
 /-!
 
@@ -84,55 +84,55 @@ lemma not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges (I : CodimensionO
 -/
 
 set_option maxRecDepth 2500 in
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
+lemma allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_same :
     ∀ x ∈ (nonPhenoConstrainedCharges same).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) := by
+      AllowsTerm x topYukawa := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges same).toMultiset.filter
-      fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
+      fun x => ¬ AllowsTerm x topYukawa := by
     simp_all
-  have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
+  have hl : Multiset.filter (fun x => ¬ AllowsTerm x topYukawa)
     (nonPhenoConstrainedCharges same).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
 set_option maxRecDepth 2000 in
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
+lemma allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) := by
+      AllowsTerm x topYukawa := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges nearestNeighbor).toMultiset.filter
-      fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
+      fun x => ¬ AllowsTerm x topYukawa := by
     simp_all
-  have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
+  have hl : Multiset.filter (fun x => ¬ AllowsTerm x topYukawa)
     (nonPhenoConstrainedCharges nearestNeighbor).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
 set_option maxRecDepth 2000 in
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
+lemma allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor :
     ∀ x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) := by
+      AllowsTerm x topYukawa := by
   intro x hx
   by_contra hnot
   have hx : x ∈ (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset.filter
-      fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x) := by
+      fun x => ¬ AllowsTerm x topYukawa := by
     simp_all
-  have hl : Multiset.filter (fun x => ¬ IsPresent topYukawa (toChargeProfile topYukawa x))
+  have hl : Multiset.filter (fun x => ¬ AllowsTerm x topYukawa)
     (nonPhenoConstrainedCharges nextToNearestNeighbor).toMultiset = ∅ := by rfl
   rw [hl] at hx
   simp at hx
 
-lemma isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
+lemma allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (nonPhenoConstrainedCharges I).toMultiset,
-      IsPresent topYukawa (toChargeProfile topYukawa x) :=
+      AllowsTerm x topYukawa :=
   match I with
-  | same => isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_same
-  | nearestNeighbor => isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor
+  | same => allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_same
+  | nearestNeighbor => allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_nearestNeighbor
   | nextToNearestNeighbor =>
-    isPresent_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor
+    allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharges_nextToNearestNeighbor
 
 end Charges
 

@@ -4,11 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.FDerivCurry
-import PhysLean.ClassicalMechanics.Time.Basic
+import PhysLean.SpaceAndTime.Time.Basic
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.LinearAlgebra.CrossProduct
 import Mathlib.Tactic.FunProp.Differentiable
-import PhysLean.ClassicalMechanics.Space.Basic
+import PhysLean.SpaceAndTime.Space.Basic
 /-!
 # Classical vector calculus properties
 
@@ -211,3 +211,5 @@ lemma inner_self_cross (v w : EuclideanSpace ℝ (Fin 3)) :
   cases w using WithLp.rec with | _ w =>
   simp only [Equiv.apply_symm_apply, EuclideanSpace.inner_piLp_equiv_symm, star_trivial]
   rw [dotProduct_comm, dot_self_cross]
+
+end ClassicalMechanics

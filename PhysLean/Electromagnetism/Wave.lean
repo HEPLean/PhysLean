@@ -5,9 +5,10 @@ Authors: Zhi Kai Pong
 -/
 import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
-import PhysLean.ClassicalMechanics.Space.VectorIdentities
+import PhysLean.SpaceAndTime.Space.VectorIdentities
 /-!
-# Electromagnetism wave equation
+
+# Electromagnetic wave equation
 
 The electromagnetic wave eqaution as a consequence of the charge and current free
 Maxwell's Equations in homogeneous isotropic medium.
@@ -129,24 +130,24 @@ theorem waveEquation_magneticField_of_freeMaxwellEquations
     exact smul_nonneg (le_of_lt OM.mu_ge_zero) (le_of_lt OM.eps_ge_zero)
 
 /-- An electric plane wave travelling in the direction of `s` with propagation speed `c`. -/
-@[nolint unusedArguments]
 noncomputable def electricPlaneWave (E₀ : ℝ → EuclideanSpace ℝ (Fin 3))
-    (c : ℝ) (s : Space) (hs : inner ℝ s s = (1:ℝ)) : ElectricField :=
-    planeWave E₀ c s hs
+    (c : ℝ) (s : Direction) : ElectricField :=
+    planeWave E₀ c s
 
 /-- A magnetic plane wave travelling in the direction of `s` with propagation speed `c`. -/
-@[nolint unusedArguments]
 noncomputable def magneticPlaneWave (B₀ : ℝ → EuclideanSpace ℝ (Fin 3))
-    (c : ℝ) (s : Space) (hs : inner ℝ s s = (1:ℝ)) : MagneticField :=
-    planeWave B₀ c s hs
+    (c : ℝ) (s : Direction) : MagneticField :=
+    planeWave B₀ c s
 
 /-- An electric plane wave minus a constant field is transverse for all x. -/
 lemma transverse_upto_time_fun_of_eq_electricPlaneWave {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
-    {s : Space} {hs : inner ℝ s s = 1} {E : ElectricField}
-    {B : MagneticField} (hEwave : E = electricPlaneWave E₀ c s hs)
+    {s : Direction} {E : ElectricField} {B : MagneticField}
+    (hEwave : E = electricPlaneWave E₀ c s)
     (h' : Differentiable ℝ E₀) (hm : OM.FreeMaxwellEquations E B) :
-    ∃ (c : Time → EuclideanSpace ℝ (Fin 3)), ∀ t x, inner ℝ (E t x) s = inner ℝ (c t) s := by
-  have E'eqdivE : ∀ t x y, inner ℝ (fderiv ℝ (E t) x y) s = inner ℝ y s * (∇ ⬝ (E t)) x := by
+    ∃ (c : Time → EuclideanSpace ℝ (Fin 3)), ∀ t x,
+    inner ℝ (E t x) s.unit = inner ℝ (c t) s.unit := by
+  have E'eqdivE : ∀ t x y, inner ℝ (fderiv ℝ (E t) x y) s.unit =
+      inner ℝ y s.unit * (∇ ⬝ (E t)) x := by
     intro t x y
     rw [hEwave, electricPlaneWave]
     unfold planeWave div coord basis Space.deriv
@@ -157,7 +158,7 @@ lemma transverse_upto_time_fun_of_eq_electricPlaneWave {E₀ : ℝ → Euclidean
       rw [wave_fderiv_inner_eq_inner_fderiv_proj h']
     rw [← Finset.mul_sum]
     simp
-  have E'eqzero : ∀ t x, fderiv ℝ (fun x => (inner ℝ (E t x) s)) x = 0 := by
+  have E'eqzero : ∀ t x, fderiv ℝ (fun x => (inner ℝ (E t x) s.unit)) x = 0 := by
     intro t x
     ext y
     rw [fderiv_inner_apply]
@@ -187,11 +188,13 @@ lemma transverse_upto_time_fun_of_eq_electricPlaneWave {E₀ : ℝ → Euclidean
 
 /-- An magnetic plane wave minus a constant field is transverse for all x. -/
 lemma transverse_upto_time_fun_of_eq_magneticPlaneWave {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
-    {s : Space} {hs : inner ℝ s s = 1} {E : ElectricField}
-    {B : MagneticField} (hBwave : B = magneticPlaneWave B₀ c s hs)
+    {s : Direction} {E : ElectricField} {B : MagneticField}
+    (hBwave : B = magneticPlaneWave B₀ c s)
     (h' : Differentiable ℝ B₀) (hm : OM.FreeMaxwellEquations E B) :
-    ∃ (c : Time → EuclideanSpace ℝ (Fin 3)), ∀ t x, inner ℝ (B t x) s = inner ℝ (c t) s := by
-  have B'eqdivB : ∀ t x y, inner ℝ (fderiv ℝ (B t) x y) s = inner ℝ y s * (∇ ⬝ (B t)) x := by
+    ∃ (c : Time → EuclideanSpace ℝ (Fin 3)), ∀ t x,
+    inner ℝ (B t x) s.unit = inner ℝ (c t) s.unit := by
+  have B'eqdivB : ∀ t x y, inner ℝ (fderiv ℝ (B t) x y) s.unit =
+      inner ℝ y s.unit * (∇ ⬝ (B t)) x := by
     intro t x y
     rw [hBwave, magneticPlaneWave]
     unfold planeWave div coord basis Space.deriv
@@ -202,7 +205,7 @@ lemma transverse_upto_time_fun_of_eq_magneticPlaneWave {B₀ : ℝ → Euclidean
       rw [wave_fderiv_inner_eq_inner_fderiv_proj h']
     rw [← Finset.mul_sum]
     simp
-  have B'eqzero : ∀ t x, fderiv ℝ (fun x => (inner ℝ (B t x) s)) x = 0 := by
+  have B'eqzero : ∀ t x, fderiv ℝ (fun x => (inner ℝ (B t x) s.unit)) x = 0 := by
     intro t x
     ext y
     rw [fderiv_inner_apply]
@@ -234,10 +237,10 @@ lemma transverse_upto_time_fun_of_eq_magneticPlaneWave {B₀ : ℝ → Euclidean
 time derivative equal to `- s ⨯ₑ₃ B'`. -/
 lemma time_deriv_electricPlaneWave_eq_cross_time_deriv_magneticPlaneWave
     {t : Time} {x : Space} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
-    {s : Space} {hs : inner ℝ s s = 1} {E : ElectricField} {B : MagneticField}
-    (hc : c = (√(μ • ε))⁻¹) (hBwave : B = magneticPlaneWave B₀ c s hs)
+    {s : Direction} {E : ElectricField} {B : MagneticField}
+    (hc : c = (√(μ • ε))⁻¹) (hBwave : B = magneticPlaneWave B₀ c s)
     (h' : Differentiable ℝ B₀) (hm : OM.FreeMaxwellEquations E B) :
-    ∂ₜ (fun t => E t x) t = - (√(μ • ε))⁻¹ • (s ⨯ₑ₃ (∂ₜ (fun t => B t x) t)) := by
+    ∂ₜ (fun t => E t x) t = - (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (∂ₜ (fun t => B t x) t)) := by
   have hdt : ∀ t, (∂ₜ (fun t => E t x) t) = (μ • ε)⁻¹ • (∇ × B t) x := by
     intro t
     rw [OM.ampereLaw_of_free E B]
@@ -260,10 +263,10 @@ lemma time_deriv_electricPlaneWave_eq_cross_time_deriv_magneticPlaneWave
 time derivative equal to `s ⨯ₑ₃ E'`. -/
 lemma time_deriv_magneticPlaneWave_eq_cross_time_deriv_electricPlaneWave
     {t : Time} {x : Space} {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
-    {s : Space} {hs : inner ℝ s s = 1} {E : ElectricField} {B : MagneticField}
-    (hc : c = (√(μ • ε))⁻¹) (hEwave : E = electricPlaneWave E₀ c s hs)
+    {s : Direction} {E : ElectricField} {B : MagneticField}
+    (hc : c = (√(μ • ε))⁻¹) (hEwave : E = electricPlaneWave E₀ c s)
     (h' : Differentiable ℝ E₀) (hm : OM.FreeMaxwellEquations E B) :
-    ∂ₜ (fun t => B t x) t = (√(μ • ε)) • (s ⨯ₑ₃ (∂ₜ (fun t => E t x) t)) := by
+    ∂ₜ (fun t => B t x) t = (√(μ • ε)) • (s.unit ⨯ₑ₃ (∂ₜ (fun t => E t x) t)) := by
   have h : (√(μ • ε)) = c⁻¹ := by
     rw [hc]
     simp
@@ -285,13 +288,14 @@ lemma time_deriv_magneticPlaneWave_eq_cross_time_deriv_electricPlaneWave
 
 /-- A magnetic planewave induces an electric field equal to `- s ⨯ₑ₃ B` plus a constant field. -/
 lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
-    {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {s : Space} {hs : inner ℝ s s = 1}
+    {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {s : Direction}
     {E : ElectricField} {B : MagneticField} (hc : c = (√(μ • ε))⁻¹)
-    (hBwave : B = magneticPlaneWave B₀ c s hs) (h' : Differentiable ℝ B₀)
+    (hBwave : B = magneticPlaneWave B₀ c s) (h' : Differentiable ℝ B₀)
     (hm : OM.FreeMaxwellEquations E B) (hE : Differentiable ℝ ↿E) :
     ∃ (c : Space → EuclideanSpace ℝ (Fin 3)), ∀ t x,
-    (E t x) = - (√(μ • ε))⁻¹ • (s ⨯ₑ₃ (B t x)) + c x := by
-  have h : ∀ t x, ∂ₜ (fun t => (E t x)) t + (√(μ • ε))⁻¹ • ∂ₜ (fun t => s ⨯ₑ₃ (B t x)) t = 0 := by
+    (E t x) = - (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x)) + c x := by
+  have h : ∀ t x, ∂ₜ (fun t => (E t x)) t + (√(μ • ε))⁻¹ •
+      ∂ₜ (fun t => s.unit ⨯ₑ₃ (B t x)) t = 0 := by
     intro t x
     rw [time_deriv_electricPlaneWave_eq_cross_time_deriv_magneticPlaneWave
         OM hc hBwave h' hm]
@@ -300,7 +304,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
     · exact time_differentiable_of_eq_planewave h' hBwave
   unfold Time.deriv at h
   have hderiv : ∀ t x, _root_.deriv (fun t => (E t x) +
-      (√(μ • ε))⁻¹ • (s ⨯ₑ₃ (B t x))) t = 0 := by
+      (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x))) t = 0 := by
     intro t x
     rw [_root_.deriv_add, _root_.deriv_smul]
     simp_all
@@ -309,7 +313,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
     · apply DifferentiableAt.const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
-  use fun x => (E 0 x) + (√(μ • ε))⁻¹ • (s ⨯ₑ₃ B 0 x)
+  use fun x => (E 0 x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ B 0 x)
   intro t x
   have ht' := fun t => hderiv t x
   apply is_const_of_deriv_eq_zero at ht'
@@ -324,14 +328,14 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
 
 /-- An electric planewave induces an magnetic field equal to `s ×₃ E` plus a constant field. -/
 lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
-    {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {s : Space} {hs : inner ℝ s s = (1:ℝ)}
+    {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {s : Direction}
     {E : ElectricField} {B : MagneticField} (hc : c = (√(μ • ε))⁻¹)
-    (hEwave : E = electricPlaneWave E₀ c s hs) (h' : Differentiable ℝ E₀)
+    (hEwave : E = electricPlaneWave E₀ c s) (h' : Differentiable ℝ E₀)
     (hm : OM.FreeMaxwellEquations E B) (hB : Differentiable ℝ ↿B) :
     ∃ (c : Space → EuclideanSpace ℝ (Fin 3)), ∀ t x,
-    (B t x) = (√(μ • ε)) • (s ⨯ₑ₃ (E t x)) + c x := by
+    (B t x) = (√(μ • ε)) • (s.unit ⨯ₑ₃ (E t x)) + c x := by
   have h : ∀ t x, ∂ₜ (fun t => (B t x)) t -
-      (√(μ • ε)) • ∂ₜ (fun t => s ⨯ₑ₃ (E t x)) t = 0 := by
+      (√(μ • ε)) • ∂ₜ (fun t => s.unit ⨯ₑ₃ (E t x)) t = 0 := by
     intro t x
     rw [time_deriv_magneticPlaneWave_eq_cross_time_deriv_electricPlaneWave
         OM hc hEwave h' hm]
@@ -340,20 +344,20 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
     · exact time_differentiable_of_eq_planewave h' hEwave
   unfold Time.deriv at h
   have hderiv : ∀ t x, fderiv ℝ (fun t => (B t x) -
-      (√(μ • ε)) • (s ⨯ₑ₃ (E t x))) t = 0 := by
+      (√(μ • ε)) • (s.unit ⨯ₑ₃ (E t x))) t = 0 := by
     intro t x
     ext1
     rw [fderiv_sub]
     rw [fderiv_const_smul]
     change (fderiv ℝ (fun t => B t x) t 1) -
-        ((√(μ • ε)) • fderiv ℝ (fun t => (s ⨯ₑ₃ (E t x))) t 1) = _
+        ((√(μ • ε)) • fderiv ℝ (fun t => (s.unit ⨯ₑ₃ (E t x))) t 1) = _
     rw [h]
     simp only [PiLp.zero_apply, ContinuousLinearMap.zero_apply]
     · exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
     · apply DifferentiableAt.const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
-  use fun x => (B 0 x) - (√(μ • ε)) • (s ⨯ₑ₃ E 0 x)
+  use fun x => (B 0 x) - (√(μ • ε)) • (s.unit ⨯ₑ₃ E 0 x)
   intro t x
   have ht' := fun t => hderiv t x
   apply is_const_of_fderiv_eq_zero at ht'
@@ -368,21 +372,21 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
 
 /-- The electric field of an EMwave minus a constant field is transverse. -/
-theorem electricField_transverse_upto_const_of_EMwave {s : Space} {hs : inner ℝ s s = 1}
+theorem electricField_transverse_upto_const_of_EMwave {s : Direction}
     {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
     {E : ElectricField} {B : MagneticField} (hc : c = (√(μ • ε))⁻¹)
-    (hEwave : E = electricPlaneWave E₀ c s hs)
-    (hBwave : B = magneticPlaneWave B₀ c s hs)
+    (hEwave : E = electricPlaneWave E₀ c s)
+    (hBwave : B = magneticPlaneWave B₀ c s)
     (hE' : Differentiable ℝ E₀) (hB' : Differentiable ℝ B₀)
     (hm : OM.FreeMaxwellEquations E B) :
-    ∃ (c : EuclideanSpace ℝ (Fin 3)), ∀ t x, inner ℝ (E t x - c) s = 0 := by
+    ∃ (c : EuclideanSpace ℝ (Fin 3)), ∀ t x, inner ℝ (E t x - c) s.unit = 0 := by
   have hdifferentiableE := differentiable_uncurry_of_eq_planewave hEwave hE'
   have hct := transverse_upto_time_fun_of_eq_electricPlaneWave OM hEwave hE' hm
   have hcx' := electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
     OM hc hBwave hB' hm hdifferentiableE
   obtain ⟨ct, hct⟩ := hct
   obtain ⟨cx, hcx'⟩ := hcx'
-  have hcx : ∀ t x, inner ℝ (E t x) s = inner ℝ (cx x) s := by
+  have hcx : ∀ t x, inner ℝ (E t x) s.unit = inner ℝ (cx x) s.unit := by
     intro t x
     rw [hcx']
     simp only [smul_eq_mul, neg_smul, PiLp.inner_apply, PiLp.add_apply, PiLp.neg_apply,
@@ -401,21 +405,21 @@ theorem electricField_transverse_upto_const_of_EMwave {s : Space} {hs : inner �
   simp
 
 /-- The magnetic field of an EMwave minus a constant field is transverse. -/
-theorem magneticField_transverse_upto_const_of_EMwave {s : Space} {hs : inner ℝ s s = 1}
+theorem magneticField_transverse_upto_const_of_EMwave {s : Direction}
     {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
     {E : ElectricField} {B : MagneticField} (hc : c = (√(μ • ε))⁻¹)
-    (hEwave : E = electricPlaneWave E₀ c s hs)
-    (hBwave : B = magneticPlaneWave B₀ c s hs)
+    (hEwave : E = electricPlaneWave E₀ c s)
+    (hBwave : B = magneticPlaneWave B₀ c s)
     (hE' : Differentiable ℝ E₀) (hB' : Differentiable ℝ B₀)
     (hm : OM.FreeMaxwellEquations E B) :
-    ∃ (c : EuclideanSpace ℝ (Fin 3)), ∀ t x, inner ℝ (B t x - c) s = 0 := by
+    ∃ (c : EuclideanSpace ℝ (Fin 3)), ∀ t x, inner ℝ (B t x - c) s.unit = 0 := by
   have hdifferentiableB := differentiable_uncurry_of_eq_planewave hBwave hB'
   have hct := transverse_upto_time_fun_of_eq_magneticPlaneWave OM hBwave hB' hm
   have hcx' := magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
     OM hc hEwave hE' hm hdifferentiableB
   obtain ⟨ct, hct⟩ := hct
   obtain ⟨cx, hcx'⟩ := hcx'
-  have hcx : ∀ t x, inner ℝ (B t x) s = inner ℝ (cx x) s := by
+  have hcx : ∀ t x, inner ℝ (B t x) s.unit = inner ℝ (cx x) s.unit := by
     intro t x
     rw [hcx']
     simp only [smul_eq_mul, neg_smul, PiLp.inner_apply, PiLp.add_apply, PiLp.neg_apply,
@@ -436,21 +440,20 @@ theorem magneticField_transverse_upto_const_of_EMwave {s : Space} {hs : inner �
 
 /-- `E + s ⨯ₑ₃ B` is constant for an EMwave. -/
 lemma electricField_add_cross_magneticField_eq_const_of_planeWave
-    {s : Space} {hs : inner ℝ s s = 1}
-    {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
+    {s : Direction} {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
     {E : ElectricField} {B : MagneticField} (hc : c = (√(μ • ε))⁻¹)
-    (hEwave : E = electricPlaneWave E₀ c s hs)
-    (hBwave : B = magneticPlaneWave B₀ c s hs)
+    (hEwave : E = electricPlaneWave E₀ c s)
+    (hBwave : B = magneticPlaneWave B₀ c s)
     (hE' : Differentiable ℝ E₀) (hB' : Differentiable ℝ B₀)
     (hm : OM.FreeMaxwellEquations E B) :
     ∃ (Ec : EuclideanSpace ℝ (Fin 3)), ∀ t x,
-    (E t x) + (√(μ • ε))⁻¹ • (s ⨯ₑ₃ (B t x)) = Ec := by
+    (E t x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x)) = Ec := by
   have hc_non_zero : c ≠ 0 := by
     rw [hc]
     simp [ne_of_gt, OM.mu_ge_zero, OM.eps_ge_zero]
   have hcuE' : ∃ (Ecu : ℝ → EuclideanSpace ℝ (Fin 3)), ∀ t x,
-      (E t x) + (√(μ • ε))⁻¹ • (s ⨯ₑ₃ (B t x)) = Ecu (inner ℝ x s - c * t) := by
-    use fun u => E₀ u + (√(μ • ε))⁻¹ • (s ⨯ₑ₃ B₀ u)
+      (E t x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x)) = Ecu (inner ℝ x s.unit - c * t) := by
+    use fun u => E₀ u + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ B₀ u)
     intro t x
     rw [hEwave, hBwave, electricPlaneWave, magneticPlaneWave, planeWave, planeWave]
   have hdifferentiableE := differentiable_uncurry_of_eq_planewave hEwave hE'
@@ -458,33 +461,32 @@ lemma electricField_add_cross_magneticField_eq_const_of_planeWave
     OM hc hBwave hB' hm hdifferentiableE
   obtain ⟨Ecx, hcxE''⟩ := hcxE'
   obtain ⟨Ecu, hcuE⟩ := hcuE'
-  have hcxE : ∀ t x, (E t x) + (√(μ • ε))⁻¹ • (s ⨯ₑ₃ (B t x)) = Ecx x := by
+  have hcxE : ∀ t x, (E t x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x)) = Ecx x := by
     simp [hcxE'']
   use Ecu 0
   intro t x
   rw [hcxE]
-  have hu : inner ℝ x s - c * (c⁻¹ * inner ℝ x s) = 0 := by
+  have hu : inner ℝ x s.unit - c * (c⁻¹ * inner ℝ x s.unit) = 0 := by
     rw [← mul_assoc]
     simp [hc_non_zero]
-  rw [← hu, ← hcuE (c⁻¹ * inner ℝ x s) x, hcxE]
+  rw [← hu, ← hcuE (c⁻¹ * inner ℝ x s.unit) x, hcxE]
 
 /-- `B - s ⨯ₑ₃ E` is constant for an EMwave. -/
 lemma magneticField_sub_cross_electricField_eq_const_of_planeWave
-    {s : Space} {hs : inner ℝ s s = 1}
-    {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
+    {s : Direction} {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
     {E : ElectricField} {B : MagneticField} (hc : c = (√(μ • ε))⁻¹)
-    (hEwave : E = electricPlaneWave E₀ c s hs)
-    (hBwave : B = magneticPlaneWave B₀ c s hs)
+    (hEwave : E = electricPlaneWave E₀ c s)
+    (hBwave : B = magneticPlaneWave B₀ c s)
     (hE' : Differentiable ℝ E₀) (hB' : Differentiable ℝ B₀)
     (hm : OM.FreeMaxwellEquations E B) :
     ∃ (Ec : EuclideanSpace ℝ (Fin 3)), ∀ t x,
-    (B t x) - (√(μ • ε)) • (s ⨯ₑ₃ (E t x)) = Ec := by
+    (B t x) - (√(μ • ε)) • (s.unit ⨯ₑ₃ (E t x)) = Ec := by
   have hc_non_zero : c ≠ 0 := by
     rw [hc]
     simp [ne_of_gt, OM.mu_ge_zero, OM.eps_ge_zero]
   have hcuB' : ∃ (Ecu : ℝ → EuclideanSpace ℝ (Fin 3)), ∀ t x,
-      (B t x) - (√(μ • ε)) • (s ⨯ₑ₃ (E t x)) = Ecu (inner ℝ x s - c * t) := by
-    use fun u => B₀ u - (√(μ • ε)) • (s ⨯ₑ₃ E₀ u)
+      (B t x) - (√(μ • ε)) • (s.unit ⨯ₑ₃ (E t x)) = Ecu (inner ℝ x s.unit - c * t) := by
+    use fun u => B₀ u - (√(μ • ε)) • (s.unit ⨯ₑ₃ E₀ u)
     intro t x
     rw [hEwave, hBwave, electricPlaneWave, magneticPlaneWave, planeWave, planeWave]
   have hdifferentiableB := differentiable_uncurry_of_eq_planewave hBwave hB'
@@ -492,32 +494,33 @@ lemma magneticField_sub_cross_electricField_eq_const_of_planeWave
     OM hc hEwave hE' hm hdifferentiableB
   obtain ⟨Bcx, hcxB''⟩ := hcxB'
   obtain ⟨Bcu, hcuB⟩ := hcuB'
-  have hcxB : ∀ t x, (B t x) - (√(μ • ε)) • (s ⨯ₑ₃ (E t x)) = Bcx x := by
+  have hcxB : ∀ t x, (B t x) - (√(μ • ε)) • (s.unit ⨯ₑ₃ (E t x)) = Bcx x := by
     simp [hcxB'']
   use Bcu 0
   intro t x
   rw [hcxB]
-  have hu : inner ℝ x s - c * (c⁻¹ * inner ℝ x s) = 0 := by
+  have hu : inner ℝ x s.unit - c * (c⁻¹ * inner ℝ x s.unit) = 0 := by
     rw [← mul_assoc]
     simp [hc_non_zero]
-  rw [← hu, ← hcuB (c⁻¹ * inner ℝ x s) x, hcxB]
+  rw [← hu, ← hcuB (c⁻¹ * inner ℝ x s.unit) x, hcxB]
 
 /-- Unit vectors in the direciton of `B`, `E` and `s` form an orthonormal traid for an EMwave
 after subtracting the appropriate constant fields. -/
-theorem orthonormal_triad_of_electromagneticplaneWave {s : Space} {hs : inner ℝ s s = 1}
+theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}
     {E : ElectricField} {B : MagneticField} (hc : c = (√(μ • ε))⁻¹)
-    (hEwave : E = electricPlaneWave E₀ c s hs)
-    (hBwave : B = magneticPlaneWave B₀ c s hs)
+    (hEwave : E = electricPlaneWave E₀ c s)
+    (hBwave : B = magneticPlaneWave B₀ c s)
     (hE' : Differentiable ℝ E₀) (hB' : Differentiable ℝ B₀)
     (hm : OM.FreeMaxwellEquations E B) :
     ∃ (Ep Bp : EuclideanSpace ℝ (Fin 3)), ∀ t x,
     E t x - Ep ≠ 0 ∧ B t x - Bp ≠ 0 →
-    Orthonormal ℝ ![((‖E t x - Ep‖)⁻¹) • (E t x - Ep), ((‖B t x - Bp‖)⁻¹) • (B t x - Bp), s] := by
+    Orthonormal ℝ ![((‖E t x - Ep‖)⁻¹) • (E t x - Ep),
+    ((‖B t x - Bp‖)⁻¹) • (B t x - Bp), s.unit] := by
   obtain ⟨Ec, hEc⟩ := electricField_transverse_upto_const_of_EMwave OM hc hEwave hBwave hE' hB' hm
   obtain ⟨Bcdiff, hBcdiff⟩ := magneticField_sub_cross_electricField_eq_const_of_planeWave
       OM hc hEwave hBwave hE' hB' hm
-  use Ec, Bcdiff + (√(μ • ε)) • (s ⨯ₑ₃ Ec)
+  use Ec, Bcdiff + (√(μ • ε)) • (s.unit ⨯ₑ₃ Ec)
   intro t x h
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, orthonormal_vecCons_iff,
     Fin.forall_fin_succ, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_succ,
@@ -552,5 +555,6 @@ theorem orthonormal_triad_of_electromagneticplaneWave {s : Space} {hs : inner �
     rw [← WithLp.equiv_symm_sub, ← LinearMap.map_sub, ← WithLp.equiv_sub]
     rw [real_inner_comm, inner_self_cross]
     simp
-  · rw [norm_eq_sqrt_real_inner]
-    simp [hs]
+  · exact s.norm
+
+end Electromagnetism

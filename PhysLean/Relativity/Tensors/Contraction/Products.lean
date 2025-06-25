@@ -236,7 +236,7 @@ lemma Pure.prodP_dropPair {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
     simp [map_map_apply]
   | Sum.inr m =>
     simp only [finSumFinEquiv_apply_right]
-    rw [← congr_right (p1.prodP p) _ (Fin.natAdd (n1) (dropPairEmb i j m))
+    rw [← congr_right (p1.prodP p) _ (Fin.natAdd n1 (dropPairEmb i j m))
       (by rw [dropPairEmb_comm_natAdd i j hij.1])]
     simp [map_map_apply]
 

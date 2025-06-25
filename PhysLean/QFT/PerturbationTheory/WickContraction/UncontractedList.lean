@@ -86,7 +86,7 @@ lemma fin_list_sorted_split :
       rw [List.filter_cons_of_pos]
       simp only [List.cons.injEq, true_and]
       have hl' := fin_list_sorted_split l hl.2 i
-      have hx : List.filter (fun x => decide (x.1 < i)) (l) = [] := by
+      have hx : List.filter (fun x => decide (x.1 < i)) l = [] := by
         simp only [List.filter_eq_nil_iff, decide_eq_true_eq, not_lt]
         intro b hb
         have hb' := hl.1 b hb

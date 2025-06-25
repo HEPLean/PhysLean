@@ -41,3 +41,6 @@ lemma memHS_of_parity (ψ : ℝ → ℂ) (hψ : MemHS ψ) : MemHS (parity ψ) :=
       (fun x => ‖ψ (x)‖ ^ 2) (R := (-1 : ℝ)) (by simp)).mpr hψ.right
 
 end HilbertSpace
+end
+end OneDimension
+end QuantumMechanics

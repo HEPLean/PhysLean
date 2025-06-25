@@ -22,8 +22,7 @@ This file provides the definitions and lemmas needed to do this.
 namespace FTheory
 
 namespace SU5U1
-
-variable {I : CodimensionOneConfig}
+open SU5
 
 /-!
 

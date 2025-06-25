@@ -25,8 +25,7 @@ We do this only in the very restrictive case when:
 namespace FTheory
 
 namespace SU5U1
-
-variable {I : CodimensionOneConfig}
+open SU5
 
 /-!
 
@@ -335,6 +334,8 @@ lemma mem_ofCharges_self (I : CodimensionOneConfig) (c : TenQuanta)
 end TenQuanta
 
 namespace Quanta
+
+open SuperSymmetry.SU5
 
 /-- The multiset of `Quanta` obtained from a `Charges`,
   which have a `Fluxes` which do not permit exotics. -/

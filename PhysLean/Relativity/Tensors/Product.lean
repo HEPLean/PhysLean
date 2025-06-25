@@ -534,7 +534,7 @@ lemma prodT_equivariant {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.C}
 lemma Pure.prodP_swap {n n1} {c : Fin n → S.C}
     {c1 : Fin n1 → S.C}
     (p : Pure S c) (p1 : Pure S c1) :
-    Pure.prodP p p1 = permP (prodSwapMap n n1) (prodSwapMap_permCond) (Pure.prodP p1 p) := by
+    Pure.prodP p p1 = permP (prodSwapMap n n1) prodSwapMap_permCond (Pure.prodP p1 p) := by
   ext i
   obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
   match i with
@@ -665,7 +665,7 @@ lemma Pure.prodP_assoc {n n1 n2} {c : Fin n → S.C}
     {c1 : Fin n1 → S.C} {c2 : Fin n2 → S.C}
     (p : Pure S c) (p1 : Pure S c1) (p2 : Pure S c2) :
     prodP (Pure.prodP p p1) p2 =
-    permP (prodAssocMap n n1 n2) (prodAssocMap_permCond) (Pure.prodP p (Pure.prodP p1 p2)) := by
+    permP (prodAssocMap n n1 n2) prodAssocMap_permCond (Pure.prodP p (Pure.prodP p1 p2)) := by
   ext i
   obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
   match i with
@@ -690,9 +690,9 @@ lemma prodT_assoc {n n1 n2} {c : Fin n → S.C}
     {c1 : Fin n1 → S.C} {c2 : Fin n2 → S.C}
     (t : S.Tensor c) (t1 : S.Tensor c1) (t2 : S.Tensor c2) :
     prodT (prodT t t1) t2 =
-    permT (prodAssocMap n n1 n2) (prodAssocMap_permCond) (prodT t (prodT t1 t2)) := by
+    permT (prodAssocMap n n1 n2) prodAssocMap_permCond (prodT t (prodT t1 t2)) := by
   let P (t : S.Tensor c) (t1 : S.Tensor c1) (t2 : S.Tensor c2) := prodT (prodT t t1) t2 =
-    permT (prodAssocMap n n1 n2) (prodAssocMap_permCond) (prodT t (prodT t1 t2))
+    permT (prodAssocMap n n1 n2) prodAssocMap_permCond (prodT t (prodT t1 t2))
   let P1 (t : S.Tensor c) := P t t1 t2
   change P1 t
   refine induction_on_pure ?_
@@ -791,7 +791,7 @@ lemma Pure.prodP_zero_right_permCond {n} {c : Fin n → S.C}
 
 lemma Pure.prodP_zero_right {n} {c : Fin n → S.C}
     {c1 : Fin 0 → S.C} (p : Pure S c) (p0 : Pure S c1) :
-    prodP p p0 = permP id (prodP_zero_right_permCond) p := by
+    prodP p p0 = permP id prodP_zero_right_permCond p := by
   ext i
   obtain ⟨j, hi⟩ := finSumFinEquiv.surjective (Fin.cast (by rfl) i : Fin (n + 0))
   simp only [Nat.add_zero, Fin.cast_eq_self] at hi

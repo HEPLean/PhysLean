@@ -208,7 +208,7 @@ def Trunk.mem (T : Trunk α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) : Prop 
   | .trunk xo branches => xo = x.1 ∧ ∃ branch ∈ branches, branch.mem x.2
 
 instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]
-    (T : Trunk α1 α2 α3 α4) (x :  α1 × α2 × α3 × α4) : Decidable (T.mem x) :=
+    (T : Trunk α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) : Decidable (T.mem x) :=
   match T with
   | .trunk _ branches =>
     haveI : Decidable (∃ branch ∈ branches, branch.mem x.2) := Multiset.decidableExistsMultiset
@@ -216,15 +216,15 @@ instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]
 
 /-- An element of `a : α1 × α2 × α3 × α4` is a member of `FourTree α1 α2 α3 α4` if
   `a` is a member of one of the `Trunk`. -/
-def mem (T : FourTree α1 α2 α3 α4) (x :  α1 × α2 × α3 × α4) : Prop :=
+def mem (T : FourTree α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) : Prop :=
   match T with
   | .root trunks => ∃ trunk ∈ trunks, trunk.mem x
 
 instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]
-    (T : FourTree α1 α2 α3 α4) (x :  α1 × α2 × α3 × α4) : Decidable (T.mem x) :=
+    (T : FourTree α1 α2 α3 α4) (x : α1 × α2 × α3 × α4) : Decidable (T.mem x) :=
   Multiset.decidableExistsMultiset
 
-instance : Membership ( α1 × α2 × α3 × α4) (FourTree α1 α2 α3 α4)where
+instance : Membership (α1 × α2 × α3 × α4) (FourTree α1 α2 α3 α4) where
   mem := mem
 
 instance [DecidableEq α1] [DecidableEq α2] [DecidableEq α3] [DecidableEq α4]

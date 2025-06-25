@@ -16,12 +16,10 @@ namespace FTheory
 
 namespace SU5U1
 
-variable {I : CodimensionOneConfig}
 namespace Charges
-open PotentialTerm
-open ChargeProfile
+
 open CodimensionOneConfig
-open Tree
+open SuperSymmetry.SU5.Charges
 
 set_option maxRecDepth 2400 in
 lemma isComplete_of_mem_nonPhenoConstrainedCharge_same :

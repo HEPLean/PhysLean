@@ -212,3 +212,6 @@ def curveLength (g : RiemannianMetric I n M) (γ : ℝ → M) (t₀ t₁ : ℝ)
 end Curve
 
 end RiemannianMetric
+end
+end RiemannianMetric
+end PseudoRiemannianMetric

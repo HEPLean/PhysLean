@@ -36,7 +36,7 @@ def Leaf.uniqueMap4 : Leaf α4 → Leaf α4
 
 /-- Given a map `f : α4 → α4` the map from `Twig α3 α4 → Twig α3 α4` mapping the underlying
   leafs and deleting any that appear in the original Twig. -/
-def Twig.uniqueMap4 (T : Twig α3 α4)  : Twig α3 α4 :=
+def Twig.uniqueMap4 (T : Twig α3 α4) : Twig α3 α4 :=
   match T with
   | .twig xs leafs =>
     let leafFinst := leafs.map (fun l => match l with
@@ -66,7 +66,7 @@ def Trunk.uniqueMap4 (T : Trunk α1 α2 α3 α4) : Trunk α1 α2 α3 α4 :=
 /-- Given a map `f : α4 → α4` the map from `FourTree α1 α2 α3 α4 → FourTree α1 α2 α3 α4`
   mapping the underlying leafs and deleting any that appear in the original twig of that
   leaf. -/
-def uniqueMap4 (T : FourTree α1 α2 α3 α4) : FourTree α1 α2 α3 α4  :=
+def uniqueMap4 (T : FourTree α1 α2 α3 α4) : FourTree α1 α2 α3 α4 :=
   match T with
   | .root trunks =>
     .root (trunks.map fun ts => (ts.uniqueMap4 f))
@@ -163,7 +163,6 @@ lemma exists_of_mem_uniqueMap4 {T : FourTree α1 α2 α3 α4}
 
 end uniqueMap4
 
-
 /-!
 
 ## uniqueMap3
@@ -174,13 +173,11 @@ section uniqueMap3
 
 variable {α1 α2 α3 α4 : Type} [DecidableEq α2] [DecidableEq α3] [DecidableEq α4] (f : α3 → α3)
 
-
 /-- Given a map `f : α3 → α3` the map from `Twig α3 α4 → Twig α3 α4` mapping the underlying
   first value of the twig. -/
 def Twig.uniqueMap3 (T : Twig α3 α4) : Twig α3 α4 :=
   match T with
   | .twig xs leafs => .twig (f xs) leafs
-
 
 /-- Given a map `f : α3 → α3` the map from `Branch α2 α3 α4 → Branch α2 α3 α4` mapping the
   underlying first value of the twig, and deleting any new leafs that appeared
@@ -210,7 +207,7 @@ def uniqueMap3 (T : FourTree α1 α2 α3 α4) : FourTree α1 α2 α3 α4:=
     .root (trunks.map fun ts => (ts.uniqueMap3 f))
 
 lemma map_mem_uniqueMap3 {T : FourTree α1 α2 α3 α4}
-    (x : α1 × α2 × α3 × α4) (hx : x ∈ T) (f : α3 → α3):
+    (x : α1 × α2 × α3 × α4) (hx : x ∈ T) (f : α3 → α3) :
     (x.1, x.2.1, f x.2.2.1, x.2.2.2) ∈ T.uniqueMap3 f ∨
     (x.1, x.2.1, f x.2.2.1, x.2.2.2) ∈ T := by
   by_cases hnotMem : (x.1, x.2.1, f x.2.2.1, x.2.2.2) ∈ T
@@ -295,7 +292,6 @@ lemma exists_of_mem_uniqueMap3 {T : FourTree α1 α2 α3 α4}
   simp only [true_and]
   apply mem_of_parts trunkT branchT twigT leafI
   all_goals simp_all
-
 
 end uniqueMap3
 

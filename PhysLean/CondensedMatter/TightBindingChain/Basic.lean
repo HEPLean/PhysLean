@@ -364,3 +364,4 @@ lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :
   ring_nf
 
 end TightBindingChain
+end CondensedMatter

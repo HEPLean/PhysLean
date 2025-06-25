@@ -268,3 +268,6 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (
       rw [abs_mul, abs_of_nonneg hx]
 
 end HilbertSpace
+end
+end OneDimension
+end QuantumMechanics

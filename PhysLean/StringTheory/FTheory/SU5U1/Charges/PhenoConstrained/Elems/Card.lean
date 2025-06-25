@@ -15,10 +15,8 @@ namespace SU5U1
 
 variable {I : CodimensionOneConfig}
 namespace Charges
-open PotentialTerm
-open ChargeProfile
+
 open CodimensionOneConfig
-open Tree
 
 lemma nonPhenoConstrainedCharges_same_card : (nonPhenoConstrainedCharges same).card = 1148 := by
   rfl
