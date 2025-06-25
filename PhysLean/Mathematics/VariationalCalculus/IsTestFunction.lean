@@ -7,6 +7,9 @@ import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
+import PhysLean.ClassicalMechanics.Space.Basic
+import Mathlib.Analysis.Calculus.Gradient.Basic
+import Mathlib.Topology.ContinuousMap.CompactlySupported
 /-!
 
 # Test functions
@@ -26,6 +29,19 @@ open ContDiff InnerProductSpace MeasureTheory
 structure IsTestFunction (f : X → U) where
   smooth : ContDiff ℝ ∞ f
   supp : HasCompactSupport f
+
+/-- A compactly supported continuous map from a test function. -/
+def IsTestFunction.toCompactlySupportedContinuousMap {f : X → U}
+    (hf : IsTestFunction f) : CompactlySupportedContinuousMap X U where
+  toFun := f
+  hasCompactSupport' := hf.supp
+  continuous_toFun := hf.smooth.continuous
+
+lemma IsTestFunction.of_compactlySupportedContinuousMap {f : CompactlySupportedContinuousMap X U}
+    (hf : ContDiff ℝ ∞ f) :
+    IsTestFunction f.toFun where
+  smooth := hf
+  supp := f.hasCompactSupport'
 
 @[fun_prop]
 lemma IsTestFunction.integrable [MeasurableSpace X] [OpensMeasurableSpace X]
@@ -47,6 +63,18 @@ lemma IsTestFunction.deriv {f : ℝ → U} (hf : IsTestFunction f) :
     IsTestFunction (fun x => deriv f x) where
   smooth := deriv' hf.smooth
   supp := HasCompactSupport.deriv hf.supp
+
+@[fun_prop]
+lemma IsTestFunction.of_fderiv {f : X → U} (hf : IsTestFunction f) :
+    IsTestFunction (fderiv ℝ f ·) where
+  smooth := by
+    apply ContDiff.fderiv (m := ∞)
+    · fun_prop
+    · fun_prop
+    · exact Preorder.le_refl (∞ + 1)
+  supp := by
+    apply HasCompactSupport.fderiv
+    exact hf.supp
 
 @[fun_prop]
 lemma IsTestFunction.fderiv_apply {f : X → U} (hf : IsTestFunction f) (δx : X) :
@@ -131,3 +159,113 @@ lemma IsTestFunction.smul_right {f : X → ℝ} {g : X → U}
     (hf : IsTestFunction f) (hg : ContDiff ℝ ∞ g) : IsTestFunction (fun x => f x • g x) where
   smooth := ContDiff.smul hf.smooth hg
   supp := HasCompactSupport.smul_right hf.supp
+
+@[fun_prop]
+lemma IsTestFunction.linearMap_comp {f : X → V} (hf : IsTestFunction f)
+    {g : V →ₗ[ℝ] U} (hg : ContDiff ℝ ∞ g) :
+    IsTestFunction (fun x => g (f x)) where
+  smooth := ContDiff.comp hg hf.smooth
+  supp := by
+    have hf' := hf.supp
+    rw [← exists_compact_iff_hasCompactSupport] at hf' ⊢
+    obtain ⟨K, cK, hK⟩ := hf'
+    refine ⟨K, cK, fun x hx => ?_⟩
+    rw [hK x hx]
+    simp
+
+@[fun_prop]
+lemma IsTestFunction.family_linearMap_comp {f : X → V} (hf : IsTestFunction f)
+    {g : X → V →L[ℝ] U} (hg : ContDiff ℝ ∞ g) :
+    IsTestFunction (fun x => g x (f x)) where
+  smooth := by
+    fun_prop
+  supp := by
+    have hf' := hf.supp
+    rw [← exists_compact_iff_hasCompactSupport] at hf' ⊢
+    obtain ⟨K, cK, hK⟩ := hf'
+    refine ⟨K, cK, fun x hx => ?_⟩
+    rw [hK x hx]
+    simp
+
+lemma IsTestFunction.gradient {d : ℕ} (φ : Space d → ℝ)
+    (hφ : IsTestFunction φ) :
+    IsTestFunction (gradient φ) where
+  smooth := by
+    rw [@contDiff_euclidean]
+    simp [_root_.gradient]
+    rw [← contDiff_euclidean]
+    apply ContDiff.fun_comp
+    · apply LinearIsometryEquiv.contDiff
+    · have hφ := hφ.smooth
+      fun_prop
+  supp := by
+    have hg : _root_.gradient φ = fun x => (toDual ℝ (Space d)).symm (fderiv ℝ φ x) := by
+      exact rfl
+    rw [hg]
+    have hf : HasCompactSupport (fun x => fderiv ℝ φ x) := by
+      exact supp (of_fderiv hφ)
+    rw [← exists_compact_iff_hasCompactSupport] at hf ⊢
+    obtain ⟨K, cK, hK⟩ := hf
+    refine ⟨K, cK, fun x hx => ?_⟩
+    rw [hK x hx]
+    simp
+
+@[fun_prop]
+lemma IsTestFunction.of_div {d : ℕ} (φ : Space d → Space d)
+    (hφ : IsTestFunction φ) :
+    IsTestFunction (Space.div φ) := by
+  let f (i : Fin d) : CompactlySupportedContinuousMap (Space d) ℝ := {
+      toFun := fun x => Space.deriv i (fun x => Space.coord i (φ x)) x
+      hasCompactSupport' := by
+        apply supp
+        simp [Space.deriv]
+        refine fderiv_apply ?_ (EuclideanSpace.single i 1)
+        constructor
+        · unfold Space.coord
+          apply ContDiff.inner
+          · fun_prop
+          · fun_prop
+        have h1 := hφ.supp
+        rw [← exists_compact_iff_hasCompactSupport] at h1 ⊢
+        obtain ⟨K, cK, hK⟩ := h1
+        refine ⟨K, cK, fun x hx => ?_⟩
+        rw [hK x hx]
+        simp [Space.coord]
+      continuous_toFun := by
+        simp [Space.deriv]
+        apply ContDiff.continuous (𝕜 := ℝ) (n := ∞)
+        apply ContDiff.fderiv_apply (m := ∞)
+        · apply ContDiff.comp
+          · unfold Space.coord
+            apply ContDiff.inner
+            · fun_prop
+            · fun_prop
+          · fun_prop
+        · fun_prop
+        · fun_prop
+        · exact Preorder.le_refl (∞ + 1)
+        }
+  let g := ∑ i, f i
+  have h1 :  (Space.div φ) = g := by
+    funext x
+    simp [g, CompactlySupportedContinuousMap.sum_apply, f]
+    unfold Space.div
+    simp
+  rw [h1]
+  apply IsTestFunction.of_compactlySupportedContinuousMap
+  rw [← h1]
+  unfold Space.div
+  simp
+  apply ContDiff.sum
+  intro i _
+  simp [Space.deriv]
+  apply ContDiff.fderiv_apply (m := ∞)
+  · apply ContDiff.comp
+    · unfold Space.coord
+      apply ContDiff.inner
+      · fun_prop
+      · fun_prop
+    · fun_prop
+  · fun_prop
+  · fun_prop
+  · exact Preorder.le_refl (∞ + 1)

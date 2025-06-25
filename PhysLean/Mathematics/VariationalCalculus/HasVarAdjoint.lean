@@ -460,13 +460,15 @@ lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X} (f : X → 
     (hf : ContDiff ℝ ∞ f) :
     HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => (f x).adjoint (ψ x)) μ  where
   test_fun_preserving φ hφ := by
-    constructor
-    · fun_prop
-    · sorry
+    apply IsTestFunction.family_linearMap_comp
+    · exact hφ
+    · exact hf
   test_fun_preserving' φ hφ := by
-    constructor
-    · sorry
-    · sorry
+    apply IsTestFunction.family_linearMap_comp
+    · exact hφ
+    · apply ContDiff.comp
+      · apply LinearIsometryEquiv.contDiff
+      · exact hf
   adjoint φ ψ hφ hψ := by
     simp[ContinuousLinearMap.adjoint_inner_right]
   ext := by
@@ -532,7 +534,7 @@ lemma fderiv_apply {dx} {μ : Measure X}
 
 protected lemma gradient {d} :
     HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
-  test_fun_preserving φ hφ := by sorry
+  test_fun_preserving φ hφ := IsTestFunction.gradient φ hφ
   test_fun_preserving' φ hφ := by sorry
   adjoint φ ψ hφ hψ := by
     simp [gradient,Space.div,Space.deriv,Space.coord]
