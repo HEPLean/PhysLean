@@ -43,26 +43,17 @@ See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. 
 Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
 
 
-## Some parts of PhysLean
+## Places in the project to start
 PhysLean _currently_ includes, but is not limited to, the following parts:
 
-__Lorentz [🗂️](https://physlean.com/docs/PhysLean/Relativity/Lorentz/Group/Basic.html):__  The Lorentz group, Lorentz algebra, Weyl fermions, Real Lorentz vectors, complex Lorentz vectors, complex Lorentz tensors, bispinors, Pauli matrices, etc.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Electromagnetism/MaxwellEquations.lean) Maxwell's equations in electromagnetism.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QuantumMechanics/OneDimension/HarmonicOscillator/Basic.lean) Quantum Harmonic Oscillator in quantum mechanics.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/StatisticalMechanics/CanonicalEnsemble/TwoState.lean) The two state canonical ensemble in statistical mechanics.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/CondensedMatter/TightBindingChain/Basic.lean) The tight-binding model in condensed matter physics
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Relativity/Special/TwinParadox/Basic.lean) The twin paradox in special relativity.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean) The two-Higgs doublet model in particle physics
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QFT/PerturbationTheory/WickAlgebra/WicksTheorem.lean) Wick's theorem in quantum field theory.
 
-__Index notation [🗂️](https://physlean.com/docs/PhysLean/Relativity/Tensors/OverColor/Basic.html) [📄](https://arxiv.org/abs/2411.07667):__  Formalization of index notation using category theory allowing commands like
-
-```Lean
-{A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ
-```
-
-__Anomaly cancellation [🗂️](https://physlean.com/docs/PhysLean/QFT/AnomalyCancellation/Basic.html):__  Results related to solutions to the anomaly cancellation conditions of several theories.
-
-__Standard Model physics [🗂️](https://physlean.com/docs/PhysLean/Particles/StandardModel/Basic.html):__ Properties of the Higgs potential.
-
-__BSM physics [🗂️](https://physlean.com/docs/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.html):__ Starts to: Georgi Glashow model, Pati-Salam, Spin(10), Two Higgs doublet model.
-
-__Flavor physics [🗂️](https://physlean.com/docs/PhysLean/Particles/FlavorPhysics/CKMMatrix/Basic.html):__ Properties of the CKM matrix.
-
-__Perturbation Theory [🗂️](https://physlean.com/docs/PhysLean/QFT/PerturbationTheory/WickContraction/Basic.html):__ Time-dependent version of Wick's theorem for both fermions and bosons.
 
 ## Associated media and publications
 - [📄](https://arxiv.org/abs/2405.08863) Joseph Tooby-Smith,
