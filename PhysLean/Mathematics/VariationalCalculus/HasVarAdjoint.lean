@@ -473,7 +473,9 @@ lemma clm_apply
     simp_rw[adjoint_eq_clm_adjoint]
     apply IsTestFunction.family_linearMap_comp
     · exact hφ
-    · sorry
+    · apply ContDiff.fun_comp
+      · fun_prop
+      · sorry
   adjoint φ ψ hφ hψ := by
     congr; funext x
     symm; apply HasAdjoint.adjoint_inner_right
@@ -668,14 +670,48 @@ lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
       (fun φ x => (F φ x, G φ x))
       (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) := sorry
 
-lemma fst {F : (X → U) → (X → W×V)}
+lemma fst {F'} {F : (X → U) → (X → W×V)}
     (hF : HasVarAdjoint F F') :
     HasVarAdjoint
       (fun φ x => (F φ x).1)
-      (fun φ x => F' (fun x' => (φ x', 0)) x) := sorry
+      (fun φ x => F' (fun x' => (φ x', 0)) x) where
+  test_fun_preserving _ hφ := by
+    apply IsTestFunction.prod_fst
+    exact hF.test_fun_preserving _ hφ
+  test_fun_preserving' y hφ := by
+    apply hF.test_fun_preserving' (fun x' => (y x', 0))
+    constructor
+    · fun_prop
+    · have h1 := hφ.supp
+      rw [← exists_compact_iff_hasCompactSupport] at h1 ⊢
+      obtain ⟨K, cK, hK⟩ := h1
+      refine ⟨K, cK, fun x hx => ?_⟩
+      rw [hK x hx]
+      rfl
+  adjoint φ ψ hφ hψ := by
+    sorry
+  ext := by sorry
 
-lemma snd {F : (X → U) → (X → W×V)}
+
+lemma snd {F'} {F : (X → U) → (X → W×V)}
     (hF : HasVarAdjoint F F') :
     HasVarAdjoint
       (fun φ x => (F φ x).2)
-      (fun φ x => F' (fun x' => (0, φ x')) x) := sorry
+      (fun φ x => F' (fun x' => (0, φ x')) x) where
+  test_fun_preserving _ hφ := by
+    apply IsTestFunction.prod_snd
+    exact hF.test_fun_preserving _ hφ
+  test_fun_preserving' y hφ := by
+    apply hF.test_fun_preserving' (fun x' => (0, y x'))
+    constructor
+    · fun_prop
+    · have h1 := hφ.supp
+      rw [← exists_compact_iff_hasCompactSupport] at h1 ⊢
+      obtain ⟨K, cK, hK⟩ := h1
+      refine ⟨K, cK, fun x hx => ?_⟩
+      rw [hK x hx]
+      rfl
+  adjoint φ ψ hφ hψ := by
+    sorry
+  ext := by
+    sorry

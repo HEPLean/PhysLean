@@ -271,3 +271,23 @@ lemma IsTestFunction.of_div {d : ℕ} (φ : Space d → Space d)
   · fun_prop
   · fun_prop
   · exact Preorder.le_refl (∞ + 1)
+
+@[fun_prop]
+lemma IsTestFunction.prod_fst {f : X → U × V} (hf : IsTestFunction f) :
+    IsTestFunction (fun x => (f x).1) where
+  smooth := by
+    fun_prop
+  supp := by
+    have hf' := hf.supp
+    rw [hasCompactSupport_iff_eventuallyEq] at hf' ⊢
+    exact hf'.mono fun x hx => by simp [hx]
+
+@[fun_prop]
+lemma IsTestFunction.prod_snd {f : X → U × V} (hf : IsTestFunction f) :
+    IsTestFunction (fun x => (f x).2) where
+  smooth := by
+    fun_prop
+  supp := by
+    have hf' := hf.supp
+    rw [hasCompactSupport_iff_eventuallyEq] at hf' ⊢
+    exact hf'.mono fun x hx => by simp [hx]
