@@ -541,8 +541,8 @@ lemma fderiv_apply {dx}
 
 lemma adjFDeriv_apply
    [InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y]
-   [ProperSpace X] [BorelSpace Y] [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure] {dy} :
-   HasVarAdjoint (fun φ : X → Y => (adjFDeriv ℝ φ · dy)) (fun φ x => - divergence ℝ φ x • dy) where
+   [ProperSpace X] [BorelSpace X] [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure] {dy} :
+   HasVarAdjoint (fun φ : X → Y => (adjFDeriv ℝ φ · dy)) (fun ψ x => - divergence ℝ ψ x • dy) where
   test_fun_preserving φ hφ := by sorry
   test_fun_preserving' φ hφ := by sorry
   ext := by
@@ -566,11 +566,31 @@ lemma adjFDeriv_apply
         · intro x hx
           have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
           exact hφ x hx'
-      intro x hx; dsimp; congr 1
-      sorry
-      -- rw [Filter.EventuallyEq.fderiv_eq (h x hx)]
+      intro x hx; dsimp[divergence]; congr 4
+      rw [Filter.EventuallyEq.fderiv_eq (h x hx)]
   adjoint φ ψ hφ hψ := by
-    sorry
+    have basisX : Basis (Fin (Module.finrank ℝ X)) ℝ X := sorry
+    let bX := fun x => basisX x
+    let bX' := basisX.equivFunL
+    calc _ = ∫ (y : X), ⟪dy, fderiv ℝ φ y (ψ y)⟫_ℝ := sorry
+         _ = ∑ i, ∫ (y : X), bX' (ψ y) i * fderiv ℝ (fun y' => ⟪dy, φ y' ⟫_ℝ) y (bX i) := by
+           -- rewrite `ψ y = ∑ i, bX' (ψ y) i • bX i
+           -- and apply `fderiv_inner_apply'`
+           sorry
+         _ = ∑ i, ∫ (y : X), - fderiv ℝ (fun y' => bX' (ψ y') i) y (bX i) * ⟪dy, φ y⟫_ℝ := by
+           congr; funext i
+           rw[integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
+           · simp[integral_neg]
+           · sorry
+           · sorry
+           · sorry
+           · sorry
+           · sorry
+         _ = ∫ (y : X), - (∑ i, fderiv ℝ (fun y' => bX' (ψ y') i) y (bX i)) * ⟪dy, φ y⟫_ℝ := sorry
+         _ = _ := by
+           -- just apply theorem stating divergence expressed in basis
+           sorry
+
 
 protected lemma gradient {d} :
     HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
