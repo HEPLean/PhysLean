@@ -8,6 +8,7 @@ import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.InnerProductSpace.ProdL2
+import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 
 import PhysLean.ClassicalMechanics.Space.Basic
 import PhysLean.Mathematics.VariationalCalculus.Basic
@@ -109,14 +110,26 @@ protected lemma deriv :
   adjoint φ ψ hφ hψ := by
     trans ∫ (x : ℝ), ⟪deriv φ x, ψ x⟫_ℝ
     · congr
-    suffices ∫ (x : ℝ), deriv (fun x' => ⟪φ x', ψ x'⟫_ℝ) x = 0 by sorry
-    rw[MeasureTheory.integral_of_hasDerivAt_of_tendsto (m:=0) (n:=0)
-       (f:=(fun x' => ⟪φ x', ψ x'⟫_ℝ))]
-    · simp
-    · sorry
-    · sorry
-    · sorry
-    · sorry
+    suffices ∫ (x : ℝ), deriv (fun x' => ⟪φ x', ψ x'⟫_ℝ) x = 0 by
+      rw [← sub_eq_zero, ← integral_sub, ← this]
+      congr
+      funext a
+      rw [deriv_inner_apply]
+      simp
+      ring
+      · exact hφ.differentiable a
+      · exact hψ.differentiable a
+      · apply IsTestFunction.integrable
+        fun_prop
+      · apply IsTestFunction.integrable
+        fun_prop
+    apply MeasureTheory.integral_eq_zero_of_hasDerivAt_of_integrable
+      (f:=(fun x' => ⟪φ x', ψ x'⟫_ℝ))
+    · intro x
+      rw [hasDerivAt_deriv_iff]
+      exact DifferentiableAt.inner ℝ (hφ.differentiable x) (hψ.differentiable  x)
+    · fun_prop
+    · apply IsTestFunction.integrable (IsTestFunction.inner hφ hψ)
   ext := by
     intro K cK
     use (Metric.cthickening 1 K)
@@ -460,9 +473,62 @@ lemma clm_apply [CompleteSpace U] [CompleteSpace V] {μ : Measure X} (f : X → 
    intro K cK
    exact ⟨K, cK, subset_refl _, by intro _ _ hφ _ _; simp_all⟩
 
-lemma fderiv_apply {d} {dx} :
-    HasVarAdjoint (fun φ : Space d → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) :=
-  sorry
+lemma fderiv_apply {dx} {μ : Measure X}
+   [InnerProductSpace ℝ X] [ProperSpace X] [BorelSpace X]
+   [FiniteDimensional ℝ X] [μ.IsAddHaarMeasure] :
+    HasVarAdjoint (fun φ : X → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) μ where
+  test_fun_preserving φ hφ := by fun_prop
+  test_fun_preserving' φ hφ := by fun_prop
+  ext := by
+    intro K cK
+    use (Metric.cthickening 1 K)
+    constructor
+    · exact IsCompact.cthickening cK
+    constructor
+    · exact Metric.self_subset_cthickening K
+    · intro φ φ' hφ
+      have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := by
+        intro x hx
+        apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+        refine mem_interior_iff_mem_nhds.mp ?_
+        rw [@mem_interior]
+        use Metric.thickening 1 K
+        simp only [subset_refl, true_and]
+        apply And.intro
+        · exact Metric.isOpen_thickening
+        · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+          use x
+          simpa using hx
+        · intro x hx
+          have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+          exact hφ x hx'
+      intro x hx; congr 1
+      rw [Filter.EventuallyEq.fderiv_eq (h x hx)]
+  adjoint φ ψ hφ hψ := by
+    rw [← sub_eq_zero]
+    rw [← integral_sub]
+    · trans ∫ (a : X), fderiv ℝ (fun a => ⟪φ a , ψ a⟫_ℝ) a dx ∂μ
+      · congr
+        funext a
+        simp
+        rw [fderiv_inner_apply]
+        rw [add_comm]
+        · exact hφ.differentiable a
+        · exact hψ.differentiable a
+      · have h1 := integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (f := fun a => 1)
+          (g :=  (fun a => ⟪φ a , ψ a⟫_ℝ)) (v := dx) (μ := μ) (by simp) (by
+            simp
+            apply IsTestFunction.integrable
+            fun_prop)
+          (by
+            simp only [one_mul]
+            apply IsTestFunction.integrable
+            fun_prop) (by fun_prop) (IsTestFunction.differentiable (by fun_prop))
+        simpa using h1
+    · apply IsTestFunction.integrable
+      fun_prop
+    · apply IsTestFunction.integrable
+      fun_prop
 
 protected lemma gradient {d} :
     HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
