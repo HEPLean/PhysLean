@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.NormOne
-import PhysLean.Relativity.Lorentz.Group.Proper
+import PhysLean.Relativity.LorentzGroup.Proper
 /-!
 # The Orthochronous Lorentz Group
 

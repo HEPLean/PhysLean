@@ -108,7 +108,6 @@ lemma basis_repr_apply {d : ℕ} (p : Vector d)
   fin_cases j
   simp
 
-
 instance : FiniteDimensional ℝ (Vector d) := by
   apply FiniteDimensional.of_fintype_basis (Tensor.basis _)
 
@@ -271,7 +270,6 @@ lemma timeComponent_basis_castAdd {d : ℕ} :
       Fin.cast (by simp) (Fin.castAdd d (0 : Fin 1)))) = 1 := by
   rw [timeComponent, toCoord_basis_apply]
   simp
-
 
 /-!
 

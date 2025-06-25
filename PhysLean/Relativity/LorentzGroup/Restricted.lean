@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.SemiFormal
-import PhysLean.Relativity.Lorentz.Group.Orthochronous
+import PhysLean.Relativity.LorentzGroup.Orthochronous
 /-!
 # The Restricted Lorentz Group
 
