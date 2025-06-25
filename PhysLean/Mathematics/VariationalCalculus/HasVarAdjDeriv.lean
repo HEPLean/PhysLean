@@ -144,31 +144,22 @@ lemma unique {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
   HasVarAdjoint.unique hF.adjoint hG.adjoint φ hφ
 
 lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
-    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt
-      (fun φ x => (WithLp.equiv 2 _).symm (F φ x, G φ x))
+      (fun φ x => (F φ x, G φ x))
       (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) u := sorry
 
-lemma fst {F : (X → U) → (X → WithLp 2 (W×V))}
-    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+lemma fst {F : (X → U) → (X → W×V)}
     (hF : HasVarAdjDerivAt F F' u) :
     HasVarAdjDerivAt
       (fun φ x => (F φ x).1)
-      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (φ x', 0)) x) u := sorry
+      (fun φ x => F' (fun x' => (φ x', 0)) x) u := sorry
 
-lemma snd {F : (X → U) → (X → WithLp 2 (W×V))}
-    {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
+lemma snd {F : (X → U) → (X → W×V)}
     (hF : HasVarAdjDerivAt F F' u) :
     HasVarAdjDerivAt
       (fun φ x => (F φ x).2)
-      (fun φ x => F' (fun x' => (WithLp.equiv 2 _).symm (0, φ x')) x) u := sorry
-
-lemma fmap [CompleteSpace U] [CompleteSpace V] (f : X → U → V) (hf : ContDiff ℝ ∞ ↿f)
-      (u : X → U) (hu : ContDiff ℝ ∞ u) :
-    HasVarAdjDerivAt
-      (fun (φ : X → U) x => f x (φ x))
-      (fun ψ x => - (fderiv ℝ (f x ·) (u x)).adjoint (ψ x)) u := sorry
+      (fun φ x => F' (fun x' => (0, φ x')) x) u := sorry
 
 attribute [fun_prop] differentiableAt_id'
 
@@ -199,24 +190,27 @@ lemma deriv' (u : ℝ → U) (hu : ContDiff ℝ ∞ u) :
     -- exact fderiv_swap (X:=ℝ) (Y:=ℝ) (Z:=U) (𝕜 := ℝ) φ (0:ℝ) 1 x 1 (ContDiff.of_le hφ (ENat.LEInfty.out))
     sorry
   adjoint := by
-    sorry
-    -- simp (disch:=fun_prop) [deriv_add]
-    -- apply HasVarAdjoint.congr_fun
-    -- case h' =>
-    --   intro φ hφ
-    --   have := hφ.smooth.differentiable (ENat.LEInfty.out)
-    --   have := hu.differentiable (ENat.LEInfty.out)
-    --   simp (disch:=fun_prop) [deriv_add]
-    --   rfl
-    -- case h =>
-    --   apply HasVarAdjoint.deriv
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ
+      have := hφ.smooth.differentiable (ENat.LEInfty.out)
+      have := hu.differentiable (ENat.LEInfty.out)
+      simp (disch:=fun_prop) [deriv_add]
+      -- swap derivs
+      rfl
+    case h =>
+      sorry
+      -- apply HasVarAdjoint.deriv
 
 protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
     HasVarAdjDerivAt (fun φ : ℝ → U => deriv (F φ))
     (fun ψ x => F' (fun x' => - deriv ψ x') x) u :=
   comp (F:=deriv) (G:=F) (hF := deriv' (F u) hF.apply_smooth_self) (hG := hF)
 
-lemma fmap [CompleteSpace U] [CompleteSpace V]
+lemma fmap
+    {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
+    {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    [CompleteSpace U] [CompleteSpace V]
     (f : X → U → V) {f' : X → U → _ }
     (u : X → U) (hu : ContDiff ℝ ∞ u)
     (hf' : ContDiff ℝ ∞ ↿f) (hf : ∀ x u, HasAdjFDerivAt ℝ (f x) (f' x u) u) :
