@@ -44,15 +44,16 @@ Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narr
 
 
 ## Places in the project to start
-PhysLean _currently_ includes, but is not limited to, the following parts:
 
-- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Electromagnetism/MaxwellEquations.lean) Maxwell's equations in electromagnetism.
-- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QuantumMechanics/OneDimension/HarmonicOscillator/Basic.lean) Quantum Harmonic Oscillator in quantum mechanics.
-- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/StatisticalMechanics/CanonicalEnsemble/TwoState.lean) The two state canonical ensemble in statistical mechanics.
-- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/CondensedMatter/TightBindingChain/Basic.lean) The tight-binding model in condensed matter physics
-- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Relativity/Special/TwinParadox/Basic.lean) The twin paradox in special relativity.
-- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean) The two-Higgs doublet model in particle physics
-- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QFT/PerturbationTheory/WickAlgebra/WicksTheorem.lean) Wick's theorem in quantum field theory.
+Good places to start an exploration of the project. 
+
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Electromagnetism/MaxwellEquations.lean) **Maxwell's equations** in electromagnetism.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QuantumMechanics/OneDimension/HarmonicOscillator/Basic.lean) **Quantum Harmonic Oscillator** in quantum mechanics.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/StatisticalMechanics/CanonicalEnsemble/TwoState.lean) The two state **canonical ensemble** in statistical mechanics.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/CondensedMatter/TightBindingChain/Basic.lean) The **tight-binding model** in condensed matter physics
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Relativity/Special/TwinParadox/Basic.lean) The **twin paradox** in special relativity.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean) The **two-Higgs doublet model** in particle physics
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QFT/PerturbationTheory/WickAlgebra/WicksTheorem.lean) **Wick's theorem** in quantum field theory.
 
 
 ## Associated media and publications
