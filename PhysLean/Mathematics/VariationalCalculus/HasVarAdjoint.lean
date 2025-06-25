@@ -535,7 +535,7 @@ lemma fderiv_apply {dx} {μ : Measure X}
 protected lemma gradient {d} :
     HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
   test_fun_preserving φ hφ := IsTestFunction.gradient φ hφ
-  test_fun_preserving' φ hφ := by sorry
+  test_fun_preserving' φ hφ := by fun_prop
   adjoint φ ψ hφ hψ := by
     simp [gradient,Space.div,Space.deriv,Space.coord]
     have := hψ.differentiable
