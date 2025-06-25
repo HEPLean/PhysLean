@@ -7,7 +7,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
 import PhysLean.Relativity.Lorentz.Group.Boosts.Basic
 /-!
 
-## Boosts of Lorentz vectors
+## Boosts applied to Lorentz vectors
 
 These recover what one would describe as the ordinary Lorentz transformations
 of Lorentz vectors.

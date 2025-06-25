@@ -202,6 +202,7 @@ import PhysLean.Relativity.CliffordAlgebra
 import PhysLean.Relativity.Lorentz.Algebra.Basic
 import PhysLean.Relativity.Lorentz.Algebra.Basis
 import PhysLean.Relativity.Lorentz.Group.Basic
+import PhysLean.Relativity.Lorentz.Group.Boosts.Apply
 import PhysLean.Relativity.Lorentz.Group.Boosts.Basic
 import PhysLean.Relativity.Lorentz.Group.Boosts.Generalized
 import PhysLean.Relativity.Lorentz.Group.Orthochronous
@@ -261,7 +262,6 @@ import PhysLean.Relativity.Tensors.RealTensor.Metrics.Pre
 import PhysLean.Relativity.Tensors.RealTensor.ToComplex
 import PhysLean.Relativity.Tensors.RealTensor.Units.Pre
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
-import PhysLean.Relativity.Tensors.RealTensor.Vector.Boosts
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.LightLike
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.TimeLike
