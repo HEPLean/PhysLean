@@ -71,6 +71,15 @@ lemma fderiv_uncurry_clm_comp (f : X → Y → Z) (hf : Differentiable 𝕜 (↿
     ContinuousLinearMap.coe_fst', Function.comp_apply, ContinuousLinearMap.coe_snd']
   fun_prop
 
+lemma fderiv_wrt_prod {f : X × Y → Z} {xy} (hf : DifferentiableAt 𝕜 f xy) :
+    fderiv 𝕜 f xy
+    =
+    (fderiv 𝕜 (fun x' => f (x',xy.2)) xy.1).comp (ContinuousLinearMap.fst 𝕜 X Y)
+    +
+    (fderiv 𝕜 (fun y' => f (xy.1,y')) xy.2).comp (ContinuousLinearMap.snd 𝕜 X Y) := by
+  apply ContinuousLinearMap.ext; intro (dx,dy)
+  apply fderiv_uncurry (fun x y => f (x,y)) _ _ hf
+
 lemma fderiv_wrt_prod_clm_comp (f : X × Y → Z) (hf : Differentiable 𝕜 f) :
     fderiv 𝕜 f
     =
