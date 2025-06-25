@@ -1,11 +1,30 @@
 /-
 Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Tomas Skrivan, Joseph Tooby-Smith
+Authors: Tomas Skrivan
 -/
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.NormedSpace.HahnBanach.SeparatingDual
+/-!
+
+# Inner product space
+
+In this module we define the type class `InnerProductSpace' 𝕜 E` which is a
+generalization of `InnerProductSpace 𝕜 E`, as it does not require the condition `‖x‖^2 = ⟪x,x⟫`
+but instead the condition `∃ (c > 0) (d > 0), c • ‖x‖^2 ≤ ⟪x,x⟫ ≤ d • ‖x‖^2`.
+Instead `E` is equipped with a L₂ norm `‖x‖₂` which statifies `‖x‖₂ = √⟪x,x⟫`.
+
+This allows us to define the inner product space structure on product types `E × F` and
+pi types `ι → E`, which would otherwise not be possible due to the use of max norm on these types.
+
+We define the following maps:
+
+- `InnerProductSpace 𝕜 E → InnerProductSpace' 𝕜 E` which sets `‖x‖₂ = ‖x‖`.
+- `InnerProductSpace' 𝕜 E → InnerProductSpace 𝕜 (WithLp 2 E)` which uses the fact that the norm
+  defined on `WithLp 2 E` is L₂ norm.
+
+-/
 
 /-- L₂ norm on `E`.
 
@@ -119,7 +138,7 @@ scoped instance toNormedSpaceWithL2 : NormedSpace 𝕜 (WithLp 2 E) where
     let core : InnerProductSpace.Core (𝕜:=𝕜) (F:=E) := by infer_instance
     apply core.toNormedSpace.norm_smul_le
 
-/-- Attach inner product space structure to `WithLp 2 E`.-/
+/-- Attach inner product space structure to `WithLp 2 E`. -/
 noncomputable
 instance toInnerProductSpaceWithL2 : InnerProductSpace 𝕜 (WithLp 2 E) where
   norm_sq_eq_re_inner := by intros; simp [norm, Real.sq_sqrt,hE.core.re_inner_nonneg]; rfl
@@ -462,5 +481,3 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
       simp [InnerProductSpace.toCore, InnerProductSpace.toInner, PiLp.innerProductSpace]
 
 end Constructions
-
-#check instInnerProd_physLean

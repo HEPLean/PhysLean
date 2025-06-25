@@ -1,11 +1,21 @@
 /-
 Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Tomas Skrivan, Joseph Tooby-Smith
+Authors: Tomas Skrivan
 -/
 import PhysLean.Mathematics.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
+/-!
 
+# Adjoint of a linear map
+
+This module defines the adjoint of a linear map `f : E → F` where
+`E` and `F` carry the instances of `InnerProductSpace'` over a field `𝕜`.
+
+This is a generalization of the usual adjoint defined on `InnerProductSpace` for
+continuous linear maps.
+
+-/
 variable {𝕜 : Type*} {E F G : Type*} [RCLike 𝕜]
   [NormedAddCommGroup E] [NormedSpace 𝕜 E] [InnerProductSpace' 𝕜 E]
   [NormedAddCommGroup F] [NormedSpace 𝕜 F] [InnerProductSpace' 𝕜 F]
@@ -17,7 +27,7 @@ variable (𝕜) in
 /-- Adjoint of a linear map `f` such that `∀ x y, ⟪adjoint 𝕜 f y, x⟫ = ⟪y, f x⟫`.
 
 This computes adjoint of a liner map the same way as `ContinuousLinearMap.adjoint` but it is
-defined over `InnerProductSpace', which is a generalization of `InnerProductSpace` that provides
+defined over `InnerProductSpace'`, which is a generalization of `InnerProductSpace` that provides
 instances for products and function types. These instances make it easier to perform computations
 compared to using the standard `InnerProductSpace` class.
 -/
