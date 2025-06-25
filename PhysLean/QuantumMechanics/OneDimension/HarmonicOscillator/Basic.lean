@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
 import PhysLean.Meta.TODO.Basic
+import PhysLean.QuantumMechanics.PlanckConstant
 /-!
 
 # 1d Harmonic Oscillator
@@ -59,39 +60,32 @@ namespace OneDimension
 structure HarmonicOscillator where
   /-- The mass of the particle. -/
   m : ℝ
-  /-- Reduced Planck's constant. -/
-  ℏ : ℝ
   /-- The angular frequency of the harmonic oscillator. -/
   ω : ℝ
-  hℏ : 0 < ℏ
   hω : 0 < ω
   hm : 0 < m
 
 namespace HarmonicOscillator
-
+open Constants
 open PhysLean HilbertSpace
 open MeasureTheory
 
 variable (Q : HarmonicOscillator)
 
 @[simp]
-lemma m_mul_ω_div_two_ℏ_pos : 0 < Q.m * Q.ω / (2 * Q.ℏ) := by
+lemma m_mul_ω_div_two_ℏ_pos : 0 < Q.m * Q.ω / (2 * ℏ) := by
   apply div_pos
   · exact mul_pos Q.hm Q.hω
-  · exact mul_pos (by norm_num) Q.hℏ
+  · exact mul_pos (by norm_num) ℏ_pos
 
 @[simp]
-lemma m_mul_ω_div_ℏ_pos : 0 < Q.m * Q.ω / Q.ℏ := by
+lemma m_mul_ω_div_ℏ_pos : 0 < Q.m * Q.ω / ℏ := by
   apply div_pos
   · exact mul_pos Q.hm Q.hω
-  · exact Q.hℏ
+  · exact ℏ_pos
 
 lemma m_ne_zero : Q.m ≠ 0 := by
   have h1 := Q.hm
-  linarith
-
-lemma ℏ_ne_zero : Q.ℏ ≠ 0 := by
-  have h1 := Q.hℏ
   linarith
 
 /-!
@@ -102,7 +96,7 @@ lemma ℏ_ne_zero : Q.ℏ ≠ 0 := by
 
 /-- The characteristic length `ξ` of the harmonic oscillator is defined
   as `√(ℏ /(m ω))`. -/
-noncomputable def ξ : ℝ := √(Q.ℏ / (Q.m * Q.ω))
+noncomputable def ξ : ℝ := √(ℏ / (Q.m * Q.ω))
 
 lemma ξ_nonneg : 0 ≤ Q.ξ := Real.sqrt_nonneg _
 
@@ -111,31 +105,31 @@ lemma ξ_pos : 0 < Q.ξ := by
   rw [ξ]
   apply Real.sqrt_pos.mpr
   apply div_pos
-  · exact Q.hℏ
+  · exact ℏ_pos
   · exact mul_pos Q.hm Q.hω
 
 @[simp]
 lemma ξ_ne_zero : Q.ξ ≠ 0 := Ne.symm (_root_.ne_of_lt Q.ξ_pos)
 
-lemma ξ_sq : Q.ξ^2 = Q.ℏ / (Q.m * Q.ω) := by
+lemma ξ_sq : Q.ξ^2 = ℏ / (Q.m * Q.ω) := by
   rw [ξ]
   apply Real.sq_sqrt
   apply div_nonneg
-  · exact le_of_lt Q.hℏ
+  · exact ℏ_nonneg
   · exact mul_nonneg (le_of_lt Q.hm) (le_of_lt Q.hω)
 
 @[simp]
 lemma ξ_abs : abs Q.ξ = Q.ξ := abs_of_nonneg Q.ξ_nonneg
 
-lemma one_over_ξ : 1/Q.ξ = √(Q.m * Q.ω / Q.ℏ) := by
-  have := Q.hℏ
+lemma one_over_ξ : 1/Q.ξ = √(Q.m * Q.ω / ℏ) := by
+  have := ℏ_pos
   field_simp [ξ]
 
-lemma ξ_inverse : Q.ξ⁻¹ = √(Q.m * Q.ω / Q.ℏ) := by
+lemma ξ_inverse : Q.ξ⁻¹ = √(Q.m * Q.ω / ℏ) := by
   rw [inv_eq_one_div]
   exact one_over_ξ Q
 
-lemma one_over_ξ_sq : (1/Q.ξ)^2 = Q.m * Q.ω / Q.ℏ := by
+lemma one_over_ξ_sq : (1/Q.ξ)^2 = Q.m * Q.ω / ℏ := by
   rw [one_over_ξ]
   refine Real.sq_sqrt (le_of_lt Q.m_mul_ω_div_ℏ_pos)
 
@@ -146,7 +140,7 @@ TODO "6VZH3" "The momentum operator should be moved to a more general file."
 
   The notation `Pᵒᵖ` can be used for the momentum operator. -/
 noncomputable def momentumOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun x => - Complex.I * Q.ℏ * deriv ψ x
+  fun x => - Complex.I * ℏ * deriv ψ x
 
 @[inherit_doc momentumOperator]
 scoped[QuantumMechanics.OneDimension.HarmonicOscillator] notation "Pᵒᵖ" => momentumOperator
@@ -166,10 +160,10 @@ scoped[QuantumMechanics.OneDimension.HarmonicOscillator] notation "Xᵒᵖ" => p
 
   `ψ ↦ - ℏ^2 / (2 * m) * ψ'' + 1/2 * m * ω^2 * x^2 * ψ`. -/
 noncomputable def schrodingerOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun x => - Q.ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) x) + 1/2 * Q.m * Q.ω^2 * x^2 * ψ x
+  fun x => - ℏ ^ 2 / (2 * Q.m) * (deriv (deriv ψ) x) + 1/2 * Q.m * Q.ω^2 * x^2 * ψ x
 
 lemma schrodingerOperator_eq (ψ : ℝ → ℂ) :
-    Q.schrodingerOperator ψ = (- Q.ℏ ^ 2 / (2 * Q.m)) •
+    Q.schrodingerOperator ψ = (- ℏ ^ 2 / (2 * Q.m)) •
     (deriv (deriv ψ)) + (1/2 * Q.m * Q.ω^2) • ((fun x => Complex.ofReal x ^2) * ψ) := by
   funext x
   simp only [schrodingerOperator, one_div, Pi.add_apply, Pi.smul_apply, Complex.real_smul,
@@ -179,11 +173,11 @@ lemma schrodingerOperator_eq (ψ : ℝ → ℂ) :
 
 /-- The schrodinger operator written in terms of `ξ`. -/
 lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
-    fun x => (Q.ℏ ^2 / (2 * Q.m)) * (- (deriv (deriv ψ) x) + (1/Q.ξ^2)^2 * x^2 * ψ x) := by
+    fun x => (ℏ ^2 / (2 * Q.m)) * (- (deriv (deriv ψ) x) + (1/Q.ξ^2)^2 * x^2 * ψ x) := by
   funext x
   simp [schrodingerOperator_eq, ξ_sq, ξ_inverse, ξ_ne_zero, ξ_pos, ξ_abs, ← Complex.ofReal_pow]
   have := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
-  have := Complex.ofReal_ne_zero.mpr Q.ℏ_ne_zero
+  have := Complex.ofReal_ne_zero.mpr ℏ_ne_zero
   field_simp
   ring
 
