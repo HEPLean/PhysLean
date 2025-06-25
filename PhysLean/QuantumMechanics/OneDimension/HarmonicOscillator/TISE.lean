@@ -17,12 +17,10 @@ namespace HarmonicOscillator
 
 variable (Q : HarmonicOscillator)
 
-open Nat
-open PhysLean
-open HilbertSpace
+open Nat PhysLean HilbertSpace Constants
 
 /-- The `n`th eigenvalues for a Harmonic oscillator is defined as `(n + 1/2) * ℏ * ω`. -/
-noncomputable def eigenValue (n : ℕ) : ℝ := (n + 1/2) * Q.ℏ * Q.ω
+noncomputable def eigenValue (n : ℕ) : ℝ := (n + 1/2) * ℏ * Q.ω
 
 /-!
 
@@ -258,7 +256,7 @@ lemma schrodingerOperator_eigenfunction (n : ℕ) (x : ℝ) :
   simp only [schrodingerOperator_eq_ξ, one_div]
   rw [Q.deriv_deriv_eigenfunction]
   have hm' := Complex.ofReal_ne_zero.mpr (Ne.symm (_root_.ne_of_lt Q.hm))
-  have hℏ' := Complex.ofReal_ne_zero.mpr (Ne.symm (_root_.ne_of_lt Q.hℏ))
+  have hℏ' := Complex.ofReal_ne_zero.mpr ℏ_ne_zero
   rw [eigenValue]
   simp only [← Complex.ofReal_pow, ξ_sq]
   field_simp

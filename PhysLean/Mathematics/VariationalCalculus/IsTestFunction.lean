@@ -4,12 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Calculus.Deriv.Support
-import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
-import PhysLean.ClassicalMechanics.Space.Basic
-import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Topology.ContinuousMap.CompactlySupported
+
+import PhysLean.Mathematics.InnerProductSpace.Basic
+import PhysLean.SpaceAndTime.Space.Basic
 /-!
 
 # Test functions
@@ -21,7 +22,7 @@ section IsTestFunction
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X]
   {U} [NormedAddCommGroup U] [NormedSpace ℝ U]
-  {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+  {V} [NormedAddCommGroup V] [NormedSpace ℝ V] -- [InnerProductSpace' ℝ V]
 
 open ContDiff InnerProductSpace MeasureTheory
 /-- A test function is a smooth function with compact support. -/
@@ -96,7 +97,7 @@ lemma IsTestFunction.zero :
   supp := HasCompactSupport.zero
 
 @[fun_prop]
-lemma IsTestFunction.add {f g : X → V} (hf : IsTestFunction f) (hg : IsTestFunction g) :
+lemma IsTestFunction.add {f g : X → U} (hf : IsTestFunction f) (hg : IsTestFunction g) :
     IsTestFunction (fun x => f x + g x) where
   smooth := ContDiff.add hf.smooth hg.smooth
   supp := by
@@ -105,14 +106,14 @@ lemma IsTestFunction.add {f g : X → V} (hf : IsTestFunction f) (hg : IsTestFun
     · exact hg.supp
 
 @[fun_prop]
-lemma IsTestFunction.neg {f : X → V} (hf : IsTestFunction f) :
+lemma IsTestFunction.neg {f : X → U} (hf : IsTestFunction f) :
     IsTestFunction (fun x => - f x) where
   smooth := ContDiff.neg hf.smooth
   supp := by
     apply HasCompactSupport.neg' hf.supp
 
 @[fun_prop]
-lemma IsTestFunction.sub {f g : X → V} (hf : IsTestFunction f) (hg : IsTestFunction g) :
+lemma IsTestFunction.sub {f g : X → U} (hf : IsTestFunction f) (hg : IsTestFunction g) :
     IsTestFunction (f - g) where
   smooth := ContDiff.sub hf.smooth hg.smooth
   supp := by
@@ -128,9 +129,10 @@ lemma IsTestFunction.mul {f g : X → ℝ} (hf : IsTestFunction f) (hg : IsTestF
   supp := HasCompactSupport.mul_left hg.supp
 
 @[fun_prop]
-lemma IsTestFunction.inner {f g : X → V} (hf : IsTestFunction f) (hg : IsTestFunction g) :
+lemma IsTestFunction.inner [InnerProductSpace' ℝ V]
+    {f g : X → V} (hf : IsTestFunction f) (hg : IsTestFunction g) :
     IsTestFunction (fun x => ⟪f x, g x⟫_ℝ) where
-  smooth := ContDiff.inner ℝ hf.smooth hg.smooth
+  smooth := by fun_prop
   supp := by
     have hf := hg.supp
     rw [hasCompactSupport_iff_eventuallyEq] at hf ⊢

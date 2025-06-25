@@ -5,7 +5,7 @@ Authors: Zhi Kai Pong
 -/
 import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
-import PhysLean.ClassicalMechanics.Space.VectorIdentities
+import PhysLean.SpaceAndTime.Space.VectorIdentities
 /-!
 
 # Electromagnetic wave equation

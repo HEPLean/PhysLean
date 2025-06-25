@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Informal.SemiFormal
-import PhysLean.ClassicalMechanics.Time.Basic
+import PhysLean.SpaceAndTime.Time.Basic
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Comp
 /-!

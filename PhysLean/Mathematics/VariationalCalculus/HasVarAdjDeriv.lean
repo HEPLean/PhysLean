@@ -4,8 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
-import Mathlib.Analysis.InnerProductSpace.ProdL2
-import PhysLean.Mathematics.FDerivCurry
+import PhysLean.Mathematics.Calculus.AdjFDeriv
 /-!
 # Variational adjoint derivative
 
@@ -26,19 +25,21 @@ open MeasureTheory ContDiff InnerProductSpace
 
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
-  {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
-  {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-  {W} [NormedAddCommGroup W] [InnerProductSpace ℝ W]
+  {Y} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [MeasureSpace Y]
+  {Z} [NormedAddCommGroup Z] [NormedSpace ℝ Z] [MeasureSpace Z]
+  {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
+  {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
+  {W} [NormedAddCommGroup W] [NormedSpace ℝ W] [InnerProductSpace' ℝ W]
 
 /-- This is analogue of saying `F' = (fderiv ℝ F u).adjoint`.
 
 This definition is useful as we can prove composition theorem for it and `HasVarGradient F grad u`
 can be computed by `grad := F' (fun _ => 1)`. -/
-structure HasVarAdjDerivAt (F : (X → U) → (X → V)) (F' : (X → V) → (X → U)) (u : X → U) : Prop
+structure HasVarAdjDerivAt (F : (X → U) → (Y → V)) (F' : (Y → V) → (X → U)) (u : X → U) : Prop
     where
   smooth_at : ContDiff ℝ ∞ u
   diff : ∀ (φ : ℝ → X → U), ContDiff ℝ ∞ ↿φ →
-    ContDiff ℝ ∞ (fun sx : ℝ×X => F (φ sx.1) sx.2)
+    ContDiff ℝ ∞ (fun sx : ℝ×Y => F (φ sx.1) sx.2)
   linearize :
     ∀ (φ : ℝ → X → U), ContDiff ℝ ∞ ↿φ →
       ∀ x,
@@ -96,7 +97,7 @@ lemma const (u : X → U) (v : X → V) (hu : ContDiff ℝ ∞ u) (hv : ContDiff
   linearize := by simp
   adjoint := by simp; exact HasVarAdjoint.zero
 
-lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {u : X → U}
+lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {u : X → U}
     {F' G'} (hF : HasVarAdjDerivAt F F' (G u)) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun u => F (G u)) (fun ψ => G' (F' ψ)) u where
   smooth_at := hG.smooth_at
@@ -126,19 +127,21 @@ lemma comp {F : (X → V) → (X → W)} {G : (X → U) → (X → V)} {u : X �
 lemma unique_on_test_functions
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
     [OpensMeasurableSpace X]
-    (F : (X → U) → (X → V)) (u : X → U)
+    (F : (X → U) → (Y → V)) (u : X → U)
     (F' G') (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
-    (φ : X → V) (hφ : IsTestFunction φ) :
-    F' φ = G' φ := HasVarAdjoint.unique_on_test_functions (μ:=volume) hF.adjoint hG.adjoint φ hφ
+    (φ : Y → V) (hφ : IsTestFunction φ) :
+    F' φ = G' φ := HasVarAdjoint.unique_on_test_functions hF.adjoint hG.adjoint φ hφ
 
 lemma unique {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
-    [FiniteDimensional ℝ X] [MeasureSpace X] [OpensMeasurableSpace X]
+    [MeasureSpace X] [OpensMeasurableSpace X]
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
-    {F : (X → U) → (X → V)} {u : X → U}
+    {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+    [FiniteDimensional ℝ Y] [MeasureSpace Y]
+    {F : (X → U) → (Y → V)} {u : X → U}
     {F' G'} (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt F G' u)
-    (φ : X → V) (hφ : ContDiff ℝ ∞ φ) :
+    (φ : Y → V) (hφ : ContDiff ℝ ∞ φ) :
     F' φ = G' φ :=
-  HasVarAdjoint.unique (μ:=volume) hF.adjoint hG.adjoint φ hφ
+  HasVarAdjoint.unique hF.adjoint hG.adjoint φ hφ
 
 lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
     {μ : Measure X} [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts μ]
@@ -213,6 +216,69 @@ protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarA
     (fun ψ x => F' (fun x' => - deriv ψ x') x) u :=
   comp (F:=deriv) (G:=F) (hF := deriv' (F u) hF.apply_smooth_self) (hG := hF)
 
+lemma fmap [CompleteSpace U] [CompleteSpace V]
+    (f : X → U → V) {f' : X → U → _ }
+    (u : X → U) (hu : ContDiff ℝ ∞ u)
+    (hf' : ContDiff ℝ ∞ ↿f) (hf : ∀ x u, HasAdjFDerivAt ℝ (f x) (f' x u) u) :
+    HasVarAdjDerivAt (fun (φ : X → U) x => f x (φ x)) (fun ψ x => f' x (u x) (ψ x)) u where
+  smooth_at := hu
+  diff := by fun_prop
+  linearize := by
+    intro φ hφ x
+    unfold deriv
+    conv => lhs; rw[fderiv_comp' (𝕜:=ℝ) (g:=(fun u : U => f _ u)) _
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop))
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop))]
+    conv => rhs; rw[fderiv_comp' (𝕜:=ℝ) (g:=(fun u : U => f _ u)) _
+            (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop)) (by fun_prop)]
+    simp[deriv_smul]
+  adjoint := by
+    apply HasVarAdjoint.congr_fun
+    case h' =>
+      intro φ hφ; funext x
+      unfold deriv
+      conv =>
+        lhs
+        rw[fderiv_comp' (𝕜:=ℝ) (g:=_) (f:=fun s : ℝ => u x + s • φ x) _
+          (by fun_prop (config:={maxTransitionDepth:=3}) (disch:=aesop)) (by fun_prop)]
+        simp[deriv_smul]
+    case h =>
+      constructor
+      · intros;
+        constructor
+        · fun_prop
+        · expose_names
+          rw [← exists_compact_iff_hasCompactSupport]
+          have h1 := h.supp
+          rw [← exists_compact_iff_hasCompactSupport] at h1
+          obtain ⟨K, cK, hK⟩ := h1
+          refine ⟨K, cK, ?_⟩
+          intro x hx
+          rw [hK x hx]
+          simp
+      · intro φ hφ
+        constructor
+        · apply ContDiff.fun_comp
+            (g:= fun x : X×U×V => f' x.1 x.2.1 x.2.2)
+            (f:= fun x => (x, u x, φ x))
+          · apply HasAdjFDerivAt.contDiffAt_deriv <;> assumption
+          · fun_prop
+        · rw [← exists_compact_iff_hasCompactSupport]
+          have h1 := hφ.supp
+          rw [← exists_compact_iff_hasCompactSupport] at h1
+          obtain ⟨K, cK, hK⟩ := h1
+          refine ⟨K, cK, ?_⟩
+          intro x hx
+          rw [hK x hx]
+          have hfx := (hf x (u x)).hasAdjoint_fderiv
+          exact HasAdjoint.adjoint_apply_zero hfx
+      · intros
+        congr 1; funext x
+        rw[← PreInnerProductSpace.Core.conj_inner_symm]
+        rw[← (hf x (u x)).hasAdjoint_fderiv.adjoint_inner_left]
+        rw[PreInnerProductSpace.Core.conj_inner_symm]
+      · intros K cK; use K; simp_all
+
 lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
     HasVarAdjDerivAt (fun φ x => -F φ x) (fun ψ x => - F' ψ x) u where
   smooth_at := hF.smooth_at
@@ -232,9 +298,11 @@ lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) 
       apply HasVarAdjoint.neg
       apply hF.adjoint
 
+section OnFiniteMeasures
+
+variable [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)]
+
 lemma add
-    [IsFiniteMeasureOnCompacts (@volume X _)]
-    [OpensMeasurableSpace X]
     (F G : (X → U) → (X → V)) (F' G') (u)
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun φ x => F φ x + G φ x) (fun ψ x => F' ψ x + G' ψ x) u where
@@ -281,8 +349,6 @@ lemma add
       apply hG.adjoint
 
 lemma mul
-    [IsFiniteMeasureOnCompacts (@volume X _)]
-    [OpensMeasurableSpace X]
     (F G : (X → ℝ) → (X → ℝ)) (F' G') (u)
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun φ x => F φ x * G φ x)

@@ -2,9 +2,6 @@ import PhysLean.ClassicalMechanics.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Momentum.Basic
-import PhysLean.ClassicalMechanics.Space.Basic
-import PhysLean.ClassicalMechanics.Space.VectorIdentities
-import PhysLean.ClassicalMechanics.Time.Basic
 import PhysLean.ClassicalMechanics.VectorFields
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.ClassicalMechanics.WaveEquation.HarmonicWave
@@ -19,6 +16,7 @@ import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Wave
+import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.DataStructures.FourTree.Basic
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Mathematics.FDerivCurry
@@ -26,6 +24,9 @@ import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
+import PhysLean.Mathematics.InnerProductSpace.Adjoint
+import PhysLean.Mathematics.InnerProductSpace.Basic
+import PhysLean.Mathematics.InnerProductSpace.Calculus
 import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
@@ -197,7 +198,9 @@ import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
+import PhysLean.QuantumMechanics.PlanckConstant
 import PhysLean.Relativity.Bispinors.Basic
+import PhysLean.Relativity.CliffordAlgebra
 import PhysLean.Relativity.Lorentz.Algebra.Basic
 import PhysLean.Relativity.Lorentz.Algebra.Basis
 import PhysLean.Relativity.Lorentz.Group.Basic
@@ -216,10 +219,7 @@ import PhysLean.Relativity.PauliMatrices.Relations
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
 import PhysLean.Relativity.SL2C.Basic
 import PhysLean.Relativity.SL2C.SelfAdjoint
-import PhysLean.Relativity.SpaceTime.Basic
-import PhysLean.Relativity.SpaceTime.CliffordAlgebra
-import PhysLean.Relativity.SpaceTime.ProperTime
-import PhysLean.Relativity.SpaceTime.TimeSlice
+import PhysLean.Relativity.Special.ProperTime
 import PhysLean.Relativity.Special.TwinParadox.Basic
 import PhysLean.Relativity.Tensors.Basic
 import PhysLean.Relativity.Tensors.Color.Basic
@@ -273,6 +273,12 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Modules
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.NormOne
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor
+import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Space.VectorIdentities
+import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
+import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.SpaceAndTime.TopTime.Basic
 import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.TwoState

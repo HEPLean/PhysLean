@@ -16,7 +16,7 @@ open MeasureTheory ContDiff InnerProductSpace
 
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
-  {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
+  {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
 
 /-- Function `grad` is variational gradient of functional `S` at point `u`.
 
@@ -61,14 +61,30 @@ inductive HasVarGradientAt (F : (X → U) → (X → ℝ)) (grad : X → U) (u :
   | intro (F') (hF' : HasVarAdjDerivAt F F' u) (hgrad : grad = F' (fun _ => 1))
 
 open Classical in
+
+/--
+The variational gradient of a function `F : (X → U) → (X → ℝ)` evaulated
+at a function `u : X → U`.
+
+This not defined defined for a functional `S : (X → U) → ℝ` but rather for the function
+`F : (X → U) → (X → ℝ)` which is the integrand of the functional `S u = ∫ x, F (u x) x ∂μ`.
+For example for action integral, `S u = ∫ t, L (u t) (deriv u t)` we have
+`S' u t = L (u t) (deriv u t)`.
+
+On functions `F : (X → U) → (X → ℝ)` which do not have a variational gradient,
+this function is defined to give `0`.
+-/
 noncomputable def varGradient (F : (X → U) → (X → ℝ)) (u : X → U) : X → U :=
   if h : ∃ grad, HasVarGradientAt F grad u then
     choose h
   else
     0
 
+@[inherit_doc varGradient]
 macro "δ" u:term ", " "∫ " x:term ", " b:term : term =>
   `(varGradient (fun $u $x => $b))
+
+@[inherit_doc varGradient]
 macro "δ" "(" u:term " := " u':term ")" ", " "∫ " x:term ", " b:term : term =>
   `(varGradient (fun $u $x => $b) $u')
 
