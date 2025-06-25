@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Lorentz.Group.Proper
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.NormOne
+import PhysLean.Meta.Informal.SemiFormal
 /-!
 # Boosts
 
@@ -214,6 +215,18 @@ lemma toLorentz_in_connected_component_1 (u v : FuturePointing d) :
 
 lemma isProper (u v : FuturePointing d) : IsProper (toLorentz u v) :=
   (isProper_on_connected_component (toLorentz_in_connected_component_1 u v)).mp id_IsProper
+
+/--
+The time component of a generalised boost is equal to
+` 1 + ‖u 0 • v.space - v 0 • u.space‖ / (1 + ⟪u, v⟫ₘ)`.
+
+A proof of this result can be found at the below link:
+https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/Lorentz.20group/near/523249684
+-/
+semiformal_result "FXNQY" toMatrix_timeComponent_eq (u v : FuturePointing d) :
+  (toMatrix u v) (Sum.inl 0) (Sum.inl 0) = 1 +
+    ‖u.1.1.toFin1dℝ (Sum.inl 0) • (fun i => v.1.1.toFin1dℝ (Sum.inr i)) -
+      v.1.1.toFin1dℝ (Sum.inl 0) • (fun i => u.1.1.toFin1dℝ (Sum.inr i))‖ / (1 + ⟪u.1.1, v.1.1⟫ₘ)
 
 end genBoost
 
