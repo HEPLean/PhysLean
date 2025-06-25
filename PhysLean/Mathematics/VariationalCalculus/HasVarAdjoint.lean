@@ -12,6 +12,9 @@ import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 
 import PhysLean.Mathematics.VariationalCalculus.Basic
 import PhysLean.Mathematics.InnerProductSpace.Calculus
+import PhysLean.Mathematics.InnerProductSpace.Adjoint
+import PhysLean.Mathematics.Calculus.Divergence
+import PhysLean.Mathematics.Calculus.AdjFDeriv
 /-!
 # Variational adjoint
 
@@ -456,24 +459,27 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
     obtain ⟨L,cL,h⟩ := hF.ext K cK
     exact ⟨L,cL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
 
+attribute [fun_prop] LinearIsometryEquiv.contDiff
+
 lemma clm_apply
-    {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
-    {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [CompleteSpace U] [CompleteSpace V] (f : X → (U →L[ℝ] V))
     (hf : ContDiff ℝ ∞ f) :
-    HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => (f x).adjoint (ψ x))  where
+    HasVarAdjoint (fun (φ : X → U) x => f x (φ x)) (fun ψ x => _root_.adjoint ℝ (f x) (ψ x))  where
   test_fun_preserving φ hφ := by
     apply IsTestFunction.family_linearMap_comp
     · exact hφ
     · exact hf
   test_fun_preserving' φ hφ := by
+    simp_rw[adjoint_eq_clm_adjoint]
     apply IsTestFunction.family_linearMap_comp
     · exact hφ
-    · apply ContDiff.comp
-      · apply LinearIsometryEquiv.contDiff
-      · exact hf
+    · sorry
   adjoint φ ψ hφ hψ := by
-    simp[ContinuousLinearMap.adjoint_inner_right]
+    congr; funext x
+    symm; apply HasAdjoint.adjoint_inner_right
+    apply HasAdjoint.congr_adj
+    apply ContinuousLinearMap.hasAdjoint
+    funext y; simp[adjoint_eq_clm_adjoint]
   ext := by
    intro K cK
    exact ⟨K, cK, by intro _ _ hφ _ _; simp_all⟩
@@ -532,6 +538,39 @@ lemma fderiv_apply {dx}
       fun_prop
     · apply IsTestFunction.integrable
       fun_prop
+
+lemma adjFDeriv_apply
+   [InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y]
+   [ProperSpace X] [BorelSpace Y] [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure] {dy} :
+   HasVarAdjoint (fun φ : X → Y => (adjFDeriv ℝ φ · dy)) (fun φ x => - divergence ℝ φ x • dy) where
+  test_fun_preserving φ hφ := by sorry
+  test_fun_preserving' φ hφ := by sorry
+  ext := by
+    intro K cK
+    use (Metric.cthickening 1 K)
+    constructor
+    · exact IsCompact.cthickening cK
+    · intro φ φ' hφ
+      have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := by
+        intro x hx
+        apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+        refine mem_interior_iff_mem_nhds.mp ?_
+        rw [@mem_interior]
+        use Metric.thickening 1 K
+        simp only [subset_refl, true_and]
+        apply And.intro
+        · exact Metric.isOpen_thickening
+        · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+          use x
+          simpa using hx
+        · intro x hx
+          have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+          exact hφ x hx'
+      intro x hx; dsimp; congr 1
+      sorry
+      -- rw [Filter.EventuallyEq.fderiv_eq (h x hx)]
+  adjoint φ ψ hφ hψ := by
+    sorry
 
 protected lemma gradient {d} :
     HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where

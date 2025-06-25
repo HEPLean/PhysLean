@@ -43,6 +43,12 @@ def adjoint (f : E → F) :=
     choose h
   else 0
 
+lemma HasAdjoint.adjoint_inner_right {f : E → F} (hf : HasAdjoint 𝕜 f f') :
+   ⟪x, f' y⟫ = ⟪f x, y⟫ := by
+  rw[←inner_conj_symm']
+  rw[hf.adjoint_inner_left]
+  rw[inner_conj_symm']
+
 open InnerProductSpace' in
 lemma ContinuousLinearMap.hasAdjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
     HasAdjoint 𝕜 f (fun y => fromL2 𝕜 (((toL2 𝕜) ∘L f ∘L (fromL2 𝕜)).adjoint (toL2 𝕜 y))) where
@@ -50,8 +56,8 @@ lemma ContinuousLinearMap.hasAdjoint [CompleteSpace E] [CompleteSpace F] (f : E 
 
 open InnerProductSpace' in
 lemma adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
-    _root_.adjoint 𝕜 f = fun y => fromL2 𝕜 ((toL2 𝕜 ∘L f ∘L fromL2 𝕜).adjoint (toL2 𝕜 y)) := by
-  funext y; apply ext_inner_right' 𝕜; intro x
+    _root_.adjoint 𝕜 f = fromL2 𝕜 ∘L (toL2 𝕜 ∘L f ∘L fromL2 𝕜).adjoint ∘L (toL2 𝕜) := by
+  ext y; apply ext_inner_right' 𝕜; intro x; simp
   rw [f.hasAdjoint.adjoint_inner_left]
   have h : ∃ f', HasAdjoint 𝕜 f f' := ⟨_,f.hasAdjoint⟩
   simp[_root_.adjoint,h,h.choose_spec.adjoint_inner_left]

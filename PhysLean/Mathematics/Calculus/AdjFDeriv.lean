@@ -72,7 +72,7 @@ protected lemma DifferentiableAt.hasAdjFDerivAt [CompleteSpace E] [CompleteSpace
     unfold adjFDeriv
     apply HasAdjoint.congr_adj
     · apply ContinuousLinearMap.hasAdjoint
-    · funext y; rw[adjoint_eq_clm_adjoint]
+    · funext y; simp[adjoint_eq_clm_adjoint]
 
 namespace ContinuousLinearMap
 
