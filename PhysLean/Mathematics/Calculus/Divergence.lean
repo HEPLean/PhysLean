@@ -10,6 +10,7 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Calculus.AdjFDeriv
+import PhysLean.SpaceAndTime.Space.Basic
 
 noncomputable section
 
@@ -36,6 +37,14 @@ lemma divergence_eq_sum_fderiv {s : Finset E} (b : Basis s 𝕜 E) {f : E → E}
 
 lemma divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E → E} :
     divergence 𝕜 f = fun x => ∑ i, b.repr (fderiv 𝕜 f x (b i)) i := by
+  sorry
+
+lemma divergence_eq_space_div {d} (f : Space d → Space d) : divergence ℝ f = Space.div f := by
+  let b := (Space.basis (d:=d)).toBasis
+  rw[divergence_eq_sum_fderiv' b]
+  funext x
+  simp +zetaDelta [Space.div,Space.deriv,Space.coord,Space.basis]
+  -- ugh again can't use `fderiv_apply` because of `EuclideanSpace`
   sorry
 
 lemma divergence_prodMk {f : E×F → E} {g : E×F → F} {xy : E×F}
