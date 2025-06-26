@@ -9,6 +9,7 @@ import Mathlib.LinearAlgebra.Trace
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 import PhysLean.Mathematics.FDerivCurry
+import PhysLean.Mathematics.Calculus.AdjFDeriv
 
 noncomputable section
 
@@ -22,20 +23,22 @@ noncomputable
 def divergence (f : E → E) (x : E) : 𝕜 := (fderiv 𝕜 f x).toLinearMap.trace _ _
 
 @[simp]
-theorem divergence_zero : divergence 𝕜 (fun x : E => 0) = fun _ => 0 := sorry
+lemma divergence_zero : divergence 𝕜 (fun _ : E => 0) = fun _ => 0 := by
+  unfold divergence
+  simp
 
-theorem divergence_eq_sum_fderiv {s : Finset E} (b : Basis s 𝕜 E) {f : E → E} :
+lemma divergence_eq_sum_fderiv {s : Finset E} (b : Basis s 𝕜 E) {f : E → E} :
     divergence 𝕜 f = fun x => ∑ i : s, b.repr (fderiv 𝕜 f x (b i)) i := by
   funext x
   unfold divergence
   rw[LinearMap.trace_eq_matrix_trace_of_finset (s:=s) _ b]
   simp[Matrix.trace,Matrix.diag,LinearMap.toMatrix]
 
-theorem divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E → E} :
+lemma divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E → E} :
     divergence 𝕜 f = fun x => ∑ i, b.repr (fderiv 𝕜 f x (b i)) i := by
   sorry
 
-theorem divergence_prodMk {f : E×F → E} {g : E×F → F} {xy : E×F}
+lemma divergence_prodMk {f : E×F → E} {g : E×F → F} {xy : E×F}
     (hf : DifferentiableAt 𝕜 f xy) (hg : DifferentiableAt 𝕜 g xy) :
     divergence 𝕜 (fun xy : E×F => (f xy, g xy)) xy
     =
@@ -49,3 +52,45 @@ theorem divergence_prodMk {f : E×F → E} {g : E×F → F} {xy : E×F}
   rw[divergence_eq_sum_fderiv' bY]
   rw[divergence_eq_sum_fderiv' bXY]
   simp[hf.fderiv_prodMk hg,bXY,fderiv_wrt_prod hf,fderiv_wrt_prod hg]
+
+lemma divergence_add {f g : E → E} {x : E}
+    (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :
+    divergence 𝕜 (fun x => f x + g x) x
+    =
+    divergence 𝕜 f x + divergence 𝕜 g x := by
+  unfold divergence
+  simp [fderiv_add hf hg]
+
+lemma divergence_neg {f : E → E} {x : E} :
+    divergence 𝕜 (fun x => -f x) x
+    =
+    -divergence 𝕜 f x := by
+  unfold divergence
+  simp [fderiv_neg]
+
+lemma divergence_sub {f g : E → E} {x : E}
+    (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :
+    divergence 𝕜 (fun x => f x - g x) x
+    =
+    divergence 𝕜 f x - divergence 𝕜 g x := by
+  unfold divergence
+  simp [fderiv_sub hf hg]
+
+lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
+    (hf : DifferentiableAt 𝕜 f x) :
+    divergence 𝕜 (fun x => c • f x) x
+    =
+    c * divergence 𝕜 f x := by
+  unfold divergence
+  simp [fderiv_const_smul hf]
+
+local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
+
+lemma divergence_smul [InnerProductSpace' 𝕜 E] {f : E → 𝕜} {g : E → E} {x : E}
+    (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :
+    divergence 𝕜 (fun x => f x • g x) x
+    =
+    f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫  := by
+  unfold divergence
+  simp [fderiv_smul hf hg]
+  sorry
