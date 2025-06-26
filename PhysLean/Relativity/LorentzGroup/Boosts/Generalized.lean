@@ -190,11 +190,13 @@ lemma toMatrix_apply_eq_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ F
       simp
     · simp [h]
   · rw [genBoostAux₁_toMatrix_apply u v μ ν]
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+      minkowskiProduct_basis_left]
     ring_nf
     simp
   · rw [genBoostAux₂_toMatrix_apply u v μ ν]
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, neg_add_rev,
+      minkowskiProduct_basis_left, map_add, Pi.add_apply]
     ring_nf
     simp
 
@@ -207,10 +209,10 @@ lemma toMatrix_apply_eq_toCoord (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     simp
   congr
   · rw [genBoostAux₁_toMatrix_apply u v μ ν]
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd]
     ring_nf
   · rw [genBoostAux₂_toMatrix_apply u v μ ν]
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, neg_add_rev]
     ring_nf
 
 @[fun_prop]
@@ -254,7 +256,8 @@ lemma genBoostAux₂_basis_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 �
   rw [genBoostAux₂_apply_basis, genBoostAux₂_apply_basis]
   rw [map_smul, map_smul]
   have h1 : ⟪u.1 + v.1, u.1 + v.1⟫ₘ = 2 * (1 + ⟪u.1, v.1⟫ₘ) := by
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
+      LinearMap.add_apply, Velocity.minkowskiProduct_self_eq_one]
     rw [minkowskiProduct_symm]
     ring
   dsimp
@@ -270,7 +273,8 @@ lemma genBoostAux₁_basis_genBoostAux₂_minkowskiProduct (u v : Velocity d) (�
   rw [genBoostAux₁_apply_basis, genBoostAux₂_apply_basis]
   rw [map_smul, map_smul]
   have h1 : ⟪ v.1, u.1 + v.1⟫ₘ = (1 + ⟪u.1, v.1⟫ₘ) := by
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
+      Velocity.minkowskiProduct_self_eq_one]
     rw [minkowskiProduct_symm]
     ring
   dsimp
@@ -288,7 +292,8 @@ lemma genBoostAux₁_add_genBoostAux₂_minkowskiProduct (u v : Velocity d) (μ 
       + (toCoord u μ + toCoord v μ) * (toCoord u ν + toCoord v ν) * (1 + ⟪u, v.1⟫ₘ)⁻¹ +
       2 * toCoord u μ * toCoord u ν) := by
   conv_lhs =>
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
+      LinearMap.add_apply]
     rw [genBoostAux₁_basis_minkowskiProduct, genBoostAux₂_basis_minkowskiProduct,
       genBoostAux₁_basis_genBoostAux₂_minkowskiProduct,
       minkowskiProduct_symm,

@@ -96,7 +96,7 @@ lemma minkowskiProduct_continuous_fst (u : Vector d) :
   have h1 : (fun (x : Velocity d) => ⟪x.1, u⟫ₘ) =
     (fun (x : Velocity d) => ⟪u, x.1⟫ₘ) := by
     ext x
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd]
     rw [minkowskiProduct_symm]
   rw [h1]
   exact minkowskiProduct_continuous_snd u
@@ -154,7 +154,8 @@ noncomputable def pathFromZero (u : Velocity d) : Path zero u where
     simp
   target' := by
     ext
-    simp
+    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Set.Icc.coe_one,
+      one_pow, one_mul, Fin.isValue, mul_one, one_smul, add_eq_right, smul_eq_zero]
     left
     rw [norm_spatialPart_sq_eq]
     simp
