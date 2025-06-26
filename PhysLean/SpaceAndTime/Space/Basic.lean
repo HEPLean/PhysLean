@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
+import PhysLean.Meta.Linters.Sorry
 /-!
 # Space
 
@@ -136,5 +137,11 @@ structure Direction (d : ℕ := 3) where
 noncomputable def toDirection {d : ℕ} (x : Space d) (h : x ≠ 0) : Direction d where
   unit := (‖x‖⁻¹) • (x)
   norm := norm_smul_inv_norm h
+
+noncomputable def test : ℕ :=
+  sorry
+
+sorryful_lemma sorryAx : 0 = 0 := by
+  sorry
 
 end Space

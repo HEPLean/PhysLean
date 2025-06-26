@@ -5,6 +5,9 @@ defaultTargets = ["PhysLean"]
 
 ## Imports
 
+[leanOptions]
+weak.linter.sorryLinter = true
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
