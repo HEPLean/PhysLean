@@ -227,8 +227,8 @@ lemma IsTestFunction.fderiv_apply {f : X → U} (hf : IsTestFunction f) (δx : X
     apply HasCompactSupport.fderiv_apply
     exact hf.supp
 
-@[fun_prop]
 open InnerProductSpace' in
+@[fun_prop]
 lemma IsTestFunction.adjFDeriv {f : X → U} [InnerProductSpace' ℝ X]
     [InnerProductSpace' ℝ U] [CompleteSpace X]
     [CompleteSpace U] (dy : U) (hf : IsTestFunction f) :
