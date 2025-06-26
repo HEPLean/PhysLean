@@ -100,66 +100,6 @@ lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {F' G'}
     · intro φ φ' hφ
       apply h' _ _ (fun _ hx' => h'' _ _ hφ _ hx')
 
-protected lemma deriv :
-    HasVarAdjoint (fun φ : ℝ → U => deriv φ) (fun φ x => - deriv φ x) where
-  test_fun_preserving _ hφ := by
-    have ⟨h,h'⟩ := hφ
-    constructor
-    · fun_prop
-    · exact HasCompactSupport.deriv h'
-  test_fun_preserving' _ hφ := by
-    have ⟨h,h'⟩ := hφ
-    constructor
-    · fun_prop
-    · apply HasCompactSupport.neg'
-      apply HasCompactSupport.deriv h'
-  adjoint φ ψ hφ hψ := by
-    trans ∫ (x : ℝ), ⟪deriv φ x, ψ x⟫_ℝ
-    · congr
-    suffices ∫ (x : ℝ), deriv (fun x' => ⟪φ x', ψ x'⟫_ℝ) x = 0 by
-      rw [← sub_eq_zero, ← integral_sub, ← this]
-      congr
-      funext a
-      rw [deriv_inner_apply']
-      simp
-      ring
-      · exact hφ.differentiable a
-      · exact hψ.differentiable a
-      · apply IsTestFunction.integrable
-        fun_prop
-      · apply IsTestFunction.integrable
-        fun_prop
-    apply MeasureTheory.integral_eq_zero_of_hasDerivAt_of_integrable
-      (f:=(fun x' => ⟪φ x', ψ x'⟫_ℝ))
-    · intro x
-      rw [hasDerivAt_deriv_iff]
-      exact (hφ.differentiable x).inner' (hψ.differentiable  x)
-    · fun_prop
-    · apply IsTestFunction.integrable (IsTestFunction.inner hφ hψ)
-  ext := by
-    intro K cK
-    use (Metric.cthickening 1 K)
-    constructor
-    · exact IsCompact.cthickening cK
-    · intro φ φ' hφ
-      have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := by
-        intro x hx
-        apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
-        refine mem_interior_iff_mem_nhds.mp ?_
-        rw [@mem_interior]
-        use Metric.thickening 1 K
-        simp only [subset_refl, true_and]
-        apply And.intro
-        · exact Metric.isOpen_thickening
-        · rw [@Metric.mem_thickening_iff_exists_edist_lt]
-          use x
-          simpa using hx
-        · intro x hx
-          have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
-          exact hφ x hx'
-      intro x hx; dsimp; congr 1
-      apply (h x hx).deriv_eq
-
 lemma congr_fun {F G : (X → U) → (Y → V)} {F' : (Y → V) → (X → U)}
     (h : HasVarAdjoint G F') (h' : ∀ φ, IsTestFunction φ → F φ = G φ) :
     HasVarAdjoint F F' where
@@ -279,19 +219,11 @@ lemma neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
     (hF : HasVarAdjoint F F') :
     HasVarAdjoint (fun φ x => - F φ x) (fun φ x => - F' φ x) where
   test_fun_preserving _ hφ := by
-    have ⟨h,h'⟩ := hφ
-    constructor
-    · apply ContDiff.neg
-      apply (hF.test_fun_preserving _ hφ).smooth
-    · apply HasCompactSupport.neg'
-      apply (hF.test_fun_preserving _ hφ).supp
+    have := hF.test_fun_preserving _ hφ
+    fun_prop
   test_fun_preserving' _ hφ := by
-    have ⟨h,h'⟩ := hφ
-    constructor
-    · apply ContDiff.neg
-      apply (hF.test_fun_preserving' _ hφ).smooth
-    · apply HasCompactSupport.neg'
-      apply (hF.test_fun_preserving' _ hφ).supp
+    have := hF.test_fun_preserving' _ hφ
+    fun_prop
   adjoint _ _ _ _ := by
     simp [integral_neg]
     rw[hF.adjoint _ _ (by assumption) (by assumption)]
@@ -310,23 +242,13 @@ lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     (hF : HasVarAdjoint F F') (hG : HasVarAdjoint G G') :
     HasVarAdjoint (fun φ x => F φ x + G φ x) (fun φ x => F' φ x + G' φ x) where
   test_fun_preserving _ hφ := by
-    have ⟨h,h'⟩ := hφ
-    constructor
-    · apply ContDiff.add
-      apply (hF.test_fun_preserving _ hφ).smooth
-      apply (hG.test_fun_preserving _ hφ).smooth
-    · apply HasCompactSupport.add
-      apply (hF.test_fun_preserving _ hφ).supp
-      apply (hG.test_fun_preserving _ hφ).supp
+    have := hF.test_fun_preserving _ hφ
+    have := hG.test_fun_preserving _ hφ
+    fun_prop
   test_fun_preserving' _ hφ := by
-    have ⟨h,h'⟩ := hφ
-    constructor
-    · apply ContDiff.add
-      apply (hF.test_fun_preserving' _ hφ).smooth
-      apply (hG.test_fun_preserving' _ hφ).smooth
-    · apply HasCompactSupport.add
-      apply (hF.test_fun_preserving' _ hφ).supp
-      apply (hG.test_fun_preserving' _ hφ).supp
+    have := hF.test_fun_preserving' _ hφ
+    have := hG.test_fun_preserving' _ hφ
+    fun_prop
   adjoint _ _ _ _ := by
     simp[inner_add_left',inner_add_right']
     rw[MeasureTheory.integral_add]
@@ -375,14 +297,11 @@ lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → �
     (hF : HasVarAdjoint F F') (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => ψ x * F φ x) (fun φ x => F' (fun x => ψ x * φ x) x) where
   test_fun_preserving φ hφ := by
-    apply IsTestFunction.mul_left
-    · exact hψ
-    · exact hF.test_fun_preserving φ hφ
+    have := hF.test_fun_preserving _ hφ
+    fun_prop
   test_fun_preserving' φ hφ := by
     apply hF.test_fun_preserving'
-    apply IsTestFunction.mul_left
-    · exact hψ
-    · exact hφ
+    fun_prop
   adjoint φ ψ' hφ hψ' := by
     rw [← hF.adjoint]
     · congr; funext x; simp; ring
@@ -399,14 +318,11 @@ lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → 
     (hF : HasVarAdjoint F F') (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => F φ x * ψ x) (fun φ x => F' (fun x => φ x * ψ x) x) where
   test_fun_preserving φ hφ := by
-    apply IsTestFunction.mul_right
-    · exact hF.test_fun_preserving φ hφ
-    · exact hψ
+    have := hF.test_fun_preserving _ hφ
+    fun_prop
   test_fun_preserving' φ hφ := by
     apply hF.test_fun_preserving'
-    apply IsTestFunction.mul_right
-    · exact hφ
-    · exact hψ
+    fun_prop
   adjoint φ ψ' hφ hψ' := by
     rw [← hF.adjoint]
     · congr; funext x; simp; ring
@@ -500,6 +416,66 @@ lemma clm_apply
   ext := by
    intro K cK
    exact ⟨K, cK, by intro _ _ hφ _ _; simp_all⟩
+
+protected lemma deriv :
+    HasVarAdjoint (fun φ : ℝ → U => deriv φ) (fun φ x => - deriv φ x) where
+  test_fun_preserving _ hφ := by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · fun_prop
+    · exact HasCompactSupport.deriv h'
+  test_fun_preserving' _ hφ := by
+    have ⟨h,h'⟩ := hφ
+    constructor
+    · fun_prop
+    · apply HasCompactSupport.neg'
+      apply HasCompactSupport.deriv h'
+  adjoint φ ψ hφ hψ := by
+    trans ∫ (x : ℝ), ⟪deriv φ x, ψ x⟫_ℝ
+    · congr
+    suffices ∫ (x : ℝ), deriv (fun x' => ⟪φ x', ψ x'⟫_ℝ) x = 0 by
+      rw [← sub_eq_zero, ← integral_sub, ← this]
+      congr
+      funext a
+      rw [deriv_inner_apply']
+      simp
+      ring
+      · exact hφ.differentiable a
+      · exact hψ.differentiable a
+      · apply IsTestFunction.integrable
+        fun_prop
+      · apply IsTestFunction.integrable
+        fun_prop
+    apply MeasureTheory.integral_eq_zero_of_hasDerivAt_of_integrable
+      (f:=(fun x' => ⟪φ x', ψ x'⟫_ℝ))
+    · intro x
+      rw [hasDerivAt_deriv_iff]
+      exact (hφ.differentiable x).inner' (hψ.differentiable  x)
+    · fun_prop
+    · apply IsTestFunction.integrable (hφ.inner hψ)
+  ext := by
+    intro K cK
+    use (Metric.cthickening 1 K)
+    constructor
+    · exact IsCompact.cthickening cK
+    · intro φ φ' hφ
+      have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := by
+        intro x hx
+        apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+        refine mem_interior_iff_mem_nhds.mp ?_
+        rw [@mem_interior]
+        use Metric.thickening 1 K
+        simp only [subset_refl, true_and]
+        apply And.intro
+        · exact Metric.isOpen_thickening
+        · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+          use x
+          simpa using hx
+        · intro x hx
+          have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+          exact hφ x hx'
+      intro x hx; dsimp; congr 1
+      apply (h x hx).deriv_eq
 
 lemma fderiv_apply {dx}
    [InnerProductSpace' ℝ X] [ProperSpace X] [BorelSpace X]
@@ -695,19 +671,11 @@ lemma fst {F'} {F : (X → U) → (X → W×V)}
     apply IsTestFunction.prod_fst
     exact hF.test_fun_preserving _ hφ
   test_fun_preserving' y hφ := by
-    apply hF.test_fun_preserving' (fun x' => (y x', 0))
-    constructor
-    · fun_prop
-    · have h1 := hφ.supp
-      rw [← exists_compact_iff_hasCompactSupport] at h1 ⊢
-      obtain ⟨K, cK, hK⟩ := h1
-      refine ⟨K, cK, fun x hx => ?_⟩
-      rw [hK x hx]
-      rfl
+    apply hF.test_fun_preserving'
+    fun_prop
   adjoint φ ψ hφ hψ := by
     sorry
   ext := by sorry
-
 
 lemma snd {F'} {F : (X → U) → (X → W×V)}
     (hF : HasVarAdjoint F F') :
@@ -718,15 +686,8 @@ lemma snd {F'} {F : (X → U) → (X → W×V)}
     apply IsTestFunction.prod_snd
     exact hF.test_fun_preserving _ hφ
   test_fun_preserving' y hφ := by
-    apply hF.test_fun_preserving' (fun x' => (0, y x'))
-    constructor
-    · fun_prop
-    · have h1 := hφ.supp
-      rw [← exists_compact_iff_hasCompactSupport] at h1 ⊢
-      obtain ⟨K, cK, hK⟩ := h1
-      refine ⟨K, cK, fun x hx => ?_⟩
-      rw [hK x hx]
-      rfl
+    apply hF.test_fun_preserving' _
+    fun_prop
   adjoint φ ψ hφ hψ := by
     sorry
   ext := by
