@@ -37,7 +37,24 @@ lemma divergence_eq_sum_fderiv {s : Finset E} (b : Basis s 𝕜 E) {f : E → E}
 
 lemma divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E → E} :
     divergence 𝕜 f = fun x => ∑ i, b.repr (fderiv 𝕜 f x (b i)) i := by
-  sorry
+  let s : Finset E := Finset.univ.map ⟨b, Basis.injective b⟩
+  let f' : ι → s := fun i => ⟨b i , by simp [s]⟩
+  have h : Function.Injective f' := by
+    intro i j h
+    simp [f'] at h
+    exact Basis.injective b h
+  have h' : Function.Surjective f' := by
+    intro ⟨x, hx⟩
+    simp [s] at hx
+    obtain ⟨i, rfl⟩ := hx
+    simp [f']
+  let e : ι ≃ s := Equiv.ofBijective f' ⟨h, h'⟩
+  let b' : Basis s 𝕜 E := b.reindex e
+  rw [divergence_eq_sum_fderiv b']
+  ext x
+  rw [← e.symm.sum_comp]
+  simp [b']
+
 
 lemma divergence_eq_space_div {d} (f : Space d → Space d) : divergence ℝ f = Space.div f := by
   let b := (Space.basis (d:=d)).toBasis
@@ -47,15 +64,18 @@ lemma divergence_eq_space_div {d} (f : Space d → Space d) : divergence ℝ f =
   -- ugh again can't use `fderiv_apply` because of `EuclideanSpace`
   sorry
 
-lemma divergence_prodMk {f : E×F → E} {g : E×F → F} {xy : E×F}
+lemma divergence_prodMk [FiniteDimensional 𝕜 E] [FiniteDimensional 𝕜 F]
+    {f : E×F → E} {g : E×F → F} {xy : E×F}
     (hf : DifferentiableAt 𝕜 f xy) (hg : DifferentiableAt 𝕜 g xy) :
     divergence 𝕜 (fun xy : E×F => (f xy, g xy)) xy
     =
     divergence 𝕜 (fun x' => f (x',xy.2)) xy.1
     +
     divergence 𝕜 (fun y' => g (xy.1,y')) xy.2 := by
-  have bX : Basis (Fin (Module.finrank 𝕜 E)) 𝕜 E := sorry
-  have bY : Basis (Fin (Module.finrank 𝕜 E)) 𝕜 F := sorry
+  obtain ⟨s, ⟨bX⟩⟩ := Basis.exists_basis 𝕜 E
+  haveI : Fintype s := FiniteDimensional.fintypeBasisIndex bX
+  obtain ⟨sY, ⟨bY⟩⟩ := Basis.exists_basis 𝕜 F
+  haveI : Fintype sY := FiniteDimensional.fintypeBasisIndex bY
   let bXY := bX.prod bY
   rw[divergence_eq_sum_fderiv' bX]
   rw[divergence_eq_sum_fderiv' bY]
