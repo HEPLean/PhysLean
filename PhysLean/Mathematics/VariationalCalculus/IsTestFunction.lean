@@ -8,7 +8,7 @@ import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Topology.ContinuousMap.CompactlySupported
-
+import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.InnerProductSpace.Basic
 import PhysLean.SpaceAndTime.Space.Basic
 /-!
@@ -176,6 +176,19 @@ lemma IsTestFunction.linearMap_comp {f : X → V} (hf : IsTestFunction f)
     simp
 
 @[fun_prop]
+lemma IsTestFunction.comp_left {f : X → V} (hf : IsTestFunction f)
+    {g : V → U} (hg1 : g 0 = 0) (hg : ContDiff ℝ ∞ g) :
+    IsTestFunction (fun x => g (f x)) where
+  smooth := ContDiff.comp hg hf.smooth
+  supp := by
+    have hf' := hf.supp
+    rw [← exists_compact_iff_hasCompactSupport] at hf' ⊢
+    obtain ⟨K, cK, hK⟩ := hf'
+    refine ⟨K, cK, fun x hx => ?_⟩
+    rw [hK x hx]
+    exact hg1
+
+@[fun_prop]
 lemma IsTestFunction.family_linearMap_comp {f : X → V} (hf : IsTestFunction f)
     {g : X → V →L[ℝ] U} (hg : ContDiff ℝ ∞ g) :
     IsTestFunction (fun x => g x (f x)) where
@@ -291,3 +304,33 @@ lemma IsTestFunction.prod_snd {f : X → U × V} (hf : IsTestFunction f) :
     have hf' := hf.supp
     rw [hasCompactSupport_iff_eventuallyEq] at hf' ⊢
     exact hf'.mono fun x hx => by simp [hx]
+
+open InnerProductSpace' in
+lemma IsTestFunction.adjFDeriv {f : X → U} [InnerProductSpace' ℝ X]
+    [InnerProductSpace' ℝ U] [CompleteSpace X]
+    [CompleteSpace U] (dy : U) (hf : IsTestFunction f) :
+    IsTestFunction (fun x => adjFDeriv ℝ f x dy) := by
+  unfold _root_.adjFDeriv
+  conv =>
+    enter [1, x]
+    rw [adjoint_eq_clm_adjoint]
+  simp
+  apply IsTestFunction.comp_left
+  · constructor
+    · apply ContDiff.clm_apply
+      · apply ContDiff.comp
+        · apply LinearIsometryEquiv.contDiff
+        · fun_prop
+      · fun_prop
+    have hf : HasCompactSupport (fun x => fderiv ℝ f x ) :=
+      (IsTestFunction.of_fderiv hf).supp
+    rw [← exists_compact_iff_hasCompactSupport] at hf ⊢
+    obtain ⟨K, cK, hK⟩ := hf
+    refine ⟨K, cK, fun x hx => ?_⟩
+    rw [hK x hx]
+    simp
+  · simp
+  · fun_prop
+
+
+end IsTestFunction

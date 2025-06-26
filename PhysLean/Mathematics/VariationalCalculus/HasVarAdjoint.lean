@@ -461,6 +461,7 @@ lemma smul_right {F : (X → U) → (X → V)} {ψ : X → ℝ} {F' : (X → V) 
 
 attribute [fun_prop] LinearIsometryEquiv.contDiff
 
+open InnerProductSpace' in
 lemma clm_apply
     [CompleteSpace U] [CompleteSpace V] (f : X → (U →L[ℝ] V))
     (hf : ContDiff ℝ ∞ f) :
@@ -470,12 +471,26 @@ lemma clm_apply
     · exact hφ
     · exact hf
   test_fun_preserving' φ hφ := by
-    simp_rw[adjoint_eq_clm_adjoint]
-    apply IsTestFunction.family_linearMap_comp
-    · exact hφ
-    · apply ContDiff.fun_comp
-      · fun_prop
-      · sorry
+    conv =>
+      enter [1, x]
+      rw [adjoint_eq_clm_adjoint]
+    simp
+    apply IsTestFunction.comp_left
+    · constructor
+      · apply ContDiff.clm_apply
+        · apply ContDiff.comp
+          · apply LinearIsometryEquiv.contDiff
+          · fun_prop
+        · fun_prop
+      have hf : HasCompactSupport (fun x => φ x ) :=
+        hφ.supp
+      rw [← exists_compact_iff_hasCompactSupport] at hf ⊢
+      obtain ⟨K, cK, hK⟩ := hf
+      refine ⟨K, cK, fun x hx => ?_⟩
+      rw [hK x hx]
+      simp
+    · simp
+    · fun_prop
   adjoint φ ψ hφ hψ := by
     congr; funext x
     symm; apply HasAdjoint.adjoint_inner_right
@@ -543,9 +558,10 @@ lemma fderiv_apply {dx}
 
 lemma adjFDeriv_apply
    [InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y]
-   [ProperSpace X] [BorelSpace X] [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure] {dy} :
+   [ProperSpace X] [BorelSpace X] [FiniteDimensional ℝ X]
+   [CompleteSpace Y] [(@volume X _).IsAddHaarMeasure] {dy} :
    HasVarAdjoint (fun φ : X → Y => (adjFDeriv ℝ φ · dy)) (fun ψ x => - divergence ℝ ψ x • dy) where
-  test_fun_preserving φ hφ := by sorry
+  test_fun_preserving φ hφ := IsTestFunction.adjFDeriv dy hφ
   test_fun_preserving' φ hφ := by sorry
   ext := by
     intro K cK
