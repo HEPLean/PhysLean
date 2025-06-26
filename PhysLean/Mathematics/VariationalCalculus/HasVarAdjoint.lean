@@ -538,7 +538,7 @@ lemma adjFDeriv_apply
    [CompleteSpace Y] [(@volume X _).IsAddHaarMeasure] {dy} :
    HasVarAdjoint (fun φ : X → Y => (adjFDeriv ℝ φ · dy)) (fun ψ x => - divergence ℝ ψ x • dy) where
   test_fun_preserving φ hφ := IsTestFunction.adjFDeriv dy hφ
-  test_fun_preserving' φ hφ := by sorry
+  test_fun_preserving' φ hφ := by fun_prop
   ext := by
     intro K cK
     use (Metric.cthickening 1 K)
@@ -656,11 +656,48 @@ lemma div {d} :
       (fun (φ : Space d → Space d) x => Space.div φ x)
       (fun ψ x => - gradient ψ x) := sorry
 
-lemma prod {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
+lemma prod
+    [IsFiniteMeasureOnCompacts (@volume X _)] [OpensMeasurableSpace X]
+    {F : (X → U) → (X → V)} {G : (X → U) → (X → W)} {F' G'}
     (hF : HasVarAdjoint F F') (hG : HasVarAdjoint G G') :
     HasVarAdjoint
       (fun φ x => (F φ x, G φ x))
-      (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) := sorry
+      (fun φ x => F' (fun x' => (φ x').1) x + G' (fun x' => (φ x').2) x) where
+  test_fun_preserving _ hφ := by
+    have := hF.test_fun_preserving _ hφ
+    have := hG.test_fun_preserving _ hφ
+    fun_prop
+  test_fun_preserving' y hφ := by
+    have := hF.test_fun_preserving' (fun x => (y x).1) (by fun_prop)
+    have := hG.test_fun_preserving' (fun x => (y x).2) (by fun_prop)
+    fun_prop
+  adjoint φ ψ hφ hψ := by
+    have := hF.test_fun_preserving _ hφ
+    have := hG.test_fun_preserving _ hφ
+    have := hF.test_fun_preserving' (fun y => (ψ y).1) (by fun_prop)
+    have := hG.test_fun_preserving' (fun y => (ψ y).2) (by fun_prop)
+    calc _ = (∫ (y : X), ⟪F φ y, (ψ y).1⟫_ℝ) + ∫ (y : X), ⟪G φ y, (ψ y).2⟫_ℝ := by
+           simp
+           rw[integral_add]
+           · apply IsTestFunction.integrable; fun_prop
+           · apply IsTestFunction.integrable; fun_prop
+         _ =  (∫ (y : X), ⟪φ y, F' (fun y' => (ψ y').1) y⟫_ℝ) +
+              (∫ (y : X), ⟪φ y, G' (fun y' => (ψ y').2) y⟫_ℝ) := by
+           rw[hF.adjoint,hG.adjoint] <;> fun_prop
+         _ = _ := by
+           simp[inner_add_right']
+           rw[integral_add]
+           · apply IsTestFunction.integrable; fun_prop
+           · apply IsTestFunction.integrable; fun_prop
+  ext := by
+    intro K cK
+    obtain ⟨A,cA,hF⟩ := hF.ext K cK
+    obtain ⟨B,cB,hG⟩ := hG.ext K cK
+    use A ∪ B
+    constructor
+    · exact cA.union cB
+    · intro φ φ' h x hx; dsimp
+      rw[hF,hG] <;> simp_all
 
 lemma fst {F'} {F : (X → U) → (X → W×V)}
     (hF : HasVarAdjoint F F') :
@@ -674,8 +711,18 @@ lemma fst {F'} {F : (X → U) → (X → W×V)}
     apply hF.test_fun_preserving'
     fun_prop
   adjoint φ ψ hφ hψ := by
-    sorry
-  ext := by sorry
+    calc _ = ∫ (y : X), ⟪F φ y, (ψ y, 0)⟫_ℝ := by simp
+         _ =  ∫ (y : X), ⟪φ y, F' (fun y => (ψ y, 0)) y⟫_ℝ := hF.adjoint _ _ hφ (by fun_prop)
+         _ = _ := by simp
+  ext := by
+    intro K cK
+    obtain ⟨A,cA,hF⟩ := hF.ext K cK
+    use A
+    constructor
+    · exact cA
+    · intro φ φ' h x hx; dsimp
+      rw[hF] <;> simp_all
+
 
 lemma snd {F'} {F : (X → U) → (X → W×V)}
     (hF : HasVarAdjoint F F') :
@@ -689,6 +736,14 @@ lemma snd {F'} {F : (X → U) → (X → W×V)}
     apply hF.test_fun_preserving' _
     fun_prop
   adjoint φ ψ hφ hψ := by
-    sorry
+    calc _ = ∫ (y : X), ⟪F φ y, (0, ψ y)⟫_ℝ := by simp
+         _ = ∫ (y : X), ⟪φ y, F' (fun y => (0, ψ y)) y⟫_ℝ := hF.adjoint _ _ hφ (by fun_prop)
+         _ = _ := by simp
   ext := by
-    sorry
+    intro K cK
+    obtain ⟨A,cA,hF⟩ := hF.ext K cK
+    use A
+    constructor
+    · exact cA
+    · intro φ φ' h x hx; dsimp
+      rw[hF] <;> simp_all
