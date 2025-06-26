@@ -86,7 +86,17 @@ lemma toCoord_pure {d : ℕ} (p : Pure (realLorentzTensor d) ![.up]) (i : Fin 1 
     Finset.prod_singleton, cons_val_zero]
   rfl
 
-lemma toCoord_basis_apply {d : ℕ} (μ : Fin (1 + d)) (ν : Fin 1 ⊕ Fin d) :
+/-!
+
+## Basis
+
+-/
+
+/-- The basis on `Vector d` indexed by `Fin 1 ⊕ Fin d`. -/
+def basis {d : ℕ} : Basis (Fin 1 ⊕ Fin d) ℝ (Vector d) :=
+  Basis.reindex (Tensor.basis (S := realLorentzTensor d) ![Color.up]) indexEquiv
+
+lemma toCoord_tensor_basis_apply {d : ℕ} (μ : Fin (1 + d)) (ν : Fin 1 ⊕ Fin d) :
     toCoord (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ => Fin.cast (by simp) μ)) ν
     = (Finsupp.single (finSumFinEquiv.symm μ) 1) ν := by
   rw [Tensor.basis_apply]
@@ -98,7 +108,7 @@ lemma toCoord_basis_apply {d : ℕ} (μ : Fin (1 + d)) (ν : Fin 1 ⊕ Fin d) :
   simp [contrBasisFin]
   simp [indexEquiv]
 
-lemma basis_repr_apply {d : ℕ} (p : Vector d)
+lemma tensor_basis_repr_apply {d : ℕ} (p : Vector d)
     (b : ComponentIdx (S := realLorentzTensor d) ![Color.up]) :
     (Tensor.basis (S := realLorentzTensor d) ![Color.up]).repr p b =
     p (finSumFinEquiv.symm (b 0)) := by
@@ -107,6 +117,38 @@ lemma basis_repr_apply {d : ℕ} (p : Vector d)
   ext j
   fin_cases j
   simp
+
+lemma basis_repr_eq_toCoord {d : ℕ} :
+    basis.repr = toCoord.trans (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin d)).symm := by
+  ext p i
+  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, basis, Basis.repr_reindex,
+    Finsupp.mapDomain_equiv_apply, LinearEquiv.trans_apply]
+  simp only [indexEquiv, Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, cons_val_zero,
+    Fin.cast_eq_self, Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.coe_fn_symm_mk]
+  rfl
+
+lemma basis_repr_apply_eq_toCoord {d : ℕ} (p : Vector d) :
+    basis.repr p = toCoord p := by
+  rw [basis_repr_eq_toCoord]
+  rfl
+
+lemma toMatrix_basis_mulVec_toCoord {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p : Vector d) :
+    (LinearMap.toMatrix basis basis f) *ᵥ p.toCoord = (f p).toCoord := by
+  rw [← basis_repr_apply_eq_toCoord, LinearMap.toMatrix_mulVec_repr]
+  rfl
+
+@[simp]
+lemma toCoord_basis {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) :
+    toCoord (basis μ) ν = if μ = ν then 1 else 0 := by
+  rw [← basis_repr_apply_eq_toCoord]
+  simp [Finsupp.single, Pi.single_apply]
+  congr 1
+  exact Lean.Grind.eq_congr' rfl rfl
+
+lemma toCoord_map_apply {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p : Vector d) :
+    toCoord (f p) = (LinearMap.toMatrix basis basis) f *ᵥ (toCoord p) := by
+  rw [← basis_repr_apply_eq_toCoord, ← basis_repr_apply_eq_toCoord]
+  exact Eq.symm (LinearMap.toMatrix_mulVec_repr basis basis f p)
 
 instance : FiniteDimensional ℝ (Vector d) := by
   apply FiniteDimensional.of_fintype_basis (Tensor.basis _)
@@ -243,14 +285,14 @@ lemma spatialPart_basis_natAdd {d : ℕ} (i : Fin d) (j : Fin d) :
     spatialPart (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ =>
       Fin.cast (by simp) (Fin.natAdd 1 i))) j =
       (Finsupp.single (Sum.inr i : Fin 1 ⊕ Fin d) 1) (Sum.inr j) := by
-  rw [spatialPart, toCoord_basis_apply]
+  rw [spatialPart, toCoord_tensor_basis_apply]
   simp
 
 @[simp]
 lemma spatialPart_basis_castAdd {d : ℕ} (i : Fin d) :
     spatialPart (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ =>
       Fin.cast (by simp) (Fin.castAdd d (0 : Fin 1)))) i = 0 := by
-  rw [spatialPart, toCoord_basis_apply]
+  rw [spatialPart, toCoord_tensor_basis_apply]
   simp
 
 /-- Extract time component from a Lorentz vector -/
@@ -261,14 +303,14 @@ abbrev timeComponent {d : ℕ} (v : Vector d) : ℝ :=
 lemma timeComponent_basis_natAdd {d : ℕ} (i : Fin d) :
     timeComponent (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ =>
       Fin.cast (by simp) (Fin.natAdd 1 i))) = 0 := by
-  rw [timeComponent, toCoord_basis_apply]
+  rw [timeComponent, toCoord_tensor_basis_apply]
   simp
 
 @[simp]
 lemma timeComponent_basis_castAdd {d : ℕ} :
     timeComponent (Tensor.basis (S := realLorentzTensor d) ![Color.up] (fun _ =>
       Fin.cast (by simp) (Fin.castAdd d (0 : Fin 1)))) = 1 := by
-  rw [timeComponent, toCoord_basis_apply]
+  rw [timeComponent, toCoord_tensor_basis_apply]
   simp
 
 /-!
@@ -304,13 +346,13 @@ lemma minkowskiProductMap_toCoord {d : ℕ} (p q : Vector d) :
     change minkowskiMatrix (finSumFinEquiv.symm y) (finSumFinEquiv.symm x)
   conv_lhs =>
     enter [2, x, 2]
-    rw [basis_repr_apply]
+    rw [tensor_basis_repr_apply]
     enter [3]
     change finSumFinEquiv.symm x
   conv_lhs =>
     enter [2, x, 1, 2, y, 2]
     simp only [Fin.isValue]
-    rw [basis_repr_apply]
+    rw [tensor_basis_repr_apply]
     enter [3]
     change finSumFinEquiv.symm y
   conv_lhs =>
@@ -404,7 +446,7 @@ def minkowskiProduct {d : ℕ} : Vector d →ₗ[ℝ] Vector d →ₗ[ℝ] ℝ w
     simp
 
 @[inherit_doc minkowskiProduct]
-notation "⟪" p ", " q "⟫ₘ" => minkowskiProduct p q
+scoped notation "⟪" p ", " q "⟫ₘ" => minkowskiProduct p q
 
 lemma minkowskiProduct_apply {d : ℕ} (p q : Vector d) :
     ⟪p, q⟫ₘ = minkowskiProductMap p q := rfl
@@ -417,6 +459,14 @@ lemma minkowskiProduct_symm {d : ℕ} (p q : Vector d) :
 lemma minkowskiProduct_toCoord {d : ℕ} (p q : Vector d) :
     ⟪p, q⟫ₘ = p (Sum.inl 0) * q (Sum.inl 0) - ∑ i, p (Sum.inr i) * q (Sum.inr i) := by
   rw [minkowskiProduct_apply, minkowskiProductMap_toCoord]
+
+lemma minkowskiProduct_toCoord_minkowskiMatrix {d : ℕ} (p q : Vector d) :
+    ⟪p, q⟫ₘ = ∑ μ, minkowskiMatrix μ μ * (toCoord p μ) * (toCoord q μ) := by
+  rw [minkowskiProduct_toCoord]
+  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fintype.sum_sum_type,
+    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0,
+    one_mul, minkowskiMatrix.inr_i_inr_i, neg_mul, Finset.sum_neg_distrib]
+  rfl
 
 @[simp]
 lemma minkowskiProduct_invariant {d : ℕ} (p q : Vector d) (Λ : LorentzGroup d) :
@@ -435,6 +485,147 @@ lemma minkowskiProduct_eq_timeComponent_spatialPart {d : ℕ} (p q : Vector d) :
   funext i
   simp [spatialPart_apply_eq_toCoord]
   ring
+
+lemma minkowskiProduct_self_eq_timeComponent_spatialPart {d : ℕ} (p : Vector d) :
+    ⟪p, p⟫ₘ = ‖p.timeComponent‖ ^ 2 - ‖p.spatialPart‖ ^ 2 := by
+  rw [minkowskiProduct_eq_timeComponent_spatialPart]
+  congr 1
+  · rw [@RCLike.norm_sq_eq_def_ax]
+    simp
+  · exact real_inner_self_eq_norm_sq p.spatialPart
+
+@[simp]
+lemma minkowskiProduct_basis_left {d : ℕ} (μ : Fin 1 ⊕ Fin d) (p : Vector d) :
+    ⟪basis μ, p⟫ₘ = minkowskiMatrix μ μ * toCoord p μ := by
+  rw [minkowskiProduct_toCoord_minkowskiMatrix]
+  simp
+
+@[simp]
+lemma minkowskiProduct_basis_right {d : ℕ} (μ : Fin 1 ⊕ Fin d) (p : Vector d) :
+    ⟪p, basis μ⟫ₘ = minkowskiMatrix μ μ * toCoord p μ := by
+  rw [minkowskiProduct_symm, minkowskiProduct_basis_left]
+
+@[simp]
+lemma minkowskiProduct_eq_zero_forall_iff {d : ℕ} (p : Vector d) :
+    (∀ q : Vector d, ⟪p, q⟫ₘ = 0) ↔ p = 0 := by
+  constructor
+  · intro h
+    apply toCoord_injective
+    ext μ
+    rw [← minkowskiMatrix.mul_η_diag_eq_iff (μ := μ)]
+    rw [← minkowskiProduct_basis_right, h (basis μ)]
+    simp
+  · intro h
+    subst h
+    simp
+
+lemma map_minkowskiProduct_eq_self_forall_iff {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
+    (∀ p q : Vector d, ⟪f p, q⟫ₘ = ⟪p, q⟫ₘ) ↔ f = LinearMap.id := by
+  constructor
+  · intro h
+    ext p
+    have h1 := h p
+    have h2 : ∀ q, ⟪f p - p, q⟫ₘ = 0 := by
+      intro q
+      simp [h1 q]
+    rw [minkowskiProduct_eq_zero_forall_iff] at h2
+    simp
+    rw [sub_eq_zero] at h2
+    exact h2
+  · intro h
+    subst h
+    simp
+
+/-!
+
+## The adjoint of a linear map
+
+-/
+
+/-- The adjoint of a linear map from `Vector d` to itself with respect to
+  the `minkowskiProduct`. -/
+def adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) : Vector d →ₗ[ℝ] Vector d :=
+  (LinearMap.toMatrix Vector.basis Vector.basis).symm <|
+  minkowskiMatrix.dual <|
+  LinearMap.toMatrix Vector.basis Vector.basis f
+
+lemma map_minkowskiProduct_eq_adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p q : Vector d) :
+    ⟪f p, q⟫ₘ = ⟪p, adjoint f q⟫ₘ := by
+  rw [minkowskiProduct_toCoord_minkowskiMatrix, minkowskiProduct_toCoord_minkowskiMatrix]
+  simp only [toCoord_map_apply]
+  conv_rhs =>
+    enter [2, x]
+    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, adjoint, LinearMap.toMatrix_symm,
+      LinearMap.toMatrix_toLin, mulVec_eq_sum, op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply,
+      transpose_apply, smul_eq_mul]
+    rw [Finset.mul_sum]
+    enter [2, y]
+    rw [minkowskiMatrix.dual_apply]
+    ring_nf
+    simp
+  conv_lhs =>
+    enter [2, x]
+    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, mulVec_eq_sum, op_smul_eq_smul,
+      Finset.sum_apply, Pi.smul_apply, transpose_apply, smul_eq_mul]
+    rw [Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun μ _ => ?_)
+  refine Finset.sum_congr rfl (fun ν _ => ?_)
+  ring
+
+lemma minkowskiProduct_map_eq_adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p q : Vector d) :
+    ⟪p, f q⟫ₘ = ⟪adjoint f p, q⟫ₘ := by
+  rw [minkowskiProduct_symm, map_minkowskiProduct_eq_adjoint f q p,
+    minkowskiProduct_symm]
+
+/-- A linear map `Vector d →ₗ[ℝ] Vector d` satsfies `IsLorentz` if it preserves
+  the minkowski product. -/
+def IsLorentz {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
+    Prop := ∀ p q : Vector d, ⟪f p, f q⟫ₘ = ⟪p, q⟫ₘ
+
+lemma isLorentz_iff {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
+    IsLorentz f ↔ ∀ p q : Vector d, ⟪f p, f q⟫ₘ = ⟪p, q⟫ₘ := by
+  rfl
+
+lemma isLorentz_iff_basis {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
+    IsLorentz f ↔ ∀ μ ν : Fin 1 ⊕ Fin d, ⟪f (basis μ), f (basis ν)⟫ₘ = ⟪basis μ, basis ν⟫ₘ := by
+  rw [isLorentz_iff]
+  constructor
+  · exact fun a μ ν => a (basis μ) (basis ν)
+  intro h p q
+  have hp : p = ∑ μ, toCoord p μ • basis μ := by
+    rw [← basis_repr_apply_eq_toCoord]
+    exact Eq.symm (Basis.sum_repr basis p)
+  have hq : q = ∑ ν, toCoord q ν • basis ν := by
+    rw [← basis_repr_apply_eq_toCoord]
+    exact Eq.symm (Basis.sum_repr basis q)
+  generalize toCoord p = fp at hp
+  generalize toCoord q = fq at hq
+  subst hp hq
+  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_sum, map_smul, LinearMap.coeFn_sum,
+    Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, minkowskiProduct_basis_left, toCoord_basis,
+    mul_ite, mul_one, mul_zero, h]
+
+lemma isLorentz_iff_comp_adjoint_eq_id {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
+    IsLorentz f ↔ adjoint f ∘ₗ f = LinearMap.id := by
+  rw [isLorentz_iff]
+  conv_lhs =>
+    enter [p, q]
+    rw [minkowskiProduct_map_eq_adjoint]
+  change (∀ (p q : Vector d), (minkowskiProduct ((adjoint f ∘ₗ f) p)) q =
+    (minkowskiProduct p) q) ↔ _
+  rw [map_minkowskiProduct_eq_self_forall_iff]
+
+lemma isLorentz_iff_toMatrix_mem_lorentzGroup {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
+    IsLorentz f ↔ LinearMap.toMatrix Vector.basis Vector.basis f ∈ LorentzGroup d := by
+  rw [isLorentz_iff_comp_adjoint_eq_id]
+  rw [LorentzGroup.mem_iff_dual_mul_self]
+  trans LinearMap.toMatrix Vector.basis Vector.basis (adjoint f ∘ₗ f) =
+    LinearMap.toMatrix Vector.basis Vector.basis (LinearMap.id : Vector d →ₗ[ℝ] Vector d)
+  · exact Iff.symm (EmbeddingLike.apply_eq_iff_eq (LinearMap.toMatrix basis basis))
+  simp
+  rw [LinearMap.toMatrix_comp Vector.basis Vector.basis]
+  simp [adjoint]
 
 end Vector
 

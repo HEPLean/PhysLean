@@ -68,6 +68,24 @@ lemma η_apply_mul_η_apply_diag (μ : Fin 1 ⊕ Fin d) : η μ μ * η μ μ = 
   | Sum.inl _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   | Sum.inr _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
+@[simp]
+lemma η_apply_sq_eq_one (μ : Fin 1 ⊕ Fin d) :
+    η μ μ ^ 2 = 1 := by
+  trans η μ μ * η μ μ
+  · exact pow_two (η μ μ)
+  simp
+
+lemma η_diag_ne_zero {μ : Fin 1 ⊕ Fin d} :
+    η μ μ ≠ 0 := by
+  match μ with
+  | Sum.inl _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  | Sum.inr _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+
+lemma mul_η_diag_eq_iff {μ : Fin 1 ⊕ Fin d} {x y : ℝ} :
+    η μ μ * x = η μ μ * y ↔ x = y := by
+  refine mul_right_inj' ?_
+  exact η_diag_ne_zero
+
 /-- The Minkowski matrix as a block matrix. -/
 lemma as_block : @minkowskiMatrix d =
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ) := by
