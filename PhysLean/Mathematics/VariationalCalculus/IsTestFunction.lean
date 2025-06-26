@@ -9,6 +9,7 @@ import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import PhysLean.Mathematics.Calculus.AdjFDeriv
+import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.InnerProductSpace.Basic
 import PhysLean.SpaceAndTime.Space.Basic
 /-!
@@ -256,28 +257,22 @@ lemma IsTestFunction.adjFDeriv {f : X → U} [InnerProductSpace' ℝ X]
   · fun_prop
 
 @[fun_prop]
+lemma IsTestFunction.divergence {f : X → X} (hf : IsTestFunction f) :
+    IsTestFunction (fun x => divergence ℝ f x) := by
+  unfold _root_.divergence
+  apply IsTestFunction.comp_left
+    (f:=fun x : X => (fderiv ℝ f x)) (g:=fun f : X →L[ℝ] X => LinearMap.trace _ _ f.toLinearMap)
+  · fun_prop
+  · simp
+  · sorry -- missing mathlib API
+
+@[fun_prop]
 lemma IsTestFunction.gradient {d : ℕ} (φ : Space d → ℝ)
     (hφ : IsTestFunction φ) :
-    IsTestFunction (gradient φ) where
-  smooth := by
-    rw [@contDiff_euclidean]
-    simp [_root_.gradient]
-    rw [← contDiff_euclidean]
-    apply ContDiff.fun_comp
-    · apply LinearIsometryEquiv.contDiff
-    · have hφ := hφ.smooth
-      fun_prop
-  supp := by
-    have hg : _root_.gradient φ = fun x => (toDual ℝ (Space d)).symm (fderiv ℝ φ x) := by
-      exact rfl
-    rw [hg]
-    have hf : HasCompactSupport (fun x => fderiv ℝ φ x) := by
-      exact supp (of_fderiv hφ)
-    rw [← exists_compact_iff_hasCompactSupport] at hf ⊢
-    obtain ⟨K, cK, hK⟩ := hf
-    refine ⟨K, cK, fun x hx => ?_⟩
-    rw [hK x hx]
-    simp
+    IsTestFunction (gradient φ) := by
+  have h := fun x => gradient_eq_adjFDeriv (hφ.differentiable x)
+  eta_expand; simp[h]
+  fun_prop
 
 @[fun_prop]
 lemma IsTestFunction.of_div {d : ℕ} (φ : Space d → Space d)
