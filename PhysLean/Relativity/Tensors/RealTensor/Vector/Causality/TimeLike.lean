@@ -44,7 +44,7 @@ lemma timelike_time_dominates_space {d : ℕ} {v : Vector d}
     (hv : causalCharacter v = .timeLike) :
     ⟪spatialPart v, spatialPart v⟫_ℝ < (timeComponent v) * (timeComponent v) := by
   rw [timeLike_iff_norm_sq_pos] at hv
-  rw [innerProduct_toCoord] at hv
+  rw [minkowskiProduct_toCoord] at hv
   simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, Fin.isValue]
   have h_spatial_sum : ∑ x, spatialPart v x * spatialPart v x =
                     ∑ i, toCoord v (Sum.inr i) * toCoord v (Sum.inr i) := by
@@ -66,7 +66,7 @@ lemma time_component_ne_zero_of_timelike {d : ℕ} {v : Vector d}
     v (Sum.inl 0) ≠ 0 := by
   by_contra h
   rw [timeLike_iff_norm_sq_pos] at hv
-  rw [innerProduct_toCoord] at hv
+  rw [minkowskiProduct_toCoord] at hv
   simp at hv
   rw [h] at hv
   simp at hv
@@ -87,10 +87,10 @@ lemma timeLike_iff_time_lt_space {d : ℕ} {v : Vector d} :
     ⟪spatialPart v, spatialPart v⟫_ℝ < v (Sum.inl 0) * v (Sum.inl 0) := by
   constructor
   · intro h_timelike
-    rw [timeLike_iff_norm_sq_pos, innerProduct_toCoord] at h_timelike
+    rw [timeLike_iff_norm_sq_pos, minkowskiProduct_toCoord] at h_timelike
     simp only [Fin.isValue, sub_pos] at h_timelike; exact h_timelike
   · intro h_time_lt_space
-    rw [timeLike_iff_norm_sq_pos, innerProduct_toCoord]
+    rw [timeLike_iff_norm_sq_pos, minkowskiProduct_toCoord]
     simp only [Fin.isValue, sub_pos]
     exact h_time_lt_space
 
@@ -106,7 +106,7 @@ lemma timeComponent_squared_pos_of_timelike {d : ℕ} {v : Vector d}
 lemma timelike_spatial_lt_time_squared {d : ℕ} {v : Vector d}
     (hv : causalCharacter v = .timeLike) :
     ⟪spatialPart v, spatialPart v⟫_ℝ < (timeComponent v)^2 := by
-  rw [timeLike_iff_norm_sq_pos, innerProduct_toCoord] at hv
+  rw [timeLike_iff_norm_sq_pos, minkowskiProduct_toCoord] at hv
   simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, Fin.isValue]
   have h_time : timeComponent v = v (Sum.inl 0) := rfl
   simp [h_time, pow_two]
