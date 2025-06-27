@@ -11,7 +11,16 @@ import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Linters.Sorry
 /-!
 
-# Turning TODOs into YAML
+# Creates TODO yml file from the TODO items.
+
+The TODO yml file is used to generate the TODO list for the website.
+This lean file collects the TODOs and generates the YML file.
+
+It collects the following TODO items:
+- TODO items `TODO ...`.
+- Informal definitions and lemmas.
+- Semi-formal results.
+- Sorryful results.
 
 -/
 
