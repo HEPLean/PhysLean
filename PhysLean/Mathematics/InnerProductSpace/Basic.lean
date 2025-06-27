@@ -275,6 +275,11 @@ lemma inner_neg_right' (x y : E) : ⟪x, -y⟫ = -⟪x, y⟫ :=
 lemma inner_self_eq_zero' {x : E} : ⟪x, x⟫ = 0 ↔ x = 0 :=
   inner_self_eq_zero (E:=WithLp 2 E)
 
+@[simp]
+lemma inner_sum'{ι : Type*} [Fintype ι] (x : E) (g : ι → E) :
+    ⟪x, ∑ i, g i⟫ = ∑ i, ⟪x, g i⟫ := by
+  rw [inner_sum (E:=WithLp 2 E)]
+
 @[fun_prop]
 lemma Continuous.inner' {α} [TopologicalSpace α] (f g : α → E)
     (hf : Continuous f) (hg : Continuous g) : Continuous (fun a => ⟪f a, g a⟫) :=
@@ -292,6 +297,9 @@ local notation "⟪" x ", " y "⟫" => inner ℝ x y
 
 lemma real_inner_self_nonneg' {x : F} : 0 ≤ re (⟪x, x⟫) :=
   real_inner_self_nonneg (F:=WithLp 2 F)
+
+lemma real_inner_comm' (x y : F): ⟪y, x⟫ = ⟪x, y⟫ :=
+  real_inner_comm (F:=WithLp 2 F) x y
 
 @[fun_prop]
 lemma ContDiffAt.inner' {f g : E → F} {x : E}

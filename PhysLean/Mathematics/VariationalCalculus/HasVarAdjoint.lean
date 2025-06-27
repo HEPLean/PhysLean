@@ -563,27 +563,78 @@ lemma adjFDeriv_apply
       intro x hx; dsimp[divergence]; congr 4
       rw [Filter.EventuallyEq.fderiv_eq (h x hx)]
   adjoint φ ψ hφ hψ := by
-    have basisX : Basis (Fin (Module.finrank ℝ X)) ℝ X := sorry
-    let bX := fun x => basisX x
-    let bX' := basisX.equivFunL
-    calc _ = ∫ (y : X), ⟪dy, fderiv ℝ φ y (ψ y)⟫_ℝ := sorry
-         _ = ∑ i, ∫ (y : X), bX' (ψ y) i * fderiv ℝ (fun y' => ⟪dy, φ y' ⟫_ℝ) y (bX i) := by
-           -- rewrite `ψ y = ∑ i, bX' (ψ y) i • bX i
-           -- and apply `fderiv_inner_apply'`
-           sorry
-         _ = ∑ i, ∫ (y : X), - fderiv ℝ (fun y' => bX' (ψ y') i) y (bX i) * ⟪dy, φ y⟫_ℝ := by
+    obtain ⟨s, ⟨bX⟩⟩ := Basis.exists_basis ℝ X
+    haveI : Fintype s := FiniteDimensional.fintypeBasisIndex bX
+    let f  (i : s) :  X →ₗ[ℝ] ℝ := {
+      toFun := (bX.repr · i)
+      map_add' := by simp
+      map_smul' := by simp
+
+    }
+    let f' (i : s) : X →L[ℝ] ℝ := (f i).toContinuousLinearMap
+    calc _ = ∫ (y : X), ⟪dy, fderiv ℝ φ y (ψ y)⟫_ℝ := by
+            congr
+            funext y
+            have h1 := DifferentiableAt.hasAdjFDerivAt (hφ.differentiable y)
+            rw [h1.hasAdjoint_fderiv.adjoint_inner_left]
+         _ = ∑ i, ∫ (y : X), bX.repr (ψ y) i * fderiv ℝ (fun y' => ⟪dy, φ y' ⟫_ℝ) y (bX i) := by
+            have h (y : X) : ψ y = ∑ i, bX.repr (ψ y) i • bX i := by
+              exact Eq.symm (Basis.sum_equivFun bX (ψ y))
+            conv_lhs =>
+              enter [2, y]
+              rw [h]
+              simp
+            rw [MeasureTheory.integral_finset_sum ]
+            congr
+            funext i
+            congr
+            funext y
+            simp [inner_smul_left', inner_smul_right']
+            left
+            rw [fderiv_inner_apply']
+            simp
+            · fun_prop
+            · exact hφ.differentiable y
+            · intro i hi
+              apply IsTestFunction.integrable
+              simp [inner_smul_left', inner_smul_right']
+              apply IsTestFunction.mul_right
+              · change IsTestFunction  fun x => f' i (ψ x)
+                apply IsTestFunction.comp_left
+                · exact hψ
+                · simp
+                · fun_prop
+              · fun_prop
+
+         _ = ∑ i, ∫ (y : X), - fderiv ℝ (fun y' => bX.repr (ψ y') i) y (bX i) * ⟪dy, φ y⟫_ℝ := by
            congr; funext i
            rw[integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
            · simp[integral_neg]
            · sorry
            · sorry
            · sorry
-           · sorry
-           · sorry
-         _ = ∫ (y : X), - (∑ i, fderiv ℝ (fun y' => bX' (ψ y') i) y (bX i)) * ⟪dy, φ y⟫_ℝ := sorry
+           · change  Differentiable ℝ fun y => f' i (ψ y)
+             fun_prop
+           · fun_prop
+         _ = ∫ (y : X), - (∑ i, fderiv ℝ (fun y' => bX.repr (ψ y') i) y (bX i)) * ⟪dy, φ y⟫_ℝ := sorry
          _ = _ := by
-           -- just apply theorem stating divergence expressed in basis
-           sorry
+            congr
+            funext y
+            rw [divergence_eq_sum_fderiv' bX]
+            simp
+            rw [inner_smul_right']
+            congr 1
+            congr 1
+            funext i
+            trans (fderiv ℝ (f' i ∘ ψ) y) (bX i)
+            · rfl
+            rw [fderiv_comp]
+            simp
+            simp [f',f ]
+            · exact ContinuousLinearMap.differentiableAt _
+            · exact hψ.differentiable y
+            · exact real_inner_comm' (φ y) dy
+
 
 
 protected lemma gradient {d} :
