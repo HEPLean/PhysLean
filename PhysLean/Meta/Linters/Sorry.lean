@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Batteries.Tactic.Lint.Basic
 import Lean.Util.CollectAxioms
+import PhysLean.Meta.Basic
 /-!
 
 # The linter for `sorry` declarations and the sorryful attribute
@@ -37,10 +38,16 @@ open Lean
 structure SorryfulInfo where
   /-- Name of result. -/
   name : Name
+  /-- The docstring of the result. -/
+  docstring : String
+  /-- The file name where the note came from. -/
+  fileName : Name
+  /-- The line from where the note came from. -/
+  line : Nat
 
 /-- An enviroment extension containing the information of declerations
   which carry the `sorryful` attribute. -/
-initialize sorryfulExtension : SimplePersistentEnvExtension Lean.Name (Array Lean.Name) ←
+initialize sorryfulExtension : SimplePersistentEnvExtension SorryfulInfo (Array SorryfulInfo) ←
   registerSimplePersistentEnvExtension {
     name := `sorryfulExtension
     addEntryFn := fun arr info => arr.push info
@@ -49,8 +56,8 @@ initialize sorryfulExtension : SimplePersistentEnvExtension Lean.Name (Array Lea
 
 /-- Adds an entry to `sorryfulExtension`. -/
 def addSorryfulEntry {m : Type → Type} [MonadEnv m]
-    (declName : Name) : m Unit :=
-  modifyEnv (sorryfulExtension.addEntry · declName)
+    (declName : Name) (docString : String) (fileName : Name) (line : Nat) : m Unit :=
+  modifyEnv (sorryfulExtension.addEntry · ⟨declName, docString, fileName, line⟩)
 
 /-- The `sorryful` attribute allows declerations to contain the `sorryAx` axiom.
   In converse, a decleration with the `sorryful` attribute must contain the `sorryAx` axiom. -/
@@ -62,8 +69,19 @@ initialize Lean.registerBuiltinAttribute {
   descr := "The `sorryful` attribute allows declerations to contain the `sorryAx` axiom.
     In converse, a decleration with the `sorryful` attribute must contain the `sorryAx` axiom."
   add := fun decl stx _attrKind => do
-    addSorryfulEntry decl
-  applicationTime := .beforeElaboration
+    let pos := stx.getPos?
+    match pos with
+    | some pos => do
+      let env ← getEnv
+      let fileMap ← getFileMap
+      let filePos := fileMap.toPosition pos
+      let line := filePos.line
+      let modName := env.mainModule
+      let nameSpace := (← getCurrNamespace)
+      let docstring ← Name.getDocString decl
+      addSorryfulEntry decl docstring modName line
+    | none => throwError "Invalid syntax for `note` command"
+  applicationTime := AttributeApplicationTime.beforeElaboration
 }
 
 /-!
@@ -91,7 +109,7 @@ open Batteries.Tactic.Lint in
     if ← isAutoDecl declName then return none
     let axioms ← collectAxioms declName
     let sorryful_results := sorryfulExtension.getState (← getEnv)
-    if declName ∈ sorryful_results ↔ ``sorryAx ∈ axioms then
+    if declName ∈ (sorryful_results.map fun x => x.name) ↔ ``sorryAx ∈ axioms then
       return none
     return m!"contains `sorryAx` and is not marked with @[sorryful]
       or is marked with @[sorryful] and does not contain `sorryAx`."

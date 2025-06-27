@@ -8,6 +8,7 @@ import PhysLean.Meta.TODO.Basic
 import Mathlib.Lean.CoreM
 import PhysLean.Meta.Informal.Post
 import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.Meta.Linters.Sorry
 /-!
 
 # Turning TODOs into YAML
@@ -128,6 +129,12 @@ def PhysLeanCategory.ofFileName (n : Name) : PhysLeanCategory :=
 
 /-########################-/
 
+/-!
+
+## FullTODOInfo
+
+-/
+
 structure FullTODOInfo where
   content : String
   fileName : Name
@@ -136,8 +143,33 @@ structure FullTODOInfo where
   isInformalDef : Bool
   isInformalLemma : Bool
   isSemiFormalResult : Bool
+  isSorryfulResult : Bool := false
   category : PhysLeanCategory
   tag : String
+
+/-- Coverts a `FullTODOInfo` to an entry in a YAML code. -/
+def FullTODOInfo.toYAML (todo : FullTODOInfo) : MetaM String := do
+  let content := todo.content
+  let contentIndent := content.replace "\n" "\n      "
+  return s!"
+  - file: {todo.fileName}
+    githubLink: {Name.toGitHubLink todo.fileName todo.line}
+    line: {todo.line}
+    isInformalDef: {todo.isInformalDef}
+    isInformalLemma: {todo.isInformalLemma}
+    isSemiFormalResult: {todo.isSemiFormalResult}
+    isSorryfulResult: {todo.isSorryfulResult}
+    category: {todo.category}
+    name: {todo.name}
+    tag: {todo.tag}
+    content: |
+      {contentIndent}"
+
+/-!
+
+## TODO items
+
+-/
 
 def FullTODOInfo.ofTODO (t : todoInfo) : FullTODOInfo :=
   {content := t.content, fileName := t.fileName, line := t.line, name := t.fileName,
@@ -150,6 +182,12 @@ unsafe def getTodoInfo : MetaM (Array FullTODOInfo) := do
   let todoInfo := (todoExtension.getState env)
   -- pure (todoInfo.qsort (fun x y => x.fileName.toString < y.fileName.toString)).toList
   pure (todoInfo.map FullTODOInfo.ofTODO)
+
+/-!
+
+## Informal lemmas and definitions
+
+-/
 
 unsafe def informalTODO (x : ConstantInfo) : CoreM FullTODOInfo := do
   let name := x.name
@@ -169,6 +207,12 @@ unsafe def allInformalTODO : CoreM (Array FullTODOInfo) := do
   let x ← AllInformal
   x.mapM informalTODO
 
+/-!
+
+## Semi-formal results
+
+-/
+
 def FullTODOInfo.ofSemiFormal (t : WantedInfo) : FullTODOInfo :=
   {content := t.content, fileName := t.fileName, line := t.line, name := t.name,
    isInformalDef := false, isInformalLemma := false,
@@ -180,30 +224,51 @@ unsafe def allSemiInformal  : CoreM (Array FullTODOInfo) := do
   let semiInformalInfos := (wantedExtension.getState env)
   pure (semiInformalInfos.map FullTODOInfo.ofSemiFormal)
 
-def FullTODOInfo.toYAML (todo : FullTODOInfo) : MetaM String := do
-  let content := todo.content
-  let contentIndent := content.replace "\n" "\n      "
-  return s!"
-  - file: {todo.fileName}
-    githubLink: {Name.toGitHubLink todo.fileName todo.line}
-    line: {todo.line}
-    isInformalDef: {todo.isInformalDef}
-    isInformalLemma: {todo.isInformalLemma}
-    isSemiFormalResult: {todo.isSemiFormalResult}
-    category: {todo.category}
-    name: {todo.name}
-    tag: {todo.tag}
-    content: |
-      {contentIndent}"
+/-!
+
+## Sorryful results
+-/
+
+def SorryfulInfo.toFullTODOInfo (s : SorryfulInfo) : FullTODOInfo where
+  content := s.docstring
+  fileName := s.fileName
+  line := s.line
+  name := s.name
+  isInformalDef := false
+  isInformalLemma := false
+  isSemiFormalResult := false
+  isSorryfulResult := true
+  category := PhysLeanCategory.ofFileName s.fileName
+  tag := s.name.toString
+
+unsafe def allSorryfulResults  : CoreM (Array FullTODOInfo) := do
+  let env ← getEnv
+  let sorryfulInfos := (sorryfulExtension.getState env)
+  pure (sorryfulInfos.map SorryfulInfo.toFullTODOInfo)
+
+/-!
+
+## All TODOs
+
+Collecting all of the TODO items
+
+-/
 
 unsafe def allTODOs : MetaM (List FullTODOInfo) := do
   let todos ← getTodoInfo
   let informalTODOs ← allInformalTODO
   let semiInformal ← allSemiInformal
-  let all := todos ++ informalTODOs ++ semiInformal
+  let sorryfulResults ← allSorryfulResults
+  let all := todos ++ informalTODOs ++ semiInformal ++ sorryfulResults
   return  (all.qsort (fun x y => x.fileName.toString < y.fileName.toString
     ∨ (x.fileName.toString = y.fileName.toString ∧ x.line < y.line))).toList
 
+
+/-!
+
+## Creating the YAML file
+
+-/
 unsafe def categoriesToYML : MetaM String := do
   let todos ← allTODOs
   let mut cat := "Category:\n"
@@ -232,6 +297,12 @@ unsafe def fullTODOYML : MetaM String := do
   let cat ← categoriesToYML
   let todos ← todosToYAML
   return cat ++ todos
+
+/-!
+
+## Main function
+
+-/
 
 unsafe def main (args : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
