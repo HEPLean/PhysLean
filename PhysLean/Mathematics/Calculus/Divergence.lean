@@ -55,14 +55,25 @@ lemma divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E �
   rw [← e.symm.sum_comp]
   simp [b']
 
-
-lemma divergence_eq_space_div {d} (f : Space d → Space d) : divergence ℝ f = Space.div f := by
+lemma divergence_eq_space_div {d} (f : Space d → Space d)
+    (h : Differentiable ℝ f) : divergence ℝ f = Space.div f := by
   let b := (Space.basis (d:=d)).toBasis
   rw[divergence_eq_sum_fderiv' b]
   funext x
   simp +zetaDelta [Space.div,Space.deriv,Space.coord,Space.basis]
-  -- ugh again can't use `fderiv_apply` because of `EuclideanSpace`
-  sorry
+  congr
+  funext i
+  have h1 : (fderiv ℝ (fun x => f x i) x)
+    = fderiv ℝ (Space.coordCLM i ∘ f ) x := by
+    congr
+    ext j
+    simp
+    rw [Space.coordCLM_apply, Space.coord_apply]
+  rw [h1]
+  rw [fderiv_comp ]
+  simp [Space.coordCLM_apply, Space.coord_apply]
+  · fun_prop
+  · exact h x
 
 lemma divergence_prodMk [FiniteDimensional 𝕜 E] [FiniteDimensional 𝕜 F]
     {f : E×F → E} {g : E×F → F} {xy : E×F}
@@ -116,10 +127,10 @@ lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
 lemma divergence_smul [InnerProductSpace' 𝕜 E] {f : E → 𝕜} {g : E → E} {x : E}
-    (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :
+    (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x)
+    [FiniteDimensional 𝕜 E] :
     divergence 𝕜 (fun x => f x • g x) x
-    =
-    f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫  := by
+    =  f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫  := by
   unfold divergence
   simp [fderiv_smul hf hg]
   sorry
