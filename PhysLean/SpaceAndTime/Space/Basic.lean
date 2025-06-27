@@ -138,10 +138,4 @@ noncomputable def toDirection {d : ℕ} (x : Space d) (h : x ≠ 0) : Direction 
   unit := (‖x‖⁻¹) • (x)
   norm := norm_smul_inv_norm h
 
-noncomputable def test : ℕ :=
-  sorry
-
-sorryful_lemma sorryAx : 0 = 0 := by
-  sorry
-
 end Space
