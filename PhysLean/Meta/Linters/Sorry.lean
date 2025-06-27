@@ -1,67 +1,99 @@
+/-
+Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
+Released under Apache 2.0 license.
+Authors: Joseph Tooby-Smith
+-/
+import Batteries.Tactic.Lint.Basic
+import Lean.Util.CollectAxioms
+/-!
 
-import Mathlib.Tactic.Linter.Header
+# The linter for `sorry` declarations and the sorryful attribute
 
+This module defines an attribute `sorryful` and a linter `noSorry`.
+
+The attribute `sorryful` adds the declaration to an environment extension
+`sorryfulExtension` which can be used to create TODO entries.
+
+The linter `noSorry` checks for declarations that contain the `sorryAx` axiom
+if and only if it has the `sorryful` attribute.
+
+## Coloring `sorryful`
+
+It is possible to color the `sorryful` attribute in VSCode.
+This is part of the `.vscode/settings.json` file, but requires the `TODO Highlight` extension
+to be downloaded.
+
+-/
+
+/-!
+
+## The sorryful attribute
+
+-/
 
 open Lean
 
--- higher priority to override the one in Batteries
-/-- `sorryful_lemma` means the same as `theorem`. It is used to denote "less important" theorems -/
-syntax (name := sorryfulLemma) (priority := default + 1) declModifiers
-  group("sorryful_lemma " declId ppIndent(declSig) declVal) : command
+/-- The information for stored for a decleration marked with `sorryful`. -/
+structure SorryfulInfo where
+  /-- Name of result. -/
+  name : Name
 
-/-- Implementation of the `lemma` command, by macro expansion to `theorem`. -/
-@[macro «sorryfulLemma»] def expandSorryFulLemma : Macro := fun stx =>
-  -- Not using a macro match, to be more resilient against changes to `lemma`.
-  -- This implementation ensures that any future changes to `theorem` are reflected in `lemma`
-  let stx := stx.modifyArg 1 fun stx =>
-    let stx := stx.modifyArg 0 (mkAtomFrom · "theorem" (canonical := true))
-    stx.setKind ``Parser.Command.theorem
-  pure <| stx.setKind ``Parser.Command.declaration
+/-- An enviroment extension containing the information of declerations
+  which carry the `sorryful` attribute. -/
+initialize sorryfulExtension : SimplePersistentEnvExtension Lean.Name (Array Lean.Name) ←
+  registerSimplePersistentEnvExtension {
+    name := `sorryfulExtension
+    addEntryFn := fun arr info => arr.push info
+    addImportedFn := fun es => es.foldl (· ++ ·) #[]
+  }
+
+/-- Adds an entry to `sorryfulExtension`. -/
+def addSorryfulEntry {m : Type → Type} [MonadEnv m]
+    (declName : Name)  : m Unit :=
+  modifyEnv (sorryfulExtension.addEntry · declName)
+
+/-- The `sorryful` attribute allows declerations to contain the `sorryAx` axiom.
+  In converse, a decleration with the `sorryful` attribute must contain the `sorryAx` axiom. -/
+syntax (name := Sorryful_attr) "sorryful"  : attr
+
+/-- Registration of the `sorryful` attribute. -/
+initialize Lean.registerBuiltinAttribute {
+  name := `Sorryful_attr
+  descr := "The `sorryful` attribute allows declerations to contain the `sorryAx` axiom.
+    In converse, a decleration with the `sorryful` attribute must contain the `sorryAx` axiom."
+  add := fun decl stx _attrKind => do
+    addSorryfulEntry decl
+  applicationTime := .beforeElaboration
+}
 
 /-!
-#  The "DocString" style linter
 
-The "DocString" linter validates style conventions regarding doc-string formatting.
+## The noSorry linter
+
 -/
-
-open Lean Elab
-
-
-/--
-The "DocString" linter validates style conventions regarding doc-string formatting.
--/
-register_option linter.sorryLint : Bool := {
-  defValue := true
-  descr := "enable the style.sorryLint linter"
-}
 
 namespace PhysLean.Linter
 
+open Lean Elab
 
-
-def sorryLinter : Linter where run := withSetOptionIn fun stx ↦ do
-  unless Linter.getLinterValue linter.sorryLint (← getOptions) do
-    return
-  if (← get).messages.hasErrors then
-    return
-  let fm ← getFileMap
-  let declId :=
-    if stx[1].isOfKind ``Lean.Parser.Command.instance then
-      stx[1][3][0]
-    else
-      stx[1][1]
-  if let .missing := declId then return
-  let declName : Name :=
-    if let `_root_ :: rest := declId[0].getId.components then
-      rest.foldl (· ++ ·) default
-    else (← getCurrNamespace) ++ declId[0].getId
-  let axioms ← collectAxioms declName
-  let msg := m!"`{declName}` contains or depends on a `sorry`."
-  if [`sorryfulLemma].contains stx.getKind ↔  ¬ ``sorryAx ∈ axioms then
-    Linter.logLint linter.sorryLint declId msg
-  else return
-
-initialize addLinter sorryLinter
-
+open Batteries.Tactic.Lint in
+/-- The `noSorry` linter. This checks  declarations contain the `sorryAx` axiom
+  if and only if they have the `sorryful` attribute. -/
+@[env_linter] def noSorry : Batteries.Tactic.Lint.Linter where
+  noErrorsFound :=
+    "A decleration which contains the `sorryAx` if and only if it has
+    the `@[sorryful]` attribute  ."
+  errorsFound := "THE FOLLOWING RESULTS EITHER HAVE THE `sorryAx` AXIOM AND
+  ARE NOT MARKED WITH THE `@[sorryful]` attribute OR DO NOT HAVE THE `sorryAx` AXIOM
+  AND ARE MARKED WITH THE `@[sorryful]` attribute."
+  isFast := true
+  test declName := do
+    if ← isAutoDecl declName then return none
+    let axioms ← collectAxioms declName
+    let sorryful_results := sorryfulExtension.getState (← getEnv)
+    if declName ∈ sorryful_results ↔ ``sorryAx ∈ axioms then
+      return none
+    return m!"contains `sorryAx` and is not marked with @[sorryful]
+      or is marked with @[sorryful] and does not contain `sorryAx`."
 
 end PhysLean.Linter
