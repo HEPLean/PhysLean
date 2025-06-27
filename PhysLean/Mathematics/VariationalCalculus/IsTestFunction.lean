@@ -72,10 +72,8 @@ lemma IsTestFunction.comp_left {f : X → V} (hf : IsTestFunction f)
     IsTestFunction (fun x => g (f x)) where
   smooth := ContDiff.comp hg hf.smooth
   supp := by
-    have hf' := hf.supp
-    rw [← exists_compact_iff_hasCompactSupport] at hf' ⊢
-    obtain ⟨K, cK, hK⟩ := hf'
-    refine ⟨K, cK, fun x hx => ?_⟩
+    obtain ⟨K, cK, hK⟩ := exists_compact_iff_hasCompactSupport.mpr hf.supp
+    refine exists_compact_iff_hasCompactSupport.mp ⟨K, cK, fun x hx => ?_⟩
     rw [hK x hx]
     exact hg1
 
@@ -86,14 +84,29 @@ lemma IsTestFunction.pi {ι} [Fintype ι] {φ : X → ι → U} (hφ : ∀ i, Is
     have := fun i => (hφ i).smooth
     fun_prop
   supp := by
-    sorry
+    let K : ι → Set X := fun i =>
+      Classical.choose (exists_compact_iff_hasCompactSupport.mpr (hφ i).supp)
+    have hK (i : ι) := Classical.choose_spec (exists_compact_iff_hasCompactSupport.mpr (hφ i).supp)
+    refine exists_compact_iff_hasCompactSupport.mp
+      ⟨⋃ i, K i, isCompact_iUnion (fun i => (hK i).1), fun x hx => ?_⟩
+    simp at hx
+    conv_lhs =>
+      enter [i]
+      rw [(hK i).2 x (hx i)]
+    rfl
 
 @[fun_prop]
 lemma IsTestFunction.prodMk {f : X → U} {g : X → V}
     (hf : IsTestFunction f) (hg : IsTestFunction g) :
     IsTestFunction (fun x => (f x, g x)) where
   smooth := by fun_prop
-  supp := sorry
+  supp := by
+    obtain ⟨Kf, cKf, hKf⟩ := exists_compact_iff_hasCompactSupport.mpr hf.supp
+    obtain ⟨Kg, cKg, hKg⟩ := exists_compact_iff_hasCompactSupport.mpr hg.supp
+    refine exists_compact_iff_hasCompactSupport.mp
+      ⟨Kf ∪ Kg, IsCompact.union cKf cKg, fun x hx => ?_⟩
+    simp at hx
+    simp [hKf x hx.1, hKg x hx.2]
 
 @[fun_prop]
 lemma IsTestFunction.prod_fst {f : X → U × V} (hf : IsTestFunction f) :
@@ -141,14 +154,20 @@ lemma IsTestFunction.inner_left [InnerProductSpace' ℝ V]
     {f : X → V} {g : X → V} (hf : ContDiff ℝ ∞ f) (hg : IsTestFunction g) :
     IsTestFunction (fun x => ⟪f x, g x⟫_ℝ) where
   smooth := ContDiff.inner' hf hg.smooth
-  supp := sorry -- HasCompactSupport.inner_left hf hg.supp
+  supp := by
+    obtain ⟨K, cK, hK⟩ := exists_compact_iff_hasCompactSupport.mpr hg.supp
+    exact exists_compact_iff_hasCompactSupport.mp ⟨K, cK, fun x hx => by simp [hK x hx]⟩
+     -- HasCompactSupport.inner_left hf hg.supp
 
 @[fun_prop]
 lemma IsTestFunction.inner_right [InnerProductSpace' ℝ V]
     {f : X → V} {g : X → V} (hf : IsTestFunction f) (hg : ContDiff ℝ ∞ g) :
     IsTestFunction (fun x => ⟪f x, g x⟫_ℝ) where
   smooth := ContDiff.inner' hf.smooth hg
-  supp := sorry -- HasCompactSupport.inner_right hf.supp hg
+  supp := by
+    obtain ⟨K, cK, hK⟩ := exists_compact_iff_hasCompactSupport.mpr hf.supp
+    exact exists_compact_iff_hasCompactSupport.mp ⟨K, cK, fun x hx => by simp [hK x hx]⟩
+    -- HasCompactSupport.inner_right hf.supp hg
 
 @[fun_prop]
 lemma IsTestFunction.smul {f : X → ℝ} {g : X → U} (hf : IsTestFunction f) (hg : IsTestFunction g) :
