@@ -12,7 +12,12 @@ def main (_: List String) : IO UInt32 := do
 
   println! "Building ... "
   let build ← IO.Process.output {cmd := "lake", args := #["build"]}
-  println! build.stdout
+  let s1 := "Build completed successfully."
+  let s2 := build.stdout
+  if ¬ (s2.splitOn s1).length = 2  then
+    println! "Build failed! run `lake build` to see the errors.\n"
+  else
+    println! "Build is successful.\n"
 
   println! "File imports ... "
   let importCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_file_imports"]}
