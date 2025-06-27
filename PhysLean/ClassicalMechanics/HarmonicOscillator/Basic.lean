@@ -136,7 +136,7 @@ def force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ := sorry
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 @[sorryful]
 lemma force_is_linear (x : Time → ℝ) :
-  force S x = - S.k • x := by sorry
+    force S x = - S.k • x := by sorry
 
 /-- The definition of the equation of motion for the classical harmonic oscillator
   defined through the Euler-Lagrange equations. -/
@@ -165,7 +165,7 @@ def ExtremaOfAction (x : Time → ℝ) : Prop := by sorry
 -/
 @[sorryful]
 lemma equationOfMotion_iff_extremaOfAction (x : Time → ℝ) :
-  EquationOfMotion x ↔ ExtremaOfAction x := by sorry
+    EquationOfMotion x ↔ ExtremaOfAction x := by sorry
 
 TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
 

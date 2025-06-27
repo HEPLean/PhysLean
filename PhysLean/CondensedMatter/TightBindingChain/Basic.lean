@@ -305,7 +305,7 @@ noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
 /-- The energy eigenstates of the tight binding chain are orthogonal. -/
 @[sorryful]
 lemma energyEigenstate_orthogonal :
-  Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by sorry
+    Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by sorry
 
 /-- The energy eigenvalue of the tight binding chain for a `k` in `QuantaWaveNumber` is
   `E0 - 2 * t * Real.cos (k * T.a)`. -/
