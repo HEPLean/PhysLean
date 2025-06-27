@@ -55,7 +55,8 @@ end SpatialGeometry
 Semiformal implementation note: It is possible that we should restirct
 `a(t)` to be smooth or at least twice differentiable.
 -/
-semiformal_result "6Z2AV" FLRW : Type
+@[sorryful]
+def FLRW : Type := sorry
 
 namespace FLRW
 
