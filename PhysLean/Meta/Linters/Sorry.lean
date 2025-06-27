@@ -49,12 +49,12 @@ initialize sorryfulExtension : SimplePersistentEnvExtension Lean.Name (Array Lea
 
 /-- Adds an entry to `sorryfulExtension`. -/
 def addSorryfulEntry {m : Type → Type} [MonadEnv m]
-    (declName : Name)  : m Unit :=
+    (declName : Name) : m Unit :=
   modifyEnv (sorryfulExtension.addEntry · declName)
 
 /-- The `sorryful` attribute allows declerations to contain the `sorryAx` axiom.
   In converse, a decleration with the `sorryful` attribute must contain the `sorryAx` axiom. -/
-syntax (name := Sorryful_attr) "sorryful"  : attr
+syntax (name := Sorryful_attr) "sorryful" : attr
 
 /-- Registration of the `sorryful` attribute. -/
 initialize Lean.registerBuiltinAttribute {
@@ -77,12 +77,12 @@ namespace PhysLean.Linter
 open Lean Elab
 
 open Batteries.Tactic.Lint in
-/-- The `noSorry` linter. This checks  declarations contain the `sorryAx` axiom
+/-- The `noSorry` linter. This checks declarations contain the `sorryAx` axiom
   if and only if they have the `sorryful` attribute. -/
 @[env_linter] def noSorry : Batteries.Tactic.Lint.Linter where
   noErrorsFound :=
     "A decleration which contains the `sorryAx` if and only if it has
-    the `@[sorryful]` attribute  ."
+    the `@[sorryful]` attribute. "
   errorsFound := "THE FOLLOWING RESULTS EITHER HAVE THE `sorryAx` AXIOM AND
   ARE NOT MARKED WITH THE `@[sorryful]` attribute OR DO NOT HAVE THE `sorryAx` AXIOM
   AND ARE MARKED WITH THE `@[sorryful]` attribute."

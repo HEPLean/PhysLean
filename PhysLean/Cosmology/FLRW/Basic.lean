@@ -5,6 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Informal.Basic
+import PhysLean.Meta.Linters.Sorry
+import PhysLean.SpaceAndTime.Space.Basic
 /-!
 
 # The Friedmann-Lemaître-Robertson-Walker metric
@@ -19,10 +21,8 @@ namespace Cosmology
 - `Spherical (k : ℝ)`
 - `Flat`
 - `Saddle (k : ℝ)` -/
-semiformal_result "6ZZLH" SpatialGeometry : Type
-
-/- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (SpatialGeometry : Type)
+@[sorryful]
+def SpatialGeometry : Type := sorry
 
 namespace SpatialGeometry
 
@@ -32,7 +32,8 @@ namespace SpatialGeometry
 - `Saddle k`, `S s r = k * sin (r / k)`.
 
 Semiformal implementation note: There is likely a better name for this function. -/
-semiformal_result "6ZZTV" S (s : SpatialGeometry) : ℝ → ℝ
+@[sorryful]
+def S (s : SpatialGeometry) : ℝ → ℝ := sorry
 
 /-- The limit of `S (Saddle k) r` as `k → ∞` is equal to `S (Flat) r`. -/
 informal_lemma limit_S_saddle where
