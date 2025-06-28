@@ -95,6 +95,17 @@ lemma IsTestFunction.pi {ι} [Fintype ι] {φ : X → ι → U} (hφ : ∀ i, Is
       rw [(hK i).2 x (hx i)]
     rfl
 
+lemma IsTestFunction.space_component  {φ : X → Space d} (hφ :  IsTestFunction φ) :
+    IsTestFunction (fun x => φ x i) where
+  smooth := by
+    have hφ := hφ.smooth
+    fun_prop
+  supp := by
+    obtain ⟨K, cK, hK⟩ := exists_compact_iff_hasCompactSupport.mpr hφ.supp
+    refine exists_compact_iff_hasCompactSupport.mp ⟨K, cK, fun x hx => ?_⟩
+    rw [hK x hx]
+    simp
+
 @[fun_prop]
 lemma IsTestFunction.prodMk {f : X → U} {g : X → V}
     (hf : IsTestFunction f) (hg : IsTestFunction g) :

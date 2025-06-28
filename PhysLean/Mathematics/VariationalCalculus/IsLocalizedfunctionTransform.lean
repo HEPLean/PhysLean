@@ -15,25 +15,7 @@ import PhysLean.Mathematics.InnerProductSpace.Calculus
 import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.Calculus.AdjFDeriv
-/-!
-# Variational adjoint
-
-Definition of adjoint of linear function between function spaces. It is inspired by the definition
-of distributional adjoint of linear maps between test functions as described here:
-https://en.wikipedia.org/wiki/Distribution_(mathematics) under 'Preliminaries: Transpose of a linear
-operator' but we require that the adjoint is function between test functions too.
-
-The key results are:
-  - variational adjoint is unique on test functions
-  - variational adjoint of identity is identity, `HasVarAdjoint.id`
-  - variational adjoint of composition is composition of adjoint in reverse order,
-    `HasVarAdjoint.comp`
-  - variational adjoint of deriv is `- deriv`, `HasVarAdjoint.deriv`
-  - variational adjoint of algebraic operations is algebraic operation of adjoints,
-    `HasVarAdjoint.neg`, `HasVarAdjoint.add`, `HasVarAdjoint.sub`, `HasVarAdjoint.mul_left`,
-    `HasVarAdjoint.mul_right`, `HasVarAdjoint.smul_left`, `HasVarAdjoint.smul_right`
--/
-
+import PhysLean.SpaceAndTime.Space.VectorIdentities
 open InnerProductSpace MeasureTheory ContDiff
 
 section
@@ -133,6 +115,203 @@ lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ}  (hF : IsLocal
   apply h
   · simp_all
   · simp_all
+
+lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ}  (hF : IsLocalizedFunctionTransform F )  :
+    IsLocalizedFunctionTransform (fun φ x => F φ x * ψ x) := by
+  intro K cK
+  obtain ⟨L,cL,h⟩ := hF K cK
+  refine ⟨L,cL, ?_⟩
+  intro _ _ hφ _ _;
+  simp
+  left
+  apply h
+  · simp_all
+  · simp_all
+
+lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ}
+    (hF : IsLocalizedFunctionTransform F)  :
+    IsLocalizedFunctionTransform (fun φ x => ψ x • F φ x) := by
+  intro K cK
+  obtain ⟨L,cL,h⟩ := hF K cK
+  refine ⟨L,cL, ?_⟩
+  intro _ _ hφ _ _;
+  simp
+  congr 1
+  apply h
+  · simp_all
+  · simp_all
+
+lemma div {d} : IsLocalizedFunctionTransform fun (φ : Space d → Space d) x => Space.div φ x := by
+  intro K cK
+  use (Metric.cthickening 1 K)
+  constructor
+  · exact IsCompact.cthickening cK
+  · intro φ φ' hφ
+    have h : ∀ (i : Fin d), ∀ x ∈ K,
+        (fun x => Space.coord i (φ x)) =ᶠ[nhds x] fun x => Space.coord i (φ' x) := by
+      intro i x hx
+      apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+      refine mem_interior_iff_mem_nhds.mp ?_
+      rw [@mem_interior]
+      use Metric.thickening 1 K
+      simp only [subset_refl, true_and]
+      apply And.intro
+      · exact Metric.isOpen_thickening
+      · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+        use x
+        simpa using hx
+      · intro x hx
+        have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+        simp_all [hφ]
+    intro x hx; dsimp;
+    simp [Space.div,Space.deriv]
+    congr; funext i; congr 1
+    exact Filter.EventuallyEq.fderiv_eq (h _ _ hx)
+
+lemma grad : IsLocalizedFunctionTransform fun (ψ : Space d → ℝ) x => Space.grad ψ x := by
+  intro K cK
+  use (Metric.cthickening 1 K)
+  constructor
+  · exact IsCompact.cthickening cK
+  · intro φ φ' hφ
+    intro x hx; dsimp;
+    simp [Space.grad_eq_sum,Space.deriv]
+    congr
+    funext i
+    congr 2
+    refine Filter.EventuallyEq.fderiv_eq ?_
+    apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+    refine mem_interior_iff_mem_nhds.mp ?_
+    rw [@mem_interior]
+    use Metric.thickening 1 K
+    simp only [subset_refl, true_and]
+    apply And.intro
+    · exact Metric.isOpen_thickening
+    · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+      use x
+      simpa using hx
+    · intro x hx
+      have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+      simp_all [hφ]
+
+lemma gradient : IsLocalizedFunctionTransform fun (ψ : Space d → ℝ) x => gradient ψ x := by
+  conv =>
+    enter [1, ψ, x]
+    rw [← Space.grad_eq_gradiant]
+  exact grad
+
+lemma clm_apply (f : X → (U →L[ℝ] V)) : IsLocalizedFunctionTransform fun φ x => (f x) (φ x) := by
+  intro K cK
+  exact ⟨K, cK, by intro _ _ hφ _ _; simp_all⟩
+
+lemma deriv : IsLocalizedFunctionTransform (fun φ : ℝ → U => deriv φ) := by
+  intro K cK
+  use (Metric.cthickening 1 K)
+  constructor
+  · exact IsCompact.cthickening cK
+  · intro φ φ' hφ
+    have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := by
+      intro x hx
+      apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+      refine mem_interior_iff_mem_nhds.mp ?_
+      rw [@mem_interior]
+      use Metric.thickening 1 K
+      simp only [subset_refl, true_and]
+      apply And.intro
+      · exact Metric.isOpen_thickening
+      · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+        use x
+        simpa using hx
+      · intro x hx
+        have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+        exact hφ x hx'
+    intro x hx; dsimp;
+    apply (h x hx).deriv_eq
+
+lemma fderiv [ProperSpace X] {dx : X} :
+    IsLocalizedFunctionTransform fun (φ : X → U) x => (fderiv ℝ φ x) dx := by
+  intro K cK
+  use (Metric.cthickening 1 K)
+  constructor
+  · exact IsCompact.cthickening cK
+  · intro φ φ' hφ
+    have h : ∀ x ∈ K, φ =ᶠ[nhds x] φ' := by
+      intro x hx
+      apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+      refine mem_interior_iff_mem_nhds.mp ?_
+      rw [@mem_interior]
+      use Metric.thickening 1 K
+      simp only [subset_refl, true_and]
+      apply And.intro
+      · exact Metric.isOpen_thickening
+      · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+        use x
+        simpa using hx
+      · intro x hx
+        have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+        exact hφ x hx'
+    intro x hx; dsimp; congr 1
+    rw [Filter.EventuallyEq.fderiv_eq (h x hx)]
+
+lemma fst {F : (X → U) → X → W × V} (hF : IsLocalizedFunctionTransform F) :
+    IsLocalizedFunctionTransform (fun φ x => (F φ x).1) := by
+  intro K cK
+  obtain ⟨L,cL,h⟩ := hF K cK
+  refine ⟨L,cL, ?_⟩
+  intro _ _ hφ _ _;
+  simp
+  congr 1
+  (expose_names; exact h φ φ' hφ x h_1)
+
+lemma snd {F : (X → U) → X → W × V} (hF : IsLocalizedFunctionTransform F) :
+    IsLocalizedFunctionTransform (fun φ x => (F φ x).2) := by
+  intro K cK
+  obtain ⟨L,cL,h⟩ := hF K cK
+  refine ⟨L,cL, ?_⟩
+  intro _ _ hφ _ _;
+  simp
+  congr 1
+  (expose_names; exact h φ φ' hφ x h_1)
+
+lemma prod {F : (X → U) → X → W}
+    {G :  (X → U) → X → V} (hF : IsLocalizedFunctionTransform F)
+    (hG : IsLocalizedFunctionTransform G) :
+    IsLocalizedFunctionTransform (fun φ x => (F φ x, G φ x)) := by
+  intro K cK
+  obtain ⟨A,cA,hF⟩ := hF K cK
+  obtain ⟨B,cB,hG⟩ := hG K cK
+  use A ∪ B
+  constructor
+  · exact cA.union cB
+  · intro φ φ' h x hx; dsimp
+    rw[hF,hG] <;> simp_all
+
+omit [MeasureSpace Y] in
+lemma adjFDeriv {dy} [ ProperSpace X] [ InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y] :
+      IsLocalizedFunctionTransform fun (φ : X → Y) x => adjFDeriv ℝ φ x dy := by
+  intro K cK
+  use (Metric.cthickening 1 K)
+  constructor
+  · exact IsCompact.cthickening cK
+  · intro φ φ' hφ x hx
+    unfold _root_.adjFDeriv
+    simp
+    congr
+    simp
+    apply Filter.EventuallyEq.fderiv_eq
+    apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
+    refine mem_interior_iff_mem_nhds.mp ?_
+    rw [@mem_interior]
+    use Metric.thickening 1 K
+    simp only [subset_refl, true_and]
+    apply And.intro
+    · exact Metric.isOpen_thickening
+    · rw [@Metric.mem_thickening_iff_exists_edist_lt]
+      use x
+      simpa using hx
+    · intro x hx
+      have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
+      exact hφ x hx'
 
 end
 end IsLocalizedFunctionTransform
