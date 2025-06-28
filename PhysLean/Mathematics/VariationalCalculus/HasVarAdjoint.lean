@@ -11,10 +11,12 @@ import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 
 import PhysLean.Mathematics.VariationalCalculus.Basic
+import PhysLean.Mathematics.VariationalCalculus.IsLocalizedfunctionTransform
 import PhysLean.Mathematics.InnerProductSpace.Calculus
 import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.Calculus.AdjFDeriv
+
 /-!
 # Variational adjoint
 
@@ -43,12 +45,6 @@ variable
   {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
   {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
   {W} [NormedAddCommGroup W] [NormedSpace ℝ W] [InnerProductSpace' ℝ W]
-
-/-- Function transformation `F` is localizable if the values of the transformed function `F φ` on
-some compact set `K` can depend only on the values of `φ` on some another compact set `L`. -/
-def IsLocalizedFunctionTransform (F : (X → U) → (Y → V)) : Prop :=
-  ∀ (K : Set Y) (_ : IsCompact K), ∃ L : Set X,
-    IsCompact L ∧ ∀ (φ φ' : X → U), (∀ x ∈ L, φ x = φ' x) → ∀ x ∈ K, F φ x = F φ' x
 
 /-- Map `F` from `(X → U)` to `(X → V)` has a variational adjoint `F'` if it preserves
 test functions and satisfies the adjoint relation `⟪F φ, ψ⟫ = ⟪φ, F' ψ⟫`for all test functions
@@ -90,15 +86,8 @@ lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {F' G'}
   adjoint φ ψ hφ hψ := by
     rw [hF.adjoint _ _ (hG.test_fun_preserving φ hφ) hψ]
     rw [hG.adjoint _ _ hφ (hF.test_fun_preserving' _ hψ)]
-  ext := by
-    intro K cK
-    obtain ⟨K', cK', h'⟩ := hG.ext K cK
-    obtain ⟨K'', cK'', h''⟩ := hF.ext K' cK'
-    use K''
-    constructor
-    · exact cK''
-    · intro φ φ' hφ
-      apply h' _ _ (fun _ hx' => h'' _ _ hφ _ hx')
+  ext := IsLocalizedFunctionTransform.fun_comp hG.ext hF.ext
+
 
 lemma congr_fun {F G : (X → U) → (Y → V)} {F' : (Y → V) → (X → U)}
     (h : HasVarAdjoint G F') (h' : ∀ φ, IsTestFunction φ → F φ = G φ) :
@@ -227,10 +216,7 @@ lemma neg {F : (X → U) → (X → V)} {F' : (X → V) → (X → U)}
   adjoint _ _ _ _ := by
     simp [integral_neg]
     rw[hF.adjoint _ _ (by assumption) (by assumption)]
-  ext := by
-    intro K cK
-    obtain ⟨L,cL,h⟩ := hF.ext K cK
-    exact ⟨L,cL,by intro _ _ _ _ _; dsimp; congr 1; apply h <;> simp_all⟩
+  ext := IsLocalizedFunctionTransform.neg hF.ext
 
 section OnFiniteMeasures
 
@@ -634,8 +620,6 @@ lemma adjFDeriv_apply
             · exact ContinuousLinearMap.differentiableAt _
             · exact hψ.differentiable y
             · exact real_inner_comm' (φ y) dy
-
-
 
 protected lemma gradient {d} :
     HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
