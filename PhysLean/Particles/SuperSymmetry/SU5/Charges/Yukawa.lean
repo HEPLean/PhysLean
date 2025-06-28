@@ -46,7 +46,7 @@ lemma ofYukawaTerms_subset_of_subset {x y : Charges} (h : x ⊆ y) :
 /-- The charges of those terms which can be regenerated with up-to `n`
   insertions of singlets needed to regenerate the Yukawa terms.
   Equivalently, the sum of up-to `n` integers each corresponding to a charge of the
-  Yukawa terms.  -/
+  Yukawa terms. -/
 def ofYukawaTermsNSum (x : Charges) : ℕ → Multiset ℤ
   | 0 => {0}
   | n + 1 => x.ofYukawaTermsNSum n + (x.ofYukawaTermsNSum n).bind fun sSum =>

@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
+import PhysLean.Meta.Linters.Sorry
 /-!
 # Space
 

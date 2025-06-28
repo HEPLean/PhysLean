@@ -32,14 +32,16 @@ where `α` is a sixth complex root of unity.
 
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
-semiformal_result "6V2FZ" gaugeGroupℤ₆SubGroup [inst : Group GaugeGroupI] : Subgroup GaugeGroupI
+@[sorryful]
+def gaugeGroupℤ₆SubGroup [inst : Group GaugeGroupI] : Subgroup GaugeGroupI := sorry
 
 /-- The smallest possible gauge group of the Standard Model, i.e., the quotient of `GaugeGroupI` by
 the ℤ₆-subgroup `gaugeGroupℤ₆SubGroup`.
 
 See https://math.ucr.edu/home/baez/guts.pdf
 -/
-semiformal_result "6V2GA" GaugeGroupℤ₆ : Type
+@[sorryful]
+def GaugeGroupℤ₆ : Type := sorry
 
 /-- The ℤ₂subgroup of the un-quotiented gauge group which acts trivially on all particles in the
 standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` derived from the ℤ₂ subgroup of

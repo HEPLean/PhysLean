@@ -20,20 +20,20 @@ This file currently only contains semiformal results, which
 namespace Electromagnetism
 
 /-- The Lorentz action on the electric and magnetic fields. -/
-semiformal_result "6WNUS" lorentzAction :
-  MulAction (LorentzGroup 3) (ElectricField × MagneticField)
+@[sorryful]
+instance lorentzAction :
+  MulAction (LorentzGroup 3) (ElectricField × MagneticField) := sorry
 
 open FieldStrength
 
 /-- The equivalence `toElectricMagneticField` is equivariant with respect to the
-  group action.
-
-  (In this semiformal result `lorentzActionTemp` should be replaced with `lorentzAction`.) -/
-semiformal_result "6V2O4" toElectricMagneticField_equivariant (d : ℕ)
-  (g : LorentzGroup 3) (E : ElectricField) (B : MagneticField)
-  (lorentzActionTemp : (LorentzGroup 3) → (ElectricField × MagneticField)
-    → (ElectricField × MagneticField)) (x : SpaceTime) :
-  (toElectricMagneticField.symm (lorentzActionTemp g (E, B))).1 x=
-  (realLorentzTensor.F.obj _).ρ g ((toElectricMagneticField.symm (E, B)).1 x)
+  group action. -/
+@[sorryful]
+lemma toElectricMagneticField_equivariant (d : ℕ)
+    (g : LorentzGroup 3) (E : ElectricField) (B : MagneticField)
+    (x : SpaceTime) :
+    (toElectricMagneticField.symm (lorentzAction.smul g (E, B))).1 x=
+    (realLorentzTensor.F.obj _).ρ g ((toElectricMagneticField.symm (E, B)).1 x) := by
+  sorry
 
 end Electromagnetism

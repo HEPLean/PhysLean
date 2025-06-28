@@ -10,6 +10,7 @@ import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import PhysLean.StatisticalMechanics.Temperature
 import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.Meta.Linters.Sorry
 /-!
 
 # Canonical ensemble
@@ -99,8 +100,9 @@ lemma partitionFunction_add [Fintype ι] [Fintype ι1] :
   ring
 
 /-- The partition function of `n` copies of a canonical ensemble. -/
-semiformal_result "ERA5D" partitionFunction_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
-    (nsmul n 𝓒).partitionFunction T = (𝓒.partitionFunction T) ^ n
+@[sorryful]
+lemma partitionFunction_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).partitionFunction T = (𝓒.partitionFunction T) ^ n := sorry
 
 lemma partitionFunction_pos [Fintype ι] [Nonempty ι] (T : Temperature) :
     0 < partitionFunction 𝓒 T := by
@@ -143,12 +145,14 @@ noncomputable def probability [Fintype ι] (i : microstates 𝓒) (T : Temperatu
   exp (- β T * 𝓒.energy i) / partitionFunction 𝓒 T
 
 /-- Probability of a microstate in a canonical ensemble is less then or equal to `1`. -/
-semiformal_result "ERDAR" probability_le_one [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
-    𝓒.probability i T ≤ 1
+@[sorryful]
+lemma probability_le_one [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
+    𝓒.probability i T ≤ 1 := sorry
 
 /-- Probability of a microstate in a canonical ensemble is non-negative. -/
-semiformal_result "ERBG6" probability_nonneg [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
-    0 ≤ 𝓒.probability i T
+@[sorryful]
+lemma probability_nonneg [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
+    0 ≤ 𝓒.probability i T := sorry
 
 lemma probability_neq_zero [Fintype ι] [Nonempty ι] (i : microstates 𝓒) (T : Temperature) :
     probability 𝓒 i T ≠ 0 := by
@@ -168,9 +172,10 @@ lemma probability_add [Fintype ι] [Fintype ι1]
 
 /-- The probability of a microstate in `n` copies of a canonical ensemble is
   equal to the product of the probability of the corresponding individual microstates. -/
-semiformal_result "ERDAE" probability_nsmul [Fintype ι] (n : ℕ)
+@[sorryful]
+lemma probability_nsmul [Fintype ι] (n : ℕ)
     (f : microstates (nsmul n 𝓒)) (T : Temperature) :
-    (nsmul n 𝓒).probability f T = ∏ i, 𝓒.probability (f i) T
+    (nsmul n 𝓒).probability f T = ∏ i, 𝓒.probability (f i) T := sorry
 
 @[simp]
 lemma sum_probability_eq_one [Fintype ι] [Nonempty ι] (T : Temperature) :
@@ -221,8 +226,10 @@ lemma meanEnergy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) 
 
   Note, can't make this `SMul` since the target type depends on the
   value of `n`. -/
-semiformal_result "ERBAH" meanEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
-    (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T
+@[sorryful]
+lemma meanEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T := by
+  sorry
 
 lemma meanEnergy_eq_logDeriv_partitionFunctionβ [Fintype ι] (T : Temperature) :
     meanEnergy 𝓒 T = - logDeriv (partitionFunctionβ 𝓒) (β T) := by
@@ -284,8 +291,9 @@ lemma entropy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) [Fi
 
 /-- The entropy of `n` copies of a canonical ensemble is equal
   to `n` times the entropy of the canonical ensemble. -/
-semiformal_result "ERBCV" entropy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
-    (nsmul n 𝓒).entropy T = n * 𝓒.entropy T
+@[sorryful]
+lemma entropy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).entropy T = n * 𝓒.entropy T := sorry
 
 /-!
 
@@ -307,7 +315,8 @@ lemma helmholtzFreeEnergy_add [Fintype ι] [Nonempty ι]
 
 /-- The free energy of `n` copies of a canonical ensemble is equal
   to `n` times the entropy of the canonical ensemble. -/
-semiformal_result "ERC72" helmholtzFreeEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
-    (nsmul n 𝓒).helmholtzFreeEnergy T = n * 𝓒.helmholtzFreeEnergy T
+@[sorryful]
+lemma helmholtzFreeEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).helmholtzFreeEnergy T = n * 𝓒.helmholtzFreeEnergy T := sorry
 
 end CanonicalEnsemble

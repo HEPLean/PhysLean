@@ -19,12 +19,7 @@ open IndexNotation
 /-!
 
 ## Derivative of the field strength
-
-This file needs updating after:
-
-- [semiformal_result (7Z2GA) : timeSlice_spatial_deriv](https://physlean.com/TODOList#7Z2GA)
-- [semiformal_result (7Z2LF) : timeSlice_time_deriv](https://physlean.com/TODOList#7Z2LF)
-are complete.
+The proofs in this file need to be rewritten based on modifications to other files.
 
 -/
 open TensorSpecies

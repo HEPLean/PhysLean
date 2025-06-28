@@ -20,7 +20,7 @@ def Imports.RedundentImports (imp : Import) : MetaM UInt32 := do
   let x ← redundantImports (some imp.module)
   if x.isEmpty then return 0
   println! "\n"
-  println! (Name.toFilePath imp.module)
+  println! s!"\x1b[31mError: Transitive imports in {Name.toFilePath imp.module} (please remove them):\x1b[0m"
   println! x.toList
   return 0
 

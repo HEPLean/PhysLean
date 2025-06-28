@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Lorentz.Group.Basic
+import PhysLean.Relativity.LorentzGroup.Basic
 import Mathlib.Topology.Connected.PathConnected
 /-!
 # The Proper Lorentz Group
@@ -180,7 +180,7 @@ lemma mul_isProper_of_isProper_isProper {Λ Λ' : LorentzGroup d}
     (h : IsProper Λ) (h' : IsProper Λ') : IsProper (Λ * Λ') := by
   rw [IsProper, lorentzGroupIsGroup_mul_coe, det_mul, h, h', mul_one]
 
-/-- A Lorentz transformation is proper if it's image under the det-representation
+/-- A Lorentz transformation is proper if its image under the det-representation
   `detRep` is `1`. -/
 lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
   rw [show 1 = detRep 1 from Eq.symm (MonoidHom.map_one detRep), detRep_apply, detRep_apply,

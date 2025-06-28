@@ -105,6 +105,7 @@ def main (_ : List String) : IO UInt32 := do
   let sortedWarned ← arrayImportSorted hepLeanMod.imports
   let warned ← checkMissingImports hepLeanMod ePhysLeanImports
   if (warned ∨ sortedWarned) then
-    throw <| IO.userError s!"The PhysLean module is not sorted, or has missing imports."
-  IO.println s!"Import check complete."
+    throw <| IO.userError s!"\x1b[31mThe PhysLean.lean file is not sorted, or has missing imports.\x1b[0m"
+  else
+    IO.println s!"\x1b[32mAll files are imported correctly into PhysLean.lean.\x1b[0m"
   pure 0

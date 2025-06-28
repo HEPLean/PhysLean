@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
 import Mathlib.RepresentationTheory.Basic
-import PhysLean.Relativity.Lorentz.Group.Basic
+import PhysLean.Relativity.LorentzGroup.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 /-!
 

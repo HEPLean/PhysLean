@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Lorentz.MinkowskiMatrix
+import PhysLean.Relativity.MinkowskiMatrix
 import PhysLean.Meta.TODO.Basic
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Topology.Instances.Matrix

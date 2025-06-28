@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.Meta.Linters.Sorry
 import PhysLean.SpaceAndTime.Time.Basic
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Comp
@@ -129,35 +130,32 @@ lemma lagrangian_parity (x : Time → ℝ) (hx : Differentiable ℝ x) :
 
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
   is the potential energy. -/
-semiformal_result "6YBYP" force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ
-
-/- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (force : (S : HarmonicOscillator) → (x : Time → ℝ) → Time → ℝ)
+@[sorryful]
+def force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ := sorry
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
-semiformal_result "6YB2U" force_is_linear (x : Time → ℝ) :
-  force S x = - S.k • x
+@[sorryful]
+lemma force_is_linear (x : Time → ℝ) :
+    force S x = - S.k • x := by sorry
 
 /-- The definition of the equation of motion for the classical harmonic oscillator
   defined through the Euler-Lagrange equations. -/
-semiformal_result"6ZTP5" EquationOfMotion (x : Time → ℝ) : Prop
-
-/- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (EquationOfMotion : (x : Time → ℝ) → Prop)
+@[sorryful]
+def EquationOfMotion (x : Time → ℝ) : Prop := sorry
 
 /-- The equations of motion are satisfied if and only if Newton's second law holds. -/
-semiformal_result "6YBEI" equationOfMotion_iff_newtons_second_law (x : Time → ℝ) :
-    EquationOfMotion x ↔ ∀ t, force S x t = S.m * deriv (fun t' => deriv x t') t
+@[sorryful]
+lemma equationOfMotion_iff_newtons_second_law (x : Time → ℝ) :
+    EquationOfMotion x ↔ ∀ t, force S x t = S.m * deriv (fun t' => deriv x t') t := by sorry
+
 
 /-- The proposition on a trajectory which is true if that trajectory is an extrema of the
   action.
 
   semiformal implmentation notes:
   - This is not expected to be easy to define. -/
-semiformal_result "6YBIG" ExtremaOfAction (x : Time → ℝ) : Prop
-
-/- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (ExtremaOfAction : (x : Time → ℝ) → Prop)
+@[sorryful]
+def ExtremaOfAction (x : Time → ℝ) : Prop := by sorry
 
 /-- A trajectory `x : ℝ → ℝ` satsifies the equation of motion if and only if
   it is an extrema of the action.
@@ -165,8 +163,9 @@ variable (ExtremaOfAction : (x : Time → ℝ) → Prop)
   Implementation note: This result depends on other semi-formal results which
   will need defining before this.
 -/
-semiformal_result "6YBQH" equationOfMotion_iff_extremaOfAction (x : Time → ℝ) :
-  EquationOfMotion x ↔ ExtremaOfAction x
+@[sorryful]
+lemma equationOfMotion_iff_extremaOfAction (x : Time → ℝ) :
+    EquationOfMotion x ↔ ExtremaOfAction x := by sorry
 
 TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
 

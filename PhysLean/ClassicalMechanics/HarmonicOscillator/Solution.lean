@@ -277,10 +277,6 @@ lemma sol_action (IC : InitialConditions) (t1 t2 : ℝ) :
 
 -/
 
-/- This variable should be removed once the the corresponding `semiformal_result`
-  is implemented. -/
-variable (EquationOfMotion : (x : Time → ℝ) → Prop)
-
 TODO "6VZI3" "For the classical harmonic oscillator find the time for which it returns to
   it's initial position and velocity."
 
@@ -291,8 +287,9 @@ TODO "6VZJH" "For the classical harmonic oscillator find the velocity when it pa
   zero."
 
 /-- The solutions for any initial condition solve the equation of motion. -/
-semiformal_result "6YATB" sol_equationOfMotion (IC : InitialConditions) :
-    EquationOfMotion (S.sol IC)
+@[sorryful]
+lemma sol_equationOfMotion (IC : InitialConditions) :
+    EquationOfMotion (S.sol IC) := by sorry
 
 /-- The solutions to the equation of motion for a given set of initial conditions
   are unique.
@@ -300,9 +297,10 @@ semiformal_result "6YATB" sol_equationOfMotion (IC : InitialConditions) :
   Semiformal implmentation:
   - One may needed the added condition of smoothness on `x` here.
   - `EquationOfMotion` needs defining before this can be proved. -/
-semiformal_result "6VZJO" sol_unique (IC : InitialConditions) (x : Time → ℝ) :
+@[sorryful]
+lemma sol_unique (IC : InitialConditions) (x : Time → ℝ) :
     EquationOfMotion x ∧ x 0 = IC.x₀ ∧ deriv x 0 = IC.v₀ →
-    x = S.sol IC
+    x = S.sol IC := by sorry
 
 end HarmonicOscillator
 

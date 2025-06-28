@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Informal.Basic
-import PhysLean.Relativity.Lorentz.Group.Orthochronous
+import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.Relativity.LorentzGroup.Orthochronous
 /-!
 # The Restricted Lorentz Group
 
@@ -14,8 +15,6 @@ This file is currently a stub.
 
 TODO "6VZNP" "Prove that every member of the restricted Lorentz group is
   combiniation of a boost and a rotation."
-TODO "6VZNU" "Prove restricted Lorentz group equivalent to connected component of identity
-  of the Lorentz group."
 
 namespace LorentzGroup
 
@@ -61,5 +60,26 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
   constructor
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩
+
+open TopologicalSpace
+
+/-- The restricted Lorentz group is connected. -/
+semiformal_result "FXNL5" restricted_isConnected {d : ℕ} :
+  IsConnected (restricted d : Set (LorentzGroup d))
+
+/-- Given the hypothesis that the restricted Lorentz group is connected,
+  the proof that the restricted lorentz group is equal to the connected component of the
+  identity. -/
+lemma restricted_eq_identity_component_of_isConnected {d : ℕ}
+    (h1 : IsConnected (restricted d : Set (LorentzGroup d))) :
+    (restricted d) = connectedComponent (1 : LorentzGroup d) := by
+  ext x
+  constructor
+  · intro hx
+    have h_id : 1 ∈ restricted d := by simp [restricted, IsOrthochronous]
+    exact IsConnected.subset_connectedComponent h1 h_id hx
+  · intro h
+    exact ⟨(isProper_on_connected_component h).mp id_IsProper,
+          (isOrthochronous_on_connected_component h).mp id_isOrthochronous⟩
 
 end LorentzGroup

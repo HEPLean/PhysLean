@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Basic
 import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.Meta.Linters.Sorry
 import PhysLean.Relativity.Tensors.ComplexTensor.Basic
 import PhysLean.Relativity.Tensors.Product
 import PhysLean.Relativity.Tensors.Evaluation
@@ -33,8 +34,9 @@ def colorToComplex (c : realLorentzTensor.C) : complexLorentzTensor.Color :=
 
 Semiformal implmentation note: Probably the easist way to define this
 is through basis. -/
-semiformal_result "7RJQJ" toComplex (c : Fin n → realLorentzTensor.C) :
-    ℝT(3, c) →ₛₗ[Complex.ofRealHom] ℂT(colorToComplex ∘ c)
+@[sorryful]
+def toComplex (c : Fin n → realLorentzTensor.C) :
+    ℝT(3, c) →ₛₗ[Complex.ofRealHom] ℂT(colorToComplex ∘ c) := by sorry
 
 /-- The map `toComplex` is injective. -/
 informal_lemma toComplex_injective where
