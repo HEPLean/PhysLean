@@ -117,6 +117,20 @@ lemma congr_fun {F G : (X → U) → (Y → V)} {F' : (Y → V) → (X → U)}
     exact h.adjoint φ ψ hφ hψ
   ext' := h.ext'
 
+lemma of_eq  {F : (X → U) → (Y → V)} {F' G' : (Y → V) → (X → U)}
+    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
+    [OpensMeasurableSpace X] (hF' : HasVarAdjoint F F') (h : ∀ φ, IsTestFunction φ → F' φ = G' φ )
+    (hlin : IsLocalizedFunctionTransform G') :
+    HasVarAdjoint F G' where
+  test_fun_preserving φ hφ := hF'.test_fun_preserving φ hφ
+  test_fun_preserving' φ hφ := by
+    rw [← h φ hφ]
+    exact hF'.test_fun_preserving' φ hφ
+  adjoint φ ψ hφ hψ := by
+    rw [← h ψ hψ]
+    exact hF'.adjoint φ ψ hφ hψ
+  ext' := hlin
+
 /-- Variational adjoint is unique only when applied to test functions. -/
 lemma unique_on_test_functions {F : (X → U) → (Y → V)} {F' G' : (Y → V) → (X → U)}
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
@@ -656,103 +670,20 @@ lemma adjFDeriv_apply
   -- ext := IsLocalizedFunctionTransform.adjFDeriv
 
 protected lemma gradient {d} :
-    HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) where
-  test_fun_preserving φ hφ := IsTestFunction.gradient φ hφ
-  test_fun_preserving' φ hφ := by fun_prop
-  adjoint φ ψ hφ hψ := by
-    simp [gradient,Space.div,Space.deriv,Space.coord]
-    have := hψ.differentiable
-    conv =>
-      rhs;
-      enter [2,x,1,1,2,i]
-      rw[fderiv_sum (by fun_prop)]
-      enter [1,2,j]
-      rw[fderiv_const_mul (by fun_prop)]
-
-    conv =>
-      rhs;
-      enter [2,x]
-      rw[Finset.sum_mul]
-      enter [1,2,i]
-      rw[ContinuousLinearMap.sum_apply]
-      rw[Finset.sum_mul]
-
-    simp [integral_neg,  mul_assoc, integral_const_mul]
-    rw [integral_finset_sum _ ]
-    have h0 (x) : ∀ i ∈ Finset.univ, Integrable
-      (fun a => Space.basis x i * ((fderiv ℝ (fun x => ψ x i) a)
-        (EuclideanSpace.single x 1) * φ a)) volume := by
-      intro i _
-      apply IsTestFunction.integrable
-      apply IsTestFunction.mul_left
-      · fun_prop
-      · apply IsTestFunction.mul_right
-        · apply IsTestFunction.fderiv_apply
-          change IsTestFunction fun x => ψ x i
-          apply IsTestFunction.space_component hψ
-        · fun_prop
-    conv_rhs =>
-      enter [1, 2, x]
-      rw [integral_finset_sum _ (h0 x)]
-    simp [Space.basis]
-    conv_rhs =>
-      enter [1, 2, x]
-      rw [Finset.sum_eq_single x (by intro b _ h; simp [h]) (by simp)]
-
-    have h : ∀ (i : Fin d),
-      ∫ (x : Space d), (fderiv ℝ (ψ · i) x) (EuclideanSpace.single i 1) * φ x ∂volume
-      =
-      - ∫ (x : Space d), (ψ x i) * fderiv ℝ φ x (EuclideanSpace.single i 1) ∂volume := by
-      intro i
-      rw [integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
-      · simp
-      · apply IsTestFunction.integrable
-        apply IsTestFunction.mul_left
-        · apply IsTestFunction.smooth
-          apply IsTestFunction.fderiv_apply
-          change IsTestFunction fun x => ψ x i
-          apply IsTestFunction.space_component hψ
-        · exact hφ
-      · apply IsTestFunction.integrable
-        apply IsTestFunction.mul_left
-        · have hx :=  hψ.smooth
-          fun_prop
-        · apply IsTestFunction.fderiv_apply
-          exact hφ
-      · apply IsTestFunction.integrable
-        apply IsTestFunction.mul_left
-        · have hx :=  hψ.smooth
-          fun_prop
-        · fun_prop
-      · fun_prop
-      · fun_prop
-    simp [h]
-    rw[← integral_finset_sum _ ]
-    simp only [← smul_eq_mul, ← map_smul, ← map_sum]
-    congr; funext x; congr
-    ext j
-    rw[Finset.sum_apply]
-    simp
-    · intro i _
-      apply IsTestFunction.integrable
-      apply IsTestFunction.mul_right
-      · apply IsTestFunction.space_component hψ
-      · have hφ' := hφ.smooth
-        fun_prop
-    · intro i _
-      apply MeasureTheory.integrable_finset_sum
-      intro j _
-      apply IsTestFunction.integrable
-      apply IsTestFunction.mul_left
-      · fun_prop
-      · apply IsTestFunction.mul_left
-        · have hψ' := hψ.smooth
-          fun_prop
-        · fun_prop
-  ext' := by
-    apply IsLocalizedFunctionTransform.neg
-    apply IsLocalizedFunctionTransform.div
-  -- ext := IsLocalizedFunctionTransform.gradient
+    HasVarAdjoint (fun φ : Space d → ℝ => gradient φ) (fun φ x => - Space.div φ x) := by
+  apply HasVarAdjoint.congr_fun (G := (fun φ  => (adjFDeriv ℝ φ · 1)))
+  · apply of_eq adjFDeriv_apply
+    · intro φ hφ
+      funext x
+      rw [divergence_eq_space_div]
+      simp
+      exact hφ.differentiable
+    · apply IsLocalizedFunctionTransform.neg
+      apply IsLocalizedFunctionTransform.div
+  · intro φ hφ
+    funext x
+    rw [gradient_eq_adjFDeriv]
+    apply hφ.differentiable x
 
 lemma div {d} : HasVarAdjoint (fun (φ : Space d → Space d) x => Space.div φ x)
       (fun ψ x => - gradient ψ x) := by
