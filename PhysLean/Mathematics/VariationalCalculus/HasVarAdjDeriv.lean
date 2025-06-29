@@ -725,62 +725,64 @@ protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
 lemma div {d} (u : Space d → Space d) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt
       (fun (φ : Space d → Space d) x => Space.div φ x)
-      (fun ψ x => - gradient ψ x) u where
-  smooth_at := hu
-  diff := by
-    intros
-    sorry
-  linearize := by
-    apply linearize_of_linear
-    · intro φ1 φ2 h1 h2
-      apply Space.div_add
-      · exact h1.differentiable (by simp)
-      · exact h2.differentiable (by simp)
-    · intro c φ hφ
-      apply Space.div_smul
+      (fun ψ x => - gradient ψ x) u := by
+  apply hasVarAdjDerivAt_of_hasVarAdjoint_of_linear
+  · intro φ hφ
+    simp [Space.div]
+    apply ContDiff.sum
+    intro i _
+    simp_rw [Space.deriv]
+    fun_prop
+  · intro φ1 φ2 h1 h2
+    apply Space.div_add
+    · exact h1.differentiable (by simp)
+    · exact h2.differentiable (by simp)
+  · intro c φ hφ
+    apply Space.div_smul
+    exact hφ.differentiable (by simp)
+  · intro φ hφ x
+    simp [Space.div]
+    rw [deriv_sum]
+    congr
+    funext i
+    simp [Space.deriv]
+    rw [← fderiv_deriv]
+    rw [fderiv_swap]
+    simp
+    congr
+    funext y
+    trans  deriv (fun x' => Space.coordCLM i (φ x' y)) 0
+    simp [Space.coordCLM_apply]
+    rw [← fderiv_deriv, fderiv_comp']
+    simp [Space.coordCLM_apply]
+    · fun_prop
+    · apply function_differentiableAt_fst
       exact hφ.differentiable (by simp)
-    · intro φ hφ x
-      simp [Space.div]
-      rw [deriv_sum]
-      congr
-      funext i
-      simp [Space.deriv]
-      rw [← fderiv_deriv]
-      rw [fderiv_swap]
-      simp
-      congr
-      funext y
-      trans  deriv (fun x' => Space.coordCLM i (φ x' y)) 0
-      simp [Space.coordCLM_apply]
-      rw [← fderiv_deriv, fderiv_comp']
-      simp [Space.coordCLM_apply]
-      · fun_prop
-      · apply function_differentiableAt_fst
-        exact hφ.differentiable (by simp)
-      · apply ContDiff.comp (g := Space.coord i)
-        · change ContDiff ℝ 2 (Space.coordCLM i)
-          fun_prop
-        · apply ContDiff.of_le hφ
-          exact ENat.LEInfty.out
-      · intro i _
-        apply Differentiable.differentiableAt
-        simp [Space.deriv]
-        have h1 (s' : ℝ) : (fderiv ℝ (fun x => Space.coord i (φ s' x)) x) =
-            Space.coordCLM i ∘L (fderiv ℝ (fun x' => φ s' x') x) := by
-          trans  (fderiv ℝ (fun x => Space.coordCLM i (φ s' x)) x)
-          rfl
-          rw [fderiv_comp']
-          simp
-          fun_prop
-          apply function_differentiableAt_snd
-          exact hφ.differentiable (by simp)
-        conv =>
-          enter [2, s]
-          rw [h1]
-        simp
-        apply Differentiable.comp
-        · fun_prop
-        apply fderiv_uncurry_differentiable_snd_comp_fst_apply
-        apply ContDiff.of_le hφ
+    · apply ContDiff.comp (g := Space.coord i)
+      · change ContDiff ℝ 2 (Space.coordCLM i)
+        fun_prop
+      · apply ContDiff.of_le hφ
         exact ENat.LEInfty.out
-  adjoint := by sorry
+    · intro i _
+      apply Differentiable.differentiableAt
+      simp [Space.deriv]
+      have h1 (s' : ℝ) : (fderiv ℝ (fun x => Space.coord i (φ s' x)) x) =
+          Space.coordCLM i ∘L (fderiv ℝ (fun x' => φ s' x') x) := by
+        trans  (fderiv ℝ (fun x => Space.coordCLM i (φ s' x)) x)
+        rfl
+        rw [fderiv_comp']
+        simp
+        fun_prop
+        apply function_differentiableAt_snd
+        exact hφ.differentiable (by simp)
+      conv =>
+        enter [2, s]
+        rw [h1]
+      simp
+      apply Differentiable.comp
+      · fun_prop
+      apply fderiv_uncurry_differentiable_snd_comp_fst_apply
+      apply ContDiff.of_le hφ
+      exact ENat.LEInfty.out
+  · exact hu
+  · exact HasVarAdjoint.div
