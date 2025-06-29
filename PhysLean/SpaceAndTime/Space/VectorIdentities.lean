@@ -353,20 +353,23 @@ lemma grad_add (f1 f2 : Space d → ℝ)
   exact hf1
   exact hf2
 
-lemma div_add (f1 f2 : Space → EuclideanSpace ℝ (Fin 3))
+lemma div_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
     (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
     ∇ ⬝ (f1 + f2) = ∇ ⬝ f1 + ∇ ⬝ f2 := by
-  unfold div Finset.sum coord basis
-  ext x
-  simp only [Pi.add_apply, EuclideanSpace.basisFun_apply, PiLp.inner_apply, PiLp.add_apply,
-    EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, Fin.univ_val_map, List.ofFn_succ, Fin.isValue,
-    Fin.succ_zero_eq_one, Fin.succ_one_eq_two, List.ofFn_zero, Multiset.sum_coe, List.sum_cons,
-    List.sum_nil, add_zero]
-  repeat rw [deriv_coord_add]
-  simp only [Fin.isValue, Pi.add_apply]
-  ring
-  repeat assumption
+  unfold div
+  simp
+  funext x
+  simp
+  rw [← Finset.sum_add_distrib]
+  congr
+  funext i
+  simp [coord_apply, Space.deriv]
+  rw [fderiv_add]
+  simp
+  · fun_prop
+  · fun_prop
+
+
 
 lemma curl_add (f1 f2 : Space → EuclideanSpace ℝ (Fin 3))
     (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
@@ -398,19 +401,21 @@ lemma grad_smul (f : Space d → ℝ) (k : ℝ)
   rfl
   exact hf
 
-lemma div_smul (f : Space → EuclideanSpace ℝ (Fin 3)) (k : ℝ)
+lemma div_smul (f : Space d → EuclideanSpace ℝ (Fin d)) (k : ℝ)
     (hf : Differentiable ℝ f) :
     ∇ ⬝ (k • f) = k • ∇ ⬝ f := by
-  unfold div Finset.sum coord basis
-  ext x
-  simp only [Pi.smul_apply, EuclideanSpace.basisFun_apply, PiLp.inner_apply, PiLp.smul_apply,
-    smul_eq_mul, EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul,
-    zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, Fin.univ_val_map, List.ofFn_succ,
-    Fin.isValue, Fin.succ_zero_eq_one, Fin.succ_one_eq_two, List.ofFn_zero, Multiset.sum_coe,
-    List.sum_cons, List.sum_nil, add_zero]
-  repeat rw [deriv_coord_smul]
-  simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, mul_add]
-  repeat fun_prop
+  unfold div
+  simp
+  funext x
+  simp
+  rw [Finset.mul_sum]
+  congr
+  funext i
+  simp [coord_apply]
+  simp [Space.deriv]
+  rw [fderiv_const_mul]
+  simp
+  · fun_prop
 
 lemma curl_smul (f : Space → EuclideanSpace ℝ (Fin 3)) (k : ℝ)
     (hf : Differentiable ℝ f) :
