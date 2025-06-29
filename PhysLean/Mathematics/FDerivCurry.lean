@@ -247,6 +247,18 @@ lemma fderiv_uncurry_differentiable_fst_comp_snd (f : X → Y → Z) (x : X) (hf
       rw [fderiv_inl_snd_clm]
     fun_prop
 
+lemma fderiv_uncurry_differentiable_fst_comp_snd_apply (f : X → Y → Z) (x δx : X) (hf : ContDiff 𝕜 2 ↿f) :
+    Differentiable 𝕜 (fun y' => fderiv 𝕜 (fun x' => (↿f) (x', y')) x δx) := by
+  have h1 : (fun y' => fderiv 𝕜 (fun x' => (↿f) (x', y')) x δx)
+    = (fun f => f δx) ∘ (fun y' => fderiv 𝕜 (fun x' => (↿f) (x', y')) x ) := by
+    funext y'
+    simp
+  rw [h1]
+  apply Differentiable.comp
+  · fun_prop
+  · apply fderiv_uncurry_differentiable_fst_comp_snd
+    exact hf
+
 @[fun_prop]
 lemma fderiv_uncurry_differentiable_snd_comp_fst (f : X → Y → Z) (y : Y) (hf : ContDiff 𝕜 2 ↿f) :
     Differentiable 𝕜 (fun x' => fderiv 𝕜 (fun y' => (↿f) (x', y')) y) := by
