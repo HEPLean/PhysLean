@@ -442,8 +442,8 @@ protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarA
   comp (F:=deriv) (G:=F) (hF := deriv' (F u) hF.apply_smooth_self) (hG := hF)
 
 lemma fmap
-    {U} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
-    {V} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
+    {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
     [CompleteSpace U] [CompleteSpace V]
     (f : X → U → V) {f' : X → U → _ }
     (u : X → U) (hu : ContDiff ℝ ∞ u)
