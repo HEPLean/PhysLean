@@ -7,6 +7,9 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import PhysLean.Meta.Linters.Sorry
+import Mathlib.Topology.ContinuousMap.CompactlySupported
+import Mathlib.Geometry.Manifold.IsManifold.Basic
+
 /-!
 # Space
 
@@ -59,6 +62,13 @@ noncomputable def coordCLM {d} (μ : Fin d) : Space d →L[ℝ] ℝ where
   cont := by
     unfold coord
     fun_prop
+
+open ContDiff
+
+@[fun_prop]
+lemma coord_contDiff {i} : ContDiff ℝ ∞ (fun x : Space d => x.coord i) := by
+  change ContDiff ℝ ∞ (coordCLM i)
+  fun_prop
 
 lemma coordCLM_apply (μ : Fin d) (p : Space d) :
     coordCLM μ p = coord μ p := by

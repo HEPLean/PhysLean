@@ -98,6 +98,7 @@ lemma differentiable_linear {F : (X → U) → (X → V)} {F' : (X → V) → (X
     Differentiable ℝ (fun s' : ℝ => F (fun x => φ 0 x + s' • deriv (φ · x) 0) x) := by
   exact fun x => (h.smooth_linear hφ).differentiable (ENat.LEInfty.out) x
 
+omit [MeasureSpace X] [InnerProductSpace' ℝ U] [InnerProductSpace' ℝ V] in
 lemma linearize_of_linear {F : (X → U) → (X → V)}
     (add : ∀ φ1 φ2 : X → U,
     ContDiff ℝ ∞  φ1 → ContDiff ℝ ∞  φ2 → F (φ1 + φ2) = F φ1 + F φ2)
@@ -626,49 +627,36 @@ lemma mul
         apply hG.adjoint
         exact apply_smooth_self hF
 
-protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u) :
+omit [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)] in
+protected lemma fderiv  (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u)
+  [ProperSpace X] [BorelSpace X] [InnerProductSpace' ℝ X]
+   [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure]:
     HasVarAdjDerivAt
       (fun (φ : X → U) x => fderiv ℝ φ x dx)
-      (fun ψ x => - fderiv ℝ ψ x dx) u where
-  smooth_at := hu
-  diff := by intros; fun_prop [fderiv]
-  linearize := by
-    intro φ hφ x
-    have h1 (s' : ℝ) := fderiv_const_smul (𝕜 := ℝ) (f := (fun x => deriv (fun x_1 => φ x_1 x) 0)) (x := x) (by
-        conv =>
-          enter [2, x]
-          rw [← fderiv_deriv]
-        refine Differentiable.differentiableAt ?_
-        apply fderiv_uncurry_differentiable_fst_comp_snd_apply
-        apply ContDiff.of_le hφ
-        exact ENat.LEInfty.out) s'
-    conv_rhs =>
-      enter [1, s']
-      rw [fderiv_add (by
-        apply function_differentiableAt_snd
-        exact hφ.differentiable (by simp)) (by
-        apply Differentiable.const_smul
-        conv =>
-          enter [2, x]
-          rw [← fderiv_deriv]
-        apply fderiv_uncurry_differentiable_fst_comp_snd_apply
-        apply ContDiff.of_le hφ
-        exact ENat.LEInfty.out)]
-      simp
-      enter [2]
-      change (fderiv ℝ (fun x => s' • (fun x => deriv (fun x_1 => φ x_1 x) 0) x) x) dx
-      rw [h1]
+      (fun ψ x => - fderiv ℝ ψ x dx) u := by
+  apply hasVarAdjDerivAt_of_hasVarAdjoint_of_linear
+  · intros; fun_prop [fderiv]
+  · intro φ1 φ2 h1 h2
+    funext x
     simp
-    rw [deriv_smul_const]
+    erw [fderiv_add]
     simp
+    · exact (h1.differentiable (by simp)).differentiableAt
+    · exact (h2.differentiable (by simp)).differentiableAt
+  · intro c φ hφ
+    funext x
+    simp
+    erw [fderiv_const_smul]
+    simp
+    exact (hφ.differentiable (by simp)).differentiableAt
+  · intro φ hφ x
     rw [← fderiv_deriv]
     rw [fderiv_swap]
     simp
     · apply ContDiff.of_le hφ
       exact ENat.LEInfty.out
-    · exact differentiableAt_id'
-  adjoint := by
-    sorry
+  · exact hu
+  · exact HasVarAdjoint.fderiv_apply
 
 protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt

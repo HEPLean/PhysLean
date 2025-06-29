@@ -200,9 +200,6 @@ lemma IsTestFunction.smul_right {f : X → ℝ} {g : X → U}
 lemma IsTestFunction.sum {ι} [Fintype ι] {φ : X → ι → U} {hφ : ∀ i, IsTestFunction (φ · i)} :
     IsTestFunction (fun x => ∑ i, φ x i) := by fun_prop (disch:=simp)
 
--- todo: move and add proof
-@[fun_prop]
-lemma Space.coord.contDiff {i} : ContDiff ℝ ∞ (fun x : Space d => x.coord i) := by sorry
 
 @[fun_prop]
 lemma IsTestFunction.coord {φ : X → Space d} (hφ : IsTestFunction φ) (i : Fin d) :
