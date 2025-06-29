@@ -131,6 +131,14 @@ scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) :=
   eq_of_dist_eq_zero := fun {x y} => core.toNormedAddCommGroup.eq_of_dist_eq_zero (x:=x) (y:=y)
   }
 
+lemma norm_withLp2_eq_norm2 (x : WithLp 2 E) :
+    ‖x‖ = |norm₂ (WithLp.equiv 2 E x)| := by
+  trans √ (RCLike.re ⟪WithLp.equiv 2 E x, WithLp.equiv 2 E x⟫)
+  · rfl
+  have h1 :=  norm₂_sq_eq_re_inner (𝕜 := 𝕜) ((WithLp.equiv 2 E) x)
+  rw [← h1]
+  exact Real.sqrt_sq_eq_abs ‖(WithLp.equiv 2 E) x‖₂
+
 /-- Attach normed space structure to `WithLp 2 E` with L₂ norm. -/
 noncomputable
 scoped instance toNormedSpaceWithL2 : NormedSpace 𝕜 (WithLp 2 E) where
@@ -487,5 +495,77 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
       simp [norm]
       rw [inner]
       simp [InnerProductSpace.toCore, InnerProductSpace.toInner, PiLp.innerProductSpace]
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [hE : InnerProductSpace' ℝ E]
+local notation "⟪" x ", " y "⟫" => inner ℝ x y
+open InnerProductSpace'
+lemma _root_.isBoundedBilinearMap_inner' :
+    IsBoundedBilinearMap ℝ fun p : E × E => ⟪p.1, p.2⟫ where
+  add_left := inner_add_left'
+  smul_left := fun r x y => by
+    simp
+    exact inner_smul_left' x y r
+  add_right := inner_add_right'
+  smul_right := fun r x y => by
+    simp
+    exact inner_smul_right' x y r
+  bound := by
+    obtain ⟨c, d, hc, hd, h⟩ := hE.inner_top_equiv_norm
+    use d
+    simp_all
+    intro x y
+    trans |‖x‖₂| * |‖y‖₂|
+    change |@inner ℝ (WithLp 2 E) _ x y| ≤ _
+    have h1 :=  norm_inner_le_norm (𝕜 := ℝ) (E := WithLp 2 E) x y
+    simp at h1
+    apply h1.trans
+    apply le_of_eq
+    congr
+    rw [norm_withLp2_eq_norm2]
+    rfl
+    rw [norm_withLp2_eq_norm2]
+    rfl
+    have h1 :  |‖x‖₂| ≤ √ d * ‖x‖ := by
+      apply le_of_sq_le_sq
+      simp [@mul_pow]
+      rw [norm₂_sq_eq_re_inner (𝕜 := ℝ) ]
+      simp
+      apply (h x).2.trans
+      apply le_of_eq
+      simp
+      left
+      refine Eq.symm (Real.sq_sqrt ?_)
+      linarith
+      apply mul_nonneg
+      exact Real.sqrt_nonneg d
+      exact norm_nonneg x
+    have h2 :  |‖y‖₂| ≤ √ d * ‖y‖ := by
+      apply le_of_sq_le_sq
+      simp [@mul_pow]
+      rw [norm₂_sq_eq_re_inner (𝕜 := ℝ)]
+      simp
+      apply (h y).2.trans
+      apply le_of_eq
+      simp
+      left
+      refine Eq.symm (Real.sq_sqrt ?_)
+      linarith
+      apply mul_nonneg
+      exact Real.sqrt_nonneg d
+      exact norm_nonneg y
+    trans (√ d * ‖x‖) * (√ d * ‖y‖)
+    refine mul_le_mul_of_nonneg h1 h2 ?_ ?_
+    exact abs_nonneg ‖x‖₂
+    apply mul_nonneg
+    exact Real.sqrt_nonneg d
+    exact norm_nonneg y
+    apply le_of_eq
+    ring_nf
+    rw [Real.sq_sqrt]
+    ring
+    linarith
+
+
+
 
 end Constructions

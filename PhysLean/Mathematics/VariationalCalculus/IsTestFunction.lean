@@ -284,14 +284,33 @@ lemma IsTestFunction.adjFDeriv {f : X → U} [InnerProductSpace' ℝ X]
   · fun_prop
 
 @[fun_prop]
-lemma IsTestFunction.divergence {f : X → X} (hf : IsTestFunction f) :
+lemma IsTestFunction.divergence {f : X → X} [FiniteDimensional ℝ X] (hf : IsTestFunction f) :
     IsTestFunction (fun x => divergence ℝ f x) := by
-  unfold _root_.divergence
+  obtain ⟨s, ⟨bX⟩⟩ := Basis.exists_basis ℝ X
+  haveI : Fintype s := FiniteDimensional.fintypeBasisIndex bX
+  conv_rhs =>
+    enter [x]
+    rw [divergence_eq_sum_fderiv' bX]
+  apply IsTestFunction.sum
+  intro i
+  let f  :  X →ₗ[ℝ] ℝ := {
+      toFun := (bX.repr · i)
+      map_add' := by simp
+      map_smul' := by simp
+
+    }
+  let f'  : X →L[ℝ] ℝ := (f ).toContinuousLinearMap
+  change IsTestFunction (fun x => f' _)
+  apply IsTestFunction.comp_left
+  fun_prop
+  simp
+  fun_prop
+  /-unfold _root_.divergence
   apply IsTestFunction.comp_left
     (f:=fun x : X => (fderiv ℝ f x)) (g:=fun f : X →L[ℝ] X => LinearMap.trace _ _ f.toLinearMap)
   · fun_prop
   · simp
-  · sorry -- missing mathlib API
+  · sorry -- missing mathlib API-/
 
 @[fun_prop]
 lemma IsTestFunction.gradient {d : ℕ} (φ : Space d → ℝ)

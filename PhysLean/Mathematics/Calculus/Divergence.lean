@@ -126,6 +126,7 @@ lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
+@[sorryful]
 lemma divergence_smul [InnerProductSpace' 𝕜 E] {f : E → 𝕜} {g : E → E} {x : E}
     (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x)
     [FiniteDimensional 𝕜 E] :
