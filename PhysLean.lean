@@ -1,4 +1,5 @@
 import PhysLean.ClassicalMechanics.Basic
+import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Momentum.Basic
@@ -17,6 +18,7 @@ import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Wave
 import PhysLean.Mathematics.Calculus.AdjFDeriv
+import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.DataStructures.FourTree.Basic
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Mathematics.FDerivCurry
@@ -26,6 +28,7 @@ import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
 import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.InnerProductSpace.Basic
+import PhysLean.Mathematics.InnerProductSpace.Calculus
 import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
@@ -39,6 +42,7 @@ import PhysLean.Mathematics.VariationalCalculus.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjDeriv
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
+import PhysLean.Mathematics.VariationalCalculus.IsLocalizedfunctionTransform
 import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
 import PhysLean.Meta.AllFilePaths
 import PhysLean.Meta.Basic

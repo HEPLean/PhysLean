@@ -27,7 +27,7 @@ TODO "FXH5S" "Make `FiniteTarget` basis independent, i.e. use a linear map for
   the hamiltonian instead of a matrix."
 /-- A finite target quantum mechanical system with hilbert-space of dimension `n`
   and Plank constant `ℏ` is described by a self-adjoint `n × n` matrix. -/
-structure FiniteTarget (n : ℕ)  where
+structure FiniteTarget (n : ℕ) where
   /-- The Hamiltonian, written with respect to the standard basis on `Fin n → ℂ`. -/
   H : Matrix (Fin n) (Fin n) ℂ
   H_selfAdjoint : Matrix.IsHermitian H

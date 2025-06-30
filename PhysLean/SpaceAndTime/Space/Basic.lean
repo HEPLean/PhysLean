@@ -5,9 +5,11 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
-import Mathlib.Analysis.Calculus.FDeriv.Basic
 import PhysLean.Meta.Linters.Sorry
+import Mathlib.Topology.ContinuousMap.CompactlySupported
+import Mathlib.Geometry.Manifold.IsManifold.Basic
 /-!
+
 # Space
 
 This file contains `d`-dimensional space.
@@ -45,6 +47,32 @@ noncomputable def basis : OrthonormalBasis (Fin d) ℝ (Space d) :=
 The notation `𝔁 μ p` can be used for this. -/
 noncomputable def coord (μ : Fin d) (p : Space d) : ℝ :=
   inner ℝ p (basis μ)
+
+lemma coord_apply (μ : Fin d) (p : Space d) :
+    coord μ p = p μ := by
+  simp [coord, basis]
+
+/-- The standard coordinate functions of Space based on `Fin d`, as a continuous linear map. -/
+noncomputable def coordCLM {d} (μ : Fin d) : Space d →L[ℝ] ℝ where
+  toFun := coord μ
+  map_add' := fun p q => by
+    simp [coord, basis, inner_add_left]
+  map_smul' := fun c p => by
+    simp [coord, basis, inner_smul_left]
+  cont := by
+    unfold coord
+    fun_prop
+
+open ContDiff
+
+@[fun_prop]
+lemma coord_contDiff {i} : ContDiff ℝ ∞ (fun x : Space d => x.coord i) := by
+  change ContDiff ℝ ∞ (coordCLM i)
+  fun_prop
+
+lemma coordCLM_apply (μ : Fin d) (p : Space d) :
+    coordCLM μ p = coord μ p := by
+  rfl
 
 @[inherit_doc coord]
 scoped notation "𝔁" => coord
