@@ -95,7 +95,7 @@ lemma IsTestFunction.pi {ι} [Fintype ι] {φ : X → ι → U} (hφ : ∀ i, Is
       rw [(hK i).2 x (hx i)]
     rfl
 
-lemma IsTestFunction.space_component  {φ : X → Space d} (hφ :  IsTestFunction φ) :
+lemma IsTestFunction.space_component {φ : X → Space d} (hφ : IsTestFunction φ) :
     IsTestFunction (fun x => φ x i) where
   smooth := by
     have hφ := hφ.smooth
@@ -168,7 +168,7 @@ lemma IsTestFunction.inner_left [InnerProductSpace' ℝ V]
   supp := by
     obtain ⟨K, cK, hK⟩ := exists_compact_iff_hasCompactSupport.mpr hg.supp
     exact exists_compact_iff_hasCompactSupport.mp ⟨K, cK, fun x hx => by simp [hK x hx]⟩
-     -- HasCompactSupport.inner_left hf hg.supp
+    -- HasCompactSupport.inner_left hf hg.supp
 
 @[fun_prop]
 lemma IsTestFunction.inner_right [InnerProductSpace' ℝ V]
@@ -199,7 +199,6 @@ lemma IsTestFunction.smul_right {f : X → ℝ} {g : X → U}
 @[fun_prop]
 lemma IsTestFunction.sum {ι} [Fintype ι] {φ : X → ι → U} {hφ : ∀ i, IsTestFunction (φ · i)} :
     IsTestFunction (fun x => ∑ i, φ x i) := by fun_prop (disch:=simp)
-
 
 @[fun_prop]
 lemma IsTestFunction.coord {φ : X → Space d} (hφ : IsTestFunction φ) (i : Fin d) :
@@ -273,7 +272,7 @@ lemma IsTestFunction.adjFDeriv {f : X → U} [InnerProductSpace' ℝ X]
         · apply LinearIsometryEquiv.contDiff
         · fun_prop
       · fun_prop
-    have hf : HasCompactSupport (fun x => fderiv ℝ f x ) :=
+    have hf : HasCompactSupport (fun x => fderiv ℝ f x) :=
       (IsTestFunction.of_fderiv hf).supp
     rw [← exists_compact_iff_hasCompactSupport] at hf ⊢
     obtain ⟨K, cK, hK⟩ := hf
@@ -293,13 +292,13 @@ lemma IsTestFunction.divergence {f : X → X} [FiniteDimensional ℝ X] (hf : Is
     rw [divergence_eq_sum_fderiv' bX]
   apply IsTestFunction.sum
   intro i
-  let f  :  X →ₗ[ℝ] ℝ := {
+  let f : X →ₗ[ℝ] ℝ := {
       toFun := (bX.repr · i)
       map_add' := by simp
       map_smul' := by simp
 
     }
-  let f'  : X →L[ℝ] ℝ := (f ).toContinuousLinearMap
+  let f' : X →L[ℝ] ℝ := (f).toContinuousLinearMap
   change IsTestFunction (fun x => f' _)
   apply IsTestFunction.comp_left
   fun_prop

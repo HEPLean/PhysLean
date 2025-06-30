@@ -135,7 +135,7 @@ lemma norm_withLp2_eq_norm2 (x : WithLp 2 E) :
     ‖x‖ = |norm₂ (WithLp.equiv 2 E x)| := by
   trans √ (RCLike.re ⟪WithLp.equiv 2 E x, WithLp.equiv 2 E x⟫)
   · rfl
-  have h1 :=  norm₂_sq_eq_re_inner (𝕜 := 𝕜) ((WithLp.equiv 2 E) x)
+  have h1 := norm₂_sq_eq_re_inner (𝕜 := 𝕜) ((WithLp.equiv 2 E) x)
   rw [← h1]
   exact Real.sqrt_sq_eq_abs ‖(WithLp.equiv 2 E) x‖₂
 
@@ -306,7 +306,7 @@ local notation "⟪" x ", " y "⟫" => inner ℝ x y
 lemma real_inner_self_nonneg' {x : F} : 0 ≤ re (⟪x, x⟫) :=
   real_inner_self_nonneg (F:=WithLp 2 F)
 
-lemma real_inner_comm' (x y : F): ⟪y, x⟫ = ⟪x, y⟫ :=
+lemma real_inner_comm' (x y : F) : ⟪y, x⟫ = ⟪x, y⟫ :=
   real_inner_comm (F:=WithLp 2 F) x y
 
 @[fun_prop]
@@ -516,7 +516,7 @@ lemma _root_.isBoundedBilinearMap_inner' :
     intro x y
     trans |‖x‖₂| * |‖y‖₂|
     change |@inner ℝ (WithLp 2 E) _ x y| ≤ _
-    have h1 :=  norm_inner_le_norm (𝕜 := ℝ) (E := WithLp 2 E) x y
+    have h1 := norm_inner_le_norm (𝕜 := ℝ) (E := WithLp 2 E) x y
     simp at h1
     apply h1.trans
     apply le_of_eq
@@ -525,10 +525,10 @@ lemma _root_.isBoundedBilinearMap_inner' :
     rfl
     rw [norm_withLp2_eq_norm2]
     rfl
-    have h1 :  |‖x‖₂| ≤ √ d * ‖x‖ := by
+    have h1 : |‖x‖₂| ≤ √ d * ‖x‖ := by
       apply le_of_sq_le_sq
       simp [@mul_pow]
-      rw [norm₂_sq_eq_re_inner (𝕜 := ℝ) ]
+      rw [norm₂_sq_eq_re_inner (𝕜 := ℝ)]
       simp
       apply (h x).2.trans
       apply le_of_eq
@@ -539,7 +539,7 @@ lemma _root_.isBoundedBilinearMap_inner' :
       apply mul_nonneg
       exact Real.sqrt_nonneg d
       exact norm_nonneg x
-    have h2 :  |‖y‖₂| ≤ √ d * ‖y‖ := by
+    have h2 : |‖y‖₂| ≤ √ d * ‖y‖ := by
       apply le_of_sq_le_sq
       simp [@mul_pow]
       rw [norm₂_sq_eq_re_inner (𝕜 := ℝ)]
@@ -564,8 +564,5 @@ lemma _root_.isBoundedBilinearMap_inner' :
     rw [Real.sq_sqrt]
     ring
     linarith
-
-
-
 
 end Constructions

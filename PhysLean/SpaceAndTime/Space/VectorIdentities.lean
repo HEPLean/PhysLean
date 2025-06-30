@@ -369,8 +369,6 @@ lemma div_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
   · fun_prop
   · fun_prop
 
-
-
 lemma curl_add (f1 f2 : Space → EuclideanSpace ℝ (Fin 3))
     (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
     ∇ × (f1 + f2) = ∇ × f1 + ∇ × f2 := by

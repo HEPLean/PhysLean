@@ -50,7 +50,7 @@ noncomputable def coord (μ : Fin d) (p : Space d) : ℝ :=
   inner ℝ p (basis μ)
 
 lemma coord_apply (μ : Fin d) (p : Space d) :
-    coord μ p = p μ  := by
+    coord μ p = p μ := by
   simp [coord, basis]
 
 noncomputable def coordCLM {d} (μ : Fin d) : Space d →L[ℝ] ℝ where
