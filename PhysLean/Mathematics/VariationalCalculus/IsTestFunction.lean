@@ -4,14 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Calculus.Deriv.Support
-import Mathlib.Analysis.Calculus.Gradient.Basic
-import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
-import Mathlib.Topology.ContinuousMap.CompactlySupported
-import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.Calculus.Divergence
-import PhysLean.Mathematics.InnerProductSpace.Basic
-import PhysLean.SpaceAndTime.Space.Basic
 /-!
 
 # Test functions

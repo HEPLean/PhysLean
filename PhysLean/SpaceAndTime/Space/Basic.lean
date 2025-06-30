@@ -5,12 +5,11 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
-import Mathlib.Analysis.Calculus.FDeriv.Basic
 import PhysLean.Meta.Linters.Sorry
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import Mathlib.Geometry.Manifold.IsManifold.Basic
-
 /-!
+
 # Space
 
 This file contains `d`-dimensional space.

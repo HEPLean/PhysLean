@@ -634,7 +634,7 @@ lemma mul
 
 omit [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)] in
 protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u)
-    [ProperSpace X] [BorelSpace X] [InnerProductSpace' ℝ X]
+    [ProperSpace X] [BorelSpace X]
     [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure]:
     HasVarAdjDerivAt
       (fun (φ : X → U) x => fderiv ℝ φ x dx)

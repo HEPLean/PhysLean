@@ -4,23 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
-import Mathlib.Analysis.Calculus.Gradient.Basic
-import Mathlib.Analysis.InnerProductSpace.Adjoint
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
-import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import PhysLean.Mathematics.VariationalCalculus.Basic
 import PhysLean.Mathematics.InnerProductSpace.Calculus
-import PhysLean.Mathematics.InnerProductSpace.Adjoint
-import PhysLean.Mathematics.Calculus.Divergence
-import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 /-!
 
 # Localized function transforms
 
 In this module we define a locality property for function transforms, `F : (X → U) → (Y → V)`.
-The locality property `IsLocalizedFunctionTransform`,  says that for every compact
+The locality property `IsLocalizedFunctionTransform`, says that for every compact
 set `K` in `Y` there exists a compact set `L` of `X`, such that if `φ` and `φ'` are equal on `L`,
 then `F φ` and `F φ'` are equal on `K`.
 
