@@ -32,7 +32,7 @@ lemma eulerLagrangeOp_eq (L : Time → X → X → ℝ) (q : Time → X) :
     eulerLagrangeOp L q = fun t => gradient (L t · (deriv q t)) (q t)
     - deriv (fun t' => gradient (L t' (q t') ·) (deriv q t')) t := by rfl
 
-/- The variational derivative of  `L t (q' t) (deriv q' t))` for a lagrangian `L`
+/- The variational derivative of `L t (q' t) (deriv q' t))` for a lagrangian `L`
   is equal to the `eulerLagrangeOp`. -/
 theorem euler_lagrange_particle
     (L : Time → X → X → ℝ) (q : Time → X)

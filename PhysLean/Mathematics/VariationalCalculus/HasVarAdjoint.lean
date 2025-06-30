@@ -3,19 +3,13 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
-import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
-
 import PhysLean.Mathematics.VariationalCalculus.Basic
 import PhysLean.Mathematics.VariationalCalculus.IsLocalizedfunctionTransform
-import PhysLean.Mathematics.InnerProductSpace.Calculus
-import PhysLean.Mathematics.InnerProductSpace.Adjoint
-import PhysLean.Mathematics.Calculus.Divergence
-import PhysLean.Mathematics.Calculus.AdjFDeriv
 
 /-!
 # Variational adjoint
@@ -117,8 +111,7 @@ lemma congr_fun {F G : (X → U) → (Y → V)} {F' : (Y → V) → (X → U)}
   ext' := h.ext'
 
 lemma of_eq {F : (X → U) → (Y → V)} {F' G' : (Y → V) → (X → U)}
-    [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
-    [OpensMeasurableSpace X] (hF' : HasVarAdjoint F F') (h : ∀ φ, IsTestFunction φ → F' φ = G' φ)
+    (hF' : HasVarAdjoint F F') (h : ∀ φ, IsTestFunction φ → F' φ = G' φ)
     (hlin : IsLocalizedFunctionTransform G') :
     HasVarAdjoint F G' where
   test_fun_preserving φ hφ := hF'.test_fun_preserving φ hφ
@@ -477,7 +470,7 @@ protected lemma deriv :
   -- ext := IsLocalizedFunctionTransform.deriv
 
 lemma fderiv_apply {dx}
-    [InnerProductSpace' ℝ X] [ProperSpace X] [BorelSpace X]
+    [ProperSpace X] [BorelSpace X]
     [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure] :
     HasVarAdjoint (fun φ : X → U => (fderiv ℝ φ · dx)) (fun φ x => - fderiv ℝ φ x dx) where
   test_fun_preserving φ hφ := by fun_prop

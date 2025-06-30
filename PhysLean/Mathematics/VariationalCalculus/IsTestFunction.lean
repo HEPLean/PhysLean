@@ -80,9 +80,7 @@ lemma IsTestFunction.comp_left {f : X → V} (hf : IsTestFunction f)
 @[fun_prop]
 lemma IsTestFunction.pi {ι} [Fintype ι] {φ : X → ι → U} (hφ : ∀ i, IsTestFunction (φ · i)) :
     IsTestFunction (fun x i => φ x i) where
-  smooth := by
-    have := fun i => (hφ i).smooth
-    fun_prop
+  smooth := contDiff_pi' (fun i => (hφ i).smooth)
   supp := by
     let K : ι → Set X := fun i =>
       Classical.choose (exists_compact_iff_hasCompactSupport.mpr (hφ i).supp)

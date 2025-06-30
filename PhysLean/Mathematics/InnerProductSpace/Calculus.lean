@@ -17,6 +17,7 @@ variable {𝕜 : Type*} {E F G : Type*} [RCLike 𝕜]
 local notation "⟪" x ", " y "⟫" => inner ℝ x y
 open InnerProductSpace'
 
+/-- Derivative of the inner product for the instance `InnerProductSpace'`. -/
 noncomputable def fderivInnerCLM' [InnerProductSpace' ℝ E] (p : E × E) : E × E →L[ℝ] ℝ :=
   isBoundedBilinearMap_inner'.deriv p
 
@@ -48,3 +49,4 @@ lemma DifferentiableAt.inner' {f g : E → F} {x}
     DifferentiableAt ℝ (fun x => ⟪f x, g x⟫) x := by
   apply HasFDerivAt.differentiableAt
   exact hf.hasFDerivAt.inner' hg.hasFDerivAt
+#lint

@@ -72,14 +72,14 @@ lemma id : IsLocalizedFunctionTransform (id : (Y → V) → (Y → V)) := by
     simp
     rw [hφ x hx]
 
-lemma neg {V} [NormedAddCommGroup V] [Module ℝ V]
+lemma neg {V} [NormedAddCommGroup V]
     {F : (X → U) → (Y → V)} (hF : IsLocalizedFunctionTransform F) :
     IsLocalizedFunctionTransform (fun φ => - F φ) := by
   intro K cK
   obtain ⟨L,cL,h⟩ := hF K cK
   exact ⟨L,cL,by intro _ _ _ _ _; dsimp; congr 1; apply h <;> simp_all⟩
 
-lemma add {V} [NormedAddCommGroup V] [Module ℝ V] {F G : (X → U) → (Y → V)}
+lemma add {V} [NormedAddCommGroup V] {F G : (X → U) → (Y → V)}
     (hF : IsLocalizedFunctionTransform F) (hG : IsLocalizedFunctionTransform G) :
     IsLocalizedFunctionTransform (fun φ => F φ + G φ) := by
   intro K cK
@@ -230,7 +230,7 @@ lemma deriv [NormedAddCommGroup U] [NormedSpace ℝ U] :
     apply (h x hx).deriv_eq
 
 lemma fderiv [NormedAddCommGroup U] [NormedSpace ℝ U]
-    [NormedSpace ℝ X] [MeasureSpace X] [ProperSpace X] {dx : X} :
+    [NormedSpace ℝ X] [ProperSpace X] {dx : X} :
     IsLocalizedFunctionTransform fun (φ : X → U) x => (fderiv ℝ φ x) dx := by
   intro K cK
   use (Metric.cthickening 1 K)

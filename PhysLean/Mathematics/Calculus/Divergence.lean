@@ -3,12 +3,7 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan
 -/
-import Mathlib.Analysis.Calculus.FDeriv.Basic
-import Mathlib.Analysis.Calculus.FDeriv.Prod
 import Mathlib.LinearAlgebra.Trace
-import Mathlib.Analysis.InnerProductSpace.Adjoint
-
-import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.SpaceAndTime.Space.Basic
 
@@ -20,8 +15,8 @@ variable
   {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
 
 variable (𝕜) in
-noncomputable
-def divergence (f : E → E) (x : E) : 𝕜 := (fderiv 𝕜 f x).toLinearMap.trace _ _
+/-- The divergence of a map `f : E → E` where `E` is a normed space over `𝕜`. -/
+noncomputable def divergence (f : E → E) (x : E) : 𝕜 := (fderiv 𝕜 f x).toLinearMap.trace _ _
 
 @[simp]
 lemma divergence_zero : divergence 𝕜 (fun _ : E => 0) = fun _ => 0 := by

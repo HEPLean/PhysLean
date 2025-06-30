@@ -18,6 +18,7 @@ import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Wave
 import PhysLean.Mathematics.Calculus.AdjFDeriv
+import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.DataStructures.FourTree.Basic
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Mathematics.FDerivCurry
@@ -41,6 +42,7 @@ import PhysLean.Mathematics.VariationalCalculus.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjDeriv
 import PhysLean.Mathematics.VariationalCalculus.HasVarAdjoint
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
+import PhysLean.Mathematics.VariationalCalculus.IsLocalizedfunctionTransform
 import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
 import PhysLean.Meta.AllFilePaths
 import PhysLean.Meta.Basic

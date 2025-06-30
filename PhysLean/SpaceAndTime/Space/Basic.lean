@@ -53,6 +53,7 @@ lemma coord_apply (μ : Fin d) (p : Space d) :
     coord μ p = p μ := by
   simp [coord, basis]
 
+/-- The standard coordinate functions of Space based on `Fin d`, as a continuous linear map. -/
 noncomputable def coordCLM {d} (μ : Fin d) : Space d →L[ℝ] ℝ where
   toFun := coord μ
   map_add' := fun p q => by
