@@ -17,7 +17,6 @@ We show that the variational derivative of the action functional
 `∫ ⟪p, dq/dt⟫ - H(t, p, q) dt` is equal to the `hamiltonEqOp`
 applied to `(p, q)`.
 
-
 -/
 
 open MeasureTheory ContDiff InnerProductSpace
@@ -62,13 +61,13 @@ lemma hamiltonEqOp_eq_zero_iff_hamiltons_equations (H : Time → X → X → ℝ
 
 theorem hamiltons_equations_varGradient
     (H : Time → X → X → ℝ) (pq : Time → X × X) (hp : ContDiff ℝ ∞ pq)
-     (hL : ContDiff ℝ ∞ ↿H) :
+    (hL : ContDiff ℝ ∞ ↿H) :
     (δ (pq':= pq), ∫ t, ⟪(pq' t).1, deriv (Prod.snd ∘ pq') t⟫_ℝ - H t (pq' t).1 (pq' t).2) =
     fun t => hamiltonEqOp H (fun t => (pq t).1) (fun t => (pq t).2) t := by
   apply HasVarGradientAt.varGradient
   apply HasVarGradientAt.intro _
   · apply HasVarAdjDerivAt.add
-    · let i := fun (t : ℝ) (x : X × X) =>  ⟪x.1, x.2⟫_ℝ
+    · let i := fun (t : ℝ) (x : X × X) => ⟪x.1, x.2⟫_ℝ
       apply HasVarAdjDerivAt.comp
         (F := fun (φ : ℝ → X × X) t => i t (φ t))
         (G := fun (φ : ℝ → X × X) t => ((φ t).1, deriv (Prod.snd ∘ φ) t))

@@ -198,7 +198,7 @@ lemma adjFDeriv_fst [CompleteSpace E] [CompleteSpace F] [CompleteSpace G]
 @[simp]
 lemma adjFDeriv_prod_fst [CompleteSpace E] [CompleteSpace F] {x : F × E} :
     adjFDeriv 𝕜 (Prod.fst : F × E → F) x = fun a => (a, 0) := by
-  change  adjFDeriv 𝕜 (fun x => (id x).fst) x = _
+  change adjFDeriv 𝕜 (fun x => (id x).fst) x = _
   rw [adjFDeriv_fst]
   funext dy
   rw [adjFDeriv_id']
@@ -220,7 +220,7 @@ lemma adjFDeriv_snd [CompleteSpace E] [CompleteSpace F] [CompleteSpace G]
 @[simp]
 lemma adjFDeriv_prod_snd [CompleteSpace E] [CompleteSpace F] {x : F × E} :
     adjFDeriv 𝕜 (Prod.snd : F × E → E) x = fun a => (0, a) := by
-  change  adjFDeriv 𝕜 (fun x => (id x).snd) x = _
+  change adjFDeriv 𝕜 (fun x => (id x).snd) x = _
   rw [adjFDeriv_snd]
   funext dy
   rw [adjFDeriv_id']
@@ -322,7 +322,7 @@ lemma adjFDeriv_smul [CompleteSpace E] [CompleteSpace F]
 
 open InnerProductSpace
 lemma HasAdjFDerivAt.inner {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [InnerProductSpace' ℝ E] [CompleteSpace E] (x : E × E) :
+    [InnerProductSpace' ℝ E] (x : E × E) :
     HasAdjFDerivAt ℝ (fun (x : E × E) => ⟪x.1, x.2⟫_ℝ) (fun y => y • (x.2, x.1)) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
@@ -341,7 +341,7 @@ lemma HasAdjFDerivAt.inner {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E
     ring
 
 lemma adjFDeriv_inner {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace' ℝ E]
-    [CompleteSpace E] (x : E × E) :
+    (x : E × E) :
     adjFDeriv ℝ (fun (x : E × E) => ⟪x.1, x.2⟫_ℝ) x =
       fun y => y • (x.2, x.1) := by
   apply HasAdjFDerivAt.adjFDeriv
