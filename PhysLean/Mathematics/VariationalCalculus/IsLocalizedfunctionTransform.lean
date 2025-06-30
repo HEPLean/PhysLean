@@ -97,12 +97,11 @@ lemma add {V} [NormedAddCommGroup V] [Module ℝ V] {F G : (X → U) → (Y → 
 end
 section
 variable
-  {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
+  {X} [NormedAddCommGroup X]
   {Y} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [MeasureSpace Y]
-  {Z} [NormedAddCommGroup Z] [NormedSpace ℝ Z] [MeasureSpace Z]
-  {U} [NormedAddCommGroup U] [NormedSpace ℝ U] [InnerProductSpace' ℝ U]
-  {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
-  {W} [NormedAddCommGroup W] [NormedSpace ℝ W] [InnerProductSpace' ℝ W]
+  {Z} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+  {U}
+  {V}
 
 lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ}  (hF : IsLocalizedFunctionTransform F )  :
     IsLocalizedFunctionTransform (fun φ x => ψ x * F φ x) := by
@@ -128,7 +127,7 @@ lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ}  (hF : IsLoca
   · simp_all
   · simp_all
 
-lemma smul_left {F : (X → U) → (X → V)} {ψ : X → ℝ}
+lemma smul_left [NormedAddCommGroup V] [NormedSpace ℝ V]  {F : (X → U) → (X → V)} {ψ : X → ℝ}
     (hF : IsLocalizedFunctionTransform F)  :
     IsLocalizedFunctionTransform (fun φ x => ψ x • F φ x) := by
   intro K cK
@@ -200,11 +199,13 @@ lemma gradient : IsLocalizedFunctionTransform fun (ψ : Space d → ℝ) x => gr
     rw [← Space.grad_eq_gradiant]
   exact grad
 
-lemma clm_apply (f : X → (U →L[ℝ] V)) : IsLocalizedFunctionTransform fun φ x => (f x) (φ x) := by
+lemma clm_apply [NormedAddCommGroup V] [NormedSpace ℝ V]  [NormedAddCommGroup U] [NormedSpace ℝ U]
+    (f : X → (U →L[ℝ] V)) : IsLocalizedFunctionTransform fun φ x => (f x) (φ x) := by
   intro K cK
   exact ⟨K, cK, by intro _ _ hφ _ _; simp_all⟩
 
-lemma deriv : IsLocalizedFunctionTransform (fun φ : ℝ → U => deriv φ) := by
+lemma deriv [NormedAddCommGroup U] [NormedSpace ℝ U] :
+    IsLocalizedFunctionTransform (fun φ : ℝ → U => deriv φ) := by
   intro K cK
   use (Metric.cthickening 1 K)
   constructor
@@ -228,7 +229,8 @@ lemma deriv : IsLocalizedFunctionTransform (fun φ : ℝ → U => deriv φ) := b
     intro x hx; dsimp;
     apply (h x hx).deriv_eq
 
-lemma fderiv [ProperSpace X] {dx : X} :
+lemma fderiv [NormedAddCommGroup U] [NormedSpace ℝ U]
+    [NormedSpace ℝ X] [MeasureSpace X] [ProperSpace X] {dx : X} :
     IsLocalizedFunctionTransform fun (φ : X → U) x => (fderiv ℝ φ x) dx := by
   intro K cK
   use (Metric.cthickening 1 K)
@@ -287,7 +289,8 @@ lemma prod {F : (X → U) → X → W}
     rw[hF,hG] <;> simp_all
 
 omit [MeasureSpace Y] in
-lemma adjFDeriv {dy} [ ProperSpace X] [ InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y] :
+lemma adjFDeriv {dy} [NormedSpace ℝ X] [ProperSpace X]
+      [InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y] :
       IsLocalizedFunctionTransform fun (φ : X → Y) x => adjFDeriv ℝ φ x dy := by
   intro K cK
   use (Metric.cthickening 1 K)
