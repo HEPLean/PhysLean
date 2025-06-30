@@ -6,7 +6,6 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import PhysLean.Mathematics.VariationalCalculus.Basic
-import PhysLean.Mathematics.InnerProductSpace.Calculus
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 /-!
 

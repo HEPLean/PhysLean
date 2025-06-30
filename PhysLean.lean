@@ -1,5 +1,6 @@
 import PhysLean.ClassicalMechanics.Basic
 import PhysLean.ClassicalMechanics.EulerLagrange
+import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Momentum.Basic

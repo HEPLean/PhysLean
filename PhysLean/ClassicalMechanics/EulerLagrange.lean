@@ -38,7 +38,7 @@ lemma eulerLagrangeOp_zero (q : Time → X) :
 
 /- The variational derivative of `L t (q' t) (deriv q' t))` for a lagrangian `L`
   is equal to the `eulerLagrangeOp`. -/
-theorem euler_lagrange_particle
+theorem euler_lagrange_varGradient
     (L : Time → X → X → ℝ) (q : Time → X)
     (hq : ContDiff ℝ ∞ q) (hL : ContDiff ℝ ∞ ↿L) :
     (δ (q':=q), ∫ t, L t (q' t) (deriv q' t)) = eulerLagrangeOp L q := by

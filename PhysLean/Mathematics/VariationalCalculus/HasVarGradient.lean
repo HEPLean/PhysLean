@@ -99,7 +99,6 @@ lemma unique
     {S' : (X → U) → (X → ℝ)} {grad grad' : X → U} {u : X → U}
     (h : HasVarGradientAt S' grad u) (h' : HasVarGradientAt S' grad' u) :
     grad = grad' := by
-
   obtain ⟨F,hF,eq⟩ := h
   obtain ⟨G,hG,eq'⟩ := h'
   rw[eq,eq',hF.unique hG (fun _ => 1) (by fun_prop)]
@@ -109,7 +108,6 @@ protected lemma varGradient
     (F : (X → U) → (X → ℝ)) (grad : X → U) (u : X → U)
     (hF : HasVarGradientAt F grad u) :
     varGradient F u = grad := by
-
   have h := Exists.intro grad hF (p:= fun grad' => HasVarGradientAt F grad' u)
   unfold varGradient;
   simp[h, hF.unique h.choose_spec]
