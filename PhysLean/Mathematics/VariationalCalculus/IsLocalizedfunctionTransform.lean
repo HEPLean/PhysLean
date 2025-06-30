@@ -9,13 +9,22 @@ import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
-
 import PhysLean.Mathematics.VariationalCalculus.Basic
 import PhysLean.Mathematics.InnerProductSpace.Calculus
 import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.SpaceAndTime.Space.VectorIdentities
+/-!
+
+# Localized function transforms
+
+In this module we define a locality property for function transforms, `F : (X → U) → (Y → V)`.
+The locality property `IsLocalizedFunctionTransform`,  says that for every compact
+set `K` in `Y` there exists a compact set `L` of `X`, such that if `φ` and `φ'` are equal on `L`,
+then `F φ` and `F φ'` are equal on `K`.
+
+-/
 open InnerProductSpace MeasureTheory ContDiff
 
 section
@@ -69,7 +78,7 @@ lemma id : IsLocalizedFunctionTransform (id : (Y → V) → (Y → V)) := by
   · exact cK
   · intro φ φ' hφ
     intro x hx
-    simp
+    simp only [id_eq]
     rw [hφ x hx]
 
 lemma neg {V} [NormedAddCommGroup V]
@@ -103,38 +112,38 @@ variable
   {U}
   {V}
 
-lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ}  (hF : IsLocalizedFunctionTransform F )  :
+lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} (hF : IsLocalizedFunctionTransform F) :
     IsLocalizedFunctionTransform (fun φ x => ψ x * F φ x) := by
   intro K cK
   obtain ⟨L,cL,h⟩ := hF K cK
   refine ⟨L,cL, ?_⟩
   intro _ _ hφ _ _;
-  simp
+  simp only [mul_eq_mul_left_iff]
   left
   apply h
   · simp_all
   · simp_all
 
-lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ}  (hF : IsLocalizedFunctionTransform F )  :
+lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} (hF : IsLocalizedFunctionTransform F) :
     IsLocalizedFunctionTransform (fun φ x => F φ x * ψ x) := by
   intro K cK
   obtain ⟨L,cL,h⟩ := hF K cK
   refine ⟨L,cL, ?_⟩
   intro _ _ hφ _ _;
-  simp
+  simp only [mul_eq_mul_right_iff]
   left
   apply h
   · simp_all
   · simp_all
 
-lemma smul_left [NormedAddCommGroup V] [NormedSpace ℝ V]  {F : (X → U) → (X → V)} {ψ : X → ℝ}
-    (hF : IsLocalizedFunctionTransform F)  :
+lemma smul_left [NormedAddCommGroup V] [NormedSpace ℝ V] {F : (X → U) → (X → V)} {ψ : X → ℝ}
+    (hF : IsLocalizedFunctionTransform F) :
     IsLocalizedFunctionTransform (fun φ x => ψ x • F φ x) := by
   intro K cK
   obtain ⟨L,cL,h⟩ := hF K cK
   refine ⟨L,cL, ?_⟩
   intro _ _ hφ _ _;
-  simp
+  simp only
   congr 1
   apply h
   · simp_all
@@ -199,7 +208,7 @@ lemma gradient : IsLocalizedFunctionTransform fun (ψ : Space d → ℝ) x => gr
     rw [← Space.grad_eq_gradiant]
   exact grad
 
-lemma clm_apply [NormedAddCommGroup V] [NormedSpace ℝ V]  [NormedAddCommGroup U] [NormedSpace ℝ U]
+lemma clm_apply [NormedAddCommGroup V] [NormedSpace ℝ V] [NormedAddCommGroup U] [NormedSpace ℝ U]
     (f : X → (U →L[ℝ] V)) : IsLocalizedFunctionTransform fun φ x => (f x) (φ x) := by
   intro K cK
   exact ⟨K, cK, by intro _ _ hφ _ _; simp_all⟩
@@ -261,7 +270,7 @@ lemma fst {F : (X → U) → X → W × V} (hF : IsLocalizedFunctionTransform F)
   obtain ⟨L,cL,h⟩ := hF K cK
   refine ⟨L,cL, ?_⟩
   intro _ _ hφ _ _;
-  simp
+  simp only
   congr 1
   (expose_names; exact h φ φ' hφ x h_1)
 
@@ -271,12 +280,12 @@ lemma snd {F : (X → U) → X → W × V} (hF : IsLocalizedFunctionTransform F)
   obtain ⟨L,cL,h⟩ := hF K cK
   refine ⟨L,cL, ?_⟩
   intro _ _ hφ _ _;
-  simp
+  simp only
   congr 1
   (expose_names; exact h φ φ' hφ x h_1)
 
 lemma prod {F : (X → U) → X → W}
-    {G :  (X → U) → X → V} (hF : IsLocalizedFunctionTransform F)
+    {G : (X → U) → X → V} (hF : IsLocalizedFunctionTransform F)
     (hG : IsLocalizedFunctionTransform G) :
     IsLocalizedFunctionTransform (fun φ x => (F φ x, G φ x)) := by
   intro K cK
@@ -290,17 +299,17 @@ lemma prod {F : (X → U) → X → W}
 
 omit [MeasureSpace Y] in
 lemma adjFDeriv {dy} [NormedSpace ℝ X] [ProperSpace X]
-      [InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y] :
-      IsLocalizedFunctionTransform fun (φ : X → Y) x => adjFDeriv ℝ φ x dy := by
+    [InnerProductSpace' ℝ X] [InnerProductSpace' ℝ Y] :
+    IsLocalizedFunctionTransform fun (φ : X → Y) x => adjFDeriv ℝ φ x dy := by
   intro K cK
   use (Metric.cthickening 1 K)
   constructor
   · exact IsCompact.cthickening cK
   · intro φ φ' hφ x hx
     unfold _root_.adjFDeriv
-    simp
+    simp only
     congr
-    simp
+    simp only [DFunLike.coe_fn_eq]
     apply Filter.EventuallyEq.fderiv_eq
     apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)
     refine mem_interior_iff_mem_nhds.mp ?_

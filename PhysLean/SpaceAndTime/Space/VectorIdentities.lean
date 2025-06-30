@@ -357,15 +357,15 @@ lemma div_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
     (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
     ∇ ⬝ (f1 + f2) = ∇ ⬝ f1 + ∇ ⬝ f2 := by
   unfold div
-  simp
+  simp only [Pi.add_apply]
   funext x
-  simp
+  simp only [Pi.add_apply]
   rw [← Finset.sum_add_distrib]
   congr
   funext i
   simp [coord_apply, Space.deriv]
   rw [fderiv_add]
-  simp
+  simp only [ContinuousLinearMap.add_apply]
   · fun_prop
   · fun_prop
 
@@ -403,16 +403,16 @@ lemma div_smul (f : Space d → EuclideanSpace ℝ (Fin d)) (k : ℝ)
     (hf : Differentiable ℝ f) :
     ∇ ⬝ (k • f) = k • ∇ ⬝ f := by
   unfold div
-  simp
+  simp only [Pi.smul_apply]
   funext x
-  simp
+  simp only [Pi.smul_apply, smul_eq_mul]
   rw [Finset.mul_sum]
   congr
   funext i
   simp [coord_apply]
   simp [Space.deriv]
   rw [fderiv_const_mul]
-  simp
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
   · fun_prop
 
 lemma curl_smul (f : Space → EuclideanSpace ℝ (Fin 3)) (k : ℝ)

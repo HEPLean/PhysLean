@@ -400,7 +400,7 @@ lemma clm_apply
     conv =>
       enter [1, x]
       rw [adjoint_eq_clm_adjoint]
-    simp
+    simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
     apply IsTestFunction.comp_left
     · constructor
       · apply ContDiff.clm_apply
@@ -449,7 +449,7 @@ protected lemma deriv :
       congr
       funext a
       rw [deriv_inner_apply']
-      simp
+      simp only [inner_neg_right', sub_neg_eq_add]
       ring
       · exact hφ.differentiable a
       · exact hψ.differentiable a
@@ -484,14 +484,14 @@ lemma fderiv_apply {dx}
     · trans ∫ (a : X), fderiv ℝ (fun a => ⟪φ a, ψ a⟫_ℝ) a dx
       · congr
         funext a
-        simp
+        simp only [inner_neg_right', sub_neg_eq_add]
         rw [fderiv_inner_apply']
         rw [add_comm]
         · exact hφ.differentiable a
         · exact hψ.differentiable a
       · have h1 := integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (f := fun a => 1)
           (g := (fun a => ⟪φ a, ψ a⟫_ℝ)) (v := dx) (by simp) (by
-            simp
+            simp only [one_mul]
             apply IsTestFunction.integrable _ (@volume X _)
             fun_prop)
           (by
@@ -566,7 +566,8 @@ lemma adjFDeriv_apply
             simp [inner_smul_left', inner_smul_right']
             left
             rw [fderiv_inner_apply']
-            simp
+            simp only [fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.zero_apply,
+              inner_zero_left', add_zero]
             · fun_prop
             · exact hφ.differentiable y
             · intro i hi
@@ -645,7 +646,7 @@ lemma adjFDeriv_apply
             congr
             funext y
             rw [divergence_eq_sum_fderiv' bX]
-            simp
+            simp only [neg_mul, neg_smul, inner_neg_right', neg_inj]
             rw [inner_smul_right']
             congr 1
             congr 1
@@ -653,7 +654,8 @@ lemma adjFDeriv_apply
             trans (fderiv ℝ (f' i ∘ ψ) y) (bX i)
             · rfl
             rw [fderiv_comp]
-            simp
+            simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp',
+              Function.comp_apply]
             simp [f',f]
             · exact ContinuousLinearMap.differentiableAt _
             · exact hψ.differentiable y
@@ -667,7 +669,7 @@ protected lemma gradient {d} :
     · intro φ hφ
       funext x
       rw [divergence_eq_space_div]
-      simp
+      simp only [smul_eq_mul, mul_one]
       exact hφ.differentiable
     · apply IsLocalizedFunctionTransform.neg
       apply IsLocalizedFunctionTransform.div
@@ -677,12 +679,12 @@ protected lemma gradient {d} :
     apply hφ.differentiable x
 
 lemma div {d} : HasVarAdjoint (fun (φ : Space d → Space d) x => Space.div φ x)
-      (fun ψ x => - gradient ψ x) := by
+    (fun ψ x => - gradient ψ x) := by
   apply HasVarAdjoint.of_neg
   apply HasVarAdjoint.symm
-  simp
+  simp only [neg_neg]
   exact HasVarAdjoint.gradient
-  simp
+  simp only [neg_neg]
   exact IsLocalizedFunctionTransform.gradient
 
 lemma prod
@@ -706,7 +708,7 @@ lemma prod
     have := hF.test_fun_preserving' (fun y => (ψ y).1) (by fun_prop)
     have := hG.test_fun_preserving' (fun y => (ψ y).2) (by fun_prop)
     calc _ = (∫ (y : X), ⟪F φ y, (ψ y).1⟫_ℝ) + ∫ (y : X), ⟪G φ y, (ψ y).2⟫_ℝ := by
-          simp
+          simp only [prod_inner_apply']
           rw[integral_add]
           · apply IsTestFunction.integrable; fun_prop
           · apply IsTestFunction.integrable; fun_prop

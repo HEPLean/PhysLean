@@ -132,9 +132,10 @@ lemma linearize_of_linear {F : (X → U) → (X → V)}
   conv_rhs =>
     enter [1, s]
     rw [h1]
-  simp
+  simp only [Pi.add_apply, Pi.smul_apply, differentiableAt_const, differentiableAt_id',
+    DifferentiableAt.smul, deriv_add, deriv_const', zero_add]
   rw [deriv_smul_const]
-  simp
+  simp only [deriv_id'', one_smul]
   rw [deriv_comm hφ x]
   fun_prop
 
@@ -160,9 +161,10 @@ lemma deriv_adjoint_of_linear {F'} {F : (X → U) → (X → V)}
   conv_lhs =>
     enter [1, s]
     rw [h1]
-  simp
+  simp only [Pi.add_apply, Pi.smul_apply, differentiableAt_const, differentiableAt_id',
+    DifferentiableAt.smul, deriv_add, deriv_const', zero_add]
   rw [deriv_smul_const]
-  simp
+  simp only [deriv_id'', one_smul]
   fun_prop
 
 lemma hasVarAdjDerivAt_of_hasVarAdjoint_of_linear
@@ -262,7 +264,7 @@ lemma prod [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (volume (α := X)
     constructor
     · rw [← fderiv_deriv, ← fderiv_deriv, DifferentiableAt.fderiv_prodMk,
         DifferentiableAt.fderiv_prodMk]
-      simp
+      simp only [ContinuousLinearMap.prod_apply, fderiv_eq_smul_deriv, one_smul]
       rw [hF.linearize]
       · exact hφ
       · apply ContDiff.differentiable (n := ∞) _ (by simp)
@@ -279,7 +281,7 @@ lemma prod [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (volume (α := X)
         exact smooth_R hG hφ x
     · rw [← fderiv_deriv, ← fderiv_deriv, DifferentiableAt.fderiv_prodMk,
         DifferentiableAt.fderiv_prodMk]
-      simp
+      simp only [ContinuousLinearMap.prod_apply, fderiv_eq_smul_deriv, one_smul]
       rw [hG.linearize]
       · exact hφ
       · apply ContDiff.differentiable (n := ∞) _ (by simp)
@@ -300,7 +302,7 @@ lemma prod [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (volume (α := X)
     intro φ hφ
     funext x
     rw [← fderiv_deriv, ← fderiv_deriv, DifferentiableAt.fderiv_prodMk]
-    simp
+    simp only [ContinuousLinearMap.prod_apply, fderiv_eq_smul_deriv, one_smul]
     · apply ContDiff.differentiable (n := ∞) _ (by simp)
       apply hF.smooth_adjoint
       exact hφ.contDiff
@@ -319,9 +321,9 @@ lemma fst {F : (X → U) → (X → W×V)}
     intro φ hφ x
     have h1 := hF.linearize φ hφ x
     rw [← fderiv_deriv, fderiv_comp']
-    simp
+    simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv, one_smul]
     rw [h1, fderiv_fst]
-    simp
+    simp only [ContinuousLinearMap.coe_fst']
     conv_rhs =>
       rw [← fderiv_deriv]
     rw [fderiv_comp' _ (by fun_prop)]
@@ -336,7 +338,8 @@ lemma fst {F : (X → U) → (X → W×V)}
     · intro φ hφ
       funext x
       rw [← fderiv_deriv, fderiv_comp', fderiv_fst]
-      simp
+      simp only [ContinuousLinearMap.coe_comp', ContinuousLinearMap.coe_fst', Function.comp_apply,
+        fderiv_eq_smul_deriv, one_smul]
       fun_prop
       · apply ContDiff.differentiable (n := ∞) _ (by simp)
         apply hF.smooth_adjoint
@@ -353,9 +356,9 @@ lemma snd {F : (X → U) → (X → W×V)}
     intro φ hφ x
     have h1 := hF.linearize φ hφ x
     rw [← fderiv_deriv, fderiv_comp']
-    simp
+    simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv, one_smul]
     rw [h1, fderiv_snd]
-    simp
+    simp only [ContinuousLinearMap.coe_snd']
     conv_rhs =>
       rw [← fderiv_deriv]
     rw [fderiv_comp' _ (by fun_prop)]
@@ -370,7 +373,8 @@ lemma snd {F : (X → U) → (X → W×V)}
     · intro φ hφ
       funext x
       rw [← fderiv_deriv, fderiv_comp', fderiv_snd]
-      simp
+      simp only [ContinuousLinearMap.coe_comp', ContinuousLinearMap.coe_snd', Function.comp_apply,
+        fderiv_eq_smul_deriv, one_smul]
       fun_prop
       · apply ContDiff.differentiable (n := ∞) _ (by simp)
         apply hF.smooth_adjoint
@@ -404,15 +408,16 @@ lemma deriv' (u : ℝ → U) (hu : ContDiff ℝ ∞ u) :
         apply fderiv_uncurry_differentiable_fst_comp_snd_apply
         apply ContDiff.of_le hφ
         exact ENat.LEInfty.out)]
-    simp
+    simp only [differentiableAt_const, differentiableAt_id', DifferentiableAt.smul, deriv_add,
+      deriv_const', zero_add]
     rw [deriv_smul_const]
-    simp
+    simp only [deriv_id'', one_smul]
     rw [← fderiv_deriv]
     conv_lhs =>
       enter [1, 2, s]
       rw [← fderiv_deriv]
     rw [fderiv_swap]
-    simp
+    simp only [fderiv_eq_smul_deriv, one_smul]
     · apply ContDiff.of_le hφ
       exact ENat.LEInfty.out
     · exact differentiableAt_id'
@@ -428,7 +433,7 @@ lemma deriv' (u : ℝ → U) (hu : ContDiff ℝ ∞ u) :
         enter [1, x]
         rw [deriv_const_smul _ (by fun_prop)]
       rw [deriv_smul_const]
-      simp
+      simp only [deriv_id'', one_smul]
       fun_prop
 
 protected lemma deriv (F : (ℝ → U) → (ℝ → ℝ)) (F') (u) (hF : HasVarAdjDerivAt F F' u) :
@@ -506,7 +511,12 @@ lemma neg (F : (X → U) → (X → V)) (F') (u) (hF : HasVarAdjDerivAt F F' u) 
     HasVarAdjDerivAt (fun φ x => -F φ x) (fun ψ x => - F' ψ x) u where
   smooth_at := hF.smooth_at
   diff := by intro φ hφ; apply ContDiff.neg; apply hF.diff; assumption
-  linearize := by intros; rw[deriv.neg']; simp; rw[hF.linearize]; assumption
+  linearize := by
+    intros
+    rw[deriv.neg']
+    simp only [deriv.neg', neg_inj]
+    rw[hF.linearize]
+    assumption
   adjoint := by
     apply HasVarAdjoint.congr_fun
     case h' =>
@@ -633,21 +643,21 @@ protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u)
   · intros; fun_prop [fderiv]
   · intro φ1 φ2 h1 h2
     funext x
-    simp
+    simp only [Pi.add_apply]
     erw [fderiv_add]
-    simp
+    simp only [ContinuousLinearMap.add_apply]
     · exact (h1.differentiable (by simp)).differentiableAt
     · exact (h2.differentiable (by simp)).differentiableAt
   · intro c φ hφ
     funext x
-    simp
+    simp only [Pi.smul_apply]
     erw [fderiv_const_smul]
-    simp
+    simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply]
     exact (hφ.differentiable (by simp)).differentiableAt
   · intro φ hφ x
     rw [← fderiv_deriv]
     rw [fderiv_swap]
-    simp
+    simp only [fderiv_eq_smul_deriv, one_smul]
     · apply ContDiff.of_le hφ
       exact ENat.LEInfty.out
   · exact hu
@@ -686,7 +696,7 @@ protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     simp [Space.deriv]
     rw [← fderiv_deriv]
     rw [fderiv_swap]
-    simp
+    simp only [fderiv_eq_smul_deriv, smul_eq_mul, one_mul]
     · apply ContDiff.of_le hφ
       exact ENat.LEInfty.out
     · simp [Space.deriv]
@@ -730,7 +740,7 @@ lemma div {d} (u : Space d → Space d) (hu : ContDiff ℝ ∞ u) :
     simp [Space.deriv]
     rw [← fderiv_deriv]
     rw [fderiv_swap]
-    simp
+    simp only [fderiv_eq_smul_deriv, smul_eq_mul, one_mul]
     congr
     funext y
     trans deriv (fun x' => Space.coordCLM i (φ x' y)) 0
@@ -753,14 +763,14 @@ lemma div {d} (u : Space d → Space d) (hu : ContDiff ℝ ∞ u) :
         trans (fderiv ℝ (fun x => Space.coordCLM i (φ s' x)) x)
         rfl
         rw [fderiv_comp']
-        simp
+        simp only [ContinuousLinearMap.fderiv]
         fun_prop
         apply function_differentiableAt_snd
         exact hφ.differentiable (by simp)
       conv =>
         enter [2, s]
         rw [h1]
-      simp
+      simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
       apply Differentiable.comp
       · fun_prop
       apply fderiv_uncurry_differentiable_snd_comp_fst_apply

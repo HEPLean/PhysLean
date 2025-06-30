@@ -262,7 +262,7 @@ lemma IsTestFunction.adjFDeriv {f : X → U} [InnerProductSpace' ℝ X]
   conv =>
     enter [1, x]
     rw [adjoint_eq_clm_adjoint]
-  simp
+  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
   apply IsTestFunction.comp_left
   · constructor
     · apply ContDiff.clm_apply
@@ -300,7 +300,7 @@ lemma IsTestFunction.divergence {f : X → X} [FiniteDimensional ℝ X] (hf : Is
   change IsTestFunction (fun x => f' _)
   apply IsTestFunction.comp_left
   fun_prop
-  simp
+  simp only [map_zero]
   fun_prop
   /-unfold _root_.divergence
   apply IsTestFunction.comp_left

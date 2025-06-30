@@ -6,7 +6,14 @@ Authors: Tomas Skrivan
 import Mathlib.LinearAlgebra.Trace
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.SpaceAndTime.Space.Basic
+/-!
 
+# Divergence
+
+In this module we define and create an API around the divergence of a map `f : E → E`
+where `E` is a normed space over a field `𝕜`.
+
+-/
 noncomputable section
 
 variable
@@ -33,7 +40,7 @@ lemma divergence_eq_sum_fderiv {s : Finset E} (b : Basis s 𝕜 E) {f : E → E}
 lemma divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E → E} :
     divergence 𝕜 f = fun x => ∑ i, b.repr (fderiv 𝕜 f x (b i)) i := by
   let s : Finset E := Finset.univ.map ⟨b, Basis.injective b⟩
-  let f' : ι → s := fun i => ⟨b i , by simp [s]⟩
+  let f' : ι → s := fun i => ⟨b i, by simp [s]⟩
   have h : Function.Injective f' := by
     intro i j h
     simp [f'] at h
@@ -59,13 +66,13 @@ lemma divergence_eq_space_div {d} (f : Space d → Space d)
   congr
   funext i
   have h1 : (fderiv ℝ (fun x => f x i) x)
-    = fderiv ℝ (Space.coordCLM i ∘ f ) x := by
+    = fderiv ℝ (Space.coordCLM i ∘ f) x := by
     congr
     ext j
-    simp
+    simp only [Function.comp_apply]
     rw [Space.coordCLM_apply, Space.coord_apply]
   rw [h1]
-  rw [fderiv_comp ]
+  rw [fderiv_comp]
   simp [Space.coordCLM_apply, Space.coord_apply]
   · fun_prop
   · exact h x
@@ -126,7 +133,7 @@ lemma divergence_smul [InnerProductSpace' 𝕜 E] {f : E → 𝕜} {g : E → E}
     (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x)
     [FiniteDimensional 𝕜 E] :
     divergence 𝕜 (fun x => f x • g x) x
-    =  f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫  := by
+    = f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫ := by
   unfold divergence
   simp [fderiv_smul hf hg]
   sorry

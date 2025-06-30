@@ -503,12 +503,10 @@ lemma _root_.isBoundedBilinearMap_inner' :
     IsBoundedBilinearMap ℝ fun p : E × E => ⟪p.1, p.2⟫ where
   add_left := inner_add_left'
   smul_left := fun r x y => by
-    simp
-    exact inner_smul_left' x y r
+    simpa using inner_smul_left' x y r
   add_right := inner_add_right'
   smul_right := fun r x y => by
-    simp
-    exact inner_smul_right' x y r
+    simpa using inner_smul_right' x y r
   bound := by
     obtain ⟨c, d, hc, hd, h⟩ := hE.inner_top_equiv_norm
     use d
@@ -529,10 +527,11 @@ lemma _root_.isBoundedBilinearMap_inner' :
       apply le_of_sq_le_sq
       simp [@mul_pow]
       rw [norm₂_sq_eq_re_inner (𝕜 := ℝ)]
-      simp
+      simp only [re_to_real]
       apply (h x).2.trans
       apply le_of_eq
-      simp
+      simp only [mul_eq_mul_right_iff, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+        pow_eq_zero_iff, norm_eq_zero]
       left
       refine Eq.symm (Real.sq_sqrt ?_)
       linarith
@@ -543,10 +542,11 @@ lemma _root_.isBoundedBilinearMap_inner' :
       apply le_of_sq_le_sq
       simp [@mul_pow]
       rw [norm₂_sq_eq_re_inner (𝕜 := ℝ)]
-      simp
+      simp only [re_to_real]
       apply (h y).2.trans
       apply le_of_eq
-      simp
+      simp only [mul_eq_mul_right_iff, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+        pow_eq_zero_iff, norm_eq_zero]
       left
       refine Eq.symm (Real.sq_sqrt ?_)
       linarith

@@ -22,7 +22,7 @@ noncomputable def fderivInnerCLM' [InnerProductSpace' ℝ E] (p : E × E) : E ×
   isBoundedBilinearMap_inner'.deriv p
 
 lemma HasFDerivAt.inner' {f g : E → F}
-  {f' g' : E →L[ℝ] F} (hf : HasFDerivAt f f' x) (hg : HasFDerivAt g g' x) :
+    {f' g' : E →L[ℝ] F} (hf : HasFDerivAt f f' x) (hg : HasFDerivAt g g' x) :
     HasFDerivAt (fun t => ⟪f t, g t⟫) ((fderivInnerCLM' (f x, g x)).comp <| f'.prod g') x := by
   exact isBoundedBilinearMap_inner' (E := F)
     |>.hasFDerivAt (f x, g x) |>.comp x (hf.prodMk hg)
@@ -49,4 +49,3 @@ lemma DifferentiableAt.inner' {f g : E → F} {x}
     DifferentiableAt ℝ (fun x => ⟪f x, g x⟫) x := by
   apply HasFDerivAt.differentiableAt
   exact hf.hasFDerivAt.inner' hg.hasFDerivAt
-#lint
