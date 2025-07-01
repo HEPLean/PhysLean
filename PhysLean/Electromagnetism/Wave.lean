@@ -363,8 +363,7 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
   apply is_const_of_fderiv_eq_zero at ht'
   simp only
   rw [ht' 0 t]
-  simp only [smul_eq_mul, WithLp.equiv_smul, map_smul, LinearMap.smul_apply,
-    WithLp.equiv_symm_smul, add_sub_cancel]
+  simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, add_sub_cancel]
   · intro x
     apply DifferentiableAt.sub
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
@@ -390,10 +389,10 @@ theorem electricField_transverse_upto_const_of_EMwave {s : Direction}
     intro t x
     rw [hcx']
     simp only [smul_eq_mul, neg_smul, PiLp.inner_apply, PiLp.add_apply, PiLp.neg_apply,
-      PiLp.smul_apply, WithLp.equiv_symm_pi_apply, RCLike.inner_apply, conj_trivial]
+      PiLp.smul_apply, WithLp.equiv_symm_apply, PiLp.toLp_apply, RCLike.inner_apply, conj_trivial]
     rw [crossProduct, Finset.sum, Finset.sum]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, LinearMap.mk₂_apply,
-      WithLp.equiv_pi_apply, Fin.univ_val_map, List.ofFn_succ, Matrix.cons_val_zero,
+      WithLp.equiv_apply, PiLp.ofLp_apply, Fin.univ_val_map, List.ofFn_succ, Matrix.cons_val_zero,
       Matrix.cons_val_succ, Fin.succ_zero_eq_one, Matrix.cons_val_fin_one, Fin.succ_one_eq_two,
       List.ofFn_zero, Multiset.sum_coe, List.sum_cons, List.sum_nil, add_zero]
     ring
@@ -423,13 +422,12 @@ theorem magneticField_transverse_upto_const_of_EMwave {s : Direction}
     intro t x
     rw [hcx']
     simp only [smul_eq_mul, neg_smul, PiLp.inner_apply, PiLp.add_apply, PiLp.neg_apply,
-      PiLp.smul_apply, WithLp.equiv_symm_pi_apply, RCLike.inner_apply, conj_trivial]
+      PiLp.smul_apply, WithLp.equiv_symm_apply, PiLp.toLp_apply, RCLike.inner_apply, conj_trivial]
     rw [crossProduct, Finset.sum, Finset.sum]
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_smul, map_smul,
-      LinearMap.smul_apply, LinearMap.mk₂_apply, WithLp.equiv_pi_apply, Pi.smul_apply, smul_eq_mul,
-      Fin.univ_val_map, List.ofFn_succ, Matrix.cons_val_zero, Matrix.cons_val_succ,
-      Fin.succ_zero_eq_one, Matrix.cons_val_fin_one, Fin.succ_one_eq_two, List.ofFn_zero,
-      Multiset.sum_coe, List.sum_cons, List.sum_nil, add_zero]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,
+      LinearMap.mk₂_apply, PiLp.ofLp_apply, Fin.univ_val_map, List.ofFn_succ, Matrix.cons_val_zero,
+      Matrix.cons_val_succ, Fin.succ_zero_eq_one, Matrix.cons_val_fin_one, Fin.succ_one_eq_two,
+      List.ofFn_zero, Multiset.sum_coe, List.sum_cons, List.sum_nil, add_zero]
     ring
   use cx 0
   intro t x
@@ -536,8 +534,9 @@ theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     rw [← hBcdiff t x]
     simp only [smul_eq_mul, sub_add, sub_sub_cancel]
     rw [← smul_sub, inner_smul_right]
-    rw [← WithLp.equiv_symm_sub, ← LinearMap.map_sub, ← WithLp.equiv_sub]
-    rw [inner_cross_self]
+    simp only [WithLp.equiv_symm_apply, WithLp.equiv_apply]
+    rw [← WithLp.toLp_sub, ← LinearMap.map_sub, ← WithLp.ofLp_sub]
+    erw [inner_cross_self]
     simp
   · /- E orthogonal to s. -/
     rw [inner_smul_left]
@@ -552,8 +551,9 @@ theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     rw [← hBcdiff t x]
     simp only [smul_eq_mul, sub_add, sub_sub_cancel]
     rw [← smul_sub, inner_smul_left]
-    rw [← WithLp.equiv_symm_sub, ← LinearMap.map_sub, ← WithLp.equiv_sub]
-    rw [real_inner_comm, inner_self_cross]
+    simp only [WithLp.equiv_symm_apply, WithLp.equiv_apply]
+    rw [← WithLp.toLp_sub, ← LinearMap.map_sub, ← WithLp.ofLp_sub]
+    erw [real_inner_comm, inner_self_cross]
     simp
   · exact s.norm
 

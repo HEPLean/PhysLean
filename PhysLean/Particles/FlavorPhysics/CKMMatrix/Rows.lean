@@ -244,7 +244,7 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     have h3 := norm_nonneg (g 0)
     simp_all only [ofReal_neg, ofReal_one, Left.nonneg_neg_iff]
     have h4 : (0 : ℝ) < 1 := by norm_num
-    exact False.elim (lt_iff_not_le.mp h4 h3)
+    exact False.elim (lt_iff_not_ge.mp h4 h3)
 
 lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
     ∃ (τ : ℝ), [V]t = cexp (τ * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
@@ -277,7 +277,7 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
     have h3 := norm_nonneg (g 2)
     simp_all only [ofReal_neg, ofReal_one, Left.nonneg_neg_iff]
     have h4 : (0 : ℝ) < 1 := by norm_num
-    exact False.elim (lt_iff_not_le.mp h4 h3)
+    exact False.elim (lt_iff_not_ge.mp h4 h3)
   · have hx : [V]t = (g 2)⁻¹ • (conj ([V]u) ×₃ conj ([V]c)) := by
       rw [← hg, @smul_smul, inv_mul_cancel₀, one_smul]
       by_contra hn

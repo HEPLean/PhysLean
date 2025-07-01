@@ -252,9 +252,9 @@ lemma crossProduct_time_differentiable_of_right_eq_planewave {s : Direction}
   apply differentiable_pi''
   intro i
   fin_cases i <;>
-  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, PiLp.inner_apply,
-      RCLike.inner_apply, conj_trivial, LinearMap.mk₂_apply, WithLp.equiv_pi_apply,
-      Fin.reduceFinMk, WithLp.equiv_symm_pi_apply, Matrix.cons_val]
+  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,
+    PiLp.inner_apply, RCLike.inner_apply, conj_trivial, LinearMap.mk₂_apply, PiLp.ofLp_apply,
+    Fin.reduceFinMk, WithLp.equiv_symm_apply, PiLp.toLp_apply, Matrix.cons_val]
     fun_prop
 
 lemma crossProduct_differentiable_of_right_eq_planewave {s : Direction}
@@ -265,8 +265,8 @@ lemma crossProduct_differentiable_of_right_eq_planewave {s : Direction}
   intro i
   fin_cases i <;>
   · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, PiLp.inner_apply,
-      RCLike.inner_apply, conj_trivial, LinearMap.mk₂_apply, WithLp.equiv_pi_apply,
-      Fin.reduceFinMk, WithLp.equiv_symm_pi_apply, Matrix.cons_val]
+      RCLike.inner_apply, conj_trivial, LinearMap.mk₂_apply, WithLp.equiv_apply, PiLp.ofLp_apply,
+      Fin.reduceFinMk, WithLp.equiv_symm_apply, PiLp.toLp_apply, Matrix.cons_val]
     fun_prop
 
 lemma wave_fderiv_inner_eq_inner_fderiv_proj {f₀ : ℝ → EuclideanSpace ℝ (Fin d)}
