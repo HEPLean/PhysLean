@@ -75,7 +75,6 @@ lemma time_component_ne_zero_of_timelike {d : ℕ} {v : Vector d}
   exact lt_irrefl 0 (h_spatial_nonneg.trans_lt hv)
 
 /-- For timelike vectors, the time component is nonzero -/
-@[simp]
 lemma timelike_time_component_ne_zero {d : ℕ} {v : Vector d}
     (hv : causalCharacter v = .timeLike) :
     timeComponent v ≠ 0 := time_component_ne_zero_of_timelike hv

@@ -594,9 +594,9 @@ lemma mul
     · apply hG.diff; assumption
   linearize := by
     intro φ hφ x
-    rw[deriv_fun_mul, deriv_fun_mul]
-    rw[hF.linearize _ hφ, hG.linearize _ hφ]
-    simp
+    rw [deriv_fun_mul, deriv_fun_mul]
+    rw [hF.linearize _ hφ, hG.linearize _ hφ]
+    · simp
     · exact hF.differentiable_linear hφ x 0
     · exact hG.differentiable_linear hφ x 0
     · apply ContDiff.differentiable _ ENat.LEInfty.out

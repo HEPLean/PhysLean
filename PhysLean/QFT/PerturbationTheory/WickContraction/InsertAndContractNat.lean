@@ -389,7 +389,6 @@ lemma insertAndContractNat_some_getDual?_eq (c : WickContraction n) (i : Fin n.s
   rw [getDual?_eq_some_iff_mem]
   simp [insertAndContractNat]
 
-@[simp]
 lemma insertAndContractNat_some_getDual?_neq_none (c : WickContraction n) (i : Fin n.succ)
     (j : c.uncontracted) (k : Fin n) (hkj : k ≠ j.1) :
     (insertAndContractNat c i (some j)).getDual? (i.succAbove k) = none ↔ c.getDual? k = none := by
@@ -411,27 +410,28 @@ lemma insertAndContractNat_some_getDual?_neq_none (c : WickContraction n) (i : F
       simpa [uncontracted] using h
     simpa [uncontracted, -mem_uncontracted_insertAndContractNat_some_iff, ne_eq] using hk
 
-@[simp]
 lemma insertAndContractNat_some_getDual?_neq_isSome (c : WickContraction n) (i : Fin n.succ)
     (j : c.uncontracted) (k : Fin n) (hkj : k ≠ j.1) :
     ((insertAndContractNat c i (some j)).getDual? (i.succAbove k)).isSome ↔
     (c.getDual? k).isSome := by
   rw [← not_iff_not]
-  simp [hkj]
+  simp [hkj, insertAndContractNat_some_getDual?_neq_none]
 
-@[simp]
 lemma insertAndContractNat_some_getDual?_neq_isSome_get (c : WickContraction n) (i : Fin n.succ)
     (j : c.uncontracted) (k : Fin n) (hkj : k ≠ j.1)
     (h : ((insertAndContractNat c i (some j)).getDual? (i.succAbove k)).isSome) :
     ((insertAndContractNat c i (some j)).getDual? (i.succAbove k)).get h =
-    i.succAbove ((c.getDual? k).get (by simpa [hkj] using h)) := by
+    i.succAbove ((c.getDual? k).get
+      (by simpa [hkj, insertAndContractNat_some_getDual?_neq_isSome] using h)) := by
   have h1 : ((insertAndContractNat c i (some j)).getDual? (i.succAbove k))
-    = some (i.succAbove ((c.getDual? k).get (by simpa [hkj] using h))) := by
+    = some (i.succAbove ((c.getDual? k).get
+      (by simpa [hkj, insertAndContractNat_some_getDual?_neq_isSome] using h))) := by
     rw [getDual?_eq_some_iff_mem]
     simp only [Nat.succ_eq_add_one, insertAndContractNat, Finset.le_eq_subset, Finset.mem_insert,
       Finset.mem_map, RelEmbedding.coe_toEmbedding]
     apply Or.inr
-    use { k, ((c.getDual? k).get (by simpa [hkj] using h))}
+    use { k, ((c.getDual? k).get
+      (by simpa [hkj, insertAndContractNat_some_getDual?_neq_isSome] using h))}
     simp only [self_getDual?_get_mem, true_and]
     rw [Finset.mapEmbedding_apply]
     simp
@@ -447,7 +447,7 @@ lemma insertAndContractNat_some_getDual?_of_neq (c : WickContraction n) (i : Fin
         some (i.succAbove ((c.getDual? k).get h)) := by
       rw [← insertAndContractNat_some_getDual?_neq_isSome_get c i j k hkj]
       refine Eq.symm (Option.some_get ?_)
-      simpa [hkj] using h
+      simpa [hkj, insertAndContractNat_some_getDual?_neq_isSome] using h
     rw [h1]
     have h2 :(c.getDual? k) = some ((c.getDual? k).get h) := by simp
     conv_rhs => rw [h2]
