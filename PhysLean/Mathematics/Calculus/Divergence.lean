@@ -101,7 +101,7 @@ lemma divergence_add {f g : E → E} {x : E}
     =
     divergence 𝕜 f x + divergence 𝕜 g x := by
   unfold divergence
-  simp [fderiv_add hf hg]
+  simp [fderiv_fun_add hf hg]
 
 lemma divergence_neg {f : E → E} {x : E} :
     divergence 𝕜 (fun x => -f x) x
@@ -116,7 +116,7 @@ lemma divergence_sub {f g : E → E} {x : E}
     =
     divergence 𝕜 f x - divergence 𝕜 g x := by
   unfold divergence
-  simp [fderiv_sub hf hg]
+  simp [fderiv_fun_sub hf hg]
 
 lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
     (hf : DifferentiableAt 𝕜 f x) :
@@ -124,7 +124,7 @@ lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
     =
     c * divergence 𝕜 f x := by
   unfold divergence
-  simp [fderiv_const_smul hf]
+  simp [fderiv_fun_const_smul hf]
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
@@ -135,5 +135,5 @@ lemma divergence_smul [InnerProductSpace' 𝕜 E] {f : E → 𝕜} {g : E → E}
     divergence 𝕜 (fun x => f x • g x) x
     = f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫ := by
   unfold divergence
-  simp [fderiv_smul hf hg]
+  simp [fderiv_fun_smul hf hg]
   sorry

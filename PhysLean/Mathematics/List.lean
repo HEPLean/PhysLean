@@ -538,7 +538,7 @@ lemma orderedInsert_eq_insertIdx_orderedInsertPos {I : Type} (le1 : I → I → 
       OrderIso.toEquiv_symm, Fin.symm_castOrderIso, Fin.zero_eta, Equiv.trans_apply,
       finExtractOne_apply_eq, Fin.isValue, finExtractOne_symm_inl_apply, RelIso.coe_fn_toEquiv,
       Fin.castOrderIso_apply, Fin.cast_mk, Fin.eta]
-    rw [List.getElem_insertIdx_self]
+    erw [List.getElem_insertIdx_self]
   | ⟨Nat.succ n', h0⟩ =>
     simp only [Nat.succ_eq_add_one, List.getElem_cons_succ, List.length_cons]
     have hr := orderedInsertEquiv_succ le1 r r0 n' h0

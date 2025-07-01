@@ -235,7 +235,7 @@ lemma meanEnergy_eq_logDeriv_partitionFunctionβ [Fintype ι] (T : Temperature) 
     meanEnergy 𝓒 T = - logDeriv (partitionFunctionβ 𝓒) (β T) := by
   rw [logDeriv_apply]
   nth_rewrite 1 [partitionFunctionβ_def]
-  rw [deriv_sum]
+  rw [deriv_fun_sum]
   · simp [meanEnergy]
     rw [@neg_div]
     simp only [neg_neg]

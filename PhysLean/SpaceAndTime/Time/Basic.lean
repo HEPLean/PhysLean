@@ -45,8 +45,7 @@ scoped notation "∂ₜ" => deriv
 lemma deriv_smul (f : Time → EuclideanSpace ℝ (Fin d)) (k : ℝ)
     (hf : Differentiable ℝ f) :
     ∂ₜ (fun t => k • f t) t = k • ∂ₜ (fun t => f t) t := by
-  rw [deriv]
-  rw [fderiv_const_smul]
+  rw [deriv, fderiv_fun_const_smul]
   rfl
   fun_prop
 

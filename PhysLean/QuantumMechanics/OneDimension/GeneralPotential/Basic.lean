@@ -47,10 +47,10 @@ lemma momentumOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   rw [fun_add ((fun x ↦ a1 * (-Complex.I * ↑ℏ * deriv ψ1 x))) _]
   ext x
   have h : deriv ((a1 •ψ1) + (a2 •ψ2)) x = deriv (fun y ↦ ((a1 •ψ1) y) + ((a2 •ψ2) y)) x := rfl
-  rw [h, deriv_add]
+  rw [h, deriv_fun_add]
   have ht1 : deriv (a1 •ψ1) x = deriv (fun y ↦ (a1 •ψ1 y)) x := rfl
   have ht2 : deriv (a2 •ψ2) x = deriv (fun y ↦ (a2 •ψ2 y)) x := rfl
-  rw [ht1, ht2, deriv_const_smul, deriv_const_smul, mul_add]
+  rw [ht1, ht2, deriv_fun_const_smul, deriv_fun_const_smul, mul_add]
   simp only [mul_comm, mul_assoc]
   rw [← mul_assoc, ← mul_assoc, ← mul_assoc a1, ← mul_assoc a2, mul_assoc, mul_assoc]
   · rfl

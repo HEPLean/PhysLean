@@ -58,13 +58,13 @@ lemma twoState_meanEnergy_eq (E : ℝ) (T : Temperature) :
   have h1 : deriv (fun β => 2 * rexp (-(β * E) / 2) * cosh (β * E / 2)) T.β
       = 2 * (- E /2) * exp (-( T.β   * E) / 2) * cosh ( T.β  * E / 2) +
         2 * (E /2) * exp (-( T.β  * E) / 2) * sinh ( T.β  * E / 2) := by
-    rw [deriv_mul (by fun_prop) (by fun_prop)]
+    rw [deriv_fun_mul (by fun_prop) (by fun_prop)]
     rw [deriv_const_mul _ (by fun_prop)]
     rw [_root_.deriv_exp (by fun_prop)]
-    simp only [deriv_div_const, deriv.neg', differentiableAt_id', differentiableAt_const, deriv_mul,
+    simp only [deriv_div_const, deriv.neg', differentiableAt_id, differentiableAt_const, deriv_mul,
       deriv_id'', one_mul, deriv_const', mul_zero, add_zero]
     rw [_root_.deriv_cosh (by fun_prop)]
-    simp only [deriv_div_const, differentiableAt_id', differentiableAt_const, deriv_mul, deriv_id'',
+    simp only [deriv_div_const, differentiableAt_id, differentiableAt_const, deriv_mul, deriv_id'',
       one_mul, deriv_const', mul_zero, add_zero]
     field_simp
     ring

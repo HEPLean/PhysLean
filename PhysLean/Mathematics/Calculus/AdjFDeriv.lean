@@ -268,7 +268,7 @@ lemma HasAjdFDerivAt.add {f g : E → F} {f' g'} {x : E}
     HasAdjFDerivAt 𝕜 (fun x => f x + g x) (fun dy => f' dy + g' dy) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
-    simp (disch:=fun_prop) [fderiv_add]
+    simp (disch:=fun_prop) [fderiv_fun_add]
     apply hf.hasAdjoint_fderiv.add hg.hasAdjoint_fderiv
 
 lemma adjFDeriv_add [CompleteSpace E] [CompleteSpace F]
@@ -286,7 +286,7 @@ lemma HasAdjFDerivAt.sub
     HasAdjFDerivAt 𝕜 (fun x => f x - g x) (fun dy => f' dy - g' dy) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
-    simp (disch:=fun_prop) [fderiv_sub]
+    simp (disch:=fun_prop) [fderiv_fun_sub]
     apply hf.hasAdjoint_fderiv.sub hg.hasAdjoint_fderiv
 
 lemma adjFDeriv_sub [CompleteSpace E] [CompleteSpace F] {f g : E → F} {x : E}
@@ -304,7 +304,7 @@ lemma HasAdjFDerivAt.smul {f : E → F} {g : E → 𝕜} {f' g'}
       (fun dy => conj (g x) • f' dy + g' (conj (inner 𝕜 dy (f x)))) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
-    simp (disch:=fun_prop) [fderiv_smul,-inner_conj_symm']
+    simp (disch:=fun_prop) [fderiv_fun_smul,-inner_conj_symm']
     apply HasAdjoint.add
     · apply hf.hasAdjoint_fderiv.smul_left
     · apply hg.hasAdjoint_fderiv.smul_right

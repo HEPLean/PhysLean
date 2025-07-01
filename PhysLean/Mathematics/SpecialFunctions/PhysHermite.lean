@@ -241,10 +241,10 @@ lemma deriv_gaussian_eq_physHermite_mul_gaussian (n : ℕ) (x : ℝ) :
     have deriv_gaussian :
       deriv (fun y => Real.exp (-(y ^ 2))) x = -2 * x * Real.exp (-(x ^ 2)) := by
       rw [deriv_exp (by simp)]
-      simp only [deriv.neg', differentiableAt_id', deriv_pow'', cast_ofNat, Nat.add_one_sub_one,
-        pow_one, deriv_id'', mul_one, mul_neg, neg_mul, neg_inj]
+      simp only [deriv.fun_neg', differentiableAt_fun_id, deriv_fun_pow'', cast_ofNat,
+        Nat.add_one_sub_one, pow_one, deriv_id'', mul_one, mul_neg, neg_mul, neg_inj]
       ring
-    rw [Function.iterate_succ_apply', ih, deriv_const_mul_field, deriv_mul, pow_succ (-1 : ℝ),
+    rw [Function.iterate_succ_apply', ih, deriv_const_mul_field, deriv_fun_mul, pow_succ (-1 : ℝ),
       deriv_gaussian, physHermite_succ]
     · rw [derivative_physHermite,]
       simp only [Pi.natCast_def, Pi.mul_apply, Pi.ofNat_apply, cast_ofNat, neg_mul, mul_neg,
@@ -287,7 +287,7 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
   refine MeasureTheory.Integrable.smul (P.coeff i : ℝ) ?_
   apply integrable_rpow_mul_exp_neg_mul_sq
   · exact hb
-  · exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
+  · exact lt_of_le_of_lt' (Nat.cast_nonneg' i) neg_one_lt_zero
 
 @[fun_prop]
 lemma guassian_integrable_polynomial_cons {b c : ℝ} (hb : 0 < b) (P : Polynomial ℤ) :
@@ -305,7 +305,7 @@ lemma guassian_integrable_polynomial_cons {b c : ℝ} (hb : 0 < b) (P : Polynomi
   refine h2 ▸ MeasureTheory.Integrable.smul (c ^ i * P.coeff i : ℝ) ?_
   apply integrable_rpow_mul_exp_neg_mul_sq (s := i)
   · exact hb
-  · exact gt_of_ge_of_gt (Nat.cast_nonneg' i) neg_one_lt_zero
+  · exact lt_of_le_of_lt' (Nat.cast_nonneg' i) neg_one_lt_zero
 
 @[fun_prop]
 lemma physHermite_gaussian_integrable (n p m : ℕ) :

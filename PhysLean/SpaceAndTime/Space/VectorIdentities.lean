@@ -67,7 +67,7 @@ lemma deriv_add [NormedAddCommGroup M] [NormedSpace ℝ M]
   unfold deriv
   simp only
   ext x
-  rw [fderiv_add']
+  rw [fderiv_add]
   rfl
   repeat fun_prop
 
@@ -79,7 +79,7 @@ lemma deriv_coord_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
   unfold deriv
   simp only
   ext x
-  rw [fderiv_add]
+  rw [fderiv_fun_add]
   simp only [ContinuousLinearMap.add_apply, Pi.add_apply]
   repeat fun_prop
 
@@ -89,7 +89,7 @@ lemma deriv_smul [NormedAddCommGroup M] [NormedSpace ℝ M]
     ∂[u] (k • f) = (k • ∂[u] f) := by
   unfold deriv
   ext x
-  rw [fderiv_const_smul']
+  rw [fderiv_const_smul]
   rfl
   fun_prop
 
@@ -142,7 +142,7 @@ lemma deriv_coord_2nd_add (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
     (∂[i] (∂[w] (fun x => f x w))) := by
   unfold deriv
   ext x
-  rw [fderiv_add, fderiv_add]
+  rw [fderiv_fun_add, fderiv_fun_add]
   simp only [ContinuousLinearMap.add_apply, Pi.add_apply]
   ring
   repeat
@@ -160,7 +160,7 @@ lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
   unfold deriv
   ext x
   simp only [Pi.sub_apply]
-  rw [fderiv_sub]
+  rw [fderiv_fun_sub]
   simp only [ContinuousLinearMap.coe_sub', Pi.sub_apply]
   repeat
     apply Differentiable.differentiableAt
@@ -364,7 +364,7 @@ lemma div_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
   congr
   funext i
   simp [coord_apply, Space.deriv]
-  rw [fderiv_add]
+  rw [fderiv_fun_add]
   simp only [ContinuousLinearMap.add_apply]
   · fun_prop
   · fun_prop

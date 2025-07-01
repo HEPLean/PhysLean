@@ -135,7 +135,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
       S (Fin.cast (boundary_split k) (Fin.natAdd (k.succ.val) i)) = S k.succ := by
     apply gt_eq hS (le_of_lt hk.right) (by rw [Fin.le_def]; exact le.intro rfl)
   simp only [hfst, hsnd]
-  simp only [Fin.val_succ, sum_const, card_fin, nsmul_eq_mul, cast_add, cast_one,
+  simp only [Fin.val_succ, sum_const, Finset.card_fin, nsmul_eq_mul, cast_add, cast_one,
     succ_sub_succ_eq_sub, Fin.is_le', cast_sub]
   rw [boundary_castSucc hS hk, boundary_succ hS hk]
   ring

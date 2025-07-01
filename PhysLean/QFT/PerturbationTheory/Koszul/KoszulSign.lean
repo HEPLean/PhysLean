@@ -111,7 +111,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       rw [orderedInsert_eq_insertIdx_orderedInsertPos]
     conv_rhs =>
       rhs
-      rw [← ofList_take_insert]
+      erw [← ofList_take_insert]
       change 𝓢(q φ, ofList q ((List.insertionSort le (φ1 :: φs)).take
         (↑(orderedInsertPos le ((List.insertionSort le (φ1 :: φs))) φ))))
       rw [← koszulSignInsert_eq_exchangeSign_take q le]

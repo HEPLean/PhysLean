@@ -143,8 +143,8 @@ lemma norm_withLp2_eq_norm2 (x : WithLp 2 E) :
 noncomputable
 scoped instance toNormedSpaceWithL2 : NormedSpace 𝕜 (WithLp 2 E) where
   norm_smul_le := by
-    let core : InnerProductSpace.Core (𝕜:=𝕜) (F:=E) := by infer_instance
-    apply core.toNormedSpace.norm_smul_le
+    let core : PreInnerProductSpace.Core (𝕜:=𝕜) (F:=E) := by infer_instance
+    apply (InnerProductSpace.Core.toNormedSpace (c := core)).norm_smul_le
 
 /-- Attach inner product space structure to `WithLp 2 E`. -/
 noncomputable

@@ -3,9 +3,12 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
-import Mathlib.Analysis.SpecialFunctions.Integrals
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.PolarCoord
+import Mathlib.Data.Real.StarOrdered
+import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 /-!
 
 # Solutions to the classical harmonic oscillator
@@ -176,9 +179,9 @@ lemma sol_differentiable (IC : InitialConditions) : Differentiable ℝ (S.sol IC
 lemma sol_velocity (IC : InitialConditions) : deriv (S.sol IC) =
     fun t => - IC.x₀ * S.ω * sin (S.ω * t) + IC.v₀ * cos (S.ω * t) := by
   funext t
-  rw [sol_eq, deriv_add (by fun_prop) (by fun_prop)]
+  rw [sol_eq, deriv_fun_add (by fun_prop) (by fun_prop)]
   simp only [differentiableAt_const, deriv_const_mul_field']
-  rw [deriv_cos (by fun_prop), deriv_sin (by fun_prop), deriv_mul (by fun_prop) (by fun_prop)]
+  rw [deriv_cos (by fun_prop), deriv_sin (by fun_prop), deriv_fun_mul (by fun_prop) (by fun_prop)]
   field_simp [S.ω_neq_zero]
   ring_nf
 
@@ -188,7 +191,7 @@ lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
   rw [sol_eq_amplitude_mul_cos_phase]
   simp only [differentiableAt_const, deriv_const_mul_field']
   rw [deriv_cos (by fun_prop), deriv_add_const', neg_mul, mul_neg,
-    deriv_mul (by fun_prop) (by fun_prop)]
+    deriv_fun_mul (by fun_prop) (by fun_prop)]
   field_simp
   ring
 

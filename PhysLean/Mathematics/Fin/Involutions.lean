@@ -265,14 +265,6 @@ lemma involutionAddEquiv_none_succ {n : ℕ}
       fun hn => Fin.succ_ne_zero x (Function.Involutive.injective f.2 hn)
   exact Iff.intro (fun h2 ↦ by simp [h2]) (fun h2 ↦ (Fin.pred_eq_iff_eq_succ hx).mp (h2 hx))
 
-lemma involutionAddEquiv_isSome_image_zero {n : ℕ} :
-    {f : {f : Fin n.succ → Fin n.succ // Function.Involutive f}}
-    → (involutionAddEquiv (involutionCons n f).1 (involutionCons n f).2).isSome
-    → ¬ f.1 ⟨0, Nat.zero_lt_succ n⟩ = ⟨0, Nat.zero_lt_succ n⟩ := by
-  intro f hf a
-  simp only [succ_eq_add_one, involutionCons, Equiv.coe_fn_mk, involutionAddEquiv] at hf
-  simp_all
-
 /-!
 
 ## Equivalences of involutions with no fixed points.

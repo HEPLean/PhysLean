@@ -215,7 +215,7 @@ lemma neg_deriv {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → ℝ) :
     - SpaceTime.deriv μ f = SpaceTime.deriv μ (fun y => - f y) := by
   ext y
   rw [SpaceTime.deriv_eq]
-  simp only [Pi.neg_apply, fderiv_neg, Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color,
+  simp only [Pi.neg_apply, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, fderiv_fun_neg,
     ContinuousLinearMap.neg_apply, neg_inj]
   rfl
 

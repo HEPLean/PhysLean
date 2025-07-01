@@ -29,7 +29,6 @@ namespace OverColor
 
 open CategoryTheory
 open MonoidalCategory
-open TensorProduct
 variable {C k : Type} [CommRing k] {G : Type} [Group G]
 
 namespace Discrete
@@ -291,6 +290,7 @@ def discreteSumEquiv {X Y : Type} {cX : X → C} {cY : Y → C} (i : X ⊕ Y) :
   | Sum.inl _ => LinearEquiv.refl _ _
   | Sum.inr _ => LinearEquiv.refl _ _
 
+open TensorProduct in
 /-- The equivalence of modules corresponding to the tensor. -/
 def μModEquiv (X Y : OverColor C) :
     ((toRep F X).V ⊗[k] (toRep F Y).V) ≃ₗ[k] toRep F (X ⊗ Y) :=
@@ -459,6 +459,7 @@ lemma associativity (X Y Z : OverColor C) :
       Iso.refl_inv, LinearEquiv.ofLinear_apply, Sum.elim_inr]
     rfl
 
+open TensorProduct in
 lemma left_unitality (X : OverColor C) : (leftUnitor (toRep F X)).hom =
     whiskerRight (toRepUnitIso F).hom (toRep F X) ≫
     (μ F (𝟙_ (OverColor C)) X).hom ≫ homToRepHom F (leftUnitor X).hom := by
@@ -487,6 +488,7 @@ lemma left_unitality (X : OverColor C) : (leftUnitor (toRep F X)).hom =
     Iso.refl_hom, Action.id_hom, Iso.refl_inv, LinearEquiv.ofLinear_apply]
   rfl
 
+open TensorProduct in
 lemma right_unitality (X : OverColor C) : (rightUnitor (toRep F X)).hom =
     whiskerLeft (toRep F X) (toRepUnitIso F).hom ≫
     (μ F X (𝟙_ (OverColor C))).hom ≫ homToRepHom F (rightUnitor X).hom := by
@@ -541,13 +543,13 @@ lemma braided (X Y : OverColor C) :
 
 /-- The lift of a functor is lax braided. -/
 instance toRepFunc_laxBraidedFunctor : Functor.LaxBraided (toRepFunc F) where
-  ε' := (toRepUnitIso F).hom
-  μ' := fun X Y => (μ F X Y).hom
-  μ'_natural_left := μ_natural_left F
-  μ'_natural_right := μ_natural_right F
-  associativity' := associativity F
-  left_unitality' := left_unitality F
-  right_unitality' := right_unitality F
+  ε := (toRepUnitIso F).hom
+  μ := fun X Y => (μ F X Y).hom
+  μ_natural_left := μ_natural_left F
+  μ_natural_right := μ_natural_right F
+  associativity := associativity F
+  left_unitality := left_unitality F
+  right_unitality := right_unitality F
   braided := fun X Y => by
     simp only [Functor.LaxMonoidal.μ, toRepFunc]
     rw [braided F X Y]
@@ -678,7 +680,7 @@ lemma repNatTransOfColorApp_unit : Functor.LaxMonoidal.ε (toRepFunc F) ≫
 
 lemma repNatTransOfColorApp_tensor (X Y : OverColor C) :
     (Functor.LaxMonoidal.μ (toRepFunc F)) X Y ≫ repNatTransOfColorApp η (X ⊗ Y) =
-    (repNatTransOfColorApp η X ⊗ repNatTransOfColorApp η Y) ≫
+    (repNatTransOfColorApp η X ⊗ₘ repNatTransOfColorApp η Y) ≫
     (Functor.LaxMonoidal.μ (toRepFunc F')) X Y := by
   ext1
   refine ModuleCat.hom_ext ?_
@@ -835,6 +837,8 @@ def forget : LaxBraidedFunctor (OverColor C) (Rep k G) ⥤ (Discrete C ⥤ Rep k
   map η := Discrete.natTrans fun c => η.hom.app (incl.obj c)
 
 variable (F F' : Discrete C ⥤ Rep k G) (η : F ⟶ F')
+
+open TensorProduct
 
 /--
 The `forgetLiftAppV` function takes an object `c` of type `C` and returns a linear equivalence

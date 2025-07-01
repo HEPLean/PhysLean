@@ -131,7 +131,7 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
     · simp only [Fin.zero_eta, Fin.isValue, EuclideanSpace.basisFun_apply, PiLp.inner_apply,
       EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul,
       Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
-      rw [fderiv_sub]
+      rw [fderiv_fun_sub]
       rw [dt_distrib]
       rw [fderiv_swap_time_space_coord, fderiv_swap_time_space_coord]
       rw [fderiv_coord_dt, fderiv_coord_dt]
@@ -169,7 +169,7 @@ lemma fderiv_cross_commute {u : ℝ} {s : Space} {f : ℝ → EuclideanSpace ℝ
       s j * (fderiv ℝ (fun u => f u) u) 1 i
       =
       (fderiv ℝ (fun t => s i * f t j - s j * f t i) u) 1:= by
-    rw [fderiv_sub, fderiv_const_mul, fderiv_const_mul]
+    rw [fderiv_fun_sub, fderiv_const_mul, fderiv_const_mul]
     rw [fderiv_pi]
     rfl
     intro i
@@ -177,12 +177,13 @@ lemma fderiv_cross_commute {u : ℝ} {s : Space} {f : ℝ → EuclideanSpace ℝ
   rw [crossProduct]
   ext i
   fin_cases i <;>
-  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, LinearMap.mk₂_apply,
-      WithLp.equiv_pi_apply, Fin.reduceFinMk, WithLp.equiv_symm_pi_apply, cons_val]
+  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,
+      LinearMap.mk₂_apply, PiLp.ofLp_apply, Fin.reduceFinMk, WithLp.equiv_symm_apply,
+      PiLp.toLp_apply, cons_val]
     rw [h]
     simp only [Fin.isValue, fderiv_eq_smul_deriv, smul_eq_mul, one_mul, PiLp.smul_apply]
     rw [deriv_pi]
-    simp only [Fin.isValue, WithLp.equiv_symm_pi_apply, cons_val]
+    simp only [Fin.isValue, WithLp.equiv_symm_apply, PiLp.toLp_apply, cons_val]
     · intro i
       fin_cases i <;>
       · simp
@@ -202,14 +203,18 @@ lemma inner_cross_self (v w : EuclideanSpace ℝ (Fin 3)) :
     inner ℝ v (w ⨯ₑ₃ v) = 0 := by
   cases v using WithLp.rec with | _ v =>
   cases w using WithLp.rec with | _ w =>
-  simp only [Equiv.apply_symm_apply, EuclideanSpace.inner_piLp_equiv_symm, star_trivial]
+  simp only [WithLp.equiv_apply, WithLp.ofLp_toLp, WithLp.equiv_symm_apply,
+    PiLp.toLp_apply, RCLike.inner_apply, conj_trivial]
+  change (crossProduct w) v ⬝ᵥ v = _
   rw [dotProduct_comm, dot_cross_self]
 
 lemma inner_self_cross (v w : EuclideanSpace ℝ (Fin 3)) :
     inner ℝ v (v ⨯ₑ₃ w) = 0 := by
   cases v using WithLp.rec with | _ v =>
   cases w using WithLp.rec with | _ w =>
-  simp only [Equiv.apply_symm_apply, EuclideanSpace.inner_piLp_equiv_symm, star_trivial]
+  simp only [WithLp.equiv_apply, WithLp.ofLp_toLp, WithLp.equiv_symm_apply, PiLp.inner_apply,
+    PiLp.toLp_apply, RCLike.inner_apply, conj_trivial]
+  change (crossProduct v) w ⬝ᵥ v = _
   rw [dotProduct_comm, dot_self_cross]
 
 end ClassicalMechanics

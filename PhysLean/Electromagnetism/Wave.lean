@@ -306,12 +306,12 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
   have hderiv : ∀ t x, _root_.deriv (fun t => (E t x) +
       (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x))) t = 0 := by
     intro t x
-    rw [_root_.deriv_add, _root_.deriv_smul]
+    rw [_root_.deriv_fun_add, _root_.deriv_fun_smul]
     simp_all
     · fun_prop
     · exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
-    · apply DifferentiableAt.const_smul
+    · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
   use fun x => (E 0 x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ B 0 x)
   intro t x
@@ -323,7 +323,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
   · intro x
     apply DifferentiableAt.add
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
-    · apply DifferentiableAt.const_smul
+    · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
 
 /-- An electric planewave induces an magnetic field equal to `s ×₃ E` plus a constant field. -/
@@ -347,15 +347,15 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
       (√(μ • ε)) • (s.unit ⨯ₑ₃ (E t x))) t = 0 := by
     intro t x
     ext1
-    rw [fderiv_sub]
-    rw [fderiv_const_smul]
+    rw [fderiv_fun_sub]
+    rw [fderiv_fun_const_smul]
     change (fderiv ℝ (fun t => B t x) t 1) -
         ((√(μ • ε)) • fderiv ℝ (fun t => (s.unit ⨯ₑ₃ (E t x))) t 1) = _
     rw [h]
     simp only [PiLp.zero_apply, ContinuousLinearMap.zero_apply]
     · exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
-    · apply DifferentiableAt.const_smul
+    · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
   use fun x => (B 0 x) - (√(μ • ε)) • (s.unit ⨯ₑ₃ E 0 x)
   intro t x
@@ -368,7 +368,7 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
   · intro x
     apply DifferentiableAt.sub
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
-    · apply DifferentiableAt.const_smul
+    · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
 
 /-- The electric field of an EMwave minus a constant field is transverse. -/

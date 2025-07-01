@@ -93,7 +93,7 @@ lemma wave_dx {u v : Fin d} {s : Direction d}
   have hdi : (fderiv ℝ (fun x => inner ℝ x s.unit - c * t) x') (EuclideanSpace.single v 1)
       =
       s.unit v := by
-    rw [fderiv_sub]
+    rw [fderiv_fun_sub]
     simp only [fderiv_fun_const, Pi.ofNat_apply, sub_zero]
     rw [fderiv_inner_apply]
     simp only [fderiv_id', ContinuousLinearMap.coe_id', id_eq]
@@ -130,7 +130,7 @@ lemma wave_dx2 {u v : Fin d} {s : Direction d}
       (s.unit u) ^ 2 • (f₀'' (inner ℝ x s.unit - c * t) 1) := by
     change (fderiv ℝ ((fun x' => f₀' x' (s.unit u)) ∘
         fun x' => (inner ℝ x' s.unit - c * t)) x) (EuclideanSpace.single u 1) = _
-    rw [fderiv_comp, fderiv_sub]
+    rw [fderiv_comp, fderiv_fun_sub]
     simp only [fderiv_fun_const, Pi.ofNat_apply, sub_zero, ContinuousLinearMap.coe_comp',
       Function.comp_apply]
     rw [fderiv_inner_apply]
@@ -143,7 +143,7 @@ lemma wave_dx2 {u v : Fin d} {s : Direction d}
     conv_lhs =>
       enter [1, 2, x']
       rw [ContinuousLinearMap.map_smul]
-    rw [ContinuousLinearMap.map_smul, fderiv_const_smul, pow_two]
+    rw [ContinuousLinearMap.map_smul, fderiv_fun_const_smul, pow_two]
     rw [HasFDerivAt.fderiv (h'' (inner ℝ x s.unit - c * t))]
     change s.unit u • s.unit u • (f₀'' (inner ℝ x s.unit - c * t) 1) = _
     rw [← smul_assoc, smul_eq_mul]
@@ -287,9 +287,9 @@ lemma wave_fderiv_inner_eq_inner_fderiv_proj {f₀ : ℝ → EuclideanSpace ℝ 
   change s.unit i * (fderiv ℝ (f₀ ∘ fun x => (inner ℝ x s.unit - c * t)) x) y i =
       inner ℝ y s.unit * (fderiv ℝ (f₀ ∘ fun x => (inner ℝ x s.unit - c * t)) x)
       (EuclideanSpace.single i 1) i
-  rw [fderiv_comp, fderiv_sub]
+  rw [fderiv_comp, fderiv_fun_sub]
   simp only [fderiv_fun_const, Pi.zero_apply, sub_zero, ContinuousLinearMap.coe_comp',
-    Function.comp_apply, differentiableAt_id', differentiableAt_const, fderiv_inner_apply,
+    Function.comp_apply, differentiableAt_fun_id, differentiableAt_const, fderiv_inner_apply,
     ContinuousLinearMap.zero_apply, inner_zero_right, fderiv_id', ContinuousLinearMap.coe_id',
     id_eq, zero_add]
   nth_rw 5 [PiLp.inner_apply]
