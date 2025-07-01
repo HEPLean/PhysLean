@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzGroup.Restricted
 import PhysLean.Relativity.Tensors.RealTensor.Velocity.Basic
-import PhysLean.Meta.Informal.SemiFormal
 /-!
 
 # Generalized Boosts

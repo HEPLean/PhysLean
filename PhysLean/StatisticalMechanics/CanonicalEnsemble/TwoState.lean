@@ -28,14 +28,14 @@ TODO "EVJNH" "Generalize the results for the two-state canonical ensemble so tha
 def twoState (E : ℝ) : CanonicalEnsemble (Fin 2) := fun | 0 => 0 | 1 => E
 
 lemma twoState_partitionFunction_apply_eq_one_add_exp (E : ℝ) (T : Temperature) :
-    (twoState E).partitionFunction T = 1 + exp (- β T * E) :=  by
+    (twoState E).partitionFunction T = 1 + exp (- β T * E) := by
   simp [partitionFunction, twoState]
 
 lemma twoState_partitionFunction_apply_eq_cosh (E : ℝ) (T : Temperature) :
     (twoState E).partitionFunction T = 2 * exp (- β T * E / 2) * cosh (β T * E / 2) := by
   rw [twoState_partitionFunction_apply_eq_one_add_exp, Real.cosh_eq]
   field_simp
-  simp [mul_add, ←  Real.exp_add, mul_assoc]
+  simp [mul_add, ← Real.exp_add, mul_assoc]
   field_simp
   simp [add_mul]
   exact Lean.Grind.CommRing.mul_comm (rexp (-(T.β * E))) 2
@@ -45,19 +45,19 @@ lemma twoState_partitionFunctionβ_eq (E : ℝ) :
   funext β
   simp [partitionFunctionβ, twoState, Real.cosh_eq]
   field_simp
-  simp [mul_add, ←  Real.exp_add, mul_assoc]
+  simp [mul_add, ← Real.exp_add, mul_assoc]
   field_simp
   simp [add_mul]
   exact Lean.Grind.CommRing.mul_comm (rexp (-(β * E))) 2
 
 lemma twoState_meanEnergy_eq (E : ℝ) (T : Temperature) :
-    (twoState E).meanEnergy T = E / 2 * (1 - tanh (β T * E / 2))  := by
+    (twoState E).meanEnergy T = E / 2 * (1 - tanh (β T * E / 2)) := by
   rw [meanEnergy_eq_logDeriv_partitionFunctionβ, twoState_partitionFunctionβ_eq]
   simp? [logDeriv] says simp only [logDeriv, neg_mul, Pi.div_apply]
   field_simp
   have h1 : deriv (fun β => 2 * rexp (-(β * E) / 2) * cosh (β * E / 2)) T.β
-      = 2 * (- E /2) * exp (-( T.β   * E) / 2) * cosh ( T.β  * E / 2) +
-        2 * (E /2) * exp (-( T.β  * E) / 2) * sinh ( T.β  * E / 2) := by
+      = 2 * (- E /2) * exp (-(T.β * E) / 2) * cosh (T.β * E / 2) +
+        2 * (E /2) * exp (-(T.β * E) / 2) * sinh (T.β * E / 2) := by
     rw [deriv_fun_mul (by fun_prop) (by fun_prop)]
     rw [deriv_const_mul _ (by fun_prop)]
     rw [_root_.deriv_exp (by fun_prop)]

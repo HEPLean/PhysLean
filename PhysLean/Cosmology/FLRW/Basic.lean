@@ -4,8 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Informal.SemiFormal
-import PhysLean.Meta.Informal.Basic
-import PhysLean.Meta.Linters.Sorry
 import PhysLean.SpaceAndTime.Space.Basic
 /-!
 
