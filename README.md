@@ -42,6 +42,9 @@ See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. 
 
 Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
 
+> [!NOTE]  
+> When making contributing to PhysLean it is much better to do it with small steps. This makes it easier for us to review, and allows you to get feedback sooner.
+
 
 ## Places in the project to start
 
