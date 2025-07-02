@@ -105,6 +105,7 @@ open MatrixGroups
 open complexLorentzTensor
 open Lorentz.SL2C in
 /-- The map `toComplex` is equivariant. -/
+@[sorryful]
 lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.Color}
     (v : ℝT(3, c)) (Λ : SL(2, ℂ)) :
     Λ • (toComplex v) = toComplex (Lorentz.SL2C.toLorentzGroup Λ • v) := by

@@ -273,6 +273,12 @@ lemma action_toCoord_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
   simp only [op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply, transpose_apply, smul_eq_mul,
     mul_comm]
 
+lemma action_toCoord_symm_eq_mulVec {d} (Λ : LorentzGroup d) (p : Fin 1 ⊕ Fin d → ℝ) :
+    Λ • toCoord.symm p = toCoord.symm (Λ.1 *ᵥ p):= by
+  apply toCoord_injective
+  rw [action_toCoord_eq_mulVec]
+  simp
+
 /-- Extract spatial components from a Lorentz vector,
     returning them as a vector in Euclidean space. -/
 abbrev spatialPart {d : ℕ} (v : Vector d) : EuclideanSpace ℝ (Fin d) :=
@@ -629,6 +635,12 @@ lemma isLorentz_iff_toMatrix_mem_lorentzGroup {d : ℕ} (f : Vector d →ₗ[ℝ
   rw [LinearMap.toMatrix_comp Vector.basis Vector.basis]
   simp [adjoint]
 
+
+lemma _root_.LorentzGroup.eq_of_action_vector_eq {d : ℕ}
+    {Λ Λ' : LorentzGroup d} (h : ∀ p : Vector d, Λ • p = Λ' • p) :
+    Λ = Λ' := by
+  apply LorentzGroup.eq_of_mulVec_eq
+  simpa [action_toCoord_symm_eq_mulVec] using fun x => h (toCoord.symm x)
 
 end Vector
 

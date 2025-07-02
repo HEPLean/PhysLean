@@ -18,6 +18,8 @@ namespace Contr
 
 variable {d : ℕ}
 
+local notation "⟪" ψ "," φ "⟫ₘ" => contrContrContractField (ψ ⊗ₜ φ)
+
 /-- The set of Lorentz vectors with norm 1. -/
 def NormOne (d : ℕ) : Set (Contr d) := fun v => ⟪v, v⟫ₘ = (1 : ℝ)
 
