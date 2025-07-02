@@ -176,27 +176,11 @@ lemma rotations_subset_restricted (d) : Rotations d ≤ LorentzGroup.restricted 
   · exact h.2
   · simp [IsOrthochronous, h.1]
 
-
-/-- A map from the restricted Lorentz group to rotations. -/
-def toRotation {d} (Λ : LorentzGroup.restricted d) : Rotations d :=
-  ⟨(toGeneralizedBoost Λ)⁻¹ * Λ, by
-  constructor
-  · simp only [toGeneralizedBoost]
-    rw [genearlizedBoost_inv]
-    rw [← toVector_timeComponent]
-    rw [toVector_mul]
-    rw [generalizedBoost_apply_fst]
-    simp
-  · refine mul_isProper_of_isProper_isProper ?_ Λ.2.1
-    rw [toGeneralizedBoost, genearlizedBoost_inv]
-    exact generalizedBoost_isProper _ _⟩
-
-@[fun_prop]
-lemma toRotation_continuous {d} :
-    Continuous (toRotation : LorentzGroup.restricted d → Rotations d) := by
-  apply Continuous.subtype_mk
-  change Continuous (fun Λ => (toGeneralizedBoost Λ)⁻¹ * Λ)
-  fun_prop
+@[simp]
+lemma toVector_rotation {d} (Λ : Rotations d) :
+    LorentzGroup.toVector Λ.1= Lorentz.Vector.basis (Sum.inl 0) := by
+  rw [LorentzGroup.toVector_eq_basis_iff_timeComponent_eq_one]
+  exact Λ.2.1
 
 end LorentzGroup
 

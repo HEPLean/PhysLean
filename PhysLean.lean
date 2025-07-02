@@ -214,7 +214,7 @@ import PhysLean.Relativity.LorentzGroup.Boosts.Basic
 import PhysLean.Relativity.LorentzGroup.Boosts.Generalized
 import PhysLean.Relativity.LorentzGroup.Orthochronous
 import PhysLean.Relativity.LorentzGroup.Proper
-import PhysLean.Relativity.LorentzGroup.Restricted
+import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 import PhysLean.Relativity.LorentzGroup.Rotations
 import PhysLean.Relativity.LorentzGroup.ToVector
 import PhysLean.Relativity.MinkowskiMatrix

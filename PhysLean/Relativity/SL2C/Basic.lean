@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.SL2C.SelfAdjoint
 import Mathlib.Analysis.Complex.Polynomial.Basic
-import PhysLean.Relativity.LorentzGroup.Restricted
+import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group
 
