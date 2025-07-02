@@ -216,6 +216,7 @@ import PhysLean.Relativity.LorentzGroup.Orthochronous
 import PhysLean.Relativity.LorentzGroup.Proper
 import PhysLean.Relativity.LorentzGroup.Restricted
 import PhysLean.Relativity.LorentzGroup.Rotations
+import PhysLean.Relativity.LorentzGroup.ToVector
 import PhysLean.Relativity.MinkowskiMatrix
 import PhysLean.Relativity.PauliMatrices.AsTensor
 import PhysLean.Relativity.PauliMatrices.Basic

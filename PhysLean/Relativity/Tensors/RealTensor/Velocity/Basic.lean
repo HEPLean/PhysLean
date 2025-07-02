@@ -113,6 +113,11 @@ noncomputable def zero : Velocity d := ⟨Vector.basis (Sum.inl 0),
 
 noncomputable instance : Zero (Velocity d) := ⟨zero⟩
 
+@[simp]
+lemma zero_timeComponent : (0 : Velocity d).1.timeComponent = 1 := by
+  change (Vector.basis (Sum.inl 0)).timeComponent = 1
+  simp
+
 /-- A continuous path from a velocity `u` to the zero velocity. -/
 noncomputable def pathFromZero (u : Velocity d) : Path zero u where
   toFun t := ⟨(√(1 + t ^ 2 * ‖u.1.spatialPart‖ ^ 2) - toCoord u.1 (Sum.inl 0) * t) •

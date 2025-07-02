@@ -108,7 +108,7 @@ instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   inv A := ⟨minkowskiMatrix.dual A.1, LorentzGroup.dual_mem A.2⟩
   inv_mul_cancel A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
 
-lemma inv_eq_dual (Λ : LorentzGroup d) :
+lemma LorentzGroup.inv_eq_dual (Λ : LorentzGroup d) :
     (Λ⁻¹ : LorentzGroup d) = minkowskiMatrix.dual Λ.1 := by
   rfl
 
@@ -336,8 +336,7 @@ def parity : LorentzGroup d := ⟨minkowskiMatrix, by
 -/
 
 lemma eq_of_mulVec_eq {Λ Λ' : LorentzGroup d}
-    (h : ∀ (x : Fin 1 ⊕ Fin d → ℝ), Λ.1 *ᵥ x = Λ'.1 *ᵥ x) :
-    Λ = Λ' := by
+    (h : ∀ (x : Fin 1 ⊕ Fin d → ℝ), Λ.1 *ᵥ x = Λ'.1 *ᵥ x) : Λ = Λ' := by
   apply Subtype.eq
   exact ext_of_mulVec_single fun i => h (Pi.single i 1)
 

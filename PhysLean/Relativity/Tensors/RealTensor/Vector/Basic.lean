@@ -186,6 +186,12 @@ lemma toCoord_fderiv {d : ℕ} (x : (Vector d)) :
   rw [ContinuousLinearEquiv.fderiv]
   rfl
 
+@[fun_prop]
+lemma toCoord_symm_differentiable {d : ℕ} :
+    Differentiable ℝ (toCoord.symm : (Fin 1 ⊕ Fin d → ℝ) → Vector d) := by
+  change Differentiable ℝ (toCoordContinuous.symm : (Fin 1 ⊕ Fin d → ℝ) → Vector d)
+  fun_prop
+
 /-- The coordinates of a Lorentz vector as a linear map. -/
 def toCoordFull {d : ℕ} : Vector d ≃ₗ[ℝ]
     (((j : Fin (Nat.succ 0)) → Fin ((realLorentzTensor d).repDim (![Color.up] j))) → ℝ) :=
@@ -278,6 +284,13 @@ lemma action_toCoord_symm_eq_mulVec {d} (Λ : LorentzGroup d) (p : Fin 1 ⊕ Fin
   apply toCoord_injective
   rw [action_toCoord_eq_mulVec]
   simp
+
+
+/-!
+
+## Spatial part
+
+-/
 
 /-- Extract spatial components from a Lorentz vector,
     returning them as a vector in Euclidean space. -/
@@ -500,6 +513,11 @@ lemma minkowskiProduct_self_eq_timeComponent_spatialPart {d : ℕ} (p : Vector d
   · rw [@RCLike.norm_sq_eq_def_ax]
     simp
   · exact real_inner_self_eq_norm_sq p.spatialPart
+
+lemma minkowskiProduct_self_le_timeComponent_sq {d : ℕ} (p : Vector d) :
+    ⟪p, p⟫ₘ ≤ p.timeComponent ^ 2 := by
+  rw [minkowskiProduct_self_eq_timeComponent_spatialPart]
+  simp
 
 @[simp]
 lemma minkowskiProduct_basis_left {d : ℕ} (μ : Fin 1 ⊕ Fin d) (p : Vector d) :
