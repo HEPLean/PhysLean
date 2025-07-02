@@ -6,6 +6,7 @@ Authors: Matteo Cipollina, Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import PhysLean.Relativity.Tensors.Elab
+import PhysLean.Relativity.Tensors.ComplexTensor.Basic
 /-!
 
 # Lorentz Vectors
@@ -352,6 +353,7 @@ def fromCoordFullContinuous {d : ℕ} :
     (((j : Fin (Nat.succ 0)) → Fin ((realLorentzTensor d).repDim (![Color.up] j))) → ℝ) ≃L[ℝ]
     Vector d :=
   LinearEquiv.toContinuousLinearEquiv toCoordFull.symm
+
 
 end Vector
 
