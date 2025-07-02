@@ -39,6 +39,13 @@ lemma ComponentIdx.congr_right {n : ℕ} {c : Fin n → S.C} (b : ComponentIdx c
   subst h
   rfl
 
+/-- Casting of a `ComponentIdx` through equivalent color maps. -/
+def ComponentIdx.cast {n m : ℕ} {c : Fin n → S.C}  {cm : Fin m → S.C}
+    (h : n = m) (hc : c  = cm ∘ Fin.cast h) (b : ComponentIdx c) :
+    ComponentIdx cm := fun j =>
+      Fin.cast (by simp [hc]) (b (Fin.cast h.symm j))
+
+
 /-!
 
 ## Pure tensors

@@ -6,6 +6,7 @@ Authors: Matteo Cipollina, Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import PhysLean.Relativity.Tensors.Elab
+import PhysLean.Relativity.Tensors.ComplexTensor.Basic
 /-!
 
 ## Metrics as real Lorentz tensors
@@ -627,6 +628,7 @@ lemma isLorentz_iff_toMatrix_mem_lorentzGroup {d : ℕ} (f : Vector d →ₗ[ℝ
     LinearMap.toMatrix_id_eq_basis_toMatrix, Basis.toMatrix_self]
   rw [LinearMap.toMatrix_comp Vector.basis Vector.basis]
   simp [adjoint]
+
 
 end Vector
 
