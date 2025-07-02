@@ -24,13 +24,14 @@ open Tensor
 open complexLorentzTensor
 
 /-- The map from colors of real Lorentz tensors to complex Lorentz tensors. -/
-def colorToComplex (c : realLorentzTensor.C) : complexLorentzTensor.Color :=
+def colorToComplex (c : realLorentzTensor.Color) : complexLorentzTensor.Color :=
   match c with
   | .up => .up
   | .down => .down
 
-def _root_.TensorSpecies.Tensor.ComponentIdx.complexify {n} {c : Fin n → realLorentzTensor.C}  :
-    ComponentIdx c ≃ ComponentIdx (S := complexLorentzTensor) (colorToComplex ∘ c) where
+def _root_.TensorSpecies.Tensor.ComponentIdx.complexify {n} {c : Fin n → realLorentzTensor.Color}  :
+    ComponentIdx (S := realLorentzTensor) c ≃
+      ComponentIdx (S := complexLorentzTensor) (colorToComplex ∘ c) where
   toFun i := fun j => Fin.cast (by
     simp
     generalize c j = cj
@@ -50,7 +51,7 @@ def _root_.TensorSpecies.Tensor.ComponentIdx.complexify {n} {c : Fin n → realL
 
 /-- The semilinear map from real Lorentz tensors to complex Lorentz tensors,
   defined through basis. -/
-noncomputable def toComplex {n} {c : Fin n → realLorentzTensor.C} :
+noncomputable def toComplex {n} {c : Fin n → realLorentzTensor.Color} :
     ℝT(3, c) →ₛₗ[Complex.ofRealHom] ℂT(colorToComplex ∘ c) where
   toFun v := ∑ i, (Tensor.basis (S := realLorentzTensor) c).repr v i  •
     Tensor.basis (S := complexLorentzTensor) (colorToComplex ∘ c) i.complexify
@@ -67,16 +68,16 @@ noncomputable def toComplex {n} {c : Fin n → realLorentzTensor.C} :
     funext i
     simp [add_smul]
 
-lemma toComplex_eq_sum_basis {n} (c : Fin n → realLorentzTensor.C) (v : ℝT(3, c)) :
+lemma toComplex_eq_sum_basis {n} (c : Fin n → realLorentzTensor.Color) (v : ℝT(3, c)) :
     toComplex v = ∑ i, (Tensor.basis (S := realLorentzTensor) c).repr v
       (ComponentIdx.complexify.symm i)  •
       Tensor.basis (S := complexLorentzTensor) (colorToComplex ∘ c) i := by
-  simp only [C_eq_color, toComplex, LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply]
+  simp only [toComplex, LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply]
   rw [← Equiv.sum_comp ComponentIdx.complexify]
   rfl
 
 @[simp]
-lemma toComplex_eq_zero_iff {n} (c : Fin n → realLorentzTensor.C) (v : ℝT(3, c)) :
+lemma toComplex_eq_zero_iff {n} (c : Fin n → realLorentzTensor.Color) (v : ℝT(3, c)) :
     toComplex v = 0 ↔ v = 0 := by
   rw [toComplex_eq_sum_basis]
   have h1 : LinearIndependent ℂ
@@ -95,7 +96,7 @@ lemma toComplex_eq_zero_iff {n} (c : Fin n → realLorentzTensor.C) (v : ℝT(3,
     simp
 
 /-- The map `toComplex` is injective. -/
-lemma toComplex_injective {n} (c : Fin n → realLorentzTensor.C) :
+lemma toComplex_injective {n} (c : Fin n → realLorentzTensor.Color) :
     Function.Injective (toComplex (c := c)) :=
   (injective_iff_map_eq_zero' toComplex).mpr (fun v => toComplex_eq_zero_iff c v)
 
@@ -104,7 +105,7 @@ open MatrixGroups
 open complexLorentzTensor
 open Lorentz.SL2C in
 /-- The map `toComplex` is equivariant. -/
-lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.C}
+lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.Color}
     (v : ℝT(3, c)) (Λ : SL(2, ℂ)) :
     Λ • (toComplex v) = toComplex (Lorentz.SL2C.toLorentzGroup Λ • v) := by
   sorry

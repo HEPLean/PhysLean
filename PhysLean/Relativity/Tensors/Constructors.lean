@@ -18,7 +18,7 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
 
 namespace Tensor
 
@@ -29,7 +29,7 @@ namespace Tensor
 -/
 
 /-- The equivalence between `S.FD.obj {as := c}` and `Pure S ![c]`. -/
-noncomputable def Pure.fromSingleP {c : S.C} : S.FD.obj {as := c} ≃ₗ[k] Pure S ![c] where
+noncomputable def Pure.fromSingleP {c : C} : S.FD.obj {as := c} ≃ₗ[k] Pure S ![c] where
   toFun x := fun | 0 => x
   invFun x := x 0
   map_add' x y := by
@@ -47,7 +47,7 @@ noncomputable def Pure.fromSingleP {c : S.C} : S.FD.obj {as := c} ≃ₗ[k] Pure
     rfl
 
 /-- The equivalence between `S.FD.obj {as := c}` and `S.Tensor ![c]`. -/
-noncomputable def fromSingleT {c : S.C} : S.FD.obj {as := c} ≃ₗ[k] S.Tensor ![c] where
+noncomputable def fromSingleT {c : C} : S.FD.obj {as := c} ≃ₗ[k] S.Tensor ![c] where
   toFun x := (OverColor.forgetLiftAppCon S.FD c).symm.hom x
   invFun x := (OverColor.forgetLiftAppCon S.FD c).hom x
   map_add' x y := by
@@ -65,7 +65,7 @@ noncomputable def fromSingleT {c : S.C} : S.FD.obj {as := c} ≃ₗ[k] S.Tensor 
     intro x
     simp
 
-lemma fromSingleT_symm_pure {c : S.C} (p : Pure S ![c]) :
+lemma fromSingleT_symm_pure {c : C} (p : Pure S ![c]) :
     fromSingleT.symm p.toTensor = Pure.fromSingleP.symm p := by
   simp [fromSingleT]
   change (forgetLiftApp S.FD c).hom.hom _ = _
@@ -81,7 +81,7 @@ lemma fromSingleT_symm_pure {c : S.C} (p : Pure S ![c]) :
   ext
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.val_eq_zero]
 
-lemma fromSingleT_eq_pureT {c : S.C} (x : S.FD.obj {as := c}) :
+lemma fromSingleT_eq_pureT {c : C} (x : S.FD.obj {as := c}) :
     fromSingleT x = Pure.toTensor (fun 0 => x : Pure S ![c]) := by
   change _ = Pure.toTensor (Pure.fromSingleP x)
   obtain ⟨p, rfl⟩ := Pure.fromSingleP.symm.surjective x
@@ -89,7 +89,7 @@ lemma fromSingleT_eq_pureT {c : S.C} (x : S.FD.obj {as := c}) :
   rw [← fromSingleT_symm_pure]
   simp
 
-lemma actionT_fromSingleT {c : S.C} (x : S.FD.obj {as := c}) (g : G) :
+lemma actionT_fromSingleT {c : C} (x : S.FD.obj {as := c}) (g : G) :
     g • fromSingleT x = fromSingleT ((S.FD.obj {as := c}).ρ g x) := by
   rw [fromSingleT_eq_pureT, actionT_pure, fromSingleT_eq_pureT]
   congr
@@ -97,8 +97,8 @@ lemma actionT_fromSingleT {c : S.C} (x : S.FD.obj {as := c}) (g : G) :
   fin_cases x
   rfl
 
-lemma fromSingleT_map {c c1 : S.C}
-    (h : ({as := c} : Discrete S.C) = {as := c1}) (x : S.FD.obj {as := c}) :
+lemma fromSingleT_map {c c1 : C}
+    (h : ({as := c} : Discrete C) = {as := c1}) (x : S.FD.obj {as := c}) :
     fromSingleT (S.FD.map (eqToHom h) x) =
     permT id (by simp at h; simp [h]) (fromSingleT x) := by
   rw [fromSingleT_eq_pureT, fromSingleT_eq_pureT, permT_pure]
@@ -107,7 +107,7 @@ lemma fromSingleT_map {c c1 : S.C}
   fin_cases i
   rfl
 
-lemma contrT_fromSingleT_fromSingleT {c : S.C} (x : S.FD.obj {as := c})
+lemma contrT_fromSingleT_fromSingleT {c : C} (x : S.FD.obj {as := c})
     (y : S.FD.obj {as := S.τ c}) :
     contrT 0 0 1 (by simp; rfl) (prodT (fromSingleT x) (fromSingleT y)) =
     (S.contr.app (Discrete.mk (c))) (x ⊗ₜ[k] y) • (Pure.toTensor default) := by
@@ -151,25 +151,25 @@ open TensorProduct
 /-- The construction of a tensor with two indices from the tensor product
   `(S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V ` defined
   categorically. -/
-noncomputable def fromPairT {c1 c2 : S.C} :
+noncomputable def fromPairT {c1 c2 : C} :
     (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V →ₗ[k] S.Tensor ![c1, c2] where
   toFun x :=
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl))
-    (TensorProduct.lift prodT (TensorProduct.map (fromSingleT (c := c1))
-      (fromSingleT (c := c2)) (x) : S.Tensor ![c1] ⊗[k] S.Tensor ![c2]))
+    (TensorProduct.lift prodT (TensorProduct.map (fromSingleT (S := S) (c := c1))
+      (fromSingleT (S := S) (c := c2)) (x) : S.Tensor ![c1] ⊗[k] S.Tensor ![c2]))
   map_add' x y := by
     simp
   map_smul' r x := by
     simp
 
-lemma fromPairT_tmul {c1 c2 : S.C} (x : S.FD.obj (Discrete.mk c1))
+lemma fromPairT_tmul {c1 c2 : C} (x : S.FD.obj (Discrete.mk c1))
     (y : S.FD.obj (Discrete.mk c2)) :
     fromPairT (x ⊗ₜ[k] y) =
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl))
     (prodT (fromSingleT x) (fromSingleT y)) := by
   rfl
 
-lemma actionT_fromPairT {c1 c2 : S.C}
+lemma actionT_fromPairT {c1 c2 : C}
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V)
     (g : G) :
     g • fromPairT x = fromPairT (TensorProduct.map ((S.FD.obj (Discrete.mk c1)).ρ g)
@@ -188,7 +188,7 @@ lemma actionT_fromPairT {c1 c2 : S.C}
   · intro x y hx hy
     simp [P, hx, hy]
 
-lemma fromPairT_map_right {c1 c2 c2' : S.C} (h :c2 = c2')
+lemma fromPairT_map_right {c1 c2 c2' : C} (h :c2 = c2')
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     fromPairT (TensorProduct.map LinearMap.id (S.FD.map (eqToHom (by rw [h]))).hom.hom' x) =
     permT id (by simp; intro i; fin_cases i <;> simp [h])
@@ -213,7 +213,7 @@ lemma fromPairT_map_right {c1 c2 c2' : S.C} (h :c2 = c2')
   · intro x y hx hy
     simp [P, hx, hy]
 
-lemma fromPairT_comm {c1 c2 : S.C}
+lemma fromPairT_comm {c1 c2 : C}
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     fromPairT (TensorProduct.comm k _ _ x) =
     permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> simp))
@@ -245,7 +245,7 @@ lemma fromPairT_comm {c1 c2 : S.C}
 -/
 
 /-- The contraction of tensors with one index with one with two indices defined categorically. -/
-noncomputable def fromSingleTContrFromPairT {c c2 : S.C}
+noncomputable def fromSingleTContrFromPairT {c c2 : C}
     (x : (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     S.Tensor ![c2] :=
@@ -258,7 +258,7 @@ noncomputable def fromSingleTContrFromPairT {c c2 : S.C}
   let T5 : V3 := (λ_ V3).hom.hom T4
   fromSingleT T5
 
-lemma fromSingleTContrFromPairT_tmul {c c2 : S.C}
+lemma fromSingleTContrFromPairT_tmul {c c2 : C}
     (x : S.FD.obj (Discrete.mk c))
     (y1 : (S.FD.obj (Discrete.mk (S.τ c))).V)
     (y2 : (S.FD.obj (Discrete.mk c2)).V) :
@@ -276,7 +276,7 @@ lemma fromSingleTContrFromPairT_tmul {c c2 : S.C}
     change (S.contr.app (Discrete.mk (c))) (x ⊗ₜ[k] y1) • y2
   simp
 
-lemma fromSingleT_contr_fromPairT_tmul {c c2 : S.C}
+lemma fromSingleT_contr_fromPairT_tmul {c c2 : C}
     (x : S.FD.obj (Discrete.mk c))
     (y1 : (S.FD.obj (Discrete.mk (S.τ c))).V)
     (y2 : (S.FD.obj (Discrete.mk c2)).V) :
@@ -341,7 +341,7 @@ lemma fromSingleT_contr_fromPairT_tmul {c c2 : S.C}
       simp
     · rfl
 
-lemma contrT_fromSingleT_fromPairT {c c2 : S.C}
+lemma contrT_fromSingleT_fromPairT {c c2 : C}
     (x : S.FD.obj (Discrete.mk c))
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     contrT 1 0 1 (by simp; rfl)
@@ -369,7 +369,7 @@ lemma contrT_fromSingleT_fromPairT {c c2 : S.C}
 -/
 
 /-- The contraction of tensors with two indices defined categorically. -/
-noncomputable def fromPairTContr {c c1 c2 : S.C}
+noncomputable def fromPairTContr {c c1 c2 : C}
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     S.Tensor ![c1, c2] :=
@@ -384,7 +384,7 @@ noncomputable def fromPairTContr {c c1 c2 : S.C}
   let T5 : V1 ⊗[k] V3 := (V1 ◁ (λ_ V3).hom).hom T4
   fromPairT T5
 
-lemma fromPairTContr_tmul_tmul {c c1 c2 : S.C}
+lemma fromPairTContr_tmul_tmul {c c1 c2 : C}
     (x1 : S.FD.obj (Discrete.mk c1))
     (x2 : S.FD.obj (Discrete.mk c))
     (y1 : S.FD.obj (Discrete.mk (S.τ c)))
@@ -407,7 +407,7 @@ lemma fromPairTContr_tmul_tmul {c c1 c2 : S.C}
   simp [tmul_smul]
 
 set_option maxHeartbeats 400000 in
-lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : S.C)
+lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : C)
     (x1 : (S.FD.obj (Discrete.mk c1)).V)
     (x2 : (S.FD.obj (Discrete.mk c)).V)
     (y1 : (S.FD.obj (Discrete.mk (S.τ c))).V)
@@ -462,7 +462,7 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : S.C)
   simp only [permT_permT, map_smul]
 
 set_option maxHeartbeats 400000 in
-lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : S.C)
+lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : C)
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     contrT 2 1 2 (by simp; rfl)
@@ -497,7 +497,7 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : S.C)
     rw [← hx, ← hy]
     simp
 
-lemma fromPairT_basis_repr {c c1 : S.C}
+lemma fromPairT_basis_repr {c c1 : C}
     (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] (S.FD.obj (Discrete.mk c1)).V)
     (b : ComponentIdx ![c, c1]) :
     (basis ![c, c1]).repr (fromPairT x) b =
@@ -541,7 +541,7 @@ lemma fromPairT_basis_repr {c c1 : S.C}
   · intro x y hx hy
     simp_all [P]
 
-lemma fromPairT_apply_basis_repr {c c1 : S.C}
+lemma fromPairT_apply_basis_repr {c c1 : C}
     (b0 : Fin (S.repDim c)) (b1 : Fin (S.repDim c1)) :
     fromPairT (S.basis c b0 ⊗ₜ[k] S.basis c1 b1) =
     Tensor.basis ![c, c1] (fun | 0 => b0 | 1 => b1) := by
@@ -568,13 +568,13 @@ lemma fromPairT_apply_basis_repr {c c1 : S.C}
 -/
 
 /-- A constant two tensor (e.g. metric and unit). -/
-noncomputable def fromConstPair {c1 c2 : S.C}
+noncomputable def fromConstPair {c1 c2 : C}
       (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
       S.Tensor ![c1, c2] := fromPairT (v.hom (1 : k))
 
 /-- Tensors formed by `fromConstPair` are invariant under the group action. -/
 @[simp]
-lemma actionT_fromConstPair {c1 c2 : S.C}
+lemma actionT_fromConstPair {c1 c2 : C}
     (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2))
     (g : G) : g • fromConstPair v = fromConstPair v := by
   rw [fromConstPair, actionT_fromPairT]
@@ -584,10 +584,10 @@ lemma actionT_fromConstPair {c1 c2 : S.C}
   simp
 
 @[simp]
-lemma fromConstPair_whiskerLeft {c1 c2 c2' : S.C} (h : c2 = c2')
+lemma fromConstPair_whiskerLeft {c1 c2 c2' : C} (h : c2 = c2')
     (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
     fromConstPair (v ≫
-    ((S.FD.obj ({ as := c1 } : Discrete S.C) ◁ S.FD.map (Discrete.eqToHom (h))))) =
+    ((S.FD.obj ({ as := c1 } : Discrete C) ◁ S.FD.map (Discrete.eqToHom (h))))) =
     permT id (And.intro (Function.bijective_id) (by simp [h])) (fromConstPair v) := by
   rw [fromConstPair]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.comp_hom, ModuleCat.hom_comp,
@@ -597,7 +597,7 @@ lemma fromConstPair_whiskerLeft {c1 c2 c2' : S.C} (h : c2 = c2')
   rfl
 
 @[simp]
-lemma fromConstPair_braid {c1 c2 : S.C}
+lemma fromConstPair_braid {c1 c2 : C}
     (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2)) :
     fromConstPair (v ≫ (β_ _ _).hom) =
     permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> simp))
@@ -618,13 +618,13 @@ lemma fromConstPair_braid {c1 c2 : S.C}
 /-- The construction of a tensor with two indices from the tensor product
   `(S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V ` defined
   categorically. -/
-noncomputable def fromTripleT {c1 c2 c3 : S.C} :
+noncomputable def fromTripleT {c1 c2 c3 : C} :
     (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
     ⊗[k] (S.FD.obj (Discrete.mk c3)).V →ₗ[k] S.Tensor ![c1, c2, c3] where
   toFun x :=
     let x1 : S.Tensor ![c1] ⊗[k] S.Tensor ![c2] ⊗[k] S.Tensor ![c3] :=
-      TensorProduct.map (fromSingleT (c := c1))
-        (TensorProduct.map (fromSingleT (c := c2)) (fromSingleT (c := c3))) x
+      TensorProduct.map (fromSingleT (S := S) (c := c1))
+        (TensorProduct.map (fromSingleT (S := S) (c := c2)) (fromSingleT (S := S) (c := c3))) x
     let x2 :=
       TensorProduct.lift prodT (TensorProduct.map LinearMap.id (TensorProduct.lift prodT) x1)
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl)) x2
@@ -633,14 +633,14 @@ noncomputable def fromTripleT {c1 c2 c3 : S.C} :
   map_smul' r x := by
     simp
 
-lemma fromTripleT_tmul {c1 c2 c3 : S.C} (x : S.FD.obj (Discrete.mk c1))
+lemma fromTripleT_tmul {c1 c2 c3 : C} (x : S.FD.obj (Discrete.mk c1))
     (y : S.FD.obj (Discrete.mk c2)) (z : S.FD.obj (Discrete.mk c3)) :
     fromTripleT (x ⊗ₜ[k] y ⊗ₜ[k] z) =
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl))
       (prodT (fromSingleT x) (prodT (fromSingleT y) (fromSingleT z))) := by
   rfl
 
-lemma actionT_fromTripleT {c1 c2 c3 : S.C}
+lemma actionT_fromTripleT {c1 c2 c3 : C}
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
       ⊗[k] (S.FD.obj (Discrete.mk c3)).V) (g : G) :
     g • fromTripleT x = fromTripleT (TensorProduct.map ((S.FD.obj (Discrete.mk c1)).ρ g)
@@ -676,7 +676,7 @@ lemma actionT_fromTripleT {c1 c2 c3 : S.C}
   · intro x y hx hy
     simp [P, hx, hy]
 
-lemma fromTripleT_basis_repr {c c1 c2 : S.C}
+lemma fromTripleT_basis_repr {c c1 c2 : C}
     (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] (S.FD.obj (Discrete.mk c1)).V
       ⊗[k] (S.FD.obj (Discrete.mk c2)).V)
     (b : ComponentIdx ![c, c1, c2]) :
@@ -751,7 +751,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : S.C}
   · intro x y hx hy
     simp_all [P]
 
-lemma fromTripleT_apply_basis {c c1 c2 : S.C}
+lemma fromTripleT_apply_basis {c c1 c2 : C}
     (b0 : Fin (S.repDim c)) (b1 : Fin (S.repDim c1))
     (b2 : Fin (S.repDim c2)) :
     fromTripleT (S.basis c b0 ⊗ₜ[k] S.basis c1 b1 ⊗ₜ[k] S.basis c2 b2) =
@@ -784,14 +784,14 @@ lemma fromTripleT_apply_basis {c c1 c2 : S.C}
 -/
 
 /-- A constant three tensor (e.g. the Pauli matrices). -/
-noncomputable def fromConstTriple {c1 c2 c3 : S.C}
+noncomputable def fromConstTriple {c1 c2 c3 : C}
     (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
       S.FD.obj (Discrete.mk c3)) :
   S.Tensor ![c1, c2, c3] := fromTripleT (v.hom (1 : k))
 
 /-- Tensors formed by `fromConstPair` are invariant under the group action. -/
 @[simp]
-lemma actionT_fromConstTriple {c1 c2 c3 : S.C}
+lemma actionT_fromConstTriple {c1 c2 c3 : C}
     (v : 𝟙_ (Rep k G) ⟶ S.FD.obj (Discrete.mk c1) ⊗ S.FD.obj (Discrete.mk c2) ⊗
       S.FD.obj (Discrete.mk c3))
     (g : G) : g • fromConstTriple v = fromConstTriple v := by
@@ -808,7 +808,7 @@ lemma actionT_fromConstTriple {c1 c2 c3 : S.C}
 -/
 
 /-- A general constant node. -/
-noncomputable def fromConst {n : ℕ} {c : Fin n → S.C}
+noncomputable def fromConst {n : ℕ} {c : Fin n → C}
     (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c)) :
     Tensor S c := (T.hom (1 : k))
 
@@ -822,7 +822,7 @@ Tensors constructed from morphisms are invariant under the group action.
 
 /-- Tensors formed by `fromConst` are invariant under the group action. -/
 @[simp]
-lemma actionT_fromConst {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c))
+lemma actionT_fromConst {n : ℕ} {c : Fin n → C} (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c))
     (g : G) : g • fromConst T = fromConst T:= by
   simp only [actionT_eq]
   change ((T.hom ≫ ModuleCat.ofHom ((S.F.obj _).ρ g))) _ = _

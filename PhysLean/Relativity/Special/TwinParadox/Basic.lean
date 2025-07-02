@@ -123,7 +123,7 @@ lemma example1_properTimeTwinA : example1.properTimeTwinA = 15 := by
 
 @[simp]
 lemma example1_properTimeTwinB : example1.properTimeTwinB = 9 := by
-  simp only [properTimeTwinB, properTime, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one,
+  simp only [properTimeTwinB, properTime, Nat.succ_eq_add_one,
     Nat.reduceAdd, example1, sub_zero, minkowskiProduct_toCoord, Fin.isValue,
     LinearEquiv.apply_symm_apply, Fin.sum_univ_three, mul_zero, add_zero, map_sub,
     LinearMap.sub_apply, Finset.sum_const_zero, zero_mul]

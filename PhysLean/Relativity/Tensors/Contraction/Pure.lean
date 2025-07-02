@@ -17,7 +17,7 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
 
 namespace Tensor
 
@@ -35,7 +35,7 @@ namespace Pure
 
 -/
 
-variable {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+variable {n : ℕ} {c : Fin (n + 1 + 1) → C}
 
 /-- The embedding of `Fin n` into `Fin (n + 1 + 1)` which leaves a hole
   at `i` and `j`. -/
@@ -200,7 +200,7 @@ lemma dropPairEmb_symm (i j : Fin (n + 1 + 1)) :
   simp [Finset.pair_comm]
 
 @[simp, nolint simpVarHead]
-lemma permCond_dropPairEmb_symm {c : Fin (n + 1 + 1) → S.C} (i j : Fin (n + 1 + 1))
+lemma permCond_dropPairEmb_symm {c : Fin (n + 1 + 1) → C} (i j : Fin (n + 1 + 1))
     (k : Fin n) : c (dropPairEmb i j k) = c (dropPairEmb j i k) := by
   rw [dropPairEmb_symm]
 
@@ -370,7 +370,8 @@ lemma dropPairEmb_comm (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1
     ⟨⟨dropPairEmb i1 j1 ∘ dropPairEmb i2 j2, by
       apply Function.Injective.comp
       exact dropPairEmb_injective i1 j1
-      exact dropPairEmb_injective _ _⟩, by simp⟩
+      exact dropPairEmb_injective _ _⟩, by simp only [Function.Embedding.coeFn_mk,
+        Function.comp_apply, dropPairEmb_leq_iff_leq, implies_true]⟩
   let fr : Fin n ↪o Fin (n + 1 + 1 + 1 + 1) :=
     ⟨⟨dropPairEmb i2' j2' ∘ dropPairEmb
       (dropPairEmbPre i2' j2' hi2j2' i1 (by simp [i2', j2']))
@@ -378,7 +379,8 @@ lemma dropPairEmb_comm (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1
       by
       apply Function.Injective.comp
       exact dropPairEmb_injective _ _
-      exact dropPairEmb_injective _ _⟩, by simp⟩
+      exact dropPairEmb_injective _ _⟩, by simp only [Function.Embedding.coeFn_mk,
+        Function.comp_apply, dropPairEmb_leq_iff_leq, implies_true]⟩
   have h : fl = fr := by
     rw [← OrderEmbedding.range_inj]
     simp only [RelEmbedding.coe_mk, Function.Embedding.coeFn_mk, Set.range_comp,
@@ -392,7 +394,9 @@ lemma dropPairEmb_comm (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1
     simp [hij2]
     simp [hij1]
   ext1 a
-  simpa [fl, fr] using congrFun (congrArg (fun x => x.toFun) h) a
+  have h' := congrFun (congrArg (fun x => x.toFun) h) a
+  dsimp [fl, fr] at h'
+  exact h'
 
 lemma dropPairEmb_comm_apply (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1))
     (hij1 : i1 ≠ j1) (hij2 : i2 ≠ j2) (m : Fin n) :
@@ -409,7 +413,7 @@ lemma dropPairEmb_comm_apply (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n +
   rw [dropPairEmb_comm i1 j1 i2 j2 hij1 hij2]
   rfl
 
-lemma permCond_dropPairEmb_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
+lemma permCond_dropPairEmb_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → C}
     (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1))
     (hij1 : i1 ≠ j1) (hij2 : i2 ≠ j2) :
     let i2' := (dropPairEmb i1 j1 i2);
@@ -472,8 +476,8 @@ lemma dropPairOfMap_bijective {n n1 : ℕ} (i j : Fin (n1 + 1 + 1)) (hij : i ≠
   · apply dropPairOfMap_injective
   · apply dropPairOfMap_surjective
 
-lemma permCond_dropPairOfMap {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    {c1 : Fin (n1 + 1 + 1) → S.C}
+lemma permCond_dropPairOfMap {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
+    {c1 : Fin (n1 + 1 + 1) → C}
     (i j : Fin (n1 + 1 + 1)) (hij : i ≠ j)
     (σ : Fin (n1 + 1 + 1) → Fin (n + 1 + 1)) (hσ : PermCond c c1 σ) :
     PermCond (c ∘ dropPairEmb (σ i) (σ j))
@@ -496,7 +500,7 @@ lemma dropPairOfMap_id { n1 : ℕ} (i j : Fin (n1 + 1 + 1)) (hij : i ≠ j) :
 -/
 
 set_option linter.unusedVariables false in
-/-- Given `i j : Fin (n + 1 + 1)`, `c : Fin (n + 1 + 1) → S.C` and a pure tensor `p : Pure S c`,
+/-- Given `i j : Fin (n + 1 + 1)`, `c : Fin (n + 1 + 1) → C` and a pure tensor `p : Pure S c`,
   `dropPair i j _ p` is the tensor formed by dropping the `i`th and `j`th parts of `p`. -/
 @[nolint unusedArguments]
 def dropPair (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c) :
@@ -504,7 +508,7 @@ def dropPair (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c) :
     fun m => p (dropPairEmb i j m)
 
 @[simp]
-lemma dropPair_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma dropPair_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c) (g : G) :
     dropPair i j hij (g • p) = g • dropPair i j hij p := by
   ext m
@@ -519,7 +523,7 @@ lemma dropPair_symm (i j : Fin (n + 1 + 1)) (hij : i ≠ j)
   refine (congr_right _ _ _ ?_).symm
   rw [dropPairEmb_symm]
 
-lemma dropPair_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
+lemma dropPair_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → C}
     (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1))
     (hij1 : i1 ≠ j1) (hij2 : i2 ≠ j2) (p : Pure S c) :
     let i2' := (dropPairEmb i1 j1 i2);
@@ -538,7 +542,7 @@ lemma dropPair_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
   · simp [hij2]
 
 @[simp]
-lemma dropPair_update_fst {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → S.C}
+lemma dropPair_update_fst {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c)
     (x : S.FD.obj (Discrete.mk (c i))) :
     dropPair i j hij (p.update i x) = dropPair i j hij p := by
@@ -548,7 +552,7 @@ lemma dropPair_update_fst {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : F
   exact Ne.symm (fst_neq_dropPairEmb_pre i j m)
 
 @[simp]
-lemma dropPair_update_snd {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → S.C}
+lemma dropPair_update_snd {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c)
     (x : S.FD.obj (Discrete.mk (c j))) :
     dropPair i j hij (p.update j x) = dropPair i j hij p := by
@@ -558,7 +562,7 @@ lemma dropPair_update_snd {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : F
 
 @[simp]
 lemma dropPair_update_dropPairEmb {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))]
-    {c : Fin (n + 1 + 1) → S.C}
+    {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j) (p : Pure S c)
     (m : Fin n)
     (x : S.FD.obj (Discrete.mk (c (dropPairEmb i j m)))) :
@@ -577,8 +581,8 @@ lemma dropPair_update_dropPairEmb {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))
 TODO "63B7X" "Prove lemmas relating to the commutation rules of `dropPair` and `prodP`."
 
 @[simp]
-lemma dropPair_permP {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    {c1 : Fin (n1 + 1 + 1) → S.C} (i j : Fin (n1 + 1 + 1)) (hij : i ≠ j)
+lemma dropPair_permP {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
+    {c1 : Fin (n1 + 1 + 1) → C} (i j : Fin (n1 + 1 + 1)) (hij : i ≠ j)
     (σ : Fin (n1 + 1 + 1) → Fin (n + 1 + 1)) (hσ : PermCond c c1 σ) (p : Pure S c) :
     dropPair i j hij (permP σ hσ p) =
     permP (dropPairOfMap i j hij σ hσ.1) (permCond_dropPairOfMap i j hij σ hσ)
@@ -599,13 +603,13 @@ lemma dropPair_permP {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
 /-- Given a pure tensor `p : Pure S c` and a `i j : Fin n`
   corresponding to dual colors in `c`, `contrPCoeff i j _ p` is the
   element of the underlying ring `k` formed by contracting `p i` and `p j`. -/
-noncomputable def contrPCoeff {n : ℕ} {c : Fin n → S.C}
+noncomputable def contrPCoeff {n : ℕ} {c : Fin n → C}
     (i j : Fin n) (hij : i ≠ j ∧ S.τ (c i) = c j) (p : Pure S c) : k :=
     (S.contr.app (Discrete.mk (c i))) (p i ⊗ₜ ((S.FD.map (eqToHom (by simp [hij]))) (p j)))
 
 @[simp]
-lemma contrPCoeff_permP {n n1 : ℕ} {c : Fin n → S.C}
-    {c1 : Fin n1 → S.C} (i j : Fin n1) (hij : i ≠ j ∧ S.τ (c1 i) = c1 j)
+lemma contrPCoeff_permP {n n1 : ℕ} {c : Fin n → C}
+    {c1 : Fin n1 → C} (i j : Fin n1) (hij : i ≠ j ∧ S.τ (c1 i) = c1 j)
     (σ : Fin n1 → Fin n) (hσ : PermCond c c1 σ) (p : Pure S c) :
     contrPCoeff i j hij (permP σ hσ p) =
     contrPCoeff (σ i) (σ j) (by simp [hσ.1.injective.eq_iff, hij, hσ.2]) p := by
@@ -625,7 +629,7 @@ lemma contrPCoeff_permP {n n1 : ℕ} {c : Fin n → S.C}
 
 @[simp]
 lemma contrPCoeff_update_dropPairEmb {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))]
-    {c : Fin (n + 1 + 1) → S.C}
+    {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j) (m : Fin n)
     (p : Pure S c) (x : S.FD.obj (Discrete.mk (c (dropPairEmb i j m)))) :
     contrPCoeff i j hij (p.update (dropPairEmb i j m) x) =
@@ -636,7 +640,7 @@ lemma contrPCoeff_update_dropPairEmb {n : ℕ} [inst : DecidableEq (Fin (n + 1 +
   · simp [update]
 
 @[simp]
-lemma contrPCoeff_update_fst_add {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → S.C}
+lemma contrPCoeff_update_fst_add {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → C}
     (i j : Fin n) (hij : i ≠ j ∧ S.τ (c i) = c j)
     (p : Pure S c) (x y : S.FD.obj (Discrete.mk (c i))) :
     contrPCoeff i j hij (p.update i (x + y)) =
@@ -646,7 +650,7 @@ lemma contrPCoeff_update_fst_add {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin
   simp [Function.update_of_ne (Ne.symm hij.1), contrPCoeff, update, TensorProduct.add_tmul, map_add]
 
 @[simp]
-lemma contrPCoeff_update_snd_add {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → S.C}
+lemma contrPCoeff_update_snd_add {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → C}
     (i j : Fin n) (hij : i ≠ j ∧ S.τ (c i) = c j)
     (p : Pure S c) (x y : S.FD.obj (Discrete.mk (c j))) :
     contrPCoeff i j hij (p.update j (x + y)) =
@@ -665,7 +669,7 @@ lemma contrPCoeff_update_snd_add {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin
   rfl
 
 @[simp]
-lemma contrPCoeff_update_fst_smul {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → S.C}
+lemma contrPCoeff_update_fst_smul {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → C}
     (i j : Fin n) (hij : i ≠ j ∧ S.τ (c i) = c j)
     (p : Pure S c) (r : k) (x : S.FD.obj (Discrete.mk (c i))) :
     contrPCoeff i j hij (p.update i (r • x)) =
@@ -681,7 +685,7 @@ lemma contrPCoeff_update_fst_smul {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fi
   rw [Function.update_of_ne (Ne.symm hij.1), Function.update_of_ne (Ne.symm hij.1)]
 
 @[simp]
-lemma contrPCoeff_update_snd_smul {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → S.C}
+lemma contrPCoeff_update_snd_smul {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fin n → C}
     (i j : Fin n) (hij : i ≠ j ∧ S.τ (c i) = c j)
     (p : Pure S c) (r : k) (x : S.FD.obj (Discrete.mk (c j))) :
     contrPCoeff i j hij (p.update j (r • x)) =
@@ -697,14 +701,14 @@ lemma contrPCoeff_update_snd_smul {n : ℕ} [inst : DecidableEq (Fin n)] {c : Fi
   simp only [Monoidal.tensorUnit_obj, map_smul, TensorProduct.tmul_smul, smul_eq_mul]
   rfl
 
-lemma contrPCoeff_dropPair {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma contrPCoeff_dropPair {n : ℕ} {c : Fin (n + 1 + 1) → C}
     (a b : Fin (n + 1 + 1)) (hab : a ≠ b)
     (i j : Fin n) (hij : i ≠ j ∧ S.τ (c (dropPairEmb a b i)) = (c (dropPairEmb a b j)))
     (p : Pure S c) : (p.dropPair a b hab).contrPCoeff i j hij =
     p.contrPCoeff (dropPairEmb a b i) (dropPairEmb a b j)
       (by simpa using hij) := by rfl
 
-lemma contrPCoeff_symm {n : ℕ} {c : Fin n → S.C} {i j : Fin n} {hij : i ≠ j ∧ S.τ (c i) = c j}
+lemma contrPCoeff_symm {n : ℕ} {c : Fin n → C} {i j : Fin n} {hij : i ≠ j ∧ S.τ (c i) = c j}
     {p : Pure S c} :
     p.contrPCoeff i j hij = p.contrPCoeff j i ⟨hij.1.symm, by simp [← hij.2]⟩ := by
   rw [contrPCoeff, contrPCoeff]
@@ -724,7 +728,7 @@ lemma contrPCoeff_symm {n : ℕ} {c : Fin n → S.C} {i j : Fin n} {hij : i ≠ 
     rfl
   · simp [hij.2]
 
-lemma contrPCoeff_mul_dropPair {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
+lemma contrPCoeff_mul_dropPair {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → C}
     (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1))
     (hij1 : i1 ≠ j1 ∧ S.τ (c i1) = (c j1))
     (hij2 : i2 ≠ j2 ∧ S.τ (c (dropPairEmb i1 j1 i2)) = (c (dropPairEmb i1 j1 j2)))
@@ -742,7 +746,7 @@ lemma contrPCoeff_mul_dropPair {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → S.C}
   rw [mul_comm]
 
 @[simp]
-lemma contrPCoeff_invariant {n : ℕ} {c : Fin n → S.C} {i j : Fin n}
+lemma contrPCoeff_invariant {n : ℕ} {c : Fin n → C} {i j : Fin n}
     {hij : i ≠ j ∧ S.τ (c i) = c j} {p : Pure S c}
     (g : G) : (g • p).contrPCoeff i j hij = p.contrPCoeff i j hij := by
   calc (g • p).contrPCoeff i j hij
@@ -777,17 +781,17 @@ lemma contrPCoeff_invariant {n : ℕ} {c : Fin n → S.C} {i j : Fin n}
 
 -/
 
-/-- For `c : Fin (n + 1 + 1) → S.C`, `i j : Fin (n + 1 + 1)` with dual color, and a pure tensor
+/-- For `c : Fin (n + 1 + 1) → C`, `i j : Fin (n + 1 + 1)` with dual color, and a pure tensor
   `p : Pure S c`, `contrP i j _ p` is the tensor (not pure due to the `n = 0` case)
   formed by contracting the `i`th index of `p`
   with the `j`th index. -/
-noncomputable def contrP {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+noncomputable def contrP {n : ℕ} {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j) (p : Pure S c) :
     S.Tensor (c ∘ dropPairEmb i j) :=
   (p.contrPCoeff i j hij) • (p.dropPair i j hij.1).toTensor
 
 @[simp]
-lemma contrP_update_add {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → S.C}
+lemma contrP_update_add {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → C}
     (i j m : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j)
     (p : Pure S c) (x y : S.FD.obj (Discrete.mk (c m))) :
     contrP i j hij (p.update m (x + y)) =
@@ -798,7 +802,7 @@ lemma contrP_update_add {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin
   · simp [contrP]
 
 @[simp]
-lemma contrP_update_smul {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → S.C}
+lemma contrP_update_smul {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fin (n + 1 + 1) → C}
     (i j m : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j)
     (p : Pure S c) (r : k) (x : S.FD.obj (Discrete.mk (c m))) :
     contrP i j hij (p.update m (r • x)) =
@@ -809,12 +813,12 @@ lemma contrP_update_smul {n : ℕ} [inst : DecidableEq (Fin (n + 1 +1))] {c : Fi
   · simp [contrP, smul_smul, mul_comm]
 
 @[simp]
-lemma contrP_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma contrP_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j) (p : Pure S c) (g : G) :
     contrP i j hij (g • p) = g • contrP i j hij p := by
   simp [contrP, contrPCoeff_invariant, dropPair_equivariant, actionT_pure]
 
-lemma contrP_symm {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma contrP_symm {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)} {hij : i ≠ j ∧ S.τ (c i) = c j} {p : Pure S c} :
     contrP i j hij p = permT id (by simp)
     (contrP j i ⟨hij.1.symm, by simp [← hij.2]⟩ p) := by
@@ -828,7 +832,7 @@ lemma contrP_symm {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
 -/
 
 /-- The multi-linear map formed by contracting a pair of indices of pure tensors. -/
-noncomputable def contrPMultilinear {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+noncomputable def contrPMultilinear {n : ℕ} {c : Fin (n + 1 + 1) → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j) :
     MultilinearMap k (fun i => S.FD.obj (Discrete.mk (c i)))
       (S.Tensor (c ∘ dropPairEmb i j))where

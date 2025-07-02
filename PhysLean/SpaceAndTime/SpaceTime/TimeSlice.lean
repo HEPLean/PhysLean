@@ -71,13 +71,13 @@ lemma timeSlice_spatial_deriv {M : Type}
     simp
   conv_lhs =>
     rw [hf]
-    simp only [timeSlice, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    simp only [timeSlice, Nat.succ_eq_add_one, Nat.reduceAdd,
       Equiv.coe_fn_mk, Function.curry_apply, Function.comp_apply]
     rw [deriv_comp_toTimeAndSpace_natAdd i (f ∘ ⇑toTimeAndSpace.symm)]
   conv_rhs =>
     rw [timeSlice]
     simp [Space.deriv]
-  simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
     ContinuousLinearEquiv.apply_symm_apply]
   rw [fderiv_curry_snd]
   · simp [basis]
@@ -94,15 +94,15 @@ lemma timeSlice_time_deriv {M : Type}
     simp
   conv_lhs =>
     rw [hf]
-    simp only [timeSlice, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    simp only [timeSlice, Nat.succ_eq_add_one, Nat.reduceAdd,
       Fin.isValue, finSumFinEquiv_apply_left, Equiv.coe_fn_mk, Function.curry_apply,
       Function.comp_apply]
     rw [deriv_comp_toTimeAndSpace_castAdd (f ∘ ⇑toTimeAndSpace.symm)]
   conv_rhs =>
     rw [timeSlice]
-    simp only [Time.deriv, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    simp only [Time.deriv, Nat.succ_eq_add_one, Nat.reduceAdd,
       Equiv.coe_fn_mk, Function.comp_apply]
-  simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
     ContinuousLinearEquiv.apply_symm_apply]
   rw [fderiv_curry_fst]
   fun_prop

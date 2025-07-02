@@ -84,14 +84,14 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       | Sum.inr i => tx.2 i)
     left_inv x := by
       obtain ⟨x, rfl⟩ := Lorentz.Vector.toCoord.symm.surjective x
-      simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, time, LinearMap.coe_mk,
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, time, LinearMap.coe_mk,
         AddHom.coe_mk, space, EmbeddingLike.apply_eq_iff_eq]
       funext i
       match i with
       | Sum.inl 0 => simp [Lorentz.Vector.timeComponent]
       | Sum.inr i => simp [Lorentz.Vector.spatialPart]
     right_inv tx := by
-      simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, time, Lorentz.Vector.timeComponent,
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, time, Lorentz.Vector.timeComponent,
         Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk, LinearEquiv.apply_symm_apply, space]
       obtain ⟨fst, snd⟩ := tx
       simp only [Prod.mk.injEq, true_and]
@@ -107,14 +107,12 @@ lemma toTimeAndSpace_basis_natAdd {d : ℕ} (i : Fin d) :
     toTimeAndSpace ((Tensor.basis (S := realLorentzTensor d) ![Color.up])
       fun x => Fin.cast (by simp) (Fin.natAdd 1 i))
     = (0, Space.basis i) := by
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_natAdd]
   simp only [true_and]
   funext j
-  simp [space]
-  rw [Lorentz.Vector.spatialPart_basis_natAdd]
-  simp [Space.basis]
+  simp [space, Space.basis]
   rw [Finsupp.single_apply]
   simp only [Sum.inr.injEq]
   congr 1
@@ -123,13 +121,12 @@ lemma toTimeAndSpace_basis_natAdd {d : ℕ} (i : Fin d) :
 lemma toTimeAndSpace_basis_castAdd {d : ℕ} :
     toTimeAndSpace ((Tensor.basis (S := realLorentzTensor d) ![Color.up])
       fun x => Fin.cast (by simp) (Fin.castAdd d (0 : Fin 1))) = (1, 0) := by
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_castAdd]
   simp only [true_and]
   funext j
   simp [space]
-  rw [Lorentz.Vector.spatialPart_basis_castAdd]
 
 /-!
 
@@ -215,7 +212,7 @@ lemma neg_deriv {d : ℕ} (μ : Fin (1 + d)) (f : SpaceTime d → ℝ) :
     - SpaceTime.deriv μ f = SpaceTime.deriv μ (fun y => - f y) := by
   ext y
   rw [SpaceTime.deriv_eq]
-  simp only [Pi.neg_apply, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, fderiv_fun_neg,
+  simp only [Pi.neg_apply, Nat.succ_eq_add_one, Nat.reduceAdd, fderiv_fun_neg,
     ContinuousLinearMap.neg_apply, neg_inj]
   rfl
 
@@ -332,7 +329,7 @@ lemma deriv_comp_toTimeAndSpace_natAdd {M : Type} [NormedAddCommGroup M] [Normed
   conv_lhs =>
     enter [1]
     rw [h1]
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, ContinuousLinearMap.coe_comp',
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, ContinuousLinearMap.coe_comp',
     ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   rw [toTimeAndSpace_basis_natAdd]
 
@@ -345,7 +342,7 @@ lemma deriv_comp_toTimeAndSpace_castAdd {M : Type} [NormedAddCommGroup M] [Norme
   conv_lhs =>
     enter [1]
     rw [h1]
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue,
     ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   rw [toTimeAndSpace_basis_castAdd]
 

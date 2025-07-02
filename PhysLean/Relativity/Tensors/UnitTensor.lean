@@ -17,23 +17,23 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
 
 open Tensor
 
 /-- The unit tensor associated with a color `c`. -/
-noncomputable def unitTensor (c : S.C) : S.Tensor ![S.τ c, c] :=
+noncomputable def unitTensor (c : C) : S.Tensor ![S.τ c, c] :=
   fromConstPair (S.unit.app (Discrete.mk c))
 
-lemma unitTensor_congr {c c1 : S.C} (h : c = c1) :
-    unitTensor c = permT id (by simp [h]) (unitTensor c1) := by
+lemma unitTensor_congr {c c1 : C} (h : c = c1) :
+    unitTensor c = permT id (by simp [h]) (unitTensor (S := S) c1) := by
   subst h
   simp
 
-lemma unit_app_eq_dual_unit_app (c : S.C) :
+lemma unit_app_eq_dual_unit_app (c : C) :
     (S.unit.app (Discrete.mk c)) = (S.unit.app ({ as := S.τ c })) ≫
       (β_ (S.FD.obj ({ as := S.τ (S.τ c) })) (S.FD.obj ({ as := S.τ c }))).hom ≫
-      ((S.FD.obj ({ as := S.τ c } : Discrete S.C) ◁ S.FD.map (Discrete.eqToHom (by simp)))) := by
+      ((S.FD.obj ({ as := S.τ c } : Discrete C) ◁ S.FD.map (Discrete.eqToHom (by simp)))) := by
   ext
   change (ConcreteCategory.hom (S.unit.app { as := c }).hom) (1 : k) = _
   rw [S.unit_symm c]
@@ -42,22 +42,22 @@ lemma unit_app_eq_dual_unit_app (c : S.C) :
   rfl
 
 /-- The unit tensor is symmetric on dualing the color. -/
-lemma unitTensor_eq_permT_dual (c : S.C) :
-    unitTensor c = permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> simp))
+lemma unitTensor_eq_permT_dual (c : C) :
+    S.unitTensor c = permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> simp))
     (unitTensor (S.τ c)) := by
   rw [unitTensor, unit_app_eq_dual_unit_app, ← Category.assoc]
   rw [fromConstPair_whiskerLeft, fromConstPair_braid]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, permT_permT, CompTriple.comp_eq]
   rfl
 
-lemma dual_unitTensor_eq_permT_unitTensor (c : S.C) :
-    unitTensor (S.τ c) = permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> simp))
+lemma dual_unitTensor_eq_permT_unitTensor (c : C) :
+    S.unitTensor (S.τ c) = permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> simp))
       (unitTensor c) := by
   rw [unitTensor_eq_permT_dual]
   rw [unitTensor_congr (by simp : c = S.τ (S.τ c))]
   simp
 
-lemma unit_fromSingleTContrFromPairT_eq_fromSingleT {c : S.C} (x : S.FD.obj (Discrete.mk c)) :
+lemma unit_fromSingleTContrFromPairT_eq_fromSingleT {c : C} (x : S.FD.obj (Discrete.mk c)) :
     fromSingleTContrFromPairT x ((S.unit.app (Discrete.mk c)).hom (1 : k)) =
     fromSingleT x := by
   change fromSingleT ((λ_ (S.FD.obj (Discrete.mk (c)))).hom.hom
@@ -68,7 +68,7 @@ lemma unit_fromSingleTContrFromPairT_eq_fromSingleT {c : S.C} (x : S.FD.obj (Dis
 
 /-- This lemma represents the de-categorification of `S.contr_unit`. -/
 @[simp]
-lemma contrT_single_unitTensor {c : S.C} (x : Tensor S ![c]) :
+lemma contrT_single_unitTensor {c : C} (x : Tensor S ![c]) :
     contrT 1 0 1 (by simp; rfl) (prodT x (unitTensor c)) =
     permT id (by simp; intro i; fin_cases i; rfl) x := by
   obtain ⟨x, rfl⟩ := fromSingleT.surjective x
@@ -77,7 +77,7 @@ lemma contrT_single_unitTensor {c : S.C} (x : Tensor S ![c]) :
   rw [← unit_fromSingleTContrFromPairT_eq_fromSingleT x]
   rfl
 
-lemma contrT_unitTensor_dual_single {c : S.C} (x : Tensor S ![S.τ c]) :
+lemma contrT_unitTensor_dual_single {c : C} (x : Tensor S ![S.τ c]) :
     contrT 1 1 2 (by simp; rfl) (prodT (unitTensor c) x) =
     permT id (by simp; intro i; fin_cases i; rfl) x := by
   rw [unitTensor_eq_permT_dual]
@@ -101,8 +101,8 @@ lemma contrT_unitTensor_dual_single {c : S.C} (x : Tensor S ![S.τ c]) :
   · rfl
 
 @[simp]
-lemma unitTensor_invariant {c : S.C} (g : G) :
-    g • unitTensor c = unitTensor c := by
+lemma unitTensor_invariant {c : C} (g : G) :
+    g • S.unitTensor c = S.unitTensor c := by
   rw [unitTensor, actionT_fromConstPair]
 
 end TensorSpecies

@@ -44,8 +44,7 @@ end realLorentzTensor
 noncomputable section
 open realLorentzTensor in
 /-- The tensor structure for complex Lorentz tensors. -/
-def realLorentzTensor (d : ℕ := 3) : TensorSpecies ℝ (LorentzGroup d) where
-  C := realLorentzTensor.Color
+def realLorentzTensor (d : ℕ := 3) : TensorSpecies ℝ realLorentzTensor.Color (LorentzGroup d) where
   FD := Discrete.functor fun c =>
     match c with
     | Color.up => Lorentz.Contr d
@@ -123,12 +122,6 @@ set_option quotPrecheck false in
 scoped[realLorentzTensor] notation "ℝT(" d "," c ")" =>
   (realLorentzTensor d).Tensor c
 
-/-- Color for real Lorentz tensors is decidable. -/
-instance (d : ℕ) : DecidableEq (realLorentzTensor d).C := realLorentzTensor.instDecidableEqColor
-
-@[simp]
-lemma C_eq_color {d : ℕ} : (realLorentzTensor d).C = Color := rfl
-
 /-!
 
 ## Simplyfing repDim
@@ -140,7 +133,7 @@ lemma repDim_up {d : ℕ} : (realLorentzTensor d).repDim Color.up = 1 + d := rfl
 lemma repDim_down {d : ℕ} : (realLorentzTensor d).repDim Color.down = 1 + d := rfl
 
 @[simp]
-lemma repDim_eq_one_plus_dim {d : ℕ} {c : (realLorentzTensor d).C} :
+lemma repDim_eq_one_plus_dim {d : ℕ} {c : realLorentzTensor.Color} :
     (realLorentzTensor d).repDim c = 1 + d := by
   cases c
   · rfl
@@ -166,7 +159,7 @@ lemma τ_down_eq_up {d : ℕ} : (realLorentzTensor d).τ Color.down = Color.up :
 
 open TensorSpecies
 
-lemma contr_basis {d : ℕ} {c : (realLorentzTensor d).C}
+lemma contr_basis {d : ℕ} {c : realLorentzTensor.Color}
     (i : Fin ((realLorentzTensor d).repDim c))
     (j : Fin ((realLorentzTensor d).repDim ((realLorentzTensor d).τ c))) :
     (realLorentzTensor d).castToField
@@ -195,7 +188,7 @@ lemma contr_basis {d : ℕ} {c : (realLorentzTensor d).C}
 
 open Tensor
 lemma contrT_basis_repr_apply_eq_dropPairSection {n d: ℕ}
-    {c : Fin (n + 1 + 1) → (realLorentzTensor d).C}
+    {c : Fin (n + 1 + 1) → realLorentzTensor.Color}
     {i j : Fin (n + 1 + 1)} (h : i ≠ j ∧ (realLorentzTensor d).τ (c i) = c j)
     (t : ℝT(d, c)) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
     (basis (c ∘ Pure.dropPairEmb i j)).repr (contrT n i j h t) b =
@@ -210,7 +203,7 @@ lemma contrT_basis_repr_apply_eq_dropPairSection {n d: ℕ}
   rfl
 
 open ComponentIdx in
-lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → (realLorentzTensor d).C}
+lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → realLorentzTensor.Color}
     {i j : Fin (n + 1 + 1)}
     {h : i ≠ j ∧ (realLorentzTensor d).τ (c i) = c j}
     (t : ℝT(d,c)) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
@@ -224,17 +217,17 @@ lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → (realLo
   rw [← e.symm.sum_comp]
   congr
   funext x
-  simp only [C_eq_color, Nat.succ_eq_add_one, mul_ite, mul_one, mul_zero]
+  simp only [Nat.succ_eq_add_one, mul_ite, mul_one, mul_zero]
   rw [Finset.sum_eq_single (Fin.cast (by simp) x)]
   · erw [contr_basis]
     simp [e]
   · intro y _ hy
     erw [contr_basis, if_neg]
-    · dsimp only [ne_eq, C_eq_color, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, e]
+    · dsimp only [ne_eq, OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, e]
       simp
-    · dsimp only [OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, C_eq_color, ne_eq, id_eq,
+    · dsimp only [OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, ne_eq, id_eq,
       eq_mpr_eq_cast, Fin.coe_cast, e]
-      simp_all only [ne_eq, Fin.ext_iff, C_eq_color, Finset.mem_univ, Fin.coe_cast,
+      simp_all only [ne_eq, Fin.ext_iff, Finset.mem_univ, Fin.coe_cast,
         OrderIso.coe_symm_toEquiv, Fin.symm_castOrderIso, Fin.castOrderIso_apply, e]
       omega
   · simp

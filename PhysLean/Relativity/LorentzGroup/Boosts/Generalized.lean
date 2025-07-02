@@ -156,7 +156,7 @@ lemma genBoostAux₁_toMatrix_apply (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d)
     (LinearMap.toMatrix Vector.basis Vector.basis (genBoostAux₁ u v)) μ ν =
     η ν ν * (2 * toCoord u ν * toCoord v μ) := by
   rw [LinearMap.toMatrix_apply, basis_repr_apply_eq_toCoord]
-  simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, genBoostAux₁,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, genBoostAux₁,
     LinearMap.coe_mk, AddHom.coe_mk, minkowskiProduct_basis_left, map_smul, Pi.smul_apply,
     smul_eq_mul]
   ring
@@ -166,7 +166,7 @@ lemma genBoostAux₂_toMatrix_apply (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d)
       η ν ν * (- ((toCoord u.1 μ) + (toCoord v.1 μ)) * ((toCoord u.1 ν) + (toCoord v.1 ν))
       / (1 + ⟪u.1, v.1⟫ₘ)) := by
   rw [LinearMap.toMatrix_apply, basis_repr_apply_eq_toCoord]
-  simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, genBoostAux₂,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, genBoostAux₂,
     LinearMap.coe_mk, AddHom.coe_mk, minkowskiProduct_basis_left, map_smul, Pi.smul_apply,
     smul_eq_mul]
   have h1 := Velocity.one_add_minkowskiProduct_neq_zero u v
@@ -189,12 +189,12 @@ lemma toMatrix_apply_eq_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ F
       simp
     · simp [h]
   · rw [genBoostAux₁_toMatrix_apply u v μ ν]
-    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
       minkowskiProduct_basis_left]
     ring_nf
     simp
   · rw [genBoostAux₂_toMatrix_apply u v μ ν]
-    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, neg_add_rev,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, neg_add_rev,
       minkowskiProduct_basis_left, map_add, Pi.add_apply]
     ring_nf
     simp
@@ -208,10 +208,10 @@ lemma toMatrix_apply_eq_toCoord (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     simp
   congr
   · rw [genBoostAux₁_toMatrix_apply u v μ ν]
-    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd]
     ring_nf
   · rw [genBoostAux₂_toMatrix_apply u v μ ν]
-    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, neg_add_rev]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, neg_add_rev]
     ring_nf
 
 @[fun_prop]
@@ -255,7 +255,7 @@ lemma genBoostAux₂_basis_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 �
   rw [genBoostAux₂_apply_basis, genBoostAux₂_apply_basis]
   rw [map_smul, map_smul]
   have h1 : ⟪u.1 + v.1, u.1 + v.1⟫ₘ = 2 * (1 + ⟪u.1, v.1⟫ₘ) := by
-    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
       LinearMap.add_apply, Velocity.minkowskiProduct_self_eq_one]
     rw [minkowskiProduct_symm]
     ring
@@ -272,7 +272,7 @@ lemma genBoostAux₁_basis_genBoostAux₂_minkowskiProduct (u v : Velocity d) (�
   rw [genBoostAux₁_apply_basis, genBoostAux₂_apply_basis]
   rw [map_smul, map_smul]
   have h1 : ⟪ v.1, u.1 + v.1⟫ₘ = (1 + ⟪u.1, v.1⟫ₘ) := by
-    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
       Velocity.minkowskiProduct_self_eq_one]
     rw [minkowskiProduct_symm]
     ring
@@ -291,7 +291,7 @@ lemma genBoostAux₁_add_genBoostAux₂_minkowskiProduct (u v : Velocity d) (μ 
       + (toCoord u μ + toCoord v μ) * (toCoord u ν + toCoord v ν) * (1 + ⟪u, v.1⟫ₘ)⁻¹ +
       2 * toCoord u μ * toCoord u ν) := by
   conv_lhs =>
-    simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
       LinearMap.add_apply]
     rw [genBoostAux₁_basis_minkowskiProduct, genBoostAux₂_basis_minkowskiProduct,
       genBoostAux₁_basis_genBoostAux₂_minkowskiProduct,
@@ -322,7 +322,7 @@ lemma toMatrix_in_lorentzGroup (u v : Velocity d) : toMatrix u v ∈ LorentzGrou
   rw [genBoost]
   trans ⟪(basis μ) + (genBoostAux₁ u v (basis μ) + genBoostAux₂ u v (basis μ)),
     (basis ν) + (genBoostAux₁ u v (basis ν) + genBoostAux₂ u v (basis ν))⟫ₘ
-  · simp only [realLorentzTensor.C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
     LinearMap.add_apply, LinearMap.id_coe, id_eq, map_add]
     ring
   rw [map_add]

@@ -59,10 +59,10 @@ def toCoord {d : ℕ} : Vector d ≃ₗ[ℝ] (Fin 1 ⊕ Fin d → ℝ) := Equiv.
   (Equiv.piCongrLeft' _ indexEquiv))
     {
       map_add := fun x y => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, map_add]
+        simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_add]
         rfl
       map_smul := fun c x => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, _root_.map_smul,
+        simp [Nat.succ_eq_add_one, Nat.reduceAdd, _root_.map_smul,
           RingHom.id_apply]
         rfl
     }
@@ -80,10 +80,10 @@ instance : CoeFun (Vector d) (fun _ => Fin 1 ⊕ Fin d → ℝ) := ⟨toCoord⟩
 lemma toCoord_pure {d : ℕ} (p : Pure (realLorentzTensor d) ![.up]) (i : Fin 1 ⊕ Fin d) :
     toCoord p.toTensor i = ((Lorentz.contrBasisFin d).repr (p 0)) (indexEquiv.symm i 0) := by
   rw [toCoord_apply]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, OverColor.mk_left, Functor.id_obj,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, OverColor.mk_left, Functor.id_obj,
     OverColor.mk_hom, Equiv.piCongrLeft'_apply, Finsupp.equivFunOnFinite_apply, Fin.isValue]
   rw [Tensor.basis_repr_pure]
-  simp only [Pure.component, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, C_eq_color,
+  simp only [Pure.component, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.prod_singleton, cons_val_zero]
   rfl
 
@@ -122,9 +122,9 @@ lemma tensor_basis_repr_apply {d : ℕ} (p : Vector d)
 lemma basis_repr_eq_toCoord {d : ℕ} :
     basis.repr = toCoord.trans (Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin d)).symm := by
   ext p i
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, basis, Basis.repr_reindex,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, basis, Basis.repr_reindex,
     Finsupp.mapDomain_equiv_apply, LinearEquiv.trans_apply]
-  simp only [indexEquiv, Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, cons_val_zero,
+  simp only [indexEquiv, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, cons_val_zero,
     Fin.cast_eq_self, Equiv.symm_trans_apply, Equiv.symm_symm, Equiv.coe_fn_symm_mk]
   rfl
 
@@ -194,10 +194,10 @@ def toCoordFull {d : ℕ} : Vector d ≃ₗ[ℝ]
   Finsupp.equivFunOnFinite)
     {
       map_add := fun x y => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, map_add]
+        simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_add]
         rfl
       map_smul := fun c x => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, _root_.map_smul,
+        simp [Nat.succ_eq_add_one, Nat.reduceAdd, _root_.map_smul,
           RingHom.id_apply]
         rfl
     }
@@ -247,7 +247,7 @@ lemma action_apply_eq_sum {d : ℕ} (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) 
     congr
     funext j
     simp only [Fin.isValue, Pi.smul_apply, transpose_apply, MulOpposite.smul_eq_mul_unop,
-      MulOpposite.unop_op, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, mul_eq_mul_left_iff]
+      MulOpposite.unop_op, Nat.succ_eq_add_one, Nat.reduceAdd, mul_eq_mul_left_iff]
     left
     rw [toCoord_pure, contrBasisFin_repr_apply]
     congr
@@ -327,7 +327,7 @@ def minkowskiProductMap {d : ℕ} (p q : Vector d) : ℝ :=
 lemma minkowskiProductMap_toCoord {d : ℕ} (p q : Vector d) :
     minkowskiProductMap p q = p (Sum.inl 0) * q (Sum.inl 0) -
     ∑ i, p (Sum.inr i) * q (Sum.inr i) := by
-  dsimp only [minkowskiProductMap, Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue]
+  dsimp only [minkowskiProductMap, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
   rw [toField_eq_repr]
   rw [contrT_basis_repr_apply_eq_fin]
   conv_lhs =>
@@ -338,7 +338,7 @@ lemma minkowskiProductMap_toCoord {d : ℕ} (p q : Vector d) :
     rw [prodT_basis_repr_apply]
     enter [1]
     erw [coMetric_repr_apply_eq_minkowskiMatrix]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, C_eq_color, Fin.isValue, Fin.succAbove_zero,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero,
     Function.comp_apply, Fin.zero_succAbove, Fin.succ_zero_eq_one, Fin.cast_eq_self,
     Fin.succ_one_eq_two]
   conv_lhs =>
@@ -391,7 +391,7 @@ lemma minkowskiProductMap_symm {d : ℕ} (p q : Vector d) :
 lemma minkowskiProductMap_add_fst {d : ℕ} (p q r : Vector d) :
     minkowskiProductMap (p + q) r = minkowskiProductMap p r + minkowskiProductMap q r := by
   rw [minkowskiProductMap_toCoord, minkowskiProductMap_toCoord, minkowskiProductMap_toCoord]
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add, Pi.add_apply]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add, Pi.add_apply]
   conv_lhs =>
     enter [2, 2, x]
     simp [add_mul]
@@ -412,13 +412,13 @@ lemma minkowskiProductMap_smul_fst {d : ℕ} (c : ℝ) (p q : Vector d) :
   rw [minkowskiProductMap_toCoord, minkowskiProductMap_toCoord]
   rw [mul_sub]
   congr 1
-  · simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_smul,
+  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_smul,
     Pi.smul_apply, smul_eq_mul]
     ring
   · rw [Finset.mul_sum]
     congr
     funext i
-    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_smul, Pi.smul_apply, smul_eq_mul]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_smul, Pi.smul_apply, smul_eq_mul]
     ring
 
 @[simp]
@@ -464,7 +464,7 @@ lemma minkowskiProduct_toCoord {d : ℕ} (p q : Vector d) :
 lemma minkowskiProduct_toCoord_minkowskiMatrix {d : ℕ} (p q : Vector d) :
     ⟪p, q⟫ₘ = ∑ μ, minkowskiMatrix μ μ * (toCoord p μ) * (toCoord q μ) := by
   rw [minkowskiProduct_toCoord]
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fintype.sum_sum_type,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fintype.sum_sum_type,
     Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0,
     one_mul, minkowskiMatrix.inr_i_inr_i, neg_mul, Finset.sum_neg_distrib]
   rfl
@@ -530,7 +530,7 @@ lemma map_minkowskiProduct_eq_self_forall_iff {d : ℕ} (f : Vector d →ₗ[ℝ
       intro q
       simp [h1 q]
     rw [minkowskiProduct_eq_zero_forall_iff] at h2
-    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, LinearMap.id_coe, id_eq]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, LinearMap.id_coe, id_eq]
     rw [sub_eq_zero] at h2
     exact h2
   · intro h
@@ -556,7 +556,7 @@ lemma map_minkowskiProduct_eq_adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector
   simp only [toCoord_map_apply]
   conv_rhs =>
     enter [2, x]
-    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, adjoint, LinearMap.toMatrix_symm,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, adjoint, LinearMap.toMatrix_symm,
       LinearMap.toMatrix_toLin, mulVec_eq_sum, op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply,
       transpose_apply, smul_eq_mul]
     rw [Finset.mul_sum]
@@ -566,7 +566,7 @@ lemma map_minkowskiProduct_eq_adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector
     simp
   conv_lhs =>
     enter [2, x]
-    simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, mulVec_eq_sum, op_smul_eq_smul,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, mulVec_eq_sum, op_smul_eq_smul,
       Finset.sum_apply, Pi.smul_apply, transpose_apply, smul_eq_mul]
     rw [Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
@@ -603,7 +603,7 @@ lemma isLorentz_iff_basis {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
   generalize toCoord p = fp at hp
   generalize toCoord q = fq at hq
   subst hp hq
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd, map_sum, map_smul, LinearMap.coeFn_sum,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sum, map_smul, LinearMap.coeFn_sum,
     Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, minkowskiProduct_basis_left, toCoord_basis,
     mul_ite, mul_one, mul_zero, h]
 
@@ -624,7 +624,7 @@ lemma isLorentz_iff_toMatrix_mem_lorentzGroup {d : ℕ} (f : Vector d →ₗ[ℝ
   trans LinearMap.toMatrix Vector.basis Vector.basis (adjoint f ∘ₗ f) =
     LinearMap.toMatrix Vector.basis Vector.basis (LinearMap.id : Vector d →ₗ[ℝ] Vector d)
   · exact Iff.symm (EmbeddingLike.apply_eq_iff_eq (LinearMap.toMatrix basis basis))
-  simp only [C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd,
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
     LinearMap.toMatrix_id_eq_basis_toMatrix, Basis.toMatrix_self]
   rw [LinearMap.toMatrix_comp Vector.basis Vector.basis]
   simp [adjoint]

@@ -17,13 +17,13 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
 
 namespace Tensor
 
 /-- The linear map taking a tensor based on the color `S.τ c` to a tensor
   based on the color `c`, defined by contraction with the metric tensor. -/
-noncomputable def fromDualMap {c : S.C} : S.Tensor ![S.τ c] →ₗ[k] S.Tensor ![c] where
+noncomputable def fromDualMap {c : C} : S.Tensor ![S.τ c] →ₗ[k] S.Tensor ![c] where
   toFun t := permT id (by simp; intro i; fin_cases i; rfl)
     (contrT 1 1 2 (by simp; rfl) (prodT (metricTensor c) t))
   map_add' t1 t2 := by
@@ -31,14 +31,14 @@ noncomputable def fromDualMap {c : S.C} : S.Tensor ![S.τ c] →ₗ[k] S.Tensor 
   map_smul' r t := by
     simp
 
-lemma fromDualMap_apply {c : S.C} (t : S.Tensor ![S.τ c]) :
+lemma fromDualMap_apply {c : C} (t : S.Tensor ![S.τ c]) :
     fromDualMap t = permT id (by simp; intro i; fin_cases i; rfl)
       (contrT 1 1 2 (by simp; rfl) (prodT (metricTensor c) t)) := by
   rfl
 
 /-- The linear map taking a tensor based on the color `c` to a tensor
   based on the color `S.τ c`, defined by contraction with the metric tensor. -/
-noncomputable def toDualMap {c : S.C} : S.Tensor ![c] →ₗ[k] S.Tensor ![S.τ c] where
+noncomputable def toDualMap {c : C} : S.Tensor ![c] →ₗ[k] S.Tensor ![S.τ c] where
   toFun t := permT id (by
     simp;intro i; fin_cases i; rfl) (contrT 1 1 2 (by
     change _ ∧ S.τ (S.τ c) = c
@@ -48,7 +48,7 @@ noncomputable def toDualMap {c : S.C} : S.Tensor ![c] →ₗ[k] S.Tensor ![S.τ 
   map_smul' r t := by
     simp
 
-lemma toDualMap_apply {c : S.C} (t : S.Tensor ![c]) :
+lemma toDualMap_apply {c : C} (t : S.Tensor ![c]) :
     toDualMap t = permT id (by
       simp;intro i; fin_cases i; rfl) (contrT 1 1 2 (by
       change _ ∧ S.τ (S.τ c) = c
@@ -56,7 +56,7 @@ lemma toDualMap_apply {c : S.C} (t : S.Tensor ![c]) :
   rfl
 
 @[simp]
-lemma toDualMap_fromDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
+lemma toDualMap_fromDualMap {c : C} (t : S.Tensor ![S.τ c]) :
     toDualMap (fromDualMap t) = t := by
   rw [toDualMap_apply, fromDualMap_apply, prodT_permT_right, prodT_contrT_snd]
   rw [contrT_permT, contrT_permT]
@@ -108,7 +108,7 @@ lemma toDualMap_fromDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
   fin_cases i
   simp
 
-lemma fromDualMap_eq_permT_toDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
+lemma fromDualMap_eq_permT_toDualMap {c : C} (t : S.Tensor ![S.τ c]) :
     fromDualMap t = permT id (by simp) (toDualMap t) := by
   rw [fromDualMap_apply, toDualMap_apply]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, permT_permT, CompTriple.comp_eq]
@@ -121,7 +121,7 @@ lemma fromDualMap_eq_permT_toDualMap {c : S.C} (t : S.Tensor ![S.τ c]) :
     rfl
   · rfl
 
-lemma toDualMap_eq_permT_fromDualMap {c : S.C} (t : S.Tensor ![c]) :
+lemma toDualMap_eq_permT_fromDualMap {c : C} (t : S.Tensor ![c]) :
     toDualMap t = (fromDualMap (permT id (by simp) t)) := by
   rw [fromDualMap_eq_permT_toDualMap]
   rw [toDualMap_apply, toDualMap_apply]
@@ -140,7 +140,7 @@ lemma toDualMap_eq_permT_fromDualMap {c : S.C} (t : S.Tensor ![c]) :
   · rfl
 
 @[simp]
-lemma fromDualMap_toDualMap {c : S.C} (t : S.Tensor ![c]) :
+lemma fromDualMap_toDualMap {c : C} (t : S.Tensor ![c]) :
     fromDualMap (toDualMap t) = t := by
   rw [fromDualMap_eq_permT_toDualMap]
   conv_lhs =>
@@ -150,11 +150,11 @@ lemma fromDualMap_toDualMap {c : S.C} (t : S.Tensor ![c]) :
 
 /-- The linear equivalence between `S.Tensor ![c]` and
   `S.Tensor ![S.τ c]` formed by contracting with metric tensors. -/
-noncomputable def toDual {c : S.C} : S.Tensor ![c] ≃ₗ[k] S.Tensor ![S.τ c] :=
+noncomputable def toDual {c : C} : S.Tensor ![c] ≃ₗ[k] S.Tensor ![S.τ c] :=
   LinearEquiv.mk toDualMap fromDualMap.toFun
     (fun x => by simp) (fun x => by simp)
 
-lemma toDual_equivariant {c : S.C} (g : G) (t : S.Tensor ![c]) :
+lemma toDual_equivariant {c : C} (g : G) (t : S.Tensor ![c]) :
     toDual (g • t) = g • toDual t := by
   simp [toDual, toDualMap]
   conv_lhs => rw [← metricTensor_invariant g]
@@ -164,7 +164,7 @@ end Tensor
 
 open Tensor
 @[simp]
-lemma repDim_τ {c : S.C} [StrongRankCondition k] :
+lemma repDim_τ {c : C} [StrongRankCondition k] :
     S.repDim (S.τ c) = S.repDim c := by
   trans Module.finrank k (S.Tensor ![S.τ c])
   · rw [finrank_tensor_eq]

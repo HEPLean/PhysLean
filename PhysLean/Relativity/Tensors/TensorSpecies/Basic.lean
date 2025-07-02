@@ -24,9 +24,7 @@ open MonoidalCategory
 /-- The structure `TensorSpecies` contains the necessary structure needed to define
   a system of tensors with index notation. Examples of `TensorSpecies` include real Lorentz tensors,
   complex Lorentz tensors, and ordinary Euclidean tensors. -/
-structure TensorSpecies (k : Type) [CommRing k] (G : Type) [Group G] where
-  /-- The colors of indices e.g. up or down. -/
-  C : Type
+structure TensorSpecies (k : Type) [CommRing k] (C : Type) (G : Type) [Group G] where
   /-- A functor from `C` to `Rep k G` giving our building block representations.
     Equivalently a function `C → Re k G`. -/
   FD : Discrete C ⥤ Rep k G
@@ -87,34 +85,34 @@ noncomputable section
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
+variable {k : Type} [CommRing k] {C : Type} [Group G] (S : TensorSpecies k C G)
 
 /-- The field `repDim` of a `TensorSpecies` is non-zero for all colors. -/
-instance (c : S.C) : NeZero (S.repDim c) := S.repDim_neZero c
+instance (c : C) : NeZero (S.repDim c) := S.repDim_neZero c
 
 @[simp]
-lemma τ_τ_apply (c : S.C) : S.τ (S.τ c) = c := S.τ_involution c
+lemma τ_τ_apply (c : C) : S.τ (S.τ c) = c := S.τ_involution c
 
-lemma basis_congr {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
+lemma basis_congr {c c1 : C} (h : c = c1) (i : Fin (S.repDim c)) :
     S.basis c i = S.FD.map (eqToHom (by simp [h])) (S.basis c1 (Fin.cast (by simp [h]) i)) := by
   subst h
   simp
 
-lemma basis_congr_repr {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c))
+lemma basis_congr_repr {c c1 : C} (h : c = c1) (i : Fin (S.repDim c))
     (t : S.FD.obj (Discrete.mk c)) :
     (S.basis c).repr t i = (S.basis c1).repr (S.FD.map (eqToHom (by simp [h])) t)
     (Fin.cast (by simp [h]) i) := by
   subst h
   simp
 
-lemma FD_map_basis {c c1 : S.C} (h : c = c1) (i : Fin (S.repDim c)) :
+lemma FD_map_basis {c c1 : C} (h : c = c1) (i : Fin (S.repDim c)) :
     (S.FD.map (Discrete.eqToHom h)).hom.hom (S.basis c i)
     = S.basis c1 (Fin.cast (by simp [h]) i) := by
   subst h
   simp
 
 /-- The lift of the functor `S.F` to functor. -/
-def F : Functor (OverColor S.C) (Rep k G) := ((OverColor.lift).obj S.FD).toFunctor
+def F : Functor (OverColor C) (Rep k G) := ((OverColor.lift).obj S.FD).toFunctor
 
 /- The definition of `F` as a lemma. -/
 lemma F_def : F S = ((OverColor.lift).obj S.FD).toFunctor := rfl
@@ -131,15 +129,17 @@ instance F_laxBraided : Functor.LaxBraided S.F :=
 instance F_braided : Functor.Braided S.F := Functor.Braided.mk
   (fun X Y => Functor.LaxBraided.braided X Y)
 
+set_option linter.unusedVariables false in
 /-- Casts an element of the monoidal unit of `Rep k G` to the field `k`. -/
-def castToField (v : (↑((𝟙_ (Discrete S.C ⥤ Rep k G)).obj { as := c }).V)) : k := v
+def castToField {S : TensorSpecies k C G}
+  (v : (↑((𝟙_ (Discrete C ⥤ Rep k G)).obj { as := c }).V)) : k := v
 
 /-- Casts an element of `(S.F.obj (OverColor.mk c)).V` for `c` a map from `Fin 0` to an
   element of the field. -/
-def castFin0ToField {c : Fin 0 → S.C} : (S.F.obj (OverColor.mk c)).V →ₗ[k] k :=
+def castFin0ToField {c : Fin 0 → C} : (S.F.obj (OverColor.mk c)).V →ₗ[k] k :=
   (PiTensorProduct.isEmptyEquiv (Fin 0)).toLinearMap
 
-lemma castFin0ToField_tprod {c : Fin 0 → S.C}
+lemma castFin0ToField_tprod {c : Fin 0 → C}
     (x : (i : Fin 0) → S.FD.obj (Discrete.mk (c i))) :
     castFin0ToField S (PiTensorProduct.tprod k x) = 1 := by
   simp only [castFin0ToField, mk_hom, Functor.id_obj, LinearEquiv.coe_coe]
@@ -151,7 +151,7 @@ lemma castFin0ToField_tprod {c : Fin 0 → S.C}
 
 -/
 
-lemma contr_congr (c c' : S.C) (h : c = c') (x : S.FD.obj (Discrete.mk c))
+lemma contr_congr (c c' : C) (h : c = c') (x : S.FD.obj (Discrete.mk c))
     (y : S.FD.obj (Discrete.mk (S.τ c))) :
     (S.contr.app { as := c }).hom (x ⊗ₜ[k] y) =
     (S.contr.app { as := c' }).hom
@@ -162,7 +162,7 @@ lemma contr_congr (c c' : S.C) (h : c = c') (x : S.FD.obj (Discrete.mk c))
 
 /-- The number of indices `n` from a tensor. -/
 @[nolint unusedArguments]
-def numIndices {S : TensorSpecies k G} {n : ℕ} {c : Fin n → S.C}
+def numIndices {S : TensorSpecies k C G} {n : ℕ} {c : Fin n → C}
     (_ : S.F.obj (OverColor.mk c)) : ℕ := n
 
 end TensorSpecies

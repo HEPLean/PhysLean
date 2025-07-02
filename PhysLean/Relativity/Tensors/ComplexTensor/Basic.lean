@@ -82,8 +82,7 @@ end complexLorentzTensor
 noncomputable section
 open complexLorentzTensor in
 /-- The tensor structure for complex Lorentz tensors. -/
-def complexLorentzTensor : TensorSpecies ℂ SL(2, ℂ) where
-  C := complexLorentzTensor.Color
+def complexLorentzTensor : TensorSpecies ℂ complexLorentzTensor.Color SL(2, ℂ) where
   FD := Discrete.functor fun c =>
     match c with
     | Color.upL => Fermion.leftHanded
@@ -209,12 +208,9 @@ macro_rules
 /-- Complex Lorentz tensor. -/
 scoped[complexLorentzTensor] notation "ℂT(" c ")" => complexLorentzTensor.Tensor c
 
-/-- Color for complex Lorentz tensors is decidable. -/
-instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor
-
 /-- Contracting two basis elements gives `1` if the index for the basis elements is the same,
   and `0` otherwise. Holds for any color of index. -/
-lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.repDim c))
+lemma basis_contr (c : complexLorentzTensor.Color) (i : Fin (complexLorentzTensor.repDim c))
     (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))) :
     complexLorentzTensor.castToField
     ((complexLorentzTensor.contr.app {as := c}).hom
@@ -229,16 +225,16 @@ lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.re
   | Color.down => Lorentz.coContrContraction_basis _ _
 
 /-- For any object in the over color category, with source `Fin n`, has a decidable source. -/
-instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
+instance {n : ℕ} {c : Fin n → complexLorentzTensor.Color} :
     DecidableEq (OverColor.mk c).left := instDecidableEqFin n
 
 /-- For any object in the over color category, with source `Fin n`, has a finite source. -/
-instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
+instance {n : ℕ} {c : Fin n → complexLorentzTensor.Color} :
     Fintype (OverColor.mk c).left := Fin.fintype n
 
 /-- The equality of two maps in `OverColor C` from objects based on `Fin _` is decidable. -/
-instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
-    {c1 : Fin m → complexLorentzTensor.C} (σ σ' : OverColor.mk c ⟶ OverColor.mk c1) :
+instance {n m : ℕ} {c : Fin n → complexLorentzTensor.Color}
+    {c1 : Fin m → complexLorentzTensor.Color} (σ σ' : OverColor.mk c ⟶ OverColor.mk c1) :
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 

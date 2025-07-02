@@ -17,7 +17,7 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
 
 namespace Tensor
 
@@ -27,46 +27,46 @@ namespace Tensor
 namespace ComponentIdx
 
 /-- The `ComponentIdx` obtained by dropping two components. -/
-def dropPair {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    (i j : Fin (n + 1 + 1)) (b : ComponentIdx c) :
-    ComponentIdx (c ∘ Pure.dropPairEmb i j) :=
+def dropPair {n : ℕ} {c : Fin (n + 1 + 1) → C}
+    (i j : Fin (n + 1 + 1)) (b : ComponentIdx (S := S) c) :
+    ComponentIdx (S := S) (c ∘ Pure.dropPairEmb i j) :=
   fun m => b (Pure.dropPairEmb i j m)
 
 /-- Given a coordinate parameter
   `b : Π k, Fin (S.repDim ((c ∘ i.succAbove ∘ j.succAbove) k)))`, the
   coordinate parameter `Π k, Fin (S.repDim (c k))` which map down to `b`. -/
-def DropPairSection {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+def DropPairSection {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i : Fin (n + 1 + 1)} {j : Fin (n + 1 + 1)}
-    (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
-    Finset (ComponentIdx c) :=
+    (b : ComponentIdx (S := S) (c ∘ Pure.dropPairEmb i j)) :
+    Finset (ComponentIdx (S := S) c) :=
   {b' : ComponentIdx c | dropPair i j b' = b}
 
 namespace DropPairSection
 
-lemma mem_iff_apply_dropPairEmb_eq {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma mem_iff_apply_dropPairEmb_eq {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)}
     (b : ComponentIdx (c ∘ Pure.dropPairEmb i j))
     (b' : ComponentIdx c) :
-    b' ∈ DropPairSection b ↔
+    b' ∈ DropPairSection (S := S) b ↔
       ∀ m, b' (Pure.dropPairEmb i j m) = b m := by
   simp only [DropPairSection, Finset.mem_filter, Finset.mem_univ, true_and]
   rw [funext_iff]
   simp [dropPair]
 
 @[simp]
-lemma mem_self_of_dropPair {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma mem_self_of_dropPair {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)}
     (b : ComponentIdx (c)) :
-    b ∈ DropPairSection (b.dropPair i j) := by
+    b ∈ DropPairSection (S := S) (b.dropPair i j) := by
   simp [DropPairSection]
 
 /-- Given a `b` in `ComponentIdx (c ∘ Pure.dropPairEmb i j))` and
   an `x` in `Fin (S.repDim (c i)) × Fin (S.repDim (c j))`, the corresponding
   coordinate parameter in `ComponentIdx c`. -/
-def ofFin {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
-    {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j))
+def ofFin {n : ℕ} {c : Fin (n + 1 + 1) → C}
+    {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx (S := S) (c ∘ Pure.dropPairEmb i j))
     (x : Fin (S.repDim (c i)) × Fin (S.repDim (c j))) :
-    ComponentIdx c := fun m =>
+    ComponentIdx (S := S) c := fun m =>
   if hi : m = i then Fin.cast (by subst hi; rfl) x.1
   else if hj : m = j then Fin.cast (by subst hj; rfl) x.2
   else
@@ -74,14 +74,14 @@ def ofFin {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
     (b (Pure.dropPairEmbPre i j hij m (by omega)))
 
 @[simp]
-lemma ofFin_apply_fst {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma ofFin_apply_fst {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j))
     (x : Fin (S.repDim (c i)) × Fin (S.repDim (c j))) :
     ofFin hij b x i = x.1 := by
   simp [ofFin]
 
 @[simp]
-lemma ofFin_apply_snd {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma ofFin_apply_snd {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j))
     (x : Fin (S.repDim (c i)) × Fin (S.repDim (c j))) :
     ofFin hij b x j = x.2 := by
@@ -89,7 +89,7 @@ lemma ofFin_apply_snd {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
   intro h
   omega
 
-lemma ofFin_mem_dropPairEmbSection {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma ofFin_mem_dropPairEmbSection {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j))
     (x : Fin (S.repDim (c i)) × Fin (S.repDim (c j))) :
     ofFin hij b x ∈ DropPairSection b := by
@@ -102,10 +102,10 @@ lemma ofFin_mem_dropPairEmbSection {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
 
 /-- The equivalence between `ContrSection b` and
   `Fin (S.repDim (c i)) × Fin (S.repDim (c (i.succAbove j)))`. -/
-def ofFinEquiv {n : ℕ} {c : Fin n.succ.succ → S.C}
+def ofFinEquiv {n : ℕ} {c : Fin n.succ.succ → C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j)
     (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
-    Fin (S.repDim (c i)) × Fin (S.repDim (c j)) ≃ DropPairSection b where
+    Fin (S.repDim (c i)) × Fin (S.repDim (c j)) ≃ DropPairSection (S := S) b where
   invFun b' := ⟨b'.1 i, b'.1 j⟩
   toFun x := ⟨ofFin hij b x, ofFin_mem_dropPairEmbSection hij b x⟩
   right_inv b' := by
@@ -123,14 +123,14 @@ def ofFinEquiv {n : ℕ} {c : Fin n.succ.succ → S.C}
     simp
 
 @[simp]
-lemma ofFinEquiv_apply_fst {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma ofFinEquiv_apply_fst {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j))
     (x : Fin (S.repDim (c i)) × Fin (S.repDim (c j))) :
     (ofFinEquiv hij b x).1 i = x.1 := by
   simp [ofFinEquiv]
 
 @[simp]
-lemma ofFinEquiv_apply_snd {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma ofFinEquiv_apply_snd {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx (c ∘ Pure.dropPairEmb i j))
     (x : Fin (S.repDim (c i)) × Fin (S.repDim (c j))) :
     (ofFinEquiv hij b x).1 j = x.2 := by
@@ -141,14 +141,14 @@ end DropPairSection
 end ComponentIdx
 open ComponentIdx
 
-lemma Pure.dropPair_basisVector {n : ℕ} {c : Fin (n + 1 + 1) → S.C}
+lemma Pure.dropPair_basisVector {n : ℕ} {c : Fin (n + 1 + 1) → C}
     {i j : Fin (n + 1 + 1)} (hij : i ≠ j) (b : ComponentIdx c) :
     Pure.dropPair i j hij (basisVector c b) =
-    basisVector (c ∘ Pure.dropPairEmb i j) fun m => b (dropPairEmb i j m) := by
+    basisVector (S := S) (c ∘ Pure.dropPairEmb i j) fun m => b (dropPairEmb i j m) := by
   funext l
   simp [dropPair, basisVector]
 
-lemma contrT_basis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin (n + 1 + 1)}
+lemma contrT_basis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → C} {i j : Fin (n + 1 + 1)}
     (h : i ≠ j ∧ S.τ (c i) = c j) (t : Tensor S c)
     (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
     (basis (c ∘ Pure.dropPairEmb i j)).repr (contrT n i j h t) b =
@@ -207,7 +207,7 @@ lemma contrT_basis_repr_apply {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin
     funext x
     rw [← add_mul]
 
-lemma contrT_basis_repr_apply_eq_sum_fin {n : ℕ} {c : Fin (n + 1 + 1) → S.C} {i j : Fin (n + 1 + 1)}
+lemma contrT_basis_repr_apply_eq_sum_fin {n : ℕ} {c : Fin (n + 1 + 1) → C} {i j : Fin (n + 1 + 1)}
     (h : i ≠ j ∧ S.τ (c i) = c j) (t : Tensor S c)
     (b : ComponentIdx (c ∘ Pure.dropPairEmb i j)) :
     (basis (c ∘ Pure.dropPairEmb i j)).repr (contrT n i j h t) b =
