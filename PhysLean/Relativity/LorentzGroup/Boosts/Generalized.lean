@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 import PhysLean.Meta.Linters.Sorry
+import PhysLean.Relativity.LorentzGroup.ToVector
 /-!
 
 # Generalized Boosts
@@ -477,6 +478,32 @@ lemma generalizedBoost_timeComponent_eq (u v : Velocity d) :
     ‖u.1.timeComponent • v.1.spatialPart -
       v.1.timeComponent • u.1.spatialPart‖ / (1 + ⟪u.1, v.1⟫ₘ) := by
   sorry
+
+def toGeneralizedBoost (Λ : LorentzGroup.restricted d) : LorentzGroup d :=
+  generalizedBoost 0 ⟨toVector Λ.1, by
+    simp [Lorentz.Velocity.mem_iff]
+    have h := isOrthochronous_of_restricted Λ
+    rw [isOrthochronous_iff_ge_one] at h
+    linarith⟩
+
+lemma toGeneralizedBoost_eq :
+    toGeneralizedBoost (d := d) = fun Λ =>
+      generalizedBoost 0 ⟨toVector Λ.1, by
+        simp [Lorentz.Velocity.mem_iff]
+        have h := isOrthochronous_of_restricted Λ
+        rw [isOrthochronous_iff_ge_one] at h
+        linarith⟩ := by rfl
+
+@[fun_prop]
+lemma toGeneralizedBoost_continuous  :
+    Continuous (toGeneralizedBoost (d := d)) := by
+  rw [toGeneralizedBoost_eq]
+  apply Continuous.comp'
+  · fun_prop
+  · apply Continuous.subtype_mk
+    apply Continuous.comp'
+    · fun_prop
+    · fun_prop
 
 end LorentzGroup
 

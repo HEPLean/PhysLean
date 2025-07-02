@@ -46,6 +46,9 @@ def restricted (d : ℕ) : Subgroup (LorentzGroup d) where
 lemma isOrthochronous_of_restricted {d : ℕ} (Λ : restricted d) :
     IsOrthochronous Λ.1 := Λ.2.2
 
+lemma isOrthochronous_of_restricted {d : ℕ} (Λ : restricted d) :
+    IsOrthochronous Λ.1 := Λ.2.2
+
 /-- The restricted Lorentz group is a normal subgroup of the Lorentz group. -/
 lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
   have h_proper {Λ P : LorentzGroup d} (hP : IsProper P) : IsProper (Λ * P * Λ⁻¹) := by
