@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 import PhysLean.Meta.Linters.Sorry
-import PhysLean.Relativity.LorentzGroup.ToVector
 /-!
 
 # Generalized Boosts
