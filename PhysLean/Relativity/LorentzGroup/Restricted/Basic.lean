@@ -3,7 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Relativity.LorentzGroup.Orthochronous.Basic
 /-!
@@ -61,7 +60,6 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
       simp_all
       rw [isOrthochronous_mul_iff]
       simp_all
-  have hO : IsOrthochronous (1 : LorentzGroup d) := id_isOrthochronous
   constructor
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩

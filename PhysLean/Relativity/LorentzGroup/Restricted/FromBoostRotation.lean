@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzGroup.Rotations
-import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 /-!
 # The construction of an element of the Lorentz group from a boost and a rotation
 
@@ -23,6 +22,8 @@ namespace LorentzGroup
 open Matrix
 open minkowskiMatrix
 
+/-- The Lorentz velocity obtained from `toVector Λ` where `Λ` is an element
+  of the restricted Lorentz group. -/
 def toVelocity {d} (Λ : LorentzGroup.restricted d) : Lorentz.Velocity d :=
   ⟨toVector Λ, by
     simp [Lorentz.Velocity.mem_iff]
@@ -56,7 +57,10 @@ lemma toRotation_continuous {d} :
   change Continuous (fun Λ => (generalizedBoost 0 (toVelocity Λ))⁻¹ * Λ)
   fun_prop
 
-
+/-- The homeomorphism from the restricted Lorentz group to the product of
+  `Lorentz.Velocity d` and `Matrix.specialOrthogonalGroup (Fin d) ℝ`. The
+  inverse of this map writes an element of the restricted Lorentz group
+  as a product of a boost and a rotation. -/
 def toBoostRotation {d} : LorentzGroup.restricted d ≃ₜ Lorentz.Velocity d ×
     Matrix.specialOrthogonalGroup (Fin d) ℝ where
   toFun Λ := (toVelocity Λ, ofSpecialOrthogonal.symm (toRotation Λ))
@@ -85,7 +89,7 @@ def toBoostRotation {d} : LorentzGroup.restricted d ≃ₜ Lorentz.Velocity d ×
     apply Subtype.eq
     simp only [lorentzGroupIsGroup_mul_coe]
     trans (generalizedBoost 0 ⟨v, hv⟩)⁻¹
-      * ((generalizedBoost 0 ⟨v, hv⟩) *  (ofSpecialOrthogonal R).1)
+      * ((generalizedBoost 0 ⟨v, hv⟩) * (ofSpecialOrthogonal R).1)
     · congr
       apply Subtype.eq
       simp [toVelocity, h0]

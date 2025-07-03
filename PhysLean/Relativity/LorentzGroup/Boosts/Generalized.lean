@@ -4,9 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzGroup.Restricted.Basic
-import PhysLean.Relativity.Tensors.RealTensor.Velocity.Basic
 import PhysLean.Meta.Linters.Sorry
-import PhysLean.Relativity.LorentzGroup.ToVector
 /-!
 
 # Generalized Boosts
