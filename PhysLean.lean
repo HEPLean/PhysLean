@@ -271,6 +271,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Metrics.Pre
 import PhysLean.Relativity.Tensors.RealTensor.ToComplex
 import PhysLean.Relativity.Tensors.RealTensor.Units.Pre
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
+import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.LightLike
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.TimeLike
