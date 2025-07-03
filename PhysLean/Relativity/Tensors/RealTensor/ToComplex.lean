@@ -27,7 +27,7 @@ def colorToComplex (c : realLorentzTensor.Color) : complexLorentzTensor.Color :=
   | .down => .down
 
 /-- The complification of the component index of a real Lorentz tensor to
-  a complex Lorentz tensor.-/
+  a complex Lorentz tensor. -/
 def _root_.TensorSpecies.Tensor.ComponentIdx.complexify {n} {c : Fin n → realLorentzTensor.Color} :
     ComponentIdx (S := realLorentzTensor) c ≃
       ComponentIdx (S := complexLorentzTensor) (colorToComplex ∘ c) where
