@@ -421,7 +421,7 @@ def rep : Representation ℝ (LorentzGroup d) (CoMod d) where
   map_one' := by
     simp only [inv_one, LorentzGroup.transpose_one, lorentzGroupIsGroup_one_coe, _root_.map_one]
   map_mul' x y := by
-    simp only [_root_.mul_inv_rev, lorentzGroupIsGroup_inv, LorentzGroup.transpose_mul,
+    simp only [_root_.mul_inv_rev, LorentzGroup.inv_eq_dual, LorentzGroup.transpose_mul,
       lorentzGroupIsGroup_mul_coe, _root_.map_mul]
 
 end CoMod

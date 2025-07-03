@@ -74,6 +74,10 @@ lemma mem_iff_transpose : Λ ∈ LorentzGroup d ↔ Λᵀ ∈ LorentzGroup d := 
     rw [mem_iff_self_mul_dual, ← h1, dual]
     noncomm_ring
 
+lemma mem_iff_neg_mem : Λ ∈ LorentzGroup d ↔ -Λ ∈ LorentzGroup d := by
+  rw [mem_iff_self_mul_dual, mem_iff_self_mul_dual]
+  simp [dual]
+
 lemma mem_mul (hΛ : Λ ∈ LorentzGroup d) (hΛ' : Λ' ∈ LorentzGroup d) : Λ * Λ' ∈ LorentzGroup d := by
   rw [mem_iff_dual_mul_self, dual_mul]
   trans dual Λ' * (dual Λ * Λ) * Λ'
@@ -98,7 +102,7 @@ end LorentzGroup
 -/
 
 /-- The instance of a group on `LorentzGroup d`. -/
-@[simps! mul_coe one_coe inv div]
+@[simps! mul_coe one_coe div]
 instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   mul A B := ⟨A.1 * B.1, LorentzGroup.mem_mul A.2 B.2⟩
   mul_assoc A B C := Subtype.eq (Matrix.mul_assoc A.1 B.1 C.1)
@@ -108,9 +112,7 @@ instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   inv A := ⟨minkowskiMatrix.dual A.1, LorentzGroup.dual_mem A.2⟩
   inv_mul_cancel A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
 
-lemma LorentzGroup.inv_eq_dual (Λ : LorentzGroup d) :
-    (Λ⁻¹ : LorentzGroup d) = minkowskiMatrix.dual Λ.1 := by
-  rfl
+
 
 /-- `LorentzGroup` has the subtype topology. -/
 instance : TopologicalSpace (LorentzGroup d) := instTopologicalSpaceSubtype
@@ -120,6 +122,10 @@ namespace LorentzGroup
 open minkowskiMatrix
 
 variable {Λ Λ' : LorentzGroup d}
+
+lemma inv_eq_dual (Λ : LorentzGroup d) :
+    (Λ⁻¹ : LorentzGroup d) = ⟨minkowskiMatrix.dual Λ.1, LorentzGroup.dual_mem Λ.2⟩ := by
+  rfl
 
 lemma coe_inv : (Λ⁻¹).1 = Λ.1⁻¹:= (inv_eq_left_inv (mem_iff_dual_mul_self.mp Λ.2)).symm
 
@@ -157,6 +163,12 @@ lemma transpose_mul_minkowskiMatrix_mul_self :
   rw [← h2]
   noncomm_ring
 
+/-!
+
+## Transpose of a Lorentz transformation
+
+-/
+
 /-- The transpose of a matrix in the Lorentz group is an element of the Lorentz group. -/
 def transpose (Λ : LorentzGroup d) : LorentzGroup d :=
   ⟨Λ.1ᵀ, mem_iff_transpose.mp Λ.2⟩
@@ -188,6 +200,24 @@ lemma minkowskiMatrix_comm : minkowskiMatrix * Λ.1 = (transpose Λ⁻¹).1 * mi
     simp only [subtype_inv_mul]
   rw [h1]
   simp
+
+
+/-!
+
+## Negation of a Lorentz transformation
+
+-/
+
+/-- The negation of a Lorentz transform. -/
+instance : Neg (LorentzGroup d) where
+  neg Λ := ⟨-Λ.1, mem_iff_neg_mem.mp Λ.2⟩
+
+@[simp]
+lemma coe_neg : (-Λ).1 = -Λ.1 := rfl
+
+lemma inv_neg : (-Λ)⁻¹ = -Λ⁻¹ := by
+  refine Subtype.eq ?_
+  simp [inv_eq_dual, dual]
 
 /-!
 

@@ -113,7 +113,7 @@ def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
     rw [coCoToMatrix_ρ_symm]
     apply congrArg
     rw [LorentzGroup.toComplex_inv]
-    simp only [lorentzGroupIsGroup_inv, SL2C.toLorentzGroup_apply_coe,
+    simp only [LorentzGroup.inv_eq_dual, SL2C.toLorentzGroup_apply_coe,
       LorentzGroup.toComplex_transpose_mul_minkowskiMatrix_mul_self]
 
 lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by

@@ -205,7 +205,7 @@ lemma toSelfAdjointMap_σSA (i : Fin 1 ⊕ Fin 3) :
     toSelfAdjointMap M (PauliMatrix.σSA i) =
     ∑ j, (toLorentzGroup M⁻¹).1 i j • PauliMatrix.σSA j := by
   have h1 : (toLorentzGroup M⁻¹).1 = minkowskiMatrix.dual (toLorentzGroup M).1 := by
-    simp
+    simp [LorentzGroup.inv_eq_dual]
   simp only [h1]
   rw [PauliMatrix.σSA_minkowskiMetric_σSAL, _root_.map_smul]
   rw [toSelfAdjointMap_basis]

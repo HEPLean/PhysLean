@@ -29,20 +29,19 @@ def Rotations (d) : Subgroup (LorentzGroup d) where
         rw [toVector_eq_basis_iff_timeComponent_eq_one, h2.1]
       rw [h]
       simp [Lorentz.Vector.timeComponent]
-      rw [Lorentz.Vector.action_toCoord_eq_mulVec]
+      rw [Lorentz.Vector.toCoord_smul_eq_mulVec]
       rw [Matrix.mulVec_eq_sum]
       simp
       rw [h1.1]
-    · exact mul_isProper_of_isProper_isProper h1.2 h2.2
+    · exact isProper_mul h1.2 h2.2
   one_mem' := by
     constructor
     · simp
     · simp
   inv_mem' {Λ} h := by
     constructor
-    · simp [minkowskiMatrix.dual_apply, h.1]
-    · simpa [IsProper] using h.2
-
+    · simp [inv_eq_dual, minkowskiMatrix.dual_apply, h.1]
+    · simpa [inv_eq_dual, IsProper] using h.2
 
 lemma mem_rotations_iff {d} (Λ : LorentzGroup d) :
     Λ ∈ Rotations d ↔ Λ.1 (Sum.inl 0) (Sum.inl 0) = 1 ∧ IsProper Λ := by
@@ -53,7 +52,7 @@ lemma transpose_mem_rotations {d} (Λ : LorentzGroup d) :
     transpose Λ ∈ Rotations d ↔ Λ ∈ Rotations d := by
   simp [mem_rotations_iff, LorentzGroup.transpose_val, IsProper]
 
-/-- The homomorphism from the special orthogonal group to the Lorentz group. -/
+/-- The group homomorphism from the special orthogonal group to the Lorentz group. -/
 def ofSpecialOrthogonal {d} :
     Matrix.specialOrthogonalGroup (Fin d) ℝ ≃* Rotations d where
   toFun A := ⟨⟨Matrix.fromBlocks 1 0 0 A, by
@@ -87,13 +86,13 @@ def ofSpecialOrthogonal {d} :
       match i, j with
       | .inl 0, .inl 0 => simp [h.1]
       | .inl 0, .inr j =>
-        simp
+        simp only [Fin.isValue, Matrix.fromBlocks_apply₁₂, Matrix.zero_apply]
         trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr j)
         · simp
         rw [← h2]
         simp [LorentzGroup.transpose_val]
       | .inr i, .inl 0 =>
-        simp
+        simp only [Fin.isValue, Matrix.fromBlocks_apply₂₁, Matrix.zero_apply]
         trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr i)
         · simp
         rw [← h1]

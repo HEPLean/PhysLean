@@ -129,7 +129,7 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
           rw [SL2CRep_ρ_basis, SL2C.toSelfAdjointMap_σSA]
           simp only [SL2C.toLorentzGroup_apply_coe, Fintype.sum_sum_type, Finset.univ_unique,
             Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, map_inv,
-            lorentzGroupIsGroup_inv, AddSubgroup.coe_add, selfAdjoint.val_smul,
+            LorentzGroup.inv_eq_dual, AddSubgroup.coe_add, selfAdjoint.val_smul,
             AddSubgroup.val_finset_sum, map_add, map_sum]
       _ = ∑ x, ∑ i, ∑ j, ((SL2C.toLorentzGroup M).1 i x • (complexContrBasis i)) ⊗ₜ[ℂ]
             leftRightToMatrix.symm.toLinearMap ((SL2C.toLorentzGroup M⁻¹).1 x j • (σSA j)) := by
@@ -142,7 +142,7 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
             ((SL2C.toLorentzGroup M⁻¹).1 x j • leftRightToMatrix.symm ((σSA j))) := by
           refine Finset.sum_congr rfl (fun x _ => (Finset.sum_congr rfl (fun i _ =>
             (Finset.sum_congr rfl (fun j _ => ?_)))))
-          simp only [SL2C.toLorentzGroup_apply_coe, map_inv, lorentzGroupIsGroup_inv,
+          simp only [SL2C.toLorentzGroup_apply_coe, map_inv, LorentzGroup.inv_eq_dual,
             LinearMap.map_smul_of_tower, LinearEquiv.coe_coe, tmul_smul]
       _ = ∑ x, ∑ i, ∑ j, ((SL2C.toLorentzGroup M).1 i x * (SL2C.toLorentzGroup M⁻¹).1 x j)
           • ((complexContrBasis i)) ⊗ₜ[ℂ] leftRightToMatrix.symm ((σSA j)) := by

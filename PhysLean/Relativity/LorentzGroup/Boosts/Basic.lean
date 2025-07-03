@@ -201,7 +201,7 @@ lemma boost_zero_eq_id (i : Fin d) : boost i 0 (by simp) = 1 := by
 
 lemma boost_inverse (i : Fin d) {β : ℝ} (hβ : |β| < 1) :
     (boost i β hβ)⁻¹ = boost i (-β) (by simpa using hβ) := by
-  rw [lorentzGroupIsGroup_inv]
+  rw [inv_eq_dual]
   ext j k
   simp only
   rw [minkowskiMatrix.dual_apply]

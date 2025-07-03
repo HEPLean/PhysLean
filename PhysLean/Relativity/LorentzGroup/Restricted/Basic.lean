@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.SemiFormal
-import PhysLean.Relativity.LorentzGroup.Orthochronous
+import PhysLean.Relativity.LorentzGroup.Orthochronous.Basic
 /-!
 # The Restricted Lorentz Group
 
@@ -31,8 +31,8 @@ def restricted (d : ℕ) : Subgroup (LorentzGroup d) where
   mul_mem' := by
     rintro Λ₁ Λ₂ ⟨Λ₁_proper, Λ₁_ortho⟩ ⟨Λ₂_proper, Λ₂_ortho⟩
     exact ⟨
-      by exact mul_isProper_of_isProper_isProper Λ₁_proper Λ₂_proper,
-      by exact mul_othchron_of_othchron_othchron Λ₁_ortho Λ₂_ortho⟩
+      by exact isProper_mul Λ₁_proper Λ₂_proper,
+      by exact isOrthochronous_mul Λ₁_ortho Λ₂_ortho⟩
   inv_mem' := by
     rintro Λ ⟨Λ_proper, Λ_ortho⟩
 
@@ -42,7 +42,7 @@ def restricted (d : ℕ) : Subgroup (LorentzGroup d) where
 
     exact ⟨
       by rw [IsProper, inv_eq_dual, det_dual, Λ_proper],
-      by rw [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
+      by simp [IsOrthochronous, inv_eq_dual, h_dual]; exact Λ_ortho⟩
 
 lemma isOrthochronous_of_restricted {d : ℕ} (Λ : restricted d) :
     IsOrthochronous Λ.1 := Λ.2.2
@@ -54,12 +54,14 @@ lemma restricted_normal_subgroup {d : ℕ} : (restricted d).Normal := by
     rw [hP, mul_one, ← det_mul, coe_inv, mul_inv_of_invertible, det_one]
   have h_ortho {Λ O : LorentzGroup d} (hO : IsOrthochronous O) : IsOrthochronous (Λ * O * Λ⁻¹) := by
     by_cases hΛ : IsOrthochronous Λ
-    · exact mul_othchron_of_othchron_othchron
-        (mul_othchron_of_othchron_othchron hΛ hO)
-        (IsOrthochronous.iff_inv_isOrthochronous.mp hΛ)
-    · exact mul_othchron_of_not_othchron_not_othchron
-        (mul_not_othchron_of_not_othchron_othchron hΛ hO)
-        (IsOrthochronous.iff_inv_isOrthochronous.not.mp hΛ)
+    · exact isOrthochronous_mul
+        (isOrthochronous_mul hΛ hO)
+        (isOrthochronous_inv_iff.mpr hΛ)
+    · rw [isOrthochronous_mul_iff, isOrthochronous_inv_iff]
+      simp_all
+      rw [isOrthochronous_mul_iff]
+      simp_all
+  have hO : IsOrthochronous (1 : LorentzGroup d) := id_isOrthochronous
   constructor
   rintro R ⟨R_proper, R_ortho⟩ Λ
   exact ⟨h_proper R_proper, h_ortho R_ortho⟩
@@ -82,7 +84,7 @@ lemma restricted_eq_identity_component_of_isConnected {d : ℕ}
     have h_id : 1 ∈ restricted d := by simp [restricted, IsOrthochronous]
     exact IsConnected.subset_connectedComponent h1 h_id hx
   · intro h
-    exact ⟨(isProper_on_connected_component h).mp id_IsProper,
+    exact ⟨(isProper_on_connected_component h).mp isProper_id,
           (isOrthochronous_on_connected_component h).mp id_isOrthochronous⟩
 
 end LorentzGroup

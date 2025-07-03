@@ -70,7 +70,7 @@ def genBoostAux₂ (u v : Velocity d) : Vector d →ₗ[ℝ] Vector d where
 lemma genBoostAux₂_self (u : Velocity d) : genBoostAux₂ u u = - genBoostAux₁ u u := by
   ext1 x
   simp only [genBoostAux₂, LinearMap.coe_mk, AddHom.coe_mk, genBoostAux₁, LinearMap.neg_apply]
-  rw [neg_smul]
+  rw [_root_.neg_smul]
   apply congrArg
   conv => lhs; rhs; rw [← (two_smul ℝ u.val)]
   rw [smul_smul]
@@ -228,7 +228,7 @@ def generalizedBoost (u v : Velocity d) : LorentzGroup d :=
 lemma generalizedBoost_apply (u v : Velocity d) (x : Vector d) :
     generalizedBoost u v • x = x + genBoostAux₁ u v x + genBoostAux₂ u v x:= by
   apply toCoord_injective
-  rw [action_toCoord_eq_mulVec]
+  rw [toCoord_smul_eq_mulVec]
   simp [generalizedBoost]
   rw [Matrix.add_mulVec, Matrix.add_mulVec]
   simp
@@ -259,7 +259,7 @@ lemma generalizedBoost_apply_mul_one_plus_contr (u v : Velocity d) (x : Vector d
       congr
       have h1 := Velocity.one_add_minkowskiProduct_neq_zero u v
       field_simp
-  · rw [neg_smul]
+  · rw [_root_.neg_smul]
     rfl
 
 lemma generalizedBoost_apply_expand (u v : Velocity d) (x : Vector d) :
@@ -395,7 +395,7 @@ lemma generalizedBoost_in_connected_component_of_id (u v : Velocity d) :
   pathComponent_subset_component _ (id_joined_generalizedBoost u v)
 
 lemma generalizedBoost_isProper (u v : Velocity d) : IsProper (generalizedBoost u v) :=
-  (isProper_on_connected_component (generalizedBoost_in_connected_component_of_id u v)).mp id_IsProper
+  (isProper_on_connected_component (generalizedBoost_in_connected_component_of_id u v)).mp isProper_id
 
 lemma generalizedBoost_isOrthochronous (u v : Velocity d) :
     IsOrthochronous (generalizedBoost u v) :=

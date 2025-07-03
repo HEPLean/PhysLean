@@ -61,12 +61,29 @@ lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
+/-- The `time-time` component of the Minkowski matrix is `1`. -/
+@[simp]
+lemma inl_0_inl_0 : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
+  rfl
+
+/-- The space diagonal components of the Minkowski matrix are `-1`. -/
+@[simp]
+lemma inr_i_inr_i (i : Fin d) : @minkowskiMatrix d (Sum.inr i) (Sum.inr i) = -1 := by
+  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  simp_all only [diagonal_apply_eq, Sum.elim_inr]
+
+/-- The off diagonal elements of the Minkowski matrix are zero. -/
+@[simp]
+lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := by
+  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  exact diagonal_apply_ne _ h
+
 /-- Multiplying any element on the diagonal of the Minkowski matrix by itself gives `1`. -/
 @[simp]
 lemma η_apply_mul_η_apply_diag (μ : Fin 1 ⊕ Fin d) : η μ μ * η μ μ = 1 := by
   match μ with
-  | Sum.inl _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  | Sum.inr _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  | Sum.inl 0 => simp
+  | Sum.inr _ => simp
 
 @[simp]
 lemma η_apply_sq_eq_one (μ : Fin 1 ⊕ Fin d) :
@@ -78,8 +95,8 @@ lemma η_apply_sq_eq_one (μ : Fin 1 ⊕ Fin d) :
 lemma η_diag_ne_zero {μ : Fin 1 ⊕ Fin d} :
     η μ μ ≠ 0 := by
   match μ with
-  | Sum.inl _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  | Sum.inr _ => simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  | Sum.inl 0 => simp
+  | Sum.inr _ => simp
 
 lemma mul_η_diag_eq_iff {μ : Fin 1 ⊕ Fin d} {x y : ℝ} :
     η μ μ * x = η μ μ * y ↔ x = y := by
@@ -96,34 +113,25 @@ lemma as_block : @minkowskiMatrix d =
   rw [← diagonal_neg]
   rfl
 
-/-- The off diagonal elements of the Minkowski matrix are zero. -/
-@[simp]
-lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := by
-  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  exact diagonal_apply_ne _ h
-
-/-- The `time-time` component of the Minkowski matrix is `1`. -/
-lemma inl_0_inl_0 : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
-  rfl
-
-/-- The space diagonal components of the Minkowski matrix are `-1`. -/
-lemma inr_i_inr_i (i : Fin d) : @minkowskiMatrix d (Sum.inr i) (Sum.inr i) = -1 := by
-  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  simp_all only [diagonal_apply_eq, Sum.elim_inr]
-
 /-- The time components of a vector acted on by the Minkowski matrix remains unchanged. -/
 @[simp]
 lemma mulVec_inl_0 (v : (Fin 1 ⊕ Fin d) → ℝ) :
-    (η *ᵥ v) (Sum.inl 0)= v (Sum.inl 0) := by
+    (η *ᵥ v) (Sum.inl 0) = v (Sum.inl 0) := by
   simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal]
   simp only [Fin.isValue, diagonal_dotProduct, Sum.elim_inl, one_mul]
 
 /-- The space components of a vector acted on by the Minkowski matrix swaps sign. -/
 @[simp]
 lemma mulVec_inr_i (v : (Fin 1 ⊕ Fin d) → ℝ) (i : Fin d) :
-    (η *ᵥ v) (Sum.inr i)= - v (Sum.inr i) := by
+    (η *ᵥ v) (Sum.inr i) = - v (Sum.inr i) := by
   simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal]
   simp only [diagonal_dotProduct, Sum.elim_inr, neg_mul, one_mul]
+
+/-!
+
+## The dual of a matrix with respect to the Minkowski metric
+
+-/
 
 variable (Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
 

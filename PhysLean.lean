@@ -212,7 +212,7 @@ import PhysLean.Relativity.LorentzGroup.Basic
 import PhysLean.Relativity.LorentzGroup.Boosts.Apply
 import PhysLean.Relativity.LorentzGroup.Boosts.Basic
 import PhysLean.Relativity.LorentzGroup.Boosts.Generalized
-import PhysLean.Relativity.LorentzGroup.Orthochronous
+import PhysLean.Relativity.LorentzGroup.Orthochronous.Basic
 import PhysLean.Relativity.LorentzGroup.Proper
 import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 import PhysLean.Relativity.LorentzGroup.Rotations
@@ -270,13 +270,13 @@ import PhysLean.Relativity.Tensors.RealTensor.Metrics.Pre
 import PhysLean.Relativity.Tensors.RealTensor.ToComplex
 import PhysLean.Relativity.Tensors.RealTensor.Units.Pre
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
+import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.LightLike
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.TimeLike
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Contraction
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Modules
-import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.NormOne
 import PhysLean.Relativity.Tensors.RealTensor.Velocity.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.UnitTensor

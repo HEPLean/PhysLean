@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
+import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 import PhysLean.Relativity.LorentzGroup.Boosts.Basic
 /-!
 
@@ -23,7 +23,7 @@ namespace Vector
 
 lemma boost_time_eq (i : Fin d) (β : ℝ) (hβ : |β| < 1) (p : Vector d) :
     (boost i β hβ • p) (Sum.inl 0) = γ β * (p (Sum.inl 0) - β * p (Sum.inr i)) := by
-  rw [action_apply_eq_sum]
+  rw [smul_eq_sum]
   simp [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
     Finset.sum_singleton]
   rw [Finset.sum_eq_single i]
@@ -37,7 +37,7 @@ lemma boost_time_eq (i : Fin d) (β : ℝ) (hβ : |β| < 1) (p : Vector d) :
 
 lemma boost_inr_self_eq (i : Fin d) (β : ℝ) (hβ : |β| < 1) (p : Vector d) :
     (boost i β hβ • p) (Sum.inr i) = γ β * (p (Sum.inr i) - β * p (Sum.inl 0)) := by
-  rw [action_apply_eq_sum]
+  rw [smul_eq_sum]
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, boost_inr_self_inl_0, neg_mul]
   rw [Finset.sum_eq_single i]
@@ -51,7 +51,7 @@ lemma boost_inr_self_eq (i : Fin d) (β : ℝ) (hβ : |β| < 1) (p : Vector d) :
 
 lemma boost_inr_other_eq (i j : Fin d) (hji : j ≠ i) (β : ℝ) (hβ : |β| < 1) (p : Vector d) :
     (boost i β hβ • p) (Sum.inr j) = p (Sum.inr j) := by
-  rw [action_apply_eq_sum]
+  rw [smul_eq_sum]
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton]
   rw [boost_inr_other_inl_0 hβ hji]
