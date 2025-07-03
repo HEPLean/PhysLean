@@ -231,7 +231,7 @@ lemma generalizedBoost_apply (u v : Velocity d) (x : Vector d) :
   rw [toCoord_smul_eq_mulVec]
   simp [generalizedBoost]
   rw [Matrix.add_mulVec, Matrix.add_mulVec]
-  simp
+  simp only [Matrix.one_mulVec]
   conv_lhs =>
     enter [2]
     rw [← basis_repr_apply_eq_toCoord, LinearMap.toMatrix_mulVec_repr]
@@ -241,10 +241,10 @@ lemma generalizedBoost_apply (u v : Velocity d) (x : Vector d) :
   rfl
 
 lemma generalizedBoost_apply_mul_one_plus_contr (u v : Velocity d) (x : Vector d) :
-    (1 + ⟪u, v.1⟫ₘ) • generalizedBoost u v • x =  (1 + ⟪u, v.1⟫ₘ) • x +
+    (1 + ⟪u, v.1⟫ₘ) • generalizedBoost u v • x = (1 + ⟪u, v.1⟫ₘ) • x +
     (2 * ⟪x, u⟫ₘ * (1 + ⟪u, v.1⟫ₘ)) • v - ⟪x, u + v⟫ₘ • (u + v) := by
   rw [generalizedBoost_apply, smul_add, smul_add]
-  trans (1 + ⟪u, v.1⟫ₘ) • x +  (2 * ⟪x, u⟫ₘ * (1 + ⟪u, v.1⟫ₘ)) • v
+  trans (1 + ⟪u, v.1⟫ₘ) • x + (2 * ⟪x, u⟫ₘ * (1 + ⟪u, v.1⟫ₘ)) • v
     + (- ⟪x, u + v⟫ₘ) • (u + v)
   · congr 1
     · congr 1
@@ -276,7 +276,7 @@ lemma generalizedBoost_apply_expand (u v : Velocity d) (x : Vector d) :
     field_simp
 
 @[simp]
-lemma generalizedBoost_apply_fst (u v : Velocity d)  :
+lemma generalizedBoost_apply_fst (u v : Velocity d) :
     generalizedBoost u v • u.1 = v.1 := by
   apply (smul_right_inj (Velocity.one_add_minkowskiProduct_neq_zero u v)).mp
   rw [generalizedBoost_apply_mul_one_plus_contr]
@@ -287,11 +287,12 @@ lemma generalizedBoost_apply_fst (u v : Velocity d)  :
   ring
 
 @[simp]
-lemma generalizedBoost_apply_snd (u v : Velocity d)  :
-    generalizedBoost u v • v.1 =  (2 * ⟪u, v.1⟫ₘ) • ↑v - ↑u:= by
+lemma generalizedBoost_apply_snd (u v : Velocity d) :
+    generalizedBoost u v • v.1 = (2 * ⟪u, v.1⟫ₘ) • ↑v - ↑u:= by
   apply (smul_right_inj (Velocity.one_add_minkowskiProduct_neq_zero u v)).mp
   rw [generalizedBoost_apply_mul_one_plus_contr]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Velocity.minkowskiProduct_self_eq_one,
+    smul_add]
   repeat rw [minkowskiProduct_symm v.1 u.1]
   abel_nf
   rw [smul_add, smul_smul]
@@ -395,7 +396,8 @@ lemma generalizedBoost_in_connected_component_of_id (u v : Velocity d) :
   pathComponent_subset_component _ (id_joined_generalizedBoost u v)
 
 lemma generalizedBoost_isProper (u v : Velocity d) : IsProper (generalizedBoost u v) :=
-  (isProper_on_connected_component (generalizedBoost_in_connected_component_of_id u v)).mp isProper_id
+  (isProper_on_connected_component
+    (generalizedBoost_in_connected_component_of_id u v)).mp isProper_id
 
 lemma generalizedBoost_isOrthochronous (u v : Velocity d) :
     IsOrthochronous (generalizedBoost u v) :=
@@ -410,7 +412,7 @@ lemma generalizedBoost_mem_restricted (u v : Velocity d) :
   · exact generalizedBoost_isOrthochronous u v
 
 lemma generalizedBoost_inv (u v : Velocity d) :
-     (generalizedBoost u v)⁻¹ = generalizedBoost v u := by
+    (generalizedBoost u v)⁻¹ = generalizedBoost v u := by
   rw [← mul_eq_one_iff_inv_eq']
   apply LorentzGroup.eq_of_action_vector_eq
   intro p
@@ -425,15 +427,15 @@ lemma generalizedBoost_inv (u v : Velocity d) :
       ⟪p, u.1 + v.1⟫ₘ • (u.1 + v.1) +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ)) • u.1 -
       ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1)) := by abel
-    _ =  (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • v.1 +
+    _ = (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • v.1 +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • u.1 -
       ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1)) := by
         rw [sub_smul, sub_smul, smul_add]
         abel_nf
     _ = (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
-      -  ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • v.1 +
+      - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • v.1 +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
-      - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ ) • u.1) := by
+      - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • u.1) := by
         conv_rhs =>
           rw [sub_smul]
           enter [2, 2]
@@ -473,10 +475,10 @@ the TODO item `FXQ45` is completed.
 -/
 @[sorryful]
 lemma generalizedBoost_timeComponent_eq (u v : Velocity d) :
-  (generalizedBoost u v).1 (Sum.inl 0) (Sum.inl 0) = 1 +
-    ‖u.1.timeComponent • v.1.spatialPart - v.1.timeComponent • u.1.spatialPart‖ / (1 + ⟪u.1, v.1⟫ₘ) := by
+    (generalizedBoost u v).1 (Sum.inl 0) (Sum.inl 0) = 1 +
+    ‖u.1.timeComponent • v.1.spatialPart -
+      v.1.timeComponent • u.1.spatialPart‖ / (1 + ⟪u.1, v.1⟫ₘ) := by
   sorry
-
 
 end LorentzGroup
 

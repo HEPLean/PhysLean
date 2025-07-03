@@ -83,7 +83,7 @@ lemma toVector_eq_basis_iff_timeComponent_eq_one {d : ℕ} (Λ : LorentzGroup d)
     match i with
     | Sum.inl 0 => simp [h]
     | Sum.inr j =>
-      simp
+      simp?
       rw [← toVector_toCoord_apply]
       change (toVector Λ).spatialPart j = 0
       rw [h1]
@@ -94,7 +94,7 @@ lemma smul_timeComponent_eq_toVector_minkowskiProduct {d : ℕ} (Λ : LorentzGro
     (Λ • v).timeComponent = ⟪toVector Λ⁻¹, v⟫ₘ := by
   simp [timeComponent]
   rw [smul_eq_sum]
-  simp
+  simp?
   rw [minkowskiProduct_eq_timeComponent_spatialPart]
   congr
   · simp [inv_eq_dual, minkowskiMatrix.dual_apply, minkowskiMatrix.inl_0_inl_0]

@@ -40,11 +40,10 @@ lemma ComponentIdx.congr_right {n : ℕ} {c : Fin n → C} (b : ComponentIdx (S 
   rfl
 
 /-- Casting of a `ComponentIdx` through equivalent color maps. -/
-def ComponentIdx.cast {n m : ℕ} {c : Fin n → C}  {cm : Fin m → C}
-    (h : n = m) (hc : c  = cm ∘ Fin.cast h) (b : ComponentIdx (S := S) c) :
+def ComponentIdx.cast {n m : ℕ} {c : Fin n → C} {cm : Fin m → C}
+    (h : n = m) (hc : c = cm ∘ Fin.cast h) (b : ComponentIdx (S := S) c) :
     ComponentIdx (S := S) cm := fun j =>
       Fin.cast (by simp [hc]) (b (Fin.cast h.symm j))
-
 
 /-!
 
@@ -256,7 +255,7 @@ lemma componentMap_apply {n : ℕ} (c : Fin n → C)
 
 /-- Given an component idx `b` in `ComponentIdx c`, `basisVector c b` is the pure tensor
   formed by `S.basis (c i) (b i)`. -/
-noncomputable def basisVector {n : ℕ} (c : Fin n → C) (b : ComponentIdx  (S := S) c) : Pure S c :=
+noncomputable def basisVector {n : ℕ} (c : Fin n → C) (b : ComponentIdx (S := S) c) : Pure S c :=
   fun i => S.basis (c i) (b i)
 
 @[simp]

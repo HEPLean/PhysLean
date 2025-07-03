@@ -112,8 +112,6 @@ instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   inv A := ⟨minkowskiMatrix.dual A.1, LorentzGroup.dual_mem A.2⟩
   inv_mul_cancel A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
 
-
-
 /-- `LorentzGroup` has the subtype topology. -/
 instance : TopologicalSpace (LorentzGroup d) := instTopologicalSpaceSubtype
 
@@ -200,7 +198,6 @@ lemma minkowskiMatrix_comm : minkowskiMatrix * Λ.1 = (transpose Λ⁻¹).1 * mi
     simp only [subtype_inv_mul]
   rw [h1]
   simp
-
 
 /-!
 

@@ -34,7 +34,7 @@ def IsOrthochronous : Prop := 0 ≤ Λ.1 (Sum.inl 0) (Sum.inl 0)
   future pointing. -/
 lemma isOrthochronous_iff_toVector_timeComponet_nonneg :
     IsOrthochronous Λ ↔ 0 ≤ (toVector Λ).timeComponent := by
-  simp  [IsOrthochronous, timeComponent]
+  simp [IsOrthochronous, timeComponent]
 
 /-- A Lorentz transformation is orthochronous if and only if its transpose is orthochronous. -/
 lemma isOrthochronous_iff_transpose :
@@ -60,7 +60,8 @@ lemma isOrthochronous_iff_ge_one :
   · intro h
     linarith
 
-
+/-- The `Lorentz.Velocity` from `Lorentz.toVector` of a orthochronous lorentz
+  transformation. -/
 def orthochronoustoVelocity {Λ : LorentzGroup d} (h : IsOrthochronous Λ) :
     Lorentz.Velocity d := ⟨toVector Λ, by
       rw [isOrthochronous_iff_ge_one] at h
@@ -110,7 +111,7 @@ lemma not_isOrthochronous_iff_le_zero : ¬ IsOrthochronous Λ ↔ Λ.1 (Sum.inl 
 
 lemma not_isOrthochronous_iff_toVector_timeComponet_nonpos :
     ¬ IsOrthochronous Λ ↔ (toVector Λ).timeComponent ≤ 0:= by
-  rw  [not_isOrthochronous_iff_le_zero]
+  rw [not_isOrthochronous_iff_le_zero]
   simp
 
 /-- The identity Lorentz transformation is orthochronous. -/
@@ -202,7 +203,6 @@ lemma isOrthochronous_mul {Λ Λ' : LorentzGroup d} (h : IsOrthochronous Λ)
   exact Lorentz.Velocity.zero_le_minkowskiProduct
     (orthochronoustoVelocity (isOrthochronous_inv_iff.mpr h)) (orthochronoustoVelocity h')
 
-
 lemma isOrthochronous_mul_iff {Λ Λ' : LorentzGroup d} :
     IsOrthochronous (Λ * Λ') ↔ (IsOrthochronous Λ = IsOrthochronous Λ') := by
   by_cases h : IsOrthochronous Λ <;> by_cases h' : IsOrthochronous Λ'
@@ -216,7 +216,7 @@ lemma isOrthochronous_mul_iff {Λ Λ' : LorentzGroup d} :
     · rfl
   · rw [not_isOrthochronous_iff_toVector_timeComponet_nonpos]
     rw [toVector_mul, smul_timeComponent_eq_toVector_minkowskiProduct]
-    simp
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd]
     trans - ⟪orthochronoustoVelocity (isOrthochronous_inv_iff.mpr h),
       (orthochronoustoVelocity (neg_isOrthochronous_iff_not.mpr h')).1⟫ₘ
     · simp [orthochronoustoVelocity, toVector_neg]
@@ -224,7 +224,8 @@ lemma isOrthochronous_mul_iff {Λ Λ' : LorentzGroup d} :
       exact Lorentz.Velocity.zero_le_minkowskiProduct _ _
   · rw [not_isOrthochronous_iff_toVector_timeComponet_nonpos]
     rw [toVector_mul, smul_timeComponent_eq_toVector_minkowskiProduct]
-    trans - ⟪orthochronoustoVelocity (isOrthochronous_inv_iff.mpr (neg_isOrthochronous_iff_not.mpr h)),
+    trans - ⟪orthochronoustoVelocity
+      (isOrthochronous_inv_iff.mpr (neg_isOrthochronous_iff_not.mpr h)),
       (orthochronoustoVelocity h').1⟫ₘ
     · simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
         orthochronoustoVelocity, coe_neg, LorentzGroup.inv_neg, toVector_neg]
@@ -233,11 +234,11 @@ lemma isOrthochronous_mul_iff {Λ Λ' : LorentzGroup d} :
       exact Lorentz.Velocity.zero_le_minkowskiProduct _ _
   · rw [isOrthochronous_iff_toVector_timeComponet_nonneg]
     rw [toVector_mul, smul_timeComponent_eq_toVector_minkowskiProduct]
-    trans ⟪orthochronoustoVelocity (isOrthochronous_inv_iff.mpr (neg_isOrthochronous_iff_not.mpr h)),
+    trans ⟪orthochronoustoVelocity
+      (isOrthochronous_inv_iff.mpr (neg_isOrthochronous_iff_not.mpr h)),
       (orthochronoustoVelocity (neg_isOrthochronous_iff_not.mpr h')).1⟫ₘ
     · exact Lorentz.Velocity.zero_le_minkowskiProduct _ _
     · simp [orthochronoustoVelocity, toVector_neg, LorentzGroup.inv_neg]
-
 
 /-- The homomorphism from `LorentzGroup` to `ℤ₂`. -/
 def orthchroRep : LorentzGroup d →* ℤ₂ where

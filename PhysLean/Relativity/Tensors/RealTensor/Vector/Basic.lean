@@ -205,7 +205,7 @@ lemma toCoord_smul_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
     mul_comm]
 
 lemma smul_toCoord_symm_eq_mulVec {d} (Λ : LorentzGroup d) (p : Fin 1 ⊕ Fin d → ℝ) :
-    Λ • toCoord.symm p = toCoord.symm (Λ.1 *ᵥ p):= by
+    Λ • toCoord.symm p = toCoord.symm (Λ.1 *ᵥ p) := by
   apply toCoord_injective
   rw [toCoord_smul_eq_mulVec]
   simp

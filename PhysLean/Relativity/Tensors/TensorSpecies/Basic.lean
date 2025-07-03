@@ -132,7 +132,7 @@ instance F_braided : Functor.Braided S.F := Functor.Braided.mk
 set_option linter.unusedVariables false in
 /-- Casts an element of the monoidal unit of `Rep k G` to the field `k`. -/
 def castToField {S : TensorSpecies k C G}
-  (v : (↑((𝟙_ (Discrete C ⥤ Rep k G)).obj { as := c }).V)) : k := v
+    (v : (↑((𝟙_ (Discrete C ⥤ Rep k G)).obj { as := c }).V)) : k := v
 
 /-- Casts an element of `(S.F.obj (OverColor.mk c)).V` for `c` a map from `Fin 0` to an
   element of the field. -/

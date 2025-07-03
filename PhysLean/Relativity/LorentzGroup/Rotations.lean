@@ -17,7 +17,6 @@ noncomputable section
 
 namespace LorentzGroup
 
-
 /-- The subgroup of rotations of the Lorentz group. -/
 def Rotations (d) : Subgroup (LorentzGroup d) where
   carrier Λ := Λ.1 (Sum.inl 0) (Sum.inl 0) = 1 ∧ IsProper Λ
@@ -31,7 +30,10 @@ def Rotations (d) : Subgroup (LorentzGroup d) where
       simp [Lorentz.Vector.timeComponent]
       rw [Lorentz.Vector.toCoord_smul_eq_mulVec]
       rw [Matrix.mulVec_eq_sum]
-      simp
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Lorentz.Vector.toCoord_basis,
+        op_smul_eq_smul, ite_smul, one_smul, zero_smul, Finset.sum_apply, Fintype.sum_sum_type,
+        Finset.univ_unique, Fin.default_eq_zero, Sum.inl.injEq, Finset.sum_singleton, ↓reduceIte,
+        Matrix.transpose_apply, reduceCtorEq, Pi.zero_apply, Finset.sum_const_zero, add_zero]
       rw [h1.1]
     · exact isProper_mul h1.2 h2.2
   one_mem' := by
@@ -118,7 +120,7 @@ def ofSpecialOrthogonal {d} :
         · exact h.2⟩
   map_mul' A B := by
     apply Subtype.eq
-    simp
+    simp only [Submonoid.coe_mul, MulMemClass.mk_mul_mk]
     apply Subtype.eq
     simp [Matrix.fromBlocks_multiply]
   left_inv Λ := by
@@ -139,20 +141,20 @@ def ofSpecialOrthogonal {d} :
       match i, j with
       | .inl 0, .inl 0 => simp [h.1]
       | .inl 0, .inr j =>
-        simp
+        simp only [Fin.isValue, Matrix.fromBlocks_apply₁₂, Matrix.zero_apply]
         trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr j)
         · simp
         rw [← h2]
         simp [LorentzGroup.transpose_val]
       | .inr i, .inl 0 =>
-        simp
+        simp only [Fin.isValue, Matrix.fromBlocks_apply₂₁, Matrix.zero_apply]
         trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr i)
         · simp
         rw [← h1]
         simp
       | .inr i, .inr j => rfl
     apply Subtype.eq
-    simp
+    simp only
     exact eq_of_mulVec_eq (congrFun (congrArg Matrix.mulVec h1))
 
 @[fun_prop]
@@ -163,7 +165,8 @@ lemma ofSpecialOrthogonal_continuous {d} :
 
 @[fun_prop]
 lemma ofSpecialOrthogonal_symm_continuous {d} :
-    Continuous (ofSpecialOrthogonal.symm : Rotations d → Matrix.specialOrthogonalGroup (Fin d) ℝ) := by
+    Continuous (ofSpecialOrthogonal.symm :
+      Rotations d → Matrix.specialOrthogonalGroup (Fin d) ℝ) := by
   simp only [ofSpecialOrthogonal, MulEquiv.symm_mk, MulEquiv.coe_mk, Equiv.coe_fn_symm_mk]
   apply Continuous.subtype_mk
   refine Continuous.matrix_submatrix ?_ Sum.inr Sum.inr

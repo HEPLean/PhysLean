@@ -20,7 +20,8 @@ open Tensor
 /-- The map between coordinates given a map ` ℝT(d, cm) → ℝT(d, cn)`. -/
 noncomputable def mapToBasis {d n m : ℕ} {cm : Fin m → realLorentzTensor.Color}
     {cn : Fin n → realLorentzTensor.Color} (f : ℝT(d, cm) → ℝT(d, cn)) :
-    (ComponentIdx (S := realLorentzTensor d) cm → ℝ) → ComponentIdx (S := realLorentzTensor d) cn → ℝ :=
+    (ComponentIdx (S := realLorentzTensor d) cm → ℝ) →
+    ComponentIdx (S := realLorentzTensor d) cn → ℝ :=
   Finsupp.equivFunOnFinite ∘ (basis cn).repr.toEquiv.toFun ∘
   f ∘ (basis cm).repr.symm.toEquiv.toFun
   ∘ Finsupp.equivFunOnFinite.symm
