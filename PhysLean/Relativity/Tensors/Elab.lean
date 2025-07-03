@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.Contraction.Basic
 import PhysLean.Relativity.Tensors.Evaluation
+import PhysLean.Relativity.Tensors.Instance
 import PhysLean.Relativity.Tensors.Product
 /-!
 
@@ -263,7 +264,7 @@ syntax "-" tensorExpr : tensorExpr
 def getNumIndicesExact (stx : Syntax) : TermElabM ℕ := do
   match stx with
   | `($t:term) =>
-    let a ← elabTerm (← `(TensorSpecies.numIndices $t)) (some (mkConst ``Nat))
+    let a ← elabTerm (← `(Tensorial.numIndices $t)) (some (mkConst ``Nat))
     let a' ← whnf a
     match a' with
     | Expr.lit (Literal.natVal n) =>
@@ -368,7 +369,8 @@ open TensorSpecies
 
 /-- For a term of the form `T` where `T` is `S.F.obj (OverColor.mk c)`,
   `tensorTermToTensorTree` returns the term corresponding to the `tensorNode T` -/
-def nodeTermMap (T : Term) : Term := T
+def nodeTermMap (T : Term) : Term :=
+  Syntax.mkApp (mkIdent ``Tensorial.toTensor) #[T]
 
 /-- Given a list `l` of pairs `ℕ × ℕ` and a term `T` corresponding to a tensor tree,
   for each `(a, b)` in `l`, `evalSyntax` applies `TensorTree.eval a b` to `T` recursively.
@@ -489,19 +491,25 @@ elab_rules (kind:=tensorExprSyntax) : term
 ## Test cases
 
 -/
-
-open Tensor
 /-
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
-  {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.Tensor c}
-  {c1 c2 : S.C}
+open Tensor
+
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
+  {c : Fin (Nat.succ (Nat.succ 0)) → C} {t : S.Tensor c}
+  {c1 c2 : C}
   {t2 : S.Tensor ![c1, c2]}
   {t3 : S.Tensor ![S.τ c1, S.τ c2]}
   {t4 : S.Tensor ![c1, c2]}
   {t5 : S.Tensor ![S.τ c1, S.τ c2]}
+
+#synth Tensorial S ![c1, c2] (S.Tensor ![c1, c2])
+def x := Tensorial.toTensor t
+
 #check {t | α β }ᵀ
 
-#check {t4 | α β ⊗ t5 | α β}ᵀ-/
+#check {t4 | α β ⊗ t5 | α β}ᵀ
+
+-/
 end Tensor
 
 end TensorSpecies

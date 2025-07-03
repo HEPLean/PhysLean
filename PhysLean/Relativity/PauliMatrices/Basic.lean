@@ -158,6 +158,7 @@ lemma pauliCo_eq_ofRat : pauliCo = ofRat (fun b =>
   rw [pauliCo]
   rw [permT_basis_repr_symm_apply]
   rw [contrT_basis_repr_apply]
+  simp only [Tensorial.self_toTensor_apply]
   conv_lhs =>
     enter [2, x]
     rw [contr_basis_ratComplexNum]
@@ -183,6 +184,7 @@ lemma pauliCoDown_eq_ofRat : pauliCoDown = ofRat (fun b =>
   rw [pauliCoDown]
   rw [permT_basis_repr_symm_apply]
   rw [contrT_basis_repr_apply]
+  simp only [Tensorial.self_toTensor_apply]
   conv_lhs =>
     enter [2, x]
     rw [contr_basis_ratComplexNum]
@@ -220,6 +222,7 @@ lemma pauliContrDown_ofRat : pauliContrDown = ofRat (fun b =>
   rw [pauliContrDown]
   rw [permT_basis_repr_symm_apply]
   rw [contrT_basis_repr_apply]
+  simp only [Tensorial.self_toTensor_apply]
   conv_lhs =>
     enter [2, x]
     rw [contr_basis_ratComplexNum]
@@ -259,18 +262,24 @@ lemma actionT_pauliContr (g : SL(2,ℂ)) : g • pauliContr = pauliContr := by
 /-- The tensor `pauliCo` is invariant under the action of `SL(2,ℂ)`. -/
 lemma actionT_pauliCo (g : SL(2,ℂ)) : g • pauliCo = pauliCo := by
   rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant]
+  simp only [Tensorial.self_toTensor_apply]
   rw [actionT_pauliContr, actionT_coMetric]
+  rfl
 
 /-- The tensor `pauliCoDown` is invariant under the action of `SL(2,ℂ)`. -/
 lemma actionT_pauliCoDown (g : SL(2,ℂ)) : g • pauliCoDown = pauliCoDown := by
   rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant,
     ← contrT_equivariant, ← prodT_equivariant]
+  simp only [Tensorial.self_toTensor_apply]
   rw [actionT_pauliCo, actionT_altLeftMetric, actionT_altRightMetric]
+  rfl
 
 /-- The tensor `pauliContrDown` is invariant under the action of `SL(2,ℂ)`. -/
 lemma actionT_pauliContrDown (g : SL(2,ℂ)) : g • pauliContrDown = pauliContrDown := by
   rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant,
     ← contrT_equivariant, ← prodT_equivariant]
+  simp only [Tensorial.self_toTensor_apply]
   rw [actionT_pauliContr, actionT_altLeftMetric, actionT_altRightMetric]
+  rfl
 
 end PauliMatrix

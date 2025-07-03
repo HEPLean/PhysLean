@@ -47,15 +47,15 @@ lemma timelike_time_dominates_space {d : ℕ} {v : Vector d}
   rw [minkowskiProduct_toCoord] at hv
   simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, Fin.isValue]
   have h_spatial_sum : ∑ x, spatialPart v x * spatialPart v x =
-                    ∑ i, toCoord v (Sum.inr i) * toCoord v (Sum.inr i) := by
+                    ∑ i,  v (Sum.inr i) *  v (Sum.inr i) := by
       simp only [spatialPart]
-  have h_time : timeComponent v = toCoord v (Sum.inl 0) := rfl
+  have h_time : timeComponent v =  v (Sum.inl 0) := rfl
   rw [h_spatial_sum, h_time]
-  have h_norm_pos : 0 < toCoord v (Sum.inl 0) * toCoord v (Sum.inl 0) -
-                  ∑ i, toCoord v (Sum.inr i) * toCoord v (Sum.inr i) := hv
+  have h_norm_pos : 0 < v (Sum.inl 0) * v (Sum.inl 0) -
+                  ∑ i,  v (Sum.inr i) * v (Sum.inr i) := hv
   -- Rearrange the inequality
-  have h : ∑ i, toCoord v (Sum.inr i) * toCoord v (Sum.inr i) <
-          toCoord v (Sum.inl 0) * toCoord v (Sum.inl 0) := by
+  have h : ∑ i,  v (Sum.inr i) * v (Sum.inr i) <
+           v (Sum.inl 0) * v (Sum.inl 0) := by
     exact lt_of_sub_pos h_norm_pos
   exact h
 

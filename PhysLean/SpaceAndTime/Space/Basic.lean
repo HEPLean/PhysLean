@@ -42,6 +42,12 @@ namespace Space
 noncomputable def basis : OrthonormalBasis (Fin d) ℝ (Space d) :=
   EuclideanSpace.basisFun (Fin d) ℝ
 
+lemma basis_apply (i j : Fin d) :
+    basis i j = if i = j then 1 else 0 := by
+  simp [basis, EuclideanSpace.basisFun_apply, Fin.isValue]
+  congr 1
+  exact Lean.Grind.eq_congr' rfl rfl
+
 /-- The standard coordinate functions of Space based on `Fin d`.
 
 The notation `𝔁 μ p` can be used for this. -/

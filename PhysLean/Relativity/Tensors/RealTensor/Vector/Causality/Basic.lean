@@ -64,10 +64,9 @@ lemma spaceLike_iff_norm_sq_neg {d : ℕ} (p : Vector d) :
 lemma neg_causalCharacter_eq_self {d : ℕ} (p : Vector d) :
     causalCharacter (-p) = causalCharacter p := by
   have h : ⟪-p, -p⟫ₘ = ⟪p, p⟫ₘ := by
-    simp only [minkowskiProduct_toCoord, toCoord];
-    simp only [Nat.succ_eq_add_one,
-      Nat.reduceAdd, Fin.isValue, map_neg, Pi.neg_apply, mul_neg, neg_mul, _root_.neg_neg]
-  simp only [causalCharacter, h];
+    rw [minkowskiProduct_toCoord]
+    simp [minkowskiProduct_toCoord]
+  simp only [causalCharacter, h]
 
 /-- The future light cone of a Lorentz vector `p` is defined as those
   vectors `q` such that

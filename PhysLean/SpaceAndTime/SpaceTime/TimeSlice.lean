@@ -60,53 +60,6 @@ lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Mod
     (f : Time → Space d → M) : timeSliceLinearEquiv.symm f = timeSlice.symm f := by
   simp [timeSliceLinearEquiv, timeSlice]
 
-/-- The derivative on space commutes with time-slicing. -/
-lemma timeSlice_spatial_deriv {M : Type}
-    [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} {f : SpaceTime d → M}
-    {t : Time} {x : Space d}
-    (hdiff : DifferentiableAt ℝ f (toTimeAndSpace.symm (t, x))) (i : Fin d) :
-    timeSlice (∂_ (Fin.natAdd 1 i) f) t x = ∂[i] (timeSlice f t) x := by
-  have hf : f = (f ∘ toTimeAndSpace.symm) ∘ toTimeAndSpace := by
-    ext x
-    simp
-  conv_lhs =>
-    rw [hf]
-    simp only [timeSlice, Nat.succ_eq_add_one, Nat.reduceAdd,
-      Equiv.coe_fn_mk, Function.curry_apply, Function.comp_apply]
-    rw [deriv_comp_toTimeAndSpace_natAdd i (f ∘ ⇑toTimeAndSpace.symm)]
-  conv_rhs =>
-    rw [timeSlice]
-    simp [Space.deriv]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
-    ContinuousLinearEquiv.apply_symm_apply]
-  rw [fderiv_curry_snd]
-  · simp [basis]
-  · fun_prop
-
-/-- The derivative on time commutes with time-slicing. -/
-lemma timeSlice_time_deriv {M : Type}
-    [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} (f : SpaceTime d → M)
-    {t : Time} {x : Space d}
-    (hdiff : DifferentiableAt ℝ f (toTimeAndSpace.symm (t, x))) :
-    timeSlice (∂_ (finSumFinEquiv (Sum.inl 0)) f) t x = ∂ₜ (fun t => timeSlice f t x) t := by
-  have hf : f = (f ∘ toTimeAndSpace.symm) ∘ toTimeAndSpace := by
-    ext x
-    simp
-  conv_lhs =>
-    rw [hf]
-    simp only [timeSlice, Nat.succ_eq_add_one, Nat.reduceAdd,
-      Fin.isValue, finSumFinEquiv_apply_left, Equiv.coe_fn_mk, Function.curry_apply,
-      Function.comp_apply]
-    rw [deriv_comp_toTimeAndSpace_castAdd (f ∘ ⇑toTimeAndSpace.symm)]
-  conv_rhs =>
-    rw [timeSlice]
-    simp only [Time.deriv, Nat.succ_eq_add_one, Nat.reduceAdd,
-      Equiv.coe_fn_mk, Function.comp_apply]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
-    ContinuousLinearEquiv.apply_symm_apply]
-  rw [fderiv_curry_fst]
-  fun_prop
-
 end SpaceTime
 
 end

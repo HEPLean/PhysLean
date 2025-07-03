@@ -58,14 +58,14 @@ lemma minkowskiProductMap_toCoord {d : ℕ} (p q : Vector d) :
     change minkowskiMatrix (finSumFinEquiv.symm y) (finSumFinEquiv.symm x)
   conv_lhs =>
     enter [2, x, 2]
-    rw [tensor_basis_repr_apply]
-    enter [3]
+    rw [tensor_basis_repr_toTensor_apply]
+    enter [1]
     change finSumFinEquiv.symm x
   conv_lhs =>
     enter [2, x, 1, 2, y, 2]
     simp only [Fin.isValue]
-    rw [tensor_basis_repr_apply]
-    enter [3]
+    rw [tensor_basis_repr_toTensor_apply]
+    enter [1]
     change finSumFinEquiv.symm y
   conv_lhs =>
     enter [2, x, 1]
@@ -77,7 +77,7 @@ lemma minkowskiProductMap_toCoord {d : ℕ} (p q : Vector d) :
     _root_.zero_add]
   congr 1
   rw [minkowskiMatrix.inl_0_inl_0]
-  simp only [Fin.isValue, one_mul]
+  simp only [Fin.isValue, one_mul, Tensorial.self_toTensor_apply]
   rw [← Finset.sum_neg_distrib]
   congr
   funext x
@@ -102,7 +102,7 @@ lemma minkowskiProductMap_symm {d : ℕ} (p q : Vector d) :
 lemma minkowskiProductMap_add_fst {d : ℕ} (p q r : Vector d) :
     minkowskiProductMap (p + q) r = minkowskiProductMap p r + minkowskiProductMap q r := by
   rw [minkowskiProductMap_toCoord, minkowskiProductMap_toCoord, minkowskiProductMap_toCoord]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add, Pi.add_apply]
+  simp only [Fin.isValue, apply_add]
   conv_lhs =>
     enter [2, 2, x]
     simp [add_mul]
@@ -113,9 +113,7 @@ lemma minkowskiProductMap_add_fst {d : ℕ} (p q r : Vector d) :
 lemma minkowskiProductMap_add_snd {d : ℕ} (p q r : Vector d) :
     minkowskiProductMap p (q + r) = minkowskiProductMap p q + minkowskiProductMap p r := by
   rw [minkowskiProductMap_symm, minkowskiProductMap_add_fst]
-  congr 1
-  · exact minkowskiProductMap_symm q p
-  · exact minkowskiProductMap_symm r p
+  rw [minkowskiProductMap_symm q p, minkowskiProductMap_symm r p]
 
 @[simp]
 lemma minkowskiProductMap_smul_fst {d : ℕ} (c : ℝ) (p q : Vector d) :
@@ -123,21 +121,18 @@ lemma minkowskiProductMap_smul_fst {d : ℕ} (c : ℝ) (p q : Vector d) :
   rw [minkowskiProductMap_toCoord, minkowskiProductMap_toCoord]
   rw [mul_sub]
   congr 1
-  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_smul,
-    Pi.smul_apply, smul_eq_mul]
+  · simp only [Fin.isValue, apply_smul]
     ring
   · rw [Finset.mul_sum]
     congr
     funext i
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_smul, Pi.smul_apply, smul_eq_mul]
+    simp only [apply_smul]
     ring
 
 @[simp]
 lemma minkowskiProductMap_smul_snd {d : ℕ} (c : ℝ) (p q : Vector d) :
     minkowskiProductMap p (c • q) = c * minkowskiProductMap p q := by
-  rw [minkowskiProductMap_symm, minkowskiProductMap_smul_fst]
-  congr 1
-  exact minkowskiProductMap_symm q p
+  rw [minkowskiProductMap_symm, minkowskiProductMap_smul_fst, minkowskiProductMap_symm q p]
 
 /-- The Minkowski product of two Lorentz vectors as a linear map. -/
 def minkowskiProduct {d : ℕ} : Vector d →ₗ[ℝ] Vector d →ₗ[ℝ] ℝ where
@@ -173,17 +168,18 @@ lemma minkowskiProduct_toCoord {d : ℕ} (p q : Vector d) :
   rw [minkowskiProduct_apply, minkowskiProductMap_toCoord]
 
 lemma minkowskiProduct_toCoord_minkowskiMatrix {d : ℕ} (p q : Vector d) :
-    ⟪p, q⟫ₘ = ∑ μ, minkowskiMatrix μ μ * (toCoord p μ) * (toCoord q μ) := by
+    ⟪p, q⟫ₘ = ∑ μ, minkowskiMatrix μ μ * p μ * q μ := by
   rw [minkowskiProduct_toCoord]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fintype.sum_sum_type,
-    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0,
-    one_mul, minkowskiMatrix.inr_i_inr_i, neg_mul, Finset.sum_neg_distrib]
+  simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+    Finset.sum_singleton, minkowskiMatrix.inl_0_inl_0, one_mul, minkowskiMatrix.inr_i_inr_i,
+    neg_mul, Finset.sum_neg_distrib]
   rfl
 
 @[simp]
 lemma minkowskiProduct_invariant {d : ℕ} (p q : Vector d) (Λ : LorentzGroup d) :
     ⟪Λ • p, Λ • q⟫ₘ = ⟪p, q⟫ₘ := by
   rw [minkowskiProduct_apply, minkowskiProductMap, ← actionT_coMetric Λ]
+  simp only [Tensorial.toTensor_smul]
   rw [prodT_equivariant, contrT_equivariant, prodT_equivariant, contrT_equivariant,
     toField_equivariant]
   rfl
@@ -213,13 +209,13 @@ lemma minkowskiProduct_self_le_timeComponent_sq {d : ℕ} (p : Vector d) :
 
 @[simp]
 lemma minkowskiProduct_basis_left {d : ℕ} (μ : Fin 1 ⊕ Fin d) (p : Vector d) :
-    ⟪basis μ, p⟫ₘ = minkowskiMatrix μ μ * toCoord p μ := by
+    ⟪basis μ, p⟫ₘ = minkowskiMatrix μ μ * p μ := by
   rw [minkowskiProduct_toCoord_minkowskiMatrix]
   simp
 
 @[simp]
 lemma minkowskiProduct_basis_right {d : ℕ} (μ : Fin 1 ⊕ Fin d) (p : Vector d) :
-    ⟪p, basis μ⟫ₘ = minkowskiMatrix μ μ * toCoord p μ := by
+    ⟪p, basis μ⟫ₘ = minkowskiMatrix μ μ * p μ := by
   rw [minkowskiProduct_symm, minkowskiProduct_basis_left]
 
 @[simp]
@@ -227,8 +223,7 @@ lemma minkowskiProduct_eq_zero_forall_iff {d : ℕ} (p : Vector d) :
     (∀ q : Vector d, ⟪p, q⟫ₘ = 0) ↔ p = 0 := by
   constructor
   · intro h
-    apply toCoord_injective
-    ext μ
+    funext μ
     rw [← minkowskiMatrix.mul_η_diag_eq_iff (μ := μ)]
     rw [← minkowskiProduct_basis_right, h (basis μ)]
     simp
@@ -269,7 +264,7 @@ def adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) : Vector d →ₗ[ℝ]
 lemma map_minkowskiProduct_eq_adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p q : Vector d) :
     ⟪f p, q⟫ₘ = ⟪p, adjoint f q⟫ₘ := by
   rw [minkowskiProduct_toCoord_minkowskiMatrix, minkowskiProduct_toCoord_minkowskiMatrix]
-  simp only [toCoord_map_apply]
+  simp only [map_apply_eq_basis_mulVec]
   conv_rhs =>
     enter [2, x]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, adjoint, LinearMap.toMatrix_symm,
@@ -316,18 +311,13 @@ lemma isLorentz_iff_basis {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
   constructor
   · exact fun a μ ν => a (basis μ) (basis ν)
   intro h p q
-  have hp : p = ∑ μ, toCoord p μ • basis μ := by
-    rw [← basis_repr_apply_eq_toCoord]
+  have hp : p = ∑ μ, p μ • basis μ := by
     exact Eq.symm (Basis.sum_repr basis p)
-  have hq : q = ∑ ν, toCoord q ν • basis ν := by
-    rw [← basis_repr_apply_eq_toCoord]
+  have hq : q = ∑ ν,  q ν • basis ν := by
     exact Eq.symm (Basis.sum_repr basis q)
-  generalize toCoord p = fp at hp
-  generalize toCoord q = fq at hq
-  subst hp hq
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sum, map_smul, LinearMap.coeFn_sum,
-    Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, minkowskiProduct_basis_left, toCoord_basis,
-    mul_ite, mul_one, mul_zero, h]
+  rw [hp, hq]
+  simp only [map_sum, map_smul, LinearMap.coeFn_sum, Finset.sum_apply, LinearMap.smul_apply, h,
+    minkowskiProduct_basis_left, smul_eq_mul]
 
 lemma isLorentz_iff_comp_adjoint_eq_id {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
     IsLorentz f ↔ adjoint f ∘ₗ f = LinearMap.id := by

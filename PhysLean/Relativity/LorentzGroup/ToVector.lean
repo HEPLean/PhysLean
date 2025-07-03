@@ -30,13 +30,12 @@ lemma toVector_neg {d : ℕ} (Λ : LorentzGroup d) :
   simp [toVector, neg_smul]
 
 @[simp]
-lemma toVector_toCoord_apply {d : ℕ} (Λ : LorentzGroup d)
-    (i : Fin 1 ⊕ Fin d) : toCoord (toVector Λ) i = Λ.1 i (Sum.inl 0) := by
+lemma toVector_apply {d : ℕ} (Λ : LorentzGroup d)
+    (i : Fin 1 ⊕ Fin d) : (toVector Λ) i = Λ.1 i (Sum.inl 0) := by
   simp [toVector, smul_eq_sum]
 
-lemma toVector_eq_toCoord_symm {d : ℕ} (Λ : LorentzGroup d) :
-    toVector Λ = toCoord.symm (fun i => Λ.1 i (Sum.inl 0)) := by
-  apply toCoord_injective
+lemma toVector_eq_fun {d : ℕ} (Λ : LorentzGroup d) :
+    toVector Λ =  (fun i => Λ.1 i (Sum.inl 0)) := by
   funext i
   simp
 
@@ -45,13 +44,11 @@ lemma toVector_continuous {d : ℕ} : Continuous (toVector (d := d)) := by
   change Continuous (fun Λ => toVector (d := d) Λ)
   conv =>
     enter [1, Λ]
-    rw [toVector_eq_toCoord_symm]
-  apply Continuous.comp
-  · fun_prop
-  · refine continuous_pi ?_
-    intro i
-    refine Continuous.matrix_elem ?_ i (Sum.inl 0)
-    fun_prop
+    rw [toVector_eq_fun]
+  refine continuous_pi ?_
+  intro i
+  refine Continuous.matrix_elem ?_ i (Sum.inl 0)
+  fun_prop
 
 lemma toVector_timeComponent {d : ℕ} (Λ : LorentzGroup d) :
     (toVector Λ).timeComponent = Λ.1 (Sum.inl 0) (Sum.inl 0) := by
@@ -74,7 +71,6 @@ lemma toVector_eq_basis_iff_timeComponent_eq_one {d : ℕ} (Λ : LorentzGroup d)
     rw [← toVector_timeComponent Λ, h]
     simp
   · intro h
-    apply toCoord_injective
     funext i
     have h1 := toVector_minkowskiProduct_self Λ
     rw [minkowskiProduct_self_eq_timeComponent_spatialPart] at h1
@@ -83,9 +79,9 @@ lemma toVector_eq_basis_iff_timeComponent_eq_one {d : ℕ} (Λ : LorentzGroup d)
     match i with
     | Sum.inl 0 => simp [h]
     | Sum.inr j =>
-      simp?
-      rw [← toVector_toCoord_apply]
-      change (toVector Λ).spatialPart j = 0
+      simp only [Fin.isValue, reduceCtorEq, ↓reduceIte]
+      trans (toVector Λ).spatialPart j
+      · simp
       rw [h1]
       simp
 
@@ -94,7 +90,8 @@ lemma smul_timeComponent_eq_toVector_minkowskiProduct {d : ℕ} (Λ : LorentzGro
     (Λ • v).timeComponent = ⟪toVector Λ⁻¹, v⟫ₘ := by
   simp [timeComponent]
   rw [smul_eq_sum]
-  simp?
+  simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Fintype.sum_sum_type,
+    Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
   rw [minkowskiProduct_eq_timeComponent_spatialPart]
   congr
   · simp [inv_eq_dual, minkowskiMatrix.dual_apply, minkowskiMatrix.inl_0_inl_0]
