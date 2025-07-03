@@ -63,7 +63,7 @@ lemma norm_spatialPart_le_timeComponent (v : Velocity d) :
     simp
 
 lemma norm_spatialPart_sq_eq (v : Velocity d) :
-    ‖v.1.spatialPart‖ ^ 2 = (toCoord v.1 (Sum.inl 0))^2 - 1 := by
+    ‖v.1.spatialPart‖ ^ 2 = (v.1 (Sum.inl 0))^2 - 1 := by
   rw [← minkowskiProduct_self_eq_one v]
   rw [minkowskiProduct_self_eq_timeComponent_spatialPart]
   simp [timeComponent]
@@ -96,7 +96,6 @@ lemma minkowskiProduct_continuous_fst (u : Vector d) :
   have h1 : (fun (x : Velocity d) => ⟪x.1, u⟫ₘ) =
     (fun (x : Velocity d) => ⟪u, x.1⟫ₘ) := by
     ext x
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd]
     rw [minkowskiProduct_symm]
   rw [h1]
   exact minkowskiProduct_continuous_snd u
@@ -120,18 +119,18 @@ lemma zero_timeComponent : (0 : Velocity d).1.timeComponent = 1 := by
 
 /-- A continuous path from a velocity `u` to the zero velocity. -/
 noncomputable def pathFromZero (u : Velocity d) : Path zero u where
-  toFun t := ⟨(√(1 + t ^ 2 * ‖u.1.spatialPart‖ ^ 2) - toCoord u.1 (Sum.inl 0) * t) •
+  toFun t := ⟨(√(1 + t ^ 2 * ‖u.1.spatialPart‖ ^ 2) - u.1 (Sum.inl 0) * t) •
       zero.1 + (t : ℝ) • u.1,
     by
       rw [mem_iff]
       apply And.intro
-      · let x := (√(1 + t ^ 2 * ‖u.1.spatialPart‖ ^ 2) - toCoord u.1 (Sum.inl 0) * t)
+      · let x := (√(1 + t ^ 2 * ‖u.1.spatialPart‖ ^ 2) - u.1 (Sum.inl 0) * t)
         calc _
           _ = ⟪x • zero.1 + (t : ℝ) • u.1, x • zero.1 + (t : ℝ) • u.1⟫ₘ := by rfl
-          _ = x ^ 2 + (t : ℝ) ^ 2 + 2 * x * (t : ℝ) * toCoord u.1 (Sum.inl 0) := by
+          _ = x ^ 2 + (t : ℝ) ^ 2 + 2 * x * (t : ℝ) * u.1 (Sum.inl 0) := by
             simp only [zero, Fin.isValue, map_add, map_smul, LinearMap.add_apply,
               LinearMap.smul_apply, minkowskiProduct_basis_right, minkowskiMatrix.inl_0_inl_0,
-              toCoord_basis, ↓reduceIte, mul_one, smul_eq_mul, one_mul, minkowskiProduct_basis_left,
+              basis_apply, ↓reduceIte, mul_one, smul_eq_mul, one_mul, minkowskiProduct_basis_left,
               minkowskiProduct_self_eq_one]
             ring
         simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, x]
@@ -143,9 +142,8 @@ noncomputable def pathFromZero (u : Velocity d) : Path zero u where
           · apply mul_nonneg
             · exact sq_nonneg _
             · exact sq_nonneg _
-      · simp only [timeComponent, Nat.succ_eq_add_one, Nat.reduceAdd,
-        Fin.isValue, zero, map_add, map_smul, Pi.add_apply, Pi.smul_apply, toCoord_basis,
-        ↓reduceIte, smul_eq_mul, mul_one]
+      · simp only [timeComponent, Fin.isValue, zero, apply_add, apply_smul, basis_apply,
+        ↓reduceIte, mul_one]
         ring_nf
         refine Real.sqrt_pos_of_pos ?_
         apply add_pos_of_pos_of_nonneg

@@ -60,7 +60,7 @@ lemma mem_of_repr {d : ℕ} {F : ℝT[d, .up, .up]}
   fin_cases i <;> rfl
 
 lemma repr_symm {d : ℕ} (F : FieldStrength d) (i j : Fin (1 + d))
-    (x : ℝT[d, .up]) :
+    (x : SpaceTime d) :
     (Tensor.basis _).repr (F.1 x) (fun | 0 => i | 1 => j)
     = - (Tensor.basis _).repr (F.1 x) (fun | 0 => j | 1 => i) := by
   obtain ⟨F, hF⟩ := F
@@ -78,7 +78,7 @@ lemma repr_symm {d : ℕ} (F : FieldStrength d) (i j : Fin (1 + d))
 
 @[simp]
 lemma repr_diag_zero {d : ℕ} (F : FieldStrength d) (i : Fin (1 + d))
-    (x : ℝT[d, .up]) :
+    (x : SpaceTime d) :
     (Tensor.basis _).repr (F.1 x) (fun | 0 => i | 1 => i)
     = 0 := by
   have hl (a : ℝ) (ha : a = -a) : a = 0 := CharZero.eq_neg_self_iff.mp ha
@@ -159,7 +159,7 @@ lemma ofElectricField_coe {d : ℕ} (E : ElectricField d) :
 
 /-- The field strength from a magnetic field as an element of `ℝT[3, .up, .up]`.
   This is only defined here for 4d spacetime. -/
-noncomputable def ofMagneticFieldAux (B : MagneticField) (x : ℝT[3, .up]) :
+noncomputable def ofMagneticFieldAux (B : MagneticField) (x : SpaceTime 3) :
       ℝT[3, .up, .up] := (Tensor.basis _).repr.symm <|
       Finsupp.equivFunOnFinite.symm <| fun b =>
     match b 0, b 1 with

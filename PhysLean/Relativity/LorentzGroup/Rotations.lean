@@ -26,12 +26,12 @@ def Rotations (d) : Subgroup (LorentzGroup d) where
         rw [toVector_eq_basis_iff_timeComponent_eq_one, h2.1]
       rw [h]
       simp [Lorentz.Vector.timeComponent]
-      rw [Lorentz.Vector.toCoord_smul_eq_mulVec]
+      rw [Lorentz.Vector.smul_eq_mulVec]
       rw [Matrix.mulVec_eq_sum]
-      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Lorentz.Vector.toCoord_basis,
-        op_smul_eq_smul, ite_smul, one_smul, zero_smul, Finset.sum_apply, Fintype.sum_sum_type,
-        Finset.univ_unique, Fin.default_eq_zero, Sum.inl.injEq, Finset.sum_singleton, ↓reduceIte,
-        Matrix.transpose_apply, reduceCtorEq, Pi.zero_apply, Finset.sum_const_zero, add_zero]
+      simp only [Fin.isValue, Lorentz.Vector.basis_apply, op_smul_eq_smul, ite_smul, one_smul,
+        zero_smul, Finset.sum_apply, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
+        Sum.inl.injEq, Finset.sum_singleton, ↓reduceIte, Matrix.transpose_apply, reduceCtorEq,
+        Pi.ofNat_apply, Finset.sum_const_zero, add_zero]
       rw [h1.1]
     · exact isProper_mul h1.2 h2.2
   one_mem' := by
@@ -87,13 +87,13 @@ def ofSpecialOrthogonal {d} :
       | .inl 0, .inl 0 => simp [h.1]
       | .inl 0, .inr j =>
         simp only [Fin.isValue, Matrix.fromBlocks_apply₁₂, Matrix.zero_apply]
-        trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr j)
+        trans (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr j)
         · simp
         rw [← h2]
         simp [LorentzGroup.transpose_val]
       | .inr i, .inl 0 =>
         simp only [Fin.isValue, Matrix.fromBlocks_apply₂₁, Matrix.zero_apply]
-        trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr i)
+        trans (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr i)
         · simp
         rw [← h1]
         simp
@@ -140,13 +140,13 @@ def ofSpecialOrthogonal {d} :
       | .inl 0, .inl 0 => simp [h.1]
       | .inl 0, .inr j =>
         simp only [Fin.isValue, Matrix.fromBlocks_apply₁₂, Matrix.zero_apply]
-        trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr j)
+        trans (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr j)
         · simp
         rw [← h2]
         simp [LorentzGroup.transpose_val]
       | .inr i, .inl 0 =>
         simp only [Fin.isValue, Matrix.fromBlocks_apply₂₁, Matrix.zero_apply]
-        trans Lorentz.Vector.toCoord (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr i)
+        trans (Lorentz.Vector.basis (Sum.inl 0)) (Sum.inr i)
         · simp
         rw [← h1]
         simp

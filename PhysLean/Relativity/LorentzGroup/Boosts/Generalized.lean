@@ -84,34 +84,32 @@ lemma genBoostAux₂_self (u : Velocity d) : genBoostAux₂ u u = - genBoostAux�
 open minkowskiMatrix
 
 lemma genBoostAux₁_apply_basis (u v : Velocity d) (μ : Fin 1 ⊕ Fin d) :
-    (genBoostAux₁ u v) (Vector.basis μ) = (2 * η μ μ * toCoord u μ) • v := by
+    (genBoostAux₁ u v) (Vector.basis μ) = (2 * η μ μ * u.1 μ) • v := by
   simp [genBoostAux₁]
   ring_nf
 
 lemma genBoostAux₂_apply_basis (u v : Velocity d) (μ : Fin 1 ⊕ Fin d) :
     (genBoostAux₂ u v) (Vector.basis μ) =
-    - (η μ μ * (toCoord u μ + toCoord v μ) / (1 + ⟪u.1, v.1⟫ₘ)) • (u.1 + v.1) := by
+    - (η μ μ * (u.1 μ + v.1 μ) / (1 + ⟪u.1, v.1⟫ₘ)) • (u.1 + v.1) := by
   simp [genBoostAux₂]
   ring_nf
 
 lemma genBoostAux₁_basis_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     ⟪genBoostAux₁ u v (Vector.basis μ), genBoostAux₁ u v (Vector.basis ν)⟫ₘ =
-    4 * η μ μ * η ν ν * toCoord u μ * toCoord u ν := by
+    4 * η μ μ * η ν ν * u.1 μ * u.1 ν := by
   simp [genBoostAux₁]
   ring
 
 lemma genBoostAux₁_toMatrix_apply (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     (LinearMap.toMatrix Vector.basis Vector.basis (genBoostAux₁ u v)) μ ν =
-    η ν ν * (2 * toCoord u ν * toCoord v μ) := by
-  rw [LinearMap.toMatrix_apply, basis_repr_apply_eq_toCoord]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, genBoostAux₁,
-    LinearMap.coe_mk, AddHom.coe_mk, minkowskiProduct_basis_left, map_smul, Pi.smul_apply,
-    smul_eq_mul]
+    η ν ν * (2 * u.1 ν * v.1 μ) := by
+  rw [LinearMap.toMatrix_apply, basis_repr_apply]
+  simp only [genBoostAux₁, LinearMap.coe_mk, AddHom.coe_mk, minkowskiProduct_basis_left, apply_smul]
   ring
 
 lemma genBoostAux₂_basis_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     ⟪genBoostAux₂ u v (Vector.basis μ), genBoostAux₂ u v (Vector.basis ν)⟫ₘ =
-    2 * η μ μ * η ν ν * (toCoord u μ + toCoord v μ) * (toCoord u ν + toCoord v ν)
+    2 * η μ μ * η ν ν * (u.1 μ + v.1 μ) * (u.1 ν + v.1 ν)
     * (1 + ⟪u, v.1⟫ₘ)⁻¹ := by
   rw [genBoostAux₂_apply_basis, genBoostAux₂_apply_basis]
   rw [map_smul, map_smul]
@@ -129,7 +127,7 @@ lemma genBoostAux₂_basis_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 �
 
 lemma genBoostAux₁_basis_genBoostAux₂_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     ⟪genBoostAux₁ u v (Vector.basis μ), genBoostAux₂ u v (Vector.basis ν)⟫ₘ =
-    - 2 * η μ μ * η ν ν * toCoord u μ * (toCoord u ν + toCoord v ν) := by
+    - 2 * η μ μ * η ν ν * u.1 μ * (u.1 ν + v.1 ν) := by
   rw [genBoostAux₁_apply_basis, genBoostAux₂_apply_basis]
   rw [map_smul, map_smul]
   have h1 : ⟪ v.1, u.1 + v.1⟫ₘ = (1 + ⟪u.1, v.1⟫ₘ) := by
@@ -146,9 +144,9 @@ lemma genBoostAux₁_basis_genBoostAux₂_minkowskiProduct (u v : Velocity d) (�
 
 lemma genBoostAux₂_toMatrix_apply (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     (LinearMap.toMatrix Vector.basis Vector.basis (genBoostAux₂ u v)) μ ν =
-      η ν ν * (- ((toCoord u.1 μ) + (toCoord v.1 μ)) * ((toCoord u.1 ν) + (toCoord v.1 ν))
+      η ν ν * (- (u.1 μ + v.1 μ) * (u.1 ν + v.1 ν)
       / (1 + ⟪u.1, v.1⟫ₘ)) := by
-  rw [LinearMap.toMatrix_apply, basis_repr_apply_eq_toCoord]
+  rw [LinearMap.toMatrix_apply, basis_repr_apply]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, genBoostAux₂,
     LinearMap.coe_mk, AddHom.coe_mk, minkowskiProduct_basis_left, map_smul, Pi.smul_apply,
     smul_eq_mul]
@@ -159,10 +157,10 @@ lemma genBoostAux₂_toMatrix_apply (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d)
 lemma genBoostAux₁_add_genBoostAux₂_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     ⟪genBoostAux₁ u v (Vector.basis μ) + genBoostAux₂ u v (Vector.basis μ),
     genBoostAux₁ u v (Vector.basis ν) + genBoostAux₂ u v (Vector.basis ν)⟫ₘ =
-    2 * η μ μ * η ν ν * (- toCoord u μ * (toCoord u ν + toCoord v ν)
-      - toCoord u ν * (toCoord u μ + toCoord v μ)
-      + (toCoord u μ + toCoord v μ) * (toCoord u ν + toCoord v ν) * (1 + ⟪u, v.1⟫ₘ)⁻¹ +
-      2 * toCoord u μ * toCoord u ν) := by
+    2 * η μ μ * η ν ν * (- u.1 μ * (u.1 ν + v.1 ν)
+      - u.1 ν * (u.1 μ + v.1 μ)
+      + (u.1 μ + v.1 μ) * (u.1 ν + v.1 ν) * (1 + ⟪u, v.1⟫ₘ)⁻¹ +
+      2 * u.1 μ * u.1 ν) := by
   conv_lhs =>
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add,
       LinearMap.add_apply]
@@ -175,8 +173,8 @@ lemma genBoostAux₁_add_genBoostAux₂_minkowskiProduct (u v : Velocity d) (μ 
 lemma basis_minkowskiProduct_genBoostAux₁_add_genBoostAux₂ (u v : Velocity d)
     (μ ν : Fin 1 ⊕ Fin d) :
     ⟪Vector.basis μ, genBoostAux₁ u v (Vector.basis ν) + genBoostAux₂ u v (Vector.basis ν)⟫ₘ =
-    η μ μ * η ν ν * (2 * toCoord u ν * toCoord v μ
-    - (toCoord u μ + toCoord v μ) * (toCoord u ν + toCoord v ν) * (1 + ⟪u.1, v.1⟫ₘ)⁻¹) := by
+    η μ μ * η ν ν * (2 * u.1 ν * v.1 μ
+    - (u.1 μ + v.1 μ) * (u.1 ν + v.1 ν) * (1 + ⟪u.1, v.1⟫ₘ)⁻¹) := by
   conv_lhs =>
     rw [map_add]
     rw [genBoostAux₁_apply_basis, genBoostAux₂_apply_basis]
@@ -225,18 +223,13 @@ def generalizedBoost (u v : Velocity d) : LorentzGroup d :=
 
 lemma generalizedBoost_apply (u v : Velocity d) (x : Vector d) :
     generalizedBoost u v • x = x + genBoostAux₁ u v x + genBoostAux₂ u v x:= by
-  apply toCoord_injective
-  rw [toCoord_smul_eq_mulVec]
+  rw [smul_eq_mulVec]
   simp [generalizedBoost]
   rw [Matrix.add_mulVec, Matrix.add_mulVec]
   simp only [Matrix.one_mulVec]
-  conv_lhs =>
-    enter [2]
-    rw [← basis_repr_apply_eq_toCoord, LinearMap.toMatrix_mulVec_repr]
-  conv_lhs =>
-    enter [1, 2]
-    rw [← basis_repr_apply_eq_toCoord, LinearMap.toMatrix_mulVec_repr]
-  rfl
+  congr
+  · rw [map_apply_eq_basis_mulVec]
+  · rw [map_apply_eq_basis_mulVec]
 
 lemma generalizedBoost_apply_mul_one_plus_contr (u v : Velocity d) (x : Vector d) :
     (1 + ⟪u, v.1⟫ₘ) • generalizedBoost u v • x = (1 + ⟪u, v.1⟫ₘ) • x +
@@ -310,11 +303,13 @@ lemma generalizedBoost_self (u : Velocity d) :
 
 lemma genearlizedBoost_apply_basis (u v : Velocity d) (μ : Fin 1 ⊕ Fin d) :
     generalizedBoost u v • (Vector.basis μ) =
-    Vector.basis μ + (2 * η μ μ * toCoord u μ) • v - (η μ μ * (toCoord u μ + toCoord v μ)
+    Vector.basis μ + (2 * η μ μ * u.1 μ) • v - (η μ μ * (u.1 μ + v.1 μ)
       / (1 + ⟪u.1, v.1⟫ₘ)) • (u.1 + v.1) := by
   rw [generalizedBoost_apply, genBoostAux₁_apply_basis, genBoostAux₂_apply_basis]
+  funext i
+  simp only [smul_add, _root_.neg_smul, apply_add, basis_apply, apply_smul, neg_apply, apply_sub]
   congr 1
-  simp
+  ring
 
 lemma generalizedBoost_apply_eq_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     (generalizedBoost u v).1 μ ν = η μ μ * (⟪Vector.basis μ, Vector.basis ν⟫ₘ + 2 *
@@ -344,14 +339,13 @@ lemma generalizedBoost_apply_eq_minkowskiProduct (u v : Velocity d) (μ ν : Fin
 
 lemma generalizedBoost_apply_eq_toCoord (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     (generalizedBoost u v).1 μ ν = ((1 : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) μ ν +
-    2 * η ν ν * toCoord u ν * toCoord v μ
-    - η ν ν * (toCoord u μ + toCoord v μ) * (toCoord u ν + toCoord v ν) / (1 + ⟪u.1, v⟫ₘ)) := by
+    2 * η ν ν * u.1 ν * v.1 μ
+    - η ν ν * (u.1 μ + v.1 μ) * (u.1 ν + v.1 ν) / (1 + ⟪u.1, v⟫ₘ)) := by
   conv_lhs =>
     rw [generalizedBoost]
     simp
   congr
   · rw [genBoostAux₁_toMatrix_apply u v μ ν]
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd]
     ring_nf
   · rw [genBoostAux₂_toMatrix_apply u v μ ν]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, neg_add_rev]
@@ -420,42 +414,42 @@ lemma generalizedBoost_inv (u v : Velocity d) :
   conv_lhs =>
     enter [1, 1]
     rw [minkowskiProduct_symm, generalizedBoost_apply_mul_one_plus_contr]
-  calc _
-    _ = (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ)) • v.1 -
+  trans (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ)) • v.1 -
       ⟪p, u.1 + v.1⟫ₘ • (u.1 + v.1) +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ)) • u.1 -
-      ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1)) := by abel
-    _ = (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • v.1 +
+      ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1))
+  · abel
+  trans  (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • v.1 +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • u.1 -
-      ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1)) := by
-        rw [sub_smul, sub_smul, smul_add]
-        abel_nf
-    _ = (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
+      ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1))
+  · rw [sub_smul, sub_smul, smul_add]
+    abel_nf
+  trans  (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
       - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • v.1 +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
-      - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • u.1) := by
-        conv_rhs =>
-          rw [sub_smul]
-          enter [2, 2]
-          rw [sub_smul]
-        rw [smul_add]
-        abel_nf
-    _ = (1 + ⟪u.1, v.1⟫ₘ) • p + ((0 : ℝ) • v.1 + (0 : ℝ) • u.1) := by
-      have h1 := Velocity.one_add_minkowskiProduct_neq_zero u v
-      congr 1
-      congr 1
-      · congr 1
-        rw [generalizedBoost_apply_expand u v]
-        field_simp [h1]
-        rw [minkowskiProduct_symm v.1 u.1]
-        ring
-      · congr 1
-        rw [generalizedBoost_apply_expand u v]
-        field_simp [h1]
-        rw [minkowskiProduct_symm v.1 u.1]
-        ring
-    _ = (1 + ⟪u.1, v.1⟫ₘ) • p := by
-      simp
+      - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • u.1)
+  · conv_rhs =>
+      rw [sub_smul]
+      enter [2, 2]
+      rw [sub_smul]
+    rw [smul_add]
+    abel_nf
+  trans (1 + ⟪u.1, v.1⟫ₘ) • p + ((0 : ℝ) • v.1 + (0 : ℝ) • u.1)
+  · have h1 := Velocity.one_add_minkowskiProduct_neq_zero u v
+    congr 1
+    congr 1
+    · congr 1
+      rw [generalizedBoost_apply_expand u v]
+      field_simp [h1]
+      rw [minkowskiProduct_symm v.1 u.1]
+      ring
+    · congr 1
+      rw [generalizedBoost_apply_expand u v]
+      field_simp [h1]
+      rw [minkowskiProduct_symm v.1 u.1]
+      ring
+  trans  (1 + ⟪u.1, v.1⟫ₘ) • p
+  · simp
   simp [minkowskiProduct_symm]
 
 /--

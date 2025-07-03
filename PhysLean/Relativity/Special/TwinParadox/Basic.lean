@@ -82,10 +82,10 @@ informal_lemma ageGap_nonneg where
   `[7.5, 6, 0, 0]` and then at (different) constant speed to `[15, 0, 0, 0]`. -/
 def example1 : InstantaneousTwinParadox where
   startPoint := 0
-  endPoint := toCoord.symm (fun
+  endPoint := (fun
     | Sum.inl 0 => 15
     | Sum.inr i => 0)
-  twinBMid := toCoord.symm (fun
+  twinBMid := (fun
     | Sum.inl 0 => 7.5
     | Sum.inr 0 => 6
     | Sum.inr i => 0)
