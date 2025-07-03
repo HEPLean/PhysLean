@@ -54,7 +54,7 @@ lemma pauliCo_contr_pauliContr :
   conv_lhs =>
     enter [2, x]
     rw [prodT_basis_repr_apply]
-    simp only [pauliCo_eq_ofRat, pauliContr_eq_ofRat]
+    simp only [pauliCo_eq_ofRat, toTensor_eq_ofRat]
     simp only [Fin.isValue, ofRat_basis_repr_apply, Function.comp_apply, Monoidal.tensorUnit_obj,
       Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
       Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj,
@@ -110,7 +110,7 @@ lemma pauliContr_mul_pauliContrDown_add :
     2 •ₜ η | μ ν ⊗ δL | α α'}ᵀ := by
   simp only [Tensorial.self_toTensor_apply]
   conv_lhs =>
-    rw [pauliContrDown_ofRat, pauliContr_eq_ofRat, prodT_ofRat_ofRat,
+    rw [pauliContrDown_ofRat, toTensor_eq_ofRat, prodT_ofRat_ofRat,
       contrT_ofRat, permT_ofRat, ← map_add]
   conv_rhs =>
     rw [leftAltLeftUnit_eq_ofRat, contrMetric_eq_ofRat, prodT_ofRat_ofRat, ← map_nsmul,
@@ -126,7 +126,7 @@ lemma auliContrDown_pauliContr_mul_add :
     2 •ₜ η | μ ν ⊗ δR' | β β'}ᵀ := by
   simp only [Tensorial.self_toTensor_apply]
   conv_lhs =>
-    rw [pauliContrDown_ofRat, pauliContr_eq_ofRat, prodT_ofRat_ofRat,
+    rw [pauliContrDown_ofRat, toTensor_eq_ofRat, prodT_ofRat_ofRat,
       contrT_ofRat, permT_ofRat, ← map_add]
   conv_rhs =>
     rw [altRightRightUnit_eq_ofRat, contrMetric_eq_ofRat, prodT_ofRat_ofRat, ← map_nsmul,

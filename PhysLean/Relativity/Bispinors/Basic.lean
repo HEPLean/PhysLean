@@ -42,7 +42,7 @@ def contrBispinorDown (p : ℂT[.up]) : ℂT[.downL, .downR] := permT id (PermCo
 
 /-- A bispinor `pᵃᵃ` created from a lorentz vector `p_μ`. -/
 def coBispinorUp (p : ℂT[.down]) : ℂT[.upL, .upR] := permT id (PermCond.auto)
-  {pauliContr | μ α β ⊗ p | μ}ᵀ
+  {σ^^^ | μ α β ⊗ p | μ}ᵀ
 
 /-- A bispinor `pₐₐ` created from a lorentz vector `p_μ`. -/
 def coBispinorDown (p : ℂT[.down]) : ℂT[.downL, .downR] := permT id (PermCond.auto)

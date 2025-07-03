@@ -7,7 +7,10 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Two
 import PhysLean.Relativity.Tensors.ComplexTensor.Vector.Pre.Basic
 /-!
 
-## Pauli matrices
+## Pauli matrices as a tensor
+
+The results in this file are primarily used to show that
+the pauli matrices in invariant under the `SL(2,ℂ)` action.
 
 -/
 

@@ -3,283 +3,158 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.PauliMatrices.AsTensor
-import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Basic
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.LinearAlgebra.Matrix.Trace
 /-!
 
 ## Pauli matrices
 
-The Pauli matrices are an invariant complex Lorentz tensor with three indices,
-two fermionic and one bosonic.
+The pauli matrices are defined ultimately through
+- `pauliMatrix` which is a map `Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ`.
+  The notation `σ` can be used as short hand.
+
+A tensorial structure is put on `Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ` to allow the
+use of index notation. We then define the following notation:
+
+- `σ^^^` is the tensorial version of the Pauli matrices, which is a complex Lorentz tensor
+  of type `ℂT[.up, .upL, .upR]`.
+
+and the following abbreviations:
+- `σ_^^` is the Pauli matrices as a complex Lorentz tensor of type `ℂT[.down, .upL, .upR]`.
+- `σ___` is the Pauli matrices as a complex Lorentz tensor of type `ℂT[.down, .downR, .downL]`.
+- `σ^__` is the Pauli matrices as a complex Lorentz tensor of type `ℂT[.up, .downR, .downL]`.
 
 -/
-open IndexNotation
 open Matrix
-open MatrixGroups
 open Complex
 open TensorProduct
-open IndexNotation
-open CategoryTheory
-open OverColor.Discrete
+
 noncomputable section
 
 namespace PauliMatrix
-open Fermion
-open complexLorentzTensor
-/-!
 
-## Definitions.
 
--/
-open TensorSpecies
-open Tensor
+/-- The Pauli matrices. -/
+def pauliMatrix  : Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ
+  | Sum.inl 0 => 1
+  | Sum.inr 0 => !![0, 1; 1, 0]
+  | Sum.inr 1 => !![0, -I; I, 0]
+  | Sum.inr 2 => !![1, 0; 0, -1]
 
-/-- The Pauli matrices as the complex Lorentz tensor `σ^μ^α^{dot β}`. -/
-abbrev pauliContr : ℂT[.up, .upL, .upR] := fromConstTriple PauliMatrix.asConsTensor
+@[inherit_doc pauliMatrix]
+scoped[PauliMatrix] notation "σ" => pauliMatrix
 
-@[inherit_doc pauliContr]
-scoped[PauliMatrix] notation "σ^^^" => PauliMatrix.pauliContr
+scoped[PauliMatrix] notation "σ0" => σ (Sum.inl 0)
 
-/-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
-abbrev pauliCo : ℂT[.down, .upL, .upR] :=
-  permT id (PermCond.auto) {η' | μ ν ⊗ σ^^^ | ν α β}ᵀ
+scoped[PauliMatrix] notation "σ1" => σ (Sum.inr 0)
 
-@[inherit_doc pauliCo]
-scoped[PauliMatrix] notation "σ_^^" => PauliMatrix.pauliCo
+scoped[PauliMatrix] notation "σ2" => σ (Sum.inr 1)
 
-/-- The Pauli matrices as the complex Lorentz tensor `σ_μ_{dot β}_α`. -/
-abbrev pauliCoDown : ℂT[.down, .downR, .downL] :=
-  permT id (PermCond.auto) {σ_^^ | μ α β ⊗ εR' | β β' ⊗ εL' | α α' }ᵀ
+scoped[PauliMatrix] notation "σ3" => σ (Sum.inr 2)
 
-@[inherit_doc pauliCoDown]
-scoped[PauliMatrix] notation "σ___" => PauliMatrix.pauliCoDown
-
-/-- The Pauli matrices as the complex Lorentz tensor `σ^μ_{dot β}_α`. -/
-abbrev pauliContrDown : ℂT[.up, .downR, .downL] :=
-    permT id (PermCond.auto) {pauliContr | μ α β ⊗ εR' | β β' ⊗ εL' | α α'}ᵀ
-
-@[inherit_doc pauliContrDown]
-scoped[PauliMatrix] notation "σ^__" => PauliMatrix.pauliContrDown
+lemma pauliMatrix_inl_zero_eq_one : pauliMatrix (Sum.inl 0) = 1 := by
+  dsimp [pauliMatrix]
 
 /-!
 
-## Different forms
+## Matrix relations
+
 -/
-open Lorentz
-lemma pauliContr_eq_fromConstTriple : σ^^^ = fromConstTriple PauliMatrix.asConsTensor := by
-  rfl
 
-lemma pauliContr_eq_fromTripleT : σ^^^ = fromTripleT PauliMatrix.asTensor := by
-  rw [pauliContr_eq_fromConstTriple, fromConstTriple,
-    congrArg fromTripleT PauliMatrix.asConsTensor_apply_one]
+lemma pauliMatrix_selfAdjoint (μ : Fin 1 ⊕ Fin 3) :
+    (σ μ)ᴴ = σ μ := by
+  fin_cases μ
+  all_goals
+    dsimp [pauliMatrix]
+    rw [eta_fin_two (_)ᴴ]
+    simp
+  ext i j
+  fin_cases i <;> fin_cases j
+  all_goals
+    simp [pauliMatrix, one_fin_two]
 
-lemma pauliContr_eq_basis : pauliContr =
-    Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0)
-    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 1 | 2 => 1)
-    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 0 | 2 => 1)
-    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 1 | 1 => 1 | 2 => 0)
-    - I • Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 0 | 2 => 1)
-    + I • Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 2 | 1 => 1 | 2 => 0)
-    + Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 0 | 2 => 0)
-    - Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 3 | 1 => 1 | 2 => 1) := by
-  rw [pauliContr_eq_fromTripleT, PauliMatrix.asTensor_expand]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Equivalence.symm_inverse, Fin.isValue, map_sub,
-    map_add, _root_.map_smul]
-  rw [show complexContrBasis (Sum.inl 0) = complexContrBasisFin4 0 by {simp}]
-  rw [show complexContrBasis (Sum.inr 0) = complexContrBasisFin4 1 by {simp}]
-  rw [show complexContrBasis (Sum.inr 1) = complexContrBasisFin4 2 by {simp}]
-  rw [show complexContrBasis (Sum.inr 2) = complexContrBasisFin4 3 by {simp}]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 1, 1, 1]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 1, 1, 2]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 1, 2]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 1, 2]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 1, 2]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 1, 2]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [1, 2]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  conv_lhs =>
-    enter [2]
-    rw [← basis_up_eq, ← basis_upL_eq, ← basis_upR_eq]
-    rw [fromTripleT_apply_basis]
-  rfl
+/-! ### Products
 
-lemma pauliContr_eq_ofRat : pauliContr = ofRat (fun b =>
-    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
-    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨1, 0⟩ else
-    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, -1⟩ else
-    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, 1⟩ else
-    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨1, 0⟩ else
-    if b 0 = 3 ∧ b 1 = 3 ∧ b 2 = 3 then ⟨-1, 0⟩ else 0) := by
-  apply (Tensor.basis _).repr.injective
-  ext b
-  rw [pauliContr_eq_basis]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add, map_neg,
-    Finsupp.coe_add, Finsupp.coe_neg, Pi.add_apply, Pi.neg_apply, cons_val_zero, cons_val_one,
-    head_cons]
-  repeat rw [basis_eq_ofRat]
-  simp only [Fin.isValue, map_sub, map_add, _root_.map_smul, Finsupp.coe_sub, Finsupp.coe_add,
-    Finsupp.coe_smul, Pi.sub_apply, Pi.add_apply, ofRat_basis_repr_apply, Pi.smul_apply,
-    smul_eq_mul, PhysLean.RatComplexNum.I_mul_toComplexNum, mul_ite, ne_eq, cons_val_two,
-    Nat.succ_eq_add_one, Nat.reduceAdd]
-  simp only [Fin.isValue, ← map_add, ← map_sub]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide +kernel
+These lemmas try to put the terms in numerical order.
+We skip `σ0` since it's just `1` anyway.
+-/
 
-lemma pauliCo_eq_ofRat : pauliCo = ofRat (fun b =>
-    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
-    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨-1, 0⟩ else
-    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, 1⟩ else
-    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, -1⟩ else
-    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨-1, 0⟩ else
-    if b 0 = 3 ∧ b 1 = 1 ∧ b 2 = 1 then ⟨1, 0⟩ else ⟨0, 0⟩) := by
-  apply (Tensor.basis _).repr.injective
-  ext b
-  rw [pauliCo]
-  rw [permT_basis_repr_symm_apply]
-  rw [contrT_basis_repr_apply]
-  simp only [Tensorial.self_toTensor_apply]
-  conv_lhs =>
-    enter [2, x]
-    rw [contr_basis_ratComplexNum]
-    rw [prodT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply, pauliContr_eq_ofRat]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
-  rw [ofRat_basis_repr_apply]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide +kernel
+@[simp]
+lemma pauliMatrix_mul_self (μ : Fin 1 ⊕ Fin 3) :
+    (σ μ) * (σ μ) = 1 := by
+  fin_cases μ
+  all_goals
+    dsimp [pauliMatrix]
+    simp [one_fin_two]
 
-lemma pauliCoDown_eq_ofRat : pauliCoDown = ofRat (fun b =>
-    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
-    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨1, 0⟩ else
-    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, -1⟩ else
-    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, 1⟩ else
-    if b 0 = 3 ∧ b 1 = 1 ∧ b 2 = 1 then ⟨-1, 0⟩ else
-    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨1, 0⟩ else ⟨0, 0⟩) := by
-  apply (Tensor.basis _).repr.injective
-  ext b
-  rw [pauliCoDown]
-  rw [permT_basis_repr_symm_apply]
-  rw [contrT_basis_repr_apply]
-  simp only [Tensorial.self_toTensor_apply]
-  conv_lhs =>
-    enter [2, x]
-    rw [contr_basis_ratComplexNum]
-    rw [prodT_basis_repr_apply]
-    rw [contrT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply,
-      altLeftMetric_eq_ofRat]
-    enter [1, 1, 2, y]
-    rw [contr_basis_ratComplexNum]
-    rw [prodT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply, pauliCo_eq_ofRat,
-      altRightMetric_eq_ofRat]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-  conv_lhs =>
-    enter [2, x]
-    rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
-  rw [ofRat_basis_repr_apply]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide +kernel
-
-lemma pauliContrDown_ofRat : pauliContrDown = ofRat (fun b =>
-    if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
-    if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨-1, 0⟩ else
-    if b 0 = 2 ∧ b 1 = 0 ∧ b 2 = 1 then ⟨0, 1⟩ else
-    if b 0 = 2 ∧ b 1 = 1 ∧ b 2 = 0 then ⟨0, -1⟩ else
-    if b 0 = 3 ∧ b 1 = 1 ∧ b 2 = 1 then ⟨1, 0⟩ else
-    if b 0 = 3 ∧ b 1 = 0 ∧ b 2 = 0 then ⟨-1, 0⟩ else 0) := by
-  apply (Tensor.basis _).repr.injective
-  ext b
-  rw [pauliContrDown]
-  rw [permT_basis_repr_symm_apply]
-  rw [contrT_basis_repr_apply]
-  simp only [Tensorial.self_toTensor_apply]
-  conv_lhs =>
-    enter [2, x]
-    rw [contr_basis_ratComplexNum]
-    rw [prodT_basis_repr_apply]
-    rw [contrT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply,
-      altLeftMetric_eq_ofRat]
-    enter [1, 1, 2, y]
-    rw [contr_basis_ratComplexNum]
-    rw [prodT_basis_repr_apply]
-    simp only [coMetric_eq_ofRat,ofRat_basis_repr_apply, pauliContr_eq_ofRat,
-      altRightMetric_eq_ofRat]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-  conv_lhs =>
-    enter [2, x]
-    rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-    rw [← PhysLean.RatComplexNum.toComplexNum.map_mul]
-  rw [← map_sum PhysLean.RatComplexNum.toComplexNum]
-  rw [ofRat_basis_repr_apply]
-  apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
-  revert b
-  decide +kernel
+@[simp] lemma σ2_mul_σ1 : σ2 * σ1 = -(σ1 * σ2) := by simp [pauliMatrix]
+@[simp] lemma σ3_mul_σ1 : σ3 * σ1 = -(σ1 * σ3) := by simp [pauliMatrix]
+@[simp] lemma σ3_mul_σ2 : σ3 * σ2 = -(σ2 * σ3) := by simp [pauliMatrix]
 
 /-!
 
-## Group actions
+## Traces
 
 -/
 
-/-- The tensor `pauliContr` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_pauliContr (g : SL(2,ℂ)) : g • pauliContr = pauliContr := by
-  rw [pauliContr_eq_fromConstTriple]
-  rw [actionT_fromConstTriple]
+@[simp] lemma trace_σ1 : Matrix.trace σ1 = 0 := by simp [pauliMatrix]
+@[simp] lemma trace_σ2 : Matrix.trace σ2 = 0 := by simp [pauliMatrix]
+@[simp] lemma trace_σ3 : Matrix.trace σ3 = 0 := by simp [pauliMatrix]
 
-/-- The tensor `pauliCo` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_pauliCo (g : SL(2,ℂ)) : g • pauliCo = pauliCo := by
-  rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant]
-  simp only [Tensorial.self_toTensor_apply]
-  rw [actionT_pauliContr, actionT_coMetric]
-  rfl
+/-- The trace of `σ0` multiplied by `σ0` is equal to `2`. -/
+lemma σ0_σ0_trace : Matrix.trace (σ0 * σ0) = 2 := by simp
 
-/-- The tensor `pauliCoDown` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_pauliCoDown (g : SL(2,ℂ)) : g • pauliCoDown = pauliCoDown := by
-  rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant,
-    ← contrT_equivariant, ← prodT_equivariant]
-  simp only [Tensorial.self_toTensor_apply]
-  rw [actionT_pauliCo, actionT_altLeftMetric, actionT_altRightMetric]
-  rfl
+/-- The trace of `σ0` multiplied by `σ1` is equal to `0`. -/
+lemma σ0_σ1_trace : Matrix.trace (σ0 * σ1) = 0 := by simp [pauliMatrix]
 
-/-- The tensor `pauliContrDown` is invariant under the action of `SL(2,ℂ)`. -/
-lemma actionT_pauliContrDown (g : SL(2,ℂ)) : g • pauliContrDown = pauliContrDown := by
-  rw [← permT_equivariant, ← contrT_equivariant, ← prodT_equivariant,
-    ← contrT_equivariant, ← prodT_equivariant]
-  simp only [Tensorial.self_toTensor_apply]
-  rw [actionT_pauliContr, actionT_altLeftMetric, actionT_altRightMetric]
-  rfl
+/-- The trace of `σ0` multiplied by `σ2` is equal to `0`. -/
+lemma σ0_σ2_trace : Matrix.trace (σ0 * σ2) = 0 := by simp [pauliMatrix]
+
+/-- The trace of `σ0` multiplied by `σ3` is equal to `0`. -/
+lemma σ0_σ3_trace : Matrix.trace (σ0 * σ3) = 0 := by simp [pauliMatrix]
+
+/-- The trace of `σ1` multiplied by `σ0` is equal to `0`. -/
+lemma σ1_σ0_trace : Matrix.trace (σ1 * σ0) = 0 := by simp [pauliMatrix]
+
+/-- The trace of `σ1` multiplied by `σ1` is equal to `2`. -/
+lemma σ1_σ1_trace : Matrix.trace (σ1 * σ1) = 2 := by simp
+
+/-- The trace of `σ1` multiplied by `σ2` is equal to `0`. -/
+@[simp]
+lemma σ1_σ2_trace : Matrix.trace (σ1 * σ2) = 0 := by
+  simp [pauliMatrix]
+
+/-- The trace of `σ1` multiplied by `σ3` is equal to `0`. -/
+@[simp]
+lemma σ1_σ3_trace : Matrix.trace (σ1 * σ3) = 0 := by
+  simp [pauliMatrix]
+
+/-- The trace of `σ2` multiplied by `σ0` is equal to `0`. -/
+lemma σ2_σ0_trace : Matrix.trace (σ2 * σ0) = 0 := by simp [pauliMatrix]
+
+/-- The trace of `σ2` multiplied by `σ1` is equal to `0`. -/
+lemma σ2_σ1_trace : Matrix.trace (σ2 * σ1) = 0 := by
+  simp [pauliMatrix]
+
+/-- The trace of `σ2` multiplied by `σ2` is equal to `2`. -/
+lemma σ2_σ2_trace : Matrix.trace (σ2 * σ2) = 2 := by simp
+
+/-- The trace of `σ2` multiplied by `σ3` is equal to `0`. -/
+@[simp]
+lemma σ2_σ3_trace : Matrix.trace (σ2 * σ3) = 0 := by
+  simp [pauliMatrix]
+
+/-- The trace of `σ3` multiplied by `σ0` is equal to `0`. -/
+lemma σ3_σ0_trace : Matrix.trace (σ3 * σ0) = 0 := by simp [pauliMatrix]
+
+/-- The trace of `σ3` multiplied by `σ1` is equal to `0`. -/
+lemma σ3_σ1_trace : Matrix.trace (σ3 * σ1) = 0 := by simp
+
+/-- The trace of `σ3` multiplied by `σ2` is equal to `0`. -/
+lemma σ3_σ2_trace : Matrix.trace (σ3 * σ2) = 0 := by simp
+
+/-- The trace of `σ3` multiplied by `σ3` is equal to `2`. -/
+lemma σ3_σ3_trace : Matrix.trace (σ3 * σ3) = 2 := by simp
 
 end PauliMatrix
