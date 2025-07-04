@@ -46,7 +46,7 @@ instance {d} : FiniteDimensional ℝ (Vector d) :=
   inferInstanceAs (FiniteDimensional ℝ (Fin 1 ⊕ Fin d → ℝ))
 
 instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (Vector d) :=
-   inferInstanceAs (NormedAddCommGroup (Fin 1 ⊕ Fin d → ℝ))
+    inferInstanceAs (NormedAddCommGroup (Fin 1 ⊕ Fin d → ℝ))
 
 instance isNormedSpace (d : ℕ) :
     NormedSpace ℝ (Vector d) :=
@@ -114,7 +114,6 @@ instance tensorial {d : ℕ} : Tensorial (realLorentzTensor d) ![.up] (Vector d)
 
 open Tensorial
 
-
 lemma toTensor_symm_apply {d : ℕ} (p : ℝT[d, .up]) :
     (toTensor (self := tensorial)).symm p =
     (Equiv.piCongrLeft' _ indexEquiv <|
@@ -163,13 +162,13 @@ lemma toTensor_symm_basis {d : ℕ} (μ : Fin 1 ⊕ Fin d) :
   simp [contrBasisFin, indexEquiv, Finsupp.single_apply]
 
 lemma toTensor_basis_eq_tensor_basis {d : ℕ} (μ : Fin 1 ⊕ Fin d) :
-    toTensor (basis μ)  = Tensor.basis ![Color.up] (indexEquiv.symm μ) := by
+    toTensor (basis μ) = Tensor.basis ![Color.up] (indexEquiv.symm μ) := by
   rw [← toTensor_symm_basis]
   simp
 
-lemma tensor_basis_repr_toTensor_apply {d : ℕ}  (p : Vector d) (μ : ComponentIdx ![Color.up]) :
+lemma tensor_basis_repr_toTensor_apply {d : ℕ} (p : Vector d) (μ : ComponentIdx ![Color.up]) :
     (Tensor.basis ![Color.up]).repr (toTensor p) μ =
-    p (indexEquiv μ)  := by
+    p (indexEquiv μ) := by
   obtain ⟨p, rfl⟩ := toTensor.symm.surjective p
   simp
   apply induction_on_pure (t := p)
@@ -246,7 +245,6 @@ lemma smul_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
   simp only [op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply, transpose_apply, smul_eq_mul,
     mul_comm]
 
-
 lemma neg_smul {d} (Λ : LorentzGroup d) (p : Vector d) :
     (-Λ) • p = - (Λ • p) := by
   funext i
@@ -257,7 +255,7 @@ lemma _root_.LorentzGroup.eq_of_action_vector_eq {d : ℕ}
     {Λ Λ' : LorentzGroup d} (h : ∀ p : Vector d, Λ • p = Λ' • p) :
     Λ = Λ' := by
   apply LorentzGroup.eq_of_mulVec_eq
-  simpa only [smul_eq_mulVec] using fun x =>  h x
+  simpa only [smul_eq_mulVec] using fun x => h x
 
 /-!
 
@@ -273,7 +271,6 @@ abbrev spatialPart {d : ℕ} (v : Vector d) : EuclideanSpace ℝ (Fin d) :=
 lemma spatialPart_apply_eq_toCoord {d : ℕ} (v : Vector d) (i : Fin d) :
     spatialPart v i = v (Sum.inr i) := rfl
 
-@[simp]
 lemma spatialPart_basis_sum_inr {d : ℕ} (i : Fin d) (j : Fin d) :
     spatialPart (basis (Sum.inr i)) j =
       (Finsupp.single (Sum.inr i : Fin 1 ⊕ Fin d) 1) (Sum.inr j) := by
@@ -281,11 +278,8 @@ lemma spatialPart_basis_sum_inr {d : ℕ} (i : Fin d) (j : Fin d) :
   rw [Finsupp.single_apply]
   simp
 
-@[simp]
 lemma spatialPart_basis_sum_inl {d : ℕ} (i : Fin d) :
-    spatialPart (basis (Sum.inl 0)) i = 0 := by
-  rw [spatialPart, basis_apply]
-  simp
+    spatialPart (basis (Sum.inl 0)) i = 0 := by simp
 
 /-!
 
@@ -297,18 +291,11 @@ lemma spatialPart_basis_sum_inl {d : ℕ} (i : Fin d) :
 abbrev timeComponent {d : ℕ} (v : Vector d) : ℝ :=
   v (Sum.inl 0)
 
-@[simp]
 lemma timeComponent_basis_sum_inr {d : ℕ} (i : Fin d) :
-    timeComponent (basis (Sum.inr i)) = 0 := by
-  rw [timeComponent, basis_apply]
-  simp
+    timeComponent (basis (Sum.inr i)) = 0 := by simp
 
-@[simp]
 lemma timeComponent_basis_sum_inl {d : ℕ} :
-    timeComponent (d := d) (basis (Sum.inl 0)) = 1 := by
-  rw [timeComponent, basis_apply]
-  simp
-
+    timeComponent (d := d) (basis (Sum.inl 0)) = 1 := by simp
 /-!
 
 ## Smoothness

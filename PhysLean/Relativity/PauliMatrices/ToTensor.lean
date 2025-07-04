@@ -44,7 +44,7 @@ and properties thereof.
 def indexEquiv : ComponentIdx (S := complexLorentzTensor) ![.up, .upL, .upR] ≃
     (Fin 1 ⊕ Fin 3) × Fin 2 × Fin 2 where
   toFun v := (finSumFinEquiv.symm (v 0 : Fin 4), v 1, v 2)
-  invFun v := fun | 0 => finSumFinEquiv v.1 | 1 =>  v.2.1 | 2 => v.2.2
+  invFun v := fun | 0 => finSumFinEquiv v.1 | 1 => v.2.1 | 2 => v.2.2
   left_inv v := by
     funext x
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Equiv.apply_symm_apply]
@@ -61,8 +61,7 @@ instance tensorial : TensorSpecies.Tensorial complexLorentzTensor
   Finsupp.equivFunOnFinite.trans <|
   (Equiv.piCongrLeft' _ indexEquiv).trans <|
   (Equiv.curry _ _ _).trans <|
-  Equiv.piCongrRight fun _ => Equiv.curry _ _ _
-  )
+  Equiv.piCongrRight fun _ => Equiv.curry _ _ _)
     { map_add := fun x y => by
         simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_add]
         rfl
@@ -71,7 +70,7 @@ instance tensorial : TensorSpecies.Tensorial complexLorentzTensor
           RingHom.id_apply]
         rfl}
 
-lemma toTensor_symm_apply  (p : ℂT[.up, .upL, .upR]) :
+lemma toTensor_symm_apply (p : ℂT[.up, .upL, .upR]) :
     (toTensor (self := tensorial)).symm p =
     ((Equiv.piCongrRight fun _ => Equiv.curry _ _ _) <|
     (Equiv.curry _ _ _) <|
@@ -82,7 +81,7 @@ lemma toTensor_symm_apply  (p : ℂT[.up, .upL, .upR]) :
 lemma toTensor_symm_basis (b : (x : Fin (Nat.succ 0).succ.succ) →
     Fin (complexLorentzTensor.repDim (![Color.up, Color.upL, Color.upR] x))) :
     (toTensor (self := tensorial)).symm (Tensor.basis ![Color.up, Color.upL, Color.upR] b) =
-    fun μ  α β => if b 0 = finSumFinEquiv μ ∧ b 1 = α ∧ b 2 = β then 1 else 0 := by
+    fun μ α β => if b 0 = finSumFinEquiv μ ∧ b 1 = α ∧ b 2 = β then 1 else 0 := by
   rw [toTensor_symm_apply]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Basis.repr_self, Finsupp.equivFunOnFinite_single,
     Equiv.curry_apply, Fin.isValue, cons_val_one, cons_val_zero, cons_val]
@@ -247,7 +246,6 @@ scoped[PauliMatrix] notation "σ^__" => PauliMatrix.pauliContrDown
 -/
 open Lorentz
 
-
 lemma pauliCo_eq_ofRat : pauliCo = ofRat (fun b =>
     if b 0 = 0 ∧ b 1 = b 2 then ⟨1, 0⟩ else
     if b 0 = 1 ∧ b 1 ≠ b 2 then ⟨-1, 0⟩ else
@@ -355,7 +353,6 @@ lemma pauliContrDown_ofRat : pauliContrDown = ofRat (fun b =>
 ## Group actions
 
 -/
-
 
 /-- The tensor `pauliCo` is invariant under the action of `SL(2,ℂ)`. -/
 lemma smul_pauliCo (g : SL(2,ℂ)) : g • pauliCo = pauliCo := by

@@ -488,7 +488,7 @@ lemma toGeneralizedBoost_eq :
         linarith⟩ := by rfl
 
 @[fun_prop]
-lemma toGeneralizedBoost_continuous  :
+lemma toGeneralizedBoost_continuous :
     Continuous (toGeneralizedBoost (d := d)) := by
   rw [toGeneralizedBoost_eq]
   apply Continuous.comp'
