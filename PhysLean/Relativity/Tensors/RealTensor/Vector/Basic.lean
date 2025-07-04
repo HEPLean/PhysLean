@@ -67,6 +67,10 @@ lemma apply_add {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
     (v + w) i = v i + w i := rfl
 
 @[simp]
+lemma apply_sub {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
+    (v - w) i = v i - w i := by rfl
+
+@[simp]
 lemma neg_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
     (-v) i = - v i := rfl
 
@@ -180,6 +184,11 @@ lemma tensor_basis_repr_toTensor_apply {d : ℕ}  (p : Vector d) (μ : Component
     simp [h]
   · intro t1 t2 h1 h2
     simp [h1, h2]
+
+lemma basis_repr_apply {d : ℕ} (p : Vector d) (μ : Fin 1 ⊕ Fin d) :
+    basis.repr p μ = p μ := by
+  simp [basis]
+  erw [Pi.basisFun_repr]
 
 lemma map_apply_eq_basis_mulVec {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p : Vector d) :
     (f p) = (LinearMap.toMatrix basis basis) f *ᵥ p := by
