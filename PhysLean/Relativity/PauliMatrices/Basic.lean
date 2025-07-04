@@ -88,6 +88,14 @@ lemma pauliMatrix_mul_self (μ : Fin 1 ⊕ Fin 3) :
     dsimp [pauliMatrix]
     simp [one_fin_two]
 
+instance pauliMatrixInvertiable (μ : Fin 1 ⊕ Fin 3) : Invertible (σ μ) := by
+  use σ μ
+  · simp
+  · simp
+
+lemma pauliMatrix_inv (μ : Fin 1 ⊕ Fin 3) :
+    ⅟ (σ μ) = σ μ := by rfl
+
 @[simp] lemma σ2_mul_σ1 : σ2 * σ1 = -(σ1 * σ2) := by simp [pauliMatrix]
 @[simp] lemma σ3_mul_σ1 : σ3 * σ1 = -(σ1 * σ3) := by simp [pauliMatrix]
 @[simp] lemma σ3_mul_σ2 : σ3 * σ2 = -(σ2 * σ3) := by simp [pauliMatrix]
@@ -156,5 +164,63 @@ lemma σ3_σ2_trace : Matrix.trace (σ3 * σ2) = 0 := by simp
 
 /-- The trace of `σ3` multiplied by `σ3` is equal to `2`. -/
 lemma σ3_σ3_trace : Matrix.trace (σ3 * σ3) = 2 := by simp
+
+/-!
+
+## Commutation relations
+
+-/
+
+@[simp] lemma σ1_σ2_commutator : σ1 * σ2 - σ2 * σ1 = (2 * I) • σ3 := by
+  simp [pauliMatrix]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp
+  · ring
+  · ring
+
+@[simp] lemma σ1_σ3_commutator : σ1 * σ3 - σ3 * σ1 = - (2 * I) • σ2 := by
+  simp [pauliMatrix]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp
+  · ring_nf
+    simp [Complex.I_sq]
+  · ring_nf
+    simp [Complex.I_sq]
+
+@[simp] lemma σ2_σ1_commutator : σ2 * σ1 - σ1 * σ2 = -(2 * I) • σ3 := by
+  simp [pauliMatrix]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp
+  · ring_nf
+  · ring_nf
+
+@[simp] lemma σ2_σ3_commutator : σ2 * σ3 - σ3 * σ2 = (2 * I) • σ1 := by
+  simp [pauliMatrix]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp
+  · ring_nf
+  · ring_nf
+
+@[simp] lemma σ3_σ1_commutator : σ3 * σ1 - σ1 * σ3 = (2 * I) • σ2 := by
+  simp [pauliMatrix]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp
+  · ring_nf
+    simp [Complex.I_sq]
+  · ring_nf
+    simp [Complex.I_sq]
+
+@[simp] lemma σ3_σ2_commutator : σ3 * σ2 - σ2 * σ3 = -(2 * I) • σ1 := by
+  simp [pauliMatrix]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp
+  · ring_nf
+  · ring_nf
 
 end PauliMatrix

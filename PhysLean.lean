@@ -222,7 +222,6 @@ import PhysLean.Relativity.MinkowskiMatrix
 import PhysLean.Relativity.PauliMatrices.AsTensor
 import PhysLean.Relativity.PauliMatrices.Basic
 import PhysLean.Relativity.PauliMatrices.CliffordAlgebra
-import PhysLean.Relativity.PauliMatrices.Matrix
 import PhysLean.Relativity.PauliMatrices.Relations
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
 import PhysLean.Relativity.SL2C.Basic

@@ -410,7 +410,8 @@ lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
 lemma same_eq_det_toSelfAdjoint (x : ContrMod 3) :
     ⟪x, x⟫ₘ = det (ContrMod.toSelfAdjoint x).1 := by
   rw [ContrMod.toSelfAdjoint_apply_coe, as_sum_toSpace, det_fin_two,
-    PauliMatrix.σ1, PauliMatrix.σ2, PauliMatrix.σ3, ContrMod.toSpace,
+    PauliMatrix.pauliMatrix, PauliMatrix.pauliMatrix, PauliMatrix.pauliMatrix,
+    PauliMatrix.pauliMatrix, ContrMod.toSpace,
     ContrMod.toFin1dℝ_eq_val]
   simp? [Fin.sum_univ_three] says
     simp only [Fin.isValue, PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial,
