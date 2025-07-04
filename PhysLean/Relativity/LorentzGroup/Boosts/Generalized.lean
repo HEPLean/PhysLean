@@ -234,7 +234,7 @@ lemma generalizedBoost_apply (u v : Velocity d) (x : Vector d) :
 lemma generalizedBoost_apply_mul_one_plus_contr (u v : Velocity d) (x : Vector d) :
     (1 + ⟪u, v.1⟫ₘ) • generalizedBoost u v • x = (1 + ⟪u, v.1⟫ₘ) • x +
     (2 * ⟪x, u⟫ₘ * (1 + ⟪u, v.1⟫ₘ)) • v - ⟪x, u + v⟫ₘ • (u + v) := by
-  rw [generalizedBoost_apply, _root_.smul_add,  _root_.smul_add]
+  rw [generalizedBoost_apply, _root_.smul_add, _root_.smul_add]
   trans (1 + ⟪u, v.1⟫ₘ) • x + (2 * ⟪x, u⟫ₘ * (1 + ⟪u, v.1⟫ₘ)) • v
     + (- ⟪x, u + v⟫ₘ) • (u + v)
   · congr 1
@@ -259,7 +259,7 @@ lemma generalizedBoost_apply_expand (u v : Velocity d) (x : Vector d) :
   apply (smul_right_inj (Velocity.one_add_minkowskiProduct_neq_zero u v)).mp
   rw [generalizedBoost_apply_mul_one_plus_contr]
   conv_rhs =>
-    rw [ _root_.smul_sub,  _root_.smul_add, smul_smul, smul_smul]
+    rw [_root_.smul_sub, _root_.smul_add, smul_smul, smul_smul]
   congr 1
   · ring_nf
   · congr

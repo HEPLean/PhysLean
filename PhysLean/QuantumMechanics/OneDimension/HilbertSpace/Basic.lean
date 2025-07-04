@@ -114,7 +114,7 @@ lemma mk_smul {f : ℝ → ℂ} {c : ℂ} {hf : MemHS f} :
     mk (memHS_smul (c := c) hf) = c • mk hf := rfl
 
 lemma mk_eq_iff {f g : ℝ → ℂ} {hf : MemHS f} {hg : MemHS g} :
-    mk hf = mk hg  ↔ f =ᵐ[volume] g := by
+    mk hf = mk hg ↔ f =ᵐ[volume] g := by
   simp [mk]
 
 /-!

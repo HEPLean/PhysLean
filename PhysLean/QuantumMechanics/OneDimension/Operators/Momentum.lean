@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
-import Mathlib.LinearAlgebra.LinearPMap
 import PhysLean.QuantumMechanics.PlanckConstant
 import PhysLean.Meta.TODO.Basic
 /-!
@@ -28,7 +27,7 @@ open HilbertSpace
 
 /-- The domain of the momentum operator is square integrable functions
   which are differentiable and which have a square integrable derivative. -/
-def momentumOperatorLinearPMap.domain' : Submodule ℂ HilbertSpace  where
+def momentumOperatorLinearPMap.domain' : Submodule ℂ HilbertSpace where
   carrier ψ := ∃ ψ', ψ =ᵐ[MeasureTheory.volume] ψ' ∧
     Differentiable ℝ ψ' ∧ MemHS (fun x => - Complex.I * ℏ * deriv ψ' x)
   zero_mem' := by
@@ -47,10 +46,10 @@ def momentumOperatorLinearPMap.domain' : Submodule ℂ HilbertSpace  where
         · exact h1'
         · exact h2'
     · fun_prop
-    · have h1 :  (fun x => -Complex.I * ↑↑ℏ * deriv (ψ1' + ψ2') x)
-          =  fun x => -Complex.I * ↑↑ℏ * deriv (ψ1') x + (-Complex.I * ↑↑ℏ * deriv (ψ2') x) := by
+    · have h1 : (fun x => -Complex.I * ↑↑ℏ * deriv (ψ1' + ψ2') x)
+          = fun x => -Complex.I * ↑↑ℏ * deriv (ψ1') x + (-Complex.I * ↑↑ℏ * deriv (ψ2') x) := by
         funext x
-        simp
+        simp only [neg_mul]
         rw [deriv_add]
         · ring
         · exact h1diff x
@@ -82,20 +81,20 @@ def momentumOperatorLinearPMap.toFun' :
   toFun := fun ψ => HilbertSpace.mk (Classical.choose_spec ψ.2).2.2
   map_add' ψ1 ψ2 := by
     rw [← mk_add, mk_eq_iff]
-    trans  (fun x => (-Complex.I * ↑↑ℏ) • (fun x => deriv (Classical.choose (ψ1 + ψ2).2) x) x)
+    trans (fun x => (-Complex.I * ↑↑ℏ) • (fun x => deriv (Classical.choose (ψ1 + ψ2).2) x) x)
     · simp
     symm
     trans (fun x => (-Complex.I * ↑↑ℏ) • (fun x =>
       deriv (Classical.choose ψ1.2) x + deriv (Classical.choose ψ2.2) x) x)
     · apply Eq.eventuallyEq
       funext x
-      simp
+      simp only [neg_mul, Pi.add_apply, smul_eq_mul]
       ring
     apply Filter.EventuallyEq.const_smul
-    trans  (fun x => deriv (Classical.choose ψ1.2 + Classical.choose ψ2.2) x)
+    trans (fun x => deriv (Classical.choose ψ1.2 + Classical.choose ψ2.2) x)
     · apply Eq.eventuallyEq
       funext x
-      simp
+      simp only [neg_mul]
       have h1 : deriv (Classical.choose ψ1.2) x + deriv (Classical.choose ψ2.2) x
           = deriv (Classical.choose ψ1.2 + Classical.choose ψ2.2) x := by
         rw [deriv_add]
@@ -127,11 +126,12 @@ def momentumOperatorLinearPMap.toFun' :
     rw [← mk_smul, mk_eq_iff]
     apply Filter.EventuallyEq.symm (Eq.eventuallyEq ?_)
     funext x
-    simp
+    simp only [RingHom.id_apply, neg_mul, Pi.smul_apply, smul_eq_mul, mul_neg, SetLike.val_smul,
+      neg_inj]
     trans (Complex.I * ↑↑ℏ * (c • deriv (Classical.choose ψ.2) x))
     · simp
       ring
-    trans (Complex.I * ↑↑ℏ * (deriv ( Classical.choose (c • ψ).2) x))
+    trans (Complex.I * ↑↑ℏ * (deriv (Classical.choose (c • ψ).2) x))
     swap
     · simp
     congr
@@ -147,7 +147,7 @@ def momentumOperatorLinearPMap.toFun' :
       exact (Classical.choose_spec ψ.2).1.symm
     symm
     apply (Classical.choose_spec (c • ψ).2).1.symm.trans
-    simp
+    simp only [SetLike.val_smul]
     apply MeasureTheory.AEEqFun.coeFn_smul
 
 /-- The unbounded momentum operator, whose domain is square integrable functions
