@@ -34,9 +34,8 @@ noncomputable section
 
 namespace PauliMatrix
 
-
 /-- The Pauli matrices. -/
-def pauliMatrix  : Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ
+def pauliMatrix : Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ
   | Sum.inl 0 => 1
   | Sum.inr 0 => !![0, 1; 1, 0]
   | Sum.inr 1 => !![0, -I; I, 0]
@@ -67,17 +66,17 @@ lemma pauliMatrix_selfAdjoint (μ : Fin 1 ⊕ Fin 3) :
   fin_cases μ
   all_goals
     dsimp [pauliMatrix]
-    rw [eta_fin_two (_)ᴴ]
+    rw [eta_fin_two _ᴴ]
     simp
   ext i j
   fin_cases i <;> fin_cases j
   all_goals
     simp [pauliMatrix, one_fin_two]
 
-/-! ### Products
+/-! ### Inversions
 
-These lemmas try to put the terms in numerical order.
-We skip `σ0` since it's just `1` anyway.
+Lemmas related to the inversions of the Pauli matrices.
+
 -/
 
 @[simp]
@@ -96,13 +95,19 @@ instance pauliMatrixInvertiable (μ : Fin 1 ⊕ Fin 3) : Invertible (σ μ) := b
 lemma pauliMatrix_inv (μ : Fin 1 ⊕ Fin 3) :
     ⅟ (σ μ) = σ μ := by rfl
 
+/-! ### Products
+
+These lemmas try to put the terms in numerical order.
+We skip `σ0` since it's just `1` anyway.
+-/
+
 @[simp] lemma σ2_mul_σ1 : σ2 * σ1 = -(σ1 * σ2) := by simp [pauliMatrix]
 @[simp] lemma σ3_mul_σ1 : σ3 * σ1 = -(σ1 * σ3) := by simp [pauliMatrix]
 @[simp] lemma σ3_mul_σ2 : σ3 * σ2 = -(σ2 * σ3) := by simp [pauliMatrix]
 
 /-!
 
-## Traces
+### Traces
 
 -/
 
@@ -167,8 +172,9 @@ lemma σ3_σ3_trace : Matrix.trace (σ3 * σ3) = 2 := by simp
 
 /-!
 
-## Commutation relations
+### Commutation relations
 
+Lemmas related to the commutation relations of the Pauli matrices.
 -/
 
 @[simp] lemma σ1_σ2_commutator : σ1 * σ2 - σ2 * σ1 = (2 * I) • σ3 := by

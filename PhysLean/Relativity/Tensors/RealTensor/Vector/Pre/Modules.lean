@@ -230,8 +230,8 @@ lemma toSelfAdjoint_apply (x : ContrMod 3) : toSelfAdjoint x =
     Basis.coe_mk, Fin.isValue]
   rw [Finsupp.linearCombination_apply_of_mem_supported ℝ (s := Finset.univ)]
   · change (∑ i : Fin 1 ⊕ Fin 3, x.toFin1dℝ i • PauliMatrix.pauliSelfAdjoint' i) = _
-    simp only [PauliMatrix.pauliSelfAdjoint', Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
-      Fin.isValue, Finset.sum_singleton, Fin.sum_univ_three]
+    simp only [pauliSelfAdjoint', Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique,
+      Fin.default_eq_zero, Finset.sum_singleton, Fin.sum_univ_three]
     apply Subtype.ext
     simp only [Fin.isValue, AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg,
       AddSubgroupClass.coe_sub]
@@ -257,14 +257,14 @@ lemma toSelfAdjoint_stdBasis (i : Fin 1 ⊕ Fin 3) :
   | Sum.inr 0 =>
     simp only [stdBasis, Fin.isValue, Basis.coe_ofEquivFun, LinearEquiv.apply_symm_apply, ne_eq,
       reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul, Pi.single_eq_same, one_smul,
-      zero_sub, Sum.inr.injEq, one_ne_zero, sub_zero, Fin.reduceEq, PauliMatrix.pauliBasis', Basis.coe_mk,
-      PauliMatrix.pauliSelfAdjoint']
+      zero_sub, Sum.inr.injEq, one_ne_zero, sub_zero, Fin.reduceEq, PauliMatrix.pauliBasis',
+      Basis.coe_mk, PauliMatrix.pauliSelfAdjoint']
     rfl
   | Sum.inr 1 =>
     simp only [stdBasis, Fin.isValue, Basis.coe_ofEquivFun, LinearEquiv.apply_symm_apply, ne_eq,
       reduceCtorEq, not_false_eq_true, Pi.single_eq_of_ne, zero_smul, Sum.inr.injEq, zero_ne_one,
-      sub_self, Pi.single_eq_same, one_smul, zero_sub, Fin.reduceEq, sub_zero, PauliMatrix.pauliBasis',
-      Basis.coe_mk, PauliMatrix.pauliSelfAdjoint']
+      sub_self, Pi.single_eq_same, one_smul, zero_sub, Fin.reduceEq, sub_zero,
+      PauliMatrix.pauliBasis', Basis.coe_mk, PauliMatrix.pauliSelfAdjoint']
     rfl
   | Sum.inr 2 =>
     simp only [stdBasis, Fin.isValue, Basis.coe_ofEquivFun, LinearEquiv.apply_symm_apply, ne_eq,

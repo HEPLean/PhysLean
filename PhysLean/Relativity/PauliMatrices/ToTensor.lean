@@ -27,10 +27,15 @@ open Fermion
 open complexLorentzTensor
 open TensorSpecies
 open Tensor
+open Tensorial
 
 /-!
 
-## As a tensor
+## Tersorial structure
+
+The tensorial structure on the type
+`Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ`
+and properties thereof.
 
 -/
 
@@ -66,10 +71,6 @@ instance tensorial : TensorSpecies.Tensorial complexLorentzTensor
           RingHom.id_apply]
         rfl}
 
-open Tensorial
-
-scoped[PauliMatrix] notation "σ^^^" => toTensor pauliMatrix
-
 lemma toTensor_symm_apply  (p : ℂT[.up, .upL, .upR]) :
     (toTensor (self := tensorial)).symm p =
     ((Equiv.piCongrRight fun _ => Equiv.curry _ _ _) <|
@@ -99,6 +100,15 @@ lemma toTensor_symm_basis (b : (x : Fin (Nat.succ 0).succ.succ) →
     · simp [h.1]
     · simp [h.2.1]
     · simp [h.2.2]
+
+/-!
+
+## Pauli matrices as a tensor
+
+-/
+
+/-- The Pauli matarices as a tensor `toTensor pauliMatrix` in `ℂT[.up, .upL, .upR]`. -/
+scoped[PauliMatrix] notation "σ^^^" => toTensor pauliMatrix
 
 lemma toTensor_basis_expand : σ^^^ =
     Tensor.basis ![Color.up, Color.upL, Color.upR] (fun | 0 => 0 | 1 => 0 | 2 => 0)
@@ -202,14 +212,11 @@ lemma toTensor_smul_eq_self (Λ : SL(2,ℂ)) : Λ • σ^^^ = σ^^^ := by
   rw [toTensor_eq_asConsTensor]
   simp
 
-
 /-!
 
 ## Variations of the pauli tensor
 
 -/
-open TensorSpecies
-open Tensor
 
 /-- The Pauli matrices as the complex Lorentz tensor `σ_μ^α^{dot β}`. -/
 abbrev pauliCo : ℂT[.down, .upL, .upR] :=

@@ -313,7 +313,7 @@ lemma isLorentz_iff_basis {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
   intro h p q
   have hp : p = ∑ μ, p μ • basis μ := by
     exact Eq.symm (Basis.sum_repr basis p)
-  have hq : q = ∑ ν,  q ν • basis ν := by
+  have hq : q = ∑ ν, q ν • basis ν := by
     exact Eq.symm (Basis.sum_repr basis q)
   rw [hp, hq]
   simp only [map_sum, map_smul, LinearMap.coeFn_sum, Finset.sum_apply, LinearMap.smul_apply, h,

@@ -6,7 +6,10 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.Basic
 /-!
 
-# Products of tensors.
+# Tensorial class
+
+The tensorial class is used to define a tensorial structure on a type `M` via
+a linear equivalence to a tensor of a `TensorSpecies`.
 
 -/
 
@@ -19,6 +22,8 @@ open OverColor
 
 variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
 
+/-- The tensorial class is used to define a tensor structure on a type `M` through a
+  linear equivalence with a module `S.Tensor c` for `S` a tensor species. -/
 class Tensorial
    {k : outParam Type} [CommRing k] {C G : outParam Type} [Group G]
    {n : outParam ℕ} (S : outParam (TensorSpecies k C G)) (c :outParam (Fin n → C)) (M : Type)
@@ -65,6 +70,7 @@ lemma smul_toTensor_symm {g : G} {t : Tensor S c} [self : Tensorial S c M] :
   rw [smul_eq]
   simp
 
+/-- The number of indices of a elements `t : M` where `M` carries a tensorial instance. -/
 def numIndices (t : M) [Tensorial S c M] : ℕ :=
   TensorSpecies.numIndices (toTensor t)
 

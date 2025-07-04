@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.Contraction.Basic
 import PhysLean.Relativity.Tensors.Evaluation
-import PhysLean.Relativity.Tensors.Instance
+import PhysLean.Relativity.Tensors.Tensorial
 import PhysLean.Relativity.Tensors.Product
 /-!
 

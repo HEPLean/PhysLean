@@ -124,7 +124,8 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
             LorentzGroup.inv_eq_dual, AddSubgroup.coe_add, selfAdjoint.val_smul,
             AddSubgroup.val_finset_sum, map_add, map_sum]
       _ = ∑ x, ∑ i, ∑ j, ((SL2C.toLorentzGroup M).1 i x • (complexContrBasis i)) ⊗ₜ[ℂ]
-            leftRightToMatrix.symm.toLinearMap ((SL2C.toLorentzGroup M⁻¹).1 x j • (pauliBasis j)) := by
+            leftRightToMatrix.symm.toLinearMap
+              ((SL2C.toLorentzGroup M⁻¹).1 x j • (pauliBasis j)) := by
           refine Finset.sum_congr rfl (fun x _ => ?_)
           rw [sum_tmul]
           refine Finset.sum_congr rfl (fun i _ => ?_)

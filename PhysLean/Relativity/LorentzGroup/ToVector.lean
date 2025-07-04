@@ -35,7 +35,7 @@ lemma toVector_apply {d : ℕ} (Λ : LorentzGroup d)
   simp [toVector, smul_eq_sum]
 
 lemma toVector_eq_fun {d : ℕ} (Λ : LorentzGroup d) :
-    toVector Λ =  (fun i => Λ.1 i (Sum.inl 0)) := by
+    toVector Λ = (fun i => Λ.1 i (Sum.inl 0)) := by
   funext i
   simp
 

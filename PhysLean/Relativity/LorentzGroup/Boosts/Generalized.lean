@@ -419,12 +419,12 @@ lemma generalizedBoost_inv (u v : Velocity d) :
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ)) • u.1 -
       ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1))
   · abel
-  trans  (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • v.1 +
+  trans (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • v.1 +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • u.1 -
       ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1))
   · rw [sub_smul, sub_smul, smul_add]
     abel_nf
-  trans  (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
+  trans (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
       - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • v.1 +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
       - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • u.1)
@@ -448,7 +448,7 @@ lemma generalizedBoost_inv (u v : Velocity d) :
       field_simp [h1]
       rw [minkowskiProduct_symm v.1 u.1]
       ring
-  trans  (1 + ⟪u.1, v.1⟫ₘ) • p
+  trans (1 + ⟪u.1, v.1⟫ₘ) • p
   · simp
   simp [minkowskiProduct_symm]
 

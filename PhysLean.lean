@@ -279,6 +279,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Contraction
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Modules
 import PhysLean.Relativity.Tensors.RealTensor.Velocity.Basic
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
+import PhysLean.Relativity.Tensors.Tensorial
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.SpaceAndTime.Space.Basic
 import PhysLean.SpaceAndTime.Space.VectorIdentities

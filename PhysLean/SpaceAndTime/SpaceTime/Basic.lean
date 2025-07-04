@@ -78,7 +78,7 @@ lemma time_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
 def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
   LinearEquiv.toContinuousLinearEquiv {
     toFun x := (x.time, x.space)
-    invFun tx :=  (fun i =>
+    invFun tx := (fun i =>
       match i with
       | Sum.inl _ => tx.1
       | Sum.inr i => tx.2 i)
@@ -164,7 +164,7 @@ lemma deriv_eq {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) (y : Spa
   rfl
 
 @[simp]
-lemma deriv_zero {d : ℕ} (μ : Fin 1 ⊕ Fin d)  : SpaceTime.deriv μ (fun _ => (0 : ℝ)) = 0 := by
+lemma deriv_zero {d : ℕ} (μ : Fin 1 ⊕ Fin d) : SpaceTime.deriv μ (fun _ => (0 : ℝ)) = 0 := by
   ext y
   rw [SpaceTime.deriv_eq]
   simp

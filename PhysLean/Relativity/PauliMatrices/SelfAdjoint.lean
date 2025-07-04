@@ -105,29 +105,29 @@ lemma pauliSelfAdjoint_span : ⊤ ≤ Submodule.span ℝ (Set.range pauliSelfAdj
   simp only [one_div, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three, c]
   apply selfAdjoint_ext
-  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add, Algebra.mul_smul_comm,
-    trace_add, trace_smul, σ0_σ0_trace, real_smul, ofReal_mul, ofReal_inv, ofReal_ofNat,
-    σ0_σ1_trace, smul_zero, σ0_σ2_trace, add_zero, σ0_σ3_trace, mul_re, inv_re, re_ofNat,
-    normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero, zero_div, ofReal_im,
-    mul_zero, sub_zero, mul_im, zero_mul]
+  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add,
+    Algebra.mul_smul_comm, trace_add, trace_smul, σ0_σ0_trace, real_smul, ofReal_mul, ofReal_inv,
+    ofReal_ofNat, σ0_σ1_trace, smul_zero, σ0_σ2_trace, add_zero, σ0_σ3_trace, mul_re, inv_re,
+    re_ofNat, normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero, zero_div,
+    ofReal_im, mul_zero, sub_zero, mul_im, zero_mul, c]
     ring
-  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add, Algebra.mul_smul_comm,
-    trace_add, trace_smul, σ1_σ0_trace, smul_zero, σ1_σ1_trace, real_smul, ofReal_mul, ofReal_inv,
-    ofReal_ofNat, σ1_σ2_trace, add_zero, σ1_σ3_trace, zero_add, mul_re, inv_re, re_ofNat,
-    normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero, zero_div, ofReal_im,
-    mul_zero, sub_zero, mul_im, zero_mul]
+  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add,
+    Algebra.mul_smul_comm, trace_add, trace_smul, σ1_σ0_trace, smul_zero, σ1_σ1_trace, real_smul,
+    ofReal_mul, ofReal_inv, ofReal_ofNat, σ1_σ2_trace, add_zero, σ1_σ3_trace, zero_add, mul_re,
+    inv_re, re_ofNat, normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero,
+    zero_div, ofReal_im, mul_zero, sub_zero, mul_im, zero_mul, c]
     ring
-  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add, Algebra.mul_smul_comm,
-    trace_add, trace_smul, σ2_σ0_trace, smul_zero, σ2_σ1_trace, σ2_σ2_trace, real_smul, ofReal_mul,
-    ofReal_inv, ofReal_ofNat, zero_add, σ2_σ3_trace, add_zero, mul_re, inv_re, re_ofNat,
-    normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero, zero_div, ofReal_im,
-    mul_zero, sub_zero, mul_im, zero_mul]
+  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add,
+    Algebra.mul_smul_comm, trace_add, trace_smul, σ2_σ0_trace, smul_zero, σ2_σ1_trace, σ2_σ2_trace,
+    real_smul, ofReal_mul, ofReal_inv, ofReal_ofNat, zero_add, σ2_σ3_trace, add_zero, mul_re,
+    inv_re, re_ofNat, normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero,
+    zero_div, ofReal_im, mul_zero, sub_zero, mul_im, zero_mul, c]
     ring
-  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add, Algebra.mul_smul_comm,
-    trace_add, trace_smul, σ3_σ0_trace, smul_zero, σ3_σ1_trace, σ3_σ2_trace, add_zero, σ3_σ3_trace,
-    real_smul, ofReal_mul, ofReal_inv, ofReal_ofNat, zero_add, mul_re, inv_re, re_ofNat,
-    normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero, zero_div, ofReal_im,
-    mul_zero, sub_zero, mul_im, zero_mul]
+  · simp only [pauliSelfAdjoint, AddSubgroup.coe_add, selfAdjoint.val_smul, mul_add,
+    Algebra.mul_smul_comm, trace_add, trace_smul, σ3_σ0_trace, smul_zero, σ3_σ1_trace, σ3_σ2_trace,
+    add_zero, σ3_σ3_trace, real_smul, ofReal_mul, ofReal_inv, ofReal_ofNat, zero_add, mul_re,
+    inv_re, re_ofNat, normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero,
+    zero_div, ofReal_im, mul_zero, sub_zero, mul_im, zero_mul, c]
     ring
 
 /-- The basis of `selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)` formed by Pauli matrices. -/
@@ -211,33 +211,33 @@ lemma pauliBasis'_decomp (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     + (-1/2 * (Matrix.trace (σ2 * M.1)).re) • pauliBasis' (Sum.inr 1)
     + (-1/2 * (Matrix.trace (σ3 * M.1)).re) • pauliBasis' (Sum.inr 2) := by
   apply selfAdjoint_ext
-  · simp only [one_div, pauliSelfAdjoint', Fin.isValue, Basis.coe_mk, pauliBasis', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ0_σ0_trace, real_smul, ofReal_mul, ofReal_inv, ofReal_ofNat, trace_neg, σ0_σ1_trace, smul_zero,
-    neg_zero, add_zero, σ0_σ2_trace, σ0_σ3_trace, mul_re, inv_re, re_ofNat, normSq_ofNat,
-    div_self_mul_self', ofReal_re, inv_im, im_ofNat, zero_div, ofReal_im, mul_zero, sub_zero,
-    mul_im, zero_mul]
+  · simp only [Fin.isValue, one_div, pauliBasis', Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ0_σ0_trace, real_smul, ofReal_mul, ofReal_inv, ofReal_ofNat, trace_neg,
+    σ0_σ1_trace, smul_zero, neg_zero, add_zero, σ0_σ2_trace, σ0_σ3_trace, mul_re, inv_re, re_ofNat,
+    normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, zero_div, ofReal_im, mul_zero,
+    sub_zero, mul_im, zero_mul]
     ring
-  · simp only [one_div, pauliBasis', Fin.isValue, Basis.coe_mk, pauliSelfAdjoint', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ1_σ0_trace, smul_zero, trace_neg, σ1_σ1_trace, real_smul, ofReal_mul, ofReal_div, ofReal_neg,
-    ofReal_one, ofReal_ofNat, zero_add, σ1_σ2_trace, neg_zero, add_zero, σ1_σ3_trace, neg_re,
-    mul_re, div_ofNat_re, one_re, ofReal_re, div_ofNat_im, neg_im, one_im, zero_div, ofReal_im,
-    mul_zero, sub_zero, re_ofNat, mul_im, zero_mul, im_ofNat]
+  · simp only [Fin.isValue, one_div, pauliBasis', Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ1_σ0_trace, smul_zero, trace_neg, σ1_σ1_trace, real_smul, ofReal_mul,
+    ofReal_div, ofReal_neg, ofReal_one, ofReal_ofNat, zero_add, σ1_σ2_trace, neg_zero, add_zero,
+    σ1_σ3_trace, neg_re, mul_re, div_ofNat_re, one_re, ofReal_re, div_ofNat_im, neg_im, one_im,
+    zero_div, ofReal_im, mul_zero, sub_zero, re_ofNat, mul_im, zero_mul, im_ofNat]
     ring
-  · simp only [one_div, pauliBasis', Fin.isValue, Basis.coe_mk, pauliSelfAdjoint', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ2_σ0_trace, smul_zero, trace_neg, σ2_σ1_trace, neg_zero, add_zero, σ2_σ2_trace, real_smul,
-    ofReal_mul, ofReal_div, ofReal_neg, ofReal_one, ofReal_ofNat, zero_add, σ2_σ3_trace, neg_re,
-    mul_re, div_ofNat_re, one_re, ofReal_re, div_ofNat_im, neg_im, one_im, zero_div, ofReal_im,
-    mul_zero, sub_zero, re_ofNat, mul_im, zero_mul, im_ofNat]
+  · simp only [Fin.isValue, one_div, pauliBasis', Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ2_σ0_trace, smul_zero, trace_neg, σ2_σ1_trace, neg_zero, add_zero,
+    σ2_σ2_trace, real_smul, ofReal_mul, ofReal_div, ofReal_neg, ofReal_one, ofReal_ofNat, zero_add,
+    σ2_σ3_trace, neg_re, mul_re, div_ofNat_re, one_re, ofReal_re, div_ofNat_im, neg_im, one_im,
+    zero_div, ofReal_im, mul_zero, sub_zero, re_ofNat, mul_im, zero_mul, im_ofNat]
     ring
-  · simp only [one_div, pauliBasis', Fin.isValue, Basis.coe_mk, pauliSelfAdjoint', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ3_σ0_trace, smul_zero, trace_neg, σ3_σ1_trace, neg_zero, add_zero, σ3_σ2_trace, σ3_σ3_trace,
-    real_smul, ofReal_mul, ofReal_div, ofReal_neg, ofReal_one, ofReal_ofNat, zero_add, neg_re,
-    mul_re, div_ofNat_re, one_re, ofReal_re, div_ofNat_im, neg_im, one_im, zero_div, ofReal_im,
-    mul_zero, sub_zero, re_ofNat, mul_im, zero_mul, im_ofNat]
+  · simp only [Fin.isValue, one_div, pauliBasis', Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ3_σ0_trace, smul_zero, trace_neg, σ3_σ1_trace, neg_zero, add_zero,
+    σ3_σ2_trace, σ3_σ3_trace, real_smul, ofReal_mul, ofReal_div, ofReal_neg, ofReal_one,
+    ofReal_ofNat, zero_add, neg_re, mul_re, div_ofNat_re, one_re, ofReal_re, div_ofNat_im, neg_im,
+    one_im, zero_div, ofReal_im, mul_zero, sub_zero, re_ofNat, mul_im, zero_mul, im_ofNat]
     ring
 
 /-- The component of a self-adjoint matrix in the direction `σ0` under
@@ -250,11 +250,11 @@ lemma pauliBasis'_repr_inl_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three] at hM
   have h0 := congrArg (fun A => Matrix.trace (σ0 * A.1)/ 2) hM
-  simp only [pauliBasis', Basis.mk_repr, Fin.isValue, Basis.coe_mk, pauliSelfAdjoint', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ0_σ0_trace, real_smul, trace_neg, σ0_σ1_trace, smul_zero, neg_zero, σ0_σ2_trace, add_zero,
-    σ0_σ3_trace, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-    IsUnit.mul_div_cancel_right] at h0
+  simp only [Fin.isValue, pauliBasis', Basis.mk_repr, Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ0_σ0_trace, real_smul, trace_neg, σ0_σ1_trace, smul_zero, neg_zero,
+    σ0_σ2_trace, add_zero, σ0_σ3_trace, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero,
+    not_false_eq_true, IsUnit.mul_div_cancel_right] at h0
   linear_combination (norm := ring_nf) -h0
   simp [pauliBasis']
 
@@ -268,11 +268,11 @@ lemma pauliBasis'_repr_inr_0 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three] at hM
   have h0 := congrArg (fun A => - Matrix.trace (σ1 * A.1)/ 2) hM
-  simp only [pauliSelfAdjoint', Basis.mk_repr, Fin.isValue, Basis.coe_mk, pauliBasis', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ1_σ0_trace, smul_zero, trace_neg, σ1_σ1_trace, real_smul, σ1_σ2_trace, neg_zero, add_zero,
-    σ1_σ3_trace, zero_add, neg_neg, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero,
-    not_false_eq_true, IsUnit.mul_div_cancel_right] at h0
+  simp only [Fin.isValue, pauliBasis', Basis.mk_repr, Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ1_σ0_trace, smul_zero, trace_neg, σ1_σ1_trace, real_smul, σ1_σ2_trace,
+    neg_zero, add_zero, σ1_σ3_trace, zero_add, neg_neg, isUnit_iff_ne_zero, ne_eq,
+    OfNat.ofNat_ne_zero, not_false_eq_true, IsUnit.mul_div_cancel_right] at h0
   linear_combination (norm := ring_nf) -h0
   simp [pauliBasis']
 
@@ -286,11 +286,11 @@ lemma pauliBasis'_repr_inr_1 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three] at hM
   have h0 := congrArg (fun A => - Matrix.trace (σ2 * A.1)/ 2) hM
-  simp only [pauliBasis', Basis.mk_repr, Fin.isValue, Basis.coe_mk, pauliSelfAdjoint', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ2_σ0_trace, smul_zero, trace_neg, σ2_σ1_trace, neg_zero, σ2_σ2_trace, real_smul, zero_add,
-    σ2_σ3_trace, add_zero, neg_neg, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero,
-    not_false_eq_true, IsUnit.mul_div_cancel_right] at h0
+  simp only [Fin.isValue, pauliBasis', Basis.mk_repr, Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ2_σ0_trace, smul_zero, trace_neg, σ2_σ1_trace, neg_zero, σ2_σ2_trace,
+    real_smul, zero_add, σ2_σ3_trace, add_zero, neg_neg, isUnit_iff_ne_zero, ne_eq,
+    OfNat.ofNat_ne_zero, not_false_eq_true, IsUnit.mul_div_cancel_right] at h0
   linear_combination (norm := ring_nf) -h0
   simp [pauliBasis']
 
@@ -304,11 +304,11 @@ lemma pauliBasis'_repr_inr_2 (M : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, Fin.sum_univ_three] at hM
   have h0 := congrArg (fun A => - Matrix.trace (σ3 * A.1)/ 2) hM
-  simp only [pauliBasis', Basis.mk_repr, Fin.isValue, Basis.coe_mk, pauliSelfAdjoint', AddSubgroup.coe_add,
-    selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg, trace_add, trace_smul,
-    σ3_σ0_trace, smul_zero, trace_neg, σ3_σ1_trace, neg_zero, σ3_σ2_trace, add_zero, σ3_σ3_trace,
-    real_smul, zero_add, neg_neg, isUnit_iff_ne_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-    IsUnit.mul_div_cancel_right] at h0
+  simp only [Fin.isValue, pauliBasis', Basis.mk_repr, Basis.coe_mk, pauliSelfAdjoint',
+    AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg, mul_add, Algebra.mul_smul_comm, mul_neg,
+    trace_add, trace_smul, σ3_σ0_trace, smul_zero, trace_neg, σ3_σ1_trace, neg_zero, σ3_σ2_trace,
+    add_zero, σ3_σ3_trace, real_smul, zero_add, neg_neg, isUnit_iff_ne_zero, ne_eq,
+    OfNat.ofNat_ne_zero, not_false_eq_true, IsUnit.mul_div_cancel_right] at h0
   linear_combination (norm := ring_nf) -h0
   simp only [pauliBasis', Basis.mk_repr, Fin.isValue, sub_self]
 
@@ -318,7 +318,7 @@ lemma pauliBasis_minkowskiMetric_pauliBasis' (i : Fin 1 ⊕ Fin 3) :
     pauliBasis i = minkowskiMatrix i i • pauliBasis' i := by
   match i with
   | Sum.inl 0 =>
-    simp [pauliSelfAdjoint', pauliSelfAdjoint, pauliBasis,  pauliBasis', minkowskiMatrix.inl_0_inl_0]
+    simp [pauliSelfAdjoint', pauliSelfAdjoint, pauliBasis, pauliBasis']
   | Sum.inr 0 =>
     simp only [pauliBasis, Fin.isValue, Basis.coe_mk, pauliSelfAdjoint, minkowskiMatrix.inr_i_inr_i,
       pauliBasis', pauliSelfAdjoint', neg_smul, one_smul]

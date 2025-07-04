@@ -78,9 +78,11 @@ lemma toSelfAdjointMap_apply_pauliBasis'_inl (M : SL(2, ℂ)) :
     ((‖M.1 0 0‖ ^ 2 + ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2) •
       PauliMatrix.pauliBasis' (Sum.inl 0) +
     (- ((M.1 0 1).re * (M.1 1 1).re + (M.1 0 1).im * (M.1 1 1).im +
-      (M.1 0 0).im * (M.1 1 0).im + (M.1 0 0).re * (M.1 1 0).re)) • PauliMatrix.pauliBasis' (Sum.inr 0)
+      (M.1 0 0).im * (M.1 1 0).im + (M.1 0 0).re * (M.1 1 0).re)) •
+        PauliMatrix.pauliBasis' (Sum.inr 0)
     + ((- (M.1 0 0).re * (M.1 1 0).im + ↑(M.1 1 0).re * (M.1 0 0).im
-      - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re)) • PauliMatrix.pauliBasis' (Sum.inr 1)
+      - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re)) •
+        PauliMatrix.pauliBasis' (Sum.inr 1)
     + ((- ‖M.1 0 0‖ ^ 2 - ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2) •
       PauliMatrix.pauliBasis' (Sum.inr 2) := by
   simp only [toSelfAdjointMap, PauliMatrix.pauliBasis', Fin.isValue, Basis.coe_mk,
@@ -159,7 +161,8 @@ lemma toMatrix_apply_contrMod (M : SL(2, ℂ)) (v : ContrMod 3) :
     LinearEquiv.trans_apply]
   change ContrMod.toFin1dℝEquiv.symm
     ((((LinearMap.toMatrix PauliMatrix.pauliBasis' PauliMatrix.pauliBasis') (toSelfAdjointMap M)))
-    *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)) (PauliMatrix.pauliBasis'.repr a)))) = _
+    *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3))
+    (PauliMatrix.pauliBasis'.repr a)))) = _
   apply congrArg
   erw [LinearMap.toMatrix_mulVec_repr]
   rfl
@@ -235,7 +238,8 @@ lemma toLorentzGroup_fst_col (M : SL(2, ℂ)) :
       - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re))
     | Sum.inr 2 => ((- ‖M.1 0 0‖ ^ 2 - ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2)
   change (fun μ => (toLorentzGroup M).1 μ (Sum.inl 0)) = k
-  have h1 : toSelfAdjointMap M (PauliMatrix.pauliBasis' (Sum.inl 0)) = ∑ μ, k μ • PauliMatrix.pauliBasis' μ := by
+  have h1 : toSelfAdjointMap M (PauliMatrix.pauliBasis' (Sum.inl 0)) =
+      ∑ μ, k μ • PauliMatrix.pauliBasis' μ := by
     simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
       Finset.sum_singleton, Fin.sum_univ_three]
     rw [toSelfAdjointMap_apply_pauliBasis'_inl]
