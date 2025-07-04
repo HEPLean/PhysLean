@@ -25,9 +25,9 @@ variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G
 /-- The tensorial class is used to define a tensor structure on a type `M` through a
   linear equivalence with a module `S.Tensor c` for `S` a tensor species. -/
 class Tensorial
-   {k : outParam Type} [CommRing k] {C G : outParam Type} [Group G]
-   {n : outParam ℕ} (S : outParam (TensorSpecies k C G)) (c :outParam (Fin n → C)) (M : Type)
-  [AddCommMonoid M] [Module k M] where
+    {k : outParam Type} [CommRing k] {C G : outParam Type} [Group G]
+    {n : outParam ℕ} (S : outParam (TensorSpecies k C G)) (c :outParam (Fin n → C)) (M : Type)
+    [AddCommMonoid M] [Module k M] where
   /-- The equivalence between `M` and `S.Tensor c` in a tensorial instance. -/
   toTensor : M ≃ₗ[k] S.Tensor c
 
@@ -51,7 +51,7 @@ noncomputable instance mulAction [Tensorial S c M] : MulAction G M where
     change toTensor.symm (1 • toTensor m) = _
     simp
   mul_smul g h m := by
-    change _ = toTensor.symm (g • toTensor (toTensor.symm (h • toTensor m) ))
+    change _ = toTensor.symm (g • toTensor (toTensor.symm (h • toTensor m)))
     simp only [LinearEquiv.apply_symm_apply]
     rw [← mul_smul]
     rfl

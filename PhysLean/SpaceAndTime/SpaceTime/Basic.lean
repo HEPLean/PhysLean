@@ -93,7 +93,8 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, time, Lorentz.Vector.timeComponent,
         Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk, LinearEquiv.apply_symm_apply, space]
     map_add' x y := by
-      simp
+      simp only [time_toCoord_symm, Fin.isValue, Lorentz.Vector.apply_add, space_toCoord_symm,
+        Prod.mk_add_mk, Prod.mk.injEq, true_and]
       funext i
       simp
     map_smul' := by

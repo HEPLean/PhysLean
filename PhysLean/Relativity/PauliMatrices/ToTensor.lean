@@ -47,7 +47,7 @@ def indexEquiv : ComponentIdx (S := complexLorentzTensor) ![.up, .upL, .upR] ≃
   invFun v := fun | 0 => finSumFinEquiv v.1 | 1 =>  v.2.1 | 2 => v.2.2
   left_inv v := by
     funext x
-    simp
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Equiv.apply_symm_apply]
     fin_cases x
     <;> rfl
   right_inv v := by
@@ -84,9 +84,11 @@ lemma toTensor_symm_basis (b : (x : Fin (Nat.succ 0).succ.succ) →
     (toTensor (self := tensorial)).symm (Tensor.basis ![Color.up, Color.upL, Color.upR] b) =
     fun μ  α β => if b 0 = finSumFinEquiv μ ∧ b 1 = α ∧ b 2 = β then 1 else 0 := by
   rw [toTensor_symm_apply]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Basis.repr_self, Finsupp.equivFunOnFinite_single,
+    Equiv.curry_apply, Fin.isValue, cons_val_one, cons_val_zero, cons_val]
   funext μ α β
-  simp
+  simp only [Equiv.piCongrRight_apply, Equiv.curry_apply, Pi.map_apply, Function.curry_apply,
+    Equiv.piCongrLeft'_apply, Fin.isValue]
   rw [Pi.single_apply]
   congr
   simp [indexEquiv]
