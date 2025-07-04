@@ -170,7 +170,7 @@ lemma tensor_basis_repr_toTensor_apply {d : ℕ} (p : Vector d) (μ : ComponentI
     (Tensor.basis ![Color.up]).repr (toTensor p) μ =
     p (indexEquiv μ) := by
   obtain ⟨p, rfl⟩ := toTensor.symm.surjective p
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, LinearEquiv.apply_symm_apply]
   apply induction_on_pure (t := p)
   · intro p
     rw [Tensor.basis_repr_pure]
@@ -229,7 +229,7 @@ lemma smul_eq_sum {d : ℕ} (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : Vec
     rw [Finset.mul_sum]
     congr
     funext x
-    simp
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, apply_smul]
     ring
   · intro t1 t2 h1 h2
     simp only [actionT_add, map_add, Pi.add_apply, h1, h2, apply_add]
