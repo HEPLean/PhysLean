@@ -224,6 +224,7 @@ import PhysLean.Relativity.PauliMatrices.Basic
 import PhysLean.Relativity.PauliMatrices.CliffordAlgebra
 import PhysLean.Relativity.PauliMatrices.Relations
 import PhysLean.Relativity.PauliMatrices.SelfAdjoint
+import PhysLean.Relativity.PauliMatrices.ToTensor
 import PhysLean.Relativity.SL2C.Basic
 import PhysLean.Relativity.SL2C.SelfAdjoint
 import PhysLean.Relativity.Special.ProperTime

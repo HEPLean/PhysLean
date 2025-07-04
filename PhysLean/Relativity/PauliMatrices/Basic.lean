@@ -44,12 +44,16 @@ def pauliMatrix : Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ
 @[inherit_doc pauliMatrix]
 scoped[PauliMatrix] notation "σ" => pauliMatrix
 
+/-- The 'Pauli matrix' corresponding to the identit `1`. -/
 scoped[PauliMatrix] notation "σ0" => σ (Sum.inl 0)
 
+/-- The Pauli matrix corresponding to the identit `!![0, 1; 1, 0]`. -/
 scoped[PauliMatrix] notation "σ1" => σ (Sum.inr 0)
 
+/-- The Pauli matrix corresponding to the identit `!![0, -I; I, 0]`. -/
 scoped[PauliMatrix] notation "σ2" => σ (Sum.inr 1)
 
+/-- The Pauli matrix corresponding to the identit `!![1, 0; 0, -1]`. -/
 scoped[PauliMatrix] notation "σ3" => σ (Sum.inr 2)
 
 lemma pauliMatrix_inl_zero_eq_one : pauliMatrix (Sum.inl 0) = 1 := by
@@ -177,7 +181,7 @@ lemma σ3_σ3_trace : Matrix.trace (σ3 * σ3) = 2 := by simp
 Lemmas related to the commutation relations of the Pauli matrices.
 -/
 
-@[simp] lemma σ1_σ2_commutator : σ1 * σ2 - σ2 * σ1 = (2 * I) • σ3 := by
+lemma σ1_σ2_commutator : σ1 * σ2 - σ2 * σ1 = (2 * I) • σ3 := by
   simp [pauliMatrix]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -185,7 +189,7 @@ Lemmas related to the commutation relations of the Pauli matrices.
   · ring
   · ring
 
-@[simp] lemma σ1_σ3_commutator : σ1 * σ3 - σ3 * σ1 = - (2 * I) • σ2 := by
+lemma σ1_σ3_commutator : σ1 * σ3 - σ3 * σ1 = - (2 * I) • σ2 := by
   simp [pauliMatrix]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -195,7 +199,7 @@ Lemmas related to the commutation relations of the Pauli matrices.
   · ring_nf
     simp [Complex.I_sq]
 
-@[simp] lemma σ2_σ1_commutator : σ2 * σ1 - σ1 * σ2 = -(2 * I) • σ3 := by
+lemma σ2_σ1_commutator : σ2 * σ1 - σ1 * σ2 = -(2 * I) • σ3 := by
   simp [pauliMatrix]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -203,7 +207,7 @@ Lemmas related to the commutation relations of the Pauli matrices.
   · ring_nf
   · ring_nf
 
-@[simp] lemma σ2_σ3_commutator : σ2 * σ3 - σ3 * σ2 = (2 * I) • σ1 := by
+lemma σ2_σ3_commutator : σ2 * σ3 - σ3 * σ2 = (2 * I) • σ1 := by
   simp [pauliMatrix]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -211,7 +215,7 @@ Lemmas related to the commutation relations of the Pauli matrices.
   · ring_nf
   · ring_nf
 
-@[simp] lemma σ3_σ1_commutator : σ3 * σ1 - σ1 * σ3 = (2 * I) • σ2 := by
+lemma σ3_σ1_commutator : σ3 * σ1 - σ1 * σ3 = (2 * I) • σ2 := by
   simp [pauliMatrix]
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -221,7 +225,7 @@ Lemmas related to the commutation relations of the Pauli matrices.
   · ring_nf
     simp [Complex.I_sq]
 
-@[simp] lemma σ3_σ2_commutator : σ3 * σ2 - σ2 * σ3 = -(2 * I) • σ1 := by
+lemma σ3_σ2_commutator : σ3 * σ2 - σ2 * σ3 = -(2 * I) • σ1 := by
   simp [pauliMatrix]
   ext i j
   fin_cases i <;> fin_cases j <;>
