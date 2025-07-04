@@ -44,6 +44,23 @@ lemma memHS_iff {f : ℝ → ℂ} : MemHS f ↔
     MeasureTheory.AEStronglyMeasurable.pow (continuous_norm.comp_aestronglyMeasurable h1) ..
   simp [h0, HasFiniteIntegral]
 
+@[simp]
+lemma zero_memHS : MemHS 0 := by
+  change MemHS (fun x => (0 : ℂ))
+  rw [memHS_iff]
+  simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, integrable_zero,
+    and_true]
+  fun_prop
+
+@[simp]
+lemma zero_fun_memHS : MemHS (fun _ : ℝ => (0 : ℂ)) := zero_memHS
+
+lemma memHS_add {f g : ℝ → ℂ} (hf : MemHS f) (hg : MemHS g) :
+    MemHS (f + g) := MeasureTheory.MemLp.add hf hg
+
+lemma memHS_smul {f : ℝ → ℂ} {c : ℂ} (hf : MemHS f) :
+    MemHS (c • f) := MeasureTheory.MemLp.const_smul hf c
+
 lemma aeEqFun_mk_mem_iff (f : ℝ → ℂ) (hf : AEStronglyMeasurable f volume) :
     AEEqFun.mk f hf ∈ HilbertSpace ↔ MemHS f := by
   simp only [Lp.mem_Lp_iff_memLp]
@@ -89,6 +106,16 @@ lemma mem_iff' {f : ℝ → ℂ} (hf : MeasureTheory.AEStronglyMeasurable f Meas
   have h0 : MeasureTheory.AEStronglyMeasurable (fun x => norm (f x) ^ 2) MeasureTheory.volume :=
     MeasureTheory.AEStronglyMeasurable.pow (continuous_norm.comp_aestronglyMeasurable hf) ..
   simp [h0, HasFiniteIntegral]
+
+lemma mk_add {f g : ℝ → ℂ} {hf : MemHS f} {hg : MemHS g} :
+    mk (memHS_add hf hg) = mk hf + mk hg := rfl
+
+lemma mk_smul {f : ℝ → ℂ} {c : ℂ} {hf : MemHS f} :
+    mk (memHS_smul (c := c) hf) = c • mk hf := rfl
+
+lemma mk_eq_iff {f g : ℝ → ℂ} {hf : MemHS f} {hg : MemHS g} :
+    mk hf = mk hg  ↔ f =ᵐ[volume] g := by
+  simp [mk]
 
 /-!
 
