@@ -245,6 +245,25 @@ lemma smul_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
   simp only [op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply, transpose_apply, smul_eq_mul,
     mul_comm]
 
+@[simp]
+lemma smul_add {d : ℕ} (Λ : LorentzGroup d) (p q : Vector d) :
+    Λ • (p + q) = Λ • p + Λ • q := by
+  rw [smul_eq_mulVec, smul_eq_mulVec, smul_eq_mulVec, Matrix.mulVec_add]
+
+@[simp]
+lemma smul_sub {d : ℕ} (Λ : LorentzGroup d) (p q : Vector d) :
+    Λ • (p - q) = Λ • p - Λ • q := by
+  rw [smul_eq_mulVec, smul_eq_mulVec, smul_eq_mulVec, Matrix.mulVec_sub]
+
+@[simp]
+lemma smul_zero {d : ℕ} (Λ : LorentzGroup d) :
+    Λ • (0 : Vector d) = 0 := by
+  rw [smul_eq_mulVec, Matrix.mulVec_zero]
+
+lemma smul_neg {d : ℕ} (Λ : LorentzGroup d) (p : Vector d) :
+    Λ • (-p) = - (Λ • p) := by
+  rw [smul_eq_mulVec, smul_eq_mulVec, Matrix.mulVec_neg]
+
 lemma neg_smul {d} (Λ : LorentzGroup d) (p : Vector d) :
     (-Λ) • p = - (Λ • p) := by
   funext i

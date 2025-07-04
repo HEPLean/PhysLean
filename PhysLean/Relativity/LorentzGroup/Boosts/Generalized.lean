@@ -234,7 +234,7 @@ lemma generalizedBoost_apply (u v : Velocity d) (x : Vector d) :
 lemma generalizedBoost_apply_mul_one_plus_contr (u v : Velocity d) (x : Vector d) :
     (1 + ⟪u, v.1⟫ₘ) • generalizedBoost u v • x = (1 + ⟪u, v.1⟫ₘ) • x +
     (2 * ⟪x, u⟫ₘ * (1 + ⟪u, v.1⟫ₘ)) • v - ⟪x, u + v⟫ₘ • (u + v) := by
-  rw [generalizedBoost_apply, smul_add, smul_add]
+  rw [generalizedBoost_apply, _root_.smul_add,  _root_.smul_add]
   trans (1 + ⟪u, v.1⟫ₘ) • x + (2 * ⟪x, u⟫ₘ * (1 + ⟪u, v.1⟫ₘ)) • v
     + (- ⟪x, u + v⟫ₘ) • (u + v)
   · congr 1
@@ -259,7 +259,7 @@ lemma generalizedBoost_apply_expand (u v : Velocity d) (x : Vector d) :
   apply (smul_right_inj (Velocity.one_add_minkowskiProduct_neq_zero u v)).mp
   rw [generalizedBoost_apply_mul_one_plus_contr]
   conv_rhs =>
-    rw [smul_sub, smul_add, smul_smul, smul_smul]
+    rw [ _root_.smul_sub,  _root_.smul_add, smul_smul, smul_smul]
   congr 1
   · ring_nf
   · congr
@@ -273,7 +273,8 @@ lemma generalizedBoost_apply_fst (u v : Velocity d) :
   rw [generalizedBoost_apply_mul_one_plus_contr]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Velocity.minkowskiProduct_self_eq_one, mul_one,
     map_add, smul_add, add_sub_add_left_eq_sub]
-  rw [← sub_smul]
+  simp only [_root_.smul_add, add_sub_add_left_eq_sub]
+  rw [← _root_.sub_smul]
   congr
   ring
 
@@ -282,11 +283,10 @@ lemma generalizedBoost_apply_snd (u v : Velocity d) :
     generalizedBoost u v • v.1 = (2 * ⟪u, v.1⟫ₘ) • ↑v - ↑u:= by
   apply (smul_right_inj (Velocity.one_add_minkowskiProduct_neq_zero u v)).mp
   rw [generalizedBoost_apply_mul_one_plus_contr]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_add, Velocity.minkowskiProduct_self_eq_one,
-    smul_add]
+  simp only [map_add, Velocity.minkowskiProduct_self_eq_one, _root_.smul_add]
   repeat rw [minkowskiProduct_symm v.1 u.1]
   abel_nf
-  rw [smul_add, smul_smul]
+  rw [_root_.smul_add, smul_smul]
   congr 1
   · congr 1
     ring
@@ -307,7 +307,8 @@ lemma genearlizedBoost_apply_basis (u v : Velocity d) (μ : Fin 1 ⊕ Fin d) :
       / (1 + ⟪u.1, v.1⟫ₘ)) • (u.1 + v.1) := by
   rw [generalizedBoost_apply, genBoostAux₁_apply_basis, genBoostAux₂_apply_basis]
   funext i
-  simp only [smul_add, _root_.neg_smul, apply_add, basis_apply, apply_smul, neg_apply, apply_sub]
+  simp only [_root_.smul_add, _root_.neg_smul, apply_add, basis_apply, apply_smul, neg_apply,
+    apply_sub]
   congr 1
   ring
 
@@ -422,7 +423,7 @@ lemma generalizedBoost_inv (u v : Velocity d) :
   trans (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • v.1 +
       (2 * ⟪generalizedBoost u v • p, v.1⟫ₘ * (1 + ⟪v.1, u.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ) • u.1 -
       ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ • (v.1 + u.1))
-  · rw [sub_smul, sub_smul, smul_add]
+  · rw [sub_smul, sub_smul, _root_.smul_add]
     abel_nf
   trans (1 + ⟪u.1, v.1⟫ₘ) • p + ((2 * ⟪p, u.1⟫ₘ * (1 + ⟪u.1, v.1⟫ₘ) - ⟪p, u.1 + v.1⟫ₘ
       - ⟪generalizedBoost u v • p, v.1 + u.1⟫ₘ) • v.1 +
@@ -432,7 +433,7 @@ lemma generalizedBoost_inv (u v : Velocity d) :
       rw [sub_smul]
       enter [2, 2]
       rw [sub_smul]
-    rw [smul_add]
+    rw [_root_.smul_add]
     abel_nf
   trans (1 + ⟪u.1, v.1⟫ₘ) • p + ((0 : ℝ) • v.1 + (0 : ℝ) • u.1)
   · have h1 := Velocity.one_add_minkowskiProduct_neq_zero u v
@@ -471,32 +472,6 @@ lemma generalizedBoost_timeComponent_eq (u v : Velocity d) :
     ‖u.1.timeComponent • v.1.spatialPart -
       v.1.timeComponent • u.1.spatialPart‖ / (1 + ⟪u.1, v.1⟫ₘ) := by
   sorry
-
-def toGeneralizedBoost (Λ : LorentzGroup.restricted d) : LorentzGroup d :=
-  generalizedBoost 0 ⟨toVector Λ.1, by
-    simp [Lorentz.Velocity.mem_iff]
-    have h := isOrthochronous_of_restricted Λ
-    rw [isOrthochronous_iff_ge_one] at h
-    linarith⟩
-
-lemma toGeneralizedBoost_eq :
-    toGeneralizedBoost (d := d) = fun Λ =>
-      generalizedBoost 0 ⟨toVector Λ.1, by
-        simp [Lorentz.Velocity.mem_iff]
-        have h := isOrthochronous_of_restricted Λ
-        rw [isOrthochronous_iff_ge_one] at h
-        linarith⟩ := by rfl
-
-@[fun_prop]
-lemma toGeneralizedBoost_continuous :
-    Continuous (toGeneralizedBoost (d := d)) := by
-  rw [toGeneralizedBoost_eq]
-  apply Continuous.comp'
-  · fun_prop
-  · apply Continuous.subtype_mk
-    apply Continuous.comp'
-    · fun_prop
-    · fun_prop
 
 end LorentzGroup
 
