@@ -73,6 +73,8 @@ lemma momentumOperator_add {ψ1 ψ2 : ℝ → ℂ}
 
 -/
 
+/-- The momentum operator on the Schwartz submodule is defined as the linear map from
+  `schwartzSubmodule` to itself, such that `ψ` is taken to `fun x => - I ℏ ψ' (x)`. -/
 def momentumOperatorSchwartz : Φ →ₗ[ℂ] Φ where
   toFun ψ := schwartzSubmoduleEquiv.symm <|
     (- Complex.I * ℏ) • SchwartzMap.derivCLM ℂ (schwartzSubmoduleEquiv ψ)
