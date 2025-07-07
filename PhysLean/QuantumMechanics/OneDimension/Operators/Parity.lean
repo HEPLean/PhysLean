@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PositionStates
 /-!
 
 # Parity operator
@@ -18,9 +19,15 @@ noncomputable section
 namespace HilbertSpace
 open MeasureTheory
 
+/-!
+
+## The parity operator on functions
+
+-/
+
 /-- The parity operator is defined as linear map from `ℝ → ℂ` to itself, such that
   `ψ` is taken to `fun x => ψ (-x)`. -/
-def parity : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) where
+def parityOperator : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) where
   toFun ψ := fun x => ψ (-x)
   map_add' ψ1 ψ2 := by
     funext x
@@ -29,16 +36,61 @@ def parity : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) where
     funext x
     simp
 
-/-- The parity operator acting on a member of the Hilbert space is in Hilbert space. -/
-lemma memHS_of_parity (ψ : ℝ → ℂ) (hψ : MemHS ψ) : MemHS (parity ψ) := by
-  simp only [parity, LinearMap.coe_mk, AddHom.coe_mk]
-  rw [memHS_iff] at hψ ⊢
-  apply And.intro
-  · rw [show (fun x => ψ (-x)) = ψ ∘ (λ x => -x) by funext x; simp]
-    exact MeasureTheory.AEStronglyMeasurable.comp_quasiMeasurePreserving hψ.left <|
-      quasiMeasurePreserving_neg_of_right_invariant volume
-  · simpa using (integrable_comp_mul_left_iff
-      (fun x => ‖ψ (x)‖ ^ 2) (R := (-1 : ℝ)) (by simp)).mpr hψ.right
+/-!
+
+## The parity operator on Schwartz maps
+
+-/
+
+/-- The parity operator on the Schwartz submodule is defined as the linear map from
+  `schwartzSubmodule` to itself, such that `ψ` is taken to `fun x => ψ (-x)`. -/
+def parityOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule := by
+  refine schwartzSubmoduleEquiv.symm.toLinearMap ∘ₗ
+    (SchwartzMap.compCLM ℂ (g := (fun x => - x : ℝ → ℝ)) ⟨?_, ?_⟩ ?_).toLinearMap ∘ₗ
+    schwartzSubmoduleEquiv.toLinearMap
+  · fun_prop
+  · intro n
+    simp
+    use 1, 1
+    intro x
+    simp
+    erw [iteratedFDeriv_neg_apply]
+    simp
+    match n with
+    | 0 => simp
+    | 1 =>
+      rw [iteratedFDeriv_succ_eq_comp_right]
+      simp
+    | .succ (.succ n) =>
+      rw [iteratedFDeriv_succ_eq_comp_right]
+      simp
+      rw [iteratedFDeriv_const_of_ne]
+      simp
+      apply add_nonneg
+      · exact zero_le_one' ℝ
+      · exact abs_nonneg x
+      simp
+  · simp
+    use 1, 1
+    intro x
+    simp
+
+/-- The unbounded parity operator, whose domain is Schwartz maps. -/
+def parityOperatorUnbounded : HilbertSpace →ₗ.[ℂ] HilbertSpace where
+  domain := schwartzSubmodule
+  toFun := SchwartzMap.toLpCLM ℂ (E := ℝ) ℂ 2 MeasureTheory.volume ∘ₗ
+    schwartzSubmoduleEquiv.toLinearMap ∘ₗ parityOperatorSchwartz
+
+lemma parityOperatorUnbounded_mem_schwartzSubmodule (ψ : schwartzSubmodule) :
+    parityOperatorUnbounded ψ ∈ schwartzSubmodule := by
+  simp [parityOperatorUnbounded]
+
+lemma parityOperatorUnbounded_apply_eq_parityOperatorUnbounded (ψ : schwartzSubmodule) :
+    parityOperatorSchwartz ψ = ⟨parityOperatorUnbounded ψ,
+      parityOperatorUnbounded_mem_schwartzSubmodule ψ⟩ := by
+  ext1
+  change _ = (schwartzSubmoduleEquiv.symm (schwartzSubmoduleEquiv (parityOperatorSchwartz ψ))).1
+  simp
 
 end HilbertSpace
 end

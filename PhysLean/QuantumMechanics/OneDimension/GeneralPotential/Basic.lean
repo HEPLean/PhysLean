@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ammar Husain
 -/
 import PhysLean.QuantumMechanics.OneDimension.Operators.Momentum
+import PhysLean.QuantumMechanics.OneDimension.Operators.Position
+
 /-!
 
 # The 1d QM system with general potential
@@ -56,11 +58,6 @@ lemma momentumOperator_sq_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
     a1 • (momentumOperator (momentumOperator ψ1)) +
     a2 • (momentumOperator (momentumOperator ψ2)) := by
   rw [momentumOperator_linear, momentumOperator_linear] <;> assumption
-
-/-- The position operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
-  `ψ` to `x ψ'`. -/
-noncomputable def positionOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun x ↦ x * ψ x
 
 /-- The potential operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
   `ψ` to `V(x) ψ`. -/

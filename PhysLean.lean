@@ -207,6 +207,7 @@ import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PlaneWaves
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.SchwartzSubmodule
 import PhysLean.QuantumMechanics.OneDimension.Operators.Momentum
 import PhysLean.QuantumMechanics.OneDimension.Operators.Parity
+import PhysLean.QuantumMechanics.OneDimension.Operators.Position
 import PhysLean.QuantumMechanics.PlanckConstant
 import PhysLean.Relativity.Bispinors.Basic
 import PhysLean.Relativity.CliffordAlgebra

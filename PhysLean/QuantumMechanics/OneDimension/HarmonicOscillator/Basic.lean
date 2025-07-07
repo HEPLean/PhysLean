@@ -183,12 +183,12 @@ lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
 
 /-- The Schrodinger operator commutes with the parity operator. -/
 lemma schrodingerOperator_parity (ψ : ℝ → ℂ) :
-    Q.schrodingerOperator (parity ψ) = parity (Q.schrodingerOperator ψ) := by
+    Q.schrodingerOperator (parityOperator ψ) = parityOperator (Q.schrodingerOperator ψ) := by
   funext x
   have (ψ : ℝ → ℂ) : (fun x => (deriv fun x => ψ (-x)) x) = fun x => - deriv ψ (-x) := by
     funext x
     rw [← deriv_comp_neg]
-  simp [schrodingerOperator, parity, this]
+  simp [schrodingerOperator, parityOperator, this]
 
 end HarmonicOscillator
 end OneDimension

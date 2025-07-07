@@ -68,6 +68,12 @@ def schwartzSubmoduleEquiv : schwartzSubmodule ≃ₗ[ℂ] SchwartzMap ℝ ℂ w
     rw [(Classical.choose_spec (a • ψ).2).2, (Classical.choose_spec ψ.2).2]
     rfl
 
+@[simp]
+lemma schwartzMap_toLpCLM_mem_schwartzSubmodule (ψ : SchwartzMap ℝ ℂ) :
+    ψ.toLp 2 volume ∈ schwartzSubmodule := by
+  use ψ
+  simp
+
 /-- The inclusion of the Hilbert space into the dual of the submodule
   of Schwartz maps. -/
 def inclDualSchwartzSubmodule: HilbertSpace →ₛₗ[starRingEnd ℂ] Module.Dual ℂ Φ :=
