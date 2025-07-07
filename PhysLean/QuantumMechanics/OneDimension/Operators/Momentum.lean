@@ -53,7 +53,7 @@ lemma momentumOperator_smul {ψ : ℝ → ℂ} (hψ : Differentiable ℝ ψ) (c 
   rw [smul_comm]
   congr
   erw [deriv_smul]
-  simp
+  simp only [smul_eq_mul, deriv_const', zero_mul, add_zero]
   fun_prop
   fun_prop
 
@@ -64,7 +64,7 @@ lemma momentumOperator_add {ψ1 ψ2 : ℝ → ℂ}
   funext x
   simp only [neg_mul, Pi.add_apply]
   rw [deriv_add (hψ1 x) (hψ2 x)]
-  simp
+  simp only [smul_eq_mul, neg_mul]
   ring
 
 /-!
@@ -81,10 +81,10 @@ def momentumOperatorSchwartz : HilbertSpace →ₗ.[ℂ] HilbertSpace where
     toFun ψ := ((- Complex.I * ℏ) • SchwartzMap.derivCLM ℂ
       (schwartzSubmoduleEquiv ψ)).toLp 2 MeasureTheory.volume
     map_add' ψ1 ψ2 := by
-      simp
+      simp only [neg_mul, map_add, smul_add, neg_smul]
       rfl
     map_smul' a ψ := by
-      simp
+      simp only [neg_mul, map_smul, neg_smul, RingHom.id_apply]
       rw [smul_comm]
       change _ = (a • -((Complex.I * ↑↑ℏ) •
         (SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ))).toLp 2 MeasureTheory.volume
@@ -127,7 +127,7 @@ lemma planeWaveFunctional_generalized_eigenvector_momentumOperatorSchwartz
     simp only [neg_mul, neg_smul, map_neg, map_smul]
     change (-((Complex.I * ↑↑ℏ) •
       (SchwartzMap.fourierTransformCLM ℂ) ((SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ)) k))
-    simp
+    simp only [SchwartzMap.fourierTransformCLM_apply, smul_eq_mul]
     erw [Real.fourierIntegral_deriv (SchwartzMap.integrable (schwartzSubmoduleEquiv ψ))
       (SchwartzMap.differentiable (schwartzSubmoduleEquiv ψ))
       (SchwartzMap.integrable ((SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ)))]
