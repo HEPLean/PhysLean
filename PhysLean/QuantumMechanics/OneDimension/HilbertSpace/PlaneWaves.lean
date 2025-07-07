@@ -40,6 +40,16 @@ open FourierTransform in
 lemma planewaveFunctional_apply (k : ℝ) (ψ : schwartzSubmodule) :
     planewaveFunctional k ψ = 𝓕 (schwartzSubmoduleEquiv ψ) k := rfl
 
+/-- Two elements of the Schwartz submodule are equal if and only if they are equal on
+  all applications of `planewaveFunctional`. -/
+lemma eq_of_eq_planewaveFunctional {ψ1 ψ2 : schwartzSubmodule}
+    (h : ∀ k, planewaveFunctional k ψ1 = planewaveFunctional k ψ2) :
+    ψ1 = ψ2 := by
+  apply schwartzSubmoduleEquiv.injective
+  apply (SchwartzMap.fourierTransformCLE ℂ).injective
+  ext k
+  exact h k
+
 end HilbertSpace
 end
 end OneDimension
