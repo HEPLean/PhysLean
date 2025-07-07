@@ -73,7 +73,7 @@ def schwartzSubmoduleEquiv : schwartzSubmodule ≃ₗ[ℂ] SchwartzMap ℝ ℂ w
 def inclDualSchwartzSubmodule: HilbertSpace →ₛₗ[starRingEnd ℂ] Module.Dual ℂ Φ :=
   toBra.domRestrict₂ Φ
 
-/-- The invlusion of the Hilbert space into the dual of the submodule
+/-- The inclusion of the Hilbert space into the dual of the submodule
   of Schwartz maps is injective. -/
 @[sorryful]
 lemma inclDualSchwartzSubmodule_injective : Function.Injective inclDualSchwartzSubmodule := by
