@@ -54,9 +54,9 @@ def schwartzSubmoduleEquiv : schwartzSubmodule ≃ₗ[ℂ] SchwartzMap ℝ ℂ w
     let ψ1' := Classical.choose ψ1.2
     let ψ2' := Classical.choose ψ2.2
     apply SchwartzMap.injective_toLp 2
-    change  (SchwartzMap.toLpCLM ℂ ℂ 2 MeasureTheory.volume)
+    change (SchwartzMap.toLpCLM ℂ ℂ 2 MeasureTheory.volume)
       (Classical.choose (ψ1 + ψ2).2) = (SchwartzMap.toLpCLM ℂ ℂ 2 MeasureTheory.volume) ψ1' +
-       (SchwartzMap.toLpCLM ℂ ℂ 2 MeasureTheory.volume) ψ2'
+      (SchwartzMap.toLpCLM ℂ ℂ 2 MeasureTheory.volume) ψ2'
     rw [(Classical.choose_spec ψ1.2).2, (Classical.choose_spec ψ2.2).2,
         (Classical.choose_spec (ψ1 + ψ2).2).2]
     rfl
