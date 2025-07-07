@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PositionStates
 /-!
 
@@ -50,12 +49,12 @@ def parityOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule := 
     schwartzSubmoduleEquiv.toLinearMap
   · fun_prop
   · intro n
-    simp
+    simp only [Real.norm_eq_abs]
     use 1, 1
     intro x
-    simp
+    simp only [pow_one, one_mul]
     erw [iteratedFDeriv_neg_apply]
-    simp
+    simp only [norm_neg]
     match n with
     | 0 => simp
     | 1 =>
@@ -63,9 +62,10 @@ def parityOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule := 
       simp
     | .succ (.succ n) =>
       rw [iteratedFDeriv_succ_eq_comp_right]
-      simp
+      simp only [Nat.succ_eq_add_one, fderiv_id', Function.comp_apply, LinearIsometryEquiv.norm_map,
+        ge_iff_le]
       rw [iteratedFDeriv_const_of_ne]
-      simp
+      simp only [Pi.zero_apply, norm_zero]
       apply add_nonneg
       · exact zero_le_one' ℝ
       · exact abs_nonneg x
@@ -91,6 +91,15 @@ lemma parityOperatorUnbounded_apply_eq_parityOperatorUnbounded (ψ : schwartzSub
   ext1
   change _ = (schwartzSubmoduleEquiv.symm (schwartzSubmoduleEquiv (parityOperatorSchwartz ψ))).1
   simp
+
+@[simp]
+lemma parityOperatorSchwartz_parityOperatorSchwartz (ψ : schwartzSubmodule) :
+    parityOperatorSchwartz (parityOperatorSchwartz ψ) = ψ := by
+  apply schwartzSubmoduleEquiv.injective
+  ext x
+  simp [parityOperatorSchwartz]
+
+open InnerProductSpace
 
 end HilbertSpace
 end

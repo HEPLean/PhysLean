@@ -109,7 +109,7 @@ lemma momentumOperatorUnbounded_mem_schwartzSubmodule (ψ : schwartzSubmodule) :
 
 lemma momentumOperatorSchwartz_apply_eq_momentumOperatorUnbounded (ψ : schwartzSubmodule) :
     momentumOperatorSchwartz ψ = ⟨momentumOperatorUnbounded ψ,
-      momentumOperatorUnbounded_mem_schwartzSubmodule ψ⟩  := by
+      momentumOperatorUnbounded_mem_schwartzSubmodule ψ⟩ := by
   ext1
   change _ = (schwartzSubmoduleEquiv.symm (schwartzSubmoduleEquiv (momentumOperatorSchwartz ψ))).1
   simp

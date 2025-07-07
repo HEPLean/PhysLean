@@ -204,6 +204,7 @@ import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Gaussians
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PlaneWaves
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PositionStates
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.SchwartzSubmodule
 import PhysLean.QuantumMechanics.OneDimension.Operators.Momentum
 import PhysLean.QuantumMechanics.OneDimension.Operators.Parity
