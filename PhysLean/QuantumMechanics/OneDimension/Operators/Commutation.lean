@@ -31,7 +31,7 @@ lemma positionOperatorSchwartz_commutation_momentumOperatorSchwartz
     - momentumOperatorSchwartz (positionOperatorSchwartz ψ)
     = (Complex.I * ℏ) • ψ := by
   apply schwartzSubmoduleEquiv.injective
-  simp
+  simp only [map_sub, map_smul]
   ext x
   simp [schwartzSubmoduleEquiv_momentumOperatorSchwartz_apply,
     schwartzSubmoduleEquiv_positionOperatorSchwartz]

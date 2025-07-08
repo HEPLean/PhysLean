@@ -105,7 +105,7 @@ lemma inner_schwartzSubmodule (ψ1 ψ2 : schwartzSubmodule) :
     schwartzSubmodule_coe_ae_schwartzSubmoduleEquiv ψ2
   filter_upwards [h1, h2] with _ h1 h2
   rw [h1, h2]
-  simp
+  simp only [RCLike.inner_apply]
   ring
 
 end HilbertSpace

@@ -53,7 +53,7 @@ def infiniteWellSubmodule (a b : ℝ) : Submodule ℂ HilbertSpace where
     refine ⟨(Lp.coeFn_add ψ1 ψ2).trans (h1ae.add h2ae),
       h1c.add h2c, ?_, fun x hx => (h1d x hx).add (h2d x hx)⟩
     intro x
-    simp
+    simp only [Function.mem_support, Pi.add_apply, ne_eq, Set.mem_Ioo]
     intro h
     by_cases h1 : ¬ ψ1' x = 0 <;> by_cases h2 : ¬ ψ2' x = 0
     · exact h1s h1
@@ -66,7 +66,8 @@ def infiniteWellSubmodule (a b : ℝ) : Submodule ℂ HilbertSpace where
     refine ⟨(Lp.coeFn_smul c ψ).trans (hae.const_smul c), hc.const_smul c, ?_,
       fun x hx => (hd x hx).const_smul c⟩
     intro x
-    simp
+    simp only [Function.mem_support, Pi.smul_apply, smul_eq_mul, ne_eq, mul_eq_zero, not_or,
+      Set.mem_Ioo, and_imp]
     intro h
     simp at hs
     exact hs x
@@ -86,7 +87,7 @@ def infiniteWellFunSubmodule (a b : ℝ) : Submodule ℂ (ℝ → ℂ) where
     refine ⟨
       h1.1.add h2.1, ?_, fun x hx => (h1.2.2 x hx).add (h2.2.2 x hx)⟩
     intro x
-    simp
+    simp only [Function.mem_support, Pi.add_apply, ne_eq, Set.mem_Ioo]
     intro h
     have h1s := h1.2.1
     have h2s := h2.2.1
@@ -99,7 +100,8 @@ def infiniteWellFunSubmodule (a b : ℝ) : Submodule ℂ (ℝ → ℂ) where
     refine ⟨h.1.const_smul c, ?_,
       fun x hx => (h.2.2 x hx).const_smul c⟩
     intro x
-    simp
+    simp only [Function.mem_support, Pi.smul_apply, smul_eq_mul, ne_eq, mul_eq_zero, not_or,
+      Set.mem_Ioo, and_imp]
     intro hc
     have hs := h.2.1
     simp at hs
@@ -175,9 +177,9 @@ def infiniteWellSubmoduleEquiv {a b : ℝ} :
   invFun ψ := ⟨HilbertSpace.mk (memHS_of_infiniteWellFunSubmodule ψ),
     ⟨ψ, ⟨coe_mk_ae (memHS_of_infiniteWellFunSubmodule ψ), ψ.2.1, ψ.2.2.1, ψ.2.2.2⟩⟩⟩
   left_inv ψ := by
-    simp
+    simp only [Function.support_subset_iff, ne_eq, Set.mem_Ioo, and_imp]
     ext1
-    simp
+    simp only
     apply ext_iff.mpr
     apply (coe_mk_ae _).trans
     simpa using (Classical.choose_spec ψ.2).1.symm
