@@ -85,6 +85,29 @@ def inclDualSchwartzSubmodule: HilbertSpace →ₛₗ[starRingEnd ℂ] Module.Du
 lemma inclDualSchwartzSubmodule_injective : Function.Injective inclDualSchwartzSubmodule := by
   sorry
 
+open InnerProductSpace
+
+lemma schwartzSubmodule_coe_ae_schwartzSubmoduleEquiv (ψ : schwartzSubmodule) :
+    ψ.1 =ᶠ[ae volume] (schwartzSubmoduleEquiv ψ) := by
+  simp only [schwartzSubmoduleEquiv, Submodule.top_coe, Set.mem_univ, SchwartzMap.toLpCLM_apply,
+    true_and, LinearEquiv.coe_mk, AddHom.coe_mk]
+  rw [← (Classical.choose_spec ψ.2).2]
+  simpa using SchwartzMap.coeFn_toLp _ 2 volume
+
+lemma inner_schwartzSubmodule (ψ1 ψ2 : schwartzSubmodule) :
+    ⟪ψ1, ψ2⟫_ℂ = ∫ x : ℝ, starRingEnd ℂ ((schwartzSubmoduleEquiv ψ1) x) *
+      (schwartzSubmoduleEquiv ψ2) x := by
+  simp only [Submodule.coe_inner]
+  apply MeasureTheory.integral_congr_ae
+  have h1 : ψ1.1 =ᶠ[ae volume] (schwartzSubmoduleEquiv ψ1) :=
+    schwartzSubmodule_coe_ae_schwartzSubmoduleEquiv ψ1
+  have h2 : ψ2.1 =ᶠ[ae volume] (schwartzSubmoduleEquiv ψ2) :=
+    schwartzSubmodule_coe_ae_schwartzSubmoduleEquiv ψ2
+  filter_upwards [h1, h2] with _ h1 h2
+  rw [h1, h2]
+  simp
+  ring
+
 end HilbertSpace
 end
 end OneDimension

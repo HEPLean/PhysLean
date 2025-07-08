@@ -99,6 +99,25 @@ lemma parityOperatorSchwartz_parityOperatorSchwartz (ψ : schwartzSubmodule) :
   ext x
   simp [parityOperatorSchwartz]
 
+/-!
+
+## Parity operator is hermitian
+
+-/
+
+open InnerProductSpace
+
+lemma parityOperatorSchwartz_hermitian (ψ1 ψ2 : schwartzSubmodule) :
+    ⟪parityOperatorSchwartz ψ1, ψ2⟫_ℂ = ⟪ψ1, parityOperatorSchwartz ψ2⟫_ℂ := by
+  rw [inner_schwartzSubmodule, inner_schwartzSubmodule]
+  simp [parityOperatorSchwartz]
+  let f (x : ℝ) :=
+    (starRingEnd ℂ) ((schwartzSubmoduleEquiv ψ1) (-x)) * (schwartzSubmoduleEquiv ψ2) x
+  change ∫ (x : ℝ), f x = _
+  trans ∫ (x : ℝ), f (- x)
+  · exact Eq.symm (integral_neg_eq_self f volume)
+  · simp [f]
+
 open InnerProductSpace
 
 end HilbertSpace

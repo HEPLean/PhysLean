@@ -157,6 +157,18 @@ def positionOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule w
       rw [smul_comm]
     rfl
 
+lemma schwartzSubmoduleEquiv_positionOperatorSchwartz (ψ : schwartzSubmodule) :
+    schwartzSubmoduleEquiv (positionOperatorSchwartz ψ) =
+    fun x => x * (schwartzSubmoduleEquiv ψ) x := by
+  simp [positionOperatorSchwartz]
+  rfl
+
+lemma schwartzSubmoduleEquiv_positionOperatorSchwartz_apply (ψ : schwartzSubmodule) (x : ℝ) :
+    schwartzSubmoduleEquiv (positionOperatorSchwartz ψ) x =
+    x * (schwartzSubmoduleEquiv ψ) x := by
+  simp [positionOperatorSchwartz]
+  rfl
+
 /-- The unbounded position operator, whose domain is Schwartz maps. -/
 def positionOperatorUnbounded : HilbertSpace →ₗ.[ℂ] HilbertSpace where
   domain := schwartzSubmodule
@@ -188,6 +200,21 @@ lemma positionStates_generalized_eigenvector_positionOperatorSchwartz
   change (schwartzSubmoduleEquiv (schwartzSubmoduleEquiv.symm _)) x = _
   simp only [LinearEquiv.apply_symm_apply]
   rfl
+
+/-!
+
+## Position operator hermitian
+
+-/
+open InnerProductSpace
+
+lemma positionOperatorSchwartz_hermitian (ψ1 ψ2 : schwartzSubmodule) :
+    ⟪positionOperatorSchwartz ψ1, ψ2⟫_ℂ = ⟪ψ1, positionOperatorSchwartz ψ2⟫_ℂ := by
+  rw [inner_schwartzSubmodule, inner_schwartzSubmodule]
+  congr
+  funext x
+  simp only [schwartzSubmoduleEquiv_positionOperatorSchwartz_apply, map_mul, Complex.conj_ofReal]
+  ring
 
 end
 end OneDimension
