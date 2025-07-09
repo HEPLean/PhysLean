@@ -88,6 +88,9 @@ private lemma norm_iteratedFDeriv_ofRealCLM {x} (i : ℕ) :
 
 open ContDiff
 
+TODO "G4FUP" "Update the definition of `positionOperatorSchwartz` to
+  be a continuous linear map."
+
 /-- The position operator on the Schwartz submodule is defined as the linear map from
   `schwartzSubmodule` to itself, such that `ψ` is taken to `fun x => x * ψ (x)`. -/
 def positionOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule where

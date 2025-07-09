@@ -166,6 +166,9 @@ lemma sin_mem_infiniteWellFunSubmodule :
         simp at hx
         simp_all
 
+TODO "G4FWA" "Update the definition of `infiniteWellSubmoduleEquiv` to
+  be a continuous linear equivalence."
+
 /-- The equivalence between the submodule of the Hilbert space and the submodule
   of functions `ℝ → ℂ` which are continuous, supported on `(a, b)` and are smooth within
   this interval. -/

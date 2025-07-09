@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import PhysLean.Meta.Linters.Sorry
+import Mathlib.Analysis.InnerProductSpace.Dual
 /-!
 
 # Hilbert space for one dimension quantum mechanics
@@ -28,36 +29,21 @@ open MeasureTheory
 open InnerProductSpace
 
 /-- The anti-linear map from the Hilbert space to it's dual. -/
-def toBra : HilbertSpace →ₛₗ[starRingEnd ℂ] (Module.Dual ℂ HilbertSpace) where
-  toFun f := {
-    toFun g := ⟪f, g⟫_ℂ,
-    map_add' g1 g2 := by simp [inner_add_right],
-    map_smul' c g := by simp [inner_smul_right]
-  }
-  map_add' f1 f2 := by
-    ext g
-    simp [inner_add_left]
-  map_smul' c f := by
-    ext g
-    simp [inner_smul_left]
+def toBra : HilbertSpace →ₛₗ[starRingEnd ℂ] NormedSpace.Dual ℂ HilbertSpace :=
+  InnerProductSpace.toDual ℂ HilbertSpace
+
+@[simp] lemma toBra_apply (f g : HilbertSpace) : toBra f g = ⟪f, g⟫_ℂ := rfl
+
+/-- The anti-linear map, `toBra`, taking a ket to it's corresponding
+  bra is surjective. -/
+lemma toBra_surjective : Function.Surjective toBra :=
+  (InnerProductSpace.toDual ℂ HilbertSpace).surjective
 
 /-- The anti-linear map, `toBra`, taking a ket to it's corresponding
   bra is injective. -/
 lemma toBra_injective : Function.Injective toBra := by
   intro f g h
-  simp [toBra] at h
-  have h1 := congrFun h (f - g)
-  have h2 : ⟪f - g, f - g⟫_ℂ = 0 := by
-    rw [inner_sub_left]
-    rw [h1]
-    simp
-  simpa [sub_eq_zero] using h2
-
-/-- The anti-linear map, `toBra`, taking a ket to it's corresponding
-  bra is surjective. -/
-@[sorryful]
-lemma toBra_surjective : Function.Surjective toBra := by
-  sorry
+  simpa [toBra] using h
 
 /-!
 

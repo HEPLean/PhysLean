@@ -41,6 +41,9 @@ def parityOperator : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) where
 
 -/
 
+TODO "G4FUA" "Update the definition of `parityOperatorSchwartz` to
+  be a continuous linear map."
+
 /-- The parity operator on the Schwartz submodule is defined as the linear map from
   `schwartzSubmodule` to itself, such that `ψ` is taken to `fun x => ψ (-x)`. -/
 def parityOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule := by

@@ -22,6 +22,9 @@ noncomputable section
 namespace HilbertSpace
 open MeasureTheory
 
+TODO "G4FRT" "Update the definition of `planewaveFunctional` to use the
+  live in `NormedSpace.Dual` instead of `Module.Dual`."
+
 /-- Plane waves as a member of the dual of the
   Schwartz submoudle of the Hilbert space.
 

@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import Mathlib.Analysis.Distribution.FourierSchwartz
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # Schwartz submodule of the Hilbert space
@@ -29,6 +30,10 @@ def schwartzSubmodule : Submodule ℂ HilbertSpace :=
 
 @[inherit_doc schwartzSubmodule]
 scoped notation "Φ" => schwartzSubmodule
+
+TODO "G4FQK" "Update the linear equivalence between the Schwartz submodule
+  of the Hilbert space and the module of Schwartz maps `schwartzSubmoduleEquiv`
+  to a continuous linear equivalence."
 
 /-- The linear equivalence between the Schwartz submodule
   of the Hilbert space and the module of Schwartz maps. -/
@@ -76,8 +81,14 @@ lemma schwartzMap_toLpCLM_mem_schwartzSubmodule (ψ : SchwartzMap ℝ ℂ) :
 
 /-- The inclusion of the Hilbert space into the dual of the submodule
   of Schwartz maps. -/
-def inclDualSchwartzSubmodule: HilbertSpace →ₛₗ[starRingEnd ℂ] Module.Dual ℂ Φ :=
-  toBra.domRestrict₂ Φ
+def inclDualSchwartzSubmodule: HilbertSpace →ₛₗ[starRingEnd ℂ] NormedSpace.Dual ℂ Φ where
+  toFun f := (toBra f) ∘L schwartzSubmodule.subtypeL
+  map_add' f g := by
+    ext1
+    simp
+  map_smul' c f := by
+    ext1
+    simp
 
 /-- The inclusion of the Hilbert space into the dual of the submodule
   of Schwartz maps is injective. -/

@@ -74,6 +74,9 @@ lemma momentumOperator_add {ψ1 ψ2 : ℝ → ℂ}
 
 -/
 
+TODO "G4FTD" "Update the definition of `momentumOperatorSchwartz` to
+  be a continuous linear map."
+
 /-- The momentum operator on the Schwartz submodule is defined as the linear map from
   `schwartzSubmodule` to itself, such that `ψ` is taken to `fun x => - I ℏ ψ' (x)`. -/
 def momentumOperatorSchwartz : Φ →ₗ[ℂ] Φ where

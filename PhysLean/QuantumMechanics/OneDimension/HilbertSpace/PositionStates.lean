@@ -21,6 +21,9 @@ noncomputable section
 namespace HilbertSpace
 open MeasureTheory
 
+TODO "G4FSN" "Update the definition of `positionState` to use the
+  live in `NormedSpace.Dual` instead of `Module.Dual`."
+
 /-- Position state as a member of the dual of the
   Schwartz submodule of the Hilbert space. -/
 def positionState (x : ℝ) : Module.Dual ℂ Φ := by
