@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PlaneWaves
 import PhysLean.QuantumMechanics.PlanckConstant
-import PhysLean.Meta.TODO.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Star
 /-!
 
