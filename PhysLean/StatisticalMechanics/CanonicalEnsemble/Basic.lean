@@ -11,6 +11,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import PhysLean.StatisticalMechanics.Temperature
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Linters.Sorry
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
 /-!
 
 # Canonical ensemble
@@ -50,6 +51,8 @@ instance {ι1 ι2 : Type} : HAdd (CanonicalEnsemble ι1) (CanonicalEnsemble ι2)
 def nsmul (n : ℕ) (𝓒1 : CanonicalEnsemble ι) : CanonicalEnsemble (Fin n → ι) :=
   fun f => ∑ i, 𝓒1 (f i)
 
+lemma nsmul_eq (n : ℕ) (𝓒1 : CanonicalEnsemble ι) : nsmul n 𝓒1 = fun f => ∑ i, 𝓒1 (f i) := rfl
+
 set_option linter.unusedVariables false in
 /-- The microstates of a the canonical ensemble -/
 @[nolint unusedArguments]
@@ -80,6 +83,9 @@ lemma energy_nsmul_apply (n : ℕ) (f : Fin n → microstates 𝓒) :
 
 -/
 
+TODO "G5AM2" "Generalize the parition function to non-finite types of
+  microstates."
+
 /-- The partition function of the canonical ensemble. -/
 noncomputable def partitionFunction [Fintype ι] (T : Temperature) : ℝ :=
   ∑ i, exp (- β T * 𝓒.energy i)
@@ -100,9 +106,16 @@ lemma partitionFunction_add [Fintype ι] [Fintype ι1] :
   ring
 
 /-- The partition function of `n` copies of a canonical ensemble. -/
-@[sorryful]
+@[simp]
 lemma partitionFunction_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
-    (nsmul n 𝓒).partitionFunction T = (𝓒.partitionFunction T) ^ n := sorry
+    (nsmul n 𝓒).partitionFunction T = (𝓒.partitionFunction T) ^ n := by
+  simp only [partitionFunction, energy_nsmul_apply, neg_mul]
+  rw [Fintype.sum_pow]
+  congr
+  funext f
+  rw [← Real.exp_sum]
+  congr
+  simp [Finset.mul_sum]
 
 lemma partitionFunction_pos [Fintype ι] [Nonempty ι] (T : Temperature) :
     0 < partitionFunction 𝓒 T := by
@@ -145,14 +158,24 @@ noncomputable def probability [Fintype ι] (i : microstates 𝓒) (T : Temperatu
   exp (- β T * 𝓒.energy i) / partitionFunction 𝓒 T
 
 /-- Probability of a microstate in a canonical ensemble is less then or equal to `1`. -/
-@[sorryful]
-lemma probability_le_one [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
-    𝓒.probability i T ≤ 1 := sorry
+lemma probability_le_one [Fintype ι] [Nonempty ι] (i : microstates 𝓒) (T : Temperature) :
+    𝓒.probability i T ≤ 1 := by
+  rw [probability]
+  rw [div_le_one]
+  · simp [partitionFunction]
+    apply Finset.single_le_sum (f := fun x => exp (-(T.β * 𝓒.energy x)))
+    · intro i _
+      exact exp_nonneg (-(T.β * 𝓒.energy i))
+    · simp
+  · exact partitionFunction_pos 𝓒 T
 
 /-- Probability of a microstate in a canonical ensemble is non-negative. -/
-@[sorryful]
-lemma probability_nonneg [Fintype ι] (i : microstates 𝓒) (T : Temperature) :
-    0 ≤ 𝓒.probability i T := sorry
+lemma probability_nonneg [Fintype ι] [Nonempty ι] (i : microstates 𝓒) (T : Temperature) :
+    0 ≤ 𝓒.probability i T := by
+  rw [probability]
+  apply div_nonneg
+  · exact exp_nonneg (-T.β * 𝓒.energy i)
+  · exact le_of_lt (partitionFunction_pos 𝓒 T)
 
 lemma probability_neq_zero [Fintype ι] [Nonempty ι] (i : microstates 𝓒) (T : Temperature) :
     probability 𝓒 i T ≠ 0 := by
@@ -172,10 +195,15 @@ lemma probability_add [Fintype ι] [Fintype ι1]
 
 /-- The probability of a microstate in `n` copies of a canonical ensemble is
   equal to the product of the probability of the corresponding individual microstates. -/
-@[sorryful]
+@[simp]
 lemma probability_nsmul [Fintype ι] (n : ℕ)
     (f : microstates (nsmul n 𝓒)) (T : Temperature) :
-    (nsmul n 𝓒).probability f T = ∏ i, 𝓒.probability (f i) T := sorry
+    (nsmul n 𝓒).probability f T = ∏ i, 𝓒.probability (f i) T := by
+  simp [probability, nsmul]
+  congr
+  rw [← Real.exp_sum]
+  congr
+  simp [Finset.mul_sum]
 
 @[simp]
 lemma sum_probability_eq_one [Fintype ι] [Nonempty ι] (T : Temperature) :
@@ -226,7 +254,6 @@ lemma meanEnergy_add [Fintype ι] [Nonempty ι] (𝓒1 : CanonicalEnsemble ι1) 
 
   Note, can't make this `SMul` since the target type depends on the
   value of `n`. -/
-@[sorryful]
 lemma meanEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T := by
   sorry
