@@ -25,6 +25,7 @@ namespace HilbertSpace
 open MeasureTheory
 open SchwartzMap InnerProductSpace
 
+/-- The continuous linear map including Schwartz functions into the hilbert space. -/
 def schwartzIncl : 𝓢(ℝ, ℂ) →L[ℂ] HilbertSpace :=
   SchwartzMap.toLpCLM ℂ (E := ℝ) ℂ 2 MeasureTheory.volume
 
@@ -43,7 +44,7 @@ lemma schwartzIncl_inner (ψ1 ψ2 : 𝓢(ℝ, ℂ)) :
     schwartzIncl_coe_ae ψ2
   filter_upwards [h1, h2] with _ h1 h2
   rw [← h1, ← h2]
-  simp
+  simp only [RCLike.inner_apply]
   rw [mul_comm]
   rfl
 

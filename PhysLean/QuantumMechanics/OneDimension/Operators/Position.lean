@@ -95,17 +95,18 @@ def positionOperatorSchwartz : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) := by
   · intro ψ1 ψ2 x
     simp [mul_add]
   · intro c ψ x
-    simp
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
     ring
   · intro ψ
-    simp
+    simp only
     apply ContDiff.mul
     · change ContDiff ℝ _ Complex.ofRealCLM
       fun_prop
     · exact SchwartzMap.smooth ψ ⊤
   · intro (k, n)
     use {(k, n - 1), (k + 1, n)}
-    simp
+    simp only [Real.norm_eq_abs, Finset.sup_insert, schwartzSeminormFamily_apply,
+      Finset.sup_singleton, Seminorm.coe_sup, Pi.sup_apply]
     use n + 1
     refine ⟨by linarith, ?_⟩
     intro ψ x
@@ -133,7 +134,7 @@ def positionOperatorSchwartz : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) := by
         Nat.sub_zero, norm_iteratedFDeriv_zero, CharP.cast_eq_zero, ge_iff_le]
       trans (SchwartzMap.seminorm ℂ (k + 1) 0) ψ
       · apply le_trans ?_ (ψ.le_seminorm ℝ _ _ x)
-        simp
+        simp only [Real.norm_eq_abs, norm_iteratedFDeriv_zero]
         ring_nf
         rfl
       exact le_max_right ((SchwartzMap.seminorm ℂ k (0 - 1)) ψ)

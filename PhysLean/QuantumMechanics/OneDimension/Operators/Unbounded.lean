@@ -28,6 +28,7 @@ open HilbertSpace
 /-- An unbounded operator on the one-dimensional Hilbert space,
   corresponds to a subobject `ι : S →L[ℂ] HilbertSpace` of the Hilbert
   space along with the operator `op : S →L[ℂ] HilbertSpace` -/
+@[nolint unusedArguments]
 def UnboundedOperator {S : Type} [AddCommGroup S] [Module ℂ S]
     [TopologicalSpace S] (ι : S →L[ℂ] HilbertSpace)
     (_ : Function.Injective ι) :=  S →L[ℂ] HilbertSpace
@@ -41,12 +42,15 @@ variable {S : Type} [AddCommGroup S] [Module ℂ S] [TopologicalSpace S]
 instance  : CoeFun (UnboundedOperator ι hι) (fun _ => S → HilbertSpace) where
   coe := fun U => U.toFun
 
+/-- An unbounded operator created from a continous linear map ` S →L[ℂ] S`. -/
 def ofSelfCLM (Op : S →L[ℂ] S) : UnboundedOperator ι hι := ι ∘L Op
 
 @[simp]
 lemma ofSelfCLM_apply (Op : S →L[ℂ] S) (ψ : S) :
     ofSelfCLM (hι := hι) Op ψ = ι (Op ψ) := rfl
 
+/-- A map `F : S →L[ℂ] ℂ` is a generalized eigenvector of an unbounded operator `U`
+  on `S` if there is an eigenvalue `c` such that for all `ψ`, `F (U ψ) = c ⬝ F ψ` -/
 def IsGeneralizedEigenvector (F : S →L[ℂ] ℂ) (c : ℂ)  : Prop :=
   ∀ ψ : S, ∃ ψ' : S, ι ψ' = U ψ ∧ F ψ' = c • F ψ
 
@@ -69,6 +73,7 @@ lemma isGeneralizedEigenvector_ofSelfCLM_iff {Op : S →L[ℂ] S}
 
 open InnerProductSpace
 
+/-- The condition on an unbounded operator to be self-adjoint. -/
 def IsSelfAdjoint : Prop :=
   ∀ ψ1 ψ2 : S, ⟪U ψ1, ι ψ2⟫_ℂ = ⟪ι ψ1, U ψ2⟫_ℂ
 
