@@ -3,9 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PlaneWaves
-import PhysLean.QuantumMechanics.PlanckConstant
-import PhysLean.Meta.TODO.Basic
+import PhysLean.QuantumMechanics.OneDimension.Operators.Unbounded
 import Mathlib.Analysis.Calculus.FDeriv.Star
 /-!
 
@@ -24,7 +22,7 @@ namespace QuantumMechanics
 namespace OneDimension
 noncomputable section
 open Constants
-open HilbertSpace
+open HilbertSpace SchwartzMap
 
 /-!
 
@@ -74,58 +72,26 @@ lemma momentumOperator_add {ψ1 ψ2 : ℝ → ℂ}
 
 -/
 
-TODO "G4FTD" "Update the definition of `momentumOperatorSchwartz` to
-  be a continuous linear map."
-
-/-- The momentum operator on the Schwartz submodule is defined as the linear map from
-  `schwartzSubmodule` to itself, such that `ψ` is taken to `fun x => - I ℏ ψ' (x)`. -/
-def momentumOperatorSchwartz : Φ →ₗ[ℂ] Φ where
-  toFun ψ := schwartzSubmoduleEquiv.symm <|
-    (- Complex.I * ℏ) • SchwartzMap.derivCLM ℂ (schwartzSubmoduleEquiv ψ)
+/-- The parity operator on the Schwartz maps is defined as the linear map from
+  `𝓢(ℝ, ℂ)` to itself, such that `ψ` is taken to `fun x => - I ℏ * ψ' x`. -/
+def momentumOperatorSchwartz : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) where
+  toFun ψ := (- Complex.I * ℏ) • SchwartzMap.derivCLM ℂ ψ
   map_add' ψ1 ψ2 := by
     simp only [neg_mul, map_add, smul_add, neg_smul]
   map_smul' a ψ := by
     simp only [neg_mul, map_smul, neg_smul, RingHom.id_apply]
     rw [smul_comm]
     simp
+  cont := by fun_prop
 
-lemma schwartzSubmoduleEquiv_momentumOperatorSchwartz (ψ : schwartzSubmodule) :
-    schwartzSubmoduleEquiv (momentumOperatorSchwartz ψ) =
-      (- Complex.I * ℏ) • (SchwartzMap.derivCLM ℂ (schwartzSubmoduleEquiv ψ)) := by
-  change schwartzSubmoduleEquiv (schwartzSubmoduleEquiv.symm _) = _
-  simp [momentumOperatorSchwartz]
-
-lemma schwartzSubmoduleEquiv_momentumOperatorSchwartz_apply (ψ : schwartzSubmodule)
-    (x : ℝ) :
-    schwartzSubmoduleEquiv (momentumOperatorSchwartz ψ) x =
-      (- Complex.I * ℏ) * (deriv (schwartzSubmoduleEquiv ψ) x) := by
-  rw [schwartzSubmoduleEquiv_momentumOperatorSchwartz]
+lemma momentumOperatorSchwartz_apply (ψ : 𝓢(ℝ, ℂ))
+    (x : ℝ) : (momentumOperatorSchwartz ψ) x = (- Complex.I * ℏ) * (deriv ψ x) := by
+  rw [momentumOperatorSchwartz]
   rfl
 
 /-- The unbounded momentum operator, whose domain is Schwartz maps. -/
-def momentumOperatorUnbounded : HilbertSpace →ₗ.[ℂ] HilbertSpace where
-  domain := schwartzSubmodule
-  toFun := SchwartzMap.toLpCLM ℂ (E := ℝ) ℂ 2 MeasureTheory.volume ∘ₗ
-    schwartzSubmoduleEquiv.toLinearMap ∘ₗ momentumOperatorSchwartz
-
-lemma momentumOperatorUnbounded_apply (ψ : schwartzSubmodule) :
-    momentumOperatorUnbounded ψ =
-      ((- Complex.I * ℏ) • SchwartzMap.derivCLM ℂ
-      (schwartzSubmoduleEquiv ψ)).toLp 2 MeasureTheory.volume := by
-  simp [momentumOperatorUnbounded, momentumOperatorSchwartz]
-
-lemma momentumOperatorUnbounded_mem_schwartzSubmodule (ψ : schwartzSubmodule) :
-    momentumOperatorUnbounded ψ ∈ schwartzSubmodule := by
-  rw [momentumOperatorUnbounded_apply]
-  use (- Complex.I * ℏ) • SchwartzMap.derivCLM ℂ (schwartzSubmoduleEquiv ψ)
-  simp
-
-lemma momentumOperatorSchwartz_apply_eq_momentumOperatorUnbounded (ψ : schwartzSubmodule) :
-    momentumOperatorSchwartz ψ = ⟨momentumOperatorUnbounded ψ,
-      momentumOperatorUnbounded_mem_schwartzSubmodule ψ⟩ := by
-  ext1
-  change _ = (schwartzSubmoduleEquiv.symm (schwartzSubmoduleEquiv (momentumOperatorSchwartz ψ))).1
-  simp
+def momentumOperatorUnbounded : UnboundedOperator schwartzIncl schwartzIncl_injective :=
+  UnboundedOperator.ofSelfCLM momentumOperatorSchwartz
 
 /-!
 
@@ -133,34 +99,38 @@ lemma momentumOperatorSchwartz_apply_eq_momentumOperatorUnbounded (ψ : schwartz
 
 -/
 
-lemma planeWaveFunctional_generalized_eigenvector_momentumOperatorSchwartz
-    (k : ℝ) (ψ : schwartzSubmodule) :
-    planewaveFunctional k (momentumOperatorSchwartz ψ) =
-    (2 * Real.pi * ℏ * k) • (planewaveFunctional k ψ) := by
+lemma planeWaveFunctional_generalized_eigenvector_momentumOperatorUnbounded (k : ℝ) :
+    momentumOperatorUnbounded.IsGeneralizedEigenvector
+      (planewaveFunctional k) (2 * Real.pi * ℏ * k) := by
+  dsimp [momentumOperatorUnbounded]
+  rw [UnboundedOperator.isGeneralizedEigenvector_ofSelfCLM_iff]
+  intro ψ
+  trans (-((Complex.I * ↑↑ℏ) •
+      (SchwartzMap.fourierTransformCLM ℂ) ((SchwartzMap.derivCLM ℂ) ψ) k))
+  · simp [momentumOperatorSchwartz]
+    left
+    rfl
   conv_lhs =>
-    rw [planewaveFunctional]
-    simp only [LinearMap.coe_comp, LinearMap.coe_mk, AddHom.coe_mk, ContinuousLinearMap.coe_coe,
-      LinearEquiv.coe_coe, Function.comp_apply]
-    rw [schwartzSubmoduleEquiv_momentumOperatorSchwartz]
-    simp only [neg_mul, neg_smul, map_neg, map_smul]
-    change (-((Complex.I * ↑↑ℏ) •
-      (SchwartzMap.fourierTransformCLM ℂ) ((SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ)) k))
     simp only [SchwartzMap.fourierTransformCLM_apply, smul_eq_mul]
-    erw [Real.fourierIntegral_deriv (SchwartzMap.integrable (schwartzSubmoduleEquiv ψ))
-      (SchwartzMap.differentiable (schwartzSubmoduleEquiv ψ))
-      (SchwartzMap.integrable ((SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ)))]
+    erw [Real.fourierIntegral_deriv (SchwartzMap.integrable ψ)
+      (SchwartzMap.differentiable (ψ)) (SchwartzMap.integrable ((SchwartzMap.derivCLM ℂ) ψ))]
   simp [planewaveFunctional]
   ring_nf
   simp
 
-open InnerProductSpace
-lemma momentumOperatorSchwartz_hermitian (ψ1 ψ2 : schwartzSubmodule) :
-    ⟪momentumOperatorSchwartz ψ1, ψ2⟫_ℂ = ⟪ψ1, momentumOperatorSchwartz ψ2⟫_ℂ := by
-  rw [inner_schwartzSubmodule, inner_schwartzSubmodule]
+/-!
+
+## The momentum operator is self adjoint
+
+-/
+
+lemma momentumOperatorUnbounded_isSelfAdjoint : momentumOperatorUnbounded.IsSelfAdjoint := by
+  intro ψ1 ψ2
+  dsimp [momentumOperatorUnbounded]
+  rw [schwartzIncl_inner, schwartzIncl_inner]
   conv_rhs =>
-    rw [schwartzSubmoduleEquiv_momentumOperatorSchwartz]
-    change ∫ (x : ℝ), (starRingEnd ℂ) ((schwartzSubmoduleEquiv ψ1) x) *
-      ((-Complex.I * ↑↑ℏ) * (SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ2) x)
+    change ∫ (x : ℝ), (starRingEnd ℂ) ((ψ1) x) *
+      ((-Complex.I * ↑↑ℏ) * (SchwartzMap.derivCLM ℂ) (ψ2) x)
     enter [2, x]
     rw [← mul_assoc]
     rw [mul_comm _ (-Complex.I * ↑↑ℏ)]
@@ -175,37 +145,38 @@ lemma momentumOperatorSchwartz_hermitian (ψ1 ψ2 : schwartzSubmodule) :
   funext x
   conv_rhs =>
     enter [2, 1, 1]
-    change (fderiv ℝ (fun a => star ((schwartzSubmoduleEquiv ψ1) a)) x) 1
+    change (fderiv ℝ (fun a => star ((ψ1) a)) x) 1
     rw [fderiv_star]
-  simp [schwartzSubmoduleEquiv_momentumOperatorSchwartz_apply]
+  simp [momentumOperatorSchwartz_apply]
   ring
   · apply MeasureTheory.Integrable.mul_of_top_left
     · conv =>
         enter [1, x]
-        change (fderiv ℝ (fun a => star ((schwartzSubmoduleEquiv ψ1) a)) x) 1
+        change (fderiv ℝ (fun a => star ((ψ1) a)) x) 1
         rw [fderiv_star]
-        change (starL' ℝ) (SchwartzMap.derivCLM ℂ (schwartzSubmoduleEquiv ψ1) x)
+        change (starL' ℝ) (SchwartzMap.derivCLM ℂ (ψ1) x)
       rw [ContinuousLinearEquiv.integrable_comp_iff]
-      exact SchwartzMap.integrable ((SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ1))
-    · exact SchwartzMap.memLp_top (schwartzSubmoduleEquiv ψ2) MeasureTheory.volume
+      exact SchwartzMap.integrable ((SchwartzMap.derivCLM ℂ) (ψ1))
+    · exact SchwartzMap.memLp_top (ψ2) MeasureTheory.volume
   · apply MeasureTheory.Integrable.mul_of_top_left
     · change MeasureTheory.Integrable
-        (fun x => (starL' ℝ : ℂ ≃L[ℝ] ℂ) ((schwartzSubmoduleEquiv ψ1) x)) MeasureTheory.volume
+        (fun x => (starL' ℝ : ℂ ≃L[ℝ] ℂ) ((ψ1) x)) MeasureTheory.volume
       rw [ContinuousLinearEquiv.integrable_comp_iff]
-      exact SchwartzMap.integrable (schwartzSubmoduleEquiv ψ1)
+      exact SchwartzMap.integrable (ψ1)
     · change MeasureTheory.MemLp
-        (fun x => SchwartzMap.derivCLM ℂ (schwartzSubmoduleEquiv ψ2) x) ⊤ MeasureTheory.volume
-      exact SchwartzMap.memLp_top ((SchwartzMap.derivCLM ℂ) (schwartzSubmoduleEquiv ψ2))
+        (fun x => SchwartzMap.derivCLM ℂ (ψ2) x) ⊤ MeasureTheory.volume
+      exact SchwartzMap.memLp_top ((SchwartzMap.derivCLM ℂ) (ψ2))
           MeasureTheory.volume
   · apply MeasureTheory.Integrable.mul_of_top_left
     · change MeasureTheory.Integrable
-        (fun x => (starL' ℝ : ℂ ≃L[ℝ] ℂ) ((schwartzSubmoduleEquiv ψ1) x)) MeasureTheory.volume
+        (fun x => (starL' ℝ : ℂ ≃L[ℝ] ℂ) ((ψ1) x)) MeasureTheory.volume
       rw [ContinuousLinearEquiv.integrable_comp_iff]
-      exact SchwartzMap.integrable (schwartzSubmoduleEquiv ψ1)
-    · exact SchwartzMap.memLp_top (schwartzSubmoduleEquiv ψ2) MeasureTheory.volume
+      exact SchwartzMap.integrable (ψ1)
+    · exact SchwartzMap.memLp_top (ψ2) MeasureTheory.volume
   · apply Differentiable.star
-    exact SchwartzMap.differentiable (schwartzSubmoduleEquiv ψ1)
-  · exact SchwartzMap.differentiable (schwartzSubmoduleEquiv ψ2)
+    exact SchwartzMap.differentiable (ψ1)
+  · exact SchwartzMap.differentiable (ψ2)
+
 end
 end OneDimension
 end QuantumMechanics

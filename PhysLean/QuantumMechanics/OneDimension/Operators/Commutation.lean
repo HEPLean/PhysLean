@@ -18,7 +18,7 @@ namespace QuantumMechanics
 namespace OneDimension
 noncomputable section
 open Constants
-open HilbertSpace
+open HilbertSpace SchwartzMap
 
 /-!
 
@@ -27,14 +27,12 @@ open HilbertSpace
 -/
 
 lemma positionOperatorSchwartz_commutation_momentumOperatorSchwartz
-    (ψ : schwartzSubmodule) : positionOperatorSchwartz (momentumOperatorSchwartz ψ)
+    (ψ : 𝓢(ℝ, ℂ)) : positionOperatorSchwartz (momentumOperatorSchwartz ψ)
     - momentumOperatorSchwartz (positionOperatorSchwartz ψ)
     = (Complex.I * ℏ) • ψ := by
-  apply schwartzSubmoduleEquiv.injective
-  simp only [map_sub, map_smul]
   ext x
-  simp [schwartzSubmoduleEquiv_momentumOperatorSchwartz_apply,
-    schwartzSubmoduleEquiv_positionOperatorSchwartz]
+  simp [momentumOperatorSchwartz_apply, positionOperatorSchwartz_apply,
+    positionOperatorSchwartz_apply_fun]
   rw [deriv_fun_mul]
   have h1 : deriv Complex.ofReal x = 1 := by
     change deriv Complex.ofRealCLM x = _
@@ -43,16 +41,16 @@ lemma positionOperatorSchwartz_commutation_momentumOperatorSchwartz
   ring
   · change DifferentiableAt ℝ Complex.ofRealCLM x
     fun_prop
-  · exact SchwartzMap.differentiableAt (schwartzSubmoduleEquiv ψ)
+  · exact SchwartzMap.differentiableAt ψ
 
-lemma positionOperatorSchwartz_momentumOperatorSchwartz_eq (ψ : schwartzSubmodule) :
+lemma positionOperatorSchwartz_momentumOperatorSchwartz_eq (ψ : 𝓢(ℝ, ℂ)) :
     positionOperatorSchwartz (momentumOperatorSchwartz ψ)
     = momentumOperatorSchwartz (positionOperatorSchwartz ψ)
     + (Complex.I * ℏ) • ψ := by
   rw [← positionOperatorSchwartz_commutation_momentumOperatorSchwartz]
   simp
 
-lemma momentumOperatorSchwartz_positionOperatorSchwartz_eq (ψ : schwartzSubmodule) :
+lemma momentumOperatorSchwartz_positionOperatorSchwartz_eq (ψ : 𝓢(ℝ, ℂ)) :
     momentumOperatorSchwartz (positionOperatorSchwartz ψ)
     = positionOperatorSchwartz (momentumOperatorSchwartz ψ)
     - (Complex.I * ℏ) • ψ := by

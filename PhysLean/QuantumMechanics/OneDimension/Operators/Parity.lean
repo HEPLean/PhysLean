@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PositionStates
+import PhysLean.QuantumMechanics.OneDimension.Operators.Unbounded
 /-!
 
 # Parity operator
@@ -16,7 +17,7 @@ namespace OneDimension
 noncomputable section
 
 namespace HilbertSpace
-open MeasureTheory
+open MeasureTheory SchwartzMap
 
 /-!
 
@@ -41,15 +42,10 @@ def parityOperator : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) where
 
 -/
 
-TODO "G4FUA" "Update the definition of `parityOperatorSchwartz` to
-  be a continuous linear map."
-
-/-- The parity operator on the Schwartz submodule is defined as the linear map from
-  `schwartzSubmodule` to itself, such that `ψ` is taken to `fun x => ψ (-x)`. -/
-def parityOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule := by
-  refine schwartzSubmoduleEquiv.symm.toLinearMap ∘ₗ
-    (SchwartzMap.compCLM ℂ (g := (fun x => - x : ℝ → ℝ)) ⟨?_, ?_⟩ ?_).toLinearMap ∘ₗ
-    schwartzSubmoduleEquiv.toLinearMap
+/-- The parity operator on the Schwartz maps is defined as the linear map from
+  `𝓢(ℝ, ℂ)` to itself, such that `ψ` is taken to `fun x => ψ (-x)`. -/
+def parityOperatorSchwartz : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) := by
+  refine (SchwartzMap.compCLM ℂ (g := (fun x => - x : ℝ → ℝ)) ⟨?_, ?_⟩ ?_)
   · fun_prop
   · intro n
     simp only [Real.norm_eq_abs]
@@ -79,47 +75,35 @@ def parityOperatorSchwartz : schwartzSubmodule →ₗ[ℂ] schwartzSubmodule := 
     simp
 
 /-- The unbounded parity operator, whose domain is Schwartz maps. -/
-def parityOperatorUnbounded : HilbertSpace →ₗ.[ℂ] HilbertSpace where
-  domain := schwartzSubmodule
-  toFun := SchwartzMap.toLpCLM ℂ (E := ℝ) ℂ 2 MeasureTheory.volume ∘ₗ
-    schwartzSubmoduleEquiv.toLinearMap ∘ₗ parityOperatorSchwartz
-
-lemma parityOperatorUnbounded_mem_schwartzSubmodule (ψ : schwartzSubmodule) :
-    parityOperatorUnbounded ψ ∈ schwartzSubmodule := by
-  simp [parityOperatorUnbounded]
-
-lemma parityOperatorUnbounded_apply_eq_parityOperatorUnbounded (ψ : schwartzSubmodule) :
-    parityOperatorSchwartz ψ = ⟨parityOperatorUnbounded ψ,
-      parityOperatorUnbounded_mem_schwartzSubmodule ψ⟩ := by
-  ext1
-  change _ = (schwartzSubmoduleEquiv.symm (schwartzSubmoduleEquiv (parityOperatorSchwartz ψ))).1
-  simp
+def parityOperatorUnbounded : UnboundedOperator schwartzIncl schwartzIncl_injective :=
+  UnboundedOperator.ofSelfCLM parityOperatorSchwartz
 
 @[simp]
-lemma parityOperatorSchwartz_parityOperatorSchwartz (ψ : schwartzSubmodule) :
+lemma parityOperatorSchwartz_parityOperatorSchwartz (ψ : 𝓢(ℝ, ℂ)) :
     parityOperatorSchwartz (parityOperatorSchwartz ψ) = ψ := by
-  apply schwartzSubmoduleEquiv.injective
   ext x
   simp [parityOperatorSchwartz]
 
 /-!
 
-## Parity operator is hermitian
+## Parity operator is self adjoint
 
 -/
 
 open InnerProductSpace
 
-lemma parityOperatorSchwartz_hermitian (ψ1 ψ2 : schwartzSubmodule) :
-    ⟪parityOperatorSchwartz ψ1, ψ2⟫_ℂ = ⟪ψ1, parityOperatorSchwartz ψ2⟫_ℂ := by
-  rw [inner_schwartzSubmodule, inner_schwartzSubmodule]
-  simp [parityOperatorSchwartz]
+lemma parityOperatorUnbounded_isSelfAdjoint :
+    parityOperatorUnbounded.IsSelfAdjoint := by
+  intro ψ1 ψ2
+  dsimp [parityOperatorUnbounded]
+  rw [schwartzIncl_inner, schwartzIncl_inner]
   let f (x : ℝ) :=
-    (starRingEnd ℂ) ((schwartzSubmoduleEquiv ψ1) (-x)) * (schwartzSubmoduleEquiv ψ2) x
+    (starRingEnd ℂ) ((ψ1) (-x)) * (ψ2) x
   change ∫ (x : ℝ), f x = _
   trans ∫ (x : ℝ), f (- x)
   · exact Eq.symm (integral_neg_eq_self f volume)
-  · simp [f]
+  · simp only [neg_neg, f]
+    rfl
 
 open InnerProductSpace
 
