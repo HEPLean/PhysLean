@@ -255,6 +255,7 @@ lemma meanEnergy_add [Fintype ι] [Nonempty ι] (𝓒1 : FiniteCanonicalEnsemble
 
   Note, can't make this `SMul` since the target type depends on the
   value of `n`. -/
+@[sorryful]
 lemma meanEnergy_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T := by
   sorry

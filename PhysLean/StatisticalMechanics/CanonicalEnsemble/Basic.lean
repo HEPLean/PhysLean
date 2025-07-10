@@ -37,6 +37,7 @@ structure CanonicalEnsemble (ι : Type) [MeasurableSpace ι] : Type where
   /-- The energy of associated with a mircrostate of the canonical ensemble. -/
   energy : ι → ℝ
   energy_measurable : Measurable energy
+  /-- The measure on the indexing set of microstates. -/
   μ : MeasureTheory.Measure ι := by volume_tac
   [μ_sigmaFinite : SigmaFinite μ]
 
@@ -140,7 +141,9 @@ lemma nsmul_succ (n : ℕ) [SigmaFinite 𝓒.μ] : nsmul n.succ 𝓒 = (𝓒 + n
     (MeasurableEquiv.piFinSuccAbove (fun _ => ι) 0) := by
   ext1
   · ext x
-    simp
+    simp only [Nat.succ_eq_add_one, energy_nsmul_apply, energy_congr_apply,
+      MeasurableEquiv.piFinSuccAbove_apply, Fin.insertNthEquiv_zero, Fin.consEquiv_symm_apply,
+      energy_add_apply]
     exact Fin.sum_univ_succAbove (fun i => 𝓒.energy (x i)) 0
   · refine Eq.symm (MeasureTheory.MeasurePreserving.map_eq ?_)
     refine MeasurePreserving.symm _ ?_
@@ -160,13 +163,13 @@ instance (T : Temperature) : SigmaFinite (𝓒.μBolt T) :=
     (SigmaFinite (𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β T * 𝓒.energy i)))))
 
 @[simp]
-lemma μBolt_add [SFinite 𝓒.μ] [SFinite 𝓒1.μ] (T : Temperature) :
+lemma μBolt_add (T : Temperature) :
     (𝓒 + 𝓒1).μBolt T = (𝓒.μBolt T).prod (𝓒1.μBolt T) := by
   rw [μBolt, μBolt, μBolt, MeasureTheory.prod_withDensity]
   congr
   funext i
   rw [← ENNReal.ofReal_mul, ← Real.exp_add]
-  simp
+  simp only [energy_add_apply, neg_mul]
   ring_nf
   · exact exp_nonneg (-T.β * 𝓒.energy i.1)
   · fun_prop
@@ -249,7 +252,7 @@ lemma paritionFunction_eq_zero_iff (T : Temperature) [IsFiniteMeasure (𝓒.μBo
   simp only [measure_ne_top, or_false]
   rw [μBolt]
   rw [MeasureTheory.withDensity_apply_eq_zero']
-  simp
+  simp only [neg_mul, ne_eq, ENNReal.ofReal_eq_zero, not_le, Set.inter_univ]
   let s : Set ι := {x | 0 < rexp (-(T.β * 𝓒.energy x))}
   have h : s = Set.univ := by
     ext i
@@ -257,7 +260,7 @@ lemma paritionFunction_eq_zero_iff (T : Temperature) [IsFiniteMeasure (𝓒.μBo
     exact exp_pos (-(T.β * 𝓒.energy i))
   change 𝓒.μ s = 0 ↔ 𝓒.μ = 0
   rw [h]
-  simp
+  simp only [Measure.measure_univ_eq_zero, s]
   fun_prop
 
 open NNReal Constants
@@ -267,7 +270,7 @@ lemma partitionFunction_comp_ofβ_apply (β : ℝ≥0) :
     (𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β * 𝓒.energy i)))).real Set.univ := by
   simp only [partitionFunction, μBolt, β_ofβ, neg_mul]
 
-@[sorryful]
+@[sorryful, nolint unusedHavesSuffices]
 lemma paritionFunction_hasFDerivAt (T : Temperature) (hT : T.1 ≠ 0) :
     let F' : ℝ → ι → ℝ →L[ℝ] ℝ := fun T i => rexp (-(1 / (kB * T)) * 𝓒.energy i) •
     (fderiv ℝ (fun T => (- (1 / (kB * T)) * 𝓒.energy i)) T)

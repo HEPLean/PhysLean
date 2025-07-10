@@ -16,9 +16,10 @@ open NNReal
 
 namespace Constants
 
-/-- The Boltzmann constant. -/
+/-- The Boltzmann constant axiom. -/
 axiom kBAx : {p : ℝ | 0 < p}
 
+/-- The Boltzmann constant. -/
 noncomputable def kB : ℝ := kBAx.1
 
 /-- The Boltzmann constant is positive. -/

@@ -44,8 +44,9 @@ noncomputable def β (T : Temperature) : ℝ≥0 := ⟨1 / (kB * T), by
     · exact kB_nonneg
     · exact T.2⟩
 
+/-- The temperature associated with a given inverse temperature `β`. -/
 noncomputable def ofβ (β : ℝ≥0) : Temperature :=
-  ⟨1 / (kB * β), by
+    ⟨1 / (kB * β), by
   apply div_nonneg
   · exact zero_le_one' ℝ
   · apply mul_nonneg
@@ -53,11 +54,11 @@ noncomputable def ofβ (β : ℝ≥0) : Temperature :=
     · exact β.2⟩
 
 lemma ofβ_eq : ofβ = fun β => ⟨1 / (kB * β), by
-  apply div_nonneg
-  · exact zero_le_one' ℝ
-  · apply mul_nonneg
-    · exact kB_nonneg
-    · exact β.2⟩ := by rfl
+    apply div_nonneg
+    · exact zero_le_one' ℝ
+    · apply mul_nonneg
+      · exact kB_nonneg
+      · exact β.2⟩ := by rfl
 
 @[simp]
 lemma β_ofβ (β' : ℝ≥0) : β (ofβ β') = β' := by
@@ -100,7 +101,7 @@ lemma ofβ_differentiableOn :
     · fun_prop
     · fun_prop
     · intro x hx
-      simp
+      simp only [ne_eq, mul_eq_zero, not_or]
       apply And.intro
       · exact kB_neq_zero
       · exact ne_of_gt hx
