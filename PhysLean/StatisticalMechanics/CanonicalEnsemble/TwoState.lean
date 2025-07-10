@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
+import PhysLean.StatisticalMechanics.CanonicalEnsemble.Finite
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import PhysLean.Meta.Informal.Basic
 /-!
@@ -15,7 +15,7 @@ canonical ensemble.
 
 -/
 
-namespace CanonicalEnsemble
+namespace FiniteCanonicalEnsemble
 
 open Temperature
 open Real
@@ -25,7 +25,7 @@ TODO "EVJNH" "Generalize the results for the two-state canonical ensemble so tha
 
 /-- The canonical ensemble corresponding to state system, with one state of energy
   `E` and the other state of energy `0`. -/
-def twoState (E : ℝ) : CanonicalEnsemble (Fin 2) := fun | 0 => 0 | 1 => E
+def twoState (E : ℝ) : FiniteCanonicalEnsemble (Fin 2) := fun | 0 => 0 | 1 => E
 
 lemma twoState_partitionFunction_apply_eq_one_add_exp (E : ℝ) (T : Temperature) :
     (twoState E).partitionFunction T = 1 + exp (- β T * E) := by
@@ -82,4 +82,4 @@ informal_lemma twoState_helmholtzFreeEnergy_eq where
   tag := "EVMPR"
   deps := [``twoState, ``helmholtzFreeEnergy]
 
-end CanonicalEnsemble
+end FiniteCanonicalEnsemble
