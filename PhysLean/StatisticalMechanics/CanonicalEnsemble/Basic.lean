@@ -32,50 +32,177 @@ to the properties of additions of canonical ensembles.
 
 -/
 
+open MeasureTheory
+
 /-- A Canonical ensemble is described by a type `ι`, corresponding to the type of microstates,
   and a map `ι → ℝ` which associates which each microstate an energy. -/
-def CanonicalEnsemble (ι : Type) : Type := ι → ℝ
+structure CanonicalEnsemble (ι : Type) [MeasurableSpace ι] : Type where
+  /-- The energy of associated with a mircrostate of the canonical ensemble. -/
+  energy : ι → ℝ
+  energy_measurable : Measurable energy
+  μ : MeasureTheory.Measure ι := by volume_tac
+  [μ_sigmaFinite : SigmaFinite μ]
 
 namespace CanonicalEnsemble
 open Real Temperature
 
-variable {ι ι1 : Type} (𝓒 : CanonicalEnsemble ι) (𝓒1 : CanonicalEnsemble ι1)
+variable {ι ι1 : Type} [MeasurableSpace ι]
+  [MeasurableSpace ι1] (𝓒 : CanonicalEnsemble ι) (𝓒1 : CanonicalEnsemble ι1)
+
+instance : SigmaFinite 𝓒.μ := 𝓒.μ_sigmaFinite
+
+@[ext]
+lemma ext {𝓒 𝓒' : CanonicalEnsemble ι} (h : 𝓒.energy = 𝓒'.energy) (hμ : 𝓒.μ = 𝓒'.μ) :
+    𝓒 = 𝓒' := by
+  cases 𝓒
+  cases 𝓒'
+  simp_all
+
+@[fun_prop]
+lemma energy_measurable' :  Measurable 𝓒.energy := 𝓒.energy_measurable
 
 /-- The addition of two `CanonicalEnsemble`. -/
-instance {ι1 ι2 : Type} : HAdd (CanonicalEnsemble ι1) (CanonicalEnsemble ι2)
+noncomputable instance {ι1 ι2 : Type} [MeasurableSpace ι1] [MeasurableSpace ι2] :
+    HAdd (CanonicalEnsemble ι1) (CanonicalEnsemble ι2)
     (CanonicalEnsemble (ι1 × ι2)) where
-  hAdd := fun 𝓒1 𝓒2 => fun (i : ι1 × ι2) => 𝓒1 i.1 + 𝓒2 i.2
+  hAdd := fun 𝓒1 𝓒2 => {
+    energy := fun (i : ι1 × ι2) => 𝓒1.energy i.1 + 𝓒2.energy i.2,
+    μ := 𝓒1.μ.prod 𝓒2.μ,
+    energy_measurable := by fun_prop
+  }
+
+
+def empty : CanonicalEnsemble Empty where
+  energy := isEmptyElim
+  μ := 0
+  energy_measurable := by fun_prop
+
+noncomputable def congr (e : ι1 ≃ᵐ ι) : CanonicalEnsemble ι1 where
+  energy := fun i => 𝓒.energy (e i)
+  μ := 𝓒.μ.map e.symm
+  energy_measurable := by
+    apply Measurable.comp
+    · fun_prop
+    · exact MeasurableEquiv.measurable e
+  μ_sigmaFinite := MeasurableEquiv.sigmaFinite_map e.symm
+
 
 /-- Scalar multiplication of `CanonicalEnsemble`, defined such that
   `nsmul n 𝓒` is `n` coppies of the canonical ensemble `𝓒`. -/
-def nsmul (n : ℕ) (𝓒1 : CanonicalEnsemble ι) : CanonicalEnsemble (Fin n → ι) :=
-  fun f => ∑ i, 𝓒1 (f i)
+noncomputable def nsmul (n : ℕ) (𝓒1 : CanonicalEnsemble ι) : CanonicalEnsemble (Fin n → ι) where
+  energy := fun f => ∑ i, 𝓒1.energy (f i)
+  μ := MeasureTheory.Measure.pi fun _ => 𝓒1.μ
+  energy_measurable := by fun_prop
 
-lemma nsmul_eq (n : ℕ) (𝓒1 : CanonicalEnsemble ι) : nsmul n 𝓒1 = fun f => ∑ i, 𝓒1 (f i) := rfl
+
 
 set_option linter.unusedVariables false in
 /-- The microstates of a the canonical ensemble -/
 @[nolint unusedArguments]
-abbrev microstates {ι : Type} (𝓒 : CanonicalEnsemble ι) : Type := ι
+abbrev microstates (𝓒 : CanonicalEnsemble ι) : Type := ι
+
+/-!
+
+## The measure
+
+-/
+
+lemma μ_add : (𝓒 + 𝓒1).μ = 𝓒.μ.prod 𝓒1.μ := rfl
+
+lemma μ_nsmul (n : ℕ) : (nsmul n 𝓒).μ = MeasureTheory.Measure.pi fun _ => 𝓒.μ := rfl
 
 /-!
 
 ## The energy of the microstates
 
 -/
-/-- The energy of associated with a mircrostate of the canonical ensemble. -/
-abbrev energy (𝓒 : CanonicalEnsemble ι) : microstates 𝓒 → ℝ := 𝓒
 
 @[simp]
 lemma energy_add_apply (i : microstates (𝓒 + 𝓒1)) :
-    (𝓒 + 𝓒1).energy i = 𝓒.energy i.1 + 𝓒1.energy i.2 := by
-  simp [energy]
-  rfl
+    (𝓒 + 𝓒1).energy i = 𝓒.energy i.1 + 𝓒1.energy i.2 := rfl
+
+lemma energy_nsmul_eq (n : ℕ) (𝓒1 : CanonicalEnsemble ι) :
+    (nsmul n 𝓒1).energy = fun f => ∑ i, 𝓒1.energy (f i) := rfl
 
 @[simp]
 lemma energy_nsmul_apply (n : ℕ) (f : Fin n → microstates 𝓒) :
-    (nsmul n 𝓒).energy f = ∑ i, 𝓒.energy (f i) := by
-  simp [energy, nsmul]
+    (nsmul n 𝓒).energy f = ∑ i, 𝓒.energy (f i) := rfl
+
+@[simp]
+lemma energy_congr_apply (e : ι1 ≃ᵐ ι)  (i : ι1) :
+   (𝓒.congr e).energy i = 𝓒.energy (e i) := by rfl
+
+/-!
+
+## induction for nsmul
+
+-/
+
+open MeasureTheory
+
+lemma nsmul_succ (n : ℕ) [SigmaFinite 𝓒.μ] : nsmul n.succ 𝓒 = (𝓒 + nsmul n 𝓒).congr
+    (MeasurableEquiv.piFinSuccAbove (fun _ => ι) 0):= by
+  ext1
+  · ext x
+    simp
+    exact Fin.sum_univ_succAbove (fun i => 𝓒.energy (x i)) 0
+  · refine Eq.symm (MeasureTheory.MeasurePreserving.map_eq ?_)
+    refine MeasurePreserving.symm _ ?_
+    exact MeasureTheory.measurePreserving_piFinSuccAbove (n := n) (fun _ => 𝓒.μ) 0
+
+/-!
+
+## The Boltzmann measure
+-/
+
+/-- The Boltzmann measure on the space of microstates. -/
+noncomputable def μBolt (T : Temperature) : MeasureTheory.Measure ι :=
+  𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β T * 𝓒.energy i)))
+
+instance (T : Temperature) : SigmaFinite (𝓒.μBolt T) :=
+  inferInstanceAs (SigmaFinite (𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β T * 𝓒.energy i)))))
+
+@[simp]
+lemma μBolt_add [SFinite 𝓒.μ] [SFinite 𝓒1.μ] (T : Temperature) :
+    (𝓒 + 𝓒1).μBolt T = (𝓒.μBolt T).prod (𝓒1.μBolt T) := by
+  rw [μBolt, μBolt, μBolt, MeasureTheory.prod_withDensity]
+  congr
+  funext i
+  rw [← ENNReal.ofReal_mul, ← Real.exp_add]
+  simp
+  ring_nf
+  · exact exp_nonneg (-T.β * 𝓒.energy i.1)
+  · fun_prop
+  · fun_prop
+
+lemma μBolt_congr  (e : ι1 ≃ᵐ ι) (T : Temperature): (𝓒.congr e).μBolt T =
+    (𝓒.μBolt T).map e.symm := by
+  simp [congr, μBolt]
+  refine Measure.ext_of_lintegral _ fun φ hφ ↦ ?_
+  rw [lintegral_withDensity_eq_lintegral_mul₀]
+  rw [lintegral_map, lintegral_map, lintegral_withDensity_eq_lintegral_mul₀]
+  congr
+  funext i
+  simp only [Pi.mul_apply, MeasurableEquiv.apply_symm_apply]
+  repeat fun_prop
+
+lemma μBolt_nsmul [SigmaFinite 𝓒.μ] (n : ℕ) (T : Temperature) :
+    (nsmul n 𝓒).μBolt T = MeasureTheory.Measure.pi fun _ => (𝓒.μBolt T) := by
+  induction n with
+  | zero =>
+    simp [nsmul, μBolt]
+    congr
+    funext x
+    exact Fin.elim0 x
+  | succ n ih =>
+    rw [nsmul_succ, μBolt_congr]
+    rw [μBolt_add]
+    refine MeasurePreserving.map_eq ?_
+    refine MeasurePreserving.symm _ ?_
+    rw [ih]
+    exact MeasureTheory.measurePreserving_piFinSuccAbove  (fun _ => 𝓒.μBolt T) 0
+
+
 
 /-!
 
@@ -83,39 +210,22 @@ lemma energy_nsmul_apply (n : ℕ) (f : Fin n → microstates 𝓒) :
 
 -/
 
-TODO "G5AM2" "Generalize the parition function to non-finite types of
-  microstates."
 
 /-- The partition function of the canonical ensemble. -/
-noncomputable def partitionFunction [Fintype ι] (T : Temperature) : ℝ :=
-  ∑ i, exp (- β T * 𝓒.energy i)
+noncomputable def partitionFunction (T : Temperature) : ℝ := (𝓒.μBolt T).real Set.univ
 
 lemma partitionFunction_add [Fintype ι] [Fintype ι1] :
     (𝓒 + 𝓒1).partitionFunction T = 𝓒.partitionFunction T * 𝓒1.partitionFunction T := by
-  simp [partitionFunction]
-  rw [Fintype.sum_prod_type]
-  rw [Finset.sum_mul]
+  simp only [partitionFunction, μBolt_add]
+  rw [← measureReal_prod_prod]
   congr
-  funext i
-  rw [Finset.mul_sum]
-  congr
-  funext j
-  rw [← Real.exp_add]
-  congr
-  simp [energy]
-  ring
+  exact Eq.symm Set.univ_prod_univ
 
 /-- The partition function of `n` copies of a canonical ensemble. -/
-@[simp]
+@[sorryful]
 lemma partitionFunction_nsmul [Fintype ι] (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).partitionFunction T = (𝓒.partitionFunction T) ^ n := by
-  simp only [partitionFunction, energy_nsmul_apply, neg_mul]
-  rw [Fintype.sum_pow]
-  congr
-  funext f
-  rw [← Real.exp_sum]
-  congr
-  simp [Finset.mul_sum]
+  sorry
 
 lemma partitionFunction_pos [Fintype ι] [Nonempty ι] (T : Temperature) :
     0 < partitionFunction 𝓒 T := by
