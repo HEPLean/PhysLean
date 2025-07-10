@@ -3,11 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Analysis.Calculus.LogDeriv
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import PhysLean.StatisticalMechanics.Temperature
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Linters.Sorry

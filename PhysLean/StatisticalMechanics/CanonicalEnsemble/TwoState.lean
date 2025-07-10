@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Finite
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import PhysLean.Meta.Informal.Basic
 /-!
 

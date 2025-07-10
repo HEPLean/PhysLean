@@ -61,7 +61,7 @@ lemma ofβ_eq : ofβ = fun β => ⟨1 / (kB * β), by
 
 @[simp]
 lemma β_ofβ (β' : ℝ≥0) : β (ofβ β') = β' := by
-  simp [β, ofβ ]
+  simp [β, ofβ]
   ext
   change ((↑β' : ℝ)⁻¹ * (↑kB : ℝ)⁻¹)⁻¹ * (kB)⁻¹ = _
   field_simp [kB_neq_zero]

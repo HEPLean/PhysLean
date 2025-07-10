@@ -3,11 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Analysis.Calculus.LogDeriv
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import PhysLean.StatisticalMechanics.Temperature
 import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 import Mathlib.Analysis.Calculus.ParametricIntegral
@@ -61,7 +56,7 @@ lemma ext {𝓒 𝓒' : CanonicalEnsemble ι} (h : 𝓒.energy = 𝓒'.energy) (
   simp_all
 
 @[fun_prop]
-lemma energy_measurable' :  Measurable 𝓒.energy := 𝓒.energy_measurable
+lemma energy_measurable' : Measurable 𝓒.energy := 𝓒.energy_measurable
 
 /-- The addition of two `CanonicalEnsemble`. -/
 noncomputable instance {ι1 ι2 : Type} [MeasurableSpace ι1] [MeasurableSpace ι2] :
@@ -80,7 +75,7 @@ def empty : CanonicalEnsemble Empty where
   energy_measurable := by fun_prop
 
 /-- Given a measurable equivalence `e : ι1 ≃ᵐ ι` and a canonical ensemble
-  `CanonicalEnsemble ι` the corresponding canonical ensemble `CanonicalEnsemble ι1`.  -/
+  `CanonicalEnsemble ι` the corresponding canonical ensemble `CanonicalEnsemble ι1`. -/
 noncomputable def congr (e : ι1 ≃ᵐ ι) : CanonicalEnsemble ι1 where
   energy := fun i => 𝓒.energy (e i)
   μ := 𝓒.μ.map e.symm
@@ -90,15 +85,12 @@ noncomputable def congr (e : ι1 ≃ᵐ ι) : CanonicalEnsemble ι1 where
     · exact MeasurableEquiv.measurable e
   μ_sigmaFinite := MeasurableEquiv.sigmaFinite_map e.symm
 
-
 /-- Scalar multiplication of `CanonicalEnsemble`, defined such that
   `nsmul n 𝓒` is `n` coppies of the canonical ensemble `𝓒`. -/
 noncomputable def nsmul (n : ℕ) (𝓒1 : CanonicalEnsemble ι) : CanonicalEnsemble (Fin n → ι) where
   energy := fun f => ∑ i, 𝓒1.energy (f i)
   μ := MeasureTheory.Measure.pi fun _ => 𝓒1.μ
   energy_measurable := by fun_prop
-
-
 
 set_option linter.unusedVariables false in
 /-- The microstates of a the canonical ensemble -/
@@ -133,8 +125,8 @@ lemma energy_nsmul_apply (n : ℕ) (f : Fin n → microstates 𝓒) :
     (nsmul n 𝓒).energy f = ∑ i, 𝓒.energy (f i) := rfl
 
 @[simp]
-lemma energy_congr_apply (e : ι1 ≃ᵐ ι)  (i : ι1) :
-   (𝓒.congr e).energy i = 𝓒.energy (e i) := by rfl
+lemma energy_congr_apply (e : ι1 ≃ᵐ ι) (i : ι1) :
+    (𝓒.congr e).energy i = 𝓒.energy (e i) := by rfl
 
 /-!
 
@@ -145,7 +137,7 @@ lemma energy_congr_apply (e : ι1 ≃ᵐ ι)  (i : ι1) :
 open MeasureTheory
 
 lemma nsmul_succ (n : ℕ) [SigmaFinite 𝓒.μ] : nsmul n.succ 𝓒 = (𝓒 + nsmul n 𝓒).congr
-    (MeasurableEquiv.piFinSuccAbove (fun _ => ι) 0):= by
+    (MeasurableEquiv.piFinSuccAbove (fun _ => ι) 0) := by
   ext1
   · ext x
     simp
@@ -164,7 +156,8 @@ noncomputable def μBolt (T : Temperature) : MeasureTheory.Measure ι :=
   𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β T * 𝓒.energy i)))
 
 instance (T : Temperature) : SigmaFinite (𝓒.μBolt T) :=
-  inferInstanceAs (SigmaFinite (𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β T * 𝓒.energy i)))))
+  inferInstanceAs
+    (SigmaFinite (𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β T * 𝓒.energy i)))))
 
 @[simp]
 lemma μBolt_add [SFinite 𝓒.μ] [SFinite 𝓒1.μ] (T : Temperature) :
@@ -179,7 +172,7 @@ lemma μBolt_add [SFinite 𝓒.μ] [SFinite 𝓒1.μ] (T : Temperature) :
   · fun_prop
   · fun_prop
 
-lemma μBolt_congr  (e : ι1 ≃ᵐ ι) (T : Temperature): (𝓒.congr e).μBolt T =
+lemma μBolt_congr (e : ι1 ≃ᵐ ι) (T : Temperature) : (𝓒.congr e).μBolt T =
     (𝓒.μBolt T).map e.symm := by
   simp [congr, μBolt]
   refine Measure.ext_of_lintegral _ fun φ hφ ↦ ?_
@@ -204,7 +197,7 @@ lemma μBolt_nsmul [SigmaFinite 𝓒.μ] (n : ℕ) (T : Temperature) :
     refine MeasurePreserving.map_eq ?_
     refine MeasurePreserving.symm _ ?_
     rw [ih]
-    exact MeasureTheory.measurePreserving_piFinSuccAbove  (fun _ => 𝓒.μBolt T) 0
+    exact MeasureTheory.measurePreserving_piFinSuccAbove (fun _ => 𝓒.μBolt T) 0
 
 /-!
 
@@ -227,7 +220,6 @@ lemma partitionFunction_eq_integral (T : Temperature) :
   simp [HSMul.hSMul, SMul.smul]
   · exact exp_nonneg _
   · fun_prop
-
 
 lemma partitionFunction_add {T : Temperature} :
     (𝓒 + 𝓒1).partitionFunction T = 𝓒.partitionFunction T * 𝓒1.partitionFunction T := by
@@ -254,7 +246,7 @@ lemma paritionFunction_eq_zero_iff (T : Temperature) [IsFiniteMeasure (𝓒.μBo
   simp [partitionFunction]
   rw [measureReal_def]
   rw [ENNReal.toReal_eq_zero_iff]
-  simp only [ measure_ne_top, or_false]
+  simp only [measure_ne_top, or_false]
   rw [μBolt]
   rw [MeasureTheory.withDensity_apply_eq_zero']
   simp
@@ -263,7 +255,7 @@ lemma paritionFunction_eq_zero_iff (T : Temperature) [IsFiniteMeasure (𝓒.μBo
     ext i
     simp [s]
     exact exp_pos (-(T.β * 𝓒.energy i))
-  change  𝓒.μ s = 0 ↔ 𝓒.μ = 0
+  change 𝓒.μ s = 0 ↔ 𝓒.μ = 0
   rw [h]
   simp
   fun_prop
@@ -271,16 +263,18 @@ lemma paritionFunction_eq_zero_iff (T : Temperature) [IsFiniteMeasure (𝓒.μBo
 open NNReal Constants
 
 lemma partitionFunction_comp_ofβ_apply (β : ℝ≥0) :
-   𝓒.partitionFunction (ofβ β) =
+    𝓒.partitionFunction (ofβ β) =
     (𝓒.μ.withDensity (fun i => ENNReal.ofReal (exp (- β * 𝓒.energy i)))).real Set.univ := by
   simp only [partitionFunction, μBolt, β_ofβ, neg_mul]
 
 @[sorryful]
-lemma paritionFunction_hasFDerivAt (T : Temperature) (hT : T.1 ≠ 0):
+lemma paritionFunction_hasFDerivAt (T : Temperature) (hT : T.1 ≠ 0) :
     let F' : ℝ → ι → ℝ →L[ℝ] ℝ := fun T i => rexp (-(1 / (kB * T)) * 𝓒.energy i) •
     (fderiv ℝ (fun T => (- (1 / (kB * T)) * 𝓒.energy i)) T)
-    HasFDerivAt (𝕜 := ℝ) (fun T => (𝓒.partitionFunction ∘ Real.toNNReal) T) (∫ (i :ι), F' T i ∂𝓒.μ) T := by
-  refine HasFDerivAt.congr_of_eventuallyEq (f := fun T =>  ∫ i, exp (- (1 / (kB * T)) * 𝓒.energy i) ∂𝓒.μ) ?_ ?_
+    HasFDerivAt (𝕜 := ℝ)
+      (fun T => (𝓒.partitionFunction ∘ Real.toNNReal) T) (∫ (i :ι), F' T i ∂𝓒.μ) T := by
+  refine HasFDerivAt.congr_of_eventuallyEq
+    (f := fun T => ∫ i, exp (- (1 / (kB * T)) * 𝓒.energy i) ∂𝓒.μ) ?_ ?_
   have h0 (i : ι) : HasFDerivAt (𝕜 := ℝ) (fun T => (- (1 / (kB * T)) * 𝓒.energy i))
     (fderiv ℝ (fun T => (- (1 / (kB * T)) * 𝓒.energy i)) T.toReal) T.toReal := by
     refine DifferentiableAt.hasFDerivAt ?_

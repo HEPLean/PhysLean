@@ -30,12 +30,12 @@ open HilbertSpace
 @[nolint unusedArguments]
 def UnboundedOperator {S : Type} [AddCommGroup S] [Module ℂ S]
     [TopologicalSpace S] (ι : S →L[ℂ] HilbertSpace)
-    (_ : Function.Injective ι) :=  S →L[ℂ] HilbertSpace
+    (_ : Function.Injective ι) := S →L[ℂ] HilbertSpace
 
 namespace UnboundedOperator
 
 variable {S : Type} [AddCommGroup S] [Module ℂ S] [TopologicalSpace S]
-   {ι : S →L[ℂ] HilbertSpace}
+  {ι : S →L[ℂ] HilbertSpace}
   {hι : Function.Injective ι} (U : UnboundedOperator ι hι)
 
 instance  : CoeFun (UnboundedOperator ι hι) (fun _ => S → HilbertSpace) where
@@ -50,7 +50,7 @@ lemma ofSelfCLM_apply (Op : S →L[ℂ] S) (ψ : S) :
 
 /-- A map `F : S →L[ℂ] ℂ` is a generalized eigenvector of an unbounded operator `U`
   on `S` if there is an eigenvalue `c` such that for all `ψ`, `F (U ψ) = c ⬝ F ψ` -/
-def IsGeneralizedEigenvector (F : S →L[ℂ] ℂ) (c : ℂ)  : Prop :=
+def IsGeneralizedEigenvector (F : S →L[ℂ] ℂ) (c : ℂ) : Prop :=
   ∀ ψ : S, ∃ ψ' : S, ι ψ' = U ψ ∧ F ψ' = c • F ψ
 
 lemma isGeneralizedEigenvector_ofSelfCLM_iff {Op : S →L[ℂ] S}
