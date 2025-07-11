@@ -184,7 +184,7 @@ theorem planeWave_isWave (c : ℝ) (s : Direction d)
   conv_lhs =>
     enter [2]
     rw [wave_dt2 h'']
-  unfold laplacian_vec laplacian coord basis Space.deriv
+  unfold laplacianVec laplacian coord basis Space.deriv
   rw [← smul_sub]
   simp only [EuclideanSpace.basisFun_apply, smul_eq_zero, ne_eq, OfNat.ofNat_ne_zero,
     not_false_eq_true, pow_eq_zero_iff]
