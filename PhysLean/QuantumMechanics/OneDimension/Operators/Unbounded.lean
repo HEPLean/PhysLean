@@ -38,7 +38,7 @@ variable {S : Type} [AddCommGroup S] [Module ℂ S] [TopologicalSpace S]
   {ι : S →L[ℂ] HilbertSpace}
   {hι : Function.Injective ι} (U : UnboundedOperator ι hι)
 
-instance  : CoeFun (UnboundedOperator ι hι) (fun _ => S → HilbertSpace) where
+instance : CoeFun (UnboundedOperator ι hι) (fun _ => S → HilbertSpace) where
   coe := fun U => U.toFun
 
 /-- An unbounded operator created from a continous linear map ` S →L[ℂ] S`. -/
