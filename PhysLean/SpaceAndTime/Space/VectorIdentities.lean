@@ -268,7 +268,7 @@ lemma div_of_curl_eq_zero (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
 
 lemma curl_of_curl (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f) :
     ∇ × (∇ × f) = ∇ (∇ ⬝ f) - Δ f := by
-  unfold laplacian_vec laplacian div grad curl Finset.sum coord basis
+  unfold laplacianVec laplacian div grad curl Finset.sum coord basis
   simp only [Fin.isValue, EuclideanSpace.basisFun_apply, PiLp.inner_apply,
     EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul,
     Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, Fin.univ_val_map, List.ofFn_succ,
