@@ -461,7 +461,6 @@ lemma μProd_nsmul (n : ℕ) (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)]
 @[fun_prop]
 lemma integrable_energy_add (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)]
     [IsFiniteMeasure (𝓒1.μBolt T)]
-    [NeZero 𝓒.μ] [NeZero 𝓒1.μ]
     (h : Integrable 𝓒.energy (𝓒.μProd T)) (h1 : Integrable 𝓒1.energy (𝓒1.μProd T)) :
     Integrable (𝓒 + 𝓒1).energy ((𝓒 + 𝓒1).μProd T) := by
   rw [μProd_add]
@@ -494,7 +493,7 @@ lemma integrable_energy_congr (T : Temperature) (e : ι1 ≃ᵐ ι)
 
 @[fun_prop]
 lemma integrable_energy_nsmul (n : ℕ) (T : Temperature)
-    [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ]
+    [IsFiniteMeasure (𝓒.μBolt T)]
     (h : Integrable 𝓒.energy (𝓒.μProd T)) :
     Integrable (nsmul n 𝓒).energy ((nsmul n 𝓒).μProd T) := by
   induction n with
