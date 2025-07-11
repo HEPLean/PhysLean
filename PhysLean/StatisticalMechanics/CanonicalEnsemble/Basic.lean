@@ -406,6 +406,10 @@ instance (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)]
   [NeZero 𝓒.μ] : IsProbabilityMeasure (𝓒.μProd T) := inferInstanceAs <|
   IsProbabilityMeasure ((𝓒.μBolt T Set.univ)⁻¹ • 𝓒.μBolt T)
 
+instance {T} : IsFiniteMeasure (𝓒.μProd T) := by
+  rw [μProd]
+  infer_instance
+
 lemma μProd_add {T : Temperature} [IsFiniteMeasure (𝓒.μBolt T)]
     [IsFiniteMeasure (𝓒1.μBolt T)] : (𝓒 + 𝓒1).μProd T = (𝓒.μProd T).prod (𝓒1.μProd T) := by
   rw [μProd, μProd, μProd, μBolt_add]

@@ -14,21 +14,28 @@ canonical ensemble.
 
 -/
 
-namespace FiniteCanonicalEnsemble
+namespace CanonicalEnsemble
 
 open Temperature
-open Real
+open Real MeasureTheory
 
 TODO "EVJNH" "Generalize the results for the two-state canonical ensemble so that the two
   states have arbitary energies, rather than one state having energy `0`."
 
 /-- The canonical ensemble corresponding to state system, with one state of energy
   `E` and the other state of energy `0`. -/
-def twoState (E : ℝ) : FiniteCanonicalEnsemble (Fin 2) := fun | 0 => 0 | 1 => E
+noncomputable def twoState (E : ℝ) : CanonicalEnsemble (Fin 2) where
+  energy := fun | 0 => 0 | 1 => E
+  μ := Measure.count
+  energy_measurable := by fun_prop
+
+instance {E} : IsFinite (twoState E) where
+  μ_eq_count := by rfl
 
 lemma twoState_partitionFunction_apply_eq_one_add_exp (E : ℝ) (T : Temperature) :
     (twoState E).partitionFunction T = 1 + exp (- β T * E) := by
-  simp [partitionFunction, twoState]
+  rw [partitionFunction_of_fintype, twoState]
+  simp
 
 lemma twoState_partitionFunction_apply_eq_cosh (E : ℝ) (T : Temperature) :
     (twoState E).partitionFunction T = 2 * exp (- β T * E / 2) * cosh (β T * E / 2) := by
@@ -39,37 +46,36 @@ lemma twoState_partitionFunction_apply_eq_cosh (E : ℝ) (T : Temperature) :
   simp [add_mul]
   exact Lean.Grind.CommRing.mul_comm (rexp (-(T.β * E))) 2
 
-lemma twoState_partitionFunctionβ_eq (E : ℝ) :
-    (twoState E).partitionFunctionβ = fun β => 2 * exp (- β * E / 2) * cosh (β * E / 2) := by
-  funext β
-  simp [partitionFunctionβ, twoState, Real.cosh_eq]
+@[simp]
+lemma twoState_energy_fst (E : ℝ) : (twoState E).energy 0 = 0 := by
+  rfl
+
+@[simp]
+lemma twoState_energy_snd (E : ℝ) : (twoState E).energy 1 = E := by
+  rfl
+
+lemma twoState_probability_snd (E : ℝ) (T : Temperature) :
+    (twoState E).probability T 1 = 1/2 * (1 - tanh (β T * E / 2)) := by
+  simp [probability]
+  rw [twoState_partitionFunction_apply_eq_cosh]
   field_simp
-  simp [mul_add, ← Real.exp_add, mul_assoc]
+  trans 2 * rexp (-(↑T.β * E) / 2) *
+    (cosh (↑T.β * E / 2) - tanh (↑T.β * E / 2) * cosh (↑T.β * E / 2))
+  swap
+  · ring
+  rw [Real.tanh_eq_sinh_div_cosh]
   field_simp
-  simp [add_mul]
-  exact Lean.Grind.CommRing.mul_comm (rexp (-(β * E))) 2
+  rw [mul_assoc, ← Real.exp_add]
+  ring_nf
 
 lemma twoState_meanEnergy_eq (E : ℝ) (T : Temperature) :
     (twoState E).meanEnergy T = E / 2 * (1 - tanh (β T * E / 2)) := by
-  rw [meanEnergy_eq_logDeriv_partitionFunctionβ, twoState_partitionFunctionβ_eq]
-  simp? [logDeriv] says simp only [logDeriv, neg_mul, Pi.div_apply]
-  field_simp
-  have h1 : deriv (fun β => 2 * rexp (-(β * E) / 2) * cosh (β * E / 2)) T.β
-      = 2 * (- E /2) * exp (-(T.β * E) / 2) * cosh (T.β * E / 2) +
-        2 * (E /2) * exp (-(T.β * E) / 2) * sinh (T.β * E / 2) := by
-    rw [deriv_fun_mul (by fun_prop) (by fun_prop)]
-    rw [deriv_const_mul _ (by fun_prop)]
-    rw [_root_.deriv_exp (by fun_prop)]
-    simp only [deriv_div_const, deriv.neg', differentiableAt_id, differentiableAt_const, deriv_mul,
-      deriv_id'', one_mul, deriv_const', mul_zero, add_zero]
-    rw [_root_.deriv_cosh (by fun_prop)]
-    simp only [deriv_div_const, differentiableAt_id, differentiableAt_const, deriv_mul, deriv_id'',
-      one_mul, deriv_const', mul_zero, add_zero]
-    field_simp
-    ring
-  rw [h1, Real.tanh_eq_sinh_div_cosh]
-  field_simp [Real.sinh_eq, Real.cosh_eq]
-  ring_nf
+  calc
+    _ = ∑ i : Fin 2, (twoState E).energy i * (twoState E).probability T i :=
+      meanEnergy_of_fintype (twoState E) T
+    _ = E * (twoState E).probability T 1 := by simp [twoState]
+  rw [twoState_probability_snd]
+  ring
 
 /-- A simplification of the `entropy` of the two-state canonical ensemble. -/
 informal_lemma twoState_entropy_eq where
@@ -79,6 +85,6 @@ informal_lemma twoState_entropy_eq where
 /-- A simplification of the `helmholtzFreeEnergy` of the two-state canonical ensemble. -/
 informal_lemma twoState_helmholtzFreeEnergy_eq where
   tag := "EVMPR"
-  deps := [``twoState, ``helmholtzFreeEnergy]
+  deps := [``twoState]
 
-end FiniteCanonicalEnsemble
+end CanonicalEnsemble
