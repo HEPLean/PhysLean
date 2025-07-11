@@ -36,6 +36,8 @@ noncomputable instance : Coe Temperature ℝ := ⟨toReal⟩
 
 instance : TopologicalSpace Temperature := inferInstanceAs (TopologicalSpace ℝ≥0)
 
+instance : Zero Temperature := ⟨0, Preorder.le_refl 0⟩
+
 /-- The inverse temperature. -/
 noncomputable def β (T : Temperature) : ℝ≥0 := ⟨1 / (kB * T), by
   apply div_nonneg
