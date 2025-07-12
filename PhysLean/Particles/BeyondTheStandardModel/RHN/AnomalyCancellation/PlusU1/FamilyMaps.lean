@@ -11,7 +11,6 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.FamilyM
 We give some propererties of the family maps for the SM with RHN, in particular, we
 define family universal maps in the case of `LinSols`, `QuadSols`, and `Sols`.
 -/
-universe v u
 
 namespace SMRHN
 namespace PlusU1

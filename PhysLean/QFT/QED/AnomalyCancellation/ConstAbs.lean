@@ -10,7 +10,6 @@ import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
 We look at charge assignments in which all charges have the same absolute value.
 
 -/
-universe v u
 
 open Nat
 open Finset

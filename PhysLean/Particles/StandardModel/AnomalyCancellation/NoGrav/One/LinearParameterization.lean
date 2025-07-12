@@ -16,7 +16,6 @@ These parameterizations are based on:
 https://arxiv.org/abs/1907.00514
 -/
 
-universe v u
 namespace SM
 namespace SMNoGrav
 namespace One

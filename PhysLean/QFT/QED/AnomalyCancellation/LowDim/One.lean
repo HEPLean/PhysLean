@@ -10,8 +10,6 @@ import PhysLean.QFT.QED.AnomalyCancellation.Basic
 We show that in this case the charge must be zero.
 -/
 
-universe v u
-
 open Nat
 open Finset
 

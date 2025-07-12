@@ -55,8 +55,6 @@ section PseudoRiemannianMetric
 
 noncomputable section
 
-universe u v w
-
 open Bundle Set Finset Function Filter Module Topology ContinuousLinearMap
 open scoped Manifold Bundle LinearMap Dual
 

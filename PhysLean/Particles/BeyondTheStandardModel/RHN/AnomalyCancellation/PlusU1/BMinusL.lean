@@ -10,7 +10,6 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.
 Relavent definitions for the SM `B-L`.
 
 -/
-universe v u
 
 namespace SMRHN
 namespace PlusU1

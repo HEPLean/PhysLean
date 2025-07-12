@@ -10,7 +10,6 @@ import PhysLean.QFT.AnomalyCancellation.GroupActions
 
 We define the ACC system for the Standard Model with right-handed neutrinos.
 -/
-universe v u
 
 namespace SMRHN
 open SMνCharges

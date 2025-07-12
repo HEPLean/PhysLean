@@ -11,8 +11,6 @@ We show that S is a solution only if one of its charges is zero.
 We define a surjective map from `LinSols` with a charge equal to zero to `Sols`.
 -/
 
-universe v u
-
 open Nat
 open Finset
 

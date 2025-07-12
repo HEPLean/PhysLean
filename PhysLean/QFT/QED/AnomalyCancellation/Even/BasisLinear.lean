@@ -11,7 +11,6 @@ import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
 We give a basis of `LinSols` in the even case. This basis has the special property
 that splits into two planes on which every point is a solution to the ACCs.
 -/
-universe v u
 
 open Nat
 open Finset

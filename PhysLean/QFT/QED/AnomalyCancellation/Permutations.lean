@@ -13,8 +13,6 @@ We further define the action on the ACC System.
 
 -/
 
-universe v u
-
 open Nat
 open Finset
 

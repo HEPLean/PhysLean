@@ -17,8 +17,6 @@ and show that it is a surjection. The main reference for this is:
 
 -/
 
-universe v u
-
 namespace SMRHN
 namespace PlusU1
 

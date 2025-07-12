@@ -11,7 +11,6 @@ We define the ACC system for the Standard Model with`n`-families and no RHN.
 
 -/
 
-universe v u
 open Nat
 open BigOperators
 

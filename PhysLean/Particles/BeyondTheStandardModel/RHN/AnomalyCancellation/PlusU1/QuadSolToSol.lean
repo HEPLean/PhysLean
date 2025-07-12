@@ -15,8 +15,6 @@ for this material is:
 
 -/
 
-universe v u
-
 namespace SMRHN
 namespace PlusU1
 

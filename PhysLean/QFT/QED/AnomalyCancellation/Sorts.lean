@@ -12,8 +12,6 @@ We define the sort function for Pure U(1) charges, and prove some basic properti
 
 -/
 
-universe v u
-
 open Nat
 open Finset
 

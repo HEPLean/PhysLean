@@ -13,8 +13,6 @@ and its action on the MSSM.
 
 -/
 
-universe v u
-
 open Nat
 open Finset
 

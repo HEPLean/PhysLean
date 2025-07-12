@@ -11,8 +11,6 @@ import Mathlib.RepresentationTheory.Basic
 We define the group of permutations for the SM charges with RHN.
 -/
 
-universe v u
-
 open Nat
 open Finset
 

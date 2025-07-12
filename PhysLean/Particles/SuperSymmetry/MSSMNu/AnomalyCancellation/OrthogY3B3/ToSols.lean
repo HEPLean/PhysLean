@@ -23,8 +23,6 @@ The main reference for the material in this file is:
 
 -/
 
-universe v u
-
 namespace MSSMACC
 open MSSMCharges
 open MSSMACCs

@@ -15,8 +15,6 @@ The plane spanned by Y₃, B₃ and third orthogonal point.
 
 -/
 
-universe v u
-
 namespace MSSMACC
 open MSSMCharges
 open MSSMACCs

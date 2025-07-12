@@ -10,7 +10,7 @@ import PhysLean.QFT.AnomalyCancellation.Basic
 We define the anomaly cancellation conditions for a pure U(1) gauge theory with `n` fermions.
 
 -/
-universe v u
+
 open Nat
 
 open Finset

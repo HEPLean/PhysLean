@@ -11,7 +11,6 @@ We place an upper bound on the dimension of a plane of charges on which every po
 The upper bound is 7, proven in the theorem `plane_exists_dim_le_7`.
 
 -/
-universe v u
 
 namespace SMRHN
 namespace PlusU1

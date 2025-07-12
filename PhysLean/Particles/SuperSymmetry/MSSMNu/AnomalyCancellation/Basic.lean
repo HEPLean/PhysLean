@@ -12,7 +12,6 @@ We define the system of charges for 1-species. We prove some basic lemmas about 
 
 -/
 
-universe v u
 open Nat
 open BigOperators
 

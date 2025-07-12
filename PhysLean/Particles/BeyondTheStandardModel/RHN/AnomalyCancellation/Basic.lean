@@ -13,7 +13,6 @@ right-handed neutrinos (SMν).
 
 -/
 
-universe v u
 open Nat
 open BigOperators
 
