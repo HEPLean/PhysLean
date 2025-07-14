@@ -20,16 +20,18 @@ namespace SU5
 
 namespace Charges
 
+variable {𝓩 : Type} [DecidableEq 𝓩]
+
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x`. -/
-def minimalSuperSet (S5 S10 : Finset ℤ) (x : Charges) : Finset Charges :=
+def minimalSuperSet (S5 S10 : Finset 𝓩) (x : Charges 𝓩) : Finset (Charges 𝓩) :=
   let SqHd := if x.1.isSome then ∅ else S5.val.map fun y => (some y, x.2)
   let SqHu := if x.2.1.isSome then ∅ else S5.val.map fun y => (x.1, some y, x.2.2)
   let SQ5 := S5.val.map (fun y => (x.1, x.2.1, insert y x.2.2.1, x.2.2.2))
   let SQ10 := S10.val.map (fun y => (x.1, x.2.1, x.2.2.1, insert y x.2.2.2))
   (SqHd ∪ SqHu ∪ SQ5 ∪ SQ10).toFinset.erase x
 
-lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x y : Charges)
+lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : Charges 𝓩)
     (hy : y ∈ minimalSuperSet S5 S10 x) : x ⊆ y := by
   simp [minimalSuperSet] at hy
   rcases hy with ⟨hy1, hr | hr | hr | hr⟩
@@ -63,18 +65,18 @@ lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x y : Charges)
       simp [hasSubset]
 
 @[simp]
-lemma self_not_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x : Charges) :
+lemma self_not_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x : Charges 𝓩) :
     x ∉ minimalSuperSet S5 S10 x := by
   simp [minimalSuperSet]
 
-lemma self_neq_mem_minimalSuperSet (S5 S10 : Finset ℤ) (x y : Charges)
+lemma self_neq_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : Charges 𝓩)
     (hy : y ∈ minimalSuperSet S5 S10 x) : x ≠ y := by
   by_contra h
   subst h
   simp at hy
 
-lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
-    (y : Charges) (hy : y ∈ minimalSuperSet S5 S10 x) :
+lemma card_of_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
+    (y : Charges 𝓩) (hy : y ∈ minimalSuperSet S5 S10 x) :
     card y = card x + 1 := by
   simp [minimalSuperSet] at hy
   rcases hy with ⟨hy1, hr | hr | hr | hr⟩
@@ -115,8 +117,8 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
       rw [Finset.insert_eq_of_mem h] at hy1
       simp at hy1
 
-lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
-    (z : ℤ) (hz : z ∈ S5) (hznot : z ∉ x.2.2.1) :
+lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
+    (z : 𝓩) (hz : z ∈ S5) (hznot : z ∉ x.2.2.1) :
     (x.1, x.2.1, insert z x.2.2.1, x.2.2.2) ∈ minimalSuperSet S5 S10 x := by
   simp [minimalSuperSet]
   match x with
@@ -128,8 +130,8 @@ lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
     left
     use z
 
-lemma insert_Q10_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
-    (z : ℤ) (hz : z ∈ S10) (hznot : z ∉ x.2.2.2) :
+lemma insert_Q10_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
+    (z : 𝓩) (hz : z ∈ S10) (hznot : z ∉ x.2.2.2) :
     (x.1, x.2.1, x.2.2.1, insert z x.2.2.2) ∈ minimalSuperSet S5 S10 x := by
   simp [minimalSuperSet]
   match x with
@@ -141,17 +143,17 @@ lemma insert_Q10_mem_minimalSuperSet {S5 S10 : Finset ℤ} {x : Charges}
     right
     use z
 
-lemma some_qHd_mem_minimalSuperSet_of_none {S5 S10 : Finset ℤ} {x2 : Option ℤ × Finset ℤ × Finset ℤ}
-    (z : ℤ) (hz : z ∈ S5) :
+lemma some_qHd_mem_minimalSuperSet_of_none {S5 S10 : Finset 𝓩}
+    {x2 : Option 𝓩 × Finset 𝓩 × Finset 𝓩} (z : 𝓩) (hz : z ∈ S5) :
     (some z, x2) ∈ minimalSuperSet S5 S10 (none, x2) := by
   simp_all [minimalSuperSet]
 
-lemma some_qHu_mem_minimalSuperSet_of_none {S5 S10 : Finset ℤ}
-    {x1 : Option ℤ} {x2 : Finset ℤ × Finset ℤ} (z : ℤ) (hz : z ∈ S5) :
+lemma some_qHu_mem_minimalSuperSet_of_none {S5 S10 : Finset 𝓩}
+    {x1 : Option 𝓩} {x2 : Finset 𝓩 × Finset 𝓩} (z : 𝓩) (hz : z ∈ S5) :
     (x1, some z, x2) ∈ minimalSuperSet S5 S10 (x1, none, x2) := by
   simp_all [minimalSuperSet]
 
-lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y : Charges}
+lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : Charges 𝓩}
     (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y)
     (hxneqy : x ≠ y) : ∃ z ∈ minimalSuperSet S5 S10 x, z ⊆ y := by
   rw [Subset] at hsubset
@@ -229,10 +231,10 @@ lemma exists_minimalSuperSet (S5 S10 : Finset ℤ) {x y : Charges}
   | some x1, some y1, some x2, some y2 =>
     simp_all
 
-lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset ℤ}
-    (p : Charges → Prop) (hp : (x : Charges) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
-    (x : Charges) (hbase : p x)
-    (y : Charges) (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y) :
+lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
+    (p : Charges 𝓩 → Prop) (hp : (x : Charges 𝓩) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
+    (x : Charges 𝓩) (hbase : p x)
+    (y : Charges 𝓩) (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y) :
     (n : ℕ) → (hn : n = y.card - x.card) → p y
   | 0, hn => by
     have hxy : x = y := by
