@@ -25,19 +25,22 @@ namespace SU5
 
 namespace Charges
 
+variable {𝓩 : Type} [AddCommGroup 𝓩]
+
 /-- The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
 if the zero charge is in the set of charges associated with that potential term. -/
-def AllowsTerm (x : Charges) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
+def AllowsTerm (x : Charges 𝓩) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
 
-lemma allowsTerm_iff_zero_mem_ofPotentialTerm' {x : Charges} {T : PotentialTerm} :
+lemma allowsTerm_iff_zero_mem_ofPotentialTerm' [DecidableEq 𝓩]
+    {x : Charges 𝓩} {T : PotentialTerm} :
     x.AllowsTerm T ↔ 0 ∈ x.ofPotentialTerm' T := by
   rw [AllowsTerm]
   exact mem_ofPotentialTerm_iff_mem_ofPotentialTerm
 
-instance (x : Charges) (T : PotentialTerm) : Decidable (x.AllowsTerm T) :=
+instance [DecidableEq 𝓩] (x : Charges 𝓩) (T : PotentialTerm) : Decidable (x.AllowsTerm T) :=
   decidable_of_iff (0 ∈ x.ofPotentialTerm' T) allowsTerm_iff_zero_mem_ofPotentialTerm'.symm
 
-lemma allowsTerm_mono {T : PotentialTerm} {y x : Charges}
+lemma allowsTerm_mono {T : PotentialTerm} {y x : Charges 𝓩}
     (h : y ⊆ x) (hy : y.AllowsTerm T) : x.AllowsTerm T := ofPotentialTerm_mono h T hy
 
 /-!
@@ -46,90 +49,92 @@ lemma allowsTerm_mono {T : PotentialTerm} {y x : Charges}
 
 -/
 
+variable [DecidableEq 𝓩]
+
 /-- A element of `Charges` from three intergers `a b c : ℤ` for a given potential term `T`.
   Defined such that `allowsTermForm a b c T` always allows the potential term `T`,
   and if any over charge `x` allows `T` then it is due to a subset of the form
   `allowsTermForm a b c T`. -/
-def allowsTermForm (a b c : ℤ) : (T : PotentialTerm) → Charges
+def allowsTermForm (a b c : 𝓩) : (T : PotentialTerm) → Charges 𝓩
   | .μ => (some a, some a, ∅, ∅)
   | .β => (none, some a, {a}, ∅)
   | .Λ => (none, none, {a, b}, {- a - b})
   | .W1 => (none, none, {- a - b - c}, {a, b, c})
   | .W2 => (some (- a - b - c), none, ∅, {a, b, c})
-  | .W3 => (none, some (- a), {b, - b - 2 * a}, ∅)
-  | .W4 => (some (- c - 2 * b), some (- b), {c}, ∅)
+  | .W3 => (none, some (- a), {b, - b - 2 • a}, ∅)
+  | .W4 => (some (- c - 2 • b), some (- b), {c}, ∅)
   | .K1 => (none, none, {-a}, {b, - a - b})
   | .K2 => (some a, some b, ∅, {- a - b})
   | .topYukawa => (none, some (-a), ∅, {b, - a - b})
   | .bottomYukawa => (some a, none, {b}, {- a - b})
 
-lemma allowsTermForm_allowsTerm {a b c : ℤ} {T : PotentialTerm} :
+lemma allowsTermForm_allowsTerm {a b c : 𝓩} {T : PotentialTerm} :
     (allowsTermForm a b c T).AllowsTerm T := by
   simp [AllowsTerm, ofPotentialTerm, allowsTermForm]
   cases T
   all_goals
     simp [PotentialTerm.toFieldLabel, ofFieldLabel, ofPotentialTerm]
-  any_goals omega
-  case' Λ =>
+  case Λ =>
     use a + b
     simp only [add_add_sub_cancel, add_neg_cancel, and_true]
     use a, b
     simp only [or_true, and_true]
     use 0, a
     simp
-  case' W3 =>
-    use - 2 * a
-    apply And.intro ?_ (by omega)
-    use b, -b - 2 * a
-    apply And.intro ?_ (by omega)
+  case W3 =>
+    use - 2 • a
+    apply And.intro ?_ (by abel)
+    use b, -b - 2 • a
+    apply And.intro ?_ (by abel)
     simp only [or_true, and_true]
     use 0, b
     simp
-  case' K1 =>
+  case K1 =>
     use - a
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use b, - a - b
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [or_true, and_true]
     use 0, b
     simp
-  case' topYukawa =>
+  case topYukawa =>
     use - a
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use b, - a - b
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [or_true, and_true]
     use 0, b
     simp
-  case' W1 =>
+  case W1 =>
     use a + b + c
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use a + b, c
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [or_true, and_true]
     use a, b
     simp only [true_or, or_true, and_true]
     use 0, a
     simp
-  case' W2 =>
+  case W2 =>
     use a + b + c
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use a + b, c
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [or_true, and_true]
     use a, b
     simp only [true_or, or_true, and_true]
     use 0, a
     simp
+  all_goals abel
 
 lemma allowsTerm_of_eq_allowsTermForm {T : PotentialTerm}
-    (x : Charges) (h : ∃ a b c, x = allowsTermForm a b c T) :
+    (x : Charges 𝓩) (h : ∃ a b c, x = allowsTermForm a b c T) :
     x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := h
   exact allowsTermForm_allowsTerm
 open PotentialTerm in
 
-lemma allowsTermForm_eq_of_subset {a b c a' b' c' : ℤ} {T : PotentialTerm}
+lemma allowsTermForm_eq_of_subset {a b c a' b' c' : 𝓩} {T : PotentialTerm}
     (h : allowsTermForm a b c T ⊆ allowsTermForm a' b' c' T) (hT : T ≠ W1 ∧ T ≠ W2) :
     allowsTermForm a b c T = allowsTermForm a' b' c' T := by
   cases T
@@ -162,7 +167,7 @@ lemma allowsTermForm_eq_of_subset {a b c a' b' c' : ℤ} {T : PotentialTerm}
     obtain ⟨rfl | rfl, h1 | h2⟩ := h2
     all_goals simp_all [Finset.pair_comm]
 
-lemma allowsTermForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
+lemma allowsTermForm_card_le_degree {a b c : 𝓩} {T : PotentialTerm} :
     (allowsTermForm a b c T).card ≤ T.degree := by
   cases T
   all_goals
@@ -172,7 +177,7 @@ lemma allowsTermForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
     have h1 : Finset.card {a, b} ≤ 2 := Finset.card_le_two
     omega
   case' W3 =>
-    have h1 : Finset.card {b, -b - 2 * a} ≤ 2 := Finset.card_le_two
+    have h1 : Finset.card {b, -b - 2 • a} ≤ 2 := Finset.card_le_two
     omega
   case' K1 =>
     have h1 : Finset.card {b, -a - b} ≤ 2 := Finset.card_le_two
@@ -184,7 +189,7 @@ lemma allowsTermForm_card_le_degree {a b c : ℤ} {T : PotentialTerm} :
     have h1 : Finset.card {a, b, c} ≤ 3 := Finset.card_le_three
     omega
 
-lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges}
+lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges 𝓩}
     (h : x.AllowsTerm T) :
     ∃ a b c, allowsTermForm a b c T ⊆ x ∧ (allowsTermForm a b c T).AllowsTerm T := by
   simp [AllowsTerm, ofPotentialTerm] at h
@@ -216,76 +221,98 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     simp [AllowsTerm, ofPotentialTerm, PotentialTerm.toFieldLabel, ofFieldLabel]
   -- Replacements of equalities
   case' W1 | W2 =>
-    have hf2 : f2 = -f4 - f6 - f8 := by omega
+    have hf2 : f2 = -f4 - f6 - f8 := by
+      rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+      abel
     subst hf2
     simp_all
-  case' β =>
-    have hf2 : f4 = - f2 := by omega
+  case β =>
+    have hf2 : f4 = - f2 := by
+      rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+      abel
     subst hf2
     simp_all
-  case' K2 =>
-    have hf2 : f2 = - f4 - f6 := by omega
+  case K2 =>
+    have hf2 : f2 = - f4 - f6 := by
+      rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+      abel
     subst hf2
     simp_all
   case' Λ =>
-    have hf2 : f2 = -f4 - f6 := by omega
+    have hf2 : f2 = -f4 - f6 := by
+      rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+      abel
     subst hf2
     simp_all
   case' W3 =>
     subst f4_mem
-    have hf8 : f8 = - f6 -2 * f4 := by omega
+    have hf8 : f8 = - f6 - 2 • f4 := by
+      rw [← sub_zero f8, ← f1_add_f2_eq_zero]
+      abel
     subst hf8
     simp_all
   case' bottomYukawa =>
-    have hf6 : f6 = - f2 - f4 := by omega
+    have hf6 : f6 = - f2 - f4 := by
+      rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+      abel
     subst hf6
     simp_all
   -- AllowsTerm
-  any_goals omega
-  case' W3 =>
-    use (- f6 -2 * f4) + f6
-    apply And.intro ?_ (by omega)
+  case W3 =>
+    use (- f6 -2 • f4) + f6
+    apply And.intro ?_ (by abel)
     try simp
-    use (- f6 -2 * f4), f6
+    use (- f6 -2 • f4), f6
     simp only [true_or, and_true]
-    use 0, (- f6 -2 * f4)
+    use 0, (- f6 -2 • f4)
     simp
-  case' W1 | W2 =>
+  case W1 | W2 =>
     use f8 + f6 + f4
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use f8 + f6, f4
-  case' W1 | W2 =>
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     try simp
     use f8, f6
     simp only [true_or, or_true, and_true]
     use 0, f8
     simp
-  case' K1 =>
-    have hf6 : f6 = - f2 - f4 := by omega
+  case K1 =>
+    have hf6 : f6 = - f2 - f4 := by
+      rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+      abel
     subst hf6
     simp_all
     use (-f2 - f4) + f4
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use (-f2 - f4), f4
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [true_or, and_true]
     use 0, (-f2 - f4)
     simp
   case' topYukawa =>
-    have hf2 : f2 = - f4 - f6 := by omega
+    have hf2 : f2 = - f4 - f6 := by
+      rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+      abel
     subst hf2
     simp_all
-  case' topYukawa | Λ =>
+  case topYukawa | Λ =>
     use f6 + f4
     apply And.intro ?_ (by omega)
     use f6, f4
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [true_or, and_true]
     use 0, f6
     simp
+  case W4 =>
+    apply And.intro
+    · rw [← sub_zero f8, ← f1_add_f2_eq_zero]
+      abel
+    · abel
+  case μ =>
+    rw [← sub_zero f2, ← f1_add_f2_eq_zero]
+    abel
 
-lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges}
+lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges 𝓩}
     (h : x.AllowsTerm T) : ∃ y ∈ x.powerset, y.card ≤ T.degree ∧ y.AllowsTerm T := by
   obtain ⟨a, b, c, h1, h2⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm h
   use allowsTermForm a b c T
