@@ -60,9 +60,11 @@ def leaf : Finset ℤ → Leaf (Finset ℤ) := fun q10 => .leaf q10
 
 -/
 
+variable {𝓩 : Type} [DecidableEq 𝓩]
+
 lemma insert_filter_card_zero
-    (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (S5 S10 : Finset ℤ)
-    (p : Charges → Prop) [DecidablePred p]
+    (T : FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (S5 S10 : Finset 𝓩)
+    (p : Charges 𝓩 → Prop) [DecidablePred p]
     (hComplet : ∀ x ∈ T, IsComplete x)
     (h10 : ∀ q10 : S10, (T.uniqueMap4 (insert q10.1)).toMultiset.filter p = ∅)
     (h5 : ∀ q5 : S5, (T.uniqueMap3 (insert q5.1)).toMultiset.filter p = ∅) :
@@ -96,13 +98,13 @@ lemma insert_filter_card_zero
     simp_all
 
 lemma subset_insert_filter_card_zero_inductive
-    (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ))
-    (S5 S10 : Finset ℤ)
-    (p : Charges → Prop) [DecidablePred p]
-    (hnotSubset : ∀ (x y : Charges), x ⊆ y → ¬ p x → ¬ p y)
+    (T : FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩))
+    (S5 S10 : Finset 𝓩)
+    (p : Charges 𝓩 → Prop) [DecidablePred p]
+    (hnotSubset : ∀ (x y : Charges 𝓩), x ⊆ y → ¬ p x → ¬ p y)
     (hComplet : ∀ x ∈ T, IsComplete x)
-    (x : Charges)
-    (hx : x ∈ T) (y : Charges) (hsubset : x ⊆ y)
+    (x : Charges 𝓩)
+    (hx : x ∈ T) (y : Charges 𝓩) (hsubset : x ⊆ y)
     (hy : y ∈ ofFinset S5 S10)
     (h10 : ∀ q10 : S10, (T.uniqueMap4 (insert q10.1)).toMultiset.filter p = ∅)
     (h5 : ∀ q5 : S5, (T.uniqueMap3 (insert q5.1)).toMultiset.filter p = ∅) :
