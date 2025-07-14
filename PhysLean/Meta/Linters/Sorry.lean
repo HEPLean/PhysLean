@@ -26,7 +26,7 @@ to be downloaded.
 
 /-!
 
-## The sorryful attribute
+## The sorryful environment extension
 
 -/
 
@@ -57,6 +57,37 @@ def addSorryfulEntry {m : Type → Type} [MonadEnv m]
     (declName : Name) (docString : String) (fileName : Name) (line : Nat) : m Unit :=
   modifyEnv (sorryfulExtension.addEntry · ⟨declName, docString, fileName, line⟩)
 
+/-!
+
+## The `psudo` environment extension
+
+-/
+
+/-- The information for stored for a decleration marked with `pseudo`. -/
+structure PseudoInfo where
+  /-- Name of result. -/
+  name : Name
+
+/-- An enviroment extension containing the information of declerations
+  which carry the `pseudo` attribute. -/
+initialize pseudoExtension : SimplePersistentEnvExtension PseudoInfo (Array PseudoInfo) ←
+  registerSimplePersistentEnvExtension {
+    name := `pseudoExtension
+    addEntryFn := fun arr info => arr.push info
+    addImportedFn := fun es => es.foldl (· ++ ·) #[]
+  }
+
+/-- Adds an entry to `pseudoExtension`. -/
+def addPseudofulEntry {m : Type → Type} [MonadEnv m]
+    (declName : Name) : m Unit :=
+  modifyEnv (pseudoExtension.addEntry · ⟨declName⟩)
+
+/-!
+
+## The sorryful attribute
+
+-/
+
 /-- The `sorryful` attribute allows declerations to contain the `sorryAx` axiom.
   In converse, a decleration with the `sorryful` attribute must contain the `sorryAx` axiom. -/
 syntax (name := Sorryful_attr) "sorryful" : attr
@@ -84,6 +115,38 @@ initialize Lean.registerBuiltinAttribute {
 
 /-!
 
+## The pseudo attribute
+
+-/
+
+/-- The `pseudo` attribute allows declerations to contain the `Lean.ofReduceBool` axiom.
+  In converse, a decleration with the `pseudo` attribute must contain the
+  `Lean.ofReduceBool` axiom. -/
+syntax (name := Pseudo_attr) "pseudo" : attr
+
+/-- Registration of the `pseudo` attribute. -/
+initialize Lean.registerBuiltinAttribute {
+  name := `Pseudo_attr
+  descr := "The `pseudo` attribute allows declerations to contain the `Lean.ofReduceBool` axiom.
+    In converse, a decleration with the `pseudo` attribute must contain the
+    `Lean.ofReduceBool` axiom."
+  add := fun decl stx _attrKind => do
+    let pos := stx.getPos?
+    -- match pos with
+    -- | some pos => do
+      -- let env ← getEnv
+      -- let fileMap ← getFileMap
+      -- let filePos := fileMap.toPosition pos
+      -- let line := filePos.line
+      --- let modName := env.mainModule
+      -- let nameSpace := (← getCurrNamespace)
+      -- let docstring ← Name.getDocString decl
+    addPseudofulEntry decl
+  applicationTime := AttributeApplicationTime.beforeElaboration
+}
+
+/-!
+
 ## The noSorry linter
 
 -/
@@ -93,23 +156,31 @@ namespace PhysLean.Linter
 open Lean Elab
 
 open Batteries.Tactic.Lint in
-/-- The `noSorry` linter. This checks declarations contain the `sorryAx` axiom
-  if and only if they have the `sorryful` attribute. -/
+/-- The `noSorry` linter. This checks the following:
+- A declaration contains the `sorryAx` axiom if and only if it has the `sorryful` attribute.
+- A declaration contains the `Lean.ofReduceBool` axiom if and only if it has the `pseudo` attribute.
+-/
 @[env_linter] def noSorry : Batteries.Tactic.Lint.Linter where
   noErrorsFound :=
-    "A decleration which contains the `sorryAx` if and only if it has
-    the `@[sorryful]` attribute. "
-  errorsFound := "THE FOLLOWING RESULTS EITHER HAVE THE `sorryAx` AXIOM AND
-  ARE NOT MARKED WITH THE `@[sorryful]` attribute OR DO NOT HAVE THE `sorryAx` AXIOM
-  AND ARE MARKED WITH THE `@[sorryful]` attribute."
+    "All declerations are marked correctly with the `@[sorryful]`
+    or `@[pseudo]` attribute when needed. "
+  errorsFound := "The following results either contain the `sorryAx`
+    or the `Lean.ofReduceBool` axiom and are not marked with the `@[sorryful]`
+    or `@[pseudo]` attribute respectively. Or they are marked with
+    the `@[sorryful]` or `@[pseudo]` attribute and do not contain the
+    `sorryAx` or `Lean.ofReduceBool` axiom respectively."
   isFast := true
   test declName := do
     if ← isAutoDecl declName then return none
     let axioms ← collectAxioms declName
     let sorryful_results := sorryfulExtension.getState (← getEnv)
-    if declName ∈ (sorryful_results.map fun x => x.name) ↔ ``sorryAx ∈ axioms then
+    let pseudo_results := pseudoExtension.getState (← getEnv)
+    if (declName ∈ (sorryful_results.map fun x => x.name) ↔ ``sorryAx ∈ axioms)
+      ∧ (declName ∈ (pseudo_results.map fun x => x.name) ↔ ``Lean.ofReduceBool ∈ axioms) then
       return none
-    return m!"contains `sorryAx` and is not marked with @[sorryful]
-      or is marked with @[sorryful] and does not contain `sorryAx`."
+    return m!"{declName} contains either
+      `sorryAx` or `Lean.ofReduceBool` and is not marked with @[sorryful]
+      or @[pseudo] respectively, or is marked with @[sorryful] or @[pseudo]
+      and does not contain `sorryAx` or `Lean.ofReduceBool` respectively."
 
 end PhysLean.Linter
