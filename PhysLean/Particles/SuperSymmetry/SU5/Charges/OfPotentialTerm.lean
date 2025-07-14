@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
+import Mathlib.Tactic.Abel
 /-!
 
 # Charges associated with a potential term
@@ -19,16 +20,18 @@ namespace SU5
 namespace Charges
 open PotentialTerm
 
+variable {𝓩 : Type} [AddCommGroup 𝓩]
+
 /-- Given a charges `x : Charges` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term. -/
-def ofPotentialTerm (x : Charges) (T : PotentialTerm) : Multiset ℤ :=
-  let add : Multiset ℤ → Multiset ℤ → Multiset ℤ := fun a b => (a.product b).map
+def ofPotentialTerm (x : Charges 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
+  let add : Multiset 𝓩 → Multiset 𝓩 → Multiset 𝓩 := fun a b => (a.product b).map
       fun (x, y) => x + y
   (T.toFieldLabel.map fun F => (ofFieldLabel x F).val).foldl add {0}
 
-lemma ofPotentialTerm_mono {x y : Charges} (h : x ⊆ y) (T : PotentialTerm) :
+lemma ofPotentialTerm_mono {x y : Charges 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ y.ofPotentialTerm T := by
-  have h1 {S1 S2 T1 T2 : Multiset ℤ} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
+  have h1 {S1 S2 T1 T2 : Multiset 𝓩} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
       (S1.product T1) ⊆ S2.product T2 :=
     Multiset.subset_iff.mpr (fun x => by simpa using fun h1' h2' => ⟨h1 h1', h2 h2'⟩)
   rw [subset_def] at h
@@ -42,7 +45,7 @@ lemma ofPotentialTerm_mono {x y : Charges} (h : x ⊆ y) (T : PotentialTerm) :
 
 @[simp]
 lemma ofPotentialTerm_empty (T : PotentialTerm) :
-    ofPotentialTerm ∅ T = ∅ := by
+    ofPotentialTerm (∅ : Charges 𝓩) T = ∅ := by
   cases T
   all_goals
     rfl
@@ -53,7 +56,7 @@ lemma ofPotentialTerm_empty (T : PotentialTerm) :
   This is a more explicit form of `PotentialTerm`, which has the benifit that
   it is quick with `decide`, but it is not defined based on more fundamental
   concepts, like `ofPotentialTerm` is. -/
-def ofPotentialTerm' (y : Charges) (T : PotentialTerm) : Multiset ℤ :=
+def ofPotentialTerm' (y : Charges 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
   let qHd := y.1
   let qHu := y.2.1
   let Q5 := y.2.2.1
@@ -79,7 +82,7 @@ def ofPotentialTerm' (y : Charges) (T : PotentialTerm) : Multiset ℤ :=
   | bottomYukawa => (qHd.toFinset.product <| Q5.product <| Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2)
 
-lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges} (T : PotentialTerm) :
+lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges 𝓩} (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ x.ofPotentialTerm' T := by
   refine Multiset.subset_iff.mpr (fun n h => ?_)
   simp [ofPotentialTerm] at h
@@ -107,9 +110,11 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges} (T : PotentialTerm) 
   case' bottomYukawa => use f2, f4, f6
   case' β => use (-f4), f2
   all_goals simp_all
-  all_goals omega
+  all_goals
+    rw [← f1_add_f2_eq_zero]
+    abel
 
-lemma ofPotentialTerm'_subset_ofPotentialTerm {x : Charges} (T : PotentialTerm) :
+lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩] {x : Charges 𝓩} (T : PotentialTerm) :
     x.ofPotentialTerm' T ⊆ x.ofPotentialTerm T := by
   refine Multiset.subset_iff.mpr (fun n h => ?_)
   cases T
@@ -148,57 +153,66 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm {x : Charges} (T : PotentialTerm) 
     simp_all [Finset.insert_subset]
   all_goals
     simp [ofPotentialTerm, PotentialTerm.toFieldLabel, ofFieldLabel]
-  any_goals omega
   case' ΛP =>
     use - q3 + n
     simp only [neg_add_cancel_comm, and_true]
     use - q1 - q3 + n, q1
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [true_or, and_true]
     use 0
     simp only [true_and, zero_add, exists_eq_right]
-    omega
+    right
+    rw [← q_sum]
+    abel
   case' W3P =>
-    use 2 * q1 + n
-    apply And.intro ?_ (by omega)
-    use - q2 + 2 * q1 + n, q2
-    apply And.intro ?_ (by omega)
+    use 2 • q1 + n
+    apply And.intro ?_ (by abel)
+    use - q2 + 2 • q1 + n, q2
+    apply And.intro ?_ (by abel)
     simp only [true_or, and_true]
     use 0, q3
     simp only [or_true, and_self, zero_add, true_and]
-    omega
+    rw [← q_sum]
+    abel
   case' K1P =>
     use q1 + n
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use q1 - q2 + n, q2
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [true_or, and_true]
     use 0, q3
     simp only [or_true, and_self, zero_add, true_and]
-    omega
+    rw [← q_sum]
+    abel
   case' topYukawaP =>
     use q1 + n
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use q1 - q2 + n, q2
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [true_or, and_true]
     use 0, q3
     simp only [or_true, and_self, zero_add, true_and]
-    omega
+    rw [← q_sum]
+    abel
   case' W1P | W2P =>
     use - q1 + n
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     use - q1 - q2 + n, q2
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [true_or, and_true]
     use -q1 - q2 - q3 + n, q3
-    apply And.intro ?_ (by omega)
+    apply And.intro ?_ (by abel)
     simp only [true_or, or_true, and_true]
     use 0, q4
     simp only [or_true, and_self, zero_add, true_and]
-    omega
+    rw [← q_sum]
+    abel
+  all_goals
+    rw [← q_sum]
+    try abel
 
-lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm {T : PotentialTerm} {n : ℤ} {y : Charges} :
+lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
+    {T : PotentialTerm} {n : 𝓩} {y : Charges 𝓩} :
     n ∈ y.ofPotentialTerm T ↔ n ∈ y.ofPotentialTerm' T := by
   constructor
   · exact fun h => ofPotentialTerm_subset_ofPotentialTerm' T h
