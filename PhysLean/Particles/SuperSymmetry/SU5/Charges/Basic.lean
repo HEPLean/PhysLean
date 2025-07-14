@@ -28,8 +28,8 @@ namespace SU5
   The `Q5` and `Q10` charges are represented by `Finset` rather than
   `Multiset`, so multiplicity is not included.
 
- This is defined for a general type `𝓩`, which could be e.g.
-- `ℤ` in the case  of `U(1)`,
+  This is defined for a general type `𝓩`, which could be e.g.
+- `ℤ` in the case of `U(1)`,
 - `ℤ × ℤ` in the case of `U(1) × U(1)`,
 - `Fin 2` in the case of `ℤ₂` etc.
 -/

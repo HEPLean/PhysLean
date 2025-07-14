@@ -28,7 +28,7 @@ which contain (perhaps transitively through imports) the definitions and theorem
 -/
 
 TODO "HB6RR" "In the above documentation describe the notion of a type, and
- introduce the type `Space d`."
+  introduce the type `Space d`."
 
 TODO "HB6VC" "Convert `Space` from an `abbrev` to a `def`."
 

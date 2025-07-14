@@ -31,7 +31,7 @@ def IsPhenoConstrained (x : Charges 𝓩) : Prop :=
   x.AllowsTerm μ ∨ x.AllowsTerm β ∨ x.AllowsTerm Λ ∨ x.AllowsTerm W2 ∨ x.AllowsTerm W4 ∨
   x.AllowsTerm K1 ∨ x.AllowsTerm K2 ∨ x.AllowsTerm W1
 
-instance decidableIsPhenoConstrained [DecidableEq 𝓩]  (x : Charges 𝓩) :
+instance decidableIsPhenoConstrained [DecidableEq 𝓩] (x : Charges 𝓩) :
     Decidable x.IsPhenoConstrained :=
   inferInstanceAs (Decidable (x.AllowsTerm μ ∨ x.AllowsTerm β ∨ x.AllowsTerm Λ ∨ x.AllowsTerm W2
     ∨ x.AllowsTerm W4 ∨ x.AllowsTerm K1 ∨ x.AllowsTerm K2 ∨ x.AllowsTerm W1))
