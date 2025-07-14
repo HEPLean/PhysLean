@@ -20,8 +20,10 @@ namespace SU5
 namespace Charges
 open SuperSymmetry.SU5
 
+variable {𝓩 : Type} [InvolutiveNeg 𝓩]
+
 /-- Given an `x : Charges`, the charges associated with a given `FieldLabel`. -/
-def ofFieldLabel (x : Charges) : FieldLabel → Finset ℤ
+def ofFieldLabel (x : Charges 𝓩) : FieldLabel → Finset 𝓩
   | .fiveBarHd => x.1.toFinset
   | .fiveBarHu => x.2.1.toFinset
   | .fiveBarMatter => x.2.2.1
@@ -32,12 +34,12 @@ def ofFieldLabel (x : Charges) : FieldLabel → Finset ℤ
 
 @[simp]
 lemma ofFieldLabel_empty (F : FieldLabel) :
-    ofFieldLabel ∅ F = ∅ := by
+    ofFieldLabel (∅ : Charges 𝓩) F = ∅ := by
   cases F
   all_goals
     rfl
 
-lemma ofFieldLabel_mono {x y : Charges} (h : x ⊆ y) (F : FieldLabel) :
+lemma ofFieldLabel_mono {x y : Charges 𝓩} (h : x ⊆ y) (F : FieldLabel) :
     x.ofFieldLabel F ⊆ y.ofFieldLabel F := by
   rw [subset_def] at h
   obtain ⟨h1, h2, h3, h4⟩ := h
@@ -45,25 +47,25 @@ lemma ofFieldLabel_mono {x y : Charges} (h : x ⊆ y) (F : FieldLabel) :
   all_goals simp_all [ofFieldLabel]
 
 @[simp]
-lemma mem_ofFieldLabel_fiveHd (x : ℤ) (y : Charges) :
+lemma mem_ofFieldLabel_fiveHd (x : 𝓩) (y : Charges 𝓩) :
     x ∈ y.ofFieldLabel FieldLabel.fiveHd ↔ -x ∈ y.ofFieldLabel .fiveBarHd := by
   simp [ofFieldLabel, FieldLabel.fiveHd]
   aesop
 
 @[simp]
-lemma mem_ofFieldLabel_fiveHu (x : ℤ) (y : Charges) :
+lemma mem_ofFieldLabel_fiveHu (x : 𝓩) (y : Charges 𝓩) :
     x ∈ y.ofFieldLabel FieldLabel.fiveHu ↔ -x ∈ y.ofFieldLabel .fiveBarHu := by
   simp [ofFieldLabel, FieldLabel.fiveHu]
   aesop
 
 @[simp]
-lemma mem_ofFieldLabel_fiveMatter (x : ℤ) (y : Charges) :
+lemma mem_ofFieldLabel_fiveMatter (x : 𝓩) (y : Charges 𝓩) :
     x ∈ y.ofFieldLabel FieldLabel.fiveMatter ↔ -x ∈ y.ofFieldLabel .fiveBarMatter := by
   simp [ofFieldLabel, FieldLabel.fiveBarHd]
   aesop
 
 /-- Two charges are equal if they are equal on all field labels. -/
-lemma ext_ofFieldLabel {x y : Charges} (h : ∀ F, x.ofFieldLabel F = y.ofFieldLabel F) :
+lemma ext_ofFieldLabel {x y : Charges 𝓩} (h : ∀ F, x.ofFieldLabel F = y.ofFieldLabel F) :
     x = y := by
   match x, y with
   | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
