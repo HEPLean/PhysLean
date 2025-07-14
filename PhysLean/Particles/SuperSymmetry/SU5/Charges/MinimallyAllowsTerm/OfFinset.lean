@@ -22,6 +22,8 @@ namespace SU5
 
 namespace Charges
 
+variable {𝓩 : Type}
+
 /-!
 
 ## Auxillary results: Multisets from Finsets of given cardinality.
@@ -29,12 +31,12 @@ namespace Charges
 -/
 
 /-- The multisets of cardinality `1` containing elements from a finite set `s`. -/
-def toMultisetsOne (s : Finset ℤ) : Multiset (Multiset ℤ) :=
+def toMultisetsOne (s : Finset 𝓩) : Multiset (Multiset 𝓩) :=
   let X1 := (s.powersetCard 1).val.map fun X => X.val
   X1
 
 @[simp]
-lemma mem_toMultisetsOne_iff {s : Finset ℤ} (X : Multiset ℤ) :
+lemma mem_toMultisetsOne_iff [DecidableEq 𝓩] {s : Finset 𝓩} (X : Multiset 𝓩) :
     X ∈ toMultisetsOne s ↔ X.toFinset ⊆ s ∧ X.card = 1 := by
   simp [toMultisetsOne]
   intro h
@@ -43,13 +45,13 @@ lemma mem_toMultisetsOne_iff {s : Finset ℤ} (X : Multiset ℤ) :
   simp
 
 /-- The multisets of cardinality `2` containing elements from a finite set `s`. -/
-def toMultisetsTwo (s : Finset ℤ) : Multiset (Multiset ℤ) :=
+def toMultisetsTwo (s : Finset 𝓩) : Multiset (Multiset 𝓩) :=
   let X1 := (s.powersetCard 1).val.map (fun X => X.val.bind (fun x => Multiset.replicate 2 x))
   let X2 := (s.powersetCard 2).val.map fun X => X.val
   X1 + X2
 
 @[simp]
-lemma mem_toMultisetsTwo_iff {s : Finset ℤ} (X : Multiset ℤ) :
+lemma mem_toMultisetsTwo_iff [DecidableEq 𝓩] {s : Finset 𝓩} (X : Multiset 𝓩) :
     X ∈ toMultisetsTwo s ↔ X.toFinset ⊆ s ∧ X.card = 2 := by
   simp [toMultisetsTwo]
   constructor
@@ -79,14 +81,14 @@ lemma mem_toMultisetsTwo_iff {s : Finset ℤ} (X : Multiset ℤ) :
       · exact Multiset.dedup_subset'.mp hsub
 
 /-- The multisets of cardinality `3` containing elements from a finite set `s`. -/
-def toMultisetsThree (s : Finset ℤ) : Multiset (Multiset ℤ) :=
+def toMultisetsThree [DecidableEq 𝓩] (s : Finset 𝓩) : Multiset (Multiset 𝓩) :=
   let X1 := (s.powersetCard 1).val.map (fun X => X.val.bind (fun x => Multiset.replicate 3 x))
   let X2 := s.val.bind (fun x => (s \ {x}).val.map (fun y => {x} + Multiset.replicate 2 y))
   let X3 := (s.powersetCard 3).val.map fun X => X.val
   X1 + X2 + X3
 
 @[simp]
-lemma mem_toMultisetsThree_iff {s : Finset ℤ} (X : Multiset ℤ) :
+lemma mem_toMultisetsThree_iff [DecidableEq 𝓩] {s : Finset 𝓩} (X : Multiset 𝓩) :
     X ∈ toMultisetsThree s ↔ X.toFinset ⊆ s ∧ X.card = 3 := by
   simp [toMultisetsThree]
   constructor
@@ -153,13 +155,12 @@ lemma mem_toMultisetsThree_iff {s : Finset ℤ} (X : Multiset ℤ) :
           simp_all
           use b
           apply And.intro
-          · refine (Multiset.mem_erase_of_ne (by omega)).mpr ?_
+          · refine (Multiset.mem_erase_of_ne (fun h => hac h.symm)).mpr ?_
             simp_all
           exact Multiset.cons_swap b a {b}
         · right
           refine (Multiset.le_iff_subset ?_).mpr ?_
-          · simp
-            omega
+          · simpa using ⟨⟨hab, hac⟩, hbc⟩
           · exact Multiset.dedup_subset'.mp hsub
 /-!
 
@@ -168,9 +169,11 @@ lemma mem_toMultisetsThree_iff {s : Finset ℤ} (X : Multiset ℤ) :
 
 open PotentialTerm
 
+variable {𝓩 : Type} [DecidableEq 𝓩] [AddCommGroup 𝓩]
+
 /-- The multiset of all charges within `ofFinset S5 S10` which minimally allow the
   potential term `T`. -/
-def minimallyAllowsTermsOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) → Multiset Charges
+def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) : (T : PotentialTerm) → Multiset (Charges 𝓩)
   | μ =>
     let SqHd := S5.val
     let SqHu := S5.val
@@ -195,13 +198,13 @@ def minimallyAllowsTermsOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) →
     let SqHu := S5.val
     let Q5 := toMultisetsOne S5
     let prod := SqHd.product (SqHu.product Q5)
-    let Filt := prod.filter (fun x => x.1 - 2 * x.2.1 + x.2.2.sum = 0)
+    let Filt := prod.filter (fun x => x.1 - 2 • x.2.1 + x.2.2.sum = 0)
     (Filt.map (fun x => (x.1, x.2.1, x.2.2.toFinset, ∅)))
   | W3 =>
     let SqHu := S5.val
     let Q5 := toMultisetsTwo S5
     let prod := SqHu.product Q5
-    let Filt := prod.filter (fun x => - 2 * x.1 + x.2.sum = 0)
+    let Filt := prod.filter (fun x => - 2 • x.1 + x.2.sum = 0)
     (Filt.map (fun x => (none, x.1, x.2.toFinset, ∅)))
   | W2 =>
     let SqHd := S5.val
@@ -242,8 +245,8 @@ def minimallyAllowsTermsOfFinset (S5 S10 : Finset ℤ) : (T : PotentialTerm) →
     let Filt := prod.filter (fun x => x.1 + x.2.1.sum + x.2.2.sum = 0)
     (Filt.map (fun x => (x.1, none,x.2.1.toFinset, x.2.2.toFinset)))
 
-lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
+    {x : Charges 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     ∃ a b c, x = allowsTermForm a b c T := by
   cases T
   all_goals
@@ -298,69 +301,75 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ}
     any_goals rfl
   all_goals
     simp_all
-    try omega
   all_goals
     congr 2
-    omega
+  case μ | topYukawa | β =>
+    rw [← add_zero a, ← h.2]
+    abel
+  case Λ | W4 | W1 | W3 | bottomYukawa =>
+    rw [← sub_zero q51, ← h.2]
+    abel
+  case K1 | K2 | W2 =>
+    rw [← sub_zero q101, ← h.2]
+    abel
 
-lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
+    {x : Charges 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
   exact allowsTermForm_allowsTerm
 
-lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset ℤ }
-    {T : PotentialTerm} (x : Charges) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
+lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset 𝓩}
+    {T : PotentialTerm} (x : Charges 𝓩) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
     x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_minimallyAllowsTerm h
   cases T
   all_goals
     simp [allowsTermForm, minimallyAllowsTermsOfFinset]
     rw [mem_ofFinset_iff] at hx
-  case' μ =>
+  case μ =>
     use a, a
     simp_all [allowsTermForm]
-  case' β =>
+  case β =>
     use a, {a}
     simp_all [allowsTermForm]
-  case' Λ =>
+  case Λ =>
     use {a, b}, {- a - b}
     simp_all [allowsTermForm]
-  case' W1 =>
+  case W1 =>
     apply And.intro
     · use {- a - b - c}, {a, b, c}
       simp_all [allowsTermForm]
-      omega
+      abel
     · exact h
-  case' W2 =>
+  case W2 =>
     apply And.intro
     · use (- a - b - c), {a, b, c}
       simp_all [allowsTermForm]
-      omega
+      abel
     · exact h
-  case' W3 =>
-    use (-a), {b, - b - 2 * a}
+  case W3 =>
+    use (-a), {b, - b - 2 • a}
     simp_all [allowsTermForm]
-    omega
-  case' W4 =>
-    use (- c - 2 * b), (-b), {c}
+    abel
+  case W4 =>
+    use (- c - 2 • b), (-b), {c}
     simp_all [allowsTermForm]
-    omega
-  case' K1 =>
+  case K1 =>
     use {-a}, {b, - a - b}
     simp_all [allowsTermForm]
-  case' K2 =>
+  case K2 =>
     use a, b, {- a - b}
     simp_all [allowsTermForm]
-  case' topYukawa =>
+  case topYukawa =>
     use (-a), {b, - a - b}
     simp_all [allowsTermForm]
-  case' bottomYukawa =>
+  case bottomYukawa =>
     use a, {b}, {- a - b}
     simp_all [allowsTermForm]
 
-lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ}
-    {T : PotentialTerm} {x : Charges}
+lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩}
+    {T : PotentialTerm} {x : Charges 𝓩}
     (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.MinimallyAllowsTerm T := by
   by_cases hT : T ≠ W1 ∧ T ≠ W2
@@ -376,8 +385,8 @@ lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset �
       simp [minimallyAllowsTermsOfFinset] at hx
       exact hx.2
 
-lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
+    {x : Charges 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x ∈ ofFinset S5 S10 := by
   cases T
   all_goals
@@ -418,15 +427,15 @@ lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset ℤ} {T :
     rw [mem_ofFinset_iff]
     simp_all
 
-lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset ℤ} {T : PotentialTerm} :
+lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm} :
     minimallyAllowsTermsOfFinset S5 S10 T ⊆ (ofFinset S5 S10).val := by
   refine Multiset.subset_iff.mpr (fun x hx => ?_)
   rw [Finset.mem_val]
   exact mem_ofFinset_of_mem_minimallyAllowsTermOfFinset hx
 
 lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
-    {S5 S10 : Finset ℤ} {T : PotentialTerm}
-    {x : Charges} (hx : x ∈ ofFinset S5 S10) :
+    {S5 S10 : Finset 𝓩} {T : PotentialTerm}
+    {x : Charges 𝓩} (hx : x ∈ ofFinset S5 S10) :
     x.MinimallyAllowsTerm T ↔ x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   constructor
   · intro h
@@ -434,7 +443,7 @@ lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
   · intro h
     exact minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset h
 
-lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10'} {T : PotentialTerm}
+lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10' : Finset 𝓩} {T : PotentialTerm}
     (h5 : S5' ⊆ S5) (h10 : S10' ⊆ S10) :
     minimallyAllowsTermsOfFinset S5' S10' T ⊆ minimallyAllowsTermsOfFinset S5 S10 T := by
   intro x hx
