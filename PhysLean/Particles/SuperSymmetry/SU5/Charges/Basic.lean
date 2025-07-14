@@ -366,12 +366,6 @@ def ofFinset (S5 S10 : Finset 𝓩) : Finset (Charges 𝓩) :=
 lemma qHd_mem_ofFinset (S5 S10 : Finset 𝓩) (z : 𝓩) (x2 : Option 𝓩 × Finset 𝓩 × Finset 𝓩)
     (hsub : (some z, x2) ∈ ofFinset S5 S10) :
     z ∈ S5 := by
-  have hoption (x : Option ℤ) (S : Finset ℤ) :
-      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
-      x.toFinset ⊆ S := by
-    match x with
-    | none => simp
-    | some x => simp
   rw [ofFinset] at hsub
   cases x2
   repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hsub
@@ -382,12 +376,6 @@ lemma qHd_mem_ofFinset (S5 S10 : Finset 𝓩) (z : 𝓩) (x2 : Option 𝓩 × Fi
 lemma qHu_mem_ofFinset (S5 S10 : Finset 𝓩) (z : 𝓩) (x1 : Option 𝓩) (x2 : Finset 𝓩 × Finset 𝓩)
     (hsub : (x1, some z, x2) ∈ ofFinset S5 S10) :
     z ∈ S5 := by
-  have hoption (x : Option ℤ) (S : Finset ℤ) :
-      x ∈ ({none} : Finset (Option ℤ)) ∪ S.map ⟨Option.some, Option.some_injective ℤ⟩ ↔
-      x.toFinset ⊆ S := by
-    match x with
-    | none => simp
-    | some x => simp
   rw [ofFinset] at hsub
   cases x2
   repeat rw [Finset.product_eq_sprod, Finset.mem_product] at hsub
