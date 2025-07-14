@@ -23,22 +23,25 @@ namespace Charges
 open SuperSymmetry.SU5
 open PotentialTerm
 
+variable {𝓩 : Type} [AddCommGroup 𝓩]
+
 /-- A charge is pheno-constrained if it leads to the presence of any term causing proton decay
   ` {W1, Λ, W2, K1}` or R-parity violation `{β, Λ, W2, W4, K1, K2}`. -/
-def IsPhenoConstrained (x : Charges) : Prop :=
+def IsPhenoConstrained (x : Charges 𝓩) : Prop :=
   x.AllowsTerm μ ∨ x.AllowsTerm β ∨ x.AllowsTerm Λ ∨ x.AllowsTerm W2 ∨ x.AllowsTerm W4 ∨
   x.AllowsTerm K1 ∨ x.AllowsTerm K2 ∨ x.AllowsTerm W1
 
-instance decidableIsPhenoConstrained (x : Charges) : Decidable x.IsPhenoConstrained :=
+instance decidableIsPhenoConstrained [DecidableEq 𝓩]  (x : Charges 𝓩) :
+    Decidable x.IsPhenoConstrained :=
   inferInstanceAs (Decidable (x.AllowsTerm μ ∨ x.AllowsTerm β ∨ x.AllowsTerm Λ ∨ x.AllowsTerm W2
     ∨ x.AllowsTerm W4 ∨ x.AllowsTerm K1 ∨ x.AllowsTerm K2 ∨ x.AllowsTerm W1))
 
 @[simp]
 lemma not_isPhenoConstrained_empty :
-    ¬ IsPhenoConstrained ∅ := by
+    ¬ IsPhenoConstrained (∅ : Charges 𝓩) := by
   simp [IsPhenoConstrained, AllowsTerm, ofPotentialTerm_empty]
 
-lemma isPhenoConstrained_mono {x y : Charges} (h : x ⊆ y)
+lemma isPhenoConstrained_mono {x y : Charges 𝓩} (h : x ⊆ y)
     (hx : x.IsPhenoConstrained) : y.IsPhenoConstrained := by
   simp [IsPhenoConstrained] at *
   rcases hx with hr | hr | hr | hr | hr | hr | hr | hr
@@ -47,16 +50,16 @@ lemma isPhenoConstrained_mono {x y : Charges} (h : x ⊆ y)
     simp_all
 
 /-- The collection of charges of super-potential terms leading to a pheno-constrained model. -/
-def phenoConstrainingChargesSP (x : Charges) : Multiset ℤ :=
+def phenoConstrainingChargesSP (x : Charges 𝓩) : Multiset 𝓩 :=
   x.ofPotentialTerm μ + x.ofPotentialTerm β + x.ofPotentialTerm Λ +
   x.ofPotentialTerm W2 + x.ofPotentialTerm W4 + x.ofPotentialTerm W1
 
 @[simp]
 lemma phenoConstrainingChargesSP_empty :
-    phenoConstrainingChargesSP ∅ = ∅ := by
+    phenoConstrainingChargesSP (∅ : Charges 𝓩) = ∅ := by
   simp [phenoConstrainingChargesSP]
 
-lemma phenoConstrainingChargesSP_mono {x y : Charges} (h : x ⊆ y) :
+lemma phenoConstrainingChargesSP_mono {x y : Charges 𝓩} (h : x ⊆ y) :
     x.phenoConstrainingChargesSP ⊆ y.phenoConstrainingChargesSP := by
   simp only [phenoConstrainingChargesSP]
   refine Multiset.subset_iff.mpr ?_
@@ -89,18 +92,20 @@ open PhysLean FourTree
 
 -/
 
+variable [DecidableEq 𝓩]
+
 /-- The twig obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q10` into all leafs of a twig. This assumes that all existing charges in the twig are
   already not pheno constrained. -/
-def Twig.phenoInsertQ10 (t : Twig (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) (x : ℤ) :
-    Twig (Finset ℤ) (Finset ℤ) :=
+def Twig.phenoInsertQ10 (t : Twig (Finset 𝓩) (Finset 𝓩)) (qHd : Option 𝓩) (x : 𝓩) :
+    Twig (Finset 𝓩) (Finset 𝓩) :=
   match t with
   | .twig Q5 leafs =>
     if AllowsTerm (none, none, Q5, {x}) Λ then
       .twig Q5 {}
     else
       let leafFinst := leafs.map (fun (.leaf ys) => ys)
-      let sub : Multiset (Finset ℤ) := leafFinst.filterMap (fun ys =>
+      let sub : Multiset (Finset 𝓩) := leafFinst.filterMap (fun ys =>
         if ¬ insert x ys ∈ leafFinst then
           some (insert x ys)
         else
@@ -113,8 +118,8 @@ def Twig.phenoInsertQ10 (t : Twig (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) 
 /-- The branch obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q10` into all leafs of a branch. This assumes that all existing charges in the branch are
   already not pheno constrained. -/
-def Branch.phenoInsertQ10 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) (x : ℤ) :
-    Branch (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def Branch.phenoInsertQ10 (b : Branch (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (qHd : Option 𝓩) (x : 𝓩) :
+    Branch (Option 𝓩) (Finset 𝓩) (Finset 𝓩) :=
   match b with
   | .branch qHu twigs =>
       if AllowsTerm (qHd, qHu, ∅, {x}) K2 then
@@ -125,8 +130,8 @@ def Branch.phenoInsertQ10 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (q
 /-- The trunk obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q10` into all leafs of a trunk. This assumes that all existing charges in the trunk are
   already not pheno constrained. -/
-def Trunk.phenoInsertQ10 (T : Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
-    Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def Trunk.phenoInsertQ10 (T : Trunk (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (x : 𝓩) :
+    Trunk (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩) :=
   match T with
   | .trunk qHd branches =>
     .trunk qHd (branches.map fun b => Branch.phenoInsertQ10 b qHd x)
@@ -134,14 +139,14 @@ def Trunk.phenoInsertQ10 (T : Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Fins
 /-- The tree obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q10` into all leafs of a tree. This assumes that all existing charges in the tree are
   already not pheno constrained. -/
-def phenoInsertQ10 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
-    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def phenoInsertQ10 (T : FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (x : 𝓩) :
+    FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩) :=
   match T with
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ10 ts x))
 
 lemma mem_phenoInsertQ10_of_mem_allowsTerm
-    (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (q10 : ℤ) (C : Charges)
+    (T : FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (q10 : 𝓩) (C : Charges 𝓩)
     (h : C ∈ (T.uniqueMap4 (insert q10))) (hC : ¬ AllowsTerm (C.1, C.2.1, ∅, {q10}) K2
       ∧ ¬ AllowsTerm (none, none, C.2.2.1, {q10}) Λ
       ∧ ¬ AllowsTerm (none, none, C.2.2.1, C.2.2.2) W1 ∧
@@ -225,8 +230,8 @@ lemma mem_phenoInsertQ10_of_mem_allowsTerm
 /-- The branch obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q5` into all leafs of a branch. This assumes that all existing charges in the branch are
   already not pheno constrained. -/
-def Branch.phenoInsertQ5 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (qHd : Option ℤ) (x : ℤ) :
-    Branch (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def Branch.phenoInsertQ5 (b : Branch (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (qHd : Option 𝓩) (x : 𝓩) :
+    Branch (Option 𝓩) (Finset 𝓩) (Finset 𝓩) :=
   match b with
   | .branch qHu twigs =>
     if AllowsTerm (none, qHu, {x}, ∅) β ∨ AllowsTerm (qHd, qHu, {x}, ∅) W4 then
@@ -242,8 +247,8 @@ def Branch.phenoInsertQ5 (b : Branch (Option ℤ) (Finset ℤ) (Finset ℤ)) (qH
 /-- The trunk obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q5` into all leafs of a trunk. This assumes that all existing charges in the trunk are
   already not pheno constrained. -/
-def Trunk.phenoInsertQ5 (T : Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
-    Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def Trunk.phenoInsertQ5 (T : Trunk (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (x : 𝓩) :
+    Trunk (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩) :=
   match T with
   | .trunk qHd branches =>
     .trunk qHd (branches.map fun b => Branch.phenoInsertQ5 b qHd x)
@@ -251,14 +256,14 @@ def Trunk.phenoInsertQ5 (T : Trunk (Option ℤ) (Option ℤ) (Finset ℤ) (Finse
 /-- The tree obtained by taking the new, not pheno-constrained, charges obtained by inserting
   `q5` into all leafs of a tree. This assumes that all existing charges in the tree are
   already not pheno constrained. -/
-def phenoInsertQ5 (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ)) (x : ℤ) :
-    FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ) :=
+def phenoInsertQ5 (T : FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩)) (x : 𝓩) :
+    FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩) :=
   match T with
   | .root trunks =>
     .root (trunks.map fun ts => (Trunk.phenoInsertQ5 ts x))
 
-lemma mem_phenoInsertQ5_of_mem_allowsTerm (T : FourTree (Option ℤ) (Option ℤ) (Finset ℤ) (Finset ℤ))
-    (q5 : ℤ) (C : Charges)
+lemma mem_phenoInsertQ5_of_mem_allowsTerm (T : FourTree (Option 𝓩) (Option 𝓩) (Finset 𝓩) (Finset 𝓩))
+    (q5 : 𝓩) (C : Charges 𝓩)
     (h : C ∈ (T.uniqueMap3 (insert q5))) (hC : ¬ AllowsTerm (none, C.2.1, {q5}, ∅) β
       ∧ ¬ AllowsTerm (C.1, C.2.1, {q5}, ∅) W4 ∧
       ¬ AllowsTerm (none, none, {q5}, C.2.2.2) W1 ∧ ¬ AllowsTerm (none, none, {q5}, C.2.2.2) K1
