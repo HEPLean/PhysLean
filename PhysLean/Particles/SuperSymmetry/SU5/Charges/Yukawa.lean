@@ -22,13 +22,15 @@ namespace SU5
 namespace Charges
 open PotentialTerm
 
+variable {𝓩 : Type} [AddCommGroup 𝓩]
+
 /-- The collection of charges associated with Yukawa terms.
   Correspondingly, the (negative) of the charges of the singlets needed to regenerate all
   Yukawa terms in the potential. -/
-def ofYukawaTerms (x : Charges) : Multiset ℤ :=
+def ofYukawaTerms (x : Charges 𝓩) : Multiset 𝓩 :=
   x.ofPotentialTerm topYukawa + x.ofPotentialTerm bottomYukawa
 
-lemma ofYukawaTerms_subset_of_subset {x y : Charges} (h : x ⊆ y) :
+lemma ofYukawaTerms_subset_of_subset {x y : Charges 𝓩} (h : x ⊆ y) :
     x.ofYukawaTerms ⊆ y.ofYukawaTerms := by
   simp only [ofYukawaTerms]
   refine Multiset.subset_iff.mpr ?_
@@ -47,12 +49,12 @@ lemma ofYukawaTerms_subset_of_subset {x y : Charges} (h : x ⊆ y) :
   insertions of singlets needed to regenerate the Yukawa terms.
   Equivalently, the sum of up-to `n` integers each corresponding to a charge of the
   Yukawa terms. -/
-def ofYukawaTermsNSum (x : Charges) : ℕ → Multiset ℤ
+def ofYukawaTermsNSum (x : Charges 𝓩) : ℕ → Multiset 𝓩
   | 0 => {0}
   | n + 1 => x.ofYukawaTermsNSum n + (x.ofYukawaTermsNSum n).bind fun sSum =>
     (x.ofYukawaTerms.map fun s => sSum + s)
 
-lemma ofYukawaTermsNSum_subset_of_subset {x y : Charges} (h : x ⊆ y) (n : ℕ) :
+lemma ofYukawaTermsNSum_subset_of_subset {x y : Charges 𝓩} (h : x ⊆ y) (n : ℕ) :
     x.ofYukawaTermsNSum n ⊆ y.ofYukawaTermsNSum n := by
   induction n with
   | zero => simp [ofYukawaTermsNSum]
@@ -74,22 +76,24 @@ lemma ofYukawaTermsNSum_subset_of_subset {x y : Charges} (h : x ⊆ y) (n : ℕ)
     apply ofYukawaTerms_subset_of_subset h
     exact hz2
 
+variable [DecidableEq 𝓩]
+
 /-- For charges `x : Charges`, the proposition which states that the singlets
   needed to regenerate the Yukawa couplings regnerate a dangerous coupling
   (in the superpotential) with up-to `n` insertions of the scalars. -/
-def YukawaGeneratesDangerousAtLevel (x : Charges) (n : ℕ) : Prop :=
+def YukawaGeneratesDangerousAtLevel (x : Charges 𝓩) (n : ℕ) : Prop :=
   (x.ofYukawaTermsNSum n).toFinset ∩ x.phenoConstrainingChargesSP.toFinset ≠ ∅
 
 @[simp]
 lemma not_yukawaGeneratesDangerousAtLevel_of_empty (n : ℕ) :
-    ¬ YukawaGeneratesDangerousAtLevel ∅ n := by
+    ¬ YukawaGeneratesDangerousAtLevel (∅ : Charges 𝓩) n := by
   simp [YukawaGeneratesDangerousAtLevel]
 
-instance (x : Charges) (n : ℕ) : Decidable (YukawaGeneratesDangerousAtLevel x n) :=
+instance (x : Charges 𝓩) (n : ℕ) : Decidable (YukawaGeneratesDangerousAtLevel x n) :=
   inferInstanceAs (Decidable ((x.ofYukawaTermsNSum n).toFinset
     ∩ x.phenoConstrainingChargesSP.toFinset ≠ ∅))
 
-lemma yukawaGeneratesDangerousAtLevel_of_subset {x y : Charges} {n : ℕ} (h : x ⊆ y)
+lemma yukawaGeneratesDangerousAtLevel_of_subset {x y : Charges 𝓩} {n : ℕ} (h : x ⊆ y)
     (hx : x.YukawaGeneratesDangerousAtLevel n) :
     y.YukawaGeneratesDangerousAtLevel n := by
   simp [YukawaGeneratesDangerousAtLevel] at *
@@ -108,7 +112,7 @@ lemma yukawaGeneratesDangerousAtLevel_of_subset {x y : Charges} {n : ℕ} (h : x
   rw [h1] at hx
   simp at hx
 
-lemma yukawaGeneratesDangerousAtLevel_succ {x : Charges} {n : ℕ}
+lemma yukawaGeneratesDangerousAtLevel_succ {x : Charges 𝓩} {n : ℕ}
     (hx : x.YukawaGeneratesDangerousAtLevel n) :
     x.YukawaGeneratesDangerousAtLevel (n + 1) := by
   simp [YukawaGeneratesDangerousAtLevel] at *
@@ -119,14 +123,14 @@ lemma yukawaGeneratesDangerousAtLevel_succ {x : Charges} {n : ℕ}
   left
   exact hx
 
-lemma yukawaGeneratesDangerousAtLevel_add_of_left {x : Charges} {n k : ℕ}
+lemma yukawaGeneratesDangerousAtLevel_add_of_left {x : Charges 𝓩} {n k : ℕ}
     (hx : x.YukawaGeneratesDangerousAtLevel n) :
     x.YukawaGeneratesDangerousAtLevel (n + k) := by
   induction k with
   | zero => exact hx
   | succ k ih => exact yukawaGeneratesDangerousAtLevel_succ ih
 
-lemma yukawaGeneratesDangerousAtLevel_of_le {x : Charges} {n m : ℕ}
+lemma yukawaGeneratesDangerousAtLevel_of_le {x : Charges 𝓩} {n m : ℕ}
     (h : n ≤ m) (hx : x.YukawaGeneratesDangerousAtLevel n) :
     x.YukawaGeneratesDangerousAtLevel m := by
   generalize hk : m - n = k at *
