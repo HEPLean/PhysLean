@@ -25,6 +25,7 @@ namespace SU5
 
 namespace Charges
 
+variable {𝓩 : Type}
 /-!
 
 ## Completions
@@ -32,17 +33,17 @@ namespace Charges
 -/
 
 /-- A collection of charges is complete if it has all types of fields. -/
-def IsComplete (x : Charges) : Prop :=
+def IsComplete (x : Charges 𝓩) : Prop :=
   x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅
 
-instance (x : Charges) : Decidable (IsComplete x) :=
+instance [DecidableEq 𝓩] (x : Charges 𝓩) : Decidable (IsComplete x) :=
   inferInstanceAs (Decidable (x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅))
 
 @[simp]
-lemma not_isComplete_empty : ¬ IsComplete ∅ := by
+lemma not_isComplete_empty : ¬ IsComplete (∅ : Charges 𝓩) := by
   simp [IsComplete]
 
-lemma isComplete_mono {x y : Charges} (h : x ⊆ y) (hx : IsComplete x) :
+lemma isComplete_mono {x y : Charges 𝓩} (h : x ⊆ y) (hx : IsComplete x) :
     IsComplete y := by
   simp [IsComplete] at *
   rw [subset_def] at h
@@ -76,17 +77,19 @@ Note the completions are not monotonic with respect to the subset relation.
 
 -/
 
+variable [DecidableEq 𝓩]
+
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x` and are
   complete. -/
-def completions (S5 S10 : Finset ℤ) (x : Charges) : Multiset Charges :=
+def completions (S5 S10 : Finset 𝓩) (x : Charges 𝓩) : Multiset (Charges 𝓩) :=
   let SqHd := if x.1.isSome then {x.1} else S5.val.map fun y => some y
   let SqHu := if x.2.1.isSome then {x.2.1} else S5.val.map fun y => some y
   let SQ5 := if x.2.2.1 ≠ ∅ then {x.2.2.1} else S5.val.map fun y => {y}
   let SQ10 := if x.2.2.2 ≠ ∅ then {x.2.2.2} else S10.val.map fun y => {y}
   (SqHd.product (SqHu.product (SQ5.product SQ10)))
 
-lemma completions_eq_singleton_of_complete {S5 S10 : Finset ℤ} (x : Charges)
+lemma completions_eq_singleton_of_complete {S5 S10 : Finset 𝓩} (x : Charges 𝓩)
     (hcomplete : IsComplete x) :
     completions S5 S10 x = {x} := by
   simp [completions]
@@ -103,7 +106,7 @@ lemma completions_eq_singleton_of_complete {S5 S10 : Finset ℤ} (x : Charges)
   rfl
 
 @[simp]
-lemma self_mem_completions_iff_isComplete {S5 S10 : Finset ℤ} (x : Charges) :
+lemma self_mem_completions_iff_isComplete {S5 S10 : Finset 𝓩} (x : Charges 𝓩) :
     x ∈ completions S5 S10 x ↔ IsComplete x := by
   simp [completions, IsComplete]
   repeat rw [Multiset.mem_product]
@@ -117,7 +120,7 @@ lemma self_mem_completions_iff_isComplete {S5 S10 : Finset ℤ} (x : Charges) :
   case' neg => simp_all
   simp_all
 
-lemma mem_completions_isComplete {S5 S10 : Finset ℤ} {x y : Charges}
+lemma mem_completions_isComplete {S5 S10 : Finset 𝓩} {x y : Charges 𝓩}
     (hx : y ∈ completions S5 S10 x) : IsComplete y := by
   match y with
   | (qHd, qHu, Q5, Q10) =>
@@ -154,7 +157,7 @@ lemma mem_completions_isComplete {S5 S10 : Finset ℤ} {x y : Charges}
       obtain ⟨a, h, rfl⟩ := hx.2.2.2
       simp
 
-lemma self_subset_mem_completions (S5 S10 : Finset ℤ) (x y : Charges)
+lemma self_subset_mem_completions (S5 S10 : Finset 𝓩) (x y : Charges 𝓩)
     (hy : y ∈ completions S5 S10 x) : x ⊆ y := by
   simp [completions] at hy
   repeat rw [Multiset.mem_product] at hy
@@ -174,7 +177,7 @@ lemma self_subset_mem_completions (S5 S10 : Finset ℤ) (x y : Charges)
     · simp_all
     · simp_all
 
-lemma exist_completions_subset_of_complete (S5 S10 : Finset ℤ) (x y : Charges)
+lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : Charges 𝓩)
     (hsubset : x ⊆ y) (hy : y ∈ ofFinset S5 S10) (hycomplete : IsComplete y) :
     ∃ z ∈ completions S5 S10 x, z ⊆ y := by
   by_cases hx : IsComplete x
