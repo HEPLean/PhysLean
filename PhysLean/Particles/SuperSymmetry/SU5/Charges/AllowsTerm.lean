@@ -312,6 +312,16 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     rw [← sub_zero f2, ← f1_add_f2_eq_zero]
     abel
 
+lemma allowsTerm_iff_subset_allowsTermForm {T : PotentialTerm} {x : Charges 𝓩} :
+    x.AllowsTerm T ↔ ∃ a b c, allowsTermForm a b c T ⊆ x := by
+  constructor
+  · intro h
+    obtain ⟨a, b, c, h1, h2⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm h
+    use a, b, c
+  · intro h
+    obtain ⟨a, b, c, h1⟩ := h
+    apply allowsTerm_mono h1 allowsTermForm_allowsTerm
+
 lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges 𝓩}
     (h : x.AllowsTerm T) : ∃ y ∈ x.powerset, y.card ≤ T.degree ∧ y.AllowsTerm T := by
   obtain ⟨a, b, c, h1, h2⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm h

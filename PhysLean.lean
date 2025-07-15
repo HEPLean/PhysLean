@@ -115,6 +115,7 @@ import PhysLean.Particles.SuperSymmetry.SU5.Charges.Basic
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.FinsetTerms
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm

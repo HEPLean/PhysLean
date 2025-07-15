@@ -63,6 +63,11 @@ lemma toFinset_card_le_four_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elems
   revert F h
   decide
 
+lemma card_le_six_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics) :
+    F.card ≤ 6 := by
+  revert F h
+  decide
+
 lemma sum_of_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics) :
     F.sum = (3, 0) := by
   revert F h
