@@ -52,6 +52,19 @@ TODO "HB6WN" "After TODO 'HB6VC', give `Space d` the necessary instances
 
 /-!
 
+## Inner product
+
+-/
+
+lemma inner_eq_sum {d} (p q : Space d) :
+    inner ℝ p q = ∑ i, p i * q i := by
+  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
+  congr
+  funext x
+  exact Lean.Grind.CommSemiring.mul_comm (q x) (p x)
+
+/-!
+
 ## Basis
 
 -/
@@ -76,6 +89,16 @@ lemma basis_self {d} (i : Fin d) : basis i i = 1 := by
 @[simp]
 lemma basis_repr {d} (p : Space d) : basis.repr p = p := by rfl
 
+@[simp high]
+lemma inner_basis {d} (p : Space d) (i : Fin d) :
+    inner ℝ p (basis i) = p i := by
+  simp [inner_eq_sum, basis_apply]
+
+@[simp high]
+lemma basis_inner {d} (i : Fin d) (p : Space d) :
+    inner ℝ (basis i) p = p i := by
+  simp [inner_eq_sum, basis_apply]
+
 /-!
 
 ## Coordinates
@@ -90,7 +113,7 @@ noncomputable def coord (μ : Fin d) (p : Space d) : ℝ :=
 
 lemma coord_apply (μ : Fin d) (p : Space d) :
     coord μ p = p μ := by
-  simp [coord, basis]
+  simp [coord]
 
 /-- The standard coordinate functions of Space based on `Fin d`, as a continuous linear map. -/
 noncomputable def coordCLM {d} (μ : Fin d) : Space d →L[ℝ] ℝ where
@@ -138,6 +161,16 @@ lemma deriv_eq [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (μ : Fin d) (f : Space d → M) (x : Space d) :
     deriv μ f x = fderiv ℝ f x (EuclideanSpace.single μ (1:ℝ)) := by
   rfl
+
+lemma deriv_eq_fderiv_basis [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+    (μ : Fin d) (f : Space d → M) (x : Space d) :
+    deriv μ f x = fderiv ℝ f x (basis μ) := by
+  rw [deriv_eq]
+  congr
+  funext i
+  simp only [EuclideanSpace.single_apply, basis_apply]
+  congr 1
+  exact Lean.Grind.eq_congr' rfl rfl
 
 /-!
 

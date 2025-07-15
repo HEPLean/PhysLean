@@ -190,46 +190,41 @@ lemma grad_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
     exact fun a a_1 => False.elim (a (id (Eq.symm a_1)))
   · simp
 
-open InnerProductSpace in
+open InnerProductSpace
+
+lemma grad_inner_eq {d} (f : Space d → ℝ) (x : Space d) (y : Space d) :
+    ⟪∇ f x, y⟫_ℝ = (fderiv ℝ f x) y:= by
+  rw [grad_eq_sum]
+  have hy : y = ∑ i, y i • basis i := by
+      conv_lhs => rw [← OrthonormalBasis.sum_repr basis y]
+      dsimp [basis]
+  rw [hy]
+  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, map_sum, map_smul, smul_eq_mul]
+  conv_lhs =>
+    enter [2, x]
+    rw [Fintype.sum_apply, Fintype.sum_apply]
+  simp [basis_apply]
+  congr
+  funext x
+  rw [deriv_eq_fderiv_basis]
+
+lemma inner_grad_eq {d} (f : Space d → ℝ) (x : Space d) (y : Space d) :
+    ⟪x, ∇ f y⟫_ℝ = (fderiv ℝ f y) x := by
+  rw [← grad_inner_eq]
+  exact real_inner_comm (∇ f y) x
+
 lemma grad_eq_gradiant {d} (f : Space d → ℝ) :
     ∇ f = gradient f := by
   funext x
-  simp [grad, gradient, deriv_eq]
-  have hx (y : Space d) : ⟪(InnerProductSpace.toDual ℝ (Space d)).symm (fderiv ℝ f x), y⟫_ℝ =
+  have hx (y : Space d) : ⟪gradient f x, y⟫_ℝ =
       ⟪∇ f x, y⟫_ℝ := by
-    rw [toDual_symm_apply]
-    have hy : y = ∑ i, y i • basis i := by
-      conv_lhs => rw [← OrthonormalBasis.sum_repr basis y]
-      dsimp [basis]
-    rw [hy]
-    conv_lhs => simp
-    conv_rhs => rw [inner_sum]
-    congr
-    funext i
-    rw [inner_smul_right]
-    congr
-    rw [grad_eq_sum]
-    rw [← inner_conj_symm]
-    simp only [conj_trivial, inner_sum]
-    simp only [inner_smul_right]
-    rw [Finset.sum_eq_single i]
-    · have h1 : ⟪basis i, basis i⟫_ℝ = 1 := by
-        rw [real_inner_self_eq_norm_sq, basis.norm_eq_one]
-        simp
-      rw [h1]
-      simp only [mul_one]
-      rw [deriv_eq]
-      simp [basis]
-    · intro b hb h
-      rw [basis.inner_eq_zero]
-      simp only [mul_zero]
-      exact id (Ne.symm h)
-    · simp
-  have h1 : ∀ y, ⟪(toDual ℝ (Space d)).symm (fderiv ℝ f x) - ∇ f x, y⟫_ℝ = 0 := by
+    rw [gradient, toDual_symm_apply]
+    exact Eq.symm (grad_inner_eq f x y)
+  have h1 : ∀ y, ⟪gradient f x- ∇ f x, y⟫_ℝ = 0 := by
     intro y
     rw [inner_sub_left, hx y]
     simp
-  have h2 := h1 ((toDual ℝ (Space d)).symm (fderiv ℝ f x) - ∇ f x)
+  have h2 := h1 (gradient f x - ∇ f x)
   rw [inner_self_eq_zero, sub_eq_zero] at h2
   rw [h2]
 
