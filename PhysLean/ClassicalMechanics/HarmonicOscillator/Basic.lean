@@ -130,8 +130,8 @@ lemma lagrangian_parity (x : Time → ℝ) (hx : Differentiable ℝ x) :
 
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
   is the potential energy. -/
-@[sorryful]
-def force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ := sorry
+noncomputable def force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ :=
+  fun t => - deriv (fun y => potentialEnergy S (fun _ => y) t) (x t)
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 @[sorryful]
