@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
 import Mathlib.Tactic.FinCases
@@ -107,7 +106,7 @@ lemma mem_minTopBottom_of_minimallyAllowsFinsetTerms
   rw [mem_ofFinset_iff] at hx
   simp at hx
   refine ⟨⟨hx.1, hx.2.1, hx.2.2.1 h5.1, hx.2.2.2 (h10 (Finset.mem_insert_self _ _))⟩, ?_⟩
-  refine  (h _ ?_).mpr ?_
+  refine (h _ ?_).mpr ?_
   · simp [subset_def]
     refine ⟨h5.1, ?_⟩
     refine Finset.insert_subset h5.2 ?_

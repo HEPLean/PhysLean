@@ -7,6 +7,7 @@ import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.ZMod.Defs
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
 import Mathlib.Tactic.FinCases
+import PhysLean.Meta.Linters.Sorry
 /-!
 
 # ZMod charges
@@ -33,14 +34,18 @@ lemma ZModCharges_one_eq : ZModCharges 1 = ∅:= by decide
 
 lemma ZModCharges_two_eq : ZModCharges 2 = ∅ := by decide
 
+@[pseudo]
 lemma ZModCharges_three_eq : ZModCharges 3 = ∅ := by native_decide
 
+@[pseudo]
 lemma ZModCharges_four_eq : ZModCharges 4 = {(some 0, some 2, {1}, {3}),
     (some 0, some 2, {3}, {1}), (some 1, some 2, {0}, {3}), (some 3, some 2, {0}, {1})} := by
   native_decide
 
+@[pseudo]
 lemma ZModCharges_five_eq : ZModCharges 5 = ∅ := by native_decide
 
+@[pseudo]
 lemma ZModCharges_six_eq : ZModCharges 6 = {(some 0, some 2, {5}, {1}),
     (some 0, some 4, {1}, {5}), (some 1, some 0, {2}, {3}), (some 1, some 2, {4}, {1}),
     (some 1, some 4, {0}, {5}), (some 1, some 4, {3}, {2}), (some 2, some 0, {1}, {3}),

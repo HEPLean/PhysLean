@@ -103,7 +103,7 @@ lemma map_ofPotentialTerm_toFinset [DecidableEq 𝓩]
       obtain ⟨q1, q1_mem, rfl⟩ := q1_mem
       obtain ⟨q2, q2_mem, rfl⟩ := q2_mem
       obtain ⟨q3, q3_mem, rfl⟩ := q3_mem
-    case' Λ | K2 | bottomYukawa  => use q1 + q2 + q3
+    case' Λ | K2 | bottomYukawa => use q1 + q2 + q3
     case' W3 => use - q1 - q1 + q2 + q3
     case' W4 => use q1 - q2 - q2 + q3
     case' K1 | topYukawa => use - q1 + q2 + q3
@@ -244,7 +244,8 @@ lemma map_ofYukawaTermsNSum_toFinset {f : 𝓩 →+ 𝓩1} {x : Charges 𝓩} {n
     rw [Finset.image_union]
     congr 1
     ext i
-    simp
+    simp only [Multiset.mem_toFinset, Multiset.mem_bind, Multiset.mem_map, Finset.mem_image,
+      exists_exists_and_exists_and_eq_and, map_add]
     constructor
     · intro h
       obtain ⟨a, a_mem, b, b_mem, h⟩ := h
@@ -260,12 +261,12 @@ lemma map_ofYukawaTermsNSum_toFinset {f : 𝓩 →+ 𝓩1} {x : Charges 𝓩} {n
       use f a
       apply And.intro
       · rw [← Multiset.mem_toFinset, ih]
-        simp
+        simp only [Finset.mem_image, Multiset.mem_toFinset]
         use a
       use f b
       apply And.intro
       · rw [mem_map_ofYukawaTerms_iff]
-        simp
+        simp only [Multiset.mem_map]
         use b
       exact h
 
@@ -324,9 +325,9 @@ lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Char
   simp [map]
   constructor
   · intro ⟨⟨h1, rfl⟩, ⟨h2, rfl⟩, ⟨h3, rfl⟩, ⟨h4, rfl⟩⟩
-    simp
+    simp only [true_and]
     rw [mem_ofFinset_iff]
-    simp
+    simp only
     refine ⟨?_, ?_, ?_, ?_⟩
     · match yHd with
       | some a => simpa using h1
@@ -339,7 +340,7 @@ lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Char
   · rw [eq_iff]
     simp only
     intro ⟨⟨rfl, rfl, rfl, rfl⟩, h2⟩
-    simp
+    simp only [and_true, Finset.mem_image]
     rw [mem_ofFinset_iff] at h2
     simp at h2
     refine ⟨?_, ?_, ?_, ?_⟩
@@ -355,12 +356,12 @@ lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Char
       | none => simp
     · refine Finset.subset_iff.mpr ?_
       intro x hx
-      simp
+      simp only [Finset.mem_filter]
       refine ⟨h2.2.2.1 hx, ?_⟩
       use x
     · refine Finset.subset_iff.mpr ?_
       intro x hx
-      simp
+      simp only [Finset.mem_filter]
       refine ⟨h2.2.2.2 hx, ?_⟩
       use x
 
@@ -382,7 +383,7 @@ lemma preimageOfFinset_card_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x :
     preimageOfFinsetCard S5 S10 f x =
     (preimageOfFinset S5 S10 f x).card := by
   rw [preimageOfFinset]
-  simp
+  simp only [Option.map_eq_map, Finset.product_eq_sprod]
   repeat rw [Finset.card_product]
   simp [preimageOfFinsetCard, mul_assoc]
 
