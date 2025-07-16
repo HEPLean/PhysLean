@@ -49,6 +49,15 @@ lemma eq_of_parts {x y : Charges 𝓩} (h1 : x.1 = y.1) (h2 : x.2.1 = y.2.1)
   | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
     simp_all
 
+lemma eq_iff {x y : Charges 𝓩} :
+    x = y ↔ x.1 = y.1 ∧ x.2.1 = y.2.1 ∧ x.2.2.1 = y.2.2.1 ∧ x.2.2.2 = y.2.2.2 := by
+  constructor
+  · intro h
+    subst h
+    simp
+  · rintro ⟨h1, h2, h3, h4⟩
+    exact eq_of_parts h1 h2 h3 h4
+
 /-!
 
 ## Basic instances on the type `Charges 𝓩`.
@@ -445,6 +454,11 @@ lemma ofFinset_subset_of_subset {S5 S5' S10 S10' : Finset 𝓩}
   intro x hx
   rw [mem_ofFinset_iff] at hx ⊢
   exact ⟨hx.1.trans h5, hx.2.1.trans h5, hx.2.2.1.trans h5, hx.2.2.2.trans h10⟩
+
+lemma ofFinset_univ [Fintype 𝓩] (x : Charges 𝓩) :
+    x ∈ ofFinset (Finset.univ : Finset 𝓩) (Finset.univ : Finset 𝓩) := by
+  rw [mem_ofFinset_iff]
+  simp
 
 end Charges
 

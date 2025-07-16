@@ -113,6 +113,7 @@ import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.Y3
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Basic
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Map
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
@@ -121,6 +122,7 @@ import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Tree
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.ZMod
 import PhysLean.Particles.SuperSymmetry.SU5.FieldLabels
 import PhysLean.Particles.SuperSymmetry.SU5.Potential
 import PhysLean.QFT.AnomalyCancellation.Basic

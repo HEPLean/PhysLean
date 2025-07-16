@@ -1,0 +1,86 @@
+/-
+Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Joseph Tooby-Smith
+-/
+import Mathlib.Data.Fintype.Prod
+import Mathlib.Data.ZMod.Defs
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
+import Mathlib.Tactic.FinCases
+/-!
+
+# ZMod charges
+
+In this module we investigate the possible ℤ₂ charges that one can assign
+to charges associated with ℤ₂ we can assign to particles in the SU(5) model, whilst
+keeping charges anomaly free.
+
+-/
+
+namespace SuperSymmetry
+
+namespace SU5
+namespace Charges
+
+/-- The finite set of `ZMod n` valued charges which are complete,
+  not pheno-constrained and don't regenerate dangerous couplings
+  with the Yukawa term up-to 4-inserstions of singlets. -/
+def ZModCharges (n : ℕ) [NeZero n] : Finset (Charges (ZMod n)) :=
+  let S : Finset (Charges (ZMod n)) := ofFinset (Finset.univ) Finset.univ
+  S.filter (fun x => IsComplete x ∧ ¬ x.IsPhenoConstrained ∧ ¬ x.YukawaGeneratesDangerousAtLevel 4)
+
+lemma ZModCharges_one_eq : ZModCharges 1 = ∅:= by decide
+
+lemma ZModCharges_two_eq : ZModCharges 2 = ∅ := by decide
+
+lemma ZModCharges_three_eq : ZModCharges 3 = ∅ := by native_decide
+
+lemma ZModCharges_four_eq : ZModCharges 4 = {(some 0, some 2, {1}, {3}),
+    (some 0, some 2, {3}, {1}), (some 1, some 2, {0}, {3}), (some 3, some 2, {0}, {1})} := by
+  native_decide
+
+lemma ZModCharges_five_eq : ZModCharges 5 = ∅ := by native_decide
+
+lemma ZModCharges_six_eq : ZModCharges 6 = {(some 0, some 2, {5}, {1}),
+    (some 0, some 4, {1}, {5}), (some 1, some 0, {2}, {3}), (some 1, some 2, {4}, {1}),
+    (some 1, some 4, {0}, {5}), (some 1, some 4, {3}, {2}), (some 2, some 0, {1}, {3}),
+    (some 2, some 4, {5}, {5}), (some 3, some 2, {5}, {4}), (some 3, some 4, {1}, {2}),
+    (some 4, some 0, {5}, {3}), (some 4, some 2, {1}, {1}), (some 5, some 0, {4}, {3}),
+    (some 5, some 2, {0}, {1}), (some 5, some 2, {3}, {4}), (some 5, some 4, {2}, {5})} := by
+  native_decide
+
+/-- The finite set of `ZMod n × ZMod m` valued charges which are complete,
+  not pheno-constrained and don't regenerate dangerous couplings
+  with the Yukawa term up-to 4-inserstions of singlets. -/
+def ZModZModCharges (n m : ℕ) [NeZero n] [NeZero m] : Finset (Charges (ZMod n × ZMod m)) :=
+  let S : Finset (Charges (ZMod n × ZMod m)) := ofFinset (Finset.univ) Finset.univ
+  S.filter (fun x => IsComplete x ∧
+  ¬ x.IsPhenoConstrained ∧ ¬ x.YukawaGeneratesDangerousAtLevel 4)
+
+/-- The additive monoid homomorphism from `ℤ` to `ZMod n` obtained by
+  taking the modulo. -/
+def intToZMod (n : ℕ) : ℤ →+ ZMod n where
+  toFun := Int.cast
+  map_zero' := Int.cast_zero
+  map_add' := Int.cast_add
+
+/-- The non-trivial additive monoid homomorphism from `ZMod 4` to `ZMod 2`. -/
+def zModFourToZModTwo:
+    ZMod 4 →+ ZMod 2 where
+  toFun x :=
+    match x with
+    | 0 => 0
+    | 1 => 1
+    | 2 => 0
+    | 3 => 1
+  map_zero' := by simp
+  map_add' := by
+    intros x y
+    fin_cases x
+    all_goals fin_cases y
+    all_goals decide
+
+end Charges
+end SU5
+
+end SuperSymmetry
