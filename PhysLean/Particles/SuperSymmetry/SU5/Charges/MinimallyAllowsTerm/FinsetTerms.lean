@@ -120,7 +120,7 @@ lemma mem_minTopBottom_of_minimallyAllowsFinsetTerms
     · rw [allowsTerm_iff_subset_allowsTermForm]
       simp [allowsTermForm, subset_def]
       use -qHu
-      simp
+      simp only [neg_neg, true_and]
       use q10
       simp
     · rw [allowsTerm_iff_subset_allowsTermForm]
