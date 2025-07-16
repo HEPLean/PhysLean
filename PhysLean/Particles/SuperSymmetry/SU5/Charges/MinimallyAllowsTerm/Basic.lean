@@ -9,7 +9,7 @@ import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
 # Minimally allows terms
 
 Given a set of charges `x : Charges` corresponding to charges of the representations
-present in the thoery, and a potential term `T : PotentialTerm`, we say that `x`
+present in the theory, and a potential term `T : PotentialTerm`, we say that `x`
 minimally allows `T` if it allows the term `T` and no proper subset of `x` allows `T`.
 
 -/
