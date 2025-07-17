@@ -7,6 +7,7 @@ import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Linters.Sorry
 import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.SpaceAndTime.Space.Basic
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Comp
 /-!
@@ -51,6 +52,8 @@ the equation of motion.
 
 namespace ClassicalMechanics
 open Real
+open Space
+open InnerProductSpace
 
 /-- The classical harmonic oscillator is specified by a mass `m`, and a spring constant `k`.
   Both the mass and the string constant are assumed to be positive. -/
@@ -95,48 +98,45 @@ lemma inverse_ω_sq : (S.ω ^ 2)⁻¹ = S.m/S.k := by
   field_simp
 
 /-- The kinetic energy of the harmonic oscillator is `1/2 m (dx/dt) ^ 2`. -/
-noncomputable def kineticEnergy (x : Time → ℝ) : Time → ℝ := fun t =>
-  1/2 * S.m * (deriv x t)^2
+noncomputable def kineticEnergy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
+  1/2 * S.m * ⟪ deriv xₜ t, deriv xₜ t ⟫_ℝ
 
 /-- The potential energy of the harmonic oscillator is `1/2 k x ^ 2` -/
-noncomputable def potentialEnergy (x : Time → ℝ) : Time → ℝ := fun t =>
-  1/2 * S.k * (x t)^2
+noncomputable def potentialEnergy (x : Space 1) : ℝ :=
+  1/2 * S.k * ⟪x, x⟫_ℝ
 
 /-- The energy of the harmonic oscillator is the kinetic energy plus the potential energy. -/
-noncomputable def energy (x : Time → ℝ) : Time → ℝ := fun t =>
-  kineticEnergy S x t + potentialEnergy S x t
+noncomputable def energy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
+  kineticEnergy S xₜ t + potentialEnergy S (xₜ t)
 
 /-- The lagrangian of the harmonic oscillator is the kinetic energy minus the potential energy. -/
-noncomputable def lagrangian (x : Time → ℝ) : Time → ℝ := fun t =>
-  kineticEnergy S x t - potentialEnergy S x t
+noncomputable def lagrangian (xₜ: Time → Space 1) : Time → ℝ := fun t =>
+  kineticEnergy S xₜ t - potentialEnergy S (xₜ t)
 
 /-- The lagrangian of the classical harmonic oscillator obeys the condition
 
   `lagrangian S (- x) = lagrangian S x`.
 -/
-lemma lagrangian_parity (x : Time → ℝ) (hx : Differentiable ℝ x) :
-    lagrangian S (- x) = lagrangian S x := by
+lemma lagrangian_parity (xₜ : Time → Space 1):
+    lagrangian S (- xₜ) = lagrangian S xₜ := by
   funext t
-  simp only [lagrangian, kineticEnergy, one_div, potentialEnergy, Pi.neg_apply, even_two,
-    Even.neg_pow, sub_left_inj, mul_eq_mul_left_iff, mul_eq_zero, inv_eq_zero, OfNat.ofNat_ne_zero,
-    false_or]
+  simp only [lagrangian, kineticEnergy, one_div, potentialEnergy, Pi.neg_apply,
+    inner_neg_neg, sub_left_inj, mul_eq_mul_left_iff, mul_eq_zero, inv_eq_zero,
+    OfNat.ofNat_ne_zero, false_or]
   left
-  trans (deriv (Neg.neg ∘ x) t)^2
-  · rfl
-  rw [deriv_comp]
-  · simp
-  · fun_prop
-  · exact hx t
+  have hx: deriv (- xₜ ) t = - deriv xₜ t := by
+    exact deriv.neg
+  rw [deriv.neg]
+  simp only [inner_neg_neg]
 
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
   is the potential energy. -/
-noncomputable def force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ :=
-  fun t => - deriv (fun y => potentialEnergy S (fun _ => y) t) (x t)
+@[sorryful]
+def force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ := sorry
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 @[sorryful]
-lemma force_is_linear (x : Time → ℝ) :
-    force S x = - S.k • x := by sorry
+lemma force_is_linear (x : Time → ℝ) : force S x = - S.k • x := by sorry
 
 /-- The definition of the equation of motion for the classical harmonic oscillator
   defined through the Euler-Lagrange equations. -/
