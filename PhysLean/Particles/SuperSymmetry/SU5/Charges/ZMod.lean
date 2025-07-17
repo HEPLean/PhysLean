@@ -30,10 +30,16 @@ def ZModCharges (n : ℕ) [NeZero n] : Finset (Charges (ZMod n)) :=
   let S : Finset (Charges (ZMod n)) := ofFinset (Finset.univ) Finset.univ
   S.filter (fun x => IsComplete x ∧ ¬ x.IsPhenoConstrained ∧ ¬ x.YukawaGeneratesDangerousAtLevel 4)
 
+/-- This lemma corresponds to the statement that there are no choices of `ℤ₁` representations
+  which give a phenomenologically viable theory. -/
 lemma ZModCharges_one_eq : ZModCharges 1 = ∅:= by decide
 
+/-- This lemma corresponds to the statement that there are no choices of `ℤ₂` representations
+  which give a phenomenologically viable theory. -/
 lemma ZModCharges_two_eq : ZModCharges 2 = ∅ := by decide
 
+/-- This lemma corresponds to the statement that there are no choices of `ℤ₃` representations
+  which give a phenomenologically viable theory. -/
 @[pseudo]
 lemma ZModCharges_three_eq : ZModCharges 3 = ∅ := by native_decide
 
@@ -42,6 +48,8 @@ lemma ZModCharges_four_eq : ZModCharges 4 = {(some 0, some 2, {1}, {3}),
     (some 0, some 2, {3}, {1}), (some 1, some 2, {0}, {3}), (some 3, some 2, {0}, {1})} := by
   native_decide
 
+/-- This lemma corresponds to the statement that there are no choices of `ℤ₅` representations
+  which give a phenomenologically viable theory. -/
 @[pseudo]
 lemma ZModCharges_five_eq : ZModCharges 5 = ∅ := by native_decide
 
