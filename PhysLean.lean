@@ -122,6 +122,7 @@ import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Tree
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.U1U1
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.ZMod
 import PhysLean.Particles.SuperSymmetry.SU5.FieldLabels
