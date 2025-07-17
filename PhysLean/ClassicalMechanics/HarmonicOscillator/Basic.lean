@@ -132,21 +132,21 @@ lemma lagrangian_parity (xₜ : Time → Space 1):
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
   is the potential energy. -/
 @[sorryful]
-def force (S : HarmonicOscillator) (x : Time → ℝ) : Time → ℝ := sorry
+def force (S : HarmonicOscillator) (xₜ : Time → Space 1) : Time → Space 1 := sorry
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 @[sorryful]
-lemma force_is_linear (x : Time → ℝ) : force S x = - S.k • x := by sorry
+lemma force_is_linear (xₜ : Time → Space 1) : force S x = - S.k • x := by sorry
 
 /-- The definition of the equation of motion for the classical harmonic oscillator
   defined through the Euler-Lagrange equations. -/
 @[sorryful]
-def EquationOfMotion (x : Time → ℝ) : Prop := sorry
+def EquationOfMotion (xₜ : Time → Space 1) : Prop := sorry
 
 /-- The equations of motion are satisfied if and only if Newton's second law holds. -/
 @[sorryful]
-lemma equationOfMotion_iff_newtons_second_law (x : Time → ℝ) :
-    EquationOfMotion x ↔ ∀ t, force S x t = S.m * deriv (fun t' => deriv x t') t := by sorry
+lemma equationOfMotion_iff_newtons_second_law (xₜ : Time → Space 1) :
+    EquationOfMotion xₜ ↔ ∀ t, force S xₜ t = S.m • deriv (fun t' => deriv xₜ t') t := by sorry
 
 /-- The proposition on a trajectory which is true if that trajectory is an extrema of the
   action.
@@ -154,7 +154,7 @@ lemma equationOfMotion_iff_newtons_second_law (x : Time → ℝ) :
   semiformal implmentation notes:
   - This is not expected to be easy to define. -/
 @[sorryful]
-def ExtremaOfAction (x : Time → ℝ) : Prop := by sorry
+def ExtremaOfAction (x : Time → Space 1) : Prop := by sorry
 
 /-- A trajectory `x : ℝ → ℝ` satsifies the equation of motion if and only if
   it is an extrema of the action.
@@ -163,7 +163,7 @@ def ExtremaOfAction (x : Time → ℝ) : Prop := by sorry
   will need defining before this.
 -/
 @[sorryful]
-lemma equationOfMotion_iff_extremaOfAction (x : Time → ℝ) :
+lemma equationOfMotion_iff_extremaOfAction (x : Time → Space 1) :
     EquationOfMotion x ↔ ExtremaOfAction x := by sorry
 
 TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
