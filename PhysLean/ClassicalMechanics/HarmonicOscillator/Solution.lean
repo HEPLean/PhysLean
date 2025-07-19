@@ -74,14 +74,14 @@ lemma v₀_zeroIC : zeroIC.v₀ = 0 := rfl
 -/
 
 /-- Given initial conditions, the solution to the classical harmonic oscillator. -/
-noncomputable def sol (IC : InitialConditions) : Time → ℝ := fun t =>
-  IC.x₀ * cos (S.ω * t) + IC.v₀/S.ω * sin (S.ω * t)
+noncomputable def sol (IC : InitialConditions) : Time → Space 1 := fun t =>
+  ![IC.x₀ * cos (S.ω * t) + IC.v₀/S.ω * sin (S.ω * t)]
 
 lemma sol_eq (IC : InitialConditions) :
-    S.sol IC = fun t => IC.x₀ * cos (S.ω * t) + IC.v₀/S.ω * sin (S.ω * t) := rfl
+    S.sol IC = fun t => ![IC.x₀ * cos (S.ω * t) + IC.v₀/S.ω * sin (S.ω * t)] := rfl
 
 /-- For zero initial conditions, the solution is zero. -/
-lemma sol_zeroIC : S.sol zeroIC = fun _ => 0 := by
+lemma sol_zeroIC : S.sol zeroIC = fun _ => ![0] := by
   simp [sol_eq]
 
 /-- Given initial conditions, the amplitude of the classical harmonic oscillator. -/
@@ -145,7 +145,7 @@ lemma amplitude_mul_sin_phase (IC : InitialConditions) :
   simp [phase, amplitude_eq_norm]
 
 lemma sol_eq_amplitude_mul_cos_phase (IC : InitialConditions) :
-    S.sol IC = fun t => S.amplitude IC * cos (S.ω * t + S.phase IC) := by
+    S.sol IC = fun t => ![S.amplitude IC * cos (S.ω * t + S.phase IC)] := by
   funext t
   rw [cos_add]
   trans (S.amplitude IC * cos (S.phase IC)) * cos (S.ω * t) -
@@ -177,7 +177,7 @@ lemma sol_differentiable (IC : InitialConditions) : Differentiable ℝ (S.sol IC
   fun_prop
 
 lemma sol_velocity (IC : InitialConditions) : deriv (S.sol IC) =
-    fun t => - IC.x₀ * S.ω * sin (S.ω * t) + IC.v₀ * cos (S.ω * t) := by
+    fun t => ![- IC.x₀ * S.ω * sin (S.ω * t) + IC.v₀ * cos (S.ω * t)] := by
   funext t
   rw [sol_eq, deriv_fun_add (by fun_prop) (by fun_prop)]
   simp only [differentiableAt_const, deriv_const_mul_field']
@@ -301,9 +301,9 @@ lemma sol_equationOfMotion (IC : InitialConditions) :
   - One may needed the added condition of smoothness on `x` here.
   - `EquationOfMotion` needs defining before this can be proved. -/
 @[sorryful]
-lemma sol_unique (IC : InitialConditions) (x : Time → ℝ) :
-    EquationOfMotion x ∧ x 0 = IC.x₀ ∧ deriv x 0 = IC.v₀ →
-    x = S.sol IC := by sorry
+lemma sol_unique (IC : InitialConditions) (xₜ : Time → Space 1) :
+    EquationOfMotion xₜ ∧ xₜ 0 = ![IC.x₀] ∧ deriv xₜ 0 = ![IC.v₀] →
+    xₜ = S.sol IC := by sorry
 
 end HarmonicOscillator
 
