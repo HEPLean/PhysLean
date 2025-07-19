@@ -1,11 +1,14 @@
 /-
 Copyright (c) 2025 Zhi Kai Pong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Zhi Kai Pong
+Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 -/
 import PhysLean.SpaceAndTime.Space.Basic
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+import Mathlib.Analysis.Calculus.FDeriv.Add
+
 import Mathlib.Analysis.Calculus.Gradient.Basic
 /-!
 
@@ -60,7 +63,7 @@ end
 
 namespace Space
 
-/-- Derivatives on space distiribute over addition. -/
+/-- Derivatives on space distribute over addition. -/
 lemma deriv_add [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f1 f2 : Space d → M) (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
     ∂[u] (f1 + f2) = ∂[u] f1 + ∂[u] f2 := by
@@ -71,7 +74,7 @@ lemma deriv_add [NormedAddCommGroup M] [NormedSpace ℝ M]
   rfl
   repeat fun_prop
 
-/-- Derivatives on space distiribute coordinate-wise over addition. -/
+/-- Derivatives on space distribute coordinate-wise over addition. -/
 lemma deriv_coord_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
     (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
     (∂[u] (fun x => f1 x i + f2 x i)) =
@@ -135,7 +138,7 @@ lemma differentiable_fderiv_coord (f : Space → EuclideanSpace ℝ (Fin 3)) (hf
   · apply ContDiff.differentiable_fderiv
     exact hf
 
-/-- Second derivatives distiribute coordinate-wise over addition (all three components for div). -/
+/-- Second derivatives distribute coordinate-wise over addition (all three components for div). -/
 lemma deriv_coord_2nd_add (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f) :
     ∂[i] (fun x => ∂[u] (fun x => f x u) x + (∂[v] (fun x => f x v) x + ∂[w] (fun x => f x w) x)) =
     (∂[i] (∂[u] (fun x => f x u))) + (∂[i] (∂[v] (fun x => f x v))) +
@@ -153,7 +156,7 @@ lemma deriv_coord_2nd_add (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
       exact hf
     · fun_prop
 
-/-- Second derivatives distiribute coordinate-wise over subtraction (two components for curl). -/
+/-- Second derivatives distribute coordinate-wise over subtraction (two components for curl). -/
 lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f) :
     ∂[u] (fun x => ∂[v] (fun x => f x w) x - ∂[w] (fun x => f x v) x) =
     (∂[u] (∂[v] (fun x => f x w))) - (∂[u] (∂[w] (fun x => f x v))) := by
@@ -168,6 +171,20 @@ lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
     · apply differentiable_fderiv_coord
       exact hf
     · fun_prop
+
+@[simp]
+lemma deriv_component_same (μ : Fin d) (x : Space d) :
+    (deriv μ (fun x => x μ) x) = 1 := by
+  simp [deriv, fderiv_coord_eq_proj_comp, ContinuousLinearMap.proj]
+  erw [LinearMap.proj_apply]
+  simp
+
+lemma deriv_component_diff (μ ν : Fin d) (x : Space d) (h : μ ≠ ν) :
+    (deriv μ (fun x => x ν) x) = 0 := by
+  simp [deriv, fderiv_coord_eq_proj_comp, ContinuousLinearMap.proj]
+  erw [LinearMap.proj_apply]
+  simp [h]
+  omega
 
 /-!
 
@@ -457,6 +474,62 @@ lemma curl_linear_map (f : W → Space 3 → EuclideanSpace ℝ (Fin 3))
   · intros k w
     rw [hf'.map_smul]
     rw [curl_smul]
+    fun_prop
+
+/-!
+
+## Inner product space identities
+
+-/
+
+open InnerProductSpace
+
+/-- The inner product is differentiable. -/
+lemma inner_differentiable {d : ℕ} :
+    Differentiable ℝ (fun y : Space d => ⟪y, y⟫_ℝ) := by
+  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
+  fun_prop
+
+/-- The gradient of the inner product is given by `2 • x`. -/
+lemma grad_inner {d : ℕ} :
+    ∇ (fun y : Space d => ⟪y, y⟫_ℝ) = fun z => (2:ℝ) • z := by
+  ext z i
+  simp [Space.grad]
+  rw [deriv]
+  rw [fderiv_fun_sum]
+  · simp
+    rw [Finset.sum_eq_single i]
+    · trans (fderiv ℝ (fun y => y i ^ 2) z) (EuclideanSpace.single i 1)
+      · congr
+        funext y
+        ring
+      trans deriv i ((fun x => x^ 2) ∘ fun y => y i ) z
+      · rfl
+      rw [deriv, fderiv_comp]
+      · simp
+        rw [← deriv_eq]
+        simp
+      · fun_prop
+      · fun_prop
+    · intro b _ hb
+      trans (fderiv ℝ (fun y => y b ^ 2) z) (EuclideanSpace.single i 1)
+      · congr
+        funext y
+        ring
+      trans deriv i ((fun x => x^ 2) ∘ fun y => y b) z
+      · rfl
+      rw [deriv, fderiv_comp]
+      simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv,
+        differentiableAt_fun_id, deriv_fun_pow'', Nat.cast_ofNat, Nat.add_one_sub_one, pow_one,
+        deriv_id'', mul_one, smul_eq_mul, mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
+      · left
+        rw [← deriv_eq]
+        rw [deriv_component_diff]
+        omega
+      · fun_prop
+      · fun_prop
+    · simp
+  · intro i
     fun_prop
 
 end Space
