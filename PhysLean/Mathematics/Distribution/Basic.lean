@@ -47,7 +47,7 @@ abbrev Distribution (𝕜 E F : Type) [RCLike 𝕜] [NormedAddCommGroup E] [Norm
     [NormedSpace ℝ E] [NormedSpace 𝕜 F] : Type :=
   𝓢(E, 𝕜) →L[𝕜] F
 
-@[inherit_doc] notation:25 E:arg "→d[" 𝕜:25 "] " F:arg => Distribution 𝕜 E F
+@[inherit_doc] notation:25 E:arg "→d[" 𝕜:25 "] " F:0 => Distribution 𝕜 E F
 
 variable (𝕜 : Type) {E F : Type} [RCLike 𝕜] [NormedAddCommGroup E] [NormedAddCommGroup F]
 
@@ -127,6 +127,81 @@ def derivative : (ℝ →d[𝕜] 𝕜) →ₗ[𝕜] (ℝ →d[𝕜] 𝕜) where
   rfl
 
 end RCLike
+
+section fderiv
+
+variable [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [RCLike 𝕜]
+  [NormedSpace 𝕜 F] [SMulCommClass ℝ 𝕜 F]
+
+/-- The Fréchet derivative of a distribution.
+
+Informally, for a distribution `u : E →d[𝕜] F`,
+the Fréchet derivative `fderiv u x v` corresponds to the dervative of `u` at the
+point `x` in the direction `v`. For example, if `F = ℝ³`
+then `fderiv u x v` is a vector in `ℝ³` corrsponding to
+`(v₁ ∂u₁/∂x₁ + v₂ ∂u₁/∂x₂ + v₃ ∂u₁/∂x₃, v₁ ∂u₂/∂x₁ + v₂ ∂u₂/∂x₂ + v₃ ∂u₂/∂x₃,...)`.
+
+Formally, for a distribution `u : E →d[𝕜] F`, this is actually defined
+the distribution which takes test function `η : E → 𝕜` to
+`- u (SchwartzMap.evalCLM v (SchwartzMap.fderivCLM 𝕜 η))`.
+
+Note that, unlike for functions, the Fréchet derivative of a distribution always exists.
+-/
+def fderivD [FiniteDimensional ℝ E] : (E →d[𝕜] F) →ₗ[𝕜] (E →d[𝕜] (E →L[ℝ] F)) where
+  toFun u := {
+    toFun η := LinearMap.toContinuousLinearMap {
+      toFun v := ContinuousLinearEquiv.neg 𝕜 <| u <|
+        SchwartzMap.evalCLM (𝕜 := 𝕜) v <|
+        SchwartzMap.fderivCLM 𝕜 (E := E) (F := 𝕜) η
+      map_add' v1 v2 := by
+        simp only [ContinuousLinearEquiv.neg_apply]
+        trans -u ((SchwartzMap.evalCLM (𝕜 := 𝕜) v1) ((fderivCLM 𝕜) η) +
+          (SchwartzMap.evalCLM (𝕜 := 𝕜) v2) ((fderivCLM 𝕜) η))
+        swap
+        · simp only [map_add, neg_add_rev]
+          abel
+        congr
+        ext x
+        simp only [SchwartzMap.evalCLM, mkCLM, mkLM, map_add, ContinuousLinearMap.coe_mk',
+          LinearMap.coe_mk, AddHom.coe_mk, fderivCLM_apply, add_apply]
+        rfl
+      map_smul' a v1 := by
+        simp only [ContinuousLinearEquiv.neg_apply, RingHom.id_apply, smul_neg, neg_inj]
+        trans u (a • (SchwartzMap.evalCLM (𝕜 := 𝕜) v1) ((fderivCLM 𝕜) η))
+        swap
+        · simp
+        congr
+        ext x
+        simp only [SchwartzMap.evalCLM, mkCLM, mkLM, map_smul, ContinuousLinearMap.coe_mk',
+          LinearMap.coe_mk, AddHom.coe_mk, fderivCLM_apply, smul_apply]
+        rfl}
+    map_add' η1 η2 := by
+      ext x
+      simp only [map_add, ContinuousLinearEquiv.neg_apply, neg_add_rev,
+        LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
+        ContinuousLinearMap.add_apply]
+    map_smul' a η := by
+      ext x
+      simp
+    cont := by
+      refine continuous_clm_apply.mpr ?_
+      intro y
+      simp only [ContinuousLinearEquiv.neg_apply, LinearMap.coe_toContinuousLinearMap',
+        LinearMap.coe_mk, AddHom.coe_mk]
+      fun_prop
+  }
+  map_add' u₁ u₂ := by
+    ext η
+    simp only [ContinuousLinearMap.add_apply, ContinuousLinearEquiv.neg_apply, neg_add_rev,
+      ContinuousLinearMap.coe_mk', LinearMap.coe_mk, AddHom.coe_mk,
+      LinearMap.coe_toContinuousLinearMap']
+    abel
+  map_smul' c u := by
+    ext
+    simp
+
+end fderiv
 
 section Complex
 

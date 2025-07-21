@@ -297,6 +297,7 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.Tensorial
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Space.Distributions
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
