@@ -57,15 +57,15 @@ section NormedSpace
 
 variable [NormedSpace ℝ E] [NormedSpace 𝕜 F]
 
-/-- We construct a distribution from the following data:
+/-- The construction of a distribution from the following data:
 1. We take a finite set `s` of pairs `(k, n) ∈ ℕ × ℕ` that will be explained later.
 2. We take a linear map `u` that evaluates the given Schwartz function `η`. At this stage we don't
-   need `u` to be continuous.
+  need `u` to be continuous.
 3. Recall that a Schwartz function `η` satisfies a bound
-   `‖x‖ᵏ * ‖(dⁿ/dxⁿ) η‖ < Mₙₖ` where `Mₙₖ : ℝ` only depends on `(k, n) : ℕ × ℕ`.
+  `‖x‖ᵏ * ‖(dⁿ/dxⁿ) η‖ < Mₙₖ` where `Mₙₖ : ℝ` only depends on `(k, n) : ℕ × ℕ`.
 4. This step is where `s` is used: for each test function `η`, the norm `‖u η‖` is required to be
-   bounded by `C * (‖x‖ᵏ * ‖(dⁿ/dxⁿ) η‖)` for some `x : ℝ` and for some `(k, n) ∈ s`, where
-   `C ≥ 0` is a global scalar.
+  bounded by `C * (‖x‖ᵏ * ‖(dⁿ/dxⁿ) η‖)` for some `x : ℝ` and for some `(k, n) ∈ s`, where
+  `C ≥ 0` is a global scalar.
 -/
 def ofLinear (s : Finset (ℕ × ℕ)) (u : 𝓢(E, 𝕜) →ₗ[𝕜] F)
     (hu : ∃ C : ℝ, 0 ≤ C ∧ ∀ η : 𝓢(E, 𝕜), ∃ (k : ℕ) (n : ℕ) (x : E), (k, n) ∈ s ∧
@@ -109,7 +109,6 @@ def diracDelta' (a : E) (v : F) : E →d[𝕜] F :=
 
 end NormedSpace
 
-
 section RCLike
 
 /-- Definition of derivative of distribution: Let `u` be a distribution. Then its derivative is
@@ -128,7 +127,6 @@ def derivative : (ℝ →d[𝕜] 𝕜) →ₗ[𝕜] (ℝ →d[𝕜] 𝕜) where
   rfl
 
 end RCLike
-
 
 section Complex
 

@@ -44,7 +44,6 @@ variable (𝕜 : Type) {E F : Type} [RCLike 𝕜] [NormedAddCommGroup E] [Normed
 
 namespace Distribution
 
-
 variable [NormedSpace ℝ E]
 
 open MeasureTheory
@@ -64,9 +63,9 @@ def powMeasure (n : ℕ) : Measure (EuclideanSpace ℝ (Fin 3)) :=
   volume.withDensity (fun x : EuclideanSpace ℝ (Fin 3) =>
     ENNReal.ofReal (‖x‖ ^ n))
 
-/-- The measure on  `EuclideanSpace ℝ (Fin 3)` given by `C1 • invSqMeasure + C2 • powMeasure n`,
+/-- The measure on `EuclideanSpace ℝ (Fin 3)` given by `C1 • invSqMeasure + C2 • powMeasure n`,
   for constants `C1` and `C2`. -/
-def boundMeasure (n : ℕ) (C1 C2 : ℝ)  :
+def boundMeasure (n : ℕ) (C1 C2 : ℝ) :
     Measure (EuclideanSpace ℝ (Fin 3)) :=
   (ENNReal.ofReal C1) • invSqMeasure +
   (ENNReal.ofReal C2) • powMeasure n
@@ -80,8 +79,8 @@ def boundMeasure (n : ℕ) (C1 C2 : ℝ)  :
 variable [NormedSpace ℝ F]
 
 lemma integrable_boundMeasure (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2_nonneg : 0 ≤ C2)
-    (f : EuclideanSpace ℝ (Fin 3) → F) (h : Integrable f (boundMeasure n C1 C2)):
-    Integrable (fun x => (C1 * (1/‖x‖^2) + C2 * ‖x‖^n) • f x)  := by
+    (f : EuclideanSpace ℝ (Fin 3) → F) (h : Integrable f (boundMeasure n C1 C2)) :
+    Integrable (fun x => (C1 * (1/‖x‖^2) + C2 * ‖x‖^n) • f x) := by
   conv =>
     enter [1, x]
     rw [add_smul]
@@ -98,9 +97,10 @@ lemma integrable_boundMeasure (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2
       refine (integrable_congr ?_).mp h1
       filter_upwards with x
       refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
-      simp
+      simp only [one_div, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom,
+        Real.coe_toNNReal', inv_nonneg, norm_nonneg, pow_nonneg, sup_of_le_left]
       fun_prop
-      simp
+      simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
       positivity
       simp
     · fun_prop
@@ -114,10 +114,11 @@ lemma integrable_boundMeasure (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2
       erw [integrable_withDensity_iff_integrable_smul₀] at h1
       refine (integrable_congr ?_).mp h1
       filter_upwards with x
-      refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ ( f x))
-      simp
+      refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
+      simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, Real.coe_toNNReal',
+        norm_nonneg, pow_nonneg, sup_of_le_left]
       fun_prop
-      simp
+      simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
       positivity
       simp
     · fun_prop
@@ -135,7 +136,7 @@ lemma integral_invSqMeasure (f : EuclideanSpace ℝ (Fin 3) → F) :
   erw [integral_withDensity_eq_integral_smul (by fun_prop)]
   congr
   funext x
-  simp
+  simp only [one_div]
   refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
   simp
 
@@ -151,7 +152,7 @@ lemma integral_powMeasure (n : ℕ) (f : EuclideanSpace ℝ (Fin 3) → F) :
 lemma integral_boundMeasure (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2_nonneg : 0 ≤ C2)
     (f : EuclideanSpace ℝ (Fin 3) → F)
     (hf : Integrable f (boundMeasure n C1 C2)) :
-    ∫ x, f x ∂(boundMeasure n C1 C2) = ∫ x,  (C1 * 1/‖x‖^2 + C2 * ‖x‖^n) • f x := by
+    ∫ x, f x ∂(boundMeasure n C1 C2) = ∫ x, (C1 * 1/‖x‖^2 + C2 * ‖x‖^n) • f x := by
   dsimp [boundMeasure] at ⊢ hf
   rw [integrable_add_measure] at hf
   rw [MeasureTheory.integral_add_measure hf.1 hf.2]
@@ -176,11 +177,12 @@ lemma integral_boundMeasure (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2_n
     erw [integrable_withDensity_iff_integrable_smul₀] at h1
     refine (integrable_congr ?_).mp h1
     filter_upwards with x
-    simp
+    simp only [one_div]
     refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
-    simp
+    simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, Real.coe_toNNReal',
+      inv_nonneg, norm_nonneg, pow_nonneg, sup_of_le_left]
     fun_prop
-    simp
+    simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
     positivity
     simp
   · conv =>
@@ -197,9 +199,10 @@ lemma integral_boundMeasure (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2_n
     refine (integrable_congr ?_).mp h1
     filter_upwards with x
     refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
-    simp
+    simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, Real.coe_toNNReal',
+      norm_nonneg, pow_nonneg, sup_of_le_left]
     fun_prop
-    simp
+    simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
     positivity
     simp
 
@@ -223,14 +226,16 @@ lemma invSqMeasure_integrable_pow_neg_two :
     rw [ENNReal.toReal_ofReal (by positivity)]
   have h1 := (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
     (volume (α := EuclideanSpace ℝ (Fin 3))))
-  have h2 : IntegrableOn (fun x : EuclideanSpace ℝ (Fin 3) =>  ((1 + ‖x‖) ^ 2)⁻¹ * (‖x‖ ^ 2)⁻¹) {0}ᶜ := by
+  have h2 : IntegrableOn (fun x : EuclideanSpace ℝ (Fin 3) =>
+      ((1 + ‖x‖) ^ 2)⁻¹ * (‖x‖ ^ 2)⁻¹) {0}ᶜ := by
     rw [MeasureTheory.integrableOn_iff_comap_subtypeVal]
     swap
     · refine MeasurableSet.compl_iff.mpr ?_
       simp
     let f := (fun x : EuclideanSpace ℝ (Fin 3) => ((1 + ‖x‖) ^ 2)⁻¹ * (‖x‖ ^ 2)⁻¹)
-      ∘ @Subtype.val (EuclideanSpace ℝ (Fin 3)) fun x => (
-        @Membership.mem (EuclideanSpace ℝ (Fin 3)) (Set (EuclideanSpace ℝ (Fin 3))) Set.instMembership {0}ᶜ x)
+      ∘ @Subtype.val (EuclideanSpace ℝ (Fin 3)) fun x =>
+        (@Membership.mem (EuclideanSpace ℝ (Fin 3))
+          (Set (EuclideanSpace ℝ (Fin 3))) Set.instMembership {0}ᶜ x)
     have hf : (f ∘ (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))).symm)∘
       (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))) = f := by
       funext x
@@ -249,7 +254,7 @@ lemma invSqMeasure_integrable_pow_neg_two :
       · intro n
         refine (isFiniteMeasure_iff (Measure.comap Subtype.val (m n))).mpr ?_
         rw [MeasurableEmbedding.comap_apply]
-        simp
+        simp only [Set.image_univ, Subtype.range_coe_subtype, Set.mem_Ioi]
         have hm := h.1 n
         exact measure_lt_top (m n) {x | 0 < x}
         exact MeasurableEmbedding.subtype_coe measurableSet_Ioi
@@ -265,8 +270,8 @@ lemma invSqMeasure_integrable_pow_neg_two :
         refine MeasurableSet.subtype_image measurableSet_Ioi hs
         exact hs
         exact MeasurableEmbedding.subtype_coe measurableSet_Ioi
-    have hf' :  (f ∘ (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))).symm) =
-      fun x =>((1 + x.2.val) ^ 2)⁻¹ * (x.2.val ^ 2)⁻¹  := by
+    have hf' : (f ∘ (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))).symm) =
+      fun x =>((1 + x.2.val) ^ 2)⁻¹ * (x.2.val ^ 2)⁻¹ := by
       funext x
       simp only [Function.comp_apply, homeomorphUnitSphereProd_symm_apply_coe, f]
       rw [norm_smul]
@@ -279,7 +284,7 @@ lemma invSqMeasure_integrable_pow_neg_two :
     rw [MeasureTheory.prod_withDensity_right]
     swap
     · fun_prop
-    rw [MeasureTheory.integrable_withDensity_iff ]
+    rw [MeasureTheory.integrable_withDensity_iff]
     swap
     · refine Measurable.ennreal_ofReal ?_
       refine Measurable.pow_const ?_ 2
@@ -290,15 +295,17 @@ lemma invSqMeasure_integrable_pow_neg_two :
     · apply Filter.Eventually.of_forall
       intro x
       exact ENNReal.ofReal_lt_top
-    have hf'' : (fun (x : ↑(Metric.sphere (α := (EuclideanSpace ℝ (Fin 3))) 0 1) × ↑(Set.Ioi (α := ℝ) 0)) => ( ((1 + x.2.val) ^ 2)⁻¹ * (x.2.val ^ 2)⁻¹ * (ENNReal.ofReal (↑x.2.val ^ 2)).toReal))
-        = fun x =>  ((1 + x.2.val) ^ 2)⁻¹:= by
+    have hf'' : (fun (x : ↑(Metric.sphere (α := (EuclideanSpace ℝ (Fin 3))) 0 1) ×
+        ↑(Set.Ioi (α := ℝ) 0)) =>
+        (((1 + x.2.val) ^ 2)⁻¹ * (x.2.val ^ 2)⁻¹ * (ENNReal.ofReal (↑x.2.val ^ 2)).toReal))
+        = fun x => ((1 + x.2.val) ^ 2)⁻¹:= by
       funext x
       rw [ENNReal.toReal_ofReal]
       generalize (1 + ↑x.2.val) ^ 2 = l
       ring_nf
       have h2 : x.2.val ≠ 0 := by
         have h' := x.2.2
-        simp  [- Subtype.coe_prop, f] at h'
+        simp [- Subtype.coe_prop, f] at h'
         linarith
       field_simp
       ring_nf
@@ -312,15 +319,15 @@ lemma invSqMeasure_integrable_pow_neg_two :
       apply Integrable.const_mul
       rw [← @Measure.Subtype.volume_def]
       apply MeasureTheory.integrable_of_integral_eq_one
-      trans ∫ (x : ℝ ) in Set.Ioi 0, ((1 + x) ^ 2)⁻¹ ∂volume
+      trans ∫ (x : ℝ) in Set.Ioi 0, ((1 + x) ^ 2)⁻¹ ∂volume
       · rw [← MeasureTheory.integral_subtype_comap]
         rfl
         exact measurableSet_Ioi
-      trans  ∫ (x : ℝ ) in Set.Ioi 1, (x ^ 2)⁻¹ ∂volume
+      trans ∫ (x : ℝ) in Set.Ioi 1, (x ^ 2)⁻¹ ∂volume
       · let f := fun x : ℝ => (x ^ 2)⁻¹
-        change ∫ (x : ℝ ) in Set.Ioi 0, f (1 + x) ∂volume   = ∫ (x : ℝ ) in Set.Ioi 1, f x ∂volume
+        change ∫ (x : ℝ) in Set.Ioi 0, f (1 + x) ∂volume = ∫ (x : ℝ) in Set.Ioi 1, f x ∂volume
         let fa := fun x : ℝ => 1 + x
-        change  ∫ (x : ℝ ) in Set.Ioi 0, f (fa x) ∂volume  =  _
+        change ∫ (x : ℝ) in Set.Ioi 0, f (fa x) ∂volume = _
         rw [← MeasureTheory.MeasurePreserving.setIntegral_image_emb (ν := volume)]
         simp [fa]
         simp [fa]
@@ -330,7 +337,7 @@ lemma invSqMeasure_integrable_pow_neg_two :
       · trans ∫ (x : ℝ) in Set.Ioi 1, (x ^ (-2 : ℝ)) ∂volume
         · simp
           rfl
-        rw [integral_Ioi_rpow_of_lt ]
+        rw [integral_Ioi_rpow_of_lt]
         field_simp
         norm_num
         linarith
@@ -338,7 +345,7 @@ lemma invSqMeasure_integrable_pow_neg_two :
   rw [← MeasureTheory.integrableOn_univ]
   apply MeasureTheory.IntegrableOn.congr_set_ae h2
   rw [← MeasureTheory.ae_eq_set_compl]
-  trans (∅  : Set (EuclideanSpace ℝ (Fin 3)))
+  trans (∅ : Set (EuclideanSpace ℝ (Fin 3)))
   · apply Filter.EventuallyEq.of_eq
     rw [← Set.compl_empty]
     exact compl_compl _
@@ -352,23 +359,24 @@ instance : Measure.HasTemperateGrowth invSqMeasure where
 
 instance (n : ℕ) : Measure.HasTemperateGrowth (powMeasure n) where
   exists_integrable := by
-    let m := (volume (α :=  EuclideanSpace ℝ (Fin 3))).integrablePower
+    let m := (volume (α := EuclideanSpace ℝ (Fin 3))).integrablePower
     use (m + n)
     simp only [powMeasure]
     rw [MeasureTheory.integrable_withDensity_iff]
-    have h1 : (fun x :  EuclideanSpace ℝ (Fin 3) => (1 + ‖x‖) ^ (- (m + n : ℝ)) * (ENNReal.ofReal (‖x‖ ^ n)).toReal)
+    have h1 : (fun x : EuclideanSpace ℝ (Fin 3) =>
+        (1 + ‖x‖) ^ (- (m + n : ℝ)) * (ENNReal.ofReal (‖x‖ ^ n)).toReal)
       = fun x => ‖x‖ ^ n * ‖(1 + ‖x‖) ^ (-(m + n : ℝ))‖ := by
       funext x
-      simp
+      simp only [neg_add_rev, norm_nonneg, pow_nonneg, ENNReal.toReal_ofReal, Real.norm_eq_abs]
       rw [abs_of_nonneg (by positivity)]
       ring
-    simp
+    simp only [Nat.cast_add, neg_add_rev, norm_nonneg, pow_nonneg, ENNReal.toReal_ofReal]
     conv_lhs at h1 =>
       simp only [neg_add_rev, norm_nonneg, pow_nonneg, ENNReal.toReal_ofReal]
     rw [h1]
     apply integrable_of_le_of_pow_mul_le (C₁ := 1) (C₂ := 1)
     · intro x
-      simp
+      simp only [neg_add_rev, Real.norm_eq_abs]
       rw [abs_of_nonneg (by positivity)]
       refine Real.rpow_le_one_of_one_le_of_nonpos ?_ ?_
       · rw [@le_add_iff_nonneg_right]
@@ -377,7 +385,7 @@ instance (n : ℕ) : Measure.HasTemperateGrowth (powMeasure n) where
         refine neg_le_iff_add_nonneg.mpr ?_
         positivity
     · intro x
-      simp  [- neg_add_rev, Real.norm_eq_abs]
+      simp [- neg_add_rev, Real.norm_eq_abs]
       have h1 : (1 + ‖x‖) ^ (-((m : ℝ) + ↑n)) = ((1 + ‖x‖) ^ (m + n))⁻¹ := by
         have h0 : (1 + ‖x‖) ^ (m + n) = (1 + ‖x‖) ^ (m + n : ℝ) := by
           rw [← Real.rpow_natCast]
@@ -385,7 +393,7 @@ instance (n : ℕ) : Measure.HasTemperateGrowth (powMeasure n) where
         rw [h0]
         rw [← Real.inv_rpow]
         rw [← Real.rpow_neg_one, ← Real.rpow_mul]
-        simp
+        simp only [neg_add_rev, neg_mul, one_mul]
         positivity
         positivity
       rw [h1]
@@ -407,7 +415,7 @@ instance (n : ℕ) : Measure.HasTemperateGrowth (powMeasure n) where
       · fun_prop
       · intro x
         left
-        simp
+        simp only [ne_eq, m]
         have h1 : 0 < 1 + ‖x‖ := by
           positivity
         by_contra hn
@@ -417,7 +425,7 @@ instance (n : ℕ) : Measure.HasTemperateGrowth (powMeasure n) where
     · filter_upwards with x
       simp
 
-instance  (n : ℕ) (C1 C2 : ℝ)  : Measure.HasTemperateGrowth (boundMeasure n C1 C2) where
+instance (n : ℕ) (C1 C2 : ℝ) : Measure.HasTemperateGrowth (boundMeasure n C1 C2) where
   exists_integrable := by
     let m1 := invSqMeasure.integrablePower
     let m2 := (powMeasure n).integrablePower
@@ -431,12 +439,13 @@ instance  (n : ℕ) (C1 C2 : ℝ)  : Measure.HasTemperateGrowth (boundMeasure n 
       rw [Real.rpow_neg]
       ring
       positivity
-    have h0 (x : EuclideanSpace ℝ (Fin 3) ): (1 + ‖x‖) ^ (-max ↑m1 ↑m2 : ℝ) = ((1 + ‖x‖) ^ (max m1 m2))⁻¹ := by
+    have h0 (x : EuclideanSpace ℝ (Fin 3)) : (1 + ‖x‖) ^ (-max ↑m1 ↑m2 : ℝ) =
+        ((1 + ‖x‖) ^ (max m1 m2))⁻¹ := by
       rw [← Real.rpow_natCast]
-      simp
+      simp only [Nat.cast_max]
       rw [← Real.inv_rpow]
       rw [← Real.rpow_neg_one, ← Real.rpow_mul]
-      simp
+      simp only [neg_mul, one_mul]
       positivity
       positivity
     apply And.intro
@@ -456,7 +465,7 @@ instance  (n : ℕ) (C1 C2 : ℝ)  : Measure.HasTemperateGrowth (boundMeasure n 
         · positivity
         simp
       · intro x
-        simp
+        simp only [zero_add, Nat.cast_max, Real.norm_eq_abs]
         rw [abs_of_nonneg (by positivity)]
         rw [h0]
         refine mul_inv_le_one_of_le₀ ?_ ?_
@@ -472,7 +481,7 @@ instance  (n : ℕ) (C1 C2 : ℝ)  : Measure.HasTemperateGrowth (boundMeasure n 
           · refine (Real.pow_le_iff_le_log ?_ ?_).mpr ?_
             · positivity
             · positivity
-            simp
+            simp only [Real.log_pow, Nat.cast_max]
             refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
             · simp [m1, m2]
             · rfl
@@ -508,7 +517,7 @@ instance  (n : ℕ) (C1 C2 : ℝ)  : Measure.HasTemperateGrowth (boundMeasure n 
         · positivity
         simp
       · intro x
-        simp
+        simp only [zero_add, Nat.cast_max, Real.norm_eq_abs, m2, m1]
         rw [abs_of_nonneg (by positivity)]
         rw [h0]
         refine mul_inv_le_one_of_le₀ ?_ ?_
@@ -524,7 +533,7 @@ instance  (n : ℕ) (C1 C2 : ℝ)  : Measure.HasTemperateGrowth (boundMeasure n 
           · refine (Real.pow_le_iff_le_log ?_ ?_).mpr ?_
             · positivity
             · positivity
-            simp
+            simp only [Real.log_pow, Nat.cast_max, m2, m1]
             refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
             · simp [m1, m2]
             · rfl
@@ -552,8 +561,8 @@ instance  (n : ℕ) (C1 C2 : ℝ)  : Measure.HasTemperateGrowth (boundMeasure n 
 -/
 
 lemma bounded_integrable (f : EuclideanSpace ℝ (Fin 3) → F)
-     (hf :  ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-2 : ℝ) + c2 * ‖x‖^n)
-     (hae: AEStronglyMeasurable (fun x => f x) volume)
+    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-2 : ℝ) + c2 * ‖x‖^n)
+    (hae: AEStronglyMeasurable (fun x => f x) volume)
     (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
     Integrable (fun x : EuclideanSpace ℝ (Fin 3) => η x • f x) := by
   rw [← MeasureTheory.integrable_norm_iff]
@@ -566,7 +575,8 @@ lemma bounded_integrable (f : EuclideanSpace ℝ (Fin 3) → F)
       enter [1, a]
       rw [mul_add]
     apply MeasureTheory.Integrable.add
-    · have h2 : (fun a => ‖η a‖ * (c1 * ‖a‖ ^ (-2 : ℝ))) = (fun a => c1 * (‖a‖ ^ (-2 : ℝ) * ‖η a‖ )) := by
+    · have h2 : (fun a => ‖η a‖ * (c1 * ‖a‖ ^ (-2 : ℝ))) =
+          (fun a => c1 * (‖a‖ ^ (-2 : ℝ) * ‖η a‖)) := by
         funext a
         ring
       rw [h2]
@@ -586,13 +596,15 @@ lemma bounded_integrable (f : EuclideanSpace ℝ (Fin 3) → F)
       exact integrable_pow_mul volume η n
     · fun_prop
     · filter_upwards with x
-      simp
+      simp only [Real.norm_eq_abs, norm_mul, abs_abs, norm_norm, Real.rpow_neg_ofNat, Int.reduceNeg,
+        zpow_neg]
       refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
       · rfl
-      · apply (hbound x).trans
+      · simp only [abs_norm]
+        apply (hbound x).trans
         apply le_of_eq
         rw [abs_of_nonneg]
-        simp
+        simp only [Real.rpow_neg_ofNat, Int.reduceNeg, zpow_neg]
         apply add_nonneg
         · apply mul_nonneg
           · exact c1_nonneg
@@ -610,12 +622,12 @@ lemma bounded_integrable (f : EuclideanSpace ℝ (Fin 3) → F)
   `f : EuclideanSpace ℝ (Fin 3) → F` bounded by `c1 * ‖x‖ ^ (-2 : ℝ) + c2 * ‖x‖ ^ n`.
 -/
 def ofBounded (f : EuclideanSpace ℝ (Fin 3) → F)
-    (hf :  ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-2 : ℝ) + c2 * ‖x‖ ^ n)
+    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-2 : ℝ) + c2 * ‖x‖ ^ n)
     (hae: AEStronglyMeasurable (fun x => f x) volume) :
     (EuclideanSpace ℝ (Fin 3)) →d[ℝ] F := by
   refine mkCLMtoNormedSpace (fun η => ∫ x, η x • f x) ?_ ?_ ?_
   · intro η κ
-    simp
+    simp only [add_apply]
     conv_lhs =>
       enter [2, a]
       rw [add_smul]
@@ -623,7 +635,7 @@ def ofBounded (f : EuclideanSpace ℝ (Fin 3) → F)
     · exact bounded_integrable f hf hae η
     · exact bounded_integrable f hf hae κ
   · intro a η
-    simp
+    simp only [smul_apply, smul_eq_mul, RingHom.id_apply]
     conv_lhs =>
       enter [2, a]
       rw [← smul_smul]
@@ -647,12 +659,13 @@ def ofBounded (f : EuclideanSpace ℝ (Fin 3) → F)
       apply (integrable_congr ?_).mp
         (integrable_boundMeasure r c1 c2 c1_nonneg c2_nonneg (fun x => ‖η x‖) h2)
       filter_upwards with x
-      simp
+      simp only [one_div, Real.norm_eq_abs, smul_eq_mul, mul_one, mul_eq_mul_right_iff,
+        add_left_inj, abs_eq_zero]
       left
       exact rfl
     · filter_upwards with x
       rw [norm_smul, mul_comm]
-      simp
+      simp only [Real.norm_eq_abs, mul_one, smul_eq_mul]
       refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
       · apply (hbound x).trans
         apply le_of_eq
@@ -667,7 +680,8 @@ def ofBounded (f : EuclideanSpace ℝ (Fin 3) → F)
   have h' : ∀ x, ‖η x‖ ≤ (1 + ‖x‖) ^ (-(n : ℝ)) *
       (2 ^ n * ((Finset.Iic m).sup (fun m' => SchwartzMap.seminorm ℝ m'.1 m'.2) η)) := by
     intro x
-    rw [Real.rpow_neg (by positivity), ← div_eq_inv_mul, le_div_iff₀' (by positivity), Real.rpow_natCast]
+    rw [Real.rpow_neg (by positivity), ← div_eq_inv_mul,
+      le_div_iff₀' (by positivity), Real.rpow_natCast]
     simpa using one_add_le_sup_seminorm_apply (m := m) (k := n) (n := 0) le_rfl le_rfl η x
   apply (integral_mono (by simpa using η.integrable_pow_mul ((boundMeasure r c1 c2)) 0) _ h').trans
   · unfold schwartzSeminormFamily
