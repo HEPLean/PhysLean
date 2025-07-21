@@ -42,6 +42,7 @@ def viableElemsExe (I : CodimensionOneConfig) :
       X1.map fun x => (c.1, c.2.1, x.1, x.2)
   FourTree.fromMultiset (F.filter fun x => AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2)
 
+
 /-- The `FourTree` of elements of `Quanta` for which the `IsViable` condition holds for a given
   `I : CodimensionOneConfig`.
 

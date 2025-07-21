@@ -325,7 +325,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoC
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ10
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.PhenoInsertQ5
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Same
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Basic

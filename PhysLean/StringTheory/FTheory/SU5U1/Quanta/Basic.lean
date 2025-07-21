@@ -24,29 +24,33 @@ variable {I : CodimensionOneConfig}
 
 /-- The quanta of 5-bar representations corresponding to a multiset of
   `(q, M, N)` for each partcile. `(M, N)` are defined in the `FluxesFive` module. -/
-abbrev FiveQuanta : Type := Multiset (ℤ × ℤ × ℤ)
+abbrev FiveQuanta (𝓩 : Type := ℤ) : Type := Multiset (𝓩 × ℤ × ℤ)
 
 namespace FiveQuanta
 
+variable {𝓩 : Type}
+
 /-- The underlying `FluxesFive` from a `FiveQuanta`. -/
-def toFluxesFive (x : FiveQuanta) : FluxesFive := x.map Prod.snd
+def toFluxesFive (x : FiveQuanta 𝓩) : FluxesFive := x.map Prod.snd
 
 /-- The underlying Multiset charges from a `FiveQuanta`. -/
-def toCharges (x : FiveQuanta) : Multiset ℤ := x.map Prod.fst
+def toCharges (x : FiveQuanta 𝓩) : Multiset 𝓩 := x.map Prod.fst
 
 end FiveQuanta
 
 /-- The quanta of w0d representations corresponding to a multiset of
   `(q, M, N)` for each partcile. `(M, N)` are defined in the `FluxesFive` module. -/
-abbrev TenQuanta : Type := Multiset (ℤ × ℤ × ℤ)
+abbrev TenQuanta (𝓩 : Type := ℤ) : Type := Multiset (𝓩 × ℤ × ℤ)
 
 namespace TenQuanta
 
+variable {𝓩 : Type}
+
 /-- The underlying `FluxesTen` from a `TenQuanta`. -/
-def toFluxesTen (x : TenQuanta) : FluxesTen := x.map Prod.snd
+def toFluxesTen (x : TenQuanta 𝓩) : FluxesTen := x.map Prod.snd
 
 /-- The underlying Multiset charges from a `TenQuanta`. -/
-def toCharges (x : TenQuanta) : Multiset ℤ := x.map Prod.fst
+def toCharges (x : TenQuanta 𝓩) : Multiset 𝓩 := x.map Prod.fst
 
 end TenQuanta
 
@@ -55,16 +59,20 @@ end TenQuanta
   5-bar matter content and the 10d matter content, and the charges of the `Hd` and
   `Hu` particles (there values of `(M,N)` are not included as they are
   forced to be `(0, 1)` and `(0, -1)` respectively. -/
-abbrev Quanta : Type := Option ℤ × Option ℤ × FiveQuanta × TenQuanta
+abbrev Quanta (𝓩 : Type := ℤ) : Type := Option 𝓩 × Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩
 
 namespace Quanta
 open SuperSymmetry.SU5
 open PotentialTerm Charges
 
-instance : DecidableEq Quanta := instDecidableEqProd
+variable {𝓩 : Type} [DecidableEq 𝓩]
+
+instance : DecidableEq (Quanta 𝓩) :=
+  haveI : DecidableEq (Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩) := instDecidableEqProd
+  instDecidableEqProd
 
 /-- The underlying `Charges` of a `Quanta`. -/
-def toCharges (x : Quanta) : Charges :=
+def toCharges (x : Quanta 𝓩) : Charges 𝓩 :=
   (x.1, x.2.1, x.2.2.1.toCharges.toFinset, x.2.2.2.toCharges.toFinset)
 
 end Quanta
