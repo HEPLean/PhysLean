@@ -117,10 +117,11 @@ noncomputable def divD {d} :
     let trace : (Space d →L[ℝ] (EuclideanSpace ℝ (Fin d))) →L[ℝ] ℝ := {
       toFun v := ∑ i, ⟪v (basis i), basis i⟫_ℝ
       map_add' v1 v2 := by
-        simp
+        simp only [ContinuousLinearMap.add_apply, inner_basis, PiLp.add_apply]
         rw [Finset.sum_add_distrib]
       map_smul' a v := by
-        simp
+        simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, inner_basis, PiLp.smul_apply,
+          smul_eq_mul, RingHom.id_apply]
         rw [Finset.mul_sum]
       cont := by fun_prop}
     trace.comp (Distribution.fderivD ℝ f)
@@ -152,13 +153,14 @@ noncomputable def curlD : (Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) →ₗ[
         ext i
         fin_cases i
         all_goals
-          simp
+          simp only [Fin.isValue, ContinuousLinearMap.add_apply, PiLp.add_apply, Fin.zero_eta]
           ring
       map_smul' a v := by
         ext i
         fin_cases i
         all_goals
-          simp
+          simp only [Fin.isValue, ContinuousLinearMap.coe_smul', Pi.smul_apply, PiLp.smul_apply,
+            smul_eq_mul, RingHom.id_apply, Fin.reduceFinMk]
           ring
       cont := by
         rw [continuous_pi_iff]
