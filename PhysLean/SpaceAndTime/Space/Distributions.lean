@@ -42,8 +42,10 @@ open SchwartzMap
 
 -/
 
-noncomputable def constD {M } [NormedAddCommGroup M] [NormedSpace ℝ M] (d : ℕ) (m : M) : (Space d) →d[ℝ] M :=
-  const ℝ (Space d) m
+/-- The constant distribution from `Space d` to a module `M` associated with
+  `m : M`. -/
+noncomputable def constD {M } [NormedAddCommGroup M] [NormedSpace ℝ M] (d : ℕ) (m : M) :
+    (Space d) →d[ℝ] M := const ℝ (Space d) m
 
 /-!
 
@@ -68,10 +70,12 @@ noncomputable def derivD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     simp
   map_smul' a f := by simp
 
-lemma schwartMap_fderiv_comm  { d}
+lemma schwartMap_fderiv_comm { d}
     (μ ν : Fin d) (x : Space d) (η : 𝓢(Space d, ℝ)) :
-    ((SchwartzMap.evalCLM (𝕜 := ℝ)  (basis μ)) ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ)  (basis ν)) ((fderivCLM ℝ) η)))) x =
-    ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis ν)) ((fderivCLM ℝ) ((SchwartzMap.evalCLM  (𝕜 := ℝ) (basis μ)) ((fderivCLM ℝ) η)))) x := by
+    ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis μ))
+      ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis ν)) ((fderivCLM ℝ) η)))) x =
+    ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis ν))
+      ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis μ)) ((fderivCLM ℝ) η)))) x := by
   have h1 := η.smooth
   have h2 := h1 2
   change fderiv ℝ (fun x => fderiv ℝ η x (basis ν)) x (basis μ) =
@@ -126,8 +130,8 @@ noncomputable def gradD {d} :
     ext x
     simp
 
-lemma gradD_inner_eq {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, ℝ)) (y : EuclideanSpace ℝ (Fin d)) :
-    ⟪gradD f η, y⟫_ℝ = fderivD ℝ f η y := by
+lemma gradD_inner_eq {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, ℝ))
+    (y : EuclideanSpace ℝ (Fin d)) : ⟪gradD f η, y⟫_ℝ = fderivD ℝ f η y := by
   rw [gradD]
   simp only [LinearIsometryEquiv.toLinearEquiv_symm, LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.coe_comp', LinearMap.coe_toContinuousLinearMap', LinearEquiv.coe_coe,
@@ -153,20 +157,20 @@ lemma gradD_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, �
     rw [fderivD_apply]
     ring
   have hx (y : EuclideanSpace ℝ (Fin d)) : ⟪gradD f η, y⟫_ℝ =
-      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i , y⟫_ℝ := by
+      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i, y⟫_ℝ := by
     rw [gradD_inner_eq, h1]
   have h1 : ∀ y, ⟪gradD f η -
-    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i ), y⟫_ℝ = 0 := by
+    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i), y⟫_ℝ = 0 := by
     intro y
     rw [inner_sub_left, hx y]
     simp
   have h2 := h1 (gradD f η -
-    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i ))
+    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i))
   rw [inner_self_eq_zero, sub_eq_zero] at h2
   rw [h2]
 
 @[simp]
-lemma gradD_constD {d} (m : ℝ)  :
+lemma gradD_constD {d} (m : ℝ) :
     gradD (constD d m) = 0 := by
   ext η
   simp [gradD, constD]
@@ -200,7 +204,8 @@ noncomputable def divD {d} :
     ext x
     simp
 
-lemma divD_apply_eq_sum_fderivD {d} (f : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Space d, ℝ)) :
+lemma divD_apply_eq_sum_fderivD {d}
+    (f : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Space d, ℝ)) :
     divD f η = ∑ i, fderivD ℝ f η (basis i) i := by
   simp [divD]
 
@@ -255,21 +260,21 @@ noncomputable def curlD : (Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) →ₗ[
     ext x
     simp
 
-lemma curlD_apply_zero (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)):
+lemma curlD_apply_zero (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)) :
     curlD f η 0 = - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 2) (fderivCLM ℝ η)) 1
     + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 1) (fderivCLM ℝ η)) 2 := by
   simp [curlD]
   rw [fderivD_apply, fderivD_apply]
   simp
 
-lemma curlD_apply_one (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)):
+lemma curlD_apply_one (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)) :
     curlD f η 1 = - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0) (fderivCLM ℝ η)) 2
     + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 2) (fderivCLM ℝ η)) 0 := by
   simp [curlD]
   rw [fderivD_apply, fderivD_apply]
   simp
 
-lemma curlD_apply_two (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)):
+lemma curlD_apply_two (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)) :
     curlD f η 2 = - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 1) (fderivCLM ℝ η)) 0
     + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0) (fderivCLM ℝ η)) 1 := by
   simp [curlD]
@@ -277,8 +282,8 @@ lemma curlD_apply_two (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : �
   simp
 
 lemma curlD_apply (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)) :
-    curlD f η  = fun
-    | 0 =>  - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 2) (fderivCLM ℝ η)) 1
+    curlD f η = fun
+    | 0 => - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 2) (fderivCLM ℝ η)) 1
       + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 1) (fderivCLM ℝ η)) 2
     | 1 => - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0) (fderivCLM ℝ η)) 2
       + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 2) (fderivCLM ℝ η)) 0
@@ -318,12 +323,12 @@ lemma curlD_gradD_eq_zero (f : (Space) →d[ℝ] ℝ) :
     rw [← map_neg, ← map_add, ← ContinuousLinearMap.map_zero f]
     congr
     ext x
-    simp
+    simp only [Fin.isValue, add_apply, zero_apply]
     rw [schwartMap_fderiv_comm]
-    change ((SchwartzMap.evalCLM (𝕜 := ℝ) _) ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) _) ((fderivCLM ℝ) η)))) x +
-      - ((SchwartzMap.evalCLM (𝕜 := ℝ) _) ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) _) ((fderivCLM ℝ) η)))) x = _
+    change ((SchwartzMap.evalCLM (𝕜 := ℝ) _)
+      ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) _) ((fderivCLM ℝ) η)))) x +
+      - ((SchwartzMap.evalCLM (𝕜 := ℝ) _)
+        ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) _) ((fderivCLM ℝ) η)))) x = _
     simp
-
-
 
 end Space

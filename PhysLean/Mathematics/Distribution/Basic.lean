@@ -74,7 +74,6 @@ def ofLinear (s : Finset (ℕ × ℕ)) (u : 𝓢(E, 𝕜) →ₗ[𝕜] F)
     obtain ⟨C, hC, hu⟩ := hu
     refine ⟨s, C, hC, fun η ↦ ?_⟩
     obtain ⟨k, n, x, hkn, hη⟩ := hu η
-    have hs : s.Nonempty := ⟨(k, n), hkn⟩
     refine hη.trans <| mul_le_mul_of_nonneg_left ((le_seminorm 𝕜 k n η x).trans ?_) hC
     rw [Seminorm.finset_sup_apply]
     refine (NNReal.coe_le_coe (r₁ := ⟨SchwartzMap.seminorm 𝕜 k n η, apply_nonneg _ _⟩)).2 ?_
@@ -130,9 +129,7 @@ end RCLike
 
 section fderiv
 
-variable [NormedAddCommGroup E]
-  [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [RCLike 𝕜]
-  [NormedSpace 𝕜 F] [SMulCommClass ℝ 𝕜 F]
+variable [NormedSpace ℝ E] [NormedSpace ℝ F] [NormedSpace 𝕜 F] [SMulCommClass ℝ 𝕜 F]
 
 /-- The Fréchet derivative of a distribution.
 
@@ -201,13 +198,11 @@ def fderivD [FiniteDimensional ℝ E] : (E →d[𝕜] F) →ₗ[𝕜] (E →d[�
     ext
     simp
 
-set_option linter.unusedSectionVars false in
 lemma fderivD_apply [FiniteDimensional ℝ E] (u : E →d[𝕜] F) (η : 𝓢(E, 𝕜)) (v : E) :
     fderivD 𝕜 u η v = - u (SchwartzMap.evalCLM (𝕜 := 𝕜) v (SchwartzMap.fderivCLM 𝕜 η)) := by
   rfl
 
 end fderiv
-
 
 section constant
 /-!
@@ -218,10 +213,12 @@ section constant
 open MeasureTheory
 section
 variable (E : Type) [NormedAddCommGroup E]
-  [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [RCLike 𝕜]
+  [NormedSpace ℝ E] [NormedSpace ℝ F]
   [NormedSpace 𝕜 F] [SMulCommClass ℝ 𝕜 F]
   [MeasureSpace E] [BorelSpace E] [SecondCountableTopology E]
 
+/-- The constant distribution `E →d[𝕜] F`, for a given `c : F` this corresponds
+  to the integral `∫ x, η x • c ∂MeasureTheory.volume`. -/
 def const [hμ : Measure.HasTemperateGrowth (volume (α := E))] (c : F) : E →d[𝕜] F := by
   refine mkCLMtoNormedSpace
     (fun η => ∫ x, η x • c ∂MeasureTheory.volume) ?_
@@ -265,36 +262,29 @@ def const [hμ : Measure.HasTemperateGrowth (volume (α := E))] (c : F) : E →d
     rw [integral_mul_const, ← mul_assoc, mul_comm (2 ^ n)]
   apply h.mul_const
 
-set_option linter.unusedSectionVars false in
 lemma const_apply [hμ : Measure.HasTemperateGrowth (volume (α := E))] (c : F)
     (η : 𝓢(E, 𝕜)) :
     const 𝕜 E c η = ∫ x, η x • c ∂MeasureTheory.volume := by rfl
 end
 section
 
-variable [NormedAddCommGroup E]
-  [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+variable [NormedSpace ℝ E] [NormedSpace ℝ F]
   [MeasureSpace E] [BorelSpace E] [SecondCountableTopology E]
 
-set_option linter.unusedSectionVars false in
 @[simp]
 lemma fderivD_const [hμ : Measure.IsAddHaarMeasure (volume (α := E))]
     [FiniteDimensional ℝ E] (c : F) :
     fderivD ℝ (const ℝ E c) = 0 := by
   ext η v
   rw [fderivD_apply, const_apply]
-  simp
+  simp only [ContinuousLinearMap.zero_apply, neg_eq_zero]
   trans -∫ (x : E), η x • (fderiv ℝ (fun y => c) x) v ∂volume
   swap
   · simp
   rw [integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable]
   simp
   rfl
-  · have hs := η.smooth'
-    apply MeasureTheory.Integrable.smul_const
-    have h0 : (fun x => (fderiv ℝ (⇑η) x) v) = fun x => SchwartzMap.fderivCLM ℝ η x v := by
-      funext x
-      simp
+  · apply MeasureTheory.Integrable.smul_const
     change Integrable (SchwartzMap.evalCLM (𝕜 := ℝ) v (SchwartzMap.fderivCLM ℝ η)) volume
     exact integrable ((SchwartzMap.evalCLM v) ((fderivCLM ℝ) η))
   · simp
@@ -323,7 +313,6 @@ def fourierTransform : (E →d[ℂ] F) →ₗ[ℂ] (E →d[ℂ] F) where
     u.fourierTransform E F η = u (fourierTransformCLM ℂ η) :=
   rfl
 
-
 end Complex
 
 /-!
@@ -333,12 +322,15 @@ end Complex
 -/
 open MeasureTheory
 
+/-- The Heaviside step distribution defined on `(EuclideanSpace ℝ (Fin d.succ)) `
+  equal to `1` in the positive `z`-direction and `0` in the negative `z`-direction. -/
 def heavisideStep (d : ℕ) : (EuclideanSpace ℝ (Fin d.succ)) →d[ℝ] ℝ := by
   refine mkCLMtoNormedSpace
-    (fun η => ∫ x in {x : EuclideanSpace ℝ (Fin d.succ) | 0 < x (Fin.last d)}, η x ∂MeasureTheory.volume) ?_
+    (fun η =>
+    ∫ x in {x : EuclideanSpace ℝ (Fin d.succ) | 0 < x (Fin.last d)}, η x ∂MeasureTheory.volume) ?_
     ?_ ?_
   · intro η1 η2
-    simp
+    simp only [Nat.succ_eq_add_one, add_apply]
     rw [MeasureTheory.integral_add]
     · apply MeasureTheory.Integrable.restrict
       exact integrable η1
@@ -351,11 +343,12 @@ def heavisideStep (d : ℕ) : (EuclideanSpace ℝ (Fin d.succ)) →d[ℝ] ℝ :=
     infer_instance
   rcases hμ.exists_integrable with ⟨n, h⟩
   let m := (n, 0)
-  use Finset.Iic m, 2 ^ n * ∫ x, (1 + ‖x‖) ^ (- (n : ℝ)) ∂(volume (α := EuclideanSpace ℝ (Fin d.succ)))
+  use Finset.Iic m, 2 ^ n *
+    ∫ x, (1 + ‖x‖) ^ (- (n : ℝ)) ∂(volume (α := EuclideanSpace ℝ (Fin d.succ)))
   refine ⟨by positivity, fun η ↦ (norm_integral_le_integral_norm _).trans ?_⟩
   trans ∫ x, ‖η x‖ ∂(volume (α := EuclideanSpace ℝ (Fin d.succ)))
   · refine setIntegral_le_integral ?_ ?_
-    · have hi := integrable η  (μ := volume)
+    · have hi := integrable η (μ := volume)
       fun_prop
     · filter_upwards with x
       simp
@@ -371,7 +364,8 @@ def heavisideStep (d : ℕ) : (EuclideanSpace ℝ (Fin d.succ)) →d[ℝ] ℝ :=
     apply h.mul_const
 
 lemma heavisideStep_apply (d : ℕ) (η : 𝓢(EuclideanSpace ℝ (Fin d.succ), ℝ)) :
-    heavisideStep d η = ∫ x in {x : EuclideanSpace ℝ (Fin d.succ) | 0 < x (Fin.last d)}, η x ∂MeasureTheory.volume := by
+    heavisideStep d η = ∫ x in {x : EuclideanSpace ℝ (Fin d.succ) | 0 < x (Fin.last d)},
+      η x ∂MeasureTheory.volume := by
   rfl
 
 end Distribution

@@ -6,8 +6,14 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Meta.TODO.Basic
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
+/-!
 
+## The multiple of a Schwartz map by `x`
 
+In this module we define the continuous linear map from the Schwartz space
+`𝓢(ℝ, 𝕜)` to itself which takes a Schwartz map `η` to the Schwartz map `x * η`.
+
+-/
 open SchwartzMap NNReal
 noncomputable section
 
@@ -19,9 +25,9 @@ variable [NormedSpace ℝ E]
 open ContDiff
 open MeasureTheory
 
-
 private lemma norm_iteratedFDeriv_ofRealCLM {x} (i : ℕ) :
-    ‖iteratedFDeriv ℝ i (RCLike.ofRealCLM (K := 𝕜)) x‖ = if i = 0 then |x| else if i = 1 then 1 else 0 := by
+    ‖iteratedFDeriv ℝ i (RCLike.ofRealCLM (K := 𝕜)) x‖ =
+      if i = 0 then |x| else if i = 1 then 1 else 0 := by
   match i with
   | 0 =>
     simp [iteratedFDeriv_zero_eq_comp]
@@ -33,9 +39,9 @@ private lemma norm_iteratedFDeriv_ofRealCLM {x} (i : ℕ) :
       apply ContinuousLinearMap.opNorm_eq_of_bounds
       · simp
       · intro x
-        simp
+        simp only [fderiv_eq_smul_deriv, Real.norm_eq_abs, one_mul]
         rw [← @RCLike.ofRealCLM_apply]
-        simp  [- RCLike.ofRealCLM_apply, norm_smul]
+        simp [- RCLike.ofRealCLM_apply, norm_smul]
         simp
       · intro N hN h
         have h1 := h 1
@@ -62,6 +68,8 @@ private lemma norm_iteratedFDeriv_ofRealCLM {x} (i : ℕ) :
       rw [h1]
       exact ContinuousMultilinearMap.opNorm_zero
 
+/-- The continuous linear map `𝓢(ℝ, 𝕜) →L[𝕜] 𝓢(ℝ, 𝕜)` taking a Schwartz map
+  `η` to `x * η`. -/
 def powOneMul : 𝓢(ℝ, 𝕜) →L[𝕜] 𝓢(ℝ, 𝕜) := by
   refine mkCLM (fun ψ ↦ fun x => x * ψ x) ?_ ?_ ?_ ?_
   · intro ψ1 ψ2 x

@@ -13,6 +13,8 @@ import PhysLean.Cosmology.Basic
 import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
 import PhysLean.Electromagnetism.Electrostatics.Basic
+import PhysLean.Electromagnetism.Electrostatics.OneDimension.PointParticle
+import PhysLean.Electromagnetism.Electrostatics.OneDimension.Vacuum
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
 import PhysLean.Electromagnetism.Homogeneous

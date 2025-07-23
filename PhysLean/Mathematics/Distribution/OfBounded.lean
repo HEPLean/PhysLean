@@ -6,7 +6,31 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Meta.TODO.Basic
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
+/-!
 
+# Distributions from bounded functions
+
+In this module we define distributions from functions `f : EuclideanSpace ℝ (Fin d.succ) → F`
+whose norm is bounded by `c1 * ‖x‖ ^ (-d : ℝ) + c2 * ‖x‖ ^ n`
+for some constants `c1`, `c2` and `n`.
+
+This gives a convenient way to construct distributions from functions, without needing
+to reference the underlying Schwartz maps.
+
+## Key definition
+
+- `ofBounded`: Creates a distribution from a bounded function `f`.
+
+## Method of definition
+
+The `ofBounded` function is defined through two measures `invPowMeasure` and `powMeasure n`,
+the first is the measure with density `1/‖x‖ᵈ` and the second is the measure with density `‖x‖^n`.
+Both these measures are proven to have temperate growth, and can be used to define a distribution
+by intergration.
+
+We also define a `boundMeasure` which is a linear combination of these two measures.
+
+-/
 open SchwartzMap NNReal
 noncomputable section
 
@@ -25,7 +49,7 @@ open MeasureTheory
 -/
 
 /-- The measure on `EuclideanSpace ℝ (Fin 3)` weighted by `1 / ‖x‖ ^ 2`. -/
-def invSqMeasure {dm1 : ℕ} : Measure (EuclideanSpace ℝ (Fin dm1.succ)) :=
+def invPowMeasure {dm1 : ℕ} : Measure (EuclideanSpace ℝ (Fin dm1.succ)) :=
   volume.withDensity (fun x : EuclideanSpace ℝ (Fin dm1.succ) => ENNReal.ofReal (1 / ‖x‖ ^ dm1))
 
 /-- The measure on `EuclideanSpace ℝ (Fin 3)` weighted by `‖x‖ ^ n`. -/
@@ -33,11 +57,11 @@ def powMeasure {dm1 : ℕ} (n : ℕ) : Measure (EuclideanSpace ℝ (Fin dm1.succ
   volume.withDensity (fun x : EuclideanSpace ℝ (Fin dm1.succ) =>
     ENNReal.ofReal (‖x‖ ^ n))
 
-/-- The measure on `EuclideanSpace ℝ (Fin 3)` given by `C1 • invSqMeasure + C2 • powMeasure n`,
+/-- The measure on `EuclideanSpace ℝ (Fin 3)` given by `C1 • invPowMeasure + C2 • powMeasure n`,
   for constants `C1` and `C2`. -/
 def boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) :
     Measure (EuclideanSpace ℝ (Fin dm1.succ)) :=
-  (ENNReal.ofReal C1) • invSqMeasure +
+  (ENNReal.ofReal C1) • invPowMeasure +
   (ENNReal.ofReal C2) • powMeasure n
 
 /-!
@@ -48,7 +72,8 @@ def boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) :
 
 variable [NormedSpace ℝ F]
 
-lemma integrable_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2_nonneg : 0 ≤ C2)
+lemma integrable_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1)
+    (C2_nonneg : 0 ≤ C2)
     (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2)) :
     Integrable (fun x => (C1 * (1/‖x‖^dm1) + C2 * ‖x‖^n) • f x) := by
   conv =>
@@ -100,9 +125,9 @@ lemma integrable_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0
 
 -/
 
-lemma integral_invSqMeasure {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F) :
-    ∫ x, f x ∂invSqMeasure = ∫ x, (1 / ‖x‖^dm1) • f x := by
-  dsimp [invSqMeasure]
+lemma integral_invPowMeasure {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F) :
+    ∫ x, f x ∂invPowMeasure = ∫ x, (1 / ‖x‖^dm1) • f x := by
+  dsimp [invPowMeasure]
   erw [integral_withDensity_eq_integral_smul (by fun_prop)]
   congr
   funext x
@@ -127,7 +152,7 @@ lemma integral_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 �
   rw [integrable_add_measure] at hf
   rw [MeasureTheory.integral_add_measure hf.1 hf.2]
   rw [integral_smul_measure, ← integral_smul, integral_smul_measure, ← integral_smul]
-  rw [integral_invSqMeasure, integral_powMeasure]
+  rw [integral_invPowMeasure, integral_powMeasure]
   rw [← integral_add]
   · congr
     funext x
@@ -142,7 +167,7 @@ lemma integral_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 �
       simp
     apply Integrable.smul
     have h1 := hf.1
-    dsimp [invSqMeasure] at h1
+    dsimp [invPowMeasure] at h1
     rw [integrable_smul_measure] at h1
     erw [integrable_withDensity_iff_integrable_smul₀] at h1
     refine (integrable_congr ?_).mp h1
@@ -183,27 +208,28 @@ lemma integral_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 �
 -/
 
 private lemma integrable_neg_pow_on_ioi (n : ℕ) :
-    IntegrableOn (fun x : ℝ => (|((1 : ℝ) + ↑x) ^ (- (n + 2) : ℝ)|)) (Set.Ioi 0)  := by
+    IntegrableOn (fun x : ℝ => (|((1 : ℝ) + ↑x) ^ (- (n + 2) : ℝ)|)) (Set.Ioi 0) := by
   rw [MeasureTheory.integrableOn_iff_comap_subtypeVal]
   rw [← MeasureTheory.integrable_smul_measure (c := n + 1)]
   apply MeasureTheory.integrable_of_integral_eq_one
   trans (n + 1) * ∫ (x : ℝ) in Set.Ioi 0, ((1 + x) ^ (- (n + 2) : ℝ)) ∂volume
   · rw [← MeasureTheory.integral_subtype_comap]
-    simp
+    simp only [neg_add_rev, Function.comp_apply, integral_smul_measure, smul_eq_mul]
     congr
     funext x
-    simp
+    simp only [abs_eq_self]
     apply Real.rpow_nonneg
     apply add_nonneg
     · exact zero_le_one' ℝ
     · exact le_of_lt x.2
     exact measurableSet_Ioi
-  have h0 (x : ℝ) (hx : x ∈ Set.Ioi 0): ((1 : ℝ) + ↑x) ^ (- (n + 2) : ℝ) = ((1 + x) ^ ((n + 2)))⁻¹ := by
+  have h0 (x : ℝ) (hx : x ∈ Set.Ioi 0) : ((1 : ℝ) + ↑x) ^ (- (n + 2) : ℝ) =
+      ((1 + x) ^ ((n + 2)))⁻¹ := by
     rw [← Real.rpow_natCast]
     rw [← Real.inv_rpow]
     rw [← Real.rpow_neg_one, ← Real.rpow_mul]
     simp only [neg_mul, one_mul]
-    simp
+    simp only [neg_add_rev, Nat.cast_add, Nat.cast_ofNat]
     have hx : 0 < x := hx
     positivity
     apply add_nonneg
@@ -237,13 +263,13 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
       rw [← Real.inv_rpow]
       rw [← Real.rpow_neg_one, ← Real.rpow_mul]
       simp only [neg_mul, one_mul]
-      simp
+      simp only [Nat.cast_add, Nat.cast_ofNat, neg_add_rev]
       positivity
       positivity
 
     rw [integral_Ioi_rpow_of_lt]
     field_simp
-    have h0 : (-2 + -(n : ℝ ) + 1) ≠ 0 := by
+    have h0 : (-2 + -(n : ℝ) + 1) ≠ 0 := by
       by_contra h
       have h1 : (1 : ℝ) - 0 = 2 + n := by
         rw [← h]
@@ -254,13 +280,14 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
     ring
     linarith
     linarith
-  simp
-  simp
-  simp
+  · simp
+  · simp
+  · simp
 
-lemma invSqMeasure_integrable_pow_neg_two {dm1 : ℕ} :
-    Integrable (fun x : EuclideanSpace ℝ (Fin dm1.succ) => (1 + ‖x‖) ^ (- (dm1 + 2) : ℝ)) invSqMeasure := by
-  simp [invSqMeasure]
+lemma invPowMeasure_integrable_pow_neg_two {dm1 : ℕ} :
+    Integrable (fun x : EuclideanSpace ℝ (Fin dm1.succ) => (1 + ‖x‖) ^ (- (dm1 + 2) : ℝ))
+      invPowMeasure := by
+  simp [invPowMeasure]
   rw [MeasureTheory.integrable_withDensity_iff]
   swap
   · fun_prop
@@ -278,7 +305,8 @@ lemma invSqMeasure_integrable_pow_neg_two {dm1 : ℕ} :
     swap
     · refine MeasurableSet.compl_iff.mpr ?_
       simp
-    let f := (fun x : EuclideanSpace ℝ (Fin dm1.succ) => ((1 + ‖x‖) ^ (- (dm1 + 2) : ℝ)) * (‖x‖ ^ dm1)⁻¹)
+    let f := (fun x : EuclideanSpace ℝ (Fin dm1.succ) =>
+        ((1 + ‖x‖) ^ (- (dm1 + 2) : ℝ)) * (‖x‖ ^ dm1)⁻¹)
       ∘ @Subtype.val (EuclideanSpace ℝ (Fin dm1.succ)) fun x =>
         (@Membership.mem (EuclideanSpace ℝ (Fin dm1.succ))
           (Set (EuclideanSpace ℝ (Fin dm1.succ))) Set.instMembership {0}ᶜ x)
@@ -289,7 +317,8 @@ lemma invSqMeasure_integrable_pow_neg_two {dm1 : ℕ} :
     change Integrable f _
     rw [← hf]
     refine (h1.integrable_comp_emb ?_).mpr ?_
-    · exact Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ)))
+    · exact Homeomorph.measurableEmbedding
+        (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ)))
     haveI sfinite : SFinite (@Measure.comap ↑(Set.Ioi 0) ℝ Subtype.instMeasurableSpace
         Real.measureSpace.toMeasurableSpace Subtype.val volume) := by
       refine { out' := ?_ }
@@ -342,8 +371,9 @@ lemma invSqMeasure_integrable_pow_neg_two {dm1 : ℕ} :
       exact ENNReal.ofReal_lt_top
     have hf'' : (fun (x : ↑(Metric.sphere (α := (EuclideanSpace ℝ (Fin dm1.succ))) 0 1) ×
         ↑(Set.Ioi (α := ℝ) 0)) =>
-        (((1 + x.2.val) ^ (- (dm1 + 2) : ℝ)) * (x.2.val ^ dm1)⁻¹ * (ENNReal.ofReal (↑x.2.val ^ dm1)).toReal))
-        = fun x => ((1 + x.2.val) ^ (- (dm1 + 2) : ℝ)):= by
+        (((1 + x.2.val) ^ (- (dm1 + 2) : ℝ)) * (x.2.val ^ dm1)⁻¹ *
+          (ENNReal.ofReal (↑x.2.val ^ dm1)).toReal))
+        = fun x => ((1 + x.2.val) ^ (- (dm1 + 2) : ℝ)) := by
       funext x
       rw [ENNReal.toReal_ofReal]
       generalize (1 + ↑x.2.val)= l
@@ -378,10 +408,10 @@ lemma invSqMeasure_integrable_pow_neg_two {dm1 : ℕ} :
   · symm
     simp
 
-instance (dm1 : ℕ): Measure.HasTemperateGrowth (invSqMeasure (dm1 := dm1)) where
+instance (dm1 : ℕ) : Measure.HasTemperateGrowth (invPowMeasure (dm1 := dm1)) where
   exists_integrable := by
     use dm1 + 2
-    simpa using invSqMeasure_integrable_pow_neg_two (dm1 := dm1)
+    simpa using invPowMeasure_integrable_pow_neg_two (dm1 := dm1)
 
 instance (dm1 : ℕ) (n : ℕ) : Measure.HasTemperateGrowth (powMeasure (dm1 := dm1) n) where
   exists_integrable := by
@@ -451,10 +481,11 @@ instance (dm1 : ℕ) (n : ℕ) : Measure.HasTemperateGrowth (powMeasure (dm1 := 
     · filter_upwards with x
       simp
 
-instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) : Measure.HasTemperateGrowth (boundMeasure (dm1 := dm1) n C1 C2) where
+instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) :
+    Measure.HasTemperateGrowth (boundMeasure (dm1 := dm1) n C1 C2) where
   exists_integrable := by
-    let m1 := (invSqMeasure (dm1 := dm1)).integrablePower
-    let m2 := (powMeasure  (dm1 := dm1) n).integrablePower
+    let m1 := (invPowMeasure (dm1 := dm1)).integrablePower
+    let m2 := (powMeasure (dm1 := dm1) n).integrablePower
     use max m1 m2
     simp [boundMeasure]
     have h1 : (fun x : EuclideanSpace ℝ (Fin dm1.succ) => (1 + ‖x‖) ^ (- max m1 m2 : ℝ)) =
@@ -495,8 +526,8 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) : Measure.HasTemperateGrowth (bound
         rw [abs_of_nonneg (by positivity)]
         rw [h0]
         refine mul_inv_le_one_of_le₀ ?_ ?_
-        · trans (1 + ‖x‖) ^ (invSqMeasure (dm1 := dm1)).integrablePower
-          · by_cases hm : (invSqMeasure (dm1 := dm1)).integrablePower = 0
+        · trans (1 + ‖x‖) ^ (invPowMeasure (dm1 := dm1)).integrablePower
+          · by_cases hm : (invPowMeasure (dm1 := dm1)).integrablePower = 0
             · rw [hm]
               simp
             refine (pow_le_pow_iff_left₀ ?_ ?_ hm).mpr ?_
@@ -607,10 +638,10 @@ lemma bounded_integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → 
         ring
       rw [h2]
       apply Integrable.const_mul
-      have h3 : Integrable (fun x => η x) invSqMeasure := by
+      have h3 : Integrable (fun x => η x) invPowMeasure := by
         exact integrable η
       rw [← MeasureTheory.integrable_norm_iff (by fun_prop)] at h3
-      simp only [invSqMeasure] at h3
+      simp only [invPowMeasure] at h3
       erw [MeasureTheory.integrable_withDensity_iff_integrable_coe_smul₀] at h3
       simpa using h3
       · fun_prop

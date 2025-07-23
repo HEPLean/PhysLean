@@ -159,7 +159,7 @@ lemma amplitude_mul_sin_phase (IC : InitialConditions) :
   simp
 
 lemma sol_eq_amplitude_mul_cos_phase (IC : InitialConditions) :
-    S.sol IC = fun t => S.amplitude IC • (fun _ =>  cos (S.ω * t + S.phase IC)) := by
+    S.sol IC = fun t => S.amplitude IC • (fun _ => cos (S.ω * t + S.phase IC)) := by
   funext t
   rw [cos_add]
   trans fun _ => (S.amplitude IC • cos (S.phase IC)) • cos (S.ω * t) -
@@ -219,7 +219,7 @@ lemma sol_velocity (IC : InitialConditions) : deriv (S.sol IC) =
   field_simp [mul_div_assoc, div_self, mul_one, S.ω_neq_zero]
 
 lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
-    fun t => - S.amplitude IC • (fun _ =>  S.ω • sin (S.ω * t + S.phase IC)) := by
+    fun t => - S.amplitude IC • (fun _ => S.ω • sin (S.ω * t + S.phase IC)) := by
   funext t i
   rw [sol_eq_amplitude_mul_cos_phase]
   simp only [differentiableAt_const, deriv_const_mul_field']
@@ -236,7 +236,6 @@ lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
 @[simp]
 lemma sol_velocity_t_zero (IC : InitialConditions) : deriv (S.sol IC) 0 = IC.v₀ := by
   simp [sol_velocity]
-
 
 lemma sol_potentialEnergy (IC : InitialConditions) (t : Time) : S.potentialEnergy (S.sol IC t) =
     1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * cos (S.ω * t + S.phase IC) ^ 2 := by

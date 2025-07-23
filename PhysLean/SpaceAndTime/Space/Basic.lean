@@ -3,16 +3,12 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Linters.Sorry
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import Mathlib.Geometry.Manifold.IsManifold.Basic
-import Mathlib.MeasureTheory.Integral.Lebesgue.Map
-import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
-import Mathlib.MeasureTheory.Constructions.Pi
 /-!
 
 # Space
@@ -277,10 +273,11 @@ noncomputable def toDirection {d : ℕ} (x : Space d) (h : x ≠ 0) : Direction 
 
 /-!
 
-## Zero equiv
+## One equiv
 
 -/
 
+/-- The linear isometric equivalence between `Space 1` and `ℝ`. -/
 noncomputable def oneEquiv : Space 1 ≃ₗᵢ[ℝ] ℝ where
   toFun x := x 0
   invFun x := fun _ => x
@@ -289,9 +286,10 @@ noncomputable def oneEquiv : Space 1 ≃ₗᵢ[ℝ] ℝ where
   map_add' x y := by rfl
   map_smul' c x := by rfl
   norm_map' x := by
-    simp
+    simp only [Fin.isValue, LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, Real.norm_eq_abs]
     rw [@PiLp.norm_eq_of_L2]
-    simp
+    simp only [Fin.isValue, Finset.univ_unique, Fin.default_eq_zero, Real.norm_eq_abs, sq_abs,
+      Finset.sum_singleton]
     exact Eq.symm (Real.sqrt_sq_eq_abs (x 0))
 
 lemma oneEquiv_coe :
@@ -317,14 +315,15 @@ lemma oneEquiv_symm_continuous :
   simp [oneEquiv_symm_coe]
   fun_prop
 
+/-- The continuous linear equivalence between `Space 1` and `ℝ`. -/
 noncomputable def oneEquivCLE : EuclideanSpace ℝ (Fin 1) ≃L[ℝ] ℝ where
   toLinearEquiv := oneEquiv
   continuous_toFun := by
-    simp
+    simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, LinearEquiv.coe_coe]
     erw [oneEquiv_coe]
     fun_prop
   continuous_invFun := by
-    simp
+    simp only [LinearEquiv.invFun_eq_symm]
     erw [oneEquiv_symm_coe]
     fun_prop
 
