@@ -201,7 +201,110 @@ def fderivD [FiniteDimensional ℝ E] : (E →d[𝕜] F) →ₗ[𝕜] (E →d[�
     ext
     simp
 
+set_option linter.unusedSectionVars false in
+lemma fderivD_apply [FiniteDimensional ℝ E] (u : E →d[𝕜] F) (η : 𝓢(E, 𝕜)) (v : E) :
+    fderivD 𝕜 u η v = - u (SchwartzMap.evalCLM (𝕜 := 𝕜) v (SchwartzMap.fderivCLM 𝕜 η)) := by
+  rfl
+
 end fderiv
+
+
+section constant
+/-!
+
+## The constant distribution
+
+-/
+open MeasureTheory
+section
+variable (E : Type) [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [RCLike 𝕜]
+  [NormedSpace 𝕜 F] [SMulCommClass ℝ 𝕜 F]
+  [MeasureSpace E] [BorelSpace E] [SecondCountableTopology E]
+
+def const [hμ : Measure.HasTemperateGrowth (volume (α := E))] (c : F) : E →d[𝕜] F := by
+  refine mkCLMtoNormedSpace
+    (fun η => ∫ x, η x • c ∂MeasureTheory.volume) ?_
+    ?_ ?_
+  · intro η1 η2
+    simp [add_smul]
+    by_cases hc : c = 0
+    · subst hc
+      simp
+    rw [MeasureTheory.integral_add]
+    · refine (integrable_smul_const hc).mpr ?_
+      exact integrable η1
+    · refine (integrable_smul_const hc).mpr ?_
+      exact integrable η2
+  · intro a η
+    simp only [Fin.isValue, smul_apply, RingHom.id_apply, smul_assoc]
+    rw [MeasureTheory.integral_smul]
+  rcases hμ.exists_integrable with ⟨n, h⟩
+  let m := (n, 0)
+  use Finset.Iic m, ‖c‖ * (2 ^ n * ∫ x, (1 + ‖x‖) ^ (- (n : ℝ)) ∂(volume (α := E)))
+  refine ⟨by positivity, fun η ↦ (norm_integral_le_integral_norm _).trans ?_⟩
+  have h' : ∀ x, ‖η x‖ ≤ (1 + ‖x‖) ^ (-(n : ℝ)) *
+    (2 ^ n * ((Finset.Iic m).sup (fun m' => SchwartzMap.seminorm 𝕜 m'.1 m'.2) η)) := by
+    intro x
+    rw [Real.rpow_neg (by positivity), ← div_eq_inv_mul,
+      le_div_iff₀' (by positivity), Real.rpow_natCast]
+    simpa using one_add_le_sup_seminorm_apply (m := m) (k := n) (n := 0) le_rfl le_rfl η x
+  conv_lhs =>
+    enter [2, x]
+    rw [norm_smul, mul_comm]
+  conv_lhs =>
+    rw [MeasureTheory.integral_const_mul]
+  rw [mul_assoc]
+  by_cases hc : c = 0
+  · subst hc
+    simp
+  refine (mul_le_mul_iff_of_pos_left ?_).mpr ?_
+  · positivity
+  apply (integral_mono (by simpa using η.integrable_pow_mul ((volume)) 0) _ h').trans
+  · unfold schwartzSeminormFamily
+    rw [integral_mul_const, ← mul_assoc, mul_comm (2 ^ n)]
+  apply h.mul_const
+
+set_option linter.unusedSectionVars false in
+lemma const_apply [hμ : Measure.HasTemperateGrowth (volume (α := E))] (c : F)
+    (η : 𝓢(E, 𝕜)) :
+    const 𝕜 E c η = ∫ x, η x • c ∂MeasureTheory.volume := by rfl
+end
+section
+
+variable [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [MeasureSpace E] [BorelSpace E] [SecondCountableTopology E]
+
+set_option linter.unusedSectionVars false in
+@[simp]
+lemma fderivD_const [hμ : Measure.IsAddHaarMeasure (volume (α := E))]
+    [FiniteDimensional ℝ E] (c : F) :
+    fderivD ℝ (const ℝ E c) = 0 := by
+  ext η v
+  rw [fderivD_apply, const_apply]
+  simp
+  trans -∫ (x : E), η x • (fderiv ℝ (fun y => c) x) v ∂volume
+  swap
+  · simp
+  rw [integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable]
+  simp
+  rfl
+  · have hs := η.smooth'
+    apply MeasureTheory.Integrable.smul_const
+    have h0 : (fun x => (fderiv ℝ (⇑η) x) v) = fun x => SchwartzMap.fderivCLM ℝ η x v := by
+      funext x
+      simp
+    change Integrable (SchwartzMap.evalCLM (𝕜 := ℝ) v (SchwartzMap.fderivCLM ℝ η)) volume
+    exact integrable ((SchwartzMap.evalCLM v) ((fderivCLM ℝ) η))
+  · simp
+  · apply MeasureTheory.Integrable.smul_const
+    exact integrable η
+  · exact SchwartzMap.differentiable η
+  · simp
+
+end
+end constant
 
 section Complex
 
@@ -220,6 +323,55 @@ def fourierTransform : (E →d[ℂ] F) →ₗ[ℂ] (E →d[ℂ] F) where
     u.fourierTransform E F η = u (fourierTransformCLM ℂ η) :=
   rfl
 
+
 end Complex
+
+/-!
+
+## Heaviside step function
+
+-/
+open MeasureTheory
+
+def heavisideStep (d : ℕ) : (EuclideanSpace ℝ (Fin d.succ)) →d[ℝ] ℝ := by
+  refine mkCLMtoNormedSpace
+    (fun η => ∫ x in {x : EuclideanSpace ℝ (Fin d.succ) | 0 < x (Fin.last d)}, η x ∂MeasureTheory.volume) ?_
+    ?_ ?_
+  · intro η1 η2
+    simp
+    rw [MeasureTheory.integral_add]
+    · apply MeasureTheory.Integrable.restrict
+      exact integrable η1
+    · apply MeasureTheory.Integrable.restrict
+      exact integrable η2
+  · intro a η
+    simp only [Fin.isValue, smul_apply, RingHom.id_apply]
+    rw [MeasureTheory.integral_smul]
+  haveI hμ : (volume (α := EuclideanSpace ℝ (Fin d.succ))).HasTemperateGrowth := by
+    infer_instance
+  rcases hμ.exists_integrable with ⟨n, h⟩
+  let m := (n, 0)
+  use Finset.Iic m, 2 ^ n * ∫ x, (1 + ‖x‖) ^ (- (n : ℝ)) ∂(volume (α := EuclideanSpace ℝ (Fin d.succ)))
+  refine ⟨by positivity, fun η ↦ (norm_integral_le_integral_norm _).trans ?_⟩
+  trans ∫ x, ‖η x‖ ∂(volume (α := EuclideanSpace ℝ (Fin d.succ)))
+  · refine setIntegral_le_integral ?_ ?_
+    · have hi := integrable η  (μ := volume)
+      fun_prop
+    · filter_upwards with x
+      simp
+  · have h' : ∀ x, ‖η x‖ ≤ (1 + ‖x‖) ^ (-(n : ℝ)) *
+      (2 ^ n * ((Finset.Iic m).sup (fun m' => SchwartzMap.seminorm ℝ m'.1 m'.2) η)) := by
+      intro x
+      rw [Real.rpow_neg (by positivity), ← div_eq_inv_mul,
+        le_div_iff₀' (by positivity), Real.rpow_natCast]
+      simpa using one_add_le_sup_seminorm_apply (m := m) (k := n) (n := 0) le_rfl le_rfl η x
+    apply (integral_mono (by simpa using η.integrable_pow_mul ((volume)) 0) _ h').trans
+    · unfold schwartzSeminormFamily
+      rw [integral_mul_const, ← mul_assoc, mul_comm (2 ^ n)]
+    apply h.mul_const
+
+lemma heavisideStep_apply (d : ℕ) (η : 𝓢(EuclideanSpace ℝ (Fin d.succ), ℝ)) :
+    heavisideStep d η = ∫ x in {x : EuclideanSpace ℝ (Fin d.succ) | 0 < x (Fin.last d)}, η x ∂MeasureTheory.volume := by
+  rfl
 
 end Distribution

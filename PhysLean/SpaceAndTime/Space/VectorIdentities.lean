@@ -237,7 +237,7 @@ lemma grad_eq_gradiant {d} (f : Space d → ℝ) :
       ⟪∇ f x, y⟫_ℝ := by
     rw [gradient, toDual_symm_apply]
     exact Eq.symm (grad_inner_eq f x y)
-  have h1 : ∀ y, ⟪gradient f x- ∇ f x, y⟫_ℝ = 0 := by
+  have h1 : ∀ y, ⟪gradient f x - ∇ f x, y⟫_ℝ = 0 := by
     intro y
     rw [inner_sub_left, hx y]
     simp

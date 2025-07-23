@@ -9,6 +9,10 @@ import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Linters.Sorry
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import Mathlib.Geometry.Manifold.IsManifold.Basic
+import Mathlib.MeasureTheory.Integral.Lebesgue.Map
+import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
+import Mathlib.MeasureTheory.Constructions.Pi
 /-!
 
 # Space
@@ -270,5 +274,83 @@ structure Direction (d : ℕ := 3) where
 noncomputable def toDirection {d : ℕ} (x : Space d) (h : x ≠ 0) : Direction d where
   unit := (‖x‖⁻¹) • (x)
   norm := norm_smul_inv_norm h
+
+/-!
+
+## Zero equiv
+
+-/
+
+noncomputable def oneEquiv : Space 1 ≃ₗᵢ[ℝ] ℝ where
+  toFun x := x 0
+  invFun x := fun _ => x
+  left_inv x := by funext i; fin_cases i; simp
+  right_inv x := by simp
+  map_add' x y := by rfl
+  map_smul' c x := by rfl
+  norm_map' x := by
+    simp
+    rw [@PiLp.norm_eq_of_L2]
+    simp
+    exact Eq.symm (Real.sqrt_sq_eq_abs (x 0))
+
+lemma oneEquiv_coe :
+    (oneEquiv : Space 1 → ℝ) = fun x => x 0 := by
+  rfl
+
+lemma oneEquiv_symm_coe :
+    (oneEquiv.symm : ℝ → Space 1) = fun x => fun _ => x := by
+  rfl
+
+lemma oneEquiv_symm_apply (x : ℝ) (i : Fin 1) :
+    oneEquiv.symm x i = x := by
+  fin_cases i
+  rfl
+
+lemma oneEquiv_continuous :
+    Continuous (oneEquiv : Space 1 → ℝ) := by
+  simp [oneEquiv_coe]
+  fun_prop
+
+lemma oneEquiv_symm_continuous :
+    Continuous (oneEquiv.symm : ℝ → Space 1) := by
+  simp [oneEquiv_symm_coe]
+  fun_prop
+
+noncomputable def oneEquivCLE : EuclideanSpace ℝ (Fin 1) ≃L[ℝ] ℝ where
+  toLinearEquiv := oneEquiv
+  continuous_toFun := by
+    simp
+    erw [oneEquiv_coe]
+    fun_prop
+  continuous_invFun := by
+    simp
+    erw [oneEquiv_symm_coe]
+    fun_prop
+
+open MeasureTheory
+lemma oneEquiv_measurableEmbedding : MeasurableEmbedding oneEquiv where
+  injective := oneEquiv.injective
+  measurable := by fun_prop
+  measurableSet_image' := by
+    intro s hs
+    change MeasurableSet (⇑oneEquivCLE '' s)
+    rw [ContinuousLinearEquiv.image_eq_preimage]
+    exact oneEquiv.symm.continuous.measurable hs
+
+lemma oneEquiv_symm_measurableEmbedding : MeasurableEmbedding oneEquiv.symm where
+  injective := oneEquiv.symm.injective
+  measurable := by fun_prop
+  measurableSet_image' := by
+    intro s hs
+    change MeasurableSet (⇑oneEquivCLE.symm '' s)
+    rw [ContinuousLinearEquiv.image_eq_preimage]
+    exact oneEquiv.continuous.measurable hs
+
+lemma oneEquiv_measurePreserving : MeasurePreserving oneEquiv volume volume :=
+  LinearIsometryEquiv.measurePreserving oneEquiv
+
+lemma oneEquiv_symm_measurePreserving : MeasurePreserving oneEquiv.symm volume volume := by
+  exact LinearIsometryEquiv.measurePreserving oneEquiv.symm
 
 end Space

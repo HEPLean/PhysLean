@@ -12,6 +12,7 @@ import PhysLean.CondensedMatter.TightBindingChain.Basic
 import PhysLean.Cosmology.Basic
 import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
+import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
 import PhysLean.Electromagnetism.Homogeneous
@@ -24,6 +25,7 @@ import PhysLean.Mathematics.DataStructures.FourTree.Basic
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Mathematics.Distribution.OfBounded
+import PhysLean.Mathematics.Distribution.PowMul
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
