@@ -26,12 +26,6 @@ or `ℂ` (which is the field denoted `𝕜`).
 - `Distribution.diracDelta`: Dirac delta distribution at a point `a : E` is a distribution
   that takes in a test function `η : 𝓢(E, 𝕜)` and outputs `η a`.
 
-## TODO
-- In the future, any function of polynomial growth can be interpreted as a distribution. This will
-  be helpful for defining the distributions that correspond to `H` (Heaviside step function), or
-  `cos(x)`.
-- Generalise `derivative` to higher dimensional domain.
-
 -/
 
 open SchwartzMap NNReal

@@ -52,6 +52,7 @@ lemma electricField_eq_zero_of_ε_eq_zero (q : ℝ) :
     electricField q 0 = 0 := by
   simp [electricField]
 
+/-- The electric field `electricField q ε` is related to the `heavisideStep` function. -/
 lemma electricField_eq_heavisideStep (q ε : ℝ) :
     (electricField q ε) = ((q/ε) • ((heavisideStep 0).smulRight (basis 0) -
     (1/(2 : ℝ)) • constD 1 (basis 0))) := by
