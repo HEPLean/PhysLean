@@ -3,11 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith, Lode Vermeulen
 -/
-import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.PolarCoord
-import Mathlib.Data.Real.StarOrdered
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 /-!
 
@@ -37,7 +34,6 @@ structure InitialConditions where
   x₀ : Space 1
   /-- The initial velocity of the harmonic oscillator. -/
   v₀ : Space 1
-
 
 TODO "6VZME" "Implement other initial condtions. For example:
 - initial conditions at a given time.
@@ -244,7 +240,7 @@ lemma sol_velocity_t₀ (IC : InitialConditions) : deriv (S.sol IC) IC.t₀ = IC
   simp [sol_velocity]
 
 lemma sol_potentialEnergy (IC : InitialConditions) (t : Time) : S.potentialEnergy (S.sol IC t) =
-    1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * cos (S.ω * (t - IC.t₀)  + S.phase IC) ^ 2 := by
+    1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * cos (S.ω * (t - IC.t₀) + S.phase IC) ^ 2 := by
   trans 1/2 * S.k * (‖IC.x₀‖ ^ 2 + (1 / S.ω) ^ 2 * ‖IC.v₀‖ ^ 2) *
     cos (S.ω * (t - IC.t₀) + S.phase IC) ^ 2
   · rw [potentialEnergy, sol_eq_amplitude_mul_cos_phase]
