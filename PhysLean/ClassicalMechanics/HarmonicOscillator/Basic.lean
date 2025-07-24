@@ -50,6 +50,9 @@ open Real
 open Space
 open InnerProductSpace
 
+TODO "IDXQA" "Modify the harmonic oscillator so it is centered on an arbitary point
+  `y` rather than on the origin."
+
 /-- The classical harmonic oscillator is specified by a mass `m`, and a spring constant `k`.
   Both the mass and the string constant are assumed to be positive. -/
 structure HarmonicOscillator where
