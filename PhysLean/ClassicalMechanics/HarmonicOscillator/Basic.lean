@@ -3,14 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith, Lode Vermeulen
 -/
-import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.Meta.Linters.Sorry
 import PhysLean.SpaceAndTime.Time.Basic
-import Mathlib.Analysis.Calculus.Deriv.Add
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Analysis.Calculus.Deriv.Pow
 /-!
 
 # The Classical Harmonic Oscillator
