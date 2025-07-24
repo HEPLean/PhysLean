@@ -31,10 +31,13 @@ variable (S : HarmonicOscillator)
 /-- The initial conditions for the harmonic oscillator specified by an initial position,
   and an initial velocity. -/
 structure InitialConditions where
+  /-- The initial time. -/
+  t₀ : Time
   /-- The initial position of the harmonic oscillator. -/
   x₀ : Space 1
   /-- The initial velocity of the harmonic oscillator. -/
   v₀ : Space 1
+
 
 TODO "6VZME" "Implement other initial condtions. For example:
 - initial conditions at a given time.
@@ -44,8 +47,8 @@ And convert them into the type `InitialConditions` above (which may need general
 to make this possible)."
 
 @[ext]
-lemma InitialConditions.ext {IC₁ IC₂ : InitialConditions} (h1 : IC₁.x₀ = IC₂.x₀)
-    (h2 : IC₁.v₀ = IC₂.v₀) : IC₁ = IC₂ := by
+lemma InitialConditions.ext {IC₁ IC₂ : InitialConditions} (ht : IC₁.t₀ = IC₂.t₀)
+    (h1 : IC₁.x₀ = IC₂.x₀) (h2 : IC₁.v₀ = IC₂.v₀) : IC₁ = IC₂ := by
   cases IC₁
   cases IC₂
   simp_all
@@ -57,15 +60,15 @@ lemma InitialConditions.ext {IC₁ IC₂ : InitialConditions} (h1 : IC₁.x₀ =
 -/
 
 /-- The zero initial condition. -/
-def zeroIC : InitialConditions := ⟨0, 0⟩
+def zeroIC (t₀ : Time) : InitialConditions := ⟨t₀, 0, 0⟩
 
 /-- The zero initial condition has zero starting point. -/
 @[simp]
-lemma x₀_zeroIC : zeroIC.x₀ = 0 := rfl
+lemma x₀_zeroIC (t₀ : Time) : (zeroIC t₀).x₀ = 0 := rfl
 
 /-- The zero initial condition has zero starting velocity. -/
 @[simp]
-lemma v₀_zeroIC : zeroIC.v₀ = 0 := rfl
+lemma v₀_zeroIC (t₀ : Time) : (zeroIC t₀).v₀ = 0 := rfl
 
 /-!
 
@@ -75,13 +78,14 @@ lemma v₀_zeroIC : zeroIC.v₀ = 0 := rfl
 
 /-- Given initial conditions, the solution to the classical harmonic oscillator. -/
 noncomputable def sol (IC : InitialConditions) : Time → Space 1 := fun t =>
-  cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀
+  cos (S.ω * (t - IC.t₀)) • IC.x₀ + (sin (S.ω * (t - IC.t₀))/S.ω) • IC.v₀
 
 lemma sol_eq (IC : InitialConditions) :
-    S.sol IC = fun t => cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀ := rfl
+    S.sol IC = fun t => cos (S.ω * (t - IC.t₀)) • IC.x₀ +
+    (sin (S.ω * (t - IC.t₀))/S.ω) • IC.v₀ := rfl
 
 /-- For zero initial conditions, the solution is zero. -/
-lemma sol_zeroIC : S.sol zeroIC = fun _ => 0 := by
+lemma sol_zeroIC (t₀ : Time) : S.sol (zeroIC t₀) = fun _ => 0 := by
   simp [sol_eq]
 
 /-- Given initial conditions, the amplitude of the classical harmonic oscillator. -/
@@ -117,18 +121,19 @@ lemma amplitude_sq (IC : InitialConditions) :
   simp [amplitude_eq, sq_nonneg, add_nonneg]
 
 @[simp]
-lemma amplitude_zeroIC : S.amplitude zeroIC = 0 := by
+lemma amplitude_zeroIC (t₀ : Time) : S.amplitude (zeroIC t₀) = 0 := by
   simp [amplitude_eq]
 
 /-- The amplitude is zero if and only if the inital conditions are zero. -/
 lemma amplitude_eq_zero_iff_IC_eq_zeroIC (IC : InitialConditions) :
-    S.amplitude IC = 0 ↔ IC = zeroIC := by
+    S.amplitude IC = 0 ↔ IC = zeroIC IC.t₀ := by
   rw [amplitude_eq]
   apply Iff.intro <;> intro h
   · rw [← Complex.norm_add_mul_I, norm_eq_zero, ← Complex.mk_eq_add_mul_I, Complex.ext_iff] at h
     simp only [Complex.zero_re, Complex.zero_im, div_eq_zero_iff, ω_neq_zero, or_false] at h
     aesop
-  · aesop
+  · rw [h, h]
+    simp
 
 /-- Given initial conditions, the phase of the classical harmonic oscillator. -/
 noncomputable def phase (IC : InitialConditions) : ℝ :=
@@ -141,7 +146,7 @@ lemma neg_pi_lt_phase (IC : InitialConditions) : -π < S.phase IC := by
   simp [phase, Complex.neg_pi_lt_arg]
 
 @[simp]
-lemma phase_zeroIC : S.phase zeroIC = 0 := by
+lemma phase_zeroIC (t₀ : Time) : S.phase (zeroIC t₀) = 0 := by
   simp [phase]
 
 lemma amplitude_mul_cos_phase (IC : InitialConditions) :
@@ -159,11 +164,11 @@ lemma amplitude_mul_sin_phase (IC : InitialConditions) :
   simp
 
 lemma sol_eq_amplitude_mul_cos_phase (IC : InitialConditions) :
-    S.sol IC = fun t => S.amplitude IC • (fun _ => cos (S.ω * t + S.phase IC)) := by
+    S.sol IC = fun t => S.amplitude IC • (fun _ => cos (S.ω * (t - IC.t₀) + S.phase IC)) := by
   funext t
   rw [cos_add]
-  trans fun _ => (S.amplitude IC • cos (S.phase IC)) • cos (S.ω * t) -
-    (S.amplitude IC • sin (S.phase IC)) • sin (S.ω * t)
+  trans fun _ => (S.amplitude IC • cos (S.phase IC)) • cos (S.ω * (t - IC.t₀)) -
+    (S.amplitude IC • sin (S.phase IC)) • sin (S.ω * (t - IC.t₀))
   · simp_rw [sol, smul_eq_mul, amplitude_mul_cos_phase, amplitude_mul_sin_phase]
     simp only [Fin.isValue, one_div, smul_eq_mul, neg_mul, sub_neg_eq_add]
     rw [@PiLp.ext_iff]
@@ -188,7 +193,7 @@ lemma abs_sol_le_amplitude (IC : InitialConditions) (t : ℝ) : ‖S.sol IC t‖
     · simp only [@PiLp.norm_eq_of_L2, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
         norm_eq_abs, sq_abs, Finset.sum_const, Finset.card_singleton, one_smul, sqrt_le_one,
         sq_le_one_iff_abs_le_one]
-      exact abs_cos_le_one (S.ω * t + S.phase IC)
+      exact abs_cos_le_one (S.ω * (t - IC.t₀) + S.phase IC)
     · exact amplitude_nonneg S IC
     · exact zero_le_one' ℝ
   · simp
@@ -196,7 +201,7 @@ lemma abs_sol_le_amplitude (IC : InitialConditions) (t : ℝ) : ‖S.sol IC t‖
 /-- For a set of initial conditions `IC` the position of the solution at time `0` is
   `IC.x₀`. -/
 @[simp]
-lemma sol_t_zero (IC : InitialConditions) : S.sol IC 0 = IC.x₀ := by
+lemma sol_t₀ (IC : InitialConditions) : S.sol IC IC.t₀ = IC.x₀ := by
   simp [sol]
 
 /-- The solutions are differentiable. -/
@@ -206,7 +211,7 @@ lemma sol_differentiable (IC : InitialConditions) : Differentiable ℝ (S.sol IC
   fun_prop
 
 lemma sol_velocity (IC : InitialConditions) : deriv (S.sol IC) =
-    fun t => -S.ω • sin (S.ω * t) • IC.x₀ + cos (S.ω * t) • IC.v₀ := by
+    fun t => -S.ω • sin (S.ω * (t - IC.t₀)) • IC.x₀ + cos (S.ω * (t - IC.t₀)) • IC.v₀ := by
   funext t
   rw [sol_eq, deriv_fun_add (by fun_prop) (by fun_prop)]
   simp only [differentiableAt_const, deriv_const_mul_field']
@@ -219,7 +224,7 @@ lemma sol_velocity (IC : InitialConditions) : deriv (S.sol IC) =
   field_simp [mul_div_assoc, div_self, mul_one, S.ω_neq_zero]
 
 lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
-    fun t => - S.amplitude IC • (fun _ => S.ω • sin (S.ω * t + S.phase IC)) := by
+    fun t => - S.amplitude IC • (fun _ => S.ω • sin (S.ω * (t - IC.t₀) + S.phase IC)) := by
   funext t i
   rw [sol_eq_amplitude_mul_cos_phase]
   simp only [differentiableAt_const, deriv_const_mul_field']
@@ -230,16 +235,18 @@ lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
     deriv_fun_mul (by fun_prop) (by fun_prop)]
   simp only [deriv_const', zero_mul, deriv_id'', mul_one, zero_add, neg_inj, mul_eq_mul_left_iff]
   left
-  · exact Lean.Grind.CommSemiring.mul_comm (sin (S.ω * t + S.phase IC)) S.ω
+  · simp
+    exact Lean.Grind.CommSemiring.mul_comm _ S.ω
   · fun_prop
 
 @[simp]
-lemma sol_velocity_t_zero (IC : InitialConditions) : deriv (S.sol IC) 0 = IC.v₀ := by
+lemma sol_velocity_t₀ (IC : InitialConditions) : deriv (S.sol IC) IC.t₀ = IC.v₀ := by
   simp [sol_velocity]
 
 lemma sol_potentialEnergy (IC : InitialConditions) (t : Time) : S.potentialEnergy (S.sol IC t) =
-    1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * cos (S.ω * t + S.phase IC) ^ 2 := by
-  trans 1/2 * S.k * (‖IC.x₀‖ ^ 2 + (1 / S.ω) ^ 2 * ‖IC.v₀‖ ^ 2) * cos (S.ω * t + S.phase IC) ^ 2
+    1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * cos (S.ω * (t - IC.t₀)  + S.phase IC) ^ 2 := by
+  trans 1/2 * S.k * (‖IC.x₀‖ ^ 2 + (1 / S.ω) ^ 2 * ‖IC.v₀‖ ^ 2) *
+    cos (S.ω * (t - IC.t₀) + S.phase IC) ^ 2
   · rw [potentialEnergy, sol_eq_amplitude_mul_cos_phase]
     ring_nf
     simp only [one_div, PiLp.inner_apply, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
@@ -254,10 +261,11 @@ lemma sol_potentialEnergy (IC : InitialConditions) (t : Time) : S.potentialEnerg
   ring
 
 lemma sol_kineticEnergy (IC : InitialConditions) : S.kineticEnergy (S.sol IC) =
-    fun t => 1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * sin (S.ω * t + S.phase IC) ^ 2 := by
+    fun t => 1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) *
+      sin (S.ω * (t - IC.t₀) + S.phase IC) ^ 2 := by
   funext t
   trans 1/2 * S.m * (‖IC.x₀‖ ^ 2 + (1 / S.ω) ^ 2 * ‖IC.v₀‖ ^ 2) * S.ω ^ 2
-    * sin (S.ω * t + S.phase IC) ^ 2
+    * sin (S.ω * (t - IC.t₀) + S.phase IC) ^ 2
   · rw [kineticEnergy, sol_velocity_amplitude_phase]
     ring_nf
     simp only [smul_eq_mul, neg_smul, inner_neg_right, inner_neg_left, PiLp.inner_apply,
@@ -277,14 +285,15 @@ lemma sol_energy (IC : InitialConditions) : S.energy (S.sol IC) =
   funext t
   rw [energy, sol_kineticEnergy, sol_potentialEnergy]
   trans 1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) *
-    (cos (S.ω * t + S.phase IC) ^ 2 + sin (S.ω * t + S.phase IC) ^ 2)
+    (cos (S.ω * (t - IC.t₀) + S.phase IC) ^ 2 + sin (S.ω * (t - IC.t₀) + S.phase IC) ^ 2)
   · ring_nf
   rw [cos_sq_add_sin_sq]
   simp only [one_div, mul_one, mul_eq_mul_left_iff, inv_eq_zero, OfNat.ofNat_ne_zero, or_false]
   ring
 
 lemma sol_lagrangian (IC : InitialConditions) : S.lagrangian (S.sol IC) =
-    fun t => - 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) * cos (2 * (S.ω * t + S.phase IC)) := by
+    fun t => - 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) *
+      cos (2 * (S.ω * (t - IC.t₀) + S.phase IC)) := by
   funext t
   rw [lagrangian, sol_kineticEnergy, sol_potentialEnergy, Real.cos_two_mul']
   ring
@@ -292,22 +301,30 @@ lemma sol_lagrangian (IC : InitialConditions) : S.lagrangian (S.sol IC) =
 open MeasureTheory in
 lemma sol_action (IC : InitialConditions) (t1 t2 : ℝ) :
     ∫ t' in t1..t2, S.lagrangian (S.sol IC) t' = - 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) *
-      (S.ω⁻¹ * 2⁻¹ * (sin (2 * (S.ω * t2 + S.phase IC)) - sin (2 * (S.ω * t1 + S.phase IC)))) := by
+      (S.ω⁻¹ * 2⁻¹ * (sin (2 * (S.ω * (t2 - IC.t₀) + S.phase IC)) -
+        sin (2 * (S.ω * (t1 - IC.t₀) + S.phase IC)))) := by
   rw [sol_lagrangian]
   simp only [intervalIntegral.integral_const_mul, mul_eq_mul_left_iff, mul_eq_zero, div_eq_zero_iff,
     neg_eq_zero, one_ne_zero, OfNat.ofNat_ne_zero, or_self, false_or]
   left
-  calc ∫ (x : ℝ) in t1..t2, cos (2 * (S.ω * x + S.phase IC))
-    _ = ∫ (x : ℝ) in t1..t2, cos ((2 * S.ω) * (x + S.phase IC/S.ω)) := by
+  calc ∫ (x : ℝ) in t1..t2, cos (2 * (S.ω * (x - IC.t₀) + S.phase IC))
+    _ = ∫ (x : ℝ) in t1..t2, cos ((2 * S.ω) * ((x - IC.t₀) + S.phase IC/S.ω)) := by
       congr
       funext t
       congr 1
       field_simp [S.ω_neq_zero]
       ring
-    _ = ∫ (x : ℝ) in (t1 + S.phase IC/S.ω)..(t2 + S.phase IC/S.ω), cos (2 * S.ω * x) := by
+    _ = ∫ (x : ℝ) in t1..t2, cos ((2 * S.ω) * (x + (- IC.t₀ + S.phase IC/S.ω))) := by
+      congr
+      funext t
+      congr 1
+      ring
+    _ = ∫ (x : ℝ) in (t1 + (- IC.t₀ + S.phase IC/S.ω))..(t2 + (- IC.t₀ + S.phase IC/S.ω)),
+        cos (2 * S.ω * x) := by
       rw [intervalIntegral.integral_comp_add_right (b := t2) (a := t1) (fun x => cos (2 * S.ω * x))
-        (S.phase IC/S.ω)]
-    _ = S.ω⁻¹ * 2⁻¹ * (sin (2 * (S.ω * t2 + S.phase IC)) - sin (2 * (S.ω * t1 + S.phase IC))) := by
+        (- IC.t₀ + S.phase IC/S.ω)]
+    _ = S.ω⁻¹ * 2⁻¹ * (sin (2 * (S.ω * (t2 - IC.t₀) + S.phase IC)) -
+        sin (2 * (S.ω * (t1 - IC.t₀) + S.phase IC))) := by
       simp only [ne_eq, mul_eq_zero, OfNat.ofNat_ne_zero, ω_neq_zero, or_self, not_false_eq_true,
         intervalIntegral.integral_comp_mul_left, mul_inv_rev, integral_cos, smul_eq_mul,
         mul_eq_mul_left_iff, inv_eq_zero, or_false]
