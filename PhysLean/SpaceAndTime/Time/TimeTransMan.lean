@@ -27,9 +27,9 @@ Given a `x : TimeMetric`, and the structure above, we can define the following
 operations on `TimeTransMan`:
 - `diff x t1 t2`, for `t1 t2 : TimeTransMan` gives the signed difference between two points in
   time in the units `x`.
-- `addTime x r t`, for `r : ℝ` and `t : TimeTransMan`, gives the point in time
+- `addTime x r t`, for `r : ℝ` and `t : TimeTransMan`, gives the point in `TimeTransMan`
   that seperated from `t`, by `r` in the unit `x`. For example, if `x` is the unit of seconds,
-  then `addTime x 1 t` gives the point in time that is one second after `t`.
+  then `addTime x 1 t` gives the point in `TimeTransMan` that is one second after `t`.
 
 Recall that the type `Time` corresponds to the manifold of time with a
 given (but arbitrary) choice of units and origin (and therefore has a structure
