@@ -176,7 +176,7 @@ instance : AddAction ℝ TimeTransMan where
     simp
   add_vadd p1 p2 t := by
     ext
-    simp
+    simp only [vadd_val]
     ring
 
 /-!
@@ -291,7 +291,8 @@ lemma diff_fst_surjective (x : TimeMetric) (t : TimeTransMan) :
   use x.1 * r +ᵥ t
   simp [abs_mul]
   rw [abs_of_nonneg (le_of_lt x.val_pos)]
-  simp
+  simp only [Set.mem_setOf_eq, ne_eq, TimeMetric.val_neq_zero, not_false_eq_true,
+    inv_mul_cancel_left₀]
   by_cases h : 0 ≤ r
   · rw [if_pos]
     exact abs_of_nonneg h
@@ -299,7 +300,7 @@ lemma diff_fst_surjective (x : TimeMetric) (t : TimeTransMan) :
     apply mul_nonneg (le_of_lt x.val_pos) h
   · rw [if_neg]
     rw [abs_of_neg (by simpa using h)]
-    simp
+    simp only [neg_neg]
     simp [le_def]
     refine mul_neg_of_pos_of_neg x.val_pos (by simpa using h)
 
