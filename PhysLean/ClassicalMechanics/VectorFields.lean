@@ -109,7 +109,7 @@ lemma differentiableAt_fderiv_coord_single
       ext w
       simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.inr_apply]
       rw [fderiv_uncurry]
-      simp only [fderiv_eq_smul_deriv, smul_eq_mul, zero_mul, zero_add]
+      simp only [map_zero, zero_add]
       fun_prop
     conv =>
       enter [2, y]
@@ -160,7 +160,7 @@ infixl:70 " ⨯ₑ₃ " => fun a b => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
     (WithLp.equiv 2 (Fin 3 → ℝ) a ×₃ WithLp.equiv 2 (Fin 3 → ℝ) b)
 
 /-- Cross product and fderiv commute. -/
-lemma fderiv_cross_commute {u : ℝ} {s : Space} {f : ℝ → EuclideanSpace ℝ (Fin 3)}
+lemma fderiv_cross_commute {u : Time} {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
     (hf : Differentiable ℝ f) :
     s ⨯ₑ₃ (fderiv ℝ (fun u => f u) u) 1
     =
@@ -177,13 +177,14 @@ lemma fderiv_cross_commute {u : ℝ} {s : Space} {f : ℝ → EuclideanSpace ℝ
   rw [crossProduct]
   ext i
   fin_cases i <;>
-  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,
+  · simp [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,
       LinearMap.mk₂_apply, PiLp.ofLp_apply, Fin.reduceFinMk, WithLp.equiv_symm_apply,
       PiLp.toLp_apply, cons_val]
     rw [h]
-    simp only [Fin.isValue, fderiv_eq_smul_deriv, smul_eq_mul, one_mul, PiLp.smul_apply]
-    rw [deriv_pi]
-    simp only [Fin.isValue, WithLp.equiv_symm_apply, PiLp.toLp_apply, cons_val]
+    simp [Fin.isValue, fderiv_eq_smul_deriv, smul_eq_mul, one_mul, PiLp.smul_apply]
+    rw [fderiv_pi]
+    simp [Fin.isValue, WithLp.equiv_symm_apply, PiLp.toLp_apply, cons_val]
+    rfl
     · intro i
       fin_cases i <;>
       · simp

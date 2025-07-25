@@ -16,7 +16,7 @@ import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 -/
 
 namespace ClassicalMechanics
-open Real
+open Real Time
 
 namespace HarmonicOscillator
 
@@ -78,7 +78,7 @@ noncomputable def sol (IC : InitialConditions) : Time → Space 1 := fun t =>
   cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀
 
 lemma sol_eq (IC : InitialConditions) :
-    S.sol IC = fun t => cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀ := rfl
+    S.sol IC = fun t : Time => cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀ := rfl
 
 /-- For zero initial conditions, the solution is zero. -/
 lemma sol_zeroIC : S.sol zeroIC = fun _ => 0 := by
@@ -159,7 +159,7 @@ lemma amplitude_mul_sin_phase (IC : InitialConditions) :
   simp
 
 lemma sol_eq_amplitude_mul_cos_phase (IC : InitialConditions) :
-    S.sol IC = fun t => S.amplitude IC • (fun _ => cos (S.ω * t + S.phase IC)) := by
+    S.sol IC = fun t : Time => S.amplitude IC • (fun _ => cos (S.ω * t + S.phase IC)) := by
   funext t
   rw [cos_add]
   trans fun _ => (S.amplitude IC • cos (S.phase IC)) • cos (S.ω * t) -
@@ -179,7 +179,7 @@ lemma sol_eq_amplitude_mul_cos_phase (IC : InitialConditions) :
 
 /-- For any time the position of the harmonic oscillator is less then the
   amplitude. -/
-lemma abs_sol_le_amplitude (IC : InitialConditions) (t : ℝ) : ‖S.sol IC t‖ ≤ S.amplitude IC := by
+lemma abs_sol_le_amplitude (IC : InitialConditions) (t : Time) : ‖S.sol IC t‖ ≤ S.amplitude IC := by
   rw [sol_eq_amplitude_mul_cos_phase]
   rw [norm_smul, norm_of_nonneg (S.amplitude_nonneg IC)]
   trans S.amplitude IC * 1
@@ -205,32 +205,43 @@ lemma sol_differentiable (IC : InitialConditions) : Differentiable ℝ (S.sol IC
   rw [sol_eq]
   fun_prop
 
-lemma sol_velocity (IC : InitialConditions) : deriv (S.sol IC) =
-    fun t => -S.ω • sin (S.ω * t) • IC.x₀ + cos (S.ω * t) • IC.v₀ := by
+lemma sol_velocity (IC : InitialConditions) : ∂ₜ (S.sol IC) =
+    fun t : Time => -S.ω • sin (S.ω * t) • IC.x₀ + cos (S.ω * t) • IC.v₀ := by
   funext t
-  rw [sol_eq, deriv_fun_add (by fun_prop) (by fun_prop)]
+  rw [sol_eq, Time.deriv, fderiv_fun_add (by fun_prop) (by fun_prop)]
   simp only [differentiableAt_const, deriv_const_mul_field']
-  rw [deriv_smul_const (by fun_prop), deriv_smul_const (by fun_prop)]
-  simp only [deriv_div_const, neg_smul]
-  rw [deriv_cos (by fun_prop), deriv_sin (by fun_prop), deriv_fun_mul (by fun_prop) (by fun_prop)]
+  rw [fderiv_smul_const (by fun_prop), fderiv_smul_const (by fun_prop)]
+  have h1 : (fderiv ℝ (fun t => sin (S.ω * t.val) / S.ω) t) =
+    (1/ S.ω) • (fderiv ℝ (fun t => sin (S.ω * t.val)) t) := by
+    rw [← fderiv_mul_const]
+    congr
+    funext t
+    field_simp
+    fun_prop
+  simp [h1]
+  rw [fderiv_cos (by fun_prop), fderiv_sin (by fun_prop),
+    fderiv_fun_mul (by fun_prop) (by fun_prop)]
   field_simp
   ring_nf
-  rw [← mul_smul, add_right_inj, mul_rotate, NonUnitalRing.mul_assoc]
+  rw [← mul_smul, mul_rotate, NonUnitalRing.mul_assoc]
   field_simp [mul_div_assoc, div_self, mul_one, S.ω_neq_zero]
 
 lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
-    fun t => - S.amplitude IC • (fun _ => S.ω • sin (S.ω * t + S.phase IC)) := by
+    fun t : Time => - S.amplitude IC • (fun _ => S.ω • sin (S.ω * t + S.phase IC)) := by
   funext t i
   rw [sol_eq_amplitude_mul_cos_phase]
   simp only [differentiableAt_const, deriv_const_mul_field']
-  rw [@deriv_fun_const_smul']
+  rw [Time.deriv, fderiv_fun_const_smul]
   simp only [deriv_div_const, neg_smul]
   simp only [PiLp.smul_apply, smul_eq_mul, Pi.neg_apply, Pi.smul_apply]
-  rw [deriv_pi, deriv_cos (by fun_prop), deriv_add_const', neg_mul, mul_neg,
-    deriv_fun_mul (by fun_prop) (by fun_prop)]
-  simp only [deriv_const', zero_mul, deriv_id'', mul_one, zero_add, neg_inj, mul_eq_mul_left_iff]
+  rw [fderiv_pi, fderiv_cos (by fun_prop), fderiv_add_const,
+    fderiv_fun_mul (by fun_prop) (by fun_prop)]
+  simp only [fderiv_fun_const, Pi.zero_apply, smul_zero, add_zero, neg_smul]
+  change S.amplitude IC * -(sin (S.ω * t.val + S.phase IC) • S.ω • fderiv ℝ val t 1) = _
+  simp only [fderiv_val, smul_eq_mul, mul_one, mul_neg, neg_inj, mul_eq_mul_left_iff]
   left
-  · exact Lean.Grind.CommSemiring.mul_comm (sin (S.ω * t + S.phase IC)) S.ω
+  exact Lean.Grind.CommSemiring.mul_comm (sin (S.ω * t + S.phase IC)) S.ω
+  · fun_prop
   · fun_prop
 
 @[simp]
@@ -254,7 +265,8 @@ lemma sol_potentialEnergy (IC : InitialConditions) (t : Time) : S.potentialEnerg
   ring
 
 lemma sol_kineticEnergy (IC : InitialConditions) : S.kineticEnergy (S.sol IC) =
-    fun t => 1/2 * (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * sin (S.ω * t + S.phase IC) ^ 2 := by
+    fun t : Time => 1/2 *
+      (S.k * ‖IC.x₀‖ ^ 2 + S.m * ‖IC.v₀‖ ^2) * sin (S.ω * t + S.phase IC) ^ 2 := by
   funext t
   trans 1/2 * S.m * (‖IC.x₀‖ ^ 2 + (1 / S.ω) ^ 2 * ‖IC.v₀‖ ^ 2) * S.ω ^ 2
     * sin (S.ω * t + S.phase IC) ^ 2
@@ -284,20 +296,38 @@ lemma sol_energy (IC : InitialConditions) : S.energy (S.sol IC) =
   ring
 
 lemma sol_lagrangian (IC : InitialConditions) : S.lagrangian (S.sol IC) =
-    fun t => - 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) * cos (2 * (S.ω * t + S.phase IC)) := by
+    fun t : Time => - 1/2 *
+      (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) * cos (2 * (S.ω * t + S.phase IC)) := by
   funext t
   rw [lagrangian, sol_kineticEnergy, sol_potentialEnergy, Real.cos_two_mul']
   ring
 
 open MeasureTheory in
-lemma sol_action (IC : InitialConditions) (t1 t2 : ℝ) :
-    ∫ t' in t1..t2, S.lagrangian (S.sol IC) t' = - 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) *
+lemma sol_action (IC : InitialConditions) (t1 t2 : Time) (h2 : t1 ≤ t2) :
+    ∫ t' in Set.Ioc t1 t2, S.lagrangian (S.sol IC) t' =
+      - 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) *
       (S.ω⁻¹ * 2⁻¹ * (sin (2 * (S.ω * t2 + S.phase IC)) - sin (2 * (S.ω * t1 + S.phase IC)))) := by
   rw [sol_lagrangian]
-  simp only [intervalIntegral.integral_const_mul, mul_eq_mul_left_iff, mul_eq_zero, div_eq_zero_iff,
-    neg_eq_zero, one_ne_zero, OfNat.ofNat_ne_zero, or_self, false_or]
+  simp only
+  rw [integral_const_mul]
+  simp only [mul_eq_mul_left_iff, mul_eq_zero, div_eq_zero_iff, neg_eq_zero, one_ne_zero,
+    OfNat.ofNat_ne_zero, or_self, false_or]
   left
-  calc ∫ (x : ℝ) in t1..t2, cos (2 * (S.ω * x + S.phase IC))
+  calc ∫ t in Set.Ioc t1 t2, cos (2 * (S.ω * t + S.phase IC))
+    _ = ∫ (x : ℝ) in Set.Ioc t1.val t2.val, cos (2 * (S.ω * x + S.phase IC)) := by
+      rw [← val_measurePreserving.setIntegral_preimage_emb
+          (val_measurableEmbedding)]
+      congr
+      ext t
+      simp [le_def, lt_def]
+    _ = ∫ (x : ℝ) in t1.val..t2.val, cos (2 * (S.ω * x + S.phase IC)) := by
+      rw [intervalIntegral]
+      have h1 : Set.Ioc t2.val t1.val = ∅ := by
+        refine Set.Ioc_eq_empty ?_
+        simp only [not_lt]
+        exact h2
+      rw [h1]
+      simp
     _ = ∫ (x : ℝ) in t1..t2, cos ((2 * S.ω) * (x + S.phase IC/S.ω)) := by
       congr
       funext t
@@ -345,7 +375,7 @@ lemma sol_equationOfMotion (IC : InitialConditions) :
   - `EquationOfMotion` needs defining before this can be proved. -/
 @[sorryful]
 lemma sol_unique (IC : InitialConditions) (x : Time → Space 1) :
-    EquationOfMotion x ∧ x 0 = IC.x₀ ∧ deriv x 0 = IC.v₀ →
+    EquationOfMotion x ∧ x 0 = IC.x₀ ∧ ∂ₜ x 0 = IC.v₀ →
     x = S.sol IC := by sorry
 
 end HarmonicOscillator

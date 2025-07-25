@@ -30,10 +30,10 @@ noncomputable def planeWave (f₀ : ℝ → EuclideanSpace ℝ (Fin d))
 lemma wave_dt {s : Direction d} {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace ℝ (Fin d)}
     (h' : ∀ x, HasFDerivAt f₀ (f₀' x) x) :
     ∂ₜ (fun t => f₀ (inner ℝ x s.unit - c * t)) =
-    fun t => -c • (f₀' (inner ℝ x s.unit - c * t)) 1 := by
+    fun t : Time => -c • (f₀' (inner ℝ x s.unit - c * t)) 1 := by
   unfold Time.deriv
   ext t i
-  change fderiv ℝ (f₀ ∘ fun t => (inner ℝ x s.unit - c * t)) t 1 i = _
+  change fderiv ℝ (f₀ ∘ fun t : Time => (inner ℝ x s.unit - c * t)) t 1 i = _
   rw [fderiv_comp, fderiv_const_sub, fderiv_const_mul]
   simp only [fderiv_id', ContinuousLinearMap.comp_neg, ContinuousLinearMap.comp_smulₛₗ,
     RingHom.id_apply, ContinuousLinearMap.comp_id, ContinuousLinearMap.neg_apply,
@@ -41,7 +41,8 @@ lemma wave_dt {s : Direction d} {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace �
     neg_mul, neg_inj, mul_eq_mul_left_iff]
   rw [HasFDerivAt.fderiv (h' (inner ℝ x s.unit - c * t))]
   left
-  rfl
+  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, ContinuousLinearMap.coe_comp',
+    Function.comp_apply, fderiv_val]
   repeat fun_prop
 
 lemma wave_dt2 {s : Direction d} {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace ℝ (Fin d)}
@@ -53,7 +54,7 @@ lemma wave_dt2 {s : Direction d} {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace �
   rw [Time.deriv_smul]
   unfold Time.deriv
   ext i
-  change -c • fderiv ℝ ((fun x' => f₀' x' 1) ∘ (fun t => inner ℝ x s.unit - c * t)) t 1 i = _
+  change -c • fderiv ℝ ((fun x' => f₀' x' 1) ∘ (fun t : Time => inner ℝ x s.unit - c * t)) t 1 i = _
   rw [fderiv_comp, fderiv_const_sub, fderiv_const_mul]
   simp only [fderiv_id', ContinuousLinearMap.comp_neg, ContinuousLinearMap.comp_smulₛₗ,
     RingHom.id_apply, ContinuousLinearMap.comp_id, ContinuousLinearMap.neg_apply,
@@ -61,8 +62,10 @@ lemma wave_dt2 {s : Direction d} {f₀' : ℝ → ℝ →L[ℝ] EuclideanSpace �
     mul_neg, neg_mul, neg_neg]
   rw [← mul_assoc, ← pow_two]
   rw [HasFDerivAt.fderiv (h'' (inner ℝ x s.unit - c * t))]
+  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, ContinuousLinearMap.coe_comp',
+    Function.comp_apply, fderiv_val]
   repeat fun_prop
-  · change Differentiable ℝ ((fun t' => f₀' t' 1) ∘ (fun t => (inner ℝ x s.unit - c * t)))
+  · change Differentiable ℝ ((fun t' => f₀' t' 1) ∘ (fun t : Time => (inner ℝ x s.unit - c * t)))
     apply Differentiable.comp
     · intro x
       exact HasFDerivAt.differentiableAt (h'' x)
@@ -217,7 +220,8 @@ theorem planeWave_isWave (c : ℝ) (s : Direction d)
 /-- If `f₀` is a function of `(inner ℝ x s - c * t)`, the fderiv of its components
 with respect to spatial coordinates is equal to the corresponding component of
 the propagation direction `s` times time derivative. -/
-lemma space_fderiv_of_inner_product_wave_eq_space_fderiv {f₀ : ℝ → EuclideanSpace ℝ (Fin d)}
+lemma space_fderiv_of_inner_product_wave_eq_space_fderiv
+    {t : Time} {f₀ : ℝ → EuclideanSpace ℝ (Fin d)}
     {s : Direction d} {u v : Fin d} (h' : Differentiable ℝ f₀) :
     c * ((fun x' => (fderiv ℝ (fun x => inner ℝ (f₀ (inner ℝ x s.unit - c * t))
     (EuclideanSpace.single v 1)) x') (EuclideanSpace.single u 1)) x)
@@ -314,7 +318,7 @@ lemma differentiable_uncurry_of_eq_planewave {s : Direction d}
     (h' : Differentiable ℝ f₀) : Differentiable ℝ ↿f := by
   rw [hf]
   unfold planeWave
-  change Differentiable ℝ (f₀ ∘ fun (t, x) => (inner ℝ x s.unit - c * t))
+  change Differentiable ℝ (f₀ ∘ fun ((t : Time), x) => (inner ℝ x s.unit - c * t))
   apply Differentiable.comp
   · fun_prop
   · apply Differentiable.sub

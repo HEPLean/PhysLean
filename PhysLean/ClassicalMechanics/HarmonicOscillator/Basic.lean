@@ -3,14 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith, Lode Vermeulen
 -/
-import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.Meta.Linters.Sorry
 import PhysLean.SpaceAndTime.Time.Basic
-import Mathlib.Analysis.Calculus.Deriv.Add
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Analysis.Calculus.Deriv.Pow
 /-!
 
 # The Classical Harmonic Oscillator
@@ -97,9 +92,10 @@ lemma inverse_ω_sq : (S.ω ^ 2)⁻¹ = S.m/S.k := by
   rw [ω_sq]
   field_simp
 
+open Time
 /-- The kinetic energy of the harmonic oscillator is `1/2 m ‖dx/dt‖^2`. -/
 noncomputable def kineticEnergy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
-  (1 / (2 : ℝ)) * S.m * ⟪deriv xₜ t, deriv xₜ t⟫_ℝ
+  (1 / (2 : ℝ)) * S.m * ⟪∂ₜ xₜ t, ∂ₜ xₜ t⟫_ℝ
 
 /-- The potential energy of the harmonic oscillator is `1/2 k x ^ 2` -/
 noncomputable def potentialEnergy (x : Space 1) : ℝ :=
@@ -124,7 +120,7 @@ lemma lagrangian_parity (xₜ : Time → Space 1) :
     inner_neg_neg, sub_left_inj, mul_eq_mul_left_iff, mul_eq_zero, inv_eq_zero, OfNat.ofNat_ne_zero,
     false_or]
   left
-  rw [show deriv (- xₜ) t = - deriv xₜ t from deriv.neg]
+  rw [show ∂ₜ (- xₜ) t = - ∂ₜ xₜ t by rw [Time.deriv_neg]]
   simp only [inner_neg_neg]
 
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`

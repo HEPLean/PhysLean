@@ -19,7 +19,7 @@ applied to `(p, q)`.
 
 -/
 
-open MeasureTheory ContDiff InnerProductSpace
+open MeasureTheory ContDiff InnerProductSpace Time
 
 namespace ClassicalMechanics
 
@@ -29,20 +29,21 @@ variable {X} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
   set to zero implies the Hamilton equations. -/
 noncomputable def hamiltonEqOp (H : Time → X → X → ℝ) (p : Time → X) (q : Time → X) :
     Time → X × X :=
-  fun x => (deriv q x + -gradient (fun x_1 => H x x_1 (q x)) (p x),
-    -deriv p x + -gradient (fun x_1 => H x (p x) x_1) (q x))
+  fun t => (∂ₜ q t + -gradient (fun x => H t x (q t)) (p t),
+    - ∂ₜ p t + -gradient (fun x => H t (p t) x) (q t))
 
 lemma hamiltonEqOp_eq (H : Time → X → X → ℝ) (p : Time → X) (q : Time → X) :
-    hamiltonEqOp H p q = fun t => (deriv q t + -gradient (fun x => H t x (q t)) (p t),
-      -deriv p t + -gradient (fun x => H t (p t) x) (q t)) := by
+    hamiltonEqOp H p q = fun t => (∂ₜ q t + -gradient (fun x => H t x (q t)) (p t),
+      - ∂ₜ p t + -gradient (fun x => H t (p t) x) (q t)) := by
   rfl
 
 lemma hamiltonEqOp_eq_zero_iff_hamiltons_equations (H : Time → X → X → ℝ)
     (p : Time → X) (q : Time → X) :
     hamiltonEqOp H p q = 0 ↔
-    (∀ t, deriv q t = gradient (fun x => H t x (q t)) (p t)) ∧
-    (∀ t, deriv p t = -gradient (fun x => H t (p t) x) (q t)) := by
+    (∀ t, ∂ₜ q t = gradient (fun x => H t x (q t)) (p t)) ∧
+    (∀ t, ∂ₜ p t = -gradient (fun x => H t (p t) x) (q t)) := by
   simp [hamiltonEqOp_eq]
+  simp_all only [Time.deriv_eq]
   rw [funext_iff]
   simp_all only [Pi.zero_apply, Prod.mk_eq_zero]
   apply Iff.intro
@@ -54,7 +55,7 @@ lemma hamiltonEqOp_eq_zero_iff_hamiltons_equations (H : Time → X → X → ℝ
       simp
     · intro t
       conv_lhs =>
-        rw [← add_zero (deriv p t), ← (h1 t).2]
+        rw [← add_zero (fderiv ℝ p t 1), ← (h1 t).2]
       simp
   · intro a x
     simp_all only [add_neg_cancel, neg_neg, and_self]
@@ -62,15 +63,15 @@ lemma hamiltonEqOp_eq_zero_iff_hamiltons_equations (H : Time → X → X → ℝ
 theorem hamiltons_equations_varGradient
     (H : Time → X → X → ℝ) (pq : Time → X × X) (hp : ContDiff ℝ ∞ pq)
     (hL : ContDiff ℝ ∞ ↿H) :
-    (δ (pq':= pq), ∫ t, ⟪(pq' t).1, deriv (Prod.snd ∘ pq') t⟫_ℝ - H t (pq' t).1 (pq' t).2) =
+    (δ (pq':= pq), ∫ t, ⟪(pq' t).1, ∂ₜ (Prod.snd ∘ pq') t⟫_ℝ - H t (pq' t).1 (pq' t).2) =
     fun t => hamiltonEqOp H (fun t => (pq t).1) (fun t => (pq t).2) t := by
   apply HasVarGradientAt.varGradient
   apply HasVarGradientAt.intro _
   · apply HasVarAdjDerivAt.add
-    · let i := fun (t : ℝ) (x : X × X) => ⟪x.1, x.2⟫_ℝ
+    · let i := fun (t : Time) (x : X × X) => ⟪x.1, x.2⟫_ℝ
       apply HasVarAdjDerivAt.comp
-        (F := fun (φ : ℝ → X × X) t => i t (φ t))
-        (G := fun (φ : ℝ → X × X) t => ((φ t).1, deriv (Prod.snd ∘ φ) t))
+        (F := fun (φ : Time → X × X) t => i t (φ t))
+        (G := fun (φ : Time → X × X) t => ((φ t).1, fderiv ℝ (Prod.snd ∘ φ) t 1))
       · apply HasVarAdjDerivAt.fmap
         · fun_prop
         · fun_prop
@@ -81,7 +82,7 @@ theorem hamiltons_equations_varGradient
         · apply HasVarAdjDerivAt.fst
           apply HasVarAdjDerivAt.id
           fun_prop
-        · apply HasVarAdjDerivAt.deriv (F := fun (φ : ℝ → X × X) t => (φ t).2)
+        · apply HasVarAdjDerivAt.fderiv' (F := fun (φ : Time → X × X) t => (φ t).2)
           apply HasVarAdjDerivAt.fmap
           · fun_prop
           · fun_prop
@@ -111,7 +112,7 @@ theorem hamiltons_equations_varGradient
     rw [adjFDeriv_inner]
     simp only [one_smul]
     conv_rhs =>
-      enter [2, 1, 1, 1, x]
+      enter [2, 1, 1, 1, 2, x]
       rw [adjFDeriv_inner]
       simp
     rw [← gradient_eq_adjFDeriv, ← gradient_eq_adjFDeriv]

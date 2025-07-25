@@ -140,7 +140,7 @@ lemma map_ofPotentialTerm_toFinset [DecidableEq 𝓩]
       obtain ⟨q1, q2, q3, q4, ⟨q1_mem, q2_mem, q3_mem, q4_mem⟩, q_sum⟩ := h
       use f q1, f q2, f q3, f q4
     all_goals
-      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product, map ]
+      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product, map]
       subst a
       simp_all
     case W1 => refine ⟨⟨q1, q1_mem, rfl⟩, ⟨q2, q2_mem, rfl⟩, ⟨q3, q3_mem, rfl⟩, ⟨q4, q4_mem, rfl⟩⟩

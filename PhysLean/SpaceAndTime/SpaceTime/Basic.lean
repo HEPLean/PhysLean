@@ -62,15 +62,17 @@ informal_lemma space_equivariant where
 
 /-- The time part of spacetime. -/
 def time {d : ℕ} : SpaceTime d →ₗ[ℝ] Time where
-  toFun x := Lorentz.Vector.timeComponent x
+  toFun x := ⟨Lorentz.Vector.timeComponent x⟩
   map_add' x1 x2 := by
+    ext
     simp [Lorentz.Vector.timeComponent]
   map_smul' c x := by
+    ext
     simp [Lorentz.Vector.timeComponent]
 
 @[simp]
-lemma time_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
-    time f =f (Sum.inl 0) := by
+lemma time_val_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
+    (time f).val = f (Sum.inl 0) := by
   simp [time, Lorentz.Vector.timeComponent]
 
 /-- A continuous linear equivalence between `SpaceTime d` and
@@ -80,7 +82,7 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
     toFun x := (x.time, x.space)
     invFun tx := (fun i =>
       match i with
-      | Sum.inl _ => tx.1
+      | Sum.inl _ => tx.1.val
       | Sum.inr i => tx.2 i)
     left_inv x := by
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, time, LinearMap.coe_mk,
@@ -93,8 +95,11 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, time, Lorentz.Vector.timeComponent,
         Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk, LinearEquiv.apply_symm_apply, space]
     map_add' x y := by
-      simp only [time_toCoord_symm, Fin.isValue, Lorentz.Vector.apply_add, space_toCoord_symm,
+      simp only [time_val_toCoord_symm, Fin.isValue, Lorentz.Vector.apply_add, space_toCoord_symm,
         Prod.mk_add_mk, Prod.mk.injEq, true_and]
+      constructor
+      · ext
+        simp
       funext i
       simp
     map_smul' := by
@@ -107,7 +112,8 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_sum_inr]
-  simp only [true_and]
+  constructor
+  · rfl
   funext j
   simp [Space.basis_apply]
 
@@ -116,7 +122,8 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_sum_inl]
-  simp only [true_and]
+  constructor
+  · rfl
   funext j
   simp [space]
 

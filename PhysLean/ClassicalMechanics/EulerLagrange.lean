@@ -15,7 +15,7 @@ and prove the that the variational derivative of the action functional
 
 -/
 
-open MeasureTheory ContDiff InnerProductSpace
+open MeasureTheory ContDiff InnerProductSpace Time
 
 variable {X} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
 
@@ -25,29 +25,29 @@ namespace ClassicalMechanics
   and a lagrangian `Time → X → X → ℝ`, the Euler-Lagrange operator is
     `∂L/∂q - dₜ(∂L/∂(dₜ q))`. -/
 noncomputable def eulerLagrangeOp (L : Time → X → X → ℝ) (q : Time → X) : Time → X := fun t =>
-  gradient (L t · (deriv q t)) (q t)
-      - deriv (fun t' => gradient (L t' (q t') ·) (deriv q t')) t
+  gradient (L t · (∂ₜ q t)) (q t) - ∂ₜ (fun t' => gradient (L t' (q t') ·) (∂ₜ q t')) t
 
 lemma eulerLagrangeOp_eq (L : Time → X → X → ℝ) (q : Time → X) :
-    eulerLagrangeOp L q = fun t => gradient (L t · (deriv q t)) (q t)
-    - deriv (fun t' => gradient (L t' (q t') ·) (deriv q t')) t := by rfl
+    eulerLagrangeOp L q = fun t => gradient (L t · (∂ₜ q t)) (q t)
+    - ∂ₜ (fun t' => gradient (L t' (q t') ·) (∂ₜ q t')) t := by rfl
 
 lemma eulerLagrangeOp_zero (q : Time → X) :
     eulerLagrangeOp (fun _ _ _ => 0) q = fun _ => 0 := by
-  simp [eulerLagrangeOp_eq]
+  simp [eulerLagrangeOp_eq, Time.deriv_eq]
 
 /- The variational derivative of `L t (q' t) (deriv q' t))` for a lagrangian `L`
   is equal to the `eulerLagrangeOp`. -/
 theorem euler_lagrange_varGradient
     (L : Time → X → X → ℝ) (q : Time → X)
     (hq : ContDiff ℝ ∞ q) (hL : ContDiff ℝ ∞ ↿L) :
-    (δ (q':=q), ∫ t, L t (q' t) (deriv q' t)) = eulerLagrangeOp L q := by
+    (δ (q':=q), ∫ t, L t (q' t) (fderiv ℝ q' t 1)) = eulerLagrangeOp L q := by
   rw [eulerLagrangeOp_eq]
+  simp only [Time.deriv_eq]
   apply HasVarGradientAt.varGradient
   apply HasVarGradientAt.intro _
   · apply HasVarAdjDerivAt.comp
-      (F := fun (φ : ℝ → X × X) t => L t (φ t).fst (φ t).snd)
-      (G := fun (φ : ℝ → X) t => (φ t, deriv φ t))
+      (F := fun (φ : Time → X × X) t => L t (φ t).fst (φ t).snd)
+      (G := fun (φ : Time → X) t => (φ t, fderiv ℝ φ t 1))
     · apply HasVarAdjDerivAt.fmap (f := fun t => ↿(L t))
       · fun_prop
       · fun_prop
@@ -57,9 +57,9 @@ theorem euler_lagrange_varGradient
       apply ContDiff.differentiable
       fun_prop
       simp
-    · apply HasVarAdjDerivAt.prod (F:=fun φ => φ) (G:=fun φ => deriv φ)
+    · apply HasVarAdjDerivAt.prod (F:=fun φ => φ)
       · apply HasVarAdjDerivAt.id _ hq
-      · apply HasVarAdjDerivAt.deriv'
+      · apply HasVarAdjDerivAt.fderiv
         · exact hq
   case hgrad =>
     funext t

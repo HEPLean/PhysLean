@@ -303,20 +303,31 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
     simp only [smul_eq_mul, neg_smul, neg_add_cancel]
     · exact time_differentiable_of_eq_planewave h' hBwave
   unfold Time.deriv at h
-  have hderiv : ∀ t x, _root_.deriv (fun t => (E t x) +
-      (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x))) t = 0 := by
+  have hderiv' : ∀ t x, fderiv ℝ (fun t => (E t x) +
+      (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x))) t 1 = 0 := by
     intro t x
-    rw [_root_.deriv_fun_add, _root_.deriv_fun_smul]
+    rw [fderiv_fun_add, fderiv_fun_smul]
     simp_all
     · fun_prop
     · exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
     · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
+  have hderiv : ∀ t x, fderiv ℝ (fun t => (E t x) +
+      (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ (B t x))) t = 0 := by
+    intro t x
+    ext1 r
+    conv_lhs =>
+      enter [2]
+      rw [Time.eq_one_smul r]
+    simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, map_smul,
+      ContinuousLinearMap.zero_apply, smul_eq_zero, val_eq_zero]
+    right
+    exact hderiv' t x
   use fun x => (E 0 x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ B 0 x)
   intro t x
   have ht' := fun t => hderiv t x
-  apply is_const_of_deriv_eq_zero at ht'
+  apply is_const_of_fderiv_eq_zero at ht'
   simp only
   rw [ht' 0 t]
   simp only [smul_eq_mul, neg_smul, neg_add_cancel_comm_assoc]
@@ -346,13 +357,18 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
   have hderiv : ∀ t x, fderiv ℝ (fun t => (B t x) -
       (√(μ • ε)) • (s.unit ⨯ₑ₃ (E t x))) t = 0 := by
     intro t x
-    ext1
+    ext1 r
+    conv_lhs =>
+      enter [2]
+      rw [Time.eq_one_smul r]
+    simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, map_smul,
+      ContinuousLinearMap.zero_apply, smul_eq_zero, val_eq_zero]
+    right
     rw [fderiv_fun_sub]
     rw [fderiv_fun_const_smul]
     change (fderiv ℝ (fun t => B t x) t 1) -
         ((√(μ • ε)) • fderiv ℝ (fun t => (s.unit ⨯ₑ₃ (E t x))) t 1) = _
     rw [h]
-    simp only [PiLp.zero_apply, ContinuousLinearMap.zero_apply]
     · exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
     · exact function_differentiableAt_fst (hf := by fun_prop) ..
     · apply DifferentiableAt.fun_const_smul
@@ -467,7 +483,7 @@ lemma electricField_add_cross_magneticField_eq_const_of_planeWave
   have hu : inner ℝ x s.unit - c * (c⁻¹ * inner ℝ x s.unit) = 0 := by
     rw [← mul_assoc]
     simp [hc_non_zero]
-  rw [← hu, ← hcuE (c⁻¹ * inner ℝ x s.unit) x, hcxE]
+  rw [← hu, ← hcuE _ x, hcxE]
 
 /-- `B - s ⨯ₑ₃ E` is constant for an EMwave. -/
 lemma magneticField_sub_cross_electricField_eq_const_of_planeWave
@@ -500,7 +516,7 @@ lemma magneticField_sub_cross_electricField_eq_const_of_planeWave
   have hu : inner ℝ x s.unit - c * (c⁻¹ * inner ℝ x s.unit) = 0 := by
     rw [← mul_assoc]
     simp [hc_non_zero]
-  rw [← hu, ← hcuB (c⁻¹ * inner ℝ x s.unit) x, hcxB]
+  rw [← hu, ← hcuB _ x, hcxB]
 
 /-- Unit vectors in the direciton of `B`, `E` and `s` form an orthonormal traid for an EMwave
 after subtracting the appropriate constant fields. -/

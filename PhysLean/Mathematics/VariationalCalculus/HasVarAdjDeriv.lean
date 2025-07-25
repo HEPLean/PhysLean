@@ -666,6 +666,15 @@ protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u)
   · exact hu
   · exact HasVarAdjoint.fderiv_apply
 
+omit [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)] in
+protected lemma fderiv' (F : (X → U) → (X → V)) (F') (u) (dx : X)
+    (hF : HasVarAdjDerivAt F F' u)[ProperSpace X] [BorelSpace X]
+    [FiniteDimensional ℝ X] [(@volume X _).IsAddHaarMeasure] :
+    HasVarAdjDerivAt (fun φ : X → U => fun x => fderiv ℝ (F φ) x dx)
+    (fun ψ x => F' (fun x' => - fderiv ℝ ψ x' dx) x) u := by
+  have hG := HasVarAdjDerivAt.fderiv (F u) dx (hF.apply_smooth_self)
+  exact comp hG hF
+
 protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt
       (fun (φ : Space d → ℝ) x => gradient φ x)
