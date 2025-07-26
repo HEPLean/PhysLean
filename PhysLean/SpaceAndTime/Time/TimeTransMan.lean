@@ -30,10 +30,13 @@ operations on `TimeTransMan`:
 - `addTime x r t`, for `r : ℝ` and `t : TimeTransMan`, gives the point in `TimeTransMan`
   that seperated from `t`, by `r` in the unit `x`. For example, if `x` is the unit of seconds,
   then `addTime x 1 t` gives the point in `TimeTransMan` that is one second after `t`.
+- `neg zero t`, for a given `zero : TimeTransMan`, gives the point in `TimeTransMan`
+  that is the same distance away from `zero` as `t` but in the opposite direction.
+  This is defined using a choice of units, but is independent of the choice.
 
 Recall that the type `Time` corresponds to the manifold of time with a
 given (but arbitrary) choice of units and origin (and therefore has a structure
-of a module over `ℝ`). Here we define the map:
+of a module over `ℝ`). Here we define the homeomorphism:
 - `toTime zero x` from `TimeTransMan` to `Time` where
   `zero : TimeTransMan` is the choice of origin and `x : TimeMetric` is the choice of units.
 This map is a diffeomorphism (to be shown).
@@ -213,8 +216,14 @@ lemma val_neq_zero (x : TimeMetric) : x.val ≠ 0 := by
 
 lemma val_pos (x : TimeMetric) : 0 < x.val := x.property
 
-noncomputable instance : HDiv TimeMetric TimeTransMan ℝ where
+noncomputable instance : HDiv TimeMetric TimeMetric ℝ where
   hDiv x t := x.val / t.val
+
+lemma div_eq_val (x y : TimeMetric) :
+    x / y = x.val / y.val := rfl
+
+instance : Inhabited TimeMetric where
+  default := ⟨1, by norm_num⟩
 
 end TimeMetric
 
@@ -333,12 +342,36 @@ lemma addTime_val (x : TimeMetric) (r : ℝ) (t : TimeTransMan) :
 
 /-!
 
+## Negation of time around a zero
+
+-/
+
+/-- Given a `zero` and an `x : TimeMetric`, `negMetric zero x t` is the time the same distance
+  away from `zero` as `t` in units `x` but in the opposite direction.
+  This does actually depend on `x`, as a result see `neg` and `neg_eq_negMetric`. -/
+noncomputable def negMetric (zero : TimeTransMan) (x : TimeMetric) (t : TimeTransMan) : TimeTransMan :=
+  addTime x (diff x zero t) zero
+
+/-- Given a `zero`, `neg zero t` is the time the same distance
+  away from `zero` as `t` in any units but in the opposite direction. -/
+noncomputable def neg (zero : TimeTransMan) (t : TimeTransMan) : TimeTransMan :=
+  negMetric zero default t
+
+lemma neg_eq_negMetric (zero : TimeTransMan) (x : TimeMetric) (t : TimeTransMan) :
+    neg zero t = negMetric zero x t := by
+  simp [neg, negMetric]
+  ext
+  simp [addTime_val, diff_eq_val]
+
+/-!
+
 ### The map from TimeTransMan to Time
 
 -/
+
 /-- With a choice of zero `zero : TimeTransMan` and a choice of units `x : TimeMetric`,
-  `toTime` is the equivalence between the type `TimeTransMan` and `Time`. -/
-noncomputable def toTime (zero : TimeTransMan) (x : TimeMetric) : TimeTransMan ≃ Time where
+  `toTime` is the homeomorphism between the type `TimeTransMan` and `Time`. -/
+noncomputable def toTime (zero : TimeTransMan) (x : TimeMetric) : TimeTransMan ≃ₜ Time where
   toFun := fun t => ⟨diff x t zero⟩
   invFun := fun r => addTime x r zero
   left_inv t := by
@@ -347,6 +380,22 @@ noncomputable def toTime (zero : TimeTransMan) (x : TimeMetric) : TimeTransMan �
   right_inv r := by
     ext
     simp [addTime_val, diff_eq_val]
+  continuous_invFun := by
+    rw [← Homeomorph.comp_continuous_iff valHomeomorphism]
+    have h1 : (⇑valHomeomorphism ∘ (fun r : Time => addTime x r.val zero)) = fun r =>
+        (x.val * r.val + zero.val) := by
+      ext
+      simp [valHomeomorphism, addTime_val, diff_eq_val]
+    rw [h1]
+    fun_prop
+  continuous_toFun := by
+    rw [← Homeomorph.comp_continuous_iff Time.toRealCLE.toHomeomorph]
+    have h1 : (⇑Time.toRealCLE.toHomeomorph ∘ (fun t => ⟨diff x t zero⟩)) = fun t =>
+        (1/x.val) * (t.val - zero.val) := by
+      ext
+      simp [Time.toRealCLE, diff_eq_val]
+    rw [h1]
+    fun_prop
 
 @[simp]
 lemma toTime_zero (zero : TimeTransMan) (x : TimeMetric) :
@@ -394,5 +443,33 @@ lemma diff_eq_toTime_sub (zero : TimeTransMan) (x : TimeMetric) (t1 t2 : TimeTra
     diff x t2 t1 = toTime zero x t2 - toTime zero x t1 := by
   simp [toTime_val, diff_eq_val]
   field_simp
+
+lemma toTime_neg (zero : TimeTransMan) (x : TimeMetric) (t : TimeTransMan) :
+    (toTime zero x) (neg zero t) = - toTime zero x t := by
+  rw [neg_eq_negMetric zero x]
+  ext
+  simp only [negMetric, diff_eq_val, Set.mem_setOf_eq, one_div, toTime_addTime, toTime_zero,
+    add_zero, Time.neg_val, toTime_val]
+  ring
+
+lemma toTime_symm_neg (zero : TimeTransMan) (x : TimeMetric) (t : Time) :
+    (toTime zero x).symm (- t) = neg zero ((toTime zero x).symm t) := by
+  ext
+  simp [toTime_symm_val, neg_eq_negMetric, addTime_val, diff_eq_val, neg, negMetric]
+
+lemma toTime_symm_sub (zero : TimeTransMan) (x : TimeMetric)
+    (t1 t2 : Time) : (toTime zero x).symm (t1 - t2) =
+      addTime x (diff x zero ((toTime zero x).symm t2))
+      ((toTime zero x).symm t1) := by
+  ext
+  simp [toTime_val, addTime_val, diff_eq_val, toTime_symm_val]
+  ring
+
+lemma toTime_scale (zero : TimeTransMan) (x1 x2 : TimeMetric)
+    (t : TimeTransMan) : toTime zero x1 t  = (x2/x1) • toTime zero x2 t := by
+  ext
+  simp [toTime_val, addTime_val, diff_eq_val, TimeMetric.div_eq_val]
+  field_simp
+  ring
 
 end TimeTransMan

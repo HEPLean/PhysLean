@@ -28,7 +28,9 @@ the angular frequency `ω` are consistent.
 
 With this notion of `Time`, becomes a 1d vector space over `ℝ` with an inner product.
 
-Within other modules e.g. `TopTime.Basic`, we define versions of time with less choices made.
+Within other modules e.g. `TimeMan` and `TimeTransMan`, we define
+versions of time with less choices made, and relate them to `Time` via a choice of units
+or origin.
 
 -/
 
