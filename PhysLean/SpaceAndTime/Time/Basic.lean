@@ -9,7 +9,25 @@ import Mathlib.Analysis.Calculus.FDeriv.Add
 /-!
 # Time
 
-In this file we define the time worldvolume as a real line.
+In this module we define the type `Time`, corresponding to time in a given
+(but arbitary) set of units, with a given (but arbitary) choice of origin (time zero).
+We note that this is the version of time most often used in undergraduate and
+non-mathematical physics.
+
+The choice of units or origin can be made on a case-by-case basis, as
+long as they are done consistently. However, since the choice of units and origin is
+left implicit, Lean will not catch inconsistencies in the choice of units or origin when
+working with `Time`.
+
+For example, for the classical mechanics system corresponding to the harmonic oscillator,
+one can take the origin of time to be the time at which the initial conditions are specified,
+and the units can be taken as anything as long as the units chosen for time `t` and
+the angular frequency `ω` are consistent.
+
+With this notion of `Time`, it becomes equivalent to the type `ℝ`, and inherits all the
+instances of `ℝ`.
+
+Within other modules e.g. `TopTime.Basic`, we define versions of time with less choices made.
 
 ## Note on implementation
 
