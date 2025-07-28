@@ -309,6 +309,7 @@ import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.Time.TimeMan
 import PhysLean.SpaceAndTime.Time.TimeTransMan
+import PhysLean.SpaceAndTime.Time.TimeUnit
 import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Finite

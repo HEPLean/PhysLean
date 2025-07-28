@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Geometry.Manifold.Diffeomorph
 import PhysLean.SpaceAndTime.Time.Basic
 /-!
@@ -113,19 +112,17 @@ lemma add_hasTimeDimension {M : Type} [AddCommMonoid M] [Module ℝ M]
     (h1 : HasTimeDimension f1 d) (h2 : HasTimeDimension f2 d) :
     HasTimeDimension (f1 + f2) d:= by
   intro x y
-  simp
+  simp only [Pi.add_apply, smul_add]
   rw [h1 x y, h2 x y]
 
 @[fun_prop]
 lemma add_fun_hasTimeDimension {M : Type} [AddCommMonoid M] [Module ℝ M]
-     {f1 f2 : TimeUnit → M} {d : ℚ}
+    {f1 f2 : TimeUnit → M} {d : ℚ}
     (h1 : HasTimeDimension f1 d) (h2 : HasTimeDimension f2 d) :
     HasTimeDimension (fun x => f1 x + f2 x) d := by
   intro x y
-  simp
+  simp only [smul_add]
   rw [h1 x y, h2 x y]
-
-
 
 /-!
 

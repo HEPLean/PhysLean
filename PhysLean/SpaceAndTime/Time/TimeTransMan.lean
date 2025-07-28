@@ -3,9 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Geometry.Manifold.Diffeomorph
-import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.Time.TimeUnit
 /-!
 
@@ -197,13 +194,11 @@ lemma le_def (t1 t2 : TimeTransMan) :
 
 instance : Nonempty TimeTransMan := Nonempty.intro ⟨0⟩
 
-
 /-!
 
 ## Functions based on a choice of unit
 
 -/
-
 
 open TimeUnit
 
@@ -439,7 +434,7 @@ lemma toTime_symm_sub (zero : TimeTransMan) (x : TimeUnit)
   ring
 
 lemma toTime_scale (zero : TimeTransMan) (x1 x2 : TimeUnit)
-    (t : TimeTransMan) : toTime zero x1 t  = (x2/x1) • toTime zero x2 t := by
+    (t : TimeTransMan) : toTime zero x1 t = (x2/x1) • toTime zero x2 t := by
   ext
   simp [toTime_val, addTime_val, diff_eq_val, TimeUnit.div_eq_val]
   field_simp
