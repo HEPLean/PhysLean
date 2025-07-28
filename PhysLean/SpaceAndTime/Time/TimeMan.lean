@@ -137,4 +137,14 @@ noncomputable def valDiffeomorphism : TimeMan ≃ₘ^ω⟮𝓘(ℝ, ℝ), 𝓘(�
     convert contMDiffOn_chart_symm (x := (⟨0⟩ : TimeMan))
     exact instIsManifoldRealModelWithCornersSelfTopWithTopENat
 
+/-!
+
+## The orientation on TimeMan
+
+-/
+
+/-- The instance of an orientation on TimeMan. -/
+instance : LE TimeMan where
+  le x y := x.val ≤ y.val
+
 end TimeMan
