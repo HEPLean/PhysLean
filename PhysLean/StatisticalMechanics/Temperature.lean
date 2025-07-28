@@ -10,17 +10,25 @@ import Mathlib.Analysis.Calculus.LogDeriv
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
-
 /-!
 
 # Temperature
 
-In this module we define the type `Temperature`, and give basic properties thereof.
+In this module we define the type `Temperature`, corresponding to the temperature in a given
+(but arbitrary) set of units which have absolute zero at zero.
+
+This is the version of temperature most often used in undergraduate and
+non-mathematical physics.
+
+The choice of units can be made on a case-by-case basis, as long as they are done consistently.
 
 -/
 open NNReal
 
-/-- The type of temperatures. -/
+TODO "IOY4E" "Change the definition of `Temperature` to be a structure rather than a `def`."
+
+/-- The type `Temperature` represents the temperature in a given (but arbitary) set of units
+  (preserving zero). -/
 def Temperature : Type := ℝ≥0
 
 namespace Temperature
