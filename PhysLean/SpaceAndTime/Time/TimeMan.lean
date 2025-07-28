@@ -9,8 +9,8 @@ import Mathlib.Geometry.Manifold.Diffeomorph
 # The time manifold
 
 In this module we define the type `TimeMan`, corresponding to the time manifold,
-without any additional structures, such as a choice of metric or origin. I.e. it is a
-manifold diffeomorphic to `ℝ` with no additional structure.
+without any additional structures except an orientation, such as a choice of metric or origin.
+I.e. it is a manifold diffeomorphic to `ℝ` with no additional structure.
 
 If you are looking for a more standard version of time see the type `Time`.
 
@@ -27,7 +27,8 @@ constitute a choice being made.
 -/
 
 /-- The type `TimeMan` represents the time manifold.
-  Mathematically `TimeMan` is a manifold diffeomorphic to `ℝ` with no additional structure. -/
+  Mathematically `TimeMan` is a manifold diffeomorphic to `ℝ` with an orientation but no additional
+  structure. -/
 structure TimeMan where
   /-- The choice of a map from `TimeMan` to `ℝ`. -/
   val : ℝ
