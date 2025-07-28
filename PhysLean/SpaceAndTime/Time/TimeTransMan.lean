@@ -349,7 +349,8 @@ lemma addTime_val (x : TimeMetric) (r : ℝ) (t : TimeTransMan) :
 /-- Given a `zero` and an `x : TimeMetric`, `negMetric zero x t` is the time the same distance
   away from `zero` as `t` in units `x` but in the opposite direction.
   This does actually depend on `x`, as a result see `neg` and `neg_eq_negMetric`. -/
-noncomputable def negMetric (zero : TimeTransMan) (x : TimeMetric) (t : TimeTransMan) : TimeTransMan :=
+noncomputable def negMetric (zero : TimeTransMan) (x : TimeMetric)
+    (t : TimeTransMan) : TimeTransMan :=
   addTime x (diff x zero t) zero
 
 /-- Given a `zero`, `neg zero t` is the time the same distance
