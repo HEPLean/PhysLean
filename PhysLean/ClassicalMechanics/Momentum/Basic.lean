@@ -4,14 +4,18 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import PhysLean.Meta.Informal.Basic
+import PhysLean.Meta.TODO.Basic
 /-!
 # Momentum
 
-Momentum in `d`-dimensional space is defined as a `d`-dimensional vector.
+In this module we define the type `Momentum`, which represents the momentum of a particle
+in `d`-dimensional space, in an arbitrary (but given) set of units.
 
 -/
 
-/-- The type `Space d` representes `d` dimensional Euclidean space.
-  The default value of `d` is `3`. Thus `Space = Space 3`. -/
-abbrev Momentum (d : ℕ := 3) := EuclideanSpace ℝ (Fin d)
+/-- Momentum in `d`-dimensional space in an arbitary, but given, set of units.
+  In `(3+1)d` space time this corresponds to `3`-momentum not `4`-momentum. -/
+structure Momentum (d : ℕ := 3) where
+  val : Fin d → ℝ
+
+TODO "IO7OT" "On the type `Momentum` define the instance of an inner product space."

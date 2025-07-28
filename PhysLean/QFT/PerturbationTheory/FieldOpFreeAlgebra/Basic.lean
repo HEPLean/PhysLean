@@ -146,7 +146,7 @@ def crPartF : 𝓕.FieldOp → 𝓕.FieldOpFreeAlgebra := fun φ =>
   | FieldOp.outAsymp _ => 0
 
 @[simp]
-lemma crPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma crPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     crPartF (FieldOp.inAsymp φ) = ofCrAnOpF ⟨FieldOp.inAsymp φ, ()⟩ := by
   simp [crPartF]
 
@@ -157,7 +157,7 @@ lemma crPartF_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
   simp [crPartF]
 
 @[simp]
-lemma crPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma crPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     crPartF (FieldOp.outAsymp φ) = 0 := by
   simp [crPartF]
 
@@ -171,7 +171,7 @@ def anPartF : 𝓕.FieldOp → 𝓕.FieldOpFreeAlgebra := fun φ =>
   | FieldOp.outAsymp φ => ofCrAnOpF ⟨FieldOp.outAsymp φ, ()⟩
 
 @[simp]
-lemma anPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma anPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     anPartF (FieldOp.inAsymp φ) = 0 := by
   simp [anPartF]
 
@@ -182,7 +182,7 @@ lemma anPartF_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
   simp [anPartF]
 
 @[simp]
-lemma anPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma anPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     anPartF (FieldOp.outAsymp φ) = ofCrAnOpF ⟨FieldOp.outAsymp φ, ()⟩ := by
   simp [anPartF]
 
