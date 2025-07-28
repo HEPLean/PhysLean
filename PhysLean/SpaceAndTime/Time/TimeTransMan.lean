@@ -41,8 +41,8 @@ This map is a diffeomorphism (to be shown).
 
 -/
 
-/-- The type `TimeTransMan` represents the time manifold.
-  Mathematically `TimeTransMan` is a manifold diffeomorphic to `ℝ` with no additional structure. -/
+/-- The type `TimeTransMan` represents the time manifold with an orientation and
+  a transitive action of the reals. -/
 structure TimeTransMan where
   /-- The choice of a map from `TimeTransMan` to `ℝ`. -/
   val : ℝ
