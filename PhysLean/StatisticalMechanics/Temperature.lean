@@ -3,13 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
+import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Analysis.InnerProductSpace.Basic
 import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.Meta.TODO.Basic
-import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Analysis.Calculus.LogDeriv
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
 /-!
 
 # Temperature
@@ -46,7 +43,8 @@ instance : TopologicalSpace Temperature := inferInstanceAs (TopologicalSpace ℝ
 
 instance : Zero Temperature := ⟨0, Preorder.le_refl 0⟩
 
-/-- The inverse temperature. -/
+/-- The inverse temperature defined as `1/(kB * T)` in a given, but arbitary set of units.
+  This has dimensions equivalent to `Energy`. -/
 noncomputable def β (T : Temperature) : ℝ≥0 := ⟨1 / (kB * T), by
   apply div_nonneg
   · exact zero_le_one' ℝ
@@ -120,8 +118,5 @@ lemma ofβ_differentiableOn :
     simp at hx
     left
     linarith
-
-TODO "EQTKM" "Define the function from `Temperature` to `ℝ` which gives the temperature in
-  Kelvin, based on axiomized constants. "
 
 end Temperature

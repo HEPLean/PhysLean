@@ -6,20 +6,24 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Data.NNReal.Defs
 /-!
 
-## Boltzmann constant
+# Boltzmann constant
 
-In this file we define the Boltzmann constant `kB` as a non-negative real number.
-This is introduced as an axiom.
+The Boltzmann constant is a constant `kB` of dimension `m² kg s⁻² K⁻¹`, that is
+`Energy/Temperature`. It is named after Ludwig Boltzmann.
+
+In this module we axiomise the existence of the Boltzmann constant in a given (but arbitrary)
+set of units.
 
 -/
 open NNReal
 
 namespace Constants
 
-/-- The Boltzmann constant axiom. -/
+/-- The axiom introducing the Boltzmann constant in a given but arbitrary set of units. -/
 axiom kBAx : {p : ℝ | 0 < p}
 
-/-- The Boltzmann constant. -/
+/-- The Boltzmann constant in a given but arbitary set of units.
+  Boltzman's constant has dimension equivalent to `Energy/Temperature`.  -/
 noncomputable def kB : ℝ := kBAx.1
 
 /-- The Boltzmann constant is positive. -/
