@@ -99,7 +99,6 @@ lemma scale_div_scale (x1 x2 : TimeUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 <
 
 -/
 
-
 /-- A function `f : TimeUnit → M` has time dimension `d` if `f y` is `(x/y)^d` times `f x`.
   This corresponds to the usual notion of a quantity carrying a dimension of time. -/
 @[fun_prop]
