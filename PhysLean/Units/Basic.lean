@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # Dimensions and unit
@@ -39,6 +40,9 @@ Zulip chats discussing units:
 - https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units
 - https://leanprover.zulipchat.com/#narrow/channel/116395-maths/topic/Dimensional.20Analysis.20Revisited/with/530238303
 
+## Note
+
+A lot of the results around units is still experimental and should be adapted based on needs.
 -/
 
 /-!
@@ -47,14 +51,18 @@ Zulip chats discussing units:
 
 -/
 
-
 /-- The foundational dimensions.
   Defined in the order ⟨length, time, mass, charge, temperature⟩ -/
 structure Dimension where
+  /-- The length dimension. -/
   length : ℚ
+  /-- The time dimension. -/
   time : ℚ
+  /-- The mass dimension. -/
   mass : ℚ
+  /-- The charge dimension. -/
   charge : ℚ
+  /-- The temperature dimension. -/
   temperature : ℚ
 
 namespace Dimension
@@ -108,7 +116,32 @@ end Dimension
 
 /-!
 
+## Dimensionalful
+
+Given a type `M` with a dimension `d`, a dimensionalful quantity is a
+map from `UnitChoices` to `M`, which scales with the choice of unit according to `d`.
+
+See: https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units/near/530520545
+
+-/
+
+TODO "IQ34V" "Define the type of dimensionalful quantities following:
+  https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units/near/530520545"
+
+/-!
+
 ## Measured quantities
+
+We defined `Measured d M` to be a type of measured quantity of type `M` and of dimension `d`,
+the terms of `Measured d M` are corresponds to values of the quantity in a given but arbitary
+set of units.
+
+If `M` has the type of a vector space, then the type `Measured d M` inherits this structure.
+
+Likewise if `M` has the type of an inner product space, then the type `Measured d M`
+inherits this structure. However, note that the inner product space does not explicit track
+the dimension, mapping down to `ℝ`. This is in theory fine, as it is still dimensionful, in the
+sense that it scales with the choice of unit.
 
 -/
 
@@ -119,3 +152,13 @@ open NNReal
 structure Measured (d : Dimension) (M : Type) [SMul ℝ≥0 M] where
   /-- The value of the measured quantity. -/
   val : M
+
+instance {d1 d2 : Dimension} {M1 M2 M : Type} [SMul ℝ≥0 M1] [SMul ℝ≥0 M2]
+    [SMul ℝ≥0 M] [HMul M1 M2 M] :
+    HMul (Measured d1 M1) (Measured d2 M2) (Measured (d1 * d2) M) where
+  hMul x y := ⟨x.val * y.val⟩
+
+instance {d1 d2 : Dimension} {M1 M2 M : Type} [SMul ℝ≥0 M1] [SMul ℝ≥0 M2]
+    [SMul ℝ≥0 M] [HSMul M1 M2 M] :
+    HSMul (Measured d1 M1) (Measured d2 M2) (Measured (d1 * d2) M) where
+  hSMul x y := ⟨x.val • y.val⟩

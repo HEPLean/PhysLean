@@ -6,6 +6,8 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Units.Basic
+import PhysLean.Units.Velocity
+import PhysLean.Units.Mass
 /-!
 # Momentum
 
@@ -19,4 +21,13 @@ open Dimension
   In `(3+1)d` space time this corresponds to `3`-momentum not `4`-momentum. -/
 abbrev Momentum (d : ℕ := 3) : Type := Measured (M𝓭 * L𝓭 * T𝓭⁻¹) (Fin d → ℝ)
 
-TODO "IO7OT" "On the type `Momentum` define the instance of an inner product space."
+TODO "IO7OT" "On the type `Momentum` define the instance of a vector space."
+
+namespace Momentum
+
+unseal Rat.add Rat.mul
+
+/-- The momentum of a particle with mass `m` and velocity `v`. -/
+def ofMassAndVelocity {d} (m : Mass) (v : Velocity d) : Momentum d := m • v
+
+end Momentum
