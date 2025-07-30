@@ -154,6 +154,9 @@ noncomputable def kilometers : LengthUnit := scale ((10) ^ (3)) meters
 /-- The length unit of a mile (1609.344 meters). -/
 noncomputable def miles : LengthUnit := scale (1609.344) meters
 
+/-- The length unit of a nautical mile (1852 meters). -/
+noncomputable def nauticalMiles : LengthUnit := scale (1852) meters
+
 /-- The length unit of an astronomical unit (149,597,870,700 meters). -/
 noncomputable def astronomicalUnits : LengthUnit := scale (149597870700) meters
 
