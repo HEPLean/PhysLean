@@ -247,7 +247,7 @@ end UnitChoices
 
 ## Dimensionful
 
-Given a type `M` with a dimension `d`, a dimensionalful quantity is a
+Given a type `M` with a dimension `d`, a dimensionful quantity is a
 map from `UnitChoices` to `M`, which scales with the choice of unit according to `d`.
 
 See: https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units/near/530520545
@@ -264,6 +264,51 @@ lemma hasDimension_iff {d : Dimension} {M : Type} [SMul ℝ≥0 M]
 
 def Dimensionful (d : Dimension) (M : Type) [SMul ℝ≥0 M] :=
   {f : UnitChoices → M // HasDimension d f}
+
+namespace Dimensionful
+
+lemma eq_of_val {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {f1 f2 : Dimensionful d M} (h : f1.1 = f2.1) : f1 = f2 := by
+  cases f1
+  cases f2
+  simp_all
+
+instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] : MulAction ℝ≥0 (Dimensionful d M) where
+  smul a f := ⟨fun u => a • f.1 u, fun u1 u2 => by
+    simp
+    rw [f.2 u1 u2]
+    rw [smul_comm]⟩
+  one_smul f := by
+    apply eq_of_val
+    ext u
+    change 1 • f.1 u = f.1 u
+    simp
+  mul_smul a b f := by
+    apply eq_of_val
+    ext u
+    change (a * b) • f.1 u = a • (b • f.1 u)
+    rw [smul_smul]
+
+instance {d : Dimension} {M : Type} [MulAction ℝ M] : MulAction ℝ (Dimensionful d M) where
+  smul a f := ⟨fun u => a • f.1 u, fun u1 u2 => by
+    simp
+    rw [f.2 u1 u2]
+    rw [smul_comm]⟩
+  one_smul f := by
+    apply eq_of_val
+    ext u
+    change 1 • f.1 u = f.1 u
+    simp
+  mul_smul a b f := by
+    apply eq_of_val
+    ext u
+    change (a * b) • f.1 u = a • (b • f.1 u)
+    rw [smul_smul]
+
+instance {d : Dimension} : LE (Dimensionful d ℝ≥0) where
+  le f1 f2 := ∀ u, f1.1 u ≤ f2.1 u
+
+end Dimensionful
 
 /-!
 
@@ -316,7 +361,20 @@ instance {d1 d2 : Dimension} {M1 M2 M : Type} [SMul ℝ≥0 M1] [SMul ℝ≥0 M2
     HSMul (Measured d1 M1) (Measured d2 M2) (Measured (d1 * d2) M) where
   hSMul x y := ⟨x.val • y.val⟩
 
+instance {d : Dimension} {M : Type} [SMul ℝ≥0 M] [LE M] : LE (Measured d M) where
+  le x y := x.val ≤ y.val
+
+lemma le_eq_le_val {d : Dimension} {M : Type} [SMul ℝ≥0 M] [LE M]
+    (x y : Measured d M) : x ≤ y ↔ x.val ≤ y.val := by
+  rfl
+
 end Measured
+
+/-!
+
+## Relating `Measured` and `Dimensionful`
+
+-/
 
 namespace Dimensionful
 
@@ -328,9 +386,45 @@ lemma coe_hasDimension {d : Dimension} {M : Type} [SMul ℝ≥0 M]
     (f : Dimensionful d M)  :
     HasDimension d (f : UnitChoices → Measured d M) := by
   intro u1 u2
-  simp
+  simp only
   rw [f.2 u1 u2]
   rfl
+
+lemma eq_of_apply {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {f1 f2 : Dimensionful d M} (h : ∀ u,  f1 u  = f2 u) : f1 = f2 := by
+  apply eq_of_val
+  simp_all
+  ext u
+  exact h u
+
+lemma eq_of_unitChoices {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {f1 f2 : Dimensionful d M} (u : UnitChoices) (h : f1 u = f2 u) : f1 = f2 := by
+  refine eq_of_apply ?_
+  simp only [Measured.mk.injEq]
+  simp at h
+  intro u2
+  rw [f1.2 u, h, ← f2.2 u]
+
+lemma eq_of_SI {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {f1 f2 : Dimensionful d M} (h : f1 UnitChoices.SI = f2 UnitChoices.SI) : f1 = f2 := by
+  refine eq_of_unitChoices UnitChoices.SI ?_
+  exact h
+
+@[simp]
+lemma smul_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    (f : Dimensionful d M) (u : UnitChoices) (a : ℝ≥0) :
+    (a • f : Dimensionful d M) u = a • f u := by
+  ext
+  simp
+  exact rfl
+
+lemma le_nnReals_of_single_unitChoice {d} {f1 f2 : Dimensionful d ℝ≥0}
+      (u : UnitChoices) (h : f1 u ≤ f2 u) : f1 ≤ f2 := by
+  intro u2
+  rw [f1.2 u, f2.2 u]
+  simp
+  apply mul_le_mul_left'
+  exact h
 
 end Dimensionful
 
