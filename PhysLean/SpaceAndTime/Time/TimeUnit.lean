@@ -26,6 +26,8 @@ existence of the time unit of seconds, and construct all other time units from t
 
 -/
 
+open NNReal
+
 /-- The choices of translationally-invariant metrics on the manifold `TimeTransMan`.
   Such a choice corresponds to a choice of units for time. -/
 structure TimeUnit : Type where
@@ -50,11 +52,11 @@ instance : Inhabited TimeUnit where
 
 -/
 
-noncomputable instance : HDiv TimeUnit TimeUnit ℝ where
-  hDiv x t := x.val / t.val
+noncomputable instance : HDiv TimeUnit TimeUnit ℝ≥0 where
+  hDiv x t :=  ⟨x.val / t.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt t.val_pos)⟩
 
 lemma div_eq_val (x y : TimeUnit) :
-    x / y = x.val / y.val := rfl
+    x / y =  (⟨x.val / y.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt y.val_pos)⟩ : ℝ≥0) := rfl
 
 @[simp]
 lemma div_pos (x y : TimeUnit) :
@@ -63,11 +65,11 @@ lemma div_pos (x y : TimeUnit) :
 
 @[simp]
 lemma div_self (x : TimeUnit) :
-    x / x = (1 : ℝ) := by
+    x / x = (1 : ℝ≥0) := by
   simp [div_eq_val, x.val_neq_zero]
 
 lemma div_symm (x y : TimeUnit) :
-    x / y = (y / x)⁻¹ := by
+    x / y = (y / x)⁻¹ := NNReal.eq <| by
   rw [div_eq_val, inv_eq_one_div, div_eq_val]
   simp
 
@@ -83,7 +85,7 @@ def scale (r : ℝ) (x : TimeUnit) (hr : 0 < r := by norm_num) : TimeUnit :=
 
 @[simp]
 lemma scale_div_self (x : TimeUnit) (r : ℝ) (hr : 0 < r) :
-    scale r x hr / x = r := by
+    scale r x hr / x = (⟨r, le_of_lt hr⟩ : ℝ≥0) := by
   simp [scale, div_eq_val]
 
 @[simp]
@@ -92,39 +94,10 @@ lemma scale_one (x : TimeUnit) : scale 1 x = x := by
 
 @[simp]
 lemma scale_div_scale (x1 x2 : TimeUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 < r2) :
-    scale r1 x1 hr1 / scale r2 x2 hr2 = r1 / r2 * (x1 / x2) := by
+    scale r1 x1 hr1 / scale r2 x2 hr2 = (⟨r1, le_of_lt hr1⟩ / ⟨r2, le_of_lt hr2⟩) * (x1 / x2) := by
+  refine NNReal.eq ?_
   simp [scale, div_eq_val]
   field_simp
-
-/-
-
-## HasTimeDimension
-
--/
-
-/-- A function `f : TimeUnit → M` has time dimension `d` if `f y` is `(x/y)^d` times `f x`.
-  This corresponds to the usual notion of a quantity carrying a dimension of time. -/
-@[fun_prop]
-def HasTimeDimension {M : Type} [SMul ℝ M] (f : TimeUnit → M) (d : ℚ) : Prop :=
-  ∀ x y : TimeUnit, f y = (x / y) ^ (d : ℝ) • f x
-
-@[fun_prop]
-lemma add_hasTimeDimension {M : Type} [AddCommMonoid M] [Module ℝ M]
-    {f1 f2 : TimeUnit → M} {d : ℚ}
-    (h1 : HasTimeDimension f1 d) (h2 : HasTimeDimension f2 d) :
-    HasTimeDimension (f1 + f2) d:= by
-  intro x y
-  simp only [Pi.add_apply, smul_add]
-  rw [h1 x y, h2 x y]
-
-@[fun_prop]
-lemma add_fun_hasTimeDimension {M : Type} [AddCommMonoid M] [Module ℝ M]
-    {f1 f2 : TimeUnit → M} {d : ℚ}
-    (h1 : HasTimeDimension f1 d) (h2 : HasTimeDimension f2 d) :
-    HasTimeDimension (fun x => f1 x + f2 x) d := by
-  intro x y
-  simp only [smul_add]
-  rw [h1 x y, h2 x y]
 
 /-!
 
@@ -180,20 +153,26 @@ noncomputable def weeks : TimeUnit := scale (7 * 24 * 60 * 60) seconds
 
 -/
 
-lemma minutes_div_seconds : minutes / seconds = (60 : ℝ) := by simp [minutes]
+lemma minutes_div_seconds : minutes / seconds = (60 : ℝ≥0) := NNReal.eq <| by simp [minutes]
 
-lemma hours_div_seconds : hours / seconds = (3600 : ℝ) := by simp [hours]; norm_num
+lemma hours_div_seconds : hours / seconds = (3600 : ℝ≥0) := NNReal.eq <| by
+  simp [hours]; norm_num
 
-lemma days_div_seconds : days / seconds = (86400 : ℝ) := by simp [days]; norm_num
+lemma days_div_seconds : days / seconds = (86400 : ℝ≥0) := NNReal.eq <| by
+  simp [days]; norm_num
 
-lemma weeks_div_seconds : weeks / seconds = (604800 : ℝ) := by simp [weeks]; norm_num
+lemma weeks_div_seconds : weeks / seconds = (604800 : ℝ≥0) := NNReal.eq <| by
+  simp [weeks]; norm_num
 
-lemma days_div_minutes : days / minutes = (1440 : ℝ) := by simp [days, minutes]; norm_num
+lemma days_div_minutes : days / minutes = (1440 : ℝ≥0) := NNReal.eq <| by
+  simp [days, minutes]; norm_num
 
-lemma weeks_div_minutes : weeks / minutes = (10080 : ℝ) := by simp [weeks, minutes]; norm_num
+lemma weeks_div_minutes : weeks / minutes = (10080 : ℝ≥0) := NNReal.eq <| by
+  simp [weeks, minutes]; norm_num
 
-lemma days_div_hours : days / hours = (24 : ℝ) := by simp [hours, days]; norm_num
+lemma days_div_hours : days / hours = (24 : ℝ≥0) := NNReal.eq <| by simp [hours, days]; norm_num
 
-lemma weeks_div_hours : weeks / hours = (168 : ℝ) := by simp [weeks, hours]; norm_num
+lemma weeks_div_hours : weeks / hours = (168 : ℝ≥0) := NNReal.eq <| by
+  simp [weeks, hours]; norm_num
 
 end TimeUnit

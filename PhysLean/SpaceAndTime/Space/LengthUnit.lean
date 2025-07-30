@@ -48,11 +48,13 @@ instance : Inhabited LengthUnit where
 
 -/
 
-noncomputable instance : HDiv LengthUnit LengthUnit ℝ where
-  hDiv x t := x.val / t.val
+open NNReal
+
+noncomputable instance : HDiv LengthUnit LengthUnit ℝ≥0 where
+  hDiv x t := ⟨x.val / t.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt t.val_pos)⟩
 
 lemma div_eq_val (x y : LengthUnit) :
-    x / y = x.val / y.val := rfl
+    (x / y) = (⟨x.val / y.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt y.val_pos)⟩ : ℝ≥0) := rfl
 
 @[simp]
 lemma div_pos (x y : LengthUnit) :
@@ -61,11 +63,11 @@ lemma div_pos (x y : LengthUnit) :
 
 @[simp]
 lemma div_self (x : LengthUnit) :
-    x / x = (1 : ℝ) := by
+    x / x = (1 : ℝ≥0) := by
   simp [div_eq_val, x.val_neq_zero]
 
 lemma div_symm (x y : LengthUnit) :
-    x / y = (y / x)⁻¹ := by
+    x / y = (y / x)⁻¹ := NNReal.eq <| by
   rw [div_eq_val, inv_eq_one_div, div_eq_val]
   simp
 
@@ -81,7 +83,7 @@ def scale (r : ℝ) (x : LengthUnit) (hr : 0 < r := by norm_num) : LengthUnit :=
 
 @[simp]
 lemma scale_div_self (x : LengthUnit) (r : ℝ) (hr : 0 < r) :
-    scale r x hr / x = r := by
+    scale r x hr / x = (⟨r, le_of_lt hr⟩ : ℝ≥0) := by
   simp [scale, div_eq_val]
 
 @[simp]
@@ -90,7 +92,8 @@ lemma scale_one (x : LengthUnit) : scale 1 x = x := by
 
 @[simp]
 lemma scale_div_scale (x1 x2 : LengthUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 < r2) :
-    scale r1 x1 hr1 / scale r2 x2 hr2 = r1 / r2 * (x1 / x2) := by
+    scale r1 x1 hr1 / scale r2 x2 hr2 = (⟨r1, le_of_lt hr1⟩ / ⟨r2, le_of_lt hr2⟩) * (x1 / x2) := by
+  refine NNReal.eq ?_
   simp [scale, div_eq_val]
   field_simp
 
@@ -177,9 +180,11 @@ TODO "ITXJV" "For each unit of charge give the reference the literature where it
 -/
 
 /-- There are exactly 1760 yards in a mile. -/
-lemma miles_div_yards : miles / yards = (1760 : ℝ) := by simp [miles, yards]; norm_num
+lemma miles_div_yards : miles / yards = (⟨1760, by norm_num⟩ : ℝ≥0) :=
+  NNReal.eq <| by simp [miles, yards]; norm_num
 
 /-- There are exactly 220 yards in a furlong. -/
-lemma furlongs_div_yards : furlongs / yards = (220 : ℝ) := by simp [furlongs, yards]; norm_num
+lemma furlongs_div_yards : furlongs / yards = (⟨220, by norm_num⟩ : ℝ≥0) := NNReal.eq <| by
+  simp [furlongs, yards]; norm_num
 
 end LengthUnit

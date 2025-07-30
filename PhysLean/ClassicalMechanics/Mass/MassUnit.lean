@@ -25,6 +25,8 @@ existence of the mass unit of kilograms, and construct all other mass units from
 
 -/
 
+open NNReal
+
 /-- The choices of translationally-invariant metrics on the mass-manifold.
   Such a choice corresponds to a choice of units for mass. -/
 structure MassUnit where
@@ -49,11 +51,11 @@ instance : Inhabited MassUnit where
 
 -/
 
-noncomputable instance : HDiv MassUnit MassUnit ℝ where
-  hDiv x t := x.val / t.val
+noncomputable instance : HDiv MassUnit MassUnit ℝ≥0 where
+  hDiv x t := ⟨x.val / t.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt t.val_pos)⟩
 
 lemma div_eq_val (x y : MassUnit) :
-    x / y = x.val / y.val := rfl
+    x / y = (⟨x.val / y.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt y.val_pos)⟩ : ℝ≥0) := rfl
 
 @[simp]
 lemma div_pos (x y : MassUnit) :
@@ -62,11 +64,11 @@ lemma div_pos (x y : MassUnit) :
 
 @[simp]
 lemma div_self (x : MassUnit) :
-    x / x = (1 : ℝ) := by
+    x / x = (1 : ℝ≥0) := by
   simp [div_eq_val, x.val_neq_zero]
 
 lemma div_symm (x y : MassUnit) :
-    x / y = (y / x)⁻¹ := by
+    x / y = (y / x)⁻¹ := NNReal.eq <| by
   rw [div_eq_val, inv_eq_one_div, div_eq_val]
   simp
 
@@ -82,7 +84,7 @@ def scale (r : ℝ) (x : MassUnit) (hr : 0 < r := by norm_num) : MassUnit :=
 
 @[simp]
 lemma scale_div_self (x : MassUnit) (r : ℝ) (hr : 0 < r) :
-    scale r x hr / x = r := by
+    scale r x hr / x = (⟨r, le_of_lt hr⟩ : ℝ≥0) := by
   simp [scale, div_eq_val]
 
 @[simp]
@@ -91,7 +93,8 @@ lemma scale_one (x : MassUnit) : scale 1 x = x := by
 
 @[simp]
 lemma scale_div_scale (x1 x2 : MassUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 < r2) :
-    scale r1 x1 hr1 / scale r2 x2 hr2 = r1 / r2 * (x1 / x2) := by
+    scale r1 x1 hr1 / scale r2 x2 hr2 = (⟨r1, le_of_lt hr1⟩ / ⟨r2, le_of_lt hr2⟩) * (x1 / x2) := by
+  refine NNReal.eq ?_
   simp [scale, div_eq_val]
   field_simp
 
@@ -159,12 +162,13 @@ noncomputable def nominalSolarMasses : MassUnit := scale (1.988416e30) kilograms
 
 -/
 
-lemma pounds_div_ounces : pounds / ounces = (16 : ℝ) := by simp [pounds, ounces]; norm_num
+lemma pounds_div_ounces : pounds / ounces = (16 : ℝ≥0) := NNReal.eq <| by
+  simp [pounds, ounces]; norm_num
 
-lemma shortTons_div_kilograms : shortTons / kilograms = (907.18474 : ℝ) := by
+lemma shortTons_div_kilograms : shortTons / kilograms = (907.18474 : ℝ≥0) := NNReal.eq <| by
   simp [shortTons, kilograms, pounds]; norm_num
 
-lemma longTons_div_kilograms : longTons / kilograms = (1016.0469088 : ℝ) := by
+lemma longTons_div_kilograms : longTons / kilograms = (1016.0469088 : ℝ≥0) := NNReal.eq <| by
   simp [longTons, kilograms, pounds]; norm_num
 
 end MassUnit
