@@ -314,7 +314,6 @@ import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Finite
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.TwoState
-import PhysLean.StatisticalMechanics.Temperature
 import PhysLean.StringTheory.Basic
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ChiralIndices
@@ -344,6 +343,8 @@ import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Elems
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.YukawaRegeneration
 import PhysLean.Thermodynamics.Basic
+import PhysLean.Thermodynamics.Temperature.Basic
+import PhysLean.Thermodynamics.Temperature.TemperatureUnits
 import PhysLean.Units.Basic
 import PhysLean.Units.Mass
 import PhysLean.Units.Momentum.Basic
