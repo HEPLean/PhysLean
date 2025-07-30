@@ -45,7 +45,7 @@ instance : Inhabited MassUnit where
 
 /-!
 
-## Division of LengthUnit
+## Division of MassUnit
 
 -/
 
@@ -72,7 +72,7 @@ lemma div_symm (x y : MassUnit) :
 
 /-!
 
-## The scaling of a length unit
+## The scaling of a mass unit
 
 -/
 
