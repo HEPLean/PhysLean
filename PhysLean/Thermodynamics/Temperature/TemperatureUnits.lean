@@ -59,11 +59,6 @@ lemma div_eq_val (x y : TemperatureUnit) :
     x / y = (⟨x.val / y.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt y.val_pos)⟩ : ℝ≥0) := rfl
 
 @[simp]
-lemma div_pos (x y : TemperatureUnit) :
-    (0 : ℝ) < x / y := by
-  simpa [div_eq_val] using _root_.div_pos x.val_pos y.val_pos
-
-@[simp]
 lemma div_self (x : TemperatureUnit) :
     x / x = (1 : ℝ≥0) := by
   simp [div_eq_val, x.val_neq_zero]
@@ -122,7 +117,6 @@ axiom kelvin : TemperatureUnit
 
 /-- The temperature unit of degrees nanokelvin (10^(-9) kelvin). -/
 noncomputable def nanokelvin : TemperatureUnit := scale (1e-9) kelvin
-
 
 /-- The temperature unit of degrees microkelvin (10^(-6) kelvin). -/
 noncomputable def microkelvin : TemperatureUnit := scale (1e-6) kelvin

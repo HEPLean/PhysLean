@@ -58,11 +58,6 @@ lemma div_eq_val (x y : MassUnit) :
     x / y = (⟨x.val / y.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt y.val_pos)⟩ : ℝ≥0) := rfl
 
 @[simp]
-lemma div_pos (x y : MassUnit) :
-    (0 : ℝ) < x / y := by
-  simpa [div_eq_val] using _root_.div_pos x.val_pos y.val_pos
-
-@[simp]
 lemma div_self (x : MassUnit) :
     x / x = (1 : ℝ≥0) := by
   simp [div_eq_val, x.val_neq_zero]

@@ -287,7 +287,7 @@ lemma eq_of_val {d : Dimension} {M : Type} [SMul ℝ≥0 M]
 
 instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] : MulAction ℝ≥0 (Dimensionful d M) where
   smul a f := ⟨fun u => a • f.1 u, fun u1 u2 => by
-    simp
+    simp only
     rw [f.2 u1 u2]
     rw [smul_comm]⟩
   one_smul f := by
@@ -303,7 +303,7 @@ instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] : MulAction ℝ≥0 (D
 
 instance {d : Dimension} {M : Type} [MulAction ℝ M] : MulAction ℝ (Dimensionful d M) where
   smul a f := ⟨fun u => a • f.1 u, fun u1 u2 => by
-    simp
+    simp only
     rw [f.2 u1 u2]
     rw [smul_comm]⟩
   one_smul f := by
@@ -430,10 +430,10 @@ lemma smul_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
   exact rfl
 
 lemma le_nnReals_of_single_unitChoice {d} {f1 f2 : Dimensionful d ℝ≥0}
-      (u : UnitChoices) (h : f1 u ≤ f2 u) : f1 ≤ f2 := by
+    (u : UnitChoices) (h : f1 u ≤ f2 u) : f1 ≤ f2 := by
   intro u2
   rw [f1.2 u, f2.2 u]
-  simp
+  simp only [smul_eq_mul]
   apply mul_le_mul_left'
   exact h
 

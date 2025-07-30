@@ -109,7 +109,7 @@ lemma acre_in_SI : acre SI = ⟨4046.8564224⟩ := by
 /-- One acre is exactly `43560` square feet. -/
 lemma acre_eq_mul_squareFeet : acre = (43560 : ℝ≥0) • squareFoot := by
   apply Dimensionful.eq_of_SI
-  simp
+  simp only [acre_in_SI, Dimensionful.smul_apply, squareFoot_in_SI]
   ext
   norm_num
 
