@@ -3,7 +3,11 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.SpaceAndTime.Time.TimeUnit
+import PhysLean.SpaceAndTime.Space.LengthUnit
+import PhysLean.ClassicalMechanics.Mass.MassUnit
+import PhysLean.Electromagnetism.Charge.ChargeUnit
+import PhysLean.Thermodynamics.Temperature.TemperatureUnits
 import PhysLean.Meta.TODO.Basic
 /-!
 
@@ -49,6 +53,8 @@ Zulip chats discussing units:
 
 A lot of the results around units is still experimental and should be adapted based on needs.
 -/
+
+open NNReal
 
 /-!
 
@@ -99,14 +105,59 @@ lemma mass_add (d1 d2 : Dimension) :
 instance : Inv Dimension where
   inv d := ⟨-d.length, -d.time, -d.mass, -d.charge, -d.temperature⟩
 
+@[simp]
+lemma inv_length (d : Dimension) : d⁻¹.length = -d.length := rfl
+
+@[simp]
+lemma inv_time (d : Dimension) : d⁻¹.time = -d.time := rfl
+
+@[simp]
+lemma inv_mass (d : Dimension) : d⁻¹.mass = -d.mass := rfl
+
+@[simp]
+lemma inv_charge (d : Dimension) : d⁻¹.charge = -d.charge := rfl
+
+@[simp]
+lemma inv_temperature (d : Dimension) : d⁻¹.temperature = -d.temperature := rfl
+
 instance : Pow Dimension ℚ where
   pow d n := ⟨d.length * n, d.time * n, d.mass * n, d.charge * n, d.temperature * n⟩
 
 /-- The dimension corresponding to length. -/
 def L𝓭 : Dimension := ⟨1, 0, 0, 0, 0⟩
 
+@[simp]
+lemma L𝓭_length : L𝓭.length = 1 := by rfl
+
+@[simp]
+lemma L𝓭_time : L𝓭.time = 0 := by rfl
+
+@[simp]
+lemma L𝓭_mass : L𝓭.mass = 0 := by rfl
+
+@[simp]
+lemma L𝓭_charge : L𝓭.charge = 0 := by rfl
+
+@[simp]
+lemma L𝓭_temperature : L𝓭.temperature = 0 := by rfl
+
 /-- The dimension corresponding to time. -/
 def T𝓭 : Dimension := ⟨0, 1, 0, 0, 0⟩
+
+@[simp]
+lemma T𝓭_length : T𝓭.length = 0 := by rfl
+
+@[simp]
+lemma T𝓭_time : T𝓭.time = 1 := by rfl
+
+@[simp]
+lemma T𝓭_mass : T𝓭.mass = 0 := by rfl
+
+@[simp]
+lemma T𝓭_charge : T𝓭.charge = 0 := by rfl
+
+@[simp]
+lemma T𝓭_temperature : T𝓭.temperature = 0 := by rfl
 
 /-- The dimension corresponding to mass. -/
 def M𝓭 : Dimension := ⟨0, 0, 1, 0, 0⟩
@@ -121,7 +172,80 @@ end Dimension
 
 /-!
 
-## Dimensionalful
+## Units
+
+-/
+
+/-- The choice of units. -/
+structure UnitChoices where
+  /-- The length unit. -/
+  length : LengthUnit
+  /-- The time unit. -/
+  time : TimeUnit
+  /-- The mass unit. -/
+  mass : MassUnit
+  /-- The charge unit. -/
+  charge : ChargeUnit
+  /-- The temperature unit. -/
+  temperature : TemperatureUnit
+
+namespace UnitChoices
+
+noncomputable def dimScale (u1 u2 : UnitChoices) (d : Dimension) : ℝ≥0 :=
+  (u1.length / u2.length) ^ (d.length : ℝ) *
+  (u1.time / u2.time) ^ (d.time : ℝ) *
+  (u1.mass / u2.mass) ^ (d.mass : ℝ) *
+  (u1.charge / u2.charge) ^ (d.charge : ℝ) *
+  (u1.temperature / u2.temperature) ^ (d.temperature : ℝ)
+
+@[simp]
+lemma dimScale_self (u : UnitChoices) (d : Dimension) :
+    dimScale u u d = 1 := by
+  simp [dimScale]
+
+lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
+    dimScale u1 u2 d * dimScale u2 u3 d = dimScale u1 u3 d := by
+  simp [dimScale]
+  trans ((u1.length / u2.length) ^ (d.length : ℝ) * (u2.length / u3.length) ^ (d.length : ℝ)) *
+    ((u1.time / u2.time) ^ (d.time : ℝ) * (u2.time / u3.time) ^ (d.time : ℝ)) *
+    ((u1.mass / u2.mass) ^ (d.mass : ℝ) * (u2.mass / u3.mass) ^ (d.mass : ℝ)) *
+    ((u1.charge / u2.charge) ^ (d.charge : ℝ) * (u2.charge / u3.charge) ^ (d.charge : ℝ)) *
+    ((u1.temperature / u2.temperature) ^ (d.temperature : ℝ) *
+      (u2.temperature / u3.temperature) ^ (d.temperature : ℝ))
+  · ring
+  repeat rw [← mul_rpow]
+  apply NNReal.eq
+  simp only [LengthUnit.div_eq_val, TimeUnit.div_eq_val, MassUnit.div_eq_val, ChargeUnit.div_eq_val,
+    TemperatureUnit.div_eq_val, NNReal.coe_mul, coe_rpow, coe_mk]
+  field_simp
+
+noncomputable def SI : UnitChoices where
+  length := LengthUnit.meters
+  time := TimeUnit.seconds
+  mass := MassUnit.kilograms
+  charge := ChargeUnit.coulombs
+  temperature := TemperatureUnit.kelvin
+
+@[simp]
+lemma SI_length : SI.length = LengthUnit.meters := rfl
+
+@[simp]
+lemma SI_time : SI.time = TimeUnit.seconds := rfl
+
+@[simp]
+lemma SI_mass : SI.mass = MassUnit.kilograms := rfl
+
+@[simp]
+lemma SI_charge : SI.charge = ChargeUnit.coulombs := rfl
+
+@[simp]
+lemma SI_temperature : SI.temperature = TemperatureUnit.kelvin := rfl
+
+end UnitChoices
+
+/-!
+
+## Dimensionful
 
 Given a type `M` with a dimension `d`, a dimensionalful quantity is a
 map from `UnitChoices` to `M`, which scales with the choice of unit according to `d`.
@@ -130,8 +254,16 @@ See: https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/phys
 
 -/
 
-TODO "IQ34V" "Define the type of dimensionalful quantities following:
-  https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units/near/530520545"
+def HasDimension (d : Dimension) {M : Type} [SMul ℝ≥0 M] (f : UnitChoices → M) : Prop :=
+  ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 d • f u1
+
+lemma hasDimension_iff {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    (f : UnitChoices → M) :
+    HasDimension d f ↔ ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 d • f u1 := by
+  rfl
+
+def Dimensionful (d : Dimension) (M : Type) [SMul ℝ≥0 M] :=
+  {f : UnitChoices → M // HasDimension d f}
 
 /-!
 
@@ -150,13 +282,29 @@ sense that it scales with the choice of unit.
 
 -/
 
-open NNReal
-
 /-- A measured quantity is a quantity which carries a dimension `d`, but which
   lives in a given (but arbitary) set of units. -/
 structure Measured (d : Dimension) (M : Type) [SMul ℝ≥0 M] where
   /-- The value of the measured quantity. -/
   val : M
+
+
+namespace Measured
+
+@[ext]
+lemma eq_of_val {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {m1 m2 : Measured d M} (h : m1.val = m2.val) : m1 = m2 := by
+  cases m1
+  cases m2
+  simp_all
+
+instance {d : Dimension} {α : Type} {M : Type} [SMul ℝ≥0 M] [SMul α M] : SMul α (Measured d M) where
+  smul r m := ⟨r • m.val⟩
+
+@[simp]
+lemma smul_val {d : Dimension} {α : Type} {M : Type} [SMul ℝ≥0 M] [SMul α M]
+    (r : α) (m : Measured d M) :
+    (r • m).val = r • m.val := rfl
 
 instance {d1 d2 : Dimension} {M1 M2 M : Type} [SMul ℝ≥0 M1] [SMul ℝ≥0 M2]
     [SMul ℝ≥0 M] [HMul M1 M2 M] :
@@ -167,3 +315,35 @@ instance {d1 d2 : Dimension} {M1 M2 M : Type} [SMul ℝ≥0 M1] [SMul ℝ≥0 M2
     [SMul ℝ≥0 M] [HSMul M1 M2 M] :
     HSMul (Measured d1 M1) (Measured d2 M2) (Measured (d1 * d2) M) where
   hSMul x y := ⟨x.val • y.val⟩
+
+end Measured
+
+namespace Dimensionful
+
+instance {d : Dimension} {M : Type} [SMul ℝ≥0 M] :
+    CoeFun (Dimensionful d M) (fun _ => UnitChoices → Measured d M) where
+  coe f := fun u => ⟨f.1 u⟩
+
+lemma coe_hasDimension {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    (f : Dimensionful d M)  :
+    HasDimension d (f : UnitChoices → Measured d M) := by
+  intro u1 u2
+  simp
+  rw [f.2 u1 u2]
+  rfl
+
+end Dimensionful
+
+namespace Measured
+
+noncomputable instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] :
+    HSMul (Measured d M) UnitChoices (Dimensionful d M) where
+  hSMul m u := ⟨fun u1 => (u.dimScale u1 d) • m.val, fun u1 u2 => by
+    simp [smul_smul, mul_comm, UnitChoices.dimScale_transitive]⟩
+
+@[simp]
+lemma smul_unitChoices_apply  {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    (m : Measured d M) (u : UnitChoices) (u1 : UnitChoices) :
+    (m • u) u1 = u.dimScale u1 d • m := rfl
+
+end Measured
