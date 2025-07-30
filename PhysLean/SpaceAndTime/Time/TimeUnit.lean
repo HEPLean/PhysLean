@@ -53,10 +53,10 @@ instance : Inhabited TimeUnit where
 -/
 
 noncomputable instance : HDiv TimeUnit TimeUnit ℝ≥0 where
-  hDiv x t :=  ⟨x.val / t.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt t.val_pos)⟩
+  hDiv x t := ⟨x.val / t.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt t.val_pos)⟩
 
 lemma div_eq_val (x y : TimeUnit) :
-    x / y =  (⟨x.val / y.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt y.val_pos)⟩ : ℝ≥0) := rfl
+    x / y = (⟨x.val / y.val, div_nonneg (le_of_lt x.val_pos) (le_of_lt y.val_pos)⟩ : ℝ≥0) := rfl
 
 @[simp]
 lemma div_pos (x y : TimeUnit) :

@@ -433,20 +433,4 @@ lemma toTime_symm_sub (zero : TimeTransMan) (x : TimeUnit)
   simp [toTime_val, addTime_val, diff_eq_val, toTime_symm_val]
   ring
 
-lemma toTime_scale (zero : TimeTransMan) (x1 x2 : TimeUnit)
-    (t : TimeTransMan) : toTime zero x1 t = (x2/x1) • toTime zero x2 t := by
-  ext
-  simp [toTime_val, addTime_val, diff_eq_val, TimeUnit.div_eq_val]
-  field_simp
-  ring
-
-@[fun_prop]
-lemma toTime_hasTimeDimension_one (zero : TimeTransMan) :
-    HasTimeDimension (fun x => (toTime zero x : TimeTransMan → Time)) 1 := by
-  intro x1 x2
-  ext y
-  simp [toTime_val, addTime_val, diff_eq_val, TimeUnit.div_eq_val]
-  field_simp
-  ring
-
 end TimeTransMan

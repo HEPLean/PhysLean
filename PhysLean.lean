@@ -347,7 +347,9 @@ import PhysLean.StringTheory.FTheory.SU5U1.Quanta.YukawaRegeneration
 import PhysLean.Thermodynamics.Basic
 import PhysLean.Thermodynamics.Temperature.Basic
 import PhysLean.Thermodynamics.Temperature.TemperatureUnits
+import PhysLean.Units.Area
 import PhysLean.Units.Basic
 import PhysLean.Units.Mass
 import PhysLean.Units.Momentum.Basic
+import PhysLean.Units.Speed
 import PhysLean.Units.Velocity

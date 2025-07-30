@@ -8,7 +8,6 @@ import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.ClassicalMechanics.Mass.MassUnit
 import PhysLean.Electromagnetism.Charge.ChargeUnit
 import PhysLean.Thermodynamics.Temperature.TemperatureUnits
-import PhysLean.Meta.TODO.Basic
 /-!
 
 # Dimensions and unit
@@ -191,6 +190,9 @@ structure UnitChoices where
 
 namespace UnitChoices
 
+/-- Given two choices of units `u1` and `u2` and a dimension `d`, the
+  element of `ℝ≥0` corresponding to the scaling (by definition) of a quantity of dimension `d`
+  when changing from units `u1` to `u2`. -/
 noncomputable def dimScale (u1 u2 : UnitChoices) (d : Dimension) : ℝ≥0 :=
   (u1.length / u2.length) ^ (d.length : ℝ) *
   (u1.time / u2.time) ^ (d.time : ℝ) *
@@ -219,6 +221,13 @@ lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
     TemperatureUnit.div_eq_val, NNReal.coe_mul, coe_rpow, coe_mk]
   field_simp
 
+/-- The choice of units corresponding to SI units, that is
+- meters,
+- seconds,
+- kilograms,
+- columbs,
+- kelvin.
+-/
 noncomputable def SI : UnitChoices where
   length := LengthUnit.meters
   time := TimeUnit.seconds
@@ -254,6 +263,8 @@ See: https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/phys
 
 -/
 
+/-- A quantity of type `M` which depends on a choice of units `UnitChoices` is said to be
+  of dimension `d` if it scales by `UnitChoices.dimScale u1 u2 d` under a change in units. -/
 def HasDimension (d : Dimension) {M : Type} [SMul ℝ≥0 M] (f : UnitChoices → M) : Prop :=
   ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 d • f u1
 
@@ -262,6 +273,7 @@ lemma hasDimension_iff {d : Dimension} {M : Type} [SMul ℝ≥0 M]
     HasDimension d f ↔ ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 d • f u1 := by
   rfl
 
+/-- The type of maps from `UnitChoices` to `M` which have dimension `d`. -/
 def Dimensionful (d : Dimension) (M : Type) [SMul ℝ≥0 M] :=
   {f : UnitChoices → M // HasDimension d f}
 
@@ -333,7 +345,6 @@ structure Measured (d : Dimension) (M : Type) [SMul ℝ≥0 M] where
   /-- The value of the measured quantity. -/
   val : M
 
-
 namespace Measured
 
 @[ext]
@@ -383,7 +394,7 @@ instance {d : Dimension} {M : Type} [SMul ℝ≥0 M] :
   coe f := fun u => ⟨f.1 u⟩
 
 lemma coe_hasDimension {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    (f : Dimensionful d M)  :
+    (f : Dimensionful d M) :
     HasDimension d (f : UnitChoices → Measured d M) := by
   intro u1 u2
   simp only
@@ -391,7 +402,7 @@ lemma coe_hasDimension {d : Dimension} {M : Type} [SMul ℝ≥0 M]
   rfl
 
 lemma eq_of_apply {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (h : ∀ u,  f1 u  = f2 u) : f1 = f2 := by
+    {f1 f2 : Dimensionful d M} (h : ∀ u, f1 u = f2 u) : f1 = f2 := by
   apply eq_of_val
   simp_all
   ext u
@@ -436,7 +447,7 @@ noncomputable instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] :
     simp [smul_smul, mul_comm, UnitChoices.dimScale_transitive]⟩
 
 @[simp]
-lemma smul_unitChoices_apply  {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+lemma smul_unitChoices_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
     (m : Measured d M) (u : UnitChoices) (u1 : UnitChoices) :
     (m • u) u1 = u.dimScale u1 d • m := rfl
 

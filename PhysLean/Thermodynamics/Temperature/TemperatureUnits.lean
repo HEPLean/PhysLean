@@ -131,7 +131,7 @@ noncomputable def microkelvin : TemperatureUnit := scale (1e-6) kelvin
 noncomputable def millikelvin : TemperatureUnit := scale (1e-3) kelvin
 
 /-- The temperature unit of degrees fahrenheit ((5/9) of a kelvin).
-  Note, this is fahrenheit starting at `0` absolute temperature.  -/
+  Note, this is fahrenheit starting at `0` absolute temperature. -/
 noncomputable def absoluteFahrenheit : TemperatureUnit := scale (5 / 9) kelvin
 
 end TemperatureUnit

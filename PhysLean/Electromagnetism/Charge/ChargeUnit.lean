@@ -20,7 +20,6 @@ positive reals.
 We assume that the charge manifold is already defined with an orientation, with the
 electron being in the negative direction.
 
-
 On `ChargeUnit` there is an instance of division giving a real number, corresponding to the
 ratio of the two scales of temperature unit.
 
