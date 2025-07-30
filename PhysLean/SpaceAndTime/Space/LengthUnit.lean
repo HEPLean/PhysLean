@@ -25,7 +25,10 @@ existence of the length unit of meters, and construct all other length units fro
 
 /-- The choices of translationally-invariant metrics on the space-manifold.
   Such a choice corresponds to a choice of units for length. -/
-def LengthUnit : Type := {x : ℝ | 0 < x}
+structure LengthUnit where
+  /-- The underlying scale of the unit. -/
+  val : ℝ
+  property : 0 < val
 
 namespace LengthUnit
 

@@ -28,7 +28,10 @@ existence of the time unit of seconds, and construct all other time units from t
 
 /-- The choices of translationally-invariant metrics on the manifold `TimeTransMan`.
   Such a choice corresponds to a choice of units for time. -/
-def TimeUnit : Type := {x : ℝ | 0 < x}
+structure TimeUnit : Type where
+  /-- The underlying scale of the unit. -/
+  val : ℝ
+  property : 0 < val
 
 namespace TimeUnit
 
