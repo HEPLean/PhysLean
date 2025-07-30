@@ -3,6 +3,7 @@ import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
+import PhysLean.ClassicalMechanics.Mass.MassUnit
 import PhysLean.ClassicalMechanics.VectorFields
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.ClassicalMechanics.WaveEquation.HarmonicWave
