@@ -107,7 +107,7 @@ lemma scale_scale (x : MassUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < r2) :
 
 To define a specific mass units, we must first axiomise the existence of a
 a given mass unit, and then construct all other mass units from it.
-We choose to axiomise the existence of the mass unit of kilographs.
+We choose to axiomise the existence of the mass unit of kilograms.
 
 We need an axiom since this relates something to something in the physical world.
 
