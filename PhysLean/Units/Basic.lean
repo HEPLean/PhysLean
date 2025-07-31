@@ -51,6 +51,7 @@ Zulip chats discussing units:
 ## Note
 
 A lot of the results around units is still experimental and should be adapted based on needs.
+
 -/
 
 open NNReal
@@ -336,6 +337,11 @@ Likewise if `M` has the type of an inner product space, then the type `Measured 
 inherits this structure. However, note that the inner product space does not explicit track
 the dimension, mapping down to `ℝ`. This is in theory fine, as it is still dimensionful, in the
 sense that it scales with the choice of unit.
+
+The type `Measured d M` can be seen as a convienent way to work with and keep track of
+dimensions. However, working with `Measured d M` does not formally prove anything
+about dimensions, which can only be done with `Dimensionful d M`, or other
+manifest considerations of `UnitChoices`.
 
 -/
 
