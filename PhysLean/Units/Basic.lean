@@ -95,12 +95,20 @@ lemma time_mul (d1 d2 : Dimension) :
     (d1 * d2).time = d1.time + d2.time := rfl
 
 @[simp]
-lemma length_add (d1 d2 : Dimension) :
+lemma length_mul (d1 d2 : Dimension) :
     (d1 * d2).length = d1.length + d2.length := rfl
 
 @[simp]
-lemma mass_add (d1 d2 : Dimension) :
+lemma mass_mul (d1 d2 : Dimension) :
     (d1 * d2).mass = d1.mass + d2.mass := rfl
+
+@[simp]
+lemma charge_mul (d1 d2 : Dimension) :
+    (d1 * d2).charge = d1.charge + d2.charge := rfl
+
+@[simp]
+lemma temperature_mul (d1 d2 : Dimension) :
+    (d1 * d2).temperature = d1.temperature + d2.temperature := rfl
 
 instance : Inv Dimension where
   inv d := ⟨-d.length, -d.time, -d.mass, -d.charge, -d.temperature⟩
@@ -206,6 +214,11 @@ lemma dimScale_self (u : UnitChoices) (d : Dimension) :
     dimScale u u d = 1 := by
   simp [dimScale]
 
+@[simp]
+lemma dimScale_zero (u1 u2 : UnitChoices) :
+    dimScale u1 u2 0 = 1 := by
+  simp [dimScale, Dimension.zero_eq]
+
 lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d * dimScale u2 u3 d = dimScale u1 u3 d := by
   simp [dimScale]
@@ -221,6 +234,38 @@ lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
   simp only [LengthUnit.div_eq_val, TimeUnit.div_eq_val, MassUnit.div_eq_val, ChargeUnit.div_eq_val,
     TemperatureUnit.div_eq_val, NNReal.coe_mul, coe_rpow, coe_mk]
   field_simp
+
+@[simp]
+lemma dimScale_mul (u1 u2 : UnitChoices) (d1 d2 : Dimension) :
+    dimScale u1 u2 (d1 * d2) = dimScale u1 u2 d1 * dimScale u1 u2 d2 := by
+  simp [dimScale]
+  repeat rw [rpow_add]
+  ring
+  all_goals
+    simp
+
+@[simp]
+lemma dimScale_neq_zero (u1 u2 : UnitChoices) (d : Dimension) :
+    dimScale u1 u2 d ≠ 0 := by
+  simp [dimScale]
+
+lemma dimScale_inv (u1 u2 : UnitChoices) (d : Dimension) :
+    dimScale u1 u2 d⁻¹ = (dimScale u1 u2 d)⁻¹ := by
+  simp only [dimScale, Dimension.inv_length, Rat.cast_neg, Dimension.inv_time, Dimension.inv_mass,
+    Dimension.inv_charge, Dimension.inv_temperature, mul_inv]
+  congr
+  all_goals
+  · exact rpow_neg _ _
+
+lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension) :
+    dimScale u1 u2 d = (dimScale u2 u1 d)⁻¹ := by
+  simp only [dimScale, mul_inv]
+  congr
+  · rw [LengthUnit.div_symm, inv_rpow]
+  · rw [TimeUnit.div_symm, inv_rpow]
+  · rw [MassUnit.div_symm, inv_rpow]
+  · rw [ChargeUnit.div_symm, inv_rpow]
+  · rw [TemperatureUnit.div_symm, inv_rpow]
 
 /-- The choice of units corresponding to SI units, that is
 - meters,
@@ -280,11 +325,51 @@ def Dimensionful (d : Dimension) (M : Type) [SMul ℝ≥0 M] :=
 
 namespace Dimensionful
 
+/-- Applying an element of `Dimensionful d M` to a unit choice gives an element of `M`. -/
+instance {d : Dimension} {M : Type} [SMul ℝ≥0 M] :
+    CoeFun (Dimensionful d M) (fun _ => UnitChoices → M) where
+  coe f := f.1
+
+lemma coe_hasDimension {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    (f : Dimensionful d M) :
+    HasDimension d (f : UnitChoices → M) := by
+  intro u1 u2
+  rw [f.2 u1 u2]
+
+/-!
+
+### Equality lemmas
+
+-/
+
 lemma eq_of_val {d : Dimension} {M : Type} [SMul ℝ≥0 M]
     {f1 f2 : Dimensionful d M} (h : f1.1 = f2.1) : f1 = f2 := by
   cases f1
   cases f2
   simp_all
+
+lemma eq_of_apply {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {f1 f2 : Dimensionful d M} (h : ∀ u, f1 u = f2 u) : f1 = f2 := by
+  apply eq_of_val
+  ext u
+  exact h u
+
+lemma eq_of_unitChoices {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {f1 f2 : Dimensionful d M} (u : UnitChoices) (h : f1 u = f2 u) : f1 = f2 := by
+  refine eq_of_apply ?_
+  intro u2
+  rw [f1.2 u, h, ← f2.2 u]
+
+lemma eq_of_SI {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    {f1 f2 : Dimensionful d M} (h : f1 UnitChoices.SI = f2 UnitChoices.SI) : f1 = f2 := by
+  refine eq_of_unitChoices UnitChoices.SI ?_
+  exact h
+
+/-!
+
+### MulAction
+
+-/
 
 instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] : MulAction ℝ≥0 (Dimensionful d M) where
   smul a f := ⟨fun u => a • f.1 u, fun u1 u2 => by
@@ -318,8 +403,348 @@ instance {d : Dimension} {M : Type} [MulAction ℝ M] : MulAction ℝ (Dimension
     change (a * b) • f.1 u = a • (b • f.1 u)
     rw [smul_smul]
 
+@[simp]
+lemma smul_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    (f : Dimensionful d M) (u : UnitChoices) (a : ℝ≥0) :
+    (a • f : Dimensionful d M) u = a • f u := by rfl
+
+@[simp]
+lemma smul_real_apply {d : Dimension} {M : Type} [MulAction ℝ M]
+    (f : Dimensionful d M) (u : UnitChoices) (a : ℝ) :
+    (a • f : Dimensionful d M) u = a • f u := by rfl
+
+/-!
+
+## ofUnit
+
+-/
+
+/-- The creation of an element `f : Dimensionful d M` given a `m : M` and a choice of
+  units `u : UnitChoices`, defined such that `f u = m`. -/
+noncomputable def ofUnit (d : Dimension) {M : Type} [MulAction ℝ≥0 M]
+    (m : M) (u : UnitChoices) : Dimensionful d M where
+  val := fun u1=> (u.dimScale u1 d) • m
+  property := fun u1 u2 => by
+    simp [smul_smul, mul_comm]
+    rw [UnitChoices.dimScale_transitive]
+
+lemma ofUnit_eq_mul_dimScale {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    (m : M) (u1 u2 : UnitChoices) :
+    ofUnit d m u1 = (UnitChoices.dimScale u1 u2 d) • ofUnit d m u2 := by
+  apply eq_of_val
+  ext u
+  simp [ofUnit, smul_smul]
+  rw [UnitChoices.dimScale_transitive]
+
+@[simp]
+lemma ofUnit_apply_self {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    (m : M) (u : UnitChoices) :
+    (ofUnit d m u) u = m := by
+  simp [ofUnit, smul_smul]
+
+lemma ofUnit_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    (m : M) (u1 u2 : UnitChoices) :
+    (ofUnit d m u1) u2 = UnitChoices.dimScale u1 u2 d • m := by
+  simp [ofUnit, smul_smul]
+
+/-!
+
+### LE
+
+-/
+
 instance {d : Dimension} : LE (Dimensionful d ℝ≥0) where
   le f1 f2 := ∀ u, f1.1 u ≤ f2.1 u
+
+lemma le_nnReals_of_unitChoice {d} {f1 f2 : Dimensionful d ℝ≥0}
+    (u : UnitChoices) (h : f1 u ≤ f2 u) : f1 ≤ f2 := by
+  intro u2
+  rw [f1.2 u, f2.2 u]
+  simp only [smul_eq_mul]
+  apply mul_le_mul_left'
+  exact h
+
+/-!
+
+### Addition and module structure
+
+-/
+
+instance {d : Dimension} {M : Type} [AddZeroClass M] [DistribSMul ℝ≥0 M] :
+    AddZeroClass (Dimensionful d M) where
+  zero := ⟨fun _ => 0, fun _ _ => by simp⟩
+  add f1 f2 := ⟨fun u => f1.1 u + f2.1 u, fun u1 u2 => by
+    simp only
+    rw [f1.2 u1 u2, f2.2 u1 u2]
+    simp [smul_add]⟩
+  zero_add f := by
+    apply eq_of_val
+    ext u
+    change (0 : M) + f.1 u = f.1 u
+    simp
+  add_zero f := by
+    apply eq_of_val
+    ext u
+    change f.1 u + (0 : M) = f.1 u
+    simp
+
+@[simp]
+lemma add_apply {d : Dimension} {M : Type} [AddZeroClass M] [DistribSMul ℝ≥0 M]
+    (f1 f2 : Dimensionful d M) (u : UnitChoices) :
+    (f1 + f2 : Dimensionful d M) u = f1 u + f2 u := rfl
+
+instance {d : Dimension} {M : Type} [AddCommGroup M] [DistribSMul ℝ≥0 M] :
+    AddCommGroup (Dimensionful d M) where
+  add_assoc f1 f2 f3 := by
+    apply eq_of_val
+    ext u
+    change (f1.1 u + f2.1 u) + f3.1 u = f1.1 u + (f2.1 u + f3.1 u)
+    simp [add_assoc]
+  neg f := ⟨fun u => - f.1 u, fun u1 u2 => by
+    simp only [smul_neg, neg_inj]
+    rw [f.2 u1 u2]⟩
+  nsmul n f := ⟨fun u => n • f.1 u, fun u1 u2 => by
+    simp only
+    rw [f.2 u1 u2, smul_comm]⟩
+  zsmul n f := ⟨fun u => n • f.1 u, fun u1 u2 => by
+    simp only
+    rw [f.2 u1 u2, smul_comm]⟩
+  neg_add_cancel f1 := by
+    apply eq_of_val
+    ext u
+    simp
+    rfl
+  add_comm f1 f2 := by
+    apply eq_of_val
+    ext u
+    change f1.1 u + f2.1 u = f2.1 u + f1.1 u
+    simp [add_comm]
+  nsmul_zero f := by simp; rfl
+  nsmul_succ n f := by
+    apply eq_of_val
+    ext u
+    simp [succ_nsmul]
+  zsmul_zero' f := by
+    apply eq_of_val
+    ext u
+    simp
+    rfl
+  zsmul_succ' n f := by
+    apply eq_of_val
+    ext u
+    simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, natCast_zsmul, add_apply]
+    rw [@add_one_zsmul]
+    simp
+  zsmul_neg' n f := by
+    apply eq_of_val
+    ext u
+    simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one]
+    erw [← neg_zsmul]
+    rfl
+
+@[simp]
+lemma neg_apply {d : Dimension} {M : Type} [AddCommGroup M] [DistribSMul ℝ≥0 M]
+    (f : Dimensionful d M) (u : UnitChoices) :
+    (-f : Dimensionful d M) u = -f u := rfl
+
+@[simp]
+lemma zero_apply {d : Dimension} {M : Type} [AddZeroClass M] [DistribSMul ℝ≥0 M]
+    (u : UnitChoices) : (0 : Dimensionful d M) u = 0 := rfl
+
+instance {d : Dimension} {M : Type} [AddCommGroup M] [Module ℝ M] :
+    Module ℝ (Dimensionful d M) where
+  smul_zero a := by
+    apply eq_of_val
+    ext u
+    simp
+  smul_add a f1 f2 := by
+    apply eq_of_val
+    ext u
+    change a • (f1.1 u + f2.1 u) = a • f1.1 u + a • f2.1 u
+    simp [smul_add]
+  add_smul a1 a2 f2 := by
+    apply eq_of_val
+    ext u
+    simp [add_smul]
+  zero_smul f := by
+    apply eq_of_val
+    ext u
+    change (0 : ℝ) • f.1 u = 0
+    simp
+
+@[simp]
+lemma sub_apply {d : Dimension} {M : Type} [AddCommGroup M] [DistribSMul ℝ≥0 M]
+    (f1 f2 : Dimensionful d M) (u : UnitChoices) :
+    (f1 - f2 : Dimensionful d M) u = f1 u - f2 u := by
+  rw [@sub_eq_neg_add]
+  simp only [add_apply, neg_apply]
+  abel
+
+/-!
+
+### Multiplication
+
+-/
+
+instance {d1 d2 : Dimension} :
+    HMul (Dimensionful d1 ℝ) (Dimensionful d2 ℝ) (Dimensionful (d1 * d2) ℝ) where
+  hMul x y := ⟨fun u => x.1 u * y.1 u, fun u1 u2 => by
+    simp only
+    rw [x.2 u1 u2, y.2 u1 u2]
+    simp only [Algebra.mul_smul_comm, Algebra.smul_mul_assoc, UnitChoices.dimScale_mul]
+    change u1.dimScale u2 d2 * (u1.dimScale u2 d1 * (x u1 * y u1)) =
+      (u1.dimScale u2 d1 * u1.dimScale u2 d2) * (x u1 * y u1)
+    ring⟩
+
+@[simp]
+lemma mul_real_apply {d1 d2 : Dimension}
+    (x : Dimensionful d1 ℝ) (y : Dimensionful d2 ℝ) (u : UnitChoices) :
+    (x * y) u = x u * y u := rfl
+
+/-!
+
+### Division
+
+-/
+
+noncomputable instance {d1 d2 : Dimension} :
+    HDiv (Dimensionful d1 ℝ) (Dimensionful d2 ℝ) (Dimensionful (d1 * d2⁻¹) ℝ) where
+  hDiv x y := ⟨fun u => x.1 u / y.1 u, fun u1 u2 => by
+    simp only
+    rw [x.2 u1 u2, y.2 u1 u2]
+    simp only [UnitChoices.dimScale_mul]
+    change (u1.dimScale u2 d1 * x u1) / (u1.dimScale u2 d2 * y u1) =
+      (u1.dimScale u2 d1 * u1.dimScale u2 d2⁻¹) * (x u1 / y u1)
+    rw [UnitChoices.dimScale_inv]
+    by_cases h0 : y.1 u1 = 0
+    · simp [h0]
+    have h0 : toReal (u1.dimScale u2 d2) ≠ 0 := by
+      simp [UnitChoices.dimScale_neq_zero]
+    field_simp⟩
+
+@[simp]
+lemma hdiv_apply {d1 d2 : Dimension}
+    (x : Dimensionful d1 ℝ) (y : Dimensionful d2 ℝ) (u : UnitChoices) :
+    (x / y) u = x u / y u := rfl
+
+noncomputable instance {d2 : Dimension} :
+    HDiv ℝ (Dimensionful d2 ℝ) (Dimensionful (d2⁻¹) ℝ) where
+  hDiv x y := ⟨fun u => x / y.1 u, fun u1 u2 => by
+    simp only
+    rw [y.2 u1 u2]
+    change x / (u1.dimScale u2 d2 * y u1) =
+      (u1.dimScale u2 d2⁻¹) * (x / y u1)
+    rw [UnitChoices.dimScale_inv]
+    by_cases h0 : y.1 u1 = 0
+    · simp [h0]
+    have h0 : toReal (u1.dimScale u2 d2) ≠ 0 := by
+      simp [UnitChoices.dimScale_neq_zero]
+    field_simp⟩
+
+/-!
+
+### SMul
+
+-/
+
+noncomputable instance {d1 d2 : Dimension} {M : Type} [AddCommGroup M] [Module ℝ M] :
+    HSMul (Dimensionful d1 ℝ) (Dimensionful d2 M) (Dimensionful (d1 * d2) M) where
+  hSMul x y := ⟨fun u => x.1 u • y.1 u, fun u1 u2 => by
+    simp only
+    rw [x.2 u1 u2, y.2 u1 u2]
+    simp only [smul_assoc, UnitChoices.dimScale_mul]
+    erw [smul_smul, smul_smul, smul_smul]
+    congr 1
+    simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, NNReal.coe_mul]
+    ring⟩
+
+@[simp]
+lemma hsmul_apply {d1 d2 : Dimension} {M : Type} [AddCommGroup M] [Module ℝ M]
+    (x : Dimensionful d1 ℝ) (y : Dimensionful d2 M) (u : UnitChoices) :
+    (x • y) u = x u • y u := rfl
+
+/-!
+
+## Inner product
+
+We define the inner product in SI units.
+-/
+
+open InnerProductSpace
+open UnitChoices
+
+noncomputable instance {M} {d : Dimension}
+    [SeminormedAddCommGroup M] [InnerProductSpace ℝ M]:
+    SeminormedAddCommGroup (Dimensionful d M) where
+  norm f := ‖f.1 SI‖
+  dist_self := by intro x; simp
+  dist_comm := by intro x y; simp; exact norm_sub_rev _ _
+  dist_triangle := by
+    intro x y z
+    simp only [sub_apply]
+    exact norm_sub_le_norm_sub_add_norm_sub _ _ _
+
+noncomputable instance {M} {d : Dimension}
+    [SeminormedAddCommGroup M] [InnerProductSpace ℝ M]:
+    InnerProductSpace ℝ (Dimensionful d M) where
+  inner x y := ⟪x.1 SI, y.1 SI⟫_ℝ
+  norm_smul_le r y := norm_smul_le r (y.1 SI)
+  norm_sq_eq_re_inner x := norm_sq_eq_re_inner (x.1 SI)
+  conj_inner_symm x y := conj_inner_symm (x.1 SI) (y.1 SI)
+  add_left x y z := add_left (x.1 SI) (y.1 SI) (z.1 SI)
+  smul_left x y r := smul_left (x.1 SI) (y.1 SI) r
+
+/-!
+
+### Derivatives
+
+-/
+
+TODO "IY4PB" "The derivative of a dimensionful quantities is only defined for `ℝ`,
+  this should be generalized to other types, carrying the relevant structure."
+
+/-- The derivative using dimensionalful quantities. -/
+noncomputable def deriv {d1 d2 : Dimension} (f : Dimensionful d1 ℝ → Dimensionful d2 ℝ)
+    (atLocation : Dimensionful d1 ℝ) :
+    Dimensionful (d2 * d1⁻¹) ℝ where
+  val := fun u =>
+    /- The derivative of `f` at location `atLocation` in the direction `(ofUnit d1 1 u)`
+      in coordinates `u`. -/
+    (fderiv ℝ f atLocation (ofUnit d1 1 u)) u
+  property := fun u1 u2 => by
+    simp only [dimScale_mul]
+    let F := (fderiv ℝ f atLocation (ofUnit d1 1 u2))
+    change F u2 = _
+    rw [F.2 u1]
+    dsimp [F]
+    have h1 : ofUnit d1 (1 : ℝ) u2 = (UnitChoices.dimScale u2 u1 d1) • ofUnit d1 1 u1 := by
+      rw [← ofUnit_eq_mul_dimScale]
+    rw [h1]
+    simp [smul_smul]
+    congr 2
+    rw [dimScale_symm]
+    exact Eq.symm (dimScale_inv u1 u2 d1)
+
+/-!
+
+### valCast
+
+-/
+
+set_option linter.unusedVariables false in
+/-- The casting of a quantity in `Dimensionful 0 M` to its underlying element in `M`. -/
+@[nolint unusedArguments]
+noncomputable def valCast {d : Dimension} {M : Type} [SMul ℝ≥0 M]
+    (f : Dimensionful d M) (hd : d = 0 := by rfl) : M :=
+  f.1 UnitChoices.SI
+
+lemma valCast_eq_unitChoices {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    {f : Dimensionful d M} {hd : d = 0} (u : UnitChoices) :
+    valCast f hd = f u := by
+  simp [valCast, hd]
+  rw [f.2 UnitChoices.SI u]
+  subst hd
+  simp
 
 end Dimensionful
 
@@ -360,6 +785,12 @@ lemma eq_of_val {d : Dimension} {M : Type} [SMul ℝ≥0 M]
   cases m2
   simp_all
 
+/-!
+
+### Basic instances carried from underlying type.
+
+-/
+
 instance {d : Dimension} {α : Type} {M : Type} [SMul ℝ≥0 M] [SMul α M] : SMul α (Measured d M) where
   smul r m := ⟨r • m.val⟩
 
@@ -385,68 +816,6 @@ lemma le_eq_le_val {d : Dimension} {M : Type} [SMul ℝ≥0 M] [LE M]
     (x y : Measured d M) : x ≤ y ↔ x.val ≤ y.val := by
   rfl
 
-end Measured
-
-/-!
-
-## Relating `Measured` and `Dimensionful`
-
--/
-
-namespace Dimensionful
-
-instance {d : Dimension} {M : Type} [SMul ℝ≥0 M] :
-    CoeFun (Dimensionful d M) (fun _ => UnitChoices → Measured d M) where
-  coe f := fun u => ⟨f.1 u⟩
-
-lemma coe_hasDimension {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    (f : Dimensionful d M) :
-    HasDimension d (f : UnitChoices → Measured d M) := by
-  intro u1 u2
-  simp only
-  rw [f.2 u1 u2]
-  rfl
-
-lemma eq_of_apply {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (h : ∀ u, f1 u = f2 u) : f1 = f2 := by
-  apply eq_of_val
-  simp_all
-  ext u
-  exact h u
-
-lemma eq_of_unitChoices {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (u : UnitChoices) (h : f1 u = f2 u) : f1 = f2 := by
-  refine eq_of_apply ?_
-  simp only [Measured.mk.injEq]
-  simp at h
-  intro u2
-  rw [f1.2 u, h, ← f2.2 u]
-
-lemma eq_of_SI {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (h : f1 UnitChoices.SI = f2 UnitChoices.SI) : f1 = f2 := by
-  refine eq_of_unitChoices UnitChoices.SI ?_
-  exact h
-
-@[simp]
-lemma smul_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
-    (f : Dimensionful d M) (u : UnitChoices) (a : ℝ≥0) :
-    (a • f : Dimensionful d M) u = a • f u := by
-  ext
-  simp
-  exact rfl
-
-lemma le_nnReals_of_single_unitChoice {d} {f1 f2 : Dimensionful d ℝ≥0}
-    (u : UnitChoices) (h : f1 u ≤ f2 u) : f1 ≤ f2 := by
-  intro u2
-  rw [f1.2 u, f2.2 u]
-  simp only [smul_eq_mul]
-  apply mul_le_mul_left'
-  exact h
-
-end Dimensionful
-
-namespace Measured
-
 noncomputable instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] :
     HSMul (Measured d M) UnitChoices (Dimensionful d M) where
   hSMul m u := ⟨fun u1 => (u.dimScale u1 d) • m.val, fun u1 u2 => by
@@ -455,6 +824,6 @@ noncomputable instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] :
 @[simp]
 lemma smul_unitChoices_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
     (m : Measured d M) (u : UnitChoices) (u1 : UnitChoices) :
-    (m • u) u1 = u.dimScale u1 d • m := rfl
+    (m • u) u1 = u.dimScale u1 d • m.val := rfl
 
 end Measured

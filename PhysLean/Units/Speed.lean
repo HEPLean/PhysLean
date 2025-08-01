@@ -15,9 +15,6 @@ We define specific insances of speed, such as miles per hour, kilometers per hou
 open Dimension
 open NNReal
 
-/-- A speed in a specific (but arbitary) choice of units. -/
-abbrev Speed : Type := Measured (L𝓭 * T𝓭⁻¹) ℝ≥0
-
 /-- The type of speeds in the absence of a choice of unit. -/
 abbrev DimSpeed : Type := Dimensionful (L𝓭 * T𝓭⁻¹) ℝ≥0
 
@@ -30,19 +27,20 @@ open UnitChoices
 ## Basic speeds
 
 -/
+open Dimensionful
 /-- The dimensional speed corresponding to 1 meter per second. -/
-noncomputable def oneMeterPerSecond : DimSpeed := (⟨1⟩ : Speed) • SI
+noncomputable def oneMeterPerSecond : DimSpeed := ofUnit _ 1 SI
 
 /-- The dimensional speed corresponding to 1 mile per hour. -/
-noncomputable def oneMilePerHour : DimSpeed := (⟨1⟩ : Speed) • ({SI with
+noncomputable def oneMilePerHour : DimSpeed := ofUnit _ 1 ({SI with
   length := LengthUnit.miles, time := TimeUnit.hours} : UnitChoices)
 
 /-- The dimensional speed corresponding to 1 kilometer per hour. -/
-noncomputable def oneKilometerPerHour : DimSpeed := (⟨1⟩ : Speed) • ({SI with
+noncomputable def oneKilometerPerHour : DimSpeed := ofUnit _ 1 ({SI with
   length := LengthUnit.kilometers, time := TimeUnit.hours} : UnitChoices)
 
 /-- The dimensional speed corresponding to 1 knot, aka, one nautical mile per hour. -/
-noncomputable def oneKnot : DimSpeed := (⟨1⟩ : Speed) • ({SI with
+noncomputable def oneKnot : DimSpeed := ofUnit _ 1 ({SI with
   length := LengthUnit.nauticalMiles, time := TimeUnit.hours} : UnitChoices)
 
 /-!
@@ -52,34 +50,29 @@ noncomputable def oneKnot : DimSpeed := (⟨1⟩ : Speed) • ({SI with
 -/
 
 @[simp]
-lemma oneMeterPerSecond_in_SI : oneMeterPerSecond SI = ⟨1⟩ := by
+lemma oneMeterPerSecond_in_SI : oneMeterPerSecond SI = 1 := by
   simp [oneMeterPerSecond]
-  ext
-  simp
 
 @[simp]
-lemma oneMilePerHour_in_SI : oneMilePerHour SI = ⟨0.44704⟩ := by
-  simp [oneMilePerHour, dimScale, LengthUnit.miles, TimeUnit.hours]
+lemma oneMilePerHour_in_SI : oneMilePerHour SI = 0.44704 := by
+  simp [oneMilePerHour, dimScale, LengthUnit.miles, TimeUnit.hours, ofUnit_apply]
   ext
-  simp only [Measured.smul_val, smul_eq_mul, mul_one, NNReal.coe_mul, coe_mk, coe_rpow,
-    NNReal.coe_ofScientific]
+  simp only [NNReal.coe_mul, coe_mk, coe_rpow, NNReal.coe_ofScientific]
   norm_num
 
 @[simp]
 lemma oneKilometerPerHour_in_SI :
-    oneKilometerPerHour SI = ⟨5/18⟩ := by
-  simp [oneKilometerPerHour, dimScale, LengthUnit.kilometers, TimeUnit.hours]
+    oneKilometerPerHour SI = 5/18 := by
+  simp [oneKilometerPerHour, dimScale, LengthUnit.kilometers, TimeUnit.hours, ofUnit_apply]
   ext
-  simp only [Measured.smul_val, smul_eq_mul, mul_one, NNReal.coe_mul, coe_mk, coe_rpow,
-    NNReal.coe_ofScientific]
+  simp only [NNReal.coe_mul, coe_mk, coe_rpow]
   norm_num
 
 @[simp]
-lemma oneKnot_in_SI : oneKnot SI = ⟨463/900⟩ := by
-  simp [oneKnot, dimScale, LengthUnit.nauticalMiles, TimeUnit.hours]
+lemma oneKnot_in_SI : oneKnot SI = 463/900 := by
+  simp [oneKnot, dimScale, LengthUnit.nauticalMiles, TimeUnit.hours, ofUnit_apply]
   ext
-  simp only [Measured.smul_val, smul_eq_mul, mul_one, NNReal.coe_mul, coe_mk, coe_rpow,
-    NNReal.coe_ofScientific]
+  simp only [NNReal.coe_mul, coe_mk, coe_rpow]
   norm_num
 
 /-!
@@ -116,31 +109,31 @@ lemma oneMeterPerSecond_eq_mul_oneMilePerHour :
 -/
 /-- One kilometer per hour is slower then one knot. -/
 lemma oneKilometerPerHour_le_oneKnot : oneKilometerPerHour ≤ oneKnot := by
-  apply Dimensionful.le_nnReals_of_single_unitChoice SI
+  apply Dimensionful.le_nnReals_of_unitChoice SI
   simp [Measured.le_eq_le_val]
   refine coe_le_coe.mp ?_
   norm_num
 
 lemma oneKilometerPerHour_le_oneMilPerHour : oneKilometerPerHour ≤ oneMilePerHour := by
-  apply Dimensionful.le_nnReals_of_single_unitChoice SI
+  apply Dimensionful.le_nnReals_of_unitChoice SI
   simp [Measured.le_eq_le_val]
   refine coe_le_coe.mp ?_
   norm_num
 
 lemma oneMilePerHour_le_oneKnot : oneMilePerHour ≤ oneKnot := by
-  apply Dimensionful.le_nnReals_of_single_unitChoice SI
+  apply Dimensionful.le_nnReals_of_unitChoice SI
   simp [Measured.le_eq_le_val]
   refine coe_le_coe.mp ?_
   norm_num
 
 lemma oneMilePerHour_le_oneMeterPerSecond : oneMilePerHour ≤ oneMeterPerSecond := by
-  apply Dimensionful.le_nnReals_of_single_unitChoice SI
+  apply Dimensionful.le_nnReals_of_unitChoice SI
   simp [Measured.le_eq_le_val]
   refine coe_le_coe.mp ?_
   norm_num
 
 lemma oneMeterPerSecond_le_oneKnot : oneKnot ≤ oneMeterPerSecond := by
-  apply Dimensionful.le_nnReals_of_single_unitChoice SI
+  apply Dimensionful.le_nnReals_of_unitChoice SI
   simp [Measured.le_eq_le_val]
   refine coe_le_coe.mp ?_
   norm_num
