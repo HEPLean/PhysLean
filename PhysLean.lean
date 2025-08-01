@@ -351,7 +351,9 @@ import PhysLean.Thermodynamics.Temperature.Basic
 import PhysLean.Thermodynamics.Temperature.TemperatureUnits
 import PhysLean.Units.Area
 import PhysLean.Units.Basic
+import PhysLean.Units.Energy
 import PhysLean.Units.Mass
 import PhysLean.Units.Momentum.Basic
+import PhysLean.Units.Pressure
 import PhysLean.Units.Speed
 import PhysLean.Units.Velocity
