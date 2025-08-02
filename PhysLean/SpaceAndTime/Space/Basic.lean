@@ -13,8 +13,7 @@ import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 # Space
 
-In this file, also called a module, we define the `d`-dimensional Euclidean space,
-and prove some proerties about it.
+In this module, we define the the type `Space d` which corresponds to a `d`-dimensional Euclidean space and prove some properties about it.
 
 PhysLean sits downstream of Mathlib, and above we import the necessary Mathlib modules
 which contain (perhaps transitively through imports) the definitions and theorems we need.
@@ -34,15 +33,28 @@ TODO "HB6VC" "Convert `Space` from an `abbrev` to a `def`."
 
 /-- The type `Space d` representes `d` dimensional Euclidean space.
   The default value of `d` is `3`. Thus `Space = Space 3`. -/
-abbrev Space (d : ℕ := 3) := EuclideanSpace ℝ (Fin d)
+structure Space (d : Nat) where
+    val : EuclideanSpace ℝ (Fin d)
+
 
 namespace Space
 
 /-!
 
-## Instances
+## Basic operations on `Space`.
 
 -/
+noncomputable instance (d: ℕ): Inner ℝ (Space d) where
+  inner x y := Inner.inner ℝ x.val y.val
+
+/-!
+
+## Instances on `Space`
+
+-/
+
+noncomputable instance : VAdd (EuclideanSpace ℝ (Fin d)) (Space d) where
+  vadd v s := ⟨v + s.val⟩
 
 TODO "HB6YZ" "In the above documentation describe what an instance is, and why
   it is useful to have instances for `Space d`."
@@ -57,11 +69,11 @@ TODO "HB6WN" "After TODO 'HB6VC', give `Space d` the necessary instances
 -/
 
 lemma inner_eq_sum {d} (p q : Space d) :
-    inner ℝ p q = ∑ i, p i * q i := by
-  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
-  congr
-  funext x
-  exact Lean.Grind.CommSemiring.mul_comm (q x) (p x)
+    inner ℝ p q = ∑ i, p.val i * q.val i := by
+  simp only [inner , PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
+  apply Finset.sum_congr rfl
+  intro i hi
+  exact mul_comm (q.val i) (p.val i)
 
 /-!
 
