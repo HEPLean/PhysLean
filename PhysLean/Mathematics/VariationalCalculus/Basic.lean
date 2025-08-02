@@ -28,28 +28,8 @@ variable
   {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
   {Y} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y][MeasurableSpace Y]
 
-lemma fundamental_theorem_of_variational_calculus {f : X → V}
-    (μ : Measure X) [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
-    [OpensMeasurableSpace X]
-    (hf : IsTestFunction f) (hg : ∀ g, IsTestFunction g → ∫ x, ⟪f x, g x⟫_ℝ ∂μ = 0) :
-    f = 0 := by
-  have hf' := hg f hf
-  rw [MeasureTheory.integral_eq_zero_iff_of_nonneg] at hf'
-  · rw [Continuous.ae_eq_iff_eq] at hf'
-    · funext x
-      have hf'' := congrFun hf' x
-      simpa using hf''
-    · have hf : Continuous f := hf.smooth.continuous
-      fun_prop
-    · fun_prop
-  · intro x
-    simp only [Pi.zero_apply]
-    apply real_inner_self_nonneg'
-  · apply IsTestFunction.integrable
-    exact IsTestFunction.inner hf hf
-
-/-- The assumption `IsTestFunction f` `in fundamental_theorem_of_variational_calculus` can be
-changed to `Continuous f`. The proof uses assumption that source of `f` is finite-dimensional
+/-- A version of `fundamental_theorem_of_variational_calculus'` for `Continuous f`.
+The proof uses assumption that source of `f` is finite-dimensional
 inner-product space, so that a bump function with compact support exists via
 `ContDiffBump.hasCompactSupport` from `Analysis.Calculus.BumpFunction.Basic`.
 
@@ -262,3 +242,28 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
         _ ≤ μ (Function.support fun x => φ x * ⟪f x, f x₀⟫_ℝ) :=
           measure_mono closedBall_subset_support
     linarith
+
+/- A version of `fundamental_theorem_of_variational_calculus` for test functions `f`.
+Source/domain `X` of `f` is not assumed to be a finite-dimensional space, and
+`hf` gives compact support for `f`.
+-/
+
+lemma fundamental_theorem_of_variational_calculus {f : X → V}
+    (μ : Measure X) [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
+    [OpensMeasurableSpace X]
+    (hf : IsTestFunction f) (hg : ∀ g, IsTestFunction g → ∫ x, ⟪f x, g x⟫_ℝ ∂μ = 0) :
+    f = 0 := by
+  have hf' := hg f hf
+  rw [MeasureTheory.integral_eq_zero_iff_of_nonneg] at hf'
+  · rw [Continuous.ae_eq_iff_eq] at hf'
+    · funext x
+      have hf'' := congrFun hf' x
+      simpa using hf''
+    · have hf : Continuous f := hf.smooth.continuous
+      fun_prop
+    · fun_prop
+  · intro x
+    simp only [Pi.zero_apply]
+    apply real_inner_self_nonneg'
+  · apply IsTestFunction.integrable
+    exact IsTestFunction.inner hf hf
