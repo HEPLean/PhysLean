@@ -27,8 +27,6 @@ variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasurableSpace X]
   {V} [NormedAddCommGroup V] [NormedSpace ℝ V] [InnerProductSpace' ℝ V]
   {Y} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y][MeasurableSpace Y]
-  -- `Y`: finite dimensional measurable space over `ℝ` with (standard) inner product;
-  -- for use in the `'` lemma.
 
 lemma fundamental_theorem_of_variational_calculus {f : X → V}
     (μ : Measure X) [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
@@ -59,10 +57,10 @@ The proof is by contradiction, assume that there is `x₀` such that `f x₀ ≠
 construct `g` test function *supported* on the neighborhood of `x₀` such that `⟪f x, g x⟫ ≥ 0`
 and `⟪f x, g x⟫ > 0` on a neighborhood of x₀.
 
-Using `Y` for the theorem below to make use of bump functions in InnerProductSpaces.
+Using `Y` for the theorem below to make use of bump functions in InnerProductSpaces. `Y` is
+a finite dimensional measurable space over `ℝ` with (standard) inner product.
 -/
 
--- @[sorryful]
 lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
     (μ : Measure Y) [IsFiniteMeasureOnCompacts μ] [μ.IsOpenPosMeasure]
     [OpensMeasurableSpace Y]
