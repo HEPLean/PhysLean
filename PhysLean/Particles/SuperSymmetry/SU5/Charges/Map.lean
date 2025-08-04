@@ -13,7 +13,14 @@ In this module we define a function `map` which takes an additive monoid homomor
 `f : 𝓩 →+ 𝓩1` and a charge `x : Charges 𝓩`, and returns the charge
 `x.map f : Charges 𝓩1` obtained by mapping the elements of `x` by `f`.
 
-We prove that various properties of charges are preserved under this mapping.
+There are various properties which are preserved under this mapping:
+- Anomaly cancellation.
+- The presence of a specific term in the potential.
+- Being complete.
+
+There are some properties which are reflected under this mapping:
+- Not being pheno-constrained.
+- Not regenerating dangerous Yukawa terms at a given level.
 
 We define the preimage of this mapping within a subset `ofFinset S5 S10` of `Charges 𝓩` in
 a computationaly efficient way.
