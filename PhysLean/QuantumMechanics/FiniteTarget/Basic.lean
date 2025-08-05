@@ -29,10 +29,12 @@ namespace QuantumMechanics
   the hamiltonian instead of a matrix."-/
 structure FiniteTarget (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [CompleteSpace H] [FiniteDimensional ℂ H] (n : ℕ) where
-  /-- The Hamiltonian, written now as a vector space map on a finite dimensional Hilbert space. -/
+  /-- the Hilbert space has the provided (finite) dimension. -/
   hdim: Module.finrank ℂ H = n
-  Ham : H →L[ℂ] H -- continuous linear map. seems easier to work with and
-                  -- standard than l[C] (lin map) as the →L[ℂ]s has a Star algebra structure.
+  /-- The Hamiltonian, written now as a continuous linear map. -/
+  Ham : H →L[ℂ] H
+  -- The →L[ℂ]s has a Star algebra structure enabling `timeEvolution` definition below.
+  /-- The Hamiltonian is self-adjoint. -/
   Ham_selfAdjoint: IsSelfAdjoint Ham
 
 namespace FiniteTarget
@@ -53,7 +55,7 @@ noncomputable def timeEvolutionMatrix (t : ℝ) (b : Basis (Fin n) ℂ H) :
   LinearMap.toMatrix b b (A.timeEvolution t).toLinearMap
   -- For `LinearMap.toMatrix`, both `M₁`, `M₂` are H.
 
-/- An instance of timeEvolutionmatrix over the standard basis.-/
+/-- An instance of timeEvolutionmatrix over the standard basis.-/
 noncomputable def timeEvolutionMatrixStandard (t : ℝ) :
   Matrix (Fin n) (Fin n) ℂ :=
   -- Use the fact that H ≃ ℂ^n to get a basis
