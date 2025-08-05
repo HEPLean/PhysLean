@@ -13,8 +13,8 @@ import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 # Space
 
-In this file, also called a module, we define the `d`-dimensional Euclidean space,
-and prove some proerties about it.
+In this module, we define the the type `Space d` which corresponds
+to a `d`-dimensional Euclidean space and prove some properties about it.
 
 PhysLean sits downstream of Mathlib, and above we import the necessary Mathlib modules
 which contain (perhaps transitively through imports) the definitions and theorems we need.
@@ -33,16 +33,24 @@ TODO "HB6RR" "In the above documentation describe the notion of a type, and
 TODO "HB6VC" "Convert `Space` from an `abbrev` to a `def`."
 
 /-- The type `Space d` representes `d` dimensional Euclidean space.
-  The default value of `d` is `3`. Thus `Space = Space 3`. -/
+  The default value of `d` is `3`. Thus `Space = Space 3`.
+
+-/
 abbrev Space (d : ℕ := 3) := EuclideanSpace ℝ (Fin d)
 
 namespace Space
 
 /-!
 
-## Instances
+## Basic operations on `Space`.
 
 -/
+/-!
+
+## Instances on `Space`
+
+-/
+
 
 TODO "HB6YZ" "In the above documentation describe what an instance is, and why
   it is useful to have instances for `Space d`."
