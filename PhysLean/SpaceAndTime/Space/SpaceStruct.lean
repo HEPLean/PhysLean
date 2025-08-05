@@ -33,11 +33,11 @@ noncomputable instance {d : Nat} : Add (SpaceStruct d) where
   add x y := ⟨x.val + y.val⟩
 
 @[simp]
-lemma add_val {d: ℕ} (x y  : SpaceStruct d) :
+lemma add_val {d: ℕ} (x y : SpaceStruct d) :
     x + y = ⟨x.val + y.val⟩ := rfl
 
 instance {d : Nat} : Neg (SpaceStruct d) where
-  neg x := ⟨ -x.val ⟩
+  neg x := ⟨-x.val⟩
 
 @[simp]
 lemma neg_val {d: ℕ} (x : SpaceStruct d) :
@@ -47,11 +47,11 @@ noncomputable instance {d: ℕ} : Sub (SpaceStruct d)
   where sub x y := ⟨x.val - y.val⟩
 
 instance {d : Nat} : SMul ℝ (SpaceStruct d) where
-   smul k x := ⟨k • x.val⟩
+  smul k x := ⟨k • x.val⟩
 
-instance {d : Nat} : Zero (SpaceStruct d) := ⟨⟨ 0 ⟩⟩
+instance {d : Nat} : Zero (SpaceStruct d) := ⟨⟨0⟩⟩
 
-noncomputable instance (d: ℕ): Inner ℝ (SpaceStruct d) where
+noncomputable instance (d: ℕ) : Inner ℝ (SpaceStruct d) where
   inner x y := Inner.inner ℝ x.val y.val
 
 noncomputable instance : VAdd (EuclideanSpace ℝ (Fin d)) (SpaceStruct d) where
@@ -91,7 +91,7 @@ noncomputable instance {d : Nat} : AddCommGroup (SpaceStruct d) where
 
 lemma inner_eq_sum {d} (p q : SpaceStruct d) :
     inner ℝ p q = ∑ i, p.val i * q.val i := by
-  simp only [inner , PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
+  simp only [inner, PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
   apply Finset.sum_congr rfl
   intro i hi
   exact mul_comm (q.val i) (p.val i)

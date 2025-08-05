@@ -39,8 +39,8 @@ lemma tsum_eq_zero
   simp_all only [tsum_zero]
 
 /-!
- ### The determinant of the matrix exponential
- -/
+  ### The determinant of the matrix exponential
+-/
 section DetExp
 
 variable [RCLike 𝕂]
@@ -177,8 +177,8 @@ lemma exp_unitary_conj (A : Matrix m m 𝕂) (U : unitaryGroup m 𝕂) :
     NormedSpace.exp 𝕂 ((U : Matrix m m 𝕂) * A * star (U : Matrix m m 𝕂)) =
       (U : Matrix m m 𝕂) * NormedSpace.exp 𝕂 A * star (U : Matrix m m 𝕂) := by
   let Uu : (Matrix m m 𝕂)ˣ :=
-    { val     := (U : Matrix m m 𝕂)
-      inv     := star (U : Matrix m m 𝕂)
+    { val := (U : Matrix m m 𝕂)
+      inv := star (U : Matrix m m 𝕂)
       val_inv := by simp
       inv_val := by simp}
   have h_units := Matrix.exp_units_conj (𝕂 := 𝕂) Uu A

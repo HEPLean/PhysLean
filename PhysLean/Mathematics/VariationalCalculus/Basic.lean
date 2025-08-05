@@ -49,7 +49,7 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
   -- assume ¬(f = 0)
     rw [funext_iff]; by_contra h₀
     obtain ⟨x₀, hx0⟩ := not_forall.1 h₀
-    simp at hx0                        -- hx0 : f x₀ ≠ 0
+    simp at hx0 -- hx0 : f x₀ ≠ 0
 
   -- [1] Proof that `f` is continuous at `x₀`.
   -- Embed into the true IP-space `WithLp 2 V`.
@@ -68,12 +68,12 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
 
   -- [2] find open neighborhood guaranteeing positive inner product with the center, based on
   -- which the test function `g` will be constructed.
-  -- pick δ₂ so that on B(x₀, δ₂),  ‖f₂ x - x₂‖ < ‖x₂‖/2
+  -- pick δ₂ so that on B(x₀, δ₂), ‖f₂ x - x₂‖ < ‖x₂‖/2
     obtain ⟨δ₂, hδ₂_pos, hδ₂⟩ :=
     Metric.continuousAt_iff.mp hcont₂ (‖x₂‖ / 2)
       (by simpa [half_pos] using (norm_pos_iff.mpr hx2))
   -- now the usual “add & subtract” proof inside WithLp 2 V
-    have inner_pos₂ : ∀ x (hx : x ∈ Metric.ball x₀ δ₂), 0 < (⟪f₂ x, x₂⟫_ℝ  : ℝ) := by
+    have inner_pos₂ : ∀ x (hx : x ∈ Metric.ball x₀ δ₂), 0 < (⟪f₂ x, x₂⟫_ℝ : ℝ) := by
       intros x hx
     -- hx : x ∈ ball x₀ δ₂, so dist x x₀ < δ₂, hence
     -- this is |⟪u,v⟫| ≤ ‖u‖ * ‖v‖, in the genuine InnerProductSpace on WithLp 2 V
@@ -83,24 +83,24 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
       let u := f₂ x - x₂
       let v := x₂
       have hlow : -‖u‖ * ‖v‖ ≤ ⟪u, v⟫_ℝ := by
-        have hpos' : ⟪-u, v⟫_ℝ  ≤ ‖-u‖ * ‖v‖ := real_inner_le_norm (-u) v
+        have hpos' : ⟪-u, v⟫_ℝ ≤ ‖-u‖ * ‖v‖ := real_inner_le_norm (-u) v
         rw [norm_neg] at hpos'
         rw [inner_neg_left] at hpos'
         linarith [hpos']
       calc
       -- start with the raw inner product
-        ⟪f₂ x, x₂⟫_ℝ = ⟪x₂ + (f₂ x - x₂), x₂⟫_ℝ     := by simp [sub_add_cancel]
+        ⟪f₂ x, x₂⟫_ℝ = ⟪x₂ + (f₂ x - x₂), x₂⟫_ℝ := by simp [sub_add_cancel]
         _ = ⟪x₂, x₂⟫_ℝ + ⟪f₂ x - x₂, x₂⟫_ℝ := inner_add_left x₂ (f₂ x - x₂) x₂
         _ = ‖x₂‖^2 + ⟪f₂ x - x₂, x₂⟫_ℝ := by rw [hself]
-        _ ≥ ‖x₂‖^2 - ‖f₂ x - x₂‖ * ‖x₂‖  := by
+        _ ≥ ‖x₂‖^2 - ‖f₂ x - x₂‖ * ‖x₂‖ := by
               -- Cauchy–Schwarz in WithLp 2 V
-               linarith [hlow]
-        _ > ‖x₂‖^2 - (‖x₂‖ / 2) * ‖x₂‖  := by
+              linarith [hlow]
+        _ > ‖x₂‖^2 - (‖x₂‖ / 2) * ‖x₂‖ := by
               -- subtract a strictly smaller term
-               have hmul := mul_lt_mul_of_pos_left hclose (norm_pos_iff.mpr hx2)
-               linarith [sub_lt_sub_left hmul (‖x₂‖^2)]
-        _   = ‖x₂‖^2 / 2                := by ring
-        _   > 0                         := by positivity
+              have hmul := mul_lt_mul_of_pos_left hclose (norm_pos_iff.mpr hx2)
+              linarith [sub_lt_sub_left hmul (‖x₂‖^2)]
+        _ = ‖x₂‖^2 / 2 := by ring
+        _ > 0 := by positivity
   -- pull `inner_pos₂` back to V via `fromL2`:
     have inner_pos_V : ∀ x ∈ Metric.ball x₀ δ₂, 0 < ⟪f x, f x₀⟫_ℝ := by
       rintro x hx
@@ -114,9 +114,9 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
         (∀ x ∈ Metric.closedBall x₀ (δ₂/4), 0 < φ x) := by
         -- use `hasContDiffBump_of_innerProductSpace`, leveraging `[innerProductSpace Y]`
           haveI : HasContDiffBump Y := hasContDiffBump_of_innerProductSpace Y
-          let rIn  : ℝ := δ₂ / 4
+          let rIn : ℝ := δ₂ / 4
           let rOut : ℝ := δ₂ / 2
-          have h_rIn_pos  : 0 < rIn  := by
+          have h_rIn_pos : 0 < rIn := by
             dsimp [rIn]
             apply div_pos hδ₂_pos
             linarith
@@ -237,7 +237,7 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
     have integral_pos : 0 < ∫ x, φ x * ⟪f x, f x₀⟫_ℝ ∂μ := by
       refine (integral_pos_iff_support_of_nonneg h_nonneg ?_).mpr ?_
       · exact integrable_prod -- Goal 1: Integrable (fun i => φ i * ⟪f i, f x₀⟫_ℝ) μ
-      · calc           -- Goal 2:  0 < μ (Function.support fun i => φ i * ⟪f i, f x₀⟫_ℝ)
+      · calc -- Goal 2: 0 < μ (Function.support fun i => φ i * ⟪f i, f x₀⟫_ℝ)
         0 < μ (Metric.closedBall x₀ (δ₂/4)) := hμ
         _ ≤ μ (Function.support fun x => φ x * ⟪f x, f x₀⟫_ℝ) :=
           measure_mono closedBall_subset_support

@@ -51,7 +51,6 @@ namespace Space
 
 -/
 
-
 TODO "HB6YZ" "In the above documentation describe what an instance is, and why
   it is useful to have instances for `Space d`."
 

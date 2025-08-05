@@ -229,9 +229,9 @@ end LinearMap
 
 namespace Matrix
 
-variable [RCLike 𝕜] [IsAlgClosed 𝕜] [Fintype n] [DecidableEq n]  [LinearOrder n] (A : Matrix n n 𝕜)
+variable [RCLike 𝕜] [IsAlgClosed 𝕜] [Fintype n] [DecidableEq n] [LinearOrder n] (A : Matrix n n 𝕜)
 
-/--  This is `LinearMap.SchurTriangulationAux` adapted for matrices in the
+/-- This is `LinearMap.SchurTriangulationAux` adapted for matrices in the
 Euclidean space. -/
 private noncomputable def schurTriangulationAux :
     OrthonormalBasis n 𝕜 (EuclideanSpace 𝕜 n) × UpperTriangular n 𝕜 :=

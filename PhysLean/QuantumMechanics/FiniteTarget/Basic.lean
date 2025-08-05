@@ -43,7 +43,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 variable {n : ℕ}(A : FiniteTarget H n)
 
 /-- Given a finite target QM system `A`, the time evolution operator for a `t : ℝ`,
-  `A.timeEvolution t` is defined as `exp(- I t /ℏ * A.Ham)`. Still a map.-/
+  `A.timeEvolution t` is defined as `exp(- I t /ℏ * A.Ham)`. Still a map. -/
 noncomputable def timeEvolution (t : ℝ) : H →L[ℂ] H :=
   NormedSpace.exp ℂ (-(Complex.I * t / ℏ) • A.Ham)
   -- Note that the `H →L[ℂ] H`s make an algebra over 𝕂 := ℂ, so [Algebra 𝕂 𝔸] is satisfied.
@@ -55,7 +55,7 @@ noncomputable def timeEvolutionMatrix (t : ℝ) (b : Basis (Fin n) ℂ H) :
   LinearMap.toMatrix b b (A.timeEvolution t).toLinearMap
   -- For `LinearMap.toMatrix`, both `M₁`, `M₂` are H.
 
-/-- An instance of timeEvolutionmatrix over the standard basis.-/
+/-- An instance of timeEvolutionmatrix over the standard basis. -/
 noncomputable def timeEvolutionMatrixStandard (t : ℝ) :
   Matrix (Fin n) (Fin n) ℂ :=
   -- Use the fact that H ≃ ℂ^n to get a basis
