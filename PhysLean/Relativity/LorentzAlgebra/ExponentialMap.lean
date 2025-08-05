@@ -13,11 +13,11 @@ import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 # Exponential map from the Lorentz algebra to the restricted Lorentz group
 
 In 1+3 Minkowski space with metric η, the Lie algebra `lorentzAlgebra` exponentiates
-onto the proper orthochronous Lorentz group (`LorentzGroup.restricted 3`).  We prove:
+onto the proper orthochronous Lorentz group (`LorentzGroup.restricted 3`). We prove:
 * exp_mem_lorentzGroup : `NormedSpace.exp ℝ A.1 ∈ LorentzGroup 3` (η-preserving).
 * exp_transpose_of_mem_algebra : `exp (A.1ᵀ) = η * exp (−A.1) * η`.
-* exp_isProper           : `det (exp A) = 1`.
-* exp_isOrthochronous    : `(exp A)₀₀ ≥ 1`.
+* exp_isProper : `det (exp A) = 1`.
+* exp_isOrthochronous : `(exp A)₀₀ ≥ 1`.
 Hence `exp A ∈ LorentzGroup.restricted 3`.
 -/
 
@@ -40,11 +40,11 @@ lemma transpose_eq_neg_eta_conj (A : lorentzAlgebra) :
     A.1ᵀ = - (η * A.1 * η) := by
   have h := lorentzAlgebra.transpose_eta A
   calc
-    A.1ᵀ = A.1ᵀ * 1             := by rw [mul_one]
-    _    = A.1ᵀ * (η * η)       := by rw [minkowskiMatrix.sq]
-    _    = (A.1ᵀ * η) * η       := by rw [mul_assoc]
-    _    = (-η * A.1) * η       := by rw [h]
-    _    = - (η * A.1 * η)      := by simp_all only [neg_mul]
+    A.1ᵀ = A.1ᵀ * 1 := by rw [mul_one]
+    _ = A.1ᵀ * (η * η) := by rw [minkowskiMatrix.sq]
+    _ = (A.1ᵀ * η) * η := by rw [mul_assoc]
+    _ = (-η * A.1) * η := by rw [h]
+    _ = - (η * A.1 * η) := by simp_all only [neg_mul]
 
 /--
 The exponential of the transpose of a Lorentz algebra element.
@@ -54,8 +54,8 @@ lemma exp_transpose_of_mem_algebra (A : lorentzAlgebra) :
     (NormedSpace.exp ℝ) (A.1ᵀ) = η * ((NormedSpace.exp ℝ) (-A.1)) * η := by
   rw [transpose_eq_neg_eta_conj A]
   let P_gl : GL (Fin 1 ⊕ Fin 3) ℝ :=
-    { val     := η,
-      inv     := η,
+    { val := η,
+      inv := η,
       val_inv := minkowskiMatrix.sq,
       inv_val := minkowskiMatrix.sq }
   rw [show -(η * A.1 * η) = η * (-A.1) * η by noncomm_ring]
@@ -72,13 +72,13 @@ theorem exp_mem_lorentzGroup (A : lorentzAlgebra) : (NormedSpace.exp ℝ) A.1 �
   calc
     (η * (NormedSpace.exp ℝ) (-A.1) * η) * η * (NormedSpace.exp ℝ) A.1
     _ = η * (NormedSpace.exp ℝ) (-A.1) * (η * η) * (NormedSpace.exp ℝ) A.1 := by noncomm_ring
-    _ = η * (NormedSpace.exp ℝ) (-A.1) * 1 * (NormedSpace.exp ℝ) A.1   := by rw [minkowskiMatrix.sq]
-    _ = η * (NormedSpace.exp ℝ) (-A.1 + A.1)             := by
+    _ = η * (NormedSpace.exp ℝ) (-A.1) * 1 * (NormedSpace.exp ℝ) A.1 := by rw [minkowskiMatrix.sq]
+    _ = η * (NormedSpace.exp ℝ) (-A.1 + A.1) := by
                                             rw [mul_one, mul_assoc, NormedSpace.exp_add_of_commute]
                                             exact Commute.neg_left rfl
-    _ = η * (NormedSpace.exp ℝ) 0                        := by rw [neg_add_cancel]
-    _ = η * 1                            := by rw [NormedSpace.exp_zero]
-    _ = η                                := by rw [mul_one]
+    _ = η * (NormedSpace.exp ℝ) 0 := by rw [neg_add_cancel]
+    _ = η * 1 := by rw [NormedSpace.exp_zero]
+    _ = η := by rw [mul_one]
 
 open Matrix Complex
 open minkowskiMatrix

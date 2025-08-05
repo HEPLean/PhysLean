@@ -109,9 +109,9 @@ lemma mem_iff_transpose_mul_minkowskiMatrix_mul_self
     exact h'
   · intro h
     calc
-      (η * Λᵀ * η) * Λ = η * (Λᵀ * η * Λ)  := by simp_rw [mul_assoc]
-      _ = η * η                       := by rw [h]
-      _ = 1                           := by rw [minkowskiMatrix.sq]
+      (η * Λᵀ * η) * Λ = η * (Λᵀ * η * Λ) := by simp_rw [mul_assoc]
+      _ = η * η := by rw [h]
+      _ = 1 := by rw [minkowskiMatrix.sq]
 
 end LorentzGroup
 
