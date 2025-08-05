@@ -51,15 +51,15 @@ lemma isPhenoConstrained_mono {x y : Charges 𝓩} (h : x ⊆ y)
 
 /-- The collection of charges of super-potential terms leading to a pheno-constrained model. -/
 def phenoConstrainingChargesSP (x : Charges 𝓩) : Multiset 𝓩 :=
-  x.ofPotentialTerm μ + x.ofPotentialTerm β + x.ofPotentialTerm Λ +
-  x.ofPotentialTerm W2 + x.ofPotentialTerm W4 + x.ofPotentialTerm W1
+  x.ofPotentialTerm' μ + x.ofPotentialTerm' β + x.ofPotentialTerm' Λ +
+  x.ofPotentialTerm' W2 + x.ofPotentialTerm' W4 + x.ofPotentialTerm' W1
 
 @[simp]
 lemma phenoConstrainingChargesSP_empty :
     phenoConstrainingChargesSP (∅ : Charges 𝓩) = ∅ := by
   simp [phenoConstrainingChargesSP]
 
-lemma phenoConstrainingChargesSP_mono {x y : Charges 𝓩} (h : x ⊆ y) :
+lemma phenoConstrainingChargesSP_mono [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) :
     x.phenoConstrainingChargesSP ⊆ y.phenoConstrainingChargesSP := by
   simp only [phenoConstrainingChargesSP]
   refine Multiset.subset_iff.mpr ?_
@@ -68,7 +68,7 @@ lemma phenoConstrainingChargesSP_mono {x y : Charges 𝓩} (h : x ⊆ y) :
   intro hr
   rcases hr with hr | hr | hr | hr | hr | hr
   all_goals
-    have h' := ofPotentialTerm_mono h _ hr
+    have h' := ofPotentialTerm'_mono h _ hr
     simp_all
 
 /-!

@@ -28,9 +28,9 @@ variable {𝓩 : Type} [AddCommGroup 𝓩]
   Correspondingly, the (negative) of the charges of the singlets needed to regenerate all
   Yukawa terms in the potential. -/
 def ofYukawaTerms (x : Charges 𝓩) : Multiset 𝓩 :=
-  x.ofPotentialTerm topYukawa + x.ofPotentialTerm bottomYukawa
+  x.ofPotentialTerm' topYukawa + x.ofPotentialTerm' bottomYukawa
 
-lemma ofYukawaTerms_subset_of_subset {x y : Charges 𝓩} (h : x ⊆ y) :
+lemma ofYukawaTerms_subset_of_subset [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) :
     x.ofYukawaTerms ⊆ y.ofYukawaTerms := by
   simp only [ofYukawaTerms]
   refine Multiset.subset_iff.mpr ?_
@@ -39,10 +39,10 @@ lemma ofYukawaTerms_subset_of_subset {x y : Charges 𝓩} (h : x ⊆ y) :
   intro hr
   rcases hr with hr | hr
   · left
-    apply ofPotentialTerm_mono h
+    apply ofPotentialTerm'_mono h
     exact hr
   · right
-    apply ofPotentialTerm_mono h
+    apply ofPotentialTerm'_mono h
     exact hr
 
 /-- The charges of those terms which can be regenerated with up-to `n`
@@ -54,7 +54,7 @@ def ofYukawaTermsNSum (x : Charges 𝓩) : ℕ → Multiset 𝓩
   | n + 1 => x.ofYukawaTermsNSum n + (x.ofYukawaTermsNSum n).bind fun sSum =>
     (x.ofYukawaTerms.map fun s => sSum + s)
 
-lemma ofYukawaTermsNSum_subset_of_subset {x y : Charges 𝓩} (h : x ⊆ y) (n : ℕ) :
+lemma ofYukawaTermsNSum_subset_of_subset [DecidableEq 𝓩]  {x y : Charges 𝓩} (h : x ⊆ y) (n : ℕ) :
     x.ofYukawaTermsNSum n ⊆ y.ofYukawaTermsNSum n := by
   induction n with
   | zero => simp [ofYukawaTermsNSum]

@@ -62,25 +62,131 @@ def ofPotentialTerm' (y : Charges 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
   let Q5 := y.2.2.1
   let Q10 := y.2.2.2
   match T with
-  | μ => (qHd.toFinset.product <| qHu.toFinset).val.map (fun x => x.1 - x.2)
-  | β => (qHu.toFinset.product <| Q5).val.map (fun x => - x.1 + x.2)
+  | μ =>
+    match qHd, qHu with
+    | none, _ => ∅
+    | _, none => ∅
+    | some qHd, some qHu => {qHd - qHu}
+  | β =>
+    match qHu with
+    | none => ∅
+    | some qHu => Q5.val.map (fun x => - qHu + x)
   | Λ => (Q5.product <| Q5.product <| Q10).val.map (fun x => x.1 + x.2.1 + x.2.2)
   | W1 => (Q5.product <| Q10.product <| Q10.product <| Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
-  | W2 => (qHd.toFinset.product <| Q10.product <| Q10.product <| Q10).val.map
-    (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2)
-  | W3 => (qHu.toFinset.product <| Q5.product <| Q5).val.map
-    (fun x => -x.1 - x.1 + x.2.1 + x.2.2)
-  | W4 => (qHd.toFinset.product <| qHu.toFinset.product <| Q5).val.map
-    (fun x => x.1 - x.2.1 - x.2.1 + x.2.2)
+  | W2 =>
+    match qHd with
+    | none => ∅
+    | some qHd =>
+      (Q10.product <| Q10.product <| Q10).val.map (fun x => qHd + x.1 + x.2.1 + x.2.2)
+  | W3 =>
+    match qHu with
+    | none => ∅
+    | some qHu => (Q5.product <| Q5).val.map (fun x => -qHu - qHu + x.1 + x.2)
+  | W4 =>
+    match qHd, qHu with
+    | none, _ => ∅
+    | _, none => ∅
+    | some qHd, some qHu => Q5.val.map (fun x => qHd - qHu - qHu + x)
   | K1 => (Q5.product <| Q10.product <| Q10).val.map
     (fun x => - x.1 + x.2.1 + x.2.2)
-  | K2 => (qHd.toFinset.product <| qHu.toFinset.product <| Q10).val.map
-    (fun x => x.1 + x.2.1 + x.2.2)
-  | topYukawa => (qHu.toFinset.product <| Q10.product <| Q10).val.map
-    (fun x => -x.1 + x.2.1 + x.2.2)
-  | bottomYukawa => (qHd.toFinset.product <| Q5.product <| Q10).val.map
-    (fun x => x.1 + x.2.1 + x.2.2)
+  | K2 =>
+    match qHd, qHu with
+    | none, _ => ∅
+    | _, none => ∅
+    | some qHd, some qHu => Q10.val.map (fun x => qHd + qHu + x)
+  | topYukawa =>
+    match qHu with
+    | none => ∅
+    | some qHu => (Q10.product <| Q10).val.map (fun x => - qHu + x.1 + x.2)
+  | bottomYukawa =>
+    match qHd with
+    | none => ∅
+    | some qHd => (Q5.product <| Q10).val.map (fun x => qHd + x.1 + x.2)
+
+lemma ofPotentialTerm'_μ_finset {x  : Charges 𝓩} :
+    x.ofPotentialTerm' μ =
+    (x.1.toFinset.product <| x.2.1.toFinset).val.map (fun x => x.1 - x.2) := by
+  match x with
+  | (none, qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, none, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, some qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+
+lemma ofPotentialTerm'_β_finset {x : Charges 𝓩} :
+    x.ofPotentialTerm' β =
+    (x.2.1.toFinset.product <| x.2.2.1).val.map (fun x => - x.1 + x.2) := by
+  match x with
+  | (qHd, none, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (qHd, some qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+
+lemma ofPotentialTerm'_W2_finset {x : Charges 𝓩} :
+    x.ofPotentialTerm' W2 = (x.1.toFinset.product <|
+      x.2.2.2.product <| x.2.2.2.product <| x.2.2.2).val.map
+    (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2) := by
+  match x with
+  | (none, qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+
+lemma ofPotentialTerm'_W3_finset {x : Charges 𝓩} :
+    x.ofPotentialTerm' W3 = (x.2.1.toFinset.product <| x.2.2.1.product <| x.2.2.1).val.map
+    (fun x => -x.1 - x.1 + x.2.1 + x.2.2) := by
+  match x with
+  | (qHd, none, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (qHd, some qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+
+lemma ofPotentialTerm'_W4_finset {x : Charges 𝓩} :
+    x.ofPotentialTerm' W4 = (x.1.toFinset.product <|
+      x.2.1.toFinset.product <| x.2.2.1).val.map
+    (fun x => x.1 - x.2.1 - x.2.1 + x.2.2) := by
+  match x with
+  | (none, qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, none, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, some qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+
+
+lemma ofPotentialTerm'_K2_finset {x : Charges 𝓩} :
+    x.ofPotentialTerm' K2 = (x.1.toFinset.product <|
+      x.2.1.toFinset.product <| x.2.2.2).val.map
+    (fun x => x.1 + x.2.1 + x.2.2) := by
+  match x with
+  | (none, qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, none, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, some qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+
+lemma ofPotentialTerm'_topYukawa_finset {x : Charges 𝓩} :
+    x.ofPotentialTerm' topYukawa = (x.2.1.toFinset.product <|
+      x.2.2.2.product <| x.2.2.2).val.map
+    (fun x => -x.1 + x.2.1 + x.2.2) := by
+  match x with
+  | (qHd, none, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (qHd, some qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+
+lemma ofPotentialTerm'_bottomYukawa_finset {x : Charges 𝓩} :
+    x.ofPotentialTerm' bottomYukawa = (x.1.toFinset.product <|
+      x.2.2.1.product <| x.2.2.2).val.map
+    (fun x => x.1 + x.2.1 + x.2.2) := by
+  match x with
+  | (none, qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
+  | (some qHd, qHu, Q5, Q10) =>
+    simp [ofPotentialTerm']
 
 lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges 𝓩} (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ x.ofPotentialTerm' T := by
@@ -96,7 +202,11 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges 𝓩} (T : PotentialT
   case' Λ | K1 | K2 | topYukawa | bottomYukawa => obtain ⟨rfl⟩ := h4
   case' W1 | W2 | W3 | W4 => obtain ⟨f7, f8, ⟨rfl, f8_mem⟩, rfl⟩ := h4
   all_goals
-    simp [ofPotentialTerm']
+    try simp [ofPotentialTerm'_W2_finset, ofPotentialTerm'_W3_finset,
+      ofPotentialTerm'_β_finset, ofPotentialTerm'_μ_finset,
+      ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
+      ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset]
+    try simp [ofPotentialTerm']
     simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
     simp_all [ofFieldLabel]
   case' W1 => use f2, f4, f6, f8
@@ -119,7 +229,11 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩] {x : Charges �
   refine Multiset.subset_iff.mpr (fun n h => ?_)
   cases T
   all_goals
-    simp [ofPotentialTerm'] at h
+    try simp [ofPotentialTerm'_W2_finset, ofPotentialTerm'_W3_finset,
+      ofPotentialTerm'_β_finset, ofPotentialTerm'_μ_finset,
+      ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
+      ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset] at h
+    try simp [ofPotentialTerm'] at h
     simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h
   case' μ | β =>
     obtain ⟨q1, q2, ⟨q1_mem, q2_mem⟩, q_sum⟩ := h
@@ -217,6 +331,19 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
   constructor
   · exact fun h => ofPotentialTerm_subset_ofPotentialTerm' T h
   · exact fun h => ofPotentialTerm'_subset_ofPotentialTerm T h
+
+lemma ofPotentialTerm'_mono  [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
+    x.ofPotentialTerm' T ⊆ y.ofPotentialTerm' T := by
+  intro i
+  rw [← mem_ofPotentialTerm_iff_mem_ofPotentialTerm, ← mem_ofPotentialTerm_iff_mem_ofPotentialTerm]
+  exact fun a => ofPotentialTerm_mono h T a
+
+@[simp]
+lemma ofPotentialTerm'_empty (T : PotentialTerm) :
+    ofPotentialTerm' (∅ : Charges 𝓩) T = ∅ := by
+  cases T
+  all_goals
+    simp [ofPotentialTerm']
 
 end Charges
 
