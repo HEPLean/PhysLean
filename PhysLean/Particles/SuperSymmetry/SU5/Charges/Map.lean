@@ -179,7 +179,7 @@ lemma mem_map_ofPotentialTerm'_iff[DecidableEq 𝓩]
     i ∈ (ofPotentialTerm' (map f x) T) ↔ i ∈ (ofPotentialTerm' x T).map f := by
   rw [← mem_ofPotentialTerm_iff_mem_ofPotentialTerm]
   rw [mem_map_ofPotentialTerm_iff]
-  simp
+  simp only [Multiset.mem_map]
   constructor
   · intro ⟨a, h, h1⟩
     refine ⟨a, ?_, h1⟩
@@ -192,7 +192,7 @@ lemma map_ofPotentialTerm'_toFinset [DecidableEq 𝓩]
     (f : 𝓩 →+ 𝓩1) (x : Charges 𝓩) (T : PotentialTerm) :
     (ofPotentialTerm' (map f x) T).toFinset = (ofPotentialTerm' x T).toFinset.image f := by
   ext i
-  simp
+  simp only [Multiset.mem_toFinset, Finset.mem_image]
   rw [mem_map_ofPotentialTerm'_iff]
   simp
 
@@ -322,12 +322,12 @@ lemma map_phenoConstrainingChargesSP_toFinset {f : 𝓩 →+ 𝓩1} {x : Charges
 
 lemma map_yukawaGeneratesDangerousAtLevel (f : 𝓩 →+ 𝓩1) {x : Charges 𝓩} (n : ℕ)
     (h : x.YukawaGeneratesDangerousAtLevel n) : (map f x).YukawaGeneratesDangerousAtLevel n := by
-  rw [YukawaGeneratesDangerousAtLevel]
+  rw [yukawaGeneratesDangerousAtLevel_iff_toFinset]
   rw [map_phenoConstrainingChargesSP_toFinset, map_ofYukawaTermsNSum_toFinset]
   rw [← Finset.nonempty_iff_ne_empty, ← Finset.not_disjoint_iff_nonempty_inter]
   apply Disjoint.of_image_finset.mt
   rw [Finset.not_disjoint_iff_nonempty_inter, Finset.nonempty_iff_ne_empty]
-  exact h
+  exact (yukawaGeneratesDangerousAtLevel_iff_toFinset _ _).mp h
 
 lemma not_yukawaGeneratesDangerousAtLevel_of_map {f : 𝓩 →+ 𝓩1} {x : Charges 𝓩}
     (n : ℕ) (h : ¬ (map f x).YukawaGeneratesDangerousAtLevel n) :
