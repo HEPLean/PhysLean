@@ -3,11 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.Normed.Algebra.Exponential
-import Mathlib.LinearAlgebra.Dimension.Free
 import PhysLean.Meta.TODO.Basic
 import PhysLean.QuantumMechanics.PlanckConstant
 /-!

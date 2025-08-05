@@ -5,10 +5,7 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 -/
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
-import Mathlib.Analysis.Calculus.BumpFunction.Basic
 import PhysLean.Mathematics.VariationalCalculus.IsTestFunction
-import PhysLean.Mathematics.InnerProductSpace.Basic
-
 /-!
 
 # Fundamental lemma of the calculus of variations
