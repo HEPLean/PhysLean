@@ -603,7 +603,7 @@ lemma not_viable_of_insert_ten_viableCharges (I : CodimensionOneConfig) :
 
 set_option maxRecDepth 2000 in
 lemma viableCompletions_subset_viableCharges (I : CodimensionOneConfig) :
-      ∀ x ∈ (viableCompletions I), x ∈ viableCharges I := by
+    ∀ x ∈ (viableCompletions I), x ∈ viableCharges I := by
   decide +revert
 
 set_option maxRecDepth 2000 in
@@ -627,7 +627,7 @@ lemma not_viable_of_not_mem_viableCharges {x : Charges}
     ?_ ?_ y ?_ x hyx hsub ?_ ?_
   · intro x y hxy
     simp only [Decidable.not_not]
-    simp
+    simp only [not_and, Decidable.not_not]
     intro h1 h2
     apply yukawaGeneratesDangerousAtLevel_of_subset hxy
     apply h1
@@ -640,13 +640,15 @@ lemma not_viable_of_not_mem_viableCharges {x : Charges}
     exact y_mem
   · intro q10
     rw [Multiset.empty_eq_zero, Multiset.eq_zero_iff_forall_notMem]
-    simp
+    simp only [Multiset.mem_filter, Multiset.mem_map, not_and, Decidable.not_not,
+      forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
     intro z hz hzP h2
     have h1 := not_viable_of_insert_ten_viableCharges I q10 q10.2 z hz
     simp_all
   · intro q5
     rw [Multiset.empty_eq_zero, Multiset.eq_zero_iff_forall_notMem]
-    simp
+    simp only [Multiset.mem_filter, Multiset.mem_map, not_and, Decidable.not_not,
+      forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
     intro z hz hzP h2
     have h1 := not_viable_of_insert_5_bar_viableCharges I q5 q5.2 z hz
     simp_all
