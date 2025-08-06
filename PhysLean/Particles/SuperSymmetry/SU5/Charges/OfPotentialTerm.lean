@@ -104,7 +104,7 @@ def ofPotentialTerm' (y : Charges 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
     | none => ∅
     | some qHd => (Q5.product <| Q10).val.map (fun x => qHd + x.1 + x.2)
 
-lemma ofPotentialTerm'_μ_finset {x  : Charges 𝓩} :
+lemma ofPotentialTerm'_μ_finset {x : Charges 𝓩} :
     x.ofPotentialTerm' μ =
     (x.1.toFinset.product <| x.2.1.toFinset).val.map (fun x => x.1 - x.2) := by
   match x with
@@ -154,7 +154,6 @@ lemma ofPotentialTerm'_W4_finset {x : Charges 𝓩} :
     simp [ofPotentialTerm']
   | (some qHd, some qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
-
 
 lemma ofPotentialTerm'_K2_finset {x : Charges 𝓩} :
     x.ofPotentialTerm' K2 = (x.1.toFinset.product <|
@@ -332,7 +331,7 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
   · exact fun h => ofPotentialTerm_subset_ofPotentialTerm' T h
   · exact fun h => ofPotentialTerm'_subset_ofPotentialTerm T h
 
-lemma ofPotentialTerm'_mono  [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
+lemma ofPotentialTerm'_mono [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm' T ⊆ y.ofPotentialTerm' T := by
   intro i
   rw [← mem_ofPotentialTerm_iff_mem_ofPotentialTerm, ← mem_ofPotentialTerm_iff_mem_ofPotentialTerm]

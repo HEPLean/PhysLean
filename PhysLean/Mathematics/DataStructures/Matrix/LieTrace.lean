@@ -5,7 +5,6 @@ Authors: Matteo Cipollina
 -/
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.LinearAlgebra.Matrix.Block
 import PhysLean.Mathematics.SchurTriangulation
 
 /-!

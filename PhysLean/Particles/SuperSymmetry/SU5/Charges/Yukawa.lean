@@ -54,7 +54,7 @@ def ofYukawaTermsNSum (x : Charges 𝓩) : ℕ → Multiset 𝓩
   | n + 1 => x.ofYukawaTermsNSum n + (x.ofYukawaTermsNSum n).bind fun sSum =>
     (x.ofYukawaTerms.map fun s => sSum + s)
 
-lemma ofYukawaTermsNSum_subset_of_subset [DecidableEq 𝓩]  {x y : Charges 𝓩} (h : x ⊆ y) (n : ℕ) :
+lemma ofYukawaTermsNSum_subset_of_subset [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) (n : ℕ) :
     x.ofYukawaTermsNSum n ⊆ y.ofYukawaTermsNSum n := by
   induction n with
   | zero => simp [ofYukawaTermsNSum]
@@ -82,10 +82,14 @@ variable [DecidableEq 𝓩]
   needed to regenerate the Yukawa couplings regnerate a dangerous coupling
   (in the superpotential) with up-to `n` insertions of the scalars.
 
-  Note: If defined as  (x.ofYukawaTermsNSum n).toFinset ∩ x.phenoConstrainingChargesSP.toFinset ≠ ∅
+  Note: If defined as (x.ofYukawaTermsNSum n).toFinset ∩ x.phenoConstrainingChargesSP.toFinset ≠ ∅
   the exicution time is greatley increased. -/
 def YukawaGeneratesDangerousAtLevel (x : Charges 𝓩) (n : ℕ) : Prop :=
   (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅
+
+lemma YukawaGeneratesDangerousAtLevel_iff_inter {x : Charges 𝓩} {n : ℕ}:
+  YukawaGeneratesDangerousAtLevel x n ↔
+  (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅ := by rfl
 
 lemma yukawaGeneratesDangerousAtLevel_iff_toFinset (x : Charges 𝓩) (n : ℕ) :
     x.YukawaGeneratesDangerousAtLevel n ↔
