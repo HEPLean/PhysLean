@@ -87,9 +87,9 @@ variable [DecidableEq 𝓩]
 def YukawaGeneratesDangerousAtLevel (x : Charges 𝓩) (n : ℕ) : Prop :=
   (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅
 
-lemma YukawaGeneratesDangerousAtLevel_iff_inter {x : Charges 𝓩} {n : ℕ}:
-  YukawaGeneratesDangerousAtLevel x n ↔
-  (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅ := by rfl
+lemma YukawaGeneratesDangerousAtLevel_iff_inter {x : Charges 𝓩} {n : ℕ} :
+    YukawaGeneratesDangerousAtLevel x n ↔
+    (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅ := by rfl
 
 lemma yukawaGeneratesDangerousAtLevel_iff_toFinset (x : Charges 𝓩) (n : ℕ) :
     x.YukawaGeneratesDangerousAtLevel n ↔
