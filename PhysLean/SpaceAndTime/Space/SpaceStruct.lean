@@ -24,6 +24,7 @@ structure SpaceStruct (d : ℕ := 3) where
     /-- The underlying EuclideanSpace associated `SpaceStruct d` -/
     val : EuclideanSpace ℝ (Fin d)
 
+open MeasureTheory InnerProductSpace
 /-!
 
 ## Basic operations on `Space`.
@@ -51,9 +52,6 @@ instance {d : Nat} : SMul ℝ (SpaceStruct d) where
 
 instance {d : Nat} : Zero (SpaceStruct d) := ⟨⟨0⟩⟩
 
-noncomputable instance (d: ℕ) : Inner ℝ (SpaceStruct d) where
-  inner x y := Inner.inner ℝ x.val y.val
-
 noncomputable instance : VAdd (EuclideanSpace ℝ (Fin d)) (SpaceStruct d) where
   vadd v s := ⟨v + s.val⟩
 
@@ -63,7 +61,7 @@ noncomputable instance : VAdd (EuclideanSpace ℝ (Fin d)) (SpaceStruct d) where
 
 -/
 
-noncomputable instance {d : Nat} : AddGroup (SpaceStruct d) where
+noncomputable instance {d : ℕ} : AddGroup (SpaceStruct d) where
   add_assoc := by simp [add_assoc]
   zero_add := fun ⟨x⟩ => by
     show SpaceStruct.mk (0 + x) = SpaceStruct.mk x
@@ -81,7 +79,20 @@ noncomputable instance {d : Nat} : AddGroup (SpaceStruct d) where
 noncomputable instance {d: ℕ} : AddCommMonoid (SpaceStruct d) where
   add_comm := by simp [add_comm]
 
-noncomputable instance {d : Nat} : AddCommGroup (SpaceStruct d) where
+noncomputable instance {d : ℕ} : AddCommGroup (SpaceStruct d) where
+
+instance {d: ℕ}: Module ℝ (SpaceStruct d) where
+  one_smul t := by simp [one_smul]
+  smul_add k t1 t2 := by ext; simp [mul_add]
+  smul_zero k := by ext; simp [mul_zero]
+  add_smul k1 k2 t := by ext; simp [add_mul]
+  mul_smul k1 k2 t := by ext; simp [mul_assoc]
+  zero_smul t := by ext; simp [zero_smul]
+
+-- noncomputable instance {d: ℕ}: SeminormedAddCommGroup (SpaceStruct d) where
+--   dist_self := by intros; simp [dist_eq_real_dist]
+--   dist_comm := by intros; simp [dist_eq_real_dist, dist_comm]
+--   dist_triangle := by intros; simp [dist_eq_real_dist, dist_triangle]
 
 /-!
 
@@ -89,9 +100,23 @@ noncomputable instance {d : Nat} : AddCommGroup (SpaceStruct d) where
 
 -/
 
-lemma inner_eq_sum {d} (p q : SpaceStruct d) :
+noncomputable instance (d: ℕ) : Inner ℝ (SpaceStruct d) where
+  inner x y := Inner.inner ℝ x.val y.val
+
+@[simp]
+lemma inner_def {d: ℕ} (x1 x2 : SpaceStruct d) :
+    ⟪x1, x2⟫_ℝ = ⟪x1.val, x2.val⟫_ℝ := rfl
+
+lemma inner_eq_sum {d: ℕ} (p q : SpaceStruct d) :
     inner ℝ p q = ∑ i, p.val i * q.val i := by
   simp only [inner, PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
   apply Finset.sum_congr rfl
   intro i hi
   exact mul_comm (q.val i) (p.val i)
+
+-- noncomputable instance {d: ℕ } : InnerProductSpace ℝ (SpaceStruct d) where
+--   norm_sq_eq_re_inner := by intros; simp [norm]; ring
+--   conj_inner_symm := by intros; simp [inner_def]; ring
+--   add_left := by intros; simp [inner_def, add_mul]
+--   smul_left := by intros; simp [inner_def]; ring
+
