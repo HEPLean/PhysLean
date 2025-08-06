@@ -546,7 +546,7 @@ lemma not_viable_of_insert_ten_viableCharges_same  :
     ∀ x ∈ (viableCharges same),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges same
-    ∨  YukawaGeneratesDangerousAtLevel y 1 := by
+    ∨ YukawaGeneratesDangerousAtLevel y 1 := by
   intro q5 hq5
   fin_cases hq5
   · decide
@@ -563,7 +563,7 @@ lemma not_viable_of_insert_ten_viableCharges_NN  :
     ∀ x ∈ (viableCharges nearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges nearestNeighbor
-    ∨  YukawaGeneratesDangerousAtLevel y 1 := by
+    ∨ YukawaGeneratesDangerousAtLevel y 1 := by
   intro q5 hq5
   fin_cases hq5
   repeat decide
@@ -574,7 +574,7 @@ lemma not_viable_of_insert_ten_viableCharges_NNToN  :
     ∀ x ∈ (viableCharges nextToNearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges nextToNearestNeighbor
-    ∨  YukawaGeneratesDangerousAtLevel y 1 := by
+    ∨ YukawaGeneratesDangerousAtLevel y 1 := by
   intro q5 hq5
   fin_cases hq5
   repeat decide
@@ -599,7 +599,6 @@ lemma not_viable_of_insert_ten_viableCharges (I : CodimensionOneConfig) :
 ## Proof of completeness.
 
 -/
-
 
 set_option maxRecDepth 2000 in
 lemma viableCompletions_subset_viableCharges (I : CodimensionOneConfig) :
