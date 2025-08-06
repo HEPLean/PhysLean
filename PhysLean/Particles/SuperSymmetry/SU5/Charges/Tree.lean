@@ -83,14 +83,14 @@ lemma insert_filter_card_zero
   obtain ⟨xqHu, rfl⟩ := xqHu_isSome
   simp [minimalSuperSet] at y_mem_minimalSuperSet
   simp_all
-  rcases y_mem_minimalSuperSet with ⟨y_neq_x, ⟨q5, q5_mem_S5, rfl⟩ | ⟨q10, q10_mem_S10, rfl⟩⟩
-  · have h5' := h5 q5 q5_mem_S5
+  rcases y_mem_minimalSuperSet with ⟨q5, q5_mem_S5, rfl⟩ | ⟨q10, q10_mem_S10, rfl⟩
+  · have h5' := h5 q5 q5_mem_S5.1
     rw [Multiset.filter_eq_nil] at h5'
     apply h5'
     rw [← mem_iff_mem_toMultiset]
     have h1 := map_mem_uniqueMap3 (some xqHd, some xqHu, xQ5, xQ10) x_mem_T (insert q5)
     simp_all
-  · have h10' := h10 q10 q10_mem_S10
+  · have h10' := h10 q10 q10_mem_S10.1
     rw [Multiset.filter_eq_nil] at h10'
     apply h10'
     rw [← mem_iff_mem_toMultiset]

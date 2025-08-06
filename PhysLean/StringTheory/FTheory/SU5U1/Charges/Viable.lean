@@ -9,13 +9,30 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import Mathlib.Tactic.FinCases
 /-!
 
-# Charges which are not phenoconstrained and do not regenerate dangerous couplings with Yukawas
+# Charges which are not pheno-constrained and do not regenerate dangerous couplings with Yukawas
 
 In this module we give a multiset of `ℤ`-valued charges which have values allowed
 by a `CodimensionOneConfig`, `I`, which permit a top Yukawa coupling,
 are not phenomenologically constrained, and do not regenerate dangerous couplings
 with one insertion of a Yuakawa coupling.
 
+## Key results
+
+- `viableCharges` contains all charges, for a given `CodimensionOneConfig`, `I`,
+  which permit a top Yukawa coupling, are not phenomenologically constrained,
+  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
+- The lemma `mem_viableCharges_iff` expresses membership of `viableCharges I`, i.e.
+  that it contains all charges which permit a top Yukawa coupling,
+  are not phenomenologically constrained, and do not regenerate dangerous couplings.
+- The proof of `mem_viableCharges_iff` is via `viableCompletions` which
+  contains all completions of charges which minimally allow the top Yukawa,
+  which are not phenomenologically constrained, and do not regenerate dangerous couplings.
+
+## Implementation details
+
+- This will eventually replace the files within `Charges.PhenoConstrainedElems`.
+- Note that this file is slow to run, any improvements to the speed of this file
+  will be very welcome.
 
 -/
 namespace FTheory
@@ -38,13 +55,12 @@ open PhysLean
 
 
 /--
-The tree of charges which contains all `completions` of
-charges which minimally allow the top Yukawa,
-which are not pheno-constrained.
+The multiset of charges which are completions of charges which minimally allow the top Yukawa,
+  which are not phenomenologically constrained, and do not regenerate dangerous couplings.
 
 This can be constructed via
 
-#eval FourTree.fromMultiset <|
+#eval
     ((minimallyAllowsTermsOfFinset same.allowedBarFiveCharges
         same.allowedTenCharges topYukawa).bind <|
       completions same.allowedBarFiveCharges same.allowedTenCharges).dedup.filter
@@ -251,10 +267,17 @@ lemma exists_subset_viableCompletions_of_not_isPhenoConstrained {x : Charges}
 
 TODO "JGVOQ" "Make the result `viableChargesExt` a safe definition."
 
+/-- All charges, for a given `CodimensionOneConfig`, `I`,
+  which permit a top Yukawa coupling, are not phenomenologically constrained,
+  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
+
+  Note this is fast for evaluation, but to slow with `decide`. See `viableCharges`
+  for an explicit vesion of this. -/
 unsafe def viableChargesExt (I : CodimensionOneConfig) :
     Multiset (Charges ℤ) :=
     (aux (viableCompletions I) (viableCompletions I)).dedup
 where
+  /-- Auxillary recursive function to define `viableChargesExt`. -/
   aux : Multiset (Charges ℤ) →  Multiset (Charges ℤ) →  Multiset (Charges ℤ) :=
     fun all add  =>
       if add = ∅ then all else
@@ -264,6 +287,9 @@ where
         ¬ IsPhenoConstrained y ∧ ¬ YukawaGeneratesDangerousAtLevel y 1
       aux (all + s2) s2
 
+/-- All charges, for `I = same`,
+  which permit a top Yukawa coupling, are not phenomenologically constrained,
+  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.  -/
 private def viableChargesSame : Multiset (Charges ℤ) :=
    {(some (-2), some (-3), {2}, {-3, 0}), (some (-1), some (-3), {1}, {-3, 0}),
     (some 1, some (-3), {-1}, {-3, 0}), (some 1, some (-3), {2}, {-3, 0}),
@@ -317,6 +343,9 @@ private def viableChargesSame : Multiset (Charges ℤ) :=
     (some (-2), some 3, {-1, 2}, {0, 3}), (some (-1), some 3, {-2, 1}, {0, 3}),
     (some 0, some (-2), {-3, 1}, {3, -1}), (some 0, some 2, {-1, 3}, {-3, 1})}
 
+/-- All charges, for `I = nearestNeighbor`,
+  which permit a top Yukawa coupling, are not phenomenologically constrained,
+  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.  -/
 private def viableChargesNN : Multiset (Charges ℤ) :=
   {(some (-9), some (-14), {-4}, {-7}), (some (-9), some (-14), {1}, {-7}),
     (some (-9), some (-14), {6}, {-7}), (some (-9), some (-14), {11}, {-7}),
@@ -355,6 +384,9 @@ private def viableChargesNN : Multiset (Charges ℤ) :=
     (some 11, some 6, {-14, -4}, {3}), (some (-4), some 6, {-9, 11}, {-7, 13}),
     (some (-4), some (-14), {-9, 11}, {13, -7})}
 
+/-- All charges, for `I = nextToNearestNeighbor`,
+  which permit a top Yukawa coupling, are not phenomenologically constrained,
+  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.  -/
 private def viableChargesNtoNN : Multiset (Charges ℤ) :=
   {(some (-13), some (-8), {7}, {-4}), (some (-3), some (-8), {7}, {-4}),
     (some 2, some (-8), {-13}, {-4}), (some 2, some (-8), {-3}, {-4}),
@@ -383,12 +415,12 @@ private def viableChargesNtoNN : Multiset (Charges ℤ) :=
     (some 2, some 12, {-13, -8}, {6}), (some 2, some 12, {-8, 7}, {6}),
     (some 7, some 12, {-13, 2}, {6})}
 
-/-- For a given `I : CodimensionOneConfig` the tree of charges containing all
-  charges which are not phenomenlogically constrained, and which permit a top
-  Yukawa coupling.
+/-- All charges, for a given `CodimensionOneConfig`, `I`,
+  which permit a top Yukawa coupling, are not phenomenologically constrained,
+  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
 
   These trees can be found with e.g.
-  `#eval nonPhenoConstrainedChargesExt nextToNearestNeighbor`. -/
+  `#eval viableChargesExt nextToNearestNeighbor`. -/
 def viableCharges : (I : CodimensionOneConfig) →  Multiset (Charges ℤ)
   | same => viableChargesSame
   | nearestNeighbor => viableChargesNN
@@ -399,6 +431,10 @@ def viableCharges : (I : CodimensionOneConfig) →  Multiset (Charges ℤ)
 ## Basic properties
 
 -/
+
+lemma viableCharges_nodup (I : CodimensionOneConfig) :
+    (viableCharges I).Nodup := by
+  decide +revert
 
 lemma viableCharges_card (I : CodimensionOneConfig) :
     (viableCharges I).card =
@@ -439,11 +475,6 @@ lemma card_ten_le_of_mem_viableCharges (I : CodimensionOneConfig) :
   revert I
   decide
 
-/-!
-
-## Pheno insert
--/
-
 set_option maxRecDepth 2000 in
 lemma not_viable_of_insert_5_bar_viableCharges_same  :
     ∀ q5 ∈ same.allowedBarFiveCharges,
@@ -462,7 +493,7 @@ lemma not_viable_of_insert_5_bar_viableCharges_same  :
   · decide
 
 set_option maxRecDepth 2000 in
-lemma not_viable_of_insert_5_bar_viableCharges_nn  :
+lemma not_viable_of_insert_5_bar_viableCharges_NN :
     ∀ q5 ∈ nearestNeighbor.allowedBarFiveCharges,
     ∀ x ∈ (viableCharges nearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
@@ -478,7 +509,7 @@ lemma not_viable_of_insert_5_bar_viableCharges_nn  :
   · decide
 
 set_option maxRecDepth 2000 in
-lemma not_viable_of_insert_5_bar_viableCharges_nnTon  :
+lemma not_viable_of_insert_5_bar_viableCharges_NNToN  :
     ∀ q5 ∈ nextToNearestNeighbor.allowedBarFiveCharges,
     ∀ x ∈ (viableCharges nextToNearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
@@ -493,6 +524,10 @@ lemma not_viable_of_insert_5_bar_viableCharges_nnTon  :
   · decide
   · decide
 
+/-- Inserting a `q5` charge into an element of `viableCharges I` either
+1. produces another element of `viableCharges I`, or
+2. produce a charge which is phenomenolically constrained or regenerates dangourous couplings
+  with the Yukawas. -/
 lemma not_viable_of_insert_5_bar_viableCharges (I : CodimensionOneConfig) :
     ∀ q5 ∈ I.allowedBarFiveCharges,
     ∀ x ∈ (viableCharges I),
@@ -500,13 +535,13 @@ lemma not_viable_of_insert_5_bar_viableCharges (I : CodimensionOneConfig) :
     IsPhenoConstrained y ∨ y ∈ viableCharges I
     ∨  YukawaGeneratesDangerousAtLevel y 1 := by
   fin_cases I
-  · exact phenoInsert_Q5_same
-  · exact phenoInsert_Q5_nn
-  · exact phenoInsert_Q5_nnTon
+  · exact not_viable_of_insert_5_bar_viableCharges_same
+  · exact not_viable_of_insert_5_bar_viableCharges_NN
+  · exact not_viable_of_insert_5_bar_viableCharges_NNToN
 
 
 set_option maxRecDepth 2000 in
-lemma phenoInsert_Q10_same  :
+lemma not_viable_of_insert_ten_viableCharges_same  :
     ∀ q10 ∈ same.allowedTenCharges,
     ∀ x ∈ (viableCharges same),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
@@ -523,7 +558,7 @@ lemma phenoInsert_Q10_same  :
   · decide
 
 set_option maxRecDepth 2000 in
-lemma phenoInsert_Q10_nn  :
+lemma not_viable_of_insert_ten_viableCharges_NN  :
     ∀ q10 ∈ nearestNeighbor.allowedTenCharges,
     ∀ x ∈ (viableCharges nearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
@@ -534,7 +569,7 @@ lemma phenoInsert_Q10_nn  :
   repeat decide
 
 set_option maxRecDepth 2000 in
-lemma phenoInsert_Q10_nnTon  :
+lemma not_viable_of_insert_ten_viableCharges_NNToN  :
     ∀ q10 ∈ nextToNearestNeighbor.allowedTenCharges,
     ∀ x ∈ (viableCharges nextToNearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
@@ -544,16 +579,20 @@ lemma phenoInsert_Q10_nnTon  :
   fin_cases hq5
   repeat decide
 
-lemma phenoInsert_Q10 (I : CodimensionOneConfig) :
+/-- Inserting a `q5` charge into an element of `viableCharges I` either
+1. produces another element of `viableCharges I`, or
+2. produce a charge which is phenomenolically constrained or regenerates dangourous couplings
+  with the Yukawas. -/
+lemma not_viable_of_insert_ten_viableCharges (I : CodimensionOneConfig) :
     ∀ q10 ∈ I.allowedTenCharges,
     ∀ x ∈ (viableCharges I),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges I
     ∨  YukawaGeneratesDangerousAtLevel y 1 := by
   fin_cases I
-  · exact phenoInsert_Q10_same
-  · exact phenoInsert_Q10_nn
-  · exact phenoInsert_Q10_nnTon
+  · exact not_viable_of_insert_ten_viableCharges_same
+  · exact not_viable_of_insert_ten_viableCharges_NN
+  · exact not_viable_of_insert_ten_viableCharges_NNToN
 
 /-!
 
@@ -561,25 +600,18 @@ lemma phenoInsert_Q10 (I : CodimensionOneConfig) :
 
 -/
 
-#eval
-    (((minimallyAllowsTermsOfFinset nextToNearestNeighbor.allowedBarFiveCharges
-        nextToNearestNeighbor.allowedTenCharges topYukawa).bind <|
-      completions nextToNearestNeighbor.allowedBarFiveCharges nextToNearestNeighbor.allowedTenCharges).dedup.filter
-    fun x => ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1)
-
-
 
 set_option maxRecDepth 2000 in
-lemma completionTopYukawa_subset_nonPhenoConstrainedCharges :
-    ∀ x ∈ (completionTopYukawa I), x ∈ nonPhenoConstrainedCharges I := by
+lemma viableCompletions_subset_viableCharges (I : CodimensionOneConfig) :
+      ∀ x ∈ (viableCompletions I), x ∈ viableCharges I := by
   decide +revert
 
 set_option maxRecDepth 2000 in
-lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
+lemma not_viable_of_not_mem_viableCharges {x : Charges}
     (hx : ¬ x.IsPhenoConstrained ∧ ¬ x.YukawaGeneratesDangerousAtLevel 1)
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges)
     (hcomplete : IsComplete x) :
-    x ∉ nonPhenoConstrainedCharges I → ¬ ((¬ IsPhenoConstrained x ∧
+    x ∉ viableCharges I → ¬ ((¬ IsPhenoConstrained x ∧
     ¬ YukawaGeneratesDangerousAtLevel x 1) ∧
       AllowsTerm x topYukawa) := by
   by_cases hn : ¬ (AllowsTerm x topYukawa)
@@ -588,9 +620,8 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
   simp only [hn, imp_false]
   simp at hn
   obtain ⟨y, y_mem, hyx⟩ :=
-    exists_subset_completionTopYukawa_of_not_isPhenoConstrained hx hn hsub hcomplete
-
-  refine subset_insert_filter_card_zero (nonPhenoConstrainedCharges I)
+    exists_subset_viableCompletions_of_not_isPhenoConstrained hx hn hsub hcomplete
+  refine subset_insert_filter_card_zero (viableCharges I)
     I.allowedBarFiveCharges I.allowedTenCharges (fun x =>
       (¬x.IsPhenoConstrained ∧ ¬x.YukawaGeneratesDangerousAtLevel 1))
     ?_ ?_ y ?_ x hyx hsub ?_ ?_
@@ -604,41 +635,41 @@ lemma not_isPhenoConstrained_mem_nonPhenoConstrainedCharges {x : Charges}
     apply h2
     exact isPhenoConstrained_mono hxy hn
   · intro x
-    exact fun a => isComplete_of_mem_nonPhenoConstrainedCharge I x a
-  · apply completionTopYukawa_subset_nonPhenoConstrainedCharges
+    exact fun a => isComplete_of_mem_viableCharges I x a
+  · apply viableCompletions_subset_viableCharges
     exact y_mem
   · intro q10
     rw [Multiset.empty_eq_zero, Multiset.eq_zero_iff_forall_notMem]
     simp
     intro z hz hzP h2
-    have h1 := phenoInsert_Q10 I q10 q10.2 z hz
+    have h1 := not_viable_of_insert_ten_viableCharges I q10 q10.2 z hz
     simp_all
   · intro q5
     rw [Multiset.empty_eq_zero, Multiset.eq_zero_iff_forall_notMem]
     simp
     intro z hz hzP h2
-    have h1 := phenoInsert_Q5 I q5 q5.2 z hz
+    have h1 := not_viable_of_insert_5_bar_viableCharges I q5 q5.2 z hz
     simp_all
 
-lemma not_isPhenoConstrained_iff_mem_nonPhenoConstrainedCharge {x : Charges}
+lemma mem_viableCharges_iff {x : Charges}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges) :
-    AllowsTerm x topYukawa ∧
-    ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1 ∧ IsComplete x ↔
-    x ∈ nonPhenoConstrainedCharges I := by
+    x ∈ viableCharges I ↔ AllowsTerm x topYukawa ∧
+    ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1 ∧ IsComplete x := by
   constructor
-  · intro ⟨hTop, hPheno, hY, hComplete⟩
-    by_contra hn
-    apply not_isPhenoConstrained_mem_nonPhenoConstrainedCharges ⟨hPheno, hY⟩ hsub hComplete hn
-    simp_all
   · intro h
     refine ⟨?_, ?_, ?_, ?_⟩
-    · exact allowsTerm_topYukawa_of_mem_nonPhenoConstrainedCharge I x h
-    · exact not_isPhenoConstrained_of_mem_nonPhenoConstrainedCharges I x h
-    · exact not_yukawaGeneratesDangerousAtLevel_one_of_mem_nonPhenoConstrainedCharges I x h
-    · exact isComplete_of_mem_nonPhenoConstrainedCharge I x h
+    · exact allowsTerm_topYukawa_of_mem_viableCharges I x h
+    · exact not_isPhenoConstrained_of_mem_viableCharges I x h
+    · exact not_yukawaGeneratesDangerousAtLevel_one_of_mem_viableCharges I x h
+    · exact isComplete_of_mem_viableCharges I x h
+  · intro ⟨hTop, hPheno, hY, hComplete⟩
+    by_contra hn
+    apply not_viable_of_not_mem_viableCharges ⟨hPheno, hY⟩ hsub hComplete hn
+    simp_all
 
 end Charges
 
 end SU5U1
 
 end FTheory
+#lint

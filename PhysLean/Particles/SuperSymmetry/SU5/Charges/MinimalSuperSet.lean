@@ -26,11 +26,11 @@ variable {𝓩 : Type} [DecidableEq 𝓩]
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x`. -/
 def minimalSuperSet (S5 S10 : Finset 𝓩) (x : Charges 𝓩) : Finset (Charges 𝓩) :=
-  let SqHd := if x.1.isSome then ∅ else S5.val.map fun y => (some y, x.2)
-  let SqHu := if x.2.1.isSome then ∅ else S5.val.map fun y => (x.1, some y, x.2.2)
-  let SQ5 := S5.val.map (fun y => (x.1, x.2.1, insert y x.2.2.1, x.2.2.2))
-  let SQ10 := S10.val.map (fun y => (x.1, x.2.1, x.2.2.1, insert y x.2.2.2))
-  (SqHd ∪ SqHu ∪ SQ5 ∪ SQ10).toFinset.erase x
+  let SqHd := if x.1.isSome then ∅ else S5.image fun y => (some y, x.2)
+  let SqHu := if x.2.1.isSome then ∅ else S5.image fun y => (x.1, some y, x.2.2)
+  let SQ5 := (S5 \ x.2.2.1).image (fun y => (x.1, x.2.1, insert y x.2.2.1, x.2.2.2))
+  let SQ10 := (S10 \ x.2.2.2).image (fun y => (x.1, x.2.1, x.2.2.1, insert y x.2.2.2))
+  (SqHd ∪ SqHu ∪ SQ5 ∪ SQ10).erase x
 
 lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : Charges 𝓩)
     (hy : y ∈ minimalSuperSet S5 S10 x) : x ⊆ y := by
@@ -288,12 +288,12 @@ lemma insert_filter_card_zero
   obtain ⟨xqHu, rfl⟩ := xqHu_isSome
   simp [minimalSuperSet] at y_mem_minimalSuperSet
   simp_all
-  rcases y_mem_minimalSuperSet with ⟨y_neq_x, ⟨q5, q5_mem_S5, rfl⟩ | ⟨q10, q10_mem_S10, rfl⟩⟩
-  · have h5' := h5 q5 q5_mem_S5
+  rcases y_mem_minimalSuperSet with ⟨q5, q5_mem_S5, rfl⟩ | ⟨q10, q10_mem_S10, rfl⟩
+  · have h5' := h5 q5 q5_mem_S5.1
     rw [Multiset.filter_eq_nil] at h5'
     simp_all
     exact h5' (some xqHd, some xqHu, xQ5, xQ10) x_mem_T y_not_in_T
-  · have h10' := h10 q10 q10_mem_S10
+  · have h10' := h10 q10 q10_mem_S10.1
     rw [Multiset.filter_eq_nil] at h10'
     simp_all
     exact h10' (some xqHd, some xqHu, xQ5, xQ10) x_mem_T y_not_in_T
