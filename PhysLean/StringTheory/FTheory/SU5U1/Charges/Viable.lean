@@ -28,6 +28,14 @@ with one insertion of a Yuakawa coupling.
   contains all completions of charges which minimally allow the top Yukawa,
   which are not phenomenologically constrained, and do not regenerate dangerous couplings.
 
+## Idea of proof
+
+The idea behind the proof is that we show:
+1. `viableCompletions I` is a subset of `viableCharges I`.
+2. Adding a Q5 or a Q10 charge to an element of `viableCharges I` leads to a charge which is either
+   not phenomenologically constrained, or does not regenerate dangerous couplings, or
+   is already in `viableCharges I`.
+The above two properties is then enough to show that `viableCharges I` contains all such charges.
 ## Implementation details
 
 - This will eventually replace the files within `Charges.PhenoConstrainedElems`.
@@ -278,7 +286,7 @@ unsafe def viableChargesExt (I : CodimensionOneConfig) :
     (aux (viableCompletions I) (viableCompletions I)).dedup
 where
   /-- Auxillary recursive function to define `viableChargesExt`. -/
-  aux : Multiset (Charges ℤ) →  Multiset (Charges ℤ) →  Multiset (Charges ℤ) :=
+  aux : Multiset (Charges ℤ) →  Multiset (Charges ℤ) → Multiset (Charges ℤ) :=
     fun all add  =>
       if add = ∅ then all else
       let s := add.bind fun x =>
@@ -287,133 +295,51 @@ where
         ¬ IsPhenoConstrained y ∧ ¬ YukawaGeneratesDangerousAtLevel y 1
       aux (all + s2) s2
 
-/-- All charges, for `I = same`,
-  which permit a top Yukawa coupling, are not phenomenologically constrained,
-  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.  -/
-private def viableChargesSame : Multiset (Charges ℤ) :=
-   {(some (-2), some (-3), {2}, {-3, 0}), (some (-1), some (-3), {1}, {-3, 0}),
-    (some 1, some (-3), {-1}, {-3, 0}), (some 1, some (-3), {2}, {-3, 0}),
-    (some 2, some (-3), {-2}, {-3, 0}), (some 2, some (-3), {1}, {-3, 0}),
-    (some (-3), some (-2), {0}, {-1}), (some (-3), some (-2), {1}, {-1}),
-    (some (-3), some (-2), {2}, {-1}), (some (-1), some (-2), {0}, {-1}),
-    (some (-1), some (-2), {1}, {-1}), (some (-1), some (-2), {2}, {-1}),
-    (some 0, some (-2), {-3}, {-1}), (some 0, some (-2), {-1}, {-1}),
-    (some 0, some (-2), {1}, {-1}), (some 0, some (-2), {2}, {-1}),
-    (some 1, some (-2), {-3}, {-1}), (some 1, some (-2), {-1}, {-1}),
-    (some 1, some (-2), {0}, {-1}), (some 1, some (-2), {2}, {-1}),
-    (some 2, some (-2), {-3}, {-1}), (some 2, some (-2), {-1}, {-1}),
-    (some 2, some (-2), {0}, {-1}), (some 2, some (-2), {1}, {-1}),
-    (some (-3), some (-2), {3}, {-2, 0}), (some (-1), some (-2), {3}, {-2, 0}),
-    (some 3, some (-2), {-3}, {-2, 0}), (some (-1), some (-2), {0}, {-3, 1}),
-    (some 0, some (-2), {-1}, {-3, 1}), (some 0, some (-2), {3}, {-3, 1}),
-    (some 3, some (-2), {0}, {-3, 1}), (some (-2), some 0, {-1}, {-3, 3}),
-    (some (-2), some 0, {1}, {-3, 3}), (some (-1), some 0, {-2}, {-3, 3}),
-    (some (-1), some 0, {2}, {-3, 3}), (some 1, some 0, {-2}, {-3, 3}),
-    (some 1, some 0, {2}, {-3, 3}), (some 2, some 0, {-1}, {-3, 3}),
-    (some 2, some 0, {1}, {-3, 3}), (some (-2), some 2, {-1}, {1}),
-    (some (-2), some 2, {0}, {1}), (some (-2), some 2, {1}, {1}),
-    (some (-2), some 2, {3}, {1}), (some (-1), some 2, {-2}, {1}),
-    (some (-1), some 2, {0}, {1}), (some (-1), some 2, {1}, {1}),
-    (some (-1), some 2, {3}, {1}), (some 0, some 2, {-2}, {1}),
-    (some 0, some 2, {-1}, {1}), (some 0, some 2, {1}, {1}),
-    (some 0, some 2, {3}, {1}), (some 1, some 2, {-2}, {1}),
-    (some 1, some 2, {-1}, {1}), (some 1, some 2, {0}, {1}),
-    (some 3, some 2, {-2}, {1}), (some 3, some 2, {-1}, {1}),
-    (some 3, some 2, {0}, {1}), (some (-3), some 2, {3}, {0, 2}),
-    (some 1, some 2, {-3}, {0, 2}), (some 3, some 2, {-3}, {0, 2}),
-    (some (-3), some 2, {0}, {-1, 3}), (some 0, some 2, {-3}, {-1, 3}),
-    (some 0, some 2, {1}, {-1, 3}), (some 1, some 2, {0}, {-1, 3}),
-    (some (-2), some 3, {-1}, {0, 3}), (some (-2), some 3, {2}, {0, 3}),
-    (some (-1), some 3, {-2}, {0, 3}), (some (-1), some 3, {1}, {0, 3}),
-    (some 1, some 3, {-1}, {0, 3}), (some 2, some 3, {-2}, {0, 3}),
-    (some 1, some (-3), {-1, 2}, {-3, 0}), (some 2, some (-3), {-2, 1}, {-3, 0}),
-    (some (-3), some (-2), {0}, {3, -1}), (some (-3), some (-2), {0, 2}, {-1}),
-    (some (-3), some (-2), {2}, {-3, -1}), (some (-1), some (-2), {0, 2}, {-1}),
-    (some 0, some (-2), {-3}, {3, -1}), (some 0, some (-2), {-3, 1}, {-1}),
-    (some 0, some (-2), {1}, {3, -1}), (some 1, some (-2), {0}, {3, -1}),
-    (some 2, some (-2), {-3}, {-3, -1}), (some 2, some (-2), {-3, -1}, {-1}),
-    (some 2, some (-2), {-3, 0}, {-1}), (some 2, some (-2), {-1, 1}, {-1}),
-    (some 0, some (-2), {-1, 3}, {-3, 1}), (some (-2), some 2, {-1, 1}, {1}),
-    (some (-2), some 2, {0, 3}, {1}), (some (-2), some 2, {1, 3}, {1}),
-    (some (-2), some 2, {3}, {3, 1}), (some (-1), some 2, {0}, {-3, 1}),
-    (some 0, some 2, {-1}, {-3, 1}), (some 0, some 2, {-1, 3}, {1}),
-    (some 0, some 2, {3}, {-3, 1}), (some 1, some 2, {-2, 0}, {1}),
-    (some 3, some 2, {-2}, {3, 1}), (some 3, some 2, {-2, 0}, {1}),
-    (some 3, some 2, {0}, {-3, 1}), (some 0, some 2, {-3, 1}, {-1, 3}),
-    (some (-2), some 3, {-1, 2}, {0, 3}), (some (-1), some 3, {-2, 1}, {0, 3}),
-    (some 0, some (-2), {-3, 1}, {3, -1}), (some 0, some 2, {-1, 3}, {-3, 1})}
+-- #eval (viableChargesExt .nextToNearestNeighbor).toFinset \ (viableCompletions .nextToNearestNeighbor).toFinset
 
-/-- All charges, for `I = nearestNeighbor`,
-  which permit a top Yukawa coupling, are not phenomenologically constrained,
-  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.  -/
-private def viableChargesNN : Multiset (Charges ℤ) :=
-  {(some (-9), some (-14), {-4}, {-7}), (some (-9), some (-14), {1}, {-7}),
-    (some (-9), some (-14), {6}, {-7}), (some (-9), some (-14), {11}, {-7}),
-    (some (-4), some (-14), {-9}, {-7}), (some (-4), some (-14), {1}, {-7}),
-    (some (-4), some (-14), {6}, {-7}), (some (-4), some (-14), {11}, {-7}),
-    (some 1, some (-14), {-9}, {-7}), (some 1, some (-14), {-4}, {-7}),
-    (some 1, some (-14), {6}, {-7}), (some 1, some (-14), {11}, {-7}),
-    (some 6, some (-14), {-9}, {-7}), (some 6, some (-14), {-4}, {-7}),
-    (some 6, some (-14), {1}, {-7}),  (some 6, some (-14), {11}, {-7}),
-    (some 11, some (-14), {-9}, {-7}), (some 11, some (-14), {-4}, {-7}),
-    (some 11, some (-14), {1}, {-7}), (some 11, some (-14), {6}, {-7}),
-    (some 11, some (-14), {-9}, {-12, -2}), (some 1, some (-9), {11}, {-12, 3}),
-    (some 11, some (-9), {1}, {-12, 3}), (some (-14), some (-4), {-9}, {-2}),
-    (some (-14), some (-4), {11}, {-2}), (some (-9), some (-4), {-14}, {-2}),
-    (some (-9), some (-4), {11}, {-2}), (some 1, some (-4), {-14}, {-2}),
-    (some 1, some (-4), {11}, {-2}), (some 11, some (-4), {-14}, {-2}),
-    (some 11, some (-4), {-9}, {-2}), (some (-9), some 1, {-4}, {-12, 13}),
-    (some (-4), some 1, {-9}, {-12, 13}), (some 6, some 1, {-9}, {-12, 13}),
-    (some (-14), some 6, {-4}, {3}), (some (-14), some 6, {1}, {3}),
-    (some (-14), some 6, {11}, {3}), (some (-4), some 6, {-14}, {3}),
-    (some (-4), some 6, {1}, {3}), (some (-4), some 6, {11}, {3}),
-    (some 1, some 6, {-14}, {3}), (some 1, some 6, {-4}, {3}),
-    (some 11, some 6, {-14}, {3}), (some 11, some 6, {-4}, {3}),
-    (some (-9), some 6, {-4}, {-7, 13}), (some (-4), some 6, {-9}, {-7, 13}),
-    (some (-4), some 6, {11}, {-7, 13}), (some 11, some 6, {-4}, {-7, 13}),
-    (some (-9), some (-14), {-4}, {13, -7}), (some (-9), some (-14), {-4, 6}, {-7}),
-    (some (-4), some (-14), {-9}, {13, -7}), (some (-4), some (-14), {-9, 6}, {-7}),
-    (some (-4), some (-14), {-9, 11}, {-7}), (some (-4), some (-14), {6, 11}, {-7}),
-    (some (-4), some (-14), {11}, {13, -7}), (some 1, some (-14), {-4, 6}, {-7}),
-    (some 6, some (-14), {-9, -4}, {-7}), (some 6, some (-14), {-4}, {-12, -7}),
-    (some 6, some (-14), {-9, 1}, {-7}), (some 6, some (-14), {1, 11}, {-7}),
-    (some 11, some (-14), {-9, -4}, {-7}), (some 11, some (-14), {-4}, {13, -7}),
-    (some 11, some (-14), {-4, 1}, {-7}), (some 11, some (-14), {-9, 6}, {-7}),
-    (some (-9), some (-4), {-14, 11}, {-2}), (some (-9), some (-4), {11}, {-12, -2}),
-    (some 1, some (-4), {-14, 11}, {-2}), (some (-14), some 6, {1, 11}, {3}),
-    (some 11, some 6, {-14, -4}, {3}), (some (-4), some 6, {-9, 11}, {-7, 13}),
-    (some (-4), some (-14), {-9, 11}, {13, -7})}
+def viableChargesAdditional : CodimensionOneConfig → Multiset (Charges ℤ)
+  | .same =>
+     {(some 1, some (-3), {-1, 2}, {-3, 0}), (some 2, some (-3), {-2, 1}, {-3, 0}),
+      (some (-3), some (-2), {0}, {3, -1}), (some (-3), some (-2), {0, 2}, {-1}),
+      (some (-3), some (-2), {2}, {-3, -1}), (some (-1), some (-2), {0, 2}, {-1}),
+      (some 0, some (-2), {-3}, {3, -1}), (some 0, some (-2), {-3, 1}, {-1}),
+      (some 0, some (-2), {1}, {3, -1}), (some 1, some (-2), {0}, {3, -1}),
+      (some 2, some (-2), {-3}, {-3, -1}), (some 2, some (-2), {-3, -1}, {-1}),
+      (some 2, some (-2), {-3, 0}, {-1}), (some 2, some (-2), {-1, 1}, {-1}),
+      (some 0, some (-2), {-1, 3}, {-3, 1}), (some (-2), some 2, {-1, 1}, {1}),
+      (some (-2), some 2, {0, 3}, {1}), (some (-2), some 2, {1, 3}, {1}),
+      (some (-2), some 2, {3}, {3, 1}), (some (-1), some 2, {0}, {-3, 1}),
+      (some 0, some 2, {-1}, {-3, 1}), (some 0, some 2, {-1, 3}, {1}),
+      (some 0, some 2, {3}, {-3, 1}), (some 1, some 2, {-2, 0}, {1}),
+      (some 3, some 2, {-2}, {3, 1}), (some 3, some 2, {-2, 0}, {1}),
+      (some 3, some 2, {0}, {-3, 1}), (some 0, some 2, {-3, 1}, {-1, 3}),
+      (some (-2), some 3, {-1, 2}, {0, 3}), (some (-1), some 3, {-2, 1}, {0, 3}),
+      (some 0, some (-2), {-3, 1}, {3, -1}), (some 0, some 2, {-1, 3}, {-3, 1})}
+  | .nearestNeighbor =>
+      {(some (-9), some (-14), {-4}, {13, -7}), (some (-9), some (-14), {-4, 6}, {-7}),
+      (some (-4), some (-14), {-9}, {13, -7}), (some (-4), some (-14), {-9, 6}, {-7}),
+      (some (-4), some (-14), {-9, 11}, {-7}), (some (-4), some (-14), {6, 11}, {-7}),
+      (some (-4), some (-14), {11}, {13, -7}), (some 1, some (-14), {-4, 6}, {-7}),
+      (some 6, some (-14), {-9, -4}, {-7}), (some 6, some (-14), {-4}, {-12, -7}),
+      (some 6, some (-14), {-9, 1}, {-7}), (some 6, some (-14), {1, 11}, {-7}),
+      (some 11, some (-14), {-9, -4}, {-7}), (some 11, some (-14), {-4}, {13, -7}),
+      (some 11, some (-14), {-4, 1}, {-7}), (some 11, some (-14), {-9, 6}, {-7}),
+      (some (-9), some (-4), {-14, 11}, {-2}), (some (-9), some (-4), {11}, {-12, -2}),
+      (some 1, some (-4), {-14, 11}, {-2}), (some (-14), some 6, {1, 11}, {3}),
+      (some 11, some 6, {-14, -4}, {3}), (some (-4), some 6, {-9, 11}, {-7, 13}),
+      (some (-4), some (-14), {-9, 11}, {13, -7})}
+  | .nextToNearestNeighbor =>
+      {(some (-13), some 2, {-8, 12}, {1}), (some (-8), some 2, {-13, 7}, {1}),
+      (some 7, some 2, {-8, 12}, {1}), (some 12, some 2, {-13, 7}, {1}),
+      (some (-3), some 2, {-8, 12}, {-9, 11}), (some (-13), some 12, {-8}, {-9, 6}),
+      (some (-13), some 12, {-8, 7}, {6}), (some (-13), some 12, {7}, {-4, 6}),
+      (some (-8), some 12, {-13}, {-9, 6}), (some (-8), some 12, {-13, 2}, {6}),
+      (some (-8), some 12, {2, 7}, {6}), (some 2, some 12, {-13, -8}, {6}),
+      (some 2, some 12, {-8, 7}, {6}), (some 7, some 12, {-13, 2}, {6})}
 
-/-- All charges, for `I = nextToNearestNeighbor`,
-  which permit a top Yukawa coupling, are not phenomenologically constrained,
-  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.  -/
-private def viableChargesNtoNN : Multiset (Charges ℤ) :=
-  {(some (-13), some (-8), {7}, {-4}), (some (-3), some (-8), {7}, {-4}),
-    (some 2, some (-8), {-13}, {-4}), (some 2, some (-8), {-3}, {-4}),
-    (some 2, some (-8), {7}, {-4}), (some 7, some (-8), {-13}, {-4}),
-    (some 7, some (-8), {-3}, {-4}), (some (-13), some 2, {-8}, {1}),
-    (some (-13), some 2, {7}, {1}), (some (-13), some 2, {12}, {1}),
-    (some (-8), some 2, {-13}, {1}), (some (-8), some 2, {7}, {1}),
-    (some 7, some 2, {-13}, {1}), (some 7, some 2, {-8}, {1}),
-    (some 7, some 2, {12}, {1}), (some 12, some 2, {-13}, {1}),
-    (some 12, some 2, {7}, {1}), (some (-8), some 2, {-3}, {-9, 11}),
-    (some (-3), some 2, {-8}, {-9, 11}), (some (-3), some 2, {12}, {-9, 11}),
-    (some 12, some 2, {-3}, {-9, 11}), (some (-13), some 12, {-8}, {6}),
-    (some (-13), some 12, {2}, {6}), (some (-13), some 12, {7}, {6}),
-    (some (-8), some 12, {-13}, {6}), (some (-8), some 12, {2}, {6}),
-    (some (-8), some 12, {7}, {6}), (some (-3), some 12, {-13}, {6}),
-    (some (-3), some 12, {-8}, {6}), (some (-3), some 12, {2}, {6}),
-    (some (-3), some 12, {7}, {6}), (some 2, some 12, {-13}, {6}),
-    (some 2, some 12, {-8}, {6}), (some 2, some 12, {7}, {6}),
-    (some 7, some 12, {-13}, {6}), (some 7, some 12, {-8}, {6}),
-    (some 7, some 12, {2}, {6}), (some (-13), some 2, {-8, 12}, {1}),
-    (some (-8), some 2, {-13, 7}, {1}), (some 7, some 2, {-8, 12}, {1}),
-    (some 12, some 2, {-13, 7}, {1}), (some (-3), some 2, {-8, 12}, {-9, 11}),
-    (some (-13), some 12, {-8}, {-9, 6}), (some (-13), some 12, {-8, 7}, {6}),
-    (some (-13), some 12, {7}, {-4, 6}), (some (-8), some 12, {-13}, {-9, 6}),
-    (some (-8), some 12, {-13, 2}, {6}), (some (-8), some 12, {2, 7}, {6}),
-    (some 2, some 12, {-13, -8}, {6}), (some 2, some 12, {-8, 7}, {6}),
-    (some 7, some 12, {-13, 2}, {6})}
+lemma viableChargesAdditional_nodup (I : CodimensionOneConfig) :
+    (viableChargesAdditional I).Nodup := by
+  cases I <;> decide
 
 /-- All charges, for a given `CodimensionOneConfig`, `I`,
   which permit a top Yukawa coupling, are not phenomenologically constrained,
@@ -421,10 +347,9 @@ private def viableChargesNtoNN : Multiset (Charges ℤ) :=
 
   These trees can be found with e.g.
   `#eval viableChargesExt nextToNearestNeighbor`. -/
-def viableCharges : (I : CodimensionOneConfig) →  Multiset (Charges ℤ)
-  | same => viableChargesSame
-  | nearestNeighbor => viableChargesNN
-  | nextToNearestNeighbor => viableChargesNtoNN
+def viableCharges (I : CodimensionOneConfig) : Multiset (Charges ℤ) :=
+  viableCompletions I + viableChargesAdditional I
+
 
 /-!
 
@@ -434,7 +359,7 @@ def viableCharges : (I : CodimensionOneConfig) →  Multiset (Charges ℤ)
 
 lemma viableCharges_nodup (I : CodimensionOneConfig) :
     (viableCharges I).Nodup := by
-  decide +revert
+  sorry
 
 lemma viableCharges_card (I : CodimensionOneConfig) :
     (viableCharges I).card =
@@ -475,13 +400,23 @@ lemma card_ten_le_of_mem_viableCharges (I : CodimensionOneConfig) :
   revert I
   decide
 
+/-!
+
+## Closed under inserting charges
+
+We now show that adding a Q5 or a Q10 charge to an element of `viableCharges I` leads to a
+charge which is either not phenomenologically constrained, or does not regenerate dangerous
+couplings, or is already in `viableCharges I`.
+
+-/
+
 set_option maxRecDepth 2000 in
 lemma not_viable_of_insert_5_bar_viableCharges_same  :
     ∀ q5 ∈ same.allowedBarFiveCharges,
     ∀ x ∈ (viableCharges same),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges same
-    ∨  YukawaGeneratesDangerousAtLevel y 1 := by
+    ∨ YukawaGeneratesDangerousAtLevel y 1 := by
   intro q5 hq5
   fin_cases hq5
   · decide
@@ -498,7 +433,7 @@ lemma not_viable_of_insert_5_bar_viableCharges_NN :
     ∀ x ∈ (viableCharges nearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges nearestNeighbor
-    ∨  YukawaGeneratesDangerousAtLevel y 1 := by
+    ∨ YukawaGeneratesDangerousAtLevel y 1 := by
   intro q5 hq5
   fin_cases hq5
   · decide
@@ -533,12 +468,11 @@ lemma not_viable_of_insert_5_bar_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges I
-    ∨  YukawaGeneratesDangerousAtLevel y 1 := by
+    ∨ YukawaGeneratesDangerousAtLevel y 1 := by
   fin_cases I
   · exact not_viable_of_insert_5_bar_viableCharges_same
   · exact not_viable_of_insert_5_bar_viableCharges_NN
   · exact not_viable_of_insert_5_bar_viableCharges_NNToN
-
 
 set_option maxRecDepth 2000 in
 lemma not_viable_of_insert_ten_viableCharges_same  :
@@ -588,7 +522,7 @@ lemma not_viable_of_insert_ten_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges I
-    ∨  YukawaGeneratesDangerousAtLevel y 1 := by
+    ∨ YukawaGeneratesDangerousAtLevel y 1 := by
   fin_cases I
   · exact not_viable_of_insert_ten_viableCharges_same
   · exact not_viable_of_insert_ten_viableCharges_NN
