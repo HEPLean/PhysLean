@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 /-!
 

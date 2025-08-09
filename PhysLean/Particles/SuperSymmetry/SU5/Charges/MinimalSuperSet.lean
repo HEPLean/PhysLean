@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Basic
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
 /-!
 # Minimal super set
@@ -255,7 +254,6 @@ lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
     · exact hsubsetz
     · rw [card_of_mem_minimalSuperSet z hz]
       omega
-
 
 /-!
 

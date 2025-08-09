@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
-import Mathlib.Tactic.FinCases
 /-!
 
 # Minimally allows a finite set of terms
