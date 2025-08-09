@@ -416,7 +416,7 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
   · match qHu with
     | some qHu =>
       simp at h
-      simp
+      simp only [Multiset.mem_map, Finset.mem_val]
       convert h using 1
       rw [neg_add_eq_zero, eq_comm]
     | none => simp at h
@@ -479,7 +479,7 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
           abel
         · right
           rw [@Multiset.mem_map]
-          simp
+          simp only [Multiset.mem_product, Finset.mem_val, Prod.exists]
           use a1, a2
     | none => simp at h
   · match qHd, qHu with
@@ -549,10 +549,11 @@ lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
   · match qHu with
     | some qHu =>
       simp [Finset.eq_empty_iff_forall_notMem] at h
-      simp
+      simp only [Multiset.mem_map, Multiset.mem_product, Multiset.mem_ndinsert, Finset.mem_val,
+        Prod.exists]
       by_cases h' : q5 + q5 - qHu - qHu = 0
       · use q5, q5
-        simp
+        simp only [true_or, and_self, true_and]
         rw [← h']
         abel
       · simp_all
@@ -578,7 +579,8 @@ lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
     | some qHd =>
       simp [Finset.eq_empty_iff_forall_notMem] at h
       obtain ⟨q1, h1, hsum⟩ := h
-      simp
+      simp only [Multiset.mem_map, Multiset.mem_product, Multiset.mem_ndinsert, Finset.mem_val,
+        Prod.exists]
       use q5, q1
       simp_all
       rw [← hsum]
@@ -810,7 +812,7 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       rw [← hsum]
       abel
     · right
-      simp
+      simp only [Multiset.mem_map, Multiset.mem_product, Finset.mem_val, Prod.exists]
       use a1, a2
   · match qHd with
     | none => simp at h
@@ -867,7 +869,7 @@ lemma allowsTerm_insertQ10_of_allowsTermQ10 {qHd qHu : Option 𝓩}
       rcases h with h | h
       · use q10, q10
         rw [← h]
-        simp
+        simp only [true_or, and_self, true_and]
         abel
       · obtain ⟨a1, h1, hsum⟩ := h
         use a1, q10
