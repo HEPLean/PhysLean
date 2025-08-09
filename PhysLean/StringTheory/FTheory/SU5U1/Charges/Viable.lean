@@ -9,6 +9,8 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import Mathlib.Tactic.FinCases
 /-!
 
+Note this file takes a long time to compile.
+
 # Charges which are not pheno-constrained and do not regenerate dangerous couplings with Yukawas
 
 In this module we give a multiset of `ℤ`-valued charges which have values allowed
@@ -446,54 +448,71 @@ couplings, or is already in `viableCharges I`.
 
 -/
 
-set_option maxRecDepth 2000 in
 lemma not_viable_of_insert_5_bar_viableCharges_same :
     ∀ q5 ∈ same.allowedBarFiveCharges,
     ∀ x ∈ (viableCharges same),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges same
     ∨ YukawaGeneratesDangerousAtLevel y 1 := by
-  intro q5 hq5
-  fin_cases hq5
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
+  suffices h : ∀ q5 ∈ same.allowedBarFiveCharges,
+      ∀ x ∈ (viableCharges same),
+      let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
+      IsPhenoConstrainedQ5 x q5 ∨ y ∈ viableCharges same
+      ∨ YukawaGeneratesDangerousAtLevel y 1 by
+    intro q5 hq5 x hx
+    have h' := h q5 hq5 x hx
+    rcases h' with h'| h' | h'
+    · left
+      rw [isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5]
+      left
+      exact h'
+    · simp_all
+    · simp_all
+  decide +kernel
 
-set_option maxRecDepth 2000 in
 lemma not_viable_of_insert_5_bar_viableCharges_NN :
     ∀ q5 ∈ nearestNeighbor.allowedBarFiveCharges,
     ∀ x ∈ (viableCharges nearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges nearestNeighbor
     ∨ YukawaGeneratesDangerousAtLevel y 1 := by
-  intro q5 hq5
-  fin_cases hq5
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
+  suffices h : ∀ q5 ∈ nearestNeighbor.allowedBarFiveCharges,
+      ∀ x ∈ (viableCharges nearestNeighbor),
+      let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
+      IsPhenoConstrainedQ5 x q5 ∨ y ∈ viableCharges nearestNeighbor
+      ∨ YukawaGeneratesDangerousAtLevel y 1 by
+    intro q5 hq5 x hx
+    have h' := h q5 hq5 x hx
+    rcases h' with h'| h' | h'
+    · left
+      rw [isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5]
+      left
+      exact h'
+    · simp_all
+    · simp_all
+  decide +kernel
 
-set_option maxRecDepth 2000 in
-lemma not_viable_of_insert_5_bar_viableCharges_NNToN :
+lemma not_viable_of_insert_5_bar_viableCharges_NToNN :
     ∀ q5 ∈ nextToNearestNeighbor.allowedBarFiveCharges,
     ∀ x ∈ (viableCharges nextToNearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges nextToNearestNeighbor
     ∨ YukawaGeneratesDangerousAtLevel y 1 := by
-  intro q5 hq5
-  fin_cases hq5
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
+  suffices h : ∀ q5 ∈ nextToNearestNeighbor.allowedBarFiveCharges,
+      ∀ x ∈ (viableCharges nextToNearestNeighbor),
+      let y : Charges ℤ := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
+      IsPhenoConstrainedQ5 x q5 ∨ y ∈ viableCharges nextToNearestNeighbor
+      ∨ YukawaGeneratesDangerousAtLevel y 1 by
+    intro q5 hq5 x hx
+    have h' := h q5 hq5 x hx
+    rcases h' with h'| h' | h'
+    · left
+      rw [isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5]
+      left
+      exact h'
+    · simp_all
+    · simp_all
+  decide +kernel
 
 /-- Inserting a `q5` charge into an element of `viableCharges I` either
 1. produces another element of `viableCharges I`, or
@@ -508,24 +527,29 @@ lemma not_viable_of_insert_5_bar_viableCharges (I : CodimensionOneConfig) :
   fin_cases I
   · exact not_viable_of_insert_5_bar_viableCharges_same
   · exact not_viable_of_insert_5_bar_viableCharges_NN
-  · exact not_viable_of_insert_5_bar_viableCharges_NNToN
+  · exact not_viable_of_insert_5_bar_viableCharges_NToNN
 
-set_option maxRecDepth 2000 in
 lemma not_viable_of_insert_ten_viableCharges_same :
     ∀ q10 ∈ same.allowedTenCharges,
     ∀ x ∈ (viableCharges same),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges same
     ∨ YukawaGeneratesDangerousAtLevel y 1 := by
-  intro q5 hq5
-  fin_cases hq5
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
-  · decide
+  suffices h : ∀ q10 ∈ same.allowedTenCharges,
+      ∀ x ∈ (viableCharges same),
+      let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
+      IsPhenoConstrainedQ10 x q10 ∨ y ∈ viableCharges same
+      ∨ YukawaGeneratesDangerousAtLevel y 1 by
+    intro q10 hq10 x hx
+    have h' := h q10 hq10 x hx
+    rcases h' with h'| h' | h'
+    · left
+      rw [isPhenoConstrained_insertQ10_iff_isPhenoConstrainedQ10]
+      left
+      exact h'
+    · simp_all
+    · simp_all
+  decide +kernel
 
 set_option maxRecDepth 2000 in
 lemma not_viable_of_insert_ten_viableCharges_NN :
@@ -534,22 +558,45 @@ lemma not_viable_of_insert_ten_viableCharges_NN :
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges nearestNeighbor
     ∨ YukawaGeneratesDangerousAtLevel y 1 := by
-  intro q5 hq5
-  fin_cases hq5
-  repeat decide
+  suffices h : ∀ q10 ∈ nearestNeighbor.allowedTenCharges,
+      ∀ x ∈ (viableCharges nearestNeighbor),
+      let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
+      IsPhenoConstrainedQ10 x q10 ∨ y ∈ viableCharges nearestNeighbor
+      ∨ YukawaGeneratesDangerousAtLevel y 1 by
+    intro q10 hq10 x hx
+    have h' := h q10 hq10 x hx
+    rcases h' with h'| h' | h'
+    · left
+      rw [isPhenoConstrained_insertQ10_iff_isPhenoConstrainedQ10]
+      left
+      exact h'
+    · simp_all
+    · simp_all
+  decide +kernel
 
-set_option maxRecDepth 2000 in
-lemma not_viable_of_insert_ten_viableCharges_NNToN :
+lemma not_viable_of_insert_ten_viableCharges_NToNN:
     ∀ q10 ∈ nextToNearestNeighbor.allowedTenCharges,
     ∀ x ∈ (viableCharges nextToNearestNeighbor),
     let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ viableCharges nextToNearestNeighbor
     ∨ YukawaGeneratesDangerousAtLevel y 1 := by
-  intro q5 hq5
-  fin_cases hq5
-  repeat decide
+  suffices h : ∀ q10 ∈ nextToNearestNeighbor.allowedTenCharges,
+      ∀ x ∈ (viableCharges nextToNearestNeighbor),
+      let y : Charges ℤ := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
+      IsPhenoConstrainedQ10 x q10 ∨ y ∈ viableCharges nextToNearestNeighbor
+      ∨ YukawaGeneratesDangerousAtLevel y 1 by
+    intro q10 hq10 x hx
+    have h' := h q10 hq10 x hx
+    rcases h' with h'| h' | h'
+    · left
+      rw [isPhenoConstrained_insertQ10_iff_isPhenoConstrainedQ10]
+      left
+      exact h'
+    · simp_all
+    · simp_all
+  decide +kernel
 
-/-- Inserting a `q5` charge into an element of `viableCharges I` either
+/-- Inserting a `q10` charge into an element of `viableCharges I` either
 1. produces another element of `viableCharges I`, or
 2. produce a charge which is phenomenolically constrained or regenerates dangourous couplings
   with the Yukawas. -/
@@ -562,7 +609,7 @@ lemma not_viable_of_insert_ten_viableCharges (I : CodimensionOneConfig) :
   fin_cases I
   · exact not_viable_of_insert_ten_viableCharges_same
   · exact not_viable_of_insert_ten_viableCharges_NN
-  · exact not_viable_of_insert_ten_viableCharges_NNToN
+  · exact not_viable_of_insert_ten_viableCharges_NToNN
 
 /-!
 

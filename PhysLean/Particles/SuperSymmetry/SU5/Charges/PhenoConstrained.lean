@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Tree
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
+import Mathlib.Tactic.Polyrith
 /-!
 
 # Pheno constrained charges
@@ -70,6 +71,84 @@ lemma phenoConstrainingChargesSP_mono [DecidableEq 𝓩] {x y : Charges 𝓩} (h
   all_goals
     have h' := ofPotentialTerm'_mono h _ hr
     simp_all
+
+/-!
+
+## Is Pheno constrained Q5 addition
+
+-/
+
+/-- The proposition which is true if the addition of a charge `q5` to a set of charegs `x` leads
+  `x` to being phenomenologically constrained. -/
+def IsPhenoConstrainedQ5 [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) : Prop :=
+  x.AllowsTermQ5 q5 μ ∨ x.AllowsTermQ5 q5 β ∨ x.AllowsTermQ5 q5 Λ ∨ x.AllowsTermQ5 q5 W2 ∨
+  x.AllowsTermQ5 q5 W4 ∨
+  x.AllowsTermQ5 q5 K1 ∨ x.AllowsTermQ5 q5 K2 ∨ x.AllowsTermQ5 q5 W1
+
+instance decidableIsPhenoConstrainedQ5 [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) :
+    Decidable (x.IsPhenoConstrainedQ5 q5) :=
+  inferInstanceAs (Decidable (x.AllowsTermQ5 q5 μ ∨ x.AllowsTermQ5 q5 β ∨
+    x.AllowsTermQ5 q5 Λ ∨ x.AllowsTermQ5 q5 W2 ∨ x.AllowsTermQ5 q5 W4 ∨
+    x.AllowsTermQ5 q5 K1 ∨ x.AllowsTermQ5 q5 K2 ∨ x.AllowsTermQ5 q5 W1))
+
+lemma isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5 [DecidableEq 𝓩] {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q5 : 𝓩} :
+    IsPhenoConstrained (qHd, qHu, insert q5 Q5, Q10) ↔
+    IsPhenoConstrainedQ5 (qHd, qHu, Q5, Q10) q5 ∨
+    IsPhenoConstrained (qHd, qHu, Q5, Q10) := by
+  constructor
+  · intro hr
+    rcases hr with hr | hr | hr | hr | hr | hr | hr | hr
+    all_goals
+      rw [allowsTerm_insertQ5_iff_allowsTermQ5] at hr
+      rcases hr with hr | hr
+      all_goals
+        simp_all [IsPhenoConstrainedQ5, IsPhenoConstrained]
+  · intro hr
+    rcases hr with hr | hr
+    · simp [IsPhenoConstrainedQ5] at hr
+      rcases hr with hr | hr | hr | hr | hr | hr | hr | hr
+      all_goals
+        have hr' := allowsTerm_insertQ5_of_allowsTermQ5 _ hr
+        simp_all [IsPhenoConstrained]
+    · apply isPhenoConstrained_mono _ hr
+      simp [subset_def]
+
+/-- The proposition which is true if the addition of a charge `q10` to a set of charegs `x` leads
+  `x` to being phenomenologically constrained. -/
+def IsPhenoConstrainedQ10 [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) : Prop :=
+  x.AllowsTermQ10 q10 μ ∨ x.AllowsTermQ10 q10 β ∨ x.AllowsTermQ10 q10 Λ ∨ x.AllowsTermQ10 q10 W2 ∨
+  x.AllowsTermQ10 q10 W4 ∨
+  x.AllowsTermQ10 q10 K1 ∨ x.AllowsTermQ10 q10 K2 ∨ x.AllowsTermQ10 q10 W1
+
+instance decidableIsPhenoConstrainedQ10 [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) :
+    Decidable (x.IsPhenoConstrainedQ10 q10) :=
+  inferInstanceAs (Decidable (x.AllowsTermQ10 q10 μ ∨ x.AllowsTermQ10 q10 β ∨ x.AllowsTermQ10 q10 Λ
+  ∨ x.AllowsTermQ10 q10 W2 ∨ x.AllowsTermQ10 q10 W4 ∨
+  x.AllowsTermQ10 q10 K1 ∨ x.AllowsTermQ10 q10 K2 ∨ x.AllowsTermQ10 q10 W1))
+
+lemma isPhenoConstrained_insertQ10_iff_isPhenoConstrainedQ10 [DecidableEq 𝓩] {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q10 : 𝓩} :
+    IsPhenoConstrained (qHd, qHu, Q5, insert q10 Q10) ↔
+    IsPhenoConstrainedQ10 (qHd, qHu, Q5, Q10) q10 ∨
+    IsPhenoConstrained (qHd, qHu, Q5, Q10) := by
+  constructor
+  · intro hr
+    rcases hr with hr | hr | hr | hr | hr | hr | hr | hr
+    all_goals
+      rw [allowsTerm_insertQ10_iff_allowsTermQ10] at hr
+      rcases hr with hr | hr
+      all_goals
+        simp_all [IsPhenoConstrainedQ10, IsPhenoConstrained]
+  · intro hr
+    rcases hr with hr | hr
+    · simp [IsPhenoConstrainedQ10] at hr
+      rcases hr with hr | hr | hr | hr | hr | hr | hr | hr
+      all_goals
+        have hr' := allowsTerm_insertQ10_of_allowsTermQ10 _ hr
+        simp_all [IsPhenoConstrained]
+    · apply isPhenoConstrained_mono _ hr
+      simp [subset_def]
 
 /-!
 

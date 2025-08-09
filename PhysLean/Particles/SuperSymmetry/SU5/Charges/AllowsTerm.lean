@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
+import Mathlib.Tactic.FinCases
 /-!
 
 # Charges allowing terms
@@ -328,6 +329,573 @@ lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
   use allowsTermForm a b c T
   simp_all
   exact allowsTermForm_card_le_degree
+
+/-!
+
+## Insertion of Q5
+
+-/
+
+/-- The proposition for which says, given a charge `x` adding a charge `q5` permits the
+  existence of a potential term `T` due to the addition of that charge. -/
+def AllowsTermQ5 [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) (T : PotentialTerm) : Prop :=
+  match T with
+  | .μ => false
+  | .β =>
+    match x with
+    | (_, some qHu, _, _) => q5 = qHu
+    | _ => false
+  | .Λ => (0 : 𝓩) ∈ ((insert q5 x.2.2.1).product x.2.2.2).val.map (fun (q1, q2) => (q1 + q5 + q2))
+  | .W4 =>
+    match x with
+    | (some qHd, some qHu, _, _) => q5 + qHd - qHu - qHu = 0
+    | _ => false
+  | .K1 => (0 : 𝓩) ∈ (x.2.2.2.product x.2.2.2).val.map (fun (y, z) => -q5 + y + z)
+  | .W1 => (0 : 𝓩) ∈ (x.2.2.2.product (x.2.2.2.product x.2.2.2)).val.map
+    (fun (q1, q2, q3) => q5 + q1 + q2 + q3)
+  | .W2 => false
+  | .bottomYukawa =>
+    match x with
+    | (none, _, _, _) => false
+    | (some qHd, _, _, _) => (0 : 𝓩) ∈ x.2.2.2.val.map (fun y => y + q5 + qHd)
+  | .topYukawa => false
+  | .K2 => false
+  | .W3 =>
+    match x with
+    | (_, some qHu, _, _) =>
+      (0 : 𝓩) ∈ (insert q5 x.2.2.1).val.map (fun y => y + q5 - qHu - qHu)
+    | _ => false
+
+instance [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) (T : PotentialTerm) :
+    Decidable (AllowsTermQ5 x q5 T) :=
+  match T with
+  | .μ => isFalse fun h => by simp [AllowsTermQ5] at h
+  | .β =>
+    match x with
+    | (_, some qHu, _, _) => decidable_of_iff (q5 = qHu) (by simp [AllowsTermQ5])
+    | (_, none, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+  | .Λ =>
+    decidable_of_iff ((0 : 𝓩) ∈ ((insert q5 x.2.2.1).product x.2.2.2).val.map
+      (fun (q1, q2) => (q1 + q5 + q2))) (by simp [AllowsTermQ5])
+  | .W4 =>
+    match x with
+    | (some qHd, some qHu, _, _) => decidable_of_iff (q5 + qHd - qHu - qHu = 0)
+      (by simp [AllowsTermQ5])
+    | (some qHd, none, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+  | .K1 =>
+    decidable_of_iff ((0 : 𝓩) ∈ (x.2.2.2.product x.2.2.2).val.map (fun (y, z) => -q5 + y + z))
+      (by simp [AllowsTermQ5])
+  | .W1 =>
+    decidable_of_iff ((0 : 𝓩) ∈ (x.2.2.2.product (x.2.2.2.product x.2.2.2)).val.map
+    (fun (q1, q2, q3) => q5 + q1 + q2 + q3)) (by rfl)
+  | .W2 => isFalse fun h => by simp [AllowsTermQ5] at h
+  | .bottomYukawa =>
+    match x with
+    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+    | (some qHd, _, _, Q10) => decidable_of_iff ((0 : 𝓩) ∈ Q10.val.map (fun y => y + q5 + qHd))
+      (by simp [AllowsTermQ5])
+  | .topYukawa => isFalse fun h => by simp [AllowsTermQ5] at h
+  | .K2 => isFalse fun h => by simp [AllowsTermQ5] at h
+  | .W3 =>
+    match x with
+    | (_, some qHu, Q5, _) => decidable_of_iff
+      ((0 : 𝓩) ∈ (insert q5 Q5).val.map (fun y => y + q5 - qHu - qHu))
+      (by simp [AllowsTermQ5])
+    | (_, none, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+
+lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm)
+    (h : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) T) :
+    AllowsTermQ5 (qHd, qHu, Q5, Q10) q5 T ∨
+    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+  rcases T
+  all_goals
+    simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm', AllowsTermQ5] at h ⊢
+  · exact h
+  · match qHu with
+    | some qHu =>
+      simp at h
+      simp
+      convert h using 1
+      rw [neg_add_eq_zero, eq_comm]
+    | none => simp at h
+  · simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
+    simp at h1 h2
+    rcases h1 with h1 | h1
+    · subst h1
+      left
+      rcases h2 with h2 | h2
+      · use a2, a3
+        simp_all
+      · use a2, a3
+        simp_all
+        rw [← hsum]
+        abel
+    · rcases h2 with h2 | h2
+      · left
+        use a1, a3
+        simp_all
+      · right
+        use a1, a2, a3
+        simp_all
+  · simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, a3, a4, ⟨h1, h2, h3, h4⟩, hsum⟩ := h
+    simp at h1
+    rcases h1 with h1 | h1
+    · left
+      use a2, a3, a4
+      simp_all
+    · right
+      use a1, a2, a3, a4
+      simp_all
+  · simp_all
+  · match qHu with
+    | some qHu =>
+      simp at h
+      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+      obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
+      simp at h1 h2
+      rcases h1 with h1 | h1
+      · subst h1
+        left
+        rcases h2 with h2 | h2
+        · left
+          subst h2
+          rw [← hsum]
+          abel
+        · right
+          use a2
+          simp_all
+          rw [← hsum]
+          abel
+      · rcases h2 with h2 | h2
+        · left
+          right
+          use a1
+          simp_all
+          rw [← hsum]
+          abel
+        · right
+          rw [@Multiset.mem_map]
+          simp
+          use a1, a2
+    | none => simp at h
+  · match qHd, qHu with
+    | some qHd, some qHu =>
+      simp_all
+      convert h using 1
+      constructor
+      all_goals
+      · intro h
+        rw [← h]
+        abel
+    | none, _ => simp at h
+    | some x, none => simp at h
+  · simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
+    simp at h1
+    rcases h1 with h1 | h1
+    · left
+      use a2, a3
+      simp_all
+    · right
+      use a1, a2, a3
+      simp_all
+  · simp_all
+  · simp_all
+  · match qHd with
+    | none => simp at h
+    | some qHd =>
+      simp_all
+      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+      obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
+      simp at h1
+      rcases h1 with h1 | h1
+      · subst h1
+        left
+        use a2
+        simp_all
+        rw [← hsum]
+        abel
+      · right
+        use a1, a2
+        simp_all
+
+lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm)
+    (h : AllowsTermQ5 (qHd, qHu, Q5, Q10) q5 T) :
+    AllowsTerm (qHd, qHu, insert q5 Q5, Q10) T := by
+  rcases T
+  all_goals
+    simp [AllowsTermQ5] at h
+  all_goals
+    simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm']
+    try simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+  · match qHu with
+    | some qHu =>
+      simp at h
+      subst h
+      simp
+    | none => simp at h
+  · obtain ⟨q1, q2, ⟨h1, h2⟩, hsum⟩ := h
+    simp at h1
+    use q1, q5, q2
+    simp_all
+  · obtain ⟨q1, q2, q3, h3, hsum⟩ := h
+    use q5, q1, q2, q3
+    simp_all
+  · match qHu with
+    | some qHu =>
+      simp [Finset.eq_empty_iff_forall_notMem] at h
+      simp
+      by_cases h' : q5 + q5 - qHu - qHu = 0
+      · use q5, q5
+        simp
+        rw [← h']
+        abel
+      · simp_all
+        obtain ⟨q1, hsum⟩ := h
+        use q1, q5
+        simp_all
+        rw [← hsum.2]
+        abel
+    | none => simp at h
+  · match qHd, qHu with
+    | some qHd, some qHu =>
+      simp_all
+      left
+      rw [← h]
+      abel
+    | none, _ => simp at h
+    | some x, none => simp at h
+  · obtain ⟨q1, q2, ⟨h1, h2⟩, hsum⟩ := h
+    use q5, q1, q2
+    simp_all
+  · match qHd with
+    | none => simp at h
+    | some qHd =>
+      simp [Finset.eq_empty_iff_forall_notMem] at h
+      obtain ⟨q1, h1, hsum⟩ := h
+      simp
+      use q5, q1
+      simp_all
+      rw [← hsum]
+      abel
+
+lemma allowsTerm_insertQ5_iff_allowsTermQ5 {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm) :
+    AllowsTerm (qHd, qHu, insert q5 Q5, Q10) T ↔
+    AllowsTermQ5 (qHd, qHu, Q5, Q10) q5 T ∨
+    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+  constructor
+  · exact allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 T
+  · intro h
+    rcases h with h | h
+    · exact allowsTerm_insertQ5_of_allowsTermQ5 T h
+    · apply allowsTerm_mono _ h
+      simp [subset_def]
+
+/-!
+
+## AllowsTermQ10
+-/
+
+/-- The proposition for which says, given a charge `x` adding a charge `q5` permits the
+  existence of a potential term `T` due to the addition of that charge. -/
+def AllowsTermQ10 [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) (T : PotentialTerm) : Prop :=
+  match T with
+  | .μ => false
+  | .β => false
+  | .Λ => (0 : 𝓩) ∈ (x.2.2.1.product x.2.2.1).val.map (fun (y, z) => y + z + q10)
+  | .W4 => false
+  | .K1 => (0 : 𝓩) ∈ (x.2.2.1.product (insert q10 x.2.2.2)).val.map (fun (q5, q2) => -q5 + q2+ q10)
+  | .W1 => (0 : 𝓩) ∈ (x.2.2.1.product ((insert q10 x.2.2.2).product (insert q10 x.2.2.2))).val.map
+    (fun (q5, q2, q3) => q5 + q2 + q3 + q10)
+  | .W2 =>
+    match x with
+    | (some qHd, _, _, _) => (0 : 𝓩) ∈
+      (((insert q10 x.2.2.2).product (insert q10 x.2.2.2))).val.map
+      (fun (q2, q3) => qHd + q2 + q3 + q10)
+    | _ => false
+  | .bottomYukawa =>
+    match x with
+    | (none, _, _, _) => false
+    | (some qHd, _, _, _) => (0 : 𝓩) ∈ x.2.2.1.val.map (fun y => q10 + y + qHd)
+  | .topYukawa =>
+    match x with
+    | (_, some qHu, _, _) => (0 : 𝓩) ∈ (insert q10 x.2.2.2).val.map (fun y => q10 + y - qHu)
+    | _ => false
+  | .K2 =>
+    match x with
+    | (some qHd, some qHu, _, _) => qHd + qHu + q10 = 0
+    | _ => false
+  | .W3 => false
+
+instance [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) (T : PotentialTerm) :
+    Decidable (AllowsTermQ10 x q10 T) :=
+  match T with
+  | .μ => isFalse fun h => by simp [AllowsTermQ10] at h
+  | .β => isFalse fun h => by simp [AllowsTermQ10] at h
+  | .Λ =>
+    decidable_of_iff ((0 : 𝓩) ∈ (x.2.2.1.product x.2.2.1).val.map (fun (y, z) => y + z + q10))
+      (by simp [AllowsTermQ10])
+  | .W4 => isFalse fun h => by simp [AllowsTermQ10] at h
+  | .K1 =>
+    decidable_of_iff ((0 : 𝓩) ∈
+      (x.2.2.1.product (insert q10 x.2.2.2)).val.map (fun (q5, q2) => -q5 + q2 + q10))
+      (by simp [AllowsTermQ10])
+  | .W1 =>
+    decidable_of_iff ((0 : 𝓩) ∈
+    (x.2.2.1.product ((insert q10 x.2.2.2).product (insert q10 x.2.2.2))).val.map
+    (fun (q5, q2, q3) => q5 + q2 + q3 + q10)) (by rfl)
+  | .W2 =>
+    match x with
+    | (some qHd, _, _, Q10) => decidable_of_iff ((0 : 𝓩) ∈
+      (((insert q10 Q10).product (insert q10 Q10))).val.map
+      (fun (q2, q3) => qHd + q2 + q3 + q10)) (by simp [AllowsTermQ10])
+    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+  | .bottomYukawa =>
+    match x with
+    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+    | (some qHd, _, Q5, _) => decidable_of_iff ((0 : 𝓩) ∈ Q5.val.map (fun y => q10 + y + qHd))
+      (by simp [AllowsTermQ10])
+  | .topYukawa =>
+    match x with
+    | (_, some qHu, _, Q10) => decidable_of_iff
+      ((0 : 𝓩) ∈ (insert q10 Q10).val.map (fun y => q10 + y - qHu))
+      (by simp [AllowsTermQ10])
+    | (_, none, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+  | .K2 =>
+    match x with
+    | (some qHd, some qHu, _, _) => decidable_of_iff (qHd + qHu + q10 = 0) (by simp [AllowsTermQ10])
+    | (some qHd, none, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+  | .W3 => isFalse fun h => by simp [AllowsTermQ10] at h
+
+lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm)
+    (h : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) T) :
+    AllowsTermQ10 (qHd, qHu, Q5, Q10) q10 T ∨
+    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+  rcases T
+  all_goals
+    simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm', AllowsTermQ10] at h ⊢
+  · simp_all
+  · simp_all
+  · simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
+    simp at h3
+    rcases h3 with h3 | h3
+    · subst h3
+      left
+      use a1, a2
+    · right
+      use a1, a2, a3
+      simp_all
+  · simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, a3, a4, ⟨h1, h2, h3, h4⟩, hsum⟩ := h
+    simp at h2
+    rcases h2 with h2 | h2
+    · subst h2
+      left
+      use a1, a3, a4
+      simp_all
+      rw [← hsum]
+      abel
+    simp at h3
+    rcases h3 with h3 | h3
+    · subst h3
+      left
+      use a1, a2, a4
+      simp_all
+      rw [← hsum]
+      abel
+    simp at h4
+    rcases h4 with h4 | h4
+    · subst h4
+      left
+      use a1, a2, a3
+      simp_all
+    right
+    use a1, a2, a3, a4
+    simp_all
+  · match qHd with
+    | none => simp at h
+    | some qHd =>
+    simp_all
+    simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
+    simp at h1
+    rcases h1 with h1 | h1
+    · subst h1
+      left
+      use a2, a3
+      simp_all
+      rw [← hsum]
+      abel
+    simp at h2
+    rcases h2 with h2 | h2
+    · subst h2
+      left
+      use a1, a3
+      simp_all
+      rw [← hsum]
+      abel
+    simp at h3
+    rcases h3 with h3 | h3
+    · subst h3
+      left
+      use a1, a2
+      simp_all
+    right
+    use a1, a2, a3
+    simp_all
+  · match qHu with
+    | none => simp at h
+    | some qHu => simp_all
+  · match qHd, qHu with
+    | none, _ => simp at h
+    | some x, none => simp at h
+    | some qHd, some qHu => simp_all
+  · simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
+    simp at h2
+    rcases h2 with h2 | h2
+    · left
+      use a1, a3
+      simp_all
+      rw [← hsum]
+      abel
+    simp at h3
+    rcases h3 with h3 | h3
+    · left
+      use a1, a2
+      simp_all
+    right
+    use a1, a2, a3
+    simp_all
+  · match qHd, qHu with
+    | none, _ => simp at h
+    | some x, none => simp at h
+    | some qHd, some qHu => simp_all
+  · match qHu with
+    | none => simp at h
+    | some qHu =>
+    simp at h
+    simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
+    simp at h1
+    rcases h1 with h1 | h1
+    · subst h1
+      left
+      simp at h2
+      rcases h2 with h2 | h2
+      · subst h2
+        left
+        rw [← hsum]
+        abel
+      · right
+        use a2
+        simp_all
+        rw [← hsum]
+        abel
+    simp at h2
+    rcases h2 with h2 | h2
+    · subst h2
+      left; right
+      use a1
+      simp_all
+      rw [← hsum]
+      abel
+    · right
+      simp
+      use a1, a2
+  · match qHd with
+    | none => simp at h
+    | some qHd =>
+    simp_all
+    simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+    obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
+    simp at h2
+    rcases h2 with h2 | h2
+    · subst h2
+      left
+      use a1
+      simp_all
+      rw [← hsum]
+      abel
+    right
+    use a1, a2
+    simp_all
+
+lemma allowsTerm_insertQ10_of_allowsTermQ10 {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm)
+    (h : AllowsTermQ10 (qHd, qHu, Q5, Q10) q10 T) :
+    AllowsTerm (qHd, qHu, Q5, insert q10 Q10) T := by
+  rcases T
+  all_goals
+    simp [AllowsTermQ10] at h
+  all_goals
+    simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm']
+    try simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h ⊢
+  · obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
+    use a1, a2, q10
+    simp_all
+  · obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
+    use a1, a2, a3, q10
+    simp_all
+  · match qHd with
+    | none => simp at h
+    | some qHd =>
+      simp at h ⊢
+      obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
+      use a1, a2, q10
+      simp_all
+  · obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
+    use a1, a2, q10
+    simp_all
+  · match qHd, qHu with
+    | none, _ => simp at h
+    | some x, none => simp at h
+    | some qHd, some qHu => simp_all
+  · match qHu with
+    | none => simp at h
+    | some qHu =>
+      simp at h ⊢
+      rcases h with h | h
+      · use q10, q10
+        rw [← h]
+        simp
+        abel
+      · obtain ⟨a1, h1, hsum⟩ := h
+        use a1, q10
+        simp_all
+        rw [← hsum]
+        abel
+  · match qHd with
+    | none => simp at h
+    | some qHd =>
+      simp at h ⊢
+      obtain ⟨a1, h1, hsum⟩ := h
+      use a1, q10
+      simp_all
+      rw [← hsum]
+      abel
+
+lemma allowsTerm_insertQ10_iff_allowsTermQ10 {qHd qHu : Option 𝓩}
+    {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm) :
+    AllowsTerm (qHd, qHu, Q5, insert q10 Q10) T ↔
+    AllowsTermQ10 (qHd, qHu, Q5, Q10) q10 T ∨
+    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+  constructor
+  · exact allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 T
+  · intro h
+    rcases h with h | h
+    · exact allowsTerm_insertQ10_of_allowsTermQ10 T h
+    · apply allowsTerm_mono _ h
+      simp [subset_def]
 
 end Charges
 

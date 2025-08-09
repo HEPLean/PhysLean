@@ -256,7 +256,6 @@ lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
     · rw [card_of_mem_minimalSuperSet z hz]
       omega
 
-
 /-!
 
 ## Inserting charges and minimal super sets
