@@ -193,7 +193,7 @@ lemma viableCompletions_complete_of_same :
     ∀ y ∈ completions same.allowedBarFiveCharges same.allowedTenCharges x, ¬ y.IsPhenoConstrained
     ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1
     → y ∈ viableCompletions .same := by
-  decide
+  decide +kernel
 
 lemma viableCompletions_complete_of_nearestNeighbor :
     ∀ x ∈ (minimallyAllowsTermsOfFinset
@@ -204,7 +204,7 @@ lemma viableCompletions_complete_of_nearestNeighbor :
       nearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
       ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1
     → y ∈ viableCompletions .nearestNeighbor := by
-  decide
+  decide +kernel
 
 lemma viableCompletions_complete_of_nextToNearestNeighbor :
     ∀ x ∈ (minimallyAllowsTermsOfFinset
@@ -215,7 +215,7 @@ lemma viableCompletions_complete_of_nextToNearestNeighbor :
       nextToNearestNeighbor.allowedTenCharges x, ¬ y.IsPhenoConstrained
       ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1
     → y ∈ viableCompletions .nextToNearestNeighbor := by
-  decide
+  decide +kernel
 
 lemma viableCompletions_complete {I : CodimensionOneConfig} (x : Charges)
     (hx : x ∈ (minimallyAllowsTermsOfFinset I.allowedBarFiveCharges
