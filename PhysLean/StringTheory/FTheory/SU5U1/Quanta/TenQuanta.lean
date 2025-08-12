@@ -7,14 +7,31 @@ import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Lemmas
 /-!
 
-# Quanta of representations
+# Quanta of 10d representations
 
-In SU(5) × U(1) F-theory theory, each 5-bar and 10d representation
-carries with it the quantum numbers of their U(1) charges and their fluxes.
+The 10d representations of the `SU(5)×U(1)` carry
+the quantum numbers of their U(1) charges and their fluxes.
 
 In this module we define the data structure for these quanta and
 properties thereof.
 
+## Key definitions
+
+- `TenQuanta` is the type of quanta of 10d representations.
+- `TenQuanta.toFluxesTen` is the underlying `FluxesTen` of a `TenQuanta`.
+- `TenQuanta.toCharges` is the underlying Multiset charges of a `TenQuanta`.
+- `TenQuanta.reduce` is the reduction of a `TenQuanta` which adds together
+  all the fluxes corresponding to the same charge (i.e. representation).
+- `TenQuanta.anomalyCoefficent` is the anomaly coefficent associated with a `TenQuanta`.
+- `TenQuanta.ofChargesExpand` is the `TenQuanta` with fluxes
+  `{(1, 0), (1, 0), (1, 0)}` or `{(1, 1), (1, -1), (1, 0)}` and finite set of charges equal to a
+  given `c`.
+
+## Key theorems
+
+- `mem_ofChargesExpand_map_reduce_iff` states that a `TenQuanta` is in the
+  image of  `ofChargesExpand c` under `reduce` if and only if it is a `TenQuanta` with
+  charges equal to `c` and fluxes which have no exotics or zero.
 -/
 namespace FTheory
 
@@ -33,7 +50,6 @@ def toFluxesTen (x : TenQuanta) : FluxesTen := x.map Prod.snd
 
 /-- The underlying Multiset charges from a `TenQuanta`. -/
 def toCharges (x : TenQuanta) : Multiset ℤ := x.map Prod.fst
-
 
 /-!
 
@@ -84,11 +100,11 @@ lemma mem_reduce_iff (x : TenQuanta) (p : ℤ × ℤ × ℤ) :
 
 lemma reduce_filter (x : TenQuanta) (q : ℤ) (h : q ∈ x.toCharges) :
     x.reduce.filter (fun f => f.1 = q) =
-     {(q, ((x.filter (fun f => f.1 = q)).map (fun y => y.2)).sum)} := by
+    {(q, ((x.filter (fun f => f.1 = q)).map (fun y => y.2)).sum)} := by
   simp [reduce]
   rw [Multiset.filter_map]
   simp
-  have hx : (Multiset.filter (fun x => x = q) x.toCharges.dedup)  = {q} := by
+  have hx : (Multiset.filter (fun x => x = q) x.toCharges.dedup) = {q} := by
     refine (Multiset.Nodup.ext ?_ ?_).mpr ?_
     · refine Multiset.Nodup.filter (fun x => x = q) ?_
       exact Multiset.nodup_dedup x.toCharges
@@ -118,15 +134,15 @@ lemma reduce_reduce (x : TenQuanta) :
   simp
   exact hp
 
-lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : TenQuanta) (f : ℤ → ℤ × ℤ →+ M)  :
+lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : TenQuanta) (f : ℤ → ℤ × ℤ →+ M) :
     (x.reduce.map fun (q, x) => f q x).sum = (x.map fun (q, x) => f q x).sum := by
   calc _
-      _ =  ∑ q ∈ x.toCharges.toFinset,
+      _ = ∑ q ∈ x.toCharges.toFinset,
           f q ((x.filter (fun f => f.1 = q)).map (fun y => y.2)).sum := by
         rw [reduce]
         simp [Finset.sum]
       _ = ∑ q ∈ x.toCharges.toFinset,
-          (((x.filter (fun f => f.1 = q)).map (fun y => f q y.2))).sum  := by
+          (((x.filter (fun f => f.1 = q)).map (fun y => f q y.2))).sum := by
         congr
         funext q5
         rw [AddMonoidHom.map_multiset_sum, Multiset.map_map]
@@ -158,7 +174,7 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : TenQuanta) (f : ℤ
         · have h_mem_dedup : p.1 ∈ (x.map Prod.fst).dedup := by rwa [Multiset.mem_dedup]
           rw [Multiset.sum_map_eq_nsmul_single p.1]
           simp
-          have h_count_one : Multiset.count p.1 (Multiset.map Prod.fst x).dedup  = 1 := by
+          have h_count_one : Multiset.count p.1 (Multiset.map Prod.fst x).dedup = 1 := by
             refine Multiset.count_eq_one_of_mem ?_ h_mem_dedup
             exact Multiset.nodup_dedup (Multiset.map Prod.fst x)
           simp [h_count_one]
@@ -192,12 +208,11 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : TenQuanta) (f : ℤ
 def anomalyCoefficent (F : TenQuanta) : ℤ × ℤ :=
   ((F.map fun x => x.1 * x.2.2).sum, 3 * (F.map fun x => x.1 * x.1 * x.2.2).sum)
 
-
 lemma anomalyCoefficent_of_reduce (F : TenQuanta) :
     F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
   simp [anomalyCoefficent]
   constructor
-  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5  => {
+  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5 => {
       toFun := fun x => q5 * x.2
       map_zero' := by simp
       map_add' := by
@@ -205,7 +220,7 @@ lemma anomalyCoefficent_of_reduce (F : TenQuanta) :
         simp [add_mul, mul_add] }
     have h1 := reduce_sum_eq_sum_toCharges F f
     simpa [f] using h1
-  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5  => {
+  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5 => {
       toFun := fun x => q5 * q5 * x.2
       map_zero' := by simp
       map_add' := by
@@ -217,11 +232,16 @@ lemma anomalyCoefficent_of_reduce (F : TenQuanta) :
 /-!
 
 ## toChargesExpand
+
 -/
 
 open SuperSymmetry.SU5.Charges
-def ofChargesExpand (c : Finset ℤ) :  Multiset TenQuanta :=
-  /- The {(1, 0), (1, 0), (1, 0)} case.-/
+
+/-- Given a finite set of charges `c` the `TenQuanta`
+  with fluxes `{(1, 0), (1, 0), (1, 0)}` and `{(1, 1), (1, -1), (1, 0)}`
+  and finite set of charges equal to `c`.  -/
+def ofChargesExpand (c : Finset ℤ) : Multiset TenQuanta :=
+  /- The {(1, 0), (1, 0), (1, 0)} case. -/
   /- The multisets of cardinality 3 containing 3 elements of `c`. -/
   let S10 : Multiset (Multiset ℤ) := toMultisetsThree c
   let F1 : Multiset TenQuanta :=
@@ -235,7 +255,7 @@ def ofChargesExpand (c : Finset ℤ) :  Multiset TenQuanta :=
 lemma toFluxesFive_of_mem_ofChargesExpand (c : Finset ℤ)
     {x : TenQuanta} (h : x ∈ ofChargesExpand c) :
     x.toFluxesTen = {(1, 0), (1, 0), (1, 0)}
-    ∨ x.toFluxesTen =  {(1, 1), (1, -1), (1, 0)}:= by
+    ∨ x.toFluxesTen = {(1, 1), (1, -1), (1, 0)}:= by
   simp [ofChargesExpand] at h
   rcases h with h | h
   · obtain ⟨⟨s, h, rfl⟩, h'⟩ := h
@@ -245,7 +265,6 @@ lemma toFluxesFive_of_mem_ofChargesExpand (c : Finset ℤ)
     decide
   · obtain ⟨⟨q1, q2, q3, h, rfl⟩, h'⟩ := h
     simp [toFluxesTen]
-
 
 lemma toCharges_of_mem_ofChargesExpand (c : Finset ℤ)
     {x : TenQuanta} (h : x ∈ ofChargesExpand c) :
@@ -272,11 +291,10 @@ lemma toCharges_of_mem_ofChargesExpand (c : Finset ℤ)
     · intro hr
       simp at hr
       simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h
-      rcases hr with  rfl | rfl | rfl
+      rcases hr with rfl | rfl | rfl
       · exact h.1
       · exact h.2.1
       · exact h.2.2
-
 
 lemma mem_ofChargesExpand_of_toCharges_toFluxesTen (c : Finset ℤ) {x : TenQuanta}
     (h : x.toCharges.toFinset = c) (h2 : x.toFluxesTen =
@@ -376,7 +394,6 @@ lemma mem_ofChargesExpand_iff (c : Finset ℤ) {x : TenQuanta} :
     obtain ⟨h1, h2⟩ := h
     exact mem_ofChargesExpand_of_toCharges_toFluxesTen c h1 h2
 
-
 lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ)
     (hc : F.toCharges.toFinset = c)
     (h1 : F.toFluxesTen.NoExotics) (h2 : F.toFluxesTen.HasNoZero) :
@@ -400,12 +417,12 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
       · simp [toFluxesTen]
       rw [hf]
       decide
-    rw [Multiset.card_eq_two]  at F_card
+    rw [Multiset.card_eq_two] at F_card
     obtain ⟨⟨q1, a1⟩, ⟨q2, a2⟩, rfl⟩ := F_card
     simp [toFluxesTen] at hf
     rw [Multiset.cons_eq_cons] at hf
     simp at hf
-    rcases hf with ⟨rfl, rfl⟩ |  ⟨hf, ⟨rfl, rfl⟩⟩
+    rcases hf with ⟨rfl, rfl⟩ | ⟨hf, ⟨rfl, rfl⟩⟩
     · use {(q1, 1, 0), (q2, 1, 0), (q2, 1, 0)}
       simp [mem_ofChargesExpand_iff, toCharges, toFluxesTen, ← hc, toCharges]
       simp [reduce, toCharges]
@@ -424,7 +441,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
           simp
         rw [h1, h2]
         simp
-        have hq2q1 :¬  q2 = q1 := by omega
+        have hq2q1 :¬ q2 = q1 := by omega
         congr 2
         · simp [@Multiset.filter_singleton, hq1q2, hq2q1]
         · simp [@Multiset.filter_singleton, hq1q2, hq2q1]
@@ -438,12 +455,12 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
         · subst hq1q2
           simp [@Multiset.filter_singleton]
         · have h1 : (q1 ::ₘ {q2}).dedup = {q1, q2} := by
-             refine Multiset.Nodup.dedup ?_
-             refine Multiset.nodup_cons.mpr ?_
-             simpa using hq1q2
+            refine Multiset.Nodup.dedup ?_
+            refine Multiset.nodup_cons.mpr ?_
+            simpa using hq1q2
           rw [h1]
           simp
-          have hq2q1 :¬  q2 = q1 := by omega
+          have hq2q1 :¬ q2 = q1 := by omega
           simp [@Multiset.filter_singleton, hq1q2, hq2q1]
   · have F_card : F.card = 2 := by
       trans F.toFluxesTen.card
@@ -455,7 +472,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
     simp [toFluxesTen] at hf
     rw [Multiset.cons_eq_cons] at hf
     simp at hf
-    rcases hf with ⟨rfl, rfl⟩ |  ⟨hf, ⟨rfl, rfl⟩⟩
+    rcases hf with ⟨rfl, rfl⟩ | ⟨hf, ⟨rfl, rfl⟩⟩
     · use {(q2, 1, 1), (q1, 1, -1), (q2, 1, 0)}
       simp [mem_ofChargesExpand_iff, toCharges, toFluxesTen, ← hc, toCharges]
       simp [reduce, toCharges]
@@ -466,7 +483,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
         refine Multiset.Nodup.dedup (Multiset.nodup_cons.mpr ?_)
         simpa using hq1q2
       rw [h1]
-      have hq2q1 :¬  q2 = q1 := by omega
+      have hq2q1 :¬ q2 = q1 := by omega
       simp [@Multiset.filter_singleton, hq1q2, hq2q1]
     · use {(q1, 1, 1), (q2, 1, -1), (q1, 1, 0)}
       simp [mem_ofChargesExpand_iff, toCharges, toFluxesTen, ← hc, toCharges]
@@ -478,7 +495,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
         refine Multiset.Nodup.dedup (Multiset.nodup_cons.mpr ?_)
         simpa using hq1q2
       rw [h1]
-      have hq2q1 :¬  q2 = q1 := by omega
+      have hq2q1 :¬ q2 = q1 := by omega
       simp [Multiset.filter_singleton, hq1q2, hq2q1, Finset.pair_comm, Multiset.cons_eq_cons]
   · have F_card : F.card = 2 := by
       trans F.toFluxesTen.card
@@ -490,7 +507,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
     simp [toFluxesTen] at hf
     rw [Multiset.cons_eq_cons] at hf
     simp at hf
-    rcases hf with ⟨rfl, rfl⟩ |  ⟨hf, ⟨rfl, rfl⟩⟩
+    rcases hf with ⟨rfl, rfl⟩ | ⟨hf, ⟨rfl, rfl⟩⟩
     · use {(q1, 1, 1), (q2, 1, -1), (q2, 1, 0)}
       simp [mem_ofChargesExpand_iff, toCharges, toFluxesTen, ← hc, toCharges]
       simp [reduce, toCharges]
@@ -501,7 +518,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
         refine Multiset.Nodup.dedup (Multiset.nodup_cons.mpr ?_)
         simpa using hq1q2
       rw [h1]
-      have hq2q1 :¬  q2 = q1 := by omega
+      have hq2q1 :¬ q2 = q1 := by omega
       simp [@Multiset.filter_singleton, hq1q2, hq2q1]
     · use {(q2, 1, 1), (q1, 1, -1), (q1, 1, 0)}
       simp [mem_ofChargesExpand_iff, toCharges, toFluxesTen, ← hc, toCharges]
@@ -513,7 +530,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
         refine Multiset.Nodup.dedup (Multiset.nodup_cons.mpr ?_)
         simpa using hq1q2
       rw [h1]
-      have hq2q1 :¬  q2 = q1 := by omega
+      have hq2q1 :¬ q2 = q1 := by omega
       simp [Multiset.filter_singleton, hq1q2, hq2q1, Finset.pair_comm, Multiset.cons_eq_cons]
   · have F_card : F.card = 1 := by
       trans F.toFluxesTen.card
@@ -527,7 +544,6 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta) (c : Finset ℤ
     use {(q1, 1, 0), (q1, 1, 0), (q1, 1, 0)}
     simp [mem_ofChargesExpand_iff, toCharges, toFluxesTen, ← hc, toCharges]
     simp [reduce, toCharges, Multiset.filter_singleton]
-
 
 lemma reduce_hasNoZeros_of_mem_ofChargesExpand (c : Finset ℤ) (F : TenQuanta)
     (h : F ∈ ofChargesExpand c) :
@@ -544,7 +560,7 @@ lemma reduce_hasNoZeros_of_mem_ofChargesExpand (c : Finset ℤ) (F : TenQuanta)
     simp [toCharges] at hx
     obtain ⟨a, b, h⟩ := hx
     use a, b
-  generalize (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = x) F))  = s at *
+  generalize (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = x) F)) = s at *
   rw [mem_ofChargesExpand_iff] at h
   rcases h with ⟨h1, h | h⟩
   all_goals
@@ -554,12 +570,11 @@ lemma reduce_hasNoZeros_of_mem_ofChargesExpand (c : Finset ℤ) (F : TenQuanta)
     all_goals
     · decide
 
-
 lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : TenQuanta)
     (h : F ∈ ofChargesExpand c) :
     F.reduce.toFluxesTen.NoExotics := by
   simp [FluxesTen.NoExotics]
-  have h1 :  (Multiset.filter (fun x => x < 0)
+  have h1 : (Multiset.filter (fun x => x < 0)
       (Multiset.map (fun f => f.1 + f.2) F.reduce.toFluxesTen)) = ∅ := by
     simp
     rw [@Multiset.filter_eq_nil]
@@ -595,7 +610,7 @@ lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : TenQuanta)
       use (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = q) F))
       simp_all [toFluxesTen]
     have ha : a = s.sum.1 := by
-      rw [ ← h'.2]
+      rw [← h'.2]
     rw [ha]
     have h2 := h'.1
     rw [mem_ofChargesExpand_iff] at h
@@ -606,8 +621,8 @@ lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : TenQuanta)
       all_goals
       · decide
 
-  have h3 : (Multiset.filter (fun x => x < 0) (Multiset.map (fun f => f.1 - f.2) F.reduce.toFluxesTen))
-      = ∅ := by
+  have h3 : (Multiset.filter (fun x => x < 0)
+    (Multiset.map (fun f => f.1 - f.2) F.reduce.toFluxesTen)) = ∅ := by
     simp
     rw [@Multiset.filter_eq_nil]
     intro a ha
@@ -640,7 +655,7 @@ lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : TenQuanta)
       change (Multiset.map (fun (q5, x) => f q5 x) F.reduce).sum = _
       rw [reduce_sum_eq_sum_toCharges F]
       simp [f, toFluxesTen]
-  have sum_2 :  (Multiset.map Prod.snd F.reduce.toFluxesTen).sum
+  have sum_2 : (Multiset.map Prod.snd F.reduce.toFluxesTen).sum
       = (Multiset.map Prod.snd F.toFluxesTen).sum := by
       rw [toFluxesTen, Multiset.map_map]
       let f : ℤ → ℤ × ℤ →+ ℤ := fun q5 => {
@@ -694,7 +709,6 @@ lemma reduce_mem_elemsNoExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : Ten
   · exact reduce_noExotics_of_mem_ofChargesExpand c F h
   · exact reduce_hasNoZeros_of_mem_ofChargesExpand c F h
 
-
 lemma mem_ofChargesExpand_map_reduce_iff (c : Finset ℤ) (S : TenQuanta) :
     S ∈ (ofChargesExpand c).map reduce ↔ S.toFluxesTen ∈ FluxesTen.elemsNoExotics
       ∧ S.toCharges.toFinset = c ∧ S.reduce = S := by
@@ -717,7 +731,6 @@ lemma mem_ofChargesExpand_map_reduce_iff (c : Finset ℤ) (S : TenQuanta) :
     · exact h.2.1
     · exact h1.1
     · exact h1.2
-
 
 end TenQuanta
 

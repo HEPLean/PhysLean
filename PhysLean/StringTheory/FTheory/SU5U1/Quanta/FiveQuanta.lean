@@ -7,14 +7,31 @@ import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Lemmas
 /-!
 
-# Quanta of representations
+# Quanta of 5-d representations
 
-In SU(5) × U(1) F-theory theory, each 5-bar and 10d representation
-carries with it the quantum numbers of their U(1) charges and their fluxes.
+The 5-bar representations of the `SU(5)×U(1)` carry
+the quantum numbers of their U(1) charges and their fluxes.
 
 In this module we define the data structure for these quanta and
 properties thereof.
 
+## Key definitions
+
+- `FiveQuanta` is the type of quanta of 5-bar representations.
+- `FiveQuanta.toFluxesFive` is the underlying `FluxesFive` of a `FiveQuanta`.
+- `FiveQuanta.toCharges` is the underlying Multiset charges of a `FiveQuanta`.
+- `FiveQuanta.reduce` is the reduction of a `FiveQuanta` which adds together
+  all the fluxes corresponding to the same charge (i.e. representation).
+- `FiveQuanta.anomalyCoefficent` is the anomaly coefficent associated with a `FiveQuanta`.
+- `FiveQuanta.ofChargesExpand` is the `FiveQuanta` with fluxes
+  `{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}` and finite set of charges equal to a given
+  `c`.
+
+## Key theorems
+
+- `mem_ofChargesExpand_map_reduce_iff` states that a `FiveQuanta` is in the
+  image of  `ofChargesExpand c` under `reduce` if and only if it is a `FiveQuanta` with
+  charges equal to `c` and fluxes which have no exotics or zero.
 -/
 namespace FTheory
 
@@ -83,11 +100,11 @@ lemma mem_reduce_iff (x : FiveQuanta) (p : ℤ × ℤ × ℤ) :
 
 lemma reduce_filter (x : FiveQuanta) (q : ℤ) (h : q ∈ x.toCharges) :
     x.reduce.filter (fun f => f.1 = q) =
-     {(q, ((x.filter (fun f => f.1 = q)).map (fun y => y.2)).sum)} := by
+    {(q, ((x.filter (fun f => f.1 = q)).map (fun y => y.2)).sum)} := by
   simp [reduce]
   rw [Multiset.filter_map]
   simp
-  have hx : (Multiset.filter (fun x => x = q) x.toCharges.dedup)  = {q} := by
+  have hx : (Multiset.filter (fun x => x = q) x.toCharges.dedup) = {q} := by
     refine (Multiset.Nodup.ext ?_ ?_).mpr ?_
     · refine Multiset.Nodup.filter (fun x => x = q) ?_
       exact Multiset.nodup_dedup x.toCharges
@@ -117,15 +134,15 @@ lemma reduce_reduce (x : FiveQuanta) :
   simp
   exact hp
 
-lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : FiveQuanta) (f : ℤ → ℤ × ℤ →+ M)  :
+lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : FiveQuanta) (f : ℤ → ℤ × ℤ →+ M) :
     (x.reduce.map fun (q5, x) => f q5 x).sum = (x.map fun (q5, x) => f q5 x).sum := by
   calc _
-      _ =  ∑ q5 ∈ x.toCharges.toFinset,
+      _ = ∑ q5 ∈ x.toCharges.toFinset,
           f q5 ((x.filter (fun f => f.1 = q5)).map (fun y => y.2)).sum := by
         rw [reduce]
         simp [Finset.sum]
       _ = ∑ q5 ∈ x.toCharges.toFinset,
-          (((x.filter (fun f => f.1 = q5)).map (fun y => f q5 y.2))).sum  := by
+          (((x.filter (fun f => f.1 = q5)).map (fun y => f q5 y.2))).sum := by
         congr
         funext q5
         rw [AddMonoidHom.map_multiset_sum, Multiset.map_map]
@@ -157,7 +174,7 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : FiveQuanta) (f : �
         · have h_mem_dedup : p.1 ∈ (x.map Prod.fst).dedup := by rwa [Multiset.mem_dedup]
           rw [Multiset.sum_map_eq_nsmul_single p.1]
           simp
-          have h_count_one : Multiset.count p.1 (Multiset.map Prod.fst x).dedup  = 1 := by
+          have h_count_one : Multiset.count p.1 (Multiset.map Prod.fst x).dedup = 1 := by
             refine Multiset.count_eq_one_of_mem ?_ h_mem_dedup
             exact Multiset.nodup_dedup (Multiset.map Prod.fst x)
           simp [h_count_one]
@@ -197,7 +214,7 @@ lemma anomalyCoefficent_of_reduce (F : FiveQuanta) :
     F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
   simp [anomalyCoefficent]
   constructor
-  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5  => {
+  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5 => {
       toFun := fun x => q5 * x.2
       map_zero' := by simp
       map_add' := by
@@ -205,7 +222,7 @@ lemma anomalyCoefficent_of_reduce (F : FiveQuanta) :
         simp [add_mul, mul_add] }
     have h1 := reduce_sum_eq_sum_toCharges F f
     simpa [f] using h1
-  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5  => {
+  · let f : ℤ → ℤ × ℤ →+ ℤ := fun q5 => {
       toFun := fun x => q5 * q5 * x.2
       map_zero' := by simp
       map_add' := by
@@ -220,9 +237,12 @@ lemma anomalyCoefficent_of_reduce (F : FiveQuanta) :
 
 -/
 
-
 open SuperSymmetry.SU5.Charges
-def ofChargesExpand (c : Finset ℤ) :  Multiset FiveQuanta :=
+
+/-- Given a finite set of charges `c` the `FiveQuanta`
+  with fluxes `{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}`
+  and finite set of charges equal to `c`.  -/
+def ofChargesExpand (c : Finset ℤ) : Multiset FiveQuanta :=
   /- The multisets of cardinality 3 containing 3 elements of `c`. -/
   let S53 : Multiset (Multiset ℤ) := toMultisetsThree c
   /- Pairs of multisets (s1, s2) such that s1 and s2 are cardinality of `3` containing
@@ -297,22 +317,22 @@ lemma mem_ofChargesExpand_of_toCharges_toFluxesFive (c : Finset ℤ) {x : FiveQu
   · rw [← h]
     simp [s1, s2, toCharges]
     rw [← Multiset.map_add]
-    refine (Multiset.le_iff_subset ( Multiset.nodup_dedup (Multiset.map Prod.fst x))).mpr ?_
+    refine (Multiset.le_iff_subset (Multiset.nodup_dedup (Multiset.map Prod.fst x))).mpr ?_
     simp only [Multiset.dedup_subset']
     refine Multiset.map_subset_map ?_
     rw [hx, Multiset.filter_add_not]
     exact fun ⦃a⦄ a => a
   · simp [s1, s2]
-    have h1 :  Multiset.map (fun x => (x.1, 1, -1)) (Multiset.filter (fun y => y.2 = (1, -1)) x)
+    have h1 : Multiset.map (fun x => (x.1, 1, -1)) (Multiset.filter (fun y => y.2 = (1, -1)) x)
         = (Multiset.filter (fun y => y.2 = (1, -1)) x) := by
-      trans  Multiset.map (fun x => x) (Multiset.filter (fun y => y.2 = (1, -1)) x)
+      trans Multiset.map (fun x => x) (Multiset.filter (fun y => y.2 = (1, -1)) x)
       · apply Multiset.map_congr
         · rfl
         · intro y hx
           simp at hx
           rw [← hx.2]
       simp
-    have h2 :  Multiset.map (fun x => (x.1, 0, 1)) (Multiset.filter (fun y => y.2 = (0, 1)) x)
+    have h2 : Multiset.map (fun x => (x.1, 0, 1)) (Multiset.filter (fun y => y.2 = (0, 1)) x)
         = (Multiset.filter (fun y => y.2 = (0, 1)) x) := by
       trans Multiset.map (fun x => x) (Multiset.filter (fun y => y.2 = (0, 1)) x)
       · apply Multiset.map_congr
@@ -370,12 +390,13 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta) (c : Finset �
   have ex_filter (q5 : ℤ) : (Ex.filter fun x => x.1 = q5) =
       (F.filter fun x => x.1 = q5).bind fun (q5, M, N) =>
       Multiset.replicate M.natAbs (q5, (1 : ℤ), -1)
-      + Multiset.replicate (M + N).natAbs (q5, 0, 1):= by
+      + Multiset.replicate (M + N).natAbs (q5, 0, 1) := by
     dsimp [Ex]
     simp
     congr
     · ext p
-      by_cases hp : p ∉ (Multiset.filter (fun x => x.1 = q5) (Multiset.bind F fun a => Multiset.replicate a.2.1.natAbs (a.1, 1, -1)))
+      by_cases hp : p ∉ (Multiset.filter (fun x => x.1 = q5)
+        (Multiset.bind F fun a => Multiset.replicate a.2.1.natAbs (a.1, 1, -1)))
       · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
         · simp
           simp at hp
@@ -411,7 +432,8 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta) (c : Finset �
         subst hn
         simp at h2
     · ext p
-      by_cases hp : p ∉ Multiset.filter (fun x => x.1 = q5) (Multiset.bind F fun a => Multiset.replicate (a.2.1 + a.2.2).natAbs (a.1, 0, 1))
+      by_cases hp : p ∉ Multiset.filter (fun x => x.1 = q5)
+        (Multiset.bind F fun a => Multiset.replicate (a.2.1 + a.2.2).natAbs (a.1, 0, 1))
       · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
         · simp
           simp at hp
@@ -504,7 +526,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta) (c : Finset �
       rw [Multiset.map_bind, Multiset.map_bind]
       simp
       trans ((Multiset.bind F.toFluxesFive fun a => Multiset.replicate a.1.natAbs (1, -1)) +
-         Multiset.bind F.toFluxesFive fun a => Multiset.replicate (a.1 + a.2).natAbs (0, 1))
+        Multiset.bind F.toFluxesFive fun a => Multiset.replicate (a.1 + a.2).natAbs (0, 1))
       · congr 1
         · rw [toFluxesFive, Multiset.bind_map]
         · rw [toFluxesFive, Multiset.bind_map]
@@ -533,11 +555,12 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta) (c : Finset �
       Int.natCast_natAbs, mul_one, smul_neg, smul_zero, Ex]
     have h1 : (Multiset.map (fun x => (|x.2.1|, -|x.2.1|))
         (Multiset.filter (fun x => x.1 = a.1) F)).sum
-       =  (Multiset.map (fun x => (|x.1|, -|x.1|))
+        = (Multiset.map (fun x => (|x.1|, -|x.1|))
         (Multiset.map (fun y => y.2) (Multiset.filter (fun x => x.1 = a.1) F))).sum := by
       rw [Multiset.map_map]
       congr
-    have h2 : (Multiset.map (fun x => ((0 : ℤ), |x.2.1 + x.2.2|)) (Multiset.filter (fun x => x.1 = a.1) F)).sum
+    have h2 : (Multiset.map (fun x => ((0 : ℤ), |x.2.1 + x.2.2|))
+      (Multiset.filter (fun x => x.1 = a.1) F)).sum
       = (Multiset.map (fun x => (0, |x.1 + x.2|))
         (Multiset.map (fun y => y.2) (Multiset.filter (fun x => x.1 = a.1) F))).sum := by
       rw [Multiset.map_map]
@@ -583,7 +606,7 @@ lemma exists_charges_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
     decide
   have F₁_map_prod_snd : F₁.map Prod.snd = Multiset.replicate 3 (1, -1) := by
     dsimp [F₁]
-    trans  (Multiset.filter (fun x => x = (1, -1)) F.toFluxesFive)
+    trans (Multiset.filter (fun x => x = (1, -1)) F.toFluxesFive)
     · simp [toFluxesFive, F₁]
       rw [Multiset.filter_map]
       simp
@@ -606,7 +629,7 @@ lemma exists_charges_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
     rw [h] at F₁_map_prod_snd
     use a1.1, a2.1, a3.1
     congr
-    · have h1 : a1.2 ∈ Multiset.map Prod.snd {a1, a2, a3}  := by
+    · have h1 : a1.2 ∈ Multiset.map Prod.snd {a1, a2, a3} := by
         simp
       rw [F₁_map_prod_snd] at h1
       simp at h1
@@ -628,7 +651,7 @@ lemma exists_charges_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
     rw [h] at F₂_map_prod_snd
     use a1.1, a2.1, a3.1
     congr
-    · have h1 : a1.2 ∈ Multiset.map Prod.snd {a1, a2, a3}  := by
+    · have h1 : a1.2 ∈ Multiset.map Prod.snd {a1, a2, a3} := by
         simp
       rw [F₂_map_prod_snd] at h1
       simp at h1
@@ -665,7 +688,7 @@ lemma exists_charges_le_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
   have F_eq : F = F₁ + F₂ := by
     dsimp [F₁, F₂]
     rw [← eq_sum_filter_of_mem_ofChargesExpand c F h]
-  suffices h : (∃ q1 q2 q3 : ℤ,  F₁ = {(q1, 1, -1), (q2, 1, -1), (q3, 1, -1)} ∧
+  suffices h : (∃ q1 q2 q3 : ℤ, F₁ = {(q1, 1, -1), (q2, 1, -1), (q3, 1, -1)} ∧
         q1 ≤ q2 ∧ q2 ≤ q3) ∧
         (∃ q4 q5 q6 : ℤ, F₂ = {(q4, 0, 1), (q5, 0, 1), (q6, 0, 1)} ∧
         q4 ≤ q5 ∧ q5 ≤ q6) by
@@ -676,7 +699,7 @@ lemma exists_charges_le_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
       · rfl
       simp_all
   have h1 : (q1 ≤ q2 ∧ q2 ≤ q3) ∨ (q2 ≤ q3 ∧ q3 ≤ q1) ∨ (q3 ≤ q1 ∧ q1 ≤ q2)
-      ∨ (q1 ≤ q3 ∧ q3 ≤ q2) ∨ (q3 ≤ q2 ∧ q2 ≤ q1) ∨ (q2 ≤ q1 ∧ q1 ≤ q3)  := by
+      ∨ (q1 ≤ q3 ∧ q3 ≤ q2) ∨ (q3 ≤ q2 ∧ q2 ≤ q1) ∨ (q2 ≤ q1 ∧ q1 ≤ q3) := by
     omega
   have h2 : (q4 ≤ q5 ∧ q5 ≤ q6) ∨ (q5 ≤ q6 ∧ q6 ≤ q4) ∨ (q6 ≤ q4 ∧ q4 ≤ q5)
       ∨ (q4 ≤ q6 ∧ q6 ≤ q5) ∨ (q6 ≤ q5 ∧ q5 ≤ q4) ∨ (q5 ≤ q4 ∧ q4 ≤ q6) := by omega
@@ -759,7 +782,7 @@ lemma reduce_hasNoZeros_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
     simp [toCharges] at hx
     obtain ⟨a, b, h⟩ := hx
     use a, b
-  generalize (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = x) F))  = s at *
+  generalize (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = x) F)) = s at *
   rw [mem_ofChargesExpand_iff] at h
   rw [h.2] at hs
   fin_cases hs
@@ -771,7 +794,7 @@ lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
     (h : F ∈ ofChargesExpand c) :
     F.reduce.toFluxesFive.NoExotics := by
   simp [FluxesFive.NoExotics]
-  have h1 :  (Multiset.filter (fun x => x < 0)
+  have h1 : (Multiset.filter (fun x => x < 0)
       (Multiset.map (fun f => f.1 + f.2) F.reduce.toFluxesFive)) = ∅ := by
     simp
     rw [@Multiset.filter_eq_nil]
@@ -805,7 +828,7 @@ lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
       use (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = q) F))
       simp_all [toFluxesFive]
     have ha : a = s.sum.1 := by
-      rw [ ← h'.2]
+      rw [← h'.2]
     rw [ha]
     have h2 := h'.1
     rw [mem_ofChargesExpand_iff] at h
@@ -828,7 +851,7 @@ lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta)
       change (Multiset.map (fun (q5, x) => f q5 x) F.reduce).sum = _
       rw [reduce_sum_eq_sum_toCharges F]
       simp [f, toFluxesFive]
-    have sum_2 :  (Multiset.map Prod.snd F.reduce.toFluxesFive).sum
+    have sum_2 : (Multiset.map Prod.snd F.reduce.toFluxesFive).sum
       = (Multiset.map Prod.snd F.toFluxesFive).sum := by
       rw [toFluxesFive, Multiset.map_map]
       let f : ℤ → ℤ × ℤ →+ ℤ := fun q5 => {
@@ -904,3 +927,4 @@ end FiveQuanta
 end SU5U1
 
 end FTheory
+#lint

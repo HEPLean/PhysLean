@@ -341,11 +341,13 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Same
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Viable
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FiveQuanta
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Cases
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Elems
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.TenQuanta
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.YukawaRegeneration
 import PhysLean.Thermodynamics.Basic
