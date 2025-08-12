@@ -28,28 +28,6 @@ namespace SU5U1
 open SuperSymmetry.SU5
 variable {I : CodimensionOneConfig}
 
-/--
-  The anomaly coefficent of a `FiveQuanta` is given by the pair of integers:
-  `(∑ᵢ qᵢ Nᵢ, ∑ᵢ qᵢ² Nᵢ)`.
-
-  The first components is for the mixed U(1)-MSSM, see equation (22) of arXiv:1401.5084.
-  The second component is for the mixed U(1)Y-U(1)-U(1) gauge anomaly,
-  see equation (23) of arXiv:1401.5084.
--/
-def FiveQuanta.anomalyCoefficent (F : FiveQuanta) : ℤ × ℤ :=
-  ((F.map fun x => x.1 * x.2.2).sum, (F.map fun x => x.1 * x.1 * x.2.2).sum)
-
-/--
-  The anomaly coefficent of a `TenQuanta` is given by the pair of integers:
-  `(∑ᵢ qᵢ Nᵢ, 3 * ∑ᵢ qᵢ² Nᵢ)`.
-
-  The first components is for the mixed U(1)-MSSM, see equation (22) of arXiv:1401.5084.
-  The second component is for the mixed U(1)Y-U(1)-U(1) gauge anomaly,
-    see equation (23) of arXiv:1401.5084.
--/
-def TenQuanta.anomalyCoefficent (F : TenQuanta) : ℤ × ℤ :=
-  ((F.map fun x => x.1 * x.2.2).sum, 3 * (F.map fun x => x.1 * x.1 * x.2.2).sum)
-
 /-!
 
 ## Anomaly cancellation conditions

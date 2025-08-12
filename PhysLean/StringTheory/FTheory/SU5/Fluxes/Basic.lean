@@ -120,6 +120,15 @@ def numChiralD (F : FluxesFive) : ℤ :=
 def numAntiChiralD (F : FluxesFive) : ℤ :=
   ((chiralIndicesOfD F).filter (fun x => x < 0)).sum
 
+lemma numChiralD_eq_sum_sub_numAntiChiralD (F : FluxesFive) :
+    F.numChiralD = (chiralIndicesOfD F).sum - F.numAntiChiralD := by
+  have h1 : (chiralIndicesOfD F) =
+    (chiralIndicesOfD F).filter (fun x => 0 ≤ x) +
+    (chiralIndicesOfD F).filter (fun x => ¬ 0 ≤ x) := by
+      exact Eq.symm (Multiset.filter_add_not (fun x => 0 ≤ x) F.chiralIndicesOfD)
+  rw [h1]
+  simp [chiralIndicesOfD, numChiralD, numAntiChiralD]
+
 /-!
 
 ## The SM representation `L = (1,2)_{-1/2}`
@@ -139,6 +148,15 @@ def numChiralL (F : FluxesFive) : ℤ :=
   representations. -/
 def numAntiChiralL (F : FluxesFive) : ℤ :=
   ((chiralIndicesOfL F).filter (fun x => x < 0)).sum
+
+lemma numChiralL_eq_sum_sub_numAntiChiralL (F : FluxesFive) :
+    F.numChiralL = (chiralIndicesOfL F).sum - F.numAntiChiralL := by
+  have h1 : (chiralIndicesOfL F) =
+    (chiralIndicesOfL F).filter (fun x => 0 ≤ x) +
+    (chiralIndicesOfL F).filter (fun x => ¬ 0 ≤ x) := by
+      exact Eq.symm (Multiset.filter_add_not (fun x => 0 ≤ x) F.chiralIndicesOfL)
+  rw [h1]
+  simp [chiralIndicesOfL, numChiralL, numAntiChiralL]
 
 /-!
 
@@ -192,6 +210,14 @@ def numChiralQ (F : FluxesTen) : ℤ := ((chiralIndicesOfQ F).filter (fun x => 0
   representations. -/
 def numAntiChiralQ (F : FluxesTen) : ℤ := ((chiralIndicesOfQ F).filter (fun x => x < 0)).sum
 
+lemma numChiralQ_eq_sum_sub_numAntiChiralQ (F : FluxesTen) :
+    F.numChiralQ = (chiralIndicesOfQ F).sum - F.numAntiChiralQ := by
+  have h1 : (chiralIndicesOfQ F) =
+    (chiralIndicesOfQ F).filter (fun x => 0 ≤ x) +
+    (chiralIndicesOfQ F).filter (fun x => ¬ 0 ≤ x) := by
+      exact Eq.symm (Multiset.filter_add_not (fun x => 0 ≤ x) F.chiralIndicesOfQ)
+  rw [h1]
+  simp [chiralIndicesOfQ, numChiralQ, numAntiChiralQ]
 /-!
 
 ## The SM representation `U = (bar 3,1)_{-2/3}`
@@ -210,6 +236,14 @@ def numChiralU (F : FluxesTen) : ℤ := ((chiralIndicesOfU F).filter (fun x => 0
   representations. -/
 def numAntiChiralU (F : FluxesTen) : ℤ := ((chiralIndicesOfU F).filter (fun x => x < 0)).sum
 
+lemma numChiralU_eq_sum_sub_numAntiChiralU (F : FluxesTen) :
+    F.numChiralU = (chiralIndicesOfU F).sum - F.numAntiChiralU := by
+  have h1 : (chiralIndicesOfU F) =
+    (chiralIndicesOfU F).filter (fun x => 0 ≤ x) +
+    (chiralIndicesOfU F).filter (fun x => ¬ 0 ≤ x) := by
+      exact Eq.symm (Multiset.filter_add_not (fun x => 0 ≤ x) F.chiralIndicesOfU)
+  rw [h1]
+  simp [chiralIndicesOfU, numChiralU, numAntiChiralU]
 /-!
 
 ## The SM representation `E = (1,1)_{1}`
@@ -227,6 +261,15 @@ def numChiralE (F : FluxesTen) : ℤ := ((chiralIndicesOfE F).filter (fun x => 0
 /-- The total number of anti-chiral `E` representations arrising from the matter 10d
   representations. -/
 def numAntiChiralE (F : FluxesTen) : ℤ := ((chiralIndicesOfE F).filter (fun x => x < 0)).sum
+
+lemma numChiralE_eq_sum_sub_numAntiChiralE (F : FluxesTen) :
+    F.numChiralE = (chiralIndicesOfE F).sum - F.numAntiChiralE := by
+  have h1 : (chiralIndicesOfE F) =
+    (chiralIndicesOfE F).filter (fun x => 0 ≤ x) +
+    (chiralIndicesOfE F).filter (fun x => ¬ 0 ≤ x) := by
+      exact Eq.symm (Multiset.filter_add_not (fun x => 0 ≤ x) F.chiralIndicesOfE)
+  rw [h1]
+  simp [chiralIndicesOfE, numChiralE, numAntiChiralE]
 
 /-!
 
