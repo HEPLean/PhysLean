@@ -321,7 +321,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
       enter [2]
       rw [Time.eq_one_smul r]
     simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, map_smul,
-      ContinuousLinearMap.zero_apply, smul_eq_zero, val_eq_zero]
+      ContinuousLinearMap.zero_apply, smul_eq_zero, eq_zero_iff]
     right
     exact hderiv' t x
   use fun x => (E 0 x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ B 0 x)
@@ -362,7 +362,7 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
       enter [2]
       rw [Time.eq_one_smul r]
     simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, map_smul,
-      ContinuousLinearMap.zero_apply, smul_eq_zero, val_eq_zero]
+      ContinuousLinearMap.zero_apply, smul_eq_zero, eq_zero_iff]
     right
     rw [fderiv_fun_sub]
     rw [fderiv_fun_const_smul]
