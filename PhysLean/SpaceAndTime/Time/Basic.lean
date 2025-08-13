@@ -54,6 +54,12 @@ instance : NatCast Time where
 instance {n : ℕ} : OfNat Time n where
   ofNat := ⟨n⟩
 
+instance : Coe ℝ Time where
+  coe r := ⟨r⟩
+
+@[simp]
+lemma realCast_val {r : ℝ} : (r : Time).val = r := rfl
+
 instance : Inhabited Time where
   default := 0
 
@@ -81,6 +87,9 @@ lemma one_ne_zero : (1 : Time) ≠ (0 : Time) := by
   by_contra h
   rw [Time.ext_iff, ofNat_val, ofNat_val] at h
   norm_cast at h
+
+@[simp]
+lemma realCast_of_natCast {n : ℕ} : ((n : ℝ) : Time) = n := rfl
 
 /-!
 ## The choice of zero, one, and orientation
