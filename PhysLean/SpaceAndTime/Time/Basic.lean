@@ -59,7 +59,6 @@ instance {n : ℕ} : OfNat Time n where
 instance : Coe ℝ Time where
   coe r := ⟨r⟩
 
-@[simp]
 lemma realCast_val {r : ℝ} : (r : Time).val = r := rfl
 
 instance : Inhabited Time where
