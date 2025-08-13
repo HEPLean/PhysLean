@@ -84,7 +84,6 @@ lemma natCast_one : ((1 : ℕ) : Time) = 1 := rfl
 @[simp]
 lemma ofNat_val {n : ℕ} : val (OfNat.ofNat n : Time) = n := rfl
 
-@[simp]
 lemma one_ne_zero : (1 : Time) ≠ (0 : Time) := by
   by_contra h
   rw [Time.ext_iff, ofNat_val, ofNat_val] at h
