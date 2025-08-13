@@ -113,7 +113,7 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_sum_inr]
   constructor
-  · rfl
+  · simp
   funext j
   simp [Space.basis_apply]
 
@@ -123,7 +123,7 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_sum_inl]
   constructor
-  · rfl
+  · simp
   funext j
   simp [space]
 
