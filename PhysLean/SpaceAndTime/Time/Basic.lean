@@ -51,6 +51,8 @@ lemma val_injective : Function.Injective val := by
 instance : NatCast Time where
   natCast n := ⟨n⟩
 
+/-- The casting of a natural number to an element of `Time`. This corresponds to a choice of
+(1) zero point in time, and (2) a choice of metric on time (defining `1`). -/
 instance {n : ℕ} : OfNat Time n where
   ofNat := ⟨n⟩
 
@@ -129,7 +131,7 @@ instance : Add Time where
 
 @[simp]
 lemma add_val (t1 t2 : Time) :
-      (t1 + t2).val = t1.val + t2.val := rfl
+    (t1 + t2).val = t1.val + t2.val := rfl
 
 instance : Neg Time where
   neg t := ⟨-t.val⟩
