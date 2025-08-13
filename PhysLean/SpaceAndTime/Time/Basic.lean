@@ -36,71 +36,83 @@ or origin.
 
 /-- The type `Time` represents the time in a given (but arbitary) set of units, and
   with a given (but arbitary) choice of origin. -/
+@[ext]
 structure Time where
   /-- The underlying real number associated with a point in time. -/
   val : ℝ
 
 namespace Time
-open MeasureTheory InnerProductSpace
 
-/-- The map `Time.val` taking an element of `Time` to it's underlying real number
-  is injective. -/
-lemma val_injective : Function.Injective Time.val := by
+lemma val_injective : Function.Injective val := by
   intro t1 t2 h
-  cases t1
-  cases t2
-  simp_all
+  ext
+  exact h
 
-@[ext]
-lemma ext_of {t1 t2 : Time} (h : t1.val = t2.val) :
-    t1 = t2 := by
-  cases t1; cases t2; simp_all
+instance : NatCast Time where
+  natCast n := ⟨n⟩
+
+instance {n : ℕ} : OfNat Time n where
+  ofNat := ⟨n⟩
+
+instance : Inhabited Time where
+  default := 0
+
+@[simp]
+lemma default_eq_zero : default = 0 := rfl
 
 /-!
-
-## The choice of zero, units and orientation
-
+## Coercions
 -/
 
-/-- The zero point in `Time`. -/
-instance : Zero Time where
-  zero := ⟨0⟩
+@[simp]
+lemma natCast_val {n : ℕ} : val n = n := rfl
 
 @[simp]
-lemma zero_val : (0 : Time).val = 0 := rfl
+lemma natCast_zero : ((0 : ℕ) : Time) = 0 := rfl
 
 @[simp]
-lemma val_eq_zero (t : Time) : t.val = 0 ↔ t = 0 := by
-  constructor
-  · intro h
-    ext
-    exact h
-  · rintro rfl
-    rfl
-
-/-- The choice of a norm on `Time`, corresponding to the choice of units. -/
-instance : Norm Time where
-  norm t := ‖t.val‖
-
-/-- The choice of a one on `Time`, corresponding, with the choice of norm,
-  to the choice of units. -/
-instance : One Time where
-  one := ⟨1⟩
+lemma natCast_one : ((1 : ℕ) : Time) = 1 := rfl
 
 @[simp]
-lemma one_val : (1 : Time).val = 1 := rfl
+lemma ofNat_val {n : ℕ} : val (OfNat.ofNat n : Time) = n := rfl
+
+@[simp]
+lemma one_ne_zero : (1 : Time) ≠ (0 : Time) := by
+  by_contra h
+  rw [Time.ext_iff, ofNat_val, ofNat_val] at h
+  norm_cast at h
+
+/-!
+## The choice of zero, one, and orientation
+-/
+
+@[simp]
+lemma zero_val : val 0 = 0 := by
+  rw [ofNat_val]
+  norm_cast
+
+@[simp]
+lemma eq_zero_iff (t : Time) : t = 0 ↔ t.val = 0 := by
+  aesop
+
+@[simp]
+lemma one_val : val 1 = 1 := by
+  rw [ofNat_val]
+  norm_cast
+
+@[simp]
+lemma eq_one_iff (t : Time) : t = 1 ↔ t.val = 1 := by
+  aesop
 
 /-- The choice of an orientation on `Time`. -/
 instance : LE Time where
   le t1 t2 := t1.val ≤ t2.val
 
 lemma le_def (t1 t2 : Time) :
-    t1 ≤ t2 ↔ t1.val ≤ t2.val := Iff.rfl
+  t1 ≤ t2 ↔ t1.val ≤ t2.val := Iff.rfl
 
 /-!
-
 ## Basic operations on `Time`.
-
 -/
 
 instance : Add Time where
@@ -131,6 +143,9 @@ instance : SMul ℝ Time where
 lemma smul_real_val (k : ℝ) (t : Time) :
     (k • t).val = k * t.val := rfl
 
+instance : Norm Time where
+  norm t := ‖t.val‖
+
 instance : Dist Time where
   dist t1 t2 := ‖t1 - t2‖
 
@@ -140,8 +155,10 @@ lemma dist_eq_val (t1 t2 : Time) :
 lemma dist_eq_real_dist (t1 t2 : Time) :
     dist t1 t2 = dist t1.val t2.val := by rfl
 
+open InnerProductSpace
+
 instance : Inner ℝ Time where
-  inner := fun t1 t2 => t1.val * t2.val
+  inner t1 t2 := t1.val * t2.val
 
 @[simp]
 lemma inner_def (t1 t2 : Time) :
@@ -154,17 +171,15 @@ lemma inner_def (t1 t2 : Time) :
 -/
 
 instance : AddGroup Time where
-  add_assoc := by intros; ext; simp [add_assoc]
-  zero_add := by intros; ext; simp [zero_add]
-  add_zero := by intros; ext; simp [add_zero]
-  neg_add_cancel := by intros; ext; simp [neg_add_cancel]
-  nsmul n t := ⟨n • t.val⟩
-  zsmul n t := ⟨n • t.val⟩
-
-instance : AddCommMonoid Time where
-  add_comm := by intros; ext; simp [add_comm]
+  add_assoc t1 t2 t3 := by ext; simp [add_assoc]
+  zero_add t := by ext; simp [zero_add]
+  add_zero t := by ext; simp [add_zero]
+  neg_add_cancel t := by ext; simp [neg_add_cancel]
+  nsmul := nsmulRec
+  zsmul := zsmulRec
 
 instance : AddCommGroup Time where
+  add_comm := by intros; ext; simp [add_comm]
 
 instance : Module ℝ Time where
   one_smul t := by ext; simp [one_smul]
@@ -175,25 +190,25 @@ instance : Module ℝ Time where
   zero_smul t := by ext; simp [zero_smul]
 
 instance : SeminormedAddCommGroup Time where
-  dist_self := by intros; simp [dist_eq_real_dist]
-  dist_comm := by intros; simp [dist_eq_real_dist, dist_comm]
-  dist_triangle := by intros; simp [dist_eq_real_dist, dist_triangle]
+  dist_self t := by simp [dist_eq_real_dist]
+  dist_comm t1 t2 := by simp [dist_eq_real_dist, dist_comm]
+  dist_triangle := by simp [dist_eq_real_dist, dist_triangle]
 
 instance : NormedAddCommGroup Time where
   eq_of_dist_eq_zero := by
     intro a b h
     simp [dist, norm] at h
-    rw [Time.ext_of_iff]
+    ext
     rw [sub_eq_zero] at h
     exact h
 
 instance : NormedSpace ℝ Time where
-  norm_smul_le := by intros; simp [abs_mul, norm]
+  norm_smul_le k t := by simp [abs_mul, norm]
 
 instance : PartialOrder Time where
-  le_refl := by intros; simp [le_def]
-  le_trans := by intro _ _ _; simp [le_def]; exact le_trans
-  le_antisymm := by intro _ _; simp [le_def, Time.ext_of_iff]; exact le_antisymm
+  le_refl t := by simp [le_def]
+  le_trans t1 t2 t3 := by simp [le_def]; exact le_trans
+  le_antisymm t1 t2 h1 h2 := by simp_all [le_def]; ext; exact le_antisymm h1 h2
 
 lemma lt_def (t1 t2 : Time) :
     t1 < t2 ↔ t1.val < t2.val := by
@@ -206,7 +221,7 @@ lemma lt_def (t1 t2 : Time) :
     apply le_of_lt h
 
 noncomputable instance : DecidableEq Time := fun t1 t2 =>
-  decidable_of_iff (t1.val = t2.val) Time.ext_of_iff.symm
+  decidable_of_iff (t1.val = t2.val) (Time.ext_iff.symm)
 
 instance : MeasurableSpace Time := borel Time
 
@@ -216,13 +231,13 @@ instance : BorelSpace Time where
 instance : FiniteDimensional ℝ Time := by
   refine Module.finite_of_rank_eq_one ?_
   rw [@rank_eq_one_iff]
-  use ⟨1⟩
+  use 1
   constructor
-  · simp [Time.ext_of_iff]
+  · simp
   · intro v
     use v.val
     ext
-    simp
+    simp [one_val]
 
 noncomputable instance : InnerProductSpace ℝ Time where
   norm_sq_eq_re_inner := by intros; simp [norm]; ring
@@ -299,6 +314,8 @@ lemma val_measurePreserving : MeasurePreserving Time.val volume volume :=
 
 -/
 
+variable {M : Type} {d : ℕ} {t : Time}
+
 /-- Given a function `f : Time → M` the derivative of `f`. -/
 noncomputable def deriv [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (f : Time → M) : Time → M :=
@@ -330,7 +347,7 @@ lemma val_differentiable : Differentiable ℝ Time.val := by
 @[simp]
 lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
   change (fderiv ℝ toRealCLM t 1) = 1
+  rw [ContinuousLinearMap.fderiv, toRealCLM]
   simp
-  rfl
 
 end Time
