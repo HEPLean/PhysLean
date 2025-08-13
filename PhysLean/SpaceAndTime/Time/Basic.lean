@@ -118,7 +118,7 @@ instance : LE Time where
   le t1 t2 := t1.val ≤ t2.val
 
 lemma le_def (t1 t2 : Time) :
-  t1 ≤ t2 ↔ t1.val ≤ t2.val := Iff.rfl
+    t1 ≤ t2 ↔ t1.val ≤ t2.val := Iff.rfl
 
 /-!
 ## Basic operations on `Time`.
@@ -129,7 +129,7 @@ instance : Add Time where
 
 @[simp]
 lemma add_val (t1 t2 : Time) :
-    (t1 + t2).val = t1.val + t2.val := rfl
+      (t1 + t2).val = t1.val + t2.val := rfl
 
 instance : Neg Time where
   neg t := ⟨-t.val⟩
