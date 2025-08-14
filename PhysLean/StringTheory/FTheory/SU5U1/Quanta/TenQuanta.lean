@@ -30,7 +30,7 @@ properties thereof.
 ## Key theorems
 
 - `mem_ofChargesExpand_map_reduce_iff` states that a `TenQuanta` is in the
-  image of  `ofChargesExpand c` under `reduce` if and only if it is a `TenQuanta` with
+  image of `ofChargesExpand c` under `reduce` if and only if it is a `TenQuanta` with
   charges equal to `c` and fluxes which have no exotics or zero.
 -/
 namespace FTheory
@@ -194,6 +194,34 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : TenQuanta) (f : ℤ
           · simp_all
           · simp_all
 
+
+lemma reduce_eq_self_of_ofCharges_nodup (x : TenQuanta) (h : x.toCharges.Nodup) :
+    x.reduce = x := by
+  rw [reduce]
+  rw [Multiset.Nodup.dedup h]
+  simp [toCharges]
+  conv_rhs => rw [← Multiset.map_id x]
+  apply Multiset.map_congr rfl
+  intro p hp
+  simp
+  have x_noDup : x.Nodup := Multiset.Nodup.of_map Prod.fst h
+  suffices (Multiset.filter (fun f => f.1 = p.1) x) = {p} by simp [this]
+  refine (Multiset.Nodup.ext ?_ ?_).mpr ?_
+  · exact Multiset.Nodup.filter (fun f => f.1 = p.1) x_noDup
+  · exact Multiset.nodup_singleton p
+  intro p'
+  simp
+  constructor
+  · rintro ⟨h1, h2⟩
+    simp [toCharges] at h
+    rw [propext (Multiset.nodup_map_iff_inj_on x_noDup)] at h
+    apply h
+    · exact h1
+    · exact hp
+    · exact h2
+  · rintro ⟨rfl⟩
+    simp_all
+
 /-!
 ## Anomaly cancellation
 
@@ -240,7 +268,7 @@ open SuperSymmetry.SU5.Charges
 
 /-- Given a finite set of charges `c` the `TenQuanta`
   with fluxes `{(1, 0), (1, 0), (1, 0)}` and `{(1, 1), (1, -1), (1, 0)}`
-  and finite set of charges equal to `c`.  -/
+  and finite set of charges equal to `c`. -/
 def ofChargesExpand (c : Finset ℤ) : Multiset TenQuanta :=
   /- The {(1, 0), (1, 0), (1, 0)} case. -/
   /- The multisets of cardinality 3 containing 3 elements of `c`. -/
