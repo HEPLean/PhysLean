@@ -202,14 +202,14 @@ lemma reduce_eq_self_of_ofCharges_nodup (x : FiveQuanta) (h : x.toCharges.Nodup)
   conv_rhs => rw [← Multiset.map_id x]
   apply Multiset.map_congr rfl
   intro p hp
-  simp
+  simp only [id_eq]
   have x_noDup : x.Nodup := Multiset.Nodup.of_map Prod.fst h
   suffices (Multiset.filter (fun f => f.1 = p.1) x) = {p} by simp [this]
   refine (Multiset.Nodup.ext ?_ ?_).mpr ?_
   · exact Multiset.Nodup.filter (fun f => f.1 = p.1) x_noDup
   · exact Multiset.nodup_singleton p
   intro p'
-  simp
+  simp only [Multiset.mem_filter, Multiset.mem_singleton]
   constructor
   · rintro ⟨h1, h2⟩
     simp [toCharges] at h
@@ -220,7 +220,6 @@ lemma reduce_eq_self_of_ofCharges_nodup (x : FiveQuanta) (h : x.toCharges.Nodup)
     · exact h2
   · rintro ⟨rfl⟩
     simp_all
-
 
 /-!
 

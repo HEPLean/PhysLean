@@ -47,7 +47,7 @@ def toCharges (x : Quanta) : Charges :=
 -/
 
 /-- The reduce of `Quanta` is a new `Quanta` with all the fluxes corresponding to the same
-  charge (i.e. represenation) added together.-/
+  charge (i.e. represenation) added together. -/
 def reduce (x : Quanta) : Quanta :=
   (x.1, x.2.1, x.2.2.1.reduce, x.2.2.2.reduce)
 

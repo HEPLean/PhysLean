@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Viable
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.AnomalyFree
 /-!
 
@@ -17,10 +16,12 @@ We say a term of a type `Quanta` is viable for a given `I : CodimensionOneConfig
 - It has no exotic chiral particles.
 - It leads to a top Yukawa coupling.
 - It does not lead to a pheno constraining terms.
+- It does not lead to a dangerous Yukawa coupling at one insertion of the Yukawa singlets.
 - It satisfies anomaly cancellation.
 - The charges are allowed by the `I` configuration.
 
-This somes with one caveat, the `IsViable` constraint enforces the anomaly cancellation condition:
+This somes with one caveat, the `IsViableYukawa` constraint enforces the anomaly
+  cancellation condition:
 `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0`
 to hold, which is not always necessary, see arXiv:1401.5084.
 
@@ -247,7 +248,7 @@ lemma toCharges_isAnomalyFree_of_isViableYukawa
 lemma toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViableYukawa
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViableYukawa I x) :
     x.toCharges ∈ (viableCharges I).filter IsAnomalyFree := by
-  simp
+  simp only [Multiset.mem_filter]
   apply And.intro
   · refine (mem_viableCharges_iff ?_).mpr ⟨?_, ?_, ?_, ?_⟩
     · exact toCharges_mem_ofFinset_of_isViableYukawa I x h
@@ -262,6 +263,7 @@ lemma toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViableYukawa
 ## viableYukawaElems
 -/
 
+/-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViableYukawa`. -/
 def viableYukawaElems : CodimensionOneConfig → Multiset Quanta
   | .same => {(some 2, some (-2), {(-1, 1, 2), (1, 2, -2)}, {(-1, 3, 0)}),
       (some 2, some (-2), {(-1, 0, 2), (1, 3, -2)}, {(-1, 3, 0)}),
@@ -274,9 +276,8 @@ def viableYukawaElems : CodimensionOneConfig → Multiset Quanta
 lemma isViableYukawa_of_mem_viableYukawaElems
     (I : CodimensionOneConfig) (x : Quanta) (h : x ∈ viableYukawaElems I) :
     IsViableYukawa I x := by
- revert x I
- decide
-
+  revert x I
+  decide
 
 lemma viableYukawaElems_card_eq (I : CodimensionOneConfig) :
     (viableYukawaElems I).card = match I with
@@ -287,7 +288,7 @@ lemma viableYukawaElems_card_eq (I : CodimensionOneConfig) :
 
 lemma mem_viableYukawaElems_of_isViableYukawa
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViableYukawa I x) :
-    x ∈ viableYukawaElems I  := by
+    x ∈ viableYukawaElems I := by
   have hx := mem_ofChargesExpand_of_isViableYukawa I x h
   have hc := toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViableYukawa I x h
   rw [viable_anomalyFree] at hc

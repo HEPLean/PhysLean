@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Viable
 /-!
 
 # Anomaly cancellation
@@ -14,8 +13,6 @@ that the charges can be extended to quanta which are anomaly free.
 
 We give the viable charges which are anomaly free for each of the three codimension one
 configurations. This is in the lemma `viable_anomalyFree`.
-
-
 
 -/
 namespace FTheory
@@ -30,7 +27,6 @@ open CodimensionOneConfig
 open Tree
 open PhysLean
 
-
 /-!
 
 ## Anomaly coefficents of charges
@@ -44,18 +40,16 @@ def IsAnomalyFree (c : Charges) : Prop :=
 
 instance {c} : Decidable (IsAnomalyFree c) := Multiset.decidableExistsMultiset
 
-
 set_option maxRecDepth 2000 in
 /-- The viable charges which are anomaly free. -/
 lemma viable_anomalyFree (I : CodimensionOneConfig) :
-   (viableCharges I).filter IsAnomalyFree =
+    (viableCharges I).filter IsAnomalyFree =
     (match I with
     | .same => {(some 2, some (-2), {-1, 1}, {-1}), (some (-2), some 2, {-1, 1}, {1})}
     | .nearestNeighbor => {(some 6, some (-14), {-9, 1}, {-7})}
-    | .nextToNearestNeighbor => ∅ ) := by
+    | .nextToNearestNeighbor => ∅) := by
   revert I
   decide
-
 
 end Charges
 

@@ -326,6 +326,7 @@ import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Completeness
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.AnomalyFree
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Basic
@@ -347,6 +348,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Cases
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Elems
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Yukawa
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.TenQuanta
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.ToList
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.YukawaRegeneration
