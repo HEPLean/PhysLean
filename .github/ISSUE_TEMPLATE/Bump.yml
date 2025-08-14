@@ -58,7 +58,7 @@ body:
   validations:
     required: false
 - type: textarea
-  id: examples of previus bumps
+  id: examples_of_previous_bumps
   attributes:
     label: Previous bump
     description: Please do not modify this text.
