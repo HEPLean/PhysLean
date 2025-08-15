@@ -3,8 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.AnomalyCancellation
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Completeness
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.AnomalyFree
 /-!
 
@@ -130,26 +128,6 @@ lemma Q5_charges_mem_allowedBarFiveCharges_of_isViableYukawa
   apply h2
   simp [toCharges]
   exact hy
-
-lemma fiveQuanta_mem_ofCharges_of_isViableYukawa
-    (I : CodimensionOneConfig) (x : Quanta) (h : IsViableYukawa I x) :
-    x.2.2.1 ∈ FiveQuanta.ofCharges I x.2.2.1.toCharges := by
-  rw [FiveQuanta.mem_ofCharges_iff]
-  · simp
-    constructor
-    · exact toFluxesFive_noExotics_of_isViableYukawa I x h
-    · exact toFluxesFive_hasNoZero_of_isViableYukawa I x h
-  · exact fun s a => Q5_charges_mem_allowedBarFiveCharges_of_isViableYukawa I x h s a
-
-lemma tenQuanta_mem_ofCharges_of_isViableYukawa
-    (I : CodimensionOneConfig) (x : Quanta) (h : IsViableYukawa I x) :
-    x.2.2.2 ∈ TenQuanta.ofCharges I x.2.2.2.toCharges := by
-  rw [TenQuanta.mem_ofCharges_iff]
-  · simp
-    constructor
-    · exact toFluxesTen_noExotics_of_isViableYukawa I x h
-    · exact toFluxesTen_hasNoZero_of_isViableYukawa I x h
-  · exact fun s a => Q10_charges_mem_allowedBarTenCharges_of_isViableYukawa I x h s a
 
 lemma topYukawa_allowsTerm_of_isViableYukawa
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViableYukawa I x) :

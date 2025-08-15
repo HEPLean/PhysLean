@@ -342,7 +342,6 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Same
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Viable
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FiveQuanta
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FromParts
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Yukawa
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.TenQuanta
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.ToList
