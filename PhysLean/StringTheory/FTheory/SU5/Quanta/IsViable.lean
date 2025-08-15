@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.AnomalyFree
+import PhysLean.StringTheory.FTheory.SU5.Charges.AnomalyFree
 /-!
 
 # Viable Quanta with Yukawa
@@ -26,7 +26,7 @@ to hold, which is not always necessary, see arXiv:1401.5084.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 variable {I : CodimensionOneConfig}
 
@@ -298,6 +298,6 @@ lemma yukawaSingletsRegenerateDangerousInsertion_two_of_isViable
 
 end Quanta
 
-end SU5U1
+end SU5
 
 end FTheory

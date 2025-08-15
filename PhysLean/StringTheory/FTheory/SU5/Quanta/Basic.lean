@@ -3,9 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FiveQuanta
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.TenQuanta
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.Viable
+import PhysLean.StringTheory.FTheory.SU5.Quanta.FiveQuanta
+import PhysLean.StringTheory.FTheory.SU5.Quanta.TenQuanta
+import PhysLean.StringTheory.FTheory.SU5.Charges.Viable
 /-!
 
 # Quanta of representations
@@ -19,7 +19,7 @@ properties thereof.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 open SU5
 variable {I : CodimensionOneConfig}
 
@@ -138,6 +138,6 @@ def ofChargesExpand (c : Charges) : Multiset Quanta :=
 
 end Quanta
 
-end SU5U1
+end SU5
 
 end FTheory

@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
+import PhysLean.StringTheory.FTheory.SU5.Charges.OfRationalSection
 /-!
 
 # Quanta of 10d representations
@@ -36,7 +36,7 @@ properties thereof.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 open SU5
 variable {I : CodimensionOneConfig}
 
@@ -767,6 +767,6 @@ lemma mem_ofChargesExpand_map_reduce_iff (c : Finset ℤ) (S : TenQuanta) :
 
 end TenQuanta
 
-end SU5U1
+end SU5
 
 end FTheory

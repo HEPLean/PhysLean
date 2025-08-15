@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
+import PhysLean.StringTheory.FTheory.SU5.Quanta.Basic
 /-!
 
 # Anomaly cancellation
@@ -17,7 +17,7 @@ configurations. This is in the lemma `viable_anomalyFree`.
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 namespace Charges
 open SuperSymmetry.SU5
@@ -53,6 +53,6 @@ lemma viable_anomalyFree (I : CodimensionOneConfig) :
 
 end Charges
 
-end SU5U1
+end SU5
 
 end FTheory

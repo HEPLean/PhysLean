@@ -5,9 +5,15 @@ Authors: Joseph Tooby-Smith
 -/
 /-!
 
-# F-theory with a SU(5) x U(1) gauge group
+# F-theory with a SU(5) gauge group
 
-This module contains the details of F-theory with a SU(5) x U(1) gauge group.
+This module contains the details of F-theory with a SU(5) gauge group, with possible
+additional charges. This should be compared to the directory:
+
+- `PhysLean.Particles.SuperSymmetry.SU5`
+
+which contains the details of the SUSY SU(5) gauge group not in F-theory. Many of the
+results here use results from that directory.
 
 ## Data structures
 

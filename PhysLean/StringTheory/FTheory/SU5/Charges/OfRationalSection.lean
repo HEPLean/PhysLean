@@ -31,7 +31,7 @@ TODO "AETF6" "The results in this file are currently stated, but not proved.
 
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 /-- The distinct codimension one configurations of the
   zero-section (`σ₀`) relativity to the additional rational section (`σ₁`s). -/
@@ -244,6 +244,6 @@ lemma tenChargeMultisetToList_length (I : CodimensionOneConfig) (S : Multiset �
   rw [coe_tenChargeMultisetToList_of_all_mem I S hs]
 
 end CodimensionOneConfig
-end SU5U1
+end SU5
 
 end FTheory

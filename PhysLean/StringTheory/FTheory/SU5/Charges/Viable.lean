@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
+import PhysLean.StringTheory.FTheory.SU5.Charges.OfRationalSection
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 /-!
@@ -47,7 +47,7 @@ The above two properties is then enough to show that `viableCharges I` contains 
 -/
 namespace FTheory
 
-namespace SU5U1
+namespace SU5
 
 namespace Charges
 open SuperSymmetry.SU5
@@ -688,6 +688,6 @@ lemma mem_viableCharges_iff {x : Charges}
 
 end Charges
 
-end SU5U1
+end SU5
 
 end FTheory
