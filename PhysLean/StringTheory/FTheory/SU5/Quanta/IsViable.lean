@@ -287,7 +287,7 @@ lemma isViable_iff_mem_viableElems
   · exact mem_viableElems_of_isViable I x
   · exact isViable_of_mem_viableElems I x
 
-/-- Every viable Quanta regenerates a dangerous coupling at two insertions of  the Yukawa
+/-- Every viable Quanta regenerates a dangerous coupling at two insertions of the Yukawa
   singlets. -/
 lemma yukawaSingletsRegenerateDangerousInsertion_two_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
