@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
-import PhysLean.StringTheory.FTheory.SU5U1.Charges.PhenoConstrained.Elems.Lemmas
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
+import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 /-!
 
 # Quanta of 10d representations
