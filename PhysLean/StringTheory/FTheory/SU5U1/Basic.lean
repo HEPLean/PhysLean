@@ -43,9 +43,6 @@ This is detailed in the paper `arxiv:1504.05593`. In implemented here using
 
 - `isViable_iff_mem_viableElems`: Enumerates all the viable `Quanta` for a given
   `CodimensionOneConfig`.
-- e.g. `viableElems_filter_yukawaSingletsRegenerateDangerousInsertion_two_eq_of_same`,
-  which says that all viable `Quanta` regenerate a dangerous coupling at two
-  insertions of the singlets needed to regenerate Yukawa couplings.
 
 ## References
 

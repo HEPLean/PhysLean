@@ -128,7 +128,6 @@ import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Tree
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.U1U1
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.ZMod
@@ -331,7 +330,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.Viable
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.FiveQuanta
-import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable.Yukawa
+import PhysLean.StringTheory.FTheory.SU5U1.Quanta.IsViable
 import PhysLean.StringTheory.FTheory.SU5U1.Quanta.TenQuanta
 import PhysLean.Thermodynamics.Basic
 import PhysLean.Thermodynamics.Temperature.Basic

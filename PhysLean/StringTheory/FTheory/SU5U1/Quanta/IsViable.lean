@@ -238,11 +238,11 @@ lemma toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViable
 
 /-!
 
-## viableYukawaElems
+## viableElems
 -/
 
 /-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViable`. -/
-def viableYukawaElems : CodimensionOneConfig → Multiset Quanta
+def viableElems : CodimensionOneConfig → Multiset Quanta
   | .same => {(some 2, some (-2), {(-1, 1, 2), (1, 2, -2)}, {(-1, 3, 0)}),
       (some 2, some (-2), {(-1, 0, 2), (1, 3, -2)}, {(-1, 3, 0)}),
       (some (-2), some 2, {(-1, 2, -2), (1, 1, 2)}, {(1, 3, 0)}),
@@ -251,22 +251,22 @@ def viableYukawaElems : CodimensionOneConfig → Multiset Quanta
     (some 6, some (-14), {(-9, 0, 2), (1, 3, -2)}, {(-7, 3, 0)})}
   | .nextToNearestNeighbor => {}
 
-lemma isViable_of_mem_viableYukawaElems
-    (I : CodimensionOneConfig) (x : Quanta) (h : x ∈ viableYukawaElems I) :
+lemma isViable_of_mem_viableElems
+    (I : CodimensionOneConfig) (x : Quanta) (h : x ∈ viableElems I) :
     IsViable I x := by
   revert x I
   decide
 
-lemma viableYukawaElems_card_eq (I : CodimensionOneConfig) :
-    (viableYukawaElems I).card = match I with
+lemma viableElems_card_eq (I : CodimensionOneConfig) :
+    (viableElems I).card = match I with
     | .same => 4
     | .nearestNeighbor => 2
     | .nextToNearestNeighbor => 0 := by
   cases I <;> rfl
 
-lemma mem_viableYukawaElems_of_isViable
+lemma mem_viableElems_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x ∈ viableYukawaElems I := by
+    x ∈ viableElems I := by
   have hx := mem_ofChargesExpand_of_isViable I x h
   have hc := toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViable I x h
   rw [viable_anomalyFree] at hc
@@ -280,17 +280,19 @@ lemma mem_viableYukawaElems_of_isViable
       revert x
       decide
 
-lemma isViable_iff_mem_viableYukawaElems
+lemma isViable_iff_mem_viableElems
     (I : CodimensionOneConfig) (x : Quanta) :
-    IsViable I x ↔ x ∈ viableYukawaElems I := by
+    IsViable I x ↔ x ∈ viableElems I := by
   constructor
-  · exact mem_viableYukawaElems_of_isViable I x
-  · exact isViable_of_mem_viableYukawaElems I x
+  · exact mem_viableElems_of_isViable I x
+  · exact isViable_of_mem_viableElems I x
 
+/-- Every viable Quanta regenerates a dangerous coupling at two insertions of  the Yukawa
+  singlets. -/
 lemma yukawaSingletsRegenerateDangerousInsertion_two_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
     (toCharges x).YukawaGeneratesDangerousAtLevel 2 := by
-  rw [isViable_iff_mem_viableYukawaElems] at h
+  rw [isViable_iff_mem_viableElems] at h
   revert I x
   decide
 

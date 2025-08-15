@@ -6,6 +6,8 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
 import PhysLean.StringTheory.FTheory.SU5U1.Charges.OfRationalSection
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 /-!
 
 Note this file takes a long time to compile.
@@ -39,9 +41,8 @@ The idea behind the proof is that we show:
 The above two properties is then enough to show that `viableCharges I` contains all such charges.
 ## Implementation details
 
-- This will eventually replace the files within `Charges.PhenoConstrainedElems`.
 - Note that this file is slow to run, any improvements to the speed of this file
-  will be very welcome.
+  will be very welcome. In particular working out a way to restrict by anomaly cancellation.
 
 -/
 namespace FTheory
@@ -53,7 +54,6 @@ open SuperSymmetry.SU5
 open SuperSymmetry.SU5.Charges
 open PotentialTerm
 open CodimensionOneConfig
-open Tree
 open PhysLean
 
 /-!
