@@ -248,7 +248,7 @@ variable [CommRing 𝓩]
     see equation (23) of arXiv:1401.5084.
 -/
 def anomalyCoefficent (F : TenQuanta 𝓩) : 𝓩 × 𝓩 :=
-  ((F.map fun x =>  x.2.2 • x.1).sum, 3 * (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
+  ((F.map fun x => x.2.2 • x.1).sum, 3 * (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
 lemma anomalyCoefficent_of_reduce [DecidableEq 𝓩] (F : TenQuanta 𝓩) :
     F.reduce.anomalyCoefficent = F.anomalyCoefficent := by

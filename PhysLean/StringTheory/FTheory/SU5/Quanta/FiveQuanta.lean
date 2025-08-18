@@ -250,7 +250,7 @@ variable [CommRing 𝓩]
   see equation (23) of arXiv:1401.5084.
 -/
 def anomalyCoefficent (F : FiveQuanta 𝓩) : 𝓩 × 𝓩 :=
-  ((F.map fun x => x.2.2 • x.1 ).sum, (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
+  ((F.map fun x => x.2.2 • x.1).sum, (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
 lemma anomalyCoefficent_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
     F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
@@ -715,7 +715,7 @@ lemma exists_charges_of_mem_ofChargesExpand (c : Finset 𝓩) (F : FiveQuanta �
   use q1, q2, q3, q4, q5, q6
   rw [h_F_split, hF₁, hF₂]
   rfl
-lemma exists_charges_le_of_mem_ofChargesExpand (c : Finset ℤ ) (F : FiveQuanta ℤ)
+lemma exists_charges_le_of_mem_ofChargesExpand (c : Finset ℤ) (F : FiveQuanta ℤ)
     (h : F ∈ ofChargesExpand c) :
     ∃ q1 q2 q3 q4 q5 q6 : ℤ,
       F = {(q1, 1, -1), (q2, 1, -1), (q3, 1, -1), (q4, 0, 1), (q5, 0, 1), (q6, 0, 1)} ∧

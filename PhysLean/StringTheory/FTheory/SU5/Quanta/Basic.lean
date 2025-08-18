@@ -103,7 +103,8 @@ instance [CommRing 𝓩] [DecidableEq 𝓩] :
     + F.anomalyCoefficent + T.anomalyCoefficent) = (0, 0)))
 
 lemma anomalyCoefficent_snd_eq_zero_of_anomalyCancellation [CommRing 𝓩]
-    {qHd qHu : Option 𝓩} {F : FiveQuanta 𝓩} {T : TenQuanta 𝓩} (h : AnomalyCancellation qHd qHu F T) :
+    {qHd qHu : Option 𝓩} {F : FiveQuanta 𝓩} {T : TenQuanta 𝓩}
+    (h : AnomalyCancellation qHd qHu F T) :
     ((HdAnomalyCoefficent qHd).2 + (HuAnomalyCoefficent qHu).2
     + (F.anomalyCoefficent).2 + (T.anomalyCoefficent).2) = 0 := by
   simp only [← Prod.snd_add]
