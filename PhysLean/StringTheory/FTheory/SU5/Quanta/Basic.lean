@@ -28,16 +28,20 @@ variable {I : CodimensionOneConfig}
   5-bar matter content and the 10d matter content, and the charges of the `Hd` and
   `Hu` particles (there values of `(M,N)` are not included as they are
   forced to be `(0, 1)` and `(0, -1)` respectively. -/
-abbrev Quanta : Type := Option ℤ × Option ℤ × FiveQuanta × TenQuanta
+abbrev Quanta (𝓩 : Type := ℤ) : Type := Option 𝓩 × Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩
 
 namespace Quanta
 open SuperSymmetry.SU5
 open PotentialTerm Charges
 
-instance : DecidableEq Quanta := instDecidableEqProd
+variable {𝓩 : Type}
+
+instance [DecidableEq 𝓩] : DecidableEq (Quanta 𝓩) :=
+  haveI : DecidableEq (FiveQuanta 𝓩) := by infer_instance
+  inferInstanceAs (DecidableEq (Option 𝓩 × Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩))
 
 /-- The underlying `Charges` of a `Quanta`. -/
-def toCharges (x : Quanta) : Charges :=
+def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : Charges 𝓩 :=
   (x.1, x.2.1, x.2.2.1.toCharges.toFinset, x.2.2.2.toCharges.toFinset)
 
 /-!
@@ -48,7 +52,7 @@ def toCharges (x : Quanta) : Charges :=
 
 /-- The reduce of `Quanta` is a new `Quanta` with all the fluxes corresponding to the same
   charge (i.e. represenation) added together. -/
-def reduce (x : Quanta) : Quanta :=
+def reduce [DecidableEq 𝓩] (x : Quanta 𝓩) : Quanta 𝓩 :=
   (x.1, x.2.1, x.2.2.1.reduce, x.2.2.2.reduce)
 
 /-!
@@ -69,13 +73,13 @@ imposed.
 -/
 
 /-- The pair of anomaly cancellation coefficents associated with the `Hd` particle. -/
-def HdAnomalyCoefficent (qHd : Option ℤ) : ℤ × ℤ :=
+def HdAnomalyCoefficent [CommRing 𝓩] (qHd : Option 𝓩) : 𝓩 × 𝓩 :=
   match qHd with
   | none => (0, 0)
   | some qHd => (qHd, qHd ^ 2)
 
 /-- The pair of anomaly cancellation coefficents associated with the `Hu` particle. -/
-def HuAnomalyCoefficent (qHu : Option ℤ) : ℤ × ℤ :=
+def HuAnomalyCoefficent [CommRing 𝓩] (qHu : Option 𝓩) : 𝓩 × 𝓩 :=
   match qHu with
   | none => (0, 0)
   | some qHu => (-qHu, -qHu ^ 2)
@@ -88,33 +92,22 @@ def HuAnomalyCoefficent (qHu : Option ℤ) : ℤ × ℤ :=
 - `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar represenations and the
   second is over all 10d representations.
 -/
-def AnomalyCancellation (qHd qHu : Option ℤ) (F : FiveQuanta) (T : TenQuanta) : Prop :=
+def AnomalyCancellation [CommRing 𝓩] (qHd qHu : Option 𝓩) (F : FiveQuanta 𝓩) (T : TenQuanta 𝓩) :
+    Prop :=
   HdAnomalyCoefficent qHd + HuAnomalyCoefficent qHu + F.anomalyCoefficent +
     T.anomalyCoefficent = (0, 0)
 
-instance : Decidable (AnomalyCancellation qHd qHu F T) :=
+instance [CommRing 𝓩] [DecidableEq 𝓩] :
+    Decidable (AnomalyCancellation (𝓩 := 𝓩) qHd qHu F T) :=
   inferInstanceAs (Decidable ((HdAnomalyCoefficent qHd + HuAnomalyCoefficent qHu
     + F.anomalyCoefficent + T.anomalyCoefficent) = (0, 0)))
 
-lemma anomalyCoefficent_snd_eq_zero_of_anomalyCancellation
-    {qHd qHu : Option ℤ} {F : FiveQuanta} {T : TenQuanta} (h : AnomalyCancellation qHd qHu F T) :
+lemma anomalyCoefficent_snd_eq_zero_of_anomalyCancellation [CommRing 𝓩]
+    {qHd qHu : Option 𝓩} {F : FiveQuanta 𝓩} {T : TenQuanta 𝓩} (h : AnomalyCancellation qHd qHu F T) :
     ((HdAnomalyCoefficent qHd).2 + (HuAnomalyCoefficent qHu).2
     + (F.anomalyCoefficent).2 + (T.anomalyCoefficent).2) = 0 := by
-  trans ((HdAnomalyCoefficent qHd)+ (HuAnomalyCoefficent qHu)
-    + (F.anomalyCoefficent) + (T.anomalyCoefficent)).2
-  · simp
+  simp only [← Prod.snd_add]
   rw [h]
-
-lemma five_anomalyCoefficent_mod_three_zero_of_anomalyCancellation
-    {qHd qHu : Option ℤ} {F : FiveQuanta} {T : TenQuanta} (h : AnomalyCancellation qHd qHu F T) :
-    ((HdAnomalyCoefficent qHd).2 + (HuAnomalyCoefficent qHu).2
-    + (F.anomalyCoefficent).2) % 3 = 0 := by
-  trans ((HdAnomalyCoefficent qHd).2 + (HuAnomalyCoefficent qHu).2
-    + (F.anomalyCoefficent).2 + (T.anomalyCoefficent).2) % 3
-  swap
-  · rw [anomalyCoefficent_snd_eq_zero_of_anomalyCancellation h]
-    simp
-  simp [TenQuanta.anomalyCoefficent]
 
 /-!
 
@@ -129,7 +122,7 @@ lemma five_anomalyCoefficent_mod_three_zero_of_anomalyCancellation
   10d matter content, and finite set of charges equal to `c`.
 
   These quanta reduce to all viable quanta. -/
-def ofChargesExpand (c : Charges) : Multiset Quanta :=
+def ofChargesExpand [DecidableEq 𝓩] (c : Charges 𝓩) : Multiset (Quanta 𝓩) :=
   let Q5s := FiveQuanta.ofChargesExpand c.2.2.1
   let Q10s := TenQuanta.ofChargesExpand c.2.2.2
   Q5s.bind <| fun Q5 =>

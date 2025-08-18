@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Quanta.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.Map
 /-!
 
 # Anomaly cancellation
@@ -33,12 +34,14 @@ open PhysLean
 
 -/
 
+variable {𝓩 : Type}
 /-- The condition on a collection of charges `c` that it extends to an anomaly free `Quanta`.
   That anomaly free `Quanta` is not tracked by this proposition. -/
-def IsAnomalyFree (c : Charges) : Prop :=
+def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : Charges 𝓩) : Prop :=
   ∃ x ∈ Quanta.ofChargesExpand c, Quanta.AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2
 
-instance {c} : Decidable (IsAnomalyFree c) := Multiset.decidableExistsMultiset
+instance [DecidableEq 𝓩] [CommRing 𝓩] {c : Charges 𝓩} : Decidable (IsAnomalyFree c) :=
+  Multiset.decidableExistsMultiset
 
 set_option maxRecDepth 2000 in
 /-- The viable charges which are anomaly free. -/
