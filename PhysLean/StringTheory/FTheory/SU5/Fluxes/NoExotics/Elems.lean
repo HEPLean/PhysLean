@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic
+import Mathlib.Tactic.FinCases
 /-!
 
 # Elements of `FluxesFive` and `FluxesTen` with no chiral exotics
@@ -77,6 +78,16 @@ lemma hasNoZero_of_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics
     F.HasNoZero := by
   revert F h
   decide
+
+lemma map_sum_add_of_mem_powerset_elemsNoExotics (F S : FluxesFive)
+   (hf :  F ∈ FluxesFive.elemsNoExotics)
+   (hS: S ∈ Multiset.powerset F) :
+   (Multiset.map (fun x => (|x.1|, -|x.1|)) S).sum +
+   (Multiset.map (fun x => (0, |x.1 + x.2|)) S).sum = S.sum := by
+  fin_cases hf
+  all_goals
+  · fin_cases hS
+    all_goals decide
 
 end FluxesFive
 
