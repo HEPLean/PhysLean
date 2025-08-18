@@ -66,7 +66,7 @@ variable [DecidableEq 𝓩]
 
 /-- The `reduce` of `FiveQuanta` is a new `FiveQuanta` with all the fluxes
   corresponding to the same charge (i.e. represenation) added together. -/
-def reduce (x : FiveQuanta 𝓩)  : FiveQuanta 𝓩 :=
+def reduce (x : FiveQuanta 𝓩) : FiveQuanta 𝓩 :=
   x.toCharges.dedup.map fun q5 => (q5, ((x.filter (fun f => f.1 = q5)).map (fun y => y.2)).sum)
 
 lemma reduce_nodup (x : FiveQuanta 𝓩) : x.reduce.Nodup := by
@@ -249,7 +249,7 @@ variable [CommRing 𝓩]
   see equation (23) of arXiv:1401.5084.
 -/
 def anomalyCoefficent (F : FiveQuanta 𝓩) : 𝓩 × 𝓩 :=
-  ((F.map fun x => x.2.2 • x.1 ).sum, (F.map fun x =>  x.2.2 • (x.1 * x.1)).sum)
+  ((F.map fun x => x.2.2 • x.1 ).sum, (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
 lemma anomalyCoefficent_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
     F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
