@@ -253,8 +253,7 @@ def anomalyCoefficent (F : FiveQuanta 𝓩) : 𝓩 × 𝓩 :=
   ((F.map fun x => x.2.2 • x.1).sum, (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
 @[simp]
-lemma anomalyCoefficent_of_map {𝓩 𝓩1 : Type} [DecidableEq 𝓩] [CommRing 𝓩]
-    [DecidableEq 𝓩1] [CommRing 𝓩1]
+lemma anomalyCoefficent_of_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (F : FiveQuanta 𝓩) :
     FiveQuanta.anomalyCoefficent (F.map fun y => (f y.1, y.2) : FiveQuanta 𝓩1) =
     (f.prodMap f) F.anomalyCoefficent := by

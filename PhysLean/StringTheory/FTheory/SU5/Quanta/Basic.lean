@@ -79,8 +79,7 @@ def HdAnomalyCoefficent [CommRing 𝓩] (qHd : Option 𝓩) : 𝓩 × 𝓩 :=
   | some qHd => (qHd, qHd ^ 2)
 
 @[simp]
-lemma HdAnomalyCoefficent_map {𝓩 𝓩1 : Type} [DecidableEq 𝓩] [CommRing 𝓩]
-    [DecidableEq 𝓩1] [CommRing 𝓩1]
+lemma HdAnomalyCoefficent_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (qHd : Option 𝓩) :
     HdAnomalyCoefficent (qHd.map f) = (f.prodMap f) (HdAnomalyCoefficent qHd) := by
   match qHd with
@@ -94,8 +93,7 @@ def HuAnomalyCoefficent [CommRing 𝓩] (qHu : Option 𝓩) : 𝓩 × 𝓩 :=
   | some qHu => (-qHu, -qHu ^ 2)
 
 @[simp]
-lemma HuAnomalyCoefficent_map {𝓩 𝓩1 : Type} [DecidableEq 𝓩] [CommRing 𝓩]
-    [DecidableEq 𝓩1] [CommRing 𝓩1]
+lemma HuAnomalyCoefficent_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (qHu : Option 𝓩) :
     HuAnomalyCoefficent (qHu.map f) = (f.prodMap f) (HuAnomalyCoefficent qHu) := by
   match qHu with
