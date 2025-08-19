@@ -250,6 +250,14 @@ variable [CommRing 𝓩]
 def anomalyCoefficent (F : TenQuanta 𝓩) : 𝓩 × 𝓩 :=
   ((F.map fun x => x.2.2 • x.1).sum, 3 * (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
+@[simp]
+lemma anomalyCoefficent_of_map {𝓩 𝓩1 : Type} [DecidableEq 𝓩] [CommRing 𝓩]
+    [DecidableEq 𝓩1] [CommRing 𝓩1]
+    (f : 𝓩 →+* 𝓩1) (F : TenQuanta 𝓩) :
+    TenQuanta.anomalyCoefficent (F.map fun y => (f y.1, y.2) : TenQuanta 𝓩1) =
+    (f.prodMap f) F.anomalyCoefficent := by
+  simp [TenQuanta.anomalyCoefficent, map_multiset_sum, Multiset.map_map, map_ofNat]
+
 lemma anomalyCoefficent_of_reduce [DecidableEq 𝓩] (F : TenQuanta 𝓩) :
     F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
   simp [anomalyCoefficent]

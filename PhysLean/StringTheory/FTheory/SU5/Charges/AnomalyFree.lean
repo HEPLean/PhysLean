@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Quanta.Basic
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Map
 /-!
 
 # Anomaly cancellation
@@ -42,6 +41,71 @@ def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : Charges 𝓩) : Prop :
 
 instance [DecidableEq 𝓩] [CommRing 𝓩] {c : Charges 𝓩} : Decidable (IsAnomalyFree c) :=
   Multiset.decidableExistsMultiset
+
+/-!
+
+## The IsAnomalyFree condition under a map
+
+-/
+
+section map
+
+variable {𝓩 𝓩1 : Type} [DecidableEq 𝓩1] [DecidableEq 𝓩][CommRing 𝓩1] [CommRing 𝓩]
+
+lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : Charges 𝓩}
+    (h : IsAnomalyFree c) : IsAnomalyFree (c.map (f.toAddMonoidHom)) := by
+  obtain ⟨Q, h1, h2⟩ := h
+  match Q with
+  | (qHd, qHu, F5, F10) =>
+  let QM : Quanta 𝓩1 := (Option.map f qHd, Option.map f qHu, F5.map fun y => (f y.1, y.2),
+    F10.map fun y => (f y.1, y.2))
+  use QM
+  constructor
+  · simp [QM, Quanta.ofChargesExpand] at ⊢ h1
+    have hqHd := h1.2.2.1
+    have hqHu := h1.2.2.2
+    subst hqHd hqHu
+    simp [Charges.map]
+    refine ⟨?_, ?_⟩
+    · have h5 := h1.1
+      rw [FiveQuanta.mem_ofChargesExpand_iff] at h5 ⊢
+      constructor
+      · rw [← h5.1]
+        simp [FiveQuanta.toCharges]
+        rw [← Finset.image_toFinset, ← Finset.image_toFinset, Finset.image_image]
+        rfl
+      · rw [← h5.2]
+        simp [FiveQuanta.toFluxesFive]
+    · have h10 := h1.2.1
+      rw [TenQuanta.mem_ofChargesExpand_iff] at h10 ⊢
+      constructor
+      · rw [← h10.1]
+        simp [TenQuanta.toCharges]
+        rw [← Finset.image_toFinset, ← Finset.image_toFinset, Finset.image_image]
+        rfl
+      · have hr := h10.2
+        rcases hr with hr | hr
+        all_goals
+          rw [← hr]
+          simp [TenQuanta.toFluxesTen]
+  · simp at h2
+    simp [QM]
+    rw [Quanta.AnomalyCancellation]
+    simp only [Quanta.HdAnomalyCoefficent_map, RingHom.coe_prodMap, Quanta.HuAnomalyCoefficent_map,
+      FiveQuanta.anomalyCoefficent_of_map, TenQuanta.anomalyCoefficent_of_map, QM]
+    trans (f.prodMap f) ((Quanta.HdAnomalyCoefficent qHd) +
+      (Quanta.HuAnomalyCoefficent qHu) + F5.anomalyCoefficent + F10.anomalyCoefficent)
+    · simp [map_add]
+    rw [h2]
+    exact map_zero _
+
+end map
+
+/-!
+
+## The viable charges which are anomaly free.
+
+-/
 
 set_option maxRecDepth 2000 in
 /-- The viable charges which are anomaly free. -/

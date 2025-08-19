@@ -78,11 +78,29 @@ def HdAnomalyCoefficent [CommRing 𝓩] (qHd : Option 𝓩) : 𝓩 × 𝓩 :=
   | none => (0, 0)
   | some qHd => (qHd, qHd ^ 2)
 
+@[simp]
+lemma HdAnomalyCoefficent_map {𝓩 𝓩1 : Type} [DecidableEq 𝓩] [CommRing 𝓩]
+    [DecidableEq 𝓩1] [CommRing 𝓩1]
+    (f : 𝓩 →+* 𝓩1) (qHd : Option 𝓩) :
+    HdAnomalyCoefficent (qHd.map f) = (f.prodMap f) (HdAnomalyCoefficent qHd) := by
+  match qHd with
+  | none => simp [HdAnomalyCoefficent]
+  | some qHd => simp [HdAnomalyCoefficent]
+
 /-- The pair of anomaly cancellation coefficents associated with the `Hu` particle. -/
 def HuAnomalyCoefficent [CommRing 𝓩] (qHu : Option 𝓩) : 𝓩 × 𝓩 :=
   match qHu with
   | none => (0, 0)
   | some qHu => (-qHu, -qHu ^ 2)
+
+@[simp]
+lemma HuAnomalyCoefficent_map {𝓩 𝓩1 : Type} [DecidableEq 𝓩] [CommRing 𝓩]
+    [DecidableEq 𝓩1] [CommRing 𝓩1]
+    (f : 𝓩 →+* 𝓩1) (qHu : Option 𝓩) :
+    HuAnomalyCoefficent (qHu.map f) = (f.prodMap f) (HuAnomalyCoefficent qHu) := by
+  match qHu with
+  | none => simp [HuAnomalyCoefficent]
+  | some qHu => simp [HuAnomalyCoefficent]
 
 /-- The anomaly cancellation conditions on quanta making up the fields present in
   the theory. This corresponds to the conditions that:
