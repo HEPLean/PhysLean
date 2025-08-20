@@ -139,6 +139,8 @@ if the following conditions hold:
 - `charges` is `IsPhenoClosedQ5` with respect to `S5`,
 - `charges` is `IsPhenoClosedQ10` with respect to `S10`
 - and satisfies `ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges`.
+The importance of this lemma is that it is only regarding properties of finite-set `charges`
+not of the whole space of possible charges.
 -/
 lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
     {S5 S10 : Finset 𝓩} {charges : Multiset (Charges 𝓩)}
