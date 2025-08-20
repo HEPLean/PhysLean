@@ -84,11 +84,15 @@ def IsPhenoConstrainedQ5 [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) : Pro
   x.AllowsTermQ5 q5 W4 ∨
   x.AllowsTermQ5 q5 K1 ∨ x.AllowsTermQ5 q5 K2 ∨ x.AllowsTermQ5 q5 W1
 
+lemma isPhenoConstrainedQ5_iff [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) :
+    x.IsPhenoConstrainedQ5 q5 ↔
+    x.AllowsTermQ5 q5 β ∨ x.AllowsTermQ5 q5 Λ ∨ x.AllowsTermQ5 q5 W4 ∨
+    x.AllowsTermQ5 q5 K1 ∨ x.AllowsTermQ5 q5 W1 := by
+  simp [IsPhenoConstrainedQ5, AllowsTermQ5]
+
 instance decidableIsPhenoConstrainedQ5 [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) :
     Decidable (x.IsPhenoConstrainedQ5 q5) :=
-  inferInstanceAs (Decidable (x.AllowsTermQ5 q5 μ ∨ x.AllowsTermQ5 q5 β ∨
-    x.AllowsTermQ5 q5 Λ ∨ x.AllowsTermQ5 q5 W2 ∨ x.AllowsTermQ5 q5 W4 ∨
-    x.AllowsTermQ5 q5 K1 ∨ x.AllowsTermQ5 q5 K2 ∨ x.AllowsTermQ5 q5 W1))
+  decidable_of_iff _ (isPhenoConstrainedQ5_iff x q5).symm
 
 lemma isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5 [DecidableEq 𝓩] {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} :
@@ -120,11 +124,14 @@ def IsPhenoConstrainedQ10 [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) : P
   x.AllowsTermQ10 q10 W4 ∨
   x.AllowsTermQ10 q10 K1 ∨ x.AllowsTermQ10 q10 K2 ∨ x.AllowsTermQ10 q10 W1
 
+lemma isPhenoConstrainedQ10_iff [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) :
+    x.IsPhenoConstrainedQ10 q10 ↔ x.AllowsTermQ10 q10 Λ ∨ x.AllowsTermQ10 q10 W2 ∨
+    x.AllowsTermQ10 q10 K1 ∨ x.AllowsTermQ10 q10 K2 ∨ x.AllowsTermQ10 q10 W1 := by
+  simp [IsPhenoConstrainedQ10, AllowsTermQ10]
+
 instance decidableIsPhenoConstrainedQ10 [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) :
     Decidable (x.IsPhenoConstrainedQ10 q10) :=
-  inferInstanceAs (Decidable (x.AllowsTermQ10 q10 μ ∨ x.AllowsTermQ10 q10 β ∨ x.AllowsTermQ10 q10 Λ
-  ∨ x.AllowsTermQ10 q10 W2 ∨ x.AllowsTermQ10 q10 W4 ∨
-  x.AllowsTermQ10 q10 K1 ∨ x.AllowsTermQ10 q10 K2 ∨ x.AllowsTermQ10 q10 W1))
+  decidable_of_iff _ (isPhenoConstrainedQ10_iff x q10).symm
 
 lemma isPhenoConstrained_insertQ10_iff_isPhenoConstrainedQ10 [DecidableEq 𝓩] {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} :

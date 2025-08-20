@@ -128,6 +128,7 @@ import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.FinsetTe
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoClosed
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.U1U1
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
