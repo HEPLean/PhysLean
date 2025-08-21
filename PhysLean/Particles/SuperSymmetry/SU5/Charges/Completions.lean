@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 /-!
 
 # Completions of charges
@@ -88,6 +89,15 @@ def completions (S5 S10 : Finset 𝓩) (x : Charges 𝓩) : Multiset (Charges �
   let SQ5 := if x.2.2.1 ≠ ∅ then {x.2.2.1} else S5.val.map fun y => {y}
   let SQ10 := if x.2.2.2 ≠ ∅ then {x.2.2.2} else S10.val.map fun y => {y}
   (SqHd.product (SqHu.product (SQ5.product SQ10)))
+
+lemma completions_nodup (S5 S10 : Finset 𝓩) (x : Charges 𝓩) :
+    (completions S5 S10 x).Nodup := by
+  simp [completions]
+  split_ifs
+  all_goals
+    refine Multiset.Nodup.product ?_ (Multiset.Nodup.product ?_ (Multiset.Nodup.product ?_ ?_))
+  any_goals exact Multiset.nodup_singleton _
+  any_goals exact Finset.nodup_map_iff_injOn.mpr (by simp)
 
 lemma completions_eq_singleton_of_complete {S5 S10 : Finset 𝓩} (x : Charges 𝓩)
     (hcomplete : IsComplete x) :
@@ -261,6 +271,49 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : Charges
       · rw [Subset]
         dsimp [hasSubset]
         simp_all
+
+/-!
+
+## Completions of minimal top yukawa
+
+-/
+
+def completionsTopYukawa (S5 : Finset 𝓩) (x : Charges 𝓩) :
+     Multiset (Charges 𝓩) :=
+  (S5.val.product S5.val).map fun (qHd, q5) => (qHd, x.2.1, {q5}, x.2.2.2)
+
+omit [DecidableEq 𝓩] in
+lemma completionsTopYukawa_nodup {S5 : Finset 𝓩} (x : Charges 𝓩) :
+    (completionsTopYukawa S5 x).Nodup := by
+  simp [completionsTopYukawa]
+  refine Multiset.Nodup.map_on ?_ ?_
+  intro (z1, z2) hz (y1, y2) hy h
+  simp [eq_iff] at h
+  simp_all
+  exact (S5.product S5).nodup
+
+lemma completions_eq_completionsTopYukawa_of_mem_minimallyAllowsTermsOfFinset [AddCommGroup 𝓩]
+    {S5 S10 : Finset 𝓩} (x : Charges 𝓩)
+    (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 .topYukawa) :
+    completions S5 S10 x = completionsTopYukawa S5 x := by
+  refine (Multiset.Nodup.ext ?_ ?_).mpr ?_
+  · exact completions_nodup S5 S10 x
+  · exact completionsTopYukawa_nodup x
+  intro a
+  simp [minimallyAllowsTermsOfFinset] at hx
+  obtain ⟨qHu, Q10, ⟨⟨h1, ⟨h2, hcard⟩⟩, h3⟩, rfl⟩ := hx
+  simp [completions, completionsTopYukawa]
+  have Q10_neq_zero : Q10 ≠ 0 := by
+    by_contra hn
+    subst hn
+    simp at hcard
+  simp [Q10_neq_zero]
+  match a with
+  | (xqHd, xqHu, xQ5, xQ10) =>
+  repeat rw [Multiset.mem_product]
+  simp [eq_iff]
+  aesop
+
 
 end Charges
 

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 /-!
 
 # Minimally allows terms given sets of allowed charges
@@ -451,6 +452,15 @@ lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10' : Finset �
   rw [← minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
     (ofFinset_subset_of_subset h5 h10 h1)]
   exact (minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset h1).mpr hx
+
+lemma not_isPhenoConstrained_of_minimallyAllowsTermsOfFinset_topYukawa
+    {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
+    (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 topYukawa) :
+    ¬ x.IsPhenoConstrained := by
+  simp [minimallyAllowsTermsOfFinset] at hx
+  obtain ⟨qHu, Q10, h1, rfl⟩ := hx
+  simp [IsPhenoConstrained, AllowsTerm, mem_ofPotentialTerm_iff_mem_ofPotentialTerm,
+    ofPotentialTerm' ]
 
 end Charges
 

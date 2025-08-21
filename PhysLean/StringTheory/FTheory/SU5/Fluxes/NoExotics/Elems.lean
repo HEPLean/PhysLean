@@ -82,8 +82,8 @@ lemma hasNoZero_of_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics
 lemma map_sum_add_of_mem_powerset_elemsNoExotics (F S : FluxesFive)
     (hf : F ∈ FluxesFive.elemsNoExotics)
     (hS: S ∈ Multiset.powerset F) :
-    (Multiset.map (fun x => (|x.1|, -|x.1|)) S).sum +
-    (Multiset.map (fun x => (0, |x.1 + x.2|)) S).sum = S.sum := by
+    (S.map (fun x => (|x.1|, -|x.1|))).sum +
+    (S.map (fun x => (0, |x.1 + x.2|))).sum = S.sum := by
   fin_cases hf
   all_goals
   · fin_cases hS

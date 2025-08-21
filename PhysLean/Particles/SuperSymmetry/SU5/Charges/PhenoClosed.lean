@@ -56,8 +56,7 @@ lemma isPhenClosedQ5_of_isPhenoConstrainedQ5 {S5 : Finset 𝓩} {charges : Multi
       IsPhenoConstrainedQ5 x q5 ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1) :
     IsPhenoClosedQ5 S5 charges := by
   intro q5 hq5 x hx
-  have h' := h q5 hq5 x hx
-  rcases h' with h'| h' | h'
+  rcases h q5 hq5 x hx with h'| h' | h'
   · left
     rw [isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5]
     left
@@ -105,18 +104,33 @@ def ContainsPhenoCompletionsOfMinimallyAllows (S5 S10 : Finset 𝓩) (charges : 
       ¬ x.IsPhenoConstrained → ∀ y ∈ completions S5 S10 x, ¬ y.IsPhenoConstrained
       ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1 → y ∈ charges
 
+lemma containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa {S5 S10 : Finset 𝓩}
+    {charges : Multiset (Charges 𝓩)} :
+    ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges ↔
+    ∀ x ∈ (minimallyAllowsTermsOfFinset S5 S10 topYukawa),
+    ∀ y ∈ completionsTopYukawa S5 x, ¬ y.IsPhenoConstrained
+      ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1 → y ∈ charges := by
+  rw [ContainsPhenoCompletionsOfMinimallyAllows]
+  have h1 (x : Charges 𝓩) (hx : x ∈ (minimallyAllowsTermsOfFinset S5 S10 topYukawa)) :
+    ¬ x.IsPhenoConstrained ↔ True := by
+    simp only [iff_true]
+    exact not_isPhenoConstrained_of_minimallyAllowsTermsOfFinset_topYukawa hx
+  conv_lhs =>
+    enter [x, hx]
+    rw [completions_eq_completionsTopYukawa_of_mem_minimallyAllowsTermsOfFinset x hx]
+    rw [h1 x hx]
+  simp
+
 instance [DecidableEq 𝓩] {S5 S10 : Finset 𝓩} {charges : Multiset (Charges 𝓩)} :
     Decidable (ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges) :=
-  Multiset.decidableForallMultiset
+  decidable_of_iff _ (containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa).symm
 
 lemma containsPhenoCompletionsOfMinimallyAllows_of_subset {S5 S10 : Finset 𝓩}
     {charges charges' : Multiset (Charges 𝓩)}
     (h' : ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges)
     (h : ∀ x ∈ charges, x ∈ charges') :
-    ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges' := by
-  intro x hx hnot y h3 h4
-  apply h
-  exact h' x hx hnot y h3 h4
+    ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges' :=
+  fun x hx hnot y h3 h4 => h y <| h' x hx hnot y h3 h4
 
 /-!
 

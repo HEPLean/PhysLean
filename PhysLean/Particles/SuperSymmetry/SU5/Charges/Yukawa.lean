@@ -14,6 +14,12 @@ Do the singlets needed to regenerate the Yukawa terms regenerate a dangerous cou
 in the superpotential with up to `n` insertions of the Yukawa singlets?
 This questions is manifested in the `YukawaGeneratesDangerousAtLevel` predicate.
 
+## Note
+
+We do not consider the regeneration of terms in the Kahler potential here.
+This is left as a TODO. Often, however, regneration of the superpotential terms is restrictive
+enough.
+
 -/
 
 namespace SuperSymmetry

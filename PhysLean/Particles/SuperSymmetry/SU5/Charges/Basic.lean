@@ -15,6 +15,7 @@ The data structure associated with additional charges in the SU(5) GUT model.
 
 These charges are permitted to sit within any type `𝓩` which is usually taken
 to be `ℤ` (for `U(1)` charges) or multiples thereof.
+
 -/
 
 namespace SuperSymmetry

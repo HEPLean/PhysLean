@@ -37,27 +37,27 @@ namespace SU5
 
 /-- Relevant terms part of the superpotential and Kahler potential of the `SU(5)` SUSY GUT. -/
 inductive PotentialTerm
-  /-- The term `μ 5Hu 5̄Hd`. -/
+  /-- The term `μ 5Hu 5̄Hd` appearing in the super-potential. -/
   | μ : PotentialTerm
-  /-- The term `𝛽ᵢ 5̄Mⁱ5Hu`. -/
+  /-- The term `𝛽ᵢ 5̄Mⁱ5Hu` appearing in the super-potential. -/
   | β : PotentialTerm
-  /-- The term `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ`. -/
+  /-- The term `𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ` appearing in the super-potential. -/
   | Λ : PotentialTerm
-  /-- The term `W¹ᵢⱼₖₗ 10ⁱ 10ʲ 10ᵏ 5̄Mˡ` -/
+  /-- The term `W¹ᵢⱼₖₗ 10ⁱ 10ʲ 10ᵏ 5̄Mˡ` appearing in the super-potential. -/
   | W1 : PotentialTerm
-  /-- The term `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`. -/
+  /-- The term `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd` appearing in the super-potential. -/
   | W2 : PotentialTerm
-  /-- The term `W³ᵢⱼ 5̄Mⁱ 5̄Mʲ 5Hu 5Hu`. -/
+  /-- The term `W³ᵢⱼ 5̄Mⁱ 5̄Mʲ 5Hu 5Hu` appearing in the super-potential. -/
   | W3 : PotentialTerm
-  /-- The term `W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu`. -/
+  /-- The term `W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu` appearing in the super-potential. -/
   | W4 : PotentialTerm
-  /-- The term `K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ`. -/
+  /-- The term `K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ` appearing in the Kahler potential. -/
   | K1 : PotentialTerm
-  /-- The term `K²ᵢ 5̄Hu 5̄Hd 10ⁱ` -/
+  /-- The term `K²ᵢ 5̄Hu 5̄Hd 10ⁱ` appearing in the Kahler potential. -/
   | K2 : PotentialTerm
-  /-- The term `λᵗᵢⱼ 10ⁱ 10ʲ 5Hu`. -/
+  /-- The term `λᵗᵢⱼ 10ⁱ 10ʲ 5Hu` appearing in the super-potential. -/
   | topYukawa : PotentialTerm
-  /-- The term `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd`. -/
+  /-- The term `λᵇᵢⱼ 10ⁱ 5̄Mʲ 5̄Hd` appearing in the super-potential. -/
   | bottomYukawa : PotentialTerm
 deriving DecidableEq, Fintype
 
