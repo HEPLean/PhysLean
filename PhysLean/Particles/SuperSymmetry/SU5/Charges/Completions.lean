@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Basic
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 /-!
 
@@ -278,8 +277,10 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : Charges
 
 -/
 
+/-- A fast version of `completions` for an `x` which is in
+  `minimallyAllowsTermsOfFinset S5 S10 .topYukawa`. -/
 def completionsTopYukawa (S5 : Finset 𝓩) (x : Charges 𝓩) :
-     Multiset (Charges 𝓩) :=
+    Multiset (Charges 𝓩) :=
   (S5.val.product S5.val).map fun (qHd, q5) => (qHd, x.2.1, {q5}, x.2.2.2)
 
 omit [DecidableEq 𝓩] in
@@ -313,7 +314,6 @@ lemma completions_eq_completionsTopYukawa_of_mem_minimallyAllowsTermsOfFinset [A
   repeat rw [Multiset.mem_product]
   simp [eq_iff]
   aesop
-
 
 end Charges
 

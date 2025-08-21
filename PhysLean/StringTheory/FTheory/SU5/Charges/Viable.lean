@@ -3,11 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoClosed
 import PhysLean.StringTheory.FTheory.SU5.Charges.OfRationalSection
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
 /-!
 
 Note this file takes a long time to compile.

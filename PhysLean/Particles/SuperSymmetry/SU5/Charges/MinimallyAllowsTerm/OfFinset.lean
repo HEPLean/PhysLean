@@ -460,7 +460,7 @@ lemma not_isPhenoConstrained_of_minimallyAllowsTermsOfFinset_topYukawa
   simp [minimallyAllowsTermsOfFinset] at hx
   obtain ⟨qHu, Q10, h1, rfl⟩ := hx
   simp [IsPhenoConstrained, AllowsTerm, mem_ofPotentialTerm_iff_mem_ofPotentialTerm,
-    ofPotentialTerm' ]
+    ofPotentialTerm']
 
 end Charges
 
