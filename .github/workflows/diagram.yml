@@ -16,3 +16,4 @@ jobs:
         uses: githubocto/repo-visualizer@main
         with:
           excluded_paths: "ignore,.github,./scripts,./docs,.gitignore"
+          file_colors: '{"lean" : "#dc4ac2ff"}'
