@@ -15,5 +15,5 @@ jobs:
       - name: Update diagram
         uses: githubocto/repo-visualizer@main
         with:
-          excluded_paths: "ignore,.github,./scripts,./docs,.gitignore, lake-manifest.json, lean-toolchain, .gitpod.yml, lakefile.toml, PhysLean.lean, diagram.svg, README.md, .vscode, CONTRIBUTING.md"
+          excluded_paths: "ignore,.github,./scripts,./docs,.gitignore, lake-manifest.json, lean-toolchain, .gitpod.yml, lakefile.toml, PhysLean.lean, diagram.svg, README.md, .vscode, CONTRIBUTING.md, LICENSE"
           file_colors: '{"lean" : "#dc4ac2ff"}'
