@@ -319,6 +319,7 @@ import PhysLean.SpaceAndTime.Time.TimeUnit
 import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Finite
+import PhysLean.StatisticalMechanics.CanonicalEnsemble.Lemmas
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.TwoState
 import PhysLean.StringTheory.Basic
 import PhysLean.StringTheory.FTheory.SU5.Basic
