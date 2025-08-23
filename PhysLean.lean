@@ -319,6 +319,7 @@ import PhysLean.SpaceAndTime.Time.TimeUnit
 import PhysLean.StatisticalMechanics.BoltzmannConstant
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Basic
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Finite
+import PhysLean.StatisticalMechanics.CanonicalEnsemble.Lemmas
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.TwoState
 import PhysLean.StringTheory.Basic
 import PhysLean.StringTheory.FTheory.SU5.Basic
@@ -345,3 +346,26 @@ import PhysLean.Units.Momentum.Basic
 import PhysLean.Units.Pressure
 import PhysLean.Units.Speed
 import PhysLean.Units.Velocity
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Asym
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.BoltzmannMachine.Core
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.BoltzmannMachine.Markov
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Core
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Markov
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.NNStochastic
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.NeuralNetwork
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Stochastic
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.StochasticAux
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.aux
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.test
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Asym
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.BoltzmannMachine.Core
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.BoltzmannMachine.Markov
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Core
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Markov
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.NNStochastic
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.NeuralNetwork
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.Stochastic
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.StochasticAux
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.aux
+import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.test
+
