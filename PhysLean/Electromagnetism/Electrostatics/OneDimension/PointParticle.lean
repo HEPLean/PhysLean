@@ -299,6 +299,9 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
   rw [gaussLaw_iff]
   ext η
   rw [electricField_eq_heavisideStep, chargeDistribution]
+  change (divD ((q / ε) • (ContinuousLinearMap.smulRight (heavisideStep 0) (basis 0) - (1 / 2) • constD 1 (basis 0)))) η =
+    ((1 / ε) • q • diracDelta ℝ 0) η
+  haveI :  SMulZeroClass ℝ ((Space 1)→d[ℝ] ℝ) := by infer_instance
   field_simp
   left
   rw [divD_apply_eq_sum_fderivD]
