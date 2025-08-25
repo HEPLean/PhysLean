@@ -22,7 +22,7 @@ lemma lightLike_iff_norm_sq_zero {d : ℕ} (p : Vector d) :
   simp only [causalCharacter]
   split
   · rename_i h
-    simp only [reduceCtorEq, h, eq_self_iff_true]
+    simp only [h]
   · rename_i h
     simp only [h, iff_false]
     split
@@ -33,7 +33,7 @@ lemma lightLike_iff_norm_sq_zero {d : ℕ} (p : Vector d) :
 @[simp]
 lemma causalCharacter_zero {d : ℕ} : causalCharacter (0 : Vector d) =
     CausalCharacter.lightLike := by
-  simp [causalCharacter, lightLike_iff_norm_sq_zero]
+  simp [causalCharacter]
 
 /-- Causally preceding is reflexive -/
 @[simp]

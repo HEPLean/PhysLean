@@ -96,8 +96,13 @@ def ofCliffordAlgebra : CliffordAlgebra diracForm →ₐ[ℝ] diracAlgebra :=
   CliffordAlgebra.lift _
     ⟨∑ i, (LinearMap.proj i).smulRight ⟨γ i, γ_in_diracAlgebra _⟩, fun v => by
       ext : 1
-      simp [Fin.sum_univ_four, mul_add, add_mul, smul_mul_smul, ← map_mul, ← map_sub, ← map_add,
-        Algebra.algebraMap_eq_smul_one]
+      simp only [γ, Fin.sum_univ_four, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one,
+        Matrix.cons_val, LinearMap.add_apply, LinearMap.coe_smulRight, LinearMap.coe_proj,
+        Function.eval, SetLike.mk_smul_mk, AddMemClass.mk_add_mk, MulMemClass.mk_mul_mk, mul_add,
+        Algebra.mul_smul_comm, add_mul, Algebra.smul_mul_assoc, γ0_mul_γ0, γ1_mul_γ0, smul_neg,
+        γ2_mul_γ0, γ3_mul_γ0, smul_add, γ1_mul_γ1, γ2_mul_γ1, γ3_mul_γ1, γ2_mul_γ2, γ3_mul_γ2,
+        γ3_mul_γ3, diracForm_apply, Algebra.algebraMap_eq_smul_one, SetLike.val_smul,
+        OneMemClass.coe_one]
       module⟩
 
 /-- The generators of the clifford algebra correspond to the elements `γ`. -/

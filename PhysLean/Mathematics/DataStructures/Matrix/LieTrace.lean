@@ -107,7 +107,7 @@ lemma blockTriangular_exp_of_blockTriangular_id
     induction n with
     | zero => rw [pow_zero]; exact blockTriangular_one
     | succ k ihk => rw [pow_succ]; exact ihk.mul hA
-  simp only [exp_series, smul_apply]
+  simp only [smul_apply]
   rw [h_pow hij, smul_zero]
 
 /--
@@ -286,7 +286,7 @@ theorem det_exp_real {n : Type*} [Fintype n] [LinearOrder n]
   have h_exp_comm : Complex.exp ((algebraMap ℝ ℂ) A.trace) =
       (algebraMap ℝ ℂ) (Real.exp A.trace) := by
     erw [← Complex.ofReal_exp]
-    simp_all only [Complex.coe_algebraMap, Algebra.id.map_eq_id, RingHom.id_apply,
+    simp_all only [Complex.coe_algebraMap, Algebra.algebraMap_self, RingHom.id_apply,
       Complex.ofReal_exp, A_ℂ]
   rw [h_exp_comm] at h_complex
   exact Complex.ofReal_injective h_complex

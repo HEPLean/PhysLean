@@ -160,7 +160,7 @@ lemma entropy_of_fintype [IsFinite 𝓒] (T : Temperature) :
     𝓒.entropy T = - kB * ∑ i, 𝓒.probability T i * log (𝓒.probability T i) := by
   simp [entropy, differentialEntropy]
   rw [MeasureTheory.integral_fintype]
-  simp [mul_comm]
+  simp only [μProd_of_fintype, smul_eq_mul, true_or]
   exact Integrable.of_finite
 
 lemma probability_le_one [IsFinite 𝓒] [Nonempty ι] (T : Temperature) (i : ι) :
@@ -208,7 +208,7 @@ lemma entropy_nonneg [IsFinite 𝓒] [Nonempty ι] (T : Temperature) :
   have hInt :
       Integrable (fun i => Real.log (𝓒.probability T i)) (𝓒.μProd T) := by
     classical
-    simp [μProd_of_fintype, probability]
+    simp only [probability, neg_mul, Integrable.of_finite]
   refine differentialEntropy_nonneg_of_prob_le_one (𝓒:=𝓒) (T:=T) hInt
     (probability_le_one (𝓒:=𝓒) (T:=T))
 

@@ -66,7 +66,7 @@ lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) : ‖ofReal a‖ ^ 2 = a := by
   rw [PiLp.norm_sq_eq_of_L2]
   rw [@Fin.sum_univ_two]
   simp only [Fin.isValue, cons_val_zero, norm_real, Real.norm_eq_abs, _root_.sq_abs, cons_val_one,
-    head_cons, norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero]
+    norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero]
   exact Real.sq_sqrt ha
 
 end HiggsVec

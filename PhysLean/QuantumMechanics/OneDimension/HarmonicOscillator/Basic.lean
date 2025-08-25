@@ -173,7 +173,7 @@ lemma schrodingerOperator_eq (ψ : ℝ → ℂ) :
 lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
     fun x => (ℏ ^2 / (2 * Q.m)) * (- (deriv (deriv ψ) x) + (1/Q.ξ^2)^2 * x^2 * ψ x) := by
   funext x
-  simp [schrodingerOperator_eq, ξ_sq, ξ_inverse, ξ_ne_zero, ξ_pos, ξ_abs, ← Complex.ofReal_pow]
+  simp [schrodingerOperator_eq, ξ_sq, ← Complex.ofReal_pow]
   have := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
   have := Complex.ofReal_ne_zero.mpr ℏ_ne_zero
   field_simp

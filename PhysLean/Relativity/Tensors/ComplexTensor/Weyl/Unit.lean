@@ -61,7 +61,7 @@ def leftAltLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ altLeftHanded
 
 lemma leftAltLeftUnit_apply_one : leftAltLeftUnit.hom (1 : ℂ) = leftAltLeftUnitVal := by
   change (1 : ℂ) • leftAltLeftUnitVal = leftAltLeftUnitVal
-  simp only [leftAltLeftUnit, one_smul]
+  simp only [one_smul]
 
 /-- The alt-left-left unit `δₐᵃ` as an element of `(altLeftHanded ⊗ leftHanded).V`. -/
 def altLeftLeftUnitVal : (altLeftHanded ⊗ leftHanded).V :=
@@ -104,7 +104,7 @@ def altLeftLeftUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ leftHanded
 /-- Applying the morphism `altLeftLeftUnit` to `1` returns `altLeftLeftUnitVal`. -/
 lemma altLeftLeftUnit_apply_one : altLeftLeftUnit.hom (1 : ℂ) = altLeftLeftUnitVal := by
   change (1 : ℂ) • altLeftLeftUnitVal = altLeftLeftUnitVal
-  simp only [altLeftLeftUnit, one_smul]
+  simp only [one_smul]
 
 /-- The right-alt-right unit `δ^{dot a}_{dot a}` as an element of
   `(rightHanded ⊗ altRightHanded).V`. -/
@@ -153,7 +153,7 @@ def rightAltRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ altRightHa
 
 lemma rightAltRightUnit_apply_one : rightAltRightUnit.hom (1 : ℂ) = rightAltRightUnitVal := by
   change (1 : ℂ) • rightAltRightUnitVal = rightAltRightUnitVal
-  simp only [rightAltRightUnit, one_smul]
+  simp only [one_smul]
 
 /-- The alt-right-right unit `δ_{dot a}^{dot a}` as an element of
   `(rightHanded ⊗ altRightHanded).V`. -/
@@ -200,7 +200,7 @@ def altRightRightUnit : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ rightHa
 
 lemma altRightRightUnit_apply_one : altRightRightUnit.hom (1 : ℂ) = altRightRightUnitVal := by
   change (1 : ℂ) • altRightRightUnitVal = altRightRightUnitVal
-  simp only [altRightRightUnit, one_smul]
+  simp only [one_smul]
 
 /-!
 

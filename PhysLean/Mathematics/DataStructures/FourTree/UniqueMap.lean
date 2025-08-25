@@ -151,7 +151,7 @@ lemma exists_of_mem_uniqueMap4 {T : FourTree α1 α2 α3 α4}
     simp [Twig.uniqueMap4]
   have hC22 : C.2.2.2 = Q10 := by
     subst heq
-    simp [Leaf.uniqueMap4, ← hPresent]
+    simp [← hPresent]
   have C_eq : C = (trunkT.1, branchT.1, twigT.1, Q10) := by
     simp [← hC1, ← hC2, ← hC21, ← hC22]
   -- The goal
@@ -248,7 +248,7 @@ lemma map_mem_uniqueMap3 {T : FourTree α1 α2 α3 α4}
     simp [Trunk.mem]
     use .branch qHu twigs
   · subst heq
-    simp [Trunk.uniqueMap3, Branch.uniqueMap3, Twig.uniqueMap3]
+    simp [Trunk.uniqueMap3, Branch.uniqueMap3]
 
 lemma exists_of_mem_uniqueMap3 {T : FourTree α1 α2 α3 α4}
     (C : α1 × α2 × α3 × α4) (h : C ∈ T.uniqueMap3 f) :
@@ -268,8 +268,7 @@ lemma exists_of_mem_uniqueMap3 {T : FourTree α1 α2 α3 α4}
   simp only [Branch.uniqueMap3, Multiset.mem_map] at twigI_mem
   obtain ⟨twigT, twigT_mem, rfl⟩ := twigI_mem
   -- obtaining leafT
-  simp [Twig.uniqueMap3, Multiset.mem_map, not_exists, not_and, Multiset.mem_filterMap,
-    Option.ite_none_right_eq_some, Option.some.injEq, exists_exists_and_eq_and] at leafI_mem
+  simp at leafI_mem
   obtain ⟨leftI_mem, h_not_mem⟩ := leafI_mem
   -- Properties of C
   have hC1 : C.1 = trunkT.1 := by
@@ -280,7 +279,7 @@ lemma exists_of_mem_uniqueMap3 {T : FourTree α1 α2 α3 α4}
     simp [Branch.uniqueMap3]
   have hC21 : C.2.2.1 = f twigT.1 := by
     subst heq
-    simp [Twig.uniqueMap3]
+    simp
   have hC22 : C.2.2.2 = leafI.1 := by
     subst heq
     simp

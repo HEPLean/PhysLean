@@ -91,7 +91,7 @@ noncomputable instance {d : Nat} : AddCommGroup (SpaceStruct d) where
 
 lemma inner_eq_sum {d} (p q : SpaceStruct d) :
     inner ℝ p q = ∑ i, p.val i * q.val i := by
-  simp only [inner, PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
+  simp only [inner, RCLike.inner_apply, conj_trivial]
   apply Finset.sum_congr rfl
   intro i hi
   exact mul_comm (q.val i) (p.val i)

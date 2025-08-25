@@ -22,7 +22,7 @@ def preContrCoUnitVal (d : ℕ := 3) : (Contr d ⊗ Co d).V :=
 /-- Expansion of `preContrCoUnitVal` into basis. -/
 lemma preContrCoUnitVal_expand_tmul {d : ℕ} : preContrCoUnitVal d =
     ∑ i, contrBasis d i ⊗ₜ[ℝ] coBasis d i := by
-  simp only [preContrCoUnitVal, Fin.isValue]
+  simp only [preContrCoUnitVal]
   rw [contrCoToMatrixRe_symm_expand_tmul]
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, ne_eq, reduceCtorEq, not_false_eq_true, one_apply_ne, zero_smul,

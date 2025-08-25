@@ -121,7 +121,7 @@ lemma linesInPlane_four (S : (PureU1 4).Sols) (hS : LineInPlaneCond S.1.1) :
   by_contra hn
   have hLin := pureU1_linear S.1.1
   have hcube := pureU1_cube S
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, PureU1_numberCharges] at hLin hcube
+  simp only [PureU1_numberCharges] at hLin hcube
   rw [Fin.sum_univ_four] at hLin hcube
   rw [sq_eq_sq_iff_eq_or_eq_neg] at hn
   simp only [Fin.isValue, not_or] at hn

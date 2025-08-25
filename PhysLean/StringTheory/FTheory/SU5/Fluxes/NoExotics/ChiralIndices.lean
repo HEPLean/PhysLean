@@ -51,7 +51,7 @@ lemma chiralIndicesOfD_noneg_of_noExotics (F : FluxesFive) (hF : NoExotics F)
     apply Multiset.sum_lt_sum_of_nonempty
     · simp [s]
       rw [Multiset.eq_zero_iff_forall_notMem]
-      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, Classical.not_imp, not_le, s]
+      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, not_le, ]
       use ci
     · intro i hi
       simp [s] at hi
@@ -161,7 +161,7 @@ lemma chiralIndicesOfL_noneg_of_noExotics (F : FluxesFive) (hF : NoExotics F)
     apply Multiset.sum_lt_sum_of_nonempty
     · simp [s]
       rw [Multiset.eq_zero_iff_forall_notMem]
-      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, Classical.not_imp, not_le, s]
+      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, not_le]
       use ci
     · intro i hi
       simp [s] at hi
@@ -275,7 +275,7 @@ lemma chiralIndicesOfQ_noneg_of_noExotics (F : FluxesTen) (hF : NoExotics F)
     apply Multiset.sum_lt_sum_of_nonempty
     · simp [s]
       rw [Multiset.eq_zero_iff_forall_notMem]
-      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, Classical.not_imp, not_le, s]
+      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, not_le]
       use ci
     · intro i hi
       simp [s] at hi
@@ -385,7 +385,7 @@ lemma chiralIndicesOfU_noneg_of_noExotics (F : FluxesTen) (hF : NoExotics F)
     apply Multiset.sum_lt_sum_of_nonempty
     · simp [s]
       rw [Multiset.eq_zero_iff_forall_notMem]
-      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, Classical.not_imp, not_le, s]
+      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, not_le]
       use ci
     · intro i hi
       simp [s] at hi
@@ -493,7 +493,7 @@ lemma chiralIndicesOfE_noneg_of_noExotics (F : FluxesTen) (hF : NoExotics F)
     apply Multiset.sum_lt_sum_of_nonempty
     · simp [s]
       rw [Multiset.eq_zero_iff_forall_notMem]
-      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, Classical.not_imp, not_le, s]
+      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, not_le]
       use ci
     · intro i hi
       simp [s] at hi

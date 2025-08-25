@@ -117,7 +117,7 @@ lemma μ_add : (𝓒 + 𝓒1).μ = 𝓒.μ.prod 𝓒1.μ := rfl
 lemma μ_nsmul (n : ℕ) : (nsmul n 𝓒).μ = MeasureTheory.Measure.pi fun _ => 𝓒.μ := rfl
 
 lemma μ_nsmul_zero_eq : (nsmul 0 𝓒).μ = Measure.pi (fun _ => 0) := by
-  simp [nsmul, μ_nsmul]
+  simp [nsmul]
   congr
   funext x
   exact Fin.elim0 x
@@ -326,8 +326,7 @@ lemma partitionFunction_nsmul (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).partitionFunction T = (𝓒.partitionFunction T) ^ n := by
   simp only [partitionFunction, μBolt_nsmul]
   rw [measureReal_def, Measure.pi_univ]
-  simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin, ENNReal.toReal_pow,
-    ENNReal.toReal_nonneg, measureReal_nonneg]
+  simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin, ENNReal.toReal_pow]
   rfl
 
 lemma partitionFunction_nonneg (T : Temperature) :
@@ -350,7 +349,7 @@ lemma paritionFunction_eq_zero_iff (T : Temperature) [IsFiniteMeasure (𝓒.μBo
     exact exp_pos (-(T.β * 𝓒.energy i))
   change 𝓒.μ s = 0 ↔ 𝓒.μ = 0
   rw [h]
-  simp only [Measure.measure_univ_eq_zero, s]
+  simp only [Measure.measure_univ_eq_zero]
   fun_prop
 
 open NNReal
@@ -519,7 +518,7 @@ lemma integrable_energy_nsmul (n : ℕ) (T : Temperature)
     Integrable (nsmul n 𝓒).energy ((nsmul n 𝓒).μProd T) := by
   induction n with
   | zero =>
-    simp [nsmul, μProd_nsmul]
+    simp [nsmul]
   | succ n ih =>
     rw [nsmul_succ]
     apply integrable_energy_congr
@@ -572,7 +571,7 @@ lemma meanEnergy_nsmul (n : ℕ) (T : Temperature)
     (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T := by
   induction n with
   | zero =>
-    simp [nsmul, meanEnergy, μProd_nsmul]
+    simp [nsmul, meanEnergy]
   | succ n ih =>
     rw [nsmul_succ, meanEnergy_congr, meanEnergy_add, ih]
     simp only [Nat.cast_add, Nat.cast_one]
@@ -603,7 +602,7 @@ lemma probability_pos
     (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] (i : ι) :
     0 < 𝓒.probability T i := by
   have hZpos := partitionFunction_pos (𝓒:=𝓒) (T:=T)
-  simp [probability, div_pos, Real.exp_pos, hZpos]
+  simp [probability, Real.exp_pos, hZpos]
 
 /-- General entropy non-negativity under a pointwise upper bound `probability ≤ 1`.
 This assumption holds automatically in the finite/counting case (since sums bound each term),

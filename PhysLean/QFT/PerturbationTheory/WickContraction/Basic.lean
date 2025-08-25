@@ -507,7 +507,7 @@ def sigmaContractedEquiv : (a : c.1) × a ≃ {x : Fin n // (c.getDual? x).isSom
       have hn : ¬ Disjoint a.1 {i.1, (c.getDual? ↑i).get (getDual?_isSome_of_mem c a i)} := by
         rw [Finset.disjoint_iff_inter_eq_empty, @Finset.eq_empty_iff_forall_notMem]
         simp only [Finset.coe_mem, Finset.inter_insert_of_mem, Finset.mem_insert, Finset.mem_inter,
-          Finset.mem_singleton, not_or, not_and, not_forall, Classical.not_imp, Decidable.not_not]
+          Finset.mem_singleton, not_or, not_and, not_forall, Decidable.not_not]
         exact ⟨i, fun x ↦ (x rfl).elim⟩
       simp_all only [or_false, disjoint_self, Finset.bot_eq_empty, Finset.insert_ne_empty,
         not_false_eq_true]

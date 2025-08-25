@@ -190,7 +190,7 @@ lemma basis_on_oddFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
       omega
     · rfl
 
@@ -208,7 +208,7 @@ lemma basis!_on_oddShiftFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
       omega
     rfl
 

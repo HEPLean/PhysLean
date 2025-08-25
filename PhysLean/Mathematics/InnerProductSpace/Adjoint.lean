@@ -96,36 +96,36 @@ lemma HasAdjoint.prodMk {f : E → F} {g : E → G} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => (f x, g x)) (fun yz => f' yz.1 + g' yz.2) := by
   constructor; intros
-  simp [inner,inner_add_left',
+  simp [inner_add_left',
       hf.adjoint_inner_left, hg.adjoint_inner_left]
 
 lemma HasAdjoint.fst {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => (f x).1) (fun y => f' (y, 0)) := by
   constructor; intros
-  simp[inner, hf.adjoint_inner_left]
+  simp[hf.adjoint_inner_left]
 
 lemma HasAdjoint.snd {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => (f x).2) (fun z => f' (0, z)) := by
   constructor; intros
-  simp[inner, hf.adjoint_inner_left]
+  simp[hf.adjoint_inner_left]
 
 lemma HasAdjoint.neg {f : E → F} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => -f x) (fun y => -f' y) := by
   constructor; intros
-  simp[inner, hf.adjoint_inner_left]
+  simp[hf.adjoint_inner_left]
 
 lemma HasAdjoint.add {f g : E → F} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => f x + g x) (fun y => f' y + g' y) := by
   constructor; intros
-  simp[inner, inner_add_left', inner_add_right',
+  simp[inner_add_left', inner_add_right',
       hf.adjoint_inner_left, hg.adjoint_inner_left]
 
 lemma HasAdjoint.sub {f g : E → F} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => f x - g x) (fun y => f' y - g' y) := by
   constructor; intros
-  simp[inner, sub_eq_add_neg, inner_add_left', inner_add_right',
+  simp[sub_eq_add_neg, inner_add_left', inner_add_right',
       hf.adjoint_inner_left, hg.adjoint_inner_left]
 
 open ComplexConjugate in
@@ -133,11 +133,11 @@ lemma HasAdjoint.smul_left {f : E → F} {f'} (c : 𝕜)
     (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => c • f x) (fun y => (conj c) • f' y) := by
   constructor; intros
-  simp[inner, inner_smul_left', inner_smul_right', hf.adjoint_inner_left]
+  simp[inner_smul_left', inner_smul_right', hf.adjoint_inner_left]
 
 open ComplexConjugate in
 lemma HasAdjoint.smul_right {f : E → 𝕜} {f'} (v : F)
     (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => f x • v) (fun y => f' (conj ⟪y, v⟫)) := by
   constructor; intros
-  simp[inner, inner_smul_left', inner_smul_right', hf.adjoint_inner_left]
+  simp[inner_smul_right', hf.adjoint_inner_left]

@@ -59,8 +59,7 @@ lemma transverseHarmonicPlaneWave_eq_planeWave {c : ℝ} {k : WaveVector} {f₀x
   ext1 t
   ext1 r
   rw [harmonicWave, harmonicWave, WaveVector.toDirection]
-  simp [-PiLp.inner_apply, RCLike.inner_apply, conj_trivial, Fin.isValue, PiLp.smul_apply,
-    smul_eq_mul, neg_mul]
+  simp only [Fin.isValue, neg_mul]
   have normk: ‖k‖ = ω/c := by
     rw [hk]
     simp [← abs_div, hc_ge_zero, hω_ge_zero, le_of_lt]

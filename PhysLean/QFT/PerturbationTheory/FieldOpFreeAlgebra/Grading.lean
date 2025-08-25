@@ -227,7 +227,7 @@ lemma directSum_eq_bosonic_plus_fermionic
       simp only [map_zero]
       simp
     | fermionic =>
-      simp only [DirectSum.of_eq_same, add_zero]
+      simp only [DirectSum.of_eq_same]
       rw [DirectSum.of_eq_of_ne]
       simp only [map_zero, zero_add]
       simp

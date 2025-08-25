@@ -99,7 +99,7 @@ lemma staticWickTerm_insert_zero_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Field
     · rw [staticContract_of_not_gradingCompliant]
       simp only [ZeroMemClass.coe_zero, zero_mul, smul_zero, instCommGroup.eq_1, mul_zero]
       exact h0
-    · simp_all only [Finset.mem_univ, not_not, instCommGroup.eq_1, forall_const]
+    · simp_all only [not_not, instCommGroup.eq_1, forall_const]
       have h1 : contractStateAtIndex φ [φsΛ]ᵘᶜ (uncontractedFieldOpEquiv φs φsΛ k) = 0 := by
         simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
           Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply,
@@ -143,13 +143,12 @@ lemma mul_staticWickTerm_eq_sum (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
   | none =>
     simp only [contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
       Equiv.coe_trans, Option.map_none, one_mul, Algebra.smul_mul_assoc, Nat.succ_eq_add_one,
-      Fin.zero_eta, Fin.val_zero, List.insertIdx_zero, staticContract_insert_none,
-      insertAndContract_uncontractedList_none_zero]
+      Fin.val_zero, List.insertIdx_zero]
     rw [staticWickTerm_insert_zero_none]
     simp only [Algebra.smul_mul_assoc]
     rfl
   | some n =>
-    simp only [Algebra.smul_mul_assoc, Nat.succ_eq_add_one, Fin.zero_eta, Fin.val_zero,
+    simp only [Algebra.smul_mul_assoc, Nat.succ_eq_add_one, Fin.val_zero,
       List.insertIdx_zero]
     rw [staticWickTerm_insert_zero_some]
 

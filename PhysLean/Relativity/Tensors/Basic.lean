@@ -203,7 +203,7 @@ lemma component_eq_drop {n : ℕ} {c : Fin (n + 1) → C} (p : Pure S c) (i : Fi
     (b : ComponentIdx c) :
     p.component b = ((S.basis (c i)).repr (p i) (b i)) *
     ((drop p i).component (fun j => b (i.succAbove j))) := by
-  simp only [component, Nat.succ_eq_add_one, Function.comp_apply]
+  simp only [component, Function.comp_apply]
   rw [Fin.prod_univ_succAbove _ i]
   rfl
 
@@ -260,8 +260,7 @@ noncomputable def basisVector {n : ℕ} (c : Fin n → C) (b : ComponentIdx (S :
 lemma component_basisVector {n : ℕ} (c : Fin n → C) (b1 b2 : ComponentIdx (S := S) c) :
     (basisVector c b1).component b2 = if b1 = b2 then 1 else 0 := by
   simp only [basisVector, component_eq, funext_iff]
-  simp only [component, MultilinearMap.coe_mk,
-    Basis.repr_self]
+  simp only [Basis.repr_self]
   by_cases h : b1 = b2
   · subst h
     simp
@@ -305,7 +304,7 @@ lemma componentMap_pure {n : ℕ} (c : Fin n → C)
     (p : Pure S c) : componentMap c (p.toTensor) = Pure.componentMap c p := by
   simp only [componentMap, Pure.toTensor]
   change (PiTensorProduct.lift (Pure.componentMap c)) ((PiTensorProduct.tprod k) p) = _
-  simp [PiTensorProduct.lift_tprod]
+  simp
 
 /-- The tensor created from it's components. -/
 def ofComponents {n : ℕ} (c : Fin n → C) :
@@ -540,7 +539,7 @@ lemma PermCond.preserve_color {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
     ∀ (x : Fin m), c1 x = (c ∘ σ) x := by
   intro x
   obtain ⟨y, rfl⟩ := h.toEquiv.surjective x
-  simp only [Function.comp_apply, Equiv.symm_apply_apply]
+  simp only [Function.comp_apply]
   rw [h.2]
 
 TODO "7ESNL" "We want to add `inv_perserve_color` to Simp database, however this fires the linter
@@ -643,7 +642,7 @@ lemma permT_pure {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
 lemma Pure.permP_id_self {n : ℕ} {c : Fin n → C} (p : Pure S c) :
     Pure.permP (id : Fin n → Fin n) (by simp : PermCond c c id) p = p := by
   ext i
-  simp only [permP, Pure.permP, Function.comp_apply]
+  simp only [permP, Pure.permP]
   rw [eqToHom_refl]
   simp
 

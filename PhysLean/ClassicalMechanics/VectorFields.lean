@@ -7,7 +7,16 @@ import PhysLean.Mathematics.FDerivCurry
 import PhysLean.SpaceAndTime.Time.Basic
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.LinearAlgebra.CrossProduct
-import Mathlib.Tactic.FunProp.Differentiable
+import Mathlib.Analysis.Calculus.FDeriv.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Comp
+import Mathlib.Analysis.Calculus.FDeriv.Prod
+import Mathlib.Analysis.Calculus.FDeriv.Pi
+import Mathlib.Analysis.Calculus.FDeriv.Add
+import Mathlib.Analysis.Calculus.FDeriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import Mathlib.Tactic.FunProp
 import PhysLean.SpaceAndTime.Space.Basic
 /-!
 # Classical vector calculus properties
@@ -181,9 +190,9 @@ lemma fderiv_cross_commute {u : Time} {s : Space} {f : Time → EuclideanSpace �
       LinearMap.mk₂_apply, PiLp.ofLp_apply, Fin.reduceFinMk, WithLp.equiv_symm_apply,
       PiLp.toLp_apply, cons_val]
     rw [h]
-    simp [Fin.isValue, fderiv_eq_smul_deriv, smul_eq_mul, one_mul, PiLp.smul_apply]
+    simp only [Fin.isValue]
     rw [fderiv_pi]
-    simp [Fin.isValue, WithLp.equiv_symm_apply, PiLp.toLp_apply, cons_val]
+    simp only [Fin.isValue, PiLp.toLp_apply]
     rfl
     · intro i
       fin_cases i <;>
@@ -204,8 +213,7 @@ lemma inner_cross_self (v w : EuclideanSpace ℝ (Fin 3)) :
     inner ℝ v (w ⨯ₑ₃ v) = 0 := by
   cases v using WithLp.rec with | _ v =>
   cases w using WithLp.rec with | _ w =>
-  simp only [WithLp.equiv_apply, WithLp.ofLp_toLp, WithLp.equiv_symm_apply,
-    PiLp.toLp_apply, RCLike.inner_apply, conj_trivial]
+  simp only [WithLp.equiv_apply, WithLp.ofLp_toLp, WithLp.equiv_symm_apply]
   change (crossProduct w) v ⬝ᵥ v = _
   rw [dotProduct_comm, dot_cross_self]
 

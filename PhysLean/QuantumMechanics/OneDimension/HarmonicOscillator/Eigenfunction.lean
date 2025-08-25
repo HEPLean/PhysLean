@@ -35,7 +35,7 @@ lemma eigenfunction_eq (n : ℕ) :
     Complex.ofReal (physHermite n (x / Q.ξ) * Real.exp (- x^2 / (2 * Q.ξ^2))) := by
   funext x
   simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div,
-    mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    mul_inv_rev, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
     Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring
 
@@ -86,7 +86,7 @@ lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
     ‖Q.eigenfunction n x‖ = (1/√(2 ^ n * n !) * (1/ √(√Real.pi * Q.ξ))) *
     (|physHermite n (x / Q.ξ)| * Real.exp (- x ^ 2 / (2 * Q.ξ ^ 2))) := by
   rw [eigenfunction_eq]
-  simp only [neg_mul, Complex.ofReal_mul]
+  simp only [Complex.ofReal_mul]
   rw [norm_mul, norm_mul]
   congr
   · simp [Real.sqrt_nonneg, abs_of_nonneg]
@@ -95,7 +95,7 @@ lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
     congr 1
     · simp
     · rw [Complex.norm_real]
-      simp [abs_of_nonneg]
+      simp
 
 lemma eigenfunction_point_norm_sq (n : ℕ) (x : ℝ) :
     ‖Q.eigenfunction n x‖ ^ 2 = (1/√(2 ^ n * n !) * (1/ √(√Real.pi * Q.ξ))) ^ 2 *
@@ -161,7 +161,7 @@ lemma eigenfunction_parity (n : ℕ) :
     parityOperator (Q.eigenfunction n) = (-1) ^ n * Q.eigenfunction n := by
   funext x
   rw [eigenfunction_eq]
-  simp only [parityOperator, LinearMap.coe_mk, AddHom.coe_mk, mul_neg, Pi.mul_apply, Pi.pow_apply,
+  simp only [parityOperator, LinearMap.coe_mk, AddHom.coe_mk, Pi.mul_apply, Pi.pow_apply,
     Pi.neg_apply, Pi.one_apply]
   rw [show -x / Q.ξ = - (x / Q.ξ) by ring]
   rw [← physHermite_eq_aeval, physHermite_parity]
@@ -184,7 +184,7 @@ lemma eigenfunction_mul (n p : ℕ) :
         (physHermite n (x/Q.ξ) * physHermite p (x/Q.ξ)) *
         (Real.exp (- x^2 / (2 * Q.ξ^2)) * Real.exp (- x^2 / (2 * Q.ξ^2))) := by
       simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul,
-        one_div, mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        one_div, mul_inv_rev, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
         Complex.ofReal_pow, Complex.ofReal_ofNat, mul_one]
       ring
     _ = (1/√(2 ^ n * n !) * 1/√(2 ^ p * p !)) * (1/ (√Real.pi * Q.ξ)) *
@@ -199,11 +199,11 @@ lemma eigenfunction_mul (n p : ℕ) :
       · rw [← Complex.ofReal_mul]
         congr
         rw [← Real.exp_add]
-        simp only [neg_mul, Real.exp_eq_exp]
+        simp only [Real.exp_eq_exp]
         field_simp
         ring
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-    mul_one, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    mul_one, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
     Complex.ofReal_pow]
   ring
 

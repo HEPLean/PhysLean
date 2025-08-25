@@ -65,7 +65,7 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldO
     use a
     simp_all only [signFinset, Finset.mem_filter, Finset.mem_univ,
       join_getDual?_apply_uncontractedListEmb, Option.map_eq_none_iff, Option.isSome_map, true_and,
-      and_true, and_self]
+      and_true]
     apply And.intro
     · have h1 := h.1
       rw [StrictMono.lt_iff_lt] at h1
@@ -146,7 +146,7 @@ lemma join_singleton_signFinset_eq_filter {φs : List 𝓕.FieldOp}
         simp [join, singleton]
       simp only [hn, getDual?_getDual?_get_get, Option.some.injEq] at hij
       omega
-    · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at h2'
+    · simp only [Bool.not_eq_true] at h2'
       simp [h2']
 
 lemma join_singleton_left_signFinset_eq_filter {φs : List 𝓕.FieldOp}
@@ -368,7 +368,7 @@ lemma joinSignLeftExtra_eq_joinSignRightExtra {φs : List 𝓕.FieldOp}
           have hj2 : ¬ uncontractedListEmd (φsucΛ.sndFieldOfContract a) < j := by omega
           simp only [hj2, ↓reduceIte, map_one]
           rw [← ofFinset_union_disjoint]
-          simp only [instCommGroup, ofFinset_singleton, List.get_eq_getElem, hs]
+          simp only [instCommGroup, ofFinset_singleton, List.get_eq_getElem]
           erw [hs]
           simp only [Fin.getElem_fin, mul_self, map_one]
           simp only [Finset.disjoint_singleton_right, Finset.mem_singleton]

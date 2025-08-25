@@ -35,7 +35,7 @@ theorem waveEquation_electricField_of_freeMaxwellEquations
   have hdt : ∀ t, (∂ₜ (fun t => E t x) t) = (μ • ε)⁻¹ • (∇ × B t) x := by
     intro t
     rw [OM.ampereLaw_of_free E B]
-    · simp [← smul_assoc, mul_assoc, OM.mu_ge_zero, ne_of_gt, OM.eps_ge_zero, h]
+    · simp [← smul_assoc, mul_assoc, OM.mu_ge_zero, ne_of_gt, OM.eps_ge_zero]
     · exact h
   have hdt2 : ∂ₜ (fun t => ∂ₜ (fun t => E t x) t) t =
       ∂ₜ (fun t => (μ • ε)⁻¹ • (∇ × B t) x) t := by aesop
@@ -102,7 +102,7 @@ theorem waveEquation_magneticField_of_freeMaxwellEquations
   rw [hdt2]
   have hd0 : (∇ ⬝ (B t)) = 0 := by
     ext x
-    simp [Pi.zero_apply, OM.gaussLawMagnetic_of_free E B, h]
+    simp [OM.gaussLawMagnetic_of_free E B, h]
   have hlpB : Δ (B t) = - ((fun x => ∇ (∇ ⬝ (B t)) - Δ (B t)) x) := by simp [hd0]
   rw [hlpB, ← curl_of_curl]
   have hcB : curl (B t) = OM.μ • OM.ε • fun x => ∂ₜ (fun t => E t x) t := by
@@ -255,7 +255,9 @@ lemma time_deriv_electricPlaneWave_eq_cross_time_deriv_magneticPlaneWave
   fin_cases i <;>
   · rw [← Real.sq_sqrt (inv_nonneg_of_nonneg (le_of_lt (smul_pos OM.mu_ge_zero OM.eps_ge_zero))),
       Real.sqrt_inv, ← hc]
-    simp [← mul_assoc, OM.mu_ge_zero, OM.eps_ge_zero, ne_of_gt]
+    simp only [Fin.isValue, EuclideanSpace.basisFun_apply, Fin.reduceFinMk, PiLp.smul_apply,
+      smul_eq_mul, Nat.succ_eq_add_one, Nat.reduceAdd, WithLp.equiv_apply, LinearMap.mk₂_apply,
+      PiLp.ofLp_apply, WithLp.equiv_symm_apply, PiLp.toLp_apply, Matrix.cons_val, neg_mul]
     rw [mul_sub, pow_two,
       mul_assoc, space_fderiv_of_inner_product_wave_eq_space_fderiv h',
       mul_assoc, space_fderiv_of_inner_product_wave_eq_space_fderiv h']
@@ -323,7 +325,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
       enter [2]
       rw [Time.eq_one_smul r]
     simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, map_smul,
-      ContinuousLinearMap.zero_apply, smul_eq_zero, eq_zero_iff]
+      ContinuousLinearMap.zero_apply, smul_eq_zero]
     right
     exact hderiv' t x
   use fun x => (E 0 x) + (√(μ • ε))⁻¹ • (s.unit ⨯ₑ₃ B 0 x)
@@ -364,7 +366,7 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
       enter [2]
       rw [Time.eq_one_smul r]
     simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, map_smul,
-      ContinuousLinearMap.zero_apply, smul_eq_zero, eq_zero_iff]
+      ContinuousLinearMap.zero_apply, smul_eq_zero]
     right
     rw [fderiv_fun_sub]
     rw [fderiv_fun_const_smul]
@@ -439,7 +441,7 @@ theorem magneticField_transverse_upto_const_of_EMwave {s : Direction}
   have hcx : ∀ t x, inner ℝ (B t x) s.unit = inner ℝ (cx x) s.unit := by
     intro t x
     rw [hcx']
-    simp only [smul_eq_mul, neg_smul, PiLp.inner_apply, PiLp.add_apply, PiLp.neg_apply,
+    simp only [smul_eq_mul, PiLp.inner_apply, PiLp.add_apply,
       PiLp.smul_apply, WithLp.equiv_symm_apply, PiLp.toLp_apply, RCLike.inner_apply, conj_trivial]
     rw [crossProduct, Finset.sum, Finset.sum]
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,

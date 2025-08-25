@@ -35,8 +35,7 @@ lemma lineY₃B₃Charges_quad (a b : ℚ) : accQuad (lineY₃B₃Charges a b).v
   rw [quadBiLin.toHomogeneousQuad.map_smul]
   rw [quadBiLin.map_smul₁, quadBiLin.map_smul₂]
   erw [quadSol Y₃.1, quadSol B₃.1]
-  simp only [mul_zero, add_zero, Fin.isValue, Fin.reduceFinMk, zero_add,
-    mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
+  simp only [mul_zero, add_zero, zero_add, mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
   apply Or.inr ∘ Or.inr
   with_unfolding_all rfl
 
@@ -60,7 +59,7 @@ def lineY₃B₃ (a b : ℚ) : MSSMACC.Sols :=
 lemma doublePoint_Y₃_B₃ (R : MSSMACC.LinSols) :
     cubeTriLin Y₃.val B₃.val R.val = 0 := by
   simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun,
-    MSSMSpecies_numberCharges, Fin.isValue, Fin.reduceFinMk]
+    MSSMSpecies_numberCharges]
   rw [Fin.sum_univ_three, B₃_val, Y₃_val, B₃AsCharge, Y₃AsCharge]
   repeat rw [toSMSpecies_toSpecies_inv]
   rw [Hd_toSpecies_inv, Hu_toSpecies_inv, Hd_toSpecies_inv, Hu_toSpecies_inv]

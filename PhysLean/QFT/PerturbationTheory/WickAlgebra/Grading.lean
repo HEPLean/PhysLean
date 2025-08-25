@@ -112,7 +112,7 @@ lemma bosonicProjFree_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) 
     bosonicProjFree a = bosonicProjFree b := by
   rw [equiv_iff_sub_mem_ideal, ← ι_eq_zero_iff_mem_ideal] at h
   rw [LinearMap.sub_mem_ker_iff.mp]
-  simp only [LinearMap.mem_ker, ← map_sub]
+  simp only [LinearMap.mem_ker]
   exact bosonicProjFree_zero_of_ι_zero (a - b) h
 
 /-- The projection of `𝓕.WickAlgebra` to `statSubmodule (𝓕 := 𝓕) bosonic`. -/
@@ -158,7 +158,7 @@ lemma fermionicProjFree_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b
     fermionicProjFree a = fermionicProjFree b := by
   rw [equiv_iff_sub_mem_ideal, ← ι_eq_zero_iff_mem_ideal] at h
   rw [LinearMap.sub_mem_ker_iff.mp]
-  simp only [LinearMap.mem_ker, ← map_sub]
+  simp only [LinearMap.mem_ker]
   exact fermionicProjFree_zero_of_ι_zero (a - b) h
 
 /-- The projection of `𝓕.WickAlgebra` to `statSubmodule (𝓕 := 𝓕) fermionic`. -/
@@ -374,7 +374,7 @@ lemma directSum_eq_bosonic_plus_fermionic
       simp only [map_zero]
       simp
     | fermionic =>
-      simp only [DirectSum.of_eq_same, add_zero]
+      simp only [DirectSum.of_eq_same]
       rw [DirectSum.of_eq_of_ne]
       simp only [map_zero, zero_add]
       simp

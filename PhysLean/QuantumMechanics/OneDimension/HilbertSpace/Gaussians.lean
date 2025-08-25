@@ -122,7 +122,7 @@ lemma mul_gaussian_mem_Lp_two (f : ℝ → ℂ) (hf : MemHS f) (b c : ℝ) (hb :
     · exact gaussian_aestronglyMeasurable c hb
     · apply Filter.Eventually.of_forall
       intro x
-      simp only [neg_mul, zero_sub, even_two, Even.neg_pow]
+      simp only [neg_mul]
       rw [Complex.norm_real]
       simp only [Real.norm_eq_abs, Real.abs_exp, Real.exp_zero, Real.exp_le_one_iff,
         Left.neg_nonpos_iff]
@@ -179,7 +179,7 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (
       exact exp_mul_abs_mul_gaussian_integrable f hf b (-|c|) hb
     · intro x hx
       simp only [Set.mem_Iic] at hx
-      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, map_eq_zero, Real.exp_ne_zero,
+      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, Real.exp_ne_zero,
         or_false, g]
       left
       rw [abs_mul, abs_of_nonpos hx]
@@ -191,7 +191,7 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (
       exact exp_mul_abs_mul_gaussian_integrable f hf b |c| hb
     · intro x hx
       simp only [Set.mem_Ici] at hx
-      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, map_eq_zero, Real.exp_ne_zero,
+      simp only [neg_mul, mul_eq_mul_right_iff, Real.exp_eq_exp, Real.exp_ne_zero,
         or_false, g]
       left
       rw [abs_mul, abs_of_nonneg hx]

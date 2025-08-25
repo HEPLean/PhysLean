@@ -120,8 +120,8 @@ lemma amplitude_eq_norm (IC : InitialConditions) :
   rw [amplitude_eq]
   trans √(‖IC.x₀‖^2 + (‖IC.v₀‖/S.ω)^2)
   · ring
-  · simp only [Complex.norm_add_mul_I, norm_eq_sqrt_sq_add_sq]
-    simp only [Fin.isValue, one_div, real_smul, smul_eq_mul, sub_re, ofReal_re, mul_re, inv_re,
+  · simp only [norm_eq_sqrt_sq_add_sq]
+    simp only [Fin.isValue, one_div, sub_re, ofReal_re, mul_re, inv_re,
       normSq_ofReal, div_self_mul_self', I_re, mul_zero, ofReal_im, I_im, mul_one, sub_self, inv_im,
       neg_zero, zero_div, mul_im, add_zero, zero_mul, sub_zero, sub_im, zero_sub, even_two,
       Even.neg_pow]
@@ -165,7 +165,7 @@ lemma phase_zeroIC : S.phase zeroIC = 0 := by
 lemma amplitude_mul_cos_phase (IC : InitialConditions) :
     S.amplitude IC * cos (S.phase IC) = IC.x₀ 0 := by
   simp only [phase, amplitude_eq_norm, polarCoord_apply, Complex.equivRealProd_symm_apply,
-    smul_eq_mul, Complex.ofReal_div, Complex.ofReal_neg]
+    Complex.ofReal_div, Complex.ofReal_neg]
   group
   simp
 
@@ -227,7 +227,7 @@ lemma sol_velocity (IC : InitialConditions) : ∂ₜ (S.sol IC) =
     fun t : Time => -S.ω • sin (S.ω * t) • IC.x₀ + cos (S.ω * t) • IC.v₀ := by
   funext t
   rw [sol_eq, Time.deriv, fderiv_fun_add (by fun_prop) (by fun_prop)]
-  simp only [differentiableAt_const, deriv_const_mul_field']
+  simp only
   rw [fderiv_smul_const (by fun_prop), fderiv_smul_const (by fun_prop)]
   have h1 : (fderiv ℝ (fun t => sin (S.ω * t.val) / S.ω) t) =
     (1/ S.ω) • (fderiv ℝ (fun t => sin (S.ω * t.val)) t) := by
@@ -248,10 +248,10 @@ lemma sol_velocity_amplitude_phase (IC : InitialConditions) : deriv (S.sol IC) =
     fun t : Time => - S.amplitude IC • (fun _ => S.ω • sin (S.ω * t + S.phase IC)) := by
   funext t i
   rw [sol_eq_amplitude_mul_cos_phase]
-  simp only [differentiableAt_const, deriv_const_mul_field']
+  simp only
   rw [Time.deriv, fderiv_fun_const_smul]
-  simp only [deriv_div_const, neg_smul]
-  simp only [PiLp.smul_apply, smul_eq_mul, Pi.neg_apply, Pi.smul_apply]
+  simp only [neg_smul]
+  simp only [smul_eq_mul, Pi.neg_apply, Pi.smul_apply]
   rw [fderiv_pi, fderiv_cos (by fun_prop), fderiv_add_const,
     fderiv_fun_mul (by fun_prop) (by fun_prop)]
   simp only [fderiv_fun_const, Pi.zero_apply, smul_zero, add_zero, neg_smul]
@@ -328,8 +328,7 @@ lemma sol_action (IC : InitialConditions) (t1 t2 : Time) (h2 : t1 ≤ t2) :
   rw [sol_lagrangian]
   simp only
   rw [integral_const_mul]
-  simp only [mul_eq_mul_left_iff, mul_eq_zero, div_eq_zero_iff, neg_eq_zero, one_ne_zero,
-    OfNat.ofNat_ne_zero, or_self, false_or]
+  simp only [mul_eq_mul_left_iff, mul_eq_zero, div_eq_zero_iff, neg_eq_zero, OfNat.ofNat_ne_zero]
   left
   calc ∫ t in Set.Ioc t1 t2, cos (2 * (S.ω * t + S.phase IC))
     _ = ∫ (x : ℝ) in Set.Ioc t1.val t2.val, cos (2 * (S.ω * x + S.phase IC)) := by

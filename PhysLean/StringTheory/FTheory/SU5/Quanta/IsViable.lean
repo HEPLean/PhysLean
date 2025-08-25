@@ -154,7 +154,7 @@ lemma reduce_five_eq_self_of_isViable
     x.2.2.1.reduce = x.2.2.1 := by
   match x with
   | (qHd, qHu, F, T) =>
-    simp [reduce]
+    simp only
     refine FiveQuanta.reduce_eq_self_of_ofCharges_nodup F ?_
     simp [IsViable] at h
     simp_all
@@ -164,7 +164,7 @@ lemma reduce_ten_eq_self_of_isViable
     x.2.2.2.reduce = x.2.2.2 := by
   match x with
   | (qHd, qHu, F, T) =>
-    simp [reduce]
+    simp only
     refine TenQuanta.reduce_eq_self_of_ofCharges_nodup T ?_
     simp [IsViable] at h
     simp_all

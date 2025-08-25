@@ -129,7 +129,7 @@ attribute [local instance] Matrix.linftyOpNormedAlgebra
 /-- The exponential of an element of the Lorentz algebra is proper (has determinant 1). -/
 theorem exp_isProper (A : lorentzAlgebra) :
     LorentzGroup.IsProper ⟨(NormedSpace.exp ℝ) A.1, exp_mem_lorentzGroup A⟩ := by
-  simp only [LorentzGroup.IsProper, Subtype.coe_mk]
+  simp only [LorentzGroup.IsProper]
   let e : (Fin 1 ⊕ Fin 3) ≃ Fin 4 := finSumFinEquiv
   -- we reindex to Fin 4 to use the faster LinearOrder
   rw [← det_reindex_self e, ← exp_reindex e]
@@ -157,12 +157,12 @@ theorem exp_isOrthochronous (A : lorentzAlgebra) :
       · exact Continuous.comp continuous_subtype_val (γ.continuous_toFun),
     source' := by
       ext i j
-      simp only [γ, zero_smul]
+      simp only [γ]
       simp [NormedSpace.exp_zero],
     target' := by
       ext i j
-      simp only [γ, one_smul]
-      simp [one_smul] }
+      simp only [γ]
+      simp}
   have h_joined : Joined (1 : LorentzGroup 3) ⟨(NormedSpace.exp ℝ) A.1, exp_mem_lorentzGroup A⟩ :=
     ⟨exp_γ⟩
   have h_connected : ⟨(NormedSpace.exp ℝ) A.1, exp_mem_lorentzGroup A⟩ ∈ connectedComponent

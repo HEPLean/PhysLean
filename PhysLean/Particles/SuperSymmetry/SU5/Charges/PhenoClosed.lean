@@ -181,7 +181,7 @@ lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
       simp_all
     revert hn
     rw [not_and]
-    simp only [hTop, not_true_eq_false, imp_false, Decidable.not_not]
+    simp only [hTop, not_true_eq_false, imp_false]
     suffices hmem : ∃ y ∈ charges, y ⊆ x by
       obtain ⟨y, y_mem, hyx⟩ := hmem
       refine subset_insert_filter_card_zero charges S5 S10 (fun x =>

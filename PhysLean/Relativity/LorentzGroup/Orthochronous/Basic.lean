@@ -226,8 +226,7 @@ lemma isOrthochronous_mul_iff {Λ Λ' : LorentzGroup d} :
     trans - ⟪orthochronoustoVelocity
       (isOrthochronous_inv_iff.mpr (neg_isOrthochronous_iff_not.mpr h)),
       (orthochronoustoVelocity h').1⟫ₘ
-    · simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
-        orthochronoustoVelocity, coe_neg, LorentzGroup.inv_neg, toVector_neg]
+    · simp only [orthochronoustoVelocity, inv_neg, toVector_neg]
       simp
     · simp
       exact Lorentz.Velocity.zero_le_minkowskiProduct _ _

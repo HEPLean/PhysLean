@@ -191,12 +191,12 @@ instance : AddCommGroup Time where
   add_comm := by intros; ext; simp [add_comm]
 
 instance : Module ℝ Time where
-  one_smul t := by ext; simp [one_smul]
+  one_smul t := by ext; simp
   smul_add k t1 t2 := by ext; simp [mul_add]
   smul_zero k := by ext; simp [mul_zero]
   add_smul k1 k2 t := by ext; simp [add_mul]
   mul_smul k1 k2 t := by ext; simp [mul_assoc]
-  zero_smul t := by ext; simp [zero_smul]
+  zero_smul t := by ext; simp
 
 instance : SeminormedAddCommGroup Time where
   dist_self t := by simp [dist_eq_real_dist]

@@ -118,7 +118,7 @@ lemma pureInr_update_left (f : (i : ι1 ⊕ ι2) → Sum.elim s1 s2 i) (x : ι1)
     (v2 : s1 x) :
     pureInr (Function.update f (Sum.inl x) v2) = (pureInr f) := by
   funext y
-  simp [pureInr, Function.update, Sum.inl.injEq, Sum.elim_inl]
+  simp [pureInr, Function.update]
 
 lemma pureInr_update_right [DecidableEq ι2] (f : (i : ι1 ⊕ ι2) → Sum.elim s1 s2 i) (x : ι2)
     (v2 : s2 x) : pureInr (Function.update f (Sum.inr x) v2) =
@@ -135,7 +135,7 @@ lemma pureInl_update_right (f : (i : ι1 ⊕ ι2) → Sum.elim s1 s2 i) (x : ι2
     (v1 : s2 x) :
     pureInl (Function.update f (Sum.inr x) v1) = (pureInl f) := by
   funext y
-  simp [pureInl, Function.update, Sum.inr.injEq, Sum.elim_inr]
+  simp [pureInl, Function.update]
 
 end
 

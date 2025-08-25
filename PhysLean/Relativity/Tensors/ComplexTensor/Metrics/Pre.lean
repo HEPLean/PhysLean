@@ -66,7 +66,7 @@ def contrMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ complexContr wh
 
 lemma contrMetric_apply_one : contrMetric.hom (1 : ℂ) = contrMetricVal := by
   change (1 : ℂ) • contrMetricVal = contrMetricVal
-  simp only [contrMetric, one_smul]
+  simp only [one_smul]
 
 /-- The metric `ηᵢᵢ` as an element of `(complexCo ⊗ complexCo).V`. -/
 def coMetricVal : (complexCo ⊗ complexCo).V :=
@@ -118,7 +118,7 @@ def coMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexCo ⊗ complexCo where
 
 lemma coMetric_apply_one : coMetric.hom (1 : ℂ) = coMetricVal := by
   change (1 : ℂ) • coMetricVal = coMetricVal
-  simp only [coMetric, one_smul]
+  simp only [one_smul]
 
 /-!
 
@@ -135,8 +135,7 @@ lemma contrCoContraction_apply_metric : (β_ complexContr complexCo).hom.hom
     coContrUnit.hom (1 : ℂ) := by
   rw [contrMetric_apply_one, coMetric_apply_one]
   rw [contrMetricVal_expand_tmul, coMetricVal_expand_tmul]
-  simp only [
-    Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg, tmul_sub, sub_tmul]
+  simp only [Fin.isValue, tmul_sub, sub_tmul, map_sub]
   have h1 (x1 x2 : complexContr) (y1 y2 :complexCo) :
     (complexContr.V ◁ (λ_ complexCo.V).hom)
     ((complexContr.V ◁ contrCoContraction.hom ▷ complexCo.V) (((complexContr.V ◁
@@ -161,8 +160,7 @@ lemma coContrContraction_apply_metric : (β_ complexCo complexContr).hom.hom
     contrCoUnit.hom (1 : ℂ) := by
   rw [coMetric_apply_one, contrMetric_apply_one]
   rw [coMetricVal_expand_tmul, contrMetricVal_expand_tmul]
-  simp only [Fin.isValue, tmul_sub, add_tmul, neg_tmul, map_sub, map_add, map_neg,
-    tmul_sub, sub_tmul]
+  simp only [Fin.isValue, tmul_sub, sub_tmul, map_sub]
   have h1 (x1 x2 : complexCo) (y1 y2 :complexContr) :
     (complexCo.V ◁ (λ_ complexContr.V).hom)
     ((complexCo.V ◁ coContrContraction.hom ▷ complexContr.V) (((complexCo.V ◁

@@ -133,9 +133,9 @@ lemma rightBasis_toFin2ℂ (i : Fin 2) : (rightBasis i).toFin2ℂ = Pi.single i 
 lemma rightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
     (LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M) i j = (M.1.map star) i j := by
   rw [LinearMap.toMatrix_apply]
-  simp only [rightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  simp only [rightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (M.1.map star *ᵥ (Pi.single j 1)) i = _
-  simp [mulVec_single, transpose_apply, mul_one]
+  simp [mulVec_single]
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†.
@@ -175,9 +175,9 @@ lemma altRightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
     (LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M) i j =
     ((M.1⁻¹).conjTranspose) i j := by
   rw [LinearMap.toMatrix_apply]
-  simp only [altRightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  simp only [altRightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change ((M.1⁻¹).conjTranspose *ᵥ (Pi.single j 1)) i = _
-  simp [mulVec_single, transpose_apply, mul_one]
+  simp [mulVec_single]
 
 /-!
 

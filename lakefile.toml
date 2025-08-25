@@ -4,7 +4,8 @@ defaultTargets = ["PhysLean"]
 #moreLinkArgs = ["-L./.lake/packages/LeanCopilot/.lake/build/lib", "-lctranslate2"]
 
 [leanOptions]
-linter.unusedSimpArgs = false
+warn.sorry = false
+
 ## Imports
 
 [[require]]

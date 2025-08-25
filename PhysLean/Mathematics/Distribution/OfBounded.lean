@@ -350,8 +350,7 @@ lemma invPowMeasure_integrable_pow_neg_two {dm1 : ℕ} :
       funext x
       simp only [Function.comp_apply, homeomorphUnitSphereProd_symm_apply_coe, f]
       rw [norm_smul]
-      simp only [Real.norm_eq_abs, norm_eq_of_mem_sphere, mul_one, sq_abs, mul_eq_mul_right_iff,
-        inv_inj, inv_eq_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, f]
+      simp only [Real.norm_eq_abs, norm_eq_of_mem_sphere, mul_one]
       rw [abs_of_nonneg (le_of_lt x.2.2)]
     rw [hf']
     simp [Measure.volumeIoiPow]
@@ -380,7 +379,7 @@ lemma invPowMeasure_integrable_pow_neg_two {dm1 : ℕ} :
       ring_nf
       have h2 : x.2.val ≠ 0 := by
         have h' := x.2.2
-        simp [- Subtype.coe_prop, f] at h'
+        simp [- Subtype.coe_prop] at h'
         linarith
       field_simp
       ring_nf
@@ -471,7 +470,7 @@ instance (dm1 : ℕ) (n : ℕ) : Measure.HasTemperateGrowth (powMeasure (dm1 := 
       · fun_prop
       · intro x
         left
-        simp only [ne_eq, m]
+        simp only [ne_eq]
         have h1 : 0 < 1 + ‖x‖ := by
           positivity
         by_contra hn
@@ -491,7 +490,7 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) :
     have h1 : (fun x : EuclideanSpace ℝ (Fin dm1.succ) => (1 + ‖x‖) ^ (- max m1 m2 : ℝ)) =
         fun x => ‖x‖ ^ 0 * ‖(1 + ‖x‖) ^ (-max m1 m2 : ℝ)‖ := by
       funext x
-      simp only [Real.norm_eq_abs, norm_smul]
+      simp only [Real.norm_eq_abs]
       rw [abs_of_nonneg (by positivity)]
       rw [Real.rpow_neg]
       ring
@@ -514,7 +513,7 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) :
       rw [h1]
       apply integrable_of_le_of_pow_mul_le (C₁ := 1) (C₂ := 1)
       · intro x
-        simp only [Real.norm_eq_abs, norm_smul]
+        simp only [Real.norm_eq_abs]
         rw [abs_of_nonneg (by positivity)]
         refine Real.rpow_le_one_of_one_le_of_nonpos ?_ ?_
         refine le_add_of_le_of_nonneg ?_ ?_
@@ -566,7 +565,7 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) :
       rw [h1]
       apply integrable_of_le_of_pow_mul_le (C₁ := 1) (C₂ := 1)
       · intro x
-        simp only [Real.norm_eq_abs, norm_smul]
+        simp only [Real.norm_eq_abs]
         rw [abs_of_nonneg (by positivity)]
         refine Real.rpow_le_one_of_one_le_of_nonpos ?_ ?_
         refine le_add_of_le_of_nonneg ?_ ?_
@@ -592,7 +591,7 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) :
             · positivity
             simp only [Real.log_pow, Nat.cast_max, m2, m1]
             refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
-            · simp [m1, m2]
+            · simp
             · rfl
             · positivity
             · refine Real.log_nonneg ?_
@@ -653,8 +652,7 @@ lemma bounded_integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → 
       exact integrable_pow_mul volume η n
     · fun_prop
     · filter_upwards with x
-      simp only [Real.norm_eq_abs, norm_mul, abs_abs, norm_norm, Real.rpow_neg_ofNat, Int.reduceNeg,
-        zpow_neg]
+      simp only [Real.norm_eq_abs, norm_mul, abs_abs]
       refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
       · rfl
       · simp only [abs_norm]

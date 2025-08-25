@@ -56,7 +56,7 @@ lemma finset_succAbove_succ_disjoint (a : Finset (Fin n)) (i : Fin n.succ) :
     Disjoint ((Finset.map (Fin.succEmb (n + 1))) ((Finset.map i.succAboveEmb) a)) {0, i.succ} := by
   simp only [succ_eq_add_one, Finset.disjoint_insert_right, Finset.mem_map, Fin.succAboveEmb_apply,
     Fin.coe_succEmb, exists_exists_and_eq_and, not_exists, not_and, Finset.disjoint_singleton_right,
-    Fin.succ_inj, exists_eq_right]
+    Fin.succ_inj]
   apply And.intro
   · exact fun x hx => Fin.succ_ne_zero (i.succAbove x)
   · exact fun x hx => Fin.succAbove_ne i x
@@ -202,8 +202,7 @@ lemma consAddContract_surjective_on_zero_contract (i : Fin n.succ)
       obtain ⟨x, rfl⟩ := (Fin.exists_succAbove_eq (x := x) (y := i)) (by omega)
       obtain ⟨y, rfl⟩ := (Fin.exists_succAbove_eq (x := y) (y := i)) (by omega)
       use {x, y}
-      simp only [Finset.map_insert, Fin.succAboveEmb_apply, Finset.map_singleton, Fin.coe_succEmb,
-        h, true_and, c']
+      simp only [c']
       rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply]
       simpa using h
 

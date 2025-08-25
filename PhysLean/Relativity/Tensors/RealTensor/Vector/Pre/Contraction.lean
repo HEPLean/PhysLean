@@ -82,8 +82,7 @@ def contrCoContract : Contr d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
     rw [dotProduct_mulVec, LorentzGroup.transpose_val,
       vecMul_transpose, mulVec_mulVec, LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [one_mulVec, CategoryTheory.Equivalence.symm_inverse,
-      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Action.tensorUnit_ρ, CategoryTheory.Category.comp_id, lift.tmul]
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
     rfl
 
 /-- Notation for `contrCoContract` acting on a tmul. -/
@@ -104,8 +103,7 @@ def coContrContract : Co d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
     rw [dotProduct_mulVec, LorentzGroup.transpose_val, mulVec_transpose, vecMul_vecMul,
       LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [vecMul_one, CategoryTheory.Equivalence.symm_inverse,
-      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Action.tensorUnit_ρ, CategoryTheory.Category.comp_id, lift.tmul]
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
     rfl
 
 /-- Notation for `coContrContract` acting on a tmul. -/
@@ -316,7 +314,7 @@ lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
   have hn := h (x - y)
   rw [ContrMod.mulVec_add, tmul_add, add_tmul, add_tmul, tmul_add, add_tmul, add_tmul] at hp
   rw [ContrMod.mulVec_sub, tmul_sub, sub_tmul, sub_tmul, tmul_sub, sub_tmul, sub_tmul] at hn
-  simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
+  simp only [map_add, map_sub] at hp hn
   rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x] at hp hn
   let e : 𝟙_ (Rep ℝ ↑(LorentzGroup d)) ≃ₗ[ℝ] ℝ :=
     LinearEquiv.refl ℝ ((𝟙_ (Rep ℝ ↑(LorentzGroup d))))
@@ -385,7 +383,7 @@ lemma basis_left {v : Contr d} (μ : Fin 1 ⊕ Fin d) :
 lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) :
     ⟪ContrMod.stdBasis μ, Λ *ᵥ ContrMod.stdBasis ν⟫ₘ = η μ μ * Λ μ ν := by
   rw [basis_left, ContrMod.mulVec_toFin1dℝ]
-  simp [basis_left, mulVec, dotProduct, ContrMod.stdBasis_apply, ContrMod.toFin1dℝ_eq_val]
+  simp [mulVec, dotProduct, ContrMod.stdBasis_apply, ContrMod.toFin1dℝ_eq_val]
 
 lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, ContrMod.stdBasis ν⟫ₘ = η μ ν := by
   trans ⟪ContrMod.stdBasis μ, 1 *ᵥ ContrMod.stdBasis ν⟫ₘ

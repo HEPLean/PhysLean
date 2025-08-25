@@ -631,24 +631,24 @@ lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : W
   simp only [Fin.getElem_fin]
   apply And.intro
   · have h1 := join_congr (subContraction_singleton_eq_singleton _ ⟨a, ha⟩).symm (φsucΛ := φsucΛ)
-    simp only [id_eq, eq_mpr_eq_cast, h1, congr_trans_apply, congr_refl, φsucΛ]
+    simp only [h1, congr_trans_apply, congr_refl, φsucΛ]
     rw [join_sub_quot]
   · apply And.intro (hc ⟨a, ha⟩)
     apply And.intro
-    · simp only [id_eq, eq_mpr_eq_cast, φsucΛ]
+    · simp only [φsucΛ]
       rw [gradingCompliant_congr (φs' := [(φsΛ.subContraction {a} (by simpa using ha))]ᵘᶜ)]
-      simp only [id_eq, eq_mpr_eq_cast, congr_trans_apply, congr_refl]
+      simp only [congr_trans_apply, congr_refl]
       exact quotContraction_gradingCompliant hc
       rw [← subContraction_singleton_eq_singleton]
-    · simp only [id_eq, eq_mpr_eq_cast, card_congr, φsucΛ]
+    · simp only [card_congr, φsucΛ]
       have h1 := subContraction_card_plus_quotContraction_card_eq _ {a} (by simpa using ha)
-      simp only [subContraction, Finset.card_singleton, id_eq, eq_mpr_eq_cast] at h1
+      simp only [subContraction, Finset.card_singleton] at h1
       omega
 
 lemma join_not_gradingCompliant_of_left_not_gradingCompliant {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length)
     (hc : ¬ φsΛ.GradingCompliant) : ¬ (join φsΛ φsucΛ).GradingCompliant := by
-  simp_all only [GradingCompliant, Fin.getElem_fin, Subtype.forall, not_forall]
+  simp_all only [GradingCompliant, Subtype.forall, not_forall]
   obtain ⟨a, ha, ha2⟩ := hc
   use (joinLiftLeft (φsucΛ := φsucΛ) ⟨a, ha⟩).1
   use (joinLiftLeft (φsucΛ := φsucΛ) ⟨a, ha⟩).2

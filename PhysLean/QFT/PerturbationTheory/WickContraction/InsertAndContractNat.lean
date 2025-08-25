@@ -598,8 +598,7 @@ lemma erase_insert (c : WickContraction n.succ) (i : Fin n.succ) :
       exact ha'
     · intro ha
       obtain ⟨a, ha⟩ := c.mem_not_eq_erase_of_isNone (a := a) i (by simpa using hi) ha
-      simp_all only [Nat.succ_eq_add_one, Bool.not_eq_true, Option.not_isSome,
-        Option.isNone_iff_eq_none]
+      simp_all only [Nat.succ_eq_add_one, Bool.not_eq_true]
       obtain ⟨left, right⟩ := ha
       subst right
       apply Exists.intro
@@ -757,7 +756,7 @@ lemma insertAndContractNat_surjective_on_nodual (i : Fin n.succ)
   use c.erase i
   apply Subtype.eq
   ext a
-  simp [insertAndContractNat, erase, hc]
+  simp [insertAndContractNat, erase]
   apply Iff.intro
   · intro h
     obtain ⟨a', ha', rfl⟩ := h

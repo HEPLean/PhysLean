@@ -207,7 +207,7 @@ lemma fromPairT_map_right {c1 c2 c2' : C} (h :c2 = c2')
       enter [2, 2]
       erw [fromSingleT_map]
     rw [prodT_permT_right, permT_permT]
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, prodRightMap_id, CompTriple.comp_eq, P]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, prodRightMap_id, CompTriple.comp_eq]
     rw [fromPairT_tmul, permT_permT]
     rfl
   · intro x y hx hy
@@ -229,7 +229,7 @@ lemma fromPairT_comm {c1 c2 : C}
     simp [P]
     rw [fromPairT_tmul, fromPairT_tmul]
     rw [prodT_swap]
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, permT_permT, CompTriple.comp_eq, Fin.isValue, P]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, permT_permT, CompTriple.comp_eq, Fin.isValue]
     congr
     ext i
     fin_cases i
@@ -327,7 +327,7 @@ lemma fromSingleT_contr_fromPairT_tmul {c c2 : C}
       simp
     · rfl
   · rw [contrT_fromSingleT_fromSingleT]
-    simp only [map_smul, prodT_default_right, LinearMap.smul_apply]
+    simp only [map_smul, LinearMap.smul_apply]
     rw [fromSingleTContrFromPairT_tmul]
     simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, Monoidal.tensorUnit_obj,
       Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
@@ -354,12 +354,12 @@ lemma contrT_fromSingleT_fromPairT {c c2 : C}
     permT id (by simp; intro i; fin_cases i; rfl) (fromSingleTContrFromPairT x y)
   change P y
   apply TensorProduct.induction_on
-  · simp only [fromSingleTContrFromPairT, map_zero, LinearMap.zero_apply, tmul_zero, P]
+  · simp only [fromSingleTContrFromPairT, map_zero, tmul_zero, P]
   · intro y1 y2
     exact fromSingleT_contr_fromPairT_tmul x y1 y2
   · intro x y hx hy
     simp only [P, fromSingleTContrFromPairT] at hx hy ⊢
-    simp only [tmul_add, map_add, fromSingleTContrFromPairT]
+    simp only [tmul_add, map_add]
     rw [hx, hy]
 
 /-!
@@ -483,9 +483,9 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : C)
       P (x1 ⊗ₜ x2) y
     change P2 y
     apply TensorProduct.induction_on
-    · simp only [fromPairTContr, map_zero, tmul_zero, P2, P, P1]
+    · simp only [fromPairTContr, map_zero, tmul_zero, P2, P]
     · intro y1 y2
-      simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, P2, P, P1]
+      simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, P2, P]
       exact fromPairT_contr_fromPairT_eq_fromPairTContr_tmul c c1 c2 x1 x2 y1 y2
     · intro x y hx hy
       simp only [P2, P, fromPairTContr] at hx hy ⊢
@@ -721,7 +721,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : C}
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))
           rw [Pure.prodP_apply_finSumFinEquiv]
         simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
-          eqToHom_refl, Discrete.functor_map_id, P, P1]
+          eqToHom_refl, Discrete.functor_map_id]
         conv_lhs =>
           enter [1, 2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inl 0))
@@ -734,7 +734,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : C}
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 1))
           rw [Pure.prodP_apply_finSumFinEquiv]
         simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
-          eqToHom_refl, Discrete.functor_map_id, P, P1]
+          eqToHom_refl, Discrete.functor_map_id]
         conv_lhs =>
           enter [2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))

@@ -141,7 +141,7 @@ def castFin0ToField {c : Fin 0 → C} : (S.F.obj (OverColor.mk c)).V →ₗ[k] k
 lemma castFin0ToField_tprod {c : Fin 0 → C}
     (x : (i : Fin 0) → S.FD.obj (Discrete.mk (c i))) :
     castFin0ToField S (PiTensorProduct.tprod k x) = 1 := by
-  simp only [castFin0ToField, mk_hom, Functor.id_obj, LinearEquiv.coe_coe]
+  simp only [castFin0ToField, mk_hom, LinearEquiv.coe_coe]
   erw [PiTensorProduct.isEmptyEquiv_apply_tprod]
 
 /-!

@@ -304,8 +304,7 @@ lemma cb_eq_zero_of_ud_us_zero {V : CKMMatrix} (h : [V]ud = 0 ∧ [V]us = 0) :
     [V]cb = 0 := by
   have h1 := fst_row_normalized_abs V
   rw [← thd_col_normalized_abs V] at h1
-  simp only [Fin.isValue, h, map_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
-    add_zero, zero_add] at h1
+  simp only [Fin.isValue, h] at h1
   rw [add_assoc] at h1
   simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, Fin.isValue,
     zero_add, add_assoc, left_eq_add] at h1
@@ -352,8 +351,7 @@ lemma cb_tb_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
   · by_contra hn
     rw [not_or] at hn
     simp only [Fin.isValue, ne_eq, Decidable.not_not] at hn
-    simp_all only [map_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero,
-      sq_eq_one_iff, false_or, one_ne_zero]
+    simp_all only [ne_eq]
     simp only [Fin.isValue, norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
       add_zero, sq_eq_one_iff] at h2
     simp_all only [false_or]

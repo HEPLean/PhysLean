@@ -206,7 +206,7 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges 𝓩} (T : PotentialT
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset]
     try simp [ofPotentialTerm']
-    simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
+    simp only [SProd.sprod, Multiset.mem_product]
     simp_all [ofFieldLabel]
   case' W1 => use f2, f4, f6, f8
   case' W2 => use f2, f4, f6, f8
@@ -233,7 +233,7 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩] {x : Charges �
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset] at h
     try simp [ofPotentialTerm'] at h
-    simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h
+    simp only [SProd.sprod, Multiset.mem_product] at h
   case' μ | β =>
     obtain ⟨q1, q2, ⟨q1_mem, q2_mem⟩, q_sum⟩ := h
   case' Λ | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>

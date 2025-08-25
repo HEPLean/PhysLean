@@ -63,7 +63,7 @@ theorem euler_lagrange_varGradient
         · exact hq
   case hgrad =>
     funext t
-    simp (disch:=fun_prop) only [adjFDeriv_uncurry,gradient_eq_adjFDeriv]
+    simp (disch:=fun_prop) only
     simp[sub_eq_add_neg]
     congr
     rw [gradient_eq_adjFDeriv, adjFDeriv_uncurry]

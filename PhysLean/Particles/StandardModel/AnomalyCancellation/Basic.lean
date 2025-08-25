@@ -239,7 +239,7 @@ lemma accQuad_ext {S T : (SMCharges n).Charges}
   simp only [HomogeneousQuadratic, accQuad, BiLinearSymm.toHomogeneousQuad_apply]
   erw [← quadBiLin.toFun_eq_coe]
   rw [quadBiLin]
-  simp only [quadBiLin, BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
+  simp only [BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   ring_nf

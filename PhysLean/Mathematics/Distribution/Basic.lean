@@ -169,7 +169,7 @@ def fderivD [FiniteDimensional ℝ E] : (E →d[𝕜] F) →ₗ[𝕜] (E →d[�
         rfl}
     map_add' η1 η2 := by
       ext x
-      simp only [map_add, ContinuousLinearEquiv.neg_apply, neg_add_rev,
+      simp only [map_add, ContinuousLinearEquiv.neg_apply,
         LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
         ContinuousLinearMap.add_apply]
     map_smul' a η := by
@@ -228,7 +228,7 @@ def const [hμ : Measure.HasTemperateGrowth (volume (α := E))] (c : F) : E →d
     · refine (integrable_smul_const hc).mpr ?_
       exact integrable η2
   · intro a η
-    simp only [Fin.isValue, smul_apply, RingHom.id_apply, smul_assoc]
+    simp only [smul_apply, RingHom.id_apply, smul_assoc]
     rw [MeasureTheory.integral_smul]
   rcases hμ.exists_integrable with ⟨n, h⟩
   let m := (n, 0)
@@ -331,7 +331,7 @@ def heavisideStep (d : ℕ) : (EuclideanSpace ℝ (Fin d.succ)) →d[ℝ] ℝ :=
     · apply MeasureTheory.Integrable.restrict
       exact integrable η2
   · intro a η
-    simp only [Fin.isValue, smul_apply, RingHom.id_apply]
+    simp only [smul_apply, RingHom.id_apply]
     rw [MeasureTheory.integral_smul]
   haveI hμ : (volume (α := EuclideanSpace ℝ (Fin d.succ))).HasTemperateGrowth := by
     infer_instance

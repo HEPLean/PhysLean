@@ -428,7 +428,7 @@ lemma deriv' (u : ℝ → U) (hu : ContDiff ℝ ∞ u) :
       funext x
       have := hφ.smooth.differentiable (ENat.LEInfty.out)
       have := hu.differentiable (ENat.LEInfty.out)
-      simp (disch:=fun_prop) [deriv_add]
+      simp (disch:=fun_prop)
       conv_lhs =>
         enter [1, x]
         rw [deriv_fun_const_smul _ (by fun_prop)]

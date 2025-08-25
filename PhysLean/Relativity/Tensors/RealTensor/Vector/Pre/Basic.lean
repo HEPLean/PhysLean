@@ -32,7 +32,7 @@ lemma contrBasis_ρ_apply {d : ℕ} (M : LorentzGroup d) (i j : Fin 1 ⊕ Fin d)
     (LinearMap.toMatrix (contrBasis d) (contrBasis d)) ((Contr d).ρ M) i j =
     M.1 i j := by
   rw [LinearMap.toMatrix_apply]
-  simp only [contrBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  simp only [contrBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (M.1 *ᵥ (Pi.single j 1)) i = _
   simp
 
@@ -49,7 +49,7 @@ def contrBasisFin (d : ℕ := 3) : Basis (Fin (1 + d)) ℝ (Contr d) :=
 @[simp]
 lemma contrBasisFin_toFin1dℝ {d : ℕ} (i : Fin (1 + d)) :
     (contrBasisFin d i).toFin1dℝ = Pi.single (finSumFinEquiv.symm i) 1 := by
-  simp only [contrBasisFin, Basis.reindex_apply, contrBasis_toFin1dℝ, Basis.coe_ofEquivFun]
+  simp only [contrBasisFin, Basis.reindex_apply, contrBasis_toFin1dℝ]
 
 lemma contrBasisFin_repr_apply {d : ℕ} (p : Contr d) (i : Fin (1 + d)) :
     (contrBasisFin d).repr p i = p.val (finSumFinEquiv.symm i) := by rfl
@@ -90,7 +90,7 @@ lemma coBasis_ρ_apply {d : ℕ} (M : LorentzGroup d) (i j : Fin 1 ⊕ Fin d) :
 @[simp]
 lemma coBasis_toFin1dℝ {d : ℕ} (i : Fin 1 ⊕ Fin d) :
     (coBasis d i).toFin1dℝ = Pi.single i 1 := by
-  simp only [ContrMod.toFin1dℝ, coBasis, Basis.coe_ofEquivFun]
+  simp only [coBasis, Basis.coe_ofEquivFun]
   rfl
 
 /-- The standard basis of covaraitn Lorentz vectors indexed by `Fin (1 + d)`. -/
@@ -100,7 +100,7 @@ def coBasisFin (d : ℕ := 3) : Basis (Fin (1 + d)) ℝ (Co d) :=
 @[simp]
 lemma coBasisFin_toFin1dℝ {d : ℕ} (i : Fin (1 + d)) :
     (coBasisFin d i).toFin1dℝ = Pi.single (finSumFinEquiv.symm i) 1 := by
-  simp only [coBasisFin, Basis.reindex_apply, coBasis_toFin1dℝ, Basis.coe_ofEquivFun]
+  simp only [coBasisFin, Basis.reindex_apply, coBasis_toFin1dℝ]
 
 open CategoryTheory.MonoidalCategory
 
@@ -123,7 +123,7 @@ def Contr.toCo (d : ℕ) : Contr d ⟶ Co d where
       simp only [_root_.map_smul, mulVec_smul, RingHom.id_apply]}
   comm g := by
     ext ψ : 2
-    simp only [ModuleCat.hom_comp, Function.comp_apply]
+    simp only [ModuleCat.hom_comp]
     conv_lhs =>
       change CoMod.toFin1dℝEquiv.symm (η *ᵥ (g.1 *ᵥ ψ.toFin1dℝ))
       rw [mulVec_mulVec, LorentzGroup.minkowskiMatrix_comm, ← mulVec_mulVec]
@@ -142,7 +142,7 @@ def Co.toContr (d : ℕ) : Co d ⟶ Contr d where
       simp only [_root_.map_smul, mulVec_smul, RingHom.id_apply]}
   comm g := by
     ext ψ : 2
-    simp only [ModuleCat.hom_comp, Function.comp_apply]
+    simp only [ModuleCat.hom_comp]
     conv_lhs =>
       change ContrMod.toFin1dℝEquiv.symm (η *ᵥ ((LorentzGroup.transpose g⁻¹).1 *ᵥ ψ.toFin1dℝ))
       rw [mulVec_mulVec, ← LorentzGroup.comm_minkowskiMatrix, ← mulVec_mulVec]
@@ -155,7 +155,7 @@ def contrIsoCo (d : ℕ) : Contr d ≅ Co d where
   inv := Co.toContr d
   hom_inv_id := by
     ext ψ
-    simp only [Action.comp_hom, ModuleCat.hom_comp, Function.comp_apply, Action.id_hom,
+    simp only [Action.comp_hom, ModuleCat.hom_comp, Action.id_hom,
       ModuleCat.id_apply]
     conv_lhs => change ContrMod.toFin1dℝEquiv.symm (η *ᵥ
       CoMod.toFin1dℝEquiv (CoMod.toFin1dℝEquiv.symm (η *ᵥ ψ.toFin1dℝ)))
@@ -163,7 +163,7 @@ def contrIsoCo (d : ℕ) : Contr d ≅ Co d where
     simp
   inv_hom_id := by
     ext ψ
-    simp only [Action.comp_hom, ModuleCat.hom_comp, Function.comp_apply, Action.id_hom,
+    simp only [Action.comp_hom, ModuleCat.hom_comp, Action.id_hom,
       ModuleCat.id_apply]
     conv_lhs => change CoMod.toFin1dℝEquiv.symm (η *ᵥ
       ContrMod.toFin1dℝEquiv (ContrMod.toFin1dℝEquiv.symm (η *ᵥ ψ.toFin1dℝ)))

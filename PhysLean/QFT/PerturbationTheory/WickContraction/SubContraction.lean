@@ -174,7 +174,7 @@ lemma quotContraction_sndFieldOfContract_uncontractedListEmd {S : Finset (Finset
 lemma quotContraction_gradingCompliant {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
     (hsΛ : φsΛ.GradingCompliant) :
     GradingCompliant [φsΛ.subContraction S hs]ᵘᶜ (quotContraction S hs) := by
-  simp only [GradingCompliant, Fin.getElem_fin, Subtype.forall]
+  simp only [GradingCompliant, Subtype.forall]
   intro a ha
   erw [subContraction_uncontractedList_get]
   erw [subContraction_uncontractedList_get]

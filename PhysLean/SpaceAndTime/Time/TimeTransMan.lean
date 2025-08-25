@@ -236,25 +236,25 @@ lemma diff_self (x : TimeUnit) (t : TimeTransMan) :
 
 lemma diff_fst_injective (x : TimeUnit) (t : TimeTransMan) : Function.Injective (diff x · t) := by
   intro t1 t2 h
-  simp [VSub.vsub, diff] at h
+  simp [diff] at h
   by_cases h1 : t ≤ t1
     <;> by_cases h2 : t ≤ t2
-  · simp_all [h1, h2, dist, le_def]
+  · simp_all [dist, le_def]
     rw [abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)] at h
     simp at h
     ext
     exact h
-  · simp_all [h1, h2, dist, le_def]
+  · simp_all [dist, le_def]
     rw [abs_of_nonneg (by linarith), abs_of_neg (by linarith)] at h
     simp [← mul_neg] at h
     ext
     exact h
-  · simp_all [h1, h2, dist, le_def]
+  · simp_all [dist, le_def]
     rw [abs_of_neg (by linarith), abs_of_nonneg (by linarith)] at h
     simp [← mul_neg] at h
     ext
     exact h
-  · simp_all [h1, h2, dist, le_def]
+  · simp_all [dist, le_def]
     rw [abs_of_neg (by linarith), abs_of_neg (by linarith)] at h
     simp at h
     ext
@@ -263,12 +263,11 @@ lemma diff_fst_injective (x : TimeUnit) (t : TimeTransMan) : Function.Injective 
 lemma diff_fst_surjective (x : TimeUnit) (t : TimeTransMan) :
     Function.Surjective (diff x · t) := by
   intro r
-  simp [VSub.vsub, diff, dist]
+  simp [diff, dist]
   use x.1 * r +ᵥ t
   simp [abs_mul]
   rw [abs_of_nonneg (le_of_lt x.val_pos)]
-  simp only [Set.mem_setOf_eq, ne_eq, TimeUnit.val_neq_zero, not_false_eq_true,
-    inv_mul_cancel_left₀]
+  simp only [ne_eq, TimeUnit.val_neq_zero, not_false_eq_true, inv_mul_cancel_left₀]
   by_cases h : 0 ≤ r
   · rw [if_pos]
     exact abs_of_nonneg h
@@ -301,7 +300,7 @@ lemma addTime_eq_val (x : TimeUnit) (r : ℝ) (t : TimeTransMan) :
   apply diff_fst_injective x t
   change (diff x · t) (Function.invFun ((diff x · t)) r) = _
   rw [Function.rightInverse_invFun (diff_fst_surjective x t)]
-  simp [diff_eq_val, dist]
+  simp [diff_eq_val]
 
 lemma addTime_val (x : TimeUnit) (r : ℝ) (t : TimeTransMan) :
     (addTime x r t).val = x.1 * r + t.val := by
@@ -353,7 +352,7 @@ noncomputable def toTime (zero : TimeTransMan) (x : TimeUnit) : TimeTransMan ≃
     have h1 : (⇑valHomeomorphism ∘ (fun r : Time => addTime x r.val zero)) = fun r =>
         (x.val * r.val + zero.val) := by
       ext
-      simp [valHomeomorphism, addTime_val, diff_eq_val]
+      simp [valHomeomorphism, addTime_val]
     rw [h1]
     fun_prop
   continuous_toFun := by
@@ -397,14 +396,14 @@ lemma toTime_symm_add (zero : TimeTransMan) (x : TimeUnit) (t1 t2 : Time) :
     (toTime zero x).symm (t1 + t2) = addTime x (diff x ((toTime zero x).symm t1) zero)
       ((toTime zero x).symm t2) := by
   ext
-  simp [toTime_val, addTime_val, diff_eq_val, toTime_symm_val]
+  simp [addTime_val, diff_eq_val, toTime_symm_val]
   ring
 
 lemma toTime_symm_add' (zero : TimeTransMan) (x : TimeUnit) (t1 t2 : Time) :
     (toTime zero x).symm (t1 + t2) = addTime x (diff x ((toTime zero x).symm t2) zero)
       ((toTime zero x).symm t1) := by
   ext
-  simp [toTime_val, addTime_val, diff_eq_val, toTime_symm_val]
+  simp [addTime_val, diff_eq_val, toTime_symm_val]
   ring
 
 lemma diff_eq_toTime_sub (zero : TimeTransMan) (x : TimeUnit) (t1 t2 : TimeTransMan) :
@@ -416,21 +415,21 @@ lemma toTime_neg (zero : TimeTransMan) (x : TimeUnit) (t : TimeTransMan) :
     (toTime zero x) (neg zero t) = - toTime zero x t := by
   rw [neg_eq_negMetric zero x]
   ext
-  simp only [negMetric, diff_eq_val, Set.mem_setOf_eq, one_div, toTime_addTime, toTime_zero,
+  simp only [negMetric, diff_eq_val, one_div, toTime_addTime, toTime_zero,
     add_zero, Time.neg_val, toTime_val]
   ring
 
 lemma toTime_symm_neg (zero : TimeTransMan) (x : TimeUnit) (t : Time) :
     (toTime zero x).symm (- t) = neg zero ((toTime zero x).symm t) := by
   ext
-  simp [toTime_symm_val, neg_eq_negMetric, addTime_val, diff_eq_val, neg, negMetric]
+  simp [toTime_symm_val, addTime_val, diff_eq_val, neg, negMetric]
 
 lemma toTime_symm_sub (zero : TimeTransMan) (x : TimeUnit)
     (t1 t2 : Time) : (toTime zero x).symm (t1 - t2) =
       addTime x (diff x zero ((toTime zero x).symm t2))
       ((toTime zero x).symm t1) := by
   ext
-  simp [toTime_val, addTime_val, diff_eq_val, toTime_symm_val]
+  simp [ addTime_val, diff_eq_val, toTime_symm_val]
   ring
 
 end TimeTransMan

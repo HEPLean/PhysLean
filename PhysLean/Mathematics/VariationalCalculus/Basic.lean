@@ -86,7 +86,7 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
         linarith [hpos']
       calc
       -- start with the raw inner product
-        ⟪f₂ x, x₂⟫_ℝ = ⟪x₂ + (f₂ x - x₂), x₂⟫_ℝ := by simp [sub_add_cancel]
+        ⟪f₂ x, x₂⟫_ℝ = ⟪x₂ + (f₂ x - x₂), x₂⟫_ℝ := by simp
         _ = ⟪x₂, x₂⟫_ℝ + ⟪f₂ x - x₂, x₂⟫_ℝ := inner_add_left x₂ (f₂ x - x₂) x₂
         _ = ‖x₂‖^2 + ⟪f₂ x - x₂, x₂⟫_ℝ := by rw [hself]
         _ ≥ ‖x₂‖^2 - ‖f₂ x - x₂‖ * ‖x₂‖ := by
@@ -226,7 +226,7 @@ lemma fundamental_theorem_of_variational_calculus' {f : Y → V}
         have hφx := hφ_pos_inner x hx
         have hin : 0 < ⟪f x, f x₀⟫_ℝ :=
           inner_pos_V x (Metric.closedBall_subset_ball (by linarith) hx)
-        simp [mul_ne_zero (ne_of_gt hφx) (ne_of_gt hin)]
+        simp only [Function.support_mul, Set.mem_inter_iff, Function.mem_support, ne_eq]
         constructor
         linarith; linarith
 

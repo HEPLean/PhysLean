@@ -133,7 +133,7 @@ noncomputable def pathFromZero (u : Velocity d) : Path zero u where
               basis_apply, ↓reduceIte, mul_one, smul_eq_mul, one_mul, minkowskiProduct_basis_left,
               minkowskiProduct_self_eq_one]
             ring
-        simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, x]
+        simp only [Fin.isValue, x]
         ring_nf
         rw [Real.sq_sqrt, norm_spatialPart_sq_eq]
         ring
@@ -157,7 +157,7 @@ noncomputable def pathFromZero (u : Velocity d) : Path zero u where
     simp
   target' := by
     ext
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Set.Icc.coe_one,
+    simp only [Set.Icc.coe_one,
       one_pow, one_mul, Fin.isValue, mul_one, one_smul, add_eq_right, smul_eq_zero]
     left
     rw [norm_spatialPart_sq_eq]

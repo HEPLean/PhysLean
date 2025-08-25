@@ -108,8 +108,7 @@ instance tensorial {d : ℕ} : Tensorial (realLorentzTensor d) ![.up] (Vector d)
         simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_add]
         rfl
       map_smul := fun c x => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, _root_.map_smul,
-          RingHom.id_apply]
+        simp [Nat.succ_eq_add_one, Nat.reduceAdd, _root_.map_smul]
         rfl}
 
 open Tensorial
@@ -124,8 +123,8 @@ lemma toTensor_symm_pure {d : ℕ} (p : Pure (realLorentzTensor d) ![.up]) (i : 
     (toTensor (self := tensorial)).symm p.toTensor i =
     ((Lorentz.contrBasisFin d).repr (p 0)) (indexEquiv.symm i 0) := by
   rw [toTensor_symm_apply]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, OverColor.mk_left, Functor.id_obj,
-    OverColor.mk_hom, Equiv.piCongrLeft'_apply, Finsupp.equivFunOnFinite_apply, Fin.isValue]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
+    Equiv.piCongrLeft'_apply, Finsupp.equivFunOnFinite_apply, Fin.isValue]
   rw [Tensor.basis_repr_pure]
   simp only [Pure.component, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.prod_singleton, cons_val_zero]
@@ -223,7 +222,7 @@ lemma smul_eq_sum {d : ℕ} (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : Vec
     congr
     simp [indexEquiv]
   · intro r t h
-    simp only [actionT_smul, _root_.map_smul, Pi.smul_apply, smul_eq_mul]
+    simp only [actionT_smul, _root_.map_smul]
     change r * toTensor (self := tensorial).symm (Λ • t) i = _
     rw [h]
     rw [Finset.mul_sum]
@@ -232,7 +231,7 @@ lemma smul_eq_sum {d : ℕ} (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : Vec
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, apply_smul]
     ring
   · intro t1 t2 h1 h2
-    simp only [actionT_add, map_add, Pi.add_apply, h1, h2, apply_add]
+    simp only [actionT_add, map_add, h1, h2, apply_add]
     rw [← Finset.sum_add_distrib]
     congr
     funext x

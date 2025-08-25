@@ -75,7 +75,7 @@ lemma pauliMatrix_selfAdjoint (μ : Fin 1 ⊕ Fin 3) :
   ext i j
   fin_cases i <;> fin_cases j
   all_goals
-    simp [pauliMatrix, one_fin_two]
+    simp
 
 /-! ### Inversions
 
@@ -202,7 +202,7 @@ lemma σ2_σ1_commutator : σ2 * σ1 - σ1 * σ2 = -(2 * I) • σ3 := by
 lemma σ2_σ3_commutator : σ2 * σ3 - σ3 * σ2 = (2 * I) • σ1 := by
   simp [pauliMatrix]
   ring_nf
-  simp only [true_and, and_true]
+  simp only [true_and]
   exact List.ofFn_inj.mp rfl
 
 lemma σ3_σ1_commutator : σ3 * σ1 - σ1 * σ3 = (2 * I) • σ2 := by
@@ -214,7 +214,7 @@ lemma σ3_σ1_commutator : σ3 * σ1 - σ1 * σ3 = (2 * I) • σ2 := by
 lemma σ3_σ2_commutator : σ3 * σ2 - σ2 * σ3 = -(2 * I) • σ1 := by
   simp [pauliMatrix]
   ring_nf
-  simp only [true_and, and_true]
+  simp only [true_and]
   exact List.ofFn_inj.mp rfl
 
 end PauliMatrix

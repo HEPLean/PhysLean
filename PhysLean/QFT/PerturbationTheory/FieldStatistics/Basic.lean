@@ -164,7 +164,7 @@ lemma ofList_eq_prod (s : 𝓕 → FieldStatistic) : (φs : List 𝓕) →
 
 @[simp]
 lemma ofList_singleton (s : 𝓕 → FieldStatistic) (φ : 𝓕) : ofList s [φ] = s φ := by
-  simp only [ofList, Fin.isValue]
+  simp only [ofList]
   rw [eq_self_if_eq_bosonic]
 
 @[simp]
@@ -179,7 +179,7 @@ lemma ofList_append (s : 𝓕 → FieldStatistic) (φs φs' : List 𝓕) :
     ofList s (φs ++ φs') = if ofList s φs = ofList s φs' then bosonic else fermionic := by
   induction φs with
   | nil =>
-    simp only [List.nil_append, ofList_empty, Fin.isValue, eq_self_if_bosonic_eq]
+    simp only [List.nil_append, ofList_empty, eq_self_if_bosonic_eq]
   | cons a l ih =>
     have hab (a b c : FieldStatistic) :
         (if a = (if b = c then bosonic else fermionic) then bosonic else fermionic) =

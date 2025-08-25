@@ -131,7 +131,7 @@ lemma neg_weight_implies_neg_value {E : Type*} [AddCommGroup E] [Module ℝ E]
       intro j; simp only [v_std]
     rw [heq, hw]
     have : (w i : ℝ) = -1 := by simp only [hi, SignType.neg_eq_neg_one, SignType.coe_neg,
-      SignType.coe_one, v_std]
+      SignType.coe_one]
     rw [this]
     exact neg_one_lt_zero
   exact ⟨v, hv_ne_zero, hq_neg⟩
@@ -166,7 +166,7 @@ theorem rankNeg_eq_zero {E : Type*} [AddCommGroup E]
     Classical.choose_spec h_exists
   have h_no_neg : ∀ i, w i ≠ SignType.neg :=
     QuadraticForm.posDef_no_neg_weights hq h_equiv
-  simp [Finset.card_eq_zero, Finset.filter_eq_empty_iff, h_no_neg]
+  simp [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
   exact fun ⦃x⦄ => h_no_neg x
 
 end QuadraticForm
@@ -194,7 +194,7 @@ private def pseudoRiemannianMetricValToQuadraticForm
     (x : M) : QuadraticForm ℝ (TangentSpace I x) where
   toFun v := val x v v
   toFun_smul a v := by
-    simp only [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_smul, pow_two]
+    simp only [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_smul]
   exists_companion' :=
       ⟨LinearMap.mk₂ ℝ (fun v y => val x v y + val x y v)
         (fun v₁ v₂ y => by simp only [map_add, add_apply]; ring)
@@ -269,7 +269,7 @@ def toBilinForm (g : PseudoRiemannianMetric E H M n I) (x : M) :
     LinearMap.BilinForm ℝ (TangentSpace I x) where
   toFun := λ v => { toFun := λ w => g.val x v w,
                     map_add' := λ w₁ w₂ => by
-                      simp only [ContinuousLinearMap.map_add, ContinuousLinearMap.add_apply],
+                      simp only [ContinuousLinearMap.map_add],
                     map_smul' := λ c w => by
                       simp only [map_smul, smul_eq_mul, RingHom.id_apply] }
   map_add' := λ v₁ v₂ => by
@@ -524,8 +524,7 @@ noncomputable def cotangentToBilinForm (g : PseudoRiemannianMetric E H M n I) (x
   toFun ω₁ := { toFun := λ ω₂ => cotangentMetricVal g x ω₁ ω₂,
                 map_add' := λ ω₂ ω₃ => by
                   simp only [cotangentMetricVal,
-                    ContinuousLinearMap.map_add,
-                    ContinuousLinearMap.add_apply],
+                    ContinuousLinearMap.map_add],
                 map_smul' := λ c ω₂ => by
                   simp only [cotangentMetricVal,
                     map_smul, smul_eq_mul, RingHom.id_apply] }
@@ -552,7 +551,7 @@ noncomputable def cotangentToQuadraticForm (g : PseudoRiemannianMetric E H M n I
     simp only [cotangentMetricVal,
       ContinuousLinearMap.map_smul,
       ContinuousLinearMap.smul_apply,
-      smul_smul, pow_two]
+      smul_smul]
   exists_companion' :=
       ⟨LinearMap.mk₂ ℝ (fun ω₁ ω₂ =>
           cotangentMetricVal g x ω₁ ω₂ + cotangentMetricVal g x ω₂ ω₁)

@@ -87,7 +87,7 @@ def toBoostRotation {d} : LorentzGroup.restricted d ≃ₜ Lorentz.Velocity d ×
     apply ofSpecialOrthogonal.injective
     rw [MulEquiv.apply_symm_apply]
     apply Subtype.eq
-    simp only [lorentzGroupIsGroup_mul_coe]
+    simp only
     trans (generalizedBoost 0 ⟨v, hv⟩)⁻¹
       * ((generalizedBoost 0 ⟨v, hv⟩) * (ofSpecialOrthogonal R).1)
     · congr

@@ -164,7 +164,7 @@ lemma fiveChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset �
     rw [hc]
     simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
-    simp [ha']
+    simp only [ite_eq_right_iff, Multiset.count_eq_zero]
     omega
   · rw [List.count_eq_zero_of_not_mem]
     · exact (Multiset.count_eq_zero.mpr hS).symm
@@ -196,7 +196,7 @@ lemma tenChargeMultisetToList_count {I : CodimensionOneConfig} {S : Multiset ℤ
     rw [hc]
     simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
-    simp [ha']
+    simp only [ite_eq_right_iff, Multiset.count_eq_zero]
     omega
   · rw [List.count_eq_zero_of_not_mem]
     · exact (Multiset.count_eq_zero.mpr hS).symm

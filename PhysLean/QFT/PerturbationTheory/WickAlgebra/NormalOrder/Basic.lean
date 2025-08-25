@@ -100,8 +100,8 @@ lemma ι_normalOrderF_superCommuteF_ofCrAnListF_ofCrAnOpF_eq_zero_mul (φa : �
     (φs : List 𝓕.CrAnFieldOp) (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓝ᶠ(a * [ofCrAnListF φs, ofCrAnOpF φa]ₛF * b) = 0 := by
   rw [← ofCrAnListF_singleton, superCommuteF_ofCrAnListF_ofCrAnListF_symm, ofCrAnListF_singleton]
-  simp only [FieldStatistic.instCommGroup.eq_1, FieldStatistic.ofList_singleton, mul_neg,
-    Algebra.mul_smul_comm, neg_mul, Algebra.smul_mul_assoc, map_neg, map_smul]
+  simp only [instCommGroup.eq_1, ofList_singleton, Algebra.mul_smul_comm, Algebra.smul_mul_assoc,
+    map_smul]
   rw [ι_normalOrderF_superCommuteF_ofCrAnOpF_ofCrAnListF_eq_zero_mul]
   simp
 
@@ -194,16 +194,16 @@ lemma ι_normalOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
     match hc with
     | Or.inl hc =>
       obtain ⟨φa, φa', hφa, hφa', rfl⟩ := hc
-      simp [mul_sub, sub_mul, ← mul_assoc]
+      simp
     | Or.inr (Or.inl hc) =>
       obtain ⟨φa, φa', hφa, hφa', rfl⟩ := hc
-      simp [mul_sub, sub_mul, ← mul_assoc]
+      simp
     | Or.inr (Or.inr (Or.inl hc)) =>
       obtain ⟨φa, φa', hφa, hφa', rfl⟩ := hc
-      simp [mul_sub, sub_mul, ← mul_assoc]
+      simp
     | Or.inr (Or.inr (Or.inr hc)) =>
       obtain ⟨φa, φa', hφa, hφa', rfl⟩ := hc
-      simp [mul_sub, sub_mul, ← mul_assoc]
+      simp
   · simp [p]
   · intro x y hx hy
     simp only [map_add, p]

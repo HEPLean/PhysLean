@@ -37,7 +37,7 @@ def electricPotential (q ε : ℝ) : StaticElectricPotential 1 :=
 lemma electricPotential_eq_zero_of_ε_eq_zero (q : ℝ) :
     electricPotential q 0 = 0 := by
   ext x
-  simp [electricPotential, ofBounded_apply, norm_zero, div_zero, zero_smul]
+  simp [electricPotential, ofBounded_apply, div_zero]
 
 /-- An electric field corresponding to a charge distribution of a point particle,
   defined as the negative of the gradient of `electricPotential q ε`.
@@ -72,17 +72,17 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       simp only [Fin.zero_eta, Fin.isValue, ContinuousLinearMap.neg_apply, gradD_eq_sum_basis,
         Finset.univ_unique, Fin.default_eq_zero, neg_smul, Finset.sum_neg_distrib,
         Finset.sum_singleton, PiLp.neg_apply, PiLp.smul_apply, basis_self, smul_eq_mul, mul_one,
-        neg_neg, s]
+        neg_neg]
       rw [electricPotential]
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, Fin.isValue,
-        ContinuousLinearMap.neg_apply, neg_inj, s]
+        ContinuousLinearMap.neg_apply, neg_inj]
       rw [ofBounded_apply]
       rfl
     _ = - (q/(2 * ε)) * (∫ x, fderiv ℝ η x (basis 0) • ‖x‖) := by
       rw [← integral_const_mul, ← integral_neg]
       congr
       funext x
-      simp only [Fin.isValue, smul_eq_mul, neg_mul, neg_inj, s]
+      simp only [Fin.isValue, smul_eq_mul, neg_mul, neg_inj]
       ring
     _ = - (q/(2 * ε)) * (∫ x in s, fderiv ℝ η x (basis 0) • ‖x‖) +
         - (q/(2 * ε)) * (∫ x in sᶜ, fderiv ℝ η x (basis 0) • ‖x‖) := by
@@ -101,7 +101,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
         congr
         rw [@PiLp.norm_eq_of_L2]
         simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Real.norm_eq_abs, sq_abs,
-          Finset.sum_singleton, s]
+          Finset.sum_singleton]
         refine Real.sqrt_eq_cases.mpr ?_
         left
         apply And.intro
@@ -114,10 +114,10 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
         congr
         rw [@PiLp.norm_eq_of_L2]
         simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Real.norm_eq_abs, sq_abs,
-          Finset.sum_singleton, s]
+          Finset.sum_singleton]
         refine Real.sqrt_eq_cases.mpr ?_
         left
-        simp only [Fin.isValue, mul_neg, neg_mul, neg_neg, Left.nonneg_neg_iff, s]
+        simp only [Fin.isValue, mul_neg, neg_mul, neg_neg, Left.nonneg_neg_iff]
         apply And.intro
         · exact Eq.symm (Lean.Grind.Semiring.pow_two (x 0))
         · simp [s] at hx
@@ -131,32 +131,32 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
         (oneEquiv_symm_measurableEmbedding)]
       congr
-      · simp only [Fin.isValue, smul_eq_mul, compCLMOfContinuousLinearEquiv_apply, s]
+      · simp only [Fin.isValue, smul_eq_mul, compCLMOfContinuousLinearEquiv_apply]
         funext x
         congr 1
         rw [← fderiv_deriv]
         rw [ContinuousLinearEquiv.comp_right_fderiv]
         simp only [Fin.isValue, ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe,
-          Function.comp_apply, s]
+          Function.comp_apply]
         congr 1
         funext i
         fin_cases i
-        simp only [Fin.isValue, Fin.zero_eta, basis_self, oneEquivCLE, s]
+        simp only [Fin.isValue, Fin.zero_eta, basis_self, oneEquivCLE]
         rfl
       · simp only [Fin.reduceLast, Fin.isValue, Set.preimage_compl, Set.preimage_setOf_eq, s]
         ext x
         simp [oneEquiv_symm_apply]
-      · simp only [Fin.isValue, smul_eq_mul, mul_neg, compCLMOfContinuousLinearEquiv_apply, s]
+      · simp only [Fin.isValue, smul_eq_mul, mul_neg, compCLMOfContinuousLinearEquiv_apply]
         funext x
         congr 1
         rw [← fderiv_deriv]
         rw [ContinuousLinearEquiv.comp_right_fderiv]
         simp only [Fin.isValue, ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe,
-          Function.comp_apply, s]
+          Function.comp_apply]
         congr 2
         funext i
         fin_cases i
-        simp only [Fin.isValue, Fin.zero_eta, basis_self, oneEquivCLE, s]
+        simp only [Fin.isValue, Fin.zero_eta, basis_self, oneEquivCLE]
         rfl
     _ = - (q/(2 * ε)) * (∫ x in Set.Ioi (0 : ℝ),
         deriv (fun x => η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x * (fun x => x) x) x
@@ -168,13 +168,13 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       · funext x
         rw [deriv_fun_mul]
         simp only [compCLMOfContinuousLinearEquiv_apply, Function.comp_apply, deriv_id'', mul_one,
-          add_sub_cancel_right, s]
+          add_sub_cancel_right]
         · exact SchwartzMap.differentiableAt _
         · fun_prop
       · funext x
         rw [deriv_fun_mul]
         simp only [compCLMOfContinuousLinearEquiv_apply, mul_neg, Function.comp_apply, deriv_neg'',
-          mul_one, neg_add_cancel_right, s]
+          mul_one, neg_add_cancel_right]
         · exact SchwartzMap.differentiableAt _
         · fun_prop
     _ = - (q/(2 * ε)) * (∫ x in Set.Ioi (0 : ℝ),

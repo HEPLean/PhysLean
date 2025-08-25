@@ -115,7 +115,7 @@ lemma prodT_ofRat_ofRat {n n1 : ℕ} {c : Fin n → complexLorentzTensor.Color}
   apply (Tensor.basis _).repr.injective
   ext b
   rw [prodT_basis_repr_apply]
-  simp only [ofRat_basis_repr_apply, Function.comp_apply, map_mul]
+  simp only [ofRat_basis_repr_apply, map_mul]
 
 lemma contrT_ofRat_eq_sum_dropPairSection {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.Color}
     {i j : Fin (n + 1 + 1)} {h : i ≠ j ∧ complexLorentzTensor.τ (c i) = c j }
@@ -170,6 +170,6 @@ lemma permT_ofRat {n m : ℕ} {c : Fin n → complexLorentzTensor.Color}
       (b (h.inv σ i)))))) := by
   apply (Tensor.basis _).repr.injective
   ext b
-  simp only [permT_basis_repr_symm_apply, mk_hom, ofRat_basis_repr_apply]
+  simp only [permT_basis_repr_symm_apply, ofRat_basis_repr_apply]
 
 end complexLorentzTensor

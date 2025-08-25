@@ -92,7 +92,7 @@ lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : Charges 𝓩}
     simp [QM]
     rw [Quanta.AnomalyCancellation]
     simp only [Quanta.HdAnomalyCoefficent_map, RingHom.coe_prodMap, Quanta.HuAnomalyCoefficent_map,
-      FiveQuanta.anomalyCoefficent_of_map, TenQuanta.anomalyCoefficent_of_map, QM]
+      FiveQuanta.anomalyCoefficent_of_map, TenQuanta.anomalyCoefficent_of_map]
     trans (f.prodMap f) ((Quanta.HdAnomalyCoefficent qHd) +
       (Quanta.HuAnomalyCoefficent qHu) + F5.anomalyCoefficent + F10.anomalyCoefficent)
     · simp [map_add]

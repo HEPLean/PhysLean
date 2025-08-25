@@ -130,7 +130,7 @@ lemma contrContrToMatrixRe_ρ {d : ℕ} (v : (Contr d ⊗ Contr d).V) (M : Loren
   funext x
   congr
   funext x1
-  simp only [contrBasis_ρ_apply, transpose_apply]
+  simp only [contrBasis_ρ_apply]
   ring
 
 lemma coCoToMatrixRe_ρ {d : ℕ} (v : ((Co d) ⊗ (Co d)).V) (M : LorentzGroup d) :

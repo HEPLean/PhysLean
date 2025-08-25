@@ -316,14 +316,14 @@ def toComplex : LorentzGroup d →* Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) �
   map_one' := by
     ext i j
     simp only [lorentzGroupIsGroup_one_coe, map_apply, ofRealHom_eq_coe]
-    simp only [Matrix.one_apply, ofReal_one, ofReal_zero]
+    simp only [Matrix.one_apply]
     split_ifs
     · rfl
     · rfl
   map_mul' Λ Λ' := by
     ext i j
     simp only [lorentzGroupIsGroup_mul_coe, map_apply, ofRealHom_eq_coe]
-    simp only [← Matrix.map_mul, RingHom.map_matrix_mul]
+    simp only [← Matrix.map_mul]
     rfl
 
 /-- The image of a Lorentz transformation under `toComplex` is invertible. -/

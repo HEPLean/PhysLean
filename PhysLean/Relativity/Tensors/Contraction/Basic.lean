@@ -71,9 +71,9 @@ lemma contrT_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → C}
   change P t
   apply induction_on_pure
   · intro p
-    simp only [ne_eq, contrT_pure, P]
+    simp only [contrT_pure, P]
     rw [actionT_pure, contrT_pure]
-    simp only [contrP, contrPCoeff_invariant, dropPair_equivariant, actionT_smul, P]
+    simp only [contrP, contrPCoeff_invariant, dropPair_equivariant, actionT_smul]
     congr 1
     exact Eq.symm actionT_pure
   · intro p q hp
@@ -96,9 +96,9 @@ lemma contrT_permT {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
   change P t
   apply induction_on_pure
   · intro p
-    simp only [ne_eq, contrT_pure, P]
+    simp only [contrT_pure, P]
     rw [permT_pure, contrT_pure]
-    simp only [contrP, contrPCoeff_permP, dropPair_permP, map_smul, P]
+    simp only [contrP, contrPCoeff_permP, dropPair_permP, map_smul]
     congr
     rw [permT_pure]
   · intro r t ht
@@ -115,7 +115,7 @@ lemma contrT_symm {n : ℕ} {c : Fin (n + 1 + 1) → C}
   change P t
   apply induction_on_pure
   · intro p
-    simp only [ne_eq, contrT_pure, permCond_dropPairEmb_symm, P]
+    simp only [contrT_pure, P]
     rw [contrP_symm]
   · intro p q hp
     simp [P, hp]
@@ -129,7 +129,7 @@ lemma contrT_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → C}
     (t : Tensor S c) :
     let i2' := (dropPairEmb i1 j1 i2);
     let j2' := (dropPairEmb i1 j1 j2);
-    have hi2j2' : i2' ≠ j2' := by simp [i2', j2', dropPairEmb_eq_orderEmbOfFin, hij2];
+    have hi2j2' : i2' ≠ j2' := by simp [i2', j2', hij2];
     let i1' := (dropPairEmbPre i2' j2' hi2j2' i1 (by simp [i2', j2']));
     let j1' := (dropPairEmbPre i2' j2' hi2j2' j1 (by simp [i2', j2']));
     contrT n i2 j2 hij2 (contrT (n + 1 + 1) i1 j1 hij1 t) =
@@ -138,9 +138,9 @@ lemma contrT_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → C}
       (contrT (n + 1 + 1) i2' j2' (by simp [i2', j2', hij2]) t)) := by
   let i2' := (dropPairEmb i1 j1 i2);
   let j2' := (dropPairEmb i1 j1 j2);
-  let i1' := (dropPairEmbPre i2' j2' (by simp [i2', j2', dropPairEmb_eq_orderEmbOfFin, hij2]) i1
+  let i1' := (dropPairEmbPre i2' j2' (by simp [i2', j2', hij2]) i1
     (by simp [i2', j2']));
-  let j1' := (dropPairEmbPre i2' j2' (by simp [i2', j2', dropPairEmb_eq_orderEmbOfFin, hij2]) j1
+  let j1' := (dropPairEmbPre i2' j2' (by simp [i2', j2', hij2]) j1
     (by simp [i2', j2']));
   let P (t : Tensor S c) : Prop := contrT n i2 j2 hij2 (contrT (n + 1 + 1) i1 j1 hij1 t) =
       permT id (permCond_dropPairEmb_comm i1 j1 i2 j2 hij1.left hij2.left)

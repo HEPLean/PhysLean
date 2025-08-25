@@ -64,7 +64,7 @@ def detContinuous : C(𝓛 d, ℤ₂) :=
 lemma detContinuous_eq_one (Λ : LorentzGroup d) :
     detContinuous Λ = Additive.toMul 0 ↔ Λ.1.det = 1 := by
   simp only [detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk, coeForℤ₂_apply,
-    Subtype.mk.injEq, ite_eq_left_iff, toMul_eq_one]
+    Subtype.mk.injEq]
   simp only [toMul_zero, ite_eq_left_iff, toMul_eq_one]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · by_contra hn

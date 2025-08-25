@@ -100,7 +100,7 @@ lemma toList_count {F : FluxesFive} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.Has
     rw [hc]
     simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
-    simp [ha']
+    simp only [ite_eq_right_iff, Multiset.count_eq_zero]
     intro hn
     exact fun a_1 => ha' (id (Eq.symm hn))
   · rw [List.count_eq_zero_of_not_mem]
@@ -209,7 +209,7 @@ lemma toList_count {F : FluxesTen} {a : ℤ × ℤ} (hf : F.NoExotics ∧ F.HasN
     rw [hc]
     simp only [↓reduceIte, one_nsmul]
     intro a' ha' hx
-    simp [ha']
+    simp only [ite_eq_right_iff, Multiset.count_eq_zero]
     intro hn
     exact fun a_1 => ha' (id (Eq.symm hn))
   · rw [List.count_eq_zero_of_not_mem]

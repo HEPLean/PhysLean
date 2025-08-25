@@ -115,7 +115,7 @@ lemma Pure.dropPairEmb_comm_natAdd {n n1 : ℕ}
     · intro b hb
       simp only [Set.mem_setOf_eq] at hb
       use ⟨b, by omega⟩
-      simp [Fin.ext_iff]
+      simp
   have hnatRange : Set.range (Fin.natAdd (m := n) n1) =
     (Set.range (Fin.castAdd (m := n) (n := n1)))ᶜ := by
     rw [hcastRange]
@@ -130,20 +130,20 @@ lemma Pure.dropPairEmb_comm_natAdd {n n1 : ℕ}
       omega
   have hfg : f = g := by
     rw [← OrderEmbedding.range_inj]
-    simp only [Nat.add_eq, RelEmbedding.coe_mk, Function.Embedding.coeFn_mk, f, g]
+    simp only [RelEmbedding.coe_mk, Function.Embedding.coeFn_mk, f, g]
     rw [Set.range_comp, Set.range_comp]
-    simp only [dropPairEmb_range hij, f, g]
+    simp only [dropPairEmb_range hij]
     rw [hnatRange]
     rw [dropPairEmb_image_compl]
-    simp only [Set.compl_union, f, g]
+    simp only [Set.compl_union]
     rw [dropPairEmb_natAdd_image_range_castAdd i j hij]
     ext a
     simp only [Set.mem_inter_iff, Set.mem_compl_iff, Set.mem_insert_iff, Set.mem_singleton_iff,
-      not_or, Set.mem_setOf_eq, not_lt, Set.mem_image, f, g]
+      not_or, Set.mem_setOf_eq, not_lt, Set.mem_image]
     apply Iff.intro
     · intro h
       use ⟨a - n1, by omega⟩
-      simp only [Fin.ext_iff, Fin.coe_natAdd, Fin.natAdd_mk, f, g] at h ⊢
+      simp only [Fin.ext_iff, Fin.coe_natAdd, Fin.natAdd_mk] at h ⊢
       omega
     · intro h
       obtain ⟨x, h1, rfl⟩ := h
@@ -226,8 +226,8 @@ lemma Pure.prodP_dropPair {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
   ext x
   obtain ⟨x, rfl⟩ := finSumFinEquiv.surjective x
   rw [prodP_apply_finSumFinEquiv]
-  simp only [ne_eq, Function.comp_apply, finSumFinEquiv_apply_left, finSumFinEquiv_apply_right,
-    dropPair, permP, Nat.add_eq, id_eq, Fin.coe_natAdd, eq_mp_eq_cast]
+  simp only [Function.comp_apply, finSumFinEquiv_apply_left, finSumFinEquiv_apply_right, dropPair,
+    permP, Nat.add_eq, id_eq]
   match x with
   | Sum.inl x =>
     simp only [finSumFinEquiv_apply_left]
@@ -251,7 +251,7 @@ lemma Pure.prodP_contrP_snd {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
       (finSumFinEquiv (m := n1) (Sum.inr j))
       (by simp [hij, - finSumFinEquiv_apply_right, finSumFinEquiv.injective.eq_iff]) <|
     prodP p1 p) := by
-  simp only [ne_eq, contrP, map_smul, Nat.add_eq, finSumFinEquiv_apply_right, Sum.elim_inr]
+  simp only [contrP, map_smul, Nat.add_eq, finSumFinEquiv_apply_right]
   rw [contrPCoeff_natAdd i j hij]
   congr 1
   rw [prodT_pure, permT_pure]
@@ -292,13 +292,12 @@ lemma prodT_contrT_snd {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
   refine induction_on_pure ?_
     (fun r t h1 => by
       dsimp only [P1, P, P2] at h1
-      simp only [h1, map_smul, LinearMap.smul_apply, P1, P, P2])
+      simp only [h1, map_smul, LinearMap.smul_apply, P, P2])
     (fun t1 t2 h1 h2 => by
       dsimp only [P1, P, P2] at h1 h2
-      simp only [h1, h2, map_add, LinearMap.add_apply, P2, P1, P]) t1
+      simp only [map_add, LinearMap.add_apply, h1, h2, P2, P]) t1
   intro p1
-  simp only [ne_eq, Nat.add_eq, finSumFinEquiv_apply_right, Function.comp_apply, contrT_pure, P2, P,
-    P1]
+  simp only [Nat.add_eq, finSumFinEquiv_apply_right, contrT_pure, P2, P]
   rw [Pure.prodP_contrP_snd, prodT_pure, contrT_pure]
   rfl
 

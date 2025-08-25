@@ -85,18 +85,16 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       | Sum.inl _ => tx.1.val
       | Sum.inr i => tx.2 i)
     left_inv x := by
-      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, time, LinearMap.coe_mk,
-        AddHom.coe_mk, space, EmbeddingLike.apply_eq_iff_eq]
+      simp only [time, LinearMap.coe_mk, AddHom.coe_mk, space]
       funext i
       match i with
       | Sum.inl 0 => simp [Lorentz.Vector.timeComponent]
       | Sum.inr i => simp [Lorentz.Vector.spatialPart]
     right_inv tx := by
-      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, time, Lorentz.Vector.timeComponent,
-        Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk, LinearEquiv.apply_symm_apply, space]
+      simp only [time, Lorentz.Vector.timeComponent, Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk,
+        space]
     map_add' x y := by
-      simp only [time_val_toCoord_symm, Fin.isValue, Lorentz.Vector.apply_add, space_toCoord_symm,
-        Prod.mk_add_mk, Prod.mk.injEq, true_and]
+      simp only [space_toCoord_symm, Lorentz.Vector.apply_add, Prod.mk_add_mk, Prod.mk.injEq]
       constructor
       · ext
         simp
@@ -109,7 +107,7 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
 lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
     toTimeAndSpace (Lorentz.Vector.basis (Sum.inr i))
     = (0, Space.basis i) := by
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
+  simp only [toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_sum_inr]
   constructor
@@ -119,7 +117,7 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
 
 lemma toTimeAndSpace_basis_inl {d : ℕ} :
     toTimeAndSpace (d := d) (Lorentz.Vector.basis (Sum.inl 0)) = (1, 0) := by
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, toTimeAndSpace, time, LinearMap.coe_mk,
+  simp only [toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_sum_inl]
   constructor
@@ -140,9 +138,9 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
 def coord {d : ℕ} (μ : Fin (1 + d)) : SpaceTime d →ₗ[ℝ] ℝ where
   toFun x := x (finSumFinEquiv.symm μ)
   map_add' x1 x2 := by
-    simp [flip]
+    simp
   map_smul' c x := by
-    simp [flip]
+    simp
 
 @[inherit_doc coord]
 scoped notation "𝔁" => coord

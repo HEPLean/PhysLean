@@ -65,16 +65,14 @@ lemma squareMeter_in_SI : squareMeter SI = 1 := by
 lemma squareFoot_in_SI : squareFoot SI = 0.09290304 := by
   simp [squareFoot, dimScale, LengthUnit.feet, ofUnit_apply]
   ext
-  simp only [Measured.smul_val, smul_eq_mul, mul_one, NNReal.coe_mul, coe_mk, coe_rpow,
-    NNReal.coe_ofScientific]
+  simp only [coe_rpow, coe_mk, NNReal.coe_ofScientific]
   norm_num
 
 @[simp]
 lemma squareMile_in_SI : squareMile SI = 2589988.110336 := by
   simp [squareMile, dimScale, LengthUnit.miles, ofUnit_apply]
   ext
-  simp only [Measured.smul_val, smul_eq_mul, mul_one, NNReal.coe_mul, coe_mk, coe_rpow,
-    NNReal.coe_ofScientific]
+  simp only [coe_rpow, coe_mk, NNReal.coe_ofScientific]
   norm_num
 
 @[simp]

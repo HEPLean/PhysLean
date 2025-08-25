@@ -133,7 +133,7 @@ lemma shift_cross_product_phase_zero {V : CKMMatrix} {τ : ℝ}
     ring
   · simp only [Fin.mk_one, Fin.isValue]
     rw [phaseShiftApply.ucCross_snd]
-    simp only [tRow, Fin.isValue, phaseShiftApply_coe, phaseShiftApply.ts, cons_val_one, head_cons,
+    simp only [tRow, Fin.isValue, phaseShiftApply_coe, phaseShiftApply.ts, cons_val_one,
       neg_mul]
     have hτ0 := congrFun hτ 1
     simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul, tRow, cons_val_one, cons_val_zero] at hτ0

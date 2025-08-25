@@ -440,12 +440,12 @@ lemma ofUnit_eq_mul_dimScale {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
 lemma ofUnit_apply_self {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
     (m : M) (u : UnitChoices) :
     (ofUnit d m u) u = m := by
-  simp [ofUnit, smul_smul]
+  simp [ofUnit]
 
 lemma ofUnit_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
     (m : M) (u1 u2 : UnitChoices) :
     (ofUnit d m u1) u2 = UnitChoices.dimScale u1 u2 d • m := by
-  simp [ofUnit, smul_smul]
+  simp [ofUnit]
 
 /-!
 
@@ -741,7 +741,7 @@ noncomputable def valCast {d : Dimension} {M : Type} [SMul ℝ≥0 M]
 lemma valCast_eq_unitChoices {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
     {f : Dimensionful d M} {hd : d = 0} (u : UnitChoices) :
     valCast f hd = f u := by
-  simp [valCast, hd]
+  simp [valCast]
   rw [f.2 UnitChoices.SI u]
   subst hd
   simp

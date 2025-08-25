@@ -94,7 +94,7 @@ lemma contrCoContraction_basis (i j : Fin 4) :
     mul_one]
   rw [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
-  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
+  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_comm]
 
 lemma contrCoContraction_basis' (i j : Fin 1 ⊕ Fin 3) :
     contrCoContraction.hom (complexContrBasis i ⊗ₜ complexCoBasis j) =
@@ -131,7 +131,7 @@ lemma coContrContraction_basis (i j : Fin 4) :
     complexContrBasisFin4, complexContrBasis_toFin13ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
-  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
+  simp only [eq_comm, EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff]
 
 lemma coContrContraction_basis' (i j : Fin 1 ⊕ Fin 3) :
     coContrContraction.hom (complexCoBasis i ⊗ₜ complexContrBasis j) =
@@ -140,7 +140,7 @@ lemma coContrContraction_basis' (i j : Fin 1 ⊕ Fin 3) :
   simp only [complexCoBasis_toFin13ℂ, complexContrBasis_toFin13ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
-  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
+  simp only [eq_comm]
 
 /-!
 

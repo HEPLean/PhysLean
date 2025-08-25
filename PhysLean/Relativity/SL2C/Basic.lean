@@ -69,8 +69,7 @@ def toSelfAdjointMap (M : SL(2, ℂ)) :
 
 lemma toSelfAdjointMap_apply_det (M : SL(2, ℂ)) (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     det ((toSelfAdjointMap M) A).1 = det A.1 := by
-  simp only [LinearMap.coe_mk, AddHom.coe_mk, toSelfAdjointMap, det_mul,
-    selfAdjoint.mem_iff, det_conjTranspose, det_mul, det_one, RingHom.id_apply]
+  simp only [toSelfAdjointMap, LinearMap.coe_mk, AddHom.coe_mk, det_mul, det_conjTranspose]
   simp only [SpecialLinearGroup.det_coe, one_mul, star_one, mul_one]
 
 lemma toSelfAdjointMap_apply_pauliBasis'_inl (M : SL(2, ℂ)) :
@@ -107,7 +106,7 @@ lemma toSelfAdjointMap_apply_pauliBasis'_inl (M : SL(2, ℂ)) :
     simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one]
     ring_nf
   | 0, 1 =>
-    simp only [Fin.isValue, cons_val', cons_val_one, head_cons, empty_val',
+    simp only [Fin.isValue, cons_val', cons_val_one, empty_val',
       cons_val_fin_one, cons_val_zero]
     ring_nf
     rw [← re_add_im (M.1 0 0), ← re_add_im (M.1 0 1), ← re_add_im (M.1 1 0), ← re_add_im (M.1 1 1)]
@@ -119,7 +118,7 @@ lemma toSelfAdjointMap_apply_pauliBasis'_inl (M : SL(2, ℂ)) :
     ring
   | 1, 0 =>
     simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
-      cons_val_one, head_fin_const]
+      cons_val_one]
     ring_nf
     rw [← re_add_im (M.1 0 0), ← re_add_im (M.1 0 1), ← re_add_im (M.1 1 0), ← re_add_im (M.1 1 1)]
     simp only [Fin.isValue, map_add, conj_ofReal, _root_.map_mul, conj_I, mul_neg, add_re,
@@ -129,8 +128,7 @@ lemma toSelfAdjointMap_apply_pauliBasis'_inl (M : SL(2, ℂ)) :
     simp only [Fin.isValue, I_sq, mul_neg, mul_one, neg_mul, neg_neg, one_mul, sub_neg_eq_add]
     ring
   | 1, 1 =>
-    simp only [Fin.isValue, cons_val', cons_val_one, head_cons, empty_val',
-      cons_val_fin_one, head_fin_const]
+    simp only [Fin.isValue, cons_val', cons_val_one, cons_val_fin_one, empty_val']
     ring_nf
 
 /-- The monoid homomorphisms from `SL(2, ℂ)` to matrices indexed by `Fin 1 ⊕ Fin 3`
@@ -197,8 +195,7 @@ lemma toSelfAdjointMap_basis (i : Fin 1 ⊕ Fin 3) :
     toSelfAdjointMap M (PauliMatrix.pauliBasis' i) =
     ∑ j, (toLorentzGroup M).1 j i • PauliMatrix.pauliBasis' j := by
   rw [toLorentzGroup_eq_pauliBasis']
-  simp only [LinearMap.toMatrix_apply, Finset.univ_unique,
-    Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
+  simp only [LinearMap.toMatrix_apply]
   nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.pauliBasis'
     ((toSelfAdjointMap M) (PauliMatrix.pauliBasis' i)))]
   rfl

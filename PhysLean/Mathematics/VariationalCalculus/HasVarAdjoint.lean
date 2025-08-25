@@ -556,7 +556,7 @@ lemma adjFDeriv_apply
             funext i
             congr
             funext y
-            simp [inner_smul_left', inner_smul_right']
+            simp [inner_smul_right']
             left
             rw [fderiv_inner_apply']
             simp only [fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.zero_apply,
@@ -565,7 +565,7 @@ lemma adjFDeriv_apply
             · exact hφ.differentiable y
             · intro i hi
               apply IsTestFunction.integrable
-              simp [inner_smul_left', inner_smul_right']
+              simp [inner_smul_right']
               apply IsTestFunction.mul_right
               · change IsTestFunction fun x => f' i (ψ x)
                 apply IsTestFunction.comp_left

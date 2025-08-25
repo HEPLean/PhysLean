@@ -108,11 +108,9 @@ lemma divergence_add {f g : E → E} {x : E}
   simp [fderiv_fun_add hf hg]
 
 lemma divergence_neg {f : E → E} {x : E} :
-    divergence 𝕜 (fun x => -f x) x
-    =
-    -divergence 𝕜 f x := by
+    divergence 𝕜 (fun x => -f x) x  = -divergence 𝕜 f x := by
   unfold divergence
-  simp [fderiv_neg]
+  simp
 
 lemma divergence_sub {f g : E → E} {x : E}
     (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :
