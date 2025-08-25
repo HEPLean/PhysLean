@@ -21,7 +21,7 @@ namespace FieldOpFreeAlgebra
 
 -/
 
-open FieldStatistic
+open Module FieldStatistic
 
 /-- For a field specification `𝓕`, the super commutator `superCommuteF` is defined as the linear
   map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra`

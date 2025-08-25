@@ -13,7 +13,7 @@ import Mathlib.RingTheory.GradedAlgebra.Basic
 
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
-open FieldStatistic
+open Module FieldStatistic
 
 namespace FieldOpFreeAlgebra
 

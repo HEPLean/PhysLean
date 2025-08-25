@@ -494,7 +494,7 @@ lemma grad_inner {d : ℕ} :
   ext z i
   simp [Space.grad]
   rw [deriv]
-  rw [fderiv_fun_sum]
+  erw [fderiv_fun_sum]
   · simp
     rw [Finset.sum_eq_single i]
     · trans (fderiv ℝ (fun y => y i ^ 2) z) (EuclideanSpace.single i 1)
@@ -518,7 +518,7 @@ lemma grad_inner {d : ℕ} :
       · rfl
       rw [deriv, fderiv_comp]
       simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv,
-        differentiableAt_fun_id, deriv_fun_pow'', Nat.cast_ofNat, Nat.add_one_sub_one, pow_one,
+        differentiableAt_fun_id, Nat.cast_ofNat, Nat.add_one_sub_one, pow_one,
         deriv_id'', mul_one, smul_eq_mul, mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
       · left
         rw [← deriv_eq]
@@ -527,7 +527,9 @@ lemma grad_inner {d : ℕ} :
       · fun_prop
       · fun_prop
     · simp
-  · intro i
-    fun_prop
+  · intro i _
+    refine DifferentiableAt.inner ℝ ?_ ?_
+    · fun_prop
+    · fun_prop
 
 end Space

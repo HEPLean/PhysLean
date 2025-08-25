@@ -12,7 +12,7 @@ import PhysLean.Mathematics.Calculus.Divergence
 
 Definition of test function, smooth and compactly supported function, and theorems about them.
 -/
-
+open Module
 section IsTestFunction
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X]

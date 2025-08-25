@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Lean.Expr.Basic
+import Lean.Elab.PreDefinition.Structural.BRecOn
 /-!
 
 ## Basic Lean meta programming commands
@@ -58,9 +59,9 @@ def PhysLean.Imports.getUserConsts (imp : Import) : CoreM (Array ConstantInfo) :
       && !isRecOnRecursor env name
       && !isNoConfusion env name
       && !isBRecOnRecursor env name
-      && !isAuxRecursorWithSuffix env name binductionOnSuffix
+      && !isAuxRecursorWithSuffix env name brecOnSuffix
       && !isAuxRecursorWithSuffix env name belowSuffix
-      && !isAuxRecursorWithSuffix env name ibelowSuffix
+      && !isAuxRecursorWithSuffix env name belowSuffix
       /- Removing syntax category declarations. -/
       && name.toString != "TensorTree.indexExprTT.quot"
       && name.toString != "TensorTree.tensorExprTT.quot"

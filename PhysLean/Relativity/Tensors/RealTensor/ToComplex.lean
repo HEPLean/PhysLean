@@ -16,7 +16,7 @@ complex Lorentz tensors.
 
 namespace realLorentzTensor
 
-open TensorSpecies
+open Module TensorSpecies
 open Tensor
 open complexLorentzTensor
 

@@ -17,7 +17,7 @@ Maxwell's Equations in homogeneous isotropic medium.
 
 namespace Electromagnetism
 
-open Space
+open Space Module
 open Time
 open ClassicalMechanics
 
@@ -152,17 +152,18 @@ lemma transverse_upto_time_fun_of_eq_electricPlaneWave {E₀ : ℝ → Euclidean
     rw [hEwave, electricPlaneWave]
     unfold planeWave div coord basis Space.deriv
     rw [PiLp.inner_apply]
-    simp [-PiLp.inner_apply]
+    simp only [RCLike.inner_apply, conj_trivial, EuclideanSpace.basisFun_apply]
     conv_lhs =>
       enter [2, i]
       rw [wave_fderiv_inner_eq_inner_fderiv_proj h']
     rw [← Finset.mul_sum]
-    simp
+    simp [PiLp.inner_apply]
   have E'eqzero : ∀ t x, fderiv ℝ (fun x => (inner ℝ (E t x) s.unit)) x = 0 := by
     intro t x
     ext y
     rw [fderiv_inner_apply]
-    simp [-PiLp.inner_apply]
+    simp only [fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.zero_apply, inner_zero_right,
+      zero_add]
     rw [E'eqdivE]
     rw [OM.gaussLawElectric_of_free E B]
     simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, mul_zero]
@@ -199,17 +200,18 @@ lemma transverse_upto_time_fun_of_eq_magneticPlaneWave {B₀ : ℝ → Euclidean
     rw [hBwave, magneticPlaneWave]
     unfold planeWave div coord basis Space.deriv
     rw [PiLp.inner_apply]
-    simp [-PiLp.inner_apply]
+    simp only [RCLike.inner_apply, conj_trivial, EuclideanSpace.basisFun_apply]
     conv_lhs =>
       enter [2, i]
       rw [wave_fderiv_inner_eq_inner_fderiv_proj h']
     rw [← Finset.mul_sum]
-    simp
+    simp [PiLp.inner_apply]
   have B'eqzero : ∀ t x, fderiv ℝ (fun x => (inner ℝ (B t x) s.unit)) x = 0 := by
     intro t x
     ext y
     rw [fderiv_inner_apply]
-    simp [-PiLp.inner_apply]
+    simp only [fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.zero_apply, inner_zero_right,
+      zero_add]
     rw [B'eqdivB]
     rw [OM.gaussLawMagnetic_of_free E B]
     simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, mul_zero]
@@ -253,7 +255,7 @@ lemma time_deriv_electricPlaneWave_eq_cross_time_deriv_magneticPlaneWave
   fin_cases i <;>
   · rw [← Real.sq_sqrt (inv_nonneg_of_nonneg (le_of_lt (smul_pos OM.mu_ge_zero OM.eps_ge_zero))),
       Real.sqrt_inv, ← hc]
-    simp [-PiLp.inner_apply, ← mul_assoc, OM.mu_ge_zero, OM.eps_ge_zero, ne_of_gt]
+    simp [← mul_assoc, OM.mu_ge_zero, OM.eps_ge_zero, ne_of_gt]
     rw [mul_sub, pow_two,
       mul_assoc, space_fderiv_of_inner_product_wave_eq_space_fderiv h',
       mul_assoc, space_fderiv_of_inner_product_wave_eq_space_fderiv h']
@@ -278,7 +280,7 @@ lemma time_deriv_magneticPlaneWave_eq_cross_time_deriv_electricPlaneWave
   unfold planeWave curl coord basis Space.deriv
   ext i
   fin_cases i <;>
-  · simp [-PiLp.inner_apply]
+  · simp
     rw [← mul_right_inj' hc_non_zero, mul_sub,
       space_fderiv_of_inner_product_wave_eq_space_fderiv h',
       space_fderiv_of_inner_product_wave_eq_space_fderiv h',
@@ -552,7 +554,9 @@ theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     rw [← smul_sub, inner_smul_right]
     simp only [WithLp.equiv_symm_apply, WithLp.equiv_apply]
     rw [← WithLp.toLp_sub, ← LinearMap.map_sub, ← WithLp.ofLp_sub]
-    erw [inner_cross_self]
+    conv_lhs =>
+      enter [2]
+      erw [inner_cross_self]
     simp
   · /- E orthogonal to s. -/
     rw [inner_smul_left]
@@ -569,7 +573,8 @@ theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     rw [← smul_sub, inner_smul_left]
     simp only [WithLp.equiv_symm_apply, WithLp.equiv_apply]
     rw [← WithLp.toLp_sub, ← LinearMap.map_sub, ← WithLp.ofLp_sub]
-    erw [real_inner_comm, inner_self_cross]
+    rw [real_inner_comm]
+    erw [inner_self_cross (s.unit) (E t x - Ec)]
     simp
   · exact s.norm
 

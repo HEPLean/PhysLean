@@ -9,7 +9,7 @@ import PhysLean.QFT.PerturbationTheory.WickContraction.ExtractEquiv
 # Cardinality of Wick contractions
 -/
 
-open FieldSpecification
+open Module FieldSpecification
 variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
@@ -178,17 +178,17 @@ lemma consAddContract_surjective_on_zero_contract (i : Fin n.succ)
   apply Iff.intro
   · intro h
     rcases h with h | h
+    · subst h
+      rw [← h2]
+      simp
     · obtain ⟨b, hb, rfl⟩ := h
       rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply]
       simp only [succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, true_and, c'] at hb
       exact hb
-    · subst h
-      rw [← h2]
-      simp
   · intro h
     by_cases ha : a = {0, i.succ}
     · simp [ha]
-    · left
+    · right
       have hd := c.2.2 a h {0, i.succ} (by rw [← h2]; simp)
       simp_all only [succ_eq_add_one, Finset.disjoint_insert_right, Finset.disjoint_singleton_right,
         false_or]

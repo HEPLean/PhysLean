@@ -12,7 +12,7 @@ import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 -/
 
 namespace Electromagnetism
-open realLorentzTensor
+open Module realLorentzTensor
 open IndexNotation
 open TensorSpecies
 open Tensor

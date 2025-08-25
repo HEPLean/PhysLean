@@ -21,7 +21,7 @@ namespace StandardModel
 
 namespace HiggsField
 
-open Manifold
+open Module Manifold
 open Matrix
 open Complex
 open ComplexConjugate
@@ -71,7 +71,7 @@ lemma innerProd_right_zero (φ : HiggsField) : ⟪φ, 0⟫_H = 0 := by
   Higgs fields. -/
 lemma innerProd_expand' (φ1 φ2 : HiggsField) (x : SpaceTime) :
     ⟪φ1, φ2⟫_H x = conj (φ1 x 0) * φ2 x 0 + conj (φ1 x 1) * φ2 x 1 := by
-  simp [innerProd]
+  simp [innerProd, PiLp.inner_apply]
   ring
 
 /-- Expands the inner product on Higgs fields in terms of real components of the
@@ -131,7 +131,7 @@ scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H^2" => normSq φ1
 lemma innerProd_self_eq_normSq (φ : HiggsField) (x : SpaceTime) :
     ⟪φ, φ⟫_H x = ‖φ‖_H^2 x := by
   erw [normSq, @PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two]
-  simp [innerProd, conj_mul']
+  simp [innerProd, conj_mul', PiLp.inner_apply]
   rw [mul_comm, conj_mul', mul_comm, conj_mul']
 
 lemma normSq_eq_innerProd_self (φ : HiggsField) (x : SpaceTime) :

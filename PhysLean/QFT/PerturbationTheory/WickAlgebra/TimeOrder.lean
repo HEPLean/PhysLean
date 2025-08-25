@@ -12,7 +12,7 @@ import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.TimeOrder
 -/
 
 namespace FieldSpecification
-open FieldOpFreeAlgebra
+open Module FieldOpFreeAlgebra
 open PhysLean.List
 open FieldStatistic
 

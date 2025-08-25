@@ -29,7 +29,7 @@ The key lemmas show how these operators interact, particularly focusing on the
 super commutation relations between creation and annihilation operators.
 
 -/
-
+open Module
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 

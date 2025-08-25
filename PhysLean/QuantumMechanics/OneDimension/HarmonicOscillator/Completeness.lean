@@ -26,7 +26,7 @@ namespace OneDimension
 namespace HarmonicOscillator
 variable (Q : HarmonicOscillator)
 
-open Nat
+open Module Nat
 open PhysLean
 open MeasureTheory HilbertSpace InnerProductSpace
 
@@ -311,7 +311,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       (Real.exp (- x ^ 2 / (2 * Q.ξ^2)))
     apply MeasureTheory.tendsto_integral_of_dominated_convergence bound
     · intro n
-      apply Finset.aestronglyMeasurable_sum
+      refine aestronglyMeasurable_fun_sum (range n) ?_
       intro r hr
       have h1 : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! *
         (f a * ↑(Real.exp (- a ^ 2 / (2 * Q.ξ^2)))))

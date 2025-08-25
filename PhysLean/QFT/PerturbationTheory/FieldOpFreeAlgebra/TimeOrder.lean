@@ -13,7 +13,7 @@ import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.SuperCommute
 
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
-open FieldStatistic
+open Module FieldStatistic
 
 namespace FieldOpFreeAlgebra
 
