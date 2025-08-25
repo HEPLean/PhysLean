@@ -11,7 +11,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
 In this module we define and create an API around the Minkowski product on Lorentz vectors.
 
 -/
-open IndexNotation
+open Module IndexNotation
 open Matrix
 open MatrixGroups
 open CategoryTheory

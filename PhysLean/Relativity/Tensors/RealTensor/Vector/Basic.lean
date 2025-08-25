@@ -14,7 +14,7 @@ In this module we define Lorentz vectors as real Lorentz tensors with a single u
 We create an API around Lorentz vectors to make working with them as easy as possible.
 
 -/
-open IndexNotation
+open Module IndexNotation
 open CategoryTheory
 open MonoidalCategory
 open Matrix

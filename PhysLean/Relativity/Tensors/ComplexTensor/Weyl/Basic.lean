@@ -17,7 +17,7 @@ https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrul
 namespace Fermion
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct

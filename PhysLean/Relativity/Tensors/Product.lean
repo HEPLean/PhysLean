@@ -218,8 +218,8 @@ lemma prodT_pure {n1 n2} {c : Fin n1 → C} {c1 : Fin n2 → C}
   conv_lhs =>
     enter [2]
     rw [Pure.μ_toTensor_tmul_toTensor]
-  change prodEquiv.toEquiv _ = _
-  rw [Equiv.apply_eq_iff_eq_symm_apply]
+  symm
+  rw [← LinearEquiv.symm_apply_eq]
   simp only [Functor.id_obj, LinearEquiv.coe_toEquiv_symm, EquivLike.coe_coe]
   rw [prodEquiv_symm_pure]
   congr

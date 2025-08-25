@@ -12,7 +12,7 @@ import PhysLean.Relativity.Tensors.Dual
 
 -/
 
-open IndexNotation
+open Module IndexNotation
 open CategoryTheory
 open MonoidalCategory
 

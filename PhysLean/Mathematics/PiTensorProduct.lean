@@ -34,14 +34,14 @@ open TensorProduct
 -/
 attribute [local ext] TensorProduct.ext
 
-lemma induction_tmul {f g : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R] M}
+lemma induction_tmul {f g : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) →ₗ[R] M}
     (h : ∀ p q, f (PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q)
     = g (PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q)) : f = g := by
   ext
   exact h _ _
 
 lemma induction_assoc
-    {f g : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M}
+    {f g : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i) ⊗[R] (⨂[R] i : ι3, s3 i)) →ₗ[R] M}
     (h : ∀ p q m, f (PiTensorProduct.tprod R p ⊗ₜ[R]
     PiTensorProduct.tprod R q ⊗ₜ[R] PiTensorProduct.tprod R m)
     = g (PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q
@@ -50,7 +50,7 @@ lemma induction_assoc
   exact h _ _ _
 
 lemma induction_assoc'
-    {f g : (((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) ⊗[R] ⨂[R] i : ι3, s3 i) →ₗ[R] M}
+    {f g : (((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) ⊗[R] (⨂[R] i : ι3, s3 i)) →ₗ[R] M}
     (h : ∀ p q m, f ((PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q) ⊗ₜ[R]
     PiTensorProduct.tprod R m) = g ((PiTensorProduct.tprod R p ⊗ₜ[R] PiTensorProduct.tprod R q)
     ⊗ₜ[R] PiTensorProduct.tprod R m)) : f = g := by
@@ -65,7 +65,7 @@ lemma induction_tmul_mod
   exact h _ _
 
 lemma induction_mod_tmul
-    {f g : (N ⊗[R] ⨂[R] i : ι1, s1 i) →ₗ[R] M}
+    {f g : (N ⊗[R] (⨂[R] i : ι1, s1 i)) →ₗ[R] M}
     (h : ∀ m p, f (m ⊗ₜ[R] PiTensorProduct.tprod R p) = g (m ⊗ₜ[R] PiTensorProduct.tprod R p)) :
     f = g := by
   ext
@@ -142,7 +142,7 @@ end
 /-- The multilinear map from `(Sum.elim s1 s2)` to `((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i)`
   defined by splitting elements of `(Sum.elim s1 s2)` into two parts. -/
 def domCoprod :
-    MultilinearMap R (Sum.elim s1 s2) ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) where
+    MultilinearMap R (Sum.elim s1 s2) ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) where
   toFun f := (PiTensorProduct.tprod R (pureInl f)) ⊗ₜ
     (PiTensorProduct.tprod R (pureInr f))
   map_update_add' f xy v1 v2 := by
@@ -174,7 +174,7 @@ def domCoprod :
 
 /-- Expand `PiTensorProduct` on sums into a `TensorProduct` of two factors. -/
 def tmulSymm : (⨂[R] i : ι1 ⊕ ι2, (Sum.elim s1 s2) i) →ₗ[R]
-    ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) := PiTensorProduct.lift domCoprod
+    ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) := PiTensorProduct.lift domCoprod
 
 /-- Produces a map `(i : ι1 ⊕ ι2) → Sum.elim s1 s2 i` from a map `(i : ι1) → s1 i` and a
   map `q : (i : ι2) → s2 i`. -/
@@ -252,7 +252,7 @@ def elimPureTensorMulLin : MultilinearMap R s1
     simp
 
 /-- Collapse a `TensorProduct` of `PiTensorProduct` into a `PiTensorProduct`. -/
-def tmul : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R]
+def tmul : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) →ₗ[R]
     ⨂[R] i : ι1 ⊕ ι2, (Sum.elim s1 s2) i := TensorProduct.lift {
     toFun := fun a ↦
       PiTensorProduct.lift <|
@@ -261,7 +261,7 @@ def tmul : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) →ₗ[R]
     map_smul' := fun r a ↦ by simp}
 
 /-- THe equivalence formed by combining a `TensorProduct` into a `PiTensorProduct`. -/
-def tmulEquiv : ((⨂[R] i : ι1, s1 i) ⊗[R] ⨂[R] i : ι2, s2 i) ≃ₗ[R]
+def tmulEquiv : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) ≃ₗ[R]
     ⨂[R] i : ι1 ⊕ ι2, (Sum.elim s1 s2) i :=
   LinearEquiv.ofLinear tmul tmulSymm
   (by

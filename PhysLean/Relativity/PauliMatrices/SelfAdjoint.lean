@@ -11,7 +11,7 @@ import PhysLean.Relativity.MinkowskiMatrix
 
 -/
 namespace PauliMatrix
-open Matrix
+open Matrix Module
 
 /-- The trace of a pauli-matrix multiplied by a self-adjoint `2×2` matrix is real. -/
 lemma trace_pauliMatrix_mul_selfAdjoint_re (μ : Fin 1 ⊕ Fin 3)

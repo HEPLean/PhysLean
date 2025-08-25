@@ -17,9 +17,7 @@ import PhysLean.Relativity.Tensors.Color.Lift
 
 -/
 
-open IndexNotation
-open CategoryTheory
-open MonoidalCategory
+open IndexNotation CategoryTheory Module MonoidalCategory
 
 /-- The structure `TensorSpecies` contains the necessary structure needed to define
   a system of tensors with index notation. Examples of `TensorSpecies` include real Lorentz tensors,

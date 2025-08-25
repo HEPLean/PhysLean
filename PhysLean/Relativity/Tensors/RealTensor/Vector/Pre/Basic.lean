@@ -15,10 +15,7 @@ We define real Lorentz vectors in as representations of the Lorentz group.
 
 noncomputable section
 
-open Matrix
-open MatrixGroups
-open Complex
-open TensorProduct
+open Matrix Module MatrixGroups Complex TensorProduct
 
 namespace Lorentz
 open minkowskiMatrix

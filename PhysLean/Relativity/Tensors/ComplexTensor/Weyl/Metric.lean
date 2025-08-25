@@ -17,7 +17,7 @@ and from right-handed to alt-right-handed Weyl fermions and back.
 namespace Fermion
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -281,7 +281,7 @@ lemma leftAltContraction_apply_metric : (β_ leftHanded altLeftHanded).hom.hom
     ((leftHanded.V ◁ leftAltContraction.hom ▷ altLeftHanded.V) (((leftHanded.V ◁
     (α_ leftHanded.V altLeftHanded.V altLeftHanded.V).inv)
     ((α_ leftHanded.V leftHanded.V (altLeftHanded.V ⊗ altLeftHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ altLeftHanded.V).hom ((leftAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [leftAltContraction_basis]
@@ -307,7 +307,7 @@ lemma altLeftContraction_apply_metric : (β_ altLeftHanded leftHanded).hom.hom
     ((altLeftHanded.V ◁ altLeftContraction.hom ▷ leftHanded.V) (((altLeftHanded.V ◁
     (α_ altLeftHanded.V leftHanded.V leftHanded.V).inv)
     ((α_ altLeftHanded.V altLeftHanded.V (leftHanded.V ⊗ leftHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ leftHanded.V).hom ((altLeftContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [altLeftContraction_basis]
@@ -333,7 +333,7 @@ lemma rightAltContraction_apply_metric : (β_ rightHanded altRightHanded).hom.ho
     ((rightHanded.V ◁ rightAltContraction.hom ▷ altRightHanded.V) (((rightHanded.V ◁
     (α_ rightHanded.V altRightHanded.V altRightHanded.V).inv)
     ((α_ rightHanded.V rightHanded.V (altRightHanded.V ⊗ altRightHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2))))) = x1 ⊗ₜ[ℂ] ((λ_ altRightHanded.V).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2)))))) = x1 ⊗ₜ[ℂ] ((λ_ altRightHanded.V).hom
     ((rightAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [rightAltContraction_basis]
@@ -359,7 +359,7 @@ lemma altRightContraction_apply_metric : (β_ altRightHanded rightHanded).hom.ho
     ((altRightHanded.V ◁ altRightContraction.hom ▷ rightHanded.V) (((altRightHanded.V ◁
     (α_ altRightHanded.V rightHanded.V rightHanded.V).inv)
     ((α_ altRightHanded.V altRightHanded.V (rightHanded.V ⊗ rightHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ rightHanded.V).hom ((altRightContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [altRightContraction_basis]

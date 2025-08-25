@@ -12,9 +12,7 @@ We give a basis of `LinSols` in the odd case. This basis has the special propert
 that splits into two planes on which every point is a solution to the ACCs.
 -/
 
-open Nat
-open Finset
-open BigOperators
+open Module Nat Finset BigOperators
 
 namespace PureU1
 

@@ -21,9 +21,7 @@ These definitions are preludes to the definitions of
 namespace Lorentz
 
 noncomputable section
-open Matrix
-open MatrixGroups
-open Complex
+open Matrix Module MatrixGroups Complex
 
 /-- The module for contravariant (up-index) real Lorentz vectors. -/
 structure ContrMod (d : ℕ) where

@@ -14,7 +14,7 @@ The aim of this file is to give the relationship between `SL(2, ℂ)` and the Lo
 -/
 namespace Lorentz
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 

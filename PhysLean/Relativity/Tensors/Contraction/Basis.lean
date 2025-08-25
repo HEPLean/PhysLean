@@ -10,9 +10,7 @@ import PhysLean.Relativity.Tensors.Contraction.Basic
 
 -/
 
-open IndexNotation
-open CategoryTheory
-open MonoidalCategory
+open IndexNotation CategoryTheory MonoidalCategory Module
 
 namespace TensorSpecies
 open OverColor

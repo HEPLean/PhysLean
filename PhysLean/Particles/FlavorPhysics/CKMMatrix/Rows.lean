@@ -17,9 +17,8 @@ The first row can be extracted as `[V]u` for a CKM matrix `V`.
 
 -/
 
-open Matrix Complex
+open Matrix Complex ComplexConjugate Module
 
-open ComplexConjugate
 noncomputable section
 
 namespace CKMMatrix

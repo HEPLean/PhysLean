@@ -10,15 +10,14 @@ import PhysLean.Relativity.Tensors.MetricTensor
 ## Metrics as real Lorentz tensors
 
 -/
-open IndexNotation
+open Module IndexNotation
 open CategoryTheory
 open MonoidalCategory
 open Matrix
 open MatrixGroups
 open TensorProduct
 open IndexNotation
-open CategoryTheory
-open OverColor.Discrete
+
 noncomputable section
 
 namespace realLorentzTensor

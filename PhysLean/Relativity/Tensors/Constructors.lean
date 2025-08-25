@@ -11,7 +11,7 @@ import PhysLean.Relativity.Tensors.Contraction.Products
 There are a number of ways to construct explicit tensors.
 -/
 
-open IndexNotation
+open Module IndexNotation
 open CategoryTheory
 open MonoidalCategory
 
@@ -379,8 +379,8 @@ noncomputable def fromPairTContr {c c1 c2 : C}
   let V3 := (S.FD.obj (Discrete.mk c2))
   let T1 : (V1 ⊗[k] V2) ⊗[k] (V2' ⊗[k] V3) := x ⊗ₜ[k] y
   let T2 : V1 ⊗[k] (V2 ⊗[k] (V2' ⊗[k] V3)) := (α_ V1 V2 (V2' ⊗ V3)).hom.hom T1
-  let T3 : V1 ⊗[k] (V2 ⊗[k] V2') ⊗[k] V3 := (V1 ◁ (α_ V2 V2' V3).inv).hom T2
-  let T4 : V1 ⊗[k] k ⊗[k] V3 := (V1 ◁ ((S.contr.app (Discrete.mk c)) ▷ V3)).hom T3
+  let T3 : V1 ⊗[k] ((V2 ⊗[k] V2') ⊗[k] V3) := (V1 ◁ (α_ V2 V2' V3).inv).hom T2
+  let T4 : V1 ⊗[k] (k ⊗[k] V3) := (V1 ◁ ((S.contr.app (Discrete.mk c)) ▷ V3)).hom T3
   let T5 : V1 ⊗[k] V3 := (V1 ◁ (λ_ V3).hom).hom T4
   fromPairT T5
 
@@ -394,13 +394,13 @@ lemma fromPairTContr_tmul_tmul {c c1 c2 : C}
   rw [fromPairTContr]
   conv_lhs =>
     enter [2, 2, 2, 2]
-    change x1 ⊗ₜ[k] (x2 ⊗ₜ[k] y1 ⊗ₜ[k] y2)
+    change x1 ⊗ₜ[k] (x2 ⊗ₜ[k] (y1 ⊗ₜ[k] y2))
   conv_lhs =>
     enter [2, 2, 2]
-    change x1 ⊗ₜ[k] (x2 ⊗ₜ[k] y1) ⊗ₜ[k] y2
+    change x1 ⊗ₜ[k] ((x2 ⊗ₜ[k] y1) ⊗ₜ[k] y2)
   conv_lhs =>
     enter [2, 2]
-    change x1 ⊗ₜ[k] (S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) ⊗ₜ[k] y2
+    change x1 ⊗ₜ[k] ((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) ⊗ₜ[k] y2)
   conv_lhs =>
     enter [2]
     change x1 ⊗ₜ[k] ((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) • y2)
@@ -619,10 +619,10 @@ lemma fromConstPair_braid {c1 c2 : C}
   `(S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V ` defined
   categorically. -/
 noncomputable def fromTripleT {c1 c2 c3 : C} :
-    (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
-    ⊗[k] (S.FD.obj (Discrete.mk c3)).V →ₗ[k] S.Tensor ![c1, c2, c3] where
+    (S.FD.obj (Discrete.mk c1)).V ⊗[k] ((S.FD.obj (Discrete.mk c2)).V
+    ⊗[k] (S.FD.obj (Discrete.mk c3)).V) →ₗ[k] S.Tensor ![c1, c2, c3] where
   toFun x :=
-    let x1 : S.Tensor ![c1] ⊗[k] S.Tensor ![c2] ⊗[k] S.Tensor ![c3] :=
+    let x1 : S.Tensor ![c1] ⊗[k] (S.Tensor ![c2] ⊗[k] S.Tensor ![c3]) :=
       TensorProduct.map (fromSingleT (S := S) (c := c1))
         (TensorProduct.map (fromSingleT (S := S) (c := c2)) (fromSingleT (S := S) (c := c3))) x
     let x2 :=
@@ -635,19 +635,19 @@ noncomputable def fromTripleT {c1 c2 c3 : C} :
 
 lemma fromTripleT_tmul {c1 c2 c3 : C} (x : S.FD.obj (Discrete.mk c1))
     (y : S.FD.obj (Discrete.mk c2)) (z : S.FD.obj (Discrete.mk c3)) :
-    fromTripleT (x ⊗ₜ[k] y ⊗ₜ[k] z) =
+    fromTripleT (x ⊗ₜ[k] (y ⊗ₜ[k] z)) =
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl))
       (prodT (fromSingleT x) (prodT (fromSingleT y) (fromSingleT z))) := by
   rfl
 
 lemma actionT_fromTripleT {c1 c2 c3 : C}
-    (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
-      ⊗[k] (S.FD.obj (Discrete.mk c3)).V) (g : G) :
+    (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] ((S.FD.obj (Discrete.mk c2)).V
+      ⊗[k] (S.FD.obj (Discrete.mk c3)).V)) (g : G) :
     g • fromTripleT x = fromTripleT (TensorProduct.map ((S.FD.obj (Discrete.mk c1)).ρ g)
       (TensorProduct.map ((S.FD.obj (Discrete.mk c2)).ρ g)
       ((S.FD.obj (Discrete.mk c3)).ρ g)) x) := by
-  let P (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V
-      ⊗[k] (S.FD.obj (Discrete.mk c3)).V) : Prop :=
+  let P (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] ((S.FD.obj (Discrete.mk c2)).V
+      ⊗[k] (S.FD.obj (Discrete.mk c3)).V)) : Prop :=
       g • fromTripleT x = fromTripleT (TensorProduct.map ((S.FD.obj (Discrete.mk c1)).ρ g)
       (TensorProduct.map ((S.FD.obj (Discrete.mk c2)).ρ g) ((S.FD.obj (Discrete.mk c3)).ρ g)) x)
   change P x
@@ -677,14 +677,14 @@ lemma actionT_fromTripleT {c1 c2 c3 : C}
     simp [P, hx, hy]
 
 lemma fromTripleT_basis_repr {c c1 c2 : C}
-    (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] (S.FD.obj (Discrete.mk c1)).V
-      ⊗[k] (S.FD.obj (Discrete.mk c2)).V)
+    (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] ((S.FD.obj (Discrete.mk c1)).V
+      ⊗[k] (S.FD.obj (Discrete.mk c2)).V))
     (b : ComponentIdx ![c, c1, c2]) :
     (basis ![c, c1, c2]).repr (fromTripleT x) b =
     (Basis.tensorProduct (S.basis c) (Basis.tensorProduct (S.basis c1) (S.basis c2))).repr x
     (b 0, b 1, b 2) := by
-  let P (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] (S.FD.obj (Discrete.mk c1)).V
-      ⊗[k] (S.FD.obj (Discrete.mk c2)).V) := (basis ![c, c1, c2]).repr (fromTripleT x) b =
+  let P (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] ((S.FD.obj (Discrete.mk c1)).V
+      ⊗[k] (S.FD.obj (Discrete.mk c2)).V)) := (basis ![c, c1, c2]).repr (fromTripleT x) b =
     (Basis.tensorProduct (S.basis c) (Basis.tensorProduct (S.basis c1) (S.basis c2))).repr x
     (b 0, b 1, b 2)
   change P x
@@ -754,7 +754,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : C}
 lemma fromTripleT_apply_basis {c c1 c2 : C}
     (b0 : Fin (S.repDim c)) (b1 : Fin (S.repDim c1))
     (b2 : Fin (S.repDim c2)) :
-    fromTripleT (S.basis c b0 ⊗ₜ[k] S.basis c1 b1 ⊗ₜ[k] S.basis c2 b2) =
+    fromTripleT (S.basis c b0 ⊗ₜ[k] (S.basis c1 b1 ⊗ₜ[k] S.basis c2 b2)) =
     Tensor.basis ![c, c1, c2] (fun | 0 => b0 | 1 => b1 | 2 => b2) := by
   apply (Tensor.basis _).repr.injective
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Basis.repr_self]

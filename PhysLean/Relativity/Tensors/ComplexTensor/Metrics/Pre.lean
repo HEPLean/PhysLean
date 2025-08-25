@@ -11,7 +11,7 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Units.Pre
 -/
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -142,7 +142,7 @@ lemma contrCoContraction_apply_metric : (β_ complexContr complexCo).hom.hom
     ((complexContr.V ◁ contrCoContraction.hom ▷ complexCo.V) (((complexContr.V ◁
     (α_ complexContr.V complexCo.V complexCo.V).inv)
     ((α_ complexContr.V complexContr.V (complexCo.V ⊗ complexCo.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ complexCo.V).hom ((contrCoContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [contrCoContraction_basis']
@@ -168,7 +168,7 @@ lemma coContrContraction_apply_metric : (β_ complexCo complexContr).hom.hom
     ((complexCo.V ◁ coContrContraction.hom ▷ complexContr.V) (((complexCo.V ◁
     (α_ complexCo.V complexContr.V complexContr.V).inv)
     ((α_ complexCo.V complexCo.V (complexContr.V ⊗ complexContr.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ complexContr.V).hom ((coContrContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [coContrContraction_basis']

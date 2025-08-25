@@ -23,6 +23,7 @@ be decomposed as `A = U * T * star U` where `U` is unitary and `T` is upper tria
 -/
 
 open scoped InnerProductSpace
+open Module
 
 /-- `subNat' i h` subtracts `m` from `i`. This is an alternative form of `Fin.subNat`. -/
 @[inline] def Fin.subNat' (i : Fin (m + n)) (h : ¬ i < m) : Fin n :=
@@ -149,7 +150,7 @@ protected noncomputable def SchurTriangulationAux.of
     have hV := V.orthogonalFamily_self
     have int : DirectSum.IsInternal (cond · V W) :=
       suffices ⨆ b, cond b V W = ⊤ from (hV.decomposition this).isInternal _
-      (sup_eq_iSup V W).symm.trans Submodule.sup_orthogonal_of_completeSpace
+      (sup_eq_iSup V W).symm.trans Submodule.sup_orthogonal_of_hasOrthogonalProjection
     let B (b : Bool) : OrthonormalBasis (cond b (Fin m) (Fin n)) 𝕜 ↥(cond b V W) := b.rec bW bV
     let bE : OrthonormalBasis (Σ b, cond b (Fin m) (Fin n)) 𝕜 E :=
       int.collectedOrthonormalBasis hV B

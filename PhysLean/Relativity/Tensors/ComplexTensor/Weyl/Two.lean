@@ -13,7 +13,7 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Basic
 namespace Fermion
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct

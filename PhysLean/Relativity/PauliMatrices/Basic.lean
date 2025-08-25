@@ -183,54 +183,38 @@ Lemmas related to the commutation relations of the Pauli matrices.
 
 lemma σ1_σ2_commutator : σ1 * σ2 - σ2 * σ1 = (2 * I) • σ3 := by
   simp [pauliMatrix]
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp
-  · ring
-  · ring
+  ring_nf
+  simp only [true_and, and_true]
+  exact List.ofFn_inj.mp rfl
 
 lemma σ1_σ3_commutator : σ1 * σ3 - σ3 * σ1 = - (2 * I) • σ2 := by
   simp [pauliMatrix]
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp
-  · ring_nf
-    simp [Complex.I_sq]
-  · ring_nf
-    simp [Complex.I_sq]
+  ring_nf
+  simp only [I_sq, neg_mul, one_mul, neg_neg, true_and]
+  exact List.ofFn_inj.mp rfl
 
 lemma σ2_σ1_commutator : σ2 * σ1 - σ1 * σ2 = -(2 * I) • σ3 := by
   simp [pauliMatrix]
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp
-  · ring_nf
-  · ring_nf
+  ring_nf
+  simp only [true_and, and_true]
+  exact List.ofFn_inj.mp rfl
 
 lemma σ2_σ3_commutator : σ2 * σ3 - σ3 * σ2 = (2 * I) • σ1 := by
   simp [pauliMatrix]
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp
-  · ring_nf
-  · ring_nf
+  ring_nf
+  simp only [true_and, and_true]
+  exact List.ofFn_inj.mp rfl
 
 lemma σ3_σ1_commutator : σ3 * σ1 - σ1 * σ3 = (2 * I) • σ2 := by
   simp [pauliMatrix]
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp
-  · ring_nf
-    simp [Complex.I_sq]
-  · ring_nf
-    simp [Complex.I_sq]
+  ring_nf
+  simp only [I_sq, neg_mul, one_mul, neg_neg, true_and]
+  exact List.ofFn_inj.mp rfl
 
 lemma σ3_σ2_commutator : σ3 * σ2 - σ2 * σ3 = -(2 * I) • σ1 := by
   simp [pauliMatrix]
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp
-  · ring_nf
-  · ring_nf
+  ring_nf
+  simp only [true_and, and_true]
+  exact List.ofFn_inj.mp rfl
 
 end PauliMatrix

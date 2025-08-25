@@ -11,7 +11,7 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Basic
 # Pauli matrices as a tensor
 
 -/
-open IndexNotation
+open Module IndexNotation
 open Matrix
 open MatrixGroups
 open Complex

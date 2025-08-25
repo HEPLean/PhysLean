@@ -16,7 +16,7 @@ We define the units for Weyl fermions, often denoted `δ` in the literature.
 namespace Fermion
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -223,7 +223,7 @@ lemma contr_altLeftLeftUnit (x : leftHanded) :
     Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add, map_smul,
     ModuleCat.MonoidalCategory.associator_inv_apply]
   have h1 (x y : leftHanded) (z : altLeftHanded) : (leftAltContraction.hom ▷ leftHanded.V)
-    ((α_ leftHanded.V altLeftHanded.V leftHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    ((α_ leftHanded.V altLeftHanded.V leftHanded.V).inv (x ⊗ₜ[ℂ] (z ⊗ₜ[ℂ] y))) =
     (leftAltContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
   erw [h1, h1, h1, h1]
   repeat rw [leftAltContraction_basis]
@@ -248,7 +248,7 @@ lemma contr_leftAltLeftUnit (x : altLeftHanded) :
     Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add, map_smul,
     ModuleCat.MonoidalCategory.associator_inv_apply]
   have h1 (x y : altLeftHanded) (z : leftHanded) : (altLeftContraction.hom ▷ altLeftHanded.V)
-    ((α_ altLeftHanded.V leftHanded.V altLeftHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    ((α_ altLeftHanded.V leftHanded.V altLeftHanded.V).inv (x ⊗ₜ[ℂ] (z ⊗ₜ[ℂ] y))) =
     (altLeftContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
   erw [h1, h1, h1, h1]
   repeat rw [altLeftContraction_basis]
@@ -272,7 +272,7 @@ lemma contr_altRightRightUnit (x : rightHanded) :
     Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add, map_smul,
     ModuleCat.MonoidalCategory.associator_inv_apply]
   have h1 (x y : rightHanded) (z : altRightHanded) : (rightAltContraction.hom ▷ rightHanded.V)
-    ((α_ rightHanded.V altRightHanded.V rightHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    ((α_ rightHanded.V altRightHanded.V rightHanded.V).inv (x ⊗ₜ[ℂ] (z ⊗ₜ[ℂ] y))) =
     (rightAltContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
   erw [h1, h1, h1, h1]
   repeat rw [rightAltContraction_basis]
@@ -296,7 +296,7 @@ lemma contr_rightAltRightUnit (x : altRightHanded) :
     Fin.sum_univ_two, Fin.isValue, tmul_add, add_tmul, smul_tmul, tmul_smul, map_add, map_smul,
     ModuleCat.MonoidalCategory.associator_inv_apply]
   have h1 (x y : altRightHanded) (z : rightHanded) : (altRightContraction.hom ▷ altRightHanded.V)
-    ((α_ altRightHanded.V rightHanded.V altRightHanded.V).inv (x ⊗ₜ[ℂ] z ⊗ₜ[ℂ] y)) =
+    ((α_ altRightHanded.V rightHanded.V altRightHanded.V).inv (x ⊗ₜ[ℂ] (z ⊗ₜ[ℂ] y))) =
     (altRightContraction.hom (x ⊗ₜ[ℂ] z)) ⊗ₜ[ℂ] y := rfl
   erw [h1, h1, h1, h1]
   repeat rw [altRightContraction_basis]

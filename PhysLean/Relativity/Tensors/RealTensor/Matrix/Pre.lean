@@ -12,11 +12,8 @@ import Mathlib.LinearAlgebra.TensorProduct.Matrix
 -/
 noncomputable section
 
-open Matrix
-open MatrixGroups
-open Complex
-open TensorProduct
-open CategoryTheory.MonoidalCategory
+open Matrix Module MatrixGroups Complex TensorProduct CategoryTheory.MonoidalCategory
+
 namespace Lorentz
 
 /-- Equivalence of `Contr ⊗ Contr` to `(1 + d) x (1 + d)` real matrices. -/

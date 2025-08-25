@@ -12,7 +12,7 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Vector.Pre.Contraction
 -/
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct

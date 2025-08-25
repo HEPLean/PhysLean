@@ -14,7 +14,7 @@ Every element of the Lorentz group defines a Lorentz vector, but it's first colu
 noncomputable section
 
 namespace LorentzGroup
-open Lorentz
+open Lorentz Module
 open Vector
 
 /-- The Lorentz vector obtained by acting the Lorentz group element `Λ` on `basis (Sum.inl 0)`. -/
@@ -95,7 +95,8 @@ lemma smul_timeComponent_eq_toVector_minkowskiProduct {d : ℕ} (Λ : LorentzGro
   rw [minkowskiProduct_eq_timeComponent_spatialPart]
   congr
   · simp [inv_eq_dual, minkowskiMatrix.dual_apply, minkowskiMatrix.inl_0_inl_0]
-  · simp [inv_eq_dual]
+  · simp only [Fin.isValue, inv_eq_dual, PiLp.inner_apply, toVector_apply, RCLike.inner_apply,
+      conj_trivial]
     rw [← Finset.sum_neg_distrib]
     congr
     funext i

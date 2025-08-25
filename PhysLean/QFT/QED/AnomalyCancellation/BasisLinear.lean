@@ -14,7 +14,7 @@ We give a basis of vector space `LinSols`, and find the rank thereof.
 
 namespace PureU1
 
-open BigOperators
+open BigOperators Module
 
 variable {n : ℕ}
 namespace BasisLinear

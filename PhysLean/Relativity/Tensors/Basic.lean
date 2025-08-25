@@ -11,9 +11,7 @@ import Mathlib.GroupTheory.GroupAction.Ring
 
 -/
 
-open IndexNotation
-open CategoryTheory
-open MonoidalCategory
+open Module IndexNotation CategoryTheory MonoidalCategory
 
 namespace TensorSpecies
 open OverColor

@@ -14,7 +14,7 @@ We define complex Lorentz vectors in 4d space-time as representations of SL(2, C
 
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct

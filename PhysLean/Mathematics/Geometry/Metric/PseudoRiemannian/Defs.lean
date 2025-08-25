@@ -303,6 +303,7 @@ lemma toQuadraticForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M)
 @[simp]
 lemma toBilinForm_isSymm (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (toBilinForm g x).IsSymm := by
+  refine { eq := ?_ }
   intro v w; simp only [toBilinForm_apply]; exact g.symm x v w
 
 @[simp]
@@ -583,6 +584,7 @@ lemma cotangentToQuadraticForm_apply (g : PseudoRiemannianMetric E H M n I) (x :
 @[simp]
 lemma cotangentToBilinForm_isSymm (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (cotangentToBilinForm g x).IsSymm := by
+  refine { eq := ?_ }
   intro ω₁ ω₂; simp only [cotangentToBilinForm_apply]; exact cotangentMetricVal_symm g x ω₁ ω₂
 
 /-- The cotangent metric is non-degenerate: if `cotangentMetricVal g x ω v = 0` for all `v`,

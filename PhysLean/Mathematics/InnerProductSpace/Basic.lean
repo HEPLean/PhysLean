@@ -354,7 +354,7 @@ instance : InnerProductSpace' 𝕜 (E×F) where
   norm₂ := (WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)).toNorm.norm
   core :=
     let _ := WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)
-    let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (WithLp 2 E) (WithLp 2 F)).toCore
+    let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (E := WithLp 2 E) (F := WithLp 2 F)).toCore
     inst
   norm₂_sq_eq_re_inner := by
     intro (x,y)
