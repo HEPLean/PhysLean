@@ -805,7 +805,6 @@ lemma μIso_inv_tprod (F : Discrete C ⥤ Rep k G) (X Y : OverColor C)
   | Sum.inl i => rfl
   | Sum.inr i => rfl
 
-@[simp]
 lemma inv_μ (X Y : OverColor C) : inv (Functor.LaxMonoidal.μ (lift.obj F).toFunctor X Y) =
     (lift.μ F X Y).inv := by
   change inv (lift.μ F X Y).hom = _
