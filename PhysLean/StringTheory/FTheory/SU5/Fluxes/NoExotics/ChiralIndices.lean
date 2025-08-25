@@ -51,7 +51,7 @@ lemma chiralIndicesOfD_noneg_of_noExotics (F : FluxesFive) (hF : NoExotics F)
     apply Multiset.sum_lt_sum_of_nonempty
     · simp [s]
       rw [Multiset.eq_zero_iff_forall_notMem]
-      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, not_le, ]
+      simp only [Multiset.mem_filter, not_and, not_lt, not_forall, not_le]
       use ci
     · intro i hi
       simp [s] at hi

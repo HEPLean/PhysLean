@@ -252,7 +252,8 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
 instance (C : Type) : MonoidalCategory (OverColor C) where
     tensorHom_def f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
         funext fun x => rfl
-    id_tensorHom_id X Y :=CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| (Iso.eq_inv_comp _).mp rfl
+    id_tensorHom_id X Y :=CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+      (Iso.eq_inv_comp _).mp rfl
     tensor_comp f1 f2 g1 g2 := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
         Over.OverMorphism.ext <| funext fun x => by
       match x with

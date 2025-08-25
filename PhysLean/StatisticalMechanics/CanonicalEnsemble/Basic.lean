@@ -618,7 +618,7 @@ lemma differentialEntropy_nonneg_of_prob_le_one
     refine Filter.Eventually.of_forall ?_
     intro i
     have hpos := probability_pos (𝓒:=𝓒) (T:=T) i
-    have hle  := hP_le_one i
+    have hle := hP_le_one i
     have hle' : 𝓒.probability T i ≤ Real.exp 0 := by
       simpa [Real.exp_zero] using hle
     exact (log_le_iff_le_exp hpos).mpr hle'

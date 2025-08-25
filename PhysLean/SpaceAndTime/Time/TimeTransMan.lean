@@ -429,7 +429,7 @@ lemma toTime_symm_sub (zero : TimeTransMan) (x : TimeUnit)
       addTime x (diff x zero ((toTime zero x).symm t2))
       ((toTime zero x).symm t1) := by
   ext
-  simp [ addTime_val, diff_eq_val, toTime_symm_val]
+  simp [addTime_val, diff_eq_val, toTime_symm_val]
   ring
 
 end TimeTransMan

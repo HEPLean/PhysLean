@@ -76,7 +76,8 @@ lemma koszulSign_erase_boson {𝓕 : Type} (q : 𝓕 → FieldStatistic) (le : �
     rw [koszulSignInsert_boson _ _ _ h]
     simp only [one_mul]
   | φ :: φs, ⟨n + 1, h⟩ => by
-    simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ, List.eraseIdx_cons_succ]
+    simp only [List.length_cons, List.get_eq_getElem, List.getElem_cons_succ,
+      List.eraseIdx_cons_succ]
     intro h'
     rw [koszulSign, koszulSign, koszulSign_erase_boson q le φs ⟨n, Nat.succ_lt_succ_iff.mp h⟩ h']
     congr 1
