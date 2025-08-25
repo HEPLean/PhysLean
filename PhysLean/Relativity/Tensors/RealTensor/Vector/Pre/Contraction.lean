@@ -411,12 +411,11 @@ lemma same_eq_det_toSelfAdjoint (x : ContrMod 3) :
     PauliMatrix.pauliMatrix, PauliMatrix.pauliMatrix, PauliMatrix.pauliMatrix,
     PauliMatrix.pauliMatrix, ContrMod.toSpace,
     ContrMod.toFin1dℝ_eq_val]
-  simp? [Fin.sum_univ_three] says
-    simp only [Fin.isValue, PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial,
-      Fin.sum_univ_three, ofReal_sub, ofReal_mul, ofReal_add, smul_of, smul_cons, smul_zero,
-      real_smul, mul_one, smul_empty, smul_neg, sub_apply, smul_apply, one_apply_eq, of_apply,
-      cons_val', cons_val_zero, cons_val_fin_one, sub_zero, cons_val_one, sub_neg_eq_add, ne_eq,
-      zero_ne_one, not_false_eq_true, one_apply_ne, zero_sub, one_ne_zero]
+  simp only [Fin.isValue, PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial,
+    Fin.sum_univ_three, ofReal_sub, ofReal_mul, ofReal_add, smul_of, smul_cons, smul_zero,
+    real_smul, mul_one, smul_empty, smul_neg, sub_apply, smul_apply, one_apply_eq, of_apply,
+    cons_val', cons_val_zero, cons_val_fin_one, sub_zero, cons_val_one, sub_neg_eq_add, ne_eq,
+    zero_ne_one, not_false_eq_true, one_apply_ne, zero_sub, one_ne_zero]
   ring_nf
   simp
 
