@@ -1,9 +1,8 @@
 import PhysLean.StatisticalMechanics.SpinGlasses.HopfieldNetwork.BoltzmannMachine
-import Mathlib
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Finite
 import PhysLean.StatisticalMechanics.CanonicalEnsemble.Lemmas
 
--- Provide a finite canonical ensemble instance for the Hopfield Boltzmann construction.
+-- We provide a finite canonical ensemble instance for the Hopfield Boltzmann construction.
 instance
   {U σ : Type} [Fintype U] [DecidableEq U]
   (NN : NeuralNetwork ℝ U σ) [Fintype NN.State] [Nonempty NN.State]
@@ -15,7 +14,7 @@ instance
   dsimp [HopfieldBoltzmann.CEparams]
   infer_instance
 
-variable [Fintype ι] [DecidableEq ι] [Ring R] --[CommRing R]
+variable [Fintype ι] [DecidableEq ι] [Ring R]
 open CanonicalEnsemble Constants
 
 section DetailedBalance
@@ -31,7 +30,7 @@ variable (p : Params NN) (T : Temperature)
 local notation "P" => P (NN:=NN) (spec:=spec) p T
 local notation "K" => Kbm (NN:=NN) p T
 
-/-- Helper: states differ away from `u` (∃ other coordinate with different activation). -/
+/-- States differ away from `u` (∃ other coordinate with different activation). -/
 def DiffAway (u : U) (s s' : NN.State) : Prop :=
   ∃ v, v ≠ u ∧ s.act v ≠ s'.act v
 
@@ -78,7 +77,8 @@ lemma Kbm_zero_of_diffAway
   exact ⟨h_forward, h_backward⟩
 
 omit [Nonempty U] [Nonempty NN.State] in
-/-- Detailed balance holds trivially in the “diff-away” case (both transition probabilities are 0). -/
+/-- Detailed balance holds trivially in the “diff-away” case (both transition probabilities
+are 0). -/
 lemma detailed_balance_diffAway
   {u : U} {s s' : NN.State}
   (h : DiffAway (NN:=NN) u s s') :
@@ -113,8 +113,7 @@ lemma single_site_cases
     · exact Or.inr ⟨hs_neg, hs'_pos⟩
     · exact False.elim (hx (hs_neg.trans hs'_neg.symm))
 
-/-- Convenience: `logisticProb (-x) = 1 - logisticProb x` (already available above as
-`TwoState.logisticProb_neg`, re-exposed here in the local namespace for algebra lemmas). -/
+/-- Convenience: `logisticProb (-x) = 1 - logisticProb x` -/
 lemma logistic_neg (x : ℝ) :
     logisticProb (-x) = 1 - logisticProb x :=
   TwoState.logisticProb_neg x
@@ -224,9 +223,9 @@ lemma TwoState.EnergySpec'.probPos_flip_pair
            mul_comm, mul_left_comm, mul_assoc] using h
   exact ⟨h₁, h₂⟩
 
-/-- Specialization of the previous pair lemma to the “neg→pos” orientation used
-in `detailed_balance_neg_pos`.  Here `ΔE = E s' - E s` with `s' = updPos s u`
-and `s = updNeg s' u` (i.e. `s` carries σ_neg at `u`, `s'` carries σ_pos). -/
+/-- Specialization to the “neg→pos” orientation used in `detailed_balance_neg_pos`.
+Here `ΔE = E s' - E s` with `s' = updPos s u`and `s = updNeg s' u` (i.e. `s` carries σ_neg at `u`,
+`s'` carries σ_pos). -/
 lemma flip_prob_neg_pos
     {U σ} [Fintype U] [DecidableEq U]
     {NN : NeuralNetwork ℝ U σ} [TwoStateNeuralNetwork NN]
@@ -283,8 +282,7 @@ lemma flip_prob_neg_pos
     ring_nf; aesop
   exact ⟨h1, h2⟩
 
-/-- Clean algebraic lemma:
-    if
+/-- if
     • `Pfun s' / Pfun s  = exp (-β ΔE)` and
     • `Kfun s  s' / Kfun s' s = exp ( β ΔE)`
     then detailed balance holds: `Pfun s * Kfun s s' = Pfun s' * Kfun s' s`. -/
@@ -421,7 +419,8 @@ lemma detailed_balance_pos_neg
 omit [Nonempty U] in
 /--
 **Theorem: Detailed Balance Condition (Reversibility)**.
-The Gibbs update kernel satisfies the detailed balance condition with respect to the Boltzmann distribution.
+The Gibbs update kernel satisfies the detailed balance condition with respect to the
+Boltzmann distribution.
 P(s) K(s→s') = P(s') K(s'→s).
 -/
 theorem detailed_balance
@@ -447,10 +446,9 @@ theorem detailed_balance
     exact detailed_balance_neg_pos (NN:=NN) (spec:=spec) (p:=p) (T:=T)
       (u:=u) (s:=s) (s':=s') h_off hneg hpos
 
-
 end DetailedBalance
 
-variable [Fintype ι] [DecidableEq ι] [Ring R] --[CommRing R]
+variable [Fintype ι] [DecidableEq ι] [Ring R]
 open CanonicalEnsemble Constants
 
 section DetailedBalance
@@ -463,16 +461,14 @@ variable [TwoStateNeuralNetwork NN] [TwoStateExclusive NN]
 variable (spec : TwoState.EnergySpec' (NN:=NN))
 variable (p : Params NN) (T : Temperature)
 
-/-- Lift a family of PMFs to a Markov kernel on a finite (hence countable) state space.
-We reuse `Kernel.ofFunOfCountable`, which supplies the measurability proof. -/
+/-- Lift a family of PMFs to a Markov kernel on a finite (hence countable) state space. -/
 noncomputable def pmfToKernel
     {α : Type*} [Fintype α] [DecidableEq α]
     [MeasurableSpace α] [MeasurableSingletonClass α] (K : α → PMF α) :
     Kernel α α :=
   Kernel.ofFunOfCountable (fun a => (K a).toMeasure)
 
-/-- Single–site Gibbs kernel at site `u` as a Kernel (uses existing `gibbsUpdate`).
-`spec` is not needed here, so we underscore it to silence the unused-variable linter. -/
+/-- Single–site Gibbs kernel at site `u` as a Kernel (uses existing `gibbsUpdate`). -/
 noncomputable def singleSiteKernel
     (NN : NeuralNetwork ℝ U σ) [Fintype NN.State] [DecidableEq U]
     [MeasurableSpace NN.State] [MeasurableSingletonClass NN.State]
@@ -481,8 +477,7 @@ noncomputable def singleSiteKernel
     Kernel NN.State NN.State :=
   pmfToKernel (fun s => TwoState.gibbsUpdate (NN:=NN) (RingHom.id ℝ) p T s u)
 
-/-- Random–scan Gibbs kernel as uniform mixture over sites.
-`spec` is likewise unused in the construction of the kernel itself. -/
+/-- Random–scan Gibbs kernel as uniform mixture over sites. -/
 noncomputable def randomScanKernel
     (NN : NeuralNetwork ℝ U σ) [Fintype U] [DecidableEq U] [Nonempty U]
     [Fintype NN.State] [DecidableEq NN.State] [MeasurableSpace NN.State] [MeasurableSingletonClass NN.State]
@@ -507,12 +502,7 @@ variable {α : Type*}
   subst hσ; trivial
 
 /-- For a finite type with counting measure, the (lower) integral
-is the finite sum (specialization of the `tsum` version).
-
-FIX: Added `[MeasurableSingletonClass α]` which is required by `MeasureTheory.lintegral_count`.
-Removed the auxiliary restricted / probability-specialized lemmas that caused build errors
-(`lintegral_count_restrict`, `lintegral_fintype_prob_restrict`, `lintegral_restrict_as_sum_if`)
-since they were unused and referenced a non‑existent lemma. -/
+is the finite sum (specialization of the `tsum` version). -/
 lemma lintegral_count_fintype
     [MeasurableSpace α] [MeasurableSingletonClass α]
     [Fintype α] [DecidableEq α]
@@ -526,7 +516,7 @@ lemma lintegral_fintype_measure_restrict
     {α : Type*}
     [Fintype α] [DecidableEq α]
     [MeasurableSpace α] [MeasurableSingletonClass α]
-    (μ : Measure α) (A : Set α) --(hA : MeasurableSet A)
+    (μ : Measure α) (A : Set α)
     (f : α → ℝ≥0∞) :
     ∫⁻ x in A, f x ∂μ
       = ∑ x : α, (if x ∈ A then μ {x} * f x else 0) := by
@@ -579,8 +569,7 @@ lemma lintegral_fintype_prob_restrict
       = ∑ x : α, (if x ∈ A then μ {x} * f x else 0) := by
   simpa using lintegral_fintype_measure_restrict μ A f
 
-/-- Restricted version over the counting measure (finite type).
-Uses the probability-style formula specialized to `Measure.count`. -/
+/-- Restricted version over the counting measure (finite type).  -/
 lemma lintegral_count_restrict
     [MeasurableSpace α] [MeasurableSingletonClass α] [Fintype α] [DecidableEq α]
     (A : Set α) (f : α → ℝ≥0∞) :
@@ -609,7 +598,7 @@ open MeasureTheory Set Finset Kernel TwoState HopfieldBoltzmann
 
 variable {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
 
-/-- (Helper) Every subset of a finite type is finite. -/
+/-- Every subset of a finite type is finite. -/
 lemma Set.finite_of_subsingleton_fintype
     {γ : Type*} [Fintype γ] (S : Set γ) : S.Finite :=
   (Set.toFinite _)
@@ -720,8 +709,7 @@ lemma randomScanKernel_eval_uniform
 end ProbabilityTheory
 
 /-- On a finite (any finite subset) space with measurable singletons, the measure of a finite
-set under a kernel is the finite sum of the singleton masses. (Refactored: Finset induction;
-avoids problematic `hB.induction_on` elaboration.) -/
+set under a kernel is the finite sum of the singleton masses. -/
 lemma Kernel.measure_eq_sum_finset
     [DecidableEq α] [MeasurableSingletonClass α]
     (κ : Kernel β α) (x : β) {B : Set α} (hB : B.Finite) :
@@ -826,7 +814,7 @@ lemma lintegral_randomScanKernel_as_sum_div
   aesop
 
 omit [Fintype U] [DecidableEq U] [Nonempty U] in
-/-- Averaging lemma: uniform average of reversible single–site kernels is reversible. -/
+/-- Uniform average of reversible single–site kernels is reversible. -/
 lemma randomScanKernel_reversible_of_sites
     (NN : NeuralNetwork ℝ U σ) [Fintype U] [DecidableEq U] [Nonempty U]
     [Fintype NN.State] [DecidableEq NN.State]
@@ -993,7 +981,7 @@ variable [TwoStateNeuralNetwork NN] [TwoStateExclusive NN]
 variable (spec : TwoState.EnergySpec' (NN:=NN))
 variable (p : Params NN) (T : Temperature)
 
-/-- Helper: canonical Boltzmann measure we use below. -/
+/-- Canonical Boltzmann measure from `CanonicalEnsemble.Basic` -/
 private noncomputable abbrev πBoltz : Measure NN.State :=
   (HopfieldBoltzmann.CEparams (NN:=NN) (spec:=spec) p).μProd T
 
@@ -1091,7 +1079,7 @@ lemma singleSite_pointwise_detailed_balance
       | simp_all only [μProd_singleton_of_fintype]
 
 omit [Nonempty U] in
-/-- Reversibility of the single–site kernel w.r.t. the Boltzmann measure (patched). -/
+/-- Reversibility of the single–site kernel w.r.t. the Boltzmann measure. -/
 lemma singleSiteKernel_reversible
     (u : U) :
     ProbabilityTheory.Kernel.IsReversible
@@ -1121,7 +1109,8 @@ variable [TwoStateNeuralNetwork NN] [TwoStateExclusive NN]
 variable (spec : TwoState.EnergySpec' (NN:=NN))
 variable (p : Params NN) (T : Temperature)
 
-/-- Reversibility of the random–scan Gibbs kernel (uniform site choice) w.r.t. the Boltzmann measure. -/
+/-- Reversibility of the random–scan Gibbs kernel (uniform site choice) w.r.t.
+the Boltzmann measure. -/
 theorem randomScanKernel_reversible :
     ProbabilityTheory.Kernel.IsReversible
       (randomScanKernel (NN:=NN) spec p T)
