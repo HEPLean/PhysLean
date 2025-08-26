@@ -12,8 +12,6 @@ import Mathlib.Probability.Kernel.Composition.Prod
 /-! ### Concrete Hopfield Energy and Fintype Instances
 -/
 
-
-
 /-!
 Reintroduce (and simplify) a `Matrix.quadraticForm` helper and the update lemma
 used later in the Hopfield energy flip relation proof (removed upstream).
@@ -109,7 +107,6 @@ lemma mulVec_update_single
 
 /- Raw single–site quadratic form update (no diagonal assumption).
 Produces a δ-linear part plus a δ² * M i i remainder term.
-
   Q(update x i v) - Q x
     = (v - x i) * ((∑ j, x j * M j i) + (M.mulVec x) i)
       + (v - x i)^2 * M i i
@@ -156,7 +153,7 @@ lemma quadraticForm_update_point
       ring
     simpa [hMv, hUpd_off, hIf1, hIf2, δ] using hOffSite
 
-/-- Core raw single–site quadratic form update (separated into a standalone lemma).
+/-- Core raw single–site quadratic form update
 Produces a δ-linear part plus a δ² * M i i remainder term. -/
 lemma quadraticForm_update_sum
     (M : Matrix ι ι R) (x : ι → R) (i : ι) (v : R) :
@@ -247,8 +244,7 @@ lemma quadraticForm_update_sum
           simp [δ, mul_comm, mul_left_comm, mul_assoc]
 
 
-/-- Raw single–site quadratic form update (no diagonal assumption).
-Old name kept; proof now delegates to `quadraticForm_update_sum`. -/
+/-- Raw single–site quadratic form update (no diagonal assumption). -/
 lemma quadraticForm_update_raw
     (M : Matrix ι ι R) (x : ι → R) (i : ι) (v : R) :
   quadraticForm M (Function.update x i v) - quadraticForm M x
@@ -286,7 +282,7 @@ lemma quadraticForm_update_single_index
   simp_rw [h1, hErase, add_comm]
 
 
-/-- Original (stronger) version assuming all diagonal entries vanish (kept for backwards compatibility). -/
+/-- Stronger version assuming all diagonal entries vanish -/
 lemma quadraticForm_update_single
     {M : Matrix ι ι R} (hDiag : ∀ j, M j j = 0)
     (x : ι → R) (i : ι) (v : R) :
@@ -296,6 +292,7 @@ lemma quadraticForm_update_single
     ( (M.mulVec x) i
       + ∑ j ∈ (Finset.univ.erase i), x j * M j i ) :=
   quadraticForm_update_single_index (M:=M) (x:=x) (i:=i) (v:=v) (hii:=hDiag i)
+
 /--
 Optimized symmetric / zero–diagonal update for the quadratic form.
 This is the version used in the Hopfield flip energy relation.
@@ -333,7 +330,6 @@ open Finset Matrix NeuralNetwork State TwoState
 
 variable {R U σ : Type}
 variable [Field R] [LinearOrder R] [IsStrictOrderedRing R]
--- We need these helper lemmas about updPos/updNeg which were not in the prompt's snippet but are essential.
 namespace TwoState
 
 variable {R U σ : Type} [Field R] [LinearOrder R] [IsStrictOrderedRing R] [DecidableEq U]
@@ -420,11 +416,8 @@ noncomputable def hamiltonian
   let θ_vec := fun i : U => (p.θ i).get fin0
   (- (1/2 : R) * quad) + ∑ i : U, θ_vec i * s.act i
 
-/--
-Proof of the fundamental Flip Energy Relation for the SymmetricBinary network.
-ΔE = E(s⁺) - E(s⁻) = -2 * Lᵤ.
-This leverages Mathlib's `Matrix.quadratic_form_update_diag_zero`.
--/
+/-- Proof of the fundamental Flip Energy Relation for the SymmetricBinary network.
+ΔE = E(s⁺) - E(s⁻) = -2 * Lᵤ. -/
 lemma hamiltonian_flip_relation (p : Params (SymmetricBinary R U)) (s : (SymmetricBinary R U).State) (u : U) :
     let sPos := updPos (NN:=SymmetricBinary R U) s u
     let sNeg := updNeg (NN:=SymmetricBinary R U) s u
@@ -433,75 +426,54 @@ lemma hamiltonian_flip_relation (p : Params (SymmetricBinary R U)) (s : (Symmetr
   intro sPos sNeg L
   unfold hamiltonian
   let θ_vec := fun i => (p.θ i).get fin0
-
-  -- 1. Analyze the Quadratic Term Difference (ΔE_quad).
   have h_quad_diff :
     (- (1/2 : R) * Matrix.quadraticForm p.w sPos.act) - (- (1/2 : R) * Matrix.quadraticForm p.w sNeg.act) =
     - (2 : R) * (p.w.mulVec s.act u) := by
-
     rw [← mul_sub]
-    -- We analyze Q(sPos) - Q(sNeg). sPos has 1 at u, sNeg has -1 at u.
-
-    -- Express sPos as an update of sNeg.
     have h_sPos_from_sNeg : sPos.act = Function.update sNeg.act u 1 := by
       ext i
       by_cases hi : i = u
       · subst hi
-        -- At site u, sPos.act u is σ_pos which is definitionally 1 for SymmetricBinary.
         simp_rw [sPos, sNeg, updPos, updNeg, Function.update]
         aesop
       · simp [sPos, sNeg, updPos, updNeg, Function.update, hi]
     rw [h_sPos_from_sNeg]
-    -- Apply the identity for updating a quadratic form with W symmetric and W_uu=0.
-    -- Q(update(x, k, v)) - Q(x) = (v - x_k) * 2 * (W x)_k.
     rw [Matrix.quadratic_form_update_diag_zero (p.hw'.1) (p.hw'.2)]
-    -- Here v=1, x=sNeg.act, k=u. sNeg.act u = -1.
     have h_sNeg_u : sNeg.act u = -1 := updNeg_act_at_u s u
     rw [h_sNeg_u]
-    -- (1 - (-1)) * 2 * (W sNeg.act)_u = 4 * (W sNeg.act)_u.
     simp only [sub_neg_eq_add, one_add_one_eq_two]
     ring_nf
-    -- Relate (W sNeg.act)_u back to s. Since W_uu=0, the activation at u doesn't matter.
     have h_W_sNeg_eq_W_s : p.w.mulVec sNeg.act u = p.w.mulVec s.act u := by
       unfold Matrix.mulVec dotProduct
       apply Finset.sum_congr rfl
       intro j _
       by_cases h_eq : j = u
-      · simp [h_eq, p.hw'.2 u]  -- W_uu = 0
+      · simp [h_eq, p.hw'.2 u]
       · rw [updNeg_act_noteq s u j h_eq]
-
     rw [h_W_sNeg_eq_W_s]
-  -- 2. Linear term difference
   have h_linear_diff :
       dotProduct θ_vec sPos.act - dotProduct θ_vec sNeg.act
         = (2 : R) * θ_vec u := by
     rw [← dotProduct_sub]
-    -- Only coordinate u differs (-1 → 1), so the difference vector is 2·e_u.
     have h_diff_vec :
         sPos.act - sNeg.act = Pi.single u (2 : R) := by
       ext v
       by_cases hv : v = u
       · subst hv
-        -- At site u: 1 - (-1) = 2 (for SymmetricBinary)
         simp [sPos, sNeg, updPos, updNeg,
               TwoState.SymmetricBinary, instTwoStateSymmetricBinary,
               Pi.single, sub_eq_add_neg, one_add_one_eq_two]
-      · -- Off site: unchanged, difference 0
-        simp [sPos, sNeg, updPos, updNeg, Pi.single, hv, sub_eq_add_neg]
+      · simp [sPos, sNeg, updPos, updNeg, Pi.single, hv, sub_eq_add_neg]
     rw [h_diff_vec, dotProduct_single]
     simp [mul_comm]
-
-  -- 3. Combine the terms.
   erw [add_sub_add_comm, h_quad_diff, h_linear_diff]
-  -- Relate (W s.act)_u to L = net(s) - θ_u. We need to show net(s) = (W s.act)_u.
   have h_net_eq_W_s : s.net p u = p.w.mulVec s.act u := by
     unfold State.net SymmetricBinary fnet Matrix.mulVec dotProduct
     apply Finset.sum_congr rfl
     intro v _
     split_ifs with h_ne
     · aesop
-    · -- Case v = u (since ¬ (v ≠ u)): the net integrand is 0; the mulVec term is W u u * s.act u = 0.
-      have hv : v = u := by
+    · have hv : v = u := by
         classical
         by_contra hvne
         exact h_ne hvne
@@ -510,7 +482,6 @@ lemma hamiltonian_flip_relation (p : Params (SymmetricBinary R U)) (s : (Symmetr
       simp [hdiag]
 
   rw [← h_net_eq_W_s]
-  -- Goal: -2 * net + 2 * θ = -2 * (net - θ).
   ring
 
 /-- The concrete Energy Specification for the SymmetricBinary Hopfield Network. -/
@@ -574,11 +545,10 @@ end SymmetricBinaryFintype
 /-!
 # Detailed Balance and the Boltzmann Distribution
 
-This section establishes that the Gibbs update kernel is reversible with respect to the
-Boltzmann distribution derived from the associated Canonical Ensemble. This holds generically
-for any exclusive two-state network with an EnergySpec'.
+This section and the DetailedBalanceBM file establish that the Gibbs update kernel is reversible
+with respect to the Boltzmann distribution derived from the associated Canonical Ensemble.
+This holds generically for any exclusive two-state network with an EnergySpec'.
 -/
-
 namespace HopfieldBoltzmann
 
 open CanonicalEnsemble ProbabilityTheory TwoState PMF
@@ -662,7 +632,7 @@ lemma boltzmann_ratio (s s' : NN.State) :
     IsHamiltonian_of_EnergySpec' (NN:=NN) (spec:=spec)
   set 𝓒 := CEparams (NN:=NN) (spec:=spec) p
   have instFin : 𝓒.IsFinite := by
-    dsimp [𝓒, CEparams]  -- unfolds to `hopfieldCE`
+    dsimp [𝓒, CEparams]
     infer_instance
   have h := CE_probability_ratio (NN:=NN) (𝓒:=𝓒) (T:=T) s s'
   simpa [P, 𝓒,
@@ -752,7 +722,7 @@ lemma Kbm_apply_other (u : U) (s s' : NN.State)
   simp [h_K]
   aesop
 
-/-- Helper: (1 - logistic(x)) / logistic(x) = exp(-x). -/
+/-- (1 - logistic(x)) / logistic(x) = exp(-x). -/
 lemma one_sub_logistic_div_logistic (x : ℝ) :
   (1 - logisticProb x) / logisticProb x = Real.exp (-x) := by
   have h_pos := logisticProb_pos x
