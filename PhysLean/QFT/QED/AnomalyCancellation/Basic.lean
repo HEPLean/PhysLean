@@ -5,9 +5,17 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.AnomalyCancellation.Basic
 /-!
-# Pure U(1) ACC system.
 
-We define the anomaly cancellation conditions for a pure U(1) gauge theory with `n` fermions.
+# Anomaly cancellation of a theory with a pure U(1)-gauge group
+
+In a pure U(1) gauge theory with `n` Weyl fermions carrying charges `xᵢ` the anomaly cancellation
+conditions (ACCs) which must be satisfied for a consistent gauge theory correspond to:
+
+- The linear ACC: `∑ xᵢ = 0`
+- The cubic ACC: `∑ xᵢ³ = 0`
+
+The charges `xᵢ` have rational fractions with one another, here they are specified as
+rational numbers.
 
 -/
 
@@ -17,6 +25,11 @@ open Finset
 
 namespace PureU1
 open BigOperators
+
+TODO "K3HYF" "The implementation of pure U(1) anomaly cancellation conditions is done
+  currently through the type `ACCSystemCharges`. This whole directory could be
+  simplified by refactoring to remove `ACCSystemCharges` defining `PureU1Charges` as
+  `Fin n → ℚ` directly, or this space quotiented by permutations and overall factors."
 
 /-- The vector space of charges. -/
 @[simps!]
