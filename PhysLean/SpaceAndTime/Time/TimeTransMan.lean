@@ -26,7 +26,7 @@ operations on `TimeTransMan`:
 - `diff x t1 t2`, for `t1 t2 : TimeTransMan` gives the signed difference between two points in
   time in the units `x`.
 - `addTime x r t`, for `r : ℝ` and `t : TimeTransMan`, gives the point in `TimeTransMan`
-  that seperated from `t`, by `r` in the unit `x`. For example, if `x` is the unit of seconds,
+  that separated from `t`, by `r` in the unit `x`. For example, if `x` is the unit of seconds,
   then `addTime x 1 t` gives the point in `TimeTransMan` that is one second after `t`.
 - `neg zero t`, for a given `zero : TimeTransMan`, gives the point in `TimeTransMan`
   that is the same distance away from `zero` as `t` but in the opposite direction.
