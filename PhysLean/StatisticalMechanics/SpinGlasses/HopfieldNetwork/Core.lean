@@ -180,11 +180,11 @@ lemma act_up_def : (s.Up wθ u).act u =
 
 @[simp]
 lemma act_of_non_up (huv : v2 ≠ u) : (s.Up wθ u).act v2 = s.act v2 := by
-  simp only [Up, if_neg huv]
+  simp [Up, huv]
 
 @[simp]
 lemma act_new_neg_one_if_net_lt_th (hn : s.net wθ u < θ' (wθ.θ u)) : (s.Up wθ u).act u = -1 := by
-  rw [act_up_def]; exact ite_eq_right_iff.mpr fun hyp => (hn.not_le hyp).elim
+  rw [act_up_def]; exact ite_eq_right_iff.mpr fun hyp => (hn.not_ge hyp).elim
 
 @[simp]
 lemma actnew_neg_one_if_net_lt_th (hn : s.net wθ u < θ' (wθ.θ u)) : (s.Up wθ u).act u = -1 :=
@@ -327,6 +327,7 @@ lemma Ew_diff' : (s.Up wθ u).Ew wθ - s.Ew wθ =
     rw [mul_sum, mul_sum, ← sum_neg_distrib, ← sum_add_distrib, sum_eq_zero]
     simp only [mem_filter, mem_univ, true_and, and_imp]; intro v2 _ hv1 hvneg2
     simp_all only [Wact, Up, mul_ite, ite_mul, reduceIte, add_neg_cancel]
+    simp only [↓reduceDIte, add_neg_cancel]
   simp only [sub_neg_eq_add]
 
 @[simp]
@@ -514,10 +515,10 @@ def stateLt (s1 s2 : State' wθ) : Prop := s1.E wθ < s2.E wθ ∨ s1.E wθ = s2
 @[simp]
 lemma stateLt_antisym (s1 s2 : State' wθ) : stateLt s1 s2 → ¬stateLt s2 s1 := by
   rintro (h1 | ⟨_, h3⟩) (h2 | ⟨_, h4⟩)
-  · exact h1.not_lt h2
+  · exact h1.not_gt h2
   · simp_all only [lt_self_iff_false]
   · simp_all only [lt_self_iff_false]
-  · exact h3.not_lt h4
+  · exact h3.not_gt h4
 
 /--
 Defines a partial order on states. The relation `stateOrd` holds between two states `s1` and `s2`
@@ -560,8 +561,8 @@ lemma stateLt_lt (s1 s2 : State' wθ) : s1 < s2 ↔ stateLt s1 s2 := by
     constructor
     · intro hs; subst hs;
       have : ¬stateLt s2 s2:= fun
-        | Or.inl h1 => h1.not_lt h1
-        | Or.inr ⟨_, h3⟩ => h3.not_lt h3
+        | Or.inl h1 => h1.not_gt h1
+        | Or.inr ⟨_, h3⟩ => h3.not_gt h3
       exact this hs2
     · intro hs; apply stateLt_antisym s1 s2 hs2 hs
 
@@ -573,7 +574,7 @@ lemma state_act_eq (s1 s2 : State' wθ) : s1.act = s2.act → s1 = s2 := by
 @[simp]
 lemma state_Up_act (s : State' wθ) : (Up' s u).act u = s.act u → Up' s u = s := by
   intro h; cases' s with act hact; apply state_act_eq; ext v
-  by_cases huv : v = u; simp only [huv, h]; simp only [Up', Up, huv, reduceIte]
+  by_cases huv : v = u; simp only [huv, h]; simp [Up', Up, huv, reduceIte]
 
 @[simp]
 lemma up_act_eq_act_of_up_eq (s : State' wθ) : Up' s u = s → (Up' s u).act u = s.act u := fun hs =>
@@ -656,7 +657,7 @@ lemma num_of_states_decreases (hs : s < s') :
   apply Finset.card_lt_card
   rw [Finset.ssubset_iff_of_subset]
   simp only [mem_filter, mem_univ, true_and, not_lt]
-  use s; exact ⟨hs, gt_irrefl s⟩
+  use s; exact ⟨hs, lt_irrefl s⟩
   simp only [Finset.subset_iff, mem_filter, mem_univ, true_and]
   exact fun _ hx => hx.trans hs
 
@@ -909,7 +910,7 @@ lemma stateisStablecondition {m : ℕ}
   (s : (HopfieldNetwork R U).State) (c : R) (hc : 0 < c)
   (hw : ∀ u, ((Hebbian ps).w).mulVec s.act u = c * s.act u) : s.isStable (Hebbian ps) := by
   intros u
-  unfold Up out
+  unfold State.Up
   simp only [reduceIte, Fin.isValue]
   rw [HNfnet_eq]
   simp_rw [mulVec, dotProduct] at hw u

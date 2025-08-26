@@ -220,7 +220,7 @@ lemma filter_sum_pos_iff_exists_pos {α β : Type} [Fintype α]
           exact h a ha
         · exact zero_le (p a)
       have sum_zero := Finset.sum_eq_zero all_zero
-      exact not_lt_of_le (by exact nonpos_iff_eq_zero.mpr sum_zero) h_pos
+      exact not_lt_of_ge (by exact nonpos_iff_eq_zero.mpr sum_zero) h_pos
     rcases exists_pos with ⟨x, hx_mem, hx_pos⟩
     exact ⟨x, filter_mem_iff.mp hx_mem, hx_pos⟩
   · rintro ⟨x, hx_mem, hx_pos⟩

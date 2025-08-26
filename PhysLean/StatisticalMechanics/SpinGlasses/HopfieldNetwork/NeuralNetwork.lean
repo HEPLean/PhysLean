@@ -9,6 +9,8 @@ import Mathlib.Data.Vector.Basic
 
 open Mathlib Finset
 
+universe uR uU uσ
+
 /-
 A `NeuralNetwork` models a neural network with:
 
@@ -19,7 +21,7 @@ A `NeuralNetwork` models a neural network with:
 
 It extends `Digraph U` and includes the network's architecture, activation functions, and constraints.
 -/
-structure NeuralNetwork (R U : Type) (σ : Type) [Zero R] extends Digraph U where
+structure NeuralNetwork (R : Type uR) (U : Type uU) (σ : Type uσ) [Zero R] extends Digraph U where
   /-- Input neurons. -/
   (Ui Uo Uh : Set U)
   /-- There is at least one input neuron. -/
@@ -55,7 +57,9 @@ structure NeuralNetwork (R U : Type) (σ : Type) [Zero R] extends Digraph U wher
                 (fnet u_target (w u_target) (fun v => fout v (current v)) (σv u_target))
                 (θ u_target)))
 
-variable {R U σ : Type} [Zero R]
+variable {R : Type uR} {U : Type uU} {σ : Type uσ} [Zero R]
+
+--variable {R U σ : Type} [Zero R]
 
 /-- `Params` is a structure that holds the parameters for a neural network `NN`. -/
 structure Params (NN : NeuralNetwork R U σ) where
@@ -71,49 +75,53 @@ structure State (NN : NeuralNetwork R U σ) where
   act : U → σ
   hp : ∀ u : U, NN.pact (act u)
 
-/-- Extensionality lemma for neural network states -/
-@[ext]
-lemma ext {R U σ : Type} [Zero R] {NN : NeuralNetwork R U σ}
-    {s₁ s₂ : NN.State} : (∀ u, s₁.act u = s₂.act u) → s₁ = s₂ := by
-  intro h
-  cases s₁
-  cases s₂
-  simp only [NeuralNetwork.State.mk.injEq]
-  apply funext
-  exact h
+@[ext] lemma ext {R U σ : Type} [Zero R] {NN : NeuralNetwork R U σ}
+    {s₁ s₂ : NN.State} :
+    (∀ u, s₁.act u = s₂.act u) → s₁ = s₂ := by
+  intro h; cases s₁; cases s₂; simp [State.mk.injEq, funext h]; aesop
 
 namespace State
-
-variable {NN : NeuralNetwork R U σ} (wσθ : Params NN) (s : NN.State)
+variable {NN : NeuralNetwork R U σ}
+variable (p : Params NN) (s : NN.State)
 
 def out (u : U) : R := NN.fout u (s.act u)
-def net (u : U) : R := NN.fnet u (wσθ.w u) (fun v => s.out v) (wσθ.σ u)
-def onlyUi : Prop :=  ∃ σ0 : σ, ∀ u : U, u ∉ NN.Ui → s.act u = σ0
+def net (u : U) : R := NN.fnet u (p.w u) (fun v => s.out v) (p.σ u)
+def onlyUi : Prop := ∃ σ0 : σ, ∀ u : U, u ∉ NN.Ui → s.act u = σ0
 variable [DecidableEq U]
 
-def Up {NN_local : NeuralNetwork R U σ} (s : NN_local.State) (wσθ : Params NN_local) (u_upd : U) : NN_local.State :=
-  { act := fun v => if v = u_upd then
-                      NN_local.fact u_upd (s.act u_upd)
-                        (NN_local.fnet u_upd (wσθ.w u_upd) (fun n => s.out n) (wσθ.σ u_upd))
-                        (wσθ.θ u_upd)
-                    else
-                      s.act v,
-    hp := by
-      intro v_target
-      rw [ite_eq_dite]
-      split_ifs with h_eq_upd_neuron
-      · exact NN_local.hpact wσθ.w wσθ.hw wσθ.hw' wσθ.σ wσθ.θ s.act s.hp u_upd
-      · exact s.hp v_target
-  }
+/-- Single–site asynchronous update: recompute neuron `u` using current state `s`.
+ -/
+def Up (s : NN.State) (p : Params NN) (u : U) : NN.State :=
+{ act := fun v =>
+    if hv : v = u then
+      NN.fact u (s.act u)
+        (NN.fnet u (p.w u) (fun n => NN.fout n (s.act n)) (p.σ u))
+        (p.θ u)
+    else
+      s.act v
+, hp := by
+    intro v
+    by_cases hv : v = u
+    · subst hv
+      have hclosure_all :=
+        NN.hpact p.w p.hw p.hw' p.σ p.θ s.act s.hp
+      have hclosure := hclosure_all v
+      simp only [dif_pos rfl]
+      exact hclosure
+    · simp only [dif_neg hv]
+      exact s.hp v }
 
-def workPhase (extu : NN.State) (_ : extu.onlyUi) (uOrder : List U) : NN.State :=
-  uOrder.foldl (fun s_iter u_iter => s_iter.Up wσθ u_iter) extu
+/-- Fold a list of update sites left-to-right starting from an extended state. -/
+def workPhase (ext : NN.State) (_ : ext.onlyUi) (uOrder : List U) : NN.State :=
+  uOrder.foldl (fun st u => Up st p u) ext
 
-def seqStates (useq : ℕ → U) : ℕ → NeuralNetwork.State NN
-  | 0 => s
-  | n + 1 => .Up (seqStates useq n) wσθ (useq n)
+/-- Iterated sequence of single–site updates following a site stream `useq`. -/
+def seqStates (useq : ℕ → U) : ℕ → NN.State
+  | 0     => s
+  | n + 1 => Up (seqStates useq n) p (useq n)
 
-def isStable : Prop :=  ∀ (u : U), (s.Up wσθ u).act u = s.act u
+/-- A state is stable if every single–site update leaves the site unchanged. -/
+def isStable : Prop := ∀ u : U, (Up s p u).act u = s.act u
 
 end State
 end NeuralNetwork

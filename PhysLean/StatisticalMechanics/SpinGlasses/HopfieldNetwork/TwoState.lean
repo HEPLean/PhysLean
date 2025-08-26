@@ -179,8 +179,10 @@ open NeuralNetwork
 --variable {R U σ : Type*}
 universe uR uU uσ
 
--- (Optional) you can also parametrize earlier variables with these universes if desired:
+-- We can also parametrize earlier variables with these universes if desired:
 variable {R : Type uR} {U : Type uU} {σ : Type uσ}
+
+--variable {R U σ : Type}
 
 /-- A minimal two-point activation alphabet.
 
@@ -189,7 +191,7 @@ This class specifies:
 - `σ_neg`: the distinguished “negative” activation,
 - `embed`: a numeric embedding `σ → R` used to interpret activations in the ambient ring `R`.
 -/
-class TwoPointActivation (R : Type uR) (σ : Type uσ) where
+class TwoPointActivation (R : Type) (σ : Type) where
   /-- Distinguished “positive” activation state. -/
   σ_pos : σ
   /-- Distinguished “negative” activation state. -/
@@ -625,11 +627,10 @@ structure EnergySpec'
       `f (E p (updPos s u) - E p (updNeg s u))
         = - scale f * f (localField p s u)`. -/
   flip_energy_relation :
-    ∀ (f : R →+* ℝ)
-      (p : Params NN) (s : NN.State) (u : U),
-      f (E p (updPos (NN:=NN) s u) - E p (updNeg (NN:=NN) s u)) =
-        - (scale (R:=R) (U:=U) (σ:=σ) (NN:=NN) (f:=f)) *
-          f (localField p s u)
+    ∀ (f : R →+* ℝ) (p : Params NN) (s : NN.State) (u : U),
+      f (E p (updPos (R:=R) (U:=U) (σ:=σ) (NN:=NN) (s:=s) (u:=u))
+           - E p (updNeg (R:=R) (U:=U) (σ:=σ) (NN:=NN) (s:=s) (u:=u))) =
+        - (scale (R:=R) (U:=U) (σ:=σ) (NN:=NN) (f:=f)) * f (localField p s u)
 
 namespace EnergySpec
 variable {NN : NeuralNetwork R U σ}
@@ -1416,4 +1417,425 @@ theorem gibbs_update_tends_to_zero_temp_limit
               (NN:=NN) f p s u (by simpa using hpos) (by simpa using hneg)
 
 end Convergence
+end TwoState
+
+open Finset Matrix NeuralNetwork State Constants Temperature Filter Topology
+open scoped ENNReal NNReal BigOperators
+open NeuralNetwork
+namespace TwoState
+
+--variable {R U σ : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+/-!
+Fix: strengthen the typeclass assumptions in the final section (they were only `[Zero R]`)
+and specialize to `R = ℝ` so that `EnergySpec` (which requires ordered field structure)
+is usable. Then provide a complete implementation of
+`EnergySpec.energy_order_from_flip_id` (previous version failed due to missing instances).
+-/
+
+
+lemma updPos_eq_self_of_act_pos
+    {R U σ} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+    [Fintype U] [DecidableEq U]
+    {NN : NeuralNetwork R U σ} [TwoStateNeuralNetwork NN]
+    (s : NN.State) (u : U)
+    (h : s.act u = TwoStateNeuralNetwork.σ_pos (NN:=NN)) :
+    updPos (R:=R) (U:=U) (σ:=σ) (NN:=NN) s u = s := by
+  classical
+  ext v
+  by_cases hv : v = u
+  · subst hv; simp [updPos, Function.update, h]
+  · simp [updPos, Function.update, hv]
+
+/-- Helper: if the current activation at `u` is already `σ_neg`, `updNeg` is identity.
+
+(Version with fully explicit implicit parameters to avoid universe inference issues.) -/
+lemma updNeg_eq_self_of_act_neg
+    {R U σ} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+    [Fintype U] [DecidableEq U]
+    {NN : NeuralNetwork R U σ} [TwoStateNeuralNetwork NN]
+    (s : NN.State) (u : U)
+    (h : s.act u = TwoStateNeuralNetwork.σ_neg (NN:=NN)) :
+    updNeg (R:=R) (U:=U) (σ:=σ) (NN:=NN) s u = s := by
+  classical
+  ext v
+  by_cases hv : v = u
+  · subst hv; simp [updNeg, Function.update, h]
+  · simp [updNeg, Function.update, hv]
+
+/-- Classification of a single asynchronous update at site `u`:
+`Up` equals `updPos` if `θ ≤ net`, else `updNeg`. (Explicit parameters to
+stabilize elaboration.) -/
+lemma Up_eq_updPos_or_updNeg
+    {R U σ} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+    [Fintype U] [DecidableEq U]
+    {NN : NeuralNetwork R U σ} [TwoStateNeuralNetwork NN]
+    (p : Params NN) (s : NN.State) (u : U) :
+    let net := s.net p u
+    let θ   := (p.θ u).get (TwoStateNeuralNetwork.θ0 (NN:=NN) u)
+    s.Up p u =
+      (if θ ≤ net then updPos (R:=R) (U:=U) (σ:=σ) (NN:=NN) s u
+       else updNeg (R:=R) (U:=U) (σ:=σ) (NN:=NN) s u) := by
+  classical
+  intro net θ
+  ext v
+  by_cases hv : v = u
+  · subst hv
+    unfold NeuralNetwork.State.Up
+    simp only
+    by_cases hθle : θ ≤ net
+    ·
+      have hpos :=
+        TwoStateNeuralNetwork.h_fact_pos (NN:=NN) v (s.act v) net (p.θ v) hθle
+      have : NN.fact v (s.act v)
+          (NN.fnet v (p.w v) (fun w => s.out w) (p.σ v))
+          (p.θ v) = TwoStateNeuralNetwork.σ_pos (NN:=NN) := by
+        simpa [NeuralNetwork.State.net] using hpos
+      simp [updPos, Function.update, this, hθle]
+      aesop
+    ·
+      have hlt : net < θ := lt_of_not_ge hθle
+      have hneg :=
+        TwoStateNeuralNetwork.h_fact_neg (NN:=NN) v (s.act v) net (p.θ v) hlt
+      have : NN.fact v (s.act v)
+          (NN.fnet v (p.w v) (fun w => s.out w) (p.σ v))
+          (p.θ v) = TwoStateNeuralNetwork.σ_neg (NN:=NN) := by
+        simpa [NeuralNetwork.State.net] using hneg
+      simp [updNeg, Function.update, this, hθle]
+      aesop
+  ·
+    unfold NeuralNetwork.State.Up
+    simp_rw [hv, updPos, updNeg]; simp [Function.update]
+    aesop
+end TwoState
+namespace TwoState.EnergySpec'
+
+/-- Given an energy difference identity
+  E sPos - E sNeg = - κ * L   with κ ≥ 0,
+we deduce the two directional inequalities depending on the sign of L. -/
+lemma energy_order_from_flip_id
+    {U σ} [Fintype U] [DecidableEq U]
+    (NN : NeuralNetwork ℝ U σ) [TwoStateNeuralNetwork NN]
+    (spec : EnergySpec' (NN:=NN))
+    {p : Params NN}
+    {κ L : ℝ} {sPos sNeg : NN.State}
+    (hdiff : spec.E p sPos - spec.E p sNeg = - κ * L)
+    (hκ : 0 ≤ κ) :
+    (0 ≤ L → spec.E p sPos ≤ spec.E p sNeg) ∧
+    (L ≤ 0 → spec.E p sNeg ≤ spec.E p sPos) := by
+  constructor
+  · intro hL
+    have hκL : 0 ≤ κ * L := mul_nonneg hκ hL
+    have hDiffLe : spec.E p sPos - spec.E p sNeg ≤ 0 := by
+      rw [hdiff]; simp only [neg_mul, Left.neg_nonpos_iff]; exact hκL
+    exact sub_nonpos.mp hDiffLe
+  · intro hL
+    have hrev : spec.E p sNeg - spec.E p sPos = κ * L := by
+      have := congrArg Neg.neg hdiff
+      simpa [neg_sub, neg_mul, neg_neg] using this
+    have hκL : κ * L ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hκ hL
+    have : spec.E p sNeg - spec.E p sPos ≤ 0 := by simpa [hrev] using hκL
+    exact sub_nonpos.mp this
+
+end EnergySpec'
+end TwoState
+namespace TwoState
+
+section ConcreteLyapunov
+variable {U : Type} [Fintype U] [DecidableEq U] [Nonempty U]
+
+-- Note: The following lemmas are specialized for `SymmetricBinary ℝ U`
+-- to simplify the proof development by avoiding universe polymorphism issues.
+-- The original polymorphic versions can be restored later from this template.
+
+lemma updPos_eq_self_of_act_pos_binary
+    (s : (SymmetricBinary ℝ U).State) (u : U)
+    (h : s.act u = 1) :
+    updPos (NN:=SymmetricBinary ℝ U) s u = s := by
+  ext v
+  by_cases hv : v = u
+  · subst hv; simp [updPos, Function.update, h, instTwoStateSymmetricBinary]
+  · simp [updPos, Function.update, hv]
+
+lemma updNeg_eq_self_of_act_neg_binary
+    (s : (SymmetricBinary ℝ U).State) (u : U)
+    (h : s.act u = -1) :
+    updNeg (NN:=SymmetricBinary ℝ U) s u = s := by
+  ext v
+  by_cases hv : v = u
+  · subst hv; simp [updNeg, Function.update, h, instTwoStateSymmetricBinary]
+  · simp [updNeg, Function.update, hv]
+
+lemma Up_eq_updPos_or_updNeg_binary
+    (p : Params (SymmetricBinary ℝ U)) (s : (SymmetricBinary ℝ U).State) (u : U) :
+    let net := s.net p u
+    let θ   := (p.θ u).get fin0
+    s.Up p u =
+      (if θ ≤ net
+       then updPos (NN:=SymmetricBinary ℝ U) s u
+       else updNeg (NN:=SymmetricBinary ℝ U) s u) := by
+  intro net θ
+  classical
+  -- Reuse the general classification lemma and unfold the lets.
+  simpa [net, θ] using
+    (TwoState.Up_eq_updPos_or_updNeg
+        (R:=ℝ) (U:=U) (σ:=ℝ)
+        (NN:=SymmetricBinary ℝ U) p s u)
+
+lemma energy_order_from_flip_id_binary
+    (spec : EnergySpec' (NN:=SymmetricBinary ℝ U))
+    {p : Params (SymmetricBinary ℝ U)}
+    {κ L : ℝ} {sPos sNeg : (SymmetricBinary ℝ U).State}
+    (hdiff : spec.E p sPos - spec.E p sNeg = - κ * L)
+    (hκ : 0 ≤ κ) :
+    (0 ≤ L → spec.E p sPos ≤ spec.E p sNeg) ∧
+    (L ≤ 0 → spec.E p sNeg ≤ spec.E p sPos) := by
+  constructor
+  · intro hL
+    have hκL : 0 ≤ κ * L := mul_nonneg hκ hL
+    -- Convert desired inequality to `sub ≤ 0`.
+    have hsub : spec.E p sPos - spec.E p sNeg ≤ 0 := by
+      rw [hdiff]; aesop
+    exact sub_nonpos.mp hsub
+  · intro hL
+    have hκL : κ * L ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hκ hL
+    -- Derive the reversed difference.
+    have hrev : spec.E p sNeg - spec.E p sPos = κ * L := by
+      have := congrArg Neg.neg hdiff
+      -- -(E sPos - E sNeg) = κ * L
+      simpa [neg_sub, neg_mul, neg_neg] using this
+    have hsub : spec.E p sNeg - spec.E p sPos ≤ 0 := by
+      rw [hrev]; exact hκL
+    exact sub_nonpos.mp hsub
+
+/-- Lyapunov (energy non‑increase) at a single site for `SymmetricBinary` networks. -/
+lemma energy_is_lyapunov_at_site_binary
+    (spec : EnergySpec' (NN:=SymmetricBinary ℝ U))
+    (p : Params (SymmetricBinary ℝ U)) (s : (SymmetricBinary ℝ U).State) (u : U)
+    (hcur : s.act u = 1 ∨ s.act u = -1) :
+    spec.E p (s.Up p u) ≤ spec.E p s := by
+  -- Shorthand states and values
+  set sPos := updPos (NN:=SymmetricBinary ℝ U) s u
+  set sNeg := updNeg (NN:=SymmetricBinary ℝ U) s u
+  set net := s.net p u
+  set θ   := (p.θ u).get fin0
+  set L : ℝ := net - θ
+  let fid : ℝ →+* ℝ := RingHom.id _
+  -- Get the energy difference relation from the spec
+  have hflip := spec.flip_energy_relation fid p s u
+  have hlocal : spec.localField p s u = L := by simp [L, net, θ, spec.localField_spec]; aesop
+  have hdiff : spec.E p sPos - spec.E p sNeg = - (scale (NN:=SymmetricBinary ℝ U) (f:=fid)) * L := by
+    simpa [sPos, sNeg, hlocal] using hflip
+  -- Define κ and prove it's non-negative
+  set κ := scale (NN:=SymmetricBinary ℝ U) (f:=fid)
+  have hκ_pos : 0 < κ := by aesop--simp [scale_binary, map_ofNat]
+  have hκ_nonneg : 0 ≤ κ := hκ_pos.le
+  -- Get the ordering implications from the energy difference
+  have hOrder := energy_order_from_flip_id_binary spec hdiff hκ_nonneg
+  -- Relate the abstract update `Up` to concrete `updPos`/`updNeg`
+  have hUp_cases := Up_eq_updPos_or_updNeg_binary p s u
+  -- Case split on the threshold condition
+  by_cases hθle : θ ≤ net
+  · -- Case 1: net ≥ θ, so update goes to sPos
+    have hUp_cases_eval := hUp_cases
+    simp [net, θ, hθle, sPos, sNeg] at hUp_cases_eval
+    rw [hUp_cases_eval]
+    cases hcur with
+    | inl h_is_pos => -- s is already sPos
+      rw [updPos_eq_self_of_act_pos_binary s u h_is_pos]
+    | inr h_is_neg => -- s = sNeg, need E(sPos) ≤ E(sNeg)
+      have hL_nonneg : 0 ≤ L := by simpa [L] using sub_nonneg.mpr hθle
+      -- Rewrite only the right-hand occurrence of s using hs
+      have hs : s = sNeg := (updNeg_eq_self_of_act_neg_binary s u h_is_neg).symm
+      have hLE : spec.E p sPos ≤ spec.E p sNeg := hOrder.left hL_nonneg
+      simp_rw [hs]
+      exact
+        le_of_eq_of_le (congrArg (spec.E p) (congrFun (congrArg updPos (id (Eq.symm hs))) u)) hLE
+  · -- Case 2: net < θ, so update goes to sNeg
+    have hUp_cases_eval := hUp_cases
+    simp [net, θ, hθle, sPos, sNeg] at hUp_cases_eval
+    rw [hUp_cases_eval]
+    cases hcur with
+    | inl h_is_pos => -- s = sPos, need E(sNeg) ≤ E(sPos)
+      have hL_nonpos : L ≤ 0 := by simpa [L] using (lt_of_not_ge hθle).le
+      have hs : s = sPos := (updPos_eq_self_of_act_pos_binary s u h_is_pos).symm
+      have hLE : spec.E p sNeg ≤ spec.E p sPos := hOrder.2 hL_nonpos
+      simp_rw [hs]
+      exact
+        le_of_eq_of_le (congrArg (spec.E p) (congrFun (congrArg updNeg (id (Eq.symm hs))) u)) hLE
+    | inr h_is_neg => -- s already sNeg
+      rw [updNeg_eq_self_of_act_neg_binary s u h_is_neg]
+
+end ConcreteLyapunov
+namespace EnergySpec'
+open TwoState
+
+/-- General (non-binary–specialized) Lyapunov single–site energy descent lemma. -/
+lemma energy_is_lyapunov_at_site
+    {U σ} [Fintype U] [DecidableEq U]
+    (NN : NeuralNetwork ℝ U σ) [TwoStateNeuralNetwork NN]
+    (spec : EnergySpec' (R:=ℝ) (NN:=NN))
+    (p : Params NN) (s : NN.State) (u : U)
+    (hcur : s.act u = TwoStateNeuralNetwork.σ_pos (NN:=NN) ∨
+            s.act u = TwoStateNeuralNetwork.σ_neg (NN:=NN)) :
+    spec.E p (s.Up p u) ≤ spec.E p s := by
+  classical
+  set sPos := updPos (NN:=NN) s u
+  set sNeg := updNeg (NN:=NN) s u
+  set net  := s.net p u
+  set θ    := (p.θ u).get (TwoStateNeuralNetwork.θ0 (NN:=NN) u)
+  set L : ℝ := net - θ
+  let fid : ℝ →+* ℝ := RingHom.id _
+  have hflip := spec.flip_energy_relation fid p s u
+  have hlocal : spec.localField p s u = L := by
+    simp [L, net, θ, spec.localField_spec]
+  have hdiff :
+      spec.E p sPos - spec.E p sNeg
+        = - (scale (R:=ℝ) (U:=U) (σ:=σ) (NN:=NN) (f:=fid)) * L := by
+    simpa [sPos, sNeg, hlocal] using hflip
+  set κ := scale (R:=ℝ) (U:=U) (σ:=σ) (NN:=NN) (f:=fid)
+  have hm := TwoStateNeuralNetwork.m_order (NN:=NN)
+  have hκpos : 0 < κ := by
+    simp [κ, scale]
+    aesop
+  have hκ : 0 ≤ κ := hκpos.le
+  have hOrder :=
+    TwoState.EnergySpec'.energy_order_from_flip_id
+      (NN:=NN) (spec:=spec) (p:=p) (κ:=κ) (L:=L)
+      (sPos:=sPos) (sNeg:=sNeg) hdiff hκ
+  have hup := TwoState.Up_eq_updPos_or_updNeg (NN:=NN) p s u
+  by_cases hθle : θ ≤ net
+  · have hUpPos : s.Up p u = sPos := by
+      simpa [net, θ, hθle] using hup
+    cases hcur with
+    | inl hpos =>
+        have hFixed : sPos = s := by
+          have h := TwoState.updPos_eq_self_of_act_pos (NN:=NN) s u hpos
+          simpa [sPos] using h
+        simp [hUpPos, hFixed]
+    | inr hneg =>
+        have hEqNeg : sNeg = s := by
+          have h := TwoState.updNeg_eq_self_of_act_neg (NN:=NN) s u hneg
+          simpa [sNeg] using h
+        have hL : 0 ≤ L := by
+          have : θ ≤ net := hθle
+          simpa [L] using sub_nonneg.mpr this
+        have hLE := hOrder.left hL
+        simp [hUpPos, hEqNeg]
+        aesop
+  · have hnetlt : net < θ := lt_of_not_ge hθle
+    have hLle : L ≤ 0 := by
+      have : net - θ < 0 := sub_lt_zero.mpr hnetlt
+      exact this.le
+    have hUpNeg : s.Up p u = sNeg := by
+      have hnot : ¬ θ ≤ net := hθle
+      simpa [net, θ, hnot] using hup
+    cases hcur with
+    | inl hpos =>
+        have hEqPos : sPos = s := by
+          have h := TwoState.updPos_eq_self_of_act_pos (NN:=NN) s u hpos
+          simpa [sPos] using h
+        have hLE := hOrder.right hLle
+        simp [hUpNeg, hEqPos]
+        aesop
+    | inr hneg =>
+        have hFixed : sNeg = s := by
+          have h := TwoState.updNeg_eq_self_of_act_neg (NN:=NN) s u hneg
+          simpa [sNeg] using h
+        simp [hUpNeg, hFixed]
+
+/-- Wrapper (argument order variant). -/
+lemma energy_is_lyapunov_at_site'
+    {U σ} [Fintype U] [DecidableEq U]
+    {NN : NeuralNetwork ℝ U σ} [TwoStateNeuralNetwork NN]
+    (spec : EnergySpec' (R:=ℝ) (NN:=NN))
+    (p : Params NN) (s : NN.State) (u : U)
+    (hcur : s.act u = TwoStateNeuralNetwork.σ_pos (NN:=NN) ∨
+            s.act u = TwoStateNeuralNetwork.σ_neg (NN:=NN)) :
+    spec.E p (s.Up p u) ≤ spec.E p s :=
+  energy_is_lyapunov_at_site (NN:=NN) (spec:=spec) p s u hcur
+
+/-- Lyapunov (energy non‑increase) at a single site (completed proof).
+Uses `energy_order_from_flip_id` and the flip relation with the identity hom. -/
+lemma energy_is_lyapunov_at_site''
+    {U σ} [Fintype U] [DecidableEq U]
+    (NN : NeuralNetwork ℝ U σ) [TwoStateNeuralNetwork NN]
+    (spec : EnergySpec' (R:=ℝ) (NN:=NN))
+    (p : Params NN) (s : NN.State) (u : U)
+    (hcur : s.act u = TwoStateNeuralNetwork.σ_pos (NN:=NN) ∨
+            s.act u = TwoStateNeuralNetwork.σ_neg (NN:=NN)) :
+    spec.E p (NeuralNetwork.State.Up s p u) ≤ spec.E p s := by
+  classical
+  set sPos := updPos (NN:=NN) s u
+  set sNeg := updNeg (NN:=NN) s u
+  set net  := s.net p u
+  set θ    := (p.θ u).get (TwoStateNeuralNetwork.θ0 (NN:=NN) u)
+  set L : ℝ := net - θ
+  let fid : ℝ →+* ℝ := RingHom.id _
+  have hflip := spec.flip_energy_relation fid p s u
+  have hlocal : spec.localField p s u = L := by
+    simp [L, net, θ, spec.localField_spec]
+  have hdiff :
+      spec.E p sPos - spec.E p sNeg =
+        - (scale (R:=ℝ) (U:=U) (σ:=σ) (NN:=NN) (f:=fid)) * L := by
+    simpa [sPos, sNeg, hlocal] using hflip
+  set κ := scale (R:=ℝ) (U:=U) (σ:=σ) (NN:=NN) (f:=fid)
+  have hκpos : 0 < κ := by
+    have hmo := TwoStateNeuralNetwork.m_order (NN:=NN)
+    have : 0 < (NN.m (TwoStateNeuralNetwork.σ_pos (NN:=NN))
+              - NN.m (TwoStateNeuralNetwork.σ_neg (NN:=NN))) := sub_pos.mpr hmo
+    simpa [κ, scale, fid, RingHom.id_apply]
+  have hκ : 0 ≤ κ := hκpos.le
+  have hOrder :=
+    energy_order_from_flip_id
+      (NN:=NN) (spec:=spec) (p:=p) (κ:=κ) (L:=L)
+      (sPos:=sPos) (sNeg:=sNeg) hdiff hκ
+  have hup := TwoState.Up_eq_updPos_or_updNeg (NN:=NN) p s u
+  by_cases hθle : θ ≤ net
+  · have hUpPos : s.Up p u = sPos := by
+      simpa [net, θ, hθle] using hup
+    cases hcur with
+    | inl hPos =>
+        have hs : sPos = s :=
+          TwoState.updPos_eq_self_of_act_pos (NN:=NN) s u hPos
+        have htriv : spec.E p sPos ≤ spec.E p sPos := le_rfl
+        simp [hUpPos, hs]
+    | inr hNeg =>
+        have hs : sNeg = s :=
+          TwoState.updNeg_eq_self_of_act_neg (NN:=NN) s u hNeg
+        have hL : 0 ≤ L := by
+          have : θ ≤ net := hθle
+          simpa [L] using sub_nonneg.mpr this
+        have hLE : spec.E p sPos ≤ spec.E p sNeg := hOrder.left hL
+        simp [hUpPos, hs]
+        aesop
+  · have hLt : net < θ := lt_of_not_ge hθle
+    have hLle : L ≤ 0 := (sub_lt_zero.mpr hLt).le
+    have hUpNeg : s.Up p u = sNeg := by
+      have hnot : ¬ θ ≤ net := hθle
+      simpa [net, θ, hnot] using hup
+    cases hcur with
+    | inl hPos =>
+        have hs : sPos = s :=
+          TwoState.updPos_eq_self_of_act_pos (NN:=NN) s u hPos
+        have hLE : spec.E p sNeg ≤ spec.E p sPos := hOrder.right hLle
+        simp [hUpNeg, hs]
+        aesop
+    | inr hNeg =>
+        have hs : sNeg = s :=
+          TwoState.updNeg_eq_self_of_act_neg (NN:=NN) s u hNeg
+        have htriv : spec.E p sNeg ≤ spec.E p sNeg := le_rfl
+        simp [hUpNeg, hs]
+
+/-- Restated helper with identical conclusion (wrapper). -/
+lemma energy_is_lyapunov_at_site'''
+    {U σ} [Fintype U] [DecidableEq U]
+    {NN : NeuralNetwork ℝ U σ} [TwoStateNeuralNetwork NN]
+    (spec : EnergySpec' (R:=ℝ) (NN:=NN))
+    (p : Params NN) (s : NN.State) (u : U)
+    (hcur : s.act u = TwoStateNeuralNetwork.σ_pos (NN:=NN) ∨
+            s.act u = TwoStateNeuralNetwork.σ_neg (NN:=NN)) :
+    spec.E p (NeuralNetwork.State.Up s p u) ≤ spec.E p s :=
+  energy_is_lyapunov_at_site (NN:=NN) (spec:=spec) p s u hcur
+
+end EnergySpec'
 end TwoState
