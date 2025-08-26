@@ -34,15 +34,15 @@ class Author:
 
 
 AUTHORS: list[Author] = [
-    Author(
-        name="Joseph Tooby-Smith",
-        github="jstoobysmith",
-        aliases={"jstoobysmith"},
-    ),
-    Author(
-        name="Pietro Monticone",
-        github="pitmonticone",
-    ),
+#    Author(
+#        name="FirstName1 LastName1",
+#        github="githubusername1",
+#        aliases={"githubusername1'"},
+#    ),
+#    Author(
+#        name="FirstName2 LastName2",
+#        github="githubusername2",
+#    ),
 ]
 
 
