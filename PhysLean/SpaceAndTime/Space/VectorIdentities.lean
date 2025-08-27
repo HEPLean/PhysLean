@@ -243,6 +243,35 @@ lemma grad_eq_gradiant {d} (f : Space d → ℝ) :
   rw [inner_self_eq_zero, sub_eq_zero] at h2
   rw [h2]
 
+/-- The gradient in the direction of the space position. -/
+lemma grad_inner_space_unit_vector {d} (x : Space d) (f : Space d → ℝ) (hd : Differentiable ℝ f) :
+    ⟪∇ f x, ‖x‖⁻¹ • x⟫_ℝ = _root_.deriv (fun r => f (r • ‖x‖⁻¹ • x)) ‖x‖ := by
+  by_cases hx : x = 0
+  · subst hx
+    simp
+  symm
+  calc _
+    _ = fderiv ℝ (f ∘ (fun r => r • ‖x‖⁻¹ • x)) ‖x‖ 1 := by rfl
+    _ =  (fderiv ℝ f (‖x‖ • ‖x‖⁻¹ • x)) (_root_.deriv (fun r => r • ‖x‖⁻¹ • x) ‖x‖) := by
+      rw [fderiv_comp _ (by fun_prop) (by fun_prop)]
+      simp
+    _ = (fderiv ℝ f x) (_root_.deriv (fun r => r • ‖x‖⁻¹ • x) ‖x‖) := by
+      have hx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
+      field_simp [smul_smul]
+  rw [grad_inner_eq f x (‖x‖⁻¹ • x)]
+  congr
+  rw [deriv_smul_const (by fun_prop)]
+  simp
+
+lemma grad_inner_space {d} (x : Space d) (f : Space d → ℝ) (hd : Differentiable ℝ f) :
+    ⟪∇ f x, x⟫_ℝ = ‖x‖ * _root_.deriv (fun r => f (r • ‖x‖⁻¹ • x)) ‖x‖ := by
+  rw [← grad_inner_space_unit_vector _ _ hd, inner_smul_right]
+  by_cases hx : x = 0
+  · subst hx
+    simp
+  have hx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
+  field_simp
+
 /-!
 
 ## Vector calculus identities
