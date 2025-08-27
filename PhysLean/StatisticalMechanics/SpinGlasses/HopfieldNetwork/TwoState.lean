@@ -1446,9 +1446,7 @@ lemma updPos_eq_self_of_act_pos
   · subst hv; simp [updPos, Function.update, h]
   · simp [updPos, Function.update, hv]
 
-/-- Helper: if the current activation at `u` is already `σ_neg`, `updNeg` is identity.
-
-(Version with fully explicit implicit parameters to avoid universe inference issues.) -/
+/-- Helper: if the current activation at `u` is already `σ_neg`, `updNeg` is identity. -/
 lemma updNeg_eq_self_of_act_neg
     {R U σ} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
     [Fintype U] [DecidableEq U]
@@ -1492,8 +1490,7 @@ lemma Up_eq_updPos_or_updNeg
         simpa [NeuralNetwork.State.net] using hpos
       simp [updPos, Function.update, this, hθle]
       aesop
-    ·
-      have hlt : net < θ := lt_of_not_ge hθle
+    · have hlt : net < θ := lt_of_not_ge hθle
       have hneg :=
         TwoStateNeuralNetwork.h_fact_neg (NN:=NN) v (s.act v) net (p.θ v) hlt
       have : NN.fact v (s.act v)
@@ -1502,8 +1499,7 @@ lemma Up_eq_updPos_or_updNeg
         simpa [NeuralNetwork.State.net] using hneg
       simp [updNeg, Function.update, this, hθle]
       aesop
-  ·
-    unfold NeuralNetwork.State.Up
+  · unfold NeuralNetwork.State.Up
     simp_rw [hv, updPos, updNeg]; simp [Function.update]
     aesop
 end TwoState
@@ -1545,7 +1541,6 @@ variable {U : Type} [Fintype U] [DecidableEq U] [Nonempty U]
 
 -- Note: The following lemmas are specialized for `SymmetricBinary ℝ U`
 -- to simplify the proof development by avoiding universe polymorphism issues.
--- The original polymorphic versions can be restored later from this template.
 
 lemma updPos_eq_self_of_act_pos_binary
     (s : (SymmetricBinary ℝ U).State) (u : U)
@@ -1592,16 +1587,13 @@ lemma energy_order_from_flip_id_binary
   constructor
   · intro hL
     have hκL : 0 ≤ κ * L := mul_nonneg hκ hL
-    -- Convert desired inequality to `sub ≤ 0`.
     have hsub : spec.E p sPos - spec.E p sNeg ≤ 0 := by
       rw [hdiff]; aesop
     exact sub_nonpos.mp hsub
   · intro hL
     have hκL : κ * L ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hκ hL
-    -- Derive the reversed difference.
     have hrev : spec.E p sNeg - spec.E p sPos = κ * L := by
       have := congrArg Neg.neg hdiff
-      -- -(E sPos - E sNeg) = κ * L
       simpa [neg_sub, neg_mul, neg_neg] using this
     have hsub : spec.E p sNeg - spec.E p sPos ≤ 0 := by
       rw [hrev]; exact hκL
@@ -1613,7 +1605,6 @@ lemma energy_is_lyapunov_at_site_binary
     (p : Params (SymmetricBinary ℝ U)) (s : (SymmetricBinary ℝ U).State) (u : U)
     (hcur : s.act u = 1 ∨ s.act u = -1) :
     spec.E p (s.Up p u) ≤ spec.E p s := by
-  -- Shorthand states and values
   set sPos := updPos (NN:=SymmetricBinary ℝ U) s u
   set sNeg := updNeg (NN:=SymmetricBinary ℝ U) s u
   set net := s.net p u
@@ -1640,11 +1631,10 @@ lemma energy_is_lyapunov_at_site_binary
     simp [net, θ, hθle, sPos, sNeg] at hUp_cases_eval
     rw [hUp_cases_eval]
     cases hcur with
-    | inl h_is_pos => -- s is already sPos
+    | inl h_is_pos =>
       rw [updPos_eq_self_of_act_pos_binary s u h_is_pos]
-    | inr h_is_neg => -- s = sNeg, need E(sPos) ≤ E(sNeg)
+    | inr h_is_neg =>
       have hL_nonneg : 0 ≤ L := by simpa [L] using sub_nonneg.mpr hθle
-      -- Rewrite only the right-hand occurrence of s using hs
       have hs : s = sNeg := (updNeg_eq_self_of_act_neg_binary s u h_is_neg).symm
       have hLE : spec.E p sPos ≤ spec.E p sNeg := hOrder.left hL_nonneg
       simp_rw [hs]
@@ -1655,14 +1645,14 @@ lemma energy_is_lyapunov_at_site_binary
     simp [net, θ, hθle, sPos, sNeg] at hUp_cases_eval
     rw [hUp_cases_eval]
     cases hcur with
-    | inl h_is_pos => -- s = sPos, need E(sNeg) ≤ E(sPos)
+    | inl h_is_pos =>
       have hL_nonpos : L ≤ 0 := by simpa [L] using (lt_of_not_ge hθle).le
       have hs : s = sPos := (updPos_eq_self_of_act_pos_binary s u h_is_pos).symm
       have hLE : spec.E p sNeg ≤ spec.E p sPos := hOrder.2 hL_nonpos
       simp_rw [hs]
       exact
         le_of_eq_of_le (congrArg (spec.E p) (congrFun (congrArg updNeg (id (Eq.symm hs))) u)) hLE
-    | inr h_is_neg => -- s already sNeg
+    | inr h_is_neg =>
       rw [updNeg_eq_self_of_act_neg_binary s u h_is_neg]
 
 end ConcreteLyapunov
