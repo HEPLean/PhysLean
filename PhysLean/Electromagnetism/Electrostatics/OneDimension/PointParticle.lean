@@ -74,7 +74,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
     /- `⟪E, η⟫ 0 = ⟪- ∇ (- q/(2 * ε) |x|), η⟫ 0`-/
     _ = - Space.gradD (electricPotential q ε) η 0 := by rw [electricField]; rfl
     /- By the definition of the gradiant on distributions
-      `-⟪∇ (- q/(2 * ε) |x|), η⟫ 0 =  - ⟪(-q/(2 * ε) |x|), -dη/dx⟫`
+      `-⟪∇ (- q/(2 * ε) |x|), η⟫ 0 = - ⟪(-q/(2 * ε) |x|), -dη/dx⟫`
       which is equal to `- ⟪(q/(2 * ε) |x|), dη/dx⟫`.
       By definition of `(q/(2 * ε) |x|)` as a distribution this is equal to
       `- ∫ x, dη/dx • (q/(2 * ε) |x|)`.
@@ -114,10 +114,9 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       apply bounded_integrable
       · exact ⟨0, 1, 1, by simp⟩
       · fun_prop
-     /- In the first of these integrals `|x|=x` whilst in the second `|x| = -x` giving
+    /- In the first of these integrals `|x|=x` whilst in the second `|x| = -x` giving
       us
-      `- q/(2 * ε) ∫_0^(∞) x, dη/dx • x - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • (-x)`
-    -/
+      `- q/(2 * ε) ∫_0^(∞) x, dη/dx • x - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • (-x)` -/
     _ = - (q/(2 * ε)) * (∫ x in s, fderiv ℝ η x (basis 0) • x 0) +
         - (q/(2 * ε)) * (∫ x in sᶜ, fderiv ℝ η x (basis 0) • (- x 0)) := by
       congr 2
@@ -216,9 +215,9 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
           mul_one, neg_add_cancel_right]
         · exact SchwartzMap.differentiableAt _
         · fun_prop
-    /- By definition of `powOneMul` we rewrite `η • x` using  `powOneMul`. Symatically we now have
-     `- q/(2 * ε) ∫_0^(∞) x, (d(η • x)/dx - η x) - q/(2 * ε) ∫_(-∞)^0 x, (d(- (η • x)))/dx + η x)`
-     things are just written in different ways. -/
+    /- By definition of `powOneMul` we rewrite `η • x` using `powOneMul`. Symatically we now have
+      `- q/(2 * ε) ∫_0^(∞) x, (d(η • x)/dx - η x) - q/(2 * ε) ∫_(-∞)^0 x, (d(- (η • x)))/dx + η x)`
+      things are just written in different ways. -/
     _ = - (q/(2 * ε)) * (∫ x in Set.Ioi (0 : ℝ),
         deriv (powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) x
         - η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
@@ -238,8 +237,8 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
         simp [powOneMul_apply]
         rw [mul_comm]
     /- We seperate the integrals to get
-     `- q/(2 * ε) (∫_0^(∞) x, d(η • x)/dx - ∫_0^(∞) x, η x) `
-     `- q/(2 * ε)  (∫_(-∞)^0 x, d(- (η • x)))/dx + ∫_(-∞)^0 x, η x)`. -/
+      `- q/(2 * ε) (∫_0^(∞) x, d(η • x)/dx - ∫_0^(∞) x, η x) `
+      `- q/(2 * ε) (∫_(-∞)^0 x, d(- (η • x)))/dx + ∫_(-∞)^0 x, η x)`. -/
     _ = - (q/(2 * ε)) * ((∫ x in Set.Ioi (0 : ℝ),
         deriv (powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) x)
         - ∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
@@ -265,8 +264,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       which rewrites `∫_0^(∞) x, d(η • x)/dx = 0 - (η 0 • 0)`
       and `∫_(-∞)^0 x, d(- (η • x)))/dx = (- η 0 • 0) - 0`. This gives us
       `- q/(2 * ε) ((0 - (η 0 • 0))- ∫_0^(∞) x, η x)`
-     `- q/(2 * ε)  (( (- η 0 • 0) - 0)+ ∫_(-∞)^0 x, η x)`.
-       -/
+      `- q/(2 * ε) (((- η 0 • 0) - 0)+ ∫_(-∞)^0 x, η x)`. -/
     _ = - (q/(2 * ε)) * ((0 -
         (powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) 0)
         - ∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
@@ -305,7 +303,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
           exact atBot_le_cocompact
     /- We simplify the `(η 0 • 0)` and `(- η 0 • 0)` terms to be `0`. Giving us
     `- q/(2 * ε) ((0 - 0)- ∫_0^(∞) x, η x)`
-     `- q/(2 * ε)  ((0 - 0)+ ∫_(-∞)^0 x, η x)`. -/
+    `- q/(2 * ε) ((0 - 0)+ ∫_(-∞)^0 x, η x)`. -/
     _ = - (q/(2 * ε)) * ((0 - 0)
         - ∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
         - (q/(2 * ε)) * ((0 - 0)
@@ -315,7 +313,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       · change - ((powOneMul ℝ) ((compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm) η)) 0 = 0
         simp [powOneMul_apply]
     /- Simplifying further gives
-    `q/(2 * ε) ∫_0^(∞) x, η x  + - q/(2 * ε)  ∫_(-∞)^0 x, η x)`. -/
+    `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε) ∫_(-∞)^0 x, η x)`. -/
     _ = (q/(2 * ε)) *
         (∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
         - (q/(2 * ε)) *
@@ -323,7 +321,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       simp
     /- We now turn back to integrals over `Space 1` instead of integrals over `x`.
     Schematically the integral remains the same.
-    `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε)  ∫_(-∞)^0 x, η x)`. -/
+    `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε) ∫_(-∞)^0 x, η x)`. -/
     _ = (q/(2 * ε)) * (∫ x in s, η x) + - (q/(2 * ε)) * (∫ x in sᶜ, η x) := by
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
         (oneEquiv_symm_measurableEmbedding)]
@@ -333,8 +331,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       ext x
       simp [oneEquiv_symm_apply, s]
     /- We rewrite the second integral `∫_(-∞)^0 = ∫_(-∞)^∞ - ∫_0^∞` to give
-
-    `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε)  (∫_(-∞)^∞ x, η x - ∫_0^∞ x, η x)`. -/
+    `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε) (∫_(-∞)^∞ x, η x - ∫_0^∞ x, η x)`. -/
     _ = (q/(2 * ε)) * (∫ x in s, η x) + - (q/(2 * ε)) * ((∫ x, η x) - ∫ x in s, η x) := by
       congr 2
       rw [← integral_add_compl₀ hs]
