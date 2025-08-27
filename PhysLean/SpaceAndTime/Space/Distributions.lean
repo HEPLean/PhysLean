@@ -3,11 +3,13 @@ Copyright (c) 2025 Zhi Kai Pong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong
 -/
-import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.Mathematics.Distribution.Basic
+import PhysLean.Mathematics.Distribution.OfBounded
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.Gradient.Basic
+import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 
 # Distributions on space
@@ -214,6 +216,125 @@ lemma divD_constD {d} (m : EuclideanSpace ℝ (Fin d)) :
     divD (constD d m) = 0 := by
   ext η
   simp [divD, constD]
+
+open MeasureTheory
+open SchwartzMap
+
+/-- The divergence of a distribution from a bounded function. -/
+lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
+    {hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n}
+    {hae: AEStronglyMeasurable (fun x => f x) volume} (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
+    divD (Distribution.ofBounded f hf hae) η =
+    - ∫ x : Space dm1.succ, ⟪f x, Space.grad η x⟫_ℝ := by
+  rw [divD_apply_eq_sum_fderivD]
+  conv_rhs =>
+    enter [1, 2, x]
+    rw [grad_eq_sum, inner_sum]
+  conv_lhs =>
+    enter [2, i]
+    rw [fderivD_apply, ofBounded_apply]
+  /- The following lemma could probably be moved out of this result. -/
+  have integrable_lemma (i j : Fin (dm1 + 1)) :
+      Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
+    simp only [PiLp.smul_apply]
+    apply bounded_integrable
+    · obtain ⟨c1, c2, n, hc1, hc2, h⟩ := hf
+      use c1, c2, n
+      simp_all
+      intro x
+      trans ‖f x‖
+      · rw [@PiLp.norm_eq_of_L2]
+        refine Real.abs_le_sqrt ?_
+        trans ∑ i ∈ {j}, ‖(f x) i‖ ^ 2
+        · simp
+        apply Finset.sum_le_univ_sum_of_nonneg
+        intro y
+        exact sq_nonneg ‖f x y‖
+      exact h x
+    · fun_prop
+  rw [MeasureTheory.integral_finset_sum]
+  · simp
+    congr
+    funext i
+    rw [MeasureTheory.eval_integral_piLp]
+    · congr
+      funext x
+      simp [inner_smul_right]
+      left
+      rw [deriv_eq_fderiv_basis]
+      rfl
+    · intro j
+      exact integrable_lemma i j
+  · intro i hi
+    simp only [Nat.succ_eq_add_one, inner_smul_right, inner_basis]
+    convert integrable_lemma i i
+    rename_i x
+    simp
+    left
+    rw [deriv_eq_fderiv_basis]
+    rfl
+
+/- The quantity `⟪f x, Space.grad η x⟫_ℝ` is integrable for `f` bounded
+  and `η` a Schwartz map. -/
+lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
+    {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
+    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n)
+    (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
+    Integrable (fun x => ⟪f x, Space.grad η x⟫_ℝ) volume := by
+  conv =>
+    enter [1, x]
+    rw [grad_eq_sum, inner_sum]
+  apply MeasureTheory.integrable_finset_sum
+  intro i _
+  simp [inner_smul_right]
+  have integrable_lemma (i j : Fin (dm1 + 1)) :
+      Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
+    simp only [PiLp.smul_apply]
+    apply bounded_integrable
+    · obtain ⟨c1, c2, n, hc1, hc2, h⟩ := hf
+      use c1, c2, n
+      simp_all
+      intro x
+      trans ‖f x‖
+      · rw [@PiLp.norm_eq_of_L2]
+        refine Real.abs_le_sqrt ?_
+        trans ∑ i ∈ {j}, ‖(f x) i‖ ^ 2
+        · simp
+        apply Finset.sum_le_univ_sum_of_nonneg
+        intro y
+        exact sq_nonneg ‖f x y‖
+      exact h x
+    · fun_prop
+  convert integrable_lemma i i
+  rename_i x
+  simp
+  left
+  rw [deriv_eq_fderiv_basis]
+  rfl
+
+lemma integrable_ofBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
+    {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
+    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n)
+    (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
+    Integrable ((fun x => ⟪f x.1, Space.grad η x.1⟫_ℝ)
+      ∘ (homeomorphUnitSphereProd (Space dm1.succ)).symm)
+      ((volume (α := Space dm1.succ)).toSphere.prod
+      (Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin dm1.succ)) - 1))) := by
+  have h1 : Integrable ((fun x => ⟪f x.1, Space.grad η x.1⟫_ℝ))
+      (.comap (Subtype.val (p := fun x => x ∈ ({0}ᶜ : Set _))) volume) := by
+    change  Integrable ((fun x => ⟪f x, Space.grad η x⟫_ℝ) ∘ Subtype.val)
+      (.comap (Subtype.val (p := fun x => x ∈ ({0}ᶜ : Set _))) volume)
+    rw [← MeasureTheory.integrableOn_iff_comap_subtypeVal]
+    apply Integrable.integrableOn
+    exact integrable_ofBounded_inner_grad_schwartzMap hf hae η
+    simp
+  have he := (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
+    (volume (α := EuclideanSpace ℝ (Fin dm1.succ))))
+  rw [← he.integrable_comp_emb]
+  convert h1
+  simp
+  exact Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ)))
+
 
 /-!
 
