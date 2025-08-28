@@ -224,6 +224,7 @@ import PhysLean.QuantumMechanics.OneDimension.Operators.Momentum
 import PhysLean.QuantumMechanics.OneDimension.Operators.Parity
 import PhysLean.QuantumMechanics.OneDimension.Operators.Position
 import PhysLean.QuantumMechanics.OneDimension.Operators.Unbounded
+import PhysLean.QuantumMechanics.OneDimension.TestQM.Basic
 import PhysLean.QuantumMechanics.OneDimension.ReflectionlessPotential.Basic
 import PhysLean.QuantumMechanics.PlanckConstant
 import PhysLean.Relativity.Bispinors.Basic
