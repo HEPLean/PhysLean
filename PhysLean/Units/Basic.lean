@@ -429,6 +429,7 @@ open CarriesDimension
 class UnitDependent (M : Type) where
   changeUnits : UnitChoices → M → UnitChoices → M
   changeUnits_trans : ∀ u1 u2 u3 m, changeUnits u2 (changeUnits u1 m u2) u3 = changeUnits u1 m u3
+  changeUnits_trans' : ∀ u1 u2 u3 m, changeUnits u1 (changeUnits u2 m u3) u2 = changeUnits u1 m u3
   changeUnits_id : ∀ u m, changeUnits u m u = m
 
 class LinearUnitDependent (M : Type) [AddCommMonoid M] [Module ℝ M] extends
@@ -442,26 +443,13 @@ class ContinuousLinearUnitDependent (M : Type) [AddCommMonoid M] [Module ℝ M]
     [TopologicalSpace M] extends LinearUnitDependent M where
   changeUnits_cont : ∀ u1 u2, Continuous (fun m => changeUnits u1 m u2)
 
-/-!
-
-### IsDimensionallyInvariant
-
--/
-
-/-- A term of type `M` carrying an instance of `UnitDependent M` is said to be
-  dimensionally invariant if under a change of units it remains the same.
-
-  This corresponds to the statement that term is dimensionally correct.
-
--/
-def IsDimensionallyInvariant {M : Type} [UnitDependent M] (m : M) : Prop :=
-  ∀ u1 u2 : UnitChoices, UnitDependent.changeUnits u1 m u2 = m
 
 /-!
 
 ## Basic properties of changeUnits
 
 -/
+
 
 
 @[simp]
@@ -525,6 +513,21 @@ def ContinuousLinearUnitDependent.changeUnitsContLinearEquiv {M : Type} [AddComm
     (ContinuousLinearUnitDependent.changeUnits_cont u1 u2)
     (ContinuousLinearUnitDependent.changeUnits_cont u2 u1)
 
+@[simp]
+lemma ContinuousLinearUnitDependent.changeUnitsContLinearEquiv_apply
+    {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+    [ContinuousLinearUnitDependent M]
+    (u1 u2 : UnitChoices) (m : M) :
+    (ContinuousLinearUnitDependent.changeUnitsContLinearEquiv u1 u2) m =
+      UnitDependent.changeUnits u1 m u2 := rfl
+
+@[simp]
+lemma ContinuousLinearUnitDependent.changeUnitsContLinearEquiv_symm_apply
+    {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+    [ContinuousLinearUnitDependent M]
+    (u1 u2 : UnitChoices) (m : M) :
+    (ContinuousLinearUnitDependent.changeUnitsContLinearEquiv u1 u2).symm m =
+      UnitDependent.changeUnits u2 m u1 := rfl
 /-!
 
 ### Instances of the type classes
@@ -542,6 +545,8 @@ noncomputable instance {M1 : Type} [CarriesDimension M1] : UnitDependent M1 wher
   changeUnits_trans u1 u2 u3 m := by
     simp [toDimensionful]
     rw [smul_smul, mul_comm, UnitChoices.dimScale_transitive]
+  changeUnits_trans' u1 u2 u3 m := by
+    simp [toDimensionful, smul_smul, UnitChoices.dimScale_transitive]
   changeUnits_id u m := by
     simp [toDimensionful, UnitChoices.dimScale_self]
 
@@ -576,6 +581,9 @@ noncomputable instance {M1 M2 : Type} [UnitDependent M2] :
   changeUnits_trans u1 u2 u3 f := by
     funext m1
     exact changeUnits_trans u1 u2 u3 (f m1)
+  changeUnits_trans' u1 u2 u3 f := by
+    funext m1
+    exact changeUnits_trans' u1 u2 u3 (f m1)
   changeUnits_id u f := by
     funext m1
     exact changeUnits_id u (f m1)
@@ -591,6 +599,9 @@ noncomputable instance {M1 M2 : Type} [AddCommMonoid M1] [Module ℝ M1]
   changeUnits_trans u1 u2 u3 f := by
     ext m1
     exact changeUnits_trans u1 u2 u3 (f m1)
+  changeUnits_trans' u1 u2 u3 f := by
+    ext m1
+    exact changeUnits_trans' u1 u2 u3 (f m1)
   changeUnits_id u f := by
     ext m1
     exact changeUnits_id u (f m1)
@@ -614,6 +625,9 @@ noncomputable instance {M1 M2 : Type} [AddCommGroup M1] [Module ℝ M1]
   changeUnits_trans u1 u2 u3 f := by
     ext m1
     exact changeUnits_trans u1 u2 u3 (f m1)
+  changeUnits_trans' u1 u2 u3 f := by
+    ext m1
+    exact changeUnits_trans' u1 u2 u3 (f m1)
   changeUnits_id u f := by
     ext m1
     exact changeUnits_id u (f m1)
@@ -628,19 +642,117 @@ noncomputable instance {M1 M2 : Type} [UnitDependent M1] :
   changeUnits_trans u1 u2 u3 f := by
     funext m1
     simp [changeUnits_trans]
+  changeUnits_trans' u1 u2 u3 f := by
+    funext m1
+    simp [changeUnits_trans']
   changeUnits_id u f := by
     funext m1
     simp [changeUnits_id]
 
-noncomputable instance {M1 M2 : Type} [UnitDependent M1] [UnitDependent M2] :
+noncomputable instance instUnitDependentTwoSided
+    {M1 M2 : Type} [UnitDependent M1] [UnitDependent M2] :
     UnitDependent (M1 → M2) where
   changeUnits u1 f u2 := fun m1 => changeUnits u1 (f (changeUnits u2 m1 u1)) u2
   changeUnits_trans u1 u2 u3 f := by
     funext m1
     simp [changeUnits_trans]
+  changeUnits_trans' u1 u2 u3 f := by
+    funext m1
+    simp [changeUnits_trans']
   changeUnits_id u f := by
     funext m1
     simp [changeUnits_id]
+
+open LinearUnitDependent  ContinuousLinearUnitDependent in
+noncomputable instance instContinuousLinearUnitDependentMap
+    {M1 M2 : Type} [AddCommGroup M1] [Module ℝ M1]
+    [TopologicalSpace M1] [ContinuousLinearUnitDependent M1]
+    [AddCommGroup M2]  [Module ℝ M2] [TopologicalSpace M2] [ContinuousConstSMul ℝ M2]
+    [IsTopologicalAddGroup M2]
+    [ContinuousLinearUnitDependent M2] :
+    ContinuousLinearUnitDependent (M1 →L[ℝ] M2) where
+  changeUnits u1 f u2 :=
+    ContinuousLinearEquiv.arrowCongr (changeUnitsContLinearEquiv u1 u2)
+      (changeUnitsContLinearEquiv u1 u2) f
+  changeUnits_trans u1 u2 u3 f := by
+    ext m1
+    simp [changeUnits_trans]
+  changeUnits_trans' u1 u2 u3 f := by
+    ext m1
+    simp [changeUnits_trans']
+  changeUnits_id u f := by
+    ext m1
+    simp [changeUnits_id]
+  changeUnits_add u1 u2 f1 f2 := by simp
+  changeUnits_smul u1 u2 r f := by simp
+  changeUnits_cont u1 u2 := ContinuousLinearEquiv.continuous
+      ((changeUnitsContLinearEquiv u1 u2).arrowCongr (changeUnitsContLinearEquiv u1 u2))
+
+/-!
+
+### IsDimensionallyInvariant
+
+-/
+
+/-- A term of type `M` carrying an instance of `UnitDependent M` is said to be
+  dimensionally invariant if under a change of units it remains the same.
+
+  This corresponds to the statement that term is dimensionally correct.
+
+-/
+def IsDimensionallyInvariant {M : Type} [UnitDependent M] (m : M) : Prop :=
+  ∀ u1 u2 : UnitChoices, UnitDependent.changeUnits u1 m u2 = m
+
+lemma isDimensionallyInvariant_iff {M : Type} [UnitDependent M] (m : M) :
+    IsDimensionallyInvariant m ↔ ∀ u1 u2 : UnitChoices,
+      UnitDependent.changeUnits u1 m u2 = m := by rfl
+
+open ContinuousLinearUnitDependent in
+/-- If a function is dimensionally valid then so is it's derivative. -/
+lemma fderiv_isDimensionallyInvariant  {M1 M2 : Type} [NormedAddCommGroup M1] [NormedSpace ℝ M1]
+    [ContinuousConstSMul ℝ M1] [ModuleCarriesDimension M1]
+    [NormedAddCommGroup M2]  [NormedSpace ℝ M2]
+    [SMulCommClass ℝ ℝ M2]  [ContinuousConstSMul ℝ M2]
+    [IsTopologicalAddGroup M2]
+    [ModuleCarriesDimension M2]
+    (f : M1 → M2) (hf : IsDimensionallyInvariant f) (f_diff : Differentiable ℝ f) :
+    IsDimensionallyInvariant (fderiv ℝ f) := by
+  rw [isDimensionallyInvariant_iff]
+  intro u1 u2
+  replace hf := hf u2 u1
+  ext m m'
+  simp [instUnitDependentTwoSided, instContinuousLinearUnitDependentMap]
+  change (toDimensionful u1 ((fderiv ℝ f ((toDimensionful u2 m).1 u1))
+      ((toDimensionful u2 m').1 u1))).1 u2 = (fderiv ℝ f m) m'
+  simp [toDimensionful_apply_apply]
+  conv_lhs =>
+    rw [← hf]
+    simp [instUnitDependentTwoSided]
+    enter [2, 2, 1, 2, mx]
+    change (toDimensionful u2 (f ((toDimensionful u1 mx).1 u2))).1 u1
+    simp [toDimensionful_apply_apply]
+    change (u2.dimScale u1 (d M2)).1 • f ((u1.dimScale u2 (d M1)).1 • mx)
+  have h1 :  (fderiv ℝ (fun mx => (u2.dimScale u1 (d M2)).1 • f
+      ((u1.dimScale u2 (d M1)).1 • mx)) ((u2.dimScale u1 (d M1)).1 • m))
+     = u2.dimScale u1 (d M2) • u1.dimScale u2 (d M1) • (fderiv ℝ f m) := by
+    change (fderiv ℝ ((u2.dimScale u1 (d M2)).1 • fun mx =>  f
+      ((u1.dimScale u2 (d M1)).1 • mx)) ((u2.dimScale u1 (d M1)).1 • m))  = _
+    rw [fderiv_const_smul (by fun_prop)]
+    rw [fderiv_comp_smul]
+    simp
+    congr
+    rw [smul_smul]
+    change ((u1.dimScale u2 (d M1)) * (u2.dimScale u1 (d M1))) • m = m
+    simp
+  erw [h1]
+  simp [smul_smul]
+  trans (1 : ℝ≥0) • (fderiv ℝ f m) m'
+  · congr
+    trans  (u1.dimScale u2 (d M2) * u2.dimScale u1 (d M2) )
+      * (u2.dimScale u1 (d M1) *  u1.dimScale u2 (d M1))
+    · ring
+    simp
+  simp
 
 /-!
 
