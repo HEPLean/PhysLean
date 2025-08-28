@@ -70,7 +70,7 @@ lemma integral_isDimensionallyInvariant (d : Dimension) :
   intro u1 u2
   funext ⟨μ, hμ⟩ ⟨f, hf⟩
   /- We have to prove that
-   `changeUnits u1 (fun μ f ↦ ∫ x, f x ∂μ) u2 ⟨μ, hμ⟩ ⟨f, hf⟩ =(∫ x, f x ∂μ` ) -/
+   `changeUnits u1 (fun μ f ↦ ∫ x, f x ∂μ) u2 ⟨μ, hμ⟩ ⟨f, hf⟩ = ∫ x, f x ∂μ` -/
   calc _
     /- By definition the LHS is equal to
     `changeUnits u1 (∫ x, (changeUnits u2 f u1) x ∂(changeUnits u2 μ u1)) u2`
