@@ -345,3 +345,4 @@ import PhysLean.Units.Momentum.Basic
 import PhysLean.Units.Pressure
 import PhysLean.Units.Speed
 import PhysLean.Units.Velocity
+import PhysLean.Units.WithDim

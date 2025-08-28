@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Units.Basic
+import PhysLean.Units.WithDim
 /-!
 
 # Area
@@ -16,7 +17,7 @@ open Dimension
 open NNReal
 
 /-- The type of areas in the absence of a choice of unit. -/
-abbrev DimArea : Type := Dimensionful (L𝓭 * L𝓭) ℝ≥0
+abbrev DimArea : Type := Dimensionful (WithDim (L𝓭 * L𝓭) ℝ≥0)
 
 namespace DimArea
 
@@ -28,28 +29,28 @@ open UnitChoices
 
 -/
 
-open Dimensionful
+open Dimensionful CarriesDimension
 
 /-- The dimensional area corresponding to 1 square meter. -/
-noncomputable def squareMeter : DimArea := ofUnit _ 1 SI
+noncomputable def squareMeter : DimArea := toDimensionful SI ⟨1⟩
 
 /-- The dimensional area corresponding to 1 square foot. -/
-noncomputable def squareFoot : DimArea := ofUnit _ 1 ({SI with
-  length := LengthUnit.feet} : UnitChoices)
+noncomputable def squareFoot : DimArea := toDimensionful ({SI with
+  length := LengthUnit.feet} : UnitChoices) ⟨1⟩
 
 /-- The dimensional area corresponding to 1 square mile. -/
-noncomputable def squareMile : DimArea := ofUnit _ 1 ({SI with
-  length := LengthUnit.miles} : UnitChoices)
+noncomputable def squareMile : DimArea := toDimensionful ({SI with
+  length := LengthUnit.miles} : UnitChoices) ⟨1⟩
 
 /-- The dimensional area corresponding to 1 are (100 square meters). -/
-noncomputable def are : DimArea := ofUnit _ 100 SI
+noncomputable def are : DimArea := toDimensionful SI ⟨100⟩
 
 /-- The dimensional area corresponding to 1 hectare (10,000 square meters). -/
-noncomputable def hectare : DimArea := ofUnit _ 10000 SI
+noncomputable def hectare : DimArea := toDimensionful SI ⟨10000⟩
 
 /-- The dimensional area corresponding to 1 acre (1/640 square miles). -/
-noncomputable def acre : DimArea := ofUnit _ (1/640) ({SI with
-  length := LengthUnit.miles} : UnitChoices)
+noncomputable def acre : DimArea := toDimensionful ({SI with
+  length := LengthUnit.miles} : UnitChoices) ⟨(1/640)⟩
 
 /-!
 
@@ -58,36 +59,37 @@ noncomputable def acre : DimArea := ofUnit _ (1/640) ({SI with
 -/
 
 @[simp]
-lemma squareMeter_in_SI : squareMeter SI = 1 := by
-  simp [squareMeter]
+lemma squareMeter_in_SI : squareMeter.1 SI = ⟨1⟩ := by
+  simp [squareMeter, toDimensionful_apply_apply]
+
 
 @[simp]
-lemma squareFoot_in_SI : squareFoot SI = 0.09290304 := by
-  simp [squareFoot, dimScale, LengthUnit.feet, ofUnit_apply]
+lemma squareFoot_in_SI : squareFoot.1 SI = ⟨0.09290304⟩ := by
+  simp [squareFoot, dimScale, LengthUnit.feet, toDimensionful_apply_apply]
   ext
-  simp only [coe_rpow, coe_mk, NNReal.coe_ofScientific]
+  simp only [NNReal.coe_ofScientific]
   norm_num
 
 @[simp]
-lemma squareMile_in_SI : squareMile SI = 2589988.110336 := by
-  simp [squareMile, dimScale, LengthUnit.miles, ofUnit_apply]
+lemma squareMile_in_SI : squareMile.1 SI = ⟨2589988.110336⟩ := by
+  simp [squareMile, dimScale, LengthUnit.miles, toDimensionful_apply_apply]
   ext
-  simp only [coe_rpow, coe_mk, NNReal.coe_ofScientific]
+  simp only [NNReal.coe_ofScientific]
   norm_num
 
 @[simp]
-lemma are_in_SI : are SI = 100 := by
-  simp [are]
+lemma are_in_SI : are.1 SI = ⟨100⟩ := by
+  simp [are, toDimensionful_apply_apply]
 
 @[simp]
-lemma hectare_in_SI : hectare SI = 10000 := by
-  simp [hectare]
+lemma hectare_in_SI : hectare.1 SI = ⟨10000⟩ := by
+  simp [hectare, toDimensionful_apply_apply]
 
 @[simp]
-lemma acre_in_SI : acre SI = 4046.8564224 := by
-  simp [acre, dimScale, LengthUnit.miles, ofUnit_apply]
+lemma acre_in_SI : acre.1 SI = ⟨4046.8564224⟩ := by
+  simp [acre, dimScale, LengthUnit.miles, toDimensionful_apply_apply]
   ext
-  simp only [NNReal.coe_mul, coe_rpow, coe_mk, NNReal.coe_ofScientific]
+  simp only [NNReal.coe_ofScientific]
   norm_num
 
 /-!
@@ -98,8 +100,8 @@ lemma acre_in_SI : acre SI = 4046.8564224 := by
 
 /-- One acre is exactly `43560` square feet. -/
 lemma acre_eq_mul_squareFeet : acre = (43560 : ℝ≥0) • squareFoot := by
-  apply Dimensionful.eq_of_SI
-  simp only [acre_in_SI, Dimensionful.smul_apply, squareFoot_in_SI]
+  apply (toDimensionful SI).symm.injective
+  simp [toDimensionful]
   ext
   norm_num
 

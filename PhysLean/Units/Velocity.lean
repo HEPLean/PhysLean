@@ -12,7 +12,3 @@ in `d`-dimensional space, in an arbitrary (but given) set of units.
 
 -/
 open Dimension
-
-/-- Velocity in `d`-dimensional space in an arbitary, but given, set of units.
-  In `(3+1)d` space time this corresponds to `3`-velocity not `4`-velocity. -/
-abbrev Velocity (d : ℕ := 3) : Type := Measured (L𝓭 * T𝓭⁻¹) (Fin d → ℝ)

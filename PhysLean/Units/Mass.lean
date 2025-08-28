@@ -13,6 +13,3 @@ in an arbitrary (but given) set of units.
 -/
 open Dimension
 open NNReal
-
-/-- Mass in a given but arbitary set of units. -/
-abbrev Mass : Type := Measured M𝓭 ℝ≥0

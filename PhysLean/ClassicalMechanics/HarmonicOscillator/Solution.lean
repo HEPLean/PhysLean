@@ -78,23 +78,6 @@ lemma v₀_zeroIC : zeroIC.v₀ = 0 := rfl
 noncomputable def sol (IC : InitialConditions) : Time → Space 1 := fun t =>
   cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀
 
-unseal Rat.add Rat.mul
-open Dimension
-/-- The solution for the classical harmonic oscillator in terms of dimensionful
-  quantities. -/
-noncomputable def solDim (ω : Dimensionful T𝓭⁻¹ ℝ)
-    (x₀ : Dimensionful L𝓭 (EuclideanSpace ℝ (Fin 1)))
-    (v₀ : Dimensionful (L𝓭 * T𝓭⁻¹) (EuclideanSpace ℝ (Fin 1))) : Dimensionful T𝓭 ℝ →
-    Dimensionful L𝓭 (Space 1) :=
-  fun t =>
-    let p : Dimensionful L𝓭 _ := (sin (ω * t).valCast / ω) • v₀
-    cos (ω * t).valCast • x₀ + p
-
-/-- On restricting to a specific choice of units `solDim` is equal to `sol`. -/
-informal_lemma solDim_eq_sol where
-  deps := [``solDim, ``sol]
-  tag := "IY4AG"
-
 lemma sol_eq (IC : InitialConditions) :
     S.sol IC = fun t : Time => cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀ := rfl
 

@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Units.Velocity
 import PhysLean.Units.Mass
+import PhysLean.Units.WithDim
 /-!
 # Momentum
 
@@ -16,15 +17,4 @@ open Dimension
 
 /-- Momentum in `d`-dimensional space in an arbitary, but given, set of units.
   In `(3+1)d` space time this corresponds to `3`-momentum not `4`-momentum. -/
-abbrev Momentum (d : ℕ := 3) : Type := Measured (M𝓭 * L𝓭 * T𝓭⁻¹) (Fin d → ℝ)
-
-TODO "IO7OT" "On the type `Momentum` define the instance of a vector space."
-
-namespace Momentum
-
-unseal Rat.add Rat.mul
-
-/-- The momentum of a particle with mass `m` and velocity `v`. -/
-def ofMassAndVelocity {d} (m : Mass) (v : Velocity d) : Momentum d := m • v
-
-end Momentum
+abbrev Momentum (d : ℕ := 3) : Type := WithDim (M𝓭 * L𝓭 * T𝓭⁻¹) (Fin d → ℝ)

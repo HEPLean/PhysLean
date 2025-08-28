@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Units.Basic
+import PhysLean.Units.WithDim
 /-!
 
 # Speed
@@ -16,7 +17,7 @@ open Dimension
 open NNReal
 
 /-- The type of speeds in the absence of a choice of unit. -/
-abbrev DimSpeed : Type := Dimensionful (L𝓭 * T𝓭⁻¹) ℝ≥0
+abbrev DimSpeed : Type := Dimensionful (WithDim (L𝓭 * T𝓭⁻¹) ℝ≥0)
 
 namespace DimSpeed
 
@@ -28,20 +29,21 @@ open UnitChoices
 
 -/
 open Dimensionful
+open UnitChoices  CarriesDimension
 /-- The dimensional speed corresponding to 1 meter per second. -/
-noncomputable def oneMeterPerSecond : DimSpeed := ofUnit _ 1 SI
+noncomputable def oneMeterPerSecond : DimSpeed := toDimensionful SI ⟨1⟩
 
 /-- The dimensional speed corresponding to 1 mile per hour. -/
-noncomputable def oneMilePerHour : DimSpeed := ofUnit _ 1 ({SI with
-  length := LengthUnit.miles, time := TimeUnit.hours} : UnitChoices)
+noncomputable def oneMilePerHour : DimSpeed := toDimensionful ({SI with
+  length := LengthUnit.miles, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
 
 /-- The dimensional speed corresponding to 1 kilometer per hour. -/
-noncomputable def oneKilometerPerHour : DimSpeed := ofUnit _ 1 ({SI with
-  length := LengthUnit.kilometers, time := TimeUnit.hours} : UnitChoices)
+noncomputable def oneKilometerPerHour : DimSpeed := toDimensionful ({SI with
+  length := LengthUnit.kilometers, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
 
 /-- The dimensional speed corresponding to 1 knot, aka, one nautical mile per hour. -/
-noncomputable def oneKnot : DimSpeed := ofUnit _ 1 ({SI with
-  length := LengthUnit.nauticalMiles, time := TimeUnit.hours} : UnitChoices)
+noncomputable def oneKnot : DimSpeed := toDimensionful ({SI with
+  length := LengthUnit.nauticalMiles, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
 
 /-!
 
@@ -50,29 +52,30 @@ noncomputable def oneKnot : DimSpeed := ofUnit _ 1 ({SI with
 -/
 
 @[simp]
-lemma oneMeterPerSecond_in_SI : oneMeterPerSecond SI = 1 := by
-  simp [oneMeterPerSecond]
+lemma oneMeterPerSecond_in_SI : oneMeterPerSecond.1 SI = ⟨1⟩ := by
+  simp [oneMeterPerSecond, toDimensionful_apply_apply]
 
 @[simp]
-lemma oneMilePerHour_in_SI : oneMilePerHour SI = 0.44704 := by
-  simp [oneMilePerHour, dimScale, LengthUnit.miles, TimeUnit.hours, ofUnit_apply]
+lemma oneMilePerHour_in_SI : oneMilePerHour.1 SI = ⟨0.44704⟩ := by
+  simp [oneMilePerHour, dimScale, LengthUnit.miles, TimeUnit.hours, toDimensionful_apply_apply]
   ext
-  simp only [NNReal.coe_mul, coe_mk, coe_rpow, NNReal.coe_ofScientific]
+  simp only [NNReal.coe_ofScientific]
   norm_num
 
 @[simp]
 lemma oneKilometerPerHour_in_SI :
-    oneKilometerPerHour SI = 5/18 := by
-  simp [oneKilometerPerHour, dimScale, LengthUnit.kilometers, TimeUnit.hours, ofUnit_apply]
+    oneKilometerPerHour.1 SI = ⟨5/18⟩ := by
+  simp [oneKilometerPerHour, dimScale,
+    LengthUnit.kilometers, TimeUnit.hours, toDimensionful_apply_apply]
   ext
-  simp only [NNReal.coe_mul, coe_mk, coe_rpow]
+  simp only
   norm_num
 
 @[simp]
-lemma oneKnot_in_SI : oneKnot SI = 463/900 := by
-  simp [oneKnot, dimScale, LengthUnit.nauticalMiles, TimeUnit.hours, ofUnit_apply]
+lemma oneKnot_in_SI : oneKnot.1 SI = ⟨463/900⟩ := by
+  simp [oneKnot, dimScale, LengthUnit.nauticalMiles, TimeUnit.hours, toDimensionful_apply_apply]
   ext
-  simp only [NNReal.coe_mul, coe_mk, coe_rpow]
+  simp only
   norm_num
 
 /-!
@@ -83,59 +86,23 @@ lemma oneKnot_in_SI : oneKnot SI = 463/900 := by
 
 lemma oneKnot_eq_mul_oneKilometerPerHour :
     oneKnot = (1.852 : ℝ≥0) • oneKilometerPerHour := by
-  apply Dimensionful.eq_of_SI
-  simp [oneKnot_in_SI, oneKilometerPerHour_in_SI]
+  apply (toDimensionful SI).symm.injective
+  simp [toDimensionful]
   ext
   norm_num
 
 lemma oneKilometerPerHour_eq_mul_oneKnot:
     oneKilometerPerHour = (250/463 : ℝ≥0) • oneKnot := by
-  apply Dimensionful.eq_of_SI
-  simp [oneKilometerPerHour_in_SI]
+  apply (toDimensionful SI).symm.injective
+  simp [toDimensionful]
   ext
   norm_num
 
 lemma oneMeterPerSecond_eq_mul_oneMilePerHour :
     oneMeterPerSecond = (3125/1397 : ℝ≥0) • oneMilePerHour := by
-  apply Dimensionful.eq_of_SI
-  simp [oneMeterPerSecond_in_SI, oneMilePerHour_in_SI]
+  apply (toDimensionful SI).symm.injective
+  simp [toDimensionful]
   ext
-  norm_num
-
-/-!
-
-## Comparisons between speeds
-
--/
-/-- One kilometer per hour is slower then one knot. -/
-lemma oneKilometerPerHour_le_oneKnot : oneKilometerPerHour ≤ oneKnot := by
-  apply Dimensionful.le_nnReals_of_unitChoice SI
-  simp only [oneKilometerPerHour_in_SI, oneKnot_in_SI]
-  refine coe_le_coe.mp ?_
-  norm_num
-
-lemma oneKilometerPerHour_le_oneMilPerHour : oneKilometerPerHour ≤ oneMilePerHour := by
-  apply Dimensionful.le_nnReals_of_unitChoice SI
-  simp only [oneKilometerPerHour_in_SI, oneMilePerHour_in_SI]
-  refine coe_le_coe.mp ?_
-  norm_num
-
-lemma oneMilePerHour_le_oneKnot : oneMilePerHour ≤ oneKnot := by
-  apply Dimensionful.le_nnReals_of_unitChoice SI
-  simp only [oneMilePerHour_in_SI, oneKnot_in_SI]
-  refine coe_le_coe.mp ?_
-  norm_num
-
-lemma oneMilePerHour_le_oneMeterPerSecond : oneMilePerHour ≤ oneMeterPerSecond := by
-  apply Dimensionful.le_nnReals_of_unitChoice SI
-  simp only [oneMilePerHour_in_SI, oneMeterPerSecond_in_SI]
-  refine coe_le_coe.mp ?_
-  norm_num
-
-lemma oneMeterPerSecond_le_oneKnot : oneKnot ≤ oneMeterPerSecond := by
-  apply Dimensionful.le_nnReals_of_unitChoice SI
-  simp only [oneKnot_in_SI, oneMeterPerSecond_in_SI]
-  refine coe_le_coe.mp ?_
   norm_num
 
 end DimSpeed

@@ -245,6 +245,11 @@ lemma dimScale_mul (u1 u2 : UnitChoices) (d1 d2 : Dimension) :
     simp
 
 @[simp]
+lemma dimScale_mul_symm (u1 u2 : UnitChoices) (d : Dimension)  :
+    dimScale u1 u2 d * dimScale u2 u1 d = 1 := by
+  rw [dimScale_transitive, dimScale_self]
+
+@[simp]
 lemma dimScale_neq_zero (u1 u2 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d ≠ 0 := by
   simp [dimScale]
@@ -298,532 +303,367 @@ lemma SI_temperature : SI.temperature = TemperatureUnit.kelvin := rfl
 
 end UnitChoices
 
+
 /-!
 
-## Dimensionful
+## Types carrying dimensions
 
-Given a type `M` with a dimension `d`, a dimensionful quantity is a
-map from `UnitChoices` to `M`, which scales with the choice of unit according to `d`.
+Dimensions are assigned to types with the following type-classes
 
-See: https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units/near/530520545
+- `CarriesDimension` for a type carrying an instance of `MulAction ℝ≥0 M`
+- `ModuleCarriesDimension` for a type carrying an instance of `Module ℝ M`.
+
+The latter is need to prevent a typeclass dimond.
+
+
+-/
+
+class CarriesDimension (M : Type) extends MulAction ℝ≥0 M where
+  d : Dimension
+
+-- prevents a typeclass diamond
+class ModuleCarriesDimension (M : Type) [AddCommMonoid M] [Module ℝ M] where
+  d : Dimension
+
+instance {M : Type} [AddCommMonoid M] [Module ℝ M] [ModuleCarriesDimension M] :
+   CarriesDimension M where
+  d := ModuleCarriesDimension.d M
+
+/-!
+
+## Terms of the current dimension
+
+Given a type `M` which carries a dimension `d`,
+we are intrested in elements of `M` which depend on a choice of units, i.e. functions
+`UnitChoices → M`.
+
+We define both a proposition
+- `HasDimension f` which says that `f` scales correctly with units,
+and a type
+- `Dimensionful M` which is the subtype of functions which `HasDimension`.
 
 -/
 
 /-- A quantity of type `M` which depends on a choice of units `UnitChoices` is said to be
   of dimension `d` if it scales by `UnitChoices.dimScale u1 u2 d` under a change in units. -/
-def HasDimension (d : Dimension) {M : Type} [SMul ℝ≥0 M] (f : UnitChoices → M) : Prop :=
-  ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 d • f u1
+def HasDimension {M : Type} [CarriesDimension M] (f : UnitChoices → M) : Prop :=
+  ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 (CarriesDimension.d M) • f u1
 
-lemma hasDimension_iff {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    (f : UnitChoices → M) :
-    HasDimension d f ↔ ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 d • f u1 := by
+lemma hasDimension_iff {M : Type} [CarriesDimension M] (f : UnitChoices → M) :
+    HasDimension f ↔ ∀ u1 u2 : UnitChoices, f u2 =
+    UnitChoices.dimScale u1 u2 (CarriesDimension.d M) • f u1 := by
   rfl
 
-/-- The type of maps from `UnitChoices` to `M` which have dimension `d`. -/
-def Dimensionful (d : Dimension) (M : Type) [SMul ℝ≥0 M] :=
-  {f : UnitChoices → M // HasDimension d f}
+/-- The subtype of functions `UnitChoices → M`, for which `M` carries a dimension,
+  which `HasDimension`. -/
+def Dimensionful (M : Type) [CarriesDimension M] := Subtype (HasDimension (M := M))
 
-namespace Dimensionful
-
-/-- Applying an element of `Dimensionful d M` to a unit choice gives an element of `M`. -/
-instance {d : Dimension} {M : Type} [SMul ℝ≥0 M] :
-    CoeFun (Dimensionful d M) (fun _ => UnitChoices → M) where
-  coe f := f.1
-
-lemma coe_hasDimension {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    (f : Dimensionful d M) :
-    HasDimension d (f : UnitChoices → M) := by
-  intro u1 u2
-  rw [f.2 u1 u2]
-
-/-!
-
-### Equality lemmas
-
--/
-
-lemma eq_of_val {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (h : f1.1 = f2.1) : f1 = f2 := by
+@[ext]
+lemma Dimensionful.ext {M : Type} [CarriesDimension M] (f1 f2 : Dimensionful M)
+    (h : f1.val = f2.val) : f1 = f2 := by
   cases f1
   cases f2
   simp_all
 
-lemma eq_of_apply {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (h : ∀ u, f1 u = f2 u) : f1 = f2 := by
-  apply eq_of_val
-  ext u
-  exact h u
-
-lemma eq_of_unitChoices {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (u : UnitChoices) (h : f1 u = f2 u) : f1 = f2 := by
-  refine eq_of_apply ?_
-  intro u2
-  rw [f1.2 u, h, ← f2.2 u]
-
-lemma eq_of_SI {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {f1 f2 : Dimensionful d M} (h : f1 UnitChoices.SI = f2 UnitChoices.SI) : f1 = f2 := by
-  refine eq_of_unitChoices UnitChoices.SI ?_
-  exact h
-
-/-!
-
-### MulAction
-
--/
-
-instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] : MulAction ℝ≥0 (Dimensionful d M) where
+instance {M : Type} [CarriesDimension M] : MulAction ℝ≥0 (Dimensionful M) where
   smul a f := ⟨fun u => a • f.1 u, fun u1 u2 => by
     simp only
     rw [f.2 u1 u2]
     rw [smul_comm]⟩
   one_smul f := by
-    apply eq_of_val
     ext u
-    change 1 • f.1 u = f.1 u
+    change (1 : ℝ≥0) • f.1 u = f.1 u
     simp
   mul_smul a b f := by
-    apply eq_of_val
-    ext u
-    change (a * b) • f.1 u = a • (b • f.1 u)
-    rw [smul_smul]
-
-instance {d : Dimension} {M : Type} [MulAction ℝ M] : MulAction ℝ (Dimensionful d M) where
-  smul a f := ⟨fun u => a • f.1 u, fun u1 u2 => by
-    simp only
-    rw [f.2 u1 u2]
-    rw [smul_comm]⟩
-  one_smul f := by
-    apply eq_of_val
-    ext u
-    change 1 • f.1 u = f.1 u
-    simp
-  mul_smul a b f := by
-    apply eq_of_val
     ext u
     change (a * b) • f.1 u = a • (b • f.1 u)
     rw [smul_smul]
 
 @[simp]
-lemma smul_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
-    (f : Dimensionful d M) (u : UnitChoices) (a : ℝ≥0) :
-    (a • f : Dimensionful d M) u = a • f u := by rfl
+lemma Dimensionful.smul_apply  {M : Type} [CarriesDimension M]
+    (a : ℝ≥0) (f : Dimensionful M) (u : UnitChoices) :
+    (a • f).1 u = a • f.1 u := rfl
 
-@[simp]
-lemma smul_real_apply {d : Dimension} {M : Type} [MulAction ℝ M]
-    (f : Dimensionful d M) (u : UnitChoices) (a : ℝ) :
-    (a • f : Dimensionful d M) u = a • f u := by rfl
+/-- For `M` carying a dimension `d`, the equivalence between `M` and  `Dimension M`,
+  given a choice of units. -/
+noncomputable def CarriesDimension.toDimensionful {M : Type} [CarriesDimension M] (u : UnitChoices) :
+    M ≃ Dimensionful M where
+  toFun m := {
+    val := fun u1 => (u.dimScale u1 (CarriesDimension.d M)) • m
+    property := fun u1 u2 => by
+      simp [smul_smul]
+      rw [mul_comm, UnitChoices.dimScale_transitive]}
+  invFun f := f.1 u
+  left_inv m := by
+    simp
+  right_inv f := by
+    simp
+    ext u1
+    simpa using (f.2 u u1).symm
+
+lemma CarriesDimension.toDimensionful_apply_apply
+    {M : Type} [CarriesDimension M] (u1 u2 : UnitChoices) (m : M) :
+    (toDimensionful u1 m).1 u2 = (u1.dimScale u2 (CarriesDimension.d M)) • m := by rfl
 
 /-!
 
-## ofUnit
+## Types which depend on dimensions
+
+In addition to types which carry a dimension, we also have types whose elements
+depend on a choice of a units. For example a function
+`f : M1 → M2` between two types `M1` and `M2` which carry dimensions does not itself
+carry a dimensions, but is dependent on a choice of units.
+
+We define three versions
+- `UnitDependent M` having a function `changeUnits : UnitChoices → M → UnitChoices → M`
+  subject to two conditions `changeUnits_trans` and `changeUnits_id`
+- `LinearUnitDependent M` extends `UnitDependent M` with additional linearity conditions
+  on `changeUnits`.
+- `ContinuousLinearUnitDependent M` extends `LinearUnitDependent M` with an additional
+  continuity condition on `changeUnits`.
 
 -/
 
-/-- The creation of an element `f : Dimensionful d M` given a `m : M` and a choice of
-  units `u : UnitChoices`, defined such that `f u = m`. -/
-noncomputable def ofUnit (d : Dimension) {M : Type} [MulAction ℝ≥0 M]
-    (m : M) (u : UnitChoices) : Dimensionful d M where
-  val := fun u1=> (u.dimScale u1 d) • m
-  property := fun u1 u2 => by
-    simp [smul_smul, mul_comm]
-    rw [UnitChoices.dimScale_transitive]
+open CarriesDimension
 
-lemma ofUnit_eq_mul_dimScale {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
-    (m : M) (u1 u2 : UnitChoices) :
-    ofUnit d m u1 = (UnitChoices.dimScale u1 u2 d) • ofUnit d m u2 := by
-  apply eq_of_val
-  ext u
-  simp [ofUnit, smul_smul]
-  rw [UnitChoices.dimScale_transitive]
+class UnitDependent (M : Type) where
+  changeUnits : UnitChoices → M → UnitChoices → M
+  changeUnits_trans : ∀ u1 u2 u3 m, changeUnits u2 (changeUnits u1 m u2) u3 = changeUnits u1 m u3
+  changeUnits_id : ∀ u m, changeUnits u m u = m
 
-@[simp]
-lemma ofUnit_apply_self {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
-    (m : M) (u : UnitChoices) :
-    (ofUnit d m u) u = m := by
-  simp [ofUnit]
+class LinearUnitDependent (M : Type) [AddCommMonoid M] [Module ℝ M] extends
+    UnitDependent M where
+  changeUnits_add : ∀ u1 u2 m1 m2,
+    changeUnits u1 (m1 + m2) u2 = changeUnits u1 m1 u2 + changeUnits u1 m2 u2
+  changeUnits_smul : ∀ u1 u2 (r : ℝ) m,
+    changeUnits u1 (r • m) u2 = r • changeUnits u1 m u2
 
-lemma ofUnit_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
-    (m : M) (u1 u2 : UnitChoices) :
-    (ofUnit d m u1) u2 = UnitChoices.dimScale u1 u2 d • m := by
-  simp [ofUnit]
+class ContinuousLinearUnitDependent (M : Type) [AddCommMonoid M] [Module ℝ M]
+    [TopologicalSpace M] extends LinearUnitDependent M where
+  changeUnits_cont : ∀ u1 u2, Continuous (fun m => changeUnits u1 m u2)
 
 /-!
 
-### LE
+### IsDimensionallyInvariant
 
 -/
 
-instance {d : Dimension} : LE (Dimensionful d ℝ≥0) where
-  le f1 f2 := ∀ u, f1.1 u ≤ f2.1 u
+/-- A term of type `M` carrying an instance of `UnitDependent M` is said to be
+  dimensionally invariant if under a change of units it remains the same.
 
-lemma le_nnReals_of_unitChoice {d} {f1 f2 : Dimensionful d ℝ≥0}
-    (u : UnitChoices) (h : f1 u ≤ f2 u) : f1 ≤ f2 := by
-  intro u2
-  rw [f1.2 u, f2.2 u]
-  simp only [smul_eq_mul]
-  apply mul_le_mul_left'
-  exact h
+  This corresponds to the statement that term is dimensionally correct.
+
+-/
+def IsDimensionallyInvariant {M : Type} [UnitDependent M] (m : M) : Prop :=
+  ∀ u1 u2 : UnitChoices, UnitDependent.changeUnits u1 m u2 = m
 
 /-!
 
-### Addition and module structure
+## Basic properties of changeUnits
 
 -/
 
-instance {d : Dimension} {M : Type} [AddZeroClass M] [DistribSMul ℝ≥0 M] :
-    AddZeroClass (Dimensionful d M) where
-  zero := ⟨fun _ => 0, fun _ _ => by simp⟩
-  add f1 f2 := ⟨fun u => f1.1 u + f2.1 u, fun u1 u2 => by
-    simp only
-    rw [f1.2 u1 u2, f2.2 u1 u2]
-    simp [smul_add]⟩
-  zero_add f := by
-    apply eq_of_val
-    ext u
-    change (0 : M) + f.1 u = f.1 u
-    simp
-  add_zero f := by
-    apply eq_of_val
-    ext u
-    change f.1 u + (0 : M) = f.1 u
-    simp
 
 @[simp]
-lemma add_apply {d : Dimension} {M : Type} [AddZeroClass M] [DistribSMul ℝ≥0 M]
-    (f1 f2 : Dimensionful d M) (u : UnitChoices) :
-    (f1 + f2 : Dimensionful d M) u = f1 u + f2 u := rfl
+lemma UnitDependent.changeUnits_symm_apply {M : Type} [UnitDependent M]
+    (u1 u2 : UnitChoices) (m : M) :
+    changeUnits u2 (changeUnits u1 m u2) u1 = m := by
+  rw [changeUnits_trans, changeUnits_id]
 
-instance {d : Dimension} {M : Type} [AddCommGroup M] [DistribSMul ℝ≥0 M] :
-    AddCommGroup (Dimensionful d M) where
-  add_assoc f1 f2 f3 := by
-    apply eq_of_val
-    ext u
-    change (f1.1 u + f2.1 u) + f3.1 u = f1.1 u + (f2.1 u + f3.1 u)
-    simp [add_assoc]
-  neg f := ⟨fun u => - f.1 u, fun u1 u2 => by
-    simp only [smul_neg, neg_inj]
-    rw [f.2 u1 u2]⟩
-  nsmul n f := ⟨fun u => n • f.1 u, fun u1 u2 => by
-    simp only
-    rw [f.2 u1 u2, smul_comm]⟩
-  zsmul n f := ⟨fun u => n • f.1 u, fun u1 u2 => by
-    simp only
-    rw [f.2 u1 u2, smul_comm]⟩
-  neg_add_cancel f1 := by
-    apply eq_of_val
-    ext u
-    simp
-    rfl
-  add_comm f1 f2 := by
-    apply eq_of_val
-    ext u
-    change f1.1 u + f2.1 u = f2.1 u + f1.1 u
-    simp [add_comm]
-  nsmul_zero f := by simp; rfl
-  nsmul_succ n f := by
-    apply eq_of_val
-    ext u
-    simp [succ_nsmul]
-  zsmul_zero' f := by
-    apply eq_of_val
-    ext u
-    simp
-    rfl
-  zsmul_succ' n f := by
-    apply eq_of_val
-    ext u
-    simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, natCast_zsmul, add_apply]
-    rw [@add_one_zsmul]
-    simp
-  zsmul_neg' n f := by
-    apply eq_of_val
-    ext u
-    simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one]
-    erw [← neg_zsmul]
+@[simp]
+lemma UnitDependent.changeUnits_injective {M : Type} [UnitDependent M]
+    (u1 u2 : UnitChoices) (m1 m2 : M) :
+    changeUnits u1 m1 u2 = changeUnits u1 m2 u2 ↔ m1 = m2 := by
+  constructor
+  · intro h1
+    have h2 : changeUnits u2 (changeUnits u1 m1 u2) u1 =
+        changeUnits u2 (changeUnits u1 m2 u2 ) u1 := by rw [h1]
+    simpa using h2
+  · intro h
+    subst h
     rfl
 
-@[simp]
-lemma neg_apply {d : Dimension} {M : Type} [AddCommGroup M] [DistribSMul ℝ≥0 M]
-    (f : Dimensionful d M) (u : UnitChoices) :
-    (-f : Dimensionful d M) u = -f u := rfl
+/-!
 
-@[simp]
-lemma zero_apply {d : Dimension} {M : Type} [AddZeroClass M] [DistribSMul ℝ≥0 M]
-    (u : UnitChoices) : (0 : Dimensionful d M) u = 0 := rfl
+### Variations on the map changeUnits
 
-instance {d : Dimension} {M : Type} [AddCommGroup M] [Module ℝ M] :
-    Module ℝ (Dimensionful d M) where
-  smul_zero a := by
-    apply eq_of_val
-    ext u
+-/
+
+open UnitDependent
+def UnitDependent.changeUnitsEquiv {M : Type} [AddCommMonoid M] [Module ℝ M] [LinearUnitDependent M]
+    (u1 u2 : UnitChoices) : M ≃ M where
+  toFun m := UnitDependent.changeUnits u1 m u2
+  invFun m := UnitDependent.changeUnits u2 m u1
+  right_inv m := by simp
+  left_inv m := by simp
+
+def LinearUnitDependent.changeUnitsLinear
+    {M : Type} [AddCommMonoid M] [Module ℝ M] [LinearUnitDependent M]
+    (u1 u2 : UnitChoices) :
+    M →ₗ[ℝ] M where
+  toFun m := UnitDependent.changeUnits u1 m u2
+  map_add' m1 m2 := by simp [LinearUnitDependent.changeUnits_add]
+  map_smul' r m2 := by simp [LinearUnitDependent.changeUnits_smul]
+
+def LinearUnitDependent.changeUnitsLinearEquiv {M : Type} [AddCommMonoid M] [Module ℝ M] [LinearUnitDependent M]
+    (u1 u2 : UnitChoices) :
+    M ≃ₗ[ℝ] M :=
+    LinearEquiv.ofLinear (changeUnitsLinear u1 u2) (changeUnitsLinear u2 u1)
+    (by ext u; simp [changeUnitsLinear])
+    (by ext u; simp [changeUnitsLinear])
+
+def ContinuousLinearUnitDependent.changeUnitsContLinear  {M : Type} [AddCommMonoid M] [Module ℝ M]
+    [TopologicalSpace M] [ContinuousLinearUnitDependent M]
+    (u1 u2 : UnitChoices) : M →L[ℝ] M where
+  toLinearMap := LinearUnitDependent.changeUnitsLinear u1 u2
+  cont :=  ContinuousLinearUnitDependent.changeUnits_cont u1 u2
+
+def ContinuousLinearUnitDependent.changeUnitsContLinearEquiv {M : Type} [AddCommMonoid M] [Module ℝ M]
+    [TopologicalSpace M] [ContinuousLinearUnitDependent M]
+    (u1 u2 : UnitChoices) : M ≃L[ℝ] M :=
+    ContinuousLinearEquiv.mk  (LinearUnitDependent.changeUnitsLinearEquiv u1 u2)
+    (ContinuousLinearUnitDependent.changeUnits_cont u1 u2)
+    (ContinuousLinearUnitDependent.changeUnits_cont u2 u1)
+
+/-!
+
+### Instances of the type classes
+
+We construct instance of the `UnitDependent`, `LinearUnitDependent` and
+  `ContinuousLinearUnitDependent` type classes based on `CarriesDimension`
+  and functions.
+
+-/
+
+open UnitDependent
+
+noncomputable instance {M1 : Type} [CarriesDimension M1] : UnitDependent M1 where
+  changeUnits u1 m u2 := (toDimensionful u1 m).1 u2
+  changeUnits_trans u1 u2 u3 m := by
+    simp [toDimensionful]
+    rw [smul_smul, mul_comm, UnitChoices.dimScale_transitive]
+  changeUnits_id u m := by
+    simp [toDimensionful, UnitChoices.dimScale_self]
+
+noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
+    [ModuleCarriesDimension M] : LinearUnitDependent M where
+  changeUnits_add u1 u2 m1 m2 := by
+    change (toDimensionful u1 (m1 + m2)).1 u2 = _
+    rw [toDimensionful_apply_apply]
     simp
-  smul_add a f1 f2 := by
-    apply eq_of_val
-    ext u
-    change a • (f1.1 u + f2.1 u) = a • f1.1 u + a • f2.1 u
-    simp [smul_add]
-  add_smul a1 a2 f2 := by
-    apply eq_of_val
-    ext u
-    simp [add_smul]
-  zero_smul f := by
-    apply eq_of_val
-    ext u
-    change (0 : ℝ) • f.1 u = 0
-    simp
+    rfl
+  changeUnits_smul u1 u2 r m := by
+    change (toDimensionful u1 (r • m)).1 u2 = _
+    rw [toDimensionful_apply_apply]
+    rw [smul_comm]
+    rfl
+
+noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
+    [ModuleCarriesDimension M] [TopologicalSpace M]
+    [ContinuousConstSMul ℝ M] : ContinuousLinearUnitDependent M where
+  changeUnits_cont u1 u2 := by
+    change Continuous fun m => (toDimensionful u1 m).1 u2
+    conv =>
+      enter [1, m]
+      rw [toDimensionful_apply_apply]
+    change Continuous fun m => (u1.dimScale u2 (d M)).1 • m
+    apply Continuous.const_smul
+    exact continuous_id'
+
+noncomputable instance {M1 M2 : Type} [UnitDependent M2] :
+    UnitDependent (M1 → M2) where
+  changeUnits u1 f u2 := fun m1 => changeUnits u1 (f m1) u2
+  changeUnits_trans u1 u2 u3 f := by
+    funext m1
+    exact changeUnits_trans u1 u2 u3 (f m1)
+  changeUnits_id u f := by
+    funext m1
+    exact changeUnits_id u (f m1)
+
+open LinearUnitDependent in
+noncomputable instance {M1 M2 : Type} [AddCommMonoid M1] [Module ℝ M1]
+    [AddCommMonoid M2] [Module ℝ M2] [LinearUnitDependent M2] :
+    LinearUnitDependent (M1 →ₗ[ℝ] M2) where
+  changeUnits u1 f u2 := {
+      toFun m1 := changeUnits u1 (f m1) u2
+      map_add' m1 m2 := by simp [changeUnits_add]
+      map_smul' := by simp [changeUnits_smul]}
+  changeUnits_trans u1 u2 u3 f := by
+    ext m1
+    exact changeUnits_trans u1 u2 u3 (f m1)
+  changeUnits_id u f := by
+    ext m1
+    exact changeUnits_id u (f m1)
+  changeUnits_add u1 u2 f1 f2 := by
+    ext m
+    simp [changeUnits_add]
+  changeUnits_smul u1 u2 r f := by
+    ext m
+    simp [changeUnits_smul]
+
+open LinearUnitDependent  ContinuousLinearUnitDependent in
+noncomputable instance {M1 M2 : Type} [AddCommGroup M1] [Module ℝ M1]
+    [TopologicalSpace M1]
+    [AddCommGroup M2]  [Module ℝ M2] [TopologicalSpace M2] [ContinuousConstSMul ℝ M2]
+    [IsTopologicalAddGroup M2]
+    [ContinuousLinearUnitDependent M2] :
+    ContinuousLinearUnitDependent (M1 →L[ℝ] M2) where
+  changeUnits u1 f u2 :=
+    ContinuousLinearEquiv.arrowCongr (ContinuousLinearEquiv.refl  ℝ _)
+      (changeUnitsContLinearEquiv u1 u2) f
+  changeUnits_trans u1 u2 u3 f := by
+    ext m1
+    exact changeUnits_trans u1 u2 u3 (f m1)
+  changeUnits_id u f := by
+    ext m1
+    exact changeUnits_id u (f m1)
+  changeUnits_add u1 u2 f1 f2 := by simp
+  changeUnits_smul u1 u2 r f := by simp
+  changeUnits_cont u1 u2 := ContinuousLinearEquiv.continuous
+      ((ContinuousLinearEquiv.refl ℝ M1).arrowCongr (changeUnitsContLinearEquiv u1 u2))
+
+noncomputable instance {M1 M2 : Type} [UnitDependent M1] :
+    UnitDependent (M1 → M2) where
+  changeUnits u1 f u2 := fun m1 => f (changeUnits u2 m1 u1)
+  changeUnits_trans u1 u2 u3 f := by
+    funext m1
+    simp [changeUnits_trans]
+  changeUnits_id u f := by
+    funext m1
+    simp [changeUnits_id]
+
+noncomputable instance {M1 M2 : Type} [UnitDependent M1] [UnitDependent M2] :
+    UnitDependent (M1 → M2) where
+  changeUnits u1 f u2 := fun m1 => changeUnits u1 (f (changeUnits u2 m1 u1)) u2
+  changeUnits_trans u1 u2 u3 f := by
+    funext m1
+    simp [changeUnits_trans]
+  changeUnits_id u f := by
+    funext m1
+    simp [changeUnits_id]
+
+/-!
+
+## Some type classes to help track dimensions
+
+-/
+
+
+class DMul (M1 M2 M3 : Type) [CarriesDimension M1] [CarriesDimension M2] [CarriesDimension M3]
+    extends HMul M1 M2 M3 where
+  mul_dim : ∀ (m1  : Dimensionful M1) (m2 : Dimensionful M2),
+    HasDimension (fun u => hMul (m1.1 u) (m2.1 u))
 
 @[simp]
-lemma sub_apply {d : Dimension} {M : Type} [AddCommGroup M] [DistribSMul ℝ≥0 M]
-    (f1 f2 : Dimensionful d M) (u : UnitChoices) :
-    (f1 - f2 : Dimensionful d M) u = f1 u - f2 u := by
-  rw [@sub_eq_neg_add]
-  simp only [add_apply, neg_apply]
-  abel
-
-/-!
-
-### Multiplication
-
--/
-
-instance {d1 d2 : Dimension} :
-    HMul (Dimensionful d1 ℝ) (Dimensionful d2 ℝ) (Dimensionful (d1 * d2) ℝ) where
-  hMul x y := ⟨fun u => x.1 u * y.1 u, fun u1 u2 => by
-    simp only
-    rw [x.2 u1 u2, y.2 u1 u2]
-    simp only [Algebra.mul_smul_comm, Algebra.smul_mul_assoc, UnitChoices.dimScale_mul]
-    change u1.dimScale u2 d2 * (u1.dimScale u2 d1 * (x u1 * y u1)) =
-      (u1.dimScale u2 d1 * u1.dimScale u2 d2) * (x u1 * y u1)
-    ring⟩
-
-@[simp]
-lemma mul_real_apply {d1 d2 : Dimension}
-    (x : Dimensionful d1 ℝ) (y : Dimensionful d2 ℝ) (u : UnitChoices) :
-    (x * y) u = x u * y u := rfl
-
-/-!
-
-### Division
-
--/
-
-noncomputable instance {d1 d2 : Dimension} :
-    HDiv (Dimensionful d1 ℝ) (Dimensionful d2 ℝ) (Dimensionful (d1 * d2⁻¹) ℝ) where
-  hDiv x y := ⟨fun u => x.1 u / y.1 u, fun u1 u2 => by
-    simp only
-    rw [x.2 u1 u2, y.2 u1 u2]
-    simp only [UnitChoices.dimScale_mul]
-    change (u1.dimScale u2 d1 * x u1) / (u1.dimScale u2 d2 * y u1) =
-      (u1.dimScale u2 d1 * u1.dimScale u2 d2⁻¹) * (x u1 / y u1)
-    rw [UnitChoices.dimScale_inv]
-    by_cases h0 : y.1 u1 = 0
-    · simp [h0]
-    have h0 : toReal (u1.dimScale u2 d2) ≠ 0 := by
-      simp [UnitChoices.dimScale_neq_zero]
-    field_simp⟩
-
-@[simp]
-lemma hdiv_apply {d1 d2 : Dimension}
-    (x : Dimensionful d1 ℝ) (y : Dimensionful d2 ℝ) (u : UnitChoices) :
-    (x / y) u = x u / y u := rfl
-
-noncomputable instance {d2 : Dimension} :
-    HDiv ℝ (Dimensionful d2 ℝ) (Dimensionful (d2⁻¹) ℝ) where
-  hDiv x y := ⟨fun u => x / y.1 u, fun u1 u2 => by
-    simp only
-    rw [y.2 u1 u2]
-    change x / (u1.dimScale u2 d2 * y u1) =
-      (u1.dimScale u2 d2⁻¹) * (x / y u1)
-    rw [UnitChoices.dimScale_inv]
-    by_cases h0 : y.1 u1 = 0
-    · simp [h0]
-    have h0 : toReal (u1.dimScale u2 d2) ≠ 0 := by
-      simp [UnitChoices.dimScale_neq_zero]
-    field_simp⟩
-
-/-!
-
-### SMul
-
--/
-
-noncomputable instance {d1 d2 : Dimension} {M : Type} [AddCommGroup M] [Module ℝ M] :
-    HSMul (Dimensionful d1 ℝ) (Dimensionful d2 M) (Dimensionful (d1 * d2) M) where
-  hSMul x y := ⟨fun u => x.1 u • y.1 u, fun u1 u2 => by
-    simp only
-    rw [x.2 u1 u2, y.2 u1 u2]
-    simp only [smul_assoc, UnitChoices.dimScale_mul]
-    erw [smul_smul, smul_smul, smul_smul]
-    congr 1
-    simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, NNReal.coe_mul]
-    ring⟩
-
-@[simp]
-lemma hsmul_apply {d1 d2 : Dimension} {M : Type} [AddCommGroup M] [Module ℝ M]
-    (x : Dimensionful d1 ℝ) (y : Dimensionful d2 M) (u : UnitChoices) :
-    (x • y) u = x u • y u := rfl
-
-/-!
-
-## Inner product
-
-We define the inner product in SI units.
--/
-
-open InnerProductSpace
-open UnitChoices
-
-noncomputable instance {M} {d : Dimension}
-    [SeminormedAddCommGroup M] [InnerProductSpace ℝ M]:
-    SeminormedAddCommGroup (Dimensionful d M) where
-  norm f := ‖f.1 SI‖
-  dist_self := by intro x; simp
-  dist_comm := by intro x y; simp; exact norm_sub_rev _ _
-  dist_triangle := by
-    intro x y z
-    simp only [sub_apply]
-    exact norm_sub_le_norm_sub_add_norm_sub _ _ _
-
-noncomputable instance {M} {d : Dimension}
-    [SeminormedAddCommGroup M] [InnerProductSpace ℝ M]:
-    InnerProductSpace ℝ (Dimensionful d M) where
-  inner x y := ⟪x.1 SI, y.1 SI⟫_ℝ
-  norm_smul_le r y := norm_smul_le r (y.1 SI)
-  norm_sq_eq_re_inner x := norm_sq_eq_re_inner (x.1 SI)
-  conj_inner_symm x y := conj_inner_symm (x.1 SI) (y.1 SI)
-  add_left x y z := add_left (x.1 SI) (y.1 SI) (z.1 SI)
-  smul_left x y r := smul_left (x.1 SI) (y.1 SI) r
-
-/-!
-
-### Derivatives
-
--/
-
-TODO "IY4PB" "The derivative of a dimensionful quantities is only defined for `ℝ`,
-  this should be generalized to other types, carrying the relevant structure."
-
-/-- The derivative using dimensionalful quantities. -/
-noncomputable def deriv {d1 d2 : Dimension} (f : Dimensionful d1 ℝ → Dimensionful d2 ℝ)
-    (atLocation : Dimensionful d1 ℝ) :
-    Dimensionful (d2 * d1⁻¹) ℝ where
-  val := fun u =>
-    /- The derivative of `f` at location `atLocation` in the direction `(ofUnit d1 1 u)`
-      in coordinates `u`. -/
-    (fderiv ℝ f atLocation (ofUnit d1 1 u)) u
-  property := fun u1 u2 => by
-    simp only [dimScale_mul]
-    let F := (fderiv ℝ f atLocation (ofUnit d1 1 u2))
-    change F u2 = _
-    rw [F.2 u1]
-    dsimp [F]
-    have h1 : ofUnit d1 (1 : ℝ) u2 = (UnitChoices.dimScale u2 u1 d1) • ofUnit d1 1 u1 := by
-      rw [← ofUnit_eq_mul_dimScale]
+lemma DMul.hMul_changeUnits {M1 M2 M3 : Type} [CarriesDimension M1] [CarriesDimension M2]
+    [CarriesDimension M3]
+    [DMul M1 M2 M3] (m1 : M1) (m2 : M2) (u1 u2 : UnitChoices) :
+    (changeUnits u1 m1 u2) * (changeUnits u1 m2 u2) =
+    changeUnits u1 (m1 * m2) u2 := by
+  simp [UnitDependent.changeUnits, toDimensionful]
+  have h1 := DMul.mul_dim (M3 := M3) (toDimensionful u1 m1) (toDimensionful u1 m2) u2 u1
+  simp [toDimensionful_apply_apply] at h1
+  conv_rhs =>
     rw [h1]
-    simp [smul_smul]
-    congr 2
-    rw [dimScale_symm]
-    exact Eq.symm (dimScale_inv u1 u2 d1)
-
-/-!
-
-### valCast
-
--/
-
-set_option linter.unusedVariables false in
-/-- The casting of a quantity in `Dimensionful 0 M` to its underlying element in `M`. -/
-@[nolint unusedArguments]
-noncomputable def valCast {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    (f : Dimensionful d M) (hd : d = 0 := by rfl) : M :=
-  f.1 UnitChoices.SI
-
-lemma valCast_eq_unitChoices {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
-    {f : Dimensionful d M} {hd : d = 0} (u : UnitChoices) :
-    valCast f hd = f u := by
-  simp [valCast]
-  rw [f.2 UnitChoices.SI u]
-  subst hd
-  simp
-
-end Dimensionful
-
-/-!
-
-## Measured quantities
-
-We defined `Measured d M` to be a type of measured quantity of type `M` and of dimension `d`,
-the terms of `Measured d M` are corresponds to values of the quantity in a given but arbitary
-set of units.
-
-If `M` has the type of a vector space, then the type `Measured d M` inherits this structure.
-
-Likewise if `M` has the type of an inner product space, then the type `Measured d M`
-inherits this structure. However, note that the inner product space does not explicit track
-the dimension, mapping down to `ℝ`. This is in theory fine, as it is still dimensionful, in the
-sense that it scales with the choice of unit.
-
-The type `Measured d M` can be seen as a convienent way to work with and keep track of
-dimensions. However, working with `Measured d M` does not formally prove anything
-about dimensions, which can only be done with `Dimensionful d M`, or other
-manifest considerations of `UnitChoices`.
-
--/
-
-/-- A measured quantity is a quantity which carries a dimension `d`, but which
-  lives in a given (but arbitary) set of units. -/
-structure Measured (d : Dimension) (M : Type) [SMul ℝ≥0 M] where
-  /-- The value of the measured quantity. -/
-  val : M
-
-namespace Measured
-
-@[ext]
-lemma eq_of_val {d : Dimension} {M : Type} [SMul ℝ≥0 M]
-    {m1 m2 : Measured d M} (h : m1.val = m2.val) : m1 = m2 := by
-  cases m1
-  cases m2
-  simp_all
-
-/-!
-
-### Basic instances carried from underlying type.
-
--/
-
-instance {d : Dimension} {α : Type} {M : Type} [SMul ℝ≥0 M] [SMul α M] : SMul α (Measured d M) where
-  smul r m := ⟨r • m.val⟩
-
-@[simp]
-lemma smul_val {d : Dimension} {α : Type} {M : Type} [SMul ℝ≥0 M] [SMul α M]
-    (r : α) (m : Measured d M) :
-    (r • m).val = r • m.val := rfl
-
-instance {d1 d2 : Dimension} {M1 M2 M : Type} [SMul ℝ≥0 M1] [SMul ℝ≥0 M2]
-    [SMul ℝ≥0 M] [HMul M1 M2 M] :
-    HMul (Measured d1 M1) (Measured d2 M2) (Measured (d1 * d2) M) where
-  hMul x y := ⟨x.val * y.val⟩
-
-instance {d1 d2 : Dimension} {M1 M2 M : Type} [SMul ℝ≥0 M1] [SMul ℝ≥0 M2]
-    [SMul ℝ≥0 M] [HSMul M1 M2 M] :
-    HSMul (Measured d1 M1) (Measured d2 M2) (Measured (d1 * d2) M) where
-  hSMul x y := ⟨x.val • y.val⟩
-
-instance {d : Dimension} {M : Type} [SMul ℝ≥0 M] [LE M] : LE (Measured d M) where
-  le x y := x.val ≤ y.val
-
-lemma le_eq_le_val {d : Dimension} {M : Type} [SMul ℝ≥0 M] [LE M]
-    (x y : Measured d M) : x ≤ y ↔ x.val ≤ y.val := by
-  rfl
-
-noncomputable instance {d : Dimension} {M : Type} [MulAction ℝ≥0 M] :
-    HSMul (Measured d M) UnitChoices (Dimensionful d M) where
-  hSMul m u := ⟨fun u1 => (u.dimScale u1 d) • m.val, fun u1 u2 => by
-    simp [smul_smul, mul_comm, UnitChoices.dimScale_transitive]⟩
-
-@[simp]
-lemma smul_unitChoices_apply {d : Dimension} {M : Type} [MulAction ℝ≥0 M]
-    (m : Measured d M) (u : UnitChoices) (u1 : UnitChoices) :
-    (m • u) u1 = u.dimScale u1 d • m.val := rfl
-
-end Measured
+    rw [smul_smul]
+    simp
