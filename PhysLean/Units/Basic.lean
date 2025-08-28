@@ -250,6 +250,14 @@ lemma dimScale_mul_symm (u1 u2 : UnitChoices) (d : Dimension)  :
   rw [dimScale_transitive, dimScale_self]
 
 @[simp]
+lemma dimScale_coe_mul_symm (u1 u2 : UnitChoices) (d : Dimension)  :
+    ↑(dimScale u1 u2 d).1 * ↑(dimScale u2 u1 d).1 = 1 := by
+  trans ((dimScale u1 u2 d * dimScale u2 u1 d).1)
+  · rw [← @Nonneg.coe_mul]
+  simp
+
+
+@[simp]
 lemma dimScale_neq_zero (u1 u2 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d ≠ 0 := by
   simp [dimScale]
@@ -271,6 +279,12 @@ lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension) :
   · rw [MassUnit.div_symm, inv_rpow]
   · rw [ChargeUnit.div_symm, inv_rpow]
   · rw [TemperatureUnit.div_symm, inv_rpow]
+
+lemma dimScale_of_inv_eq_swap (u1 u2 : UnitChoices) (d : Dimension) :
+    dimScale u1 u2 d⁻¹ = dimScale u2 u1 d := by
+  rw [dimScale_inv]
+  conv_rhs => rw[dimScale_symm]
+
 
 /-- The choice of units corresponding to SI units, that is
 - meters,
@@ -432,6 +446,11 @@ class UnitDependent (M : Type) where
   changeUnits_trans' : ∀ u1 u2 u3 m, changeUnits u1 (changeUnits u2 m u3) u2 = changeUnits u1 m u3
   changeUnits_id : ∀ u m, changeUnits u m u = m
 
+class MulUnitDependent (M : Type) [MulAction ℝ≥0 M] extends
+    UnitDependent M where
+  changeUnits_mul : ∀ u1 u2 (r : ℝ≥0) m,
+    changeUnits u1 (r • m) u2 = r • changeUnits u1 m u2
+
 class LinearUnitDependent (M : Type) [AddCommMonoid M] [Module ℝ M] extends
     UnitDependent M where
   changeUnits_add : ∀ u1 u2 m1 m2,
@@ -540,7 +559,7 @@ We construct instance of the `UnitDependent`, `LinearUnitDependent` and
 
 open UnitDependent
 
-noncomputable instance {M1 : Type} [CarriesDimension M1] : UnitDependent M1 where
+noncomputable instance {M1 : Type} [CarriesDimension M1] : MulUnitDependent M1 where
   changeUnits u1 m u2 := (toDimensionful u1 m).1 u2
   changeUnits_trans u1 u2 u3 m := by
     simp [toDimensionful]
@@ -549,6 +568,22 @@ noncomputable instance {M1 : Type} [CarriesDimension M1] : UnitDependent M1 wher
     simp [toDimensionful, smul_smul, UnitChoices.dimScale_transitive]
   changeUnits_id u m := by
     simp [toDimensionful, UnitChoices.dimScale_self]
+  changeUnits_mul u1 u2 r m := by
+    simp [toDimensionful]
+    exact smul_comm (u1.dimScale u2 (d M1)) r m
+
+
+
+lemma CarriesDimension.changeUnits_apply {M : Type} [CarriesDimension M]
+    (u1 u2 : UnitChoices) (m : M) :
+    changeUnits u1 m u2 = (u1.dimScale u2 (d M)) • m := by
+  simp [changeUnits, toDimensionful_apply_apply]
+
+lemma CarriesDimension.changeUnits_apply' {M : Type} [AddCommMonoid M] [Module ℝ M] [ModuleCarriesDimension M]
+    (u1 u2 : UnitChoices) (m : M) :
+    changeUnits u1 m u2 = ((u1.dimScale u2 (d M) : ℝ) • m : M):= by
+  simp [changeUnits, toDimensionful_apply_apply]
+  rfl
 
 noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
     [ModuleCarriesDimension M] : LinearUnitDependent M where
@@ -662,6 +697,23 @@ noncomputable instance instUnitDependentTwoSided
   changeUnits_id u f := by
     funext m1
     simp [changeUnits_id]
+
+noncomputable instance instUnitDependentTwoSidedMul
+    {M1 M2 : Type} [UnitDependent M1] [MulAction ℝ≥0 M2] [MulUnitDependent M2] :
+    MulUnitDependent (M1 → M2) where
+  changeUnits u1 f u2 := fun m1 => changeUnits u1 (f (changeUnits u2 m1 u1)) u2
+  changeUnits_trans u1 u2 u3 f := by
+    funext m1
+    simp [changeUnits_trans]
+  changeUnits_trans' u1 u2 u3 f := by
+    funext m1
+    simp [changeUnits_trans']
+  changeUnits_id u f := by
+    funext m1
+    simp [changeUnits_id]
+  changeUnits_mul u1 u2 r f := by
+    funext m1
+    simp [MulUnitDependent.changeUnits_mul]
 
 open LinearUnitDependent  ContinuousLinearUnitDependent in
 noncomputable instance instContinuousLinearUnitDependentMap
@@ -779,3 +831,41 @@ lemma DMul.hMul_changeUnits {M1 M2 M3 : Type} [CarriesDimension M1] [CarriesDime
     rw [h1]
     rw [smul_smul]
     simp
+
+/-!
+
+## Dim Subtype
+
+-/
+
+/-- Given a type `M` that depends on units, e.g. the function type `M1 → M2` between two types
+  carrying a dimension, the subtype of `M` which scales according to the dimension `d`. -/
+def DimSet (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
+  Set M :=
+  { m : M | ∀ u1 u2, changeUnits u1 m u2 = (UnitChoices.dimScale u1 u2 d) • m }
+
+instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
+    MulAction ℝ≥0 (DimSet M d) where
+  smul a f := ⟨a • f.1, fun u1 u2 => by
+    rw [smul_comm, ← f.2]
+    rw [MulUnitDependent.changeUnits_mul]⟩
+  one_smul f := by
+    ext
+    change (1 : ℝ≥0) • f.1 = f.1
+    simp
+  mul_smul a b f := by
+    ext
+    change (a * b) • f.1 = a • (b • f.1)
+    rw [smul_smul]
+
+
+instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
+    CarriesDimension (DimSet M d) where
+  d := d
+
+@[simp]
+lemma changeUnits_dimSet_val {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension)
+    (m : DimSet M d) (u1 u2 : UnitChoices) :
+    (changeUnits u1 m u2).1 = changeUnits u1 m.1 u2 := by
+  rw [changeUnits_apply, m.2]
+  rfl

@@ -65,18 +65,4 @@ instance {d1 d2 : Dimension} :
     congr 1
     rw [mul_comm]
 
-open Dimension
-example (m1 : WithDim L𝓭 ℝ) (m2 : WithDim T𝓭 ℝ) : WithDim (L𝓭 * T𝓭) ℝ := m1 * m2
-
-def testProp (l : WithDim L𝓭 ℝ) (t : WithDim T𝓭 ℝ) (lt : WithDim (L𝓭 * T𝓭) ℝ) :
-    Prop := lt = l * t
-
-lemma testProp_dimInvariant : IsDimensionallyInvariant (testProp) := by
-  intro u1 u2
-  funext l t lt
-  simp
-  change UnitDependent.changeUnits u2 lt u1 = _  ↔ _
-  simp
-  rfl
-
 end WithDim
