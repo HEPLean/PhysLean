@@ -198,6 +198,23 @@ lemma μProd_of_fintype (T : Temperature) [IsFinite 𝓒] (i : ι) :
   rw [mul_comm]
   rfl
 
+open scoped ENNReal
+
+/-- Finite singleton evaluation in `ℝ≥0∞` form. -/
+@[simp]
+lemma μProd_singleton_of_fintype
+    (T : Temperature) [IsFinite 𝓒] [Nonempty ι] (i : ι) :
+    (𝓒.μProd T) {i} = ENNReal.ofReal (𝓒.probability T i) := by
+  have hReal := μProd_of_fintype (𝓒:=𝓒) (T:=T) i
+  have hfin : (𝓒.μProd T) {i} ≠ ∞ := (measure_ne_top _ _)
+  have hToReal : ((𝓒.μProd T) {i}).toReal = 𝓒.probability T i := by
+    simpa [measureReal_def, hfin]
+      using hReal
+  have hRewrite :
+      (𝓒.μProd T) {i} = ENNReal.ofReal (((𝓒.μProd T) {i}).toReal) := by
+    simp [ENNReal.ofReal_toReal, hfin]
+  rw [← hReal, ofReal_measureReal hfin]
+
 lemma meanEnergy_of_fintype [IsFinite 𝓒] (T : Temperature) :
     𝓒.meanEnergy T = ∑ i, 𝓒.energy i * 𝓒.probability T i := by
   simp [meanEnergy]
