@@ -20,7 +20,7 @@ We derive properties of this normal ordering.
 
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
-open FieldStatistic
+open Module FieldStatistic
 
 namespace FieldOpFreeAlgebra
 

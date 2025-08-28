@@ -3,11 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
 import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # Phenomenologically closed sets of charges
@@ -183,7 +181,7 @@ lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
       simp_all
     revert hn
     rw [not_and]
-    simp only [hTop, not_true_eq_false, imp_false, Decidable.not_not]
+    simp only [hTop, not_true_eq_false, imp_false]
     suffices hmem : ∃ y ∈ charges, y ⊆ x by
       obtain ⟨y, y_mem, hyx⟩ := hmem
       refine subset_insert_filter_card_zero charges S5 S10 (fun x =>
@@ -234,6 +232,79 @@ lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
           have := yukawaGeneratesDangerousAtLevel_of_subset hz2 hn
           simp_all
     · simp_all
+
+/-!
+
+## Definitions of multisets which are phenomenologically closed
+
+-/
+
+/-- For a given `S5 S10 : Finset 𝓩`, the minimal multiset of charges which satifies
+  the condition `ContainsPhenoCompletionsOfMinimallyAllows`.
+  That is to say, every multiset of charges which satifies
+  `ContainsPhenoCompletionsOfMinimallyAllows` has `completeMinSubset` as a subset. -/
+def completeMinSubset (S5 S10 : Finset 𝓩) : Multiset (Charges 𝓩) :=
+  ((minimallyAllowsTermsOfFinset S5 S10 topYukawa).bind <|
+      completionsTopYukawa S5).dedup.filter
+    fun x => ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1
+
+lemma completeMinSubset_nodup {S5 S10 : Finset 𝓩} :
+    (completeMinSubset S5 S10).Nodup := by
+  simp [completeMinSubset]
+  apply Multiset.Nodup.filter
+  exact Multiset.nodup_dedup
+      ((minimallyAllowsTermsOfFinset S5 S10 topYukawa).bind (completionsTopYukawa S5))
+
+lemma completeMinSubset_subset_iff_containsPhenoCompletionsOfMinimallyAllows
+    (S5 S10 : Finset 𝓩) (charges : Multiset (Charges 𝓩)) :
+    completeMinSubset S5 S10 ⊆ charges ↔
+    ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges := by
+  constructor
+  · intro h
+    rw [containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa]
+    rw [Multiset.subset_iff] at h
+    intro x hx y hy1 hy2
+    apply h
+    simp [completeMinSubset]
+    simp_all
+    use x
+  · intro h
+    intro y hy
+    simp [completeMinSubset] at hy
+    obtain ⟨⟨x, hx, hyx⟩, hy2⟩ := hy
+    rw [containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa] at h
+    exact h x hx y hyx hy2
+
+lemma completeMinSubset_containsPhenoCompletionsOfMinimallyAllows (S5 S10 : Finset 𝓩) :
+    ContainsPhenoCompletionsOfMinimallyAllows S5 S10 (completeMinSubset S5 S10) := by
+  rw [← completeMinSubset_subset_iff_containsPhenoCompletionsOfMinimallyAllows]
+  simp
+
+TODO "JGVOQ" "Make the result `viableChargesMultiset` a safe definition, that is to
+  say proof that the recursion terminates."
+
+/-- All charges, for a given `S5 S10 : Finset 𝓩`,
+  which permit a top Yukawa coupling, are not phenomenologically constrained,
+  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
+
+  This is the unique multiset without duplicates which satifies:
+  `completeness_of_isPhenoClosedQ5_isPhenoClosedQ10`.
+
+  Note this is fast for evaluation, but to slow with `decide`. -/
+unsafe def viableChargesMultiset (S5 S10 : Finset 𝓩) :
+    Multiset (Charges 𝓩) := (aux (completeMinSubset S5 S10) (completeMinSubset S5 S10)).dedup
+where
+  /-- Auxillary recursive function to define `viableChargesMultiset`. -/
+  aux : Multiset (Charges 𝓩) → Multiset (Charges 𝓩) → Multiset (Charges 𝓩) :=
+    fun all add =>
+      /- Note that aux terminates since that every iteration the size of `all` increases,
+        unless it terminates that round, but `all` is bounded in size by the number
+        of allowed charges given `S5` and `S10`. -/
+      if add = ∅ then all else
+      let s := add.bind fun x => (minimalSuperSet S5 S10 x).val
+      let s2 := s.filter fun y => y ∉ all ∧
+        ¬ IsPhenoConstrained y ∧ ¬ YukawaGeneratesDangerousAtLevel y 1
+      aux (all + s2) s2
 
 end Charges
 

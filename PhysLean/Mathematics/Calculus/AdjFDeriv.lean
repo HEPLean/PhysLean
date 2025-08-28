@@ -127,8 +127,7 @@ lemma gradient_eq_adjFDeriv
     gradient f x = adjFDeriv 𝕜 f x 1 := by
   apply ext_inner_right 𝕜
   unfold gradient
-  simp [ContinuousLinearMap.adjoint_inner_left,
-        hf.hasAdjFDerivAt.hasAdjoint_fderiv.adjoint_inner_left]
+  simp [hf.hasAdjFDerivAt.hasAdjoint_fderiv.adjoint_inner_left]
 
 attribute [fun_prop] HasAdjFDerivAt.differentiableAt
 

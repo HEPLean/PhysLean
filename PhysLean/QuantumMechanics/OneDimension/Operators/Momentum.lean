@@ -47,7 +47,7 @@ lemma momentumOperator_smul {ψ : ℝ → ℂ} (hψ : Differentiable ℝ ψ) (c 
     momentumOperator (c • ψ) = c • momentumOperator ψ := by
   rw [momentumOperator_eq_smul, momentumOperator_eq_smul]
   funext x
-  simp only [neg_mul, Pi.smul_apply, mul_neg, neg_inj]
+  simp only [neg_mul, Pi.smul_apply]
   rw [smul_comm]
   congr
   erw [deriv_smul]

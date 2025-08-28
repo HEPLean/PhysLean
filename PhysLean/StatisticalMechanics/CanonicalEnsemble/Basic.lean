@@ -23,11 +23,11 @@ work uniformly for discrete (counting measure) and continuous (Lebesgue–type) 
 Classical phase–space integrals produce *dimensionful* quantities. To obtain dimensionless
 thermodynamic objects (and an absolute entropy) we introduce:
 
-* `phase_space_unit : ℝ` (physically Planck's constant `h`);
+* `phaseSpaceUnit : ℝ` (physically Planck's constant `h`);
 * `dof : ℕ` the number of degrees of freedom.
 
 The *physical* partition function is obtained from the *mathematical* one by dividing by
-`phase_space_unit ^ dof`. This yields the standard semi–classical correction preventing
+`phaseSpaceUnit ^ dof`. This yields the standard semi–classical correction preventing
 ambiguities such as the Gibbs paradox.
 
 ## 2. Mathematical vs Physical Quantities
@@ -49,7 +49,7 @@ Each physical quantity is expressed explicitly in terms of its mathematical ance
 
 ## 3. Core Structure
 
-We assume `phase_space_unit > 0` and `μ` σ–finite. No probability assumption is imposed:
+We assume `phaseSpaceUnit > 0` and `μ` σ–finite. No probability assumption is imposed:
 normalization is recovered via the Boltzmann weighted measure.
 
 ## 4. Boltzmann & Probability Measures
@@ -75,7 +75,7 @@ settings, not in general continuous ones).
 We construct composite ensembles:
 
 * Addition `(𝓒₁ + 𝓒₂)` on product microstates: energies add, measures take product,
-  degrees of freedom add, and (physically) the same `phase_space_unit` is reused.
+  degrees of freedom add, and (physically) the same `phaseSpaceUnit` is reused.
 * Multiplicity `nsmul n 𝓒`: `n` distinguishable, non–interacting copies (product of `n` copies).
 * Transport along measurable equivalences via `congr`.
 
@@ -93,7 +93,7 @@ mean energies and integrability.
 
 * L. D. Landau & E. M. Lifshitz, *Statistical Physics, Part 1*.
 * D. Tong, Cambridge Lecture Notes (sections on canonical ensemble).
-  - https://www.damtp.cam.ac.uk/user/tong/statphys/statmechhtml/S1.html
+  - https://www.damtp.cam.ac.uk/user/tong/statphys/one.pdf
   - https://www.damtp.cam.ac.uk/user/tong/statphys/two.pdf
 
 ## 9. Roadmap
@@ -121,9 +121,9 @@ structure CanonicalEnsemble (ι : Type) [MeasurableSpace ι] : Type where
   This constant is necessary to define an absolute (rather than relative) thermodynamic
   entropy. In the semi-classical approach, this unit is identified with Planck's constant `h`.
   For discrete systems with a counting measure, this unit should be set to `1`. -/
-  phase_space_unit : ℝ := 1
+  phaseSpaceunit : ℝ := 1
   /-- Assumption that the phase space unit is positive. -/
-  h_pos : 0 < phase_space_unit := by positivity
+  hPos : 0 < phaseSpaceunit := by positivity
   energy_measurable : Measurable energy
   /-- The measure on the indexing set of microstates. -/
   μ : MeasureTheory.Measure ι := by volume_tac
@@ -139,7 +139,7 @@ instance : SigmaFinite 𝓒.μ := 𝓒.μ_sigmaFinite
 
 @[ext]
 lemma ext {𝓒 𝓒' : CanonicalEnsemble ι} (h_energy : 𝓒.energy = 𝓒'.energy)
-    (h_dof : 𝓒.dof = 𝓒'.dof) (h_h : 𝓒.phase_space_unit = 𝓒'.phase_space_unit)
+    (h_dof : 𝓒.dof = 𝓒'.dof) (h_h : 𝓒.phaseSpaceunit = 𝓒'.phaseSpaceunit)
     (h_μ : 𝓒.μ = 𝓒'.μ) : 𝓒 = 𝓒' := by
   cases 𝓒; cases 𝓒'; simp_all
 
@@ -154,8 +154,8 @@ noncomputable instance {ι1 ι2 : Type} [MeasurableSpace ι1] [MeasurableSpace �
   hAdd := fun 𝓒1 𝓒2 => {
     energy := fun (i : ι1 × ι2) => 𝓒1.energy i.1 + 𝓒2.energy i.2
     dof := 𝓒1.dof + 𝓒2.dof
-    phase_space_unit := 𝓒1.phase_space_unit
-    h_pos := 𝓒1.h_pos
+    phaseSpaceunit := 𝓒1.phaseSpaceunit
+    hPos := 𝓒1.hPos
     μ := 𝓒1.μ.prod 𝓒2.μ
     energy_measurable := by fun_prop
   }
@@ -172,8 +172,8 @@ on `ι1`. The physical properties (`dof`, `phase_space_unit`) are unchanged. -/
 noncomputable def congr (e : ι1 ≃ᵐ ι) : CanonicalEnsemble ι1 where
   energy := fun i => 𝓒.energy (e i)
   dof := 𝓒.dof
-  phase_space_unit := 𝓒.phase_space_unit
-  h_pos := 𝓒.h_pos
+  phaseSpaceunit := 𝓒.phaseSpaceunit
+  hPos := 𝓒.hPos
   μ := 𝓒.μ.map e.symm
   energy_measurable := by
     apply Measurable.comp
@@ -192,8 +192,8 @@ lemma congr_energy_comp_symmm (e : ι1 ≃ᵐ ι) :
 noncomputable def nsmul (n : ℕ) (𝓒 : CanonicalEnsemble ι) : CanonicalEnsemble (Fin n → ι) where
   energy := fun f => ∑ i, 𝓒.energy (f i)
   dof := n * 𝓒.dof
-  phase_space_unit := 𝓒.phase_space_unit
-  h_pos := 𝓒.h_pos
+  phaseSpaceunit := 𝓒.phaseSpaceunit
+  hPos := 𝓒.hPos
   μ := MeasureTheory.Measure.pi fun _ => 𝓒.μ
   energy_measurable := by fun_prop
 
@@ -210,14 +210,14 @@ lemma dof_add (𝓒1 : CanonicalEnsemble ι) (𝓒2 : CanonicalEnsemble ι1) :
 
 @[simp]
 lemma phase_space_unit_add (𝓒1 : CanonicalEnsemble ι) (𝓒2 : CanonicalEnsemble ι1) :
-    (𝓒1 + 𝓒2).phase_space_unit = 𝓒1.phase_space_unit := rfl
+    (𝓒1 + 𝓒2).phaseSpaceunit = 𝓒1.phaseSpaceunit := rfl
 
 @[simp]
 lemma dof_nsmul (n : ℕ) : (nsmul n 𝓒).dof = n * 𝓒.dof := rfl
 
 @[simp]
 lemma phase_space_unit_nsmul (n : ℕ) :
-    (nsmul n 𝓒).phase_space_unit = 𝓒.phase_space_unit := rfl
+    (nsmul n 𝓒).phaseSpaceunit = 𝓒.phaseSpaceunit := rfl
 
 @[simp]
 lemma dof_congr (e : ι1 ≃ᵐ ι) :
@@ -225,7 +225,7 @@ lemma dof_congr (e : ι1 ≃ᵐ ι) :
 
 @[simp]
 lemma phase_space_unit_congr (e : ι1 ≃ᵐ ι) :
-    (𝓒.congr e).phase_space_unit = 𝓒.phase_space_unit := rfl
+    (𝓒.congr e).phaseSpaceunit = 𝓒.phaseSpaceunit := rfl
 
 /-! ## The measure -/
 
@@ -234,7 +234,7 @@ lemma μ_add : (𝓒 + 𝓒1).μ = 𝓒.μ.prod 𝓒1.μ := rfl
 lemma μ_nsmul (n : ℕ) : (nsmul n 𝓒).μ = MeasureTheory.Measure.pi fun _ => 𝓒.μ := rfl
 
 lemma μ_nsmul_zero_eq : (nsmul 0 𝓒).μ = Measure.pi (fun _ => 0) := by
-  simp [nsmul, μ_nsmul]
+  simp [nsmul]
   congr
   funext x
   exact Fin.elim0 x
@@ -368,7 +368,7 @@ lemma μBolt_nsmul [SigmaFinite 𝓒.μ] (n : ℕ) (T : Temperature) :
     rw [ih]
     exact MeasureTheory.measurePreserving_piFinSuccAbove (fun _ => 𝓒.μBolt T) 0
 
-  lemma μBolt_ne_zero_of_μ_ne_zero (T : Temperature) (h : 𝓒.μ ≠ 0) :
+lemma μBolt_ne_zero_of_μ_ne_zero (T : Temperature) (h : 𝓒.μ ≠ 0) :
     𝓒.μBolt T ≠ 0 := by
   simp [μBolt] at ⊢ h
   rw [Measure.ext_iff'] at ⊢ h
@@ -460,7 +460,7 @@ lemma mathematicalPartitionFunction_eq_zero_iff (T : Temperature) [IsFiniteMeasu
     exact exp_pos (-(T.β * 𝓒.energy i))
   change 𝓒.μ s = 0 ↔ 𝓒.μ = 0
   rw [h]
-  simp only [Measure.measure_univ_eq_zero, s]
+  simp only [Measure.measure_univ_eq_zero]
   fun_prop
 
 open NNReal
@@ -619,7 +619,7 @@ lemma integrable_energy_nsmul (n : ℕ) (T : Temperature)
     Integrable (nsmul n 𝓒).energy ((nsmul n 𝓒).μProd T) := by
   induction n with
   | zero =>
-    simp [nsmul, μProd_nsmul]
+    simp [nsmul]
   | succ n ih =>
     rw [nsmul_succ]
     apply integrable_energy_congr
@@ -672,7 +672,7 @@ lemma meanEnergy_nsmul (n : ℕ) (T : Temperature)
     (nsmul n 𝓒).meanEnergy T = n * 𝓒.meanEnergy T := by
   induction n with
   | zero =>
-    simp [nsmul, meanEnergy, μProd_nsmul]
+    simp [nsmul, meanEnergy]
   | succ n ih =>
     rw [nsmul_succ, meanEnergy_congr, meanEnergy_add, ih]
     simp only [Nat.cast_add, Nat.cast_one]
@@ -692,8 +692,7 @@ See `thermodynamicEntropy` for the absolute physical quantity. -/
 noncomputable def differentialEntropy (T : Temperature) : ℝ :=
   - kB * ∫ i, log (probability 𝓒 T i) ∂𝓒.μProd T
 
-/-- Probabilities are non-negative,
-assuming a positive partition function. -/
+/-- Probabilities are non-negative, assuming a positive partition function. -/
 lemma probability_nonneg
     (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] (i : ι) :
     0 ≤ 𝓒.probability T i := by
@@ -721,7 +720,7 @@ lemma differentialEntropy_nonneg_of_prob_le_one
     refine Filter.Eventually.of_forall ?_
     intro i
     have hpos := probability_pos (𝓒:=𝓒) (T:=T) i
-    have hle  := hP_le_one i
+    have hle := hP_le_one i
     have hle' : 𝓒.probability T i ≤ Real.exp 0 := by
       simpa [Real.exp_zero] using hle
     exact (log_le_iff_le_exp hpos).mpr hle'
@@ -745,26 +744,26 @@ lemma differentialEntropy_nonneg_of_prob_le_one
 ## Thermodynamic Quantities
 
 These are the dimensionless physical quantities derived from the mathematical definitions
-by incorporating the phase space volume `𝓒.phase_space_unit ^ 𝓒.dof`.
+by incorporating the phase space volume `𝓒.phaseSpaceUnit ^ 𝓒.dof`.
 -/
 
 open Constants
 
 /-- The dimensionless thermodynamic partition function, `Z = Z_math / h^dof`. -/
 noncomputable def partitionFunction (T : Temperature) : ℝ :=
-  𝓒.mathematicalPartitionFunction T / (𝓒.phase_space_unit ^ 𝓒.dof)
+  𝓒.mathematicalPartitionFunction T / (𝓒.phaseSpaceunit ^ 𝓒.dof)
 
 @[simp]
 lemma partitionFunction_def (𝓒 : CanonicalEnsemble ι) (T : Temperature) :
     𝓒.partitionFunction T =
-      𝓒.mathematicalPartitionFunction T / (𝓒.phase_space_unit ^ 𝓒.dof) := rfl
+      𝓒.mathematicalPartitionFunction T / (𝓒.phaseSpaceunit ^ 𝓒.dof) := rfl
 
 lemma partitionFunction_pos
     (𝓒 : CanonicalEnsemble ι) (T : Temperature)
     [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] :
     0 < 𝓒.partitionFunction T := by
   have hZ := 𝓒.mathematicalPartitionFunction_pos T
-  have hden : 0 < 𝓒.phase_space_unit ^ 𝓒.dof := pow_pos 𝓒.h_pos _
+  have hden : 0 < 𝓒.phaseSpaceunit ^ 𝓒.dof := pow_pos 𝓒.hPos _
   simp [partitionFunction, hZ, hden]
 
 lemma partitionFunction_congr
@@ -775,7 +774,7 @@ lemma partitionFunction_congr
 lemma partitionFunction_add
     (𝓒 : CanonicalEnsemble ι) (𝓒1 : CanonicalEnsemble ι1)
     (T : Temperature)
-    (h : 𝓒.phase_space_unit = 𝓒1.phase_space_unit) :
+    (h : 𝓒.phaseSpaceunit = 𝓒1.phaseSpaceunit) :
     (𝓒 + 𝓒1).partitionFunction T
       = 𝓒.partitionFunction T * 𝓒1.partitionFunction T := by
   simp [partitionFunction, mathematicalPartitionFunction_add, h,
@@ -796,7 +795,7 @@ lemma partitionFunction_dof_zero
   simp [partitionFunction, h]
 
 lemma partitionFunction_phase_space_unit_one
-    (𝓒 : CanonicalEnsemble ι) (T : Temperature) (h : 𝓒.phase_space_unit = 1) :
+    (𝓒 : CanonicalEnsemble ι) (T : Temperature) (h : 𝓒.phaseSpaceunit = 1) :
     𝓒.partitionFunction T = 𝓒.mathematicalPartitionFunction T := by
   simp [partitionFunction, h]
 
@@ -805,12 +804,12 @@ lemma log_partitionFunction
     [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] :
     Real.log (𝓒.partitionFunction T)
       = Real.log (𝓒.mathematicalPartitionFunction T)
-        - (𝓒.dof : ℝ) * Real.log 𝓒.phase_space_unit := by
+        - (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
   have hZ := 𝓒.mathematicalPartitionFunction_pos T
-  have hden : 0 < 𝓒.phase_space_unit ^ 𝓒.dof := pow_pos 𝓒.h_pos _
+  have hden : 0 < 𝓒.phaseSpaceunit ^ 𝓒.dof := pow_pos 𝓒.hPos _
   have hlogpow :
-      Real.log (𝓒.phase_space_unit ^ 𝓒.dof)
-        = (𝓒.dof : ℝ) * Real.log 𝓒.phase_space_unit := by
+      Real.log (𝓒.phaseSpaceunit ^ 𝓒.dof)
+        = (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
     simp
   simp [partitionFunction, Real.log_div hZ.ne' hden.ne', hlogpow,
         sub_eq_add_neg, mul_comm, mul_left_comm, mul_assoc]
@@ -822,7 +821,7 @@ lemma log_partitionFunction_ofβ
     [IsFiniteMeasure (𝓒.μBolt (ofβ β))] [NeZero 𝓒.μ] :
     Real.log (𝓒.partitionFunction (ofβ β))
       = Real.log (𝓒.mathematicalPartitionFunction (ofβ β))
-        - (𝓒.dof : ℝ) * Real.log 𝓒.phase_space_unit :=
+        - (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit :=
   log_partitionFunction (𝓒:=𝓒) (T:=ofβ β)
 
 /-- The logarithm of the mathematical partition function as an integral. -/
@@ -854,7 +853,7 @@ lemma helmholtzFreeEnergy_dof_zero
   simp [helmholtzFreeEnergy, partitionFunction, h]
 
 lemma helmholtzFreeEnergy_phase_space_unit_one
-    (𝓒 : CanonicalEnsemble ι) (T : Temperature) (h : 𝓒.phase_space_unit = 1) :
+    (𝓒 : CanonicalEnsemble ι) (T : Temperature) (h : 𝓒.phaseSpaceunit = 1) :
     𝓒.helmholtzFreeEnergy T
       = -kB * T.val * Real.log (𝓒.mathematicalPartitionFunction T) := by
   simp [helmholtzFreeEnergy, partitionFunction, h]
@@ -863,7 +862,7 @@ lemma helmholtzFreeEnergy_add
     (𝓒 : CanonicalEnsemble ι) (𝓒1 : CanonicalEnsemble ι1) (T : Temperature)
     [IsFiniteMeasure (𝓒.μBolt T)] [IsFiniteMeasure (𝓒1.μBolt T)]
     [NeZero 𝓒.μ] [NeZero 𝓒1.μ]
-    (h : 𝓒.phase_space_unit = 𝓒1.phase_space_unit) :
+    (h : 𝓒.phaseSpaceunit = 𝓒1.phaseSpaceunit) :
     (𝓒 + 𝓒1).helmholtzFreeEnergy T
       = 𝓒.helmholtzFreeEnergy T + 𝓒1.helmholtzFreeEnergy T := by
   have hPF := partitionFunction_add (𝓒:=𝓒) (𝓒1:=𝓒1) (T:=T) h
@@ -903,20 +902,20 @@ lemma helmholtzFreeEnergy_nsmul
     _ = n * 𝓒.helmholtzFreeEnergy T := by
           simp [helmholtzFreeEnergy, mul_comm, mul_left_comm, mul_assoc]
 
-/-- The dimensionless physical probability density. This is obtained by dividing the
-phase space measure by the fundamental unit `h^dof`, making the probability
-density `ρ_phys = ρ_math * h^dof` dimensionless. -/
+/-- The dimensionless physical probability density. This is is the probability density w.r.t. the
+measure, obtained by dividing the phase space measure by the fundamental unit `h^dof`, making the
+probability density `ρ_phys = ρ_math * h^dof` dimensionless. -/
 noncomputable def physicalProbability (T : Temperature) (i : ι) : ℝ :=
-  𝓒.probability T i * (𝓒.phase_space_unit ^ 𝓒.dof)
+  𝓒.probability T i * (𝓒.phaseSpaceunit ^ 𝓒.dof)
 
 @[simp]
 lemma physicalProbability_def (T : Temperature) (i : ι) :
     𝓒.physicalProbability T i
-      = 𝓒.probability T i * (𝓒.phase_space_unit ^ 𝓒.dof) := rfl
+      = 𝓒.probability T i * (𝓒.phaseSpaceunit ^ 𝓒.dof) := rfl
 
 lemma physicalProbability_measurable (T : Temperature) :
     Measurable (𝓒.physicalProbability T) := by
-  let c : ℝ := (𝓒.phase_space_unit ^ 𝓒.dof) / 𝓒.mathematicalPartitionFunction T
+  let c : ℝ := (𝓒.phaseSpaceunit ^ 𝓒.dof) / 𝓒.mathematicalPartitionFunction T
   have h_energy_meas : Measurable fun i => 𝓒.energy i := 𝓒.energy_measurable
   have h_mul_meas : Measurable fun i => (-(T.β : ℝ)) * 𝓒.energy i := by
     simpa [mul_comm] using h_energy_meas.const_mul (-(T.β : ℝ))
@@ -936,20 +935,20 @@ lemma physicalProbability_nonneg
     (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] (i : ι) :
     0 ≤ 𝓒.physicalProbability T i := by
   have hp := 𝓒.probability_nonneg (T:=T) i
-  exact mul_nonneg hp (by exact pow_nonneg (le_of_lt 𝓒.h_pos) _)
+  exact mul_nonneg hp (by exact pow_nonneg (le_of_lt 𝓒.hPos) _)
 
 lemma physicalProbability_pos
     (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] (i : ι) :
     0 < 𝓒.physicalProbability T i := by
   have hp := 𝓒.probability_pos (T:=T) i
-  exact mul_pos hp (pow_pos 𝓒.h_pos _)
+  exact mul_pos hp (pow_pos 𝓒.hPos _)
 
 lemma log_physicalProbability
     (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] (i : ι) :
     Real.log (𝓒.physicalProbability T i)
-      = Real.log (𝓒.probability T i) + (𝓒.dof : ℝ) * Real.log 𝓒.phase_space_unit := by
+      = Real.log (𝓒.probability T i) + (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
   have hppos := 𝓒.probability_pos (T:=T) i
-  have hpowpos : 0 < 𝓒.phase_space_unit ^ 𝓒.dof := pow_pos 𝓒.h_pos _
+  have hpowpos : 0 < 𝓒.phaseSpaceunit ^ 𝓒.dof := pow_pos 𝓒.hPos _
   simp [physicalProbability, Real.log_mul hppos.ne' hpowpos.ne', Real.log_pow, Nat.cast_id]
 
 lemma integral_probability
@@ -982,18 +981,18 @@ lemma integral_physicalProbability_base
     (𝓒 : CanonicalEnsemble ι) (T : Temperature)
     [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] :
     (∫ i, 𝓒.physicalProbability T i ∂ 𝓒.μ)
-      = 𝓒.phase_space_unit ^ 𝓒.dof := by
+      = 𝓒.phaseSpaceunit ^ 𝓒.dof := by
   classical
   have hnorm := integral_probability (𝓒:=𝓒) (T:=T)
   calc
     (∫ i, 𝓒.physicalProbability T i ∂ 𝓒.μ)
-        = (∫ i, 𝓒.probability T i * (𝓒.phase_space_unit ^ 𝓒.dof) ∂ 𝓒.μ) := by
+        = (∫ i, 𝓒.probability T i * (𝓒.phaseSpaceunit ^ 𝓒.dof) ∂ 𝓒.μ) := by
               simp [physicalProbability, mul_comm, mul_left_comm, mul_assoc]
-    _ = (∫ i, 𝓒.probability T i ∂ 𝓒.μ) * (𝓒.phase_space_unit ^ 𝓒.dof) := by
+    _ = (∫ i, 𝓒.probability T i ∂ 𝓒.μ) * (𝓒.phaseSpaceunit ^ 𝓒.dof) := by
               simp [physicalProbability, integral_mul_const,
                     mul_comm, mul_left_comm, mul_assoc]
-    _ = 1 * (𝓒.phase_space_unit ^ 𝓒.dof) := by simp [hnorm]
-    _ = 𝓒.phase_space_unit ^ 𝓒.dof := by ring
+    _ = 1 * (𝓒.phaseSpaceunit ^ 𝓒.dof) := by simp [hnorm]
+    _ = 𝓒.phaseSpaceunit ^ 𝓒.dof := by ring
 
 lemma physicalProbability_dof_zero
     (T : Temperature) (h : 𝓒.dof = 0) (i : ι) :
@@ -1001,7 +1000,7 @@ lemma physicalProbability_dof_zero
   simp [physicalProbability, h]
 
 lemma physicalProbability_phase_space_unit_one
-    (T : Temperature) (h : 𝓒.phase_space_unit = 1) (i : ι) :
+    (T : Temperature) (h : 𝓒.phaseSpaceunit = 1) (i : ι) :
     𝓒.physicalProbability T i = 𝓒.probability T i := by
   simp [physicalProbability, h]
 
@@ -1013,7 +1012,7 @@ lemma physicalProbability_congr (e : ι1 ≃ᵐ ι) (T : Temperature) (i : ι1) 
 lemma physicalProbability_add
     {ι1} [MeasurableSpace ι1]
     (𝓒1 : CanonicalEnsemble ι1) (T : Temperature) (i : ι × ι1)
-    (h : 𝓒.phase_space_unit = 𝓒1.phase_space_unit) :
+    (h : 𝓒.phaseSpaceunit = 𝓒1.phaseSpaceunit) :
     (𝓒 + 𝓒1).physicalProbability T i
       = 𝓒.physicalProbability T i.1 * 𝓒1.physicalProbability T i.2 := by
   simp [physicalProbability, probability_add, phase_space_unit_add, dof_add, h, pow_add]

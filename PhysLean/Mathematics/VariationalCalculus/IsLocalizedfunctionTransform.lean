@@ -161,7 +161,7 @@ lemma div {d} : IsLocalizedFunctionTransform fun (φ : Space d → Space d) x =>
         simpa using hx
       · intro x hx
         have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
-        simp_all [hφ]
+        simp_all
     intro x hx; dsimp;
     simp [Space.div,Space.deriv]
     congr; funext i; congr 1
@@ -191,7 +191,7 @@ lemma grad : IsLocalizedFunctionTransform fun (ψ : Space d → ℝ) x => Space.
       simpa using hx
     · intro x hx
       have hx' : x ∈ Metric.cthickening 1 K := Metric.thickening_subset_cthickening 1 K hx
-      simp_all [hφ]
+      simp_all
 
 lemma gradient : IsLocalizedFunctionTransform fun (ψ : Space d → ℝ) x => gradient ψ x := by
   conv =>

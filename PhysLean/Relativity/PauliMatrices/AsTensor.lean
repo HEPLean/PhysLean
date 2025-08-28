@@ -174,7 +174,7 @@ def asConsTensor : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ complexContr ⊗ leftHanded ⊗
   to Pauli matrices, when evaluated on `1` corresponds to the tensor `PauliMatrix.asTensor`. -/
 lemma asConsTensor_apply_one : asConsTensor.hom (1 : ℂ) = asTensor := by
   change (1 : ℂ) • asTensor = asTensor
-  simp only [asConsTensor, one_smul]
+  simp only [one_smul]
 
 end
 end PauliMatrix

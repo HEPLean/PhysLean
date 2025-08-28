@@ -49,19 +49,19 @@ lemma ofFieldLabel_mono {x y : Charges 𝓩} (h : x ⊆ y) (F : FieldLabel) :
 @[simp]
 lemma mem_ofFieldLabel_fiveHd (x : 𝓩) (y : Charges 𝓩) :
     x ∈ y.ofFieldLabel FieldLabel.fiveHd ↔ -x ∈ y.ofFieldLabel .fiveBarHd := by
-  simp [ofFieldLabel, FieldLabel.fiveHd]
+  simp [ofFieldLabel]
   aesop
 
 @[simp]
 lemma mem_ofFieldLabel_fiveHu (x : 𝓩) (y : Charges 𝓩) :
     x ∈ y.ofFieldLabel FieldLabel.fiveHu ↔ -x ∈ y.ofFieldLabel .fiveBarHu := by
-  simp [ofFieldLabel, FieldLabel.fiveHu]
+  simp [ofFieldLabel]
   aesop
 
 @[simp]
 lemma mem_ofFieldLabel_fiveMatter (x : 𝓩) (y : Charges 𝓩) :
     x ∈ y.ofFieldLabel FieldLabel.fiveMatter ↔ -x ∈ y.ofFieldLabel .fiveBarMatter := by
-  simp [ofFieldLabel, FieldLabel.fiveBarHd]
+  simp [ofFieldLabel]
   aesop
 
 /-- Two charges are equal if they are equal on all field labels. -/

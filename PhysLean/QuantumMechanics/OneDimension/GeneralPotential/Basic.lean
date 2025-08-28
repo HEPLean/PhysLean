@@ -42,7 +42,7 @@ lemma momentumOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   have ht1 : deriv (a1 •ψ1) x = deriv (fun y ↦ (a1 •ψ1 y)) x := rfl
   have ht2 : deriv (a2 •ψ2) x = deriv (fun y ↦ (a2 •ψ2 y)) x := rfl
   rw [ht1, ht2, deriv_fun_const_smul, deriv_fun_const_smul, mul_add]
-  simp only [mul_comm, mul_assoc]
+  simp only [mul_comm]
   rw [← mul_assoc, ← mul_assoc, ← mul_assoc a1, ← mul_assoc a2, mul_assoc, mul_assoc]
   · rfl
   · exact hψ2_x x
@@ -74,7 +74,7 @@ lemma potentialOperator_linear (V: ℝ → ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ →
   ext x
   have h: (a1 • ψ1 + a2 • ψ2) x = a1 *ψ1 x + a2 * ψ2 x := rfl
   rw [h, mul_add]
-  simp only [mul_assoc, mul_comm, add_comm]
+  simp only [mul_comm]
   rw [mul_comm,mul_assoc, ← mul_assoc _ a2, mul_comm _ a2, mul_assoc a2, mul_comm (ψ2 x)]
 
 /-- A quantum mechanical system in 1D is specified by a three

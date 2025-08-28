@@ -106,7 +106,7 @@ lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
   erw [TriLinearSymm.toCubic_add, cubeSol (b • (BL n)), accCube.map_smul]
   repeat rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   rw [on_cubeTriLin_AFL]
-  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply, Fin.isValue,
+  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply,
     add_zero, BL_val, mul_zero]
   ring
 

@@ -46,7 +46,7 @@ private lemma norm_iteratedFDeriv_ofRealCLM {x} (i : ℕ) :
       · intro N hN h
         have h1 := h 1
         rw [← RCLike.ofRealCLM_apply] at h1
-        simp [- RCLike.ofRealCLM_apply, norm_smul] at h1
+        simp [- RCLike.ofRealCLM_apply] at h1
         simpa using h1
     | succ i ih =>
       rw [iteratedFDeriv_succ_eq_comp_right]

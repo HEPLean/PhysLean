@@ -14,7 +14,7 @@ We define complex Lorentz vectors in 4d space-time as representations of SL(2, C
 
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -44,7 +44,7 @@ lemma complexContrBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 1 ⊕ Fin 3) :
     (LinearMap.toMatrix complexContrBasis complexContrBasis) (complexContr.ρ M) i j =
     (LorentzGroup.toComplex (SL2C.toLorentzGroup M)) i j := by
   rw [LinearMap.toMatrix_apply]
-  simp only [complexContrBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  simp only [complexContrBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (((LorentzGroup.toComplex (SL2C.toLorentzGroup M))) *ᵥ (Pi.single j 1)) i = _
   simp
 
@@ -60,31 +60,31 @@ def complexContrBasisFin4 : Basis (Fin 4) ℂ complexContr :=
 @[simp]
 lemma complexContrBasisFin4_apply_zero :
     complexContrBasisFin4 0 = complexContrBasis (Sum.inl 0) := by
-  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  simp only [complexContrBasisFin4, Basis.reindex_apply]
   rfl
 
 @[simp]
 lemma complexContrBasisFin4_apply_one :
     complexContrBasisFin4 1 = complexContrBasis (Sum.inr 0) := by
-  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  simp only [complexContrBasisFin4, Basis.reindex_apply]
   rfl
 
 @[simp]
 lemma complexContrBasisFin4_apply_two :
     complexContrBasisFin4 2 = complexContrBasis (Sum.inr 1) := by
-  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  simp only [complexContrBasisFin4, Basis.reindex_apply]
   rfl
 
 @[simp]
 lemma complexContrBasisFin4_apply_three :
     complexContrBasisFin4 3 = complexContrBasis (Sum.inr 2) := by
-  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  simp only [complexContrBasisFin4, Basis.reindex_apply]
   rfl
 
 @[simp]
 lemma complexContrBasisFin4_apply_succ (i : Fin 3) :
     complexContrBasisFin4 i.succ = complexContrBasis (Sum.inr i) := by
-  simp only [complexContrBasisFin4, Basis.reindex_apply, complexContrBasis_toFin13ℂ]
+  simp only [complexContrBasisFin4, Basis.reindex_apply]
   congr 1
   fin_cases i <;> decide
 
@@ -113,25 +113,25 @@ def complexCoBasisFin4 : Basis (Fin 4) ℂ complexCo :=
 @[simp]
 lemma complexCoBasisFin4_apply_zero :
     complexCoBasisFin4 0 = complexCoBasis (Sum.inl 0) := by
-  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  simp only [complexCoBasisFin4, Basis.reindex_apply]
   rfl
 
 @[simp]
 lemma complexCoBasisFin4_apply_one :
     complexCoBasisFin4 1 = complexCoBasis (Sum.inr 0) := by
-  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  simp only [complexCoBasisFin4, Basis.reindex_apply]
   rfl
 
 @[simp]
 lemma complexCoBasisFin4_apply_two :
     complexCoBasisFin4 2 = complexCoBasis (Sum.inr 1) := by
-  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  simp only [complexCoBasisFin4, Basis.reindex_apply]
   rfl
 
 @[simp]
 lemma complexCoBasisFin4_apply_three :
     complexCoBasisFin4 3 = complexCoBasis (Sum.inr 2) := by
-  simp only [complexCoBasisFin4, Basis.reindex_apply, complexCoBasis_toFin13ℂ]
+  simp only [complexCoBasisFin4, Basis.reindex_apply]
   rfl
 
 /-!
@@ -148,14 +148,14 @@ def inclCongrRealLorentz : ContrMod 3 →ₛₗ[Complex.ofRealHom] complexContr 
     apply Lorentz.ContrℂModule.ext
     rw [Lorentz.ContrℂModule.val_add]
     funext i
-    simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.add_apply, map_add]
-    simp only [ofRealHom_eq_coe, ofReal_add]
+    simp only [Function.comp_apply, Pi.add_apply, map_add]
+    simp only [ofReal_add]
   map_smul' c x := by
     apply Lorentz.ContrℂModule.ext
     rw [Lorentz.ContrℂModule.val_smul]
     funext i
     simp only [Function.comp_apply, ofRealHom_eq_coe, Pi.smul_apply, _root_.map_smul]
-    simp only [smul_eq_mul, ofRealHom_eq_coe, ofReal_mul]
+    simp only [smul_eq_mul, ofReal_mul]
 
 lemma inclCongrRealLorentz_val (v : ContrMod 3) :
     (inclCongrRealLorentz v).val = ofRealHom ∘ v.toFin1dℝ := rfl

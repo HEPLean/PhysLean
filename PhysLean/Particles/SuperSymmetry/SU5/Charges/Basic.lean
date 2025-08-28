@@ -146,7 +146,7 @@ instance emptyInst : EmptyCollection (Charges 𝓩) where
 
 @[simp]
 lemma empty_subset (x : Charges 𝓩) : ∅ ⊆ x := by
-  simp [hasSubset, Subset, emptyInst]
+  simp [Subset, emptyInst]
 
 @[simp]
 lemma subset_of_empty_iff_empty {x : Charges 𝓩} :
@@ -192,7 +192,7 @@ lemma card_empty : card (∅ : Charges 𝓩) = 0 := by
   simp [card, emptyInst]
 
 lemma card_mono {x y : Charges 𝓩} (h : x ⊆ y) : card x ≤ card y := by
-  simp [card, hasSubset] at h
+  simp [hasSubset] at h
   have h1 := Finset.card_le_card h.1
   have h2 := Finset.card_le_card h.2.1
   have h3 := Finset.card_le_card h.2.2.1

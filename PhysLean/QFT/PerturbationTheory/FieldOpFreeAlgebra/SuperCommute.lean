@@ -21,7 +21,7 @@ namespace FieldOpFreeAlgebra
 
 -/
 
-open FieldStatistic
+open Module FieldStatistic
 
 /-- For a field specification `𝓕`, the super commutator `superCommuteF` is defined as the linear
   map `𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra →ₗ[ℂ] 𝓕.FieldOpFreeAlgebra`
@@ -419,7 +419,11 @@ lemma superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum (φs : List 𝓕.CrAnFieldOp)
     ofCrAnListF (φs'.take n) * [ofCrAnListF φs, ofCrAnOpF (φs'.get n)]ₛF *
     ofCrAnListF (φs'.drop (n + 1))
   | [] => by
-    simp [← ofCrAnListF_nil, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp only [ofCrAnListF_nil, List.length_nil, Finset.univ_eq_empty, instCommGroup.eq_1,
+      List.take_nil, ofList_empty, exchangeSign_bosonic, one_smul, List.get_eq_getElem, one_mul,
+      List.drop_nil, mul_one, Finset.sum_empty]
+    rw [← ofCrAnListF_nil, superCommuteF_ofCrAnListF_ofCrAnListF]
+    simp
   | φ :: φs' => by
     rw [superCommuteF_ofCrAnListF_ofCrAnListF_cons,
       superCommuteF_ofCrAnListF_ofCrAnListF_eq_sum φs φs']
@@ -651,7 +655,7 @@ lemma superCommuteF_bonsonic {a b : 𝓕.FieldOpFreeAlgebra} (hb : b ∈ statist
 lemma bosonic_superCommuteF {a b : 𝓕.FieldOpFreeAlgebra} (ha : a ∈ statisticSubmodule bosonic) :
     [a, b]ₛF = a * b - b * a := by
   rw [← bosonicProjF_add_fermionicProjF b]
-  simp only [map_add, LinearMap.add_apply]
+  simp only [map_add]
   rw [superCommuteF_bosonic_bosonic ha (by simp), superCommuteF_bosonic_fermionic ha (by simp)]
   simp only [add_mul, mul_add]
   abel
@@ -691,14 +695,14 @@ lemma superCommuteF_fermionic_fermionic {a b : 𝓕.FieldOpFreeAlgebra}
       simp_all only [p, map_add, LinearMap.add_apply, add_mul, mul_add]
       abel
     · intro c x hx hp1
-      simp_all [p, smul_sub]
+      simp_all [p]
     · exact ha
   · simp [p]
   · intro x y hx hy hp1 hp2
     simp_all only [map_add, mul_add, add_mul, p]
     abel
   · intro c x hx hp1
-    simp_all [p, smul_sub]
+    simp_all [p]
   · exact hb
 
 lemma superCommuteF_fermionic_fermionic_symm {a b : 𝓕.FieldOpFreeAlgebra}
@@ -735,7 +739,7 @@ lemma superCommuteF_ofCrAnListF_ofCrAnListF_bosonic_or_fermionic (φs φs' : Lis
     apply ofCrAnListF_mem_statisticSubmodule_of _ _ h2
   · right
     have h : fermionic = bosonic + fermionic := by
-      simp only [add_eq_mul, instCommGroup, mul_self]
+      simp only [add_eq_mul, instCommGroup]
       rfl
     rw [h]
     apply superCommuteF_grade
@@ -743,7 +747,7 @@ lemma superCommuteF_ofCrAnListF_ofCrAnListF_bosonic_or_fermionic (φs φs' : Lis
     apply ofCrAnListF_mem_statisticSubmodule_of _ _ (by simpa using h2)
   · right
     have h : fermionic = fermionic + bosonic := by
-      simp only [add_eq_mul, instCommGroup, mul_self]
+      simp only [add_eq_mul, instCommGroup]
       rfl
     rw [h]
     apply superCommuteF_grade
@@ -777,13 +781,13 @@ lemma superCommuteF_superCommuteF_ofCrAnOpF_bosonic_or_fermionic (φ1 φ2 φ3 : 
     apply superCommuteF_grade h1 hs
   · right
     have h : fermionic = fermionic + bosonic := by
-      simp only [add_eq_mul, instCommGroup, mul_self]
+      simp only [add_eq_mul, instCommGroup]
       rfl
     rw [h]
     apply superCommuteF_grade h1 hs
   · right
     have h : fermionic = bosonic + fermionic := by
-      simp only [add_eq_mul, instCommGroup, mul_self]
+      simp only [add_eq_mul, instCommGroup]
       rfl
     rw [h]
     apply superCommuteF_grade h1 hs

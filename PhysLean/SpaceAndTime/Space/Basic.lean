@@ -85,13 +85,13 @@ noncomputable def basis {d} : OrthonormalBasis (Fin d) ℝ (Space d) :=
 
 lemma basis_apply {d} (i j : Fin d) :
     basis i j = if i = j then 1 else 0 := by
-  simp [basis, EuclideanSpace.basisFun_apply, Fin.isValue]
+  simp [basis, EuclideanSpace.basisFun_apply]
   congr 1
   exact Lean.Grind.eq_congr' rfl rfl
 
 @[simp]
 lemma basis_self {d} (i : Fin d) : basis i i = 1 := by
-  simp [basis_apply, if_pos rfl]
+  simp [basis_apply]
 
 @[simp]
 lemma basis_repr {d} (p : Space d) : basis.repr p = p := by rfl

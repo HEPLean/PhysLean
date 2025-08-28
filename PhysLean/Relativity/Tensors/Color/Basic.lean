@@ -252,7 +252,8 @@ instance (C : Type) : MonoidalCategoryStruct (OverColor C) where
 instance (C : Type) : MonoidalCategory (OverColor C) where
     tensorHom_def f g := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| Over.OverMorphism.ext <|
         funext fun x => rfl
-    tensor_id X Y :=CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <| (Iso.eq_inv_comp _).mp rfl
+    id_tensorHom_id X Y :=CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
+      (Iso.eq_inv_comp _).mp rfl
     tensor_comp f1 f2 g1 g2 := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
         Over.OverMorphism.ext <| funext fun x => by
       match x with
@@ -305,9 +306,9 @@ instance (C : Type) : MonoidalCategory (OverColor C) where
 instance (C : Type) : BraidedCategory (OverColor C) where
   braiding f g := {
     hom := ⟨Over.isoMk (Equiv.sumComm f.left g.left).toIso
-      (by simp only [OverColor.left, mk]; aesop_cat)⟩
+      (by simp only [OverColor.left]; aesop_cat)⟩
     inv := ⟨(Over.isoMk (Equiv.sumComm f.left g.left).toIso
-      (by simp only [OverColor.left, mk]; aesop_cat)).symm⟩
+      (by simp only [OverColor.left]; aesop_cat)).symm⟩
     hom_inv_id := CoreHom.ext_iff.mpr <| CategoryTheory.Iso.ext <|
         Over.OverMorphism.ext <| funext fun x => by
       match x with

@@ -10,9 +10,7 @@ import PhysLean.Relativity.Tensors.Contraction.Basic
 
 -/
 
-open IndexNotation
-open CategoryTheory
-open MonoidalCategory
+open IndexNotation CategoryTheory MonoidalCategory Module
 
 namespace TensorSpecies
 open OverColor
@@ -97,7 +95,7 @@ lemma ofFin_mem_dropPairEmbSection {n : ℕ} {c : Fin (n + 1 + 1) → C}
   ext m
   simp only [ofFin, dropPair, Pure.dropPairEmb_neq_fst, ↓reduceDIte, Pure.dropPairEmb_neq_snd,
     Function.comp_apply]
-  simp only [Fin.ext_iff, Fin.coe_cast]
+  simp only [Fin.coe_cast]
   rw [Pure.dropPairEmbPre_dropPairEmb]
 
 /-- The equivalence between `ContrSection b` and

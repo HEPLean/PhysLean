@@ -89,7 +89,7 @@ lemma scale_div_self (x : LengthUnit) (r : ℝ) (hr : 0 < r) :
 
 @[simp]
 lemma scale_one (x : LengthUnit) : scale 1 x = x := by
-  simp [scale, mul_one]
+  simp [scale]
 
 @[simp]
 lemma scale_div_scale (x1 x2 : LengthUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 < r2) :

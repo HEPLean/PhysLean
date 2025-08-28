@@ -29,7 +29,7 @@ The key lemmas show how these operators interact, particularly focusing on the
 super commutation relations between creation and annihilation operators.
 
 -/
-
+open Module
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 
@@ -208,8 +208,7 @@ noncomputable def ofCrAnListFBasis : Basis (List 𝓕.CrAnFieldOp) ℂ (FieldOpF
 lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnFieldOp) :
     ofCrAnListFBasis φs = ofCrAnListF φs := by
   simp only [ofCrAnListFBasis, FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
-    Basis.coe_ofRepr, AlgEquiv.toLinearEquiv_symm, AlgEquiv.toLinearEquiv_apply,
-    AlgEquiv.ofAlgHom_symm_apply, ofCrAnListF]
+    Basis.coe_ofRepr, ofCrAnListF]
   erw [MonoidAlgebra.lift_apply]
   simp only [zero_smul, Finsupp.sum_single_index, one_smul]
   rw [@FreeMonoid.lift_apply]
@@ -241,7 +240,7 @@ noncomputable def mulLinearMap : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFree
   map_smul' := by
     intros
     ext c
-    simp [smul_mul']
+    simp
 
 lemma mulLinearMap_apply (a b : FieldOpFreeAlgebra 𝓕) :
     mulLinearMap a b = a * b := rfl

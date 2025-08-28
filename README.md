@@ -5,7 +5,7 @@
 
 
 <div align="center">
-  
+
 ## An open-source, community, project to digitalize results from physics into Lean 4
 
 
@@ -20,7 +20,7 @@
 [![](https://img.shields.io/badge/PhysLean-Online-purple)](https://live.physlean.com)
 
  [![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
-[![](https://img.shields.io/badge/Lean-v4.21.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.21.0)
+[![](https://img.shields.io/badge/Lean-v4.22.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.22.0)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HEPLean/PhysLean)
 
@@ -49,7 +49,7 @@ See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. 
 
 Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
 
-> [!NOTE]  
+> [!NOTE]
 > When making contributing to PhysLean it is much better to do it with small steps. This makes it easier for us to review, and allows you to get feedback sooner.
 
 
@@ -120,4 +120,3 @@ or
 - Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
 - Run `lake build`.
 - Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
-

@@ -49,11 +49,11 @@ lemma map_empty (f : 𝓩 →+ 𝓩1) : map f (∅ : Charges 𝓩) = ∅ := by
 
 lemma map_map (f : 𝓩 →+ 𝓩1) (g : 𝓩1 →+ 𝓩2) (x : Charges 𝓩) :
     map g (map f x) = map (g.comp f) x := by
-  simp [map, Function.comp, Option.map_map, Finset.image_image]
+  simp [map, Option.map_map, Finset.image_image]
 
 @[simp]
 lemma map_id [DecidableEq 𝓩] (x : Charges 𝓩) : map (AddMonoidHom.id 𝓩) x = x := by
-  simp [map, Option.map_id, Finset.image_id]
+  simp [map, Finset.image_id]
 
 lemma map_ofFieldLabel (f : 𝓩 →+ 𝓩1) (x : Charges 𝓩) (F : FieldLabel) :
     ofFieldLabel (map f x) F = (ofFieldLabel x F).image f := by
@@ -100,7 +100,7 @@ lemma map_ofPotentialTerm_toFinset [DecidableEq 𝓩]
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset] at h
       try simp [ofPotentialTerm'] at h
-      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h
+      simp only [SProd.sprod, Multiset.mem_product] at h
     case' μ | β =>
       obtain ⟨q1, q2, ⟨q1_mem, q2_mem⟩, q_sum⟩ := h
       simp [map] at q1_mem q2_mem
@@ -133,7 +133,7 @@ lemma map_ofPotentialTerm_toFinset [DecidableEq 𝓩]
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset]
       try simp [ofPotentialTerm']
-      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
+      simp only [SProd.sprod, Multiset.mem_product]
       use q1, q2
       simp_all
     · use q3, q4
@@ -147,7 +147,7 @@ lemma map_ofPotentialTerm_toFinset [DecidableEq 𝓩]
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset] at h
       try simp [ofPotentialTerm'] at h
-      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h
+      simp only [SProd.sprod, Multiset.mem_product] at h
       try simp [ofPotentialTerm'_W2_finset, ofPotentialTerm'_W3_finset,
       ofPotentialTerm'_β_finset, ofPotentialTerm'_μ_finset,
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
@@ -163,7 +163,7 @@ lemma map_ofPotentialTerm_toFinset [DecidableEq 𝓩]
       obtain ⟨q1, q2, q3, q4, ⟨q1_mem, q2_mem, q3_mem, q4_mem⟩, q_sum⟩ := h
       use f q1, f q2, f q3, f q4
     all_goals
-      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product, map]
+      simp only [SProd.sprod, Multiset.mem_product, map]
       subst a
       simp_all
     case W1 => refine ⟨⟨q1, q1_mem, rfl⟩, ⟨q2, q2_mem, rfl⟩, ⟨q3, q3_mem, rfl⟩, ⟨q4, q4_mem, rfl⟩⟩
@@ -212,7 +212,7 @@ lemma map_subset {f : 𝓩 →+ 𝓩1} {x y : Charges 𝓩} (h : x ⊆ y) :
     | (a, _, _, _), (b, _, _, _) =>
       cases a
       all_goals cases b
-      all_goals simp [hHd]
+      all_goals simp
       all_goals simp at hHd
       subst hHd
       rfl
@@ -220,7 +220,7 @@ lemma map_subset {f : 𝓩 →+ 𝓩1} {x y : Charges 𝓩} (h : x ⊆ y) :
     | (_, a, _, _), (_, b, _, _) =>
       cases a
       all_goals cases b
-      all_goals simp [hHu]
+      all_goals simp
       all_goals simp at hHu
       subst hHu
       rfl
@@ -283,7 +283,7 @@ lemma mem_map_ofYukawaTerms_iff {f : 𝓩 →+ 𝓩1} {x : Charges 𝓩} {i} :
 lemma map_ofYukawaTermsNSum_toFinset {f : 𝓩 →+ 𝓩1} {x : Charges 𝓩} {n : ℕ}:
     ((map f x).ofYukawaTermsNSum n).toFinset = (x.ofYukawaTermsNSum n).toFinset.image f:= by
   induction n with
-  | zero => simp [ofYukawaTermsNSum, map]
+  | zero => simp [ofYukawaTermsNSum]
   | succ n ih =>
     simp [ofYukawaTermsNSum]
     rw [Finset.image_union]

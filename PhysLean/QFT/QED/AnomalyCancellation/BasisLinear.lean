@@ -14,7 +14,7 @@ We give a basis of vector space `LinSols`, and find the rank thereof.
 
 namespace PureU1
 
-open BigOperators
+open BigOperators Module
 
 variable {n : ℕ}
 namespace BasisLinear
@@ -57,7 +57,7 @@ def asLinSols (j : Fin n) : (PureU1 n.succ).LinSols :=
     match i with
     | 0 =>
     simp only [Fin.isValue, PureU1_linearACCs, accGrav,
-      LinearMap.coe_mk, AddHom.coe_mk, Fin.coe_eq_castSucc]
+      LinearMap.coe_mk, AddHom.coe_mk]
     rw [Fin.sum_univ_castSucc]
     rw [Finset.sum_eq_single j]
     · simp only [asCharges, PureU1_numberCharges, ↓reduceIte]
@@ -91,8 +91,7 @@ def coordinateMap : (PureU1 n.succ).LinSols ≃ₗ[ℚ] Fin n →₀ ℚ where
     intro j
     rw [sum_of_vectors]
     simp only [HSMul.hSMul, SMul.smul, PureU1_numberCharges,
-      asLinSols_val, Equiv.toFun_as_coe,
-      Fin.coe_eq_castSucc, mul_ite, mul_one, mul_neg, mul_zero, Equiv.invFun_as_coe]
+      asLinSols_val]
     rw [Finset.sum_eq_single j]
     · simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
     · intro k _ hkj
@@ -106,8 +105,7 @@ def coordinateMap : (PureU1 n.succ).LinSols ≃ₗ[ℚ] Fin n →₀ ℚ where
     simp only [Finsupp.equivFunOnFinite_symm_apply_toFun, Function.comp_apply]
     rw [sum_of_vectors]
     simp only [HSMul.hSMul, SMul.smul, PureU1_numberCharges,
-      asLinSols_val, Equiv.toFun_as_coe,
-      Fin.coe_eq_castSucc, mul_ite, mul_one, mul_neg, mul_zero, Equiv.invFun_as_coe]
+      asLinSols_val]
     rw [Finset.sum_eq_single j]
     · simp only [asCharges, PureU1_numberCharges, ↓reduceIte, mul_one]
     · intro k _ hkj

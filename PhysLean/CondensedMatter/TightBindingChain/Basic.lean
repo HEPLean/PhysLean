@@ -131,9 +131,8 @@ lemma energy_localizedState (n : Fin T.N) (htn : 1 < T.N) : ⟪|n⟩, T.hamilton
   rw [hamiltonian_apply_localizedState]
   simp only [smul_add, inner_sub_right, inner_add_right]
   erw [inner_smul_right, inner_smul_right, inner_smul_right]
-  simp only [RingHom.toMonoidHom_eq_coe, OneHom.toFun_eq_coe, MonoidHom.toOneHom_coe,
-    MonoidHom.coe_coe, Complex.coe_algebraMap, ZeroHom.coe_mk, localizedState_orthonormal_eq_ite,
-    ↓reduceIte, mul_one, left_eq_add, Fin.one_eq_zero_iff, mul_ite, mul_zero, sub_eq_self]
+  simp only [localizedState_orthonormal_eq_ite, ↓reduceIte, mul_one, left_eq_add,
+    Fin.one_eq_zero_iff, mul_ite, mul_zero, sub_eq_self]
   split_ifs with h1 h2
   · omega
   · omega
@@ -276,7 +275,7 @@ lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
         simpa using hn
       · rw [@Fin.coe_sub]
         congr
-        simp [Fin.val_one', Nat.one_mod_eq_one.mpr hn]
+        simp [Nat.one_mod_eq_one.mpr hn]
     rw [hx]
     have hl : (Complex.I * ↑↑k * ↑(T.N - 1 + ↑n) * ↑T.a) =
         Complex.I * ↑↑k * n * ↑T.a + Complex.I * ↑↑k * ↑(T.N - 1) * ↑T.a := by

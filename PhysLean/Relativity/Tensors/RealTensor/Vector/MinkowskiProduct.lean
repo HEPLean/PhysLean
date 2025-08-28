@@ -11,7 +11,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
 In this module we define and create an API around the Minkowski product on Lorentz vectors.
 
 -/
-open IndexNotation
+open Module IndexNotation
 open Matrix
 open MatrixGroups
 open CategoryTheory
@@ -49,9 +49,7 @@ lemma minkowskiProductMap_toCoord {d : ℕ} (p q : Vector d) :
     rw [prodT_basis_repr_apply]
     enter [1]
     erw [coMetric_repr_apply_eq_minkowskiMatrix]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Fin.succAbove_zero,
-    Function.comp_apply, Fin.zero_succAbove, Fin.succ_zero_eq_one, Fin.cast_eq_self,
-    Fin.succ_one_eq_two]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Function.comp_apply, Fin.cast_eq_self]
   conv_lhs =>
     enter [2, x, 1, 2, y, 1]
     simp only [Fin.isValue]
@@ -77,7 +75,7 @@ lemma minkowskiProductMap_toCoord {d : ℕ} (p q : Vector d) :
     _root_.zero_add]
   congr 1
   rw [minkowskiMatrix.inl_0_inl_0]
-  simp only [Fin.isValue, one_mul, Tensorial.self_toTensor_apply]
+  simp only [Fin.isValue, one_mul]
   rw [← Finset.sum_neg_distrib]
   congr
   funext x
@@ -141,7 +139,7 @@ def minkowskiProduct {d : ℕ} : Vector d →ₗ[ℝ] Vector d →ₗ[ℝ] ℝ w
     map_add' := fun q r => by
       simp
     map_smul' := fun c q => by
-      simp [minkowskiProductMap_smul_fst c p q]
+      simp
   }
   map_add' := fun p r => by
     apply LinearMap.ext
@@ -191,7 +189,7 @@ lemma minkowskiProduct_eq_timeComponent_spatialPart {d : ℕ} (p q : Vector d) :
   rw [minkowskiProduct_toCoord]
   congr
   funext i
-  simp [spatialPart_apply_eq_toCoord]
+  simp only [RCLike.inner_apply, conj_trivial]
   ring
 
 lemma minkowskiProduct_self_eq_timeComponent_spatialPart {d : ℕ} (p : Vector d) :
@@ -247,7 +245,7 @@ lemma map_minkowskiProduct_eq_self_forall_iff {d : ℕ} (f : Vector d →ₗ[ℝ
       intro q
       simp [h1 q]
     rw [minkowskiProduct_eq_zero_forall_iff] at h2
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, LinearMap.id_coe, id_eq]
+    simp only [LinearMap.id_coe, id_eq]
     rw [sub_eq_zero] at h2
     exact h2
   · intro h
@@ -336,8 +334,7 @@ lemma isLorentz_iff_toMatrix_mem_lorentzGroup {d : ℕ} (f : Vector d →ₗ[ℝ
   trans LinearMap.toMatrix Vector.basis Vector.basis (adjoint f ∘ₗ f) =
     LinearMap.toMatrix Vector.basis Vector.basis (LinearMap.id : Vector d →ₗ[ℝ] Vector d)
   · exact Iff.symm (EmbeddingLike.apply_eq_iff_eq (LinearMap.toMatrix basis basis))
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd,
-    LinearMap.toMatrix_id_eq_basis_toMatrix, Basis.toMatrix_self]
+  simp only [LinearMap.toMatrix_id_eq_basis_toMatrix, Basis.toMatrix_self]
   rw [LinearMap.toMatrix_comp Vector.basis Vector.basis]
   simp [adjoint]
 

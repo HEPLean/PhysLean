@@ -96,7 +96,7 @@ lemma scale_div_self (x : ChargeUnit) (r : ℝ) (hr : 0 < r) :
 
 @[simp]
 lemma scale_one (x : ChargeUnit) : scale 1 x = x := by
-  simp [scale, mul_one]
+  simp [scale]
 
 @[simp]
 lemma scale_div_scale (x1 x2 : ChargeUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 < r2) :

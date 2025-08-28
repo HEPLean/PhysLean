@@ -115,8 +115,8 @@ lemma rotateMatrix_det {φ : HiggsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det 
   have h1 : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
   field_simp [rotateMatrix, det_fin_two]
   rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-  simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
-    Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
+  simp only [Fin.isValue, mul_conj, add_comm, PiLp.inner_apply, Complex.inner, ofReal_re,
+    Fin.sum_univ_two, ofReal_add]
 
 /-- The `rotateMatrix` for a non-zero Higgs vector is unitary. -/
 lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
@@ -128,13 +128,13 @@ lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
   fin_cases i <;> fin_cases j
   · field_simp
     rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-    simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
-      Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm, add_comm]
-  · simp only [Fin.isValue, Fin.zero_eta, Fin.mk_one, of_apply, cons_val', cons_val_one, head_cons,
-    empty_val', cons_val_fin_one, cons_val_zero]
+    simp only [Fin.isValue, mul_comm, mul_conj, add_comm, PiLp.inner_apply, Complex.inner,
+      ofReal_re, Fin.sum_univ_two, ofReal_add]
+  · simp only [Fin.isValue, Fin.zero_eta, Fin.mk_one, of_apply, cons_val', cons_val_one,
+    cons_val_fin_one, empty_val', cons_val_zero]
     ring_nf
   · simp only [Fin.isValue, Fin.mk_one, Fin.zero_eta, of_apply, cons_val', cons_val_zero,
-    empty_val', cons_val_fin_one, cons_val_one, head_fin_const]
+    empty_val', cons_val_fin_one, cons_val_one]
     ring_nf
   · field_simp
     rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
@@ -164,14 +164,14 @@ lemma rotateGaugeGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
     cons_val_zero, cons_dotProduct, vecHead, vecTail, Nat.succ_eq_add_one, Nat.reduceAdd,
     Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_empty, add_zero]
     ring_nf
-  · simp only [Fin.mk_one, Fin.isValue, cons_val_one, head_cons, mulVec, Fin.isValue,
+  · simp only [Fin.mk_one, Fin.isValue, cons_val_one, mulVec, Fin.isValue,
     cons_val', empty_val', cons_val_fin_one, vecHead, cons_dotProduct, vecTail, Nat.succ_eq_add_one,
     Nat.reduceAdd, Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_empty, add_zero]
     have : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
     field_simp
     rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
-    simp [PiLp.inner_apply, Complex.inner, neg_mul, sub_neg_eq_add,
-      Fin.sum_univ_two, ofReal_add, ofReal_mul, mul_conj, mul_comm]
+    simp only [Fin.isValue, mul_comm, mul_conj, PiLp.inner_apply, Complex.inner, ofReal_re,
+      Fin.sum_univ_two, ofReal_add]
 
 /-- For every Higgs vector there exists an element of the gauge group which rotates that
   Higgs vector to have `0` in the first component and be a non-negative real in the second
@@ -206,8 +206,7 @@ theorem rotate_fst_real_snd_zero (φ : HiggsVec) :
   rw [rep.map_mul]
   change rep P (rep g φ) = _
   rw [h, rep_apply]
-  simp only [one_pow, Nat.succ_eq_add_one, Nat.reduceAdd, ofRealHom_eq_coe, mulVec_cons, zero_smul,
-    coe_smul, mulVec_empty, add_zero, zero_add, one_smul]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd]
   funext i
   fin_cases i
   · simp only [one_pow, mulVec_cons, Nat.succ_eq_add_one, Nat.reduceAdd, zero_smul, coe_smul,

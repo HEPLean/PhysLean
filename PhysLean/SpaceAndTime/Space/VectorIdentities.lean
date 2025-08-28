@@ -181,7 +181,7 @@ lemma deriv_component_diff (μ ν : Fin d) (x : Space d) (h : μ ≠ ν) :
     (deriv μ (fun x => x ν) x) = 0 := by
   simp [deriv, fderiv_coord_eq_proj_comp, ContinuousLinearMap.proj]
   erw [LinearMap.proj_apply]
-  simp [h]
+  simp only [EuclideanSpace.single_apply, ite_eq_right_iff, one_ne_zero, imp_false]
   omega
 
 /-!
@@ -271,7 +271,7 @@ lemma div_of_curl_eq_zero (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
   simp only [Fin.isValue, Pi.sub_apply]
   rw [deriv_commute fun x => f x 0, deriv_commute fun x => f x 1,
     deriv_commute fun x => f x 2]
-  simp only [Fin.isValue, sub_add_sub_cancel', sub_add_sub_cancel, sub_self]
+  simp only [Fin.isValue, sub_add_sub_cancel', sub_self]
   repeat
     try apply contDiff_euclidean.mp
     exact hf
@@ -494,7 +494,7 @@ lemma grad_inner {d : ℕ} :
   ext z i
   simp [Space.grad]
   rw [deriv]
-  rw [fderiv_fun_sum]
+  erw [fderiv_fun_sum]
   · simp
     rw [Finset.sum_eq_single i]
     · trans (fderiv ℝ (fun y => y i ^ 2) z) (EuclideanSpace.single i 1)
@@ -518,8 +518,7 @@ lemma grad_inner {d : ℕ} :
       · rfl
       rw [deriv, fderiv_comp]
       simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv,
-        differentiableAt_fun_id, deriv_fun_pow'', Nat.cast_ofNat, Nat.add_one_sub_one, pow_one,
-        deriv_id'', mul_one, smul_eq_mul, mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
+        smul_eq_mul, mul_eq_zero]
       · left
         rw [← deriv_eq]
         rw [deriv_component_diff]
@@ -527,7 +526,9 @@ lemma grad_inner {d : ℕ} :
       · fun_prop
       · fun_prop
     · simp
-  · intro i
-    fun_prop
+  · intro i _
+    refine DifferentiableAt.inner ℝ ?_ ?_
+    · fun_prop
+    · fun_prop
 
 end Space

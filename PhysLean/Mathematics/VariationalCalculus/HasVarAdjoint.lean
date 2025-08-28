@@ -23,7 +23,7 @@ The key results are:
     `HasVarAdjoint.mul_right`, `HasVarAdjoint.smul_left`, `HasVarAdjoint.smul_right`
 -/
 
-open InnerProductSpace MeasureTheory ContDiff
+open Module InnerProductSpace MeasureTheory ContDiff
 
 variable
   {X} [NormedAddCommGroup X] [NormedSpace ℝ X] [MeasureSpace X]
@@ -432,7 +432,7 @@ protected lemma deriv :
     have ⟨h,h'⟩ := hφ
     constructor
     · fun_prop
-    · apply HasCompactSupport.neg'
+    · apply HasCompactSupport.neg
       apply HasCompactSupport.deriv h'
   adjoint φ ψ hφ hψ := by
     trans ∫ (x : ℝ), ⟪deriv φ x, ψ x⟫_ℝ
@@ -550,13 +550,13 @@ lemma adjFDeriv_apply
             conv_lhs =>
               enter [2, y]
               rw [h]
-              simp
+              simp only [map_sum, map_smul, inner_sum']
             rw [MeasureTheory.integral_finset_sum]
             congr
             funext i
             congr
             funext y
-            simp [inner_smul_left', inner_smul_right']
+            simp [inner_smul_right']
             left
             rw [fderiv_inner_apply']
             simp only [fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.zero_apply,
@@ -565,7 +565,7 @@ lemma adjFDeriv_apply
             · exact hφ.differentiable y
             · intro i hi
               apply IsTestFunction.integrable
-              simp [inner_smul_left', inner_smul_right']
+              simp [inner_smul_right']
               apply IsTestFunction.mul_right
               · change IsTestFunction fun x => f' i (ψ x)
                 apply IsTestFunction.comp_left

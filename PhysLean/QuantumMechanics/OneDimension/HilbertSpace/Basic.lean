@@ -25,11 +25,11 @@ noncomputable section
 abbrev HilbertSpace := MeasureTheory.Lp (α := ℝ) ℂ 2
 
 namespace HilbertSpace
-open MeasureTheory
+open Module MeasureTheory
 open InnerProductSpace
 
 /-- The anti-linear map from the Hilbert space to it's dual. -/
-def toBra : HilbertSpace →ₛₗ[starRingEnd ℂ] NormedSpace.Dual ℂ HilbertSpace :=
+def toBra : HilbertSpace →ₛₗ[starRingEnd ℂ] StrongDual ℂ HilbertSpace :=
   InnerProductSpace.toDual ℂ HilbertSpace
 
 @[simp] lemma toBra_apply (f g : HilbertSpace) : toBra f g = ⟪f, g⟫_ℂ := rfl

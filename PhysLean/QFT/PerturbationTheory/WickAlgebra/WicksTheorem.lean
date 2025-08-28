@@ -78,7 +78,7 @@ theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     ∑ (φsΛ : WickContraction φs.length), φsΛ.wickTerm
   | [] => by
     rw [timeOrder_ofFieldOpList_nil]
-    simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
+    simp only [List.length_nil]
     rw [sum_WickContraction_nil]
     simp only [wickTerm_empty_nil]
   | φ :: φs => by
@@ -98,11 +98,10 @@ theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     trans (1 : ℂ) • ∑ k : Option { x // x ∈ c.uncontracted },
       (c ↩Λ (maxTimeField φ φs) (maxTimeFieldPosFin φ φs) k).wickTerm
     swap
-    · simp [uncontractedListGet]
+    · simp
     rw [smul_smul]
-    simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one,
-      Algebra.smul_mul_assoc, Fintype.sum_option, timeContract_insert_none,
-      Finset.univ_eq_attach, smul_add, one_smul, uncontractedListGet]
+    simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one, Fintype.sum_option,
+      Finset.univ_eq_attach, smul_add, one_smul]
     · exact fun k => timeOrder_maxTimeField _ _ k
     · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
 termination_by φs => φs.length

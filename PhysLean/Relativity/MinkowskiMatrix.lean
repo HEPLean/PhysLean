@@ -117,14 +117,14 @@ lemma as_block : @minkowskiMatrix d =
 @[simp]
 lemma mulVec_inl_0 (v : (Fin 1 ⊕ Fin d) → ℝ) :
     (η *ᵥ v) (Sum.inl 0) = v (Sum.inl 0) := by
-  simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal]
+  simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   simp only [Fin.isValue, diagonal_dotProduct, Sum.elim_inl, one_mul]
 
 /-- The space components of a vector acted on by the Minkowski matrix swaps sign. -/
 @[simp]
 lemma mulVec_inr_i (v : (Fin 1 ⊕ Fin d) → ℝ) (i : Fin d) :
     (η *ᵥ v) (Sum.inr i) = - v (Sum.inr i) := by
-  simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mulVec_diagonal]
+  simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
   simp only [diagonal_dotProduct, Sum.elim_inr, neg_mul, one_mul]
 
 /-!

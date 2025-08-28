@@ -106,7 +106,7 @@ lemma subset_le_mem_of_card_eq_two {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.
   have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le,
     Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
     Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
     not_true_eq_false]
@@ -151,10 +151,9 @@ lemma subset_le_mem_of_card_eq_three {F : FluxesFive} (hF : F.NoExotics) (hnZ : 
   have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
+    Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg, Finset.mem_insert,
+    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
     decide
   intro a S ih hcard hle hSum1 hSum2
   have hsub : S ≤ F := by
@@ -193,10 +192,9 @@ lemma subset_le_mem_of_card_eq_four {F : FluxesFive} (hF : F.NoExotics) (hnZ : F
   have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
+    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons, Finset.mem_insert,
+    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
     decide
   intro a S ih hcard hle hSum1 hSum2
   have hsub : S ≤ F := by
@@ -231,11 +229,9 @@ lemma subset_le_mem_of_card_eq_five {F : FluxesFive} (hF : F.NoExotics) (hnZ : F
   have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons,
-    Int.reduceNeg, Finset.mem_insert, Multiset.zero_ne_cons,
-    Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
+    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons, Finset.mem_insert,
+    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
     decide
   intro a S ih hcard hle hSum1 hSum2
   have hsub : S ≤ F := by
@@ -266,12 +262,9 @@ lemma subset_le_mem_of_card_eq_six {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.
   have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg,
-    Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons,
-    Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
+    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons,
+    Finset.mem_singleton, Multiset.zero_ne_cons, imp_false, not_true_eq_false]
     decide
   intro a S ih hcard hle hSum1 hSum2
   have hsub : S ≤ F := by
@@ -301,12 +294,8 @@ lemma subset_le_mem_of_card_eq_seven {F : FluxesFive} (hF : F.NoExotics) (hnZ : 
   have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg,
-    Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons,
-    Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
+    Multiset.sum_zero, Nat.ofNat_nonneg]
     decide
   intro a S ih hcard hle hSum1 hSum2
   have hsub : S ≤ F := by
@@ -494,10 +483,9 @@ lemma subset_le_mem_of_card_eq_two {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.H
   have hsum3 := chiralIndicesOfE_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
+    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons, Finset.mem_insert,
+    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
     simp only [not_false_eq_true]
   intro a S ih hcard hle hSum1 hSum2 hsum3
   have hsub : S ≤ F := by
@@ -528,7 +516,7 @@ lemma subset_le_mem_of_card_eq_three {F : FluxesTen} (hF : F.NoExotics) (hnZ : F
   have hsum3 := chiralIndicesOfE_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le,
     Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
     Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
     not_true_eq_false]
@@ -562,11 +550,9 @@ lemma subset_le_mem_of_card_eq_four {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.
   have hsum3 := chiralIndicesOfE_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, Set.mem_setOf_eq, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
-    simp [not_false_eq_true]
+  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
+    Multiset.sum_zero, Nat.ofNat_nonneg]
+    simp
   intro a S ih hcard hle hSum1 hSum2 hsum3
   have hsub : S ≤ F := by
     refine Multiset.le_iff_count.mpr ?_

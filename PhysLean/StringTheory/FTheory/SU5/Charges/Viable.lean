@@ -61,11 +61,7 @@ The multiset of charges which are completions of charges which minimally allow t
 
 This can be constructed via
 
-#eval
-    ((minimallyAllowsTermsOfFinset same.allowedBarFiveCharges
-        same.allowedTenCharges topYukawa).bind <|
-      completions same.allowedBarFiveCharges same.allowedTenCharges).dedup.filter
-    fun x => ¬ IsPhenoConstrained x
+#eval completeMinSubset same.allowedBarFiveCharges same.allowedTenCharges
 -/
 private def viableCompletions (I : CodimensionOneConfig) : Multiset (Charges ℤ) :=
   match I with
@@ -198,35 +194,14 @@ lemma containsPhenoCompletionsOfMinimallyAllows_viableCompletions :
 
 -/
 
-TODO "JGVOQ" "Make the result `viableChargesExt` a safe definition."
-
-/-- All charges, for a given `CodimensionOneConfig`, `I`,
-  which permit a top Yukawa coupling, are not phenomenologically constrained,
-  and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
-
-  Note this is fast for evaluation, but to slow with `decide`. See `viableCharges`
-  for an explicit vesion of this. -/
-unsafe def viableChargesExt (I : CodimensionOneConfig) :
-    Multiset (Charges ℤ) :=
-    (aux (viableCompletions I) (viableCompletions I)).dedup
-where
-  /-- Auxillary recursive function to define `viableChargesExt`. -/
-  aux : Multiset (Charges ℤ) → Multiset (Charges ℤ) → Multiset (Charges ℤ) :=
-    fun all add =>
-      if add = ∅ then all else
-      let s := add.bind fun x =>
-        (minimalSuperSet I.allowedBarFiveCharges I.allowedTenCharges x).val
-      let s2 := s.filter fun y => y ∉ all ∧
-        ¬ IsPhenoConstrained y ∧ ¬ YukawaGeneratesDangerousAtLevel y 1
-      aux (all + s2) s2
-
 /-- The charges in addition to `viableCompletions` which which permit a top Yukawa coupling,
   are not phenomenologically constrained,
   and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
 
   These can be found with e.g.
-  #eval (viableChargesExt .nextToNearestNeighbor).toFinset \
-    (viableCompletions .nextToNearestNeighbor).toFinset
+  #eval (viableChargesMultiset same.allowedBarFiveCharges same.allowedTenCharges).toFinset \
+    (completeMinSubset same.allowedBarFiveCharges
+      same.allowedTenCharges).toFinset
 -/
 def viableChargesAdditional : CodimensionOneConfig → Multiset (Charges ℤ)
   | .same =>

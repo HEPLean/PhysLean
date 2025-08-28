@@ -38,12 +38,12 @@ open CKMMatrix
 lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     ((standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃)ᴴ * standParamAsMatrix θ₁₂ θ₁₃ θ₂₃ δ₁₃) = 1 := by
   funext j i
-  simp only [standParamAsMatrix, neg_mul, Fin.isValue]
+  simp only [standParamAsMatrix, neg_mul]
   rw [mul_apply]
   have h1 := exp_ne_zero (I * ↑δ₁₃)
   fin_cases j <;> rw [Fin.sum_univ_three]
   · simp only [Fin.zero_eta, Fin.isValue, conjTranspose_apply, cons_val', cons_val_zero,
-    empty_val', cons_val_fin_one, star_mul', RCLike.star_def, conj_ofReal, cons_val_one, head_cons,
+    empty_val', cons_val_fin_one, star_mul', RCLike.star_def, conj_ofReal, cons_val_one,
     star_sub, star_neg, ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons,
     head_fin_const]
     simp only [ofReal_cos, ofReal_sin]
@@ -64,7 +64,7 @@ lemma standParamAsMatrix_unitary (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
       field_simp
       rw [sin_sq]
       ring
-  · simp only [Fin.mk_one, Fin.isValue, conjTranspose_apply, cons_val', cons_val_one, head_cons,
+  · simp only [Fin.mk_one, Fin.isValue, conjTranspose_apply, cons_val', cons_val_one,
     empty_val', cons_val_fin_one, cons_val_zero, star_mul', RCLike.star_def, conj_ofReal, star_sub,
     ← exp_conj, _root_.map_mul, conj_I, neg_mul, cons_val_two, tail_cons, head_fin_const, star_neg]
     simp only [ofReal_sin, ofReal_cos]
@@ -181,7 +181,7 @@ lemma VusVubVcdSq_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Rea
   by_cases hx : Real.cos θ₁₃ ≠ 0
   · rw [Complex.norm_exp]
     simp only [neg_re, mul_re, I_re, ofReal_re, zero_mul, I_im, ofReal_im, mul_zero, sub_self,
-      neg_zero, Real.exp_zero, mul_one, _root_.sq_abs]
+      neg_zero, Real.exp_zero, mul_one]
     rw [Complex.norm_of_nonneg h1, Complex.norm_of_nonneg h3, Complex.norm_of_nonneg h2,
       Complex.norm_of_nonneg h4]
     simp only [sq]

@@ -70,7 +70,7 @@ lemma Y₃_plus_B₃_plus_proj (T : MSSMACC.LinSols) (a b c : ℚ) :
   apply congrArg
   rw [← add_assoc, ← MulAction.mul_smul, ← Module.add_smul]
   apply congrArg
-  simp only [HSMul.hSMul, SMul.smul, MSSMACC_numberCharges, Fin.isValue, Fin.reduceFinMk]
+  simp only [HSMul.hSMul, SMul.smul, MSSMACC_numberCharges]
   funext i
   linarith
 

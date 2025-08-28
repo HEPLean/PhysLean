@@ -197,7 +197,7 @@ def fromL2 : WithLp 2 E →L[𝕜] E where
       · apply inv_pos.2 hc
       · intro x
         have h := Real.sqrt_le_sqrt (h x).1
-        simp [smul_eq_mul,norm] at h
+        simp [smul_eq_mul] at h
         apply (le_inv_mul_iff₀' hc).2
         exact h
 
@@ -354,7 +354,7 @@ instance : InnerProductSpace' 𝕜 (E×F) where
   norm₂ := (WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)).toNorm.norm
   core :=
     let _ := WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)
-    let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (WithLp 2 E) (WithLp 2 F)).toCore
+    let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (E := WithLp 2 E) (F := WithLp 2 F)).toCore
     inst
   norm₂_sq_eq_re_inner := by
     intro (x,y)
@@ -390,16 +390,16 @@ instance : InnerProductSpace' 𝕜 (E×F) where
           calc _ ≤ c₂ * ‖y‖ ^ 2 := by gcongr; simp
               _ ≤ re ⟪y,y⟫ := h₂₁ y
               _ ≤ _ := by simpa
-        · have : max ‖x‖ ‖y‖ ≤ ‖x‖ := by simp at h; simp[h]; linarith
+        · have : max ‖x‖ ‖y‖ ≤ ‖x‖ := by simp at h; simp; linarith
           calc _ ≤ c₁ * ‖x‖ ^ 2 := by gcongr; simp
               _ ≤ re ⟪x,x⟫ := h₁₁ x
               _ ≤ _ := by simpa
       · by_cases h : re ⟪x,x⟫ ≤ re ⟪y,y⟫
-        · calc _ ≤ re ⟪y,y⟫ + re ⟪y,y⟫ := by simp[h]
+        · calc _ ≤ re ⟪y,y⟫ + re ⟪y,y⟫ := by simp [h]
               _ ≤ d₂ * ‖y‖ ^ 2 + d₂ * ‖y‖ ^ 2 := by gcongr <;> exact h₂₂ y
               _ ≤ _ := by ring_nf; gcongr <;> simp
         · have h : re ⟪y,y⟫ ≤ re ⟪x,x⟫ := by linarith
-          calc _ ≤ re ⟪x,x⟫ + re ⟪x,x⟫ := by simp[h]
+          calc _ ≤ re ⟪x,x⟫ + re ⟪x,x⟫ := by simp [h]
               _ ≤ d₁ * ‖x‖ ^ 2 + d₁ * ‖x‖ ^ 2 := by gcongr <;> exact h₁₂ x
               _ ≤ _ := by ring_nf; gcongr <;> simp
 

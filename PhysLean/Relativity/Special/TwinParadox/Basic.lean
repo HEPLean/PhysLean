@@ -92,16 +92,15 @@ def example1 : InstantaneousTwinParadox where
   endPoint_causallyFollows_startPoint := by
     simp [causallyFollows]
     left
-    simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq,
-      LinearEquiv.apply_symm_apply, Nat.ofNat_pos, and_true]
+    simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq, Nat.ofNat_pos,
+      and_true]
     refine (timeLike_iff_norm_sq_pos _).mpr ?_
     rw [minkowskiProduct_toCoord]
     simp
   twinBMid_causallyFollows_startPoint := by
     simp only [causallyFollows]
     left
-    simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq,
-      LinearEquiv.apply_symm_apply]
+    simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq]
     norm_num
     refine (timeLike_iff_norm_sq_pos _).mpr ?_
     rw [minkowskiProduct_toCoord]
@@ -123,10 +122,9 @@ lemma example1_properTimeTwinA : example1.properTimeTwinA = 15 := by
 
 @[simp]
 lemma example1_properTimeTwinB : example1.properTimeTwinB = 9 := by
-  simp only [properTimeTwinB, properTime, Nat.succ_eq_add_one,
-    Nat.reduceAdd, example1, sub_zero, minkowskiProduct_toCoord, Fin.isValue,
-    LinearEquiv.apply_symm_apply, Fin.sum_univ_three, mul_zero, add_zero, map_sub,
-    LinearMap.sub_apply, Finset.sum_const_zero, zero_mul]
+  simp only [properTimeTwinB, properTime, example1, sub_zero, minkowskiProduct_toCoord,
+    Fin.sum_univ_three, mul_zero, add_zero, map_sub, LinearMap.sub_apply, Finset.sum_const_zero,
+    zero_mul]
   norm_num
   rw [show √81 = 9 from sqrt_eq_cases.mpr (by norm_num)]
   rw [show √4 = 2 from sqrt_eq_cases.mpr (by norm_num)]

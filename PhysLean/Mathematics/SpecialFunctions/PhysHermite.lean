@@ -167,7 +167,7 @@ lemma iterated_deriv_physHermite_eq_aeval (n : ℕ) : (m : ℕ) →
     deriv^[m] (physHermite n) = fun x => (derivative^[m] (physHermite n)).aeval x
   | 0 => by simp
   | m + 1 => by
-    simp only [Function.iterate_succ_apply', Function.comp_apply]
+    simp only [Function.iterate_succ_apply']
     rw [iterated_deriv_physHermite_eq_aeval n m]
     funext x
     rw [Polynomial.deriv_aeval]
@@ -241,14 +241,13 @@ lemma deriv_gaussian_eq_physHermite_mul_gaussian (n : ℕ) (x : ℝ) :
     have deriv_gaussian :
       deriv (fun y => Real.exp (-(y ^ 2))) x = -2 * x * Real.exp (-(x ^ 2)) := by
       rw [deriv_exp (by simp)]
-      simp only [deriv.fun_neg', differentiableAt_fun_id, deriv_fun_pow'', cast_ofNat,
+      simp only [deriv.fun_neg', differentiableAt_fun_id, deriv_fun_pow, cast_ofNat,
         Nat.add_one_sub_one, pow_one, deriv_id'', mul_one, mul_neg, neg_mul, neg_inj]
       ring
     rw [Function.iterate_succ_apply', ih, deriv_const_mul_field, deriv_fun_mul, pow_succ (-1 : ℝ),
       deriv_gaussian, physHermite_succ]
     · rw [derivative_physHermite,]
-      simp only [Pi.natCast_def, Pi.mul_apply, Pi.ofNat_apply, cast_ofNat, neg_mul, mul_neg,
-        mul_one, nsmul_eq_mul, smul_eq_mul]
+      simp only [neg_mul, mul_neg, mul_one, nsmul_eq_mul, cast_ofNat]
       simp only [Polynomial.deriv_aeval, derivative_physHermite, nsmul_eq_mul, map_mul, map_natCast,
         map_sub, aeval_X]
       simp only [aeval, eval₂AlgHom'_apply, eval₂_ofNat]
@@ -428,8 +427,7 @@ theorem physHermite_norm (n : ℕ) :
     ∫ x : ℝ, (physHermite n x * physHermite n x) * Real.exp (- x ^ 2) =
     ↑n ! * 2 ^ n * √Real.pi := by
   rw [integral_physHermite_mul_physHermite_eq_integral_deriv, iterated_deriv_physHermite_eq_aeval]
-  simp only [iterate_derivative_physHermite_self,
-    Int.cast_pow, Int.cast_ofNat, map_pow]
+  simp only [iterate_derivative_physHermite_self]
   conv_lhs =>
     enter [2, x]
     rw [aeval_C]
@@ -489,7 +487,7 @@ lemma polynomial_mem_physHermite_span_induction (P : Polynomial ℤ) : (n : ℕ)
       funext x
       simp only [coeff_physHermite_self_succ, zsmul_eq_mul, Int.cast_pow, Int.cast_ofNat, map_sub,
         map_mul, map_pow, map_intCast, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, sub_left_inj,
-        mul_eq_mul_right_iff, P']
+        mul_eq_mul_right_iff]
       simp [aeval]
     rw [hl] at hP'mem
     rw [Submodule.sub_mem_iff_left] at hP'mem
@@ -504,8 +502,7 @@ decreasing_by
   rw [Polynomial.natDegree_lt_iff_degree_lt]
   · apply (Polynomial.degree_lt_iff_coeff_zero _ _).mpr
     intro m hm'
-    simp only [coeff_physHermite_self_succ, Int.cast_pow, Int.cast_ofNat, coeff_sub,
-        Int.cast_id]
+    simp only [coeff_physHermite_self_succ, coeff_sub]
     change n + 1 ≤ m at hm'
     rw [coeff_smul, coeff_smul]
     by_cases hm : m = n + 1

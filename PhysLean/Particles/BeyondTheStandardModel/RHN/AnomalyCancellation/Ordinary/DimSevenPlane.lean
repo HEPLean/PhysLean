@@ -159,7 +159,7 @@ lemma B₀_Bi_cubic {i : Fin 7} (hi : 0 ≠ i) (S : (SM 3).Charges) :
   fin_cases i <;>
     simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
       Fin.reduceFinMk, not_true_eq_false] at hi <;>
-    simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+    simp [B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat]
 
 lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 1) (B i) S = 0 := by
@@ -168,7 +168,7 @@ lemma B₁_Bi_cubic {i : Fin 7} (hi : 1 ≠ i) (S : (SM 3).Charges) :
   fin_cases i <;>
     simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
       Fin.reduceFinMk, not_true_eq_false] at hi <;>
-    simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+    simp [B₀, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat]
 
 lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 2) (B i) S = 0 := by
@@ -177,7 +177,7 @@ lemma B₂_Bi_cubic {i : Fin 7} (hi : 2 ≠ i) (S : (SM 3).Charges) :
   fin_cases i <;>
     simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
       Fin.reduceFinMk, not_true_eq_false] at hi <;>
-    simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+    simp [B₀, B₁, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat]
 
 lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 3) (B i) S = 0 := by
@@ -186,7 +186,7 @@ lemma B₃_Bi_cubic {i : Fin 7} (hi : 3 ≠ i) (S : (SM 3).Charges) :
   fin_cases i <;>
   simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
     Fin.reduceFinMk, not_true_eq_false] at hi <;>
-  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp [B₀, B₁, B₂, B₄, B₅, B₆, Fin.divNat, Fin.modNat]
 
 lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 4) (B i) S = 0 := by
@@ -195,7 +195,7 @@ lemma B₄_Bi_cubic {i : Fin 7} (hi : 4 ≠ i) (S : (SM 3).Charges) :
   fin_cases i <;>
   simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
     Fin.reduceFinMk, not_true_eq_false] at hi <;>
-  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp [B₀, B₁, B₂, B₃, B₅, B₆, Fin.divNat, Fin.modNat]
 
 lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 5) (B i) S = 0 := by
@@ -204,7 +204,7 @@ lemma B₅_Bi_cubic {i : Fin 7} (hi : 5 ≠ i) (S : (SM 3).Charges) :
   fin_cases i <;>
   simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
     Fin.reduceFinMk, not_true_eq_false] at hi <;>
-  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp [B₀, B₁, B₂, B₃, B₄, B₆, Fin.divNat, Fin.modNat]
 
 lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).Charges) :
     cubeTriLin (B 6) (B i) S = 0 := by
@@ -213,7 +213,7 @@ lemma B₆_Bi_cubic {i : Fin 7} (hi : 6 ≠ i) (S : (SM 3).Charges) :
   fin_cases i <;>
   simp only [Fin.isValue, Fin.zero_eta, ne_eq, Fin.reduceEq, not_false_eq_true, Fin.mk_one,
     Fin.reduceFinMk, not_true_eq_false] at hi <;>
-  simp [B₀, B₁, B₂, B₃, B₄, B₅, B₆, Fin.divNat, Fin.modNat, finProdFinEquiv]
+  simp [B₀, B₁, B₂, B₃, B₄, B₅, Fin.divNat, Fin.modNat]
 
 lemma Bi_Bj_ne_cubic {i j : Fin 7} (h : i ≠ j) (S : (SM 3).Charges) :
     cubeTriLin (B i) (B j) S = 0 := by

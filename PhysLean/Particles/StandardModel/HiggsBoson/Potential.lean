@@ -133,7 +133,7 @@ lemma quadDiscrim_nonneg (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     0 ≤ P.quadDiscrim φ x := by
   have h1 := P.as_quad φ x
   rw [mul_assoc, quadratic_eq_zero_iff_discrim_eq_sq] at h1
-  · simp only [h1, ne_eq, quadDiscrim, div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
+  · simp only [quadDiscrim, h1]
     exact sq_nonneg (2 * P.𝓵 * ‖φ‖_H^2 x + - P.μ2)
   · exact h
 

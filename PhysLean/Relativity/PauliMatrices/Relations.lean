@@ -101,7 +101,7 @@ lemma pauliCo_trace_pauliCoDown: {σ_^^ | μ α β ⊗ σ___ | ν β α = 2 •�
   apply (Tensor.basis _).repr.injective
   ext b
   conv_rhs => rw [permT_basis_repr_symm_apply]
-  simp only [coMetric_eq_ofRat, ofRat_basis_repr_apply]
+  simp only [ofRat_basis_repr_apply]
   apply (Function.Injective.eq_iff PhysLean.RatComplexNum.toComplexNum_injective).mpr
   decide +revert +kernel
 

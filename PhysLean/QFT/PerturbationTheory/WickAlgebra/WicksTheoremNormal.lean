@@ -48,13 +48,13 @@ lemma timeOrder_ofFieldOpList_eqTimeOnly (φs : List 𝓕.FieldOp) :
     (Equiv.sumCompl _).symm
   rw [← e2.symm.sum_comp]
   simp only [Equiv.symm_symm, Algebra.smul_mul_assoc, Fintype.sum_sum_type,
-    Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, map_add, map_sum, map_smul, e2]
+    Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, map_add, map_sum, e2]
   simp only [staticWickTerm, Algebra.smul_mul_assoc, map_smul]
   conv_lhs =>
     enter [2, 2, x]
     rw [timeOrder_timeOrder_left]
     rw [timeOrder_staticContract_of_not_mem _ x.2]
-  simp only [Finset.univ_eq_attach, zero_mul, map_zero, smul_zero, Finset.sum_const_zero, add_zero]
+  simp only [zero_mul, map_zero, smul_zero, Finset.sum_const_zero, add_zero]
   congr
   funext x
   rw [staticContract_eq_timeContract_of_eqTimeOnly]
@@ -139,7 +139,7 @@ lemma timeOrder_haveEqTime_split (φs : List 𝓕.FieldOp) :
     exact (Equiv.sumCompl HaveEqTime).symm
   rw [← e1.symm.sum_comp]
   simp only [Equiv.symm_symm, Algebra.smul_mul_assoc, Fintype.sum_sum_type,
-    Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, ne_eq, sub_left_inj, e1]
+    Equiv.sumCompl_apply_inl, Equiv.sumCompl_apply_inr, ne_eq, e1]
   rw [add_comm]
   congr 1
   let f : WickContraction φs.length → 𝓕.WickAlgebra := fun φsΛ =>
@@ -250,7 +250,7 @@ decreasing_by
   have hc := uncontracted_card_eq_iff φsΛ.1
   simp only [List.length_cons, φsΛ.2.2, iff_false] at hc
   have hc' := uncontracted_card_le φsΛ.1
-  simp_all only [Algebra.smul_mul_assoc, List.length_cons, Finset.mem_univ, gt_iff_lt]
+  simp_all only [List.length_cons, Finset.mem_univ, gt_iff_lt]
   omega
 
 end WickAlgebra

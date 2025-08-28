@@ -17,9 +17,8 @@ The first row can be extracted as `[V]u` for a CKM matrix `V`.
 
 -/
 
-open Matrix Complex
+open Matrix Complex ComplexConjugate Module
 
-open ComplexConjugate
 noncomputable section
 
 namespace CKMMatrix
@@ -184,8 +183,7 @@ lemma rows_linearly_independent (V : CKMMatrix) : LinearIndependent ℂ (rows V)
   have h0 := congrArg (fun X => conj [V]u ⬝ᵥ X) hg
   have h1 := congrArg (fun X => conj [V]c ⬝ᵥ X) hg
   have h2 := congrArg (fun X => conj [V]t ⬝ᵥ X) hg
-  simp only [Fin.isValue, dotProduct_add, dotProduct_smul, Pi.conj_apply,
-    smul_eq_mul, dotProduct_zero] at h0 h1 h2
+  simp only [Fin.isValue, dotProduct_add, dotProduct_smul, smul_eq_mul, dotProduct_zero] at h0 h1 h2
   rw [uRow_normalized, uRow_cRow_orthog, uRow_tRow_orthog] at h0
   rw [cRow_normalized, cRow_uRow_orthog, cRow_tRow_orthog] at h1
   rw [tRow_normalized, tRow_uRow_orthog, tRow_cRow_orthog] at h2
@@ -210,20 +208,18 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
   have h0 := congrArg (fun X => conj [V]c ⬝ᵥ X) hg
   have h1 := congrArg (fun X => conj [V]t ⬝ᵥ X) hg
-  simp only [Fin.isValue, dotProduct_add, dotProduct_smul, Pi.conj_apply,
-    smul_eq_mul, dotProduct_zero] at h0 h1
+  simp only [Fin.isValue, dotProduct_add, dotProduct_smul, smul_eq_mul] at h0 h1
   rw [cRow_normalized, cRow_uRow_orthog, cRow_tRow_orthog, dot_self_cross] at h0
   rw [tRow_normalized, tRow_uRow_orthog, tRow_cRow_orthog, dot_cross_self] at h1
   simp only [Fin.isValue, mul_zero, mul_one, zero_add, add_zero] at h0 h1 hg
   simp only [h0, h1, zero_smul, add_zero] at hg
   have h2 := congrArg (fun X => conj X ⬝ᵥ X) hg
-  simp only [Fin.isValue, dotProduct_smul, Pi.conj_apply, Pi.smul_apply,
-    smul_eq_mul, _root_.map_mul, cRow_cross_tRow_normalized] at h2
+  simp only [Fin.isValue, dotProduct_smul, smul_eq_mul, cRow_cross_tRow_normalized] at h2
   have h3 : conj (g 0 • [V]u) = conj (g 0) • conj [V]u := by
     funext i
     fin_cases i <;> simp
-  simp only [h3, Fin.isValue, smul_dotProduct, Pi.conj_apply, smul_eq_mul,
-    uRow_normalized, Fin.isValue, mul_one, mul_conj, ← Complex.sq_norm] at h2
+  simp only [Fin.isValue, h3, smul_dotProduct, uRow_normalized, smul_eq_mul, mul_one, mul_conj, ←
+    Complex.sq_norm] at h2
   simp only [Fin.isValue, ofReal_pow, sq_eq_one_iff, ofReal_eq_one] at h2
   cases' h2 with h2 h2
   · have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ×₃ conj ([V]t)) := by
@@ -231,7 +227,7 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
       by_contra hn
       simp [hn] at h2
     have hg2 : norm (g 0)⁻¹ = 1 := by
-      simp [@map_inv₀, h2]
+      simp [h2]
     have hg22 : ∃ (τ : ℝ), (g 0)⁻¹ = Complex.exp (τ * I) := by
       rw [← norm_mul_exp_arg_mul_I (g 0)⁻¹, hg2]
       use arg (g 0)⁻¹
@@ -254,20 +250,18 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
   simp only [Fin.isValue, coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
   have h0 := congrArg (fun X => conj [V]u ⬝ᵥ X) hg
   have h1 := congrArg (fun X => conj [V]c ⬝ᵥ X) hg
-  simp only [Fin.isValue, dotProduct_add, dotProduct_smul, Pi.conj_apply,
-    smul_eq_mul, dotProduct_zero] at h0 h1
+  simp only [Fin.isValue, dotProduct_add, dotProduct_smul, smul_eq_mul] at h0 h1
   rw [uRow_normalized, uRow_cRow_orthog, uRow_tRow_orthog, dot_self_cross] at h0
   rw [cRow_normalized, cRow_uRow_orthog, cRow_tRow_orthog, dot_cross_self] at h1
   simp only [Fin.isValue, mul_one, mul_zero, add_zero, zero_add] at h0 h1
   simp only [Fin.isValue, h0, zero_smul, h1, add_zero, zero_add] at hg
   have h2 := congrArg (fun X => conj X ⬝ᵥ X) hg
-  simp only [Fin.isValue, dotProduct_smul, Pi.conj_apply, Pi.smul_apply,
-    smul_eq_mul, _root_.map_mul] at h2
+  simp only [Fin.isValue, dotProduct_smul, smul_eq_mul] at h2
   rw [uRow_cross_cRow_normalized] at h2
   have h3 : conj (g 2 • [V]t) = conj (g 2) • conj [V]t := by
     funext i
     fin_cases i <;> simp
-  simp only [h3, Fin.isValue, smul_dotProduct, Pi.conj_apply, smul_eq_mul, tRow_normalized,
+  simp only [h3, Fin.isValue, smul_dotProduct, smul_eq_mul, tRow_normalized,
     Fin.isValue, mul_one, mul_conj, ← Complex.sq_norm, ofReal_pow, sq_eq_one_iff,
     ofReal_eq_one] at h2
   cases' h2 with h2 h2
@@ -283,7 +277,7 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
       by_contra hn
       simp [hn] at h2
     have hg2 : norm (g 2)⁻¹ = 1 := by
-      simp [@map_inv₀, h2]
+      simp [h2]
     have hg22 : ∃ (τ : ℝ), (g 2)⁻¹ = Complex.exp (τ * I) := by
       rw [← norm_mul_exp_arg_mul_I (g 2)⁻¹]
       use arg (g 2)⁻¹
@@ -346,8 +340,7 @@ lemma uRow_mul (V : CKMMatrix) (a b c : ℝ) :
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 0 _ = _
   · simp only [Fin.isValue, ud, ofReal_zero, zero_mul, add_zero, uRow, Fin.zero_eta, cons_val_zero]
-  · simp [Fin.isValue, us, ofReal_zero, zero_mul, add_zero, uRow, Fin.mk_one, cons_val_one,
-    head_cons]
+  · simp [Fin.isValue, us, ofReal_zero, zero_mul, add_zero, uRow, Fin.mk_one, cons_val_one]
   · simp only [Fin.isValue, ub, ofReal_zero, zero_mul, add_zero, uRow, Fin.reduceFinMk,
     cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
 
@@ -358,8 +351,7 @@ lemma cRow_mul (V : CKMMatrix) (a b c : ℝ) :
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 1 _ = _
   · simp only [Fin.isValue, cd, ofReal_zero, zero_mul, add_zero, cRow, Fin.zero_eta, cons_val_zero]
-  · simp [Fin.isValue, cs, ofReal_zero, zero_mul, add_zero, cRow, Fin.mk_one, cons_val_one,
-    head_cons]
+  · simp [Fin.isValue, cs, ofReal_zero, zero_mul, add_zero, cRow, Fin.mk_one, cons_val_one]
   · simp only [Fin.isValue, cb, ofReal_zero, zero_mul, add_zero, cRow, Fin.reduceFinMk,
     cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
 
@@ -370,8 +362,7 @@ lemma tRow_mul (V : CKMMatrix) (a b c : ℝ) :
   fin_cases i <;>
     change (phaseShiftApply V a b c 0 0 0).1 2 _ = _
   · simp only [Fin.isValue, td, ofReal_zero, zero_mul, add_zero, tRow, Fin.zero_eta, cons_val_zero]
-  · simp [Fin.isValue, ts, ofReal_zero, zero_mul, add_zero, tRow, Fin.mk_one, cons_val_one,
-    head_cons]
+  · simp [Fin.isValue, ts, ofReal_zero, zero_mul, add_zero, tRow, Fin.mk_one, cons_val_one]
   · simp only [Fin.isValue, tb, ofReal_zero, zero_mul, add_zero, tRow, Fin.reduceFinMk,
     cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons, head_cons]
 

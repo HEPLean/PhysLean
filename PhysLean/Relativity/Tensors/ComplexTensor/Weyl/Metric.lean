@@ -17,7 +17,7 @@ and from right-handed to alt-right-handed Weyl fermions and back.
 namespace Fermion
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -34,8 +34,8 @@ lemma comm_metricRaw (M : SL(2,ℂ)) : M.1 * metricRaw = metricRaw * (M.1⁻¹)�
   rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
       Matrix.mul_fin_two, eta_fin_two !![M.1 1 1, -M.1 0 1; -M.1 1 0, M.1 0 0]ᵀ]
   simp only [Fin.isValue, mul_zero, mul_neg, mul_one, zero_add, add_zero, transpose_apply, of_apply,
-    cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_fin_const, head_cons,
-    cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, zero_smul, tail_cons, one_smul,
+    cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, cons_mul,
+    Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, zero_smul, tail_cons, one_smul,
     empty_vecMul, neg_smul, neg_cons, neg_neg, neg_empty, empty_mul, Equiv.symm_apply_apply]
 
 lemma metricRaw_comm (M : SL(2,ℂ)) : metricRaw * M.1 = (M.1⁻¹)ᵀ * metricRaw := by
@@ -44,8 +44,8 @@ lemma metricRaw_comm (M : SL(2,ℂ)) : metricRaw * M.1 = (M.1⁻¹)ᵀ * metricR
   rw [SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
       Matrix.mul_fin_two, eta_fin_two !![M.1 1 1, -M.1 0 1; -M.1 1 0, M.1 0 0]ᵀ]
   simp only [Fin.isValue, zero_mul, one_mul, zero_add, neg_mul, add_zero, transpose_apply, of_apply,
-    cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, head_fin_const, head_cons,
-    cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, smul_cons, smul_eq_mul, mul_zero,
+    cons_val', cons_val_zero, empty_val', cons_val_fin_one, cons_val_one, cons_mul,
+    Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, smul_cons, smul_eq_mul, mul_zero,
     mul_one, smul_empty, tail_cons, neg_smul, mul_neg, neg_cons, neg_neg, neg_zero, neg_empty,
     empty_vecMul, add_cons, empty_add_empty, empty_mul, Equiv.symm_apply_apply]
 
@@ -75,8 +75,8 @@ lemma leftMetricVal_expand_tmul : leftMetricVal =
   simp only [leftMetricVal, Fin.isValue]
   rw [leftLeftToMatrix_symm_expand_tmul]
   simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
-    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
-    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
+    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, neg_add_rev,
+    one_smul, zero_smul, neg_zero, add_zero, neg_neg, zero_add]
 
 /-- The metric `εᵃᵃ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
@@ -107,7 +107,7 @@ def leftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ leftHanded ⊗ leftHanded where
 
 lemma leftMetric_apply_one : leftMetric.hom (1 : ℂ) = leftMetricVal := by
   change (1 : ℂ) • leftMetricVal = leftMetricVal
-  simp only [leftMetric, one_smul]
+  simp only [one_smul]
 
 /-- The metric `εₐₐ` as an element of `(altLeftHanded ⊗ altLeftHanded).V`. -/
 def altLeftMetricVal : (altLeftHanded ⊗ altLeftHanded).V :=
@@ -118,9 +118,8 @@ lemma altLeftMetricVal_expand_tmul : altLeftMetricVal =
     altLeftBasis 0 ⊗ₜ[ℂ] altLeftBasis 1 - altLeftBasis 1 ⊗ₜ[ℂ] altLeftBasis 0 := by
   simp only [altLeftMetricVal, Fin.isValue]
   rw [altLeftaltLeftToMatrix_symm_expand_tmul]
-  simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
-    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
-    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
+  simp only [metricRaw, of_apply, cons_val', empty_val', cons_val_fin_one, Fin.sum_univ_two,
+    Fin.isValue, cons_val_zero, cons_val_one, zero_smul, one_smul, zero_add, neg_smul, add_zero]
   rfl
 
 /-- The metric `εₐₐ` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHanded`,
@@ -152,7 +151,7 @@ def altLeftMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altLeftHanded ⊗ altLeftHande
 
 lemma altLeftMetric_apply_one : altLeftMetric.hom (1 : ℂ) = altLeftMetricVal := by
   change (1 : ℂ) • altLeftMetricVal = altLeftMetricVal
-  simp only [altLeftMetric, one_smul]
+  simp only [one_smul]
 
 /-- The metric `ε^{dot a}^{dot a}` as an element of `(rightHanded ⊗ rightHanded).V`. -/
 def rightMetricVal : (rightHanded ⊗ rightHanded).V :=
@@ -164,8 +163,8 @@ lemma rightMetricVal_expand_tmul : rightMetricVal =
   simp only [rightMetricVal, Fin.isValue]
   rw [rightRightToMatrix_symm_expand_tmul]
   simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
-    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
-    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
+    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, neg_add_rev,
+    one_smul, zero_smul, neg_zero, add_zero, neg_neg, zero_add]
 
 /-- The metric `ε^{dot a}^{dot a}` as a morphism `𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded`,
   making manifest its invariance under the action of `SL(2,ℂ)`. -/
@@ -203,7 +202,7 @@ def rightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ rightHanded ⊗ rightHanded wher
 
 lemma rightMetric_apply_one : rightMetric.hom (1 : ℂ) = rightMetricVal := by
   change (1 : ℂ) • rightMetricVal = rightMetricVal
-  simp only [rightMetric, one_smul]
+  simp only [one_smul]
 
 /-- The metric `ε_{dot a}_{dot a}` as an element of `(altRightHanded ⊗ altRightHanded).V`. -/
 def altRightMetricVal : (altRightHanded ⊗ altRightHanded).V :=
@@ -214,9 +213,8 @@ lemma altRightMetricVal_expand_tmul : altRightMetricVal =
     altRightBasis 0 ⊗ₜ[ℂ] altRightBasis 1 - altRightBasis 1 ⊗ₜ[ℂ] altRightBasis 0 := by
   simp only [altRightMetricVal, Fin.isValue]
   erw [altRightAltRightToMatrix_symm_expand_tmul]
-  simp only [metricRaw, neg_apply, of_apply, cons_val', empty_val', cons_val_fin_one, neg_smul,
-    Finset.sum_neg_distrib, Fin.sum_univ_two, Fin.isValue, cons_val_zero, cons_val_one, head_cons,
-    neg_add_rev, one_smul, zero_smul, neg_zero, add_zero, head_fin_const, neg_neg, zero_add]
+  simp only [metricRaw, of_apply, cons_val', empty_val', cons_val_fin_one, Fin.sum_univ_two,
+    Fin.isValue, cons_val_zero, cons_val_one, zero_smul, one_smul, zero_add, neg_smul, add_zero]
   rfl
 
 /-- The metric `ε_{dot a}_{dot a}` as a morphism
@@ -258,7 +256,7 @@ def altRightMetric : 𝟙_ (Rep ℂ SL(2,ℂ)) ⟶ altRightHanded ⊗ altRightHa
 
 lemma altRightMetric_apply_one : altRightMetric.hom (1 : ℂ) = altRightMetricVal := by
   change (1 : ℂ) • altRightMetricVal = altRightMetricVal
-  simp only [altRightMetric, one_smul]
+  simp only [one_smul]
 
 /-!
 
@@ -281,7 +279,7 @@ lemma leftAltContraction_apply_metric : (β_ leftHanded altLeftHanded).hom.hom
     ((leftHanded.V ◁ leftAltContraction.hom ▷ altLeftHanded.V) (((leftHanded.V ◁
     (α_ leftHanded.V altLeftHanded.V altLeftHanded.V).inv)
     ((α_ leftHanded.V leftHanded.V (altLeftHanded.V ⊗ altLeftHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ altLeftHanded.V).hom ((leftAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [leftAltContraction_basis]
@@ -307,7 +305,7 @@ lemma altLeftContraction_apply_metric : (β_ altLeftHanded leftHanded).hom.hom
     ((altLeftHanded.V ◁ altLeftContraction.hom ▷ leftHanded.V) (((altLeftHanded.V ◁
     (α_ altLeftHanded.V leftHanded.V leftHanded.V).inv)
     ((α_ altLeftHanded.V altLeftHanded.V (leftHanded.V ⊗ leftHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ leftHanded.V).hom ((altLeftContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [altLeftContraction_basis]
@@ -333,7 +331,7 @@ lemma rightAltContraction_apply_metric : (β_ rightHanded altRightHanded).hom.ho
     ((rightHanded.V ◁ rightAltContraction.hom ▷ altRightHanded.V) (((rightHanded.V ◁
     (α_ rightHanded.V altRightHanded.V altRightHanded.V).inv)
     ((α_ rightHanded.V rightHanded.V (altRightHanded.V ⊗ altRightHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2))))) = x1 ⊗ₜ[ℂ] ((λ_ altRightHanded.V).hom
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2)))))) = x1 ⊗ₜ[ℂ] ((λ_ altRightHanded.V).hom
     ((rightAltContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [rightAltContraction_basis]
@@ -359,7 +357,7 @@ lemma altRightContraction_apply_metric : (β_ altRightHanded rightHanded).hom.ho
     ((altRightHanded.V ◁ altRightContraction.hom ▷ rightHanded.V) (((altRightHanded.V ◁
     (α_ altRightHanded.V rightHanded.V rightHanded.V).inv)
     ((α_ altRightHanded.V altRightHanded.V (rightHanded.V ⊗ rightHanded.V)).hom
-    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] y1 ⊗ₜ[ℂ] y2)))))
+    ((x1 ⊗ₜ[ℂ] x2) ⊗ₜ[ℂ] (y1 ⊗ₜ[ℂ] y2))))))
       = x1 ⊗ₜ[ℂ] ((λ_ rightHanded.V).hom ((altRightContraction.hom (x2 ⊗ₜ[ℂ] y1)) ⊗ₜ[ℂ] y2)) := rfl
   repeat rw [h1]
   repeat rw [altRightContraction_basis]

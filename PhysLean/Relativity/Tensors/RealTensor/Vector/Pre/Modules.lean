@@ -21,9 +21,7 @@ These definitions are preludes to the definitions of
 namespace Lorentz
 
 noncomputable section
-open Matrix
-open MatrixGroups
-open Complex
+open Matrix Module MatrixGroups Complex
 
 /-- The module for contravariant (up-index) real Lorentz vectors. -/
 structure ContrMod (d : ℕ) where
@@ -166,11 +164,11 @@ lemma mulVec_add (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v w : Con
 
 @[simp]
 lemma one_mulVec (v : ContrMod d) : (1 : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) *ᵥ v = v := by
-  simp [mulVec, _root_.map_one, one_apply]
+  simp [mulVec, _root_.map_one]
 
 lemma mulVec_mulVec (M N : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : ContrMod d) :
     M *ᵥ (N *ᵥ v) = (M * N) *ᵥ v := by
-  simp [mulVec, _root_.map_mul, mul_apply]
+  simp [mulVec, _root_.map_mul]
 
 /-!
 
@@ -235,7 +233,7 @@ lemma toSelfAdjoint_apply (x : ContrMod 3) : toSelfAdjoint x =
     apply Subtype.ext
     simp only [Fin.isValue, AddSubgroup.coe_add, selfAdjoint.val_smul, smul_neg,
       AddSubgroupClass.coe_sub]
-    simp only [neg_add, add_assoc, sub_eq_add_neg]
+    simp only [add_assoc, sub_eq_add_neg]
   · simp_all only [Finset.coe_univ, Finsupp.supported_univ, Submodule.mem_top]
 
 lemma toSelfAdjoint_apply_coe (x : ContrMod 3) : (toSelfAdjoint x).1 =

@@ -14,7 +14,7 @@ Every element of the Lorentz group defines a Lorentz vector, but it's first colu
 noncomputable section
 
 namespace LorentzGroup
-open Lorentz
+open Lorentz Module
 open Vector
 
 /-- The Lorentz vector obtained by acting the Lorentz group element `Λ` on `basis (Sum.inl 0)`. -/
@@ -57,7 +57,7 @@ lemma toVector_timeComponent {d : ℕ} (Λ : LorentzGroup d) :
 @[simp]
 lemma toVector_minkowskiProduct_self {d : ℕ} (Λ : LorentzGroup d) :
     ⟪toVector Λ, toVector Λ⟫ₘ = 1 := by
-  simp [toVector, smul_eq_sum, minkowskiMatrix.inl_0_inl_0]
+  simp [toVector, minkowskiMatrix.inl_0_inl_0]
 
 lemma one_le_abs_timeComponent {d : ℕ} (Λ : LorentzGroup d) :
     1 ≤ |Λ.1 (Sum.inl 0) (Sum.inl 0)| := by
@@ -75,7 +75,7 @@ lemma toVector_eq_basis_iff_timeComponent_eq_one {d : ℕ} (Λ : LorentzGroup d)
     have h1 := toVector_minkowskiProduct_self Λ
     rw [minkowskiProduct_self_eq_timeComponent_spatialPart] at h1
     simp [h] at h1
-    simp [toVector, smul_eq_sum, h]
+    simp [toVector, smul_eq_sum]
     match i with
     | Sum.inl 0 => simp [h]
     | Sum.inr j =>
@@ -90,12 +90,13 @@ lemma smul_timeComponent_eq_toVector_minkowskiProduct {d : ℕ} (Λ : LorentzGro
     (Λ • v).timeComponent = ⟪toVector Λ⁻¹, v⟫ₘ := by
   simp [timeComponent]
   rw [smul_eq_sum]
-  simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Fintype.sum_sum_type,
+  simp only [Fin.isValue, Fintype.sum_sum_type,
     Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
   rw [minkowskiProduct_eq_timeComponent_spatialPart]
   congr
   · simp [inv_eq_dual, minkowskiMatrix.dual_apply, minkowskiMatrix.inl_0_inl_0]
-  · simp [inv_eq_dual]
+  · simp only [Fin.isValue, inv_eq_dual, PiLp.inner_apply, toVector_apply, RCLike.inner_apply,
+      conj_trivial]
     rw [← Finset.sum_neg_distrib]
     congr
     funext i

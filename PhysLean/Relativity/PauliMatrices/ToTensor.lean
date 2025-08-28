@@ -11,7 +11,7 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Basic
 # Pauli matrices as a tensor
 
 -/
-open IndexNotation
+open Module IndexNotation
 open Matrix
 open MatrixGroups
 open Complex
@@ -65,8 +65,7 @@ instance tensorial : TensorSpecies.Tensorial complexLorentzTensor
         simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_add]
         rfl
       map_smul := fun c x => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, _root_.map_smul,
-          RingHom.id_apply]
+        simp [Nat.succ_eq_add_one, Nat.reduceAdd, _root_.map_smul]
         rfl}
 
 lemma toTensor_symm_apply (p : ℂT[.up, .upL, .upR]) :
@@ -189,9 +188,7 @@ lemma toTensor_eq_ofRat : σ^^^ = ofRat (fun b =>
   apply (Tensor.basis _).repr.injective
   ext b
   rw [toTensor_basis_expand]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_add, map_neg,
-    Finsupp.coe_add, Finsupp.coe_neg, Pi.add_apply, Pi.neg_apply, cons_val_zero, cons_val_one,
-    head_cons]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, cons_val_zero, cons_val_one]
   repeat rw [basis_eq_ofRat]
   simp only [Fin.isValue, map_sub, map_add, _root_.map_smul, Finsupp.coe_sub, Finsupp.coe_add,
     Finsupp.coe_smul, Pi.sub_apply, Pi.add_apply, ofRat_basis_repr_apply, Pi.smul_apply,

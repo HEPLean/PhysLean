@@ -72,10 +72,10 @@ lemma swap_fields : P.toFun Φ1 Φ2 =
     (conj P.𝓵₅) (conj P.𝓵₇) (conj P.𝓵₆)).toFun Φ2 Φ1 := by
   funext x
   simp only [toFun, normSq, Complex.add_re, Complex.mul_re, Complex.conj_re, Complex.conj_im,
-    neg_mul, sub_neg_eq_add, one_div, Complex.inv_re, Complex.re_ofNat,
-    Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div,
-    zero_mul, sub_zero, Complex.mul_im, add_zero, mul_neg, Complex.ofReal_pow, normSq_apply_re_self,
-    normSq_apply_im_zero, mul_zero, zero_add, RingHomCompTriple.comp_apply, RingHom.id_apply]
+    neg_mul, sub_neg_eq_add, one_div, Complex.inv_re, Complex.re_ofNat, Complex.normSq_ofNat,
+    div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div, zero_mul, sub_zero,
+    Complex.mul_im, add_zero, mul_neg, Complex.ofReal_pow, RingHomCompTriple.comp_apply,
+    RingHom.id_apply]
   ring_nf
   simp only [one_div, add_left_inj, add_right_inj, mul_eq_mul_left_iff]
   left
@@ -122,11 +122,11 @@ lemma left_eq_right : P.toFun Φ1 Φ1 =
     (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re)).toFun Φ1 := by
   funext x
   simp only [toFun, normSq, innerProd_self_eq_normSq, Complex.ofReal_pow, Complex.add_re,
-    Complex.mul_re, normSq_apply_re_self, normSq_apply_im_zero, mul_zero, sub_zero, Complex.conj_re,
-    Complex.conj_im, one_div, norm_pow, Complex.norm_real, norm_norm, Complex.inv_re,
-    Complex.re_ofNat, Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat,
-    neg_zero, zero_div, zero_mul, Complex.mul_im, add_zero, mul_neg, neg_mul, sub_neg_eq_add,
-    sub_add_add_cancel, zero_add, HiggsField.Potential.toFun, neg_add_rev, neg_sub]
+    Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add, sub_add_add_cancel,
+    one_div, norm_pow, Complex.norm_real, norm_norm, Complex.inv_re, Complex.re_ofNat,
+    Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div,
+    zero_mul, sub_zero, Complex.mul_im, add_zero, mul_neg, HiggsField.Potential.toFun, neg_add_rev,
+    neg_sub]
   ring_nf
   erw [show ((Complex.ofRealHom ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
     erw [← Complex.ofReal_pow]; rfl]

@@ -181,7 +181,7 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : TenQuanta 𝓩) (f 
         by_cases h_mem : p.1 ∈ x.map Prod.fst
         · have h_mem_dedup : p.1 ∈ (x.map Prod.fst).dedup := by rwa [Multiset.mem_dedup]
           rw [Multiset.sum_map_eq_nsmul_single p.1]
-          simp only [Multiset.nodup_dedup, ↓reduceIte, smul_eq_mul]
+          simp only [↓reduceIte, smul_eq_mul]
           have h_count_one : Multiset.count p.1 (Multiset.map Prod.fst x).dedup = 1 := by
             refine Multiset.count_eq_one_of_mem ?_ h_mem_dedup
             exact Multiset.nodup_dedup (Multiset.map Prod.fst x)
@@ -192,7 +192,7 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : TenQuanta 𝓩) (f 
           refine Eq.symm (Multiset.count_eq_zero_of_notMem ?_)
           intro h
           have h_mem : p.1 ∈ Multiset.map Prod.fst x := by
-            simp_all [h]
+            simp_all
           (expose_names; exact h_mem_1 h_mem)
           intro p' hp
           simp at hp
@@ -266,14 +266,14 @@ lemma anomalyCoefficent_of_reduce [DecidableEq 𝓩] (F : TenQuanta 𝓩) :
       map_zero' := by simp
       map_add' := by
         intros x y
-        simp [add_mul, mul_add] }
+        simp [add_mul] }
     simpa [f] using reduce_sum_eq_sum_toCharges F f
   · let f : 𝓩 → ℤ × ℤ →+ 𝓩 := fun q5 => {
       toFun := fun x => x.2 • (q5 * q5)
       map_zero' := by simp
       map_add' := by
         intros x y
-        simp [add_mul, mul_add] }
+        simp [add_mul] }
     apply congrArg
     simpa [f] using reduce_sum_eq_sum_toCharges F f
 
@@ -343,7 +343,7 @@ lemma toCharges_of_mem_ofChargesExpand (c : Finset 𝓩)
       simpa using Multiset.mem_of_le h' hr
     · intro hr
       simp at hr
-      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product] at h
+      simp only [SProd.sprod, Multiset.mem_product] at h
       rcases hr with rfl | rfl | rfl
       · exact h.1
       · exact h.2.1
@@ -394,7 +394,7 @@ lemma mem_ofChargesExpand_of_toCharges_toFluxesTen (c : Finset 𝓩) {x : TenQua
     obtain ⟨p3, hp3, hp3_2⟩ := h2
     apply And.intro
     · use p1.1, p2.1, p3.1
-      simp only [SProd.sprod, Multiset.instSProd, Multiset.mem_product]
+      simp only [SProd.sprod, Multiset.mem_product]
       subst h
       simp only [Multiset.toFinset_val, Multiset.mem_dedup, Int.reduceNeg]
       refine ⟨⟨?_, ?_, ?_⟩, ?_⟩
@@ -497,8 +497,8 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : TenQuanta 𝓩) (c : Finse
           Multiset.sum_cons, Multiset.map_singleton]
         have hq2q1 : ¬ q2 = q1 := fun a => hq1q2 (id (Eq.symm a))
         congr 2
-        · simp [@Multiset.filter_singleton, hq1q2, hq2q1]
-        · simp [@Multiset.filter_singleton, hq1q2, hq2q1]
+        · simp [@Multiset.filter_singleton, hq2q1]
+        · simp [@Multiset.filter_singleton, hq1q2]
     · use {(q1, 1, 0), (q1, 1, 0), (q2, 1, 0)}
       simp [mem_ofChargesExpand_iff]
       simp [toCharges, toFluxesTen]

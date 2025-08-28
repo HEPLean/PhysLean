@@ -134,7 +134,7 @@ lemma force_eq_linear (x : Space 1) : force S x = - S.k • x := by
   change -∇ ((1 / (2 : ℝ)) • S.k • (fun (x : Space 1) => ⟪x, x⟫_ℝ)) x = -S.k • x
   rw [grad_smul, grad_smul]
   · rw [grad_inner]
-    simp only [Pi.smul_apply, neg_smul, neg_inj, smul_smul, smul_algebra_smul_comm]
+    simp only [Pi.smul_apply, neg_smul, neg_inj, smul_smul]
     simp only [mul_smul]
     rw [smul_comm]
     simp only [one_div, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, inv_smul_smul₀]

@@ -181,7 +181,7 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : FiveQuanta 𝓩) (f
         by_cases h_mem : p.1 ∈ x.map Prod.fst
         · have h_mem_dedup : p.1 ∈ (x.map Prod.fst).dedup := by rwa [Multiset.mem_dedup]
           rw [Multiset.sum_map_eq_nsmul_single p.1]
-          simp only [Multiset.nodup_dedup, ↓reduceIte, smul_eq_mul]
+          simp only [↓reduceIte, smul_eq_mul]
           have h_count_one : Multiset.count p.1 (Multiset.map Prod.fst x).dedup = 1 := by
             refine Multiset.count_eq_one_of_mem ?_ h_mem_dedup
             exact Multiset.nodup_dedup (Multiset.map Prod.fst x)
@@ -192,7 +192,7 @@ lemma reduce_sum_eq_sum_toCharges {M} [AddCommMonoid M] (x : FiveQuanta 𝓩) (f
           refine Eq.symm (Multiset.count_eq_zero_of_notMem ?_)
           intro h
           have h_mem : p.1 ∈ Multiset.map Prod.fst x := by
-            simp_all [h]
+            simp_all
           (expose_names; exact h_mem_1 h_mem)
           intro p' hp
           simp at hp
@@ -267,14 +267,14 @@ lemma anomalyCoefficent_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
       map_zero' := by simp
       map_add' := by
         intros x y
-        simp [add_mul, mul_add] }
+        simp [add_mul] }
     simpa [f] using reduce_sum_eq_sum_toCharges F f
   · let f : 𝓩 → ℤ × ℤ →+ 𝓩 := fun q5 => {
       toFun := fun x => x.2 • (q5 * q5)
       map_zero' := by simp
       map_add' := by
         intros x y
-        simp [add_mul, mul_add] }
+        simp [add_mul] }
     simpa [f] using reduce_sum_eq_sum_toCharges F f
 
 end ACCs
@@ -443,7 +443,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
       Multiset.replicate M.natAbs (q5, (1 : ℤ), -1)
       + Multiset.replicate (M + N).natAbs (q5, 0, 1) := by
     dsimp [Ex]
-    simp only [Int.reduceNeg, Multiset.bind_add, Multiset.filter_add, Ex]
+    simp only [Int.reduceNeg, Multiset.bind_add, Multiset.filter_add]
     congr
     · ext p
       by_cases hp : p ∉ (Multiset.filter (fun x => x.1 = q5)
@@ -458,27 +458,27 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
           have hl := hp' hn
           rw [Multiset.mem_replicate] at hn
           obtain ⟨h, rfl⟩ := hn
-          simp only [not_true_eq_false, Ex] at hl
+          simp only [not_true_eq_false] at hl
         · exact hp
       · simp at hp
         obtain ⟨q, M, ⟨N, is_mem⟩, h2, rfl⟩ := hp
         rw [Multiset.count_filter]
-        simp only [↓reduceIte, Int.reduceNeg, Ex]
+        simp only [↓reduceIte, Int.reduceNeg]
         rw [Multiset.count_bind, Multiset.count_bind]
         have hf : F = (Multiset.filter (fun x => x.1 = p.1) F) +
           (Multiset.filter (fun x => ¬ x.1 = p.1) F) :=
             Eq.symm (Multiset.filter_add_not (fun x => x.1 = p.1) F)
         conv_lhs => rw [hf]
-        simp only [Int.reduceNeg, Multiset.map_add, Multiset.sum_add, Nat.add_eq_left, Ex]
+        simp only [Int.reduceNeg, Multiset.map_add, Multiset.sum_add, Nat.add_eq_left]
         apply Multiset.sum_eq_zero
         intro x hx
         simp only [Int.reduceNeg, Multiset.mem_map, Multiset.mem_filter, Prod.exists,
-          exists_and_right, Ex] at hx
+          exists_and_right] at hx
         obtain ⟨q', M', ⟨⟨N', is_mem⟩, h2⟩, h⟩ := hx
         rw [Multiset.count_eq_zero_of_notMem] at h
         exact h.symm
         rw [Multiset.mem_replicate]
-        simp only [ne_eq, Int.natAbs_eq_zero, Int.reduceNeg, not_and, Ex]
+        simp only [ne_eq, Int.natAbs_eq_zero, Int.reduceNeg, not_and]
         intro hM'
         by_contra hn
         subst hn
@@ -488,9 +488,9 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
         (Multiset.bind F fun a => Multiset.replicate (a.2.1 + a.2.2).natAbs (a.1, 0, 1))
       · rw [Multiset.count_eq_zero_of_notMem, Multiset.count_eq_zero_of_notMem]
         · simp only [Multiset.mem_bind, Multiset.mem_filter, Prod.exists, not_exists, not_and,
-          and_imp, Ex]
+          and_imp]
           simp only [Multiset.mem_filter, Multiset.mem_bind, Prod.exists, not_and,
-            forall_exists_index, and_imp, Ex] at hp
+            forall_exists_index, and_imp] at hp
           intro q M N h1 hq
           subst hq
           have hp' := hp q M N h1
@@ -501,16 +501,16 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
           simp at hl
         · exact hp
       · simp only [Multiset.mem_filter, Multiset.mem_bind, Prod.exists, not_and,
-        forall_exists_index, and_imp, not_forall, Classical.not_imp, Decidable.not_not, Ex] at hp
+        forall_exists_index, and_imp, not_forall, Decidable.not_not] at hp
         obtain ⟨q, M, N, os_mem, h1, rfl⟩ := hp
         rw [Multiset.count_filter]
-        simp only [↓reduceIte, Ex]
+        simp only [↓reduceIte]
         rw [Multiset.count_bind, Multiset.count_bind]
         have hf : F = (Multiset.filter (fun x => x.1 = p.1) F) +
           (Multiset.filter (fun x => ¬ x.1 = p.1) F) :=
             Eq.symm (Multiset.filter_add_not (fun x => x.1 = p.1) F)
         conv_lhs => rw [hf]
-        simp only [Multiset.map_add, Multiset.sum_add, Nat.add_eq_left, Ex]
+        simp only [Multiset.map_add, Multiset.sum_add, Nat.add_eq_left]
         apply Multiset.sum_eq_zero
         intro x hx
         simp at hx
@@ -518,7 +518,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
         rw [Multiset.count_eq_zero_of_notMem] at h
         exact h.symm
         rw [Multiset.mem_replicate]
-        simp only [ne_eq, Int.natAbs_eq_zero, not_and, Ex]
+        simp only [ne_eq, Int.natAbs_eq_zero, not_and]
         intro hM'
         by_contra hn
         subst hn
@@ -561,7 +561,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
         use 0, 1, p, M, N
         simp_all
         refine Multiset.mem_replicate.mpr ?_
-        simp only [ne_eq, Int.natAbs_eq_zero, and_true, Ex]
+        simp only [ne_eq, Int.natAbs_eq_zero, and_true]
         revert h1
         revert hf
         generalize F.toFluxesFive = FF
@@ -579,7 +579,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
     /- Ex.toFluxesFive = {(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)} -/
     · simp [Ex, toFluxesFive]
       rw [Multiset.map_bind, Multiset.map_bind]
-      simp only [Int.reduceNeg, Multiset.map_replicate, Ex]
+      simp only [Int.reduceNeg, Multiset.map_replicate]
       trans ((Multiset.bind F.toFluxesFive fun a => Multiset.replicate a.1.natAbs (1, -1)) +
         Multiset.bind F.toFluxesFive fun a => Multiset.replicate (a.1 + a.2).natAbs (0, 1))
       · congr 1
@@ -607,7 +607,7 @@ lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Fins
     rw [Multiset.map_bind]
     simp only [Int.reduceNeg, Multiset.map_add, Multiset.map_replicate, Multiset.bind_add,
       Multiset.sum_add, Multiset.sum_bind, Multiset.sum_replicate, Prod.smul_mk, nsmul_eq_mul,
-      Int.natCast_natAbs, mul_one, smul_neg, smul_zero, Ex]
+      Int.natCast_natAbs, mul_one, smul_neg, smul_zero]
     have h1 : (Multiset.map (fun x => (|x.2.1|, -|x.2.1|))
         (Multiset.filter (fun x => x.1 = a.1) F)).sum
         = (Multiset.map (fun x => (|x.1|, -|x.1|))
@@ -659,7 +659,7 @@ lemma exists_charges_of_mem_ofChargesExpand (c : Finset 𝓩) (F : FiveQuanta �
   have F₁_map_prod_snd : F₁.map Prod.snd = Multiset.replicate 3 (1, -1) := by
     dsimp [F₁]
     trans (Multiset.filter (fun x => x = (1, -1)) F.toFluxesFive)
-    · simp [toFluxesFive, F₁]
+    · simp [toFluxesFive]
       rw [Multiset.filter_map]
       simp
     rw [mem_ofChargesExpand_iff] at h
@@ -668,7 +668,7 @@ lemma exists_charges_of_mem_ofChargesExpand (c : Finset 𝓩) (F : FiveQuanta �
   have F₂_map_prod_snd : F₂.map Prod.snd = Multiset.replicate 3 (0, 1) := by
     dsimp [F₂]
     trans (Multiset.filter (fun x => x = (0, 1)) F.toFluxesFive)
-    · simp [toFluxesFive, F₂]
+    · simp [toFluxesFive]
       rw [Multiset.filter_map]
       simp
     rw [mem_ofChargesExpand_iff] at h

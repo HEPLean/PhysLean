@@ -91,6 +91,12 @@ lemma ofβ_β (T : Temperature) : ofβ (β T) = T := by
     show (1 / (kB * (1 / (kB * (T : ℝ))))) = (T : ℝ) from by
       field_simp [kB_neq_zero]
 
+/-- Positivity of `β` from positivity of temperature. -/
+lemma beta_pos (T : Temperature) (hT_pos : 0 < T.val) : 0 < (T.β : ℝ) := by
+  unfold Temperature.β
+  have h_prod : 0 < (kB : ℝ) * T.val := mul_pos kB_pos hT_pos
+  simpa [Temperature.β] using inv_pos.mpr h_prod
+
 /-! ### Regularity of `ofβ` -/
 
 open Filter Topology
@@ -122,7 +128,7 @@ lemma ofβ_continuousOn : ContinuousOn (ofβ : ℝ≥0 → Temperature) (Set.Ioi
       exact div_nonneg zero_le_one hb)
   have hind : Topology.IsInducing (fun T : Temperature => (T.val : ℝ≥0)) := ⟨rfl⟩
   have : Tendsto (fun b : ℝ≥0 => ofβ b) (𝓝 x) (𝓝 (ofβ x)) := by
-    simp [hind.nhds_eq_comap, Function.comp, ofβ_eq]
+    simp [hind.nhds_eq_comap, ofβ_eq]
     simp_all only [Set.mem_Ioi, one_div, mul_inv_rev, val_eq_coe]
     exact hNN
   exact this
@@ -137,9 +143,9 @@ lemma ofβ_differentiableOn :
       have hx0 : x ≠ 0 := ne_of_gt (by simpa using hx)
       simp [mul_eq_zero, kB_neq_zero, hx0]
   · intro x hx
-    simp [ofβ_eq] at hx
+    simp at hx
     have hx' : 0 < x := by simpa using hx
-    simp [ofβ_eq, hx'.le, Real.toNNReal, NNReal.coe_mk, hx'.ne']
+    simp [ofβ_eq, hx'.le, Real.toNNReal, NNReal.coe_mk]
 
 /-! ### Convergence -/
 
@@ -189,7 +195,7 @@ private lemma tendsto_const_inv_mul_atTop (a : ℝ) (ha : 0 < a) :
     have hane : a ≠ 0 := ne_of_gt ha
     have hx' : a * (ε⁻¹ * a⁻¹) = (1 / ε) := by
       have : a * (ε⁻¹ * a⁻¹) = ε⁻¹ := by
-        simp [mul_comm, mul_left_comm, mul_assoc, hane]
+        simp [mul_comm, hane]
       simpa [one_div] using this
     simpa [hx'] using h'
   have hpos : 0 < (1 / ε) := by simpa [one_div] using inv_pos.mpr hεpos

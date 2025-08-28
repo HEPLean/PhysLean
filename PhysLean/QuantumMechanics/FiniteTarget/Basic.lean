@@ -19,7 +19,7 @@ Physical examples of such systems include:
 - Tight binding chains.
 
 -/
-open Constants
+open Constants Module
 namespace QuantumMechanics
 
 /-- A `FiniteTarget` structure that is basis independent, i.e. use a linear map for

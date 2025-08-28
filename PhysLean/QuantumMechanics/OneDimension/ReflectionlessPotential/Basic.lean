@@ -8,12 +8,6 @@ import PhysLean.QuantumMechanics.OneDimension.Operators.Momentum
 import PhysLean.QuantumMechanics.OneDimension.Operators.Position
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.Time.Basic
-import Mathlib.Data.NNReal.Defs
-import Mathlib.Data.Real.Basic
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Order.Basic
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-
 /-!
 
 # 1d Reflectionless Potential

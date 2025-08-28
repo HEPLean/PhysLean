@@ -21,7 +21,7 @@ lemma takeWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
   | [], _, h => by
     rfl
   | a :: [], 0, h => by
-    simp only [List.takeWhile, List.eraseIdx_zero, List.nil_eq]
+    simp only [List.takeWhile, List.eraseIdx_zero]
     split
     · rfl
     · rfl
@@ -38,7 +38,7 @@ lemma takeWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
     · have hPa : P a := by
         simpa using h ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp [Fin.lt_def]) (by simpa using hPb)
       simp [hPb, hPa]
-    · simp only [hPb, decide_false, List.nil_eq]
+    · simp only [hPb, decide_false]
       simp_all only [List.length_cons, List.get_eq_getElem, List.tail_cons, decide_false,
         Bool.false_eq_true, not_false_eq_true, List.takeWhile_cons_of_neg, List.nil_eq]
       split
@@ -72,10 +72,10 @@ lemma dropWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
       List.getElem_cons_zero, implies_true, List.tail_cons, List.dropWhile_nil, decide_true,
       decide_false, ite_self]
   | a :: [], Nat.succ n, h => by
-    simp only [List.dropWhile, List.eraseIdx_nil, List.takeWhile, Nat.succ_eq_add_one]
+    simp only [List.dropWhile, List.takeWhile, Nat.succ_eq_add_one]
     rw [List.eraseIdx_of_length_le]
     simp_all only [List.length_singleton, List.get_eq_getElem, Fin.val_eq_zero,
-      List.getElem_cons_zero, implies_true, ite_self]
+      List.getElem_cons_zero, implies_true]
     split
     next x heq =>
       simp_all only [decide_eq_true_eq, decide_true, List.dropWhile_cons_of_pos, List.dropWhile_nil,
@@ -150,7 +150,7 @@ lemma orderedInsertPos_lt_length {I : Type} (le1 : I → I → Prop) [DecidableR
 lemma orderedInsert_get_orderedInsertPos {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
     (r : List I) (r0 : I) :
     (List.orderedInsert le1 r0 r)[(orderedInsertPos le1 r r0).val] = r0 := by
-  simp [List.orderedInsert_eq_take_drop, orderedInsertPos, List.getElem_append]
+  simp [List.orderedInsert_eq_take_drop, orderedInsertPos]
 
 @[simp]
 lemma orderedInsert_eraseIdx_orderedInsertPos {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
@@ -234,7 +234,7 @@ lemma orderedInsertPos_drop_eq_orderedInsert {I : Type} (le1 : I → I → Prop)
   conv_lhs =>
     rhs
     rw [hr]
-  rw [List.drop_append_eq_append_drop]
+  rw [List.drop_append]
   simp [orderedInsertPos]
 
 lemma orderedInsertPos_take {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
@@ -252,7 +252,7 @@ lemma orderedInsertPos_succ_take_orderedInsert {I : Type} (le1 : I → I → Pro
     (r : List I) (r0 : I) :
     (List.take (orderedInsertPos le1 r r0).succ (List.orderedInsert le1 r0 r)) =
     List.takeWhile (fun b => decide ¬le1 r0 b) r ++ [r0] := by
-  simp [orderedInsertPos, List.orderedInsert_eq_take_drop, List.take_append_eq_append_take]
+  simp [orderedInsertPos, List.orderedInsert_eq_take_drop, List.take_append]
 
 lemma lt_orderedInsertPos_rel {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
     (r0 : I) (r : List I) (n : Fin r.length)
@@ -364,16 +364,15 @@ lemma orderedInsertEquiv_succ {I : Type} (le1 : I → I → Prop) [DecidableRel 
     Fin.cast (List.orderedInsert_length le1 r r0).symm
     ((Fin.succAbove ⟨(orderedInsertPos le1 r r0), orderedInsertPos_lt_length le1 r r0⟩)
     ⟨n, Nat.succ_lt_succ_iff.mp hn⟩) := by
-  simp only [List.length_cons, orderedInsertEquiv, Nat.succ_eq_add_one, OrderIso.toEquiv_symm,
-    Fin.symm_castOrderIso, Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply]
+  simp only [List.length_cons, orderedInsertEquiv, Nat.succ_eq_add_one, Equiv.trans_apply]
   match r with
   | [] =>
     simp
   | r1 :: r =>
-    simp only [List.orderedInsert.eq_2, List.length_cons, Fin.cast_inj]
+    simp only [List.orderedInsert.eq_2, List.length_cons]
     rw [finExtractOne_apply_neq]
-    simp only [List.orderedInsert.eq_2, List.length_cons, orderedInsertPos, decide_not,
-      Nat.succ_eq_add_one, finExtractOne_symm_inr_apply]
+    simp only [List.orderedInsert.eq_2, orderedInsertPos, decide_not, Nat.succ_eq_add_one,
+      finExtractOne_symm_inr_apply]
     rfl
     exact ne_of_beq_false rfl
 
@@ -387,9 +386,7 @@ lemma orderedInsertEquiv_fin_succ {I : Type} (le1 : I → I → Prop) [Decidable
   | [] =>
     simp
   | r1 :: r =>
-    simp only [List.orderedInsert.eq_2, List.length_cons, OrderIso.toEquiv_symm,
-      Fin.symm_castOrderIso, Nat.succ_eq_add_one, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
-      Fin.eta, Fin.cast_inj]
+    simp only [List.orderedInsert.eq_2, List.length_cons, Fin.eta]
     rw [finExtractOne_apply_neq]
     simp only [orderedInsertPos, List.orderedInsert.eq_2, decide_not, Nat.succ_eq_add_one,
       finExtractOne_symm_inr_apply]
@@ -502,12 +499,12 @@ lemma orderedInsertEquiv_sigma {I : Type} {f : I → Type}
   ext x
   match x with
   | ⟨0, h0⟩ =>
-    simp only [List.length_cons, Fin.zero_eta, Equiv.trans_apply, RelIso.coe_fn_toEquiv,
-      Fin.castOrderIso_apply, Fin.cast_zero, Fin.coe_cast]
+    simp only [Fin.zero_eta, Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply,
+      Fin.cast_zero, Fin.coe_cast]
     rw [orderedInsertEquiv_zero, orderedInsertEquiv_zero]
     simp [orderedInsertPos_sigma]
   | ⟨Nat.succ n, h0⟩ =>
-    simp only [List.length_cons, Nat.succ_eq_add_one, Equiv.trans_apply, RelIso.coe_fn_toEquiv,
+    simp only [Nat.succ_eq_add_one, Equiv.trans_apply, RelIso.coe_fn_toEquiv,
       Fin.castOrderIso_apply, Fin.cast_mk, Fin.coe_cast]
     erw [orderedInsertEquiv_succ, orderedInsertEquiv_succ]
     simp only [orderedInsertPos_sigma, Fin.coe_cast]
@@ -534,13 +531,11 @@ lemma orderedInsert_eq_insertIdx_orderedInsertPos {I : Type} (le1 : I → I → 
   simp only [List.length_cons, Function.comp_apply, Equiv.symm_apply_apply, List.get_eq_getElem]
   match n' with
   | ⟨0, h0⟩ =>
-    simp only [List.getElem_cons_zero, orderedInsertEquiv, List.length_cons, Nat.succ_eq_add_one,
-      OrderIso.toEquiv_symm, Fin.symm_castOrderIso, Fin.zero_eta, Equiv.trans_apply,
-      finExtractOne_apply_eq, Fin.isValue, finExtractOne_symm_inl_apply, RelIso.coe_fn_toEquiv,
-      Fin.castOrderIso_apply, Fin.cast_mk, Fin.eta]
+    simp only [List.getElem_cons_zero, orderedInsertEquiv, List.length_cons, Fin.zero_eta,
+      Equiv.trans_apply, finExtractOne_apply_eq, Fin.isValue, finExtractOne_symm_inl_apply]
     erw [List.getElem_insertIdx_self]
   | ⟨Nat.succ n', h0⟩ =>
-    simp only [Nat.succ_eq_add_one, List.getElem_cons_succ, List.length_cons]
+    simp only [Nat.succ_eq_add_one, List.getElem_cons_succ]
     have hr := orderedInsertEquiv_succ le1 r r0 n' h0
     trans (List.insertIdx r (↑(orderedInsertPos le1 r r0)) r0).get
       ⟨↑((orderedInsertEquiv le1 r r0) ⟨n' +1, h0⟩), h2⟩
@@ -555,7 +550,7 @@ lemma orderedInsert_eq_insertIdx_orderedInsertPos {I : Type} (le1 : I → I → 
           erw [← hr]
           exact h2⟩ := by
       rw [Fin.ext_iff]
-      simp only [List.length_cons]
+      simp only
       simpa using hr
     rw [hx]
     simp only [Fin.succAbove, Fin.castSucc_mk, Fin.mk_lt_mk, Fin.succ_mk, List.get_eq_getElem]
@@ -623,7 +618,7 @@ lemma insertionSortEquiv_order {α : Type} {r : α → α → Prop} [DecidableRe
     simp only [List.insertionSort.eq_2, List.length_cons, Nat.succ_eq_add_one, Fin.zero_eta,
       Equiv.trans_apply, equivCons_zero] at hij'
     have hx := orderedInsertEquiv_zero r (List.insertionSort r as) a
-    simp only [List.length_cons, Fin.zero_eta] at hx
+    simp only at hx
     rw [hx] at hij'
     have h1 := lt_orderedInsertPos_rel_fin r a (List.insertionSort r as) _ hij'
     rw [insertionSortEquiv] at h1
@@ -674,7 +669,7 @@ lemma eraseIdx_get {I : Type} (l : List I) (i : Fin l.length) :
     (List.eraseIdx l i).get = l.get ∘ (Fin.cast (eraseIdx_length l i)) ∘
     (Fin.cast (eraseIdx_length l i).symm i).succAbove := by
   ext x
-  simp only [Function.comp_apply, List.get_eq_getElem, List.eraseIdx, List.getElem_eraseIdx]
+  simp only [Function.comp_apply, List.get_eq_getElem, List.getElem_eraseIdx]
   simp only [Fin.succAbove, Fin.coe_cast]
   by_cases hi: x.castSucc < Fin.cast (Eq.symm (eraseIdx_length l i)) i
   · simp only [hi, ↓reduceIte, Fin.coe_castSucc, dite_eq_left_iff, not_lt]

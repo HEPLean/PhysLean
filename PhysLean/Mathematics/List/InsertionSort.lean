@@ -70,14 +70,12 @@ lemma insertionSortMin_lt_mem_insertionSortDropMinPos_of_lt {α : Type} (r : α 
     ((insertionSortMinPosFin r a l).succAbove i)) := by
     trans (insertionSortDropMinPos r a l).get i
     simp only [Fin.getElem_fin, List.get_eq_getElem]
-    simp only [insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one,
-      finCongr_apply, Fin.coe_cast]
+    simp only [insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one, finCongr_apply]
     rw [eraseIdx_get]
     simp only [List.length_cons, Function.comp_apply, List.get_eq_getElem, Fin.coe_cast]
     rfl
   erw [h1]
-  simp only [List.length_cons, Nat.succ_eq_add_one, List.get_eq_getElem,
-    Fin.coe_cast]
+  simp only [List.length_cons, Nat.succ_eq_add_one, List.get_eq_getElem]
   apply insertionSortEquiv_order
   simpa using h
   simp only [List.insertionSort.eq_2, List.length_cons, finCongr_apply]
@@ -273,10 +271,10 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
       refine hbc ?_
       exact IsTrans.trans _ _ _ hrba hac
   have ha1 : b1.1 ≤ a2.1 := by
-    simp only [orderedInsertPos, decide_not, b1, b2]
+    simp only [orderedInsertPos, decide_not, b1]
     rw [ht]
     apply List.Sublist.length_le
-    simp only [decide_not, b1]
+    simp only [decide_not]
     exact List.takeWhile_sublist _
   have ha2 : a1.1 = a2.1 + 1 := by
     simp only [orderedInsertPos, decide_not, a1, a2]
@@ -303,13 +301,13 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
     · simp [ha]
   have hbs1 : (b1.succAbove n).1 = if n.1 < b1.1 then n.1 else n.1 + 1 := by
     rw [Fin.succAbove]
-    simp only [Fin.castSucc_mk, Fin.lt_def, Fin.succ_mk]
+    simp only [Fin.lt_def]
     by_cases ha : n.1 < b1.1
     · simp [ha]
     · simp [ha]
   have has2 : (a2.succAbove n).1 = if n.1 < a2.1 then n.1 else n.1 + 1 := by
     rw [Fin.succAbove]
-    simp only [Fin.castSucc_mk, Fin.lt_def, Fin.succ_mk]
+    simp only [Fin.lt_def]
     by_cases ha : n.1 < a2.1
     · simp [ha]
     · simp [ha]

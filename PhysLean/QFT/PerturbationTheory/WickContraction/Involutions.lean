@@ -138,7 +138,7 @@ lemma fromInvolution_toInvolution (f : {f : Fin n → Fin n // Function.Involuti
     (fromInvolution f).toInvolution = f := by
   apply Subtype.eq
   funext i
-  simp only [toInvolution, ne_eq, dite_not]
+  simp only [toInvolution]
   split
   · rename_i h
     simp

@@ -254,7 +254,7 @@ lemma quadBiLin_decomp (S T : (SMνCharges n).Charges) :
         ∑ i, D S i * D T i - ∑ i, L S i * L T i + ∑ i, E S i * E T i := by
   erw [← quadBiLin.toFun_eq_coe]
   rw [quadBiLin]
-  simp only [quadBiLin, BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
+  simp only [BiLinearSymm.mk₂, AddHom.toFun_eq_coe, AddHom.coe_mk, LinearMap.coe_mk]
   repeat rw [Finset.sum_add_distrib]
   repeat rw [← Finset.mul_sum]
   simp only [SMνSpecies_numberCharges, toSpecies_apply, Fin.isValue, neg_mul, one_mul, add_left_inj]

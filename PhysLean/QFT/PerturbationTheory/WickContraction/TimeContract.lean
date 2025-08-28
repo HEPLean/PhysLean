@@ -190,7 +190,7 @@ lemma timeContract_of_not_gradingCompliant (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (h : ¬ GradingCompliant φs φsΛ) :
     φsΛ.timeContract = 0 := by
   rw [timeContract]
-  simp only [GradingCompliant, Fin.getElem_fin, Subtype.forall, not_forall] at h
+  simp only [GradingCompliant, Subtype.forall, not_forall] at h
   obtain ⟨a, ha⟩ := h
   obtain ⟨ha, ha2⟩ := ha
   apply Finset.prod_eq_zero (i := ⟨a, ha⟩)

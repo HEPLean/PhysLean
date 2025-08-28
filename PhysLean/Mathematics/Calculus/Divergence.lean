@@ -15,6 +15,7 @@ where `E` is a normed space over a field `𝕜`.
 
 -/
 noncomputable section
+open Module
 
 variable
   {𝕜 : Type*} [RCLike 𝕜]
@@ -62,7 +63,10 @@ lemma divergence_eq_space_div {d} (f : Space d → Space d)
   let b := (Space.basis (d:=d)).toBasis
   rw[divergence_eq_sum_fderiv' b]
   funext x
-  simp +zetaDelta [Space.div,Space.deriv,Space.coord,Space.basis]
+  simp +zetaDelta only [Space.basis, OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    OrthonormalBasis.coe_toBasis_repr_apply, EuclideanSpace.basisFun_repr, Space.div, Space.deriv,
+    Space.coord, PiLp.inner_apply, EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial,
+    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
   congr
   funext i
   have h1 : (fderiv ℝ (fun x => f x i) x)
@@ -104,11 +108,9 @@ lemma divergence_add {f g : E → E} {x : E}
   simp [fderiv_fun_add hf hg]
 
 lemma divergence_neg {f : E → E} {x : E} :
-    divergence 𝕜 (fun x => -f x) x
-    =
-    -divergence 𝕜 f x := by
+    divergence 𝕜 (fun x => -f x) x = -divergence 𝕜 f x := by
   unfold divergence
-  simp [fderiv_neg]
+  simp
 
 lemma divergence_sub {f g : E → E} {x : E}
     (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :

@@ -60,7 +60,7 @@ lemma signFinset_insertAndContract_none (φ : 𝓕.FieldOp) (φs : List 𝓕.Fie
       · simp
     rw [h1]
     rw [succAbove_mem_insertAndContractLiftFinset]
-    simp only [Nat.succ_eq_add_one, signFinset, finCongr_apply, Finset.mem_filter, Finset.mem_univ,
+    simp only [Nat.succ_eq_add_one, signFinset, Finset.mem_filter, Finset.mem_univ,
       insertAndContract_none_succAbove_getDual?_eq_none_iff, true_and,
       insertAndContract_none_succAbove_getDual?_isSome_iff, insertAndContract_none_getDual?_get_eq]
     rw [Fin.lt_def, Fin.lt_def, Fin.lt_def, Fin.lt_def]

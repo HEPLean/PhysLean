@@ -90,7 +90,7 @@ lemma scale_div_self (x : MassUnit) (r : ℝ) (hr : 0 < r) :
 
 @[simp]
 lemma scale_one (x : MassUnit) : scale 1 x = x := by
-  simp [scale, mul_one]
+  simp [scale]
 
 @[simp]
 lemma scale_div_scale (x1 x2 : MassUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 < r2) :
@@ -167,9 +167,9 @@ lemma pounds_div_ounces : pounds / ounces = (16 : ℝ≥0) := NNReal.eq <| by
   simp [pounds, ounces]; norm_num
 
 lemma shortTons_div_kilograms : shortTons / kilograms = (907.18474 : ℝ≥0) := NNReal.eq <| by
-  simp [shortTons, kilograms, pounds]; norm_num
+  simp [shortTons, pounds]; norm_num
 
 lemma longTons_div_kilograms : longTons / kilograms = (1016.0469088 : ℝ≥0) := NNReal.eq <| by
-  simp [longTons, kilograms, pounds]; norm_num
+  simp [longTons, pounds]; norm_num
 
 end MassUnit

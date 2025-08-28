@@ -213,8 +213,7 @@ lemma AFL_even_Boundary {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted 
   simp only [succ_eq_add_one, PureU1_numberCharges, mul_eq, cast_add, cast_mul, cast_ofNat,
     cast_one, add_sub_add_right_eq_sub] at h0
   rw [pureU1_linear A] at h0
-  simp only [mul_eq, cast_add, cast_mul, cast_ofNat, cast_one, add_sub_add_right_eq_sub,
-    succ_eq_add_one, zero_eq_mul, hA, or_false] at h0
+  simp only [zero_eq_mul, hA, or_false] at h0
   rw [← @Nat.cast_inj ℚ]
   linear_combination h0 / 2
 

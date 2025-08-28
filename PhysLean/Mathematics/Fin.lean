@@ -42,7 +42,7 @@ lemma predAboveI_succAbove (i : Fin n.succ.succ) (x : Fin n.succ) :
   split_ifs
   · rfl
   · rename_i h1 h2
-    simp only [Fin.lt_def, Fin.coe_castSucc, not_lt, Nat.succ_eq_add_one, Fin.val_succ] at h1 h2
+    simp only [Fin.lt_def, Fin.coe_castSucc, not_lt, Fin.val_succ] at h1 h2
     omega
   · rfl
 lemma succsAbove_predAboveI {i x : Fin n.succ.succ} (h : i ≠ x) :
@@ -52,7 +52,7 @@ lemma succsAbove_predAboveI {i x : Fin n.succ.succ} (h : i ≠ x) :
   · rfl
   · rename_i h1 h2
     rw [Fin.lt_def] at h1 h2
-    simp only [Fin.succ_mk, Nat.succ_eq_add_one, add_eq_left, one_ne_zero]
+    simp only [Fin.succ_mk, add_eq_left, one_ne_zero]
     simp only [Fin.castSucc_mk, Fin.eta, Fin.val_fin_lt, not_lt] at h2
     rw [Fin.le_def] at h2
     omega
@@ -63,7 +63,7 @@ lemma succsAbove_predAboveI {i x : Fin n.succ.succ} (h : i ≠ x) :
     simp only [Fin.castSucc_mk] at h2
     omega
   · rename_i h1 h2
-    simp only [Fin.succ_mk, Nat.succ_eq_add_one]
+    simp only [Fin.succ_mk]
     rw [not_lt, Fin.le_def] at h1
     omega
 
@@ -111,7 +111,7 @@ lemma succAbove_succAbove_predAboveI (i : Fin n.succ.succ) (j : Fin n.succ) (x :
         · rw [Fin.lt_def] at hx2 ⊢
           simp_all only [Nat.succ_eq_add_one, Fin.coe_castSucc, Fin.val_succ]
           omega
-      · simp only [Nat.succ_eq_add_one, not_lt] at hx2
+      · simp only [not_lt] at hx2
         rw [Fin.succAbove_of_le_castSucc _ _ hx2]
         nth_rewrite 2 [Fin.succAbove_of_le_castSucc]
         · rw [Fin.succAbove_of_le_castSucc]
@@ -396,8 +396,7 @@ lemma equivCons_castOrderIso {n m : ℕ} (h : n = m) :
     (Fin.equivCons (Fin.castOrderIso h).toEquiv) = (Fin.castOrderIso (by simp [h])).toEquiv := by
   refine Equiv.ext_iff.mpr fun x ↦ ?_
   simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, RelIso.coe_fn_toEquiv,
-    Equiv.invFun_as_coe, OrderIso.toEquiv_symm, Fin.symm_castOrderIso, Equiv.coe_fn_mk,
-    Fin.castOrderIso_apply]
+    Equiv.invFun_as_coe, Equiv.coe_fn_mk, Fin.castOrderIso_apply]
   match x with
   | ⟨0, h⟩ => rfl
   | ⟨i + 1, h⟩ => rfl
@@ -414,8 +413,7 @@ lemma equivCons_symm_succ {n m : ℕ} (e : Fin n ≃ Fin m) (i : ℕ) (hi : i + 
 @[simp]
 lemma equivCons_succ {n m : ℕ} (e : Fin n ≃ Fin m) (i : ℕ) (hi : i + 1 < n.succ) :
     (Fin.equivCons e) ⟨i + 1, hi⟩ = (e ⟨i, Nat.succ_lt_succ_iff.mp hi⟩).succ := by
-  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.invFun_as_coe,
-    Equiv.coe_fn_symm_mk]
+  simp only [Nat.succ_eq_add_one, equivCons, Equiv.toFun_as_coe, Equiv.invFun_as_coe]
   have hi : ⟨i + 1, hi⟩ = Fin.succ ⟨i, Nat.succ_lt_succ_iff.mp hi⟩ := by rfl
   simp only [Equiv.coe_fn_mk]
   rw [hi, Fin.cons_succ]

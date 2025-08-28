@@ -12,11 +12,8 @@ import Mathlib.LinearAlgebra.TensorProduct.Matrix
 -/
 noncomputable section
 
-open Matrix
-open MatrixGroups
-open Complex
-open TensorProduct
-open CategoryTheory.MonoidalCategory
+open Matrix Module MatrixGroups Complex TensorProduct CategoryTheory.MonoidalCategory
+
 namespace Lorentz
 
 /-- Equivalence of `Contr ⊗ Contr` to `(1 + d) x (1 + d)` real matrices. -/
@@ -133,7 +130,7 @@ lemma contrContrToMatrixRe_ρ {d : ℕ} (v : (Contr d ⊗ Contr d).V) (M : Loren
   funext x
   congr
   funext x1
-  simp only [contrBasis_ρ_apply, transpose_apply]
+  simp only [contrBasis_ρ_apply]
   ring
 
 lemma coCoToMatrixRe_ρ {d : ℕ} (v : ((Co d) ⊗ (Co d)).V) (M : LorentzGroup d) :

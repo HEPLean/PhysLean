@@ -184,7 +184,7 @@ lemma contr_basis {d : ℕ} {c : realLorentzTensor.Color}
       mul_one]
     rw [Pi.single_apply]
     refine ite_congr ?_ (congrFun rfl) (congrFun rfl)
-    simp only [eq_comm, EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, repDim_up]
+    simp only [eq_comm, EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff]
 
 open Tensor
 lemma contrT_basis_repr_apply_eq_dropPairSection {n d: ℕ}
@@ -217,7 +217,7 @@ lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → realLor
   rw [← e.symm.sum_comp]
   congr
   funext x
-  simp only [Nat.succ_eq_add_one, mul_ite, mul_one, mul_zero]
+  simp only
   rw [Finset.sum_eq_single (Fin.cast (by simp) x)]
   · erw [contr_basis]
     simp [e]
@@ -228,7 +228,7 @@ lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → realLor
     · dsimp only [OrderIso.toEquiv_symm, RelIso.coe_fn_toEquiv, ne_eq, id_eq,
       eq_mpr_eq_cast, Fin.coe_cast, e]
       simp_all only [ne_eq, Fin.ext_iff, Finset.mem_univ, Fin.coe_cast,
-        OrderIso.coe_symm_toEquiv, Fin.symm_castOrderIso, Fin.castOrderIso_apply, e]
+        OrderIso.coe_symm_toEquiv, Fin.symm_castOrderIso, Fin.castOrderIso_apply]
       omega
   · simp
 

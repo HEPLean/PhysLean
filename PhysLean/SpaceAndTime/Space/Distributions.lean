@@ -61,7 +61,7 @@ noncomputable def derivD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     let ev : (Space d →L[ℝ] M) →L[ℝ] M := {
       toFun v := v (basis μ)
       map_add' v1 v2 := by
-        simp only [LinearMap.add_apply, ContinuousLinearMap.add_apply]
+        simp only [ContinuousLinearMap.add_apply]
       map_smul' a v := by
         simp
     }
@@ -319,7 +319,7 @@ lemma curlD_gradD_eq_zero (f : (Space) →d[ℝ] ℝ) :
     try rw [curlD_apply_one]
     try rw [curlD_apply_two]
     rw [gradD_eq_sum_basis, gradD_eq_sum_basis]
-    simp [Fin.sum_univ_three, basis_apply, Fintype.sum_apply]
+    simp [Fin.sum_univ_three, basis_apply]
     rw [← map_neg, ← map_add, ← ContinuousLinearMap.map_zero f]
     congr
     ext x

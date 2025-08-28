@@ -112,8 +112,7 @@ instance linSolsAddCommMonoid (χ : ACCSystemLinear) :
   zero := ⟨χ.chargesAddCommMonoid.zero, fun _ ↦ (χ.linearACCs _).map_zero⟩
   zero_add S := LinSols.ext (χ.chargesAddCommMonoid.zero_add _)
   add_zero S := LinSols.ext (χ.chargesAddCommMonoid.add_zero _)
-  nsmul n S := ⟨n • S.val, fun _ ↦ by simp [Nat.cast_smul_eq_nsmul ℚ, (χ.linearACCs _).map_smul,
-    S.linearSol _]⟩
+  nsmul n S := ⟨n • S.val, fun _ ↦ by simp [S.linearSol _]⟩
   nsmul_zero n := rfl
   nsmul_succ n S := LinSols.ext (χ.chargesAddCommMonoid.nsmul_succ _ _)
 
