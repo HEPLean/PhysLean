@@ -114,7 +114,7 @@ instance [IsFinite 𝓒] (n : ℕ) : IsFinite (nsmul n 𝓒) where
       refine Measure.ext (fun s _ => ?_)
       rcases h_cases s with hs | hs
       · subst hs
-        simp [CanonicalEnsemble.nsmul, IsFinite.μ_eq_count (𝓒:=𝓒)]
+        simp [CanonicalEnsemble.nsmul]
       · subst hs
         simp [CanonicalEnsemble.nsmul, IsFinite.μ_eq_count (𝓒:=𝓒)]
     | succ n ih =>
