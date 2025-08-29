@@ -39,12 +39,14 @@ def chargeDistribution (q : ℝ) : ChargeDistribution 3 := q • diracDelta ℝ 
 def electricField (q ε : ℝ) : StaticElectricField 3 :=
   Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r)
   ⟨|q / (4 * π * ε)|, 0, 0, by
-    simp
+    simp only [abs_nonneg, le_refl, Nat.succ_eq_add_one, Nat.reduceAdd, inv_pow, Nat.cast_ofNat,
+      rpow_neg_ofNat, Int.reduceNeg, zpow_neg, pow_zero, mul_one, add_zero, true_and]
     intro x
     simp [norm_smul]
     by_cases h : x = 0
     · subst h
-      simp
+      simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, inv_zero,
+        mul_zero]
       apply le_of_eq
       ring
     have h' : ‖x‖ ≠ 0 := by exact norm_ne_zero_iff.mpr h
@@ -79,7 +81,7 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
       | n' + 1 + 1 =>
         use 0, 0
         intro x
-        simp
+        simp only [norm_eq_abs, pow_zero, mul_one, norm_le_zero_iff]
         rw [iteratedFDeriv_succ_eq_comp_right]
         simp [fderiv_smul_const]
         rw [iteratedFDeriv_succ_const]
@@ -114,7 +116,8 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
         (volume (α := EuclideanSpace ℝ (Fin 3))))
           (Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))))]
       congr 1
-      simp
+      simp only [inv_pow, homeomorphUnitSphereProd_apply_snd_coe, norm_norm,
+        homeomorphUnitSphereProd_apply_fst_coe]
       let f (x : Space 3) : ℝ :=
         (‖↑x‖ ^ 2)⁻¹ * _root_.deriv (fun a => η (a • ‖↑x‖⁻¹ • ↑x)) ‖↑x‖
       conv_rhs =>
@@ -153,7 +156,8 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
         conv_rhs => rw [pow_succ, mul_comm]
         rfl) (by fun_prop) η
       rename_i r
-      simp
+      simp only [norm_eq_abs, inv_pow, sq_abs, Nat.succ_eq_add_one, Nat.reduceAdd,
+        Function.comp_apply, homeomorphUnitSphereProd_symm_apply_coe]
       let x : Space 3 := r.2.1 • r.1.1
       have hr := r.2.2
       simp [-Subtype.coe_prop] at hr
@@ -217,7 +221,8 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
         exact Filter.Tendsto.mono_left (η' n).toZeroAtInfty.zero_at_infty' atTop_le_cocompact
     _ = (q/(4 * π * ε)) * η 0 * (3 * (volume (α := EuclideanSpace ℝ (Fin 3))).real
         (Metric.ball 0 1)) := by
-      simp
+      simp only [integral_const, Measure.toSphere_real_apply_univ, finrank_euclideanSpace,
+        Fintype.card_fin, Nat.cast_ofNat, smul_eq_mul, mul_neg, neg_mul, neg_neg]
       ring
     _ = (q/(4 * π * ε)) * η 0 * (3 * (π * 4/3)) := by
       congr

@@ -266,7 +266,7 @@ lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin
     simp only [Nat.succ_eq_add_one, inner_smul_right, inner_basis]
     convert integrable_lemma i i
     rename_i x
-    simp
+    simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, mul_eq_mul_right_iff]
     left
     rw [deriv_eq_fderiv_basis]
     rfl
@@ -305,7 +305,7 @@ lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
     · fun_prop
   convert integrable_lemma i i
   rename_i x
-  simp
+  simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, mul_eq_mul_right_iff]
   left
   rw [deriv_eq_fderiv_basis]
   rfl
@@ -330,7 +330,7 @@ lemma integrable_ofBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
     (volume (α := EuclideanSpace ℝ (Fin dm1.succ))))
   rw [← he.integrable_comp_emb]
   convert h1
-  simp
+  simp only [Nat.succ_eq_add_one, Function.comp_apply, Homeomorph.symm_apply_apply]
   exact Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ)))
 
 /-!
