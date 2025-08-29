@@ -52,6 +52,17 @@ Zulip chats discussing units:
 
 A lot of the results around units is still experimental and should be adapted based on needs.
 
+## Other implementations of units
+
+There are other implementations of units in Lean, in particular:
+1. https://github.com/ATOMSLab/LeanDimensionalAnalysis/tree/main
+2. https://github.com/teorth/analysis/blob/main/analysis/Analysis/Misc/SI.lean
+3. https://github.com/ecyrbe/lean-units
+Each of these have their own advantages and specific use-cases.
+For example both (1) and (3) allow for or work in Floats, allowing computability and the use
+of `#eval`. This is currently not possible with the more theoretical implementation here
+in PhysLean which is based exclusively on Reals.
+
 -/
 
 open NNReal
