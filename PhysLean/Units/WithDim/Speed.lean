@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Units.Basic
-import PhysLean.Units.WithDim
+import PhysLean.Units.WithDim.Basic
 /-!
 
 # Speed
@@ -29,7 +28,7 @@ open UnitChoices
 
 -/
 open Dimensionful
-open UnitChoices  CarriesDimension
+open UnitChoices CarriesDimension
 /-- The dimensional speed corresponding to 1 meter per second. -/
 noncomputable def oneMeterPerSecond : DimSpeed := toDimensionful SI ⟨1⟩
 

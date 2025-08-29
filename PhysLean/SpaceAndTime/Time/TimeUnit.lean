@@ -65,6 +65,12 @@ lemma div_neq_zero (x y : TimeUnit) : ¬ x / y = (0 : ℝ≥0) := by
   simp
 
 @[simp]
+lemma div_pos (x y : TimeUnit) : (0 : ℝ≥0) < x/ y := by
+  apply lt_of_le_of_ne
+  · exact zero_le (x / y)
+  · exact Ne.symm (div_neq_zero x y)
+
+@[simp]
 lemma div_self (x : TimeUnit) :
     x / x = (1 : ℝ≥0) := by
   simp [div_eq_val, x.val_neq_zero]
@@ -73,6 +79,12 @@ lemma div_symm (x y : TimeUnit) :
     x / y = (y / x)⁻¹ := NNReal.eq <| by
   rw [div_eq_val, inv_eq_one_div, div_eq_val]
   simp
+
+@[simp]
+lemma div_mul_div_coe (x y z : TimeUnit) :
+    (x / y : ℝ) * (y /z : ℝ) = x /z := by
+  simp [div_eq_val]
+  field_simp
 
 /-!
 
@@ -100,6 +112,20 @@ lemma scale_div_scale (x1 x2 : TimeUnit) {r1 r2 : ℝ} (hr1 : 0 < r1) (hr2 : 0 <
   simp [scale, div_eq_val]
   field_simp
 
+@[simp]
+lemma self_div_sccale (x : TimeUnit) (r : ℝ) (hr : 0 < r) :
+    x / scale r x hr = (⟨1/r, _root_.div_nonneg (by simp) (le_of_lt hr)⟩ : ℝ≥0) := by
+  simp [scale, div_eq_val]
+  ext
+  simp
+  field_simp
+  ring
+
+@[simp]
+lemma scale_scale (x : TimeUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < r2) :
+    scale r1 (scale r2 x hr2) hr1 = scale (r1 * r2) x (mul_pos hr1 hr2) := by
+  simp [scale]
+  ring
 /-!
 
 ## Specific choices of time units

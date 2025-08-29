@@ -65,6 +65,12 @@ lemma div_neq_zero (x y : TemperatureUnit) : ¬ x / y = (0 : ℝ≥0) := by
   simp
 
 @[simp]
+lemma div_pos (x y : TemperatureUnit) : (0 : ℝ≥0) < x/ y := by
+  apply lt_of_le_of_ne
+  · exact zero_le (x / y)
+  · exact Ne.symm (div_neq_zero x y)
+
+@[simp]
 lemma div_self (x : TemperatureUnit) :
     x / x = (1 : ℝ≥0) := by
   simp [div_eq_val, x.val_neq_zero]
@@ -73,6 +79,12 @@ lemma div_symm (x y : TemperatureUnit) :
     x / y = (y / x)⁻¹ := NNReal.eq <| by
   rw [div_eq_val, inv_eq_one_div, div_eq_val]
   simp
+
+@[simp]
+lemma div_mul_div_coe (x y z : TemperatureUnit) :
+    (x / y : ℝ) * (y /z : ℝ) = x /z := by
+  simp [div_eq_val]
+  field_simp
 
 /-!
 
@@ -88,6 +100,15 @@ def scale (r : ℝ) (x : TemperatureUnit) (hr : 0 < r := by norm_num) : Temperat
 lemma scale_div_self (x : TemperatureUnit) (r : ℝ) (hr : 0 < r) :
     scale r x hr / x = (⟨r, le_of_lt hr⟩ : ℝ≥0) := by
   simp [scale, div_eq_val]
+
+@[simp]
+lemma self_div_sccale (x : TemperatureUnit) (r : ℝ) (hr : 0 < r) :
+    x / scale r x hr = (⟨1/r, _root_.div_nonneg (by simp) (le_of_lt hr)⟩ : ℝ≥0) := by
+  simp [scale, div_eq_val]
+  ext
+  simp
+  field_simp
+  ring
 
 @[simp]
 lemma scale_one (x : TemperatureUnit) : scale 1 x = x := by

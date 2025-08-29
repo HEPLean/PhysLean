@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Units.Basic
-import PhysLean.Units.WithDim
+import PhysLean.Units.WithDim.Basic
 /-!
 
 # Area
@@ -61,7 +60,6 @@ noncomputable def acre : DimArea := toDimensionful ({SI with
 @[simp]
 lemma squareMeter_in_SI : squareMeter.1 SI = ⟨1⟩ := by
   simp [squareMeter, toDimensionful_apply_apply]
-
 
 @[simp]
 lemma squareFoot_in_SI : squareFoot.1 SI = ⟨0.09290304⟩ := by

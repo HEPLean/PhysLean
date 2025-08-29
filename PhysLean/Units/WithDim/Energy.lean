@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Units.Basic
-import PhysLean.Units.WithDim
+import PhysLean.Units.WithDim.Basic
 /-!
 
 # Energy
@@ -32,6 +31,6 @@ noncomputable def electronVolt : DimEnergy := toDimensionful SI ⟨1.602176634e-
 noncomputable def calorie : DimEnergy := toDimensionful SI ⟨4.184⟩
 
 /-- The dimensional energy corresponding to 1 kilowatt-hours, (3,600,000 J). -/
-noncomputable def kilowattHour : DimEnergy :=  toDimensionful SI ⟨3600000⟩
+noncomputable def kilowattHour : DimEnergy := toDimensionful SI ⟨3600000⟩
 
 end DimEnergy

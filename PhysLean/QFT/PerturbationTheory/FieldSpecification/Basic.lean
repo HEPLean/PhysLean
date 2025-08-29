@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.SpaceTime.Basic
-import PhysLean.Units.Momentum.Basic
+import PhysLean.Units.WithDim.Momentum
 import PhysLean.QFT.PerturbationTheory.FieldStatistics.OfFinset
 /-!
 

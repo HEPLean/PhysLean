@@ -3,9 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Units.Velocity
-import PhysLean.Units.Mass
-import PhysLean.Units.WithDim
+import PhysLean.Units.WithDim.Velocity
+import PhysLean.Units.WithDim.Mass
+import PhysLean.Units.WithDim.Basic
 /-!
 # Momentum
 

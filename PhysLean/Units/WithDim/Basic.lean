@@ -15,13 +15,15 @@ WithDim is the type `M` which carrying the dimension `d`.
 
 open NNReal
 
+/-- The type `M` carrying an instance of a dimension `d`. -/
 structure WithDim (d : Dimension) (M : Type) [MulAction ℝ≥0 M] where
+  /-- The underlying value of `M`. -/
   val : M
 
 namespace WithDim
 
 @[ext]
-lemma ext {d M}  [MulAction ℝ≥0 M] (x1 x2 : WithDim d M) (h : x1.val = x2.val) : x1 = x2 := by
+lemma ext {d M} [MulAction ℝ≥0 M] (x1 x2 : WithDim d M) (h : x1.val = x2.val) : x1 = x2 := by
   cases x1
   cases x2
   simp_all
@@ -54,7 +56,7 @@ lemma withDim_hMul_val {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d
     (m1 * m2).val = m1.val * m2.val := rfl
 
 instance {d1 d2 : Dimension} :
-    DMul (WithDim d1 ℝ) (WithDim d2 ℝ) (WithDim (d1 * d2)  ℝ) where
+    DMul (WithDim d1 ℝ) (WithDim d2 ℝ) (WithDim (d1 * d2) ℝ) where
   mul_dim m1 m2 := by
     intro u1 u2
     ext
