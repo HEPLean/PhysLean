@@ -91,6 +91,12 @@ lemma ofβ_β (T : Temperature) : ofβ (β T) = T := by
     show (1 / (kB * (1 / (kB * (T : ℝ))))) = (T : ℝ) from by
       field_simp [kB_neq_zero]
 
+/-- Positivity of `β` from positivity of temperature. -/
+lemma beta_pos (T : Temperature) (hT_pos : 0 < T.val) : 0 < (T.β : ℝ) := by
+  unfold Temperature.β
+  have h_prod : 0 < (kB : ℝ) * T.val := mul_pos kB_pos hT_pos
+  simpa [Temperature.β] using inv_pos.mpr h_prod
+
 /-! ### Regularity of `ofβ` -/
 
 open Filter Topology
