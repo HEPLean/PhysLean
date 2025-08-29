@@ -60,9 +60,9 @@ instance {d1 d2 : Dimension} :
   mul_dim m1 m2 := by
     intro u1 u2
     ext
-    simp
+    simp only [withDim_hMul_val, carriesDimension_d, UnitChoices.dimScale_mul, smul_val]
     rw [m1.2 u1, m2.2 u1]
-    simp
+    simp only [carriesDimension_d, smul_val, Algebra.mul_smul_comm, Algebra.smul_mul_assoc]
     rw [smul_smul]
     congr 1
     rw [mul_comm]

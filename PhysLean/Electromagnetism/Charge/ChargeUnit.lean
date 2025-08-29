@@ -107,11 +107,11 @@ lemma scale_div_self (x : ChargeUnit) (r : ℝ) (hr : 0 < r) :
   simp [scale, div_eq_val]
 
 @[simp]
-lemma self_div_sccale (x : ChargeUnit) (r : ℝ) (hr : 0 < r) :
+lemma self_div_scale (x : ChargeUnit) (r : ℝ) (hr : 0 < r) :
     x / scale r x hr = (⟨1/r, _root_.div_nonneg (by simp) (le_of_lt hr)⟩ : ℝ≥0) := by
   simp [scale, div_eq_val]
   ext
-  simp
+  simp only [coe_mk]
   field_simp
   ring
 

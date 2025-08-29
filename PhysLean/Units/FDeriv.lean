@@ -54,7 +54,7 @@ lemma fderiv_isDimensionallyInvariant {M1 M2 : Type} [NormedAddCommGroup M1] [No
       ((u1.dimScale u2 (d M1)).1 • mx)) ((u2.dimScale u1 (d M1)).1 • m)) = _
     rw [fderiv_const_smul (by fun_prop)]
     rw [fderiv_comp_smul]
-    simp
+    simp only [val_eq_coe]
     congr
     rw [smul_smul]
     change ((u1.dimScale u2 (d M1)) * (u2.dimScale u1 (d M1))) • m = m

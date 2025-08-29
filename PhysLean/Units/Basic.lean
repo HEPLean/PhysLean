@@ -126,7 +126,7 @@ instance : CommGroup Dimension where
   mul_assoc a b c := by
     ext
     all_goals
-      simp
+      simp only [length_mul, time_mul, mass_mul, charge_mul, temperature_mul]
       ring
   one := 0
   one_mul a := by
@@ -147,7 +147,7 @@ instance : CommGroup Dimension where
   mul_comm a b := by
     ext
     all_goals
-      simp
+      simp only [length_mul, time_mul, mass_mul, charge_mul, temperature_mul]
       ring
 
 @[simp]
@@ -455,7 +455,7 @@ noncomputable def CarriesDimension.toDimensionful {M : Type} [CarriesDimension M
   left_inv m := by
     simp
   right_inv f := by
-    simp
+    simp only
     ext u1
     simpa using (f.2 u u1).symm
 
@@ -927,7 +927,7 @@ lemma DMul.hMul_scaleUnit {M1 M2 M3 : Type} [CarriesDimension M1] [CarriesDimens
 /-- Given a type `M` that depends on units, e.g. the function type `M1 → M2` between two types
   carrying a dimension, the subtype of `M` which scales according to the dimension `d`. -/
 def DimSet (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
-  Set M :=
+    Set M :=
   { m : M | ∀ u1 u2, scaleUnit u1 u2 m = (UnitChoices.dimScale u1 u2 d) • m }
 
 instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :

@@ -29,7 +29,7 @@ noncomputable def meters400 : Dimensionful (WithDim L𝓭 ℝ) := toDimensionful
 example : meters400.1 {SI with length := LengthUnit.miles} = ⟨400/1609.344⟩ := by
   simp [meters400, toDimensionful_apply_apply, dimScale, LengthUnit.miles]
   ext
-  simp
+  simp only [WithDim.smul_val]
   trans 1609.344⁻¹ * 400
   · rfl
   norm_num
@@ -76,7 +76,7 @@ lemma energyMass_isDimensionallyInvariant :
     _ = ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1 • E.1 =
         ((u2.dimScale u1 M𝓭 * u2.dimScale u1 (L𝓭 * T𝓭⁻¹) * u2.dimScale u1 (L𝓭 * T𝓭⁻¹)).1) *
           (m.1 * ((speedOfLight.1 u).1) ^ 2)) := by
-        simp
+        simp only [dimScale_mul, NNReal.val_eq_coe, NNReal.coe_mul, smul_eq_mul, eq_iff_iff]
         ring_nf
     _ = ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1 • E.1 =
         ((u2.dimScale u1 (M𝓭 * (L𝓭 * T𝓭⁻¹) * (L𝓭 * T𝓭⁻¹))).1) *
