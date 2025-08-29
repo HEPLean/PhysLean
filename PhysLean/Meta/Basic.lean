@@ -144,13 +144,13 @@ def getDeclString (name : Name) : CoreM String := do
 /-- Given a name, returns the source code defining that name,
   starting with the def ... or lemma... etc. -/
 def getDeclStringNoDoc (name : Name) : CoreM String := do
-  let declerationString ← getDeclString name
+  let declarationString ← getDeclString name
   let headerLine (line : String) : Bool :=
     line.startsWith "def " ∨ line.startsWith "lemma " ∨ line.startsWith "inductive "
     ∨ line.startsWith "structure " ∨ line.startsWith "theorem "
     ∨ line.startsWith "instance " ∨ line.startsWith "abbrev " ∨
     line.startsWith "noncomputable def " ∨ line.startsWith "noncomputable abbrev "
-  let lines := declerationString.splitOn "\n"
+  let lines := declarationString.splitOn "\n"
   match lines.findIdx? headerLine with
   | none => panic! s!"{name} has no header line"
   | some i => return String.intercalate "\n" (lines.drop i)

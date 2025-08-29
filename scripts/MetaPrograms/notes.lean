@@ -128,7 +128,7 @@ def NotePart.toYMLM : ((List String) × Nat × Nat × Nat) →  NotePart →
 structure Note where
   title : String
   /-- The curators of the note are the people who put the note together.
-    This may not conicide with the original authors of the material. -/
+    This may not coincide with the original authors of the material. -/
   curators : List String
   parts : List NotePart
 
