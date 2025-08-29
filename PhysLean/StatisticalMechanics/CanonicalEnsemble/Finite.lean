@@ -114,11 +114,9 @@ instance [IsFinite 𝓒] (n : ℕ) : IsFinite (nsmul n 𝓒) where
       refine Measure.ext (fun s _ => ?_)
       rcases h_cases s with hs | hs
       · subst hs
-        simp [CanonicalEnsemble.nsmul, CanonicalEnsemble.μ_nsmul,
-          IsFinite.μ_eq_count (𝓒:=𝓒)]
+        simp [CanonicalEnsemble.nsmul, IsFinite.μ_eq_count (𝓒:=𝓒)]
       · subst hs
-        simp [CanonicalEnsemble.nsmul, CanonicalEnsemble.μ_nsmul,
-          IsFinite.μ_eq_count (𝓒:=𝓒)]
+        simp [CanonicalEnsemble.nsmul, IsFinite.μ_eq_count (𝓒:=𝓒)]
     | succ n ih =>
       classical
       haveI : IsFinite (nsmul n 𝓒) := {
@@ -210,7 +208,7 @@ open Constants
 omit [MeasurableSingletonClass ι] in
 lemma entropy_of_fintype (T : Temperature) :
     𝓒.shannonEntropy T = - kB * ∑ i, 𝓒.probability T i * log (𝓒.probability T i) := by
-  simp [shannonEntropy, differentialEntropy]
+  simp [shannonEntropy]
 
 lemma probability_le_one [IsFinite 𝓒] [Nonempty ι] (T : Temperature) (i : ι) :
     𝓒.probability T i ≤ 1 := by
@@ -274,7 +272,7 @@ lemma sum_probability_eq_one [IsFinite 𝓒] [Nonempty ι] (T : Temperature) :
   have hZdef := mathematicalPartitionFunction_of_fintype (𝓒:=𝓒) T
   have hZpos := mathematicalPartitionFunction_pos_finite (𝓒:=𝓒) (T:=T)
   have hZne : 𝓒.mathematicalPartitionFunction T ≠ 0 := hZpos.ne'
-  simp [hZdef, hZne]
+  simp [hZdef]
   simp_all only [neg_mul, ne_eq, not_false_eq_true, div_self]
 
 /-- The entropy of a finite canonical ensemble (Shannon entropy) is non-negative. -/
@@ -330,9 +328,8 @@ theorem thermodynamicEntropy_eq_shannonEntropy [IsFinite 𝓒]
       funext i
       simp [CanonicalEnsemble.physicalProbability,
             IsFinite.dof_eq_zero (𝓒:=𝓒),
-            IsFinite.phase_space_unit_eq_one (𝓒:=𝓒),
-            pow_zero]
-    simp_all only [physicalProbability_def, true_or]
+            IsFinite.phase_space_unit_eq_one (𝓒:=𝓒)]
+    simp_all only [physicalProbability_def]
   have h_shannon :
       𝓒.shannonEntropy T = 𝓒.differentialEntropy T :=
     (shannonEntropy_eq_differentialEntropy (𝓒:=𝓒) T)

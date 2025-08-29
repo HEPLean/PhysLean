@@ -9,7 +9,6 @@ import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.LinearAlgebra.CrossProduct
 import Mathlib.Analysis.Calculus.FDeriv.Pi
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-import Mathlib.Tactic.FunProp
 import PhysLean.SpaceAndTime.Space.Basic
 /-!
 # Classical vector calculus properties

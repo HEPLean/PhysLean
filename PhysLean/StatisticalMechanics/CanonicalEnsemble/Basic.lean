@@ -10,7 +10,6 @@ import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Meta.Linters.Sorry
 import Mathlib.Analysis.SpecialFunctions.Log.Summable
 import Mathlib.MeasureTheory.Integral.Prod
-import Mathlib.Order.Filter.AtTopBot.Basic
 /-!
 # Canonical Ensemble: Core Definitions
 
@@ -35,12 +34,12 @@ ambiguities such as the Gibbs paradox.
 We keep both layers:
 
 * Mathematical / raw:
-  - `mathematicalPartitionFunction (T)`   :  ∫ exp(-β E) dμ
+  - `mathematicalPartitionFunction (T)` : ∫ exp(-β E) dμ
   - `probability` (density w.r.t. `μ`)
   - `differentialEntropy` (can be negative, unit–dependent)
 
 * Physical / dimensionless:
-  - `partitionFunction`  :  `Z = Z_math / h^dof`
+  - `partitionFunction` : `Z = Z_math / h^dof`
   - `physicalProbability` : dimensionless density
   - `helmholtzFreeEnergy` : `F = -kB T log Z`
   - `thermodynamicEntropy` : absolute entropy `(U - F)/T = -kB ∫ ρ_phys log ρ_phys`
@@ -54,8 +53,8 @@ normalization is recovered via the Boltzmann weighted measure.
 
 ## 4. Boltzmann & Probability Measures
 
-* `μBolt T`  : Boltzmann (unnormalized) measure `withDensity exp(-β E)`
-* `μProd T`  : normalized probability measure (rescaled `μBolt T`)
+* `μBolt T` : Boltzmann (unnormalized) measure `withDensity exp(-β E)`
+* `μProd T` : normalized probability measure (rescaled `μBolt T`)
 * `probability T i` : the density `exp(-β E(i)) / Z_math`
 * `physicalProbability` : `probability * (phase_space_unit ^ dof)`
 
@@ -265,11 +264,9 @@ lemma nsmul_succ (n : ℕ) [SigmaFinite 𝓒.μ] : nsmul n.succ 𝓒 = (𝓒 + n
     (MeasurableEquiv.piFinSuccAbove (fun _ => ι) 0) := by
   ext1
   · ext x
-    simp only [Nat.succ_eq_add_one, energy_nsmul_apply, congr_energy_comp_symmm,
-      MeasurableEquiv.piFinSuccAbove_apply, Fin.insertNthEquiv_zero, Fin.consEquiv_symm_apply,
-      energy_add_apply, MeasurableEquiv.symm_apply_apply]
+    simp only [Nat.succ_eq_add_one, energy_nsmul_apply]
     exact Fin.sum_univ_succAbove (fun i => 𝓒.energy (x i)) 0
-  · simp [Nat.succ_eq_add_one, Nat.succ_mul, dof_nsmul, add_comm, add_left_comm, add_assoc]
+  · simp [Nat.succ_eq_add_one, Nat.succ_mul, dof_nsmul, add_comm]
   · simp
   · refine Eq.symm (MeasureTheory.MeasurePreserving.map_eq ?_)
     refine MeasurePreserving.symm _ ?_
@@ -438,7 +435,7 @@ lemma mathematicalPartitionFunction_congr (e : ι1 ≃ᵐ ι) (T : Temperature) 
 lemma mathematicalPartitionFunction_nsmul (n : ℕ) (T : Temperature) :
     (nsmul n 𝓒).mathematicalPartitionFunction T = (𝓒.mathematicalPartitionFunction T) ^ n := by
   simp_rw [mathematicalPartitionFunction, μBolt_nsmul, measureReal_def, Measure.pi_univ]
-  simp [ENNReal.toReal_prod]
+  simp
 
 lemma mathematicalPartitionFunction_nonneg (T : Temperature) :
     0 ≤ 𝓒.mathematicalPartitionFunction T := by
@@ -704,7 +701,7 @@ lemma probability_pos
     (T : Temperature) [IsFiniteMeasure (𝓒.μBolt T)] [NeZero 𝓒.μ] (i : ι) :
     0 < 𝓒.probability T i := by
   have hZpos := mathematicalPartitionFunction_pos (𝓒:=𝓒) (T:=T)
-  simp [probability, div_pos, Real.exp_pos, hZpos]
+  simp [probability, Real.exp_pos, hZpos]
 
 /-- General entropy non-negativity under a pointwise upper bound `probability ≤ 1`.
 This assumption holds automatically in the finite/counting case (since sums bound each term),
@@ -777,8 +774,7 @@ lemma partitionFunction_add
     (h : 𝓒.phaseSpaceunit = 𝓒1.phaseSpaceunit) :
     (𝓒 + 𝓒1).partitionFunction T
       = 𝓒.partitionFunction T * 𝓒1.partitionFunction T := by
-  simp [partitionFunction, mathematicalPartitionFunction_add, h,
-        mul_comm, mul_left_comm, mul_assoc]
+  simp [partitionFunction, mathematicalPartitionFunction_add, h]
   ring_nf
 
 lemma partitionFunction_nsmul
@@ -786,7 +782,7 @@ lemma partitionFunction_nsmul
     (nsmul n 𝓒).partitionFunction T
       = (𝓒.partitionFunction T) ^ n := by
   simp [partitionFunction, mathematicalPartitionFunction_nsmul,
-        dof_nsmul, phase_space_unit_nsmul, pow_mul, mul_comm, mul_left_comm, mul_assoc]
+        dof_nsmul, phase_space_unit_nsmul, pow_mul]
   ring_nf
 
 lemma partitionFunction_dof_zero
@@ -812,7 +808,7 @@ lemma log_partitionFunction
         = (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
     simp
   simp [partitionFunction, Real.log_div hZ.ne' hden.ne', hlogpow,
-        sub_eq_add_neg, mul_comm, mul_left_comm, mul_assoc]
+        sub_eq_add_neg]
 
 /-- A rewriting form convenient under a coercion to a temperature obtained from an inverse
 temperature. -/
@@ -844,7 +840,7 @@ lemma helmholtzFreeEnergy_def
 lemma helmholtzFreeEnergy_congr
     (𝓒 : CanonicalEnsemble ι) (e : ι1 ≃ᵐ ι) (T : Temperature) :
     (𝓒.congr e).helmholtzFreeEnergy T = 𝓒.helmholtzFreeEnergy T := by
-  simp [helmholtzFreeEnergy, partitionFunction_congr]
+  simp [helmholtzFreeEnergy]
 
 lemma helmholtzFreeEnergy_dof_zero
     (𝓒 : CanonicalEnsemble ι) (T : Temperature) (h : 𝓒.dof = 0) :
@@ -866,7 +862,7 @@ lemma helmholtzFreeEnergy_add
     (𝓒 + 𝓒1).helmholtzFreeEnergy T
       = 𝓒.helmholtzFreeEnergy T + 𝓒1.helmholtzFreeEnergy T := by
   have hPF := partitionFunction_add (𝓒:=𝓒) (𝓒1:=𝓒1) (T:=T) h
-  have hpf₁ : 0 < 𝓒.partitionFunction T  := partitionFunction_pos (𝓒:=𝓒)  (T:=T)
+  have hpf₁ : 0 < 𝓒.partitionFunction T := partitionFunction_pos (𝓒:=𝓒) (T:=T)
   have hpf₂ : 0 < 𝓒1.partitionFunction T := partitionFunction_pos (𝓒:=𝓒1) (T:=T)
   calc
     (𝓒 + 𝓒1).helmholtzFreeEnergy T
@@ -880,7 +876,7 @@ lemma helmholtzFreeEnergy_add
         + (-kB * T.val) * Real.log (𝓒1.partitionFunction T) := by
           ring
     _ = 𝓒.helmholtzFreeEnergy T + 𝓒1.helmholtzFreeEnergy T := by
-          simp [helmholtzFreeEnergy, mul_comm, mul_left_comm, mul_assoc]
+          simp [helmholtzFreeEnergy, mul_comm, mul_assoc]
 
 lemma helmholtzFreeEnergy_nsmul
     (𝓒 : CanonicalEnsemble ι) (n : ℕ) (T : Temperature) :
@@ -928,7 +924,7 @@ lemma physicalProbability_measurable (T : Temperature) :
         = fun i => c * Real.exp (-(T.β : ℝ) * 𝓒.energy i) := by
     funext i
     simp [physicalProbability, probability, c, div_eq_mul_inv,
-          mul_comm, mul_left_comm, mul_assoc]
+          mul_comm, mul_assoc]
   simpa [h_eq] using h_fun_meas
 
 lemma physicalProbability_nonneg
@@ -949,7 +945,7 @@ lemma log_physicalProbability
       = Real.log (𝓒.probability T i) + (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
   have hppos := 𝓒.probability_pos (T:=T) i
   have hpowpos : 0 < 𝓒.phaseSpaceunit ^ 𝓒.dof := pow_pos 𝓒.hPos _
-  simp [physicalProbability, Real.log_mul hppos.ne' hpowpos.ne', Real.log_pow, Nat.cast_id]
+  simp [physicalProbability, Real.log_mul hppos.ne' hpowpos.ne', Real.log_pow]
 
 lemma integral_probability
     (𝓒 : CanonicalEnsemble ι) (T : Temperature)
@@ -967,7 +963,7 @@ lemma integral_probability
         = (𝓒.mathematicalPartitionFunction T)⁻¹ *
           (∫ i, Real.exp (- T.β * 𝓒.energy i) ∂ 𝓒.μ) := by
     simp [probability, div_eq_mul_inv, integral_const_mul,
-          mul_comm, mul_left_comm, mul_assoc]
+          mul_comm]
   calc
     (∫ i, 𝓒.probability T i ∂ 𝓒.μ)
         = (𝓒.mathematicalPartitionFunction T)⁻¹ *
@@ -987,10 +983,9 @@ lemma integral_physicalProbability_base
   calc
     (∫ i, 𝓒.physicalProbability T i ∂ 𝓒.μ)
         = (∫ i, 𝓒.probability T i * (𝓒.phaseSpaceunit ^ 𝓒.dof) ∂ 𝓒.μ) := by
-              simp [physicalProbability, mul_comm, mul_left_comm, mul_assoc]
+              simp [physicalProbability]
     _ = (∫ i, 𝓒.probability T i ∂ 𝓒.μ) * (𝓒.phaseSpaceunit ^ 𝓒.dof) := by
-              simp [physicalProbability, integral_mul_const,
-                    mul_comm, mul_left_comm, mul_assoc]
+              simp [integral_mul_const, mul_comm]
     _ = 1 * (𝓒.phaseSpaceunit ^ 𝓒.dof) := by simp [hnorm]
     _ = 𝓒.phaseSpaceunit ^ 𝓒.dof := by ring
 

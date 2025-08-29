@@ -63,7 +63,7 @@ lemma twoState_probability_snd (E : ℝ) (T : Temperature) :
   have h_basic :
       (twoState E).probability T 1 =
         Real.exp (-β T * E) / (1 + Real.exp (-β T * E)) := by
-    --  The mathematical partition function of `twoState` is `1 + e^{-βE}`.
+    -- The mathematical partition function of `twoState` is `1 + e^{-βE}`.
     have hZ :
         (twoState E).mathematicalPartitionFunction T =
           1 + Real.exp (-β T * E) := by
