@@ -4,11 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong
 -/
 import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Mathematics.Distribution.OfBounded
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 
@@ -235,7 +231,8 @@ lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin
     rw [fderivD_apply, ofBounded_apply]
   /- The following lemma could probably be moved out of this result. -/
   have integrable_lemma (i j : Fin (dm1 + 1)) :
-      Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
+      Integrable (fun x =>
+        (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
     simp only [PiLp.smul_apply]
     apply bounded_integrable
     · obtain ⟨c1, c2, n, hc1, hc2, h⟩ := hf
@@ -288,7 +285,8 @@ lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
   intro i _
   simp [inner_smul_right]
   have integrable_lemma (i j : Fin (dm1 + 1)) :
-      Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
+      Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j)
+        volume := by
     simp only [PiLp.smul_apply]
     apply bounded_integrable
     · obtain ⟨c1, c2, n, hc1, hc2, h⟩ := hf
@@ -322,7 +320,7 @@ lemma integrable_ofBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
       (Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin dm1.succ)) - 1))) := by
   have h1 : Integrable ((fun x => ⟪f x.1, Space.grad η x.1⟫_ℝ))
       (.comap (Subtype.val (p := fun x => x ∈ ({0}ᶜ : Set _))) volume) := by
-    change  Integrable ((fun x => ⟪f x, Space.grad η x⟫_ℝ) ∘ Subtype.val)
+    change Integrable ((fun x => ⟪f x, Space.grad η x⟫_ℝ) ∘ Subtype.val)
       (.comap (Subtype.val (p := fun x => x ∈ ({0}ᶜ : Set _))) volume)
     rw [← MeasureTheory.integrableOn_iff_comap_subtypeVal]
     apply Integrable.integrableOn
@@ -334,7 +332,6 @@ lemma integrable_ofBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
   convert h1
   simp
   exact Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ)))
-
 
 /-!
 

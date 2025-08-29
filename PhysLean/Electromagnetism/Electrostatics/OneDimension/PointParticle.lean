@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Electrostatics.Basic
-import PhysLean.Mathematics.Distribution.OfBounded
 import PhysLean.Mathematics.Distribution.PowMul
 /-!
 
@@ -37,7 +36,7 @@ def electricPotential (q ε : ℝ) : StaticElectricPotential 1 :=
 lemma electricPotential_eq_zero_of_ε_eq_zero (q : ℝ) :
     electricPotential q 0 = 0 := by
   ext x
-  simp [electricPotential, ofBounded_apply, div_zero]
+  simp [electricPotential, ofBounded_apply]
 
 /-- An electric field corresponding to a charge distribution of a point particle,
   defined as the negative of the gradient of `electricPotential q ε`.

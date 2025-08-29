@@ -16,6 +16,7 @@ import PhysLean.Electromagnetism.Charge.ChargeUnit
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.PointParticle
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.Vacuum
+import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.PointParticle
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
 import PhysLean.Electromagnetism.Homogeneous

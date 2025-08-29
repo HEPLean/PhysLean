@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Electrostatics.Basic
-import PhysLean.Mathematics.Distribution.OfBounded
 import PhysLean.Mathematics.Distribution.PowMul
 /-!
 

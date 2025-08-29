@@ -22,7 +22,6 @@ Any help proving this would be greatly appreciated.
 - https://math.stackexchange.com/questions/1335591/
 -/
 
-
 namespace Electromagnetism
 open Distribution SchwartzMap
 
@@ -34,7 +33,9 @@ noncomputable section
   Mathematically, this corresponds to a dirac delta distribution centered at the origin. -/
 def chargeDistribution (q : ℝ) : ChargeDistribution 3 := q • diracDelta ℝ 0
 
-
+/-- The electric field of a point particle of charge `q` in 3d space sitting at the origin.
+  Mathematically, this corresponds to the distribution associated to the distribution
+  `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r`. -/
 def electricField (q ε : ℝ) : StaticElectricField 3 :=
   Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r)
   ⟨|q / (4 * π * ε)|, 0, 0, by
@@ -53,13 +54,13 @@ def electricField (q ε : ℝ) : StaticElectricField 3 :=
     · subst hε
       simp
     field_simp
-    trans   |q| * ‖x‖ * (4 * |π| * |ε| * ‖x‖ ^ 2)
+    trans |q| * ‖x‖ * (4 * |π| * |ε| * ‖x‖ ^ 2)
     · rfl
     ring⟩ (by fun_prop)
 
 /-- Guass' law for a point particle in 3-dimensions, that is this theorem states that
-  the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q δ(r)`. -/
-lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribution q) := by
+  the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
+lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribution q) := by
   ext η
   let η' (n : ↑(Metric.sphere 0 1)) : 𝓢(ℝ, ℝ) := compCLM (g := fun a => a • n.1) ℝ (by
     apply And.intro
@@ -79,11 +80,11 @@ lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribut
         use 0, 0
         intro x
         simp
-        rw [iteratedFDeriv_succ_eq_comp_right ]
+        rw [iteratedFDeriv_succ_eq_comp_right]
         simp [fderiv_smul_const]
         rw [iteratedFDeriv_succ_const]
         simp
-        rfl) (by use 1, 1; simp [norm_smul] ) η
+        rfl) (by use 1, 1; simp [norm_smul]) η
   let s : Set (EuclideanSpace ℝ (Fin 3)) := {0}ᶜ
   haveI : MeasureSpace s := by
     exact Measure.Subtype.measureSpace
@@ -107,15 +108,15 @@ lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribut
     _ = - (q/(4 * π * ε)) * ∫ r, ‖r.2.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • r.1)) ‖r.2.1‖)
         ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere.prod
-        (Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))):= by
+        (Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))) := by
       rw [← MeasureTheory.MeasurePreserving.integral_comp (f := homeomorphUnitSphereProd _)
         (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
-        (volume (α := EuclideanSpace ℝ (Fin 3)))) (
-          Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))))]
+        (volume (α := EuclideanSpace ℝ (Fin 3))))
+          (Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))))]
       congr 1
       simp
       let f (x : Space 3) : ℝ :=
-         (‖↑x‖ ^ 2)⁻¹ * _root_.deriv (fun a => η (a • ‖↑x‖⁻¹ • ↑x)) ‖↑x‖
+        (‖↑x‖ ^ 2)⁻¹ * _root_.deriv (fun a => η (a • ‖↑x‖⁻¹ • ↑x)) ‖↑x‖
       conv_rhs =>
         enter [2, x]
         change f x.1
@@ -130,10 +131,10 @@ lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribut
       · symm
         simp
     /- Splitting the integral over the sphere and radius-/
-    _ = - (q/(4 * π * ε)) * ∫ n,  (∫ r, ‖r.1‖⁻¹ ^ 2 *
+    _ = - (q/(4 * π * ε)) * ∫ n, (∫ r, ‖r.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • n)) ‖r.1‖)
-         ∂((Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))))
-        ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere):= by
+        ∂((Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))))
+        ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
       congr 1
       rw [MeasureTheory.integral_prod]
       /- Integrable condition. -/
@@ -157,7 +158,7 @@ lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribut
       have hr := r.2.2
       simp [-Subtype.coe_prop] at hr
       have hr2 : r.2.1 ≠ 0 := by exact Ne.symm (ne_of_lt hr)
-      trans (r.2.1 ^ 2)⁻¹ * _root_.deriv (fun a => η (a •  ‖↑x‖⁻¹ • ↑x)) ‖x‖
+      trans (r.2.1 ^ 2)⁻¹ * _root_.deriv (fun a => η (a • ‖↑x‖⁻¹ • ↑x)) ‖x‖
       · simp [x, norm_smul]
         left
         congr
@@ -173,9 +174,9 @@ lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribut
       ring
       exact SchwartzMap.differentiable η
     /- Simplifying the inner integral. -/
-    _ = - (q/(4 * π * ε)) * ∫ n,  (∫ (r : Set.Ioi (0 : ℝ)),
+    _ = - (q/(4 * π * ε)) * ∫ n, (∫ (r : Set.Ioi (0 : ℝ)),
         (_root_.deriv (fun a => η (a • n)) r.1) ∂(.comap Subtype.val volume))
-        ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere):= by
+        ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
       congr
       funext n
       simp [Measure.volumeIoiPow]
@@ -193,10 +194,10 @@ lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribut
       congr
       rw [abs_of_nonneg]
       have h1 := r.2
-      simp  [- Subtype.coe_prop] at h1
+      simp [- Subtype.coe_prop] at h1
       exact le_of_lt h1
       fun_prop
-    _ = - (q/(4 * π * ε)) * ∫ n,  (-η 0) ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
+    _ = - (q/(4 * π * ε)) * ∫ n, (-η 0) ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
       congr
       funext n
       rw [MeasureTheory.integral_subtype_comap (by simp)]
@@ -214,7 +215,8 @@ lemma gaussLaw  (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribut
         exact integrable ((derivCLM ℝ) (η' n))
       · change Filter.Tendsto (η' n) Filter.atTop (nhds 0)
         exact Filter.Tendsto.mono_left (η' n).toZeroAtInfty.zero_at_infty' atTop_le_cocompact
-    _ = (q/(4 * π * ε)) * η 0 * (3 * (volume (α := EuclideanSpace ℝ (Fin 3))).real (Metric.ball 0 1)):= by
+    _ = (q/(4 * π * ε)) * η 0 * (3 * (volume (α := EuclideanSpace ℝ (Fin 3))).real
+        (Metric.ball 0 1)) := by
       simp
       ring
     _ = (q/(4 * π * ε)) * η 0 * (3 * (π * 4/3)) := by
