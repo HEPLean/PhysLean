@@ -14,26 +14,26 @@ calculus identities for the canonical ensemble.
 ## Contents Overview
 
 1. Helmholtz Free Energies
-   * `mathematicalHelmholtzFreeEnergy`
-   * Relation to physical `helmholtzFreeEnergy` with semi–classical correction.
+  * `mathematicalHelmholtzFreeEnergy`
+  * Relation to physical `helmholtzFreeEnergy` with semi–classical correction.
 
 2. Entropy Relations
-   * Pointwise logarithm of (mathematical / physical) Boltzmann probabilities.
-   * Key identity:
-       `differentialEntropy = kB * β * meanEnergy + kB * log Z_math`
-   * Fundamental link:
-       `thermodynamicEntropy = differentialEntropy - kB * dof * log h`
-     (semi–classical correction term).
-   * Specializations removing the correction when `dof = 0` or `phaseSpaceUnit = 1`.
+  * Pointwise logarithm of (mathematical / physical) Boltzmann probabilities.
+  * Key identity:
+      `differentialEntropy = kB * β * meanEnergy + kB * log Z_math`
+  * Fundamental link:
+      `thermodynamicEntropy = differentialEntropy - kB * dof * log h`
+    (semi–classical correction term).
+  * Specializations removing the correction when `dof = 0` or `phaseSpaceUnit = 1`.
 
 3. Fundamental Thermodynamic Identity
-   * Proof of `F = U - T S_thermo`.
-   * Equivalent rearrangements giving entropy from energies and free energy.
-   * Discrete / normalized specialization (no correction).
+  * Proof of `F = U - T S_thermo`.
+  * Equivalent rearrangements giving entropy from energies and free energy.
+  * Discrete / normalized specialization (no correction).
 
 4. Mean energy as
-       `U = - d/dβ log Z_math`
-     and likewise with the physical partition function (constant factor cancels).
+      `U = - d/dβ log Z_math`
+      and likewise with the physical partition function (constant factor cancels).
 
 ## Design Notes
 
@@ -77,8 +77,7 @@ lemma helmholtzFreeEnergy_eq_helmholtzMathematicalFreeEnergy_add_correction (T :
   have h_log_pow : Real.log (𝓒.phaseSpaceunit ^ 𝓒.dof)
       = (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
     simp
-  simp [sub_eq_add_neg, h_log_pow, mul_add, add_comm, add_left_comm, add_assoc,
-        mul_comm, mul_left_comm, mul_assoc]
+  simp [sub_eq_add_neg, h_log_pow, mul_add, add_comm, mul_comm, mul_left_comm, mul_assoc]
 
 /-- General identity: S_diff = kB β ⟨E⟩ + kB log Z_math.
 This connects the differential entropy to the mean energy and the mathematical partition function.
@@ -108,9 +107,8 @@ lemma differentialEntropy_eq_kB_beta_meanEnergy_add_kB_log_mathZ
     (hE.const_mul _)
   rw [integral_add h_intE h_int1,
       integral_const_mul, meanEnergy, integral_const]
-  simp [mul_add, add_comm, add_left_comm, add_assoc, sub_eq_add_neg,
-        mul_comm, mul_left_comm, mul_assoc, differentialEntropy, probability,
-       mul_comm, mul_left_comm, mul_assoc]
+  simp [mul_add, add_comm, mul_comm, mul_left_comm,
+    mul_comm, mul_left_comm]
 
 /-- Pointwise logarithm of the Boltzmann probability. -/
 lemma log_probability
@@ -122,7 +120,7 @@ lemma log_probability
   unfold probability
   simp [Real.log_div, hZpos.ne', Real.log_exp, sub_eq_add_neg]
 
-/--  Auxiliary identity: `kB · β = 1 / T`.
+/-- Auxiliary identity: `kB · β = 1 / T`.
 `β` is defined as `1 / (kB · T)` (see `Temperature.β`). -/
 @[simp]
 private lemma kB_mul_beta (T : Temperature) (hT : 0 < T.val) :
@@ -152,8 +150,7 @@ lemma thermodynamicEntropy_eq_differentialEntropy_sub_correction
     intro i
     have : 0 < 𝓒.mathematicalPartitionFunction T := hZpos
     unfold probability
-    simp [Real.log_div (Real.exp_pos _).ne' this.ne', Real.log_exp, sub_eq_add_neg,
-          mul_comm, mul_left_comm, mul_assoc]
+    simp [Real.log_div (Real.exp_pos _).ne' this.ne', Real.log_exp, sub_eq_add_neg]
   have h_log_phys_pt :
       ∀ i, Real.log (𝓒.physicalProbability T i)
         = Real.log (𝓒.probability T i)
@@ -173,7 +170,7 @@ lemma thermodynamicEntropy_eq_differentialEntropy_sub_correction
         (fun i => (- (T.β : ℝ)) * 𝓒.energy i
               + (- Real.log (𝓒.mathematicalPartitionFunction T))) := by
       funext i
-      simp [h_log_prob_point i, sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+      simp [h_log_prob_point i, sub_eq_add_neg, add_comm]
     simpa [h_eq] using h_intE.add h_intC
   have h_int_const :
       Integrable (fun _ : ι =>
@@ -184,7 +181,7 @@ lemma thermodynamicEntropy_eq_differentialEntropy_sub_correction
         =
       ∫ i, (Real.log (𝓒.probability T i)
               + (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit) ∂ 𝓒.μProd T := by
-    simp_all only [neg_mul, physicalProbability_def, integrable_add_iff_integrable_right']
+    simp_all only [neg_mul, physicalProbability_def]
   have h_int_const_eval :
       ∫ _i, (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit ∂ 𝓒.μProd T
         = (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
@@ -200,7 +197,7 @@ lemma thermodynamicEntropy_eq_differentialEntropy_sub_correction
         (-kB * ∫ i, Real.log (𝓒.probability T i) ∂ 𝓒.μProd T)
           - kB * (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
     ring
-  simp [this, sub_eq_add_neg, mul_comm, mul_left_comm, mul_assoc]
+  simp [this, sub_eq_add_neg, mul_assoc]
 
 /-- No semiclassical correction when `dof = 0`. -/
 lemma thermodynamicEntropy_eq_differentialEntropy_of_dof_zero
@@ -269,8 +266,7 @@ theorem helmholtzFreeEnergy_eq_meanEnergy_sub_temp_mul_thermodynamicEntropy
             - kB * 𝓒.dof * Real.log 𝓒.phaseSpaceunit := by
               simp [hSdiff]
       _ = _ := by
-              simp [add_comm, add_left_comm, add_assoc, sub_eq_add_neg,
-                    mul_comm, mul_left_comm, mul_assoc]
+              simp [add_comm, sub_eq_add_neg, mul_comm, mul_left_comm, mul_assoc]
   have hkβT : T.val * (kB * (T.β : ℝ)) = 1 := by
     simp [hkβ, hTne]
   have h_rhs :
@@ -295,11 +291,11 @@ theorem helmholtzFreeEnergy_eq_meanEnergy_sub_temp_mul_thermodynamicEntropy
       _ = 𝓒.meanEnergy T - 1 * 𝓒.meanEnergy T
             - T.val * kB * Real.log (𝓒.mathematicalPartitionFunction T)
             + T.val * kB * 𝓒.dof * Real.log 𝓒.phaseSpaceunit := by
-              simp [hkβT, mul_comm, mul_left_comm, mul_assoc]
+              simp [hkβT, mul_comm, mul_assoc]
       _ = -kB * T.val *
             (Real.log (𝓒.mathematicalPartitionFunction T)
               - (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit) := by
-              simp [sub_eq_add_neg, mul_comm, mul_left_comm, mul_assoc]
+              simp [sub_eq_add_neg, mul_comm, mul_assoc]
               ring
   have hZpos := 𝓒.mathematicalPartitionFunction_pos T
   have hhpos : 0 < 𝓒.phaseSpaceunit ^ 𝓒.dof := pow_pos 𝓒.hPos _
@@ -312,16 +308,15 @@ theorem helmholtzFreeEnergy_eq_meanEnergy_sub_temp_mul_thermodynamicEntropy
         Real.log (𝓒.phaseSpaceunit ^ 𝓒.dof)
           = (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by simp
     simp [helmholtzFreeEnergy, partitionFunction,
-          Real.log_div hZpos.ne' hhpos.ne',
-          Real.log_pow, h_log_pow,
+          Real.log_div hZpos.ne' hhpos.ne', h_log_pow,
           sub_eq_add_neg,
-          mul_add, add_comm, add_left_comm, add_assoc,
+          mul_add, add_comm,
           mul_comm, mul_left_comm, mul_assoc]
   rw [hF_rewrite, h_rhs]
 
 /-- **Theorem: Helmholtz identity with semi–classical correction term**.
-Physical identity (always true for `T > 0`):
-  (U - F)/T   = S_thermo
+Physical identity (always true for `T > 0`) :
+  (U - F)/T = S_thermo
 and:
   S_thermo = S_diff - kB * dof * log h.
 Hence:
@@ -351,19 +346,19 @@ theorem differentialEntropy_eq_meanEnergy_sub_helmholtz_div_temp_add_correction
   have hS' :
       𝓒.differentialEntropy T = E / T.val + kB * Real.log Zmath := by
     rw [hS, hkβ]
-    simp [E, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
+    simp [E, div_eq_mul_inv, mul_comm]
   have hZdef : Zmath = Zphys * 𝓒.phaseSpaceunit ^ 𝓒.dof := by
     unfold Zmath Zphys partitionFunction
     have hne : (𝓒.phaseSpaceunit ^ 𝓒.dof) ≠ 0 :=
       pow_ne_zero _ (ne_of_gt 𝓒.hPos)
-    simp [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc, hne]
+    simp [div_eq_mul_inv, hne]
   have hpow_pos : 0 < 𝓒.phaseSpaceunit ^ 𝓒.dof := pow_pos 𝓒.hPos _
   have hZmath_pos :
       0 < Zmath := (mathematicalPartitionFunction_pos (𝓒:=𝓒) (T:=T))
   have hZphys_pos :
       0 < Zphys := by
     have : Zphys = Zmath / 𝓒.phaseSpaceunit ^ 𝓒.dof := by
-      simp [Zphys, partitionFunction, div_eq_mul_inv]
+      simp [Zphys, div_eq_mul_inv]
       exact Or.symm (Or.inr rfl)
     have hden_pos : 0 < 𝓒.phaseSpaceunit ^ 𝓒.dof := hpow_pos
     simp [this, hZmath_pos, hden_pos]
@@ -378,8 +373,7 @@ theorem differentialEntropy_eq_meanEnergy_sub_helmholtz_div_temp_add_correction
       simp
     calc
       Real.log Zmath
-          = Real.log (Zphys * 𝓒.phaseSpaceunit ^ 𝓒.dof) := by simp [hZdef, mul_comm,
-            mul_left_comm, mul_assoc]
+          = Real.log (Zphys * 𝓒.phaseSpaceunit ^ 𝓒.dof) := by simp [hZdef]
       _ = Real.log Zphys + Real.log (𝓒.phaseSpaceunit ^ 𝓒.dof) := by
         have hx0 : Zphys ≠ 0 := ne_of_gt hx
         have hy0 : 𝓒.phaseSpaceunit ^ 𝓒.dof ≠ 0 := ne_of_gt hy
@@ -395,13 +389,12 @@ theorem differentialEntropy_eq_meanEnergy_sub_helmholtz_div_temp_add_correction
       (E - 𝓒.helmholtzFreeEnergy T) / T.val
         = E / T.val + kB * Real.log Zphys := by
     simp [sub_eq_add_neg, division_def, mul_add,
-      add_comm, add_left_comm, add_assoc,
       mul_comm, mul_left_comm, mul_assoc, E, Zphys, Tne]
   calc
     𝓒.differentialEntropy T
         = (E / T.val + kB * Real.log Zphys)
             + kB * (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit := by
-              simp [hS_phys, add_comm, add_left_comm, add_assoc]
+              simp [hS_phys, add_comm, add_left_comm]
     _ = (E - 𝓒.helmholtzFreeEnergy T) / T.val
             + kB * 𝓒.dof * Real.log 𝓒.phaseSpaceunit := by
               rw [hEF]
@@ -467,7 +460,7 @@ lemma integral_bolt_eq_integral_mul_exp
   simpa [f, mul_comm] using h'
 
 set_option linter.unusedVariables false in
-/--  A specialization of `integral_bolt_eq_integral_mul_exp`
+/-- A specialization of `integral_bolt_eq_integral_mul_exp`
 to the energy observable. -/
 lemma integral_energy_bolt
     {ι} [MeasurableSpace ι] (𝓒 : CanonicalEnsemble ι) (T : Temperature) :
@@ -509,7 +502,7 @@ lemma meanEnergy_eq_ratio_of_integrals
           simp [h_inv_toReal]
     _ = (∫ x, 𝓒.energy x * Real.exp (- T.β * 𝓒.energy x) ∂ 𝓒.μ) /
           (∫ x, Real.exp (- T.β * 𝓒.energy x) ∂ 𝓒.μ) := by
-          simp [h_den, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
+          simp [h_den, div_eq_mul_inv, mul_comm]
 
 /-- The mean energy is the negative derivative of the logarithm of the
 (mathematical) partition function with respect to β = 1/(kB T).
@@ -567,7 +560,7 @@ lemma meanEnergy_eq_neg_deriv_log_mathZ_of_beta
           (∫ i, Real.exp (-(T.β : ℝ) * 𝓒.energy i) ∂𝓒.μ)
         = (1 / f (T.β : ℝ)) *
             (∫ i, 𝓒.energy i * Real.exp (-(T.β : ℝ) * 𝓒.energy i) ∂𝓒.μ) := by
-    simp [h_f_eval, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
+    simp [h_f_eval, div_eq_mul_inv, mul_comm]
   calc
     𝓒.meanEnergy T = _ := h_mean_ratio
     _ = (1 / f (T.β : ℝ)) *
@@ -625,7 +618,7 @@ private lemma log_phys_eq_log_math_sub_const_on_Ioi
     simp
   have :
       Real.log (𝓒.partitionFunction (Temperature.ofβ (Real.toNNReal β))) =
-        -( (𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit)
+        -((𝓒.dof : ℝ) * Real.log 𝓒.phaseSpaceunit)
           + Real.log (∫ i, Real.exp (-β * 𝓒.energy i) ∂ 𝓒.μ) := by
     have h_integral_pos : 0 < ∫ i, Real.exp (-β * 𝓒.energy i) ∂ 𝓒.μ := by
       have h_eq : ∫ i, Real.exp (-β * 𝓒.energy i) ∂ 𝓒.μ =
@@ -696,7 +689,7 @@ private lemma derivWithin_log_phys_eq_derivWithin_log_math
   have h_sub :
       derivWithin (fun β => F_math β - C) (Set.Ioi 0) (T.β : ℝ)
         = derivWithin F_math (Set.Ioi 0) (T.β : ℝ) := by
-    simp [F_math, sub_eq_add_neg, h_const_deriv]; rw [@derivWithin_add_const]
+    simp [F_math, sub_eq_add_neg]; rw [@derivWithin_add_const]
   simpa [F_phys, F_math] using h_congr.trans h_sub
 
 set_option linter.unusedVariables false in
