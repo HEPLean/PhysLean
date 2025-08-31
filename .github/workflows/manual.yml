@@ -1,9 +1,7 @@
-# This is a basic workflow that is manually triggered
+# This is a workflow that is triggered manually to create a treemap of physlean directories
 
 name: Physlean treemap
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
   workflow_dispatch:
   
@@ -12,18 +10,15 @@ permissions:
   pages: write
   id-token: write
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    name: download python and project
+    name: run treemap_gen.py
+    # install python and dependencies, run the python file, save and commit the image in high resolution
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
-    - run: pwd
     - run: pip install -r "scripts/treemap_requirements.txt"
     - run: python scripts/treemap_gen.py
     - run: |
