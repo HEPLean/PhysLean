@@ -39,4 +39,5 @@ blobs,
     values='size',
 
     color_continuous_scale='plasma'
-).show()
+)
+fig.write_image("treemap.png")
