@@ -23,5 +23,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
+    - run: pwd
     - run: pip install -r "/scripts/requirements.txt"
     - run: "/scripts/treemap_gen.py"
