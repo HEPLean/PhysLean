@@ -1,1 +1,4 @@
-
+numpy
+plotly
+gitpython
+pandas
