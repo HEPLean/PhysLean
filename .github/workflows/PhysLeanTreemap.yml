@@ -1,4 +1,4 @@
-# This is a workflow that is triggered manually to create a treemap of physlean directories
+# This is a workflow that is triggered manually to create a treemap (in docs folder) of physlean directories
 
 name: Physlean treemap
 
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     name: run treemap_gen.py
-    # install python and dependencies, run the python file, save and commit the image in high resolution
+    # install python and dependencies, run the python file, save and commit the image in high resolution in the docs folder
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
