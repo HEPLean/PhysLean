@@ -40,4 +40,7 @@ blobs,
 
     color_continuous_scale='plasma'
 )
-fig.write_image("treemap.png")
+fig.write_image("treemap.png",
+width=1600,    # pixels
+    height=1200,   # pixels
+    scale=2        # multiplies resolution (like DPI scaling))
