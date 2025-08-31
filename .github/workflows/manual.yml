@@ -26,7 +26,6 @@ jobs:
     - run: pwd
     - run: pip install -r "scripts/treemap_requirements.txt"
     - run: python scripts/treemap_gen.py
-    - name: Commit and push generated image
     - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
