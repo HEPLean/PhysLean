@@ -4,8 +4,9 @@ import itertools
 from git import Repo
 import numpy as np
 import pandas as pd
+print(os.getcwd())
 
-repo = Repo(".")
+repo = Repo("..")
 physlean_path = os.path.join(repo.working_tree_dir, "PhysLean")
 folders = [name for name in os.listdir(physlean_path) if os.path.isdir(os.path.join(physlean_path, name))]
 folder_map = {folder: idx + 1 for idx, folder in enumerate(folders)}
