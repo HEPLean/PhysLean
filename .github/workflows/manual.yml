@@ -25,4 +25,5 @@ jobs:
     - uses: actions/setup-python@v5
     - run: pwd
     - run: pip install -r "scripts/treemap_requirements.txt"
-    - run: scripts/treemap_gen.py
+    - name: Make treemap_gen.py executable
+    - run: python scripts/treemap_gen.py
