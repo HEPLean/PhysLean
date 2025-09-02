@@ -40,6 +40,107 @@ example : meters400.1 {SI with length := LengthUnit.miles} = ⟨400/1609.344⟩ 
 
 -/
 
+/-!
+
+## Cases with only WithDim
+
+-/
+
+def EnergyMassWithDim (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
+    (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop :=
+    E.1 = m.1 * c.1 ^ 2
+
+lemma energyMassWithDim_isDimensionallyInvariant : IsDimensionallyInvariant EnergyMassWithDim := by
+  simp [isDimensionallyInvariant_fun_iff]
+  intros
+  funext
+  simp [EnergyMassWithDim]
+  rw [WithDim.scaleUnit_val_eq_scaleUnit_val_of_dim_eq]
+  /- General method for euating dimensions. -/
+  ext <;> simp <;> try module
+
+def NewtonsSecondWithDim (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
+    (a : WithDim (L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ) : Prop :=
+    F.1 = m.1 * a.1
+
+lemma newtonsSecondWithDim_isDimensionallyInvariant :
+    IsDimensionallyInvariant NewtonsSecondWithDim := by
+  simp [isDimensionallyInvariant_fun_iff]
+  intros
+  funext
+  simp [NewtonsSecondWithDim]
+  rw [WithDim.scaleUnit_val_eq_scaleUnit_val_of_dim_eq]
+  ext <;> simp; try module
+
+def EnergyMassWithDim' (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
+    (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop := E = WithDim.cast (m * c * c)
+
+lemma energyMassWithDim'_isDimensionallyInvariant :
+    IsDimensionallyInvariant EnergyMassWithDim' := by
+  simp; intros; funext; simp [EnergyMassWithDim']
+
+def NewtonsSecondWithDim' (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
+    (a : WithDim (L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ) : Prop :=
+    F = WithDim.cast (m * a)
+
+lemma newtonsSecondWithDim'_isDimensionallyInvariant :
+    IsDimensionallyInvariant NewtonsSecondWithDim' := by
+  simp; intros; funext; simp [NewtonsSecondWithDim']
+  /-!
+
+  ## A general tactic for proving dimensional invariance
+
+  -/
+
+  open Lean Elab Tactic
+
+  /--
+  A tactic to prove `IsDimensionallyInvariant X`.
+  It applies `simp; intros; funext; simp [X]`.
+  It automatically finds `X` from the goal.
+  -/
+  elab "prove_dim_invariant" : tactic => do
+    let goal ← getMainGoal
+    goal.withContext do
+      let goalType ← goal.getType
+      if goalType.isAppOf `UnitDependent.IsDimensionallyInvariant then
+        let X := goalType.getAppArgs[0]!
+        let X_ident ← Lean.Meta.ppExpr X
+        match X.getAppFn with
+        | Lean.Expr.const name _ =>
+        let tac ← `(tactic| (
+            simp (config := {zeta := false}) only [isDimensionallyInvariant_fun_iff];
+            intros;
+            funext;
+            unfold name;
+            simp (config := {zeta := false}) only))
+        evalTactic tac
+        | _ =>
+          throwError "The function {X_ident} is not a constant, cannot unfold it"
+      else
+        throwError "Goal is not of the form `IsDimensionallyInvariant X`"
+
+  def EnergyMassWithDim'' (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
+      (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop := E = WithDim.cast (m * c * c)
+
+  lemma energyMassWithDim''_isDimensionallyInvariant :
+      IsDimensionallyInvariant EnergyMassWithDim'' := by
+    prove_dim_invariant
+
+  def NewtonsSecondWithDim'' (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
+      (a : WithDim (L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ) : Prop :=
+      F = WithDim.cast (m * a)
+
+  lemma newtonsSecondWithDim''_isDimensionallyInvariant :
+      IsDimensionallyInvariant NewtonsSecondWithDim'' := by
+    prove_dim_invariant
+
+/-!
+
+## Cases with Dimensionful
+
+-/
+
 /-- The speed of light as a dimensionful quantity. -/
 noncomputable def speedOfLight : Dimensionful (WithDim (L𝓭 * T𝓭⁻¹) ℝ) :=
   toDimensionful SI ⟨299792458⟩
@@ -56,6 +157,7 @@ def EnergyMass' (m : Dimensionful (WithDim M𝓭 ℝ))
     (E : Dimensionful (WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ))
     (u : UnitChoices) : Prop :=
     (E.1 u).1 = (m.1 u).1 * (speedOfLight.1 u).1 ^ 2
+
 
 /-- The lemma that the proposition `EnergyMass` is dimensionally correct-/
 lemma energyMass_isDimensionallyInvariant :
@@ -86,19 +188,21 @@ lemma energyMass_isDimensionallyInvariant :
         ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1) *
           (m.1 * ((speedOfLight.1 u).1) ^ 2)) := by
       congr 4
-      aesop
+      ext <;> simp; try module
     _ = ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1 • E.1 =
         ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1) •
           (m.1 * ((speedOfLight.1 u).1) ^ 2)) := by
       rfl
-  simp
+  simp only [dimScale_mul, NNReal.val_eq_coe, NNReal.coe_mul, smul_eq_mul, mul_eq_mul_left_iff,
+    mul_eq_zero, NNReal.coe_eq_zero, dimScale_neq_zero, or_self, or_false, eq_iff_iff]
   rfl
 
 /-! We now explore the consequences of `energyMass_isDimensionallyInvariant` and how
   we can use it. -/
 
 lemma example1_energyMass : EnergyMass ⟨2⟩ ⟨2 * 299792458 ^ 2⟩ SI := by
-  simp [EnergyMass]
+  simp only [EnergyMass, mul_eq_mul_left_iff, OfNat.ofNat_ne_zero,
+    or_false]
   simp [speedOfLight, toDimensionful_apply_apply, dimScale, SI]
 
 /- The lemma `energyMass_isDimensionallyInvariant` allows us to scale the units

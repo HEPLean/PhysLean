@@ -752,7 +752,9 @@ noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
     change Continuous fun m => (u1.dimScale u2 (d M)).1 • m
     apply Continuous.const_smul
     exact continuous_id'
-
+/-!
+### Functions
+-/
 noncomputable instance {M1 M2 : Type} [UnitDependent M2] :
     UnitDependent (M1 → M2) where
   scaleUnit u1 u2 f := fun m1 => scaleUnit u1 u2 (f m1)
@@ -765,6 +767,11 @@ noncomputable instance {M1 M2 : Type} [UnitDependent M2] :
   scaleUnit_id u f := by
     funext m1
     exact scaleUnit_id u (f m1)
+
+@[simp]
+lemma UnitDependent.scaleUnit_apply_fun_right {M1 M2 : Type} [UnitDependent M2]
+    (u1 u2 : UnitChoices) (f : M1 → M2) (m1 : M1) :
+    scaleUnit u1 u2 f m1 = scaleUnit u1 u2 (f m1) := rfl
 
 open LinearUnitDependent in
 noncomputable instance {M1 M2 : Type} [AddCommMonoid M1] [Module ℝ M1]
@@ -827,6 +834,11 @@ noncomputable instance {M1 M2 : Type} [UnitDependent M1] :
     funext m1
     simp [scaleUnit_id]
 
+@[simp]
+lemma UnitDependent.scaleUnit_apply_fun_left {M1 M2 : Type} [UnitDependent M1]
+    (u1 u2 : UnitChoices) (f : M1 → M2) (m1 : M1) :
+    scaleUnit u1 u2 f m1 = f (scaleUnit u2 u1 m1) := rfl
+
 noncomputable instance instUnitDependentTwoSided
     {M1 M2 : Type} [UnitDependent M1] [UnitDependent M2] :
     UnitDependent (M1 → M2) where
@@ -840,6 +852,11 @@ noncomputable instance instUnitDependentTwoSided
   scaleUnit_id u f := by
     funext m1
     simp [scaleUnit_id]
+
+@[simp]
+lemma UnitDependent.scaleUnit_apply_fun {M1 M2 : Type} [UnitDependent M1]
+    [UnitDependent M2] (u1 u2 : UnitChoices) (f : M1 → M2) (m1 : M1) :
+    scaleUnit u1 u2 f m1 = scaleUnit u1 u2 (f (scaleUnit u2 u1 m1)) := rfl
 
 noncomputable instance instUnitDependentTwoSidedMul
     {M1 M2 : Type} [UnitDependent M1] [MulAction ℝ≥0 M2] [MulUnitDependent M2] :
@@ -902,6 +919,47 @@ lemma isDimensionallyInvariant_iff {M : Type} [UnitDependent M] (m : M) :
     IsDimensionallyInvariant m ↔ ∀ u1 u2 : UnitChoices,
       scaleUnit u1 u2 m = m := by rfl
 
+@[simp]
+lemma isDimensionallyInvariant_fun_iff {M1 M2 : Type} [UnitDependent M1] [UnitDependent M2]
+    {f : M1 → M2} :
+    IsDimensionallyInvariant f ↔
+     ∀ u1 u2 : UnitChoices, ∀ m, scaleUnit u1 u2 (f (scaleUnit u2 u1 m)) = f m := by
+  constructor
+  · intro h u1 u2 m
+    have h1 := h u1 u2
+    conv_rhs => rw [← h1]
+    rfl
+  · intro h u1 u2
+    funext m
+    exact h u1 u2 m
+
+@[simp]
+lemma isDimensionallyInvariant_fun_left {M1 M2 : Type} [UnitDependent M1]
+    {f : M1 → M2} :
+    IsDimensionallyInvariant f ↔
+     ∀ u1 u2 : UnitChoices, ∀ m, (f (scaleUnit u2 u1 m)) = f m := by
+  constructor
+  · intro h u1 u2 m
+    have h1 := h u1 u2
+    conv_rhs => rw [← h1]
+    rfl
+  · intro h u1 u2
+    funext m
+    exact h u1 u2 m
+
+@[simp]
+lemma isDimensionallyInvariant_fun_right {M1 M2 : Type} [UnitDependent M2]
+    {f : M1 → M2} :
+    IsDimensionallyInvariant f ↔
+     ∀ u1 u2 : UnitChoices, ∀ m, scaleUnit u1 u2 (f m) = f m := by
+  constructor
+  · intro h u1 u2 m
+    have h1 := h u1 u2
+    conv_rhs => rw [← h1]
+    rfl
+  · intro h u1 u2
+    funext m
+    exact h u1 u2 m
 /-!
 
 ## Some type classes to help track dimensions

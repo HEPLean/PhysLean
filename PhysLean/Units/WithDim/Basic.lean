@@ -51,7 +51,6 @@ instance {d1 d2 : Dimension} :
     HMul (WithDim d1 ℝ) (WithDim d2 ℝ) (WithDim (d1 * d2) ℝ) where
   hMul m1 m2 := ⟨m1.val * m2.val⟩
 
-@[simp]
 lemma withDim_hMul_val {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 ℝ) :
     (m1 * m2).val = m1.val * m2.val := rfl
 
@@ -66,5 +65,53 @@ instance {d1 d2 : Dimension} :
     rw [smul_smul]
     congr 1
     rw [mul_comm]
+
+open UnitDependent
+
+@[simp]
+lemma val_mul_eq_mul {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 ℝ) :
+    m1.val * m2.val = (m1 * m2).val  := by
+  simp only [withDim_hMul_val]
+
+@[simp]
+lemma val_pow_two_eq_mul {d1 : Dimension} (m1 : WithDim d1 ℝ)  :
+    m1.val ^ 2 = (m1 * m1).val  := by
+  rw [sq]
+  rfl
+
+@[simp]
+lemma scaleUnit_val_eq_scaleUnit_val {d : Dimension} (M : Type) [MulAction ℝ≥0 M]
+    (u1 u2 : UnitChoices) (m1 m2 : WithDim d M) :
+    (scaleUnit u1 u2 m1).val = (scaleUnit u1 u2 m2).val ↔ m1.val = m2.val := by
+  rw [← WithDim.ext_iff]
+  simp
+  exact WithDim.ext_iff
+
+lemma scaleUnit_val_eq_scaleUnit_val_of_dim_eq {d1 d2 : Dimension} (M : Type) [MulAction ℝ≥0 M]
+    (u1 u2 : UnitChoices) (m1 : WithDim d1 M) (m2 : WithDim d2 M) (h : d1 = d2) :
+    (scaleUnit u1 u2 m1).val = (scaleUnit u1 u2 m2).val ↔ m1.val = m2.val := by
+  subst h
+  simp
+
+/-!
+## Casting
+-/
+
+set_option linter.unusedVariables false in
+def cast {d d2 : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M)
+  (h : d = d2 := by ext <;> simp <;> try module) : WithDim d2 M := ⟨m.val⟩
+
+@[simp]
+lemma cast_refl {d : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M) :
+    cast m rfl = m := by
+  ext
+  rfl
+
+@[simp]
+lemma cast_scaleUnit {d d2 : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M)
+  (h : d = d2) (u1 u2 : UnitChoices) :
+    cast (scaleUnit u1 u2 m) h = scaleUnit u1 u2 (cast m h) := by
+  subst h
+  simp
 
 end WithDim
