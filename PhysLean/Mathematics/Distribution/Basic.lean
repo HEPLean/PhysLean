@@ -3,9 +3,8 @@ Copyright (c) 2025 Kenny Lau. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kenny Lau
 -/
-
 import Mathlib.Analysis.Distribution.FourierSchwartz
-
+import PhysLean.Meta.TODO.Basic
 /-!
 # Distributions
 
@@ -198,7 +197,7 @@ lemma fderivD_apply [FiniteDimensional ℝ E] (u : E →d[𝕜] F) (η : 𝓢(E,
 
 TODO "01-09-25-JTS" "For distributions, prove that the derivative fderivD commutes with
   integrals and sums. This may require defining the integral of families of distributions
-  although it is expected this will follow from the definition of a distribution." 
+  although it is expected this will follow from the definition of a distribution."
 
 end fderiv
 
