@@ -81,7 +81,6 @@ lemma integral_isDimensionallyInvariant (d : Dimension) :
     original integral in `u2` units i.e. `∫ x, f x ∂μ`. -/
     _ = scaleUnit u1 u2 (∫ x, (scaleUnit u2 u1 f) x ∂(scaleUnit u2 u1 μ)) := by
       simp [instUnitDependentTwoSided]
-      rfl
     /- Since we have assumed `μ` has dimension `d`, `(scaleUnit u2 μ u1)`
       is equal to `(u2.dimScale u1 d) • μ` -/
     _ = scaleUnit u1 u2 (u2.dimScale u1 d • ∫ (x : M), scaleUnit u2 u1 f x ∂ μ) := by
@@ -105,7 +104,7 @@ lemma integral_isDimensionallyInvariant (d : Dimension) :
     _ = ((u1.dimScale u2 (CarriesDimension.d G) * u2.dimScale u1 (CarriesDimension.d G))
         * (u2.dimScale u1 d * u1.dimScale u2 d)) • ∫ (x : M), f x ∂ μ := by
       congr 1
-      conv_lhs => simp
+      conv_lhs => simp only [map_mul]
       rw [UnitChoices.dimScale_of_inv_eq_swap]
       ring
     _ = ∫ (x : M), f x ∂ μ := by simp

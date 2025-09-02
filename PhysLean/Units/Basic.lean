@@ -161,6 +161,8 @@ instance : CommGroup Dimension where
       simp only [length_mul, time_mul, mass_mul, charge_mul, temperature_mul]
       ring
 
+lemma one_eq_zero : (1 : Dimension) = 0 := rfl
+
 @[simp]
 lemma inv_length (d : Dimension) : d⁻¹.length = -d.length := rfl
 
@@ -251,13 +253,29 @@ namespace UnitChoices
 /-- Given two choices of units `u1` and `u2` and a dimension `d`, the
   element of `ℝ≥0` corresponding to the scaling (by definition) of a quantity of dimension `d`
   when changing from units `u1` to `u2`. -/
-noncomputable def dimScale (u1 u2 : UnitChoices) (d : Dimension) : ℝ≥0 :=
-  (u1.length / u2.length) ^ (d.length : ℝ) *
-  (u1.time / u2.time) ^ (d.time : ℝ) *
-  (u1.mass / u2.mass) ^ (d.mass : ℝ) *
-  (u1.charge / u2.charge) ^ (d.charge : ℝ) *
-  (u1.temperature / u2.temperature) ^ (d.temperature : ℝ)
+noncomputable def dimScale (u1 u2 : UnitChoices) :Dimension →* ℝ≥0 where
+  toFun d :=
+    (u1.length / u2.length) ^ (d.length : ℝ) *
+    (u1.time / u2.time) ^ (d.time : ℝ) *
+    (u1.mass / u2.mass) ^ (d.mass : ℝ) *
+    (u1.charge / u2.charge) ^ (d.charge : ℝ) *
+    (u1.temperature / u2.temperature) ^ (d.temperature : ℝ)
+  map_one' := by
+    simp [Dimension.one_eq_zero, Dimension.zero_eq]
+  map_mul' d1 d2 := by
+    simp
+    repeat rw [rpow_add]
+    ring
+    all_goals
+      simp
 
+lemma dimScale_apply (u1 u2 : UnitChoices) (d : Dimension) :
+    dimScale u1 u2 d =
+      (u1.length / u2.length) ^ (d.length : ℝ) *
+      (u1.time / u2.time) ^ (d.time : ℝ) *
+      (u1.mass / u2.mass) ^ (d.mass : ℝ) *
+      (u1.charge / u2.charge) ^ (d.charge : ℝ) *
+      (u1.temperature / u2.temperature) ^ (d.temperature : ℝ) := rfl
 @[simp]
 lemma dimScale_self (u : UnitChoices) (d : Dimension) :
     dimScale u u d = 1 := by
@@ -285,15 +303,6 @@ lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
   field_simp
 
 @[simp]
-lemma dimScale_mul (u1 u2 : UnitChoices) (d1 d2 : Dimension) :
-    dimScale u1 u2 (d1 * d2) = dimScale u1 u2 d1 * dimScale u1 u2 d2 := by
-  simp [dimScale]
-  repeat rw [rpow_add]
-  ring
-  all_goals
-    simp
-
-@[simp]
 lemma dimScale_mul_symm (u1 u2 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d * dimScale u2 u1 d = 1 := by
   rw [dimScale_transitive, dimScale_self]
@@ -310,17 +319,9 @@ lemma dimScale_neq_zero (u1 u2 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d ≠ 0 := by
   simp [dimScale]
 
-lemma dimScale_inv (u1 u2 : UnitChoices) (d : Dimension) :
-    dimScale u1 u2 d⁻¹ = (dimScale u1 u2 d)⁻¹ := by
-  simp only [dimScale, Dimension.inv_length, Rat.cast_neg, Dimension.inv_time, Dimension.inv_mass,
-    Dimension.inv_charge, Dimension.inv_temperature, mul_inv]
-  congr
-  all_goals
-  · exact rpow_neg _ _
-
 lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d = (dimScale u2 u1 d)⁻¹ := by
-  simp only [dimScale, mul_inv]
+  simp only [dimScale_apply, mul_inv]
   congr
   · rw [LengthUnit.div_symm, inv_rpow]
   · rw [TimeUnit.div_symm, inv_rpow]
@@ -330,7 +331,7 @@ lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension) :
 
 lemma dimScale_of_inv_eq_swap (u1 u2 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d⁻¹ = dimScale u2 u1 d := by
-  rw [dimScale_inv]
+  simp
   conv_rhs => rw[dimScale_symm]
 
 TODO "LCSAY" "Make SI : UnitChoices computable, probably by
