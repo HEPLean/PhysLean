@@ -747,4 +747,16 @@ lemma ofBounded_apply {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     ofBounded f hf hae η = ∫ x, η x • f x := rfl
 
+@[simp]
+lemma ofBounded_zero_eq_zero  {dm1 : ℕ} :
+    ofBounded (fun _ : EuclideanSpace ℝ (Fin (dm1 + 1)) => (0 : F))
+      ⟨0, 0, 0, by simp, by simp, by simp⟩ (by fun_prop) = 0 := by
+  ext η
+  simp [ofBounded_apply]
+
+TODO "LQX64" "Show that the creation of a distribution
+  from a bounded function via `ofBounded` is linear on adding two bounded functions.
+  A necessary preliminary is to show that the sum of two bounded functions is bounded,
+  this may require a modification of the definition of boundedness."
+
 end Distribution

@@ -29,9 +29,18 @@ namespace ThreeDimPointParticle
 open Space StaticElectricField MeasureTheory Real InnerProductSpace
 noncomputable section
 
+TODO "LQXTB" "Derive the electric field of a point particle in 3d from the
+  electrostatic potential."
+
+TODO "LQXNC" "Generalize the proof of Gauss' law for a point particle in 3d
+  so the particle is not at the origin."
+
 /-- The charge distribution of a point particle of charge `q` in 1d space sitting at the origin.
   Mathematically, this corresponds to a dirac delta distribution centered at the origin. -/
 def chargeDistribution (q : ℝ) : ChargeDistribution 3 := q • diracDelta ℝ 0
+
+lemma chargeDistribution_eq_zero_of_charge_eq_zero :
+    chargeDistribution 0 = 0 := by simp [chargeDistribution]
 
 /-- The electric field of a point particle of charge `q` in 3d space sitting at the origin.
   Mathematically, this corresponds to the distribution associated to the distribution
@@ -60,9 +69,15 @@ def electricField (q ε : ℝ) : StaticElectricField 3 :=
     · rfl
     ring⟩ (by fun_prop)
 
+lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ}:
+    electricField 0 ε = 0 := by simp [electricField]
+
 /-- Guass' law for a point particle in 3-dimensions, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
 lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribution q) := by
+  /- The proof here follows that given here:
+  https://math.stackexchange.com/questions/2409008/
+  -/
   ext η
   let η' (n : ↑(Metric.sphere 0 1)) : 𝓢(ℝ, ℝ) := compCLM (g := fun a => a • n.1) ℝ (by
     apply And.intro
