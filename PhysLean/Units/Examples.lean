@@ -120,13 +120,13 @@ def EnergyMassWithDimNot (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L
 
 lemma energyMassWithDimNot_not_isDimensionallyInvariant :
     ¬ IsDimensionallyInvariant EnergyMassWithDimNot := by
-  simp
+  simp only [isDimensionallyInvariant_fun_iff, not_forall]
   use SI, SIPrimed, ⟨1⟩
   rw [@funext_iff]
-  simp
+  simp only [scaleUnit_apply_fun, not_forall]
   use ⟨1⟩
   rw [funext_iff]
-  simp
+  simp only [scaleUnit_apply_fun_left, eq_iff_iff, not_forall]
   use ⟨1⟩
   unfold EnergyMassWithDimNot
   simp [WithDim.scaleUnit_val, M𝓭, NNReal.smul_def]
