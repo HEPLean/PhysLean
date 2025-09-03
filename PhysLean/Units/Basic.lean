@@ -100,7 +100,7 @@ noncomputable def dimScale (u1 u2 : UnitChoices) :Dimension →* ℝ≥0 where
     (u1.charge / u2.charge) ^ (d.charge : ℝ) *
     (u1.temperature / u2.temperature) ^ (d.temperature : ℝ)
   map_one' := by
-    simp [Dimension.one_eq_zero, Dimension.zero_eq]
+    simp
   map_mul' d1 d2 := by
     simp only [Dimension.length_mul, Rat.cast_add, Dimension.time_mul, Dimension.mass_mul,
       Dimension.charge_mul, Dimension.temperature_mul]
@@ -116,15 +116,16 @@ lemma dimScale_apply (u1 u2 : UnitChoices) (d : Dimension) :
       (u1.mass / u2.mass) ^ (d.mass : ℝ) *
       (u1.charge / u2.charge) ^ (d.charge : ℝ) *
       (u1.temperature / u2.temperature) ^ (d.temperature : ℝ) := rfl
+
 @[simp]
 lemma dimScale_self (u : UnitChoices) (d : Dimension) :
     dimScale u u d = 1 := by
   simp [dimScale]
 
 @[simp]
-lemma dimScale_zero (u1 u2 : UnitChoices) :
-    dimScale u1 u2 0 = 1 := by
-  simp [dimScale, Dimension.zero_eq]
+lemma dimScale_one (u1 u2 : UnitChoices) :
+    dimScale u1 u2 1 = 1 := by
+  simp [dimScale]
 
 lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d * dimScale u2 u3 d = dimScale u1 u3 d := by
@@ -205,6 +206,38 @@ lemma SI_charge : SI.charge = ChargeUnit.coulombs := rfl
 
 @[simp]
 lemma SI_temperature : SI.temperature = TemperatureUnit.kelvin := rfl
+
+/-- A `UnitChoices` which is related to `SI` by a prime scaling of each
+  of the underlying units. This is useful in proving that a result is not
+  dimensionally invariant. -/
+noncomputable def SIPrimed : UnitChoices where
+  length := LengthUnit.scale 2 LengthUnit.meters
+  time := TimeUnit.scale 3 TimeUnit.seconds
+  mass := MassUnit.scale 5 MassUnit.kilograms
+  charge := ChargeUnit.scale 7 ChargeUnit.coulombs
+  temperature := TemperatureUnit.scale 11 TemperatureUnit.kelvin
+
+@[simp]
+lemma dimScale_SI_SIPrimed (d : Dimension) :
+    dimScale SI SIPrimed d =
+      (2⁻¹ : ℝ≥0) ^ (d.length : ℝ) *
+      (3⁻¹ : ℝ≥0) ^ (d.time : ℝ) *
+      (5⁻¹ : ℝ≥0) ^ (d.mass : ℝ) *
+      (7⁻¹ : ℝ≥0) ^ (d.charge : ℝ) *
+      (11⁻¹ : ℝ≥0) ^ (d.temperature : ℝ) := by
+  simp [dimScale, SI, SIPrimed]
+  rfl
+
+@[simp]
+lemma dimScale_SIPrimed_SI (d : Dimension) :
+    dimScale SIPrimed SI d =
+      (2 : ℝ≥0) ^ (d.length : ℝ) *
+      (3 : ℝ≥0) ^ (d.time : ℝ) *
+      (5 : ℝ≥0) ^ (d.mass : ℝ) *
+      (7 : ℝ≥0) ^ (d.charge : ℝ) *
+      (11 : ℝ≥0) ^ (d.temperature : ℝ) := by
+  simp [dimScale, SI, SIPrimed]
+  rfl
 
 end UnitChoices
 

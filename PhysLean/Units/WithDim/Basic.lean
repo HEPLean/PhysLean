@@ -123,6 +123,14 @@ lemma div_scaleUnit {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 �
   rw [← val_div_val]
   exact div_mul_div_comm (↑((u1.dimScale u2) d1)) (↑((u1.dimScale u2) d2)) m1.val m2.val
 
+@[simp]
+lemma scaleUnit_dim_eq_zero {d : Dimension} (m : WithDim d ℝ) (u1 u2 : UnitChoices)
+    (h : d = 1 :=  by ext <;> {simp; try ring}) : scaleUnit u1 u2 m = m := by
+  subst h
+  ext
+  rw [scaleUnit_val]
+  simp
+
 /-!
 ## Casting
 -/

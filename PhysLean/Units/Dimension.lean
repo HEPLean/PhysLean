@@ -49,11 +49,6 @@ lemma ext {d1 d2 : Dimension}
   cases d2
   congr
 
-instance : Zero Dimension where
-  zero := ⟨0, 0, 0, 0, 0⟩
-
-lemma zero_eq : (0 : Dimension) = ⟨0, 0, 0, 0, 0⟩ := rfl
-
 instance : Mul Dimension where
   mul d1 d2 := ⟨d1.length + d2.length,
     d1.time + d2.time,
@@ -81,35 +76,46 @@ lemma charge_mul (d1 d2 : Dimension) :
 lemma temperature_mul (d1 d2 : Dimension) :
     (d1 * d2).temperature = d1.temperature + d2.temperature := rfl
 
+instance : One Dimension where
+  one := ⟨0, 0, 0, 0, 0⟩
+
+@[simp]
+lemma one_length : (1 : Dimension).length = 0 := rfl
+@[simp]
+lemma one_time : (1 : Dimension).time = 0 := rfl
+
+@[simp]
+lemma one_mass : (1 : Dimension).mass = 0 := rfl
+
+@[simp]
+lemma one_charge : (1 : Dimension).charge = 0 := rfl
+
+@[simp]
+lemma one_temperature : (1 : Dimension).temperature = 0 := rfl
+
 instance : CommGroup Dimension where
   mul_assoc a b c := by
     ext
     all_goals
       simp only [length_mul, time_mul, mass_mul, charge_mul, temperature_mul]
       ring
-  one := 0
   one_mul a := by
-    change 0 * a = a
     ext
     all_goals
-      simp [zero_eq]
+      simp
   mul_one a := by
-    change a * 0 = a
     ext
     all_goals
-      simp [zero_eq]
+      simp
   inv d := ⟨-d.length, -d.time, -d.mass, -d.charge, -d.temperature⟩
   inv_mul_cancel a := by
-    change _ = 0
     ext
-    all_goals simp [zero_eq]
+    all_goals simp
   mul_comm a b := by
     ext
     all_goals
       simp only [length_mul, time_mul, mass_mul, charge_mul, temperature_mul]
       ring
-
-lemma one_eq_zero : (1 : Dimension) = 0 := rfl
 
 @[simp]
 lemma inv_length (d : Dimension) : d⁻¹.length = -d.length := rfl
@@ -155,7 +161,7 @@ lemma div_temperature (d1 d2 : Dimension) :
 @[simp]
 lemma npow_length (d : Dimension) (n : ℕ) : (d ^ n).length = n • d.length := by
   induction n with
-  | zero => simp [one_eq_zero, zero_eq]
+  | zero => simp
   | succ n ih =>
     rw [@pow_add]
     simp [ih]
@@ -164,7 +170,7 @@ lemma npow_length (d : Dimension) (n : ℕ) : (d ^ n).length = n • d.length :=
 @[simp]
 lemma npow_time (d : Dimension) (n : ℕ) : (d ^ n).time = n • d.time := by
   induction n with
-  | zero => simp [one_eq_zero, zero_eq]
+  | zero => simp
   | succ n ih =>
     rw [@pow_add]
     simp [ih]
@@ -173,7 +179,7 @@ lemma npow_time (d : Dimension) (n : ℕ) : (d ^ n).time = n • d.time := by
 @[simp]
 lemma npow_mass (d : Dimension) (n : ℕ) : (d ^ n).mass = n • d.mass := by
   induction n with
-  | zero => simp [one_eq_zero, zero_eq]
+  | zero => simp
   | succ n ih =>
     rw [@pow_add]
     simp [ih]
@@ -182,7 +188,7 @@ lemma npow_mass (d : Dimension) (n : ℕ) : (d ^ n).mass = n • d.mass := by
 @[simp]
 lemma npow_charge (d : Dimension) (n : ℕ) : (d ^ n).charge = n • d.charge := by
   induction n with
-  | zero => simp [one_eq_zero, zero_eq]
+  | zero => simp
   | succ n ih =>
     rw [@pow_add]
     simp [ih]
@@ -191,7 +197,7 @@ lemma npow_charge (d : Dimension) (n : ℕ) : (d ^ n).charge = n • d.charge :=
 @[simp]
 lemma npow_temperature (d : Dimension) (n : ℕ) : (d ^ n).temperature = n • d.temperature := by
   induction n with
-  | zero => simp [one_eq_zero, zero_eq]
+  | zero => simp
   | succ n ih =>
     rw [@pow_add]
     simp [ih]

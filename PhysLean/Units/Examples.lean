@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Units.WithDim.Speed
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
 /-!
 
 # Examples of units in PhysLean
@@ -110,6 +111,27 @@ lemma newtonsSecondWithDim_isDimensionallyInvariant :
   rw [WithDim.scaleUnit_val_eq_scaleUnit_val_of_dim_eq]
   ext <;> simp; try module
 
+
+/-- An example of dimensions corresponding to `E = m c` using `WithDim` with `.val`,
+  which is not dimensionally invariant. -/
+def EnergyMassWithDimNot (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
+    (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop :=
+  E.1 = m.1 * c.1
+
+lemma energyMassWithDimNot_not_isDimensionallyInvariant :
+    ¬ IsDimensionallyInvariant EnergyMassWithDimNot := by
+  simp
+  use SI, SIPrimed, ⟨1⟩
+  rw [@funext_iff]
+  simp
+  use ⟨1⟩
+  rw [funext_iff]
+  simp
+  use ⟨1⟩
+  unfold EnergyMassWithDimNot
+  simp [WithDim.scaleUnit_val, M𝓭, NNReal.smul_def]
+  norm_num
+
 /-!
 
 ## Cases with Dimensionful
@@ -193,6 +215,19 @@ lemma example2_energyMass (u : UnitChoices) :
   rw [← h1]
   simp [instUnitDependentTwoSided, instUnitDependentForall_1]
   exact example1_energyMass
+
+/-!
+
+## Examples with other functions
+-/
+
+/-- An example of a dimensionafully correct result using functions. -/
+def CosDim (t : WithDim T𝓭 ℝ) (ω : WithDim T𝓭⁻¹ ℝ) (a : ℝ) : Prop :=
+  Real.cos (ω.1 * t.1) = a
+
+lemma cosDim_isDimensionallyInvariant : IsDimensionallyInvariant CosDim := by
+  simp; intros; funext; simp [CosDim]
+
 
 /-!
 
