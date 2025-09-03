@@ -461,6 +461,13 @@ lemma ContinuousLinearUnitDependent.scaleUnit_apply_fun {M1 M2 : Type}
 
 /-- A term of type `M` carrying an instance of `UnitDependent M` is said to be
   dimensionally correct if under a change of units it remains the same.
+
+  More colloquially, something is dimensionally correct if it (e.g. it's value or its truth
+  for a proposition) does not depend on the units it is written in.
+
+  For the case of `m : M` with `CarriesDimension M` then `IsDimensionallyCorrect m`
+  corresponds to the statement that `m` does not depend on units, e.g. is zero
+  or the dimension of `M` is zero.
 -/
 def IsDimensionallyCorrect {M : Type} [UnitDependent M] (m : M) : Prop :=
   ∀ u1 u2 : UnitChoices, scaleUnit u1 u2 m = m
