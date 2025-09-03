@@ -234,5 +234,4 @@ lemma cosDim_isDimensionallyCorrect : IsDimensionallyCorrect CosDim := by
 -/
 
 TODO "LCR7N" "Add an example involving derivatives."
-
 end UnitExamples

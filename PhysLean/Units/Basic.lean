@@ -175,6 +175,15 @@ lemma dimScale_of_inv_eq_swap (u1 u2 : UnitChoices) (d : Dimension) :
   simp only [map_inv]
   conv_rhs => rw[dimScale_symm]
 
+@[simp]
+lemma smul_dimScale_injective {M : Type} [MulAction ℝ≥0 M] (u1 u2 : UnitChoices) (d : Dimension)
+    (m1 m2  : M):
+    (u1.dimScale u2 d) • m1 = (u1.dimScale u2 d) • m2 ↔ m1 = m2:= by
+  refine IsUnit.smul_left_cancel ?_
+  refine isUnit_iff_exists_inv.mpr ?_
+  use u1.dimScale u2 d⁻¹
+  simp
+
 TODO "LCSAY" "Make SI : UnitChoices computable, probably by
   replacing the axioms defining the units. See here:
   https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units/near/534914807"

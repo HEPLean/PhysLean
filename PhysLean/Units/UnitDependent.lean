@@ -572,3 +572,6 @@ lemma scaleUnit_dimSet_val {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M]
     (scaleUnit u1 u2 m).1 = scaleUnit u1 u2 m.1 := by
   rw [scaleUnit_apply, m.2]
   rfl
+
+lemma DimSet.mem_iff {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) (m : M) :
+    m ∈ DimSet M d ↔ ∀ u1 u2, scaleUnit u1 u2 m = (UnitChoices.dimScale u1 u2 d) • m := by rfl
