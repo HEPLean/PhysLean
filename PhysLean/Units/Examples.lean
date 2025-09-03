@@ -103,7 +103,7 @@ def NewtonsSecondWithDim (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T
 
 lemma newtonsSecondWithDim_isDimensionallyInvariant :
     IsDimensionallyInvariant NewtonsSecondWithDim := by
-  simp
+  simp only [isDimensionallyInvariant_fun_iff]
   intros
   funext
   simp [NewtonsSecondWithDim]

@@ -102,7 +102,8 @@ noncomputable def dimScale (u1 u2 : UnitChoices) :Dimension →* ℝ≥0 where
   map_one' := by
     simp [Dimension.one_eq_zero, Dimension.zero_eq]
   map_mul' d1 d2 := by
-    simp
+    simp only [Dimension.length_mul, Rat.cast_add, Dimension.time_mul, Dimension.mass_mul,
+      Dimension.charge_mul, Dimension.temperature_mul]
     repeat rw [rpow_add]
     ring
     all_goals
@@ -170,7 +171,7 @@ lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension) :
 
 lemma dimScale_of_inv_eq_swap (u1 u2 : UnitChoices) (d : Dimension) :
     dimScale u1 u2 d⁻¹ = dimScale u2 u1 d := by
-  simp
+  simp only [map_inv]
   conv_rhs => rw[dimScale_symm]
 
 TODO "LCSAY" "Make SI : UnitChoices computable, probably by
