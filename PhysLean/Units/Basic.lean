@@ -209,7 +209,7 @@ lemma SI_temperature : SI.temperature = TemperatureUnit.kelvin := rfl
 
 /-- A `UnitChoices` which is related to `SI` by a prime scaling of each
   of the underlying units. This is useful in proving that a result is not
-  dimensionally invariant. -/
+  dimensionally correct. -/
 noncomputable def SIPrimed : UnitChoices where
   length := LengthUnit.scale 2 LengthUnit.meters
   time := TimeUnit.scale 3 TimeUnit.seconds

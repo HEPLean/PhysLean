@@ -125,7 +125,7 @@ lemma div_scaleUnit {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 �
 
 @[simp]
 lemma scaleUnit_dim_eq_zero {d : Dimension} (m : WithDim d ℝ) (u1 u2 : UnitChoices)
-    (h : d = 1 :=  by ext <;> {simp; try ring}) : scaleUnit u1 u2 m = m := by
+    (h : d = 1 := by ext <;> {simp; try ring}) : scaleUnit u1 u2 m = m := by
   subst h
   ext
   rw [scaleUnit_val]

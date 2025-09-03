@@ -24,15 +24,15 @@ in which the derivative is taken.
 open CarriesDimension NNReal
 open ContinuousLinearUnitDependent in
 /-- If a function is dimensionally valid then so is it's derivative. -/
-lemma fderiv_isDimensionallyInvariant {M1 M2 : Type} [NormedAddCommGroup M1] [NormedSpace ℝ M1]
+lemma fderiv_isDimensionallyCorrect {M1 M2 : Type} [NormedAddCommGroup M1] [NormedSpace ℝ M1]
     [ContinuousConstSMul ℝ M1] [ModuleCarriesDimension M1]
     [NormedAddCommGroup M2] [NormedSpace ℝ M2]
     [SMulCommClass ℝ ℝ M2] [ContinuousConstSMul ℝ M2]
     [IsTopologicalAddGroup M2]
     [ModuleCarriesDimension M2]
-    (f : M1 → M2) (hf : IsDimensionallyInvariant f) (f_diff : Differentiable ℝ f) :
-    IsDimensionallyInvariant (fderiv ℝ f) := by
-  simp only [isDimensionallyInvariant_fun_iff]
+    (f : M1 → M2) (hf : IsDimensionallyCorrect f) (f_diff : Differentiable ℝ f) :
+    IsDimensionallyCorrect (fderiv ℝ f) := by
+  simp only [isDimensionallyCorrect_fun_iff]
   intro u1 u2 m
   ext m'
   simp only [scaleUnit_apply_fun]

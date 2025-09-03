@@ -455,27 +455,24 @@ lemma ContinuousLinearUnitDependent.scaleUnit_apply_fun {M1 M2 : Type}
 
 /-!
 
-### IsDimensionallyInvariant
+### isDimensionallyCorrect
 
 -/
 
 /-- A term of type `M` carrying an instance of `UnitDependent M` is said to be
-  dimensionally invariant if under a change of units it remains the same.
-
-  This corresponds to the statement that term is dimensionally correct.
-
+  dimensionally correct if under a change of units it remains the same.
 -/
-def IsDimensionallyInvariant {M : Type} [UnitDependent M] (m : M) : Prop :=
+def IsDimensionallyCorrect {M : Type} [UnitDependent M] (m : M) : Prop :=
   ∀ u1 u2 : UnitChoices, scaleUnit u1 u2 m = m
 
-lemma isDimensionallyInvariant_iff {M : Type} [UnitDependent M] (m : M) :
-    IsDimensionallyInvariant m ↔ ∀ u1 u2 : UnitChoices,
+lemma isDimensionallyCorrect_iff {M : Type} [UnitDependent M] (m : M) :
+    IsDimensionallyCorrect m ↔ ∀ u1 u2 : UnitChoices,
       scaleUnit u1 u2 m = m := by rfl
 
 @[simp]
-lemma isDimensionallyInvariant_fun_iff {M1 M2 : Type} [UnitDependent M1] [UnitDependent M2]
+lemma isDimensionallyCorrect_fun_iff {M1 M2 : Type} [UnitDependent M1] [UnitDependent M2]
     {f : M1 → M2} :
-    IsDimensionallyInvariant f ↔
+    IsDimensionallyCorrect f ↔
     ∀ u1 u2 : UnitChoices, ∀ m, scaleUnit u1 u2 (f (scaleUnit u2 u1 m)) = f m := by
   constructor
   · intro h u1 u2 m
@@ -487,9 +484,9 @@ lemma isDimensionallyInvariant_fun_iff {M1 M2 : Type} [UnitDependent M1] [UnitDe
     exact h u1 u2 m
 
 @[simp]
-lemma isDimensionallyInvariant_fun_left {M1 M2 : Type} [UnitDependent M1]
+lemma isDimensionallyCorrect_fun_left {M1 M2 : Type} [UnitDependent M1]
     {f : M1 → M2} :
-    IsDimensionallyInvariant f ↔
+    IsDimensionallyCorrect f ↔
     ∀ u1 u2 : UnitChoices, ∀ m, (f (scaleUnit u2 u1 m)) = f m := by
   constructor
   · intro h u1 u2 m
@@ -501,9 +498,9 @@ lemma isDimensionallyInvariant_fun_left {M1 M2 : Type} [UnitDependent M1]
     exact h u1 u2 m
 
 @[simp]
-lemma isDimensionallyInvariant_fun_right {M1 M2 : Type} [UnitDependent M2]
+lemma isDimensionallyCorrect_fun_right {M1 M2 : Type} [UnitDependent M2]
     {f : M1 → M2} :
-    IsDimensionallyInvariant f ↔
+    IsDimensionallyCorrect f ↔
     ∀ u1 u2 : UnitChoices, ∀ m, scaleUnit u1 u2 (f m) = f m := by
   constructor
   · intro h u1 u2 m

@@ -64,9 +64,9 @@ lemma scaleUnit_measure (u1 u2 : UnitChoices) (μ : MeasureTheory.Measure M) :
 fun (μ : DimSet (MeasureTheory.Measure M) d)
     (f : DimSet (M → G) (CarriesDimension.d G * d⁻¹)) ↦ ∫ x, f.1 x ∂μ.1
 ```
-  is dimensionally invariant. -/
-lemma integral_isDimensionallyInvariant (d : Dimension) :
-    IsDimensionallyInvariant (fun (μ : DimSet (MeasureTheory.Measure M) d)
+  is dimensionally correct. -/
+lemma integral_isDimensionallyCorrect (d : Dimension) :
+    IsDimensionallyCorrect (fun (μ : DimSet (MeasureTheory.Measure M) d)
       (f : DimSet (M → G) (CarriesDimension.d G * d⁻¹)) ↦ ∫ x, f.1 x ∂μ.1) := by
   intro u1 u2
   funext ⟨μ, hμ⟩ ⟨f, hf⟩
@@ -77,7 +77,7 @@ lemma integral_isDimensionallyInvariant (d : Dimension) :
     `scaleUnit u1 u2 (∫ x, (scaleUnit u2 u1 f) x ∂(scaleUnit u2 u1 μ)) `
     The statement says, suppose `f` and `μ` are in units `u2`, we change them to units `u1`,
     then do the integral, and then we take the result back to `u2`.
-    If the integral is dimensionally invariant, this should be the same as just doing the
+    If the integral is dimensionally correct, this should be the same as just doing the
     original integral in `u2` units i.e. `∫ x, f x ∂μ`. -/
     _ = scaleUnit u1 u2 (∫ x, (scaleUnit u2 u1 f) x ∂(scaleUnit u2 u1 μ)) := by
       simp [instUnitDependentTwoSided]
