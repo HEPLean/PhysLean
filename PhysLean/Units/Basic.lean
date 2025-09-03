@@ -184,6 +184,13 @@ lemma smul_dimScale_injective {M : Type} [MulAction ℝ≥0 M] (u1 u2 : UnitChoi
   use u1.dimScale u2 d⁻¹
   simp
 
+@[simp]
+lemma dimScale_pos (u1 u2 : UnitChoices) (d : Dimension) :
+    0 < (dimScale u1 u2 d) := by
+  apply lt_of_le_of_ne
+  · simp
+  · exact Ne.symm (dimScale_neq_zero u1 u2 d)
+
 TODO "LCSAY" "Make SI : UnitChoices computable, probably by
   replacing the axioms defining the units. See here:
   https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/physical.20units/near/534914807"
