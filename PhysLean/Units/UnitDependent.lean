@@ -540,8 +540,7 @@ lemma DMul.hMul_scaleUnit {M1 M2 M3 : Type} [CarriesDimension M1] [CarriesDimens
   have h1 := DMul.mul_dim (M3 := M3) (toDimensionful u1 m1) (toDimensionful u1 m2) u2 u1
   simp [toDimensionful_apply_apply] at h1
   conv_rhs =>
-    rw [h1]
-    rw [smul_smul]
+    rw [h1, smul_smul]
     simp
 
 /-!
