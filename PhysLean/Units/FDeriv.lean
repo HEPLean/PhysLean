@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Units.Basic
+import PhysLean.Units.UnitDependent
 /-!
 
 # Dimensional invarance of fderiv
@@ -32,33 +32,19 @@ lemma fderiv_isDimensionallyInvariant {M1 M2 : Type} [NormedAddCommGroup M1] [No
     [ModuleCarriesDimension M2]
     (f : M1 → M2) (hf : IsDimensionallyInvariant f) (f_diff : Differentiable ℝ f) :
     IsDimensionallyInvariant (fderiv ℝ f) := by
-  rw [isDimensionallyInvariant_iff]
-  intro u1 u2
-  replace hf := hf u2 u1
-  ext m m'
-  simp [instUnitDependentTwoSided, instContinuousLinearUnitDependentMap]
-  change (toDimensionful u1 ((fderiv ℝ f ((toDimensionful u2 m).1 u1))
-      ((toDimensionful u2 m').1 u1))).1 u2 = (fderiv ℝ f m) m'
-  simp [toDimensionful_apply_apply]
-  conv_lhs =>
-    rw [← hf]
-    simp [instUnitDependentTwoSided]
-    enter [2, 2, 1, 2, mx]
-    change (toDimensionful u2 (f ((toDimensionful u1 mx).1 u2))).1 u1
-    simp [toDimensionful_apply_apply]
-    change (u2.dimScale u1 (d M2)).1 • f ((u1.dimScale u2 (d M1)).1 • mx)
-  have h1 : (fderiv ℝ (fun mx => (u2.dimScale u1 (d M2)).1 • f
+  simp only [isDimensionallyInvariant_fun_iff]
+  intro u1 u2 m
+  ext m'
+  simp only [scaleUnit_apply_fun]
+  simp only [ModuleCarriesDimension.scaleUnit_apply, map_smul]
+  simp only [← smul_def, smul_smul]
+  conv_lhs => rw [← hf u2 u1]
+  have h1 : (fderiv ℝ ((u2.dimScale u1 (d M2)).1 • fun mx => f
       ((u1.dimScale u2 (d M1)).1 • mx)) ((u2.dimScale u1 (d M1)).1 • m))
       = u2.dimScale u1 (d M2) • u1.dimScale u2 (d M1) • (fderiv ℝ f m) := by
-    change (fderiv ℝ ((u2.dimScale u1 (d M2)).1 • fun mx => f
-      ((u1.dimScale u2 (d M1)).1 • mx)) ((u2.dimScale u1 (d M1)).1 • m)) = _
-    rw [fderiv_const_smul (by fun_prop)]
-    rw [fderiv_comp_smul]
-    simp only [val_eq_coe]
+    rw [fderiv_const_smul (by fun_prop), fderiv_comp_smul]
     congr
-    rw [smul_smul]
-    change ((u1.dimScale u2 (d M1)) * (u2.dimScale u1 (d M1))) • m = m
-    simp
+    simp [smul_smul]
   erw [h1]
   simp [smul_smul]
   trans (1 : ℝ≥0) • (fderiv ℝ f m) m'

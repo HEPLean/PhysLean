@@ -44,6 +44,10 @@ noncomputable def oneKilometerPerHour : DimSpeed := toDimensionful ({SI with
 noncomputable def oneKnot : DimSpeed := toDimensionful ({SI with
   length := LengthUnit.nauticalMiles, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
 
+/-- The dimensionful speed of light correspnoding to 299792458 meters per second. -/
+noncomputable def speedOfLight : Dimensionful (WithDim (L𝓭 * T𝓭⁻¹) ℝ) :=
+  toDimensionful SI ⟨299792458⟩
+
 /-!
 
 ## Speed in SI units
@@ -51,11 +55,11 @@ noncomputable def oneKnot : DimSpeed := toDimensionful ({SI with
 -/
 
 @[simp]
-lemma oneMeterPerSecond_in_SI : oneMeterPerSecond.1 SI = ⟨1⟩ := by
+lemma oneMeterPerSecond_in_SI : oneMeterPerSecond SI = ⟨1⟩ := by
   simp [oneMeterPerSecond, toDimensionful_apply_apply]
 
 @[simp]
-lemma oneMilePerHour_in_SI : oneMilePerHour.1 SI = ⟨0.44704⟩ := by
+lemma oneMilePerHour_in_SI : oneMilePerHour SI = ⟨0.44704⟩ := by
   simp [oneMilePerHour, dimScale, LengthUnit.miles, TimeUnit.hours, toDimensionful_apply_apply]
   ext
   simp only [NNReal.coe_ofScientific]
@@ -63,7 +67,7 @@ lemma oneMilePerHour_in_SI : oneMilePerHour.1 SI = ⟨0.44704⟩ := by
 
 @[simp]
 lemma oneKilometerPerHour_in_SI :
-    oneKilometerPerHour.1 SI = ⟨5/18⟩ := by
+    oneKilometerPerHour SI = ⟨5/18⟩ := by
   simp [oneKilometerPerHour, dimScale,
     LengthUnit.kilometers, TimeUnit.hours, toDimensionful_apply_apply]
   ext
@@ -71,11 +75,15 @@ lemma oneKilometerPerHour_in_SI :
   norm_num
 
 @[simp]
-lemma oneKnot_in_SI : oneKnot.1 SI = ⟨463/900⟩ := by
+lemma oneKnot_in_SI : oneKnot SI = ⟨463/900⟩ := by
   simp [oneKnot, dimScale, LengthUnit.nauticalMiles, TimeUnit.hours, toDimensionful_apply_apply]
   ext
   simp only
   norm_num
+
+@[simp]
+lemma speedOfLight_in_SI : speedOfLight SI = ⟨299792458⟩ := by
+  simp [speedOfLight, toDimensionful_apply_apply]
 
 /-!
 

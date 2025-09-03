@@ -340,9 +340,11 @@ import PhysLean.Thermodynamics.Basic
 import PhysLean.Thermodynamics.Temperature.Basic
 import PhysLean.Thermodynamics.Temperature.TemperatureUnits
 import PhysLean.Units.Basic
+import PhysLean.Units.Dimension
 import PhysLean.Units.Examples
 import PhysLean.Units.FDeriv
 import PhysLean.Units.Integral
+import PhysLean.Units.UnitDependent
 import PhysLean.Units.WithDim.Area
 import PhysLean.Units.WithDim.Basic
 import PhysLean.Units.WithDim.Energy

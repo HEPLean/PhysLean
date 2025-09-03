@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Units.Basic
-
+import PhysLean.Units.UnitDependent
 /-!
 
 ## WithDim
@@ -70,12 +69,12 @@ open UnitDependent
 
 @[simp]
 lemma val_mul_eq_mul {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 ℝ) :
-    m1.val * m2.val = (m1 * m2).val  := by
+    m1.val * m2.val = (m1 * m2).val := by
   simp only [withDim_hMul_val]
 
 @[simp]
-lemma val_pow_two_eq_mul {d1 : Dimension} (m1 : WithDim d1 ℝ)  :
-    m1.val ^ 2 = (m1 * m1).val  := by
+lemma val_pow_two_eq_mul {d1 : Dimension} (m1 : WithDim d1 ℝ) :
+    m1.val ^ 2 = (m1 * m1).val := by
   rw [sq]
   rfl
 
@@ -103,7 +102,7 @@ lemma scaleUnit_val {d : Dimension} (M : Type) [MulAction ℝ≥0 M]
 
 -/
 
-noncomputable instance (d1 d2 : Dimension):
+noncomputable instance (d1 d2 : Dimension) :
     HDiv (WithDim d1 ℝ) (WithDim d2 ℝ) (WithDim (d1 * d2⁻¹) ℝ) where
   hDiv m1 m2 := ⟨m1.val / m2.val⟩
 
@@ -129,8 +128,10 @@ lemma div_scaleUnit {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 �
 -/
 
 set_option linter.unusedVariables false in
+/-- The casting from `WithDim d M` to `WithDim d2 M` when `d = d2`. -/
+@[nolint unusedArguments]
 def cast {d d2 : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M)
-    (h : d = d2 := by ext <;> simp <;> try module) : WithDim d2 M := ⟨m.val⟩
+    (h : d = d2 := by ext <;> {simp; try ring}) : WithDim d2 M := ⟨m.val⟩
 
 @[simp]
 lemma cast_refl {d : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M) :
@@ -144,5 +145,7 @@ lemma cast_scaleUnit {d d2 : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : Wi
     cast (scaleUnit u1 u2 m) h = scaleUnit u1 u2 (cast m h) := by
   subst h
   simp
+
+TODO "LPWE4" "Induce instances on `WithDim d M` from instances on `M`."
 
 end WithDim

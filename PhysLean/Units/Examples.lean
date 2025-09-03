@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Units.WithDim.Basic
+import PhysLean.Units.WithDim.Speed
 /-!
 
 # Examples of units in PhysLean
@@ -25,8 +25,9 @@ open Dimension CarriesDimension UnitChoices UnitDependent
 /-- The length corresponding to 400 meters. -/
 noncomputable def meters400 : Dimensionful (WithDim L𝓭 ℝ) := toDimensionful SI ⟨400⟩
 
-/-- Changing that length to miles. -/
-example : meters400.1 {SI with length := LengthUnit.miles} = ⟨400/1609.344⟩ := by
+/-- Changing that length to miles.
+  400 meters is very almost a quarter of a mile. -/
+example : meters400 {SI with length := LengthUnit.miles} = ⟨1/4 - 73/50292⟩ := by
   simp [meters400, toDimensionful_apply_apply, dimScale, LengthUnit.miles]
   ext
   simp only [WithDim.smul_val]
@@ -46,30 +47,45 @@ example : meters400.1 {SI with length := LengthUnit.miles} = ⟨400/1609.344⟩ 
 
 -/
 
+open WithDim
+
+/-- An example of dimensions corresponding to `E = m c^2` using `WithDim`. -/
 def EnergyMassWithDim' (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
-    (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop := E = WithDim.cast (m * c * c)
+    (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop := E = cast (m * c * c)
 
 lemma energyMassWithDim'_isDimensionallyInvariant :
     IsDimensionallyInvariant EnergyMassWithDim' := by
   simp; intros; funext; simp [EnergyMassWithDim']
 
+/-- An example of dimensions corresponding to `F = m a` using `WithDim`. -/
 def NewtonsSecondWithDim' (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
     (a : WithDim (L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ) : Prop :=
-    F = WithDim.cast (m * a)
+    F = cast (m * a)
 
 lemma newtonsSecondWithDim'_isDimensionallyInvariant :
     IsDimensionallyInvariant NewtonsSecondWithDim' := by
   simp; intros; funext; simp [NewtonsSecondWithDim']
 
+/-- An example of dimensions corresponding to `s = d/t` using `WithDim`. -/
 def SpeedEq (s : WithDim (L𝓭 * T𝓭⁻¹) ℝ) (d : WithDim L𝓭 ℝ) (t : WithDim T𝓭 ℝ) : Prop :=
-    s = WithDim.cast (d / t)
+  s = cast (d / t)
 
 lemma speedEq_isDimensionallyInvariant : IsDimensionallyInvariant SpeedEq := by
   simp; intros; funext; simp [SpeedEq]
 
+/-- An example with complicated dimensions. -/
+def OddDimensions (m1 m2 : WithDim (M𝓭) ℝ)
+    (θ : WithDim Θ𝓭 ℝ) (I1 I2 : WithDim (C𝓭/T𝓭) ℝ) (d : WithDim L𝓭 ℝ) (t : WithDim T𝓭 ℝ)
+    (X : WithDim (L𝓭 * T𝓭⁻¹ ^ 3 * Θ𝓭⁻¹ * C𝓭 ^2) ℝ) : Prop :=
+    X = cast (m1 * (d / t) / (m2 * θ) * I2 * I1)
+
+lemma oddDimensions_isDimensionallyInvariant : IsDimensionallyInvariant OddDimensions := by
+  simp; intros; funext; simp [OddDimensions]
+
+/-- An example of dimensions corresponding to `E = m c^2` using `WithDim` with `.val`. -/
 def EnergyMassWithDim (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
     (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop :=
-    E.1 = m.1 * c.1 ^ 2
+  E.1 = m.1 * c.1 ^ 2
 
 lemma energyMassWithDim_isDimensionallyInvariant : IsDimensionallyInvariant EnergyMassWithDim := by
   simp [isDimensionallyInvariant_fun_iff]
@@ -80,43 +96,39 @@ lemma energyMassWithDim_isDimensionallyInvariant : IsDimensionallyInvariant Ener
   /- General method for euating dimensions. -/
   ext <;> simp <;> try module
 
+/-- An example of dimensions corresponding to `F = m a` using `WithDim` with `.val`. -/
 def NewtonsSecondWithDim (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
     (a : WithDim (L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ) : Prop :=
-    F.1 = m.1 * a.1
+  F.1 = m.1 * a.1
 
 lemma newtonsSecondWithDim_isDimensionallyInvariant :
     IsDimensionallyInvariant NewtonsSecondWithDim := by
-  simp [isDimensionallyInvariant_fun_iff]
+  simp
   intros
   funext
   simp [NewtonsSecondWithDim]
   rw [WithDim.scaleUnit_val_eq_scaleUnit_val_of_dim_eq]
   ext <;> simp; try module
 
-
 /-!
 
 ## Cases with Dimensionful
 
 -/
-
-/-- The speed of light as a dimensionful quantity. -/
-noncomputable def speedOfLight : Dimensionful (WithDim (L𝓭 * T𝓭⁻¹) ℝ) :=
-  toDimensionful SI ⟨299792458⟩
+open DimSpeed
 
 /-- The equation `E = m c^2`, in this equation we `E` and `m` are implicitly in the
   units `u`, while the speed of light is explicitly written in those units. -/
 def EnergyMass (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
     (u : UnitChoices) : Prop :=
-    E.1 = m.1 * (speedOfLight.1 u).1 ^ 2
+    E.1 = m.1 * (speedOfLight u).1 ^ 2
 
 /-- The equation `E = m c^2`, in this version everything is written explicitly in
   terms of a choice of units. -/
 def EnergyMass' (m : Dimensionful (WithDim M𝓭 ℝ))
     (E : Dimensionful (WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ))
     (u : UnitChoices) : Prop :=
-    (E.1 u).1 = (m.1 u).1 * (speedOfLight.1 u).1 ^ 2
-
+    (E.1 u).1 = (m.1 u).1 * (speedOfLight u).1 ^ 2
 
 /-- The lemma that the proposition `EnergyMass` is dimensionally correct-/
 lemma energyMass_isDimensionallyInvariant :
@@ -137,7 +149,7 @@ lemma energyMass_isDimensionallyInvariant :
     _ = ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1 • E.1 =
         ((u2.dimScale u1 M𝓭 * u2.dimScale u1 (L𝓭 * T𝓭⁻¹) * u2.dimScale u1 (L𝓭 * T𝓭⁻¹)).1) *
           (m.1 * ((speedOfLight.1 u).1) ^ 2)) := by
-        simp only [dimScale_mul, NNReal.val_eq_coe, NNReal.coe_mul, smul_eq_mul, eq_iff_iff]
+        simp only [map_mul, NNReal.val_eq_coe, NNReal.coe_mul, smul_eq_mul, eq_iff_iff]
         ring_nf
     _ = ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1 • E.1 =
         ((u2.dimScale u1 (M𝓭 * (L𝓭 * T𝓭⁻¹) * (L𝓭 * T𝓭⁻¹))).1) *
@@ -152,12 +164,17 @@ lemma energyMass_isDimensionallyInvariant :
         ((u2.dimScale u1 (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹)).1) •
           (m.1 * ((speedOfLight.1 u).1) ^ 2)) := by
       rfl
-  simp only [dimScale_mul, NNReal.val_eq_coe, NNReal.coe_mul, smul_eq_mul, mul_eq_mul_left_iff,
+  simp only [map_mul, NNReal.val_eq_coe, NNReal.coe_mul, smul_eq_mul, mul_eq_mul_left_iff,
     mul_eq_zero, NNReal.coe_eq_zero, dimScale_neq_zero, or_self, or_false, eq_iff_iff]
   rfl
 
-/-! We now explore the consequences of `energyMass_isDimensionallyInvariant` and how
-  we can use it. -/
+/-!
+
+## Examples of using `IsDimensionallyInvariant`
+
+We now explore the consequences of `energyMass_isDimensionallyInvariant` and how we can use it.
+
+-/
 
 lemma example1_energyMass : EnergyMass ⟨2⟩ ⟨2 * 299792458 ^ 2⟩ SI := by
   simp only [EnergyMass, mul_eq_mul_left_iff, OfNat.ofNat_ne_zero,
@@ -167,16 +184,21 @@ lemma example1_energyMass : EnergyMass ⟨2⟩ ⟨2 * 299792458 ^ 2⟩ SI := by
 /- The lemma `energyMass_isDimensionallyInvariant` allows us to scale the units
   of `example1_energyMass`, that is - we proved it in one set of units, but we get the result
   in any set of units. -/
-lemma example2_energyMass (u2 : UnitChoices) :
-    EnergyMass (scaleUnit SI u2 ⟨2⟩)
-      (scaleUnit SI u2 ⟨2 * 299792458 ^ 2⟩) u2 := by
-  conv_rhs => rw [← UnitChoices.scaleUnit_apply_fst SI u2]
-  have h1 := congrFun (congrFun (congrFun (energyMass_isDimensionallyInvariant SI u2)
-    (scaleUnit SI u2 ⟨2⟩))
-    (scaleUnit SI u2 ⟨2 * 299792458 ^ 2⟩)) (scaleUnit SI u2 SI)
+lemma example2_energyMass (u : UnitChoices) :
+    EnergyMass (scaleUnit SI u ⟨2⟩) (scaleUnit SI u ⟨2 * 299792458 ^ 2⟩) u := by
+  conv_rhs => rw [← UnitChoices.scaleUnit_apply_fst SI u]
+  have h1 := congrFun (congrFun (congrFun (energyMass_isDimensionallyInvariant SI u)
+    (scaleUnit SI u ⟨2⟩))
+    (scaleUnit SI u ⟨2 * 299792458 ^ 2⟩)) (scaleUnit SI u SI)
   rw [← h1]
   simp [instUnitDependentTwoSided, instUnitDependentForall_1]
   exact example1_energyMass
+
+/-!
+
+## An example involving derivatives
+
+-/
 
 TODO "LCR7N" "Add an example involving derivatives."
 
