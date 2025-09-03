@@ -86,8 +86,9 @@ lemma scaleUnit_val_eq_scaleUnit_val {d : Dimension} (M : Type) [MulAction ℝ�
   simp only [scaleUnit_injective]
   exact WithDim.ext_iff
 
-lemma scaleUnit_val_eq_scaleUnit_val_of_dim_eq {d1 d2 : Dimension} (M : Type) [MulAction ℝ≥0 M]
-    (u1 u2 : UnitChoices) (m1 : WithDim d1 M) (m2 : WithDim d2 M) (h : d1 = d2) :
+lemma scaleUnit_val_eq_scaleUnit_val_of_dim_eq {d1 d2 : Dimension} {M : Type} [MulAction ℝ≥0 M]
+    {u1 u2 : UnitChoices} {m1 : WithDim d1 M} {m2 : WithDim d2 M}
+    (h : d1 = d2 := by ext <;> {simp; try ring}) :
     (scaleUnit u1 u2 m1).val = (scaleUnit u1 u2 m2).val ↔ m1.val = m2.val := by
   subst h
   simp

@@ -55,8 +55,7 @@ def EnergyMassWithDim' (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L�
     (c : WithDim (L𝓭 * T𝓭⁻¹) ℝ) : Prop := E = cast (m * c * c)
 
 lemma energyMassWithDim'_isDimensionallyCorrect :
-    IsDimensionallyCorrect EnergyMassWithDim' := by
-  simp; intros; funext; simp [EnergyMassWithDim']
+    IsDimensionallyCorrect EnergyMassWithDim' := by simp [funext_iff, EnergyMassWithDim']
 
 /-- An example of dimensions corresponding to `F = m a` using `WithDim`. -/
 def NewtonsSecondWithDim' (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
@@ -64,15 +63,14 @@ def NewtonsSecondWithDim' (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * 
     F = cast (m * a)
 
 lemma newtonsSecondWithDim'_isDimensionallyCorrect :
-    IsDimensionallyCorrect NewtonsSecondWithDim' := by
-  simp; intros; funext; simp [NewtonsSecondWithDim']
+    IsDimensionallyCorrect NewtonsSecondWithDim' := by simp [funext_iff, NewtonsSecondWithDim']
 
 /-- An example of dimensions corresponding to `s = d/t` using `WithDim`. -/
 def SpeedEq (s : WithDim (L𝓭 * T𝓭⁻¹) ℝ) (d : WithDim L𝓭 ℝ) (t : WithDim T𝓭 ℝ) : Prop :=
   s = cast (d / t)
 
 lemma speedEq_isDimensionallyCorrect : IsDimensionallyCorrect SpeedEq := by
-  simp; intros; funext; simp [SpeedEq]
+  simp [funext_iff, SpeedEq]
 
 /-- An example with complicated dimensions. -/
 def OddDimensions (m1 m2 : WithDim (M𝓭) ℝ)
@@ -81,7 +79,7 @@ def OddDimensions (m1 m2 : WithDim (M𝓭) ℝ)
     X = cast (m1 * (d / t) / (m2 * θ) * I2 * I1)
 
 lemma oddDimensions_isDimensionallyCorrect : IsDimensionallyCorrect OddDimensions := by
-  simp; intros; funext; simp [OddDimensions]
+  simp [funext_iff, OddDimensions]
 
 /-- An example of dimensions corresponding to `E = m c^2` using `WithDim` with `.val`. -/
 def EnergyMassWithDim (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
@@ -89,13 +87,10 @@ def EnergyMassWithDim (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L�
   E.1 = m.1 * c.1 ^ 2
 
 lemma energyMassWithDim_isDimensionallyCorrect : IsDimensionallyCorrect EnergyMassWithDim := by
-  simp [isDimensionallyCorrect_fun_iff]
+  simp [funext_iff, EnergyMassWithDim]
   intros
-  funext
-  simp [EnergyMassWithDim]
   rw [WithDim.scaleUnit_val_eq_scaleUnit_val_of_dim_eq]
-  /- General method for euating dimensions. -/
-  ext <;> simp <;> try module
+
 
 /-- An example of dimensions corresponding to `F = m a` using `WithDim` with `.val`. -/
 def NewtonsSecondWithDim (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
@@ -104,12 +99,9 @@ def NewtonsSecondWithDim (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T
 
 lemma newtonsSecondWithDim_isDimensionallyCorrect :
     IsDimensionallyCorrect NewtonsSecondWithDim := by
-  simp only [isDimensionallyCorrect_fun_iff]
+  simp [funext_iff, NewtonsSecondWithDim]
   intros
-  funext
-  simp [NewtonsSecondWithDim]
   rw [WithDim.scaleUnit_val_eq_scaleUnit_val_of_dim_eq]
-  ext <;> simp; try module
 
 /-- An example of dimensions corresponding to `E = m c` using `WithDim` with `.val`,
   which is not dimensionally correct. -/
@@ -119,14 +111,10 @@ def EnergyMassWithDimNot (m : WithDim M𝓭 ℝ) (E : WithDim (M𝓭 * L𝓭 * L
 
 lemma energyMassWithDimNot_not_isDimensionallyCorrect :
     ¬ IsDimensionallyCorrect EnergyMassWithDimNot := by
-  simp only [isDimensionallyCorrect_fun_iff, not_forall]
-  use SI, SIPrimed, ⟨1⟩
-  rw [@funext_iff]
-  simp only [scaleUnit_apply_fun, not_forall]
-  use ⟨1⟩
-  rw [funext_iff]
-  simp only [scaleUnit_apply_fun_left, eq_iff_iff, not_forall]
-  use ⟨1⟩
+  simp only [isDimensionallyCorrect_fun_iff, not_forall, funext_iff, scaleUnit_apply_fun]
+  /- We show that `EnergyMassWithDimNot` is not dimensionally correct by
+    changing from `SI` to `SIPrimed` with values of `E`, `m` and `c` all equal to `1`. -/
+  use SI, SIPrimed, ⟨1⟩, ⟨1⟩, ⟨1⟩
   unfold EnergyMassWithDimNot
   simp [WithDim.scaleUnit_val, M𝓭, NNReal.smul_def]
   norm_num
@@ -225,7 +213,7 @@ def CosDim (t : WithDim T𝓭 ℝ) (ω : WithDim T𝓭⁻¹ ℝ) (a : ℝ) : Pro
   Real.cos (ω.1 * t.1) = a
 
 lemma cosDim_isDimensionallyCorrect : IsDimensionallyCorrect CosDim := by
-  simp; intros; funext; simp [CosDim]
+  simp [funext_iff, CosDim]
 
 /-!
 
