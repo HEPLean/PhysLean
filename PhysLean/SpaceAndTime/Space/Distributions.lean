@@ -218,7 +218,7 @@ open SchwartzMap
 
 /-- The divergence of a distribution from a bounded function. -/
 lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
-    {hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n}
+    {hf : IsDistBounded f}
     {hae: AEStronglyMeasurable (fun x => f x) volume} (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     divD (Distribution.ofBounded f hf hae) η =
     - ∫ x : Space dm1.succ, ⟪f x, Space.grad η x⟫_ℝ := by
@@ -234,9 +234,9 @@ lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin
       Integrable (fun x =>
         (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
     simp only [PiLp.smul_apply]
-    apply bounded_integrable
-    · obtain ⟨c1, c2, n, hc1, hc2, h⟩ := hf
-      use c1, c2, n
+    apply IsDistBounded.integrable
+    · obtain ⟨c1, c2, c3, n, hc1, hc2, hc3, h⟩ := hf
+      use c1, c2, c3, n
       simp_all
       intro x
       trans ‖f x‖
@@ -275,7 +275,7 @@ lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin
   and `η` a Schwartz map. -/
 lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
     {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
-    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n)
+    (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     Integrable (fun x => ⟪f x, Space.grad η x⟫_ℝ) volume := by
   conv =>
@@ -288,9 +288,9 @@ lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
       Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j)
         volume := by
     simp only [PiLp.smul_apply]
-    apply bounded_integrable
-    · obtain ⟨c1, c2, n, hc1, hc2, h⟩ := hf
-      use c1, c2, n
+    apply IsDistBounded.integrable
+    · obtain ⟨c1, c2, c3, n, hc1, hc2, hc3, h⟩ := hf
+      use c1, c2, c3, n
       simp_all
       intro x
       trans ‖f x‖
@@ -312,7 +312,7 @@ lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
 
 lemma integrable_ofBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
     {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
-    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n)
+    (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     Integrable ((fun x => ⟪f x.1, Space.grad η x.1⟫_ℝ)
       ∘ (homeomorphUnitSphereProd (Space dm1.succ)).symm)

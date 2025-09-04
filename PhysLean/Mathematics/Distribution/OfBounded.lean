@@ -34,13 +34,170 @@ We also define a `boundMeasure` which is a linear combination of these two measu
 open SchwartzMap NNReal
 noncomputable section
 
-variable (𝕜 : Type) {E F : Type} [RCLike 𝕜] [NormedAddCommGroup E] [NormedAddCommGroup F]
+variable (𝕜 : Type) {E F F' : Type} [RCLike 𝕜] [NormedAddCommGroup E] [NormedAddCommGroup F]
+  [NormedAddCommGroup F']
 
 namespace Distribution
 
 variable [NormedSpace ℝ E]
 
 open MeasureTheory
+
+/-!
+
+## IsBounded
+
+-/
+
+/-- The boundedness condition on a function ` EuclideanSpace ℝ (Fin dm1.succ) → F`
+  for it to form a distribution. -/
+@[fun_prop]
+def IsDistBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F) : Prop :=
+    ∃ c1 c2 c3 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ 0 ≤ c3 ∧
+    ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n + c3
+
+@[fun_prop]
+lemma IsDistBounded.const_smul {dm1 : ℕ} [NormedSpace ℝ F] {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
+    (hf : IsDistBounded f) (c : ℝ) : IsDistBounded (c • f) := by
+  rcases hf with ⟨c1, c2, c3, n, c1_nonneg, c2_nonneg, c3_nonneg, hbound⟩
+  use |c| * c1, |c| * c2, |c| * c3, n
+  constructor
+  · exact mul_nonneg (abs_nonneg c) c1_nonneg
+  constructor
+  · exact mul_nonneg (abs_nonneg c) c2_nonneg
+  constructor
+  · exact mul_nonneg (abs_nonneg c) c3_nonneg
+  intro x
+  specialize hbound x
+  calc
+    ‖(c • f) x‖ = ‖c‖ * ‖f x‖ := norm_smul _ _
+    _ ≤ |c| * (c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n + c3) := by
+      apply mul_le_mul_of_nonneg_left hbound (abs_nonneg c)
+    _ = |c| * c1 * ‖x‖ ^ (-dm1 : ℝ) + |c| * c2 * ‖x‖ ^ n + |c| * c3 := by
+      ring
+
+lemma IsDistBounded.congr {dm1 : ℕ} {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
+    {g : EuclideanSpace ℝ (Fin dm1.succ) → F'}
+    (hf : IsDistBounded f) (hfg : ∀ x, ‖g x‖ = ‖f x‖) : IsDistBounded g := by
+  rcases hf with ⟨c1, c2, c3, n, c1_nonneg, c2_nonneg, c3_nonneg, hbound⟩
+  use c1, c2, c3, n
+  refine ⟨c1_nonneg, c2_nonneg, c3_nonneg, ?_⟩
+  intro x
+  rw [hfg x]
+  exact hbound x
+
+lemma IsDistBounded.mono {dm1 : ℕ} {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
+    {g : EuclideanSpace ℝ (Fin dm1.succ) → F'}
+    (hf : IsDistBounded f) (hfg : ∀ x, ‖g x‖ ≤ ‖f x‖) : IsDistBounded g := by
+  rcases hf with ⟨c1, c2, c3, n, c1_nonneg, c2_nonneg, c3_nonneg, hbound⟩
+  use c1, c2, c3, n
+  constructor
+  · exact c1_nonneg
+  constructor
+  · exact c2_nonneg
+  constructor
+  · exact c3_nonneg
+  intro x
+  specialize hbound x
+  calc
+    ‖g x‖ ≤ ‖f x‖ := hfg x
+    _ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n + c3 := hbound
+
+@[fun_prop]
+lemma IsDistBounded.add {dm1 : ℕ} {f g : EuclideanSpace ℝ (Fin dm1.succ) → F}
+    (hf : IsDistBounded f) (hg : IsDistBounded g) : IsDistBounded (f + g) := by
+  rcases hf with ⟨c1, c2, c3, n, c1_nonneg, c2_nonneg, c3_nonneg, hboundf⟩
+  rcases hg with ⟨d1, d2, d3, m, d1_nonneg, d2_nonneg, d3_nonneg, hboundg⟩
+  let n' := max n m
+  use c1 + d1, c2 + d2, c3 + d3 + c2 + d2, n'
+  have h1 (r : ℝ) (hr : 0 ≤ r) (n : ℕ) (hn : n ≤ n'):
+      r ^ n ≤ 1 + r ^ n' := by
+    by_cases hr' : r ≤ 1
+    · trans 1
+      · exact pow_le_one₀ hr hr'
+      · have hr' : 0 ≤ r ^ n' := by positivity
+        linarith
+    · trans r ^ n'
+      · refine Bound.pow_le_pow_right_of_le_one_or_one_le ?_
+        left
+        simp_all
+        exact le_of_lt (by simpa using hr')
+      · simp
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · positivity
+  · positivity
+  · positivity
+  · intro x
+    trans ‖f x‖ + ‖g x‖
+    · simpa using norm_add_le (f x) (g x)
+    have hf' : ‖f x‖ ≤  (c1 * ‖x‖ ^ (- (dm1 : ℝ)) + c2 * (1 + ‖x‖ ^ n') + c3) := by
+      apply (hboundf x).trans
+      refine add_le_add_three (by rfl) ?_ (by rfl)
+      exact mul_le_mul_of_nonneg_left (h1 ‖x‖ (norm_nonneg x) n (by simp [n'])) c2_nonneg
+    have hg' : ‖g x‖ ≤  (d1 * ‖x‖ ^ (- (dm1 : ℝ)) + d2 * (1 + ‖x‖ ^ n') + d3) := by
+      apply (hboundg x).trans
+      refine add_le_add_three (by rfl) ?_ (by rfl)
+      exact mul_le_mul_of_nonneg_left (h1 ‖x‖ (norm_nonneg x) m (by simp [n'])) d2_nonneg
+    linarith
+
+TODO "LSLHW" "The proof `IsDistBounded.pow` needs golfing."
+
+lemma IsDistBounded.pow {dm1 : ℕ} (n : ℤ) (hn : - dm1 ≤ n) :
+    IsDistBounded (dm1 := dm1) (fun x => ‖x‖ ^ n) := by
+  use 1, 1, 0, n.natAbs
+  simp only [zero_le_one, le_refl, Nat.succ_eq_add_one, norm_zpow, norm_norm, Real.rpow_neg_natCast,
+    zpow_neg, zpow_natCast, one_mul, add_zero, true_and]
+  intro x
+  have hx := norm_nonneg x
+  generalize  ‖x‖ = r  at *
+  by_cases hr : r = 0
+  · subst hr
+    simp_all
+    rw [zero_zpow_eq, zero_pow_eq, zero_pow_eq]
+    by_cases hn : n = 0
+    · subst hn
+      simp only [↓reduceIte, Int.natAbs_zero, le_add_iff_nonneg_left, inv_nonneg]
+      by_cases hdm1 : dm1 = 0
+      · subst hdm1
+        simp
+      · simp [hdm1]
+    · simp [hn]
+      by_cases hdm1 : dm1 = 0
+      · subst hdm1
+        simp
+      · simp [hdm1]
+  field_simp
+  refine (le_div_iff₀ ?_).mpr ?_
+  · positivity
+  rw [← pow_add]
+  trans r ^ (n + dm1)
+  · apply le_of_eq
+    rw [zpow_add']
+    simp only [zpow_natCast]
+    left
+    simp_all
+  obtain ⟨m, hm⟩ : ∃ (m : ℕ), n + dm1 = m := by
+    by_cases hn : n + dm1 < 0
+    · exfalso
+      linarith
+    · use (n + dm1).natAbs
+      rw [Int.natAbs_of_nonneg (by linarith)]
+  have m_lt : m ≤ n.natAbs + dm1 := by
+    refine Int.ofNat_le.mp ?_
+    simpa [← hm] using le_abs_self n
+  rw [hm]
+  generalize (n.natAbs + dm1) = n at *
+  simp only [zpow_natCast, ge_iff_le]
+  by_cases hr' : r ≤ 1
+  · apply (pow_le_one₀ hx hr').trans
+    simp only [le_add_iff_nonneg_right]
+    positivity
+  · trans r ^n
+    · apply Bound.pow_le_pow_right_of_le_one_or_one_le
+      left
+      simp_all
+      apply le_of_lt hr'
+    · simp
 
 /-!
 
@@ -59,10 +216,11 @@ def powMeasure {dm1 : ℕ} (n : ℕ) : Measure (EuclideanSpace ℝ (Fin dm1.succ
 
 /-- The measure on `EuclideanSpace ℝ (Fin 3)` given by `C1 • invPowMeasure + C2 • powMeasure n`,
   for constants `C1` and `C2`. -/
-def boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) :
+def boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) :
     Measure (EuclideanSpace ℝ (Fin dm1.succ)) :=
   (ENNReal.ofReal C1) • invPowMeasure +
-  (ENNReal.ofReal C2) • powMeasure n
+  (ENNReal.ofReal C2) • powMeasure n +
+  (ENNReal.ofReal C3) • volume
 
 /-!
 
@@ -72,52 +230,82 @@ def boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) :
 
 variable [NormedSpace ℝ F]
 
-lemma integrable_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1)
-    (C2_nonneg : 0 ≤ C2)
-    (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2)) :
-    Integrable (fun x => (C1 * (1/‖x‖^dm1) + C2 * ‖x‖^n) • f x) := by
+lemma integrable_invPow_of_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C1_nonneg : 0 ≤ C1)
+    (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2 C3)) :
+    Integrable (fun x => C1 •  (1/‖x‖^dm1) • f x) := by
+  simp [boundMeasure] at h
+  by_cases hC1 : C1 = 0
+  · subst hC1
+    simp
+  refine Integrable.essSup_smul ?_ ?_ ?_
+  · have h1 := h.1.1
+    rw [integrable_smul_measure] at h1
+    erw [integrable_withDensity_iff_integrable_smul₀] at h1
+    refine (integrable_congr ?_).mp h1
+    filter_upwards with x
+    refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
+    simp only [one_div, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom,
+      Real.coe_toNNReal', inv_nonneg, norm_nonneg, pow_nonneg, sup_of_le_left]
+    fun_prop
+    simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+    positivity
+    simp
+  · fun_prop
+  · simp
+
+lemma integrable_pow_of_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C2_nonneg : 0 ≤ C2)
+    (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2 C3)) :
+    Integrable (fun x => C2 • ‖x‖ ^ n • f x) volume := by
+  simp [boundMeasure] at h
+  by_cases hC2 : C2 = 0
+  · subst hC2
+    simp
+  refine Integrable.essSup_smul ?_ ?_ ?_
+  · have h1 := h.1.2
+    rw [integrable_smul_measure] at h1
+    erw [integrable_withDensity_iff_integrable_smul₀] at h1
+    refine (integrable_congr ?_).mp h1
+    filter_upwards with x
+    refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
+    simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, Real.coe_toNNReal',
+      norm_nonneg, pow_nonneg, sup_of_le_left]
+    fun_prop
+    simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+    positivity
+    simp
+  · fun_prop
+  · simp
+
+lemma integrable_const_of_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C3_nonneg : 0 ≤ C3)
+    (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2 C3)) :
+     Integrable (fun x => C3 • f x) volume:= by
+  simp [boundMeasure] at h
+  by_cases hC3 : C3 = 0
+  · subst hC3
+    simp
+  have h3 := h.2
+  rw [integrable_smul_measure] at h3
+  refine Integrable.essSup_smul h3 ?_ ?_
+  · fun_prop
+  · simp
+  · simp
+    positivity
+  · simp
+
+lemma integrable_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C1_nonneg : 0 ≤ C1)
+    (C2_nonneg : 0 ≤ C2) (C3_nonneg : 0 ≤ C3)
+    (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2 C3)) :
+    Integrable (fun x => (C1 * (1/‖x‖^dm1) + C2 * ‖x‖^n + C3) • f x) := by
   conv =>
     enter [1, x]
-    rw [add_smul]
-    rw [← smul_smul, ← smul_smul]
-  simp [boundMeasure] at h
+    rw [add_smul, add_smul, ← smul_smul, ← smul_smul]
   apply Integrable.add
-  · by_cases hC1 : C1 = 0
-    · subst hC1
-      simp
-    refine Integrable.essSup_smul ?_ ?_ ?_
-    · have h1 := h.1
-      rw [integrable_smul_measure] at h1
-      erw [integrable_withDensity_iff_integrable_smul₀] at h1
-      refine (integrable_congr ?_).mp h1
-      filter_upwards with x
-      refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
-      simp only [one_div, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom,
-        Real.coe_toNNReal', inv_nonneg, norm_nonneg, pow_nonneg, sup_of_le_left]
-      fun_prop
-      simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
-      positivity
-      simp
-    · fun_prop
-    · simp
-  · by_cases hC2 : C2 = 0
-    · subst hC2
-      simp
-    refine Integrable.essSup_smul ?_ ?_ ?_
-    · have h1 := h.2
-      rw [integrable_smul_measure] at h1
-      erw [integrable_withDensity_iff_integrable_smul₀] at h1
-      refine (integrable_congr ?_).mp h1
-      filter_upwards with x
-      refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
-      simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, Real.coe_toNNReal',
-        norm_nonneg, pow_nonneg, sup_of_le_left]
-      fun_prop
-      simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
-      positivity
-      simp
-    · fun_prop
-    · simp
+  apply Integrable.add
+  · exact integrable_invPow_of_boundMeasure n C1 C2 C3 C1_nonneg f h
+  · exact integrable_pow_of_boundMeasure n C1 C2 C3 C2_nonneg f h
+  · exact integrable_const_of_boundMeasure n C1 C2 C3 C3_nonneg f h
+
+
 
 /-!
 
@@ -144,62 +332,47 @@ lemma integral_powMeasure {dm1 : ℕ} (n : ℕ) (f : EuclideanSpace ℝ (Fin dm1
   refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
   simp
 
-lemma integral_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 : ℝ) (C1_nonneg : 0 ≤ C1) (C2_nonneg : 0 ≤ C2)
+lemma integral_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C1_nonneg : 0 ≤ C1)
+    (C2_nonneg : 0 ≤ C2) (C3_nonneg : 0 ≤ C3)
     (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
-    (hf : Integrable f (boundMeasure n C1 C2)) :
-    ∫ x, f x ∂(boundMeasure n C1 C2) = ∫ x, (C1 * 1/‖x‖^dm1 + C2 * ‖x‖^n) • f x := by
+    (hf : Integrable f (boundMeasure n C1 C2 C3)) :
+    ∫ x, f x ∂(boundMeasure n C1 C2 C3) = ∫ x, (C1 * 1/‖x‖^dm1 + C2 * ‖x‖^n + C3) • f x := by
+  let hf' := hf
   dsimp [boundMeasure] at ⊢ hf
   rw [integrable_add_measure] at hf
   rw [MeasureTheory.integral_add_measure hf.1 hf.2]
-  rw [integral_smul_measure, ← integral_smul, integral_smul_measure, ← integral_smul]
+  rw [integrable_add_measure] at hf
+  rw [MeasureTheory.integral_add_measure hf.1.1 hf.1.2]
+  rw [integral_smul_measure, ← integral_smul, integral_smul_measure, ← integral_smul,
+    integral_smul_measure, ← integral_smul]
   rw [integral_invPowMeasure, integral_powMeasure]
-  rw [← integral_add]
+  rw [← integral_add, ← integral_add]
   · congr
     funext x
-    rw [ENNReal.toReal_ofReal C1_nonneg, ENNReal.toReal_ofReal C2_nonneg]
-    rw [add_smul, smul_smul, smul_smul]
+    rw [ENNReal.toReal_ofReal C1_nonneg, ENNReal.toReal_ofReal C2_nonneg,
+      ENNReal.toReal_ofReal C3_nonneg]
+    rw [add_smul, add_smul, smul_smul, smul_smul]
     ring_nf
-  · conv =>
-      enter [1, x]
-      rw [smul_comm]
-    by_cases hc : C1 = 0
-    · subst hc
-      simp
-    apply Integrable.smul
-    have h1 := hf.1
-    dsimp [invPowMeasure] at h1
-    rw [integrable_smul_measure] at h1
-    erw [integrable_withDensity_iff_integrable_smul₀] at h1
-    refine (integrable_congr ?_).mp h1
-    filter_upwards with x
-    simp only [one_div]
-    refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
-    simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, Real.coe_toNNReal',
-      inv_nonneg, norm_nonneg, pow_nonneg, sup_of_le_left]
-    fun_prop
-    simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
-    positivity
-    simp
-  · conv =>
-      enter [1, x]
-      rw [smul_comm]
-    by_cases hc : C2 = 0
-    · subst hc
-      simp
-    apply Integrable.smul
-    have h1 := hf.2
-    dsimp [powMeasure] at h1
-    rw [integrable_smul_measure] at h1
-    erw [integrable_withDensity_iff_integrable_smul₀] at h1
-    refine (integrable_congr ?_).mp h1
-    filter_upwards with x
-    refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
-    simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, coe_toRealHom, Real.coe_toNNReal',
-      norm_nonneg, pow_nonneg, sup_of_le_left]
-    fun_prop
-    simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
-    positivity
-    simp
+  apply Integrable.add
+  · convert integrable_invPow_of_boundMeasure n C1 C2 C3 C1_nonneg f hf' using 1
+    funext x
+    simp [ENNReal.toReal_ofReal C1_nonneg]
+    rw [smul_comm]
+  · convert integrable_pow_of_boundMeasure n C1 C2 C3 C2_nonneg f hf' using 1
+    funext x
+    simp [ENNReal.toReal_ofReal C2_nonneg]
+    rw [smul_comm]
+  · convert integrable_const_of_boundMeasure n C1 C2 C3 C3_nonneg f hf' using 1
+    funext x
+    simp [ENNReal.toReal_ofReal C3_nonneg]
+  · convert integrable_invPow_of_boundMeasure n C1 C2 C3 C1_nonneg f hf' using 1
+    funext x
+    simp [ENNReal.toReal_ofReal C1_nonneg]
+    rw [smul_comm]
+  · convert integrable_pow_of_boundMeasure n C1 C2 C3 C2_nonneg f hf' using 1
+    funext x
+    simp [ENNReal.toReal_ofReal C2_nonneg]
+    rw [smul_comm]
 
 /-!
 
@@ -480,135 +653,40 @@ instance (dm1 : ℕ) (n : ℕ) : Measure.HasTemperateGrowth (powMeasure (dm1 := 
     · filter_upwards with x
       simp
 
-instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) :
-    Measure.HasTemperateGrowth (boundMeasure (dm1 := dm1) n C1 C2) where
+instance (dm1 : ℕ) (n : ℕ) (C1 C2 C3 : ℝ) :
+    Measure.HasTemperateGrowth (boundMeasure (dm1 := dm1) n C1 C2 C3) where
   exists_integrable := by
+    /- We show that `boundMeasure (dm1 := dm1) n C1 C2 C3` has temperate growth. -/
     let m1 := (invPowMeasure (dm1 := dm1)).integrablePower
     let m2 := (powMeasure (dm1 := dm1) n).integrablePower
-    use max m1 m2
+    let m3 := (volume (α := EuclideanSpace ℝ (Fin dm1.succ))).integrablePower
+    let mM := max (max m1 m2) m3
+    /- We want to show that `(1 + ‖x‖) ^ (-↑mM)` is integrable over
+      `boundMeasure (dm1 := dm1) n C1 C2 C3`. -/
+    use mM
+    /- We split it into integrability over the indivdual parts -/
     simp [boundMeasure]
-    have h1 : (fun x : EuclideanSpace ℝ (Fin dm1.succ) => (1 + ‖x‖) ^ (- max m1 m2 : ℝ)) =
-        fun x => ‖x‖ ^ 0 * ‖(1 + ‖x‖) ^ (-max m1 m2 : ℝ)‖ := by
-      funext x
-      simp only [Real.norm_eq_abs]
-      rw [abs_of_nonneg (by positivity)]
-      rw [Real.rpow_neg]
-      ring
-      positivity
-    have h0 (x : EuclideanSpace ℝ (Fin dm1.succ)) : (1 + ‖x‖) ^ (-max ↑m1 ↑m2 : ℝ) =
-        ((1 + ‖x‖) ^ (max m1 m2))⁻¹ := by
-      rw [← Real.rpow_natCast]
-      simp only [Nat.cast_max]
-      rw [← Real.inv_rpow]
-      rw [← Real.rpow_neg_one, ← Real.rpow_mul]
-      simp only [neg_mul, one_mul]
-      positivity
-      positivity
-    apply And.intro
-    · refine Integrable.smul_measure ?_ ?_
-      swap
-      · simp
-      conv_lhs at h1=>
-        simp only [Nat.cast_max, Real.norm_eq_abs, one_mul]
-      rw [h1]
-      apply integrable_of_le_of_pow_mul_le (C₁ := 1) (C₂ := 1)
-      · intro x
-        simp only [Real.norm_eq_abs]
-        rw [abs_of_nonneg (by positivity)]
-        refine Real.rpow_le_one_of_one_le_of_nonpos ?_ ?_
-        refine le_add_of_le_of_nonneg ?_ ?_
-        · rfl
-        · positivity
+    refine ⟨⟨Integrable.smul_measure ?_ (by simp), Integrable.smul_measure ?_ (by simp)⟩,
+      Integrable.smul_measure ?_ (by simp)⟩
+    all_goals
+      /- Integrability over the indivdual parts.  -/
+      apply MeasureTheory.Integrable.mono (integrable_pow_neg_integrablePower _)
+      · refine Continuous.aestronglyMeasurable (Continuous.inv₀ (by fun_prop) ?_)
+        intro x
+        refine pow_ne_zero mM (fun hn => ?_)
+        have hx : ¬ (1 : ℝ) ≤ (0 : ℝ) := by simp
+        apply hx
+        rw [← hn]
         simp
-      · intro x
-        simp only [zero_add, Nat.cast_max, Real.norm_eq_abs]
-        rw [abs_of_nonneg (by positivity)]
-        rw [h0]
-        refine mul_inv_le_one_of_le₀ ?_ ?_
-        · trans (1 + ‖x‖) ^ (invPowMeasure (dm1 := dm1)).integrablePower
-          · by_cases hm : (invPowMeasure (dm1 := dm1)).integrablePower = 0
-            · rw [hm]
-              simp
-            refine (pow_le_pow_iff_left₀ ?_ ?_ hm).mpr ?_
-            · exact norm_nonneg x
-            · positivity
-            · refine le_add_of_nonneg_left ?_
-              exact zero_le_one' ℝ
-          · refine (Real.pow_le_iff_le_log ?_ ?_).mpr ?_
-            · positivity
-            · positivity
-            simp only [Real.log_pow, Nat.cast_max]
-            refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
-            · simp [m1, m2]
-            · rfl
-            · positivity
-            · refine Real.log_nonneg ?_
-              refine le_add_of_le_of_nonneg ?_ ?_
-              · rfl
-              · positivity
-        · positivity
-      refine Continuous.aestronglyMeasurable ?_
-      apply Continuous.rpow_const
-      · fun_prop
-      · intro x
-        left
-        have h1 : 0 < 1 + ‖x‖ := by
-          positivity
-        by_contra hn
-        rw [hn] at h1
-        simp at h1
-    · refine Integrable.smul_measure ?_ ?_
-      swap
-      · simp
-      conv_lhs at h1=>
-        simp only [Nat.cast_max, Real.norm_eq_abs, one_mul]
-      rw [h1]
-      apply integrable_of_le_of_pow_mul_le (C₁ := 1) (C₂ := 1)
-      · intro x
-        simp only [Real.norm_eq_abs]
-        rw [abs_of_nonneg (by positivity)]
-        refine Real.rpow_le_one_of_one_le_of_nonpos ?_ ?_
-        refine le_add_of_le_of_nonneg ?_ ?_
-        · rfl
-        · positivity
-        simp
-      · intro x
-        simp only [zero_add, Nat.cast_max, Real.norm_eq_abs, m2, m1]
-        rw [abs_of_nonneg (by positivity)]
-        rw [h0]
-        refine mul_inv_le_one_of_le₀ ?_ ?_
-        · trans (1 + ‖x‖) ^ (powMeasure (dm1 := dm1) n).integrablePower
-          · by_cases hm : (powMeasure (dm1 := dm1) n).integrablePower = 0
-            · rw [hm]
-              simp
-            refine (pow_le_pow_iff_left₀ ?_ ?_ hm).mpr ?_
-            · exact norm_nonneg x
-            · positivity
-            · refine le_add_of_nonneg_left ?_
-              exact zero_le_one' ℝ
-          · refine (Real.pow_le_iff_le_log ?_ ?_).mpr ?_
-            · positivity
-            · positivity
-            simp only [Real.log_pow, Nat.cast_max, m2, m1]
-            refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
-            · simp
-            · rfl
-            · positivity
-            · refine Real.log_nonneg ?_
-              refine le_add_of_le_of_nonneg ?_ ?_
-              · rfl
-              · positivity
-        · positivity
-      refine Continuous.aestronglyMeasurable ?_
-      apply Continuous.rpow_const
-      · fun_prop
-      · intro x
-        left
-        have h1 : 0 < 1 + ‖x‖ := by
-          positivity
-        by_contra hn
-        rw [hn] at h1
-        simp at h1
+      · filter_upwards with x
+        simp only [norm_inv, norm_pow, Real.norm_eq_abs, Real.rpow_neg_natCast, zpow_neg,
+          zpow_natCast]
+        refine inv_pow_le_inv_pow_of_le ?_ ?_
+        · trans |1|
+          · simp
+          refine abs_le_abs_of_nonneg (zero_le_one' ℝ) ?_
+          simp
+        · simp [mM, m1, m2, m3]
 
 /-!
 
@@ -616,67 +694,29 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 : ℝ) :
 
 -/
 
-lemma bounded_integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
-    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖^n)
+lemma IsDistBounded.integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
+    (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume)
     (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     Integrable (fun x : EuclideanSpace ℝ (Fin dm1.succ) => η x • f x) := by
-  rw [← MeasureTheory.integrable_norm_iff]
-  · conv =>
-      enter [1, a]
-      rw [norm_smul]
-    obtain ⟨c1, c2, n, c1_nonneg, c2_nonneg, hbound⟩ := hf
-    apply Integrable.mono (g := fun x => ‖η x‖ * (c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖^n))
-    conv =>
-      enter [1, a]
-      rw [mul_add]
-    apply MeasureTheory.Integrable.add
-    · have h2 : (fun a => ‖η a‖ * (c1 * ‖a‖ ^ (-dm1 : ℝ))) =
-          (fun a => c1 * (‖a‖ ^ (-dm1 : ℝ) * ‖η a‖)) := by
-        funext a
-        ring
-      rw [h2]
-      apply Integrable.const_mul
-      have h3 : Integrable (fun x => η x) invPowMeasure := by
-        exact integrable η
-      rw [← MeasureTheory.integrable_norm_iff (by fun_prop)] at h3
-      simp only [invPowMeasure] at h3
-      erw [MeasureTheory.integrable_withDensity_iff_integrable_coe_smul₀] at h3
-      simpa using h3
-      · fun_prop
-    · have h2 : (fun a => ‖η a‖ * (c2 * ‖a‖ ^ n)) = (fun a => c2 * (‖a‖ ^ n * ‖η a‖)) := by
-        funext a
-        ring
-      rw [h2]
-      apply Integrable.const_mul
-      exact integrable_pow_mul volume η n
-    · fun_prop
-    · filter_upwards with x
-      simp only [Real.norm_eq_abs, norm_mul, abs_abs]
-      refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
-      · rfl
-      · simp only [abs_norm]
-        apply (hbound x).trans
-        apply le_of_eq
-        rw [abs_of_nonneg]
-        apply add_nonneg
-        · apply mul_nonneg
-          · exact c1_nonneg
-          · apply Real.rpow_nonneg
-            exact norm_nonneg x
-        apply mul_nonneg
-        · exact c2_nonneg
-        · refine pow_nonneg ?_ n
-          exact norm_nonneg x
-      · exact abs_nonneg (η x)
-      · exact abs_nonneg _
+  obtain ⟨c1, c2, c3, n, c1_nonneg, c2_nonneg, c3_nonneg, hbound⟩ := hf
+  apply Integrable.mono (g := fun x => η x * (c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖^n + c3))
+  · convert integrable_boundMeasure n c1 c2 c3 c1_nonneg c2_nonneg c3_nonneg η η.integrable using 1
+    funext x
+    simp only [Nat.succ_eq_add_one, Real.rpow_neg_natCast, zpow_neg, zpow_natCast, one_div,
+      smul_eq_mul]
+    ring
   · fun_prop
+  · filter_upwards with x
+    simp [norm_smul]
+    refine mul_le_mul_of_nonneg (by rfl) ((hbound x).trans  ?_) (abs_nonneg _) (abs_nonneg _)
+    simpa using le_abs_self (c1 * (‖x‖ ^ dm1)⁻¹ + c2 * ‖x‖ ^ n + c3)
 
 /-- A distribution `(EuclideanSpace ℝ (Fin 3)) →d[ℝ] F` from a function
   `f : EuclideanSpace ℝ (Fin 3) → F` bounded by `c1 * ‖x‖ ^ (-2 : ℝ) + c2 * ‖x‖ ^ n`.
 -/
 def ofBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
-    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n)
+    (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) :
     (EuclideanSpace ℝ (Fin dm1.succ)) →d[ℝ] F := by
   refine mkCLMtoNormedSpace (fun η => ∫ x, η x • f x) ?_ ?_ ?_
@@ -686,24 +726,24 @@ def ofBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
       enter [2, a]
       rw [add_smul]
     rw [integral_add]
-    · exact bounded_integrable f hf hae η
-    · exact bounded_integrable f hf hae κ
+    · exact hf.integrable f hae η
+    · exact hf.integrable f hae κ
   · intro a η
     simp only [smul_apply, smul_eq_mul, RingHom.id_apply]
     conv_lhs =>
       enter [2, a]
       rw [← smul_smul]
     rw [integral_smul]
-  obtain ⟨c1, c2, r, c1_nonneg, c2_nonneg, hbound⟩ := hf
-  haveI hμ : (boundMeasure (dm1 := dm1) r c1 c2).HasTemperateGrowth := by infer_instance
+  obtain ⟨c1, c2, c3, r, c1_nonneg, c2_nonneg, c3_nonneg, hbound⟩ := hf
+  haveI hμ : (boundMeasure (dm1 := dm1) r c1 c2 c3).HasTemperateGrowth := by infer_instance
   rcases hμ.exists_integrable with ⟨n, h⟩
   let m := (n, 0)
-  use Finset.Iic m, 2 ^ n * ∫ x, (1 + ‖x‖) ^ (- (n : ℝ)) ∂(boundMeasure (dm1 := dm1) r c1 c2)
+  use Finset.Iic m, 2 ^ n * ∫ x, (1 + ‖x‖) ^ (- (n : ℝ)) ∂(boundMeasure (dm1 := dm1) r c1 c2 c3)
   refine ⟨by positivity, fun η ↦ (norm_integral_le_integral_norm _).trans ?_⟩
-  trans ∫ x, ‖η x‖ ∂(boundMeasure r c1 c2)
-  · have h1 : Integrable (fun x => η x) (boundMeasure r c1 c2) := by
+  trans ∫ x, ‖η x‖ ∂(boundMeasure r c1 c2 c3)
+  · have h1 : Integrable (fun x => η x) (boundMeasure r c1 c2 c3) := by
         exact integrable η
-    have h2 : Integrable (fun x => ‖η x‖) (boundMeasure r c1 c2) := by
+    have h2 : Integrable (fun x => ‖η x‖) (boundMeasure r c1 c2 c3) := by
         exact Integrable.norm h1
     rw [integral_boundMeasure]
     refine integral_mono_of_nonneg ?_ ?_ ?_
@@ -711,7 +751,7 @@ def ofBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
       positivity
     · dsimp
       apply (integrable_congr ?_).mp
-        (integrable_boundMeasure r c1 c2 c1_nonneg c2_nonneg (fun x => ‖η x‖) h2)
+        (integrable_boundMeasure r c1 c2 c3 c1_nonneg c2_nonneg c3_nonneg (fun x => ‖η x‖) h2)
       filter_upwards with x
       simp only [one_div, Real.norm_eq_abs, smul_eq_mul, mul_one, mul_eq_mul_right_iff,
         add_left_inj, abs_eq_zero]
@@ -730,6 +770,7 @@ def ofBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
       · positivity
     · exact c1_nonneg
     · exact c2_nonneg
+    · exact c3_nonneg
     · exact h2
   have h' : ∀ x, ‖η x‖ ≤ (1 + ‖x‖) ^ (-(n : ℝ)) *
       (2 ^ n * ((Finset.Iic m).sup (fun m' => SchwartzMap.seminorm ℝ m'.1 m'.2) η)) := by
@@ -737,26 +778,53 @@ def ofBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     rw [Real.rpow_neg (by positivity), ← div_eq_inv_mul,
       le_div_iff₀' (by positivity), Real.rpow_natCast]
     simpa using one_add_le_sup_seminorm_apply (m := m) (k := n) (n := 0) le_rfl le_rfl η x
-  apply (integral_mono (by simpa using η.integrable_pow_mul ((boundMeasure r c1 c2)) 0) _ h').trans
+  apply (integral_mono
+    (by simpa using η.integrable_pow_mul ((boundMeasure r c1 c2 c3)) 0) _ h').trans
   · unfold schwartzSeminormFamily
     rw [integral_mul_const, ← mul_assoc, mul_comm (2 ^ n)]
   apply h.mul_const
 
 lemma ofBounded_apply {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
-    (hf : ∃ c1 c2 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n)
+    (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     ofBounded f hf hae η = ∫ x, η x • f x := rfl
 
 @[simp]
 lemma ofBounded_zero_eq_zero  {dm1 : ℕ} :
     ofBounded (fun _ : EuclideanSpace ℝ (Fin (dm1 + 1)) => (0 : F))
-      ⟨0, 0, 0, by simp, by simp, by simp⟩ (by fun_prop) = 0 := by
+      ⟨0, 0, 0, 0, by simp⟩ (by fun_prop) = 0 := by
   ext η
   simp [ofBounded_apply]
 
 TODO "LQX64" "Show that the creation of a distribution
-  from a bounded function via `ofBounded` is linear on adding two bounded functions.
-  A necessary preliminary is to show that the sum of two bounded functions is bounded,
-  this may require a modification of the definition of boundedness."
+  from a bounded function via `ofBounded` is linear on adding two bounded functions."
+
+lemma ofBounded_smul {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
+    (hf : IsDistBounded f)
+    (hae: AEStronglyMeasurable (fun x => f x) volume) (c : ℝ) :
+    ofBounded (c • f) (by fun_prop) (by fun_prop)  = c • ofBounded f hf hae := by
+  ext η
+  change _ = c • ∫ x, η x • f x
+  rw [ofBounded_apply]
+  simp only [Nat.succ_eq_add_one, Pi.smul_apply]
+  rw [← integral_smul]
+  congr
+  funext x
+  rw [smul_comm]
+
+lemma ofBounded_smul_fun {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
+    (hf : IsDistBounded f)
+    (hae: AEStronglyMeasurable (fun x => f x) volume) (c : ℝ) :
+    ofBounded (fun x => c • f x) (by
+      change IsDistBounded (c • f)
+      fun_prop) (by fun_prop)  = c • ofBounded f hf hae := by
+  ext η
+  change _ = c • ∫ x, η x • f x
+  rw [ofBounded_apply]
+  simp only [Nat.succ_eq_add_one]
+  rw [← integral_smul]
+  congr
+  funext x
+  rw [smul_comm]
 
 end Distribution

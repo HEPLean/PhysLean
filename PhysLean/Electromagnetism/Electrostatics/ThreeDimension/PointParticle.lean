@@ -42,41 +42,52 @@ def chargeDistribution (q : ℝ) : ChargeDistribution 3 := q • diracDelta ℝ 
 lemma chargeDistribution_eq_zero_of_charge_eq_zero :
     chargeDistribution 0 = 0 := by simp [chargeDistribution]
 
+/-- The electric potential of a point particle of charge `q` in 3d space sitting at the origin.
+  Mathematically, this corresponds to the distribution associated to the function
+  `(q/(4 * π * ε)) • ‖r‖⁻¹`. -/
+def electricPotential (q ε : ℝ) : StaticElectricPotential 3 :=
+  - Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹)
+  (by
+    apply IsDistBounded.const_smul
+    apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-1 : ℤ)) (IsDistBounded.pow _ (by simp))
+    simp) (by
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd];
+    refine AEStronglyMeasurable.const_mul ?_ (q / (4 * π * ε))
+    refine StronglyMeasurable.aestronglyMeasurable ?_
+    refine stronglyMeasurable_iff_measurable.mpr ?_
+    fun_prop)
+
 /-- The electric field of a point particle of charge `q` in 3d space sitting at the origin.
-  Mathematically, this corresponds to the distribution associated to the distribution
+  Mathematically, this corresponds to the distribution associated to the function
   `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r`. -/
 def electricField (q ε : ℝ) : StaticElectricField 3 :=
   Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r)
-  ⟨|q / (4 * π * ε)|, 0, 0, by
-    simp only [abs_nonneg, le_refl, Nat.succ_eq_add_one, Nat.reduceAdd, inv_pow, Nat.cast_ofNat,
-      rpow_neg_ofNat, Int.reduceNeg, zpow_neg, pow_zero, mul_one, add_zero, true_and]
-    intro x
+  (by
+    apply IsDistBounded.const_smul
+    apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
     simp [norm_smul]
-    by_cases h : x = 0
-    · subst h
-      simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, inv_zero,
-        mul_zero]
-      apply le_of_eq
-      ring
-    have h' : ‖x‖ ≠ 0 := by exact norm_ne_zero_iff.mpr h
-    apply le_of_eq
-    field_simp [abs_mul, abs_div]
-    by_cases hε : ε = 0
-    · subst hε
-      simp
-    field_simp
-    trans |q| * ‖x‖ * (4 * |π| * |ε| * ‖x‖ ^ 2)
-    · rfl
-    ring⟩ (by fun_prop)
+    intro x
+    by_cases hx : ‖x‖ = 0
+    · simp [hx, zpow_two]
+    · field_simp [zpow_two]
+      ring) (by fun_prop)
 
 lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ}:
     electricField 0 ε = 0 := by simp [electricField]
 
+open InnerProductSpace
+
+/-- The gradient of the electric potential for a point particle in 3d
+  is equal to the electric field. -/
+@[sorryful]
+lemma gradD_electricPotential_eq_electricField (q ε : ℝ) :
+    - Space.gradD (electricPotential q ε) = electricField q ε := by
+  sorry
+
 /-- Guass' law for a point particle in 3-dimensions, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
 lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribution q) := by
-  /- The proof here follows that given here:
-  https://math.stackexchange.com/questions/2409008/
+  /- The proof here follows that given here:  https://math.stackexchange.com/questions/2409008/
   -/
   ext η
   let η' (n : ↑(Metric.sphere 0 1)) : 𝓢(ℝ, ℝ) := compCLM (g := fun a => a • n.1) ℝ (by

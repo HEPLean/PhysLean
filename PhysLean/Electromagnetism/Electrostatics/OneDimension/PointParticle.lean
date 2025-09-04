@@ -30,13 +30,13 @@ def chargeDistribution (q : ℝ) : ChargeDistribution 1 := q • diracDelta ℝ 
   scalar. -/
 def electricPotential (q ε : ℝ) : StaticElectricPotential 1 :=
   - Distribution.ofBounded (fun x => (q/(2 * ε)) • ‖x‖)
-  ⟨0, |q/(2 * ε)|, 1, by simp [-norm_div]⟩ (by fun_prop)
+  ⟨0, |q/(2 * ε)|, 0, 1, by simp [-norm_div]⟩ (by fun_prop)
 
 @[simp]
 lemma electricPotential_eq_zero_of_ε_eq_zero (q : ℝ) :
     electricPotential q 0 = 0 := by
   ext x
-  simp [electricPotential, ofBounded_apply]
+  simp [electricPotential]
 
 /-- An electric field corresponding to a charge distribution of a point particle,
   defined as the negative of the gradient of `electricPotential q ε`.
@@ -110,8 +110,8 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       · ring
       change Integrable (fun x : EuclideanSpace ℝ (Fin 1) =>
         ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0)) ((fderivCLM ℝ) η)) x • ‖x‖)
-      apply bounded_integrable
-      · exact ⟨0, 1, 1, by simp⟩
+      apply IsDistBounded.integrable
+      · exact ⟨0, 1, 0, 1,  by simp⟩
       · fun_prop
     /- In the first of these integrals `|x|=x` whilst in the second `|x| = -x` giving
       us
