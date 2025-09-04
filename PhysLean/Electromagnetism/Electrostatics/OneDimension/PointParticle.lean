@@ -111,7 +111,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       change Integrable (fun x : EuclideanSpace ℝ (Fin 1) =>
         ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0)) ((fderivCLM ℝ) η)) x • ‖x‖)
       apply IsDistBounded.integrable
-      · exact ⟨0, 1, 0, 1,  by simp⟩
+      · exact ⟨0, 1, 0, 1, by simp⟩
       · fun_prop
     /- In the first of these integrals `|x|=x` whilst in the second `|x| = -x` giving
       us

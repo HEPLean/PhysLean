@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Electrostatics.Basic
-import PhysLean.Mathematics.Distribution.OfBounded
 import PhysLean.Mathematics.Distribution.PowMul
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 /-!
@@ -28,9 +27,6 @@ open Distribution SchwartzMap
 namespace ThreeDimPointParticle
 open Space StaticElectricField MeasureTheory Real InnerProductSpace
 noncomputable section
-
-TODO "LQXTB" "Derive the electric field of a point particle in 3d from the
-  electrostatic potential."
 
 TODO "LQXNC" "Generalize the proof of Gauss' law for a point particle in 3d
   so the particle is not at the origin."
@@ -77,7 +73,7 @@ lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ}:
 
 open InnerProductSpace
 
-/-- The gradient of the electric potential for a point particle in 3d
+/-- The negative of the gradient of the electric potential for a point particle in 3d
   is equal to the electric field. -/
 @[sorryful]
 lemma gradD_electricPotential_eq_electricField (q ε : ℝ) :
@@ -87,7 +83,7 @@ lemma gradD_electricPotential_eq_electricField (q ε : ℝ) :
 /-- Guass' law for a point particle in 3-dimensions, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
 lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribution q) := by
-  /- The proof here follows that given here:  https://math.stackexchange.com/questions/2409008/
+  /- The proof here follows that given here: https://math.stackexchange.com/questions/2409008/
   -/
   ext η
   let η' (n : ↑(Metric.sphere 0 1)) : 𝓢(ℝ, ℝ) := compCLM (g := fun a => a • n.1) ℝ (by

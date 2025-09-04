@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.Distribution.Basic
-import PhysLean.Meta.TODO.Basic
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
 /-!
 
@@ -110,35 +109,30 @@ lemma IsDistBounded.add {dm1 : ℕ} {f g : EuclideanSpace ℝ (Fin dm1.succ) →
   rcases hg with ⟨d1, d2, d3, m, d1_nonneg, d2_nonneg, d3_nonneg, hboundg⟩
   let n' := max n m
   use c1 + d1, c2 + d2, c3 + d3 + c2 + d2, n'
-  have h1 (r : ℝ) (hr : 0 ≤ r) (n : ℕ) (hn : n ≤ n'):
+  have h1 (r : ℝ) (hr : 0 ≤ r) (n : ℕ) (hn : n ≤ n') :
       r ^ n ≤ 1 + r ^ n' := by
     by_cases hr' : r ≤ 1
-    · trans 1
-      · exact pow_le_one₀ hr hr'
-      · have hr' : 0 ≤ r ^ n' := by positivity
-        linarith
+    · apply (pow_le_one₀ hr hr').trans
+      have hr' : 0 ≤ r ^ n' := by positivity
+      linarith
     · trans r ^ n'
       · refine Bound.pow_le_pow_right_of_le_one_or_one_le ?_
         left
         simp_all
         exact le_of_lt (by simpa using hr')
       · simp
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · positivity
-  · positivity
-  · positivity
-  · intro x
-    trans ‖f x‖ + ‖g x‖
-    · simpa using norm_add_le (f x) (g x)
-    have hf' : ‖f x‖ ≤  (c1 * ‖x‖ ^ (- (dm1 : ℝ)) + c2 * (1 + ‖x‖ ^ n') + c3) := by
-      apply (hboundf x).trans
-      refine add_le_add_three (by rfl) ?_ (by rfl)
-      exact mul_le_mul_of_nonneg_left (h1 ‖x‖ (norm_nonneg x) n (by simp [n'])) c2_nonneg
-    have hg' : ‖g x‖ ≤  (d1 * ‖x‖ ^ (- (dm1 : ℝ)) + d2 * (1 + ‖x‖ ^ n') + d3) := by
-      apply (hboundg x).trans
-      refine add_le_add_three (by rfl) ?_ (by rfl)
-      exact mul_le_mul_of_nonneg_left (h1 ‖x‖ (norm_nonneg x) m (by simp [n'])) d2_nonneg
-    linarith
+  refine ⟨by positivity, by positivity, by positivity, ?_⟩
+  intro x
+  trans ‖f x‖ + ‖g x‖
+  · simpa using norm_add_le (f x) (g x)
+  have hf' : ‖f x‖ ≤ (c1 * ‖x‖ ^ (- (dm1 : ℝ)) + c2 * (1 + ‖x‖ ^ n') + c3) := by
+    apply (hboundf x).trans
+    refine add_le_add_three (by rfl) ?_ (by rfl)
+    exact mul_le_mul_of_nonneg_left (h1 ‖x‖ (norm_nonneg x) n (by simp [n'])) c2_nonneg
+  have hg' : ‖g x‖ ≤ (d1 * ‖x‖ ^ (- (dm1 : ℝ)) + d2 * (1 + ‖x‖ ^ n') + d3) :=
+    (hboundg x).trans <| add_le_add_three (by rfl)
+      (mul_le_mul_of_nonneg_left (h1 ‖x‖ (norm_nonneg x) m (by simp [n'])) d2_nonneg) (by rfl)
+  linarith
 
 TODO "LSLHW" "The proof `IsDistBounded.pow` needs golfing."
 
@@ -149,55 +143,27 @@ lemma IsDistBounded.pow {dm1 : ℕ} (n : ℤ) (hn : - dm1 ≤ n) :
     zpow_neg, zpow_natCast, one_mul, add_zero, true_and]
   intro x
   have hx := norm_nonneg x
-  generalize  ‖x‖ = r  at *
+  generalize ‖x‖ = r at *
   by_cases hr : r = 0
   · subst hr
-    simp_all
-    rw [zero_zpow_eq, zero_pow_eq, zero_pow_eq]
-    by_cases hn : n = 0
-    · subst hn
-      simp only [↓reduceIte, Int.natAbs_zero, le_add_iff_nonneg_left, inv_nonneg]
-      by_cases hdm1 : dm1 = 0
-      · subst hdm1
-        simp
-      · simp [hdm1]
-    · simp [hn]
-      by_cases hdm1 : dm1 = 0
-      · subst hdm1
-        simp
-      · simp [hdm1]
+    simp_all [zero_zpow_eq, zero_pow_eq]
+    split_ifs <;> simp
   field_simp
-  refine (le_div_iff₀ ?_).mpr ?_
-  · positivity
+  refine (le_div_iff₀ (by positivity)).mpr ?_
   rw [← pow_add]
   trans r ^ (n + dm1)
   · apply le_of_eq
-    rw [zpow_add']
-    simp only [zpow_natCast]
-    left
-    simp_all
-  obtain ⟨m, hm⟩ : ∃ (m : ℕ), n + dm1 = m := by
-    by_cases hn : n + dm1 < 0
-    · exfalso
-      linarith
-    · use (n + dm1).natAbs
-      rw [Int.natAbs_of_nonneg (by linarith)]
-  have m_lt : m ≤ n.natAbs + dm1 := by
-    refine Int.ofNat_le.mp ?_
-    simpa [← hm] using le_abs_self n
-  rw [hm]
+    rw [zpow_add' (Or.inl hr), zpow_natCast]
+  obtain ⟨m, hm⟩ : ∃ (m : ℕ), n + dm1 = m :=
+    ⟨(n + dm1).natAbs, by rw [Int.natAbs_of_nonneg (by linarith)]⟩
+  have m_lt : m ≤ n.natAbs + dm1 := Int.ofNat_le.mp <| by simpa [← hm] using le_abs_self n
   generalize (n.natAbs + dm1) = n at *
-  simp only [zpow_natCast, ge_iff_le]
+  simp only [zpow_natCast, ge_iff_le, hm]
   by_cases hr' : r ≤ 1
-  · apply (pow_le_one₀ hx hr').trans
-    simp only [le_add_iff_nonneg_right]
-    positivity
-  · trans r ^n
-    · apply Bound.pow_le_pow_right_of_le_one_or_one_le
-      left
-      simp_all
-      apply le_of_lt hr'
-    · simp
+  · exact (pow_le_one₀ hx hr').trans <|
+      (le_add_iff_nonneg_right _).mpr <| pow_nonneg hx n
+  · apply (Bound.pow_le_pow_right_of_le_one_or_one_le <| Or.inl <| ⟨le_of_not_ge hr', m_lt⟩).trans
+    simp
 
 /-!
 
@@ -232,7 +198,7 @@ variable [NormedSpace ℝ F]
 
 lemma integrable_invPow_of_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C1_nonneg : 0 ≤ C1)
     (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2 C3)) :
-    Integrable (fun x => C1 •  (1/‖x‖^dm1) • f x) := by
+    Integrable (fun x => C1 • (1/‖x‖^dm1) • f x) := by
   simp [boundMeasure] at h
   by_cases hC1 : C1 = 0
   · subst hC1
@@ -278,7 +244,7 @@ lemma integrable_pow_of_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C2_
 
 lemma integrable_const_of_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C3_nonneg : 0 ≤ C3)
     (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (h : Integrable f (boundMeasure n C1 C2 C3)) :
-     Integrable (fun x => C3 • f x) volume:= by
+    Integrable (fun x => C3 • f x) volume:= by
   simp [boundMeasure] at h
   by_cases hC3 : C3 = 0
   · subst hC3
@@ -304,8 +270,6 @@ lemma integrable_boundMeasure {dm1 : ℕ} (n : ℕ) (C1 C2 C3 : ℝ) (C1_nonneg 
   · exact integrable_invPow_of_boundMeasure n C1 C2 C3 C1_nonneg f h
   · exact integrable_pow_of_boundMeasure n C1 C2 C3 C2_nonneg f h
   · exact integrable_const_of_boundMeasure n C1 C2 C3 C3_nonneg f h
-
-
 
 /-!
 
@@ -669,7 +633,7 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 C3 : ℝ) :
     refine ⟨⟨Integrable.smul_measure ?_ (by simp), Integrable.smul_measure ?_ (by simp)⟩,
       Integrable.smul_measure ?_ (by simp)⟩
     all_goals
-      /- Integrability over the indivdual parts.  -/
+      /- Integrability over the indivdual parts. -/
       apply MeasureTheory.Integrable.mono (integrable_pow_neg_integrablePower _)
       · refine Continuous.aestronglyMeasurable (Continuous.inv₀ (by fun_prop) ?_)
         intro x
@@ -709,7 +673,7 @@ lemma IsDistBounded.integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ
   · fun_prop
   · filter_upwards with x
     simp [norm_smul]
-    refine mul_le_mul_of_nonneg (by rfl) ((hbound x).trans  ?_) (abs_nonneg _) (abs_nonneg _)
+    refine mul_le_mul_of_nonneg (by rfl) ((hbound x).trans ?_) (abs_nonneg _) (abs_nonneg _)
     simpa using le_abs_self (c1 * (‖x‖ ^ dm1)⁻¹ + c2 * ‖x‖ ^ n + c3)
 
 /-- A distribution `(EuclideanSpace ℝ (Fin 3)) →d[ℝ] F` from a function
@@ -790,7 +754,7 @@ lemma ofBounded_apply {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     ofBounded f hf hae η = ∫ x, η x • f x := rfl
 
 @[simp]
-lemma ofBounded_zero_eq_zero  {dm1 : ℕ} :
+lemma ofBounded_zero_eq_zero {dm1 : ℕ} :
     ofBounded (fun _ : EuclideanSpace ℝ (Fin (dm1 + 1)) => (0 : F))
       ⟨0, 0, 0, 0, by simp⟩ (by fun_prop) = 0 := by
   ext η
@@ -802,7 +766,7 @@ TODO "LQX64" "Show that the creation of a distribution
 lemma ofBounded_smul {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) (c : ℝ) :
-    ofBounded (c • f) (by fun_prop) (by fun_prop)  = c • ofBounded f hf hae := by
+    ofBounded (c • f) (by fun_prop) (by fun_prop) = c • ofBounded f hf hae := by
   ext η
   change _ = c • ∫ x, η x • f x
   rw [ofBounded_apply]
@@ -817,7 +781,7 @@ lemma ofBounded_smul_fun {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → 
     (hae: AEStronglyMeasurable (fun x => f x) volume) (c : ℝ) :
     ofBounded (fun x => c • f x) (by
       change IsDistBounded (c • f)
-      fun_prop) (by fun_prop)  = c • ofBounded f hf hae := by
+      fun_prop) (by fun_prop) = c • ofBounded f hf hae := by
   ext η
   change _ = c • ∫ x, η x • f x
   rw [ofBounded_apply]
