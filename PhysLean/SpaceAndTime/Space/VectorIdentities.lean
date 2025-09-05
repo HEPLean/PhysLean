@@ -184,6 +184,45 @@ lemma deriv_component_diff (μ ν : Fin d) (x : Space d) (h : μ ≠ ν) :
   simp only [EuclideanSpace.single_apply, ite_eq_right_iff, one_ne_zero, imp_false]
   omega
 
+lemma deriv_component (μ ν : Fin d) (x : Space d)  :
+    (deriv ν (fun x => x μ) x) =  if ν = μ then 1 else 0 := by
+  by_cases h' : ν = μ
+  · subst h'
+    simp
+  · rw [deriv_component_diff ν μ]
+    simp
+    simpa using h'
+    simpa using h'
+
+lemma deriv_component_sq {d : ℕ} {ν μ : Fin d} (x : Space d) :
+    (deriv ν (fun x => (x μ) ^ 2) x) = if ν = μ then 2 * x μ  else 0:= by
+  rw [deriv_eq_fderiv_basis]
+  rw [fderiv_pow]
+  simp
+  rw [← deriv_eq_fderiv_basis, deriv_component]
+  simp
+  fun_prop
+
+@[fun_prop]
+lemma norm_sq_differentiable : Differentiable ℝ (fun x : Space d => ‖x‖ ^ 2) := by
+  simp [@PiLp.norm_sq_eq_of_L2]
+  fun_prop
+
+lemma deriv_norm_sq (x : Space d) (i : Fin d) :
+    deriv i (fun x => ‖x‖ ^ 2) x = 2 * x i := by
+  simp [@PiLp.norm_sq_eq_of_L2]
+  rw [deriv_eq_fderiv_basis]
+  rw [fderiv_fun_sum]
+  simp
+  conv_lhs =>
+    enter [2, j]
+    rw [← deriv_eq_fderiv_basis]
+    simp
+  simp [deriv_component_sq]
+  intro i hi
+  fun_prop
+
+
 /-!
 
 ## Some properties of grad
@@ -271,6 +310,13 @@ lemma grad_inner_space {d} (x : Space d) (f : Space d → ℝ) (hd : Differentia
     simp
   have hx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
   field_simp
+
+lemma grad_norm_sq (x : Space d)  :
+    ∇ (fun x => ‖x‖ ^ 2) x = (2 : ℝ) • x := by
+  funext i
+  rw [grad_eq_sum]
+  simp [deriv_norm_sq, basis_apply]
+
 
 /-!
 

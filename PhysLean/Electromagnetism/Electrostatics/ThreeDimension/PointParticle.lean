@@ -6,6 +6,9 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Mathematics.Distribution.PowMul
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.Analysis.InnerProductSpace.NormPow
+import Mathlib.Analysis.Calculus.FDeriv.Norm
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 /-!
 
 # A electrostatics of a point particle in 3d.
@@ -42,7 +45,7 @@ lemma chargeDistribution_eq_zero_of_charge_eq_zero :
   Mathematically, this corresponds to the distribution associated to the function
   `(q/(4 * π * ε)) • ‖r‖⁻¹`. -/
 def electricPotential (q ε : ℝ) : StaticElectricPotential 3 :=
-  - Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹)
+  Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹)
   (by
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-1 : ℤ)) (IsDistBounded.pow _ (by simp))
@@ -73,12 +76,482 @@ lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ}:
 
 open InnerProductSpace
 
-/-- The negative of the gradient of the electric potential for a point particle in 3d
-  is equal to the electric field. -/
-@[sorryful]
-lemma gradD_electricPotential_eq_electricField (q ε : ℝ) :
+open scoped Topology BigOperators FourierTransform
+
+/-!
+
+## Prove that the electric field is the gradient of the potential
+
+We now prove that the electric field is the negative gradient of the potential.
+
+We first show in `gradD_electricPotential_eq_electricField_of_integral_eq_zero` that this
+is true if
+`∫ x, d_y η x * ‖x‖⁻¹ + η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ = 0`
+for all Schwartz maps `η` and directions `y`.
+
+To prove this integral is zero we define `potentialLimitSeries` which is a sequence of functions
+given by
+`potentialLimitSeries n x = (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)`.
+The limit of this sequence as `n → ∞` is `‖x‖⁻¹`, and the limit of it's gradient is
+`-⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ `.
+
+The key idea is to use `MeasureTheory.tendsto_integral_of_dominated_convergence` to show
+that the limit of the integrals
+`∫ x, fderiv ℝ η x y * potentialLimitSeries n x + η x * fderiv ℝ (potentialLimitSeries n) x y`
+is equal to `∫ x, d_y η x * ‖x‖⁻¹ + η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ`,
+and because it they are total derivatives of differentiable functions, eqaul to zero.
+
+To use `MeasureTheory.tendsto_integral_of_dominated_convergence` we need to show a number
+of properties of `potentialLimitSeries` and it's derivatives.
+
+For convience we define
+`fderiv ℝ η x y * potentialLimitSeries n x + η x * fderiv ℝ (potentialLimitSeries n) x y`
+to be `potentialLimitSeriesFDerivSchwartz`.
+
+### Note
+
+This proof also allows us to prove Faraday's law for a point particle in 3d.
+
+-/
+
+/-- The gradient of the electric potential is equal to the electric field if the integral
+  ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y  * ‖a‖⁻¹ +
+    η a * ⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ)
+  is zero.
+  -/
+lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
+    (h_integral : ∀ η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ), ∀ y :  EuclideanSpace ℝ (Fin 3),
+    ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * ‖a‖⁻¹ +
+    η a * - ⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ)  = 0) :
     - Space.gradD (electricPotential q ε) = electricField q ε := by
-  sorry
+  rw [← sub_eq_zero]
+  ext1 η
+  apply ext_inner_right ℝ
+  intro y
+  simp [inner_sub_left, gradD_inner_eq, fderivD_apply]
+  dsimp [electricPotential, electricField]
+  rw [ofBounded_inner, ofBounded_apply]
+  simp
+  rw [← integral_sub]
+  change  ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y  * (q / (4 * π * ε) * ‖a‖⁻¹)) -
+    η a * ⟪(q / (4 * π * ε)) • (‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ = _
+  trans  ∫ (a : EuclideanSpace ℝ (Fin 3)), ( q / (4 * π * ε)) * (fderivCLM ℝ η a y  * ‖a‖⁻¹ +
+    η a * -⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ)
+  · congr
+    funext a
+    rw [inner_smul_left]
+    simp only [fderivCLM_apply, map_div₀, conj_trivial]
+    ring
+  rw [integral_const_mul, h_integral, mul_zero]
+  apply IsDistBounded.integrable_mul
+  · change IsDistBounded fun x => (q / (4 * π * ε)) • ‖x‖⁻¹
+    apply IsDistBounded.const_smul
+    fun_prop
+  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd];
+    refine AEStronglyMeasurable.const_mul ?_ (q / (4 * π * ε))
+    refine StronglyMeasurable.aestronglyMeasurable ?_
+    refine stronglyMeasurable_iff_measurable.mpr ?_
+    fun_prop
+  apply IsDistBounded.integrable_mul
+  · apply IsDistBounded.inner_left
+    apply IsDistBounded.const_smul
+    apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
+    simp [norm_smul]
+    intro x
+    by_cases hx : ‖x‖ = 0
+    · simp [hx, zpow_two]
+    · field_simp [zpow_two]
+      ring
+  · fun_prop
+
+def potentialLimitSeries  : ℕ → EuclideanSpace ℝ (Fin 3) → ℝ := fun n x =>
+   (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)
+
+lemma potentialLimitSeries_eq (n : ℕ) :
+    potentialLimitSeries n = fun x => (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ) := rfl
+
+lemma potentialLimitSeries_eq_sqrt_inv (n : ℕ) :
+    potentialLimitSeries n = fun x => √(‖x‖ ^ 2 + 1/(n + 1))⁻¹ := by
+  funext x
+  rw [potentialLimitSeries_eq]
+  simp
+  rw [sqrt_eq_rpow]
+  nth_rewrite 2 [← Real.rpow_neg_one]
+  rw [← Real.rpow_mul]
+  congr
+  ring
+  positivity
+
+lemma potentialLimitSeries_nonneg (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) :
+    0 ≤ potentialLimitSeries n x := by
+  rw [potentialLimitSeries_eq_sqrt_inv]
+  simp
+
+lemma potentialLimitSeries_differentiable  (n : ℕ) :
+    Differentiable ℝ (potentialLimitSeries n) := by
+  rw [potentialLimitSeries_eq]
+  refine Differentiable.rpow_const ?_ ?_
+  · refine (Differentiable.fun_add_iff_right ?_).mpr ?_
+    apply Differentiable.norm_sq ℝ
+    · fun_prop
+    · fun_prop
+  · intro x
+    left
+    have h1 :  0 < ‖x‖ ^ 2 + 1 / (↑n + 1)  := by
+      apply add_pos_of_nonneg_of_pos
+      · apply sq_nonneg
+      · positivity
+    by_contra hn
+    rw [hn] at h1
+    simp at h1
+
+lemma potentialLimitSeries_fderiv (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ):
+      fderiv ℝ (potentialLimitSeries n) x y  =
+      - ((‖x‖ ^ 2 + (1 + (n : ℝ))⁻¹) ^ (- 1 /2 : ℝ)) ^ 3 * ⟪x, y⟫_ℝ := by
+    have h0  (x : EuclideanSpace ℝ (Fin 3)) : (‖x‖ ^ 2 + ((n : ℝ) + 1)⁻¹) ^ (-1 / 2 : ℝ) =
+        (√(‖x‖ ^ 2 + ((n : ℝ) + 1)⁻¹))⁻¹ := by
+      rw [sqrt_eq_rpow]
+      nth_rewrite 2 [← Real.rpow_neg_one]
+      rw [← Real.rpow_mul]
+      congr
+      ring
+      positivity
+    trans fderiv ℝ (fun x => (√(‖x‖ ^2 + 1/(n + 1)))⁻¹) x y
+    · congr
+      funext x
+      simp
+      dsimp [potentialLimitSeries]
+      simp
+      exact h0 x
+    rw [fderiv_comp']
+    simp
+    rw [fderiv_sqrt]
+    simp
+    rw [← @grad_inner_eq]
+    rw [grad_norm_sq]
+    simp [inner_smul_left]
+    ring_nf
+    rw [mul_comm]
+    congr 2
+    trans (‖x‖ ^ 2 + ((n : ℝ)+ 1)⁻¹) ^ (-1 / 2 : ℝ)
+    · rw [h0 x]
+      ring_nf
+    ring_nf
+    · refine (DifferentiableAt.fun_add_iff_right ?_).mpr ?_
+      · apply Differentiable.norm_sq ℝ
+        · fun_prop
+      · fun_prop
+    · have h1 :  0 < ‖x‖ ^ 2 + 1 / (↑n + 1)  := by
+        apply add_pos_of_nonneg_of_pos
+        · apply sq_nonneg
+        · positivity
+      by_contra hn
+      simp at h1
+      rw [hn] at h1
+      simp at h1
+    · refine differentiableAt_inv ?_
+      simp
+      refine sqrt_ne_zero'.mpr ?_
+      apply add_pos_of_nonneg_of_pos
+      · apply sq_nonneg
+      · positivity
+    · refine DifferentiableAt.sqrt ?_ ?_
+      refine (DifferentiableAt.fun_add_iff_right ?_).mpr ?_
+      · apply Differentiable.norm_sq ℝ
+        · fun_prop
+      · fun_prop
+      have h1 :  0 < ‖x‖ ^ 2 + 1 / (↑n + 1)  := by
+        apply add_pos_of_nonneg_of_pos
+        · apply sq_nonneg
+        · positivity
+      by_contra hn
+      rw [hn] at h1
+      simp at h1
+
+lemma potentialLimitSeries_fderiv_eq_potentialLimitseries_mul
+    (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ):
+    fderiv ℝ (potentialLimitSeries n) x y  = - (potentialLimitSeries n x) ^ 3 * ⟪x, y⟫_ℝ := by
+  rw [potentialLimitSeries_fderiv]
+  congr
+  simp
+  ring
+
+lemma potentialLimitSeries_tendsto (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
+    Filter.Tendsto (fun n => potentialLimitSeries n x) Filter.atTop (𝓝 (‖x‖⁻¹))  := by
+  conv => enter [1, n]; rw [potentialLimitSeries_eq]
+  simp
+  have hx_norm : ‖x‖⁻¹ = (‖x‖ ^ 2 + 0) ^ (-1 / 2 : ℝ) := by
+    trans √(‖x‖ ^ 2)⁻¹
+    · simp
+    rw [sqrt_eq_rpow]
+    nth_rewrite 1 [← Real.rpow_neg_one]
+    rw [← Real.rpow_mul]
+    congr
+    ring
+    simp
+    simp
+  rw [hx_norm]
+  refine Filter.Tendsto.rpow ?_ tendsto_const_nhds ?_
+  · apply Filter.Tendsto.add
+    · exact tendsto_const_nhds
+    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat
+  left
+  simpa using hx
+
+lemma potentialLimitSeries_fderiv_tendsto (x y : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
+    Filter.Tendsto (fun n => fderiv ℝ (potentialLimitSeries n) x y) Filter.atTop
+      (𝓝 (-⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ)) := by
+  conv => enter [1, n]; rw [potentialLimitSeries_fderiv, neg_mul]
+  apply Filter.Tendsto.neg
+  rw [inner_smul_left]
+  apply Filter.Tendsto.mul_const
+  simp
+  have hx' : (‖x‖ ^ 3)⁻¹ = ‖x‖⁻¹^ 3 := by exact Eq.symm (inv_pow ‖x‖ 3)
+  rw [hx']
+  apply Filter.Tendsto.pow
+  convert potentialLimitSeries_tendsto x hx
+  rw [potentialLimitSeries_eq]
+  simp
+  ring_nf
+
+@[fun_prop]
+lemma potentialLimitSeries_aeStronglyMeasurable (n : ℕ) :
+    AEStronglyMeasurable (potentialLimitSeries n)  := by
+  rw [potentialLimitSeries_eq]
+  refine StronglyMeasurable.aestronglyMeasurable ?_
+  refine stronglyMeasurable_iff_measurable.mpr ?_
+  fun_prop
+
+@[fun_prop]
+lemma potentialLimitSeries_fderiv_aeStronglyMeasurable (n : ℕ) (y : EuclideanSpace ℝ (Fin 3)) :
+    AEStronglyMeasurable (fun x => fderiv ℝ (potentialLimitSeries n) x y) := by
+  refine StronglyMeasurable.aestronglyMeasurable ?_
+  refine stronglyMeasurable_iff_measurable.mpr ?_
+  fun_prop
+
+lemma potentialLimitSeries_bounded_neq_zero (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
+    ‖potentialLimitSeries n x‖ ≤ ‖x‖⁻¹ := by
+  simp
+  rw [abs_of_nonneg (potentialLimitSeries_nonneg _ _)]
+  rw [potentialLimitSeries_eq_sqrt_inv]
+  simp
+  have hx : 0 < ‖x‖ := by positivity
+  generalize ‖x‖ = r at *
+  refine inv_anti₀ hx ?_
+  refine (le_sqrt' hx).mpr ?_
+  simp
+  linarith
+
+lemma potentialLimitSeries_bounded (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) :
+    ‖potentialLimitSeries n x‖ ≤ ‖x‖⁻¹ + √(n + 1) := by
+  by_cases hx : x = 0
+  · subst hx
+    simp
+    rw [abs_of_nonneg (potentialLimitSeries_nonneg _ _)]
+    simp [potentialLimitSeries_eq_sqrt_inv]
+  · apply (potentialLimitSeries_bounded_neq_zero n x hx).trans
+    simp
+
+lemma potentialLimitSeries_isDistBounded (n : ℕ) :
+    IsDistBounded (potentialLimitSeries n) := by
+  apply IsDistBounded.mono (f := fun x => ‖x‖⁻¹ + √(n + 1))
+  · apply IsDistBounded.add
+    · apply IsDistBounded.inv
+    · apply IsDistBounded.const
+  · intro x
+    apply (potentialLimitSeries_bounded n x).trans
+    apply le_of_eq
+    simp
+    rw [abs_of_nonneg]
+    positivity
+
+lemma potentialLimitSeries_fderiv_bounded (n : ℕ)
+    (x y : EuclideanSpace ℝ (Fin 3)) :
+    ‖fderiv ℝ (potentialLimitSeries n) x y‖ ≤ (‖x‖⁻¹) ^ 2 * ‖y‖ := by
+  by_cases hx : x = 0
+  · subst hx
+    rw [potentialLimitSeries_fderiv]
+    simp
+  trans  (‖x‖⁻¹) ^ 3 * ‖x‖ * ‖y‖
+  rw [potentialLimitSeries_fderiv_eq_potentialLimitseries_mul]
+  simp
+  rw [mul_assoc]
+  refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
+  · trans ‖x‖⁻¹ ^ 3
+    · refine (pow_le_pow_iff_left₀ ?_ ?_ ?_).mpr ?_
+      · exact abs_nonneg (potentialLimitSeries n x)
+      · simp
+      · simp
+      · exact potentialLimitSeries_bounded_neq_zero n x hx
+    · apply le_of_eq
+      exact inv_pow ‖x‖ 3
+  · exact abs_real_inner_le_norm x y
+  · positivity
+  · positivity
+  apply le_of_eq
+  have hx : 0 < ‖x‖ := by positivity
+  field_simp
+  ring
+
+lemma potentialLimitSeries_fderiv_isDistBounded (n : ℕ) (y : EuclideanSpace ℝ (Fin 3)) :
+    IsDistBounded (fun x => fderiv ℝ (potentialLimitSeries n) x y) := by
+  apply IsDistBounded.mono (f := fun x => (‖x‖⁻¹) ^ 2 * ‖y‖)
+  · conv => enter [1, x]; rw [mul_comm]
+    apply IsDistBounded.const_mul_fun
+    convert IsDistBounded.pow (dm1 := 2) (-2) (by simp) using 1
+    funext x
+    simp
+    rfl
+  · intro x
+    apply (potentialLimitSeries_fderiv_bounded n x y).trans
+    simp
+
+def potentialLimitSeriesFDerivSchwartz
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ)
+    (x : EuclideanSpace ℝ (Fin 3)) : ℝ :=
+  fderiv ℝ (fun x => η x * potentialLimitSeries n x) x y
+
+lemma potentialLimitSeriesFDerivSchwartz_eq
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ)
+    (x : EuclideanSpace ℝ (Fin 3)) :
+    potentialLimitSeriesFDerivSchwartz y η n x=
+      fderiv ℝ η x y * potentialLimitSeries n x + η x * fderiv ℝ (potentialLimitSeries n) x y := by
+  simp [potentialLimitSeriesFDerivSchwartz]
+  rw [fderiv_fun_mul]
+  simp
+  ring
+  · exact SchwartzMap.differentiableAt η
+  · refine Differentiable.differentiableAt ?_
+    exact potentialLimitSeries_differentiable n
+
+lemma potentialLimitSeriesFDerivSchwartz_integral_eq_zero
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
+    ∫ (x : EuclideanSpace ℝ (Fin 3)), potentialLimitSeriesFDerivSchwartz y η n x = 0 := by
+  conv_lhs => enter [2, x]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
+  rw [integral_add, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
+  simp
+  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
+    · exact potentialLimitSeries_isDistBounded n
+    · exact potentialLimitSeries_aeStronglyMeasurable n
+  · apply IsDistBounded.integrable_mul
+    · exact potentialLimitSeries_fderiv_isDistBounded n y
+    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
+  · apply IsDistBounded.integrable_mul
+    · exact potentialLimitSeries_isDistBounded n
+    · exact potentialLimitSeries_aeStronglyMeasurable n
+  · exact SchwartzMap.differentiable η
+  · exact potentialLimitSeries_differentiable n
+  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
+    · exact potentialLimitSeries_isDistBounded n
+    · exact potentialLimitSeries_aeStronglyMeasurable n
+  · apply IsDistBounded.integrable_mul
+    · exact potentialLimitSeries_fderiv_isDistBounded n y
+    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
+
+lemma  potentialLimitSeriesFDerivSchwartz_tendsto
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ))  :
+    ∀ᵐ (a : EuclideanSpace ℝ (Fin 3)) ∂(volume),
+    Filter.Tendsto (fun n => potentialLimitSeriesFDerivSchwartz y η n a)
+      Filter.atTop (𝓝 (fderiv ℝ η a y * ‖a‖⁻¹ + η a * -⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ)) := by
+  rw [Filter.eventually_iff_exists_mem ]
+  use {0}ᶜ
+  constructor
+  · rw [compl_mem_ae_iff, measure_singleton]
+  intro x hx
+  simp at hx
+  conv => enter [1, n]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
+  apply Filter.Tendsto.add
+  · apply Filter.Tendsto.const_mul
+    exact potentialLimitSeries_tendsto x hx
+  · apply Filter.Tendsto.mul
+    · exact tendsto_const_nhds
+    · exact potentialLimitSeries_fderiv_tendsto x y hx
+
+lemma potentialLimitSeriesFDerivSchwartz_aeStronglyMeasurable
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
+    AEStronglyMeasurable (fun x => potentialLimitSeriesFDerivSchwartz y η n x) := by
+  conv => enter [1, x]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
+  fun_prop
+
+lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
+    Filter.Tendsto (fun n => ∫ (x : EuclideanSpace ℝ (Fin 3)),
+      potentialLimitSeriesFDerivSchwartz y η n x) Filter.atTop
+      (𝓝 (∫ (x : EuclideanSpace ℝ (Fin 3)), fderiv ℝ η x y * ‖x‖⁻¹ +
+        η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ)) := by
+  refine MeasureTheory.tendsto_integral_of_dominated_convergence
+    (fun x => ‖fderiv ℝ η x y * ‖x‖⁻¹‖+ ‖η x * (‖x‖⁻¹ ^ 2 * ‖y‖)‖)
+    (potentialLimitSeriesFDerivSchwartz_aeStronglyMeasurable y η)
+    ?_ ?_
+    (potentialLimitSeriesFDerivSchwartz_tendsto y η)
+  · apply Integrable.add
+    · refine Integrable.norm ?_
+      apply IsDistBounded.integrable_fderviv_schwartzMap_mul
+      · fun_prop
+      · refine StronglyMeasurable.aestronglyMeasurable ?_
+        refine stronglyMeasurable_iff_measurable.mpr ?_
+        fun_prop
+    · refine Integrable.norm ?_
+      apply IsDistBounded.integrable_mul
+      · conv => enter [1, x]; rw [mul_comm]
+        refine IsDistBounded.const_mul_fun ?_ ‖y‖
+        convert IsDistBounded.pow (dm1 := 2) (-2) (by simp) using 1
+        funext x
+        simp
+        rfl
+      · refine StronglyMeasurable.aestronglyMeasurable ?_
+        refine stronglyMeasurable_iff_measurable.mpr ?_
+        fun_prop
+  · intro n
+    rw [Filter.eventually_iff_exists_mem ]
+    use {0}ᶜ
+    constructor
+    · rw [compl_mem_ae_iff, measure_singleton]
+    intro x hx
+    simp at hx
+    simp [potentialLimitSeriesFDerivSchwartz_eq y η n x]
+    apply (abs_add_le _ _).trans
+    apply add_le_add
+    · simp [abs_mul]
+      refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
+      · rfl
+      · exact potentialLimitSeries_bounded_neq_zero n x hx
+      · exact abs_nonneg (fderiv ℝ η x y)
+      · positivity
+    · simp [abs_mul]
+      refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
+      · rfl
+      · convert potentialLimitSeries_fderiv_bounded n x y
+        simp
+      · exact abs_nonneg (η x)
+      · positivity
+
+lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
+    Filter.Tendsto (fun n => ∫ (x : EuclideanSpace ℝ (Fin 3)),
+      potentialLimitSeriesFDerivSchwartz y η n x) Filter.atTop (𝓝 (0)) := by
+  conv => enter [1, n]; rw [potentialLimitSeriesFDerivSchwartz_integral_eq_zero y η n]
+  simp
+
+lemma electricField_eq_neg_gradD_electricPotential (q ε : ℝ) :
+    electricField q ε = - Space.gradD (electricPotential q ε)  :=
+  Eq.symm <|
+  gradD_electricPotential_eq_electricField_of_integral_eq_zero q ε <|
+  fun η y => tendsto_nhds_unique
+    (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral y η)
+    (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero y η)
+
+lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) :
+    electricField q ε = ofPotential (electricPotential q ε)  :=
+  electricField_eq_neg_gradD_electricPotential q ε
+
+/-!
+
+## Prove of Gauss' law
+
+We now prove Gauss' law for a point particle in 3-dimensions.
+
+-/
 
 /-- Guass' law for a point particle in 3-dimensions, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
@@ -258,3 +731,16 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
       ring
   simp [chargeDistribution]
   ring
+
+/-!
+
+## Prove of Faraday's law
+
+Faraday's law for a point particle in 3-dimensions follows immediately from the fact that the
+electric field is derived from a potential.
+
+-/
+
+lemma faradaysLaw (q ε : ℝ) : (electricField q ε).FaradaysLaw := by
+  rw [electricField_eq_ofPotential_electricPotential]
+  exact ofPotential_faradaysLaw (electricPotential q ε)

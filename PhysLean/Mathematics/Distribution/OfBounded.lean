@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.Distribution.Basic
+import PhysLean.Meta.Linters.Sorry
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
 /-!
 
@@ -55,6 +56,18 @@ def IsDistBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F) : Pr
     ∃ c1 c2 c3 n, 0 ≤ c1 ∧ 0 ≤ c2 ∧ 0 ≤ c3 ∧
     ∀ x, ‖f x‖ ≤ c1 * ‖x‖ ^ (-dm1 : ℝ) + c2 * ‖x‖ ^ n + c3
 
+@[sorryful]
+lemma IsDistBounded.comp_add_left {dm1 : ℕ} {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
+    (hf : IsDistBounded f) (c : EuclideanSpace ℝ (Fin dm1.succ)) :
+    IsDistBounded (fun x => f (x + c)) := by
+  sorry
+
+@[fun_prop]
+lemma IsDistBounded.const {dm1 : ℕ} (f : F) :
+    IsDistBounded (dm1 := dm1) (fun _ : EuclideanSpace ℝ (Fin dm1.succ) => f) := by
+  use 0, 0, ‖f‖, 0
+  simp
+
 @[fun_prop]
 lemma IsDistBounded.const_smul {dm1 : ℕ} [NormedSpace ℝ F] {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
     (hf : IsDistBounded f) (c : ℝ) : IsDistBounded (c • f) := by
@@ -74,6 +87,12 @@ lemma IsDistBounded.const_smul {dm1 : ℕ} [NormedSpace ℝ F] {f : EuclideanSpa
       apply mul_le_mul_of_nonneg_left hbound (abs_nonneg c)
     _ = |c| * c1 * ‖x‖ ^ (-dm1 : ℝ) + |c| * c2 * ‖x‖ ^ n + |c| * c3 := by
       ring
+
+@[fun_prop]
+lemma IsDistBounded.const_mul_fun {dm1 : ℕ}
+    {f : EuclideanSpace ℝ (Fin dm1.succ) → ℝ}
+    (hf : IsDistBounded f) (c : ℝ) : IsDistBounded (fun x => c * f x) := by
+  convert hf.const_smul c using 1
 
 lemma IsDistBounded.congr {dm1 : ℕ} {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
     {g : EuclideanSpace ℝ (Fin dm1.succ) → F'}
@@ -136,6 +155,7 @@ lemma IsDistBounded.add {dm1 : ℕ} {f g : EuclideanSpace ℝ (Fin dm1.succ) →
 
 TODO "LSLHW" "The proof `IsDistBounded.pow` needs golfing."
 
+@[fun_prop]
 lemma IsDistBounded.pow {dm1 : ℕ} (n : ℤ) (hn : - dm1 ≤ n) :
     IsDistBounded (dm1 := dm1) (fun x => ‖x‖ ^ n) := by
   use 1, 1, 0, n.natAbs
@@ -164,6 +184,28 @@ lemma IsDistBounded.pow {dm1 : ℕ} (n : ℤ) (hn : - dm1 ≤ n) :
       (le_add_iff_nonneg_right _).mpr <| pow_nonneg hx n
   · apply (Bound.pow_le_pow_right_of_le_one_or_one_le <| Or.inl <| ⟨le_of_not_ge hr', m_lt⟩).trans
     simp
+
+@[fun_prop]
+lemma IsDistBounded.inv {n : ℕ} :
+    IsDistBounded (dm1 := n.succ) (fun x => ‖x‖⁻¹) := by
+  convert IsDistBounded.pow (dm1 := n.succ) (-1) (by simp) using 1
+  ext1 x
+  simp
+open InnerProductSpace
+
+@[fun_prop]
+lemma IsDistBounded.inner_left {dm1 n : ℕ}
+    {f : EuclideanSpace ℝ (Fin dm1.succ) → EuclideanSpace ℝ (Fin n) }
+    (hf : IsDistBounded f) (y : EuclideanSpace ℝ (Fin n)) :
+    IsDistBounded (fun x => ⟪f x, y⟫_ℝ) := by
+  rcases hf with ⟨c1, c2, c3, n, c1_nonneg, c2_nonneg, c3_nonneg, hboundf⟩
+  refine ⟨c1 * ‖y‖, c2 * ‖y‖, c3 * ‖y‖, n, by positivity, by positivity, by positivity, ?_⟩
+  intro x
+  apply (norm_inner_le_norm (f x) y).trans
+  trans  (c1* ‖x‖ ^ (-↑dm1 : ℝ) + c2 *  ‖x‖ ^ n + c3) * ‖y‖
+  · apply mul_le_mul_of_nonneg_right (hboundf x) (norm_nonneg y)
+  · apply le_of_eq
+    ring
 
 /-!
 
@@ -651,13 +693,14 @@ instance (dm1 : ℕ) (n : ℕ) (C1 C2 C3 : ℝ) :
           refine abs_le_abs_of_nonneg (zero_le_one' ℝ) ?_
           simp
         · simp [mM, m1, m2, m3]
-
 /-!
 
-## Bounded functions as distributions
+
+## Integrability
 
 -/
 
+@[fun_prop]
 lemma IsDistBounded.integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume)
@@ -675,6 +718,29 @@ lemma IsDistBounded.integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ
     simp [norm_smul]
     refine mul_le_mul_of_nonneg (by rfl) ((hbound x).trans ?_) (abs_nonneg _) (abs_nonneg _)
     simpa using le_abs_self (c1 * (‖x‖ ^ dm1)⁻¹ + c2 * ‖x‖ ^ n + c3)
+
+@[fun_prop]
+lemma IsDistBounded.integrable_mul {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → ℝ)
+    (hf : IsDistBounded f)
+    (hae: AEStronglyMeasurable (fun x => f x) volume)
+    (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
+    Integrable (fun x : EuclideanSpace ℝ (Fin dm1.succ) => η x * f x) := by
+  convert hf.integrable f hae η using 1
+
+@[fun_prop]
+lemma IsDistBounded.integrable_fderviv_schwartzMap_mul {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → ℝ)
+    (hf : IsDistBounded f)
+    (hae: AEStronglyMeasurable (fun x => f x) volume)
+    (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) (y : EuclideanSpace ℝ (Fin dm1.succ)):
+    Integrable (fun x : EuclideanSpace ℝ (Fin dm1.succ) => fderiv ℝ η x y * f x) := by
+  exact hf.integrable f hae (((SchwartzMap.evalCLM (𝕜 := ℝ) y) ((fderivCLM ℝ) η)))
+
+
+/-!
+
+## Bounded functions as distributions
+
+-/
 
 /-- A distribution `(EuclideanSpace ℝ (Fin 3)) →d[ℝ] F` from a function
   `f : EuclideanSpace ℝ (Fin 3) → F` bounded by `c1 * ‖x‖ ^ (-2 : ℝ) + c2 * ‖x‖ ^ n`.
@@ -790,5 +856,21 @@ lemma ofBounded_smul_fun {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → 
   congr
   funext x
   rw [smul_comm]
+
+open InnerProductSpace
+
+lemma ofBounded_inner {dm1 n : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) →  EuclideanSpace ℝ (Fin n))
+    (hf : IsDistBounded f)
+    (hae: AEStronglyMeasurable (fun x => f x) volume)
+    (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) (y :  EuclideanSpace ℝ (Fin n)) :
+    ⟪ofBounded f hf hae η, y⟫_ℝ = ∫ x, η x * ⟪f x, y⟫_ℝ := by
+  rw [ofBounded_apply]
+  trans ∫ x,  ⟪y, η x • f x⟫_ℝ; swap
+  · congr
+    funext x
+    rw [real_inner_comm]
+    simp [inner_smul_left]
+  rw [integral_inner, real_inner_comm]
+  fun_prop
 
 end Distribution
