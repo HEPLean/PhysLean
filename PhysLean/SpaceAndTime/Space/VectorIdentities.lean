@@ -190,7 +190,7 @@ lemma deriv_component (μ ν : Fin d) (x : Space d) :
   · subst h'
     simp
   · rw [deriv_component_diff ν μ]
-    simp
+    simp only [right_eq_ite_iff, zero_ne_one, imp_false]
     simpa using h'
     simpa using h'
 
@@ -198,9 +198,10 @@ lemma deriv_component_sq {d : ℕ} {ν μ : Fin d} (x : Space d) :
     (deriv ν (fun x => (x μ) ^ 2) x) = if ν = μ then 2 * x μ else 0:= by
   rw [deriv_eq_fderiv_basis]
   rw [fderiv_pow]
-  simp
+  simp only [Nat.add_one_sub_one, pow_one, nsmul_eq_mul, Nat.cast_ofNat,
+    ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
   rw [← deriv_eq_fderiv_basis, deriv_component]
-  simp
+  simp only [mul_ite, mul_one, mul_zero]
   fun_prop
 
 @[fun_prop]
@@ -213,7 +214,7 @@ lemma deriv_norm_sq (x : Space d) (i : Fin d) :
   simp [@PiLp.norm_sq_eq_of_L2]
   rw [deriv_eq_fderiv_basis]
   rw [fderiv_fun_sum]
-  simp
+  simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply]
   conv_lhs =>
     enter [2, j]
     rw [← deriv_eq_fderiv_basis]

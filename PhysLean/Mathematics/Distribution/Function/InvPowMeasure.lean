@@ -6,7 +6,13 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Meta.Linters.Sorry
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
+/-!
 
+# The inverse pow measure on Euclidean space
+
+The measure `‖x‖^(- d) dx` on `EuclideanSpace ℝ (Fin d.succ)`, cancelling
+the radius contribution from the measure in spherical coordiantes.
+-/
 open SchwartzMap NNReal
 noncomputable section
 

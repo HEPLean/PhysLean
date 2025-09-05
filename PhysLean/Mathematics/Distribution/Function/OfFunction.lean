@@ -4,8 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.Distribution.Function.IsDistBounded
-import PhysLean.Meta.Linters.Sorry
-import Mathlib.MeasureTheory.Constructions.HaarToSphere
 /-!
 
 # Distributions from bounded functions
@@ -79,7 +77,7 @@ def ofFunction {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
       (k := r) (n := 0) le_rfl le_rfl η x
     rw [Lean.Grind.Field.IsOrdered.le_mul_inv_iff_mul_le _ _ (by positivity)]
     convert h0 using 1
-    simp
+    simp only [Nat.succ_eq_add_one, norm_iteratedFDeriv_zero, Real.norm_eq_abs]
     ring_nf
     congr
     rw [abs_of_nonneg (by positivity)]

@@ -3,11 +3,20 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Mathematics.Distribution.Function.InvPowMeasure
-import PhysLean.Meta.Linters.Sorry
-import Mathlib.MeasureTheory.Constructions.HaarToSphere
+/-!
 
+## Bounded functions for distributions
+
+In this module we define the property `IsDistBounded f` for a function `f`.
+It says that `f` is bounded by a finite sum of terms of the form `c * ‖x + g‖ ^ p` for
+constants `c`, `g` and `-d ≤ p ` where `d` is the dimension of the space minus 1.
+
+We prove a number of properties of these functions, inparticular that they
+are integrable when multiplied by a Schwartz map. This allows us to define distributions
+from such functions.
+
+-/
 open SchwartzMap NNReal
 noncomputable section
 
@@ -46,19 +55,19 @@ lemma IsDistBounded.add {dm1 : ℕ} {f g : EuclideanSpace ℝ (Fin dm1.succ) →
     obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
     match i with
     | .inl i =>
-      simp
+      simp only [finSumFinEquiv_apply_left, Fin.append_left, ge_iff_le]
       exact c1_nonneg i
     | .inr i =>
-      simp
+      simp only [finSumFinEquiv_apply_right, Fin.append_right, ge_iff_le]
       exact c2_nonneg i
   · intro i
     obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
     match i with
     | .inl i =>
-      simp
+      simp only [finSumFinEquiv_apply_left, Fin.append_left, ge_iff_le]
       exact p1_bound i
     | .inr i =>
-      simp
+      simp only [finSumFinEquiv_apply_right, Fin.append_right, ge_iff_le]
       exact p2_bound i
   · intro x
     apply (norm_add_le _ _).trans
@@ -73,7 +82,7 @@ lemma IsDistBounded.const_smul {dm1 : ℕ} [NormedSpace ℝ F] {f : EuclideanSpa
   rcases hf with ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, bound1⟩
   refine ⟨n1, ‖c‖ • c1, g1, p1, ?_, p1_bound, ?_⟩
   · intro i
-    simp
+    simp only [Real.norm_eq_abs, Pi.smul_apply, smul_eq_mul]
     have hi := c1_nonneg i
     positivity
   · intro x
@@ -91,7 +100,7 @@ lemma IsDistBounded.pi_comp {dm1 n : ℕ}
   refine ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, ?_⟩
   intro x
   apply le_trans ?_ (bound1 x)
-  simp
+  simp only [Real.norm_eq_abs]
   rw [@PiLp.norm_eq_of_L2]
   refine Real.abs_le_sqrt ?_
   trans ∑ i ∈ {j}, ‖(f x) i‖ ^ 2
@@ -108,7 +117,7 @@ lemma IsDistBounded.comp_add_right {dm1 : ℕ} {f : EuclideanSpace ℝ (Fin dm1.
   intro x
   apply (bound1 (x + c)).trans
   apply le_of_eq
-  simp
+  simp only [Nat.succ_eq_add_one]
   congr 1
   funext x
   congr 3
@@ -146,13 +155,13 @@ lemma IsDistBounded.inner_left {dm1 n : ℕ}
   rcases hf with ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, bound1⟩
   refine ⟨n1, fun i => ‖y‖ * c1 i, g1, p1, ?_, p1_bound, ?_⟩
   · intro i
-    simp
+    simp only
     have hi := c1_nonneg i
     positivity
   · intro x
     apply (norm_inner_le_norm (f x) y).trans
     rw [mul_comm]
-    simp
+    simp only [Nat.succ_eq_add_one]
     conv_rhs => enter [2, i]; rw [mul_assoc]
     rw [← Finset.mul_sum]
     refine mul_le_mul (by rfl) (bound1 x) ?_ ?_
@@ -209,9 +218,9 @@ private lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpa
     erw [integrable_withDensity_iff_integrable_smul₀ (by fun_prop)] at h1
     convert h1 using 1
     funext x
-    simp
+    simp only [Nat.succ_eq_add_one, Real.norm_eq_abs, one_div]
     rw [Real.toNNReal_of_nonneg, NNReal.smul_def]
-    simp
+    simp only [inv_nonneg, norm_nonneg, pow_nonneg, coe_mk, smul_eq_mul]
     ring_nf
     rw [mul_assoc]
     congr
@@ -219,7 +228,7 @@ private lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpa
     generalize ‖x‖ = r at *
     by_cases hr : r = 0
     · subst hr
-      simp
+      simp only [inv_zero]
       rw [zero_pow_eq, zero_zpow_eq, zero_zpow_eq]
       split_ifs <;> simp
       any_goals omega
@@ -229,7 +238,7 @@ private lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpa
     · simp
   convert integrable_pow_mul_iteratedFDeriv invPowMeasure η (p + dm1).toNat 0 using 1
   funext x
-  simp
+  simp only [Nat.succ_eq_add_one, Real.norm_eq_abs, norm_iteratedFDeriv_zero]
   rw [mul_comm]
   congr 1
   rw [← zpow_natCast]
@@ -268,7 +277,7 @@ lemma IsDistBounded.schwartzMap_mul_integrable_norm {dm1 : ℕ}
         · have hx : (fderiv ℝ (fun x => x - g i)) =
               fun _ => ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin (dm1 + 1))) := by
             funext x
-            simp
+            simp only [Nat.succ_eq_add_one]
             erw [fderiv_sub]
             simp only [fderiv_id', fderiv_fun_const, Pi.zero_apply, sub_zero]
             fun_prop
@@ -279,7 +288,7 @@ lemma IsDistBounded.schwartzMap_mul_integrable_norm {dm1 : ℕ}
               (ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin (dm1 + 1))))
         · fun_prop
         · intro x
-          simp
+          simp only [Nat.succ_eq_add_one, pow_one]
           trans ‖x‖ + ‖g i‖
           · apply norm_sub_le
           simp [mul_add, add_mul]
@@ -290,10 +299,10 @@ lemma IsDistBounded.schwartzMap_mul_integrable_norm {dm1 : ℕ}
             positivity
           ring_nf
           rfl) (by
-          simp
+          simp only [Nat.succ_eq_add_one]
           use 1, (1 + ‖g i‖)
           intro x
-          simp
+          simp only [Nat.succ_eq_add_one, pow_one]
           apply (norm_le_norm_add_norm_sub' x (g i)).trans
           trans 1 + (‖g i‖ + ‖x - g i‖)
           · simp
@@ -347,7 +356,7 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
       invPowMeasure := by
     have hr1 (x : EuclideanSpace ℝ (Fin dm1.succ)) :
         ‖((1 + ‖x - v‖) ^ (q + m))⁻¹‖ = ((1 + ‖x - v‖) ^ (q + m))⁻¹ := by
-      simp
+      simp only [Nat.succ_eq_add_one, norm_inv, norm_pow, Real.norm_eq_abs, inv_inj, abs_nonneg]
       rw [abs_of_nonneg (by positivity)]
     apply integrable_of_le_of_pow_mul_le (C₁ := 1) (C₂ :=2 ^ (q + m - 1) * (‖v‖ ^ (q + m) + 1))
     · simp
@@ -372,7 +381,7 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
         · apply norm_le_norm_add_norm_sub'
         · positivity
         · positivity
-        simp
+        simp only [ne_eq, Nat.add_eq_zero, not_and]
         intro hq
         omega
       apply (add_pow_le _ _ _).trans
@@ -409,7 +418,8 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
     constructor
     · rw [compl_mem_ae_iff, measure_singleton]
     intro x hx
-    simp
+    simp only [Nat.succ_eq_add_one, norm_inv, norm_pow, Real.norm_eq_abs, one_div, inv_nonneg,
+      norm_nonneg, pow_nonneg, ENNReal.toReal_ofReal]
     simp at hx
     field_simp
     have hx': ‖x‖ ≠ 0 := by simpa using hx
@@ -432,13 +442,13 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
   · rw [compl_mem_ae_iff, measure_singleton]
   intro x hx
   refine norm_mul_le_of_le ?_ ?_
-  simp
+  simp only [Nat.succ_eq_add_one, norm_zpow, norm_norm, Int.ofNat_toNat]
   apply le_of_eq
   congr
   rw [max_eq_left]
-  simp
+  simp only [add_sub_cancel_right]
   omega
-  simp
+  simp only [Nat.succ_eq_add_one, norm_inv, norm_pow, Real.norm_eq_abs, abs_abs]
   refine inv_pow_le_inv_pow_of_le ?_ ?_
   · rw [abs_of_nonneg (by positivity)]
     simp
@@ -468,7 +478,7 @@ lemma IsDistBounded.norm_inv_mul_exists_pow_integrable {dm1 : ℕ}
     · refine Measurable.aestronglyMeasurable ?_
       fun_prop
   · filter_upwards with x
-    simp
+    simp [Nat.succ_eq_add_one, norm_inv, norm_pow, Real.norm_eq_abs, norm_mul, abs_abs]
     rw [← Finset.sum_mul]
     refine mul_le_mul_of_nonneg (hbound x) ?_ ?_ ?_
     · rfl
@@ -481,7 +491,7 @@ lemma IsDistBounded.norm_inv_mul_exists_pow_integrable {dm1 : ℕ}
     rw [mul_assoc]
   apply Integrable.const_mul
   apply intergrable_pow (p i) _ (p_bound i)
-  simp
+  simp only [Nat.succ_eq_add_one, add_le_add_iff_right, Int.toNat_le, Int.ofNat_toNat, le_sup_iff]
   left
   exact pMax_max i
 
