@@ -69,21 +69,20 @@ def ofFunction {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     exact hr
   · filter_upwards with x
     simp [norm_smul]
-    trans (2 ^ r  *
+    trans (2 ^ r *
       ((Finset.Iic (r, 0)).sup (schwartzSeminormFamily ℝ (EuclideanSpace ℝ (Fin (dm1 + 1))) ℝ)) η
-      *(|1 + ‖x‖| ^ r)⁻¹)  * ‖f x‖; swap
+      *(|1 + ‖x‖| ^ r)⁻¹) * ‖f x‖; swap
     · apply le_of_eq
       ring
     apply mul_le_mul_of_nonneg ?_ (by rfl) (by positivity) (by positivity)
-    have h0 := one_add_le_sup_seminorm_apply (𝕜 := ℝ) (m := (r, 0)) (k := r) (n := 0) le_rfl le_rfl η x
+    have h0 := one_add_le_sup_seminorm_apply (𝕜 := ℝ) (m := (r, 0))
+      (k := r) (n := 0) le_rfl le_rfl η x
     rw [Lean.Grind.Field.IsOrdered.le_mul_inv_iff_mul_le _ _ (by positivity)]
     convert h0 using 1
-
     simp
     ring_nf
     congr
     rw [abs_of_nonneg (by positivity)]
-
 
 lemma ofFunction_apply {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     (hf : IsDistBounded f)
@@ -130,10 +129,10 @@ open InnerProductSpace
 lemma ofFunction_inner {dm1 n : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → EuclideanSpace ℝ (Fin n))
     (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume)
-    (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) (y :  EuclideanSpace ℝ (Fin n)) :
+    (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) (y : EuclideanSpace ℝ (Fin n)) :
     ⟪ofFunction f hf hae η, y⟫_ℝ = ∫ x, η x * ⟪f x, y⟫_ℝ := by
   rw [ofFunction_apply]
-  trans ∫ x,  ⟪y, η x • f x⟫_ℝ; swap
+  trans ∫ x, ⟪y, η x • f x⟫_ℝ; swap
   · congr
     funext x
     rw [real_inner_comm]

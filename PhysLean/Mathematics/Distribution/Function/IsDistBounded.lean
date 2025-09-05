@@ -34,7 +34,7 @@ def IsDistBounded {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F) : Pr
     ∃ p : Fin n → ℤ,
     (∀ i, 0 ≤ c i) ∧
     (∀ i, -dm1 ≤ p i) ∧
-     ∀ x, ‖f x‖ ≤ ∑ i, c i * ‖x + g i‖ ^ p i
+    ∀ x, ‖f x‖ ≤ ∑ i, c i * ‖x + g i‖ ^ p i
 
 @[fun_prop]
 lemma IsDistBounded.add {dm1 : ℕ} {f g : EuclideanSpace ℝ (Fin dm1.succ) → F}
@@ -64,14 +64,14 @@ lemma IsDistBounded.add {dm1 : ℕ} {f g : EuclideanSpace ℝ (Fin dm1.succ) →
     apply (norm_add_le _ _).trans
     apply (add_le_add (bound1 x) (bound2 x)).trans
     apply le_of_eq
-    rw [← finSumFinEquiv.sum_comp ]
+    rw [← finSumFinEquiv.sum_comp]
     simp
 
 @[fun_prop]
 lemma IsDistBounded.const_smul {dm1 : ℕ} [NormedSpace ℝ F] {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
     (hf : IsDistBounded f) (c : ℝ) : IsDistBounded (c • f) := by
   rcases hf with ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, bound1⟩
-  refine ⟨n1 , ‖c‖ • c1, g1, p1, ?_, p1_bound, ?_⟩
+  refine ⟨n1, ‖c‖ • c1, g1, p1, ?_, p1_bound, ?_⟩
   · intro i
     simp
     have hi := c1_nonneg i
@@ -86,7 +86,7 @@ lemma IsDistBounded.const_smul {dm1 : ℕ} [NormedSpace ℝ F] {f : EuclideanSpa
 
 lemma IsDistBounded.pi_comp {dm1 n : ℕ}
     {f : EuclideanSpace ℝ (Fin dm1.succ) → EuclideanSpace ℝ (Fin n)}
-    (hf : IsDistBounded f) (j : Fin n) : IsDistBounded (fun x =>  f x j) := by
+    (hf : IsDistBounded f) (j : Fin n) : IsDistBounded (fun x => f x j) := by
   rcases hf with ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, bound1⟩
   refine ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, ?_⟩
   intro x
@@ -215,7 +215,7 @@ private lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpa
     ring_nf
     rw [mul_assoc]
     congr
-    have hx : 0 ≤ ‖x‖  := norm_nonneg x
+    have hx : 0 ≤ ‖x‖ := norm_nonneg x
     generalize ‖x‖ = r at *
     by_cases hr : r = 0
     · subst hr
@@ -237,15 +237,14 @@ private lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpa
   refine Int.eq_natCast_toNat.mpr ?_
   omega
 
-
 lemma IsDistBounded.schwartzMap_mul_integrable_norm {dm1 : ℕ}
     {η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)}
     {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
     (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) :
-    Integrable (fun x => ‖η x‖ * ‖f x‖ ) volume := by
+    Integrable (fun x => ‖η x‖ * ‖f x‖) volume := by
   rcases hf with ⟨n, c, g, p, c_nonneg, p_bound, hbound⟩
-  apply Integrable.mono' (g := fun x =>  ∑ i, ‖η x‖ * (c i * ‖x + g i‖ ^ p i)) _
+  apply Integrable.mono' (g := fun x => ∑ i, ‖η x‖ * (c i * ‖x + g i‖ ^ p i)) _
   · fun_prop
   · filter_upwards with x
     rw [← Finset.mul_sum]
@@ -260,12 +259,14 @@ lemma IsDistBounded.schwartzMap_mul_integrable_norm {dm1 : ℕ}
     suffices h1 : Integrable (fun x => ‖η ((x + g i) - g i)‖ * ‖x + g i‖ ^ p i) volume by
       convert h1 using 1
       simp
-    apply MeasureTheory.Integrable.comp_add_right (g :=  g i) (f := fun x => ‖η (x - g i)‖ * ‖x‖ ^ p i)
+    apply MeasureTheory.Integrable.comp_add_right (g := g i)
+      (f := fun x => ‖η (x - g i)‖ * ‖x‖ ^ p i)
     let η' := SchwartzMap.compCLM (𝕜 := ℝ)
       (g := fun x => x - g i)
       (by
         apply Function.HasTemperateGrowth.of_fderiv (k := 1) (C := 1 + ‖g i‖)
-        · have hx : (fderiv ℝ (fun x => x - g i)) = fun _ => ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin (dm1 + 1))) := by
+        · have hx : (fderiv ℝ (fun x => x - g i)) =
+              fun _ => ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin (dm1 + 1))) := by
             funext x
             simp
             erw [fderiv_sub]
@@ -300,7 +301,7 @@ lemma IsDistBounded.schwartzMap_mul_integrable_norm {dm1 : ℕ}
           · simp
             positivity
           ring_nf
-          rfl ) η
+          rfl) η
     exact schwartzMap_mul_pow_integrable η' (p i) (p_bound i)
 
 lemma IsDistBounded.schwartzMap_smul_integrable {dm1 : ℕ}
@@ -309,7 +310,7 @@ lemma IsDistBounded.schwartzMap_smul_integrable {dm1 : ℕ}
     (hf : IsDistBounded f) [NormedSpace ℝ F]
     (hae: AEStronglyMeasurable (fun x => f x) volume) :
     Integrable (fun x => η x • f x) volume := by
-  rw [← MeasureTheory.integrable_norm_iff ]
+  rw [← MeasureTheory.integrable_norm_iff]
   convert hf.schwartzMap_mul_integrable_norm (η := η) hae using 1
   funext x
   simp [norm_smul]
@@ -324,16 +325,15 @@ lemma IsDistBounded.schwartzMap_mul_integrable {dm1 : ℕ} (f : EuclideanSpace �
   convert hf.schwartzMap_smul_integrable (η := η) hae using 1
 
 @[fun_prop]
-lemma IsDistBounded.integrable_fderviv_schwartzMap_mul {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → ℝ)
-    (hf : IsDistBounded f)
+lemma IsDistBounded.integrable_fderviv_schwartzMap_mul {dm1 : ℕ}
+    (f : EuclideanSpace ℝ (Fin dm1.succ) → ℝ) (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume)
-    (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) (y : EuclideanSpace ℝ (Fin dm1.succ)):
+    (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) (y : EuclideanSpace ℝ (Fin dm1.succ)) :
     Integrable (fun x : EuclideanSpace ℝ (Fin dm1.succ) => fderiv ℝ η x y * f x) := by
   exact hf.schwartzMap_smul_integrable hae
     (η := ((SchwartzMap.evalCLM (𝕜 := ℝ) y) ((fderivCLM ℝ) η)))
 
 /-!
-
 
 ## Integrability of 1/(1 + ‖x‖)
 -/
@@ -341,10 +341,11 @@ lemma IsDistBounded.integrable_fderviv_schwartzMap_mul {dm1 : ℕ} (f : Euclidea
 lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
     (r_bound : (p + ↑dm1).toNat + (invPowMeasure (dm1 := dm1)).integrablePower ≤ r)
     (v : EuclideanSpace ℝ (Fin dm1.succ)) :
-    Integrable (fun x => ‖x + v‖ ^ p  * ‖((1 + ‖x‖) ^ r)⁻¹‖) volume := by
+    Integrable (fun x => ‖x + v‖ ^ p * ‖((1 + ‖x‖) ^ r)⁻¹‖) volume := by
   let m := (invPowMeasure (dm1 := dm1)).integrablePower
-  have h0  (q : ℕ) : Integrable (fun x => ‖x‖ ^ q * ‖((1 + ‖x - v‖) ^ (q + m))⁻¹‖) invPowMeasure := by
-    have hr1  (x : EuclideanSpace ℝ (Fin dm1.succ)):
+  have h0 (q : ℕ) : Integrable (fun x => ‖x‖ ^ q * ‖((1 + ‖x - v‖) ^ (q + m))⁻¹‖)
+      invPowMeasure := by
+    have hr1 (x : EuclideanSpace ℝ (Fin dm1.succ)) :
         ‖((1 + ‖x - v‖) ^ (q + m))⁻¹‖ = ((1 + ‖x - v‖) ^ (q + m))⁻¹ := by
       simp
       rw [abs_of_nonneg (by positivity)]
@@ -376,7 +377,7 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
         omega
       apply (add_pow_le _ _ _).trans
       trans 2 ^ (q + m - 1) * (‖v‖ ^ (q + m) + ‖x - v‖ ^ (q + m)) + (2 ^ (q + m - 1)
-         + 2 ^ (q + m - 1) * ‖v‖ ^ (q + m) * ‖x - v‖ ^ (q + m ))
+        + 2 ^ (q + m - 1) * ‖v‖ ^ (q + m) * ‖x - v‖ ^ (q + m))
       · simp
         positivity
       trans (2 ^ (q + m - 1) * (‖v‖ ^ (q + m) + 1)) * (1 + ‖x - v‖ ^ (q + m))
@@ -443,8 +444,8 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
     simp
   · exact r_bound
 
-lemma IsDistBounded.norm_inv_mul_exists_pow_integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
-    (hf : IsDistBounded f)
+lemma IsDistBounded.norm_inv_mul_exists_pow_integrable {dm1 : ℕ}
+    (f : EuclideanSpace ℝ (Fin dm1.succ) → F) (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) :
     ∃ r, Integrable (fun x => ‖f x‖ * ‖((1 + ‖x‖) ^ r)⁻¹‖) volume := by
   rcases hf with ⟨n, c, g, p, c_nonneg, p_bound, hbound⟩

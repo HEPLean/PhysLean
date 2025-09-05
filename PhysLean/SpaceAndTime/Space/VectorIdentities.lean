@@ -184,8 +184,8 @@ lemma deriv_component_diff (μ ν : Fin d) (x : Space d) (h : μ ≠ ν) :
   simp only [EuclideanSpace.single_apply, ite_eq_right_iff, one_ne_zero, imp_false]
   omega
 
-lemma deriv_component (μ ν : Fin d) (x : Space d)  :
-    (deriv ν (fun x => x μ) x) =  if ν = μ then 1 else 0 := by
+lemma deriv_component (μ ν : Fin d) (x : Space d) :
+    (deriv ν (fun x => x μ) x) = if ν = μ then 1 else 0 := by
   by_cases h' : ν = μ
   · subst h'
     simp
@@ -195,7 +195,7 @@ lemma deriv_component (μ ν : Fin d) (x : Space d)  :
     simpa using h'
 
 lemma deriv_component_sq {d : ℕ} {ν μ : Fin d} (x : Space d) :
-    (deriv ν (fun x => (x μ) ^ 2) x) = if ν = μ then 2 * x μ  else 0:= by
+    (deriv ν (fun x => (x μ) ^ 2) x) = if ν = μ then 2 * x μ else 0:= by
   rw [deriv_eq_fderiv_basis]
   rw [fderiv_pow]
   simp
@@ -221,7 +221,6 @@ lemma deriv_norm_sq (x : Space d) (i : Fin d) :
   simp [deriv_component_sq]
   intro i hi
   fun_prop
-
 
 /-!
 
@@ -311,12 +310,11 @@ lemma grad_inner_space {d} (x : Space d) (f : Space d → ℝ) (hd : Differentia
   have hx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
   field_simp
 
-lemma grad_norm_sq (x : Space d)  :
+lemma grad_norm_sq (x : Space d) :
     ∇ (fun x => ‖x‖ ^ 2) x = (2 : ℝ) • x := by
   funext i
   rw [grad_eq_sum]
   simp [deriv_norm_sq, basis_apply]
-
 
 /-!
 

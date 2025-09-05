@@ -46,7 +46,6 @@ lemma integral_invPowMeasure {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) 
   refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
   simp
 
-
 /-!
 
 ## HasTemperateGrowth of measures
