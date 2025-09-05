@@ -144,7 +144,7 @@ lemma iteratedDeriv_tanh_bounded (n : ℕ) :
   exact hC x
 
 /-- tanh is infinitely differentiable -/
-lemma contDiff_top_tanh:  ContDiff ℝ ∞ Real.tanh := by
+lemma contDiff_top_tanh : ContDiff ℝ ∞ Real.tanh := by
     rw [contDiff_infty]
     apply contDiff_tanh
 
