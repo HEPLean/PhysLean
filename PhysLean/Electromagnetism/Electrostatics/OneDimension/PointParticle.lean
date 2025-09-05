@@ -29,8 +29,12 @@ def chargeDistribution (q : ℝ) : ChargeDistribution 1 := q • diracDelta ℝ 
   this corresponds to the distribution formed by the function `|x|` multiplied by a
   scalar. -/
 def electricPotential (q ε : ℝ) : StaticElectricPotential 1 :=
-  - Distribution.ofBounded (fun x => (q/(2 * ε)) • ‖x‖)
-  ⟨0, |q/(2 * ε)|, 0, 1, by simp [-norm_div]⟩ (by fun_prop)
+  - Distribution.ofFunction (fun x => (q/(2 * ε)) • ‖x‖)
+  (by
+    apply IsDistBounded.const_smul
+    convert IsDistBounded.pow (n := 1) (by simp)
+    simp)
+  (by fun_prop)
 
 @[simp]
 lemma electricPotential_eq_zero_of_ε_eq_zero (q : ℝ) :
@@ -86,7 +90,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       rw [electricPotential]
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, Fin.isValue,
         ContinuousLinearMap.neg_apply, neg_inj]
-      rw [ofBounded_apply]
+      rw [ofFunction_apply]
       rfl
     /- Pulling out the scalar `q/(2 * ε)` gives
       `- ∫ x, dη/dx • (q/(2 * ε) |x|) = - q/(2 * ε) ∫ x, dη/dx • |x|`.
@@ -110,8 +114,9 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       · ring
       change Integrable (fun x : EuclideanSpace ℝ (Fin 1) =>
         ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0)) ((fderivCLM ℝ) η)) x • ‖x‖)
-      apply IsDistBounded.integrable
-      · exact ⟨0, 1, 0, 1, by simp⟩
+      apply IsDistBounded.schwartzMap_smul_integrable
+      · convert IsDistBounded.pow (n := 1) (by simp)
+        simp
       · fun_prop
     /- In the first of these integrals `|x|=x` whilst in the second `|x| = -x` giving
       us

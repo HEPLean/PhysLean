@@ -32,7 +32,6 @@ import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Mathematics.Distribution.Function.InvPowMeasure
 import PhysLean.Mathematics.Distribution.Function.IsDistBounded
 import PhysLean.Mathematics.Distribution.Function.OfFunction
-import PhysLean.Mathematics.Distribution.OfBounded
 import PhysLean.Mathematics.Distribution.PowMul
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin

@@ -45,7 +45,7 @@ lemma chargeDistribution_eq_zero_of_charge_eq_zero :
   Mathematically, this corresponds to the distribution associated to the function
   `(q/(4 * π * ε)) • ‖r‖⁻¹`. -/
 def electricPotential (q ε : ℝ) : StaticElectricPotential 3 :=
-  Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹)
+  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹)
   (by
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-1 : ℤ)) (IsDistBounded.pow _ (by simp))
@@ -60,7 +60,7 @@ def electricPotential (q ε : ℝ) : StaticElectricPotential 3 :=
   Mathematically, this corresponds to the distribution associated to the function
   `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r`. -/
 def electricField (q ε : ℝ) : StaticElectricField 3 :=
-  Distribution.ofBounded (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r)
+  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r)
   (by
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
@@ -130,7 +130,7 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
   intro y
   simp [inner_sub_left, gradD_inner_eq, fderivD_apply]
   dsimp [electricPotential, electricField]
-  rw [ofBounded_inner, ofBounded_apply]
+  rw [ofFunction_inner, ofFunction_apply]
   simp
   rw [← integral_sub]
   change  ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y  * (q / (4 * π * ε) * ‖a‖⁻¹)) -
@@ -143,7 +143,7 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
     simp only [fderivCLM_apply, map_div₀, conj_trivial]
     ring
   rw [integral_const_mul, h_integral, mul_zero]
-  apply IsDistBounded.integrable_mul
+  apply IsDistBounded.schwartzMap_mul_integrable
   · change IsDistBounded fun x => (q / (4 * π * ε)) • ‖x‖⁻¹
     apply IsDistBounded.const_smul
     fun_prop
@@ -152,7 +152,7 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
     refine StronglyMeasurable.aestronglyMeasurable ?_
     refine stronglyMeasurable_iff_measurable.mpr ?_
     fun_prop
-  apply IsDistBounded.integrable_mul
+  apply IsDistBounded.schwartzMap_mul_integrable
   · apply IsDistBounded.inner_left
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
@@ -433,10 +433,10 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_eq_zero
   · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
     · exact potentialLimitSeries_isDistBounded n
     · exact potentialLimitSeries_aeStronglyMeasurable n
-  · apply IsDistBounded.integrable_mul
+  · apply IsDistBounded.schwartzMap_mul_integrable
     · exact potentialLimitSeries_fderiv_isDistBounded n y
     · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
-  · apply IsDistBounded.integrable_mul
+  · apply IsDistBounded.schwartzMap_mul_integrable
     · exact potentialLimitSeries_isDistBounded n
     · exact potentialLimitSeries_aeStronglyMeasurable n
   · exact SchwartzMap.differentiable η
@@ -444,7 +444,7 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_eq_zero
   · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
     · exact potentialLimitSeries_isDistBounded n
     · exact potentialLimitSeries_aeStronglyMeasurable n
-  · apply IsDistBounded.integrable_mul
+  · apply IsDistBounded.schwartzMap_mul_integrable
     · exact potentialLimitSeries_fderiv_isDistBounded n y
     · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
 
@@ -492,7 +492,7 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral
         refine stronglyMeasurable_iff_measurable.mpr ?_
         fun_prop
     · refine Integrable.norm ?_
-      apply IsDistBounded.integrable_mul
+      apply IsDistBounded.schwartzMap_mul_integrable
       · conv => enter [1, x]; rw [mul_comm]
         refine IsDistBounded.const_mul_fun ?_ ‖y‖
         convert IsDistBounded.pow (dm1 := 2) (-2) (by simp) using 1
@@ -588,7 +588,7 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
   calc _
     _ = (divD (electricField q ε)) η := by rfl
     _ = - ∫ r : Space 3, ⟪((q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r), Space.grad η r⟫_ℝ := by
-      rw [electricField, Space.divD_ofBounded]
+      rw [electricField, Space.divD_ofFunction]
     _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r, Space.grad η r⟫_ℝ := by
       simp [inner_smul_left, integral_const_mul]
       left
@@ -636,20 +636,15 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
       congr 1
       rw [MeasureTheory.integral_prod]
       /- Integrable condition. -/
-      convert integrable_ofBounded_inner_grad_schwartzMap_spherical (f := fun r => ‖r‖⁻¹ ^ 3 • r)
+      convert integrable_isDistBounded_inner_grad_schwartzMap_spherical (f := fun r => ‖r‖⁻¹ ^ 3 • r)
         (by
-        use 1, 0, 0
+        apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
         simp [norm_smul]
         intro x
-        by_cases hx : x = 0
-        · subst hx
-          simp [@zpow_two]
-        apply le_of_eq
-        have hx' : ‖x‖ ≠ 0 := by exact norm_ne_zero_iff.mpr hx
-        field_simp
-        change ‖x‖ * ‖x‖ ^ 2 = ‖x‖ ^ 3
-        conv_rhs => rw [pow_succ, mul_comm]
-        rfl) (by fun_prop) η
+        by_cases hx : ‖x‖ = 0
+        · simp [hx, zpow_two]
+        · field_simp [zpow_two]
+          ring) (by fun_prop) η
       rename_i r
       simp only [norm_eq_abs, inv_pow, sq_abs, Nat.succ_eq_add_one, Nat.reduceAdd,
         Function.comp_apply, homeomorphUnitSphereProd_symm_apply_coe]

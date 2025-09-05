@@ -258,5 +258,4 @@ instance (dm1 : ℕ) : Measure.HasTemperateGrowth (invPowMeasure (dm1 := dm1)) w
     use dm1 + 2
     simpa using invPowMeasure_integrable_pow_neg_two (dm1 := dm1)
 
-
 end Distribution

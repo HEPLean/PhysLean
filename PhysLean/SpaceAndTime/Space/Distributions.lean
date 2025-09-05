@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong
 -/
 import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.Mathematics.Distribution.OfBounded
+import PhysLean.Mathematics.Distribution.Function.OfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 
@@ -217,10 +217,10 @@ open MeasureTheory
 open SchwartzMap
 
 /-- The divergence of a distribution from a bounded function. -/
-lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
+lemma divD_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
     {hf : IsDistBounded f}
     {hae: AEStronglyMeasurable (fun x => f x) volume} (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
-    divD (Distribution.ofBounded f hf hae) η =
+    divD (Distribution.ofFunction f hf hae) η =
     - ∫ x : Space dm1.succ, ⟪f x, Space.grad η x⟫_ℝ := by
   rw [divD_apply_eq_sum_fderivD]
   conv_rhs =>
@@ -228,26 +228,14 @@ lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin
     rw [grad_eq_sum, inner_sum]
   conv_lhs =>
     enter [2, i]
-    rw [fderivD_apply, ofBounded_apply]
+    rw [fderivD_apply, ofFunction_apply]
   /- The following lemma could probably be moved out of this result. -/
   have integrable_lemma (i j : Fin (dm1 + 1)) :
       Integrable (fun x =>
         (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
     simp only [PiLp.smul_apply]
-    apply IsDistBounded.integrable
-    · obtain ⟨c1, c2, c3, n, hc1, hc2, hc3, h⟩ := hf
-      use c1, c2, c3, n
-      simp_all
-      intro x
-      trans ‖f x‖
-      · rw [@PiLp.norm_eq_of_L2]
-        refine Real.abs_le_sqrt ?_
-        trans ∑ i ∈ {j}, ‖(f x) i‖ ^ 2
-        · simp
-        apply Finset.sum_le_univ_sum_of_nonneg
-        intro y
-        exact sq_nonneg ‖f x y‖
-      exact h x
+    apply IsDistBounded.schwartzMap_smul_integrable
+    · exact IsDistBounded.pi_comp hf j
     · fun_prop
   rw [MeasureTheory.integral_finset_sum]
   · simp
@@ -273,7 +261,7 @@ lemma divD_ofBounded {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin
 
 /- The quantity `⟪f x, Space.grad η x⟫_ℝ` is integrable for `f` bounded
   and `η` a Schwartz map. -/
-lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
+lemma integrable_isDistBounded_inner_grad_schwartzMap {dm1 : ℕ}
     {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
     (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
@@ -288,20 +276,8 @@ lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
       Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j)
         volume := by
     simp only [PiLp.smul_apply]
-    apply IsDistBounded.integrable
-    · obtain ⟨c1, c2, c3, n, hc1, hc2, hc3, h⟩ := hf
-      use c1, c2, c3, n
-      simp_all
-      intro x
-      trans ‖f x‖
-      · rw [@PiLp.norm_eq_of_L2]
-        refine Real.abs_le_sqrt ?_
-        trans ∑ i ∈ {j}, ‖(f x) i‖ ^ 2
-        · simp
-        apply Finset.sum_le_univ_sum_of_nonneg
-        intro y
-        exact sq_nonneg ‖f x y‖
-      exact h x
+    apply IsDistBounded.schwartzMap_smul_integrable
+    · exact IsDistBounded.pi_comp hf j
     · fun_prop
   convert integrable_lemma i i
   rename_i x
@@ -310,7 +286,7 @@ lemma integrable_ofBounded_inner_grad_schwartzMap {dm1 : ℕ}
   rw [deriv_eq_fderiv_basis]
   rfl
 
-lemma integrable_ofBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
+lemma integrable_isDistBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
     {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
     (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
@@ -324,7 +300,7 @@ lemma integrable_ofBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
       (.comap (Subtype.val (p := fun x => x ∈ ({0}ᶜ : Set _))) volume)
     rw [← MeasureTheory.integrableOn_iff_comap_subtypeVal]
     apply Integrable.integrableOn
-    exact integrable_ofBounded_inner_grad_schwartzMap hf hae η
+    exact integrable_isDistBounded_inner_grad_schwartzMap hf hae η
     simp
   have he := (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
     (volume (α := EuclideanSpace ℝ (Fin dm1.succ))))
@@ -437,7 +413,7 @@ lemma curlD_gradD_eq_zero (f : (Space) →d[ℝ] ℝ) :
     try rw [curlD_apply_one]
     try rw [curlD_apply_two]
     rw [gradD_eq_sum_basis, gradD_eq_sum_basis]
-    simp [Fin.sum_univ_three, basis_apply]
+    simp [basis_apply]
     rw [← map_neg, ← map_add, ← ContinuousLinearMap.map_zero f]
     congr
     ext x

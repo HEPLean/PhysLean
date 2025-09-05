@@ -7,31 +7,7 @@ import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.Mathematics.Distribution.Function.InvPowMeasure
 import PhysLean.Meta.Linters.Sorry
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
-/-!
 
-# Distributions from bounded functions
-
-In this module we define distributions from functions `f : EuclideanSpace ℝ (Fin d.succ) → F`
-whose norm is bounded by `c1 * ‖x‖ ^ (-d : ℝ) + c2 * ‖x‖ ^ n`
-for some constants `c1`, `c2` and `n`.
-
-This gives a convenient way to construct distributions from functions, without needing
-to reference the underlying Schwartz maps.
-
-## Key definition
-
-- `ofBounded`: Creates a distribution from a bounded function `f`.
-
-## Method of definition
-
-The `ofBounded` function is defined through two measures `invPowMeasure` and `powMeasure n`,
-the first is the measure with density `1/‖x‖ᵈ` and the second is the measure with density `‖x‖^n`.
-Both these measures are proven to have temperate growth, and can be used to define a distribution
-by intergration.
-
-We also define a `boundMeasure` which is a linear combination of these two measures.
-
--/
 open SchwartzMap NNReal
 noncomputable section
 
@@ -107,6 +83,22 @@ lemma IsDistBounded.const_smul {dm1 : ℕ} [NormedSpace ℝ F] {f : EuclideanSpa
     refine mul_le_mul (by rfl) (bound1 x) ?_ ?_
     · exact norm_nonneg (f x)
     · exact abs_nonneg c
+
+lemma IsDistBounded.pi_comp {dm1 n : ℕ}
+    {f : EuclideanSpace ℝ (Fin dm1.succ) → EuclideanSpace ℝ (Fin n)}
+    (hf : IsDistBounded f) (j : Fin n) : IsDistBounded (fun x =>  f x j) := by
+  rcases hf with ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, bound1⟩
+  refine ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, ?_⟩
+  intro x
+  apply le_trans ?_ (bound1 x)
+  simp
+  rw [@PiLp.norm_eq_of_L2]
+  refine Real.abs_le_sqrt ?_
+  trans ∑ i ∈ {j}, ‖(f x) i‖ ^ 2
+  · simp
+  apply Finset.sum_le_univ_sum_of_nonneg
+  intro y
+  exact sq_nonneg ‖f x y‖
 
 lemma IsDistBounded.comp_add_right {dm1 : ℕ} {f : EuclideanSpace ℝ (Fin dm1.succ) → F}
     (hf : IsDistBounded f) (c : EuclideanSpace ℝ (Fin dm1.succ)) :
@@ -451,17 +443,47 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
     simp
   · exact r_bound
 
-lemma IsDistBounded.norm__inv_mul_exists_pow_integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → ℝ)
+lemma IsDistBounded.norm_inv_mul_exists_pow_integrable {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
     (hf : IsDistBounded f)
     (hae: AEStronglyMeasurable (fun x => f x) volume) :
-    ∃ r, Integrable (fun x => f x * ‖((1 + ‖x‖) ^ r)⁻¹‖) volume := by
+    ∃ r, Integrable (fun x => ‖f x‖ * ‖((1 + ‖x‖) ^ r)⁻¹‖) volume := by
   rcases hf with ⟨n, c, g, p, c_nonneg, p_bound, hbound⟩
-  induction' n
-
-  let pMax := Finset.max' (Finset.image p Finset.univ)
-  have pMax_max (i : Fin n) : p i ≤ pMax := by
+  induction' n with n ih
+  · simp at hbound
+    conv =>
+      enter [1, r, 1, x]
+      rw [hbound]
+    simp
+  let pMax := Finset.max' (Finset.image p Finset.univ) (by simp)
+  have pMax_max (i : Fin n.succ) : p i ≤ pMax := by
     simp [pMax]
-    apply?
+    apply Finset.le_max'
+    simp
+  use (pMax + ↑dm1).toNat + (invPowMeasure (dm1 := dm1)).integrablePower
+  apply Integrable.mono' (g := fun x => ∑ i, c i * ‖x + g i‖ ^ p i
+      * ‖((1 + ‖x‖) ^ ((pMax + ↑dm1).toNat + (invPowMeasure (dm1 := dm1)).integrablePower))⁻¹‖) _
+  · apply AEStronglyMeasurable.mul
+    · fun_prop
+    · refine Measurable.aestronglyMeasurable ?_
+      fun_prop
+  · filter_upwards with x
+    simp
+    rw [← Finset.sum_mul]
+    refine mul_le_mul_of_nonneg (hbound x) ?_ ?_ ?_
+    · rfl
+    · exact norm_nonneg (f x)
+    · positivity
+  apply MeasureTheory.integrable_finset_sum
+  intro i _
+  conv =>
+    enter [1, x]
+    rw [mul_assoc]
+  apply Integrable.const_mul
+  apply intergrable_pow (p i) _ (p_bound i)
+  simp
+  left
+  exact pMax_max i
+
 open InnerProductSpace
 
 end Distribution
