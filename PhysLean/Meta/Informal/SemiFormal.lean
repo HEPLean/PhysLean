@@ -34,7 +34,7 @@ structure WantedInfo where
   /-- The tag of the TODO item -/
   tag : String
 
-/-- The enviroment extension for semiformal results. -/
+/-- The environment extension for semiformal results. -/
 initialize wantedExtension : SimplePersistentEnvExtension WantedInfo (Array WantedInfo) ←
   registerSimplePersistentEnvExtension {
     name := `wantedExtension
