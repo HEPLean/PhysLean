@@ -135,6 +135,15 @@ lemma gradD_inner_eq {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, ℝ))
     ContinuousLinearMap.coe_comp', LinearMap.coe_toContinuousLinearMap', LinearEquiv.coe_coe,
     LinearIsometryEquiv.coe_symm_toLinearEquiv, Function.comp_apply, toDual_symm_apply]
 
+lemma gradD_eq_of_inner {d} (f : (Space d) →d[ℝ] ℝ) (g : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d))
+    (h : ∀ η y, fderivD ℝ f η y = ⟪g η, y⟫_ℝ) :
+    gradD f = g := by
+  ext1 η
+  specialize h η
+  conv at h => enter [x]; rw [← gradD_inner_eq]
+  exact ext_inner_right (𝕜 := ℝ) h
+
+
 lemma gradD_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, ℝ)) :
     gradD f η = ∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i := by
   have h1 (y : EuclideanSpace ℝ (Fin d)) :

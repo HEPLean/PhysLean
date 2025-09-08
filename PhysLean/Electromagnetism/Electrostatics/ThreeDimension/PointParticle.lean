@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Electrostatics.Basic
+import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.Mathematics.Distribution.PowMul
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Analysis.InnerProductSpace.NormPow
@@ -12,10 +13,14 @@ import Mathlib.Analysis.Calculus.FDeriv.Norm
 
 # A electrostatics of a point particle in 3d.
 
-This file is currently a stub.
+The electrostatics of a point particle in 3d space sitting at an arbitrary position `r₀`.
 
-It will eventually contain the proof of Gauss's law for a point particle in 3d.
-Any help proving this would be greatly appreciated.
+## Key results
+
+- The electric potential is given by `electricPotential q ε r₀`.
+- The electric field is given by `electricField q ε r₀`.
+- Gauss's law is given in `gaussLaw`.
+- Faraday's law is given in `faradaysLaw`.
 
 ## Some references
 
@@ -33,21 +38,28 @@ noncomputable section
 TODO "LQXNC" "Generalize the proof of Gauss' law for a point particle in 3d
   so the particle is not at the origin."
 
-/-- The charge distribution of a point particle of charge `q` in 1d space sitting at the origin.
-  Mathematically, this corresponds to a dirac delta distribution centered at the origin. -/
-def chargeDistribution (q : ℝ) : ChargeDistribution 3 := q • diracDelta ℝ 0
+/-- The charge distribution of a point particle of charge `q` in 3d space sitting at the `r₀`.
+  Mathematically, this corresponds to a dirac delta distribution centered at the `r₀`. -/
+def chargeDistribution (q : ℝ) (r₀ : Space) : ChargeDistribution 3 := q • diracDelta ℝ r₀
 
-lemma chargeDistribution_eq_zero_of_charge_eq_zero :
-    chargeDistribution 0 = 0 := by simp [chargeDistribution]
+lemma chargeDistribution_eq_zero_of_charge_eq_zero (r₀ : Space) :
+    chargeDistribution 0 r₀ = 0 := by simp [chargeDistribution]
 
-/-- The electric potential of a point particle of charge `q` in 3d space sitting at the origin.
+lemma chargeDistribution_eq_translateD (q : ℝ) (r₀ : Space) :
+    chargeDistribution q r₀ = Space.translateD r₀
+      (chargeDistribution q 0) := by
+  ext η
+  simp [chargeDistribution, Space.translateD_apply]
+
+/-- The electric potential of a point particle of charge `q` in 3d space sitting at the `r₀`.
   Mathematically, this corresponds to the distribution associated to the function
-  `(q/(4 * π * ε)) • ‖r‖⁻¹`. -/
-def electricPotential (q ε : ℝ) : StaticElectricPotential 3 :=
-  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹)
+  `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹`. -/
+def electricPotential (q ε : ℝ) (r₀ : Space) : StaticElectricPotential 3 :=
+  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹)
   (by
     apply IsDistBounded.const_smul
-    apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-1 : ℤ)) (IsDistBounded.pow _ (by simp))
+    apply IsDistBounded.congr (f := fun r => ‖r - r₀‖ ^ (-1 : ℤ))
+      (IsDistBounded.pow_shift (-1) r₀ (by simp))
     simp) (by
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd];
     refine AEStronglyMeasurable.const_mul ?_ (q / (4 * π * ε))
@@ -55,23 +67,36 @@ def electricPotential (q ε : ℝ) : StaticElectricPotential 3 :=
     refine stronglyMeasurable_iff_measurable.mpr ?_
     fun_prop)
 
-/-- The electric field of a point particle of charge `q` in 3d space sitting at the origin.
+lemma electricPotential_eq_translateD (q ε : ℝ) (r₀ : Space) :
+    electricPotential q ε r₀ = Space.translateD r₀ (electricPotential q ε 0) := by
+  ext η
+  simp [electricPotential]
+  rw [Space.translateD_ofFunction]
+
+/-- The electric field of a point particle of charge `q` in 3d space sitting at `r₀`.
   Mathematically, this corresponds to the distribution associated to the function
-  `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r`. -/
-def electricField (q ε : ℝ) : StaticElectricField 3 :=
-  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r)
+  `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀)`. -/
+def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
+  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀))
   (by
     apply IsDistBounded.const_smul
-    apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
+    apply IsDistBounded.congr (f := fun r => ‖r - r₀‖ ^ (-2 : ℤ))
+      (IsDistBounded.pow_shift _ r₀ (by simp))
     simp [norm_smul]
     intro x
-    by_cases hx : ‖x‖ = 0
+    by_cases hx : ‖x - r₀‖ = 0
     · simp [hx, zpow_two]
     · field_simp [zpow_two]
       ring) (by fun_prop)
 
-lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ}:
-    electricField 0 ε = 0 := by simp [electricField]
+lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ} (r₀ : Space):
+    electricField 0 ε r₀ = 0 := by simp [electricField]
+
+lemma electricField_eq_translateD (q ε : ℝ) (r₀ : Space) :
+    electricField q ε r₀ = Space.translateD r₀ (electricField q ε 0) := by
+  ext η
+  simp [electricField]
+  rw [Space.translateD_ofFunction]
 
 open InnerProductSpace
 
@@ -82,6 +107,8 @@ open scoped Topology BigOperators FourierTransform
 ## Prove that the electric field is the gradient of the potential
 
 We now prove that the electric field is the negative gradient of the potential.
+
+We do this for `r₀ = 0`, and then use translations to prove it for any `r₀`.
 
 We first show in `gradD_electricPotential_eq_electricField_of_integral_eq_zero` that this
 is true if
@@ -122,7 +149,7 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
     (h_integral : ∀ η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ), ∀ y : EuclideanSpace ℝ (Fin 3),
     ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * ‖a‖⁻¹ +
     η a * - ⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ) = 0) :
-    - Space.gradD (electricPotential q ε) = electricField q ε := by
+    - Space.gradD (electricPotential q ε 0) = electricField q ε 0 := by
   rw [← sub_eq_zero]
   ext1 η
   apply ext_inner_right ℝ
@@ -132,6 +159,7 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
   rw [ofFunction_inner, ofFunction_apply]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, inv_pow]
   rw [← integral_sub]
+  simp only [sub_zero]
   change ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * (q / (4 * π * ε) * ‖a‖⁻¹)) -
     η a * ⟪(q / (4 * π * ε)) • (‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ = _
   trans ∫ (a : EuclideanSpace ℝ (Fin 3)), (q / (4 * π * ε)) * (fderivCLM ℝ η a y * ‖a‖⁻¹ +
@@ -143,7 +171,8 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
     ring
   rw [integral_const_mul, h_integral, mul_zero]
   apply IsDistBounded.schwartzMap_mul_integrable
-  · change IsDistBounded fun x => (q / (4 * π * ε)) • ‖x‖⁻¹
+  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, sub_zero]
+    change IsDistBounded fun x => (q / (4 * π * ε)) • ‖x‖⁻¹
     apply IsDistBounded.const_smul
     fun_prop
   · simp only [Nat.succ_eq_add_one, Nat.reduceAdd];
@@ -538,17 +567,24 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero
   conv => enter [1, n]; rw [potentialLimitSeriesFDerivSchwartz_integral_eq_zero y η n]
   simp
 
-lemma electricField_eq_neg_gradD_electricPotential (q ε : ℝ) :
-    electricField q ε = - Space.gradD (electricPotential q ε) :=
+lemma electricField_eq_neg_gradD_electricPotential_origin (q ε : ℝ) :
+    electricField q ε 0 = - Space.gradD (electricPotential q ε 0) :=
   Eq.symm <|
   gradD_electricPotential_eq_electricField_of_integral_eq_zero q ε <|
   fun η y => tendsto_nhds_unique
     (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral y η)
     (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero y η)
 
-lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) :
-    electricField q ε = ofPotential (electricPotential q ε) :=
-  electricField_eq_neg_gradD_electricPotential q ε
+lemma electricField_eq_neg_gradD_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
+    electricField q ε r₀ = - Space.gradD (electricPotential q ε r₀) := by
+  rw [electricField_eq_translateD, electricPotential_eq_translateD]
+  simp only [Space.translateD_gradD]
+  rw [electricField_eq_neg_gradD_electricPotential_origin]
+  simp
+
+lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)):
+    electricField q ε r₀ = ofPotential (electricPotential q ε r₀) :=
+  electricField_eq_neg_gradD_electricPotential q ε r₀
 
 /-!
 
@@ -558,9 +594,9 @@ We now prove Gauss' law for a point particle in 3-dimensions.
 
 -/
 
-/-- Guass' law for a point particle in 3-dimensions, that is this theorem states that
+/-- Guass' law for a point particle in 3-dimensions at the origin, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
-lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribution q) := by
+lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeDistribution q 0) := by
   /- The proof here follows that given here: https://math.stackexchange.com/questions/2409008/
   -/
   ext η
@@ -591,9 +627,10 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
   haveI : MeasureSpace s := by
     exact Measure.Subtype.measureSpace
   calc _
-    _ = (divD (electricField q ε)) η := by rfl
+    _ = (divD (electricField q ε 0)) η := by rfl
     _ = - ∫ r : Space 3, ⟪((q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r), Space.grad η r⟫_ℝ := by
       rw [electricField, Space.divD_ofFunction]
+      simp
     _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r, Space.grad η r⟫_ℝ := by
       simp [inner_smul_left, integral_const_mul]
       left
@@ -733,6 +770,14 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
   simp [chargeDistribution]
   ring
 
+lemma gaussLaw (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
+    (electricField q ε r₀).GaussLaw ε (chargeDistribution q r₀) := by
+  rw [electricField_eq_translateD, chargeDistribution_eq_translateD]
+  rw [gaussLaw_iff]
+  rw [Space.divD_translateD]
+  rw [gaussLaw_origin q ε]
+  simp
+
 /-!
 
 ## Prove of Faraday's law
@@ -742,6 +787,6 @@ electric field is derived from a potential.
 
 -/
 
-lemma faradaysLaw (q ε : ℝ) : (electricField q ε).FaradaysLaw := by
+lemma faradaysLaw (q ε : ℝ) (r₀ : Space) : (electricField q ε r₀).FaradaysLaw := by
   rw [electricField_eq_ofPotential_electricPotential]
-  exact ofPotential_faradaysLaw (electricPotential q ε)
+  exact ofPotential_faradaysLaw (electricPotential q ε r₀)

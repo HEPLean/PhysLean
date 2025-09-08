@@ -193,6 +193,18 @@ lemma IsDistBounded.pow {dm1 : ℕ} (n : ℤ) (hn : - dm1 ≤ n) :
     simp
 
 @[fun_prop]
+lemma IsDistBounded.pow_shift {dm1 : ℕ} (n : ℤ)
+    (g : EuclideanSpace ℝ (Fin dm1.succ)) (hn : - dm1 ≤ n) :
+    IsDistBounded (dm1 := dm1) (fun x => ‖x - g‖ ^ n) := by
+  refine ⟨1, fun _ => 1, fun _ => (- g), fun _ => n, ?_, ?_, ?_⟩
+  · simp
+  · simp
+    exact hn
+  · intro x
+    simp
+    rfl
+
+@[fun_prop]
 lemma IsDistBounded.inv {n : ℕ} :
     IsDistBounded (dm1 := n.succ) (fun x => ‖x‖⁻¹) := by
   convert IsDistBounded.pow (dm1 := n.succ) (-1) (by simp) using 1
