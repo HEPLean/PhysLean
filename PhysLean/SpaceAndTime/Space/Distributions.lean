@@ -143,7 +143,6 @@ lemma gradD_eq_of_inner {d} (f : (Space d) →d[ℝ] ℝ) (g : (Space d) →d[�
   conv at h => enter [x]; rw [← gradD_inner_eq]
   exact ext_inner_right (𝕜 := ℝ) h
 
-
 lemma gradD_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, ℝ)) :
     gradD f η = ∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i := by
   have h1 (y : EuclideanSpace ℝ (Fin d)) :

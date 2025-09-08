@@ -30,12 +30,12 @@ variable {M1 M2 : Type} [NormedAddCommGroup M1] [NormedSpace ℝ M1]
     [SMulCommClass ℝ ℝ M2] [ContinuousConstSMul ℝ M2]
     [ModuleCarriesDimension M2]
 
-lemma fderiv_apply_scaleUnit (u1 u2 : UnitChoices)  (x dm : M1)
+lemma fderiv_apply_scaleUnit (u1 u2 : UnitChoices) (x dm : M1)
     (f : M1 → M2) (hf : IsDimensionallyCorrect f) (f_diff : Differentiable ℝ f) :
     fderiv ℝ f (scaleUnit u2 u1 x) dm =
     u2.dimScale u1 (d M2) • u1.dimScale u2 (d M1) • fderiv ℝ f x dm := by
   conv_lhs => rw [← hf u2 u1]
-  change  (fderiv ℝ ((u2.dimScale u1 (d M2)).1 • fun mx => f
+  change (fderiv ℝ ((u2.dimScale u1 (d M2)).1 • fun mx => f
       ((u1.dimScale u2 (d M1)).1 • mx)) ((u2.dimScale u1 (d M1)).1 • x)) dm = _
   rw [fderiv_const_smul (by fun_prop), fderiv_comp_smul]
   simp [smul_smul]
@@ -43,7 +43,7 @@ lemma fderiv_apply_scaleUnit (u1 u2 : UnitChoices)  (x dm : M1)
 
 open ContinuousLinearUnitDependent in
 /-- If a function is dimensionally valid then so is it's derivative. -/
-lemma fderiv_isDimensionallyCorrect  (f : M1 → M2) (hf : IsDimensionallyCorrect f)
+lemma fderiv_isDimensionallyCorrect (f : M1 → M2) (hf : IsDimensionallyCorrect f)
     (f_diff : Differentiable ℝ f) :
     IsDimensionallyCorrect (fderiv ℝ f) := by
   simp only [isDimensionallyCorrect_fun_iff]

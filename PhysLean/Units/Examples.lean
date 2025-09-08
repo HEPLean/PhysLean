@@ -91,7 +91,6 @@ lemma energyMassWithDim_isDimensionallyCorrect : IsDimensionallyCorrect EnergyMa
   intros
   rw [WithDim.scaleUnit_val_eq_scaleUnit_val_of_dim_eq]
 
-
 /-- An example of dimensions corresponding to `F = m a` using `WithDim` with `.val`. -/
 def NewtonsSecondWithDim (m : WithDim M𝓭 ℝ) (F : WithDim (M𝓭 * L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ)
     (a : WithDim (L𝓭 * T𝓭⁻¹ * T𝓭⁻¹) ℝ) : Prop :=

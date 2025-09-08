@@ -368,7 +368,7 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
       invPowMeasure := by
     have hr1 (x : EuclideanSpace ℝ (Fin dm1.succ)) :
         ‖((1 + ‖x - v‖) ^ (q + m))⁻¹‖ = ((1 + ‖x - v‖) ^ (q + m))⁻¹ := by
-      simp only [Nat.succ_eq_add_one, norm_inv, norm_pow, Real.norm_eq_abs, inv_inj, abs_nonneg]
+      simp only [Nat.succ_eq_add_one, norm_inv, norm_pow, Real.norm_eq_abs, inv_inj]
       rw [abs_of_nonneg (by positivity)]
     apply integrable_of_le_of_pow_mul_le (C₁ := 1) (C₂ :=2 ^ (q + m - 1) * (‖v‖ ^ (q + m) + 1))
     · simp

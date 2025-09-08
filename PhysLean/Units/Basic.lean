@@ -177,7 +177,7 @@ lemma dimScale_of_inv_eq_swap (u1 u2 : UnitChoices) (d : Dimension) :
 
 @[simp]
 lemma smul_dimScale_injective {M : Type} [MulAction ℝ≥0 M] (u1 u2 : UnitChoices) (d : Dimension)
-    (m1 m2  : M):
+    (m1 m2 : M) :
     (u1.dimScale u2 d) • m1 = (u1.dimScale u2 d) • m2 ↔ m1 = m2:= by
   refine IsUnit.smul_left_cancel ?_
   refine isUnit_iff_exists_inv.mpr ?_

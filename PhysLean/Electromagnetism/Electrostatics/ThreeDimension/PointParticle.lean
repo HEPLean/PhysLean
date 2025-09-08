@@ -89,7 +89,7 @@ def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
     · field_simp [zpow_two]
       ring) (by fun_prop)
 
-lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ} (r₀ : Space):
+lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ} (r₀ : Space) :
     electricField 0 ε r₀ = 0 := by simp [electricField]
 
 lemma electricField_eq_translateD (q ε : ℝ) (r₀ : Space) :
@@ -582,7 +582,7 @@ lemma electricField_eq_neg_gradD_electricPotential (q ε : ℝ) (r₀ : Euclidea
   rw [electricField_eq_neg_gradD_electricPotential_origin]
   simp
 
-lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)):
+lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
     electricField q ε r₀ = ofPotential (electricPotential q ε r₀) :=
   electricField_eq_neg_gradD_electricPotential q ε r₀
 

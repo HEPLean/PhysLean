@@ -18,13 +18,12 @@ section
 
 variable
   {𝕜} [NontriviallyNormedField 𝕜]
-  {X} [NormedAddCommGroup X] [NormedSpace ℝ  X]
+  {X} [NormedAddCommGroup X] [NormedSpace ℝ X]
   {Y} [NormedAddCommGroup Y] [NormedSpace 𝕜 Y]
   {ι : Type*} [Fintype ι] {Y' : ι → Type*} [∀ i, NormedAddCommGroup (Y' i)]
   [∀ i, NormedSpace 𝕜 (Y' i)] {Φ : X → ∀ i, Y' i} {x : X}
 
 namespace Space
-
 
 noncomputable instance {d} : VAdd (EuclideanSpace ℝ (Fin d)) (Space d) where
   vadd v s := v + s
@@ -39,11 +38,10 @@ noncomputable instance {d} : AddAction (EuclideanSpace ℝ (Fin d)) (Space d) wh
 
 -/
 
-
 open Distribution
 open SchwartzMap
 
-
+/-- The continuous linear map translating Schwartz maps. -/
 noncomputable def translateSchwartz {d : ℕ} (a : EuclideanSpace ℝ (Fin d)) :
     𝓢(Space d, X) →L[ℝ] 𝓢(Space d, X) :=
   SchwartzMap.compCLM (𝕜 := ℝ)
@@ -99,6 +97,7 @@ lemma translateSchwartz_coe_eq {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
   ext
   simp
 
+/-- The continuous linear map translating distributions. -/
 noncomputable def translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d)) :
     ((Space d) →d[ℝ] X) →ₗ[ℝ] ((Space d) →d[ℝ] X) where
   toFun T := T.comp (translateSchwartz (-a))
@@ -124,7 +123,7 @@ lemma translateD_gradD {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
   rw [fderivD_apply, fderivD_apply, translateD_apply]
   congr 2
   ext x
-  simp
+  simp only [translateSchwartz_apply, sub_neg_eq_add]
   change fderiv ℝ η (x + a) y = fderiv ℝ _ x y
   rw [translateSchwartz_coe_eq]
   simp only [sub_neg_eq_add]
@@ -144,9 +143,9 @@ lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
       · exact measurableEmbedding_subRight a) := by
   ext η
   rw [translateD_apply, ofFunction_apply, ofFunction_apply]
-  trans  ∫ (x : EuclideanSpace ℝ (Fin d.succ)), η ((x - a) + a) • f (x - a); swap
+  trans ∫ (x : EuclideanSpace ℝ (Fin d.succ)), η ((x - a) + a) • f (x - a); swap
   · simp
-  let f' := fun x : EuclideanSpace ℝ (Fin d.succ) => η (x  + a) • f (x)
+  let f' := fun x : EuclideanSpace ℝ (Fin d.succ) => η (x + a) • f (x)
   change _ = ∫ (x : EuclideanSpace ℝ (Fin d.succ)), f' (x - a)
   rw [MeasureTheory.integral_sub_right_eq_self]
   congr
@@ -155,7 +154,7 @@ lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
 
 @[simp]
 lemma divD_translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
-    (T : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) ) :
+    (T : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) :
     divD (translateD a T) = translateD a (divD T) := by
   ext η
   rw [divD_apply_eq_sum_fderivD]
@@ -163,18 +162,17 @@ lemma divD_translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
   congr
   funext i
   rw [fderivD_apply, fderivD_apply, translateD_apply]
-  simp
+  simp only [PiLp.neg_apply, neg_inj]
   have h1 : ((translateSchwartz (-a)) ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)))
       = ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i))
         ((fderivCLM ℝ) ((translateSchwartz (-a)) η))) := by
     ext x
     rw [translateSchwartz_apply]
-    simp
+    simp only [sub_neg_eq_add]
     change fderiv ℝ η (x + a) (basis i) = fderiv ℝ _ x (basis i)
     rw [translateSchwartz_coe_eq]
-    simp
+    simp only [sub_neg_eq_add]
     rw [fderiv_comp_add_right]
   rw [h1]
-
 
 end Space
