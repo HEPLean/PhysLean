@@ -4,13 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 -/
 import PhysLean.SpaceAndTime.Space.Distributions
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
-import Mathlib.Analysis.Calculus.Gradient.Basic
 /-!
 
 # Translations on space
+
+We define translations on space, and how translations act on distributions.
+Translations for part of the Poincaré group.
 
 -/
 
