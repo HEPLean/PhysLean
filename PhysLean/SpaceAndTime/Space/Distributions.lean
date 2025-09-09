@@ -8,7 +8,7 @@ import PhysLean.Mathematics.Distribution.Function.OfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 
-# Distributions on space
+# Distributions on Space
 
 In this module we define the derivatives, gradient, divergence and curl of distributions
 on `Space`.

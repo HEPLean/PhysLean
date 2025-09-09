@@ -8,8 +8,14 @@ import PhysLean.SpaceAndTime.Space.Distributions
 
 # Electrostatics
 
-In this file we define the static electric field as a distribution
-on `Space d`.
+Electrostatics corresponds to the study of electric fields and potentials in the absence of
+time variation or magnetic fields.
+
+The study of electrostatics usually necessitates the use of distributions, since point charges
+are often used to model charged particles. The formal definition of such distributions
+are often glossed over in physics. As a result some of the definitions or proofs
+within PhysLean's electrostatics may seem obtruce - but this is necessary for complete
+mathematical correctness.
 
 -/
 

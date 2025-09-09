@@ -35,9 +35,6 @@ namespace ThreeDimPointParticle
 open Space StaticElectricField MeasureTheory Real InnerProductSpace
 noncomputable section
 
-TODO "LQXNC" "Generalize the proof of Gauss' law for a point particle in 3d
-  so the particle is not at the origin."
-
 /-- The charge distribution of a point particle of charge `q` in 3d space sitting at the `r₀`.
   Mathematically, this corresponds to a dirac delta distribution centered at the `r₀`. -/
 def chargeDistribution (q : ℝ) (r₀ : Space) : ChargeDistribution 3 := q • diracDelta ℝ r₀
@@ -77,7 +74,7 @@ lemma electricPotential_eq_translateD (q ε : ℝ) (r₀ : Space) :
   Mathematically, this corresponds to the distribution associated to the function
   `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀)`. -/
 def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
-  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀))
+  ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀))
   (by
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r - r₀‖ ^ (-2 : ℤ))
@@ -196,6 +193,8 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
   differentiable everywhere. -/
 def potentialLimitSeries : ℕ → EuclideanSpace ℝ (Fin 3) → ℝ := fun n x =>
   (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)
+
+section PotentialLimitSeries
 
 lemma potentialLimitSeries_eq (n : ℕ) :
     potentialLimitSeries n = fun x => (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ) := rfl
@@ -437,6 +436,8 @@ lemma potentialLimitSeries_fderiv_isDistBounded (n : ℕ) (y : EuclideanSpace �
   · intro x
     apply (potentialLimitSeries_fderiv_bounded n x y).trans
     simp
+
+end PotentialLimitSeries
 
 /-- A series of functions of the form `fderiv ℝ (fun x => η x * potentialLimitSeries n x) x y`. -/
 def potentialLimitSeriesFDerivSchwartz
@@ -790,3 +791,8 @@ electric field is derived from a potential.
 lemma faradaysLaw (q ε : ℝ) (r₀ : Space) : (electricField q ε r₀).FaradaysLaw := by
   rw [electricField_eq_ofPotential_electricPotential]
   exact ofPotential_faradaysLaw (electricPotential q ε r₀)
+
+/-- The electrostatic field of a point particle is rotationally invariant. -/
+informal_lemma electricField_rotationally_invariant where
+  deps := [``electricField]
+  tag := "L7NXF"

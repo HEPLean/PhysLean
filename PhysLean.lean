@@ -4,7 +4,9 @@ import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Mass.MassUnit
+import PhysLean.ClassicalMechanics.Scattering.RigidSphere
 import PhysLean.ClassicalMechanics.VectorFields
+import PhysLean.ClassicalMechanics.Vibrations.LinearTriatomic
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.ClassicalMechanics.WaveEquation.HarmonicWave
 import PhysLean.CondensedMatter.Basic
@@ -16,6 +18,8 @@ import PhysLean.Electromagnetism.Charge.ChargeUnit
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.PointParticle
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.Vacuum
+import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.FiniteCollection
+import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.InfinitePlane
 import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.PointParticle
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
