@@ -13,19 +13,21 @@ import Mathlib.Analysis.Calculus.FDeriv.Norm
 
 # A electrostatics of a point particle in 3d.
 
-The electrostatics of a point particle in 3d space sitting at an arbitrary position `r₀`.
+In this module we derive properties of the electrostatics of a point particle of
+charge `q` sitting in `3`d space.
 
-## Key results
+### i. Key results
 
 - The electric potential is given by `electricPotential q ε r₀`.
 - The electric field is given by `electricField q ε r₀`.
 - Gauss's law is given in `gaussLaw`.
 - Faraday's law is given in `faradaysLaw`.
 
-## Some references
+### ii. References
 
-- https://math.stackexchange.com/questions/2409008/
-- https://math.stackexchange.com/questions/1335591/
+- The proof of Gauss' law in this module follows:
+  https://math.stackexchange.com/questions/2409008/
+
 -/
 
 namespace Electromagnetism
@@ -35,22 +37,28 @@ namespace ThreeDimPointParticle
 open Space StaticElectricField MeasureTheory Real InnerProductSpace
 noncomputable section
 
+/-!
+
+## A. Definitions
+
+We start by stating the charge distribution, electric potential and electric field of
+the point particle. Later on in this module we will prove that these definitions are
+correct, by showing they satisfy the necessary physical properties.
+
+We have the following definitions:
+- The `chargeDistribution` is `q δ(r-r₀)`.
+- The `electricPotential` is `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹`.
+- The `electricField` is `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀)`.
+
+-/
+
 /-- The charge distribution of a point particle of charge `q` in 3d space sitting at the `r₀`.
-  Mathematically, this corresponds to a dirac delta distribution centered at the `r₀`. -/
+  In the physicists notation this corresponds to the 'function' `q δ(r-r₀)`. -/
 def chargeDistribution (q : ℝ) (r₀ : Space) : ChargeDistribution 3 := q • diracDelta ℝ r₀
 
-lemma chargeDistribution_eq_zero_of_charge_eq_zero (r₀ : Space) :
-    chargeDistribution 0 r₀ = 0 := by simp [chargeDistribution]
-
-lemma chargeDistribution_eq_translateD (q : ℝ) (r₀ : Space) :
-    chargeDistribution q r₀ = Space.translateD r₀
-      (chargeDistribution q 0) := by
-  ext η
-  simp [chargeDistribution, Space.translateD_apply]
-
 /-- The electric potential of a point particle of charge `q` in 3d space sitting at the `r₀`.
-  Mathematically, this corresponds to the distribution associated to the function
-  `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹`. -/
+  In physics notation this corresponds to the 'function' `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹`.
+  Here it is defined as the distribution corresponing to that function. -/
 def electricPotential (q ε : ℝ) (r₀ : Space) : StaticElectricPotential 3 :=
   Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹)
   (by
@@ -64,15 +72,10 @@ def electricPotential (q ε : ℝ) (r₀ : Space) : StaticElectricPotential 3 :=
     refine stronglyMeasurable_iff_measurable.mpr ?_
     fun_prop)
 
-lemma electricPotential_eq_translateD (q ε : ℝ) (r₀ : Space) :
-    electricPotential q ε r₀ = Space.translateD r₀ (electricPotential q ε 0) := by
-  ext η
-  simp [electricPotential]
-  rw [Space.translateD_ofFunction]
-
 /-- The electric field of a point particle of charge `q` in 3d space sitting at `r₀`.
-  Mathematically, this corresponds to the distribution associated to the function
-  `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀)`. -/
+  In physics notation this corresponds to the 'function'
+  `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀)`.
+  Here it is defined as the distribution corresponding to that function. -/
 def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
   ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀))
   (by
@@ -86,8 +89,45 @@ def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
     · field_simp [zpow_two]
       ring) (by fun_prop)
 
+/-!
+
+## B. Properties for `q = 0`
+
+We first prove that the charge distribution, electric potential and electric field are
+all zero when the charge of the particle is zero.
+
+-/
+
+lemma chargeDistribution_eq_zero_of_charge_eq_zero (r₀ : Space) :
+    chargeDistribution 0 r₀ = 0 := by simp [chargeDistribution]
+
+lemma electricPotential_eq_zero_of_charge_eq_zero {ε : ℝ} (r₀ : Space) :
+    electricPotential 0 ε r₀ = 0 := by simp [electricPotential]
+
 lemma electricField_eq_zero_of_charge_eq_zero {ε : ℝ} (r₀ : Space) :
     electricField 0 ε r₀ = 0 := by simp [electricField]
+
+/-!
+
+## C. Translations
+
+We now prove that the charge distribution, electric potential and electric field
+for the point particle at `r₀` is just the translation of the charge distribution,
+electric potential and electric field for the point particle located at `0`.
+
+-/
+
+lemma chargeDistribution_eq_translateD (q : ℝ) (r₀ : Space) :
+    chargeDistribution q r₀ = Space.translateD r₀
+      (chargeDistribution q 0) := by
+  ext η
+  simp [chargeDistribution, Space.translateD_apply]
+
+lemma electricPotential_eq_translateD (q ε : ℝ) (r₀ : Space) :
+    electricPotential q ε r₀ = Space.translateD r₀ (electricPotential q ε 0) := by
+  ext η
+  simp [electricPotential]
+  rw [Space.translateD_ofFunction]
 
 lemma electricField_eq_translateD (q ε : ℝ) (r₀ : Space) :
     electricField q ε r₀ = Space.translateD r₀ (electricField q ε 0) := by
@@ -99,49 +139,39 @@ open InnerProductSpace
 
 open scoped Topology BigOperators FourierTransform
 
+
 /-!
 
-## Prove that the electric field is the gradient of the potential
+## D. Proving the gradient of the potential is the electric field
 
-We now prove that the electric field is the negative gradient of the potential.
-
-We do this for `r₀ = 0`, and then use translations to prove it for any `r₀`.
-
-We first show in `gradD_electricPotential_eq_electricField_of_integral_eq_zero` that this
-is true if
-`∫ x, d_y η x * ‖x‖⁻¹ + η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ = 0`
-for all Schwartz maps `η` and directions `y`.
-
-To prove this integral is zero we define `potentialLimitSeries` which is a sequence of functions
-given by
-`potentialLimitSeries n x = (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)`.
-The limit of this sequence as `n → ∞` is `‖x‖⁻¹`, and the limit of it's gradient is
-`-⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ `.
-
-The key idea is to use `MeasureTheory.tendsto_integral_of_dominated_convergence` to show
-that the limit of the integrals
-`∫ x, fderiv ℝ η x y * potentialLimitSeries n x + η x * fderiv ℝ (potentialLimitSeries n) x y`
-is equal to `∫ x, d_y η x * ‖x‖⁻¹ + η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ`,
-and because it they are total derivatives of differentiable functions, eqaul to zero.
-
-To use `MeasureTheory.tendsto_integral_of_dominated_convergence` we need to show a number
-of properties of `potentialLimitSeries` and it's derivatives.
-
-For convience we define
-`fderiv ℝ η x y * potentialLimitSeries n x + η x * fderiv ℝ (potentialLimitSeries n) x y`
-to be `potentialLimitSeriesFDerivSchwartz`.
-
-### Note
-
-This proof also allows us to prove Faraday's law for a point particle in 3d.
+We now prove that the electric field is equal to the negative gradient of the potential,
+i.e. `E = -∇φ`.
 
 -/
 
-/-- The gradient of the electric potential is equal to the electric field if the integral
-  ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * ‖a‖⁻¹ +
-    η a * ⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ)
+/-!
+
+### D.1. Reducing the problem to showing an integral is zero
+
+Until the very end of this problem we will implicitly assume that `r₀ = 0`.
+We generalize at the end.
+
+The first step of our proof is to show that `E = -∇φ` if for any Schwartz map `η` and direction `y`
+the integral
+`∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ = 0`
+is equal to zero.
+
+Recall that a 'Schwartz map' is a smooth function which, along with all it's
+derivatives, decays fast. It's presence here is because the electric field and potential
+are defined as distributions, and distributions are defined by how they act on Schwartz maps.
+
+-/
+
+/--
+  The relation `E = -∇φ` holds for the point particle if the integral
+  `∫ x, d_y η x * ‖x‖⁻¹ + η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ = 0`
   is zero.
-  -/
+-/
 lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
     (h_integral : ∀ η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ), ∀ y : EuclideanSpace ℝ (Fin 3),
     ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * ‖a‖⁻¹ +
@@ -189,32 +219,72 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
       ring
   · fun_prop
 
+/-!
+
+### D.2. A smooth approximation to `‖r‖⁻¹`
+
+Notice that in the integral
+`∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ = 0`
+the integrand is has the structure of the total derivative of the function
+`η r * ‖r‖⁻¹` in the direction `y`, i.e. `d_y (η r * ‖r‖⁻¹)`.
+
+However, this doesn't quite work because `‖r‖⁻¹` is not differentiable at `r = 0`.
+To get around this we define a sequence of functions, which for `n : ℕ` are given by
+`potentialLimitSeries n r = (‖r‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)`.
+
+The overall aim will be to write `∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ`
+as the limit of the integrals
+`∫ r, d_y η r * potentialLimitSeries n r + η r * d_y (potentialLimitSeries n) r y`
+as `n → ∞`, and then show that each of these integrals is zero because they
+are integrals of total derivatives of differentiable functions.
+
+-/
+
 /-- A series of functions whose limit is the `‖x‖⁻¹` and for which each function is
   differentiable everywhere. -/
 def potentialLimitSeries : ℕ → EuclideanSpace ℝ (Fin 3) → ℝ := fun n x =>
   (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)
 
-section PotentialLimitSeries
-
 lemma potentialLimitSeries_eq (n : ℕ) :
     potentialLimitSeries n = fun x => (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ) := rfl
 
-lemma potentialLimitSeries_eq_sqrt_inv (n : ℕ) :
-    potentialLimitSeries n = fun x => √(‖x‖ ^ 2 + 1/(n + 1))⁻¹ := by
-  funext x
-  rw [potentialLimitSeries_eq]
-  simp only [one_div, sqrt_inv]
-  rw [sqrt_eq_rpow]
-  nth_rewrite 2 [← Real.rpow_neg_one]
-  rw [← Real.rpow_mul]
-  congr
-  ring
-  positivity
+/-!
 
-lemma potentialLimitSeries_nonneg (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) :
-    0 ≤ potentialLimitSeries n x := by
-  rw [potentialLimitSeries_eq_sqrt_inv]
-  simp
+#### Part D.2.I.
+The most important property of `potentialLimitSeries` is that it converges to `‖x‖⁻¹` as
+`n → ∞`. That is, it approximates `‖x‖⁻¹` arbitrarily closely for large enough `n`.
+
+-/
+
+lemma potentialLimitSeries_tendsto (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
+    Filter.Tendsto (fun n => potentialLimitSeries n x) Filter.atTop (𝓝 (‖x‖⁻¹)) := by
+  conv => enter [1, n]; rw [potentialLimitSeries_eq]
+  simp only [one_div]
+  have hx_norm : ‖x‖⁻¹ = (‖x‖ ^ 2 + 0) ^ (-1 / 2 : ℝ) := by
+    trans √(‖x‖ ^ 2)⁻¹
+    · simp
+    rw [sqrt_eq_rpow]
+    nth_rewrite 1 [← Real.rpow_neg_one]
+    rw [← Real.rpow_mul]
+    congr
+    ring
+    simp only [one_div]
+    simp
+  rw [hx_norm]
+  refine Filter.Tendsto.rpow ?_ tendsto_const_nhds ?_
+  · apply Filter.Tendsto.add
+    · exact tendsto_const_nhds
+    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat
+  left
+  simpa using hx
+
+/-!
+
+#### Part D.2.II.
+Unlike `‖r‖⁻¹`, importantly the functions `potentialLimitSeries n` are
+differentiable everywhere.
+
+-/
 
 lemma potentialLimitSeries_differentiable (n : ℕ) :
     Differentiable ℝ (potentialLimitSeries n) := by
@@ -233,6 +303,16 @@ lemma potentialLimitSeries_differentiable (n : ℕ) :
     by_contra hn
     rw [hn] at h1
     simp at h1
+
+/-!
+
+#### Part D.2.III.
+  The derivative of `potentialLimitSeries n` in the direction `y` is given by
+  `- (‖r‖^1 + 1/(1 + n))^(-3/2) * ⟪r, y⟫_ℝ`, or equivalently
+  `- (potentialLimitSeries n r) ^ 3 * ⟪r, y⟫_ℝ`.
+
+-/
+
 
 lemma potentialLimitSeries_fderiv (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
     fderiv ℝ (potentialLimitSeries n) x y =
@@ -307,27 +387,15 @@ lemma potentialLimitSeries_fderiv_eq_potentialLimitseries_mul
   simp only [one_div, inv_inj]
   ring
 
-lemma potentialLimitSeries_tendsto (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
-    Filter.Tendsto (fun n => potentialLimitSeries n x) Filter.atTop (𝓝 (‖x‖⁻¹)) := by
-  conv => enter [1, n]; rw [potentialLimitSeries_eq]
-  simp only [one_div]
-  have hx_norm : ‖x‖⁻¹ = (‖x‖ ^ 2 + 0) ^ (-1 / 2 : ℝ) := by
-    trans √(‖x‖ ^ 2)⁻¹
-    · simp
-    rw [sqrt_eq_rpow]
-    nth_rewrite 1 [← Real.rpow_neg_one]
-    rw [← Real.rpow_mul]
-    congr
-    ring
-    simp only [one_div]
-    simp
-  rw [hx_norm]
-  refine Filter.Tendsto.rpow ?_ tendsto_const_nhds ?_
-  · apply Filter.Tendsto.add
-    · exact tendsto_const_nhds
-    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat
-  left
-  simpa using hx
+
+/-!
+
+#### Part D.2.IV.
+  as `n → ∞` the limit of the derivative of `potentialLimitSeries n` in the direction `y` is
+  `-⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ`. This is exactly the derivative of `‖x‖⁻¹`
+  in the direction `y`, when it exists (i.e. when `x ≠ 0`).
+
+-/
 
 lemma potentialLimitSeries_fderiv_tendsto (x y : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
     Filter.Tendsto (fun n => fderiv ℝ (potentialLimitSeries n) x y) Filter.atTop
@@ -345,6 +413,17 @@ lemma potentialLimitSeries_fderiv_tendsto (x y : EuclideanSpace ℝ (Fin 3)) (hx
   simp only [one_div]
   ring_nf
 
+/-!
+
+#### Part D.2.V
+
+Because we are integrating, we need to show some integrability and measurability properties
+of `potentialLimitSeries` and it's derivative.
+
+We first show that they are almost everywhere strongly measurable.
+
+-/
+
 @[fun_prop]
 lemma potentialLimitSeries_aeStronglyMeasurable (n : ℕ) :
     AEStronglyMeasurable (potentialLimitSeries n) := by
@@ -359,6 +438,36 @@ lemma potentialLimitSeries_fderiv_aeStronglyMeasurable (n : ℕ) (y : EuclideanS
   refine StronglyMeasurable.aestronglyMeasurable ?_
   refine stronglyMeasurable_iff_measurable.mpr ?_
   fun_prop
+
+/-!
+
+#### Part D.2.VI.
+
+We now show that `potentialLimitSeries` satisfies the condition `IsDistBounded`.
+Along with the fact it is almost everywhere strongly measurable, this means
+it can be made into a tempered distribution, but for our purposes means that it is
+integrable when multiplied by a Schwartz map.
+
+There are a number of precursory lemmas first.
+
+-/
+
+lemma potentialLimitSeries_eq_sqrt_inv (n : ℕ) :
+    potentialLimitSeries n = fun x => √(‖x‖ ^ 2 + 1/(n + 1))⁻¹ := by
+  funext x
+  rw [potentialLimitSeries_eq]
+  simp only [one_div, sqrt_inv]
+  rw [sqrt_eq_rpow]
+  nth_rewrite 2 [← Real.rpow_neg_one]
+  rw [← Real.rpow_mul]
+  congr
+  ring
+  positivity
+
+lemma potentialLimitSeries_nonneg (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) :
+    0 ≤ potentialLimitSeries n x := by
+  rw [potentialLimitSeries_eq_sqrt_inv]
+  simp
 
 lemma potentialLimitSeries_bounded_neq_zero (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
     ‖potentialLimitSeries n x‖ ≤ ‖x‖⁻¹ := by
@@ -395,6 +504,15 @@ lemma potentialLimitSeries_isDistBounded (n : ℕ) :
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, norm_eq_abs]
     rw [abs_of_nonneg]
     positivity
+
+/-!
+
+#### Part D.2.VII.
+
+In a similar fashion, and for the same reason,
+we now show that the derivative of `potentialLimitSeries` satisfies the condition `IsDistBounded`.
+
+-/
 
 lemma potentialLimitSeries_fderiv_bounded (n : ℕ)
     (x y : EuclideanSpace ℝ (Fin 3)) :
@@ -437,7 +555,25 @@ lemma potentialLimitSeries_fderiv_isDistBounded (n : ℕ) (y : EuclideanSpace �
     apply (potentialLimitSeries_fderiv_bounded n x y).trans
     simp
 
-end PotentialLimitSeries
+
+/-!
+
+### D.3. A series of integrals
+
+We now show that the integral
+`∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ` is the limit of the integrals
+`∫ r, d_y (η r * potentialLimitSeries n r)` as `n → ∞`.
+
+-/
+
+/-!
+#### Part D.3.I.
+
+We first define a series of functions which are the integrands of
+`∫ r, d_y (η r * potentialLimitSeries n r)`.
+These functions are `potentialLimitSeriesFDerivSchwartz y η n r`.
+
+-/
 
 /-- A series of functions of the form `fderiv ℝ (fun x => η x * potentialLimitSeries n x) x y`. -/
 def potentialLimitSeriesFDerivSchwartz
@@ -459,30 +595,13 @@ lemma potentialLimitSeriesFDerivSchwartz_eq
   · refine Differentiable.differentiableAt ?_
     exact potentialLimitSeries_differentiable n
 
-lemma potentialLimitSeriesFDerivSchwartz_integral_eq_zero
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
-    ∫ (x : EuclideanSpace ℝ (Fin 3)), potentialLimitSeriesFDerivSchwartz y η n x = 0 := by
-  conv_lhs => enter [2, x]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
-  rw [integral_add, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
-  simp only [add_neg_cancel]
-  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
-    · exact potentialLimitSeries_isDistBounded n
-    · exact potentialLimitSeries_aeStronglyMeasurable n
-  · apply IsDistBounded.schwartzMap_mul_integrable
-    · exact potentialLimitSeries_fderiv_isDistBounded n y
-    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
-  · apply IsDistBounded.schwartzMap_mul_integrable
-    · exact potentialLimitSeries_isDistBounded n
-    · exact potentialLimitSeries_aeStronglyMeasurable n
-  · exact SchwartzMap.differentiable η
-  · exact potentialLimitSeries_differentiable n
-  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
-    · exact potentialLimitSeries_isDistBounded n
-    · exact potentialLimitSeries_aeStronglyMeasurable n
-  · apply IsDistBounded.schwartzMap_mul_integrable
-    · exact potentialLimitSeries_fderiv_isDistBounded n y
-    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
+/-!
+#### Part D.3.II.
 
+We show that these integrands converge to the integrand of
+`∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ` as `n → ∞`.
+
+-/
 lemma potentialLimitSeriesFDerivSchwartz_tendsto
     (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
     ∀ᵐ (a : EuclideanSpace ℝ (Fin 3)) ∂(volume),
@@ -501,6 +620,20 @@ lemma potentialLimitSeriesFDerivSchwartz_tendsto
   · apply Filter.Tendsto.mul
     · exact tendsto_const_nhds
     · exact potentialLimitSeries_fderiv_tendsto x y hx
+
+/-!
+
+#### Part D.3.III.
+
+We use 'Lebesgue dominated convergence theorem' to show that the integrals
+`∫ r, d_y (η r * potentialLimitSeries n r)` converge to the integral
+`∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ` as `n → ∞`.
+
+This requires some measurability properties of `potentialLimitSeriesFDerivSchwartz`
+and uses the integrability properties of `potentialLimitSeries` and
+its derivative shown above.
+
+-/
 
 lemma potentialLimitSeriesFDerivSchwartz_aeStronglyMeasurable
     (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
@@ -561,6 +694,57 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral
       · exact abs_nonneg (η x)
       · positivity
 
+/-!
+
+### D.4. The limit of the series of integrals is zero
+
+Above we showed that the limit of the integrals
+`∫ r, d_y (η r * potentialLimitSeries n r)` as `n → ∞` is
+`∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ`.
+We now show that this same limit is zero.
+
+-/
+
+/-!
+#### Part D.4.I.
+
+The integral
+`∫ r, d_y (η r * potentialLimitSeries n r)` is zero for each `n : ℕ`.
+This follows because this integrand is the total derivative of a differentiable function.
+-/
+
+lemma potentialLimitSeriesFDerivSchwartz_integral_eq_zero
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
+    ∫ (x : EuclideanSpace ℝ (Fin 3)), potentialLimitSeriesFDerivSchwartz y η n x = 0 := by
+  conv_lhs => enter [2, x]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
+  rw [integral_add, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
+  simp only [add_neg_cancel]
+  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
+    · exact potentialLimitSeries_isDistBounded n
+    · exact potentialLimitSeries_aeStronglyMeasurable n
+  · apply IsDistBounded.schwartzMap_mul_integrable
+    · exact potentialLimitSeries_fderiv_isDistBounded n y
+    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
+  · apply IsDistBounded.schwartzMap_mul_integrable
+    · exact potentialLimitSeries_isDistBounded n
+    · exact potentialLimitSeries_aeStronglyMeasurable n
+  · exact SchwartzMap.differentiable η
+  · exact potentialLimitSeries_differentiable n
+  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
+    · exact potentialLimitSeries_isDistBounded n
+    · exact potentialLimitSeries_aeStronglyMeasurable n
+  · apply IsDistBounded.schwartzMap_mul_integrable
+    · exact potentialLimitSeries_fderiv_isDistBounded n y
+    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
+
+/-!
+#### Part D.4.II.
+
+From part D.4.I it follows that the limit of the integrals
+`∫ r, d_y (η r * potentialLimitSeries n r)` as `n → ∞` is zero, since each
+individual integral is zero.
+
+-/
 lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero
     (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
     Filter.Tendsto (fun n => ∫ (x : EuclideanSpace ℝ (Fin 3)),
@@ -568,6 +752,20 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero
   conv => enter [1, n]; rw [potentialLimitSeriesFDerivSchwartz_integral_eq_zero y η n]
   simp
 
+/-!
+
+### D.5. E = -∇ V for a particle at the origin
+
+We now put everything together. In part D.1 we showed that `E = -∇ V` follows from the integral
+`∫ r, d_y η r * ‖r‖⁻¹ + η r * -⟪(‖r‖ ^ 3)⁻¹ • x, r⟫_ℝ = 0` for all Schwartz maps `η` and
+directions `y`.
+In part D.3 we showed that this integral is the limit of the integrals
+`∫ r, d_y (η r * potentialLimitSeries n r)` as `n → ∞`.
+In part D.4 we showed that this limit is zero, and therefore this integral itself must be zero.
+
+It follows that `E = -∇ V` for a particle at the origin.
+
+-/
 lemma electricField_eq_neg_gradD_electricPotential_origin (q ε : ℝ) :
     electricField q ε 0 = - Space.gradD (electricPotential q ε 0) :=
   Eq.symm <|
@@ -576,6 +774,14 @@ lemma electricField_eq_neg_gradD_electricPotential_origin (q ε : ℝ) :
     (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral y η)
     (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero y η)
 
+/-!
+
+### D.6. E = -∇ V for a particle at r₀
+
+The general case of a particle at `r₀` follows from the case of a particle at the origin
+by using that the gradient commutes with translation.
+
+-/
 lemma electricField_eq_neg_gradD_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
     electricField q ε r₀ = - Space.gradD (electricPotential q ε r₀) := by
   rw [electricField_eq_translateD, electricPotential_eq_translateD]
@@ -589,18 +795,77 @@ lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) (r₀ : Euclid
 
 /-!
 
-## Prove of Gauss' law
+## E. Faraday's law
 
-We now prove Gauss' law for a point particle in 3-dimensions.
+Faraday's law, which says that `∇ × E = 0`,
+is an immediate consequence of the fact that `E = -∇ V`, because
+the curl of a gradient is always zero.
+
+-/
+
+lemma faradaysLaw (q ε : ℝ) (r₀ : Space) : (electricField q ε r₀).FaradaysLaw := by
+  rw [electricField_eq_ofPotential_electricPotential]
+  exact ofPotential_faradaysLaw (electricPotential q ε r₀)
+
+/-!
+
+## F. Gauss' law
+
+We now prove Gauss' law for a point particle in 3-dimensions. Recall that Gauss' law states that
+the divergence of the electric field is equal to the charge density divided by the permittivity,
+i.e. `∇ • E = ρ/ε`.
+
+In this case, this result is related to the sometimes confusing fact that
+`∇ • ((‖r‖⁻¹) ^ 3 • r) ∝ δ(r)`.
+
+We first prove Gauss' law for a point particle at the origin, and then use translation to
+prove it for a point particle at `r₀`.
+
+-/
+
+/-!
+
+### F.1. Gauss' law for a point particle at the origin
+
+The proof of Gauss' law for a point particle at the origin follows the proof given here:
+https://math.stackexchange.com/questions/2409008/
+
+We highlight the main steps of the proof here (the below comments also appear
+in-line within the proof):
+- **Step 1**: `∇ ⬝ E = 1/ε ρ` if for all Schwartz maps`η`,  `∇ ⬝ E η = (1/ε ρ) η`.
+- **Step 2**: We focus on rewriting the LHS, by definition it is equal to
+    `- ∫ d³r ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, (∇ η) r⟫`
+- **Step 3**: We rearrange the integral to
+    `- q/(4 * π * ε) * ∫ d³r ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r), (∇ η) r⟫`
+- **Step 4**: We use that `⟪‖r‖⁻¹ • r), (∇ η) r⟫ = (d(η (a • ‖r‖⁻¹ • r))/d a)_‖r‖`
+    to rewrite the integral as
+    `- q/(4 * π * ε) * ∫ d³r ‖r‖⁻¹ ^ 2 * (d(η (a • ‖r‖⁻¹ • r))/d a)_‖r‖`.
+- **Step 5**: We move over to spherical coordinates rewriting
+      `d³r` as `r² dr dn` where `dn` is the integral over the unit vectors `n`.
+      In `d³r` the `r` is a vector whilst in `r² dr dn` the `r` is a scalar (the distance).
+      `- q/(4 * π * ε) * ∫ dr² dr dn r⁻¹ ^ 2 * (d(η (a • n))/d a)_r`
+- **Step 6**: The integral is rearanged to
+      `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr  r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)`
+- **Step 7**: The integral is further rearanged to
+    `- q/(4 * π * ε) * ∫ dn (∫_0^∞ dr (d(η (a • n))/d a)_r)`
+- **Step 8**: The inner integral `(∫_0^∞ dr (d(η (a • n))/d a)_r)` is an integral over
+      a total derivative of a function which tends to zero at infinity,
+      and so is equal to `-η 0`. Thus the integral is equal to
+      `- q/(4 * π * ε) * ∫ dn (-η 0)`.
+- **Step 9**: The integral `∫ dn` is equal to the surface area of the unit sphere, which is
+      `4 * π`. And thus we get after some simplification
+      `(q/ε) * η 0`.
+- **Step 10**: This is manifestly equal to the right hand side `1/ε ρ η` since `ρ = q δ(r)`,
+    thereby proving the result.
 
 -/
 
 /-- Guass' law for a point particle in 3-dimensions at the origin, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
 lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeDistribution q 0) := by
-  /- The proof here follows that given here: https://math.stackexchange.com/questions/2409008/
-  -/
+  /- Step 1: `∇ ⬝ E = 1/ε ρ` if for all Schwartz maps`η`,  `∇ ⬝ E η = (1/ε ρ) η`. -/
   ext η
+  /- Preliminary definitions. -/
   let η' (n : ↑(Metric.sphere 0 1)) : 𝓢(ℝ, ℝ) := compCLM (g := fun a => a • n.1) ℝ (by
     apply And.intro
     · fun_prop
@@ -629,22 +894,32 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
     exact Measure.Subtype.measureSpace
   calc _
     _ = (divD (electricField q ε 0)) η := by rfl
-    _ = - ∫ r : Space 3, ⟪((q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r), Space.grad η r⟫_ℝ := by
+    /- Step 2: We focus on rewriting the LHS, by definition it is equal to
+      `- ∫ d³r ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, (∇ η) r⟫`. -/
+    _ = - ∫ r, ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, Space.grad η r⟫_ℝ := by
       rw [electricField, Space.divD_ofFunction]
       simp
+    /- Step 3: We rearrange the integral to
+      `- q/(4 * π * ε) * ∫ d³r ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r), (∇ η) r⟫`. -/
     _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r, Space.grad η r⟫_ℝ := by
       simp [inner_smul_left, integral_const_mul]
       left
       congr
       funext r
       ring
+    /- Step 4: We use that `⟪‖r‖⁻¹ • r), (∇ η) r⟫ = (d(η (a • ‖r‖⁻¹ • r))/d a)_‖r‖`
+      to rewrite the integral as
+      `- q/(4 * π * ε) * ∫ d³r ‖r‖⁻¹ ^ 2 * (d(η (a • ‖r‖⁻¹ • r))/d a)_‖r‖`. -/
     _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • ‖r‖⁻¹ • r)) ‖r‖) := by
       congr
       funext r
       congr
       rw [real_inner_comm, ← grad_inner_space_unit_vector _ _ (SchwartzMap.differentiable η)]
-    /- Moving to spherical coordinates. -/
+    /- Step 5: We move over to spherical coordinates rewriting
+      `d³r` as `r² dr dn` where `dn` is the integral over the unit vectors `n`.
+      In `d³r` the `r` is a vector whilst in `r² dr dn` the `r` is a scalar (the distance).
+      `- q/(4 * π * ε) * ∫ dr² dr dn r⁻¹ ^ 2 * (d(η (a • n))/d a)_r` -/
     _ = - (q/(4 * π * ε)) * ∫ r, ‖r.2.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • r.1)) ‖r.2.1‖)
         ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere.prod
@@ -671,7 +946,8 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         exact compl_compl _
       · symm
         simp
-    /- Splitting the integral over the sphere and radius-/
+   /- Step 6: The integral is rearanged to
+      `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr  r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (∫ r, ‖r.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • n)) ‖r.1‖)
         ∂((Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))))
@@ -711,7 +987,8 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       field_simp
       ring
       exact SchwartzMap.differentiable η
-    /- Simplifying the inner integral. -/
+    /- Step 7: The integral is further rearanged to
+      `- q/(4 * π * ε) * ∫ dn (∫_0^∞ dr (d(η (a • n))/d a)_r)` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (∫ (r : Set.Ioi (0 : ℝ)),
         (_root_.deriv (fun a => η (a • n)) r.1) ∂(.comap Subtype.val volume))
         ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
@@ -735,6 +1012,10 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       simp [- Subtype.coe_prop] at h1
       exact le_of_lt h1
       fun_prop
+    /- Step 8: The inner integral `(∫_0^∞ dr (d(η (a • n))/d a)_r)` is an integral over
+      a total derivative of a function which tends to zero at infinity,
+      and so is equal to `-η 0`. Thus the integral is equal to
+      `- q/(4 * π * ε) * ∫ dn (-η 0) ` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (-η 0) ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
       congr
       funext n
@@ -753,6 +1034,9 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         exact integrable ((derivCLM ℝ) (η' n))
       · change Filter.Tendsto (η' n) Filter.atTop (nhds 0)
         exact Filter.Tendsto.mono_left (η' n).toZeroAtInfty.zero_at_infty' atTop_le_cocompact
+     /- Step 9: The integral `∫ dn` is equal to the surface area of the unit sphere, which is
+      `4 * π`. And thus we get after some simplification
+      `(q/ε) * η 0` -/
     _ = (q/(4 * π * ε)) * η 0 * (3 * (volume (α := EuclideanSpace ℝ (Fin 3))).real
         (Metric.ball 0 1)) := by
       simp only [integral_const, Measure.toSphere_real_apply_univ, finrank_euclideanSpace,
@@ -768,8 +1052,20 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         simp
       field_simp
       ring
+  /- Step 10: This is manifestly equal to the right hand side `1/ε ρ η` since `ρ = q δ(r)`,
+    thereby proving the result. -/
   simp [chargeDistribution]
   ring
+
+/-!
+
+### F.2. Gauss' law for a point particle at `r₀`
+
+We now show Gauss' law for a point particle at `r₀`.
+This follows from the case of a point particle at the origin
+by using that the divergence commutes with translation.
+
+-/
 
 lemma gaussLaw (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
     (electricField q ε r₀).GaussLaw ε (chargeDistribution q r₀) := by
@@ -779,18 +1075,17 @@ lemma gaussLaw (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
   rw [gaussLaw_origin q ε]
   simp
 
+
 /-!
 
-## Prove of Faraday's law
+## G. Rotational invaraiance
 
-Faraday's law for a point particle in 3-dimensions follows immediately from the fact that the
-electric field is derived from a potential.
+We now prove the electric field, charge distribution and potential of a point particle
+are rotationally invariant.
+
+This is yet to be done, and is a TODO item.
 
 -/
-
-lemma faradaysLaw (q ε : ℝ) (r₀ : Space) : (electricField q ε r₀).FaradaysLaw := by
-  rw [electricField_eq_ofPotential_electricPotential]
-  exact ofPotential_faradaysLaw (electricPotential q ε r₀)
 
 /-- The electrostatic field of a point particle is rotationally invariant. -/
 informal_lemma electricField_rotationally_invariant where
