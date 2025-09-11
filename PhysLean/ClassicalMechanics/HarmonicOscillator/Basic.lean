@@ -160,6 +160,12 @@ lemma lagrangian_eq :
    lagrangian S  = fun t x v =>
   1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ - 1 / (2 : ℝ) * S.k * ⟪x, x⟫_ℝ := by rfl
 
+lemma lagrangian_eq_kineticEnergy_sub_potentialEnergy (t : Time) (xₜ : Time → Space 1)  :
+    lagrangian S t (xₜ t) (∂ₜ xₜ t) = kineticEnergy S xₜ t - potentialEnergy S (xₜ t) := by
+  rw [lagrangian_eq, kineticEnergy, potentialEnergy]
+  simp only [one_div, smul_eq_mul, sub_right_inj]
+  ring
+
 @[fun_prop]
 lemma contDiff_lagrangian : ContDiff ℝ ∞ ↿S.lagrangian  := by
   rw [lagrangian_eq]
