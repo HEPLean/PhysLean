@@ -25,7 +25,7 @@ noncomputable def solidSphere (d : ℕ) (m R : ℝ≥0) : RigidBody d where
       ∫ x in Metric.closedBall (0 : Space d) R, f x ∂volume,
     by
     intro f g
-    simp
+    simp only [ContMDiffMap.coe_add, Pi.add_apply]
     rw [integral_add]
     ring
     · exact IntegrableOn.integrable
@@ -34,13 +34,15 @@ noncomputable def solidSphere (d : ℕ) (m R : ℝ≥0) : RigidBody d where
         (ContinuousOn.integrableOn_compact (isCompact_closedBall 0 R) (by fun_prop))
       ⟩, by
       intro r f
-      simp
+      simp only [ContMDiffMap.coe_smul, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
       rw [integral_const_mul]
       ring⟩
 
 lemma solidSphere_mass {d : ℕ} (m R : ℝ≥0) (hr : R ≠ 0) : (solidSphere d.succ m R).mass = m := by
   simp only [mass, solidSphere]
-  simp
+  simp only [Nat.succ_eq_add_one, LinearMap.coe_mk, AddHom.coe_mk, ContMDiffMap.coeFn_mk,
+    integral_const, MeasurableSet.univ, measureReal_restrict_apply, Set.univ_inter, smul_eq_mul,
+    mul_one]
   have h1 : (@volume (Space d.succ) measureSpaceOfInnerProductSpace).real
       (Metric.closedBall 0 R) ≠ 0 := by
     refine (measureReal_ne_zero_iff ?_).mpr ?_
@@ -48,7 +50,10 @@ lemma solidSphere_mass {d : ℕ} (m R : ℝ≥0) (hr : R ≠ 0) : (solidSphere d
       simp
       exact not_eq_of_beq_eq_false rfl
     · rw [EuclideanSpace.volume_closedBall]
-      simp
+      simp only [ENNReal.ofReal_coe_nnreal, Nat.succ_eq_add_one, Fintype.card_fin, Nat.cast_add,
+        Nat.cast_one, ne_eq, mul_eq_zero, Nat.add_eq_zero, one_ne_zero, and_false,
+        not_false_eq_true, pow_eq_zero_iff, ENNReal.coe_eq_zero, ENNReal.ofReal_eq_zero, not_or,
+        not_le]
       apply And.intro
       · exact hr
       · positivity
