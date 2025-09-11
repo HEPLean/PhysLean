@@ -17,6 +17,8 @@ is denoted `𝓢(E, 𝕜)`.
 `E` is required to be a normed vector space over `ℝ`, and `F` can be a normed vector space over `ℝ`
 or `ℂ` (which is the field denoted `𝕜`).
 
+Note that the distributions defined here are more precisely called tempered distributions.
+
 ## Important Results
 - `Distribution.derivative` and `Distribution.fourierTransform` allow us to make sense of these
   operations that might not make sense a priori on general functions.

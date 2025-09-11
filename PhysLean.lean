@@ -4,6 +4,8 @@ import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Mass.MassUnit
+import PhysLean.ClassicalMechanics.RigidBody.Basic
+import PhysLean.ClassicalMechanics.RigidBody.SolidSphere
 import PhysLean.ClassicalMechanics.Scattering.RigidSphere
 import PhysLean.ClassicalMechanics.VectorFields
 import PhysLean.ClassicalMechanics.Vibrations.LinearTriatomic
