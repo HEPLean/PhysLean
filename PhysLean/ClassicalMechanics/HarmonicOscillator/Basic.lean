@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith, Lode Vermeulen
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.ClassicalMechanics.EulerLagrange
 /-!
 
 # The Classical Harmonic Oscillator
@@ -93,6 +94,15 @@ lemma inverse_ω_sq : (S.ω ^ 2)⁻¹ = S.m/S.k := by
   field_simp
 
 open Time
+
+/-!
+
+## The energies of the harmonic oscillator
+
+We define the kinetic energy, potential energy, total energy of the harmonic oscillator.
+
+-/
+
 /-- The kinetic energy of the harmonic oscillator is `1/2 m ‖dx/dt‖^2`. -/
 noncomputable def kineticEnergy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
   (1 / (2 : ℝ)) * S.m * ⟪∂ₜ xₜ t, ∂ₜ xₜ t⟫_ℝ
@@ -105,23 +115,11 @@ noncomputable def potentialEnergy (x : Space 1) : ℝ :=
 noncomputable def energy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
   kineticEnergy S xₜ t + potentialEnergy S (xₜ t)
 
-/-- The lagrangian of the harmonic oscillator is the kinetic energy minus the potential energy. -/
-noncomputable def lagrangian (xₜ : Time → Space 1) : Time → ℝ := fun t =>
-  kineticEnergy S xₜ t - potentialEnergy S (xₜ t)
+/-!
 
-/-- The lagrangian of the classical harmonic oscillator obeys the condition
+## The force
 
-  `lagrangian S (- x) = lagrangian S x`.
 -/
-lemma lagrangian_parity (xₜ : Time → Space 1) :
-    lagrangian S (- xₜ) = lagrangian S xₜ := by
-  funext t
-  simp only [lagrangian, kineticEnergy, one_div, potentialEnergy, Pi.neg_apply,
-    inner_neg_neg, sub_left_inj, mul_eq_mul_left_iff, mul_eq_zero, inv_eq_zero, OfNat.ofNat_ne_zero,
-    false_or]
-  left
-  rw [show ∂ₜ (- xₜ) t = - ∂ₜ xₜ t by rw [Time.deriv_neg]]
-  simp only [inner_neg_neg]
 
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
   is the potential energy. -/
@@ -141,33 +139,90 @@ lemma force_eq_linear (x : Space 1) : force S x = - S.k • x := by
   · simp only [inner_differentiable]
   · simp only [Differentiable.const_smul, inner_differentiable]
 
-/-- The definition of the equation of motion for the classical harmonic oscillator
-  defined through the Euler-Lagrange equations. -/
-@[sorryful]
-def EquationOfMotion (x : Time → Space 1) : Prop := sorry
+/-!
 
-/-- The equations of motion are satisfied if and only if Newton's second law holds. -/
-@[sorryful]
-lemma equationOfMotion_iff_newtons_second_law (x : Time → Space 1) :
-    EquationOfMotion x ↔ ∀ t, force S (x t) = S.m • deriv (fun t' => deriv x t') t := by sorry
+## The equation of motion
 
-/-- The proposition on a trajectory which is true if that trajectory is an extrema of the
-  action.
-
-  semiformal implmentation notes:
-  - This is not expected to be easy to define. -/
-@[sorryful]
-def ExtremaOfAction (x : Time → Space 1) : Prop := by sorry
-
-/-- A trajectory `x : ℝ → ℝ` satsifies the equation of motion if and only if
-  it is an extrema of the action.
-
-  Implementation note: This result depends on other semi-formal results which
-  will need defining before this.
 -/
-@[sorryful]
-lemma equationOfMotion_iff_extremaOfAction (x : Time → Space 1) :
-    EquationOfMotion x ↔ ExtremaOfAction x := by sorry
+
+open MeasureTheory ContDiff InnerProductSpace Time
+
+set_option linter.unusedVariables false in
+/-- The lagrangian of the harmonic oscillator is the kinetic energy minus the potential energy. -/
+@[nolint unusedArguments]
+noncomputable def lagrangian (t : Time) (x :  Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
+   ℝ :=
+  1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ - 1 / (2 : ℝ) * S.k * ⟪x, x⟫_ℝ
+
+set_option linter.unusedVariables false in
+@[nolint unusedArguments]
+lemma lagrangian_eq :
+   lagrangian S  = fun t x v =>
+  1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ - 1 / (2 : ℝ) * S.k * ⟪x, x⟫_ℝ := by rfl
+
+@[fun_prop]
+lemma contDiff_lagrangian : ContDiff ℝ ∞ ↿S.lagrangian  := by
+  rw [lagrangian_eq]
+  fun_prop
+
+/-- The Euler-Lagrange operator for the classical harmonic osscilator. -/
+noncomputable def eulerLagrangeOp (xₜ : Time → Space 1) : Time → Space 1 :=
+  ClassicalMechanics.eulerLagrangeOp (lagrangian S) xₜ
+
+lemma eulerLagrangeOp_eq (xₜ : Time → Space 1) :
+    eulerLagrangeOp S xₜ = fun t => gradient (S.lagrangian t · (∂ₜ xₜ t)) (xₜ t)
+    - ∂ₜ (fun t' => gradient (S.lagrangian t' (xₜ t') ·) (∂ₜ xₜ t')) t := by
+  rw [eulerLagrangeOp, ClassicalMechanics.eulerLagrangeOp_eq]
+
+/-- The Euler lagrange operator corresponds to Newton's second law. -/
+lemma eulerLagrangeOp_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+    eulerLagrangeOp S xₜ = fun t => force S (xₜ t) - S.m • ∂ₜ (∂ₜ xₜ) t := by
+  funext t
+  rw [eulerLagrangeOp_eq]
+  simp [lagrangian_eq]
+  congr
+  · rw [← grad_eq_gradiant, grad_eq_sum]
+    simp [Space.deriv_eq_fderiv_basis]
+    rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
+    simp
+    rw [fderiv_const_mul (by fun_prop)]
+    simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self, force_eq_linear]
+    have hx : xₜ t =  xₜ t 0 • basis 0 := by
+      ext i
+      fin_cases i
+      simp
+    rw [hx]
+    simp [smul_smul]
+    congr 1
+    field_simp
+    ring
+  · rw [← Time.deriv_smul _ _ (by fun_prop)]
+    congr
+    funext t
+    rw [← grad_eq_gradiant, grad_eq_sum]
+    simp [Space.deriv_eq_fderiv_basis]
+    rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
+    simp
+    rw [fderiv_const_mul (by fun_prop)]
+    simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
+    have hx : ∂ₜ xₜ t =  ∂ₜ xₜ t 0 • basis 0 := by
+      ext i
+      fin_cases i
+      simp
+    rw [hx]
+    simp [smul_smul]
+    congr 1
+    field_simp
+    ring
+
+lemma variational_gradient_action (xₜ : Time → Space 1) (hq : ContDiff ℝ ∞ xₜ) :
+    (δ (q':=xₜ), ∫ t, lagrangian S t (q' t) (fderiv ℝ q' t 1)) = eulerLagrangeOp S xₜ :=
+  euler_lagrange_varGradient S.lagrangian xₜ hq S.contDiff_lagrangian
+
+/-- THe equation of motion for the Harmonic oscillator. -/
+def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
+  eulerLagrangeOp S xₜ = 0
+
 
 TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
 

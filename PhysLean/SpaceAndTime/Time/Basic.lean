@@ -6,6 +6,8 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Meta.Informal.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
+import Mathlib.Topology.ContinuousMap.CompactlySupported
+import Mathlib.Geometry.Manifold.IsManifold.Basic
 /-!
 # Time
 
@@ -358,5 +360,18 @@ lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
   change (fderiv ℝ toRealCLM t 1) = 1
   rw [ContinuousLinearMap.fderiv, toRealCLM]
   simp
+
+open MeasureTheory ContDiff InnerProductSpace Time
+
+@[fun_prop]
+lemma deriv_differentiable_of_contDiff  {M : Type}
+    [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) (hf : ContDiff ℝ ∞ f) :
+    Differentiable ℝ (∂ₜ f) := by
+  unfold deriv
+  change Differentiable ℝ ((fun x => x 1) ∘ (fun t => fderiv ℝ f t))
+  apply Differentiable.comp
+  · fun_prop
+  · rw [contDiff_infty_iff_fderiv, contDiff_infty_iff_fderiv ] at hf
+    exact hf.2.1
 
 end Time
