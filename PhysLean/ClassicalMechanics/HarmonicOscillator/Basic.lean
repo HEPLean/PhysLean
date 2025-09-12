@@ -149,7 +149,7 @@ of the harmonic oscillator, through the lagrangian.
 
 -/
 
-/-- The kinetic energy of the harmonic oscillator is `1/2 m ‖dx/dt‖^2`. -/
+/-- The kinetic energy of the harmonic oscillator is $\frac{1}{2} m ‖\dot x‖^2$. -/
 noncomputable def kineticEnergy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
   (1 / (2 : ℝ)) * S.m * ⟪∂ₜ xₜ t, ∂ₜ xₜ t⟫_ℝ
 
@@ -282,7 +282,9 @@ We state the lagrangian, and derive from that the equation of motion for the har
 /-!
 ### D.1. The Lagrangian
 
-We define the lagrangian of the harmonic oscillator, as a function of phase-space.
+We define the lagrangian of the harmonic oscillator, as a function of phase-space. It is given by
+
+$$L(t, x, v) := \frac{1}{2} m ‖v‖^2 - \frac{1}{2} k ‖x‖^2$$
 
 In theory this definition is the kinetic energy minus the potential energy, however
 to make the lagrangian a function on phase-space we reserve this result for a lemma.
@@ -383,7 +385,12 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpa
 
 ### D.2. The Euler-Lagrange operator
 
-We now write down the Euler-Lagrange operator for the harmonic oscillator.
+We now write down the Euler-Lagrange operator for the harmonic oscillator, for
+a trajectory $x(t)$ this is equal to
+
+$$t\mapsto \left.\frac{\partial L(t, \dot x (t), q)}{\partial q}\right|_{q = x(t)} -
+  \frac{d}{dt} \left.\frac{\partial L(t, v, x(t))}{\partial v}\right|_{v = \dot x (t)}$$
+
 Setting this equal to zero corresponds to the Euler-Lagrange equations, and thereby the
 equation of motion.
 
