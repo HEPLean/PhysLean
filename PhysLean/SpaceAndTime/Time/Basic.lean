@@ -374,4 +374,14 @@ lemma deriv_differentiable_of_contDiff  {M : Type}
   · rw [contDiff_infty_iff_fderiv, contDiff_infty_iff_fderiv ] at hf
     exact hf.2.1
 
+@[fun_prop]
+lemma deriv_contDiff_of_contDiff  {M : Type}
+    [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) (hf : ContDiff ℝ ∞ f) :
+    ContDiff ℝ ∞ (∂ₜ f) := by
+  unfold deriv
+  change ContDiff ℝ ∞ ((fun x => x 1) ∘ (fun t => fderiv ℝ f t))
+  apply ContDiff.comp
+  · fun_prop
+  · fun_prop
+
 end Time

@@ -270,10 +270,12 @@ lemma sol_velocity_eq_zero_iff (IC : InitialConditions) (t : Time)
 
 -/
 
-@[sorryful]
 lemma sol_energy (IC : InitialConditions) : S.energy (S.sol IC) =
     fun _ => 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) := by
-  sorry
+  funext t
+  rw [energy_conservation_of_equationOfMotion' _ _ (by fun_prop) (sol_equationOfMotion S IC)]
+  simp [energy, kineticEnergy, potentialEnergy, real_inner_self_eq_norm_sq]
+  ring
 
 /-!
 
