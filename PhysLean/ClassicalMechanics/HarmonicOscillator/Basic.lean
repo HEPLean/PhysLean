@@ -4,11 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith, Lode Vermeulen
 -/
 import PhysLean.Meta.Informal.SemiFormal
-import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
-import Mathlib.Tactic.TFAE
 /-!
 
 # The Classical Harmonic Oscillator
@@ -35,8 +32,8 @@ In the `Basic` module:
 
 In the `Solution` module:
 - `InitialConditions` is a structure for the initial conditions for the harmonic oscillator.
-- `sol` is the solution to the harmonic oscillator for given initial conditions.
-- `sol_equationOfMotion` proves that the solution satisfies the equation of motion.
+- `trajectories` is the trajectories to the harmonic oscillator for given initial conditions.
+- `trajectories_equationOfMotion` proves that the solution satisfies the equation of motion.
 
 ## iii. Table of content for this module
 
@@ -456,7 +453,7 @@ motion is equivalent to Newton's second law.
 
 /-!
 
-### E.1. The force
+### E.1. The force
 
 We define the force of the harmoic oscillator as the negative gradient of the potential energy,
 and show that this is equal to `- k x`.

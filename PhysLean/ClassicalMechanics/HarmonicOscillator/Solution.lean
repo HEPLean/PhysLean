@@ -22,10 +22,17 @@ prove that they satisfy the equation of motion, and prove some properties of the
 ## ii. Key results
 
 - `InitialConditions` is a structure for the initial conditions for the harmonic oscillator.
-- `sol` is the solution to the harmonic oscillator for given initial conditions.
-- `sol_equationOfMotion` proves that the solution satisfies the equation of motion.
+- `trajectories` is the trajectories to the harmonic oscillator for given initial conditions.
+- `trajectories_equationOfMotion` proves that the solution satisfies the equation of motion.
 
 ## iii. Table of contents for this module
+
+- A. The initial conditions
+- B. Trajectories associated with the initial conditions
+- C. Trajectories and Equation of motion
+- D. The energy of the trajectories
+- E. The trajectories at zero velocity
+- F. Some open TODOs
 
 ## iv. References
 
