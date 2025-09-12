@@ -364,18 +364,18 @@ lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
 open MeasureTheory ContDiff InnerProductSpace Time
 
 @[fun_prop]
-lemma deriv_differentiable_of_contDiff  {M : Type}
+lemma deriv_differentiable_of_contDiff {M : Type}
     [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) (hf : ContDiff ℝ ∞ f) :
     Differentiable ℝ (∂ₜ f) := by
   unfold deriv
   change Differentiable ℝ ((fun x => x 1) ∘ (fun t => fderiv ℝ f t))
   apply Differentiable.comp
   · fun_prop
-  · rw [contDiff_infty_iff_fderiv, contDiff_infty_iff_fderiv ] at hf
+  · rw [contDiff_infty_iff_fderiv, contDiff_infty_iff_fderiv] at hf
     exact hf.2.1
 
 @[fun_prop]
-lemma deriv_contDiff_of_contDiff  {M : Type}
+lemma deriv_contDiff_of_contDiff {M : Type}
     [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) (hf : ContDiff ℝ ∞ f) :
     ContDiff ℝ ∞ (∂ₜ f) := by
   unfold deriv
