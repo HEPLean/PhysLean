@@ -223,6 +223,13 @@ lemma deriv_norm_sq (x : Space d) (i : Fin d) :
   intro i hi
   fun_prop
 
+open InnerProductSpace
+
+lemma deriv_eq_inner_self (x : Space d) (i : Fin d) :
+    deriv i (fun x => ⟪x, x⟫_ℝ) x = 2 * x i := by
+  convert deriv_norm_sq x i
+  exact real_inner_self_eq_norm_sq _
+
 /-!
 
 ## Some properties of grad

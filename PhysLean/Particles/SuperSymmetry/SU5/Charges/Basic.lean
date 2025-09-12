@@ -11,7 +11,9 @@ import PhysLean.Particles.SuperSymmetry.SU5.Potential
 
 # Charges
 
-The data structure associated with additional charges in the SU(5) GUT model.
+In this module we give the data structure for a charges
+associated with the matter content of the SU(5) GUT model, assuming
+only 5-bar and 10d representations.
 
 These charges are permitted to sit within any type `𝓩` which is usually taken
 to be `ℤ` (for `U(1)` charges) or multiples thereof.
