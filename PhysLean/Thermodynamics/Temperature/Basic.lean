@@ -242,4 +242,114 @@ lemma tendsto_ofβ_atTop :
     tendsto_inf.2 ⟨h_to0, h_into⟩
   simpa [nhdsWithin] using this
 
+/-! ### Conversion to and from `ℝ≥0` -/
+
+open Constants
+
+/-- Build a `Temperature` directly from a nonnegative real. -/
+@[simp] def ofNNReal (t : ℝ≥0) : Temperature := ⟨t⟩
+
+@[simp]
+lemma ofNNReal_val (t : ℝ≥0) : (ofNNReal t).val = t := rfl
+
+@[simp]
+lemma coe_ofNNReal_coe (t : ℝ≥0) : ((ofNNReal t : Temperature) : ℝ≥0) = t := rfl
+
+@[simp]
+lemma coe_ofNNReal_real (t : ℝ≥0) : ((⟨t⟩ : Temperature) : ℝ) = t := rfl
+
+/-- Convenience: build a temperature from a real together with a proof of nonnegativity. -/
+@[simp]
+noncomputable def ofRealNonneg (t : ℝ) (ht : 0 ≤ t) : Temperature :=
+  ofNNReal ⟨t, ht⟩
+
+@[simp]
+lemma ofRealNonneg_val {t : ℝ} (ht : 0 ≤ t) :
+    (ofRealNonneg t ht).val = ⟨t, ht⟩ := rfl
+
+/-! ### Calculus relating T and β -/
+
+open Set
+open scoped ENNReal
+
+/-- Map a real `t` to the inverse temperature `β` corresponding to the temperature `Real.toNNReal t`
+(`max t 0`), returned as a real number. -/
+noncomputable def betaFromReal (t : ℝ) : ℝ :=
+  ((Temperature.ofNNReal (Real.toNNReal t)).β : ℝ)
+
+/-- Explicit closed-form for `Beta_fun_T t` when `t > 0`. -/
+lemma beta_fun_T_formula (t : ℝ) (ht : 0 < t) :
+    betaFromReal t = 1 / (kB * t) := by
+  have ht0 : (0 : ℝ) ≤ t := ht.le
+  have : ((Temperature.ofNNReal (Real.toNNReal t)).β : ℝ) = 1 / (kB * t) := by
+    simp [Temperature.β, Temperature.ofNNReal, Temperature.toReal,
+      Real.toNNReal_of_nonneg ht0, one_div, mul_comm]
+  simpa [betaFromReal] using this
+
+/-- On `Ioi 0`, `Beta_fun_T t` equals `1 / (kB * t)`. -/
+lemma beta_fun_T_eq_on_Ioi :
+    EqOn betaFromReal (fun t : ℝ => 1 / (kB * t)) (Set.Ioi 0) := by
+  intro t ht
+  exact beta_fun_T_formula t ht
+
+lemma deriv_beta_wrt_T (T : Temperature) (hT_pos : 0 < T.val) :
+    HasDerivWithinAt betaFromReal (-1 / (kB * (T.val : ℝ)^2)) (Set.Ioi 0) (T.val : ℝ) := by
+  let f : ℝ → ℝ := fun t => 1 / (kB * t)
+  have h_eq : EqOn betaFromReal f (Set.Ioi 0) := beta_fun_T_eq_on_Ioi
+  have hTne : (T.val : ℝ) ≠ 0 := ne_of_gt hT_pos
+  have hf_def : f = fun t : ℝ => (kB)⁻¹ * t⁻¹ := by
+    funext t
+    by_cases ht : t = 0
+    · simp [f, ht]
+    · simp [f, one_div, *] at *
+      ring
+  have h_inv :
+      HasDerivAt (fun t : ℝ => t⁻¹)
+        (-( (T.val : ℝ) ^ 2)⁻¹) (T.val : ℝ) := by
+    simpa using (hasDerivAt_inv (x := (T.val : ℝ)) hTne)
+  have h_deriv_aux :
+      HasDerivAt (fun t : ℝ => (kB)⁻¹ * t⁻¹)
+        ((kB)⁻¹ * (-( (T.val : ℝ) ^ 2)⁻¹)) (T.val : ℝ) :=
+    h_inv.const_mul ((kB)⁻¹)
+  have h_pow_simp :
+      (kB)⁻¹ * (-( (T.val : ℝ) ^ 2)⁻¹) = -1 / (kB * (T.val : ℝ)^2) := by
+    calc
+      (kB)⁻¹ * (-( (T.val : ℝ) ^ 2)⁻¹)
+          = -((kB)⁻¹ * ((T.val : ℝ) ^ 2)⁻¹) := by
+            ring
+      _   = -(1 / kB * (1 / (T.val : ℝ) ^ 2)) := by
+            simp [one_div]
+      _ = -1 / (kB * (T.val : ℝ) ^ 2) := by
+        rw [one_div]
+        field_simp [pow_two, mul_comm, mul_left_comm, mul_assoc, kB_neq_zero, hTne]
+  have h_deriv_f :
+      HasDerivAt f (-1 / (kB * (T.val : ℝ)^2)) (T.val : ℝ) := by
+    simpa [hf_def, h_pow_simp] using h_deriv_aux
+  have h_mem : (T.val : ℝ) ∈ Set.Ioi (0 : ℝ) := hT_pos
+  exact (h_deriv_f.hasDerivWithinAt).congr h_eq (h_eq h_mem)
+
+/-- Chain rule for β(T): d/dT F(β(T)) = F'(β(T)) * (-1 / (kB * T^2)), within `Ioi 0`. -/
+lemma chain_rule_T_beta {F : ℝ → ℝ} {F' : ℝ}
+    (T : Temperature) (hT_pos : 0 < T.val)
+    (hF_deriv : HasDerivWithinAt F F' (Set.Ioi 0) (T.β : ℝ)) :
+    HasDerivWithinAt (fun t : ℝ => F (betaFromReal t))
+      (F' * (-1 / (kB * (T.val : ℝ)^2))) (Set.Ioi 0) (T.val : ℝ) := by
+  have hβ_deriv := deriv_beta_wrt_T (T:=T) hT_pos
+  have h_map : Set.MapsTo betaFromReal (Set.Ioi 0) (Set.Ioi 0) := by
+    intro t ht
+    have ht_pos : 0 < t := ht
+    have : 0 < 1 / (kB * t) := by
+      have : 0 < kB * t := mul_pos kB_pos ht_pos
+      exact one_div_pos.mpr this
+    have h_eqt : betaFromReal t = 1 / (kB * t) := beta_fun_T_eq_on_Ioi ht
+    simpa [h_eqt] using this
+  have h_beta_at_T : betaFromReal (T.val : ℝ) = (T.β : ℝ) := by
+    have hTposR : 0 < (T.val : ℝ) := hT_pos
+    have h_eqt := beta_fun_T_eq_on_Ioi hTposR
+    simpa [Temperature.β, Temperature.toReal] using h_eqt
+  have hF_deriv' : HasDerivWithinAt F F' (Set.Ioi 0) (betaFromReal (T.val : ℝ)) := by
+    simpa [h_beta_at_T] using hF_deriv
+  have h_comp := hF_deriv'.comp (T.val : ℝ) hβ_deriv h_map
+  simpa [mul_comm] using h_comp
+
 end Temperature
