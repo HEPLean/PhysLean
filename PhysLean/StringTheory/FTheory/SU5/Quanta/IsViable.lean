@@ -23,6 +23,57 @@ This somes with one caveat, the `IsViable` constraint enforces the anomaly
 `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0`
 to hold, which is not always necessary, see arXiv:1401.5084.
 
+## Key result
+
+The key result of this file is `isViable_iff_mem_viableElems`.
+It corresponds to the following statement:
+
+In SU(5)+U(1) F-theory with the following constraints:
+
+- C1. There is a pair of Higgs fields `Hd` and `Hu`.
+- C2. The matter fields are in the 5-bar or 10d representation of SU(5).
+
+The above conditions are related to the datastructures we are trying to
+prove our results about.
+For each such matter field carries a unique charge `q`
+and quantum numbers `M` and `N` which are
+related to the `G₄`-fluxes and hypercharge fluxes respectively, but determine the
+spectrum on breaking to the Standard Model.
+These quantum numbers are carried in the type `Quanta`.
+
+- C3. There exists no chiral exotics in the matter spectrum.
+  - This is related to the `FluxesFive.NoExotics` and `FluxesTen.NoExotics` propositions.
+- C4. There exists a top Yukawa coupling.
+  - This is related to the `SuperSymmetry.SU5.Charges.AllowsTerm` proposition.
+- C5. The matter fields are not pheno-constrained.
+  - This is related to the `SuperSymmetry.SU5.Charges.IsPhenoConstrained` proposition.
+- C6. The generate dangerous couplings at one insertion of the Yukawa singlets.
+  - This is related to the `SuperSymmetry.SU5.Charges.YukawaGeneratesDangerousAtLevel` proposition.
+- C7. The charges are anomaly free.
+  - This is related to the `FTheory.SU5.Quanta.AnomalyCancellation` proposition.
+- C8. The charges are determined by the configurations given in https://arxiv.org/pdf/1504.05593
+  - This is relate to `x.toCharges ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges`
+
+Then, there are exactly six possible theories which satisfy all of the above constraints,
+which are given by `viableElems I` for each `I : CodimensionOneConfig`. They are
+
+|  qHd | qHu | (q₅, M₅, N₅) | (q₁₀, M₁₀, N₁₀) | arXiv:1507.05961 |
+|---------|-------------------------|---------|---------|---------|
+| 2 | -2 | {(-1, 1, 2), (1, 2, -2)} | {(-1, 3, 0)} | I.1.4a |
+| 2 | -2 | {(-1, 0, 2), (1, 3, -2)} | {(-1, 3, 0)} | I.1.4a (different M) |
+| -2 | 2 | {(-1, 2, -2), (1, 1, 2)} | {(1, 3, 0)} | I.1.4a (swap charge sign) |
+| -2 | 2 | {(-1, 3, -2), (1, 0, 2)} | {(1, 3, 0)} | I.1.4a (swap charge sign and different M) |
+| 6 | -14 | {(-9, 1, 2), (1, 2, -2)} | {(-7, 3, 0)} | I.1.4c |
+| 6 | -14 | {(-9, 0, 2), (1, 3, -2)} | {(-7, 3, 0)} | I.1.4c (different M) |
+
+A corollary of this result is `yukawaSingletsRegenerateDangerousInsertion_two_of_isViable`
+which corresponds to the statement that there are no viable theories which do not
+regenerate dangerous couplings at two insertions of the Yukawa singlets.
+
+## References
+
+- arXiv:1507.05961
+
 -/
 namespace FTheory
 
