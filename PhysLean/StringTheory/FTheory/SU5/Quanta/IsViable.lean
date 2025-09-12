@@ -66,6 +66,7 @@ which are given by `viableElems I` for each `I : CodimensionOneConfig`. They are
 | 6 | -14 | {(-9, 1, 2), (1, 2, -2)} | {(-7, 3, 0)} | I.1.4c |
 | 6 | -14 | {(-9, 0, 2), (1, 3, -2)} | {(-7, 3, 0)} | I.1.4c (different M) |
 
+
 A corollary of this result is `yukawaSingletsRegenerateDangerousInsertion_two_of_isViable`
 which corresponds to the statement that there are no viable theories which do not
 regenerate dangerous couplings at two insertions of the Yukawa singlets.
@@ -84,6 +85,12 @@ variable {I : CodimensionOneConfig}
 namespace Quanta
 open SuperSymmetry.SU5
 open PotentialTerm Charges
+
+/-!
+
+## A. `IsViable` definition
+
+-/
 
 /-- For a given `I : CodimensionOneConfig` the condition on a `Quanta` for it to be
   phenomenologically viable. -/
@@ -286,10 +293,10 @@ lemma toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViable
     · exact h.2.2.1
     · exact toCharges_isComplete_of_isViable I x h
   · exact toCharges_isAnomalyFree_of_isViable I x h
-
 /-!
 
-## viableElems
+## B. Defining viableElems
+
 -/
 
 /-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViable`. -/
