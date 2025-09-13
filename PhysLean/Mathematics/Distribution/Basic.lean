@@ -1,36 +1,86 @@
 /-
 Copyright (c) 2025 Kenny Lau. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Kenny Lau
+Authors: Kenny Lau, Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Distribution.FourierSchwartz
 import PhysLean.Meta.TODO.Basic
 /-!
+
 # Distributions
 
-This file defines distributions `E →d[𝕜] F`, which is a way to generalise functions `E → F`.
-Mathematically, a distribution `u : E →d[𝕜] F` takes in a test function `η : E → 𝕜` that is smooth
-with rapidly decreasing iterated derivatives, and outputs a value in `F`. This operation is required
-to be linear and continuous. Note that the space of test functions is called the Schwartz space and
-is denoted `𝓢(E, 𝕜)`.
+## i. Overview of distributions
 
-`E` is required to be a normed vector space over `ℝ`, and `F` can be a normed vector space over `ℝ`
-or `ℂ` (which is the field denoted `𝕜`).
+Distributions are often used implicitly in physics, for example the correct way to handle
+a dirac delta function is to treat it as a distribution. In this file we will
+define distributions and some properties on them.
 
-Note that the distributions defined here are more precisely called tempered distributions.
+The distributions from a space `E` to space `F` can be thought of as a generalization of
+functions from `E` to `F`. We give a more precise definition of distributions below.
 
-## Important Results
+## ii. Key results
+
+- `E →d[𝕜] F` is the type of distributions from `E` to `F`.
 - `Distribution.derivative` and `Distribution.fourierTransform` allow us to make sense of these
   operations that might not make sense a priori on general functions.
 
-## Examples
-- `Distribution.diracDelta`: Dirac delta distribution at a point `a : E` is a distribution
-  that takes in a test function `η : 𝓢(E, 𝕜)` and outputs `η a`.
+## iii. Table of Content
+
+- A. The definition of a distribution
+- B. Construction of distributions from linear maps
+- C. Derivatives of distributions
+- D. Fourier transform of distributions
+- E. Specific distributions
+
+## iv. Implementation notes
+
+- In this file we will define distributions generally, in `PhysLean.SpaceAndTime.Distributions`
+  we define properties of distributions directly related to `Space`.
 
 -/
 
 open SchwartzMap NNReal
 noncomputable section
+
+/-!
+
+## A. The definition of a distribution
+
+In physics, we often encounter mathematical objects like the Dirac delta function `δ(x)`
+that are not functions in the traditional sense.
+Distributions provide a rigorous framework for handling such objects.
+
+The core idea is to define a "generalized function" not by its value at each point,
+but by how it acts on a set of well-behaved "test functions".
+
+These test functions, typically denoted `η`. The choice of test functions depends on the application
+here we choose test functions which are smooth and decay
+rapidly at infinity (called Schwartz maps). Thus really the distributions we are defining here
+are called tempered distributions.
+
+A distribution `u` is a linear map that takes a test function `η` and produces a value,
+which can be a scalar or a vector. This action is written as `⟪u,η⟫`.
+
+Two key examples illustrate this concept:
+
+1.  **Ordinary Functions:** Any well-behaved function `f(x)` can be viewed as a distribution.
+  Its action on a test function `η` is defined by integration:
+  `u_f(η) = ∫ f(x) η(x) dx`
+  This integral "tests" the function `f` using `η`.
+
+2.  **Dirac Delta:** The Dirac delta `δ_a` (centered at `a`) is a distribution whose action is to
+  simply evaluate the test function at `a`:
+  `δ_a(η) = η(a)`
+
+Formally, a distribution is a *continuous linear map* from the space of Schwartz functions
+`𝓢(E, 𝕜)` to a
+vector space `F` over `𝕜`. This definition allows us to rigorously define concepts
+like derivatives and Fourier transforms for these generalized functions, as we will see below.
+
+We use the notation `E →d[𝕜] F` to denote the space of distributions from `E` to `F`
+where `E` is a normed vector space over `ℝ` and `F` is a normed vector space over `𝕜`.
+
+-/
 
 /-- An `F`-valued distribution on `E` (where `E` is a normed vector space over `ℝ` and `F` is a
 normed vector space over `𝕜`) is a continuous linear map `𝓢(E, 𝕜) →L[𝕜] F` where `𝒮(E, 𝕜)` is
@@ -51,6 +101,17 @@ namespace Distribution
 section NormedSpace
 
 variable [NormedSpace ℝ E] [NormedSpace 𝕜 F]
+
+/-!
+
+## B. Construction of distributions from linear maps
+
+Distributions are defined as **continuous** linear maps from `𝓢(E, 𝕜)` to `F`.
+It is possible to define a constructor of distributions from just linear maps
+`𝓢(E, 𝕜) →ₗ[𝕜] F` (without the continuity requirement) by imposing a condition
+on the size of `u` applied to `η`.
+
+-/
 
 /-- The construction of a distribution from the following data:
 1. We take a finite set `s` of pairs `(k, n) ∈ ℕ × ℕ` that will be explained later.
@@ -82,45 +143,20 @@ def ofLinear (s : Finset (ℕ × ℕ)) (u : 𝓢(E, 𝕜) →ₗ[𝕜] F)
     ofLinear 𝕜 s u hu η = u η :=
   rfl
 
-/-- Dirac delta distribution `diracDelta 𝕜 a : E →d[𝕜] 𝕜` takes in a test function `η : 𝓢(E, 𝕜)`
-and outputs `η a`. Intuitively this is an infinite density at a single point `a`. -/
-def diracDelta (a : E) : E →d[𝕜] 𝕜 :=
-  delta 𝕜 𝕜 a
-
-@[simp] lemma diracDelta_apply (a : E) (η : 𝓢(E, 𝕜)) :
-    diracDelta 𝕜 a η = η a :=
-  rfl
-
-/-- Dirac delta in a given direction `v : F`. `diracDelta' 𝕜 a v` takesn in a test function
-`η : 𝓢(E, 𝕜)` and outputs `η a • v`. Intuitively this is an infinitely intense vector field
-at a single point `a` pointing at the direction `v`. -/
-def diracDelta' (a : E) (v : F) : E →d[𝕜] F :=
-  ContinuousLinearMap.smulRight (diracDelta 𝕜 a) v
-
-@[simp] lemma diracDelta'_apply (a : E) (v : F) (η : 𝓢(E, 𝕜)) :
-    diracDelta' 𝕜 a v η = η a • v :=
-  rfl
-
 end NormedSpace
 
-section RCLike
+/-!
 
-/-- Definition of derivative of distribution: Let `u` be a distribution. Then its derivative is
-`u'` where given a test function `η`, `u' η := -u(η')`. This agrees with the distribution generated
-by the derivative of a differentiable function (with suitable conditions) (to be defined later),
-because of integral by parts (where the boundary conditions are `0` by the test functions being
-rapidly decreasing). -/
-def derivative : (ℝ →d[𝕜] 𝕜) →ₗ[𝕜] (ℝ →d[𝕜] 𝕜) where
-  toFun u := (ContinuousLinearEquiv.neg 𝕜).toContinuousLinearMap.comp <| u.comp <|
-    SchwartzMap.derivCLM 𝕜
-  map_add' u₁ u₂ := by simp
-  map_smul' c u := by simp
+## C. Derivatives of distributions
 
-@[simp] lemma derivative_apply (u : ℝ→d[𝕜] 𝕜) (η : 𝓢(ℝ, 𝕜)) :
-    u.derivative 𝕜 η = -u (derivCLM 𝕜 η) :=
-  rfl
+Given a distribution `u : E →d[𝕜] F`, we can define the derivative of that distribution.
+In general when defining an operation on a distribution, we do it by applying a similar
+operation instead to the Schwartz maps it acts on.
 
-end RCLike
+Thus the derivative of `u` is the distribution which takes `η` to `⟪u, - η'⟫`
+where `η'` is the derivative of `η`.
+
+-/
 
 section fderiv
 
@@ -203,10 +239,54 @@ TODO "01-09-25-JTS" "For distributions, prove that the derivative fderivD commut
 
 end fderiv
 
+/-!
+
+## D. Fourier transform of distributions
+
+As with derivatives of distributions we can define the fourier transform of a distribution
+by taking the fourier transform of the underlying Schwartz maps. Thus the fourier transform
+of the distribution `u` is the distribution which takes `η` to `⟪u, F[η]⟫` where `F[η]` is the
+fourier transform of `η`.
+
+-/
+
+section Complex
+
+variable [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+  [NormedSpace ℂ F]
+
+variable (E F) in
+/-- Definition of Fourier transform of distribution: Let `u` be a distribution. Then its Fourier
+transform is `F{u}` where given a test function `η`, `F{u}(η) := u(F{η})`. -/
+def fourierTransform : (E →d[ℂ] F) →ₗ[ℂ] (E →d[ℂ] F) where
+  toFun u := u.comp <| fourierTransformCLM ℂ (E := ℂ) (V := E)
+  map_add' u₁ u₂ := by simp
+  map_smul' c u := by simp
+
+@[simp] lemma fourierTransform_apply (u : E →d[ℂ] F) (η : 𝓢(E, ℂ)) :
+    u.fourierTransform E F η = u (fourierTransformCLM ℂ η) :=
+  rfl
+
+end Complex
+
+/-!
+
+## E. Specific distributions
+
+We now define specific distributions, which are used throughout physics. In particular, we define:
+- The constant distribution.
+- The dirac delta distribution.
+- The heaviside step funciton.
+
+-/
+
 section constant
 /-!
 
-## The constant distribution
+### E.1. The constant distribution
+
+The constant distribution is the distribution which corresponds to a constant function,
+it takes `η` to the integral of `η` over the volume measure.
 
 -/
 open MeasureTheory
@@ -295,28 +375,47 @@ lemma fderivD_const [hμ : Measure.IsAddHaarMeasure (volume (α := E))]
 end
 end constant
 
-section Complex
-
-variable [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
-  [NormedSpace ℂ F]
-
-variable (E F) in
-/-- Definition of Fourier transform of distribution: Let `u` be a distribution. Then its Fourier
-transform is `F{u}` where given a test function `η`, `F{u}(η) := u(F{η})`. -/
-def fourierTransform : (E →d[ℂ] F) →ₗ[ℂ] (E →d[ℂ] F) where
-  toFun u := u.comp <| fourierTransformCLM ℂ (E := ℂ) (V := E)
-  map_add' u₁ u₂ := by simp
-  map_smul' c u := by simp
-
-@[simp] lemma fourierTransform_apply (u : E →d[ℂ] F) (η : 𝓢(E, ℂ)) :
-    u.fourierTransform E F η = u (fourierTransformCLM ℂ η) :=
-  rfl
-
-end Complex
-
 /-!
 
-## Heaviside step function
+### E.2. The dirac delta distribution
+
+The dirac delta distribution centered at `a : E` is the distribution which takes
+`η` to `η a`. We also define `diracDelta'` whick takes in an element of `v` of `F` and
+outputs `η a • v`.
+
+-/
+
+section DiracDelta
+
+variable [NormedSpace ℝ E] [NormedSpace 𝕜 F]
+
+/-- Dirac delta distribution `diracDelta 𝕜 a : E →d[𝕜] 𝕜` takes in a test function `η : 𝓢(E, 𝕜)`
+and outputs `η a`. Intuitively this is an infinite density at a single point `a`. -/
+def diracDelta (a : E) : E →d[𝕜] 𝕜 :=
+  delta 𝕜 𝕜 a
+
+@[simp] lemma diracDelta_apply (a : E) (η : 𝓢(E, 𝕜)) :
+    diracDelta 𝕜 a η = η a :=
+  rfl
+
+/-- Dirac delta in a given direction `v : F`. `diracDelta' 𝕜 a v` takesn in a test function
+`η : 𝓢(E, 𝕜)` and outputs `η a • v`. Intuitively this is an infinitely intense vector field
+at a single point `a` pointing at the direction `v`. -/
+def diracDelta' (a : E) (v : F) : E →d[𝕜] F :=
+  ContinuousLinearMap.smulRight (diracDelta 𝕜 a) v
+
+@[simp] lemma diracDelta'_apply (a : E) (v : F) (η : 𝓢(E, 𝕜)) :
+    diracDelta' 𝕜 a v η = η a • v :=
+  rfl
+
+end DiracDelta
+/-!
+
+### E.3. The heviside step function
+
+The heaviside step function on `EuclideanSpace ℝ (Fin d.succ)` is the distribution
+from `EuclideanSpace ℝ (Fin d.succ)` to `ℝ` which takes a `η` to the integral of `η` in the
+upper-half plane (determined by the last coordinate in `EuclideanSpace ℝ (Fin d.succ)`).
 
 -/
 open MeasureTheory
