@@ -63,12 +63,12 @@ which can be a scalar or a vector. This action is written as `⟪u,η⟫`.
 
 Two key examples illustrate this concept:
 
-1.  **Ordinary Functions:** Any well-behaved function `f(x)` can be viewed as a distribution.
+1. **Ordinary Functions:** Any well-behaved function `f(x)` can be viewed as a distribution.
   Its action on a test function `η` is defined by integration:
   `u_f(η) = ∫ f(x) η(x) dx`
   This integral "tests" the function `f` using `η`.
 
-2.  **Dirac Delta:** The Dirac delta `δ_a` (centered at `a`) is a distribution whose action is to
+2. **Dirac Delta:** The Dirac delta `δ_a` (centered at `a`) is a distribution whose action is to
   simply evaluate the test function at `a`:
   `δ_a(η) = η(a)`
 
