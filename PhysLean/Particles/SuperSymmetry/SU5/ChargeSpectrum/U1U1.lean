@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.ZMod.Defs
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Yukawa
 import PhysLean.Meta.Linters.Sorry
 /-!
 

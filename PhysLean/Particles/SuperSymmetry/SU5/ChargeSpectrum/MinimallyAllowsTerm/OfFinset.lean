@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.MinimallyAllowsTerm.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoConstrained
 /-!
 
 # Minimally allows terms given sets of allowed charges
@@ -21,7 +21,7 @@ namespace SuperSymmetry
 
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 
 variable {𝓩 : Type}
 
@@ -174,7 +174,7 @@ variable {𝓩 : Type} [DecidableEq 𝓩] [AddCommGroup 𝓩]
 
 /-- The multiset of all charges within `ofFinset S5 S10` which minimally allow the
   potential term `T`. -/
-def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) : (T : PotentialTerm) → Multiset (Charges 𝓩)
+def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) : (T : PotentialTerm) → Multiset (ChargeSpectrum 𝓩)
   | μ =>
     let SqHd := S5.val
     let SqHu := S5.val
@@ -247,7 +247,7 @@ def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) : (T : PotentialTerm) �
     (Filt.map (fun x => (x.1, none,x.2.1.toFinset, x.2.2.toFinset)))
 
 lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
-    {x : Charges 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+    {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     ∃ a b c, x = allowsTermForm a b c T := by
   cases T
   all_goals
@@ -315,13 +315,13 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩
     abel
 
 lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
-    {x : Charges 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+    {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
   exact allowsTermForm_allowsTerm
 
 lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset 𝓩}
-    {T : PotentialTerm} (x : Charges 𝓩) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
+    {T : PotentialTerm} (x : ChargeSpectrum 𝓩) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
     x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_minimallyAllowsTerm h
   cases T
@@ -370,7 +370,7 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset �
     simp_all [allowsTermForm]
 
 lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩}
-    {T : PotentialTerm} {x : Charges 𝓩}
+    {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
     (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.MinimallyAllowsTerm T := by
   by_cases hT : T ≠ W1 ∧ T ≠ W2
@@ -387,7 +387,7 @@ lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset �
       exact hx.2
 
 lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
-    {x : Charges 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+    {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x ∈ ofFinset S5 S10 := by
   cases T
   all_goals
@@ -436,7 +436,7 @@ lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset 𝓩} {T : Po
 
 lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
     {S5 S10 : Finset 𝓩} {T : PotentialTerm}
-    {x : Charges 𝓩} (hx : x ∈ ofFinset S5 S10) :
+    {x : ChargeSpectrum 𝓩} (hx : x ∈ ofFinset S5 S10) :
     x.MinimallyAllowsTerm T ↔ x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   constructor
   · intro h
@@ -454,7 +454,7 @@ lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10' : Finset �
   exact (minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset h1).mpr hx
 
 lemma not_isPhenoConstrained_of_minimallyAllowsTermsOfFinset_topYukawa
-    {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
+    {S5 S10 : Finset 𝓩} {x : ChargeSpectrum 𝓩}
     (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 topYukawa) :
     ¬ x.IsPhenoConstrained := by
   simp [minimallyAllowsTermsOfFinset] at hx
@@ -462,7 +462,7 @@ lemma not_isPhenoConstrained_of_minimallyAllowsTermsOfFinset_topYukawa
   simp [IsPhenoConstrained, AllowsTerm, mem_ofPotentialTerm_iff_mem_ofPotentialTerm,
     ofPotentialTerm']
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 

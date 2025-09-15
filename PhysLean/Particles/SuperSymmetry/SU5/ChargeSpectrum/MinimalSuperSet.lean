@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Completions
 /-!
 # Minimal super set
 
@@ -18,20 +18,20 @@ namespace SuperSymmetry
 
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 
 variable {𝓩 : Type} [DecidableEq 𝓩]
 
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x`. -/
-def minimalSuperSet (S5 S10 : Finset 𝓩) (x : Charges 𝓩) : Finset (Charges 𝓩) :=
+def minimalSuperSet (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) : Finset (ChargeSpectrum 𝓩) :=
   let SqHd := if x.1.isSome then ∅ else S5.image fun y => (some y, x.2)
   let SqHu := if x.2.1.isSome then ∅ else S5.image fun y => (x.1, some y, x.2.2)
   let SQ5 := (S5 \ x.2.2.1).image (fun y => (x.1, x.2.1, insert y x.2.2.1, x.2.2.2))
   let SQ10 := (S10 \ x.2.2.2).image (fun y => (x.1, x.2.1, x.2.2.1, insert y x.2.2.2))
   (SqHd ∪ SqHu ∪ SQ5 ∪ SQ10).erase x
 
-lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : Charges 𝓩)
+lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 𝓩)
     (hy : y ∈ minimalSuperSet S5 S10 x) : x ⊆ y := by
   simp [minimalSuperSet] at hy
   rcases hy with ⟨hy1, hr | hr | hr | hr⟩
@@ -65,18 +65,18 @@ lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : Charges 𝓩
       simp [hasSubset]
 
 @[simp]
-lemma self_not_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x : Charges 𝓩) :
+lemma self_not_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) :
     x ∉ minimalSuperSet S5 S10 x := by
   simp [minimalSuperSet]
 
-lemma self_neq_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : Charges 𝓩)
+lemma self_neq_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 𝓩)
     (hy : y ∈ minimalSuperSet S5 S10 x) : x ≠ y := by
   by_contra h
   subst h
   simp at hy
 
-lemma card_of_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
-    (y : Charges 𝓩) (hy : y ∈ minimalSuperSet S5 S10 x) :
+lemma card_of_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : ChargeSpectrum 𝓩}
+    (y : ChargeSpectrum 𝓩) (hy : y ∈ minimalSuperSet S5 S10 x) :
     card y = card x + 1 := by
   simp [minimalSuperSet] at hy
   rcases hy with ⟨hy1, hr | hr | hr | hr⟩
@@ -117,7 +117,7 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
       rw [Finset.insert_eq_of_mem h] at hy1
       simp at hy1
 
-lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
+lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : ChargeSpectrum 𝓩}
     (z : 𝓩) (hz : z ∈ S5) (hznot : z ∉ x.2.2.1) :
     (x.1, x.2.1, insert z x.2.2.1, x.2.2.2) ∈ minimalSuperSet S5 S10 x := by
   simp [minimalSuperSet]
@@ -130,7 +130,7 @@ lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
     left
     use z
 
-lemma insert_Q10_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : Charges 𝓩}
+lemma insert_Q10_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : ChargeSpectrum 𝓩}
     (z : 𝓩) (hz : z ∈ S10) (hznot : z ∉ x.2.2.2) :
     (x.1, x.2.1, x.2.2.1, insert z x.2.2.2) ∈ minimalSuperSet S5 S10 x := by
   simp [minimalSuperSet]
@@ -153,7 +153,7 @@ lemma some_qHu_mem_minimalSuperSet_of_none {S5 S10 : Finset 𝓩}
     (x1, some z, x2) ∈ minimalSuperSet S5 S10 (x1, none, x2) := by
   simp_all [minimalSuperSet]
 
-lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : Charges 𝓩}
+lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : ChargeSpectrum 𝓩}
     (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y)
     (hxneqy : x ≠ y) : ∃ z ∈ minimalSuperSet S5 S10 x, z ⊆ y := by
   rw [Subset] at hsubset
@@ -232,9 +232,9 @@ lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : Charges 𝓩}
     simp_all
 
 lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
-    (p : Charges 𝓩 → Prop) (hp : (x : Charges 𝓩) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
-    (x : Charges 𝓩) (hbase : p x)
-    (y : Charges 𝓩) (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y) :
+    (p : ChargeSpectrum 𝓩 → Prop) (hp : (x : ChargeSpectrum 𝓩) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
+    (x : ChargeSpectrum 𝓩) (hbase : p x)
+    (y : ChargeSpectrum 𝓩) (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y) :
     (n : ℕ) → (hn : n = y.card - x.card) → p y
   | 0, hn => by
     have hxy : x = y := by
@@ -264,8 +264,8 @@ lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
 variable {𝓩 : Type} [DecidableEq 𝓩]
 
 lemma insert_filter_card_zero
-    (T : Multiset (Charges 𝓩)) (S5 S10 : Finset 𝓩)
-    (p : Charges 𝓩 → Prop) [DecidablePred p]
+    (T : Multiset (ChargeSpectrum 𝓩)) (S5 S10 : Finset 𝓩)
+    (p : ChargeSpectrum 𝓩 → Prop) [DecidablePred p]
     (hComplet : ∀ x ∈ T, IsComplete x)
     (h10 : ∀ q10 : S10, ((T.map fun x => (x.1, x.2.1, x.2.2.1, insert q10.1 x.2.2.2)).filter
       fun y => (y ∉ T ∧ p y)) = ∅)
@@ -297,13 +297,13 @@ lemma insert_filter_card_zero
     exact h10' (some xqHd, some xqHu, xQ5, xQ10) x_mem_T y_not_in_T
 
 lemma subset_insert_filter_card_zero_inductive
-    (T : Multiset (Charges 𝓩))
+    (T : Multiset (ChargeSpectrum 𝓩))
     (S5 S10 : Finset 𝓩)
-    (p : Charges 𝓩 → Prop) [DecidablePred p]
-    (hnotSubset : ∀ (x y : Charges 𝓩), x ⊆ y → ¬ p x → ¬ p y)
+    (p : ChargeSpectrum 𝓩 → Prop) [DecidablePred p]
+    (hnotSubset : ∀ (x y : ChargeSpectrum 𝓩), x ⊆ y → ¬ p x → ¬ p y)
     (hComplet : ∀ x ∈ T, IsComplete x)
-    (x : Charges 𝓩)
-    (hx : x ∈ T) (y : Charges 𝓩) (hsubset : x ⊆ y)
+    (x : ChargeSpectrum 𝓩)
+    (hx : x ∈ T) (y : ChargeSpectrum 𝓩) (hsubset : x ⊆ y)
     (hy : y ∈ ofFinset S5 S10)
     (h10 : ∀ q10 : S10, ((T.map fun x => (x.1, x.2.1, x.2.2.1, insert q10.1 x.2.2.2)).filter
       fun y => (y ∉ T ∧ p y)) = ∅)
@@ -344,13 +344,13 @@ lemma subset_insert_filter_card_zero_inductive
   This assumes that all charges in `T` are complete, and that `p` satisfies
   `x ⊆ y → ¬ p x → ¬ p y`. -/
 lemma subset_insert_filter_card_zero
-    (T : Multiset (Charges 𝓩))
+    (T : Multiset (ChargeSpectrum 𝓩))
     (S5 S10 : Finset 𝓩)
-    (p : Charges 𝓩 → Prop) [DecidablePred p]
-    (hnotSubset : ∀ (x y : Charges 𝓩), x ⊆ y → ¬ p x → ¬ p y)
+    (p : ChargeSpectrum 𝓩 → Prop) [DecidablePred p]
+    (hnotSubset : ∀ (x y : ChargeSpectrum 𝓩), x ⊆ y → ¬ p x → ¬ p y)
     (hComplet : ∀ x ∈ T, IsComplete x)
-    (x : Charges 𝓩)
-    (hx : x ∈ T) (y : Charges 𝓩) (hsubset : x ⊆ y)
+    (x : ChargeSpectrum 𝓩)
+    (hx : x ∈ T) (y : ChargeSpectrum 𝓩) (hsubset : x ⊆ y)
     (hy : y ∈ ofFinset S5 S10)
     (h10 : ∀ q10 : S10, ((T.map fun x => (x.1, x.2.1, x.2.2.1, insert q10.1 x.2.2.2)).filter
       fun y => (y ∉ T ∧ p y)) = ∅)
@@ -360,7 +360,7 @@ lemma subset_insert_filter_card_zero
   subset_insert_filter_card_zero_inductive T S5 S10 p hnotSubset hComplet x hx y hsubset hy h10 h5
     (y.card - x.card) rfl
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 

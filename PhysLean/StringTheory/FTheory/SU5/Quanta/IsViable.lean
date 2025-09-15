@@ -32,7 +32,7 @@ variable {I : CodimensionOneConfig}
 
 namespace Quanta
 open SuperSymmetry.SU5
-open PotentialTerm Charges
+open PotentialTerm ChargeSpectrum
 
 /-- For a given `I : CodimensionOneConfig` the condition on a `Quanta` for it to be
   phenomenologically viable. -/
@@ -66,7 +66,7 @@ lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
       ∧
     x.2.2.1.toCharges.Nodup ∧
     x.2.2.2.toCharges.Nodup := by
-  rw [IsViable, Charges.mem_ofFinset_iff]
+  rw [IsViable, mem_ofFinset_iff]
   simp [toCharges]
 
 instance (I : CodimensionOneConfig) (x : Quanta) : Decidable (IsViable I x) :=
@@ -111,7 +111,7 @@ lemma Q10_charges_mem_allowedBarTenCharges_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
     ∀ s ∈ x.2.2.2.toCharges, s ∈ I.allowedTenCharges := by
   have h1 := toCharges_mem_ofFinset_of_isViable I x h
-  rw [Charges.mem_ofFinset_iff] at h1
+  rw [mem_ofFinset_iff] at h1
   have h2 := h1.2.2.2
   intro y hy
   apply h2
@@ -122,7 +122,7 @@ lemma Q5_charges_mem_allowedBarFiveCharges_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
     ∀ s ∈ x.2.2.1.toCharges, s ∈ I.allowedBarFiveCharges := by
   have h1 := toCharges_mem_ofFinset_of_isViable I x h
-  rw [Charges.mem_ofFinset_iff] at h1
+  rw [mem_ofFinset_iff] at h1
   have h2 := h1.2.2.1
   intro y hy
   apply h2

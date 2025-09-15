@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimalSuperSet
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Yukawa
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.MinimalSuperSet
 import PhysLean.Meta.TODO.Basic
 /-!
 
@@ -29,7 +29,7 @@ namespace SuperSymmetry
 
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 
 variable {𝓩 : Type} [DecidableEq 𝓩] [AddCommGroup 𝓩]
 
@@ -43,14 +43,14 @@ variable {𝓩 : Type} [DecidableEq 𝓩] [AddCommGroup 𝓩]
   adding individual elements of `S5` to the `Q5` charges of elements of `charges` again
   leads to an element in `charges` or a charge which is phenomenologically constrained,
   or regenerates dangerous couplings with one singlet insertion. -/
-def IsPhenoClosedQ5 (S5 : Finset 𝓩) (charges : Multiset (Charges 𝓩)) : Prop :=
+def IsPhenoClosedQ5 (S5 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)) : Prop :=
   ∀ q5 ∈ S5, ∀ x ∈ charges,
-    let y : Charges 𝓩 := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
+    let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1
 
-lemma isPhenClosedQ5_of_isPhenoConstrainedQ5 {S5 : Finset 𝓩} {charges : Multiset (Charges 𝓩)}
+lemma isPhenClosedQ5_of_isPhenoConstrainedQ5 {S5 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)}
     (h : ∀ q5 ∈ S5, ∀ x ∈ charges,
-      let y : Charges 𝓩 := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
+      let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
       IsPhenoConstrainedQ5 x q5 ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1) :
     IsPhenoClosedQ5 S5 charges := by
   intro q5 hq5 x hx
@@ -72,14 +72,14 @@ lemma isPhenClosedQ5_of_isPhenoConstrainedQ5 {S5 : Finset 𝓩} {charges : Multi
   adding individual elements of `S10` to the `Q10` charges of elements of `charges` again
   leads to an element in `charges` or a charge which is phenomenologically constrained,
   or regenerates dangerous couplings with one singlet insertion. -/
-def IsPhenoClosedQ10 (S10 : Finset 𝓩) (charges : Multiset (Charges 𝓩)) : Prop :=
+def IsPhenoClosedQ10 (S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)) : Prop :=
   ∀ q10 ∈ S10, ∀ x ∈ charges,
-    let y : Charges 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
+    let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1
 
-lemma isPhenClosedQ10_of_isPhenoConstrainedQ10 {S10 : Finset 𝓩} {charges : Multiset (Charges 𝓩)}
+lemma isPhenClosedQ10_of_isPhenoConstrainedQ10 {S10 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)}
     (h : ∀ q10 ∈ S10, ∀ x ∈ charges,
-      let y : Charges 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
+      let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
       IsPhenoConstrainedQ10 x q10 ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1) :
     IsPhenoClosedQ10 S10 charges := by
   intro q10 hq10 x hx
@@ -97,19 +97,19 @@ open PotentialTerm
 /-- The proposition that for multiset set of charges `charges` contains all
   viable completions of charges which allow the top Yukawa, given allowed values
   of `5`d and `10`d charges `S5` and `S10`. -/
-def ContainsPhenoCompletionsOfMinimallyAllows (S5 S10 : Finset 𝓩) (charges : Multiset (Charges 𝓩)) :
+def ContainsPhenoCompletionsOfMinimallyAllows (S5 S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)) :
     Prop := ∀ x ∈ (minimallyAllowsTermsOfFinset S5 S10 topYukawa),
       ¬ x.IsPhenoConstrained → ∀ y ∈ completions S5 S10 x, ¬ y.IsPhenoConstrained
       ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1 → y ∈ charges
 
 lemma containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa {S5 S10 : Finset 𝓩}
-    {charges : Multiset (Charges 𝓩)} :
+    {charges : Multiset (ChargeSpectrum 𝓩)} :
     ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges ↔
     ∀ x ∈ (minimallyAllowsTermsOfFinset S5 S10 topYukawa),
     ∀ y ∈ completionsTopYukawa S5 x, ¬ y.IsPhenoConstrained
       ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1 → y ∈ charges := by
   rw [ContainsPhenoCompletionsOfMinimallyAllows]
-  have h1 (x : Charges 𝓩) (hx : x ∈ (minimallyAllowsTermsOfFinset S5 S10 topYukawa)) :
+  have h1 (x : ChargeSpectrum 𝓩) (hx : x ∈ (minimallyAllowsTermsOfFinset S5 S10 topYukawa)) :
     ¬ x.IsPhenoConstrained ↔ True := by
     simp only [iff_true]
     exact not_isPhenoConstrained_of_minimallyAllowsTermsOfFinset_topYukawa hx
@@ -119,12 +119,12 @@ lemma containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa {S5 S10
     rw [h1 x hx]
   simp
 
-instance [DecidableEq 𝓩] {S5 S10 : Finset 𝓩} {charges : Multiset (Charges 𝓩)} :
+instance [DecidableEq 𝓩] {S5 S10 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)} :
     Decidable (ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges) :=
   decidable_of_iff _ (containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa).symm
 
 lemma containsPhenoCompletionsOfMinimallyAllows_of_subset {S5 S10 : Finset 𝓩}
-    {charges charges' : Multiset (Charges 𝓩)}
+    {charges charges' : Multiset (ChargeSpectrum 𝓩)}
     (h' : ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges)
     (h : ∀ x ∈ charges, x ∈ charges') :
     ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges' :=
@@ -155,7 +155,7 @@ The importance of this lemma is that it is only regarding properties of finite-s
 not of the whole space of possible charges.
 -/
 lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
-    {S5 S10 : Finset 𝓩} {charges : Multiset (Charges 𝓩)}
+    {S5 S10 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)}
     (charges_topYukawa : ∀ x ∈ charges, x.AllowsTerm .topYukawa)
     (charges_not_isPhenoConstrained : ∀ x ∈ charges, ¬ x.IsPhenoConstrained)
     (charges_yukawa : ∀ x ∈ charges, ¬ x.YukawaGeneratesDangerousAtLevel 1)
@@ -163,7 +163,7 @@ lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
     (charges_isPhenoClosedQ5 : IsPhenoClosedQ5 S5 charges)
     (charges_isPhenoClosedQ10 : IsPhenoClosedQ10 S10 charges)
     (charges_exist : ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges)
-    {x : Charges 𝓩} (hsub : x ∈ ofFinset S5 S10) :
+    {x : ChargeSpectrum 𝓩} (hsub : x ∈ ofFinset S5 S10) :
     x ∈ charges ↔ AllowsTerm x .topYukawa ∧
     ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1 ∧ IsComplete x := by
   constructor
@@ -243,7 +243,7 @@ lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
   the condition `ContainsPhenoCompletionsOfMinimallyAllows`.
   That is to say, every multiset of charges which satifies
   `ContainsPhenoCompletionsOfMinimallyAllows` has `completeMinSubset` as a subset. -/
-def completeMinSubset (S5 S10 : Finset 𝓩) : Multiset (Charges 𝓩) :=
+def completeMinSubset (S5 S10 : Finset 𝓩) : Multiset (ChargeSpectrum 𝓩) :=
   ((minimallyAllowsTermsOfFinset S5 S10 topYukawa).bind <|
       completionsTopYukawa S5).dedup.filter
     fun x => ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1
@@ -256,7 +256,7 @@ lemma completeMinSubset_nodup {S5 S10 : Finset 𝓩} :
       ((minimallyAllowsTermsOfFinset S5 S10 topYukawa).bind (completionsTopYukawa S5))
 
 lemma completeMinSubset_subset_iff_containsPhenoCompletionsOfMinimallyAllows
-    (S5 S10 : Finset 𝓩) (charges : Multiset (Charges 𝓩)) :
+    (S5 S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)) :
     completeMinSubset S5 S10 ⊆ charges ↔
     ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges := by
   constructor
@@ -292,10 +292,10 @@ TODO "JGVOQ" "Make the result `viableChargesMultiset` a safe definition, that is
 
   Note this is fast for evaluation, but to slow with `decide`. -/
 unsafe def viableChargesMultiset (S5 S10 : Finset 𝓩) :
-    Multiset (Charges 𝓩) := (aux (completeMinSubset S5 S10) (completeMinSubset S5 S10)).dedup
+    Multiset (ChargeSpectrum 𝓩) := (aux (completeMinSubset S5 S10) (completeMinSubset S5 S10)).dedup
 where
   /-- Auxillary recursive function to define `viableChargesMultiset`. -/
-  aux : Multiset (Charges 𝓩) → Multiset (Charges 𝓩) → Multiset (Charges 𝓩) :=
+  aux : Multiset (ChargeSpectrum 𝓩) → Multiset (ChargeSpectrum 𝓩) → Multiset (ChargeSpectrum 𝓩) :=
     fun all add =>
       /- Note that aux terminates since that every iteration the size of `all` increases,
         unless it terminates that round, but `all` is bounded in size by the number
@@ -306,7 +306,7 @@ where
         ¬ IsPhenoConstrained y ∧ ¬ YukawaGeneratesDangerousAtLevel y 1
       aux (all + s2) s2
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 

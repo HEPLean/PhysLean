@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoConstrained
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.MinimallyAllowsTerm.Basic
 /-!
 
 # Minimally allows a finite set of terms
@@ -20,7 +20,7 @@ each term in `Ts`.
 namespace SuperSymmetry
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 
 variable {𝓩 : Type} [AddCommGroup 𝓩] [DecidableEq 𝓩]
 open SuperSymmetry.SU5
@@ -29,14 +29,14 @@ open PotentialTerm
 /-- A collection of charges `x : Charges` is said to minimally allow
   a finite set of potential terms `Ts` if it allows
   all terms in `Ts` and no strict subset of it allows all terms in `Ts`. -/
-def MinimallyAllowsFinsetTerms (x : Charges 𝓩) (Ts : Finset PotentialTerm) : Prop :=
+def MinimallyAllowsFinsetTerms (x : ChargeSpectrum 𝓩) (Ts : Finset PotentialTerm) : Prop :=
   ∀ y ∈ x.powerset, y = x ↔ ∀ T ∈ Ts, y.AllowsTerm T
 
-instance (x : Charges 𝓩) (Ts : Finset PotentialTerm) :
+instance (x : ChargeSpectrum 𝓩) (Ts : Finset PotentialTerm) :
     Decidable (x.MinimallyAllowsFinsetTerms Ts) :=
   inferInstanceAs (Decidable (∀ y ∈ powerset x, y = x ↔ ∀ T ∈ Ts, y.AllowsTerm T))
 
-variable {Ts : Finset PotentialTerm} {x : Charges 𝓩}
+variable {Ts : Finset PotentialTerm} {x : ChargeSpectrum 𝓩}
 
 lemma allowsTerm_of_minimallyAllowsFinsetTerms {T : PotentialTerm}
     (h : x.MinimallyAllowsFinsetTerms Ts) (hT : T ∈ Ts) : x.AllowsTerm T :=
@@ -55,12 +55,12 @@ lemma minimallyAllowsFinsetTerms_singleton {T : PotentialTerm} :
 
 /-- The set of charges of the form `(qHd, qHu, {q5}, {-qHd-q5, q10, qHu - q10})`
   This includes every charge which minimally allows for the top and bottom Yukawas. -/
-def minTopBottom (S5 S10 : Finset 𝓩) : Multiset (Charges 𝓩) := Multiset.dedup <|
+def minTopBottom (S5 S10 : Finset 𝓩) : Multiset (ChargeSpectrum 𝓩) := Multiset.dedup <|
   (S5.val.product <| S5.val.product <| S5.val.product <| S10.val).map
     (fun x => (x.1, x.2.1, {x.2.2.1}, {- x.1 - x.2.2.1, x.2.2.2, x.2.1 - x.2.2.2}))
 
 lemma allowsTerm_topYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
-    {x : Charges 𝓩} (h : x ∈ minTopBottom S5 S10) :
+    {x : ChargeSpectrum 𝓩} (h : x ∈ minTopBottom S5 S10) :
     x.AllowsTerm topYukawa := by
   simp [minTopBottom] at h
   obtain ⟨qHd, qHu, q5, q10, ⟨hHd, hHu, h5, h10⟩, rfl⟩ := h
@@ -71,7 +71,7 @@ lemma allowsTerm_topYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
   simp
 
 lemma allowsTerm_bottomYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
-    {x : Charges 𝓩} (h : x ∈ minTopBottom S5 S10) :
+    {x : ChargeSpectrum 𝓩} (h : x ∈ minTopBottom S5 S10) :
     x.AllowsTerm bottomYukawa := by
   simp [minTopBottom] at h
   obtain ⟨qHd, qHu, q5, q10, ⟨hHd, hHu, h5, h10⟩, rfl⟩ := h
@@ -82,7 +82,7 @@ lemma allowsTerm_bottomYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
   simp
 
 lemma mem_minTopBottom_of_minimallyAllowsFinsetTerms
-    {x : Charges 𝓩} {S5 S10 : Finset 𝓩}
+    {x : ChargeSpectrum 𝓩} {S5 S10 : Finset 𝓩}
     (h : x.MinimallyAllowsFinsetTerms {topYukawa, bottomYukawa})
     (hx : x ∈ ofFinset S5 S10) :
     x ∈ minTopBottom S5 S10 := by
@@ -124,7 +124,7 @@ lemma mem_minTopBottom_of_minimallyAllowsFinsetTerms
     · rw [allowsTerm_iff_subset_allowsTermForm]
       simp [allowsTermForm, subset_def]
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 end SuperSymmetry

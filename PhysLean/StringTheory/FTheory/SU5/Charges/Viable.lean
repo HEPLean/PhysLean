@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoClosed
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoClosed
 import PhysLean.StringTheory.FTheory.SU5.Charges.OfRationalSection
 /-!
 
@@ -42,9 +42,9 @@ namespace FTheory
 
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 open SuperSymmetry.SU5
-open SuperSymmetry.SU5.Charges
+open SuperSymmetry.SU5.ChargeSpectrum
 open PotentialTerm
 open CodimensionOneConfig
 open PhysLean
@@ -63,7 +63,7 @@ This can be constructed via
 
 #eval completeMinSubset same.allowedBarFiveCharges same.allowedTenCharges
 -/
-private def viableCompletions (I : CodimensionOneConfig) : Multiset (Charges ℤ) :=
+private def viableCompletions (I : CodimensionOneConfig) : Multiset (ChargeSpectrum ℤ) :=
   match I with
   | same => {
     /- qHu = -3, and Q10 = {-3, 0} -/
@@ -203,7 +203,7 @@ lemma containsPhenoCompletionsOfMinimallyAllows_viableCompletions :
     (completeMinSubset same.allowedBarFiveCharges
       same.allowedTenCharges).toFinset
 -/
-def viableChargesAdditional : CodimensionOneConfig → Multiset (Charges ℤ)
+def viableChargesAdditional : CodimensionOneConfig → Multiset (ChargeSpectrum ℤ)
   | .same =>
     {(some 1, some (-3), {-1, 2}, {-3, 0}), (some 2, some (-3), {-2, 1}, {-3, 0}),
       (some (-3), some (-2), {0}, {3, -1}), (some (-3), some (-2), {0, 2}, {-1}),
@@ -268,7 +268,7 @@ lemma viableCompletions_disjiont_viableChargesAdditional (I : CodimensionOneConf
 
   These trees can be found with e.g.
   `#eval viableChargesExt nextToNearestNeighbor`. -/
-def viableCharges (I : CodimensionOneConfig) : Multiset (Charges ℤ) :=
+def viableCharges (I : CodimensionOneConfig) : Multiset (ChargeSpectrum ℤ) :=
   viableCompletions I + viableChargesAdditional I
 
 /-!
@@ -372,7 +372,7 @@ lemma viableCompletions_subset_viableCharges (I : CodimensionOneConfig) :
   left
   exact hx
 
-lemma mem_viableCharges_iff {I} {x : Charges}
+lemma mem_viableCharges_iff {I} {x : ChargeSpectrum}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges) :
     x ∈ viableCharges I ↔ AllowsTerm x topYukawa ∧
     ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1 ∧ IsComplete x :=
@@ -388,7 +388,7 @@ lemma mem_viableCharges_iff {I} {x : Charges}
       (viableCompletions_subset_viableCharges I))
     hsub
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 

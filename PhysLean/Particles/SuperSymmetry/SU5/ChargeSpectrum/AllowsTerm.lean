@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfPotentialTerm
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.OfPotentialTerm
 import Mathlib.Tactic.FinCases
 /-!
 
@@ -24,24 +24,24 @@ subset which can be expressed as `allowsTermForm a b c T` for some integers `a`,
 namespace SuperSymmetry
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 
 variable {𝓩 : Type} [AddCommGroup 𝓩]
 
 /-- The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
 if the zero charge is in the set of charges associated with that potential term. -/
-def AllowsTerm (x : Charges 𝓩) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
+def AllowsTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
 
 lemma allowsTerm_iff_zero_mem_ofPotentialTerm' [DecidableEq 𝓩]
-    {x : Charges 𝓩} {T : PotentialTerm} :
+    {x : ChargeSpectrum 𝓩} {T : PotentialTerm} :
     x.AllowsTerm T ↔ 0 ∈ x.ofPotentialTerm' T := by
   rw [AllowsTerm]
   exact mem_ofPotentialTerm_iff_mem_ofPotentialTerm
 
-instance [DecidableEq 𝓩] (x : Charges 𝓩) (T : PotentialTerm) : Decidable (x.AllowsTerm T) :=
+instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Decidable (x.AllowsTerm T) :=
   decidable_of_iff (0 ∈ x.ofPotentialTerm' T) allowsTerm_iff_zero_mem_ofPotentialTerm'.symm
 
-lemma allowsTerm_mono {T : PotentialTerm} {y x : Charges 𝓩}
+lemma allowsTerm_mono {T : PotentialTerm} {y x : ChargeSpectrum 𝓩}
     (h : y ⊆ x) (hy : y.AllowsTerm T) : x.AllowsTerm T := ofPotentialTerm_mono h T hy
 
 /-!
@@ -56,7 +56,7 @@ variable [DecidableEq 𝓩]
   Defined such that `allowsTermForm a b c T` always allows the potential term `T`,
   and if any over charge `x` allows `T` then it is due to a subset of the form
   `allowsTermForm a b c T`. -/
-def allowsTermForm (a b c : 𝓩) : (T : PotentialTerm) → Charges 𝓩
+def allowsTermForm (a b c : 𝓩) : (T : PotentialTerm) → ChargeSpectrum 𝓩
   | .μ => (some a, some a, ∅, ∅)
   | .β => (none, some a, {a}, ∅)
   | .Λ => (none, none, {a, b}, {- a - b})
@@ -129,7 +129,7 @@ lemma allowsTermForm_allowsTerm {a b c : 𝓩} {T : PotentialTerm} :
   all_goals abel
 
 lemma allowsTerm_of_eq_allowsTermForm {T : PotentialTerm}
-    (x : Charges 𝓩) (h : ∃ a b c, x = allowsTermForm a b c T) :
+    (x : ChargeSpectrum 𝓩) (h : ∃ a b c, x = allowsTermForm a b c T) :
     x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := h
   exact allowsTermForm_allowsTerm
@@ -189,7 +189,7 @@ lemma allowsTermForm_card_le_degree {a b c : 𝓩} {T : PotentialTerm} :
     have h1 : Finset.card {a, b, c} ≤ 3 := Finset.card_le_three
     omega
 
-lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges 𝓩}
+lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
     (h : x.AllowsTerm T) :
     ∃ a b c, allowsTermForm a b c T ⊆ x ∧ (allowsTermForm a b c T).AllowsTerm T := by
   simp [AllowsTerm, ofPotentialTerm] at h
@@ -312,7 +312,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     rw [← sub_zero f2, ← f1_add_f2_eq_zero]
     abel
 
-lemma allowsTerm_iff_subset_allowsTermForm {T : PotentialTerm} {x : Charges 𝓩} :
+lemma allowsTerm_iff_subset_allowsTermForm {T : PotentialTerm} {x : ChargeSpectrum 𝓩} :
     x.AllowsTerm T ↔ ∃ a b c, allowsTermForm a b c T ⊆ x := by
   constructor
   · intro h
@@ -322,7 +322,7 @@ lemma allowsTerm_iff_subset_allowsTermForm {T : PotentialTerm} {x : Charges 𝓩
     obtain ⟨a, b, c, h1⟩ := h
     apply allowsTerm_mono h1 allowsTermForm_allowsTerm
 
-lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Charges 𝓩}
+lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
     (h : x.AllowsTerm T) : ∃ y ∈ x.powerset, y.card ≤ T.degree ∧ y.AllowsTerm T := by
   obtain ⟨a, b, c, h1, h2⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm h
   use allowsTermForm a b c T
@@ -337,7 +337,7 @@ lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
 
 /-- The proposition for which says, given a charge `x` adding a charge `q5` permits the
   existence of a potential term `T` due to the addition of that charge. -/
-def AllowsTermQ5 [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) (T : PotentialTerm) : Prop :=
+def AllowsTermQ5 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : PotentialTerm) : Prop :=
   match T with
   | .μ => false
   | .β =>
@@ -365,7 +365,7 @@ def AllowsTermQ5 [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) (T : Potentia
       (0 : 𝓩) ∈ (insert q5 x.2.2.1).val.map (fun y => y + q5 - qHu - qHu)
     | _ => false
 
-instance [DecidableEq 𝓩] (x : Charges 𝓩) (q5 : 𝓩) (T : PotentialTerm) :
+instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : PotentialTerm) :
     Decidable (AllowsTermQ5 x q5 T) :=
   match T with
   | .μ => isFalse fun h => by simp [AllowsTermQ5] at h
@@ -605,7 +605,7 @@ lemma allowsTerm_insertQ5_iff_allowsTermQ5 {qHd qHu : Option 𝓩}
 
 /-- The proposition for which says, given a charge `x` adding a charge `q5` permits the
   existence of a potential term `T` due to the addition of that charge. -/
-def AllowsTermQ10 [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) (T : PotentialTerm) : Prop :=
+def AllowsTermQ10 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T : PotentialTerm) : Prop :=
   match T with
   | .μ => false
   | .β => false
@@ -634,7 +634,7 @@ def AllowsTermQ10 [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) (T : Potent
     | _ => false
   | .W3 => false
 
-instance [DecidableEq 𝓩] (x : Charges 𝓩) (q10 : 𝓩) (T : PotentialTerm) :
+instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T : PotentialTerm) :
     Decidable (AllowsTermQ10 x q10 T) :=
   match T with
   | .μ => isFalse fun h => by simp [AllowsTermQ10] at h
@@ -898,7 +898,7 @@ lemma allowsTerm_insertQ10_iff_allowsTermQ10 {qHd qHu : Option 𝓩}
     · apply allowsTerm_mono _ h
       simp [subset_def]
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 end SuperSymmetry

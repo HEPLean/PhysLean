@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.MinimallyAllowsTerm.OfFinset
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.MinimallyAllowsTerm.OfFinset
 import PhysLean.StringTheory.FTheory.SU5.Charges.OfRationalSection
 /-!
 
@@ -286,7 +286,7 @@ end ACCs
 
 section toChargesExpand
 
-open SuperSymmetry.SU5.Charges
+open SuperSymmetry.SU5.ChargeSpectrum
 
 variable [DecidableEq 𝓩]
 

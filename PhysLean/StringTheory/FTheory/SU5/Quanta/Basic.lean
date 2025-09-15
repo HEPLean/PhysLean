@@ -32,7 +32,7 @@ abbrev Quanta (𝓩 : Type := ℤ) : Type := Option 𝓩 × Option 𝓩 × FiveQ
 
 namespace Quanta
 open SuperSymmetry.SU5
-open PotentialTerm Charges
+open PotentialTerm ChargeSpectrum
 
 variable {𝓩 : Type}
 
@@ -40,8 +40,8 @@ instance [DecidableEq 𝓩] : DecidableEq (Quanta 𝓩) :=
   haveI : DecidableEq (FiveQuanta 𝓩) := by infer_instance
   inferInstanceAs (DecidableEq (Option 𝓩 × Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩))
 
-/-- The underlying `Charges` of a `Quanta`. -/
-def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : Charges 𝓩 :=
+/-- The underlying `ChargeSpectrum` of a `Quanta`. -/
+def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : ChargeSpectrum 𝓩 :=
   (x.1, x.2.1, x.2.2.1.toCharges.toFinset, x.2.2.2.toCharges.toFinset)
 
 /-!
@@ -139,7 +139,7 @@ lemma anomalyCoefficent_snd_eq_zero_of_anomalyCancellation [CommRing 𝓩]
   10d matter content, and finite set of charges equal to `c`.
 
   These quanta reduce to all viable quanta. -/
-def ofChargesExpand [DecidableEq 𝓩] (c : Charges 𝓩) : Multiset (Quanta 𝓩) :=
+def ofChargesExpand [DecidableEq 𝓩] (c : ChargeSpectrum 𝓩) : Multiset (Quanta 𝓩) :=
   let Q5s := FiveQuanta.ofChargesExpand c.2.2.1
   let Q10s := TenQuanta.ofChargesExpand c.2.2.2
   Q5s.bind <| fun Q5 =>

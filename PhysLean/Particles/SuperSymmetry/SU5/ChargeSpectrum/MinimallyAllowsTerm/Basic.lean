@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.AllowsTerm
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.AllowsTerm
 /-!
 
 # Minimally allows terms
@@ -17,20 +17,20 @@ minimally allows `T` if it allows the term `T` and no proper subset of `x` allow
 namespace SuperSymmetry
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 
 variable {𝓩 : Type} [AddCommGroup 𝓩] [DecidableEq 𝓩]
 open SuperSymmetry.SU5
 
 /-- A collection of charges `x : Charges` is said to minimally allow
   the potential term `T` if it allows `T` and no strict subset of it allows `T`. -/
-def MinimallyAllowsTerm (x : Charges 𝓩) (T : PotentialTerm) : Prop :=
+def MinimallyAllowsTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Prop :=
   ∀ y ∈ x.powerset, y = x ↔ y.AllowsTerm T
 
-instance (x : Charges 𝓩) (T : PotentialTerm) : Decidable (x.MinimallyAllowsTerm T) :=
+instance (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Decidable (x.MinimallyAllowsTerm T) :=
   inferInstanceAs (Decidable (∀ y ∈ powerset x, y = x ↔ y.AllowsTerm T))
 
-variable {T : PotentialTerm} {x : Charges 𝓩}
+variable {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
 
 lemma allowsTerm_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) : x.AllowsTerm T := by
   simp only [MinimallyAllowsTerm] at h
@@ -161,7 +161,7 @@ lemma allowsTermForm_minimallyAllowsTerm {a b c : 𝓩} {T : PotentialTerm}
     rw [← hEq]
     exact hsub
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 end SuperSymmetry

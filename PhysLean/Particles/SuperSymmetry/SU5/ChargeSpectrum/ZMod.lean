@@ -5,8 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.ZMod.Defs
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Yukawa
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Completions
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Yukawa
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Completions
 import PhysLean.Meta.Linters.Sorry
 /-!
 
@@ -21,13 +21,13 @@ keeping charges anomaly free.
 namespace SuperSymmetry
 
 namespace SU5
-namespace Charges
+namespace ChargeSpectrum
 
 /-- The finite set of `ZMod n` valued charges which are complete,
   not pheno-constrained and don't regenerate dangerous couplings
   with the Yukawa term up-to 4-inserstions of singlets. -/
-def ZModCharges (n : ℕ) [NeZero n] : Finset (Charges (ZMod n)) :=
-  let S : Finset (Charges (ZMod n)) := ofFinset (Finset.univ) Finset.univ
+def ZModCharges (n : ℕ) [NeZero n] : Finset (ChargeSpectrum (ZMod n)) :=
+  let S : Finset (ChargeSpectrum (ZMod n)) := ofFinset (Finset.univ) Finset.univ
   S.filter (fun x => IsComplete x ∧ ¬ x.IsPhenoConstrained ∧ ¬ x.YukawaGeneratesDangerousAtLevel 4)
 
 /-- This lemma corresponds to the statement that there are no choices of `ℤ₁` representations
@@ -65,8 +65,8 @@ lemma ZModCharges_six_eq : ZModCharges 6 = {(some 0, some 2, {5}, {1}),
 /-- The finite set of `ZMod n × ZMod m` valued charges which are complete,
   not pheno-constrained and don't regenerate dangerous couplings
   with the Yukawa term up-to 4-inserstions of singlets. -/
-def ZModZModCharges (n m : ℕ) [NeZero n] [NeZero m] : Finset (Charges (ZMod n × ZMod m)) :=
-  let S : Finset (Charges (ZMod n × ZMod m)) := ofFinset (Finset.univ) Finset.univ
+def ZModZModCharges (n m : ℕ) [NeZero n] [NeZero m] : Finset (ChargeSpectrum (ZMod n × ZMod m)) :=
+  let S : Finset (ChargeSpectrum (ZMod n × ZMod m)) := ofFinset (Finset.univ) Finset.univ
   S.filter (fun x => IsComplete x ∧
   ¬ x.IsPhenoConstrained ∧ ¬ x.YukawaGeneratesDangerousAtLevel 4)
 
@@ -93,7 +93,7 @@ def zModFourToZModTwo:
     all_goals fin_cases y
     all_goals decide
 
-end Charges
+end ChargeSpectrum
 end SU5
 
 end SuperSymmetry

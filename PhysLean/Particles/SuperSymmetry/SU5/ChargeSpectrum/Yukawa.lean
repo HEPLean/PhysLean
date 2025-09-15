@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.PhenoConstrained
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoConstrained
 /-!
 
 # Yukawa charges
@@ -25,7 +25,7 @@ enough.
 namespace SuperSymmetry
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 open PotentialTerm
 
 variable {𝓩 : Type} [AddCommGroup 𝓩]
@@ -33,10 +33,10 @@ variable {𝓩 : Type} [AddCommGroup 𝓩]
 /-- The collection of charges associated with Yukawa terms.
   Correspondingly, the (negative) of the charges of the singlets needed to regenerate all
   Yukawa terms in the potential. -/
-def ofYukawaTerms (x : Charges 𝓩) : Multiset 𝓩 :=
+def ofYukawaTerms (x : ChargeSpectrum 𝓩) : Multiset 𝓩 :=
   x.ofPotentialTerm' topYukawa + x.ofPotentialTerm' bottomYukawa
 
-lemma ofYukawaTerms_subset_of_subset [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) :
+lemma ofYukawaTerms_subset_of_subset [DecidableEq 𝓩] {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) :
     x.ofYukawaTerms ⊆ y.ofYukawaTerms := by
   simp only [ofYukawaTerms]
   refine Multiset.subset_iff.mpr ?_
@@ -55,12 +55,12 @@ lemma ofYukawaTerms_subset_of_subset [DecidableEq 𝓩] {x y : Charges 𝓩} (h 
   insertions of singlets needed to regenerate the Yukawa terms.
   Equivalently, the sum of up-to `n` integers each corresponding to a charge of the
   Yukawa terms. -/
-def ofYukawaTermsNSum (x : Charges 𝓩) : ℕ → Multiset 𝓩
+def ofYukawaTermsNSum (x : ChargeSpectrum 𝓩) : ℕ → Multiset 𝓩
   | 0 => {0}
   | n + 1 => x.ofYukawaTermsNSum n + (x.ofYukawaTermsNSum n).bind fun sSum =>
     (x.ofYukawaTerms.map fun s => sSum + s)
 
-lemma ofYukawaTermsNSum_subset_of_subset [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) (n : ℕ) :
+lemma ofYukawaTermsNSum_subset_of_subset [DecidableEq 𝓩] {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (n : ℕ) :
     x.ofYukawaTermsNSum n ⊆ y.ofYukawaTermsNSum n := by
   induction n with
   | zero => simp [ofYukawaTermsNSum]
@@ -90,14 +90,14 @@ variable [DecidableEq 𝓩]
 
   Note: If defined as (x.ofYukawaTermsNSum n).toFinset ∩ x.phenoConstrainingChargesSP.toFinset ≠ ∅
   the exicution time is greatley increased. -/
-def YukawaGeneratesDangerousAtLevel (x : Charges 𝓩) (n : ℕ) : Prop :=
+def YukawaGeneratesDangerousAtLevel (x : ChargeSpectrum 𝓩) (n : ℕ) : Prop :=
   (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅
 
-lemma YukawaGeneratesDangerousAtLevel_iff_inter {x : Charges 𝓩} {n : ℕ} :
+lemma YukawaGeneratesDangerousAtLevel_iff_inter {x : ChargeSpectrum 𝓩} {n : ℕ} :
     YukawaGeneratesDangerousAtLevel x n ↔
     (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅ := by rfl
 
-lemma yukawaGeneratesDangerousAtLevel_iff_toFinset (x : Charges 𝓩) (n : ℕ) :
+lemma yukawaGeneratesDangerousAtLevel_iff_toFinset (x : ChargeSpectrum 𝓩) (n : ℕ) :
     x.YukawaGeneratesDangerousAtLevel n ↔
     (x.ofYukawaTermsNSum n).toFinset ∩ x.phenoConstrainingChargesSP.toFinset ≠ ∅ := by
   simp [YukawaGeneratesDangerousAtLevel]
@@ -123,14 +123,14 @@ lemma yukawaGeneratesDangerousAtLevel_iff_toFinset (x : Charges 𝓩) (n : ℕ) 
 
 @[simp]
 lemma not_yukawaGeneratesDangerousAtLevel_of_empty (n : ℕ) :
-    ¬ YukawaGeneratesDangerousAtLevel (∅ : Charges 𝓩) n := by
+    ¬ YukawaGeneratesDangerousAtLevel (∅ : ChargeSpectrum 𝓩) n := by
   simp [YukawaGeneratesDangerousAtLevel]
 
-instance (x : Charges 𝓩) (n : ℕ) : Decidable (YukawaGeneratesDangerousAtLevel x n) :=
+instance (x : ChargeSpectrum 𝓩) (n : ℕ) : Decidable (YukawaGeneratesDangerousAtLevel x n) :=
   inferInstanceAs (Decidable ((x.ofYukawaTermsNSum n)
     ∩ x.phenoConstrainingChargesSP ≠ ∅))
 
-lemma yukawaGeneratesDangerousAtLevel_of_subset {x y : Charges 𝓩} {n : ℕ} (h : x ⊆ y)
+lemma yukawaGeneratesDangerousAtLevel_of_subset {x y : ChargeSpectrum 𝓩} {n : ℕ} (h : x ⊆ y)
     (hx : x.YukawaGeneratesDangerousAtLevel n) :
     y.YukawaGeneratesDangerousAtLevel n := by
   simp [yukawaGeneratesDangerousAtLevel_iff_toFinset] at *
@@ -149,7 +149,7 @@ lemma yukawaGeneratesDangerousAtLevel_of_subset {x y : Charges 𝓩} {n : ℕ} (
   rw [h1] at hx
   simp at hx
 
-lemma yukawaGeneratesDangerousAtLevel_succ {x : Charges 𝓩} {n : ℕ}
+lemma yukawaGeneratesDangerousAtLevel_succ {x : ChargeSpectrum 𝓩} {n : ℕ}
     (hx : x.YukawaGeneratesDangerousAtLevel n) :
     x.YukawaGeneratesDangerousAtLevel (n + 1) := by
   simp [yukawaGeneratesDangerousAtLevel_iff_toFinset] at *
@@ -160,14 +160,14 @@ lemma yukawaGeneratesDangerousAtLevel_succ {x : Charges 𝓩} {n : ℕ}
   left
   exact hx
 
-lemma yukawaGeneratesDangerousAtLevel_add_of_left {x : Charges 𝓩} {n k : ℕ}
+lemma yukawaGeneratesDangerousAtLevel_add_of_left {x : ChargeSpectrum 𝓩} {n k : ℕ}
     (hx : x.YukawaGeneratesDangerousAtLevel n) :
     x.YukawaGeneratesDangerousAtLevel (n + k) := by
   induction k with
   | zero => exact hx
   | succ k ih => exact yukawaGeneratesDangerousAtLevel_succ ih
 
-lemma yukawaGeneratesDangerousAtLevel_of_le {x : Charges 𝓩} {n m : ℕ}
+lemma yukawaGeneratesDangerousAtLevel_of_le {x : ChargeSpectrum 𝓩} {n m : ℕ}
     (h : n ≤ m) (hx : x.YukawaGeneratesDangerousAtLevel n) :
     x.YukawaGeneratesDangerousAtLevel m := by
   generalize hk : m - n = k at *
@@ -175,7 +175,7 @@ lemma yukawaGeneratesDangerousAtLevel_of_le {x : Charges 𝓩} {n m : ℕ}
   subst h1
   exact yukawaGeneratesDangerousAtLevel_add_of_left hx
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 end SuperSymmetry

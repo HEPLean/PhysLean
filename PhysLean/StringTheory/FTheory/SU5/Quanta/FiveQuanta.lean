@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5.Charges.OfRationalSection
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.Map
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Map
 /-!
 
 # Quanta of 5-d representations
@@ -286,7 +286,7 @@ end ACCs
 
 section ofChargesExpand
 
-open SuperSymmetry.SU5.Charges
+open SuperSymmetry.SU5.ChargeSpectrum
 
 variable [DecidableEq 𝓩]
 

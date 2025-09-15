@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.SuperSymmetry.SU5.Charges.OfFieldLabel
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.OfFieldLabel
 import Mathlib.Tactic.Abel
 /-!
 
@@ -17,19 +17,19 @@ we can extract the set of charges associated with instances of that potential te
 namespace SuperSymmetry
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 open PotentialTerm
 
 variable {𝓩 : Type} [AddCommGroup 𝓩]
 
 /-- Given a charges `x : Charges` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term. -/
-def ofPotentialTerm (x : Charges 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
+def ofPotentialTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
   let add : Multiset 𝓩 → Multiset 𝓩 → Multiset 𝓩 := fun a b => (a.product b).map
       fun (x, y) => x + y
   (T.toFieldLabel.map fun F => (ofFieldLabel x F).val).foldl add {0}
 
-lemma ofPotentialTerm_mono {x y : Charges 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
+lemma ofPotentialTerm_mono {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ y.ofPotentialTerm T := by
   have h1 {S1 S2 T1 T2 : Multiset 𝓩} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
       (S1.product T1) ⊆ S2.product T2 :=
@@ -45,7 +45,7 @@ lemma ofPotentialTerm_mono {x y : Charges 𝓩} (h : x ⊆ y) (T : PotentialTerm
 
 @[simp]
 lemma ofPotentialTerm_empty (T : PotentialTerm) :
-    ofPotentialTerm (∅ : Charges 𝓩) T = ∅ := by
+    ofPotentialTerm (∅ : ChargeSpectrum 𝓩) T = ∅ := by
   cases T
   all_goals
     rfl
@@ -56,7 +56,7 @@ lemma ofPotentialTerm_empty (T : PotentialTerm) :
   This is a more explicit form of `PotentialTerm`, which has the benifit that
   it is quick with `decide`, but it is not defined based on more fundamental
   concepts, like `ofPotentialTerm` is. -/
-def ofPotentialTerm' (y : Charges 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
+def ofPotentialTerm' (y : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
   let qHd := y.1
   let qHu := y.2.1
   let Q5 := y.2.2.1
@@ -104,7 +104,7 @@ def ofPotentialTerm' (y : Charges 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
     | none => ∅
     | some qHd => (Q5.product <| Q10).val.map (fun x => qHd + x.1 + x.2)
 
-lemma ofPotentialTerm'_μ_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_μ_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' μ =
     (x.1.toFinset.product <| x.2.1.toFinset).val.map (fun x => x.1 - x.2) := by
   match x with
@@ -115,7 +115,7 @@ lemma ofPotentialTerm'_μ_finset {x : Charges 𝓩} :
   | (some qHd, some qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm'_β_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_β_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' β =
     (x.2.1.toFinset.product <| x.2.2.1).val.map (fun x => - x.1 + x.2) := by
   match x with
@@ -124,7 +124,7 @@ lemma ofPotentialTerm'_β_finset {x : Charges 𝓩} :
   | (qHd, some qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm'_W2_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_W2_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' W2 = (x.1.toFinset.product <|
       x.2.2.2.product <| x.2.2.2.product <| x.2.2.2).val.map
     (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2) := by
@@ -134,7 +134,7 @@ lemma ofPotentialTerm'_W2_finset {x : Charges 𝓩} :
   | (some qHd, qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm'_W3_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_W3_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' W3 = (x.2.1.toFinset.product <| x.2.2.1.product <| x.2.2.1).val.map
     (fun x => -x.1 - x.1 + x.2.1 + x.2.2) := by
   match x with
@@ -143,7 +143,7 @@ lemma ofPotentialTerm'_W3_finset {x : Charges 𝓩} :
   | (qHd, some qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm'_W4_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_W4_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' W4 = (x.1.toFinset.product <|
       x.2.1.toFinset.product <| x.2.2.1).val.map
     (fun x => x.1 - x.2.1 - x.2.1 + x.2.2) := by
@@ -155,7 +155,7 @@ lemma ofPotentialTerm'_W4_finset {x : Charges 𝓩} :
   | (some qHd, some qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm'_K2_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_K2_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' K2 = (x.1.toFinset.product <|
       x.2.1.toFinset.product <| x.2.2.2).val.map
     (fun x => x.1 + x.2.1 + x.2.2) := by
@@ -167,7 +167,7 @@ lemma ofPotentialTerm'_K2_finset {x : Charges 𝓩} :
   | (some qHd, some qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm'_topYukawa_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_topYukawa_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' topYukawa = (x.2.1.toFinset.product <|
       x.2.2.2.product <| x.2.2.2).val.map
     (fun x => -x.1 + x.2.1 + x.2.2) := by
@@ -177,7 +177,7 @@ lemma ofPotentialTerm'_topYukawa_finset {x : Charges 𝓩} :
   | (qHd, some qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm'_bottomYukawa_finset {x : Charges 𝓩} :
+lemma ofPotentialTerm'_bottomYukawa_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' bottomYukawa = (x.1.toFinset.product <|
       x.2.2.1.product <| x.2.2.2).val.map
     (fun x => x.1 + x.2.1 + x.2.2) := by
@@ -187,7 +187,7 @@ lemma ofPotentialTerm'_bottomYukawa_finset {x : Charges 𝓩} :
   | (some qHd, qHu, Q5, Q10) =>
     simp [ofPotentialTerm']
 
-lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges 𝓩} (T : PotentialTerm) :
+lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ x.ofPotentialTerm' T := by
   refine Multiset.subset_iff.mpr (fun n h => ?_)
   simp [ofPotentialTerm] at h
@@ -223,7 +223,7 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : Charges 𝓩} (T : PotentialT
     rw [← f1_add_f2_eq_zero]
     abel
 
-lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩] {x : Charges 𝓩} (T : PotentialTerm) :
+lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩] {x : ChargeSpectrum 𝓩} (T : PotentialTerm) :
     x.ofPotentialTerm' T ⊆ x.ofPotentialTerm T := by
   refine Multiset.subset_iff.mpr (fun n h => ?_)
   cases T
@@ -325,13 +325,13 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩] {x : Charges �
     try abel
 
 lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
-    {T : PotentialTerm} {n : 𝓩} {y : Charges 𝓩} :
+    {T : PotentialTerm} {n : 𝓩} {y : ChargeSpectrum 𝓩} :
     n ∈ y.ofPotentialTerm T ↔ n ∈ y.ofPotentialTerm' T := by
   constructor
   · exact fun h => ofPotentialTerm_subset_ofPotentialTerm' T h
   · exact fun h => ofPotentialTerm'_subset_ofPotentialTerm T h
 
-lemma ofPotentialTerm'_mono [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
+lemma ofPotentialTerm'_mono [DecidableEq 𝓩] {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm' T ⊆ y.ofPotentialTerm' T := by
   intro i
   rw [← mem_ofPotentialTerm_iff_mem_ofPotentialTerm, ← mem_ofPotentialTerm_iff_mem_ofPotentialTerm]
@@ -339,12 +339,12 @@ lemma ofPotentialTerm'_mono [DecidableEq 𝓩] {x y : Charges 𝓩} (h : x ⊆ y
 
 @[simp]
 lemma ofPotentialTerm'_empty (T : PotentialTerm) :
-    ofPotentialTerm' (∅ : Charges 𝓩) T = ∅ := by
+    ofPotentialTerm' (∅ : ChargeSpectrum 𝓩) T = ∅ := by
   cases T
   all_goals
     simp [ofPotentialTerm']
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 end SuperSymmetry

@@ -19,9 +19,9 @@ namespace FTheory
 
 namespace SU5
 
-namespace Charges
+namespace ChargeSpectrum
 open SuperSymmetry.SU5
-open SuperSymmetry.SU5.Charges
+open SuperSymmetry.SU5.ChargeSpectrum
 open PotentialTerm
 open CodimensionOneConfig
 open Tree
@@ -36,10 +36,10 @@ open PhysLean
 variable {𝓩 : Type}
 /-- The condition on a collection of charges `c` that it extends to an anomaly free `Quanta`.
   That anomaly free `Quanta` is not tracked by this proposition. -/
-def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : Charges 𝓩) : Prop :=
+def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : ChargeSpectrum 𝓩) : Prop :=
   ∃ x ∈ Quanta.ofChargesExpand c, Quanta.AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2
 
-instance [DecidableEq 𝓩] [CommRing 𝓩] {c : Charges 𝓩} : Decidable (IsAnomalyFree c) :=
+instance [DecidableEq 𝓩] [CommRing 𝓩] {c : ChargeSpectrum 𝓩} : Decidable (IsAnomalyFree c) :=
   Multiset.decidableExistsMultiset
 
 /-!
@@ -52,7 +52,7 @@ section map
 
 variable {𝓩 𝓩1 : Type} [DecidableEq 𝓩1] [DecidableEq 𝓩][CommRing 𝓩1] [CommRing 𝓩]
 
-lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : Charges 𝓩}
+lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : ChargeSpectrum 𝓩}
     (h : IsAnomalyFree c) : IsAnomalyFree (c.map (f.toAddMonoidHom)) := by
   obtain ⟨Q, h1, h2⟩ := h
   match Q with
@@ -65,7 +65,7 @@ lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : Charges 𝓩}
     have hqHd := h1.2.2.1
     have hqHu := h1.2.2.2
     subst hqHd hqHu
-    simp [Charges.map]
+    simp [ChargeSpectrum.map]
     refine ⟨?_, ?_⟩
     · have h5 := h1.1
       rw [FiveQuanta.mem_ofChargesExpand_iff] at h5 ⊢
@@ -118,7 +118,7 @@ lemma viable_anomalyFree (I : CodimensionOneConfig) :
   revert I
   decide
 
-end Charges
+end ChargeSpectrum
 
 end SU5
 
