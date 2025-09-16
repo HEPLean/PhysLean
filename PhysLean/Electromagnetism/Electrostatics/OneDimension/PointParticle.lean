@@ -371,7 +371,9 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
     (1 / 2) • constD 1 (basis 0)))) η =
     ((1 / ε) • q • diracDelta ℝ 0) η
   haveI : SMulZeroClass ℝ ((Space 1)→d[ℝ] ℝ) := by infer_instance
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub,
+    divD_constD, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub', Pi.smul_apply,
+    Pi.sub_apply, ContinuousLinearMap.zero_apply, smul_eq_mul, mul_zero, sub_zero, diracDelta_apply]
   field_simp
   congr 1
   rw [divD_apply_eq_sum_fderivD]

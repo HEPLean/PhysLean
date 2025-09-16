@@ -240,7 +240,9 @@ lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
   use ((k : Int) - (T.N / 2 : ℕ)) * (n : ℤ)
   have hpp : (T.N : ℂ) ≠ 0 := by simp [Ne.symm (NeZero.ne' T.N)]
   have hT' : (T.a : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos T.a_pos
-  simp
+  simp only [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_ofNat, Complex.ofReal_natCast,
+    Complex.ofReal_sub, Int.natCast_ediv, Nat.cast_ofNat, Int.cast_mul, Int.cast_sub,
+    Int.cast_natCast]
   field_simp
   ring_nf
   congr 1

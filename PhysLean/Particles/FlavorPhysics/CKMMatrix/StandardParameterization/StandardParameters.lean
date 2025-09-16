@@ -575,7 +575,7 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
       rw [S₁₂_eq_ℂsin_θ₁₂ ⟦V⟧, S₁₂, C₁₂_eq_ℂcos_θ₁₂ ⟦V⟧, C₁₂_eq_Vud_div_sqrt hb']
       rw [S₂₃_eq_ℂsin_θ₂₃ ⟦V⟧, S₂₃_of_Vub_neq_one hb', C₂₃_eq_ℂcos_θ₂₃ ⟦V⟧,
         C₂₃_of_Vub_neq_one hb', S₁₃_eq_ℂsin_θ₁₃ ⟦V⟧, S₁₃]
-      simp
+      simp only [VtbAbs, Fin.isValue, VusAbs, neg_mul, VudAbs, VubAbs, VcbAbs, ofReal_div]
       field_simp
       conv_rhs => rw [sq, h1]
       simp only [Fin.isValue, sq]

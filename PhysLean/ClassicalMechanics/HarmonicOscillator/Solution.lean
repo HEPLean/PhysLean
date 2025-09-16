@@ -311,7 +311,7 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   ring_nf
   rw [ω_sq]
   field_simp
-  simp
+  simp only [neg_add_cancel, mul_zero]
   fun_prop
 
 /-!
