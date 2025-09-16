@@ -30,12 +30,36 @@ on the theory, most notably phenomenological constraints.
 By keeping the presence of `Hd` and `Hu` optional, we can define a number of useful properties
 of the charge spectrum, which can help in searching for viable theories.
 
+## ii. Key results
+
+- `ChargeSpectrum 𝓩` : The type of charge spectra with charges of type `𝓩`, which is usually
+  `ℤ`.
+
+## iii. Table of Content
+
+- A. The definition of the charge spectrum
+- B. The subset relation
+- C. The empty charge spectrum
+- D. The cardinality of a charge spectrum
+- E. The power set of a charge spectrum
+- F. Finite sets of charge spectra with values
+
+## iv. References
+
+There are no known references for charge spectra in the literature.
+They were created specifically for the purpose of PhysLean.
 
 -/
 
 namespace SuperSymmetry
 
 namespace SU5
+
+/-!
+
+## A. The definition of the charge spectrum
+
+-/
 
 /-- The type such that an element corresponds to the collection of
   charges associated with the matter content of the theory.
@@ -55,9 +79,11 @@ namespace ChargeSpectrum
 
 variable {𝓩 : Type}
 
-/-- The explicit casting of a term of type `Charges 𝓩` to a term of
-  `Option 𝓩 × Option 𝓩 × Finset 𝓩 × Finset 𝓩`. -/
-def toProd (x : ChargeSpectrum 𝓩) : Option 𝓩 × Option 𝓩 × Finset 𝓩 × Finset 𝓩 := x
+/-!
+
+### A.1. Extensionality properties
+
+-/
 
 lemma eq_of_parts {x y : ChargeSpectrum 𝓩} (h1 : x.1 = y.1) (h2 : x.2.1 = y.2.1)
     (h3 : x.2.2.1 = y.2.2.1) (h4 : x.2.2.2 = y.2.2.2) : x = y := by
@@ -76,12 +102,28 @@ lemma eq_iff {x y : ChargeSpectrum 𝓩} :
 
 /-!
 
-## Basic instances on the type `Charges 𝓩`.
+### A.2. Relation to products
+
+-/
+
+/-- The explicit casting of a term of type `Charges 𝓩` to a term of
+  `Option 𝓩 × Option 𝓩 × Finset 𝓩 × Finset 𝓩`. -/
+def toProd (x : ChargeSpectrum 𝓩) : Option 𝓩 × Option 𝓩 × Finset 𝓩 × Finset 𝓩 := x
+
+/-!
+
+### A.3. Decidability
 
 -/
 
 instance [DecidableEq 𝓩] : DecidableEq (ChargeSpectrum 𝓩) := inferInstanceAs
   (DecidableEq (Option 𝓩 × Option 𝓩 × Finset 𝓩 × Finset 𝓩))
+
+/-!
+
+### A.4. Rendering
+
+-/
 
 unsafe instance [Repr 𝓩] : Repr (ChargeSpectrum 𝓩) where
   reprPrec x _ := match x with
@@ -94,7 +136,9 @@ unsafe instance [Repr 𝓩] : Repr (ChargeSpectrum 𝓩) where
 
 /-!
 
-## Subsest relation
+## B. The subset relation
+
+We define a `HasSubset` and `HasSSubset` instance on `ChargeSpectrum 𝓩`.
 
 -/
 
@@ -114,14 +158,7 @@ lemma subset_def {x y : ChargeSpectrum 𝓩} : x ⊆ y ↔ x.1.toFinset ⊆ y.1.
   rfl
 
 @[simp, refl]
-lemma subset_refl (x : ChargeSpectrum 𝓩) : x ⊆ x := by
-  constructor
-  · rfl
-  · constructor
-    · rfl
-    · constructor
-      · rfl
-      · rfl
+lemma subset_refl (x : ChargeSpectrum 𝓩) : x ⊆ x := ⟨by rfl, by rfl, by rfl, by rfl⟩
 
 lemma _root_.Option.toFinset_inj {x y : Option 𝓩} :
     x = y ↔ x.toFinset = y.toFinset := by
@@ -152,7 +189,7 @@ lemma subset_antisymm {x y : ChargeSpectrum 𝓩} (hxy : x ⊆ y) (hyx : y ⊆ x
 
 /-!
 
-## The empty charges
+## C. The empty charge spectrum
 
 -/
 
@@ -193,7 +230,7 @@ lemma empty_Q10 : (∅ : ChargeSpectrum 𝓩).2.2.2 = ∅ := by
 
 /-!
 
-## Card
+## D. The cardinality of a charge spectrum
 
 -/
 
@@ -240,7 +277,7 @@ lemma eq_of_subset_card {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (hcard : card 
 
 /-!
 
-## Powerset
+## E. The power set of a charge spectrum
 
 -/
 
@@ -374,7 +411,7 @@ lemma min_exists (S : Finset (ChargeSpectrum 𝓩)) (hS : S ≠ ∅) :
 
 /-!
 
-## ofFinset
+## F. Finite sets of charge spectra with values
 
 -/
 
