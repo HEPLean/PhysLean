@@ -106,7 +106,6 @@ lemma self_div_scale (x : LengthUnit) (r : ℝ) (hr : 0 < r) :
   ext
   simp only [coe_mk]
   field_simp
-  ring
 
 @[simp]
 lemma scale_one (x : LengthUnit) : scale 1 x = x := by

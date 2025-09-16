@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.StandardModel.HiggsBoson.PointwiseInnerProd
+import Mathlib.Tactic.Cases
 /-!
 # The potential of the Higgs field
 
@@ -112,12 +113,14 @@ lemma toFun_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     · apply Or.inr
       field_simp at h2 ⊢
       ring_nf
+      simp only [normSq]
       linear_combination h2
   · cases' hD with hD hD
     · simp [toFun, hD]
     · simp only [toFun, neg_mul]
       rw [hD]
       field_simp
+      simp
 
 /-!
 
@@ -147,7 +150,9 @@ lemma quadDiscrim_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTim
   refine Iff.intro (fun hD => ?_) (fun hV => ?_)
   · field_simp
     linear_combination hD
-  · field_simp [hV]
+  · simp only [even_two, Even.neg_pow, hV, mul_neg, sub_neg_eq_add]
+    field_simp
+    simp
 
 lemma quadDiscrim_eq_zero_iff_normSq (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     P.quadDiscrim φ x = 0 ↔ ‖φ‖_H^2 x = P.μ2 / (2 * P.𝓵) := by

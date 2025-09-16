@@ -13,7 +13,7 @@ def main (args : List String) : IO UInt32 := do
 
   println! "\x1b[36m- Building \x1b[0m"
   let build ← IO.Process.output {cmd := "lake", args := #["build"]}
-  let s1 := "Build completed successfully."
+  let s1 := "Build completed successfully"
   let s2 := build.stdout
   if ¬ (s2.splitOn s1).length = 2  then
     println! "\x1b[31mError: Build failed. Run `lake build` to see the errors.\x1b[0m\n"

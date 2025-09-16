@@ -43,7 +43,7 @@ variable {d : ℕ}
 def genBoostAux₁ (u v : Velocity d) : Vector d →ₗ[ℝ] Vector d where
   toFun x := (2 * ⟪x, u⟫ₘ) • v
   map_add' x y := by
-    simp [map_add, LinearMap.add_apply, mul_add, add_smul]
+    simp [map_add, LinearMap.add_apply, mul_add, _root_.add_smul]
   map_smul' c x := by
     simp only [map_smul, RingHom.id_apply, smul_smul]
     dsimp only [Nat.succ_eq_add_one, Nat.reduceAdd, LinearMap.smul_apply, smul_eq_mul]
@@ -54,10 +54,11 @@ def genBoostAux₁ (u v : Velocity d) : Vector d →ₗ[ℝ] Vector d where
 def genBoostAux₂ (u v : Velocity d) : Vector d →ₗ[ℝ] Vector d where
   toFun x := - (⟪x, u.1 + v.1⟫ₘ / (1 + ⟪u.1, v.1⟫ₘ)) • (u.1 + v.1)
   map_add' x y := by
-    rw [← add_smul]
+    rw [← _root_.add_smul]
     apply congrFun (congrArg _ _)
+    have hx := Velocity.one_add_minkowskiProduct_neq_zero u v
     field_simp [add_tmul]
-    apply congrFun (congrArg _ _)
+    simp only [map_add, LinearMap.add_apply, neg_add_rev]
     ring
   map_smul' c x := by
     rw [map_smul]
@@ -122,7 +123,6 @@ lemma genBoostAux₂_basis_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 �
   have h2 : (1 + ⟪u.1, v.1⟫ₘ) ≠ 0 := by
     exact Velocity.one_add_minkowskiProduct_neq_zero u v
   field_simp [h2]
-  ring
 
 lemma genBoostAux₁_basis_genBoostAux₂_minkowskiProduct (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     ⟪genBoostAux₁ u v (Vector.basis μ), genBoostAux₂ u v (Vector.basis ν)⟫ₘ =
@@ -138,7 +138,6 @@ lemma genBoostAux₁_basis_genBoostAux₂_minkowskiProduct (u v : Velocity d) (�
   have h2 : (1 + ⟪u.1, v.1⟫ₘ) ≠ 0 := by
     exact Velocity.one_add_minkowskiProduct_neq_zero u v
   field_simp [h2]
-  ring
 
 lemma genBoostAux₂_toMatrix_apply (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d) :
     (LinearMap.toMatrix Vector.basis Vector.basis (genBoostAux₂ u v)) μ ν =
@@ -147,6 +146,7 @@ lemma genBoostAux₂_toMatrix_apply (u v : Velocity d) (μ ν : Fin 1 ⊕ Fin d)
   rw [LinearMap.toMatrix_apply, basis_repr_apply]
   simp only [genBoostAux₂, LinearMap.coe_mk, AddHom.coe_mk, minkowskiProduct_basis_left]
   have h1 := Velocity.one_add_minkowskiProduct_neq_zero u v
+  simp only [apply_add, apply_smul, neg_mul, neg_add_rev]
   field_simp
   ring
 
@@ -402,7 +402,7 @@ lemma generalizedBoost_inv (u v : Velocity d) :
   apply LorentzGroup.eq_of_action_vector_eq
   intro p
   apply (smul_right_inj (Velocity.one_add_minkowskiProduct_neq_zero v u)).mp
-  rw [mul_smul]
+  rw [MulAction.mul_smul]
   rw [generalizedBoost_apply_mul_one_plus_contr]
   conv_lhs =>
     enter [1, 1]
@@ -433,11 +433,17 @@ lemma generalizedBoost_inv (u v : Velocity d) :
     congr 1
     · congr 1
       rw [generalizedBoost_apply_expand u v]
+      simp only [map_add, _root_.smul_add, map_sub, map_smul, LinearMap.sub_apply,
+        LinearMap.add_apply, LinearMap.smul_apply, Velocity.minkowskiProduct_self_eq_one,
+        smul_eq_mul]
       field_simp [h1]
       rw [minkowskiProduct_symm v.1 u.1]
       ring
     · congr 1
       rw [generalizedBoost_apply_expand u v]
+      simp only [map_add, _root_.smul_add, map_sub, map_smul, LinearMap.sub_apply,
+        LinearMap.add_apply, LinearMap.smul_apply, Velocity.minkowskiProduct_self_eq_one,
+        smul_eq_mul, mul_one]
       field_simp [h1]
       rw [minkowskiProduct_symm v.1 u.1]
       ring

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.Distribution.Function.InvPowMeasure
+import Mathlib.Tactic.Cases
 /-!
 
 ## Bounded functions for distributions
@@ -244,7 +245,8 @@ private lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpa
       rw [zero_pow_eq, zero_zpow_eq, zero_zpow_eq]
       split_ifs <;> simp
       any_goals omega
-    · field_simp
+    · simp only [inv_pow]
+      field_simp
       rw [zpow_add₀ hr]
       simp
     · simp
@@ -436,8 +438,9 @@ lemma intergrable_pow {dm1 : ℕ} (p: ℤ) (r : ℕ) (p_bound : -dm1 ≤ p)
     field_simp
     have hx': ‖x‖ ≠ 0 := by simpa using hx
     rw [zpow_sub₀ hx']
+    simp only [Nat.succ_eq_add_one, zpow_natCast]
     field_simp
-    ring
+    ring_nf
     · fun_prop
     · filter_upwards with x
       simp

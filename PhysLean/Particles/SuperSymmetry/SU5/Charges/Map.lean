@@ -78,7 +78,7 @@ lemma map_ofFieldLabel (f : 𝓩 →+ 𝓩1) (x : Charges 𝓩) (F : FieldLabel)
       trans Finset.image (⇑f ∘ Neg.neg) (Q5)
       · ext a
         simp
-      congr
+      congr 1
       funext a
       simp
 

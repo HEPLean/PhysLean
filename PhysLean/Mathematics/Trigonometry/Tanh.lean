@@ -46,7 +46,7 @@ lemma deriv_tanh : deriv Real.tanh = fun x => 1 - Real.tanh x ^ 2 := by
     funext x
     rw [deriv_div, Real.deriv_sinh, Real.deriv_cosh]
     field_simp
-    rw [sq, sq, tanh_eq_sinh_div_cosh, mul_sub_right_distrib]
+    rw [sq, sq, tanh_eq_sinh_div_cosh]
     field_simp
     · apply Real.differentiable_sinh
     · apply Real.differentiable_cosh
@@ -189,6 +189,7 @@ lemma iteratedDeriv_tanh_const_mul (n : ℕ) (κ : ℝ) : ∀ x : ℝ,
   | zero =>
     rw [iteratedDeriv_zero]
     field_simp
+    simp
   | succ n ih =>
     rw [iteratedDeriv_succ]
     have h' : iteratedDeriv n (fun y => tanh (κ * y)) =
@@ -208,6 +209,7 @@ lemma iteratedDeriv_tanh_const_mul (n : ℕ) (κ : ℝ) : ∀ x : ℝ,
       funext x
       rw [deriv_const_mul, ← Function.id_def]
       field_simp
+      simp only [deriv_id', mul_one]
       apply differentiable_id
     rw [h''']
     field_simp

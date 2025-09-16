@@ -296,8 +296,7 @@ lemma orderedInsert_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
     decide_eq_false_iff_not, crAnTimeOrderRel_refl, decide_true, Bool.false_eq_true,
     not_false_eq_true, List.dropWhile_cons_of_neg, ite_eq_left_iff, not_forall, Decidable.not_not,
     List.append_left_eq_self, forall_exists_index]
-  intro x hx hxψ
-  intro y hy
+  intro x hx hxψ y hy
   simpa using List.mem_takeWhile_imp hy
 
 lemma orderedInsert_in_swap_eq_time {φ ψ φ': 𝓕.CrAnFieldOp} (h1 : crAnTimeOrderRel φ ψ)

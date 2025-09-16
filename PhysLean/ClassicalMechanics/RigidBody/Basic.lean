@@ -17,7 +17,6 @@ In this module we will define the basic properties of a rigid body, including
 - center of mass
 - inertia tensor
 
-
 ## References
 - Landau and Lifshitz, Mechanics, page 100, Section 32
 -/

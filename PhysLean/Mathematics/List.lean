@@ -763,7 +763,7 @@ lemma insertionSort_eq_insertionSortMin_cons {α : Type} (r : α → α → Prop
     rw [insertionSortMinPos, Equiv.apply_symm_apply]
   simp only [List.insertionSort, List.eraseIdx_zero]
   rw [insertionSortMin_eq_insertionSort_head]
-  exact (List.head_cons_tail _ _).symm
+  exact (List.cons_head_tail _).symm
 
 /-- Optional erase of an element in a list, with addition for `none`. For `none` adds `a` to the
   front of the list, for `some i` removes the `i`th element of the list (does not add `a`).

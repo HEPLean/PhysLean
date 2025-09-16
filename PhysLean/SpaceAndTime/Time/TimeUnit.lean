@@ -119,7 +119,6 @@ lemma self_div_scale (x : TimeUnit) (r : ℝ) (hr : 0 < r) :
   ext
   simp only [coe_mk]
   field_simp
-  ring
 
 @[simp]
 lemma scale_scale (x : TimeUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < r2) :

@@ -85,7 +85,9 @@ where
         · subst hk
           simp only [Fin.isValue, ↓reduceIte, one_apply_eq]
           ring_nf
-          field_simp [γ, hb1, hb2]
+          simp [γ]
+          rw [hb1]
+          field_simp
         · simp only [Fin.isValue, hk, ↓reduceIte]
           by_cases hk' : k = Sum.inr i
           · simp only [hk', ↓reduceIte, Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true,
@@ -122,7 +124,9 @@ where
             simp only [Fin.isValue, reduceCtorEq, ↓reduceIte, neg_mul, one_mul, neg_neg, and_true,
               and_self, one_apply_eq]
             ring_nf
-            field_simp [γ, hb1, hb2]
+            simp [γ]
+            rw [hb1]
+            field_simp
           · rw [one_apply]
             simp only [Fin.isValue, reduceCtorEq, ↓reduceIte, Sum.inr.injEq, hk, and_true, and_self,
               neg_mul, one_mul, neg_neg, zero_add]

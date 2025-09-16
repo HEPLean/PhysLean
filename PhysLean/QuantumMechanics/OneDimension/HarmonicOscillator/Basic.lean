@@ -121,7 +121,9 @@ lemma ξ_abs : abs Q.ξ = Q.ξ := abs_of_nonneg Q.ξ_nonneg
 
 lemma one_over_ξ : 1/Q.ξ = √(Q.m * Q.ω / ℏ) := by
   have := ℏ_pos
-  field_simp [ξ]
+  simp only [ξ, one_div]
+  rw [← Real.sqrt_inv]
+  field_simp
 
 lemma ξ_inverse : Q.ξ⁻¹ = √(Q.m * Q.ω / ℏ) := by
   rw [inv_eq_one_div]
@@ -177,6 +179,7 @@ lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
   have := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
   have := Complex.ofReal_ne_zero.mpr ℏ_ne_zero
   field_simp
+  simp only [Complex.ofReal_pow]
   ring
 
 /-- The Schrodinger operator commutes with the parity operator. -/

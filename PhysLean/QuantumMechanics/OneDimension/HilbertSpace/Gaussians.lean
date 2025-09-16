@@ -160,6 +160,7 @@ lemma exp_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f)
     · ring
     rw [← Real.exp_add, ← Real.exp_add]
     congr 1
+    simp only [neg_mul, Real.exp_eq_exp]
     field_simp
     ring
   rw [h1]

@@ -177,7 +177,7 @@ lemma deriv_eq_fderiv_basis [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (μ : Fin d) (f : Space d → M) (x : Space d) :
     deriv μ f x = fderiv ℝ f x (basis μ) := by
   rw [deriv_eq]
-  congr
+  congr 1
   funext i
   simp only [EuclideanSpace.single_apply, basis_apply]
   congr 1

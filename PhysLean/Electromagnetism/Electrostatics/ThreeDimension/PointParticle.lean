@@ -86,8 +86,7 @@ def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
     intro x
     by_cases hx : ‖x - r₀‖ = 0
     · simp [hx, zpow_two]
-    · field_simp [zpow_two]
-      ring) (by fun_prop)
+    · field_simp [zpow_two]) (by fun_prop)
 
 /-!
 
@@ -138,7 +137,6 @@ lemma electricField_eq_translateD (q ε : ℝ) (r₀ : Space) :
 open InnerProductSpace
 
 open scoped Topology BigOperators FourierTransform
-
 
 /-!
 
@@ -216,7 +214,6 @@ lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
     by_cases hx : ‖x‖ = 0
     · simp [hx, zpow_two]
     · field_simp [zpow_two]
-      ring
   · fun_prop
 
 /-!
@@ -313,7 +310,6 @@ lemma potentialLimitSeries_differentiable (n : ℕ) :
 
 -/
 
-
 lemma potentialLimitSeries_fderiv (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
     fderiv ℝ (potentialLimitSeries n) x y =
     - ((‖x‖ ^ 2 + (1 + (n : ℝ))⁻¹) ^ (- 1 /2 : ℝ)) ^ 3 * ⟪x, y⟫_ℝ := by
@@ -386,7 +382,6 @@ lemma potentialLimitSeries_fderiv_eq_potentialLimitseries_mul
   congr
   simp only [one_div, inv_inj]
   ring
-
 
 /-!
 
@@ -540,7 +535,6 @@ lemma potentialLimitSeries_fderiv_bounded (n : ℕ)
   apply le_of_eq
   have hx : 0 < ‖x‖ := by positivity
   field_simp
-  ring
 
 lemma potentialLimitSeries_fderiv_isDistBounded (n : ℕ) (y : EuclideanSpace ℝ (Fin 3)) :
     IsDistBounded (fun x => fderiv ℝ (potentialLimitSeries n) x y) := by
@@ -554,7 +548,6 @@ lemma potentialLimitSeries_fderiv_isDistBounded (n : ℕ) (y : EuclideanSpace �
   · intro x
     apply (potentialLimitSeries_fderiv_bounded n x y).trans
     simp
-
 
 /-!
 
@@ -831,8 +824,8 @@ The proof of Gauss' law for a point particle at the origin follows the proof giv
 https://math.stackexchange.com/questions/2409008/
 
 We highlight the main steps of the proof here (the below comments also appear
-in-line within the proof):
-- **Step 1**: `∇ ⬝ E = 1/ε ρ` if for all Schwartz maps`η`,  `∇ ⬝ E η = (1/ε ρ) η`.
+in-line within the proof) :
+- **Step 1**: `∇ ⬝ E = 1/ε ρ` if for all Schwartz maps`η`, `∇ ⬝ E η = (1/ε ρ) η`.
 - **Step 2**: We focus on rewriting the LHS, by definition it is equal to
     `- ∫ d³r ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, (∇ η) r⟫`
 - **Step 3**: We rearrange the integral to
@@ -845,7 +838,7 @@ in-line within the proof):
       In `d³r` the `r` is a vector whilst in `r² dr dn` the `r` is a scalar (the distance).
       `- q/(4 * π * ε) * ∫ dr² dr dn r⁻¹ ^ 2 * (d(η (a • n))/d a)_r`
 - **Step 6**: The integral is rearanged to
-      `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr  r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)`
+      `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)`
 - **Step 7**: The integral is further rearanged to
     `- q/(4 * π * ε) * ∫ dn (∫_0^∞ dr (d(η (a • n))/d a)_r)`
 - **Step 8**: The inner integral `(∫_0^∞ dr (d(η (a • n))/d a)_r)` is an integral over
@@ -863,7 +856,7 @@ in-line within the proof):
 /-- Guass' law for a point particle in 3-dimensions at the origin, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
 lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeDistribution q 0) := by
-  /- Step 1: `∇ ⬝ E = 1/ε ρ` if for all Schwartz maps`η`,  `∇ ⬝ E η = (1/ε ρ) η`. -/
+  /- Step 1: `∇ ⬝ E = 1/ε ρ` if for all Schwartz maps`η`, `∇ ⬝ E η = (1/ε ρ) η`. -/
   ext η
   /- Preliminary definitions. -/
   let η' (n : ↑(Metric.sphere 0 1)) : 𝓢(ℝ, ℝ) := compCLM (g := fun a => a • n.1) ℝ (by
@@ -946,8 +939,8 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         exact compl_compl _
       · symm
         simp
-   /- Step 6: The integral is rearanged to
-      `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr  r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)` -/
+    /- Step 6: The integral is rearanged to
+      `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (∫ r, ‖r.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • n)) ‖r.1‖)
         ∂((Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))))
@@ -963,8 +956,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         intro x
         by_cases hx : ‖x‖ = 0
         · simp [hx, zpow_two]
-        · field_simp [zpow_two]
-          ring) (by fun_prop) η
+        · field_simp [zpow_two]) (by fun_prop) η
       rename_i r
       simp only [norm_eq_abs, inv_pow, sq_abs, Nat.succ_eq_add_one, Nat.reduceAdd,
         Function.comp_apply, homeomorphUnitSphereProd_symm_apply_coe]
@@ -981,11 +973,11 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         simp [smul_smul]
         rw [abs_of_nonneg (le_of_lt hr)]
         field_simp
+        simp
       rw [← grad_inner_space_unit_vector]
       rw [real_inner_comm]
       simp [inner_smul_left, x, norm_smul, abs_of_nonneg (le_of_lt hr)]
       field_simp
-      ring
       exact SchwartzMap.differentiable η
     /- Step 7: The integral is further rearanged to
       `- q/(4 * π * ε) * ∫ dn (∫_0^∞ dr (d(η (a • n))/d a)_r)` -/
@@ -1005,6 +997,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         refine coe_toNNReal (↑r ^ 2) ?_
         apply pow_two_nonneg
       have h1 : r.1 ≠ 0 := by exact ne_of_gt r.2
+      simp only [smul_eq_mul]
       field_simp
       congr
       rw [abs_of_nonneg]
@@ -1034,7 +1027,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         exact integrable ((derivCLM ℝ) (η' n))
       · change Filter.Tendsto (η' n) Filter.atTop (nhds 0)
         exact Filter.Tendsto.mono_left (η' n).toZeroAtInfty.zero_at_infty' atTop_le_cocompact
-     /- Step 9: The integral `∫ dn` is equal to the surface area of the unit sphere, which is
+      /- Step 9: The integral `∫ dn` is equal to the surface area of the unit sphere, which is
       `4 * π`. And thus we get after some simplification
       `(q/ε) * η 0` -/
     _ = (q/(4 * π * ε)) * η 0 * (3 * (volume (α := EuclideanSpace ℝ (Fin 3))).real
@@ -1051,7 +1044,6 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       · subst hε
         simp
       field_simp
-      ring
   /- Step 10: This is manifestly equal to the right hand side `1/ε ρ η` since `ρ = q δ(r)`,
     thereby proving the result. -/
   simp [chargeDistribution]
@@ -1074,7 +1066,6 @@ lemma gaussLaw (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
   rw [Space.divD_translateD]
   rw [gaussLaw_origin q ε]
   simp
-
 
 /-!
 

@@ -119,7 +119,7 @@ namespace standParam
   up and charm rows. -/
 lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]t =
-    (conj [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]u ×₃ conj [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) := by
+    (conj [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]u ⨯₃ conj [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) := by
   have h1 := exp_ne_zero (I * ↑δ₁₃)
   funext i
   fin_cases i
@@ -128,6 +128,7 @@ lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     head_fin_const, cons_val_one, head_cons, Fin.zero_eta, crossProduct, uRow, cRow,
     LinearMap.mk₂_apply, Pi.conj_apply, _root_.map_mul, map_inv₀, ← exp_conj, conj_I, conj_ofReal,
     inv_inv, map_sub, map_neg]
+    simp only [ofReal_sin, ofReal_cos]
     field_simp
     ring_nf
     rw [sin_sq]
@@ -137,6 +138,7 @@ lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     cons_val_one, head_cons, Fin.mk_one, crossProduct, uRow, cRow, LinearMap.mk₂_apply,
     Pi.conj_apply, _root_.map_mul, conj_ofReal, map_inv₀, ← exp_conj, conj_I, inv_inv, map_sub,
     map_neg]
+    simp only [ofReal_cos, ofReal_sin]
     field_simp
     ring_nf
     rw [sin_sq]
@@ -146,6 +148,7 @@ lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
     cons_val_one, head_cons, Fin.reduceFinMk, crossProduct, uRow, cRow, LinearMap.mk₂_apply,
     Pi.conj_apply, _root_.map_mul, conj_ofReal, map_inv₀, ← exp_conj, conj_I, inv_inv, map_sub,
     map_neg]
+    simp only [ofReal_cos, ofReal_sin]
     field_simp
     ring_nf
     rw [sin_sq]
@@ -154,7 +157,7 @@ lemma cross_product_t (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) :
 /-- A CKM matrix which has rows equal to that of a standard parameterisation is equal
   to that standard parameterisation. -/
 lemma eq_rows (U : CKMMatrix) {θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ} (hu : [U]u = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]u)
-    (hc : [U]c = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) (hU : [U]t = conj [U]u ×₃ conj [U]c) :
+    (hc : [U]c = [standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃]c) (hU : [U]t = conj [U]u ⨯₃ conj [U]c) :
     U = standParam θ₁₂ θ₁₃ θ₂₃ δ₁₃ := by
   apply ext_Rows hu hc
   rw [hU, cross_product_t, hu, hc]
@@ -194,7 +197,6 @@ lemma VusVubVcdSq_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ Rea
       simp
     rw [h1]
     field_simp
-    ring
   · simp only [ne_eq, Decidable.not_not] at hx
     rw [hx]
     simp
@@ -213,7 +215,7 @@ lemma mulExpδ₁₃_eq (θ₁₂ θ₁₃ θ₂₃ δ₁₃ : ℝ) (h1 : 0 ≤ 
   ring_nf
   rw [exp_neg]
   have h1 : cexp (I * δ₁₃) ≠ 0 := exp_ne_zero _
-  field_simp
+  simp
 
 end standParam
 end

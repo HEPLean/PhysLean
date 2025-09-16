@@ -453,8 +453,7 @@ lemma stat_signFinset_insert_some_self_fst
     simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_self_eq,
       reduceCtorEq, Option.isSome_some, Option.get_some, forall_const, false_or, and_self,
       false_and, false_iff, not_exists, not_and, and_imp]
-    intro x hi hx
-    intro h
+    intro x hi hx h
     simp only [Fin.ext_iff, Fin.coe_cast]
     simp only [Fin.val_eq_val]
     exact Fin.succAbove_ne i x
@@ -530,8 +529,7 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.FieldOp) (φs : List 𝓕.
     simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_self_eq,
       reduceCtorEq, Option.isSome_some, Option.get_some, imp_false, not_true_eq_false, or_self,
       and_self, and_false, false_iff, not_exists, not_and, and_imp]
-    intro x hi hx
-    intro h
+    intro x hi hx h
     simp only [Fin.ext_iff, Fin.coe_cast]
     simp only [Fin.val_eq_val]
     exact Fin.succAbove_ne i x

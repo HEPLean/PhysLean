@@ -127,6 +127,7 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
         ring
       simp at h1
       linarith
+    simp only [neg_add_rev, Real.one_rpow, mul_one]
     field_simp
     ring
     linarith
@@ -234,6 +235,7 @@ lemma invPowMeasure_integrable_pow_neg_two {dm1 : ℕ} :
         linarith
       field_simp
       ring_nf
+      simp only [Nat.succ_eq_add_one, inv_pow]
       field_simp
       exact pow_nonneg (le_of_lt x.2.2) dm1
     simp at hf''
