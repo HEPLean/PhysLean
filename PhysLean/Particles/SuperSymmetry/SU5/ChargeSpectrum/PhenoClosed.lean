@@ -77,7 +77,8 @@ def IsPhenoClosedQ10 (S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum �
     let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
     IsPhenoConstrained y ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1
 
-lemma isPhenClosedQ10_of_isPhenoConstrainedQ10 {S10 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)}
+lemma isPhenClosedQ10_of_isPhenoConstrainedQ10 {S10 : Finset 𝓩}
+    {charges : Multiset (ChargeSpectrum 𝓩)}
     (h : ∀ q10 ∈ S10, ∀ x ∈ charges,
       let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
       IsPhenoConstrainedQ10 x q10 ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1) :
@@ -97,7 +98,8 @@ open PotentialTerm
 /-- The proposition that for multiset set of charges `charges` contains all
   viable completions of charges which allow the top Yukawa, given allowed values
   of `5`d and `10`d charges `S5` and `S10`. -/
-def ContainsPhenoCompletionsOfMinimallyAllows (S5 S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)) :
+def ContainsPhenoCompletionsOfMinimallyAllows (S5 S10 : Finset 𝓩)
+    (charges : Multiset (ChargeSpectrum 𝓩)) :
     Prop := ∀ x ∈ (minimallyAllowsTermsOfFinset S5 S10 topYukawa),
       ¬ x.IsPhenoConstrained → ∀ y ∈ completions S5 S10 x, ¬ y.IsPhenoConstrained
       ∧ ¬ y.YukawaGeneratesDangerousAtLevel 1 → y ∈ charges

@@ -174,7 +174,8 @@ variable {𝓩 : Type} [DecidableEq 𝓩] [AddCommGroup 𝓩]
 
 /-- The multiset of all charges within `ofFinset S5 S10` which minimally allow the
   potential term `T`. -/
-def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) : (T : PotentialTerm) → Multiset (ChargeSpectrum 𝓩)
+def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) :
+    (T : PotentialTerm) → Multiset (ChargeSpectrum 𝓩)
   | μ =>
     let SqHd := S5.val
     let SqHu := S5.val
@@ -321,7 +322,8 @@ lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : 
   exact allowsTermForm_allowsTerm
 
 lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset 𝓩}
-    {T : PotentialTerm} (x : ChargeSpectrum 𝓩) (h : x.MinimallyAllowsTerm T) (hx : x ∈ ofFinset S5 S10) :
+    {T : PotentialTerm} (x : ChargeSpectrum 𝓩) (h : x.MinimallyAllowsTerm T)
+    (hx : x ∈ ofFinset S5 S10) :
     x ∈ minimallyAllowsTermsOfFinset S5 S10 T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_minimallyAllowsTerm h
   cases T

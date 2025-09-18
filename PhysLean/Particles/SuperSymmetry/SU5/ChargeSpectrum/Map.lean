@@ -349,7 +349,8 @@ lemma not_yukawaGeneratesDangerousAtLevel_of_map {f : 𝓩 →+ 𝓩1} {x : Char
 
 /-- The preimage of a charge `Charges 𝓩1` in `ofFinset S5 S10 ⊆ Charges 𝓩` under
   mapping charges through `f : 𝓩 →+ 𝓩1`. -/
-def preimageOfFinset (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩1) : Finset (ChargeSpectrum 𝓩) :=
+def preimageOfFinset (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1)
+    (x : ChargeSpectrum 𝓩1) : Finset (ChargeSpectrum 𝓩) :=
   let SHd := (S5.map ⟨Option.some, Option.some_injective 𝓩⟩ ∪ {none} : Finset (Option 𝓩)).filter
     fun y => f <$> y = x.1
   let SHu := (S5.map ⟨Option.some, Option.some_injective 𝓩⟩ ∪ {none} : Finset (Option 𝓩)).filter

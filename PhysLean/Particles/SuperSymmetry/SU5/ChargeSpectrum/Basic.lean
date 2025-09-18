@@ -151,7 +151,8 @@ instance hasSubset : HasSubset (ChargeSpectrum 𝓩) where
 instance hasSSubset : HasSSubset (ChargeSpectrum 𝓩) where
   SSubset x y := x ⊆ y ∧ x ≠ y
 
-instance subsetDecidable [DecidableEq 𝓩] (x y : ChargeSpectrum 𝓩) : Decidable (x ⊆ y) := instDecidableAnd
+instance subsetDecidable [DecidableEq 𝓩] (x y : ChargeSpectrum 𝓩) : Decidable (x ⊆ y) :=
+  instDecidableAnd
 
 lemma subset_def {x y : ChargeSpectrum 𝓩} : x ⊆ y ↔ x.1.toFinset ⊆ y.1.toFinset ∧
     x.2.1.toFinset ⊆ y.2.1.toFinset ∧ x.2.2.1 ⊆ y.2.2.1 ∧ x.2.2.2 ⊆ y.2.2.2 := by

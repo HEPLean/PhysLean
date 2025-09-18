@@ -232,7 +232,8 @@ lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : ChargeSpectrum 𝓩}
     simp_all
 
 lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
-    (p : ChargeSpectrum 𝓩 → Prop) (hp : (x : ChargeSpectrum 𝓩) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
+    (p : ChargeSpectrum 𝓩 → Prop)
+    (hp : (x : ChargeSpectrum 𝓩) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
     (x : ChargeSpectrum 𝓩) (hbase : p x)
     (y : ChargeSpectrum 𝓩) (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y) :
     (n : ℕ) → (hn : n = y.card - x.card) → p y

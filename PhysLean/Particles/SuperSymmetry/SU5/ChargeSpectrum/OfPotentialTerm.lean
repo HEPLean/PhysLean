@@ -223,7 +223,8 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : Pot
     rw [← f1_add_f2_eq_zero]
     abel
 
-lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩] {x : ChargeSpectrum 𝓩} (T : PotentialTerm) :
+lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩]
+    {x : ChargeSpectrum 𝓩} (T : PotentialTerm) :
     x.ofPotentialTerm' T ⊆ x.ofPotentialTerm T := by
   refine Multiset.subset_iff.mpr (fun n h => ?_)
   cases T
@@ -331,7 +332,8 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
   · exact fun h => ofPotentialTerm_subset_ofPotentialTerm' T h
   · exact fun h => ofPotentialTerm'_subset_ofPotentialTerm T h
 
-lemma ofPotentialTerm'_mono [DecidableEq 𝓩] {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
+lemma ofPotentialTerm'_mono [DecidableEq 𝓩] {x y : ChargeSpectrum 𝓩}
+    (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm' T ⊆ y.ofPotentialTerm' T := by
   intro i
   rw [← mem_ofPotentialTerm_iff_mem_ofPotentialTerm, ← mem_ofPotentialTerm_iff_mem_ofPotentialTerm]
