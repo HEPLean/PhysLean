@@ -39,16 +39,18 @@ open SpaceTime
 
 /-!
 
-# A. The Higgs vector space
+## A. The Higgs vector space
 
 The target space of the Higgs field is a 2-dimensional complex vector space.
+In this section we will define this vector space, and the action of the
+global gauge group on it.
 
 -/
 
 
 /-!
 
-## A.1 Definition of the Higgs vector space
+### A.1 Definition of the Higgs vector space
 
 -/
 /-- The vector space `HiggsVec` is defined to be the complex Euclidean space of dimension 2.
@@ -59,7 +61,7 @@ namespace HiggsVec
 
 /-!
 
-## A.2 Relation to `(Fin 2 → ℂ)`
+### A.2 Relation to `(Fin 2 → ℂ)`
 
 We define the continuous linear map from `HiggsVec` to `(Fin 2 → ℂ)` achieved by
 casting vectors, we also show that this map is smooth.
@@ -80,7 +82,7 @@ lemma smooth_toFin2ℂ : ContMDiff 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → ℂ) 
 
 /-!
 
-## A.3 Orthonormal basis
+### A.3 Orthonormal basis
 
 We define an orthonormal basis of `HiggsVec`.
 
@@ -115,7 +117,7 @@ lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) : ‖ofReal a‖ ^ 2 = a := by
 
 /-!
 
-## A.5 Action of the gauge group on `HiggsVec`
+### A.5 Action of the gauge group on `HiggsVec`
 
 The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplication.
 
@@ -123,7 +125,7 @@ The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplicatio
 
 /-!
 
-### A.5.1 Definition of the action
+#### A.5.1 Definition of the action
 
 -/
 
@@ -147,7 +149,7 @@ instance : MulAction StandardModel.GaugeGroupI HiggsVec where
 
 /-!
 
-### A.5.2 Unitary nature of the action
+#### A.5.2 Unitary nature of the action
 
 The action of `StandardModel.GaugeGroupI` on `HiggsVec` is unitary.
 
@@ -190,7 +192,7 @@ lemma gaugeGroupI_smul_norm (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
 
 /-!
 
-## A.6. The Gauge orbit of a Higgs vector
+### A.6. The Gauge orbit of a Higgs vector
 
 We show that two Higgs vectors are in the same gauge orbit if and only if they have the same norm.
 
@@ -198,7 +200,7 @@ We show that two Higgs vectors are in the same gauge orbit if and only if they h
 
 /-!
 
-### A.6.1 The rotation matrix to ofReal
+#### A.6.1 The rotation matrix to ofReal
 
 We define an element of `GaugeGroupI` which takes a given Higgs vector to the
 corresponding `ofReal` Higgs vector.
@@ -271,7 +273,7 @@ lemma toRealGroupElem_smul_self (φ : HiggsVec) :
 
 /-!
 
-### A.6.2 Members of orbits
+#### A.6.2 Members of orbits
 
 Members of the orbit of a Higgs vector under the action of `GaugeGroupI` are exactly those
 Higgs vectors with the same norm.
@@ -286,17 +288,26 @@ lemma mem_orbit_gaugeGroupI_iff (φ : HiggsVec) (ψ : HiggsVec) :
     simp
   · intro h
     use (toRealGroupElem ψ)⁻¹ * toRealGroupElem (φ)
+    simp only
+    rw [← smul_smul, toRealGroupElem_smul_self φ, ← h, ← toRealGroupElem_smul_self ψ, smul_smul]
     simp
-    rw [← smul_smul]
-    rw [toRealGroupElem_smul_self φ, ← h, ← toRealGroupElem_smul_self ψ, smul_smul]
-    simp
+
 end HiggsVec
 
 /-!
 
-## Definition of the Higgs Field
+## B. The Higgs bundle
 
-We also define the Higgs bundle.
+We define the Higgs bundle as the trivial vector bundle with base `SpaceTime` and fiber `HiggsVec`.
+The Higgs field will then be defined as smooth sections of this bundle.
+-/
+
+/-!
+
+### B.1 Definition of the Higgs bundle
+
+We define the Higgs bundle.
+
 -/
 
 TODO "6V2IS" "Make `HiggsBundle` an associated bundle."
@@ -305,9 +316,28 @@ TODO "6V2IS" "Make `HiggsBundle` an associated bundle."
   fiber `HiggsVec`. Thus as a manifold it corresponds to `ℝ⁴ × ℂ²`. -/
 abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
+/-!
+
+### B.2 Instance of a vector bundle
+
+We given the Higgs bundle an instance of a smooth vector bundle.
+
+-/
+
 /-- The instance of a smooth vector bundle with total space `HiggsBundle` and fiber `HiggsVec`. -/
 instance : ContMDiffVectorBundle ⊤ HiggsVec HiggsBundle (Lorentz.Vector.asSmoothManifold 3) :=
   Bundle.Trivial.contMDiffVectorBundle HiggsVec
+
+
+/-!
+
+## C. The Higgs fields
+
+Higgs fields are smooth sections of the Higgs bundle.
+This corresponds to smooth maps from `SpaceTime` to `HiggsVec`.
+We here define the type of Higgs fields and create an API around them.
+
+-/
 
 /-- The type `HiggsField` is defined such that elements are smooth sections of the trivial
   vector bundle `HiggsBundle`. Such elements are Higgs fields. Since `HiggsField` is
@@ -316,26 +346,50 @@ instance : ContMDiffVectorBundle ⊤ HiggsVec HiggsBundle (Lorentz.Vector.asSmoo
 abbrev HiggsField : Type := ContMDiffSection
   (Lorentz.Vector.asSmoothManifold 3) HiggsVec ⊤ HiggsBundle
 
-/-- Given a vector in `HiggsVec` the constant Higgs field with value equal to that
-section. -/
-def HiggsVec.toField (φ : HiggsVec) : HiggsField where
-  toFun := fun _ ↦ φ
-  contMDiff_toFun := by
-    intro x
-    rw [Bundle.contMDiffAt_section]
-    exact contMDiffAt_const
 
-/-- For all spacetime points, the constant Higgs field defined by a Higgs vector,
-  returns that Higgs Vector. -/
-@[simp]
-lemma HiggsVec.toField_apply (φ : HiggsVec) (x : SpaceTime) : (φ.toField x) = φ := rfl
 
 namespace HiggsField
 open HiggsVec
 
 /-!
 
-## Relation to `HiggsVec`
+### C.1 Relations between `HiggsField` and `HiggsVec`
+
+-/
+
+/-!
+
+#### C.1.1 The constant Higgs field
+
+We define the constant Higgs field associated to a given Higgs vector.
+
+-/
+
+
+/-- Given a vector in `HiggsVec` the constant Higgs field with value equal to that
+section. -/
+def const : HiggsVec →ₗ[ℝ] HiggsField where
+  toFun  φ := {
+    toFun := fun _ ↦ φ,
+    contMDiff_toFun := by
+      intro x
+      rw [Bundle.contMDiffAt_section]
+      exact contMDiffAt_const}
+  map_add' φ ψ := by
+    ext1 x
+    simp
+  map_smul' a φ := by
+    ext1 x
+    simp
+
+/-- For all spacetime points, the constant Higgs field defined by a Higgs vector,
+  returns that Higgs Vector. -/
+@[simp]
+lemma const_apply (φ : HiggsVec) (x : SpaceTime) : const φ x = φ := rfl
+
+/-!
+
+### C.1.2 The map from `HiggsField` to `SpaceTime → HiggsVec`
 
 -/
 
@@ -349,15 +403,17 @@ lemma toHiggsVec_smooth (φ : HiggsField) :
   rw [Bundle.contMDiffAt_section] at h1
   exact h1
 
-lemma toField_toHiggsVec_apply (φ : HiggsField) (x : SpaceTime) :
-    (φ.toHiggsVec x).toField x = φ x := rfl
+lemma const_toHiggsVec_apply (φ : HiggsField) (x : SpaceTime) :
+    const (φ.toHiggsVec x) x = φ x := rfl
 
 lemma toFin2ℂ_comp_toHiggsVec (φ : HiggsField) :
     toFin2ℂ ∘ φ.toHiggsVec = φ := rfl
 
 /-!
 
-## Smoothness properties of components
+### C.2 Smoothness properties of components
+
+We prove some smoothness properties of the components of a Higgs field.
 
 -/
 
@@ -376,33 +432,81 @@ lemma apply_im_smooth (φ : HiggsField) (i : Fin 2) :
     ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) ⊤ (imCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
   (ContinuousLinearMap.contMDiff imCLM).comp (φ.apply_smooth i)
 
+
 /-!
 
-## Constant Higgs fields
+### C.3 The pointwise inner product
+
+The pointwise inner product on the Higgs field.
 
 -/
 
-/-- A Higgs field is constant if it is equal for all `x` `y` in `spaceTime`. -/
-def IsConst (Φ : HiggsField) : Prop := ∀ x y, Φ x = Φ y
+open InnerProductSpace
 
-lemma isConst_of_higgsVec (φ : HiggsVec) : φ.toField.IsConst := fun _ => congrFun rfl
+instance : Inner (SpaceTime → ℂ) (HiggsField) where
+  inner φ1 φ2 := fun x => ⟪φ1 x, φ2 x⟫_ℂ
 
-lemma isConst_iff_of_higgsVec (Φ : HiggsField) : Φ.IsConst ↔ ∃ (φ : HiggsVec), Φ = φ.toField :=
-  Iff.intro (fun h ↦ ⟨Φ 0, by ext x y; rw [← h x 0]; rfl⟩) (fun ⟨φ, hφ⟩ x y ↦ by subst hφ; rfl)
+/-!
 
-/-- Generating a constant Higgs field from a real number, such that the norm-squared of that Higgs
-  vector is the given real number. -/
-def ofReal (a : ℝ) : HiggsField := (HiggsVec.ofReal a).toField
+#### C.3.1 Basic equaltities
 
-/-- The higgs field which is all zero. -/
-def zero : HiggsField := ofReal 0
-
-/-- The zero Higgs field is the zero section of the Higgs bundle, i.e., the HiggsField `zero`
-defined by `ofReal 0` is the constant zero-section of the bundle `HiggsBundle`.
 -/
-informal_lemma zero_is_zero_section where
-  deps := [`StandardModel.HiggsField.zero]
-  tag := "6V2I5"
+
+lemma inner_apply (φ1 φ2 : HiggsField) (x : SpaceTime) :
+    ⟪φ1, φ2⟫_(SpaceTime → ℂ) x = ⟪φ1 x, φ2 x⟫_ℂ := rfl
+
+lemma inner_eq_expand (φ1 φ2 : HiggsField) :
+    ⟪φ1, φ2⟫_(SpaceTime → ℂ) = fun x => equivRealProdCLM.symm (((φ1 x 0).re * (φ2 x 0).re
+    + (φ1 x 1).re * (φ2 x 1).re+ (φ1 x 0).im * (φ2 x 0).im + (φ1 x 1).im * (φ2 x 1).im),
+    ((φ1 x 0).re * (φ2 x 0).im + (φ1 x 1).re * (φ2 x 1).im
+    - (φ1 x 0).im * (φ2 x 0).re - (φ1 x 1).im * (φ2 x 1).re)) := by
+  funext x
+  simp only [inner_apply, PiLp.inner_apply, RCLike.inner_apply, Fin.sum_univ_two,
+    equivRealProdCLM_symm_apply, ofReal_add, ofReal_mul, ofReal_sub]
+  rw [RCLike.conj_eq_re_sub_im, RCLike.conj_eq_re_sub_im]
+  nth_rewrite 1 [← RCLike.re_add_im (φ2 x 0)]
+  nth_rewrite 1 [← RCLike.re_add_im (φ2 x 1)]
+  ring_nf
+  simp only [Fin.isValue, RCLike.re_to_complex, coe_algebraMap, RCLike.I_to_complex,
+    RCLike.im_to_complex, I_sq, mul_neg, mul_one, neg_mul, sub_neg_eq_add, one_mul]
+  ring
+
+
+/-- Expands the inner product on Higgs fields in terms of complex components of the
+  Higgs fields. -/
+lemma inner_expand_conj (φ1 φ2 : HiggsField) (x : SpaceTime) :
+    ⟪φ1, φ2⟫_(SpaceTime → ℂ) x = conj (φ1 x 0) * φ2 x 0 + conj (φ1 x 1) * φ2 x 1 := by
+  simp [inner_apply, PiLp.inner_apply]
+  ring
+
+/-!
+
+#### C.3.2 Symmetry properties
+
+-/
+
+lemma inner_symm (φ1 φ2 : HiggsField) :
+    conj ⟪φ2, φ1⟫_(SpaceTime → ℂ) = ⟪φ1, φ2⟫_(SpaceTime → ℂ)  := by
+  funext x
+  simp only [inner_apply, Pi.conj_apply, inner_conj_symm]
+
+/-!
+
+#### C.3.3 Linearity conditions
+
+-/
+
+lemma inner_add_left (φ1 φ2 φ3 : HiggsField) :
+    ⟪φ1 + φ2, φ3⟫_(SpaceTime → ℂ) = ⟪φ1, φ3⟫_(SpaceTime → ℂ) + ⟪φ2, φ3⟫_(SpaceTime → ℂ) := by
+  funext x
+  simp [inner_apply]
+  rw [_root_.inner_add_left]
+
+lemma inner_add_right (φ1 φ2 φ3 : HiggsField) :
+    ⟪φ1, φ2 + φ3⟫_(SpaceTime → ℂ) = ⟪φ1, φ2⟫_(SpaceTime → ℂ) + ⟪φ1, φ3⟫_(SpaceTime → ℂ) := by
+  funext x
+  simp [inner_apply]
+  rw [_root_.inner_add_right]
 
 end HiggsField
 
