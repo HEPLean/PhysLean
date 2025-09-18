@@ -410,6 +410,7 @@ lemma diff_eq_toTime_sub (zero : TimeTransMan) (x : TimeUnit) (t1 t2 : TimeTrans
     diff x t2 t1 = toTime zero x t2 - toTime zero x t1 := by
   simp [toTime_val, diff_eq_val]
   field_simp
+  ring
 
 lemma toTime_neg (zero : TimeTransMan) (x : TimeUnit) (t : TimeTransMan) :
     (toTime zero x) (neg zero t) = - toTime zero x t := by

@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.LinearMaps
 import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+import Mathlib.Tactic.Cases
 /-!
 # Anomaly cancellation conditions
 

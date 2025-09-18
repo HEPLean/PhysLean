@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.LinearAlgebra.UnitaryGroup
-import Mathlib.Data.Complex.Trigonometric
+import Mathlib.Analysis.Complex.Trigonometric
 import Mathlib.Tactic.Polyrith
 /-!
 # The CKM Matrix
@@ -93,7 +93,7 @@ def PhaseShiftRelation (U V : unitaryGroup (Fin 3) ℂ) : Prop :=
 /-- The relation `PhaseShiftRelation` is reflective. -/
 lemma phaseShiftRelation_refl (U : unitaryGroup (Fin 3) ℂ) : PhaseShiftRelation U U := by
   use 0, 0, 0, 0, 0, 0
-  rw [Subtype.ext_iff_val]
+  rw [Subtype.ext_iff]
   simp only [Submonoid.coe_mul, phaseShift_coe_matrix]
   rw [phaseShiftMatrix_one]
   simp only [one_mul, mul_one]
@@ -104,7 +104,7 @@ lemma phaseShiftRelation_symm {U V : unitaryGroup (Fin 3) ℂ} :
   intro h
   obtain ⟨a, b, c, e, f, g, h⟩ := h
   use (- a), (- b), (- c), (- e), (- f), (- g)
-  rw [Subtype.ext_iff_val]
+  rw [Subtype.ext_iff]
   rw [h]
   repeat rw [mul_assoc]
   simp only [Submonoid.coe_mul, phaseShift_coe_matrix]
@@ -120,7 +120,7 @@ lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
   obtain ⟨a, b, c, e, f, g, hUV⟩ := hUV
   obtain ⟨d, i, j, k, l, m, hVW⟩ := hVW
   use (a + d), (b + i), (c + j), (e + k), (f + l), (g + m)
-  rw [Subtype.ext_iff_val, hUV, hVW]
+  rw [Subtype.ext_iff, hUV, hVW]
   simp only [Submonoid.coe_mul, phaseShift_coe_matrix]
   rw [mul_assoc, mul_assoc, phaseShiftMatrix_mul, ← mul_assoc, ← mul_assoc, phaseShiftMatrix_mul,
     add_comm k e, add_comm l f, add_comm m g]

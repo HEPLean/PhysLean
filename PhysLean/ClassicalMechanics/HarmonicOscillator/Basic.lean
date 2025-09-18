@@ -104,23 +104,23 @@ Here we both define and proof properties related to the angular frequency.
 
 -/
 
-/-- The angular frequency  of the classical harmonic osscilator, `ω`, is defined
+/-- The angular frequency of the classical harmonic osscilator, `ω`, is defined
   as `√(k/m)`. -/
 noncomputable def ω : ℝ := √(S.k / S.m)
 
-/-- The angular frequency  of the classical harmonic osscilator is positive. -/
+/-- The angular frequency of the classical harmonic osscilator is positive. -/
 @[simp]
 lemma ω_pos : 0 < S.ω := sqrt_pos.mpr (div_pos S.k_pos S.m_pos)
 
-/-- The square of the angular frequency  of the classical harmonic osscilator is equal to `k/m`. -/
+/-- The square of the angular frequency of the classical harmonic osscilator is equal to `k/m`. -/
 lemma ω_sq : S.ω^2 = S.k / S.m := by
   rw [ω, sq_sqrt]
   exact div_nonneg (le_of_lt S.k_pos) (le_of_lt S.m_pos)
 
-/-- The angular frequency  of the classical harmonic osscilator is not equal to zero. -/
+/-- The angular frequency of the classical harmonic osscilator is not equal to zero. -/
 lemma ω_neq_zero : S.ω ≠ 0 := Ne.symm (ne_of_lt S.ω_pos)
 
-/-- The inverse of the square of the angular frequency  of the classical harmonic osscilator
+/-- The inverse of the square of the angular frequency of the classical harmonic osscilator
   is `m/k`. -/
 lemma inverse_ω_sq : (S.ω ^ 2)⁻¹ = S.m/S.k := by
   rw [ω_sq]
@@ -360,7 +360,6 @@ lemma gradient_lagrangian_position_eq (t : Time) (x : Space 1) (v : EuclideanSpa
   simp [smul_smul]
   congr 1
   field_simp
-  ring
 
 lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
     gradient (lagrangian S t x) v = S.m • v := by
@@ -379,7 +378,6 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpa
   simp [smul_smul]
   congr 1
   field_simp
-  ring
 
 /-!
 
@@ -525,7 +523,6 @@ lemma eulerLagrangeOp_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ 
     simp [smul_smul]
     congr 1
     field_simp
-    ring
   · rw [← Time.deriv_smul _ _ (by fun_prop)]
     congr
     funext t

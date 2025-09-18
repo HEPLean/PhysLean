@@ -6,6 +6,7 @@ Authors: Tomas Skrivan, Joseph Tooby-Smith
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
+import Mathlib.Tactic.Cases
 /-!
 
 # Physicists Hermite Polynomial
@@ -260,9 +261,7 @@ lemma physHermite_eq_deriv_gaussian (n : ℕ) (x : ℝ) :
     (fun y => Real.exp (- y ^ 2)) x / Real.exp (- x ^ 2) := by
   rw [deriv_gaussian_eq_physHermite_mul_gaussian]
   field_simp [Real.exp_ne_zero]
-  rw [← @smul_eq_mul ℝ _ ((-1) ^ n), ← inv_smul_eq_iff₀, mul_assoc, smul_eq_mul, ← inv_pow, ←
-    neg_inv, inv_one]
-  exact pow_ne_zero _ (by norm_num)
+  simp [← pow_mul]
 
 lemma physHermite_eq_deriv_gaussian' (n : ℕ) (x : ℝ) :
     physHermite n x = (-1 : ℝ) ^ n * deriv^[n] (fun y => Real.exp (- y ^ 2)) x *

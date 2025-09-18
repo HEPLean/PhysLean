@@ -273,7 +273,8 @@ lemma component_basisVector {n : ℕ} (c : Fin n → C) (b1 b2 : ComponentIdx (S
       simp_all only [not_forall]
       obtain ⟨w, h⟩ := h
       refine Finset.prod_eq_zero (Finset.mem_univ i) ?_
-      rw [Finsupp.single_eq_of_ne hi]
+      rw [Finsupp.single_eq_of_ne]
+      exact fun a => hi (id (Eq.symm a))
 
 end Pure
 

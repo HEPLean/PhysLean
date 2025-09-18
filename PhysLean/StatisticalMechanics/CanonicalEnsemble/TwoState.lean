@@ -44,10 +44,9 @@ lemma twoState_partitionFunction_apply_eq_cosh (E : ℝ) (T : Temperature) :
     (twoState E).partitionFunction T = 2 * exp (- β T * E / 2) * cosh (β T * E / 2) := by
   rw [twoState_partitionFunction_apply_eq_one_add_exp, Real.cosh_eq]
   field_simp
-  simp [mul_add, ← Real.exp_add, mul_assoc]
+  simp only [mul_add, ← exp_add, neg_add_cancel, exp_zero, add_right_inj, exp_eq_exp]
   field_simp
-  simp [add_mul]
-  exact Lean.Grind.CommRing.mul_comm (rexp (-(T.β * E))) 2
+  ring
 
 @[simp]
 lemma twoState_energy_fst (E : ℝ) : (twoState E).energy 0 = 0 := by
@@ -76,15 +75,16 @@ lemma twoState_probability_snd (E : ℝ) (T : Temperature) :
         Real.exp (-x / 2) / (Real.exp (x / 2) + Real.exp (-x / 2)) := by
     calc
       _ = (Real.exp (-x) * Real.exp (x / 2)) / ((1 + Real.exp (-x)) * Real.exp (x / 2)) := by
-        field_simp; ring_nf
+        field_simp
       _ = _ := by
         congr
         · rw [← Real.exp_add]; ring_nf
         · rw [add_mul, one_mul, ← Real.exp_add]; ring_nf
   have h_tanh (y : ℝ) :
       1 / 2 * (1 - Real.tanh y) = Real.exp (-y) / (Real.exp y + Real.exp (-y)) := by
-    rw [Real.tanh_eq_sinh_div_cosh, Real.sinh_eq, Real.cosh_eq]
+    rw [Real.tanh_eq_sinh_div_cosh, Real.sinh_eq, Real.cosh_eq, Real.exp_neg]
     field_simp
+    ring
   have h_half :
       Real.exp (-x / 2) / (Real.exp (x / 2) + Real.exp (-x / 2)) =
         1 / 2 * (1 - Real.tanh (x / 2)) := by

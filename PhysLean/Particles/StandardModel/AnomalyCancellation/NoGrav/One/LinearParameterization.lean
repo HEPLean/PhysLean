@@ -145,12 +145,15 @@ def bijection : linearParameters ≃ (SMNoGrav 1).LinSols where
     match i with
     | 0 => rfl
     | 1 =>
+      simp only [asCharges, Nat.reduceMul, Fin.isValue, toSpecies_apply]
       field_simp
       linear_combination -(1 * h1)
     | 2 =>
+      simp only [asCharges, Nat.reduceMul, Fin.isValue, neg_add_rev, toSpecies_apply]
       field_simp
       linear_combination -(1 * h1)
     | 3 =>
+      simp only [asCharges, Nat.reduceMul, Fin.isValue, neg_mul, toSpecies_apply]
       field_simp
       linear_combination -(1 * h2)
     | 4 => rfl
@@ -220,7 +223,7 @@ def tolinearParametersQNeqZero (S : {S : linearParameters // S.Q' ≠ 0 ∧ S.E'
       field_simp
       ring_nf
       simp only [neg_eq_zero, mul_eq_zero, OfNat.ofNat_ne_zero, or_false]
-      exact S.2⟩
+      simpa using S.2⟩
 
 /-- A bijection between the type `linearParametersQENeqZero` and linear parameters
   with `Q'` and `E'` non-zero. -/
@@ -234,7 +237,9 @@ def bijectionLinearParameters :
     have hQ := S.hx
     apply linearParametersQENeqZero.ext
     · rfl
-    · field_simp
+    · simp only [tolinearParametersQNeqZero_v, toLinearParameters_coe_Y, toLinearParameters_coe_Q',
+      toLinearParameters_coe_E']
+      field_simp
       ring
     · simp only [tolinearParametersQNeqZero_w, toLinearParameters_coe_Y, toLinearParameters_coe_Q',
         toLinearParameters_coe_E']
@@ -246,10 +251,14 @@ def bijectionLinearParameters :
     have hE := S.2.2
     apply linearParameters.ext
     · rfl
-    · field_simp
+    · simp only [ne_eq, toLinearParameters_coe_Y, tolinearParametersQNeqZero_x,
+      tolinearParametersQNeqZero_v, tolinearParametersQNeqZero_w]
+      field_simp
       ring_nf
       field_simp [hQ, hE]
-    · field_simp
+    · simp only [ne_eq, toLinearParameters_coe_E', tolinearParametersQNeqZero_x,
+      tolinearParametersQNeqZero_v, tolinearParametersQNeqZero_w]
+      field_simp
       ring_nf
       field_simp [hQ, hE]
 
@@ -266,9 +275,9 @@ lemma cubic (S : linearParametersQENeqZero) :
   have hvw := S.hvw
   have hQ := S.hx
   field_simp
-  have h1 : (-(54 * S.x ^ 3 * (S.v + S.w) ^ 2) - 18 * S.x * (3 * S.x * (S.v - S.w)) ^ 2) *
-      (S.v + S.w) ^ 3 + (-(6 * S.x)) ^ 3 * (S.v + S.w) ^ 2 =
-      - 216 * S.x ^3 * (S.v ^3 + S.w ^3 +1) * (S.v + S.w) ^ 2 := by
+  simp [hQ]
+  ring_nf
+  have h1 : -216 + (-(S.v ^ 3 * 216) - S.w ^ 3 * 216) = - 216 *(S.v ^3 + S.w ^3 +1) := by
     ring
   rw [h1]
   simp_all
@@ -335,9 +344,10 @@ lemma grav (S : linearParametersQENeqZero) : accGrav (bijection S).1.val = 0 ↔
   field_simp
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · apply (mul_right_inj' hQ).mp
-    linear_combination -1 * h / 6
-  · rw [h]
-    exact Eq.symm (mul_neg_one (6 * S.x))
+    simp at h
+    field_simp at h
+    rw [← h]
+  · simp [h]
 
 lemma grav_of_cubic (S : linearParametersQENeqZero) (h : accCube (bijection S).1.val = 0) :
     accGrav (bijection S).1.val = 0 := by

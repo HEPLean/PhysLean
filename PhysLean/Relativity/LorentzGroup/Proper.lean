@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzGroup.Basic
 import Mathlib.Topology.Connected.PathConnected
+import Mathlib.Tactic.Cases
 /-!
 # The Proper Lorentz Group
 

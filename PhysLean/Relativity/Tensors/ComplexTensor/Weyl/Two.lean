@@ -715,7 +715,7 @@ lemma altLeftAltRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) �
   apply congrArg
   simp only [SL2C.toSelfAdjointMap_apply_coe, SpecialLinearGroup.coe_inv,
     SpecialLinearGroup.coe_transpose]
-  congr
+  congr 1
   · rw [SL2C.inverse_coe]
     simp only [SpecialLinearGroup.coe_inv]
     rw [@adjugate_transpose]

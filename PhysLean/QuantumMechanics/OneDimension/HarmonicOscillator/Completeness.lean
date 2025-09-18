@@ -360,7 +360,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       rw [h1]
       by_cases hf : norm (f y) = 0
       · simp [hf]
-      rw [_root_.mul_le_mul_right]
+      rw [mul_le_mul_iff_left₀]
       · have h1 := Real.sum_le_exp_of_nonneg (x := |c * y|) (abs_nonneg (c * y)) n
         refine le_trans ?_ h1
         have h2 : norm (∑ i ∈ range n, (Complex.I * (↑c * ↑y)) ^ i / ↑i !) ≤
@@ -416,7 +416,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
   apply tendsto_nhds_unique h1'
   rw [tendsto_const_nhds_iff]
 
-open FourierTransform MeasureTheory Real Lp Memℒp Filter Complex Topology
+open FourierTransform MeasureTheory Real Lp MemLp Filter Complex Topology
   ComplexInnerProductSpace ComplexConjugate
 
 /-- If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
@@ -457,6 +457,7 @@ lemma zero_of_orthogonal_mk (f : ℝ → ℂ) (hf : MemHS f)
     left
     congr
     field_simp
+    simp
   have h1 : eLpNorm (fun x => f x * Real.exp (- x^2 / (2 * Q.ξ^2))) 2 volume = 0 := by
     rw [← plancherel_theorem]
     rw [Q.fourierIntegral_zero_of_mem_orthogonal f hf hOrth]

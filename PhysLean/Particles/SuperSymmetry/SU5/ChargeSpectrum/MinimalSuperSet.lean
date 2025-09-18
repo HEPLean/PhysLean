@@ -288,12 +288,8 @@ lemma insert_filter_card_zero
   simp_all
   rcases y_mem_minimalSuperSet with ⟨q5, q5_mem_S5, rfl⟩ | ⟨q10, q10_mem_S10, rfl⟩
   · have h5' := h5 q5 q5_mem_S5.1
-    rw [Multiset.filter_eq_nil] at h5'
-    simp_all
     exact h5' (some xqHd, some xqHu, xQ5, xQ10) x_mem_T y_not_in_T
   · have h10' := h10 q10 q10_mem_S10.1
-    rw [Multiset.filter_eq_nil] at h10'
-    simp_all
     exact h10' (some xqHd, some xqHu, xQ5, xQ10) x_mem_T y_not_in_T
 
 lemma subset_insert_filter_card_zero_inductive

@@ -52,7 +52,10 @@ lemma eigenfunction_eq_mul_eigenfunction_zero (n : ℕ) :
     simp
   | n + 1 =>
     funext x
-    field_simp [eigenfunction, eigenfunction_zero]
+    simp only [eigenfunction, one_div, Complex.ofReal_inv, pow_zero, factorial_zero, cast_one,
+      mul_one, Real.sqrt_one, Complex.ofReal_one, ne_eq, one_ne_zero, not_false_eq_true, div_self,
+      one_mul, physHermite_zero, map_one]
+    field_simp
 
 /-!
 
@@ -213,7 +216,9 @@ lemma eigenfunction_mul_self (n : ℕ) : (Q.eigenfunction n x) * (Q.eigenfunctio
   rw [eigenfunction_mul]
   congr 2
   · trans 1 / ↑(√(2 ^ n * ↑n !) * ↑√(2 ^ n * ↑n !))
-    · field_simp
+    · simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+      mul_one]
+      field_simp
     congr
     trans Complex.ofReal ((2 ^ n * ↑n !))
     · congr 1
@@ -246,8 +251,9 @@ lemma eigenfunction_normalized (n : ℕ) : ⟪HilbertSpace.mk (Q.eigenfunction_m
   have : (n ! : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos <| by simpa using factorial_pos n
   have := Complex.ofReal_ne_zero.mpr (ne_of_gt Q.ξ_pos)
   have := Complex.ofReal_ne_zero.mpr (Real.sqrt_ne_zero'.mpr Real.pi_pos)
+  simp only [smul_eq_mul, Complex.ofReal_mul, Complex.ofReal_natCast, Complex.ofReal_pow,
+    Complex.ofReal_ofNat]
   field_simp
-  ring
 
 /-- The eigenfunctions of the quantum harmonic oscillator are orthogonal. -/
 lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :

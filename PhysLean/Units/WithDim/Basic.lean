@@ -118,6 +118,7 @@ lemma div_scaleUnit {d1 d2 : Dimension} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 �
   symm
   ext
   simp only [← val_div_val, scaleUnit_val]
+  simp only [map_mul, map_inv, val_div_val]
   field_simp
   change ((u1.dimScale u2) d1 / (u1.dimScale u2) d2) * (m1 / m2).val =
     u1.dimScale u2 d1 * m1.val / (u1.dimScale u2 d2 * m2.val)

@@ -433,12 +433,13 @@ lemma on_param_cos_θ₁₂_eq_zero {V : CKMMatrix} (δ₁₃ : ℝ) (h : Real.c
       mul_one, neg_inj, Fin.mk_one, Fin.reduceFinMk]
   · exact Or.inr rfl
   · change _ = _ + _ * 0
+    simp only [mul_zero, add_zero, neg_inj]
     field_simp
   · ring
   · field_simp
   · ring_nf
     change _ = _ + _ * 0
-    field_simp
+    simp
   · ring
   · field_simp
 
@@ -574,8 +575,9 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
       rw [S₁₂_eq_ℂsin_θ₁₂ ⟦V⟧, S₁₂, C₁₂_eq_ℂcos_θ₁₂ ⟦V⟧, C₁₂_eq_Vud_div_sqrt hb']
       rw [S₂₃_eq_ℂsin_θ₂₃ ⟦V⟧, S₂₃_of_Vub_neq_one hb', C₂₃_eq_ℂcos_θ₂₃ ⟦V⟧,
         C₂₃_of_Vub_neq_one hb', S₁₃_eq_ℂsin_θ₁₃ ⟦V⟧, S₁₃]
+      simp only [VtbAbs, Fin.isValue, VusAbs, neg_mul, VudAbs, VubAbs, VcbAbs, ofReal_div]
       field_simp
-      rw [h1]
+      conv_rhs => rw [sq, h1]
       simp only [Fin.isValue, sq]
       field_simp
       ring_nf
@@ -587,8 +589,9 @@ lemma eq_standParam_of_fstRowThdColRealCond {V : CKMMatrix} (hb : [V]ud ≠ 0 �
         S₁₃_eq_ℂsin_θ₁₃ ⟦V⟧, S₂₃_eq_ℂsin_θ₂₃ ⟦V⟧]
       rw [C₁₂_eq_Vud_div_sqrt hb', C₂₃_of_Vub_neq_one hb', S₁₂, S₁₃, S₂₃_of_Vub_neq_one hb']
       rw [cs_of_fstRowThdColRealCond hb hV]
+      simp only [VtbAbs, Fin.isValue, VudAbs, VusAbs, VubAbs, neg_mul, VcbAbs, ofReal_div]
       field_simp
-      rw [h1]
+      conv_rhs => rw [sq, h1]
       simp only [Fin.isValue, sq]
       field_simp
       ring_nf

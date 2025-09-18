@@ -128,9 +128,9 @@ private lemma kB_mul_beta (T : Temperature) (hT : 0 < T.val) :
   have hkB : (kB : ℝ) ≠ 0 := kB_neq_zero
   have hT0 : (T.val : ℝ) ≠ 0 := by
     exact_mod_cast (ne_of_gt hT)
-  field_simp [Temperature.β, hkB, hT0]
-  rw [mul_div_mul_left (↑T.val) T.toReal hkB]
-  erw [propext (div_eq_one_iff_eq hT0)]
+  simp [Temperature.β]
+  field_simp [Temperature.β, hkB, hT0, toReal]
+  rfl
 
 /-- Fundamental relation between thermodynamic and differential entropy:
 `S_thermo = S_diff - kB * dof * log h`. -/

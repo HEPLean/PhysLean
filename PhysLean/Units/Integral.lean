@@ -26,7 +26,7 @@ noncomputable instance (M : Type)
   scaleUnit u1 u2 μ := μ.map (fun m => scaleUnit u1 u2 m)
   scaleUnit_trans u1 u2 u3 μ := by
     rw [Measure.map_map]
-    congr
+    congr 1
     funext m
     simp [scaleUnit_trans]
     simp [CarriesDimension.scaleUnit_apply']
@@ -34,7 +34,7 @@ noncomputable instance (M : Type)
     · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (CarriesDimension.d M)).1
   scaleUnit_trans' u1 u2 u3 μ := by
     rw [Measure.map_map]
-    congr
+    congr 1
     funext m
     simp [scaleUnit_trans']
     simp [CarriesDimension.scaleUnit_apply']

@@ -168,8 +168,8 @@ lemma exists_stationary_vec (A : SO(3)) :
     have hveq : v1 = v2 := by aesop
     subst hveq
     rw [Set.restrict_apply, inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
+    simp only [map_inv₀, conj_trivial, Fin.isValue, ↓reduceIte]
     field_simp
-    ring
   · simp [End.mem_eigenspace_iff.mp hv.1]
 
 /-- For every element of `SO(3)` there exists a basis indexed by `Fin 3` under which the first

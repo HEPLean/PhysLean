@@ -268,8 +268,7 @@ lemma completeMinSubset_subset_iff_containsPhenoCompletionsOfMinimallyAllows
     simp [completeMinSubset]
     simp_all
     use x
-  · intro h
-    intro y hy
+  · intro h y hy
     simp [completeMinSubset] at hy
     obtain ⟨⟨x, hx, hyx⟩, hy2⟩ := hy
     rw [containsPhenoCompletionsOfMinimallyAllows_iff_completionsTopYukawa] at h

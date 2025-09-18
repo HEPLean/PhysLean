@@ -53,7 +53,7 @@ lemma deriv_eigenfunction_zero : deriv (Q.eigenfunction 0) =
       · exact Complex.differentiableAt_ofReal
     rw [h1']
     field_simp
-    ring
+    ring_nf
     exact Complex.differentiableAt_exp
     refine DifferentiableAt.mul_const ?_ _
     refine differentiableAt_neg_iff.mpr ?_
@@ -223,8 +223,8 @@ lemma deriv_deriv_eigenfunction (n : ℕ) (x : ℝ) :
           Polynomial.aeval_X, map_natCast, Complex.ofReal_sub, Complex.ofReal_mul,
           Complex.ofReal_natCast]
         rw [show (Polynomial.aeval (x / Q.ξ)) 2 = 2 by simp [Polynomial.aeval]]
+        simp only [one_div, Complex.ofReal_ofNat, Complex.ofReal_div]
         field_simp
-        ring
       ring
     · rw [Q.eigenfunction_eq_mul_eigenfunction_zero (n + 1)]
       simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, one_div, mul_inv_rev, Complex.ofReal_mul,
@@ -251,6 +251,8 @@ lemma schrodingerOperator_eigenfunction (n : ℕ) (x : ℝ) :
   have hℏ' := Complex.ofReal_ne_zero.mpr ℏ_ne_zero
   rw [eigenValue]
   simp only [← Complex.ofReal_pow, ξ_sq]
+  simp only [Complex.ofReal_pow, Complex.ofReal_div, Complex.ofReal_mul, inv_div, one_div,
+    Complex.ofReal_add, Complex.ofReal_natCast, Complex.ofReal_inv, Complex.ofReal_ofNat]
   field_simp
   ring
 

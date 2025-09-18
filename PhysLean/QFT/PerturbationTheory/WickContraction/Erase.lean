@@ -51,8 +51,7 @@ lemma mem_erase_uncontracted_iff (c : WickContraction n.succ) (i : Fin n.succ) (
         obtain ⟨z, hz⟩ := hi'
         subst hz
         exact h z
-  · intro h
-    intro k
+  · intro h k
     rcases h with h | h
     · exact h (i.succAbove k)
     · by_contra hn

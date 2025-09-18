@@ -175,13 +175,14 @@ lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.Brillouin
           have hl : 2 * (↑↑n - (k : ℝ)) / (2 * ↑k) = ↑↑n / ↑k - 1 := by
             simp only [ne_eq, mul_eq_zero, OfNat.ofNat_ne_zero, false_or] at ht
             field_simp
-            ring
           rw [hl, neg_le_sub_iff_le_add', le_add_iff_nonneg_right]
           positivity
         · have h0 : (2 * k + 1) / 2 = k := by omega
           rw [h0, neg_le_iff_add_nonneg']
           have hl : 1 + 2 * (↑↑n - (↑k : ℝ)) / ↑(2 * k + 1) =
-              (2 * k + 1 + 2 * (↑↑n - ↑k)) / ↑(2 * k + 1) := by field_simp
+              (2 * k + 1 + 2 * (↑↑n - ↑k)) / ↑(2 * k + 1) := by
+            simp only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
+            field_simp
           rw [hl]
           apply div_nonneg
           · have hl : 2 * (k : ℝ) + 1 + 2 * (↑↑n - ↑k) = 1 + 2 * n := by ring
@@ -208,7 +209,6 @@ lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.Brillouin
         have hl : 2 * (↑↑n - (k : ℝ)) / (2 * ↑k) = ↑↑n / ↑k - 1 := by
           simp at ht
           field_simp
-          ring
         rw [hl, sub_lt_iff_lt_add']
         ring_nf
         field_simp
@@ -240,13 +240,13 @@ lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
   use ((k : Int) - (T.N / 2 : ℕ)) * (n : ℤ)
   have hpp : (T.N : ℂ) ≠ 0 := by simp [Ne.symm (NeZero.ne' T.N)]
   have hT' : (T.a : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos T.a_pos
+  simp only [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_ofNat, Complex.ofReal_natCast,
+    Complex.ofReal_sub, Int.natCast_ediv, Nat.cast_ofNat, Int.cast_mul, Int.cast_sub,
+    Int.cast_natCast]
   field_simp
   ring_nf
-  congr 2
-  simp only [mul_assoc]
-  congr 2
+  congr 1
   rw [mul_comm]
-  simp only [mul_assoc]
   rfl
 
 lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber) :

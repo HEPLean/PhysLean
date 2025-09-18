@@ -108,7 +108,6 @@ lemma self_div_scale (x : TemperatureUnit) (r : ℝ) (hr : 0 < r) :
   ext
   simp only [coe_mk]
   field_simp
-  ring
 
 @[simp]
 lemma scale_one (x : TemperatureUnit) : scale 1 x = x := by

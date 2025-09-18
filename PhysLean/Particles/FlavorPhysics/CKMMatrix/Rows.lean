@@ -7,6 +7,7 @@ import PhysLean.Particles.FlavorPhysics.CKMMatrix.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.LinearAlgebra.CrossProduct
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+import Mathlib.Tactic.Cases
 /-!
 # Rows for the CKM Matrix
 
@@ -140,27 +141,27 @@ lemma tRow_cRow_orthog (V : CKMMatrix) : conj [V]t ⬝ᵥ [V]c = 0 := by
   rw [mul_comm (V.1 _ 0) _, mul_comm (V.1 _ 1) _, mul_comm (V.1 _ 2) _] at ht
   exact ht
 
-lemma uRow_cross_cRow_conj (V : CKMMatrix) : conj (conj [V]u ×₃ conj [V]c) = [V]u ×₃ [V]c := by
+lemma uRow_cross_cRow_conj (V : CKMMatrix) : conj (conj [V]u ⨯₃ conj [V]c) = [V]u ⨯₃ [V]c := by
   simp only [crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, LinearMap.mk₂_apply,
     Pi.conj_apply]
   funext i
   fin_cases i <;> simp
 
-lemma cRow_cross_tRow_conj (V : CKMMatrix) : conj (conj [V]c ×₃ conj [V]t) = [V]c ×₃ [V]t := by
+lemma cRow_cross_tRow_conj (V : CKMMatrix) : conj (conj [V]c ⨯₃ conj [V]t) = [V]c ⨯₃ [V]t := by
   simp only [crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, LinearMap.mk₂_apply,
     Pi.conj_apply]
   funext i
   fin_cases i <;> simp
 
 lemma uRow_cross_cRow_normalized (V : CKMMatrix) :
-    conj (conj [V]u ×₃ conj [V]c) ⬝ᵥ (conj [V]u ×₃ conj [V]c) = 1 := by
+    conj (conj [V]u ⨯₃ conj [V]c) ⬝ᵥ (conj [V]u ⨯₃ conj [V]c) = 1 := by
   rw [uRow_cross_cRow_conj, cross_dot_cross, dotProduct_comm, uRow_normalized,
     dotProduct_comm, cRow_normalized, dotProduct_comm, cRow_uRow_orthog,
     dotProduct_comm, uRow_cRow_orthog]
   simp
 
 lemma cRow_cross_tRow_normalized (V : CKMMatrix) :
-    conj (conj [V]c ×₃ conj [V]t) ⬝ᵥ (conj [V]c ×₃ conj [V]t) = 1 := by
+    conj (conj [V]c ⨯₃ conj [V]t) ⬝ᵥ (conj [V]c ⨯₃ conj [V]t) = 1 := by
   rw [cRow_cross_tRow_conj, cross_dot_cross, dotProduct_comm, cRow_normalized,
     dotProduct_comm, tRow_normalized, dotProduct_comm, tRow_cRow_orthog,
     dotProduct_comm, cRow_tRow_orthog]
@@ -201,9 +202,9 @@ noncomputable def rowBasis (V : CKMMatrix) : Basis (Fin 3) ℂ (Fin 3 → ℂ) :
     (Module.finrank_fin_fun ℂ).symm
 
 lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
-    ∃ (κ : ℝ), [V]u = cexp (κ * I) • (conj [V]c ×₃ conj [V]t) := by
+    ∃ (κ : ℝ), [V]u = cexp (κ * I) • (conj [V]c ⨯₃ conj [V]t) := by
   obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span (rowBasis V)
-    (conj [V]c ×₃ conj [V]t))
+    (conj [V]c ⨯₃ conj [V]t))
   simp only [Fin.sum_univ_three, rowBasis, Fin.isValue,
     coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
   have h0 := congrArg (fun X => conj [V]c ⬝ᵥ X) hg
@@ -222,7 +223,7 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     Complex.sq_norm] at h2
   simp only [Fin.isValue, ofReal_pow, sq_eq_one_iff, ofReal_eq_one] at h2
   cases' h2 with h2 h2
-  · have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ×₃ conj ([V]t)) := by
+  · have hx : [V]u = (g 0)⁻¹ • (conj ([V]c) ⨯₃ conj ([V]t)) := by
       rw [← hg, smul_smul, inv_mul_cancel₀, one_smul]
       by_contra hn
       simp [hn] at h2
@@ -243,9 +244,9 @@ lemma cRow_cross_tRow_eq_uRow (V : CKMMatrix) :
     exact False.elim (lt_iff_not_ge.mp h4 h3)
 
 lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
-    ∃ (τ : ℝ), [V]t = cexp (τ * I) • (conj ([V]u) ×₃ conj ([V]c)) := by
+    ∃ (τ : ℝ), [V]t = cexp (τ * I) • (conj ([V]u) ⨯₃ conj ([V]c)) := by
   obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (Basis.mem_span (rowBasis V)
-    (conj ([V]u) ×₃ conj ([V]c)))
+    (conj ([V]u) ⨯₃ conj ([V]c)))
   rw [Fin.sum_univ_three, rowBasis] at hg
   simp only [Fin.isValue, coe_basisOfLinearIndependentOfCardEqFinrank, rows] at hg
   have h0 := congrArg (fun X => conj [V]u ⬝ᵥ X) hg
@@ -272,7 +273,7 @@ lemma uRow_cross_cRow_eq_tRow (V : CKMMatrix) :
     simp_all only [ofReal_neg, ofReal_one, Left.nonneg_neg_iff]
     have h4 : (0 : ℝ) < 1 := by norm_num
     exact False.elim (lt_iff_not_ge.mp h4 h3)
-  · have hx : [V]t = (g 2)⁻¹ • (conj ([V]u) ×₃ conj ([V]c)) := by
+  · have hx : [V]t = (g 2)⁻¹ • (conj ([V]u) ⨯₃ conj ([V]c)) := by
       rw [← hg, @smul_smul, inv_mul_cancel₀, one_smul]
       by_contra hn
       simp [hn] at h2
@@ -307,10 +308,10 @@ variable (V : CKMMatrix) (a b c d e f : ℝ)
 
 /-- The cross product of the conjugate of the `u` and `c` rows of a CKM matrix. -/
 def ucCross : Fin 3 → ℂ :=
-  conj [phaseShiftApply V a b c d e f]u ×₃ conj [phaseShiftApply V a b c d e f]c
+  conj [phaseShiftApply V a b c d e f]u ⨯₃ conj [phaseShiftApply V a b c d e f]c
 
 lemma ucCross_fst (V : CKMMatrix) : (ucCross V a b c d e f) 0 =
-    cexp ((- a * I) + (- b * I) + (- e * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 0 := by
+    cexp ((- a * I) + (- b * I) + (- e * I) + (- f * I)) * (conj [V]u ⨯₃ conj [V]c) 0 := by
   simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow,
     phaseShiftApply_coe, us, exp_add, ub, cRow, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply,
     cons_val_one, head_cons, _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two,
@@ -318,7 +319,7 @@ lemma ucCross_fst (V : CKMMatrix) : (ucCross V a b c d e f) 0 =
   ring
 
 lemma ucCross_snd (V : CKMMatrix) : (ucCross V a b c d e f) 1 =
-    cexp ((- a * I) + (- b * I) + (- d * I) + (- f * I)) * (conj [V]u ×₃ conj [V]c) 1 := by
+    cexp ((- a * I) + (- b * I) + (- d * I) + (- f * I)) * (conj [V]u ⨯₃ conj [V]c) 1 := by
   simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow, ud,
     exp_add, us, ub, cRow, cd, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply, cons_val_one, head_cons,
     _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two, tail_cons,
@@ -326,7 +327,7 @@ lemma ucCross_snd (V : CKMMatrix) : (ucCross V a b c d e f) 1 =
   ring
 
 lemma ucCross_thd (V : CKMMatrix) : (ucCross V a b c d e f) 2 =
-    cexp ((- a * I) + (- b * I) + (- d * I) + (- e * I)) * (conj [V]u ×₃ conj [V]c) 2 := by
+    cexp ((- a * I) + (- b * I) + (- d * I) + (- e * I)) * (conj [V]u ⨯₃ conj [V]c) 2 := by
   simp only [ucCross, crossProduct, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, uRow, ud,
     exp_add, us, ub, cRow, cd, cs, cb, LinearMap.mk₂_apply, Pi.conj_apply, cons_val_one, head_cons,
     _root_.map_mul, ← exp_conj, conj_ofReal, conj_I, mul_neg, cons_val_two, tail_cons,

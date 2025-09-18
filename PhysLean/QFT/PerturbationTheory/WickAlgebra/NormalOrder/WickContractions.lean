@@ -117,7 +117,7 @@ lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
   rw [congr_uncontractedList]
   erw [uncontractedList_extractEquiv_symm_some]
   simp only [Fin.coe_succAboveEmb, List.map_eraseIdx, List.map_map]
-  congr
+  congr 1
   conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
 
 end WickAlgebra

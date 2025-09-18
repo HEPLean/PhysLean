@@ -123,8 +123,7 @@ lemma example1_properTimeTwinA : example1.properTimeTwinA = 15 := by
 @[simp]
 lemma example1_properTimeTwinB : example1.properTimeTwinB = 9 := by
   simp only [properTimeTwinB, properTime, example1, sub_zero, minkowskiProduct_toCoord,
-    Fin.sum_univ_three, mul_zero, add_zero, map_sub, LinearMap.sub_apply, Finset.sum_const_zero,
-    zero_mul]
+    Fin.sum_univ_three, map_sub, LinearMap.sub_apply]
   norm_num
   rw [show √81 = 9 from sqrt_eq_cases.mpr (by norm_num)]
   rw [show √4 = 2 from sqrt_eq_cases.mpr (by norm_num)]

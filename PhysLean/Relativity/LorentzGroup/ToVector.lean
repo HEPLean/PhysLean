@@ -22,8 +22,7 @@ def toVector {d : ℕ} (Λ : LorentzGroup d) : Lorentz.Vector d := Λ • basis 
 
 lemma toVector_mul {d : ℕ} (Λ₁ Λ₂ : LorentzGroup d) :
     toVector (Λ₁ * Λ₂) = Λ₁ • toVector Λ₂ := by
-  rw [toVector, toVector]
-  simp [mul_smul]
+  rw [toVector, toVector, smul_smul]
 
 lemma toVector_neg {d : ℕ} (Λ : LorentzGroup d) :
     toVector (-Λ) = -toVector Λ := by

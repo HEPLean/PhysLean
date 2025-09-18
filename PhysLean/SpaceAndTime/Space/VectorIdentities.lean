@@ -303,7 +303,9 @@ lemma grad_inner_space_unit_vector {d} (x : Space d) (f : Space d → ℝ) (hd :
       simp
     _ = (fderiv ℝ f x) (_root_.deriv (fun r => r • ‖x‖⁻¹ • x) ‖x‖) := by
       have hx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
-      field_simp [smul_smul]
+      rw [smul_smul]
+      field_simp
+      simp
   rw [grad_inner_eq f x (‖x‖⁻¹ • x)]
   congr
   rw [deriv_smul_const (by fun_prop)]

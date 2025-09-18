@@ -67,8 +67,7 @@ lemma id : IsLocalizedFunctionTransform (id : (Y → V) → (Y → V)) := by
   use K
   constructor
   · exact cK
-  · intro φ φ' hφ
-    intro x hx
+  · intro φ φ' hφ x hx
     simp only [id_eq]
     rw [hφ x hx]
 
@@ -172,8 +171,8 @@ lemma grad : IsLocalizedFunctionTransform fun (ψ : Space d → ℝ) x => Space.
   use (Metric.cthickening 1 K)
   constructor
   · exact IsCompact.cthickening cK
-  · intro φ φ' hφ
-    intro x hx; dsimp;
+  · intro φ φ' hφ x hx
+    dsimp
     simp [Space.grad_eq_sum,Space.deriv]
     congr
     funext i
@@ -299,7 +298,7 @@ lemma adjFDeriv {dy} [NormedSpace ℝ X] [ProperSpace X]
   · intro φ φ' hφ x hx
     unfold _root_.adjFDeriv
     simp only
-    congr
+    congr 1
     simp only [DFunLike.coe_fn_eq]
     apply Filter.EventuallyEq.fderiv_eq
     apply Filter.eventuallyEq_of_mem (s := Metric.thickening 1 K)

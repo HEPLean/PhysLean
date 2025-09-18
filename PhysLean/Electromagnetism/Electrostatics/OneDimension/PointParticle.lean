@@ -168,7 +168,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
         (oneEquiv_symm_measurableEmbedding)]
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
         (oneEquiv_symm_measurableEmbedding)]
-      congr
+      congr 3
       · simp only [Fin.isValue, smul_eq_mul, compCLMOfContinuousLinearEquiv_apply]
         funext x
         congr 1
@@ -181,7 +181,8 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
         fin_cases i
         simp only [Fin.isValue, Fin.zero_eta, basis_self, oneEquivCLE]
         rfl
-      · simp only [Fin.reduceLast, Fin.isValue, Set.preimage_compl, Set.preimage_setOf_eq, s]
+      · congr
+        simp only [Fin.reduceLast, Fin.isValue, Set.preimage_compl, Set.preimage_setOf_eq, s]
         ext x
         simp [oneEquiv_symm_apply]
       · simp only [Fin.isValue, smul_eq_mul, mul_neg, compCLMOfContinuousLinearEquiv_apply]
@@ -370,11 +371,13 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
     (1 / 2) • constD 1 (basis 0)))) η =
     ((1 / ε) • q • diracDelta ℝ 0) η
   haveI : SMulZeroClass ℝ ((Space 1)→d[ℝ] ℝ) := by infer_instance
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub,
+    divD_constD, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub', Pi.smul_apply,
+    Pi.sub_apply, ContinuousLinearMap.zero_apply, smul_eq_mul, mul_zero, sub_zero, diracDelta_apply]
   field_simp
-  left
+  congr 1
   rw [divD_apply_eq_sum_fderivD]
-  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Nat.reduceAdd,
-    Finset.sum_singleton]
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
   rw [fderivD_apply]
   simp only [Fin.isValue, ContinuousLinearMap.smulRight_apply, PiLp.neg_apply, PiLp.smul_apply,
     basis_self, smul_eq_mul, mul_one]

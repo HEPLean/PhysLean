@@ -235,6 +235,9 @@ lemma trajectory_velocity (IC : InitialConditions) : ∂ₜ (IC.trajectory S) =
   simp [h1]
   rw [fderiv_cos (by fun_prop), fderiv_sin (by fun_prop),
     fderiv_fun_mul (by fun_prop) (by fun_prop)]
+  simp only [fderiv_fun_const, Pi.zero_apply, smul_zero, add_zero, neg_smul,
+    ContinuousLinearMap.neg_apply, ContinuousLinearMap.coe_smul', Pi.smul_apply, fderiv_val,
+    smul_eq_mul, mul_one]
   field_simp
   ring_nf
   rw [← mul_smul, mul_rotate, NonUnitalRing.mul_assoc]
@@ -260,6 +263,8 @@ lemma trajectory_acceleration (IC : InitialConditions) : ∂ₜ (∂ₜ (IC.traj
   rw [fderiv_cos (by fun_prop), fderiv_sin (by fun_prop),
     fderiv_fun_mul (by fun_prop) (by fun_prop)]
   field_simp [smul_smul]
+  simp only [fderiv_fun_const, Pi.zero_apply, smul_zero, add_zero, ContinuousLinearMap.coe_smul',
+    Pi.smul_apply, fderiv_val, smul_eq_mul, mul_one, neg_smul, ContinuousLinearMap.neg_apply]
   ring_nf
   module
 
@@ -306,6 +311,7 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   ring_nf
   rw [ω_sq]
   field_simp
+  simp only [neg_add_cancel, mul_zero]
   fun_prop
 
 /-!
@@ -386,7 +392,8 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   trans (sin (S.ω * t.val) * (S.ω * IC.x₀ 0)) +
     (-(S.ω • sin (S.ω * t.val) • IC.x₀) + cos (S.ω * t.val) • IC.v₀) 0
   · rw [h]
-    simp
+    simp only [Fin.isValue, PiLp.zero_apply, add_zero]
+    ring
   · simp
     ring
   simp at h2

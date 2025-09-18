@@ -84,7 +84,7 @@ def rep : Representation ℂ GaugeGroupI HiggsVec :=
 
 lemma higgsRepUnitary_mul (g : GaugeGroupI) (φ : HiggsVec) :
     (higgsRepUnitary g).1 *ᵥ φ = g.2.2 ^ 3 • (g.2.1.1 *ᵥ φ) := by
-  simp [higgsRepUnitary_apply_coe, smul_mulVec_assoc]
+  simp [higgsRepUnitary_apply_coe, Matrix.smul_mulVec]
 
 /-- The application of gauge group on a Higgs vector can be decomposed in
   to an smul with the `U(1)-factor` and a multiplication by the `SU(2)`-factor. -/
@@ -113,8 +113,10 @@ lemma rotateMatrix_star (φ : HiggsVec) :
 /-- The determinant of the `rotateMatrix` for a non-zero Higgs vector is `1`. -/
 lemma rotateMatrix_det {φ : HiggsVec} (hφ : φ ≠ 0) : (rotateMatrix φ).det = 1 := by
   have h1 : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
-  field_simp [rotateMatrix, det_fin_two]
-  rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+  simp [rotateMatrix, det_fin_two]
+  field_simp
+  simp only [Fin.isValue, sub_neg_eq_add]
+  rw [← ofReal_pow, ← @real_inner_self_eq_norm_sq]
   simp only [Fin.isValue, mul_conj, add_comm, PiLp.inner_apply, Complex.inner, ofReal_re,
     Fin.sum_univ_two, ofReal_add]
 
@@ -126,8 +128,9 @@ lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
   have : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
   ext i j
   fin_cases i <;> fin_cases j
-  · field_simp
-    rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+  · simp only [Fin.isValue, Fin.zero_eta, of_apply, cons_val', cons_val_zero, cons_val_fin_one]
+    field_simp
+    rw [← ofReal_pow, ← @real_inner_self_eq_norm_sq]
     simp only [Fin.isValue, mul_comm, mul_conj, add_comm, PiLp.inner_apply, Complex.inner,
       ofReal_re, Fin.sum_univ_two, ofReal_add]
   · simp only [Fin.isValue, Fin.zero_eta, Fin.mk_one, of_apply, cons_val', cons_val_one,
@@ -136,8 +139,9 @@ lemma rotateMatrix_unitary {φ : HiggsVec} (hφ : φ ≠ 0) :
   · simp only [Fin.isValue, Fin.mk_one, Fin.zero_eta, of_apply, cons_val', cons_val_zero,
     empty_val', cons_val_fin_one, cons_val_one]
     ring_nf
-  · field_simp
-    rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+  · simp only [Fin.isValue, Fin.mk_one, of_apply, cons_val', cons_val_one, cons_val_fin_one]
+    field_simp
+    rw [← ofReal_pow, ← @real_inner_self_eq_norm_sq]
     simp only [Fin.isValue, mul_comm, mul_conj, PiLp.inner_apply, Complex.inner, ofReal_re,
     Fin.sum_univ_two, ofReal_add]
 
@@ -162,14 +166,14 @@ lemma rotateGaugeGroup_apply {φ : HiggsVec} (hφ : φ ≠ 0) :
   fin_cases i
   · simp only [mulVec, Fin.zero_eta, Fin.isValue, cons_val', empty_val', cons_val_fin_one,
     cons_val_zero, cons_dotProduct, vecHead, vecTail, Nat.succ_eq_add_one, Nat.reduceAdd,
-    Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_empty, add_zero]
+    Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_of_isEmpty, add_zero]
     ring_nf
   · simp only [Fin.mk_one, Fin.isValue, cons_val_one, mulVec, Fin.isValue,
     cons_val', empty_val', cons_val_fin_one, vecHead, cons_dotProduct, vecTail, Nat.succ_eq_add_one,
-    Nat.reduceAdd, Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_empty, add_zero]
+    Nat.reduceAdd, Function.comp_apply, Fin.succ_zero_eq_one, dotProduct_of_isEmpty, add_zero]
     have : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
     field_simp
-    rw [← ofReal_mul, ← sq, ← @real_inner_self_eq_norm_sq]
+    rw [← ofReal_pow, ← @real_inner_self_eq_norm_sq]
     simp only [Fin.isValue, mul_comm, mul_conj, PiLp.inner_apply, Complex.inner, ofReal_re,
       Fin.sum_univ_two, ofReal_add]
 

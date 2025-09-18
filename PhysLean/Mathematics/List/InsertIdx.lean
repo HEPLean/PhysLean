@@ -157,7 +157,7 @@ lemma drop_eraseIdx_succ {I : Type} :
   | 0, _, _=> by
     simp only [List.eraseIdx_zero, List.drop_tail, zero_add, List.drop_one, List.drop_zero]
     rw [@List.getElem_zero]
-    exact List.head_cons_tail _ _
+    exact List.cons_head_tail _
   | n+1, [], hn => by simp at hn
   | n+1, a::as, hn => by
     simp only [List.getElem_cons_succ, List.eraseIdx_cons_succ, List.drop_succ_cons]

@@ -158,7 +158,7 @@ set_option quotPrecheck false in
 /-- Cross product in `EuclideanSpace ℝ (Fin 3)`. Uses `⨯` which is typed using `\X` or
 `\vectorproduct` or `\crossproduct`. -/
 infixl:70 " ⨯ₑ₃ " => fun a b => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
-    (WithLp.equiv 2 (Fin 3 → ℝ) a ×₃ WithLp.equiv 2 (Fin 3 → ℝ) b)
+    (WithLp.equiv 2 (Fin 3 → ℝ) a ⨯₃ WithLp.equiv 2 (Fin 3 → ℝ) b)
 
 /-- Cross product and fderiv commute. -/
 lemma fderiv_cross_commute {u : Time} {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
