@@ -26,6 +26,25 @@ open ComplexConjugate
 abbrev GaugeGroupI : Type :=
   specialUnitaryGroup (Fin 3) ℂ × specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
 
+namespace GaugeGroupI
+
+def toSU3 : GaugeGroupI →* specialUnitaryGroup (Fin 3) ℂ where
+  toFun g := g.1
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
+def toSU2 : GaugeGroupI →* specialUnitaryGroup (Fin 2) ℂ where
+  toFun g := g.2.1
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
+def toU1 : GaugeGroupI →* unitary ℂ where
+  toFun g := g.2.2
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
+end GaugeGroupI
+
 /-- The subgroup of the un-quotiented gauge group which acts trivially on all particles in the
 standard model, i.e., the ℤ₆-subgroup of `GaugeGroupI` with elements `(α^2 * I₃, α^(-3) * I₂, α)`,
 where `α` is a sixth complex root of unity.
