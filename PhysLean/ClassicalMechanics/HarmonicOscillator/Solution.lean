@@ -25,7 +25,7 @@ prove that they satisfy the equation of motion, and prove some properties of the
 - `trajectories` is the trajectories to the harmonic oscillator for given initial conditions.
 - `trajectories_equationOfMotion` proves that the solution satisfies the equation of motion.
 
-## iii. Table of contents for this module
+## iii. Table of contents
 
 - A. The initial conditions
 - B. Trajectories associated with the initial conditions
@@ -75,7 +75,7 @@ structure InitialConditions where
 
 /-!
 
-#### Part A.1.I
+#### A.1.1.
 
 We prove an extensionality lemma for `InitialConditions`.
 That is, a lemma which states that two initial conditions are equal if their
@@ -126,7 +126,7 @@ instance : Zero InitialConditions := ⟨0, 0⟩
 
 /-!
 
-#### Part A.3.I
+#### A.3.1.
 
 Some simple results about the zero initial conditions.
 
@@ -166,7 +166,7 @@ noncomputable def trajectory (IC : InitialConditions) : Time → Space 1 := fun 
 
 /-!
 
-#### Part B.1.I
+#### B.1.1.
 
 We show a basic definitional equality for the trajectory.
 
@@ -270,7 +270,7 @@ lemma trajectory_acceleration (IC : InitialConditions) : ∂ₜ (∂ₜ (IC.traj
 
 /-!
 
-### B.6. The initial conditions of the trajectories
+### B.6. The initial conditions of the trajectories
 
 We show that, unsurprisingly, the trajectories have the initial conditions
 used to define them.

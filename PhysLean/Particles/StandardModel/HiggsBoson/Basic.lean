@@ -18,14 +18,14 @@ The Higgs field describes is the underlying field of the Higgs boson.
 It is a map from SpaceTime to a 2-dimensional complex vector space.
 In this module we define the Higgs field and prove some basic properties.
 
-## ii. Important results
+## ii. Key results
 
 - `HiggsVec`: The 2-dimensional complex vector space which is the target space of the Higgs field.
   This vector space is equipped with an action of the global gauge group of the Standard Model.
 - `HiggsBundle`: The trivial vector bundle over `SpaceTime` with fiber `HiggsVec`.
 - `HiggsField`: The type of smooth sections of the `HiggsBundle`, i.e., the type of Higgs fields.
 
-## iii. Table of Contents
+## iii. Table of contents
 
 - A. The Higgs vector space
   - A.1 Definition of the Higgs vector space
@@ -63,7 +63,7 @@ open SpaceTime
 
 /-!
 
-## A. The Higgs vector space
+## A. The Higgs vector space
 
 The target space of the Higgs field is a 2-dimensional complex vector space.
 In this section we will define this vector space, and the action of the
@@ -73,7 +73,7 @@ global gauge group on it.
 
 /-!
 
-### A.1 Definition of the Higgs vector space
+### A.1. Definition of the Higgs vector space
 
 -/
 /-- The vector space `HiggsVec` is defined to be the complex Euclidean space of dimension 2.
@@ -84,7 +84,7 @@ namespace HiggsVec
 
 /-!
 
-### A.2 Relation to `(Fin 2 → ℂ)`
+### A.2. Relation to `(Fin 2 → ℂ)`
 
 We define the continuous linear map from `HiggsVec` to `(Fin 2 → ℂ)` achieved by
 casting vectors, we also show that this map is smooth.
@@ -104,7 +104,7 @@ lemma smooth_toFin2ℂ : ContMDiff 𝓘(ℝ, HiggsVec) 𝓘(ℝ, Fin 2 → ℂ) 
 
 /-!
 
-### A.3 Orthonormal basis
+### A.3. Orthonormal basis
 
 We define an orthonormal basis of `HiggsVec`.
 
@@ -116,7 +116,7 @@ def orthonormBasis : OrthonormalBasis (Fin 2) ℂ HiggsVec :=
 
 /-!
 
-## A.4 Generating Higgs vectors from real numbers
+### A.4. Generating Higgs vectors from real numbers
 
 Given a real number `a` we define the Higgs vector corresponding to that real number
 as `(√a, 0)`. This has the property that it's norm is equal to `a`.
@@ -139,7 +139,7 @@ lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) : ‖ofReal a‖ ^ 2 = a := by
 
 /-!
 
-### A.5 Action of the gauge group on `HiggsVec`
+### A.5. Action of the gauge group on `HiggsVec`
 
 The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplication.
 
@@ -147,7 +147,7 @@ The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplicatio
 
 /-!
 
-#### A.5.1 Definition of the action
+#### A.5.1. Definition of the action
 
 -/
 
@@ -171,7 +171,7 @@ instance : MulAction StandardModel.GaugeGroupI HiggsVec where
 
 /-!
 
-#### A.5.2 Unitary nature of the action
+#### A.5.2. Unitary nature of the action
 
 The action of `StandardModel.GaugeGroupI` on `HiggsVec` is unitary.
 
@@ -222,7 +222,7 @@ We show that two Higgs vectors are in the same gauge orbit if and only if they h
 
 /-!
 
-#### A.6.1 The rotation matrix to ofReal
+#### A.6.1. The rotation matrix to ofReal
 
 We define an element of `GaugeGroupI` which takes a given Higgs vector to the
 corresponding `ofReal` Higgs vector.
@@ -296,7 +296,7 @@ lemma toRealGroupElem_smul_self (φ : HiggsVec) :
 
 /-!
 
-#### A.6.2 Members of orbits
+#### A.6.2. Members of orbits
 
 Members of the orbit of a Higgs vector under the action of `GaugeGroupI` are exactly those
 Higgs vectors with the same norm.
@@ -317,7 +317,7 @@ lemma mem_orbit_gaugeGroupI_iff (φ : HiggsVec) (ψ : HiggsVec) :
 
 /-!
 
-### A.7 The stability group of a Higgs vector
+### A.7. The stability group of a Higgs vector
 
 We find the stability group of a Higgs vector, and the stability group of the set of
 all Higgs vectors.
@@ -355,7 +355,7 @@ The Higgs field will then be defined as smooth sections of this bundle.
 
 /-!
 
-### B.1 Definition of the Higgs bundle
+### B.1. Definition of the Higgs bundle
 
 We define the Higgs bundle.
 
@@ -369,7 +369,7 @@ abbrev HiggsBundle := Bundle.Trivial SpaceTime HiggsVec
 
 /-!
 
-### B.2 Instance of a vector bundle
+### B.2. Instance of a vector bundle
 
 We given the Higgs bundle an instance of a smooth vector bundle.
 
@@ -401,13 +401,13 @@ open HiggsVec
 
 /-!
 
-### C.1 Relations between `HiggsField` and `HiggsVec`
+### C.1. Relations between `HiggsField` and `HiggsVec`
 
 -/
 
 /-!
 
-#### C.1.1 The constant Higgs field
+#### C.1.1. The constant Higgs field
 
 We define the constant Higgs field associated to a given Higgs vector.
 
@@ -436,7 +436,7 @@ lemma const_apply (φ : HiggsVec) (x : SpaceTime) : const φ x = φ := rfl
 
 /-!
 
-### C.1.2 The map from `HiggsField` to `SpaceTime → HiggsVec`
+#### C.1.2. The map from `HiggsField` to `SpaceTime → HiggsVec`
 
 -/
 
@@ -458,7 +458,7 @@ lemma toFin2ℂ_comp_toHiggsVec (φ : HiggsField) :
 
 /-!
 
-### C.2 Smoothness properties of components
+### C.2. Smoothness properties of components
 
 We prove some smoothness properties of the components of a Higgs field.
 
@@ -481,7 +481,7 @@ lemma apply_im_smooth (φ : HiggsField) (i : Fin 2) :
 
 /-!
 
-### C.3 The pointwise inner product
+### C.3. The pointwise inner product
 
 The pointwise inner product on the Higgs field.
 
@@ -494,7 +494,7 @@ instance : Inner (SpaceTime → ℂ) (HiggsField) where
 
 /-!
 
-#### C.3.1 Basic equaltities
+#### C.3.1. Basic equaltities
 
 -/
 
@@ -526,7 +526,7 @@ lemma inner_expand_conj (φ1 φ2 : HiggsField) (x : SpaceTime) :
 
 /-!
 
-#### C.3.2 Symmetry properties
+#### C.3.2. Symmetry properties
 
 -/
 
@@ -537,7 +537,7 @@ lemma inner_symm (φ1 φ2 : HiggsField) :
 
 /-!
 
-#### C.3.3 Linearity conditions
+#### C.3.3. Linearity conditions
 
 -/
 
@@ -577,7 +577,7 @@ lemma inner_neg_right (φ1 φ2 : HiggsField) :
 
 /-!
 
-#### C.3.4 Smoothness of the inner product
+#### C.3.4. Smoothness of the inner product
 
 -/
 
@@ -596,7 +596,7 @@ lemma inner_smooth (φ1 φ2 : HiggsField) : ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(
 
 /-!
 
-### C.4 The pointwise norm
+### C.4. The pointwise norm
 
 We define the pointwise norm-squared of a Higgs field.
 
@@ -615,7 +615,7 @@ scoped[StandardModel.HiggsField] notation "‖" φ1 "‖_H^2" => normSq φ1
 
 /-!
 
-#### C.4.1 Basic equalities
+#### C.4.1. Basic equalities
 
 -/
 
@@ -641,7 +641,7 @@ lemma normSq_expand (φ : HiggsField) :
 
 /-!
 
-#### C.4.2 Positivity
+#### C.4.2. Positivity
 
 -/
 
@@ -650,7 +650,7 @@ lemma normSq_nonneg (φ : HiggsField) (x : SpaceTime) : 0 ≤ ‖φ‖_H^2 x := 
 
 /-!
 
-#### C.4.3 On the zero section
+#### C.4.3. On the zero section
 
 -/
 
@@ -661,7 +661,7 @@ lemma normSq_zero : ‖0‖_H^2 = 0 := by
 
 /-!
 
-#### C.4.4 Smoothness of the norm-squared
+#### C.4.4. Smoothness of the norm-squared
 
 -/
 
@@ -678,7 +678,7 @@ lemma normSq_smooth (φ : HiggsField) : ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ,
 
 /-!
 
-#### C.4.5 Norm-squared of constant Higgs fields
+#### C.4.5. Norm-squared of constant Higgs fields
 
 -/
 
@@ -689,7 +689,7 @@ lemma const_normSq (φ : HiggsVec) (x : SpaceTime) :
 
 /-!
 
-### C.5 The action of the gauge group on Higgs fields
+### C.5. The action of the gauge group on Higgs fields
 
 The results in this section are currently informal.
 -/
