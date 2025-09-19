@@ -10,12 +10,12 @@ import PhysLean.ClassicalMechanics.HamiltonsEquations
 
 # The Classical Harmonic Oscillator
 
-## i. Description
+## i. Overview
 
 The classical harmonic oscillator is a classical mechanical system corresponding to a
 mass `m` under a force `- k x` where `k` is the spring constant and `x` is the position.
 
-## ii. Summary of the key results
+## ii. Key results
 
 The key results in the study of the classical harmonic oscillator are the follows:
 
@@ -35,7 +35,7 @@ In the `Solution` module:
 - `trajectories` is the trajectories to the harmonic oscillator for given initial conditions.
 - `trajectories_equationOfMotion` proves that the solution satisfies the equation of motion.
 
-## iii. Table of content for this module
+## iii. Table of contents
 
 - A. The input data
 - B. The angular frequency
@@ -46,7 +46,7 @@ In the `Solution` module:
 - G. Hamiltonian formulation
 - H. Equivalences between the different formulations of the equations of motion
 
-## iiv. References
+## iv. References
 
 References for the classical harmonic oscillator include:
 - Landau & Lifshitz, Mechanics, page 58, section 21.
@@ -177,7 +177,7 @@ lemma energy_eq (xₜ : Time → Space 1) :
     energy S xₜ = fun t => kineticEnergy S xₜ t + potentialEnergy S (xₜ t) := by rfl
 /-!
 
-### C.2. Differentiability of the energies
+### C.3. Differentiability of the energies
 
 On smooth trajectories the energies are differentiable.
 
@@ -209,7 +209,7 @@ lemma energy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x�
 
 /-!
 
-### C.3. Time derivatives of the energies
+### C.4. Time derivatives of the energies
 
 For a general smooth trajectory (which may not satisfy the equations of motion) we can compute
 the time derivatives of the energies.
@@ -299,7 +299,7 @@ noncomputable def lagrangian (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (F
 
 /-!
 
-#### Part D.1.I
+#### D.1.1.
 
 Equalitites for the lagrangian. We prove some simple equalities for the lagrangian,
 in particular that when applied to a trajectory it is the kinetic energy minus the potential energy.
@@ -322,7 +322,7 @@ lemma lagrangian_eq_kineticEnergy_sub_potentialEnergy (t : Time) (xₜ : Time �
 
 /-!
 
-#### Part D.1.II
+#### D.1.2.
 
 The lagrangian is smooth in all its arguments.
 
@@ -335,7 +335,7 @@ lemma contDiff_lagrangian (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.lagrangian 
 
 /-!
 
-#### Part D.1.III
+#### D.1.3.
 
 We now show results related to the gradients of the lagrangian with respect to the
 position and velocity.
@@ -400,7 +400,7 @@ noncomputable def eulerLagrangeOp (xₜ : Time → Space 1) : Time → Space 1 :
 
 /-!
 
-#### Part D.2.I
+#### D.2.1.
 
 Basic equaltities for the Euler-Lagrange operator.
 
@@ -413,7 +413,7 @@ lemma eulerLagrangeOp_eq (xₜ : Time → Space 1) :
 
 /-!
 
-#### Part D.2.II
+#### D.2.2.
 
 Relation of the Euler-Lagrange operator to variational derivative of the action.
 
@@ -425,7 +425,7 @@ lemma variational_gradient_action (xₜ : Time → Space 1) (hq : ContDiff ℝ �
 
 /-!
 
-### Part D.3. The equation of motion
+### D.3. The equation of motion
 
 The equation of motion for the harmonic oscillator is given by setting the
 Euler-Lagrange operator equal to zero.
@@ -438,7 +438,7 @@ def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
 
 /-!
 
-#### Part D.3.I.
+#### D.3.1.
 
 We write a simple iff statment for the definition of the equation of motions.
 
@@ -472,7 +472,7 @@ noncomputable def force (S : HarmonicOscillator) (x : Space 1) : EuclideanSpace 
 
 /-!
 
-#### part E.1.I
+#### E.1.1.
 
 We now show that the force is equal to `- k x`.
 
@@ -547,7 +547,7 @@ lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → Space 1) (hx : ContD
 
 /-!
 
-### F. Energy conservation
+## F. Energy conservation
 
 In this section we show that any trajectory satisfying the equation of motion
 conserves energy. This result simply follows from the definition of the energies,
@@ -558,7 +558,7 @@ to Newton's second law.
 
 /-!
 
-#### F.1. Energy conservation in terms of time derivatives
+### F.1. Energy conservation in terms of time derivatives
 
 We prove that the time derivative of the energy is zero for any trajectory satisfying
 the equation of motion.
@@ -576,7 +576,7 @@ lemma energy_conservation_of_equationOfMotion (xₜ : Time → Space 1) (hx : Co
 
 /-!
 
-#### F.1. Energy conservation in terms of constant energy
+### F.2. Energy conservation in terms of constant energy
 
 We prove that the energy is constant for any trajectory satisfying the equation of motion.
 
@@ -634,7 +634,7 @@ noncomputable def toCanonicalMomentum (t : Time) (x : Space 1) :
 
 /-!
 
-#### Part G.1.I.
+#### G.1.1.
 
 An simple equality for the canonical momentum.
 
@@ -662,7 +662,7 @@ noncomputable def hamiltonian (t : Time) (p : EuclideanSpace ℝ (Fin 1)) (x : S
 
 /-!
 
-#### Part G.2.I.
+#### G.2.1.
 
 We prove a simple equality for the Hamiltonian, to help in computations.
 
@@ -679,7 +679,7 @@ lemma hamiltonian_eq :
 
 /-!
 
-#### Part G.2.II.
+#### G.2.2.
 
 We show that the Hamiltonian is smooth in all its arguments.
 
@@ -692,7 +692,7 @@ lemma hamiltonian_contDiff (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.hamiltonia
 
 /-!
 
-#### Part G.2.II.
+#### G.2.3.
 
 We now write down the graidents of the Hamiltonian with respect to the momentum and position.
 
@@ -749,7 +749,7 @@ lemma hamiltonian_eq_energy (xₜ : Time → Space 1) :
 
 /-!
 
-### G.3. Hamilton equation operator
+### G.4. Hamilton equation operator
 
 We define the operator on momentum-position phase-space whose vanishing is equivalent
 to Hamilton's equations.
@@ -763,7 +763,7 @@ noncomputable def hamiltonEqOp (p : Time → EuclideanSpace ℝ (Fin 1)) (q : Ti
 
 /-!
 
-### G.4. Equation of motion if and only if Hamilton's equations
+### G.5. Equation of motion if and only if Hamilton's equations
 
 We show that the equation of motion is equivalent to Hamilton's equations, that is
 to the vanishing of the Hamilton equation operator.
