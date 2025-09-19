@@ -198,7 +198,7 @@ lemma gaugeGroupI_smul_inner (g : StandardModel.GaugeGroupI) (φ ψ : HiggsVec) 
     _ = ((g.toU1 ^ 3 • ψ)) ⬝ᵥ star (g.toU1 ^ 3) • star (φ.toFin2ℂ) := by
       congr
       ext i
-      simp
+      simp only [Pi.star_apply, RCLike.star_def, star_pow, Pi.smul_apply]
       change (starRingEnd ℂ) (GaugeGroupI.toU1 g ^ 3 * φ i) = _
       simp
       rfl
@@ -246,7 +246,8 @@ def toRealGroupElem (φ : HiggsVec) : GaugeGroupI :=
     rw [mem_unitaryGroup_iff']
     funext i j
     rw [Matrix.mul_apply]
-    simp
+    simp only [Fin.isValue, star_apply, of_apply, cons_val', cons_val_fin_one, RCLike.star_def,
+      Fin.sum_univ_two, cons_val_zero, cons_val_one]
     have hφ : Complex.ofReal ‖φ‖ ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
     fin_cases i <;> fin_cases j <;>
     all_goals
