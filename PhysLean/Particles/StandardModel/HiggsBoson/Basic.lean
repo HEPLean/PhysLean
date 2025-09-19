@@ -645,7 +645,6 @@ lemma normSq_expand (φ : HiggsField) :
 
 -/
 
-@[simp]
 lemma normSq_nonneg (φ : HiggsField) (x : SpaceTime) : 0 ≤ ‖φ‖_H^2 x := by
   simp [normSq]
 
