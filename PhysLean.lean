@@ -114,8 +114,6 @@ import PhysLean.Particles.StandardModel.AnomalyCancellation.NoGrav.One.LinearPar
 import PhysLean.Particles.StandardModel.AnomalyCancellation.Permutations
 import PhysLean.Particles.StandardModel.Basic
 import PhysLean.Particles.StandardModel.HiggsBoson.Basic
-import PhysLean.Particles.StandardModel.HiggsBoson.GaugeAction
-import PhysLean.Particles.StandardModel.HiggsBoson.PointwiseInnerProd
 import PhysLean.Particles.StandardModel.HiggsBoson.Potential
 import PhysLean.Particles.StandardModel.Representations
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.B3
