@@ -3,7 +3,7 @@ Copyright (c) 2025 Tomas Skrivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomas Skrivan
 -/
-import Mathlib.LinearAlgebra.Trace
+import Mathlib.Analysis.InnerProductSpace.Trace
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.SpaceAndTime.Space.Basic
 /-!
@@ -16,6 +16,7 @@ where `E` is a normed space over a field `𝕜`.
 -/
 noncomputable section
 open Module
+open scoped InnerProductSpace
 
 variable
   {𝕜 : Type*} [RCLike 𝕜]
@@ -128,14 +129,42 @@ lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
   unfold divergence
   simp [fderiv_fun_const_smul hf]
 
-local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
+lemma LinearMap.toMatrix_smulRight {R M M₁ m n : Type*} [CommSemiring R] [AddCommMonoid M]
+    [AddCommMonoid M₁] [Module R M] [Module R M₁] [Finite m] [Fintype n] [DecidableEq n]
+    (f : M₁ →ₗ[R] R) (x : M) (v₁ : Module.Basis n R M₁) (v₂ : Module.Basis m R M) :
+    toMatrix v₁ v₂ (f.smulRight x) = Matrix.vecMulVec (v₂.repr x) (⇑f ∘ ⇑v₁) := by
+  ext i j
+  simpa [toMatrix_apply, Matrix.vecMulVec_apply] using mul_comm _ _
 
-@[sorryful]
+-- from latest mathlib
+@[simp]
+theorem Matrix.trace_vecMulVec {R n : Type*} [Fintype n] [NonUnitalNonAssocSemiring R]
+    (a b : n → R) : trace (vecMulVec a b) = a ⬝ᵥ b := by
+  rw [vecMulVec_eq Unit, trace_replicateCol_mul_replicateRow]
+
+@[simp]
+lemma LinearMap.trace_smulRight {R M : Type*} [CommSemiring R] [AddCommMonoid M]
+    [Module R M] [Module.Free R M] [Module.Finite R M] (f : M →ₗ[R] R) (x : M) :
+    trace R M (f.smulRight x) = f x := by
+  classical
+  rw [trace_eq_matrix_trace _ (Module.Free.chooseBasis R M)]
+  simp only [toMatrix_smulRight, Matrix.trace_vecMulVec, dotProduct, Function.comp_apply]
+  simp_rw +singlePass [← smul_eq_mul, ← map_smul, ← map_sum, Module.Basis.sum_repr]
+
+@[simp]
+lemma ContinuousLinearMap.smulRight_toLinearMap {M₁ : Type*} [TopologicalSpace M₁]
+    [AddCommMonoid M₁] {M₂ : Type*} [TopologicalSpace M₂] [AddCommMonoid M₂] {R : Type*} {S : Type*}
+    [Semiring R] [Semiring S] [Module R M₁] [Module R M₂] [Module R S] [Module S M₂]
+    [IsScalarTower R S M₂] [TopologicalSpace S] [ContinuousSMul S M₂] (c : M₁ →L[R] S) (f : M₂) :
+    (↑(ContinuousLinearMap.smulRight c f) : M₁ →ₗ[R] M₂) =
+      LinearMap.smulRight (↑c : M₁ →ₗ[R] S) f :=
+  rfl
+
+open InnerProductSpace' in
 lemma divergence_smul [InnerProductSpace' 𝕜 E] {f : E → 𝕜} {g : E → E} {x : E}
     (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x)
     [FiniteDimensional 𝕜 E] :
     divergence 𝕜 (fun x => f x • g x) x
-    = f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫ := by
-  unfold divergence
-  simp [fderiv_fun_smul hf hg]
-  sorry
+    = f x * divergence 𝕜 g x + ⟪adjFDeriv 𝕜 f x 1, g x⟫_𝕜 := by
+  haveI : CompleteSpace E := FiniteDimensional.complete 𝕜 E
+  simp [divergence, fderiv_fun_smul hf hg, hf.hasAdjFDerivAt.hasAdjoint_fderiv.adjoint_inner_left]
