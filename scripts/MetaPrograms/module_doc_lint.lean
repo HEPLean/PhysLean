@@ -33,6 +33,12 @@ def getHeaddings (f : FilePath) : IO (Array String) := do
   let lines ← IO.FS.lines f
   return lines.filter (fun l ↦ l.trim.startsWith "#")
 
+def getTableOfContents (f : FilePath) : IO (Array String) := do
+  let lines := (← IO.FS.lines f).toList
+  let tofC := ((lines.splitAt (lines.findIdx (fun l ↦ l.trim == "## iii. Table of contents")+1))).2
+  let toc := (tofC.splitAt (tofC.findIdx (fun l ↦ l.trim == "## iv. References"))).1
+  return toc.toArray
+
 def checkHeadings (f : FilePath) : IO (List DocLintError) := do
   let headings ← getHeaddings f
   let mut errors := []
@@ -102,6 +108,20 @@ def checkHeadings (f : FilePath) : IO (List DocLintError) := do
   if ¬ List.Nodup otherHeaddingsSplit.toList then
     let dups := otherHeaddingsSplit.toList.filter (fun x ↦ otherHeaddingsSplit.toList.count x > 1)
     errors := {msg := s!"Duplicate section tags found {dups}", file := f} :: errors
+
+  /- Table of contents check. -/
+  let tocLines ← getTableOfContents f
+  let expectedLevel1 (n : ℕ) := (otherHeadings.filter (fun l ↦ l.count '#' ≤ n)).map fun l =>
+    let l' := l
+    let l' := l'.replace "#### "  "  - "
+    let l' := l'.replace "### "  " - "
+    let l' := l'.replace "## "  "- "
+    l'
+  let tocLinesNoEmpty := tocLines.filter (fun l ↦ l.trim ≠ "")
+  if tocLinesNoEmpty ≠ expectedLevel1 4 then
+    errors := {msg := s!"Table of contents does not match headings. \n Given:
+{String.intercalate "\n" tocLinesNoEmpty.toList}\n Expected:
+{String.intercalate "\n" (expectedLevel1 4).toList}\nEnd of Error.", file := f} :: errors
   return errors
 
 /-- The array of modules not to be linted. -/

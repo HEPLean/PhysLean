@@ -124,7 +124,6 @@ PhysLean/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Permutations.lean
 PhysLean/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Y3.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/AllowsTerm.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Basic.lean
-PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Map.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimalSuperSet.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/Basic.lean
@@ -137,8 +136,6 @@ PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/PhenoConstrained.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/U1U1.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Yukawa.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/ZMod.lean
-PhysLean/Particles/SuperSymmetry/SU5/FieldLabels.lean
-PhysLean/Particles/SuperSymmetry/SU5/Potential.lean
 PhysLean/QFT/AnomalyCancellation/Basic.lean
 PhysLean/QFT/AnomalyCancellation/GroupActions.lean
 PhysLean/QFT/PerturbationTheory/CreateAnnihilate.lean

@@ -40,10 +40,38 @@ In the `Solution` module:
 - A. The input data
 - B. The angular frequency
 - C. The energies
+ - C.1. The definitions of the energies
+ - C.2. Simple equalties for the energies
+ - C.3. Differentiability of the energies
+ - C.4. Time derivatives of the energies
 - D. Lagrangian and the equation of motion
+ - D.1. The Lagrangian
+  - D.1.1.
+  - D.1.2.
+  - D.1.3.
+ - D.2. The Euler-Lagrange operator
+  - D.2.1.
+  - D.2.2.
+ - D.3. The equation of motion
+  - D.3.1.
 - E. Newton's second law
+ - E.1. The force
+  - E.1.1.
+ - E.2. Euler-Lagrange operator and force
+ - E.3. Equation of motion if and only if Newton's second law
 - F. Energy conservation
+ - F.1. Energy conservation in terms of time derivatives
+ - F.2. Energy conservation in terms of constant energy
 - G. Hamiltonian formulation
+ - G.1. The canonical momentum
+  - G.1.1.
+ - G.2. The Hamiltonian
+  - G.2.1.
+  - G.2.2.
+  - G.2.3.
+ - G.3. Relation between Hamiltonian and energy
+ - G.4. Hamilton equation operator
+ - G.5. Equation of motion if and only if Hamilton's equations
 - H. Equivalences between the different formulations of the equations of motion
 
 ## iv. References

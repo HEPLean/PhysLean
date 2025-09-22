@@ -28,10 +28,26 @@ prove that they satisfy the equation of motion, and prove some properties of the
 ## iii. Table of contents
 
 - A. The initial conditions
+ - A.1. Definition of the initial conditions
+  - A.1.1.
+ - A.2. Relation to other types of initial conditions
+ - A.3. The zero initial conditions
+  - A.3.1.
 - B. Trajectories associated with the initial conditions
+ - B.1. The trajectory associated with the initial conditions
+  - B.1.1.
+ - B.2. The trajectory for zero initial conditions
+ - B.3. Smoothness of the trajectories
+ - B.4. Velocity of the trajectories
+ - B.5. Acceleration of the trajectories
+ - B.6. The initial conditions of the trajectories
 - C. Trajectories and Equation of motion
+ - C.1. Uniqueness of the solutions
 - D. The energy of the trajectories
 - E. The trajectories at zero velocity
+ - E.1. The times at which the velocity is zero
+ - E.2. A time when the velocity is zero
+ - E.3. The position when the velocity is zero
 - F. Some open TODOs
 
 ## iv. References
