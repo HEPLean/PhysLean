@@ -282,7 +282,7 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩
     grind
   case W1 =>
     obtain ⟨⟨a, b, ⟨⟨⟨ha, hacard⟩, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩, _⟩ := hx
-    obtain ⟨c,  rfl⟩ := Multiset.card_eq_one.mp hacard
+    obtain ⟨c, rfl⟩ := Multiset.card_eq_one.mp hacard
     obtain ⟨e, d, f, rfl⟩ := Multiset.card_eq_three.mp hbcard
     simp_all [allowsTermForm]
     use e, d, f

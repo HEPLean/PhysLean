@@ -57,7 +57,7 @@ lemma ext {g g' : GaugeGroupI} (hSU3 : toSU3 g = toSU3 g')
 instance : Star GaugeGroupI where
   star g := (star g.1, star g.2.1, star g.2.2)
 
-lemma star_eq (g : GaugeGroupI) :  star g = (star g.1, star g.2.1, star g.2.2) := rfl
+lemma star_eq (g : GaugeGroupI) : star g = (star g.1, star g.2.1, star g.2.2) := rfl
 
 @[simp]
 lemma star_toSU3 (g : GaugeGroupI) : toSU3 (star g) = star (toSU3 g) := rfl

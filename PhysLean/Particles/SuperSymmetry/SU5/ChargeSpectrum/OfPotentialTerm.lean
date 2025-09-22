@@ -9,8 +9,42 @@ import Mathlib.Tactic.Abel
 
 # Charges associated with a potential term
 
-Given a potential term `T`, and a charge `x : Charges`,
-we can extract the set of charges associated with instances of that potential term.
+## i. Overview
+
+In this module we give the multiset of charges associated with a given type of potential term,
+given a charge spectrum.
+
+We will define two versions of this, one based on the underlying fields on the
+potentials, and the charges that they carry, and one more explicit version which
+is faster to compute with. The former is `ofPotentialTerm`, and the latter is
+`ofPotentialTerm'`.
+
+We will show that these two multisets have the same elements.
+
+## ii. Key results
+
+- `ofPotentialTerm` : The multiset of charges associated with a potential term,
+  defined in terms of the fields making up that potential term, given a charge spectrum.
+- `ofPotentialTerm'` : The multiset of charges associated with a potential term,
+  defined explicitly, given a charge spectrum.
+
+## iii. Table of contents
+
+- A. Charges of a potential term from field labels
+  - A.1. Monotonicity of `ofPotentialTerm`
+  - A.2. Charges of potential terms for the empty charge spectrum
+- B. Explicit construction of charges of a potential term
+  - B.1. Explicit multisets for `ofPotentialTerm'`
+  - B.2. `ofPotentialTerm'` on the empty charge spectrum
+- C. Relation between two constructions of charges of potential terms
+  - C.1. Showing that `ofPotentialTerm` is a subset of `ofPotentialTerm'`
+  - C.2. Showing that `ofPotentialTerm'` is a subset of `ofPotentialTerm`
+  - C.3. Equivalence of elements of `ofPotentialTerm` and `ofPotentialTerm'`
+  - C.4. Induced monoticity of `ofPotentialTerm'`
+
+## iv. References
+
+There are no known references for this material.
 
 -/
 
@@ -22,6 +56,15 @@ open PotentialTerm
 
 variable {𝓩 : Type} [AddCommGroup 𝓩]
 
+/-!
+
+## A. Charges of a potential term from field labels
+
+We first define `ofPotentialTerm`, and prover properites of it.
+This is slow to compute in practice.
+
+-/
+
 /-- Given a charges `x : Charges` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term. -/
 def ofPotentialTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
@@ -29,6 +72,14 @@ def ofPotentialTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset �
       fun (x, y) => x + y
   (T.toFieldLabel.map fun F => (ofFieldLabel x F).val).foldl add {0}
 
+/-!
+
+### A.1. Monotonicity of `ofPotentialTerm`
+
+We show that `ofPotentialTerm` is monotone in its charge spectrum argument.
+That is if `x ⊆ y` then `ofPotentialTerm x T ⊆ ofPotentialTerm y T`.
+
+-/
 lemma ofPotentialTerm_mono {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ y.ofPotentialTerm T := by
   have h1 {S1 S2 T1 T2 : Multiset 𝓩} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
@@ -43,6 +94,14 @@ lemma ofPotentialTerm_mono {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (T : Potent
         h1 _ (Finset.subset_def.mp (ofFieldLabel_mono h _))
     simp
 
+/-!
+
+### A.2. Charges of potential terms for the empty charge spectrum
+
+For the empty charge spectrum, the charges associated with any potential term is empty.
+
+-/
+
 @[simp]
 lemma ofPotentialTerm_empty (T : PotentialTerm) :
     ofPotentialTerm (∅ : ChargeSpectrum 𝓩) T = ∅ := by
@@ -50,7 +109,17 @@ lemma ofPotentialTerm_empty (T : PotentialTerm) :
   all_goals
     rfl
 
-/-- Given a charges `x : Charges` associated to the representations, and a potential
+/-!
+
+## B. Explicit construction of charges of a potential term
+
+We now turn to a more explicit construction of the charges associated with a potential term.
+This is faster to compute with, but less obviously connected to the underlying
+fields.
+
+-/
+
+/-- Given a charges `x : ChargeSpectrum` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term.
 
   This is a more explicit form of `PotentialTerm`, which has the benifit that
@@ -104,6 +173,13 @@ def ofPotentialTerm' (y : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset �
     | none => ∅
     | some qHd => (Q5.product <| Q10).val.map (fun x => qHd + x.1 + x.2)
 
+/-!
+
+### B.1. Explicit multisets for `ofPotentialTerm'`
+
+For each potential term, we give an explicit form of the multiset `ofPotentialTerm'`.
+
+-/
 lemma ofPotentialTerm'_μ_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' μ =
     (x.qHd.toFinset.product <| x.qHu.toFinset).val.map (fun x => x.1 - x.2) := by
@@ -187,6 +263,42 @@ lemma ofPotentialTerm'_bottomYukawa_finset {x : ChargeSpectrum 𝓩} :
   | ⟨some qHd, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
+/-!
+
+### B.2. `ofPotentialTerm'` on the empty charge spectrum
+
+We show that for the empty charge spectrum, the charges associated with any potential term is empty,
+as defined through `ofPotentialTerm'`.
+
+-/
+
+@[simp]
+lemma ofPotentialTerm'_empty (T : PotentialTerm) :
+    ofPotentialTerm' (∅ : ChargeSpectrum 𝓩) T = ∅ := by
+  cases T
+  all_goals
+    simp [ofPotentialTerm']
+/-!
+
+## C. Relation between two constructions of charges of potential terms
+
+We now give the relation between `ofPotentialTerm` and `ofPotentialTerm'`.
+We show that they have the same elements, by showing that they are subsets of each other.
+
+The prove of some of these results are rather long since they involve explicit
+case analysis for each potential term, due to the nature of the definition
+of `ofPotentialTerm'`.
+
+-/
+
+/-!
+
+### C.1. Showing that `ofPotentialTerm` is a subset of `ofPotentialTerm'`
+
+We first show that `ofPotentialTerm` is a subset of `ofPotentialTerm'`.
+
+-/
+
 lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ x.ofPotentialTerm' T := by
   refine Multiset.subset_iff.mpr (fun n h => ?_)
@@ -222,6 +334,15 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : Pot
   all_goals
     rw [← f1_add_f2_eq_zero]
     abel
+
+/-!
+
+### C.2. Showing that `ofPotentialTerm'` is a subset of `ofPotentialTerm`
+
+We now show the other direction of the subset relation, that
+`ofPotentialTerm'` is a subset of `ofPotentialTerm`.
+
+-/
 
 lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩]
     {x : ChargeSpectrum 𝓩} (T : PotentialTerm) :
@@ -325,6 +446,16 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩]
     rw [← q_sum]
     try abel
 
+/-!
+
+### C.3. Equivalence of elements of `ofPotentialTerm` and `ofPotentialTerm'`
+
+We now show that a charge is in `ofPotentialTerm` if and only if it is in
+`ofPotentialTerm'`. I.e. their underlying finite sets are equal.
+We do not say anything about the multiplicity of elements within the multisets,
+which is not important for us.
+
+-/
 lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
     {T : PotentialTerm} {n : 𝓩} {y : ChargeSpectrum 𝓩} :
     n ∈ y.ofPotentialTerm T ↔ n ∈ y.ofPotentialTerm' T := by
@@ -332,19 +463,21 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
   · exact fun h => ofPotentialTerm_subset_ofPotentialTerm' T h
   · exact fun h => ofPotentialTerm'_subset_ofPotentialTerm T h
 
+/-!
+
+### C.4. Induced monoticity of `ofPotentialTerm'`
+
+Due to the equivalence of elements of `ofPotentialTerm` and `ofPotentialTerm'`,
+we can now also show that `ofPotentialTerm'` is monotone in its charge spectrum argument.
+
+-/
+
 lemma ofPotentialTerm'_mono [DecidableEq 𝓩] {x y : ChargeSpectrum 𝓩}
     (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm' T ⊆ y.ofPotentialTerm' T := by
   intro i
   rw [← mem_ofPotentialTerm_iff_mem_ofPotentialTerm, ← mem_ofPotentialTerm_iff_mem_ofPotentialTerm]
   exact fun a => ofPotentialTerm_mono h T a
-
-@[simp]
-lemma ofPotentialTerm'_empty (T : PotentialTerm) :
-    ofPotentialTerm' (∅ : ChargeSpectrum 𝓩) T = ∅ := by
-  cases T
-  all_goals
-    simp [ofPotentialTerm']
 
 end ChargeSpectrum
 

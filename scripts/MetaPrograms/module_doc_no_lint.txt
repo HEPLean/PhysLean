@@ -129,7 +129,6 @@ PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimalSuperSet.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/Basic.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/FinsetTerms.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/OfFinset.lean
-PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/OfPotentialTerm.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/PhenoClosed.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/PhenoConstrained.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/U1U1.lean

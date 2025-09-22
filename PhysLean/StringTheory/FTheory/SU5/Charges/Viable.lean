@@ -165,7 +165,6 @@ private def viableCompletions (I : CodimensionOneConfig) : Multiset (ChargeSpect
     ⟨some 2, some 12, {7}, {6}⟩, ⟨some 7, some 12, {-13}, {6}⟩,
     ⟨some 7, some 12, {-8}, {6}⟩, ⟨some 7, some 12, {2}, {6}⟩}
 
-
 lemma viableCompletions_card (I : CodimensionOneConfig) :
     (viableCompletions I).card = if I = same then 70 else
       if I = nearestNeighbor then 48 else 37 := by

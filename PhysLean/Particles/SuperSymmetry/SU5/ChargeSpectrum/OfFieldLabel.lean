@@ -75,7 +75,7 @@ This follows directly from the definition.
 
 -/
 
-/-- `ofFieldLabel ∅ F`  is empty for any field label `F`. -/
+/-- `ofFieldLabel ∅ F` is empty for any field label `F`. -/
 @[simp]
 lemma ofFieldLabel_empty (F : FieldLabel) :
     ofFieldLabel (∅ : ChargeSpectrum 𝓩) F = ∅ := by
