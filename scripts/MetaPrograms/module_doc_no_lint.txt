@@ -239,7 +239,6 @@ PhysLean/Relativity/LorentzGroup/Restricted/Basic.lean
 PhysLean/Relativity/LorentzGroup/Restricted/FromBoostRotation.lean
 PhysLean/Relativity/LorentzGroup/Rotations.lean
 PhysLean/Relativity/LorentzGroup/ToVector.lean
-PhysLean/Relativity/MinkowskiMatrix.lean
 PhysLean/Relativity/PauliMatrices/AsTensor.lean
 PhysLean/Relativity/PauliMatrices/Basic.lean
 PhysLean/Relativity/PauliMatrices/CliffordAlgebra.lean
