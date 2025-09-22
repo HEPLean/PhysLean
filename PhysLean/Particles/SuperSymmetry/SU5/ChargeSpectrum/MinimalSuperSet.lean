@@ -7,10 +7,40 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Completions
 /-!
 # Minimal super set
 
-Given a a colleciton of charges `x`, and two sets of charges `S5` and `S10`,
-a minimal super set of `x` is the collection of charge `y` which is a
-super sets of `x`, for which the the additional charges in `y` are
-corresponding in `S5` and `S10`, and which is minimal in this regard.
+## i. Overview
+
+The minimally super set of a spectrum of charges `x` is the finite set of
+spectrums of charges `y` such that `x ⊆ y` and there is no `z` such that `x ⊆ z ⊂ y`.
+The minimal super set is defined using a finite set of possible charges in the `5`-bar and `10`
+representations of `su(5)`. This is to ensure that the minimal super set is itself finite.
+
+In this file we define the minimal super set and prove some basic properties of it.
+
+## ii. Key results
+
+- `minimalSuperSet`: the minimal super set of a charge spectrum.
+- `exists_minimalSuperSet`: the existence of a member of the minimal super set
+  between two charge spectra.
+- `subset_insert_filter_card_zero`: a statement related to closure properties of multisets
+  of charge spectra under a proposition `p` satisfying certain properties. The proof
+  of this result relies on induction on minimal super sets.
+
+## iii. Table of contents
+
+- A. The minimal super set
+  - A.1. Members of the minimal super set are super sets
+  - A.2. Self is not a member of the minimal super set
+  - A.3. Cardinality of member of the minimal super set
+  - A.4. Inserting charges and minimal super sets
+  - A.5. Existence of a minimal super set member between two charges
+- B. Induction properties on the minimal super set
+  - B.1. Lifting propositions from minimal super sets to super sets
+  - B.2. Closure of multisets based on proposition for minimial super sets
+  - B.3. Closure of multisets based on propositions
+
+## iv. References
+
+There are no known references for the material in this file.
 
 -/
 
@@ -22,6 +52,13 @@ namespace ChargeSpectrum
 
 variable {𝓩 : Type} [DecidableEq 𝓩]
 
+/-!
+
+## A. The minimal super set
+
+We define the minimal super set.
+
+-/
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x`. -/
 def minimalSuperSet (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) : Finset (ChargeSpectrum 𝓩) :=
@@ -31,6 +68,15 @@ def minimalSuperSet (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) : Finset (C
   let SQ5 := (S5 \ x.Q5).image (fun y => ⟨x.qHd, x.qHu, insert y x.Q5, x.Q10⟩)
   let SQ10 := (S10 \ x.Q10).image (fun y => ⟨x.qHd, x.qHu, x.Q5, insert y x.Q10⟩)
   (SqHd ∪ SqHu ∪ SQ5 ∪ SQ10).erase x
+
+/-!
+
+### A.1. Members of the minimal super set are super sets
+
+We show the basic property of a member `y ∈ minimalSuperSet S5 S10 x`, that is
+that they are indeed super sets, namely `x ⊆ y`.
+
+-/
 
 lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 𝓩)
     (hy : y ∈ minimalSuperSet S5 S10 x) : x ⊆ y := by
@@ -65,6 +111,15 @@ lemma self_subset_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : ChargeSpectr
       rw [Subset]
       simp [hasSubset]
 
+/-!
+
+### A.2. Self is not a member of the minimal super set
+
+A charge spectrum is not a member of its own minimal super set. We give
+two different forms of this result.
+
+-/
+
 @[simp]
 lemma self_not_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) :
     x ∉ minimalSuperSet S5 S10 x := by
@@ -75,6 +130,15 @@ lemma self_neq_mem_minimalSuperSet (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 
   by_contra h
   subst h
   simp at hy
+
+/-!
+
+### A.3. Cardinality of member of the minimal super set
+
+We show that any member `y` of the minimal super set of `x` has cardinality one more than
+that of `x`. I.e. it contains exactly one more unique charge.
+
+-/
 
 lemma card_of_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : ChargeSpectrum 𝓩}
     (y : ChargeSpectrum 𝓩) (hy : y ∈ minimalSuperSet S5 S10 x) :
@@ -118,6 +182,18 @@ lemma card_of_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : ChargeSpectrum �
       rw [Finset.insert_eq_of_mem h] at hy1
       simp at hy1
 
+/-!
+
+### A.4. Inserting charges and minimal super sets
+
+We show that inserting a charge from `S5` or `S10` into `x`'s `Q5` or `Q10` respectively
+which is not already present in `x` gives a member of the minimal super set.
+
+Likewise we show that if `x` has no `qHd` or `qHu` charge, then inserting a charge from `S5`
+into `qHd` or `qHu` respectively gives a member of the minimal super set.
+
+-/
+
 lemma insert_Q5_mem_minimalSuperSet {S5 S10 : Finset 𝓩} {x : ChargeSpectrum 𝓩}
     (z : 𝓩) (hz : z ∈ S5) (hznot : z ∉ x.Q5) :
     ⟨x.qHd, x.qHu, insert z x.Q5, x.Q10⟩ ∈ minimalSuperSet S5 S10 x := by
@@ -153,6 +229,19 @@ lemma some_qHu_mem_minimalSuperSet_of_none {S5 S10 : Finset 𝓩}
     {x1 : Option 𝓩} {x2 : Finset 𝓩 × Finset 𝓩} (z : 𝓩) (hz : z ∈ S5) :
     ⟨x1, some z, x2.1,x2.2⟩ ∈ minimalSuperSet S5 S10 ⟨x1, none, x2.1, x2.2⟩ := by
   simp_all [minimalSuperSet]
+
+/-!
+
+### A.5. Existence of a minimal super set member between two charges
+
+We show that if `y` has charges from `S5` and `S10` and is a super set of `x` but not equal to `x`
+then there is a `z` in the minimal super set of `x` which is a subset of `y`.
+
+This shows, in a sense, that `minimalSuperSet` is "minimal", although it does not
+go all the way to doing that. In particular, it does show that every minimal super set
+is a member of `minimalSuperSet`.
+
+-/
 
 lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : ChargeSpectrum 𝓩}
     (hy : y ∈ ofFinset S5 S10) (hsubset : x ⊆ y)
@@ -231,6 +320,24 @@ lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : ChargeSpectrum 𝓩}
   | some x1, some y1, some x2, some y2 =>
     simp_all
 
+/-!
+
+## B. Induction properties on the minimal super set
+
+We now prove a number of induction properties related to mininmal super sets.
+
+-/
+
+/-!
+
+### B.1. Lifting propositions from minimal super sets to super sets
+
+We show that for a proposition `p` on charge spectra with the property that
+it is true on all minimial super sets of `x` if it true on `x` itself, then it is true on all
+super sets of `x` if it is true for `x` itself.
+
+-/
+
 lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
     (p : ChargeSpectrum 𝓩 → Prop)
     (hp : (x : ChargeSpectrum 𝓩) → p x → ∀ y ∈ minimalSuperSet S5 S10 x, p y)
@@ -258,10 +365,16 @@ lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
 
 /-!
 
-## Inserting charges and minimal super sets
+### B.2. Closure of multisets based on proposition for minimial super sets
+
+We show that for a predicate `p` on charge spectrum,
+if a multiset `T` of complete charge spectra has the property that
+- all insersions of a `q10` charge either ends in `T` or fails `p`.
+- all insertions of a `q5` charge either ends in `T` or fails `p`.
+Then if `x` is in `T` then all members of the minimal super set of `x` either
+are in `T` or fail `p`.
 
 -/
-
 variable {𝓩 : Type} [DecidableEq 𝓩]
 
 lemma insert_filter_card_zero
@@ -292,6 +405,22 @@ lemma insert_filter_card_zero
     exact h5' ⟨some xqHd, some xqHu, xQ5, xQ10⟩ x_mem_T y_not_in_T
   · have h10' := h10 q10 q10_mem_S10.1
     exact h10' ⟨some xqHd, some xqHu, xQ5, xQ10⟩ x_mem_T y_not_in_T
+
+/-!
+
+### B.3. Closure of multisets based on propositions
+
+We show that for a predicate `p` on charge spectrum which if false on a charge spectrum
+is also false on all its super sets,
+if a multiset `T` of complete charge spectra has the property that
+- all insersions of a `q10` charge either ends in `T` or fails `p`.
+- all insertions of a `q5` charge either ends in `T` or fails `p`.
+Then if `y` is not in `T` then it does not satisfy `p`.
+
+We first prove this with an explicit induction argument, `n`, and then
+we prove it in a more user friendly way.
+
+-/
 
 lemma subset_insert_filter_card_zero_inductive
     (T : Multiset (ChargeSpectrum 𝓩))

@@ -6,12 +6,48 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.AllowsTerm
 /-!
 
-# Minimally allows terms
+# Charge spectrum which minimally allows terms
 
-Given a set of charges `x : Charges` corresponding to charges of the representations
-present in the theory, and a potential term `T : PotentialTerm`, we say that `x`
-minimally allows `T` if it allows the term `T` and no proper subset of `x` allows `T`.
+## i. Overview
 
+We can say that a charge spectrum `x : ChargeSpectrum 𝓩` minimally allows a potential term
+`T : PotentialTerm` if it allows the term `T` and no strict subset of `x` allows `T`.
+
+That is to say, you need all of the charges in `x` to allow the term `T`.
+
+We show that any charge spectrum which allows `T` has a subset which minimally allows `T`.
+
+We show that every charge spectrum which minimally allows `T` is of the form
+`allowsTermForm a b c T` for some `a b c : 𝓩`, and the reverse is true for
+`T` not equal to `W1` or `W2`.
+
+## ii. Key results
+
+- `MinimallyAllowsTerm` : Predicate on charge spectra which is true if the charge spectrum
+  minimally allows a potential term.
+- `allowsTerm_iff_subset_minimallyAllowsTerm` : A charge spectrum which allows a term
+  has a subset which minimally allows the term, and vice versa.
+- `eq_allowsTermForm_of_minimallyAllowsTerm` : Any charge spectrum which minimally allows a term
+  is of the form `allowsTermForm a b c T` for some `a b c : 𝓩`.
+
+## iii. Table of contents
+
+- A. Charge spectra which minimally allow potential terms
+  - A.1. Decidability of `MinimallyAllowsTerm`
+  - A.2. A charge spectrum which minimally allows a term allows the term
+  - A.3. Spectrum with a subset which minimally allows a term, allows the term
+  - A.4. Minimally allows term iff only member of powerset allowing term
+  - A.5. Minimally allows term iff powerset allowing term has cardinal one
+  - A.6. A charge spectrum which allows a term has a subset which minimally allows the term
+  - A.7. A charge spectrum allows a term iff it has a subset which minimally allows the term
+  - A.8. Cardinality of spectrum which minimally allows term is at most degree of term
+- B. Relation between `MinimallyAllowsTerm` and `allowsTermForm`
+  - B.1. A charge spectrum which minimally allows a term is of the form `allowsTermForm a b c T`
+  - B.2. `allowsTermForm a b c T` minimally allows `T` if `T` is not `W1` or `W2`
+
+## iv. References
+
+There are no known references for this material.
 -/
 
 namespace SuperSymmetry
@@ -22,13 +58,39 @@ namespace ChargeSpectrum
 variable {𝓩 : Type} [AddCommGroup 𝓩] [DecidableEq 𝓩]
 open SuperSymmetry.SU5
 
+/-!
+
+## A. Charge spectra which minimally allow potential terms
+
+We define the predicate `MinimallyAllowsTerm` on charge spectra
+which is true if the charge spectrum allows a given potential term and no strict subset of
+it allows the term.
+
+We prove properties of charge spectra which minimally allow potential terms.
+
+-/
 /-- A collection of charges `x : Charges` is said to minimally allow
   the potential term `T` if it allows `T` and no strict subset of it allows `T`. -/
 def MinimallyAllowsTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Prop :=
   ∀ y ∈ x.powerset, y = x ↔ y.AllowsTerm T
 
+/-!
+
+### A.1. Decidability of `MinimallyAllowsTerm`
+
+We show that `MinimallyAllowsTerm` is decidable.
+-/
+
 instance (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Decidable (x.MinimallyAllowsTerm T) :=
   inferInstanceAs (Decidable (∀ y ∈ powerset x, y = x ↔ y.AllowsTerm T))
+
+/-!
+
+### A.2. A charge spectrum which minimally allows a term allows the term
+
+Somewhat trivially a charge spectrum which minimally allows the term does indeed allow the term.
+
+-/
 
 variable {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
 
@@ -36,12 +98,29 @@ lemma allowsTerm_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) : x.Allows
   simp only [MinimallyAllowsTerm] at h
   simpa using h x (self_mem_powerset x)
 
+/-!
+
+### A.3. Spectrum with a subset which minimally allows a term, allows the term
+
+If a charge spectrum `x` has a subset which minimally allows a term `T`, then `x` allows `T`.
+
+-/
+
 lemma allowsTerm_of_has_minimallyAllowsTerm_subset
     (hx : ∃ y ∈ powerset x, y.MinimallyAllowsTerm T) : x.AllowsTerm T := by
   obtain ⟨y, hy⟩ := hx
   simp only [mem_powerset_iff_subset] at hy
   apply allowsTerm_mono hy.1
   exact allowsTerm_of_minimallyAllowsTerm hy.2
+
+/-!
+
+### A.4. Minimally allows term iff only member of powerset allowing term
+
+A charge spectrum `x` minimally allows a term `T` if and only if the only member of its
+own powerset which allows `T` is itself.
+
+-/
 
 lemma minimallyAllowsTerm_iff_powerset_filter_eq :
     x.MinimallyAllowsTerm T ↔ x.powerset.filter (fun y => y.AllowsTerm T) = {x} := by
@@ -70,6 +149,15 @@ lemma minimallyAllowsTerm_iff_powerset_filter_eq :
       · exact hy
       · exact h1
 
+/-!
+
+### A.5. Minimally allows term iff powerset allowing term has cardinal one
+
+A charge spectrum `x` minimally allows a term `T` if and only the
+the number of members of its powerset which allow `T` is one.
+
+-/
+
 lemma minimallyAllowsTerm_iff_powerset_countP_eq_one :
     x.MinimallyAllowsTerm T ↔ x.powerset.val.countP (fun y => y.AllowsTerm T) = 1 := by
   rw [minimallyAllowsTerm_iff_powerset_filter_eq]
@@ -96,6 +184,14 @@ lemma minimallyAllowsTerm_iff_powerset_countP_eq_one :
     subst hxMem
     exact Finset.val_inj.mp ha
 
+/-!
+
+### A.6. A charge spectrum which allows a term has a subset which minimally allows the term
+
+If a charge spectrum `x` allows a term `T`, then it has a subset which minimally allows `T`.
+
+-/
+
 lemma subset_minimallyAllowsTerm_of_allowsTerm
     (hx : x.AllowsTerm T) : ∃ y ∈ powerset x, y.MinimallyAllowsTerm T := by
   have hPresent : (x.powerset.filter (fun y => y.AllowsTerm T)) ≠ ∅ := by
@@ -114,10 +210,28 @@ lemma subset_minimallyAllowsTerm_of_allowsTerm
   intro hzy hzpres
   exact subset_trans hzy h1.1
 
+/-!
+
+### A.7. A charge spectrum allows a term iff it has a subset which minimally allows the term
+
+We combine results above to show that a charge spectrum allows a term if and only if it has a subset
+which minimally allows the term.
+
+-/
+
 lemma allowsTerm_iff_subset_minimallyAllowsTerm :
     x.AllowsTerm T ↔ ∃ y ∈ powerset x, y.MinimallyAllowsTerm T :=
   ⟨fun h => subset_minimallyAllowsTerm_of_allowsTerm h, fun h =>
     allowsTerm_of_has_minimallyAllowsTerm_subset h⟩
+
+/-!
+
+### A.8. Cardinality of spectrum which minimally allows term is at most degree of term
+
+We show that the cardinality of a charge spectrum which minimally allows a term `T` is at most the
+degree of `T`.
+
+-/
 
 lemma card_le_degree_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) :
     x.card ≤ T.degree := by
@@ -131,6 +245,24 @@ lemma card_le_degree_of_minimallyAllowsTerm (h : x.MinimallyAllowsTerm T) :
   subst hy
   exact y_card
 
+/-!
+
+## B. Relation between `MinimallyAllowsTerm` and `allowsTermForm`
+
+We now relate the predicate `MinimallyAllowsTerm` to charge spectra of the form
+`allowsTermForm a b c T`.
+
+-/
+
+/-!
+
+### B.1. A charge spectrum which minimally allows a term is of the form `allowsTermForm a b c T`
+
+We show that any charge spectrum which minimally allows a term `T` is of the form
+`allowsTermForm a b c T` for some `a b c : 𝓩`.
+
+-/
+
 lemma eq_allowsTermForm_of_minimallyAllowsTerm (h1 : x.MinimallyAllowsTerm T) :
     ∃ a b c, x = allowsTermForm a b c T := by
   obtain ⟨a, b, c, h2, h3⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm
@@ -143,6 +275,14 @@ lemma eq_allowsTermForm_of_minimallyAllowsTerm (h1 : x.MinimallyAllowsTerm T) :
   simp at hy
   exact hy.symm
 
+/-!
+
+### B.2. `allowsTermForm a b c T` minimally allows `T` if `T` is not `W1` or `W2`
+
+We show that charge spectra of the form `allowsTermForm a b c T` minimally allow `T` provided that
+`T` is not one of `W1` or `W2`.
+
+-/
 open PotentialTerm in
 lemma allowsTermForm_minimallyAllowsTerm {a b c : 𝓩} {T : PotentialTerm}
     (hT : T ≠ W1 ∧ T ≠ W2) :
