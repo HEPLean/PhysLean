@@ -112,8 +112,8 @@ set_option maxRecDepth 2000 in
 lemma viable_anomalyFree (I : CodimensionOneConfig) :
     (viableCharges I).filter IsAnomalyFree =
     (match I with
-    | .same => {(some 2, some (-2), {-1, 1}, {-1}), (some (-2), some 2, {-1, 1}, {1})}
-    | .nearestNeighbor => {(some 6, some (-14), {-9, 1}, {-7})}
+    | .same => {⟨some 2, some (-2), {-1, 1}, {-1}⟩, ⟨some (-2), some 2, {-1, 1}, {1}⟩}
+    | .nearestNeighbor => {⟨some 6, some (-14), {-9, 1}, {-7}⟩}
     | .nextToNearestNeighbor => ∅) := by
   revert I
   decide

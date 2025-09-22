@@ -67,103 +67,104 @@ private def viableCompletions (I : CodimensionOneConfig) : Multiset (ChargeSpect
   match I with
   | same => {
     /- qHu = -3, and Q10 = {-3, 0} -/
-    (some (-2), some (-3), {2}, {-3, 0}), (some (-1), some (-3), {1}, {-3, 0}),
-    (some 1, some (-3), {-1}, {-3, 0}), (some 1, some (-3), {2}, {-3, 0}),
-    (some 2, some (-3), {-2}, {-3, 0}), (some 2, some (-3), {1}, {-3, 0}),
+    ⟨some (-2), some (-3), {2}, {-3, 0}⟩, ⟨some (-1), some (-3), {1}, {-3, 0}⟩,
+    ⟨some 1, some (-3), {-1}, {-3, 0}⟩, ⟨some 1, some (-3), {2}, {-3, 0}⟩,
+    ⟨some 2, some (-3), {-2}, {-3, 0}⟩, ⟨some 2, some (-3), {1}, {-3, 0}⟩,
     /- qHu = -2, and Q10 = {-1} -/
-    (some (-3), some (-2), {0}, {-1}), (some (-3), some (-2), {1}, {-1}),
-    (some (-3), some (-2), {2}, {-1}), (some (-1), some (-2), {0}, {-1}),
-    (some (-1), some (-2), {1}, {-1}), (some (-1), some (-2), {2}, {-1}),
-    (some 0, some (-2), {-3}, {-1}), (some 0, some (-2), {-1}, {-1}),
-    (some 0, some (-2), {1}, {-1}), (some 0, some (-2), {2}, {-1}),
-    (some 1, some (-2), {-3}, {-1}), (some 1, some (-2), {-1}, {-1}),
-    (some 1, some (-2), {0}, {-1}), (some 1, some (-2), {2}, {-1}),
-    (some 2, some (-2), {-3}, {-1}), (some 2, some (-2), {-1}, {-1}),
-    (some 2, some (-2), {0}, {-1}), (some 2, some (-2), {1}, {-1}),
+    ⟨some (-3), some (-2), {0}, {-1}⟩, ⟨some (-3), some (-2), {1}, {-1}⟩,
+    ⟨some (-3), some (-2), {2}, {-1}⟩, ⟨some (-1), some (-2), {0}, {-1}⟩,
+    ⟨some (-1), some (-2), {1}, {-1}⟩, ⟨some (-1), some (-2), {2}, {-1}⟩,
+    ⟨some 0, some (-2), {-3}, {-1}⟩, ⟨some 0, some (-2), {-1}, {-1}⟩,
+    ⟨some 0, some (-2), {1}, {-1}⟩, ⟨some 0, some (-2), {2}, {-1}⟩,
+    ⟨some 1, some (-2), {-3}, {-1}⟩, ⟨some 1, some (-2), {-1}, {-1}⟩,
+    ⟨some 1, some (-2), {0}, {-1}⟩, ⟨some 1, some (-2), {2}, {-1}⟩,
+    ⟨some 2, some (-2), {-3}, {-1}⟩, ⟨some 2, some (-2), {-1}, {-1}⟩,
+    ⟨some 2, some (-2), {0}, {-1}⟩, ⟨some 2, some (-2), {1}, {-1}⟩,
     /- qHu = -2, and Q10 = {-2, 0} -/
-    (some (-3), some (-2), {3}, {-2, 0}), (some (-1), some (-2), {3}, {-2, 0}),
-    (some 3, some (-2), {-3}, {-2, 0}),
+    ⟨some (-3), some (-2), {3}, {-2, 0}⟩, ⟨some (-1), some (-2), {3}, {-2, 0}⟩,
+    ⟨some 3, some (-2), {-3}, {-2, 0}⟩,
     /- qHu = -2, and Q10 = {-3, 1} -/
-    (some (-1), some (-2), {0}, {-3, 1}),(some 0, some (-2), {-1}, {-3, 1}),
-    (some 0, some (-2), {3}, {-3, 1}), (some 3, some (-2), {0}, {-3, 1}),
+    ⟨some (-1), some (-2), {0}, {-3, 1}⟩,⟨some 0, some (-2), {-1}, {-3, 1}⟩,
+    ⟨some 0, some (-2), {3}, {-3, 1}⟩, ⟨some 3, some (-2), {0}, {-3, 1}⟩,
     /- qHu = 0, and Q10 = {-3, 3} -/
-    (some (-2), some 0, {-1}, {-3, 3}), (some (-2), some 0, {1}, {-3, 3}),
-    (some (-1), some 0, {-2}, {-3, 3}), (some (-1), some 0, {2}, {-3, 3}),
-    (some 1, some 0, {-2}, {-3, 3}), (some 1, some 0, {2}, {-3, 3}),
-    (some 2, some 0, {-1}, {-3, 3}), (some 2, some 0, {1}, {-3, 3}),
+    ⟨some (-2), some 0, {-1}, {-3, 3}⟩, ⟨some (-2), some 0, {1}, {-3, 3}⟩,
+    ⟨some (-1), some 0, {-2}, {-3, 3}⟩, ⟨some (-1), some 0, {2}, {-3, 3}⟩,
+    ⟨some 1, some 0, {-2}, {-3, 3}⟩, ⟨some 1, some 0, {2}, {-3, 3}⟩,
+    ⟨some 2, some 0, {-1}, {-3, 3}⟩, ⟨some 2, some 0, {1}, {-3, 3}⟩,
     /- qHu = 2, and Q10 = {1} -/
-    (some (-2), some 2, {-1}, {1}), (some (-2), some 2, {0}, {1}), (some (-2), some 2, {1}, {1}),
-    (some (-2), some 2, {3}, {1}), (some (-1), some 2, {-2}, {1}), (some (-1), some 2, {0}, {1}),
-    (some (-1), some 2, {1}, {1}), (some (-1), some 2, {3}, {1}), (some 0, some 2, {-2}, {1}),
-    (some 0, some 2, {-1}, {1}), (some 0, some 2, {1}, {1}), (some 0, some 2, {3}, {1}),
-    (some 1, some 2, {-2}, {1}), (some 1, some 2, {-1}, {1}), (some 1, some 2, {0}, {1}),
-    (some 3, some 2, {-2}, {1}), (some 3, some 2, {-1}, {1}), (some 3, some 2, {0}, {1}),
+    ⟨some (-2), some 2, {-1}, {1}⟩, ⟨some (-2), some 2, {0}, {1}⟩, ⟨some (-2), some 2, {1}, {1}⟩,
+    ⟨some (-2), some 2, {3}, {1}⟩, ⟨some (-1), some 2, {-2}, {1}⟩, ⟨some (-1), some 2, {0}, {1}⟩,
+    ⟨some (-1), some 2, {1}, {1}⟩, ⟨some (-1), some 2, {3}, {1}⟩, ⟨some 0, some 2, {-2}, {1}⟩,
+    ⟨some 0, some 2, {-1}, {1}⟩, ⟨some 0, some 2, {1}, {1}⟩, ⟨some 0, some 2, {3}, {1}⟩,
+    ⟨some 1, some 2, {-2}, {1}⟩, ⟨some 1, some 2, {-1}, {1}⟩, ⟨some 1, some 2, {0}, {1}⟩,
+    ⟨some 3, some 2, {-2}, {1}⟩, ⟨some 3, some 2, {-1}, {1}⟩, ⟨some 3, some 2, {0}, {1}⟩,
     /- qHu = 2, and Q10 = {0, 2} -/
-    (some (-3), some 2, {3}, {0, 2}), (some 1, some 2, {-3}, {0, 2}),
-    (some 3, some 2, {-3}, {0, 2}),
+    ⟨some (-3), some 2, {3}, {0, 2}⟩, ⟨some 1, some 2, {-3}, {0, 2}⟩,
+    ⟨some 3, some 2, {-3}, {0, 2}⟩,
     /- qHu = 2, and Q10 = {-1, 3} -/
-    (some (-3), some 2, {0}, {-1, 3}), (some 0, some 2, {-3}, {-1, 3}),
-    (some 0, some 2, {1}, {-1, 3}), (some 1, some 2, {0}, {-1, 3}),
+    ⟨some (-3), some 2, {0}, {-1, 3}⟩, ⟨some 0, some 2, {-3}, {-1, 3}⟩,
+    ⟨some 0, some 2, {1}, {-1, 3}⟩, ⟨some 1, some 2, {0}, {-1, 3}⟩,
     /- qHu = 3, and Q10 = {0, 3} -/
-    (some (-2), some 3, {-1}, {0, 3}), (some (-2), some 3, {2}, {0, 3}),
-    (some (-1), some 3, {-2}, {0, 3}), (some (-1), some 3, {1}, {0, 3}),
-    (some 1, some 3, {-1}, {0, 3}), (some 2, some 3, {-2}, {0, 3})}
+    ⟨some (-2), some 3, {-1}, {0, 3}⟩, ⟨some (-2), some 3, {2}, {0, 3}⟩,
+    ⟨some (-1), some 3, {-2}, {0, 3}⟩, ⟨some (-1), some 3, {1}, {0, 3}⟩,
+    ⟨some 1, some 3, {-1}, {0, 3}⟩, ⟨some 2, some 3, {-2}, {0, 3}⟩}
   | nearestNeighbor => {
     /- qHu = -14, and Q10 = {-7} -/
-    (some (-9), some (-14), {-4}, {-7}), (some (-9), some (-14), {1}, {-7}),
-    (some (-9), some (-14), {6}, {-7}), (some (-9), some (-14), {11}, {-7}),
-    (some (-4), some (-14), {-9}, {-7}), (some (-4), some (-14), {1}, {-7}),
-    (some (-4), some (-14), {6}, {-7}), (some (-4), some (-14), {11}, {-7}),
-    (some 1, some (-14), {-9}, {-7}), (some 1, some (-14), {-4}, {-7}),
-    (some 1, some (-14), {6}, {-7}), (some 1, some (-14), {11}, {-7}),
-    (some 6, some (-14), {-9}, {-7}), (some 6, some (-14), {-4}, {-7}),
-    (some 6, some (-14), {1}, {-7}), (some 6, some (-14), {11}, {-7}),
-    (some 11, some (-14), {-9}, {-7}), (some 11, some (-14), {-4}, {-7}),
-    (some 11, some (-14), {1}, {-7}), (some 11, some (-14), {6}, {-7}),
+    ⟨some (-9), some (-14), {-4}, {-7}⟩, ⟨some (-9), some (-14), {1}, {-7}⟩,
+    ⟨some (-9), some (-14), {6}, {-7}⟩, ⟨some (-9), some (-14), {11}, {-7}⟩,
+    ⟨some (-4), some (-14), {-9}, {-7}⟩, ⟨some (-4), some (-14), {1}, {-7}⟩,
+    ⟨some (-4), some (-14), {6}, {-7}⟩, ⟨some (-4), some (-14), {11}, {-7}⟩,
+    ⟨some 1, some (-14), {-9}, {-7}⟩, ⟨some 1, some (-14), {-4}, {-7}⟩,
+    ⟨some 1, some (-14), {6}, {-7}⟩, ⟨some 1, some (-14), {11}, {-7}⟩,
+    ⟨some 6, some (-14), {-9}, {-7}⟩, ⟨some 6, some (-14), {-4}, {-7}⟩,
+    ⟨some 6, some (-14), {1}, {-7}⟩, ⟨some 6, some (-14), {11}, {-7}⟩,
+    ⟨some 11, some (-14), {-9}, {-7}⟩, ⟨some 11, some (-14), {-4}, {-7}⟩,
+    ⟨some 11, some (-14), {1}, {-7}⟩, ⟨some 11, some (-14), {6}, {-7}⟩,
     /- qHu = -14, and Q10 = {-12, -2} -/
-    (some 11, some (-14), {-9}, {-12, -2}),
+    ⟨some 11, some (-14), {-9}, {-12, -2}⟩,
     /- qHu = -9, and Q10 = {-12, 3} -/
-    (some 1, some (-9), {11}, {-12, 3}), (some 11, some (-9), {1}, {-12, 3}),
+    ⟨some 1, some (-9), {11}, {-12, 3}⟩, ⟨some 11, some (-9), {1}, {-12, 3}⟩,
     /- qHu = -4, and Q10 = {-2} -/
-    (some (-14), some (-4), {-9}, {-2}), (some (-14), some (-4), {11}, {-2}),
-    (some (-9), some (-4), {-14}, {-2}), (some (-9), some (-4), {11}, {-2}),
-    (some 1, some (-4), {-14}, {-2}), (some 1, some (-4), {11}, {-2}),
-    (some 11, some (-4), {-14}, {-2}), (some 11, some (-4), {-9}, {-2}),
+    ⟨some (-14), some (-4), {-9}, {-2}⟩, ⟨some (-14), some (-4), {11}, {-2}⟩,
+    ⟨some (-9), some (-4), {-14}, {-2}⟩, ⟨some (-9), some (-4), {11}, {-2}⟩,
+    ⟨some 1, some (-4), {-14}, {-2}⟩, ⟨some 1, some (-4), {11}, {-2}⟩,
+    ⟨some 11, some (-4), {-14}, {-2}⟩, ⟨some 11, some (-4), {-9}, {-2}⟩,
     /- qHu = 1, and Q10 = {-12, 13} -/
-    (some (-9), some 1, {-4}, {-12, 13}), (some (-4), some 1, {-9}, {-12, 13}),
-    (some 6, some 1, {-9}, {-12, 13}),
+    ⟨some (-9), some 1, {-4}, {-12, 13}⟩, ⟨some (-4), some 1, {-9}, {-12, 13}⟩,
+    ⟨some 6, some 1, {-9}, {-12, 13}⟩,
     /- qHu = 6, and Q10 = {3} -/
-    (some (-14), some 6, {-4}, {3}), (some (-14), some 6, {1}, {3}),
-    (some (-14), some 6, {11}, {3}), (some (-4), some 6, {-14}, {3}),
-    (some (-4), some 6, {1}, {3}), (some (-4), some 6, {11}, {3}),
-    (some 1, some 6, {-14}, {3}), (some 1, some 6, {-4}, {3}),
-    (some 11, some 6, {-14}, {3}), (some 11, some 6, {-4}, {3}),
+    ⟨some (-14), some 6, {-4}, {3}⟩, ⟨some (-14), some 6, {1}, {3}⟩,
+    ⟨some (-14), some 6, {11}, {3}⟩, ⟨some (-4), some 6, {-14}, {3}⟩,
+    ⟨some (-4), some 6, {1}, {3}⟩, ⟨some (-4), some 6, {11}, {3}⟩,
+    ⟨some 1, some 6, {-14}, {3}⟩, ⟨some 1, some 6, {-4}, {3}⟩,
+    ⟨some 11, some 6, {-14}, {3}⟩, ⟨some 11, some 6, {-4}, {3}⟩,
     /- qHu = 6, and Q10 = {-7, 13} -/
-    (some (-9), some 6, {-4}, {-7, 13}), (some (-4), some 6, {-9}, {-7, 13}),
-    (some (-4), some 6, {11}, {-7, 13}), (some 11, some 6, {-4}, {-7, 13})}
+    ⟨some (-9), some 6, {-4}, {-7, 13}⟩, ⟨some (-4), some 6, {-9}, {-7, 13}⟩,
+    ⟨some (-4), some 6, {11}, {-7, 13}⟩, ⟨some 11, some 6, {-4}, {-7, 13}⟩}
   | nextToNearestNeighbor => {
     /- qHu = -8, and Q10 = {-4} -/
-    (some (-13), some (-8), {7}, {-4}), (some (-3), some (-8), {7}, {-4}),
-    (some 2, some (-8), {-13}, {-4}), (some 2, some (-8), {-3}, {-4}),
-    (some 2, some (-8), {7}, {-4}), (some 7, some (-8), {-13}, {-4}),
-    (some 7, some (-8), {-3}, {-4}),
+    ⟨some (-13), some (-8), {7}, {-4}⟩, ⟨some (-3), some (-8), {7}, {-4}⟩,
+    ⟨some 2, some (-8), {-13}, {-4}⟩, ⟨some 2, some (-8), {-3}, {-4}⟩,
+    ⟨some 2, some (-8), {7}, {-4}⟩, ⟨some 7, some (-8), {-13}, {-4}⟩,
+    ⟨some 7, some (-8), {-3}, {-4}⟩,
     /- qHu = 2, and Q10 = {1} -/
-    (some (-13), some 2, {-8}, {1}), (some (-13), some 2, {7}, {1}),
-    (some (-13), some 2, {12}, {1}), (some (-8), some 2, {-13}, {1}),
-    (some (-8), some 2, {7}, {1}), (some 7, some 2, {-13}, {1}), (some 7, some 2, {-8}, {1}),
-    (some 7, some 2, {12}, {1}), (some 12, some 2, {-13}, {1}), (some 12, some 2, {7}, {1}),
+    ⟨some (-13), some 2, {-8}, {1}⟩, ⟨some (-13), some 2, {7}, {1}⟩,
+    ⟨some (-13), some 2, {12}, {1}⟩, ⟨some (-8), some 2, {-13}, {1}⟩,
+    ⟨some (-8), some 2, {7}, {1}⟩, ⟨some 7, some 2, {-13}, {1}⟩, ⟨some 7, some 2, {-8}, {1}⟩,
+    ⟨some 7, some 2, {12}, {1}⟩, ⟨some 12, some 2, {-13}, {1}⟩, ⟨some 12, some 2, {7}, {1}⟩,
     /- qHu = 2, and Q10 = {-9, 11} -/
-    (some (-8), some 2, {-3}, {-9, 11}), (some (-3), some 2, {-8}, {-9, 11}),
-    (some (-3), some 2, {12}, {-9, 11}), (some 12, some 2, {-3}, {-9, 11}),
+    ⟨some (-8), some 2, {-3}, {-9, 11}⟩, ⟨some (-3), some 2, {-8}, {-9, 11}⟩,
+    ⟨some (-3), some 2, {12}, {-9, 11}⟩, ⟨some 12, some 2, {-3}, {-9, 11}⟩,
     /- qHu = 12, and Q10 = {6} -/
-    (some (-13), some 12, {-8}, {6}), (some (-13), some 12, {2}, {6}),
-    (some (-13), some 12, {7}, {6}), (some (-8), some 12, {-13}, {6}),
-    (some (-8), some 12, {2}, {6}), (some (-8), some 12, {7}, {6}),
-    (some (-3), some 12, {-13}, {6}), (some (-3), some 12, {-8}, {6}),
-    (some (-3), some 12, {2}, {6}), (some (-3), some 12, {7}, {6}),
-    (some 2, some 12, {-13}, {6}), (some 2, some 12, {-8}, {6}),
-    (some 2, some 12, {7}, {6}), (some 7, some 12, {-13}, {6}),
-    (some 7, some 12, {-8}, {6}), (some 7, some 12, {2}, {6})}
+    ⟨some (-13), some 12, {-8}, {6}⟩, ⟨some (-13), some 12, {2}, {6}⟩,
+    ⟨some (-13), some 12, {7}, {6}⟩, ⟨some (-8), some 12, {-13}, {6}⟩,
+    ⟨some (-8), some 12, {2}, {6}⟩, ⟨some (-8), some 12, {7}, {6}⟩,
+    ⟨some (-3), some 12, {-13}, {6}⟩, ⟨some (-3), some 12, {-8}, {6}⟩,
+    ⟨some (-3), some 12, {2}, {6}⟩, ⟨some (-3), some 12, {7}, {6}⟩,
+    ⟨some 2, some 12, {-13}, {6}⟩, ⟨some 2, some 12, {-8}, {6}⟩,
+    ⟨some 2, some 12, {7}, {6}⟩, ⟨some 7, some 12, {-13}, {6}⟩,
+    ⟨some 7, some 12, {-8}, {6}⟩, ⟨some 7, some 12, {2}, {6}⟩}
+
 
 lemma viableCompletions_card (I : CodimensionOneConfig) :
     (viableCompletions I).card = if I = same then 70 else
@@ -205,43 +206,43 @@ lemma containsPhenoCompletionsOfMinimallyAllows_viableCompletions :
 -/
 def viableChargesAdditional : CodimensionOneConfig → Multiset (ChargeSpectrum ℤ)
   | .same =>
-    {(some 1, some (-3), {-1, 2}, {-3, 0}), (some 2, some (-3), {-2, 1}, {-3, 0}),
-      (some (-3), some (-2), {0}, {3, -1}), (some (-3), some (-2), {0, 2}, {-1}),
-      (some (-3), some (-2), {2}, {-3, -1}), (some (-1), some (-2), {0, 2}, {-1}),
-      (some 0, some (-2), {-3}, {3, -1}), (some 0, some (-2), {-3, 1}, {-1}),
-      (some 0, some (-2), {1}, {3, -1}), (some 1, some (-2), {0}, {3, -1}),
-      (some 2, some (-2), {-3}, {-3, -1}), (some 2, some (-2), {-3, -1}, {-1}),
-      (some 2, some (-2), {-3, 0}, {-1}), (some 2, some (-2), {-1, 1}, {-1}),
-      (some 0, some (-2), {-1, 3}, {-3, 1}), (some (-2), some 2, {-1, 1}, {1}),
-      (some (-2), some 2, {0, 3}, {1}), (some (-2), some 2, {1, 3}, {1}),
-      (some (-2), some 2, {3}, {3, 1}), (some (-1), some 2, {0}, {-3, 1}),
-      (some 0, some 2, {-1}, {-3, 1}), (some 0, some 2, {-1, 3}, {1}),
-      (some 0, some 2, {3}, {-3, 1}), (some 1, some 2, {-2, 0}, {1}),
-      (some 3, some 2, {-2}, {3, 1}), (some 3, some 2, {-2, 0}, {1}),
-      (some 3, some 2, {0}, {-3, 1}), (some 0, some 2, {-3, 1}, {-1, 3}),
-      (some (-2), some 3, {-1, 2}, {0, 3}), (some (-1), some 3, {-2, 1}, {0, 3}),
-      (some 0, some (-2), {-3, 1}, {3, -1}), (some 0, some 2, {-1, 3}, {-3, 1})}
+    {⟨some 1, some (-3), {-1, 2}, {-3, 0}⟩, ⟨some 2, some (-3), {-2, 1}, {-3, 0}⟩,
+      ⟨some (-3), some (-2), {0}, {3, -1}⟩, ⟨some (-3), some (-2), {0, 2}, {-1}⟩,
+      ⟨some (-3), some (-2), {2}, {-3, -1}⟩, ⟨some (-1), some (-2), {0, 2}, {-1}⟩,
+      ⟨some 0, some (-2), {-3}, {3, -1}⟩, ⟨some 0, some (-2), {-3, 1}, {-1}⟩,
+      ⟨some 0, some (-2), {1}, {3, -1}⟩, ⟨some 1, some (-2), {0}, {3, -1}⟩,
+      ⟨some 2, some (-2), {-3}, {-3, -1}⟩, ⟨some 2, some (-2), {-3, -1}, {-1}⟩,
+      ⟨some 2, some (-2), {-3, 0}, {-1}⟩, ⟨some 2, some (-2), {-1, 1}, {-1}⟩,
+      ⟨some 0, some (-2), {-1, 3}, {-3, 1}⟩, ⟨some (-2), some 2, {-1, 1}, {1}⟩,
+      ⟨some (-2), some 2, {0, 3}, {1}⟩, ⟨some (-2), some 2, {1, 3}, {1}⟩,
+      ⟨some (-2), some 2, {3}, {3, 1}⟩, ⟨some (-1), some 2, {0}, {-3, 1}⟩,
+      ⟨some 0, some 2, {-1}, {-3, 1}⟩, ⟨some 0, some 2, {-1, 3}, {1}⟩,
+      ⟨some 0, some 2, {3}, {-3, 1}⟩, ⟨some 1, some 2, {-2, 0}, {1}⟩,
+      ⟨some 3, some 2, {-2}, {3, 1}⟩, ⟨some 3, some 2, {-2, 0}, {1}⟩,
+      ⟨some 3, some 2, {0}, {-3, 1}⟩, ⟨some 0, some 2, {-3, 1}, {-1, 3}⟩,
+      ⟨some (-2), some 3, {-1, 2}, {0, 3}⟩, ⟨some (-1), some 3, {-2, 1}, {0, 3}⟩,
+      ⟨some 0, some (-2), {-3, 1}, {3, -1}⟩, ⟨some 0, some 2, {-1, 3}, {-3, 1}⟩}
   | .nearestNeighbor =>
-      {(some (-9), some (-14), {-4}, {13, -7}), (some (-9), some (-14), {-4, 6}, {-7}),
-      (some (-4), some (-14), {-9}, {13, -7}), (some (-4), some (-14), {-9, 6}, {-7}),
-      (some (-4), some (-14), {-9, 11}, {-7}), (some (-4), some (-14), {6, 11}, {-7}),
-      (some (-4), some (-14), {11}, {13, -7}), (some 1, some (-14), {-4, 6}, {-7}),
-      (some 6, some (-14), {-9, -4}, {-7}), (some 6, some (-14), {-4}, {-12, -7}),
-      (some 6, some (-14), {-9, 1}, {-7}), (some 6, some (-14), {1, 11}, {-7}),
-      (some 11, some (-14), {-9, -4}, {-7}), (some 11, some (-14), {-4}, {13, -7}),
-      (some 11, some (-14), {-4, 1}, {-7}), (some 11, some (-14), {-9, 6}, {-7}),
-      (some (-9), some (-4), {-14, 11}, {-2}), (some (-9), some (-4), {11}, {-12, -2}),
-      (some 1, some (-4), {-14, 11}, {-2}), (some (-14), some 6, {1, 11}, {3}),
-      (some 11, some 6, {-14, -4}, {3}), (some (-4), some 6, {-9, 11}, {-7, 13}),
-      (some (-4), some (-14), {-9, 11}, {13, -7})}
+      {⟨some (-9), some (-14), {-4}, {13, -7}⟩, ⟨some (-9), some (-14), {-4, 6}, {-7}⟩,
+      ⟨some (-4), some (-14), {-9}, {13, -7}⟩, ⟨some (-4), some (-14), {-9, 6}, {-7}⟩,
+      ⟨some (-4), some (-14), {-9, 11}, {-7}⟩, ⟨some (-4), some (-14), {6, 11}, {-7}⟩,
+      ⟨some (-4), some (-14), {11}, {13, -7}⟩, ⟨some 1, some (-14), {-4, 6}, {-7}⟩,
+      ⟨some 6, some (-14), {-9, -4}, {-7}⟩, ⟨some 6, some (-14), {-4}, {-12, -7}⟩,
+      ⟨some 6, some (-14), {-9, 1}, {-7}⟩, ⟨some 6, some (-14), {1, 11}, {-7}⟩,
+      ⟨some 11, some (-14), {-9, -4}, {-7}⟩, ⟨some 11, some (-14), {-4}, {13, -7}⟩,
+      ⟨some 11, some (-14), {-4, 1}, {-7}⟩, ⟨some 11, some (-14), {-9, 6}, {-7}⟩,
+      ⟨some (-9), some (-4), {-14, 11}, {-2}⟩, ⟨some (-9), some (-4), {11}, {-12, -2}⟩,
+      ⟨some 1, some (-4), {-14, 11}, {-2}⟩, ⟨some (-14), some 6, {1, 11}, {3}⟩,
+      ⟨some 11, some 6, {-14, -4}, {3}⟩, ⟨some (-4), some 6, {-9, 11}, {-7, 13}⟩,
+      ⟨some (-4), some (-14), {-9, 11}, {13, -7}⟩}
   | .nextToNearestNeighbor =>
-      {(some (-13), some 2, {-8, 12}, {1}), (some (-8), some 2, {-13, 7}, {1}),
-      (some 7, some 2, {-8, 12}, {1}), (some 12, some 2, {-13, 7}, {1}),
-      (some (-3), some 2, {-8, 12}, {-9, 11}), (some (-13), some 12, {-8}, {-9, 6}),
-      (some (-13), some 12, {-8, 7}, {6}), (some (-13), some 12, {7}, {-4, 6}),
-      (some (-8), some 12, {-13}, {-9, 6}), (some (-8), some 12, {-13, 2}, {6}),
-      (some (-8), some 12, {2, 7}, {6}), (some 2, some 12, {-13, -8}, {6}),
-      (some 2, some 12, {-8, 7}, {6}), (some 7, some 12, {-13, 2}, {6})}
+      {⟨some (-13), some 2, {-8, 12}, {1}⟩, ⟨some (-8), some 2, {-13, 7}, {1}⟩,
+      ⟨some 7, some 2, {-8, 12}, {1}⟩, ⟨some 12, some 2, {-13, 7}, {1}⟩,
+      ⟨some (-3), some 2, {-8, 12}, {-9, 11}⟩, ⟨some (-13), some 12, {-8}, {-9, 6}⟩,
+      ⟨some (-13), some 12, {-8, 7}, {6}⟩, ⟨some (-13), some 12, {7}, {-4, 6}⟩,
+      ⟨some (-8), some 12, {-13}, {-9, 6}⟩, ⟨some (-8), some 12, {-13, 2}, {6}⟩,
+      ⟨some (-8), some 12, {2, 7}, {6}⟩, ⟨some 2, some 12, {-13, -8}, {6}⟩,
+      ⟨some 2, some 12, {-8, 7}, {6}⟩, ⟨some 7, some 12, {-13, 2}, {6}⟩}
 
 lemma viableChargesAdditional_nodup (I : CodimensionOneConfig) :
     (viableChargesAdditional I).Nodup := by
@@ -317,12 +318,12 @@ lemma not_yukawaGeneratesDangerousAtLevel_one_of_mem_viableCharges
   · exact yukawaGeneratesDangerousAtLevel_one_of_mem_viableChargesAdditional I x hs
 
 lemma card_five_bar_le_of_mem_viableCharges (I : CodimensionOneConfig) :
-    ∀ x ∈ (viableCharges I), x.2.2.1.card ≤ 2 := by
+    ∀ x ∈ (viableCharges I), x.Q5.card ≤ 2 := by
   revert I
   decide
 
 lemma card_ten_le_of_mem_viableCharges (I : CodimensionOneConfig) :
-    ∀ x ∈ (viableCharges I), x.2.2.2.card ≤ 2 := by
+    ∀ x ∈ (viableCharges I), x.Q10.card ≤ 2 := by
   revert I
   decide
 

@@ -24,13 +24,13 @@ variable {𝓩 : Type} [InvolutiveNeg 𝓩]
 
 /-- Given an `x : Charges`, the charges associated with a given `FieldLabel`. -/
 def ofFieldLabel (x : ChargeSpectrum 𝓩) : FieldLabel → Finset 𝓩
-  | .fiveBarHd => x.1.toFinset
-  | .fiveBarHu => x.2.1.toFinset
-  | .fiveBarMatter => x.2.2.1
-  | .tenMatter => x.2.2.2
-  | .fiveHd => x.1.toFinset.map ⟨Neg.neg, neg_injective⟩
-  | .fiveHu => x.2.1.toFinset.map ⟨Neg.neg, neg_injective⟩
-  | .fiveMatter => x.2.2.1.map ⟨Neg.neg, neg_injective⟩
+  | .fiveBarHd => x.qHd.toFinset
+  | .fiveBarHu => x.qHu.toFinset
+  | .fiveBarMatter => x.Q5
+  | .tenMatter => x.Q10
+  | .fiveHd => x.qHd.toFinset.map ⟨Neg.neg, neg_injective⟩
+  | .fiveHu => x.qHu.toFinset.map ⟨Neg.neg, neg_injective⟩
+  | .fiveMatter => x.Q5.map ⟨Neg.neg, neg_injective⟩
 
 @[simp]
 lemma ofFieldLabel_empty (F : FieldLabel) :
@@ -68,7 +68,7 @@ lemma mem_ofFieldLabel_fiveMatter (x : 𝓩) (y : ChargeSpectrum 𝓩) :
 lemma ext_ofFieldLabel {x y : ChargeSpectrum 𝓩} (h : ∀ F, x.ofFieldLabel F = y.ofFieldLabel F) :
     x = y := by
   match x, y with
-  | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
+  | ⟨x1, x2, x3, x4⟩, ⟨y1, y2, y3, y4⟩ =>
   have h1 := h FieldLabel.fiveBarHd
   have h2 := h FieldLabel.fiveBarHu
   have h3 := h FieldLabel.fiveBarMatter

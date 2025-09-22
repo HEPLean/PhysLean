@@ -38,8 +38,11 @@ variable {𝓩 𝓩1 𝓩2 : Type} [AddCommGroup 𝓩] [AddCommGroup 𝓩1] [Dec
 /-- Given an additive monoid homomorphisms `f : 𝓩 →+ 𝓩1`, for a charge
   `x : Charges 𝓩`, `x.map f` is the charge of `Charges 𝓩1` obtained by mapping the elements
   of `x` by `f`. -/
-def map (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) : ChargeSpectrum 𝓩1 :=
-  (f <$> x.1, f <$> x.2.1, x.2.2.1.image f, x.2.2.2.image f)
+def map (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) : ChargeSpectrum 𝓩1 where
+  qHd := f <$> x.qHd
+  qHu := f <$> x.qHu
+  Q5 := x.Q5.image f
+  Q10 := x.Q10.image f
 
 @[simp]
 lemma map_empty (f : 𝓩 →+ 𝓩1) : map f (∅ : ChargeSpectrum 𝓩) = ∅ := by
@@ -59,7 +62,7 @@ lemma map_ofFieldLabel (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) (F : Fiel
     ofFieldLabel (map f x) F = (ofFieldLabel x F).image f := by
   simp [ofFieldLabel, map]
   match x with
-  | (qHd, qHu, Q5, Q10) =>
+  | ⟨qHd, qHu, Q5, Q10⟩ =>
   fin_cases F
   all_goals simp
   case «0» | «1» =>
@@ -209,7 +212,7 @@ lemma map_subset {f : 𝓩 →+ 𝓩1} {x y : ChargeSpectrum 𝓩} (h : x ⊆ y)
   obtain ⟨hHd, hHu, hQ5, hQ10⟩ := h
   refine ⟨?_, ?_, ?_, ?_⟩
   · match x, y with
-    | (a, _, _, _), (b, _, _, _) =>
+    | ⟨a, _, _, _⟩, ⟨b, _, _, _⟩ =>
       cases a
       all_goals cases b
       all_goals simp
@@ -217,7 +220,7 @@ lemma map_subset {f : 𝓩 →+ 𝓩1} {x y : ChargeSpectrum 𝓩} (h : x ⊆ y)
       subst hHd
       rfl
   · match x, y with
-    | (_, a, _, _), (_, b, _, _) =>
+    | ⟨_, a, _, _⟩, ⟨_, b, _, _⟩ =>
       cases a
       all_goals cases b
       all_goals simp
@@ -352,22 +355,21 @@ lemma not_yukawaGeneratesDangerousAtLevel_of_map {f : 𝓩 →+ 𝓩1} {x : Char
 def preimageOfFinset (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1)
     (x : ChargeSpectrum 𝓩1) : Finset (ChargeSpectrum 𝓩) :=
   let SHd := (S5.map ⟨Option.some, Option.some_injective 𝓩⟩ ∪ {none} : Finset (Option 𝓩)).filter
-    fun y => f <$> y = x.1
+    fun y => f <$> y = x.qHd
   let SHu := (S5.map ⟨Option.some, Option.some_injective 𝓩⟩ ∪ {none} : Finset (Option 𝓩)).filter
-    fun y => f <$> y = x.2.1
-  let SQ5' := S5.filter fun y => f y ∈ x.2.2.1
-  let SQ5 : Finset (Finset 𝓩) := SQ5'.powerset.filter fun y => y.image f = x.2.2.1
-  let SQ10' := S10.filter fun y => f y ∈ x.2.2.2
-  let SQ10 : Finset (Finset 𝓩) := SQ10'.powerset.filter fun y => y.image f = x.2.2.2
-  SHd.product <| SHu.product <| SQ5.product SQ10
+    fun y => f <$> y = x.qHu
+  let SQ5' := S5.filter fun y => f y ∈ x.Q5
+  let SQ5 : Finset (Finset 𝓩) := SQ5'.powerset.filter fun y => y.image f = x.Q5
+  let SQ10' := S10.filter fun y => f y ∈ x.Q10
+  let SQ10 : Finset (Finset 𝓩) := SQ10'.powerset.filter fun y => y.image f = x.Q10
+  (SHd.product <| SHu.product <| SQ5.product SQ10).map toProd.symm.toEmbedding
 
 lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩1) :
     preimageOfFinset S5 S10 f x = {y : ChargeSpectrum 𝓩 | y.map f = x ∧ y ∈ ofFinset S5 S10} := by
   ext y
+  simp [preimageOfFinset, toProd]
   match y, x with
-  | (yHd, yHu, y5, y10), (xHd, xHu, x5, x10) =>
-  simp [preimageOfFinset]
-  repeat rw [Finset.mem_product]
+  | ⟨yHd, yHu, y5, y10⟩, ⟨xHd, xHu, x5, x10⟩ =>
   simp [map]
   constructor
   · intro ⟨⟨h1, rfl⟩, ⟨h2, rfl⟩, ⟨h3, rfl⟩, ⟨h4, rfl⟩⟩
@@ -383,9 +385,7 @@ lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Char
       | none => simp
     · exact h3.trans <| Finset.filter_subset (fun y => f y ∈ Finset.image (⇑f) y5) S5
     · apply h4.trans <| Finset.filter_subset (fun y => f y ∈ Finset.image (⇑f) y10) S10
-  · rw [eq_iff]
-    simp only
-    intro ⟨⟨rfl, rfl, rfl, rfl⟩, h2⟩
+  · intro ⟨⟨rfl, rfl, rfl, rfl⟩, h2⟩
     simp only [and_true, Finset.mem_image]
     rw [mem_ofFinset_iff] at h2
     simp at h2
@@ -416,19 +416,19 @@ lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Char
   mapping charges through `f : 𝓩 →+ 𝓩1`. -/
 def preimageOfFinsetCard (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩1) : ℕ :=
   let SHd := (S5.map ⟨Option.some, Option.some_injective 𝓩⟩ ∪ {none} : Finset (Option 𝓩)).filter
-    fun y => f <$> y = x.1
+    fun y => f <$> y = x.qHd
   let SHu := (S5.map ⟨Option.some, Option.some_injective 𝓩⟩ ∪ {none} : Finset (Option 𝓩)).filter
-    fun y => f <$> y = x.2.1
-  let SQ5' := S5.filter fun y => f y ∈ x.2.2.1
-  let SQ5 : Finset (Finset 𝓩) := SQ5'.powerset.filter fun y => y.image f = x.2.2.1
-  let SQ10' := S10.filter fun y => f y ∈ x.2.2.2
-  let SQ10 : Finset (Finset 𝓩) := SQ10'.powerset.filter fun y => y.image f = x.2.2.2
+    fun y => f <$> y = x.qHu
+  let SQ5' := S5.filter fun y => f y ∈ x.Q5
+  let SQ5 : Finset (Finset 𝓩) := SQ5'.powerset.filter fun y => y.image f = x.Q5
+  let SQ10' := S10.filter fun y => f y ∈ x.Q10
+  let SQ10 : Finset (Finset 𝓩) := SQ10'.powerset.filter fun y => y.image f = x.Q10
   SHd.card * SHu.card * SQ5.card * SQ10.card
 
 lemma preimageOfFinset_card_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩1) :
     preimageOfFinsetCard S5 S10 f x =
     (preimageOfFinset S5 S10 f x).card := by
-  rw [preimageOfFinset]
+  rw [preimageOfFinset, Finset.card_map]
   simp only [Option.map_eq_map, Finset.product_eq_sprod]
   repeat rw [Finset.card_product]
   simp [preimageOfFinsetCard, mul_assoc]

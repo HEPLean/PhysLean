@@ -45,12 +45,12 @@ variable {𝓩 : Type} [DecidableEq 𝓩] [AddCommGroup 𝓩]
   or regenerates dangerous couplings with one singlet insertion. -/
 def IsPhenoClosedQ5 (S5 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)) : Prop :=
   ∀ q5 ∈ S5, ∀ x ∈ charges,
-    let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
+    let y : ChargeSpectrum 𝓩 := ⟨x.qHd, x.qHu, insert q5 x.Q5, x.Q10⟩
     IsPhenoConstrained y ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1
 
 lemma isPhenClosedQ5_of_isPhenoConstrainedQ5 {S5 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)}
     (h : ∀ q5 ∈ S5, ∀ x ∈ charges,
-      let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, insert q5 x.2.2.1, x.2.2.2)
+      let y : ChargeSpectrum 𝓩 := ⟨x.qHd, x.qHu, insert q5 x.Q5, x.Q10⟩
       IsPhenoConstrainedQ5 x q5 ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1) :
     IsPhenoClosedQ5 S5 charges := by
   intro q5 hq5 x hx
@@ -74,13 +74,13 @@ lemma isPhenClosedQ5_of_isPhenoConstrainedQ5 {S5 : Finset 𝓩} {charges : Multi
   or regenerates dangerous couplings with one singlet insertion. -/
 def IsPhenoClosedQ10 (S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)) : Prop :=
   ∀ q10 ∈ S10, ∀ x ∈ charges,
-    let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
+    let y : ChargeSpectrum 𝓩 := ⟨x.qHd, x.qHu, x.Q5, insert q10 x.Q10⟩
     IsPhenoConstrained y ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1
 
 lemma isPhenClosedQ10_of_isPhenoConstrainedQ10 {S10 : Finset 𝓩}
     {charges : Multiset (ChargeSpectrum 𝓩)}
     (h : ∀ q10 ∈ S10, ∀ x ∈ charges,
-      let y : ChargeSpectrum 𝓩 := (x.1, x.2.1, x.2.2.1, insert q10 x.2.2.2)
+      let y : ChargeSpectrum 𝓩 := ⟨x.qHd, x.qHu, x.Q5, insert q10 x.Q10⟩
       IsPhenoConstrainedQ10 x q10 ∨ y ∈ charges ∨ YukawaGeneratesDangerousAtLevel y 1) :
     IsPhenoClosedQ10 S10 charges := by
   intro q10 hq10 x hx

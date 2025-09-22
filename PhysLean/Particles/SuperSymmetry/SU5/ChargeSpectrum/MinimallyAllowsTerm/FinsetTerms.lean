@@ -57,7 +57,7 @@ lemma minimallyAllowsFinsetTerms_singleton {T : PotentialTerm} :
   This includes every charge which minimally allows for the top and bottom Yukawas. -/
 def minTopBottom (S5 S10 : Finset 𝓩) : Multiset (ChargeSpectrum 𝓩) := Multiset.dedup <|
   (S5.val.product <| S5.val.product <| S5.val.product <| S10.val).map
-    (fun x => (x.1, x.2.1, {x.2.2.1}, {- x.1 - x.2.2.1, x.2.2.2, x.2.1 - x.2.2.2}))
+    (fun x => ⟨x.1, x.2.1, {x.2.2.1}, {- x.1 - x.2.2.1, x.2.2.2, x.2.1 - x.2.2.2}⟩)
 
 lemma allowsTerm_topYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
     {x : ChargeSpectrum 𝓩} (h : x ∈ minTopBottom S5 S10) :
@@ -90,13 +90,13 @@ lemma mem_minTopBottom_of_minimallyAllowsFinsetTerms
   have hTop : x.AllowsTerm topYukawa := allowsTerm_of_minimallyAllowsFinsetTerms h (by simp)
   have hBottom : x.AllowsTerm bottomYukawa := allowsTerm_of_minimallyAllowsFinsetTerms h (by simp)
   match x with
-  | (none, qHu, Q5, Q10) =>
+  | ⟨none, qHu, Q5, Q10⟩ =>
     rw [allowsTerm_iff_subset_allowsTermForm] at hBottom
     simp [allowsTermForm, subset_def] at hBottom
-  | (qHd, none, Q5, Q10) =>
+  | ⟨qHd, none, Q5, Q10⟩ =>
     rw [allowsTerm_iff_subset_allowsTermForm] at hTop
     simp [allowsTermForm, subset_def] at hTop
-  | (some qHd, some qHu, Q5, Q10) =>
+  | ⟨some qHd, some qHu, Q5, Q10⟩ =>
   rw [allowsTerm_iff_subset_allowsTermForm] at hTop hBottom
   simp [allowsTermForm, subset_def] at hTop hBottom
   obtain ⟨n, hn, q10, h10⟩ := hTop

@@ -96,9 +96,9 @@ instance decidableIsPhenoConstrainedQ5 [DecidableEq 𝓩] (x : ChargeSpectrum �
 
 lemma isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5 [DecidableEq 𝓩] {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} :
-    IsPhenoConstrained (qHd, qHu, insert q5 Q5, Q10) ↔
-    IsPhenoConstrainedQ5 (qHd, qHu, Q5, Q10) q5 ∨
-    IsPhenoConstrained (qHd, qHu, Q5, Q10) := by
+    IsPhenoConstrained ⟨qHd, qHu, insert q5 Q5, Q10⟩↔
+    IsPhenoConstrainedQ5 ⟨qHd, qHu, Q5, Q10⟩ q5 ∨
+    IsPhenoConstrained ⟨qHd, qHu, Q5, Q10⟩:= by
   constructor
   · intro hr
     rcases hr with hr | hr | hr | hr | hr | hr | hr | hr
@@ -135,9 +135,9 @@ instance decidableIsPhenoConstrainedQ10 [DecidableEq 𝓩] (x : ChargeSpectrum �
 
 lemma isPhenoConstrained_insertQ10_iff_isPhenoConstrainedQ10 [DecidableEq 𝓩] {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} :
-    IsPhenoConstrained (qHd, qHu, Q5, insert q10 Q10) ↔
-    IsPhenoConstrainedQ10 (qHd, qHu, Q5, Q10) q10 ∨
-    IsPhenoConstrained (qHd, qHu, Q5, Q10) := by
+    IsPhenoConstrained ⟨qHd, qHu, Q5, insert q10 Q10⟩ ↔
+    IsPhenoConstrainedQ10 ⟨qHd, qHu, Q5, Q10⟩ q10 ∨
+    IsPhenoConstrained ⟨qHd, qHu, Q5, Q10⟩ := by
   constructor
   · intro hr
     rcases hr with hr | hr | hr | hr | hr | hr | hr | hr

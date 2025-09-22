@@ -57,10 +57,10 @@ lemma ofPotentialTerm_empty (T : PotentialTerm) :
   it is quick with `decide`, but it is not defined based on more fundamental
   concepts, like `ofPotentialTerm` is. -/
 def ofPotentialTerm' (y : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
-  let qHd := y.1
-  let qHu := y.2.1
-  let Q5 := y.2.2.1
-  let Q10 := y.2.2.2
+  let qHd := y.qHd
+  let qHu := y.qHu
+  let Q5 := y.Q5
+  let Q10 := y.Q10
   match T with
   | μ =>
     match qHd, qHu with
@@ -106,85 +106,85 @@ def ofPotentialTerm' (y : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset �
 
 lemma ofPotentialTerm'_μ_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' μ =
-    (x.1.toFinset.product <| x.2.1.toFinset).val.map (fun x => x.1 - x.2) := by
+    (x.qHd.toFinset.product <| x.qHu.toFinset).val.map (fun x => x.1 - x.2) := by
   match x with
-  | (none, qHu, Q5, Q10) =>
+  | ⟨none, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, none, Q5, Q10) =>
+  | ⟨some qHd, none, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, some qHu, Q5, Q10) =>
+  | ⟨some qHd, some qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm'_β_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' β =
-    (x.2.1.toFinset.product <| x.2.2.1).val.map (fun x => - x.1 + x.2) := by
+    (x.qHu.toFinset.product <| x.Q5).val.map (fun x => - x.1 + x.2) := by
   match x with
-  | (qHd, none, Q5, Q10) =>
+  | ⟨qHd, none, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (qHd, some qHu, Q5, Q10) =>
+  | ⟨qHd, some qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm'_W2_finset {x : ChargeSpectrum 𝓩} :
-    x.ofPotentialTerm' W2 = (x.1.toFinset.product <|
-      x.2.2.2.product <| x.2.2.2.product <| x.2.2.2).val.map
+    x.ofPotentialTerm' W2 = (x.qHd.toFinset.product <|
+      x.Q10.product <| x.Q10.product <| x.Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2.1 + x.2.2.2) := by
   match x with
-  | (none, qHu, Q5, Q10) =>
+  | ⟨none, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, qHu, Q5, Q10) =>
+  | ⟨some qHd, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm'_W3_finset {x : ChargeSpectrum 𝓩} :
-    x.ofPotentialTerm' W3 = (x.2.1.toFinset.product <| x.2.2.1.product <| x.2.2.1).val.map
+    x.ofPotentialTerm' W3 = (x.qHu.toFinset.product <| x.Q5.product <| x.Q5).val.map
     (fun x => -x.1 - x.1 + x.2.1 + x.2.2) := by
   match x with
-  | (qHd, none, Q5, Q10) =>
+  | ⟨qHd, none, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (qHd, some qHu, Q5, Q10) =>
+  | ⟨qHd, some qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm'_W4_finset {x : ChargeSpectrum 𝓩} :
-    x.ofPotentialTerm' W4 = (x.1.toFinset.product <|
-      x.2.1.toFinset.product <| x.2.2.1).val.map
+    x.ofPotentialTerm' W4 = (x.qHd.toFinset.product <|
+      x.qHu.toFinset.product <| x.Q5).val.map
     (fun x => x.1 - x.2.1 - x.2.1 + x.2.2) := by
   match x with
-  | (none, qHu, Q5, Q10) =>
+  | ⟨none, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, none, Q5, Q10) =>
+  | ⟨some qHd, none, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, some qHu, Q5, Q10) =>
+  | ⟨some qHd, some qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm'_K2_finset {x : ChargeSpectrum 𝓩} :
-    x.ofPotentialTerm' K2 = (x.1.toFinset.product <|
-      x.2.1.toFinset.product <| x.2.2.2).val.map
+    x.ofPotentialTerm' K2 = (x.qHd.toFinset.product <|
+      x.qHu.toFinset.product <| x.Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2) := by
   match x with
-  | (none, qHu, Q5, Q10) =>
+  | ⟨none, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, none, Q5, Q10) =>
+  | ⟨some qHd, none, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, some qHu, Q5, Q10) =>
+  | ⟨some qHd, some qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm'_topYukawa_finset {x : ChargeSpectrum 𝓩} :
-    x.ofPotentialTerm' topYukawa = (x.2.1.toFinset.product <|
-      x.2.2.2.product <| x.2.2.2).val.map
+    x.ofPotentialTerm' topYukawa = (x.qHu.toFinset.product <|
+      x.Q10.product <| x.Q10).val.map
     (fun x => -x.1 + x.2.1 + x.2.2) := by
   match x with
-  | (qHd, none, Q5, Q10) =>
+  | ⟨qHd, none, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (qHd, some qHu, Q5, Q10) =>
+  | ⟨qHd, some qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm'_bottomYukawa_finset {x : ChargeSpectrum 𝓩} :
     x.ofPotentialTerm' bottomYukawa = (x.1.toFinset.product <|
-      x.2.2.1.product <| x.2.2.2).val.map
+      x.Q5.product <| x.Q10).val.map
     (fun x => x.1 + x.2.1 + x.2.2) := by
   match x with
-  | (none, qHu, Q5, Q10) =>
+  | ⟨none, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
-  | (some qHd, qHu, Q5, Q10) =>
+  | ⟨some qHd, qHu, Q5, Q10⟩ =>
     simp [ofPotentialTerm']
 
 lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : PotentialTerm) :
@@ -241,25 +241,25 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩]
     obtain ⟨q1, q2, q3, ⟨q1_mem, q2_mem, q3_mem⟩, q_sum⟩ := h
   case' W1 | W2 =>
     obtain ⟨q1, q2, q3, q4, ⟨q1_mem, q2_mem, q3_mem, q4_mem⟩, q_sum⟩ := h
-  case' μ => refine ofPotentialTerm_mono (x := (q1, q2, ∅, ∅)) ?μSub _ ?μP
-  case' β => refine ofPotentialTerm_mono (x := (none, q1, {q2}, ∅)) ?βSub _ ?βP
+  case' μ => refine ofPotentialTerm_mono (x := ⟨q1, q2, ∅, ∅⟩) ?μSub _ ?μP
+  case' β => refine ofPotentialTerm_mono (x := ⟨none, q1, {q2}, ∅⟩) ?βSub _ ?βP
   case' Λ =>
-    refine ofPotentialTerm_mono (x := (none, none, {q1, q2}, {q3})) ?ΛSub _ ?ΛP
+    refine ofPotentialTerm_mono (x := ⟨none, none, {q1, q2}, {q3}⟩) ?ΛSub _ ?ΛP
   case' W1 =>
-    refine ofPotentialTerm_mono (x := (none, none, {q1}, {q2, q3, q4})) ?W1Sub _ ?W1P
+    refine ofPotentialTerm_mono (x := ⟨none, none, {q1}, {q2, q3, q4}⟩) ?W1Sub _ ?W1P
   case' W2 =>
-    refine ofPotentialTerm_mono (x := (q1, none, ∅, {q2, q3, q4})) ?W2Sub _ ?W2P
-  case' W3 => refine ofPotentialTerm_mono (x := (none, q1, {q2, q3}, ∅)) ?W3Sub _ ?W3P
-  case' W4 => refine ofPotentialTerm_mono (x := (q1, q2, {q3}, ∅)) ?W4Sub _ ?W4P
+    refine ofPotentialTerm_mono (x := ⟨q1, none, ∅, {q2, q3, q4}⟩) ?W2Sub _ ?W2P
+  case' W3 => refine ofPotentialTerm_mono (x := ⟨none, q1, {q2, q3}, ∅⟩) ?W3Sub _ ?W3P
+  case' W4 => refine ofPotentialTerm_mono (x := ⟨q1, q2, {q3}, ∅⟩) ?W4Sub _ ?W4P
   case' K1 =>
-    refine ofPotentialTerm_mono (x := (none, none, {q1}, {q2, q3}))
+    refine ofPotentialTerm_mono (x := ⟨none, none, {q1}, {q2, q3}⟩)
       ?K1Sub _ ?K1P
-  case' K2 => refine ofPotentialTerm_mono (x := (q1, q2, ∅, {q3})) ?K2Sub _ ?K2P
+  case' K2 => refine ofPotentialTerm_mono (x := ⟨q1, q2, ∅, {q3}⟩) ?K2Sub _ ?K2P
   case' topYukawa =>
-    refine ofPotentialTerm_mono (x := (none, q1, ∅, {q2, q3}))
+    refine ofPotentialTerm_mono (x := ⟨none, q1, ∅, {q2, q3}⟩)
       ?topYukawaSub _ ?topYukawaP
   case' bottomYukawa =>
-    refine ofPotentialTerm_mono (x := (q1, none, {q2}, {q3}))
+    refine ofPotentialTerm_mono (x := ⟨q1, none, {q2}, {q3}⟩)
       ?bottomYukawaSub _ ?bottomYukawaP
   case' μSub | βSub | ΛSub | W1Sub | W2Sub | W3Sub | W4Sub | K1Sub | K2Sub |
       topYukawaSub | bottomYukawaSub =>

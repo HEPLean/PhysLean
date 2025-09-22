@@ -57,17 +57,17 @@ variable [DecidableEq 𝓩]
   and if any over charge `x` allows `T` then it is due to a subset of the form
   `allowsTermForm a b c T`. -/
 def allowsTermForm (a b c : 𝓩) : (T : PotentialTerm) → ChargeSpectrum 𝓩
-  | .μ => (some a, some a, ∅, ∅)
-  | .β => (none, some a, {a}, ∅)
-  | .Λ => (none, none, {a, b}, {- a - b})
-  | .W1 => (none, none, {- a - b - c}, {a, b, c})
-  | .W2 => (some (- a - b - c), none, ∅, {a, b, c})
-  | .W3 => (none, some (- a), {b, - b - 2 • a}, ∅)
-  | .W4 => (some (- c - 2 • b), some (- b), {c}, ∅)
-  | .K1 => (none, none, {-a}, {b, - a - b})
-  | .K2 => (some a, some b, ∅, {- a - b})
-  | .topYukawa => (none, some (-a), ∅, {b, - a - b})
-  | .bottomYukawa => (some a, none, {b}, {- a - b})
+  | .μ => ⟨some a, some a, ∅, ∅⟩
+  | .β => ⟨none, some a, {a}, ∅⟩
+  | .Λ => ⟨none, none, {a, b}, {- a - b}⟩
+  | .W1 => ⟨none, none, {- a - b - c}, {a, b, c}⟩
+  | .W2 => ⟨some (- a - b - c), none, ∅, {a, b, c}⟩
+  | .W3 => ⟨none, some (- a), {b, - b - 2 • a}, ∅⟩
+  | .W4 => ⟨some (- c - 2 • b), some (- b), {c}, ∅⟩
+  | .K1 => ⟨none, none, {-a}, {b, - a - b}⟩
+  | .K2 => ⟨some a, some b, ∅, {- a - b}⟩
+  | .topYukawa => ⟨none, some (-a), ∅, {b, - a - b}⟩
+  | .bottomYukawa => ⟨some a, none, {b}, {- a - b}⟩
 
 lemma allowsTermForm_allowsTerm {a b c : 𝓩} {T : PotentialTerm} :
     (allowsTermForm a b c T).AllowsTerm T := by
@@ -151,13 +151,13 @@ lemma allowsTermForm_eq_of_subset {a b c a' b' c' : 𝓩} {T : PotentialTerm}
     rfl
   case' K2 =>
     obtain ⟨rfl, rfl, h2⟩ := h
-    rfl
+    simp
   case' W4 =>
     obtain ⟨h2, rfl, rfl⟩ := h
-    rfl
+    simp
   case' bottomYukawa =>
     obtain ⟨rfl, rfl, h2⟩ := h
-    rfl
+    simp
   case' Λ => obtain ⟨h2, h1⟩ := h
   case' K1 => obtain ⟨rfl, h2⟩ := h
   case' topYukawa => obtain ⟨rfl, h2⟩ := h
@@ -342,27 +342,27 @@ def AllowsTermQ5 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : P
   | .μ => false
   | .β =>
     match x with
-    | (_, some qHu, _, _) => q5 = qHu
+    | ⟨_, some qHu, _, _⟩ => q5 = qHu
     | _ => false
-  | .Λ => (0 : 𝓩) ∈ ((insert q5 x.2.2.1).product x.2.2.2).val.map (fun (q1, q2) => (q1 + q5 + q2))
+  | .Λ => (0 : 𝓩) ∈ ((insert q5 x.Q5).product x.Q10).val.map (fun (q1, q2) => (q1 + q5 + q2))
   | .W4 =>
     match x with
-    | (some qHd, some qHu, _, _) => q5 + qHd - qHu - qHu = 0
+    | ⟨some qHd, some qHu, _, _⟩ => q5 + qHd - qHu - qHu = 0
     | _ => false
-  | .K1 => (0 : 𝓩) ∈ (x.2.2.2.product x.2.2.2).val.map (fun (y, z) => -q5 + y + z)
-  | .W1 => (0 : 𝓩) ∈ (x.2.2.2.product (x.2.2.2.product x.2.2.2)).val.map
+  | .K1 => (0 : 𝓩) ∈ (x.Q10.product x.Q10).val.map (fun (y, z) => -q5 + y + z)
+  | .W1 => (0 : 𝓩) ∈ (x.Q10.product (x.Q10.product x.Q10)).val.map
     (fun (q1, q2, q3) => q5 + q1 + q2 + q3)
   | .W2 => false
   | .bottomYukawa =>
     match x with
-    | (none, _, _, _) => false
-    | (some qHd, _, _, _) => (0 : 𝓩) ∈ x.2.2.2.val.map (fun y => y + q5 + qHd)
+    | ⟨none, _, _, _⟩ => false
+    | ⟨some qHd, _, _, _⟩ => (0 : 𝓩) ∈ x.Q10.val.map (fun y => y + q5 + qHd)
   | .topYukawa => false
   | .K2 => false
   | .W3 =>
     match x with
-    | (_, some qHu, _, _) =>
-      (0 : 𝓩) ∈ (insert q5 x.2.2.1).val.map (fun y => y + q5 - qHu - qHu)
+    | ⟨_, some qHu, _, _⟩ =>
+      (0 : 𝓩) ∈ (insert q5 x.Q5).val.map (fun y => y + q5 - qHu - qHu)
     | _ => false
 
 instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : PotentialTerm) :
@@ -371,43 +371,43 @@ instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : Potential
   | .μ => isFalse fun h => by simp [AllowsTermQ5] at h
   | .β =>
     match x with
-    | (_, some qHu, _, _) => decidable_of_iff (q5 = qHu) (by simp [AllowsTermQ5])
-    | (_, none, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+    | ⟨_, some qHu, _, _⟩ => decidable_of_iff (q5 = qHu) (by simp [AllowsTermQ5])
+    | ⟨_, none, _, _⟩ => isFalse fun h => by simp [AllowsTermQ5] at h
   | .Λ =>
-    decidable_of_iff ((0 : 𝓩) ∈ ((insert q5 x.2.2.1).product x.2.2.2).val.map
+    decidable_of_iff ((0 : 𝓩) ∈ ((insert q5 x.Q5).product x.Q10).val.map
       (fun (q1, q2) => (q1 + q5 + q2))) (by simp [AllowsTermQ5])
   | .W4 =>
     match x with
-    | (some qHd, some qHu, _, _) => decidable_of_iff (q5 + qHd - qHu - qHu = 0)
+    | ⟨some qHd, some qHu, _, _⟩ => decidable_of_iff (q5 + qHd - qHu - qHu = 0)
       (by simp [AllowsTermQ5])
-    | (some qHd, none, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
-    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+    | ⟨some qHd, none, _, _⟩ => isFalse fun h => by simp [AllowsTermQ5] at h
+    | ⟨none, _, _, _⟩ => isFalse fun h => by simp [AllowsTermQ5] at h
   | .K1 =>
-    decidable_of_iff ((0 : 𝓩) ∈ (x.2.2.2.product x.2.2.2).val.map (fun (y, z) => -q5 + y + z))
+    decidable_of_iff ((0 : 𝓩) ∈ (x.Q10.product x.Q10).val.map (fun (y, z) => -q5 + y + z))
       (by simp [AllowsTermQ5])
   | .W1 =>
-    decidable_of_iff ((0 : 𝓩) ∈ (x.2.2.2.product (x.2.2.2.product x.2.2.2)).val.map
+    decidable_of_iff ((0 : 𝓩) ∈ (x.Q10.product (x.Q10.product x.Q10)).val.map
     (fun (q1, q2, q3) => q5 + q1 + q2 + q3)) (by rfl)
   | .W2 => isFalse fun h => by simp [AllowsTermQ5] at h
   | .bottomYukawa =>
     match x with
-    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
-    | (some qHd, _, _, Q10) => decidable_of_iff ((0 : 𝓩) ∈ Q10.val.map (fun y => y + q5 + qHd))
+    | ⟨none, _, _, _⟩ => isFalse fun h => by simp [AllowsTermQ5] at h
+    | ⟨some qHd, _, _, Q10⟩ => decidable_of_iff ((0 : 𝓩) ∈ Q10.val.map (fun y => y + q5 + qHd))
       (by simp [AllowsTermQ5])
   | .topYukawa => isFalse fun h => by simp [AllowsTermQ5] at h
   | .K2 => isFalse fun h => by simp [AllowsTermQ5] at h
   | .W3 =>
     match x with
-    | (_, some qHu, Q5, _) => decidable_of_iff
+    | ⟨_, some qHu, Q5, _⟩ => decidable_of_iff
       ((0 : 𝓩) ∈ (insert q5 Q5).val.map (fun y => y + q5 - qHu - qHu))
       (by simp [AllowsTermQ5])
-    | (_, none, _, _) => isFalse fun h => by simp [AllowsTermQ5] at h
+    | ⟨_, none, _, _⟩ => isFalse fun h => by simp [AllowsTermQ5] at h
 
 lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm)
-    (h : AllowsTerm (qHd, qHu, insert q5 Q5, Q10) T) :
-    AllowsTermQ5 (qHd, qHu, Q5, Q10) q5 T ∨
-    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+    (h : AllowsTerm ⟨qHd, qHu, insert q5 Q5, Q10⟩ T) :
+    AllowsTermQ5 ⟨qHd, qHu, Q5, Q10⟩ q5 T ∨
+    AllowsTerm ⟨qHd, qHu, Q5, Q10⟩ T := by
   rcases T
   all_goals
     simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm', AllowsTermQ5] at h ⊢
@@ -524,8 +524,8 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
 
 lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm)
-    (h : AllowsTermQ5 (qHd, qHu, Q5, Q10) q5 T) :
-    AllowsTerm (qHd, qHu, insert q5 Q5, Q10) T := by
+    (h : AllowsTermQ5 ⟨qHd, qHu, Q5, Q10⟩ q5 T) :
+    AllowsTerm ⟨qHd, qHu, insert q5 Q5, Q10⟩ T := by
   rcases T
   all_goals
     simp [AllowsTermQ5] at h
@@ -587,9 +587,9 @@ lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
 
 lemma allowsTerm_insertQ5_iff_allowsTermQ5 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm) :
-    AllowsTerm (qHd, qHu, insert q5 Q5, Q10) T ↔
-    AllowsTermQ5 (qHd, qHu, Q5, Q10) q5 T ∨
-    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+    AllowsTerm ⟨qHd, qHu, insert q5 Q5, Q10⟩ T ↔
+    AllowsTermQ5 ⟨qHd, qHu, Q5, Q10⟩ q5 T ∨
+    AllowsTerm ⟨qHd, qHu, Q5, Q10⟩ T := by
   constructor
   · exact allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 T
   · intro h
@@ -609,28 +609,28 @@ def AllowsTermQ10 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T :
   match T with
   | .μ => false
   | .β => false
-  | .Λ => (0 : 𝓩) ∈ (x.2.2.1.product x.2.2.1).val.map (fun (y, z) => y + z + q10)
+  | .Λ => (0 : 𝓩) ∈ (x.Q5.product x.Q5).val.map (fun (y, z) => y + z + q10)
   | .W4 => false
-  | .K1 => (0 : 𝓩) ∈ (x.2.2.1.product (insert q10 x.2.2.2)).val.map (fun (q5, q2) => -q5 + q2+ q10)
-  | .W1 => (0 : 𝓩) ∈ (x.2.2.1.product ((insert q10 x.2.2.2).product (insert q10 x.2.2.2))).val.map
+  | .K1 => (0 : 𝓩) ∈ (x.Q5.product (insert q10 x.Q10)).val.map (fun (q5, q2) => -q5 + q2+ q10)
+  | .W1 => (0 : 𝓩) ∈ (x.Q5.product ((insert q10 x.Q10).product (insert q10 x.Q10))).val.map
     (fun (q5, q2, q3) => q5 + q2 + q3 + q10)
   | .W2 =>
     match x with
-    | (some qHd, _, _, _) => (0 : 𝓩) ∈
-      (((insert q10 x.2.2.2).product (insert q10 x.2.2.2))).val.map
+    | ⟨some qHd, _, _, _⟩ => (0 : 𝓩) ∈
+      (((insert q10 x.Q10).product (insert q10 x.Q10))).val.map
       (fun (q2, q3) => qHd + q2 + q3 + q10)
     | _ => false
   | .bottomYukawa =>
     match x with
-    | (none, _, _, _) => false
-    | (some qHd, _, _, _) => (0 : 𝓩) ∈ x.2.2.1.val.map (fun y => q10 + y + qHd)
+    | ⟨none, _, _, _⟩ => false
+    | ⟨some qHd, _, _, _⟩ => (0 : 𝓩) ∈ x.Q5.val.map (fun y => q10 + y + qHd)
   | .topYukawa =>
     match x with
-    | (_, some qHu, _, _) => (0 : 𝓩) ∈ (insert q10 x.2.2.2).val.map (fun y => q10 + y - qHu)
+    | ⟨_, some qHu, _, _⟩ => (0 : 𝓩) ∈ (insert q10 x.Q10).val.map (fun y => q10 + y - qHu)
     | _ => false
   | .K2 =>
     match x with
-    | (some qHd, some qHu, _, _) => qHd + qHu + q10 = 0
+    | ⟨some qHd, some qHu, _, _⟩ => qHd + qHu + q10 = 0
     | _ => false
   | .W3 => false
 
@@ -640,46 +640,46 @@ instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T : Potentia
   | .μ => isFalse fun h => by simp [AllowsTermQ10] at h
   | .β => isFalse fun h => by simp [AllowsTermQ10] at h
   | .Λ =>
-    decidable_of_iff ((0 : 𝓩) ∈ (x.2.2.1.product x.2.2.1).val.map (fun (y, z) => y + z + q10))
+    decidable_of_iff ((0 : 𝓩) ∈ (x.Q5.product x.Q5).val.map (fun (y, z) => y + z + q10))
       (by simp [AllowsTermQ10])
   | .W4 => isFalse fun h => by simp [AllowsTermQ10] at h
   | .K1 =>
     decidable_of_iff ((0 : 𝓩) ∈
-      (x.2.2.1.product (insert q10 x.2.2.2)).val.map (fun (q5, q2) => -q5 + q2 + q10))
+      (x.Q5.product (insert q10 x.Q10)).val.map (fun (q5, q2) => -q5 + q2 + q10))
       (by simp [AllowsTermQ10])
   | .W1 =>
     decidable_of_iff ((0 : 𝓩) ∈
-    (x.2.2.1.product ((insert q10 x.2.2.2).product (insert q10 x.2.2.2))).val.map
+    (x.Q5.product ((insert q10 x.Q10).product (insert q10 x.Q10))).val.map
     (fun (q5, q2, q3) => q5 + q2 + q3 + q10)) (by rfl)
   | .W2 =>
     match x with
-    | (some qHd, _, _, Q10) => decidable_of_iff ((0 : 𝓩) ∈
+    | ⟨some qHd, _, _, Q10⟩ => decidable_of_iff ((0 : 𝓩) ∈
       (((insert q10 Q10).product (insert q10 Q10))).val.map
       (fun (q2, q3) => qHd + q2 + q3 + q10)) (by simp [AllowsTermQ10])
-    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+    | ⟨none, _, _, _⟩ => isFalse fun h => by simp [AllowsTermQ10] at h
   | .bottomYukawa =>
     match x with
-    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
-    | (some qHd, _, Q5, _) => decidable_of_iff ((0 : 𝓩) ∈ Q5.val.map (fun y => q10 + y + qHd))
+    | ⟨none, _, _, _⟩ => isFalse fun h => by simp [AllowsTermQ10] at h
+    | ⟨some qHd, _, Q5, _⟩ => decidable_of_iff ((0 : 𝓩) ∈ Q5.val.map (fun y => q10 + y + qHd))
       (by simp [AllowsTermQ10])
   | .topYukawa =>
     match x with
-    | (_, some qHu, _, Q10) => decidable_of_iff
+    | ⟨_, some qHu, _, Q10⟩ => decidable_of_iff
       ((0 : 𝓩) ∈ (insert q10 Q10).val.map (fun y => q10 + y - qHu))
       (by simp [AllowsTermQ10])
-    | (_, none, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+    | ⟨_, none, _, _⟩ => isFalse fun h => by simp [AllowsTermQ10] at h
   | .K2 =>
     match x with
-    | (some qHd, some qHu, _, _) => decidable_of_iff (qHd + qHu + q10 = 0) (by simp [AllowsTermQ10])
-    | (some qHd, none, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
-    | (none, _, _, _) => isFalse fun h => by simp [AllowsTermQ10] at h
+    | ⟨some qHd, some qHu, _, _⟩ => decidable_of_iff (qHd + qHu + q10 = 0) (by simp [AllowsTermQ10])
+    | ⟨some qHd, none, _, _⟩ => isFalse fun h => by simp [AllowsTermQ10] at h
+    | ⟨none, _, _, _⟩ => isFalse fun h => by simp [AllowsTermQ10] at h
   | .W3 => isFalse fun h => by simp [AllowsTermQ10] at h
 
 lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm)
-    (h : AllowsTerm (qHd, qHu, Q5, insert q10 Q10) T) :
-    AllowsTermQ10 (qHd, qHu, Q5, Q10) q10 T ∨
-    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+    (h : AllowsTerm ⟨qHd, qHu, Q5, insert q10 Q10⟩ T) :
+    AllowsTermQ10 ⟨qHd, qHu, Q5, Q10⟩ q10 T ∨
+    AllowsTerm ⟨qHd, qHu, Q5, Q10⟩ T := by
   rcases T
   all_goals
     simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm', AllowsTermQ10] at h ⊢
@@ -833,8 +833,8 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
 
 lemma allowsTerm_insertQ10_of_allowsTermQ10 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm)
-    (h : AllowsTermQ10 (qHd, qHu, Q5, Q10) q10 T) :
-    AllowsTerm (qHd, qHu, Q5, insert q10 Q10) T := by
+    (h : AllowsTermQ10 ⟨qHd, qHu, Q5, Q10⟩ q10 T) :
+    AllowsTerm ⟨qHd, qHu, Q5, insert q10 Q10⟩ T := by
   rcases T
   all_goals
     simp [AllowsTermQ10] at h
@@ -887,9 +887,9 @@ lemma allowsTerm_insertQ10_of_allowsTermQ10 {qHd qHu : Option 𝓩}
 
 lemma allowsTerm_insertQ10_iff_allowsTermQ10 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm) :
-    AllowsTerm (qHd, qHu, Q5, insert q10 Q10) T ↔
-    AllowsTermQ10 (qHd, qHu, Q5, Q10) q10 T ∨
-    AllowsTerm (qHd, qHu, Q5, Q10) T := by
+    AllowsTerm ⟨qHd, qHu, Q5, insert q10 Q10⟩ T ↔
+    AllowsTermQ10 ⟨qHd, qHu, Q5, Q10⟩ q10 T ∨
+    AllowsTerm ⟨qHd, qHu, Q5, Q10⟩ T := by
   constructor
   · exact allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 T
   · intro h

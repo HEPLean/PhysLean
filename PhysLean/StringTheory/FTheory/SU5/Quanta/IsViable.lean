@@ -62,7 +62,7 @@ lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
   x.2.2.2.toFluxesTen.HasNoZero ∧
   AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2 ∧
   (x.1.toFinset ⊆ I.allowedBarFiveCharges ∧ x.2.1.toFinset ⊆ I.allowedBarFiveCharges ∧
-      x.toCharges.2.2.1 ⊆ I.allowedBarFiveCharges ∧ x.toCharges.2.2.2 ⊆ I.allowedTenCharges)
+      x.toCharges.Q5 ⊆ I.allowedBarFiveCharges ∧ x.toCharges.Q10 ⊆ I.allowedTenCharges)
       ∧
     x.2.2.1.toCharges.Nodup ∧
     x.2.2.2.toCharges.Nodup := by

@@ -41,8 +41,11 @@ instance [DecidableEq 𝓩] : DecidableEq (Quanta 𝓩) :=
   inferInstanceAs (DecidableEq (Option 𝓩 × Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩))
 
 /-- The underlying `ChargeSpectrum` of a `Quanta`. -/
-def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : ChargeSpectrum 𝓩 :=
-  (x.1, x.2.1, x.2.2.1.toCharges.toFinset, x.2.2.2.toCharges.toFinset)
+def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : ChargeSpectrum 𝓩 where
+  qHd := x.1
+  qHu := x.2.1
+  Q5 := x.2.2.1.toCharges.toFinset
+  Q10 := x.2.2.2.toCharges.toFinset
 
 /-!
 
@@ -113,7 +116,7 @@ def AnomalyCancellation [CommRing 𝓩] (qHd qHu : Option 𝓩) (F : FiveQuanta 
   HdAnomalyCoefficent qHd + HuAnomalyCoefficent qHu + F.anomalyCoefficent +
     T.anomalyCoefficent = (0, 0)
 
-instance [CommRing 𝓩] [DecidableEq 𝓩] :
+instance {qHd qHu F T} [CommRing 𝓩] [DecidableEq 𝓩] :
     Decidable (AnomalyCancellation (𝓩 := 𝓩) qHd qHu F T) :=
   inferInstanceAs (Decidable ((HdAnomalyCoefficent qHd + HuAnomalyCoefficent qHu
     + F.anomalyCoefficent + T.anomalyCoefficent) = (0, 0)))
@@ -140,11 +143,11 @@ lemma anomalyCoefficent_snd_eq_zero_of_anomalyCancellation [CommRing 𝓩]
 
   These quanta reduce to all viable quanta. -/
 def ofChargesExpand [DecidableEq 𝓩] (c : ChargeSpectrum 𝓩) : Multiset (Quanta 𝓩) :=
-  let Q5s := FiveQuanta.ofChargesExpand c.2.2.1
-  let Q10s := TenQuanta.ofChargesExpand c.2.2.2
+  let Q5s := FiveQuanta.ofChargesExpand c.Q5
+  let Q10s := TenQuanta.ofChargesExpand c.Q10
   Q5s.bind <| fun Q5 =>
   Q10s.map <| fun Q10 =>
-    (c.1, c.2.1, Q5, Q10)
+    (c.qHd, c.qHu, Q5, Q10)
 
 end Quanta
 

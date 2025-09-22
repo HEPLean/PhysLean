@@ -181,71 +181,71 @@ def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) :
     let SqHu := S5.val
     let prod := SqHd.product (SqHu)
     let Filt := prod.filter (fun x => - x.1 + x.2 = 0)
-    (Filt.map (fun x => (x.1, x.2, ∅, ∅)))
+    (Filt.map (fun x => ⟨x.1, x.2, ∅, ∅⟩))
   | K2 =>
     let SqHd := S5.val
     let SqHu := S5.val
     let Q10 := toMultisetsOne S10
     let prod := SqHd.product (SqHu.product Q10)
     let Filt := prod.filter (fun x => x.1 + x.2.1 + x.2.2.sum = 0)
-    (Filt.map (fun x => (x.1, x.2.1, ∅, x.2.2.toFinset)))
+    (Filt.map (fun x => ⟨x.1, x.2.1, ∅, x.2.2.toFinset⟩))
   | K1 =>
     let Q5 := toMultisetsOne S5
     let Q10 := toMultisetsTwo S10
     let Prod := Q5.product Q10
     let Filt := Prod.filter (fun x => - x.1.sum + x.2.sum = 0)
-    (Filt.map (fun x => (none, none, x.1.toFinset, x.2.toFinset)))
+    (Filt.map (fun x => ⟨none, none, x.1.toFinset, x.2.toFinset⟩))
   | W4 =>
     let SqHd := S5.val
     let SqHu := S5.val
     let Q5 := toMultisetsOne S5
     let prod := SqHd.product (SqHu.product Q5)
     let Filt := prod.filter (fun x => x.1 - 2 • x.2.1 + x.2.2.sum = 0)
-    (Filt.map (fun x => (x.1, x.2.1, x.2.2.toFinset, ∅)))
+    (Filt.map (fun x => ⟨x.1, x.2.1, x.2.2.toFinset, ∅⟩))
   | W3 =>
     let SqHu := S5.val
     let Q5 := toMultisetsTwo S5
     let prod := SqHu.product Q5
     let Filt := prod.filter (fun x => - 2 • x.1 + x.2.sum = 0)
-    (Filt.map (fun x => (none, x.1, x.2.toFinset, ∅)))
+    (Filt.map (fun x => ⟨none, x.1, x.2.toFinset, ∅⟩))
   | W2 =>
     let SqHd := S5.val
     let Q10 := toMultisetsThree S10
     let prod := SqHd.product Q10
     let Filt := prod.filter (fun x => x.1 + x.2.sum = 0)
-    (Filt.map (fun x => (x.1, none, ∅, x.2.toFinset))).filter fun x => MinimallyAllowsTerm x W2
+    (Filt.map (fun x => ⟨x.1, none, ∅, x.2.toFinset⟩)).filter fun x => MinimallyAllowsTerm x W2
   | W1 =>
     let Q5 := toMultisetsOne S5
     let Q10 := toMultisetsThree S10
     let Prod := Q5.product Q10
     let Filt := Prod.filter (fun x => x.1.sum + x.2.sum = 0)
     (Filt.map (fun x =>
-      (none, none, x.1.toFinset, x.2.toFinset))).filter fun x => MinimallyAllowsTerm x W1
+      ⟨none, none, x.1.toFinset, x.2.toFinset⟩)).filter fun x => MinimallyAllowsTerm x W1
   | Λ =>
     let Q5 := toMultisetsTwo S5
     let Q10 := toMultisetsOne S10
     let Prod := Q5.product Q10
     let Filt := Prod.filter (fun x => x.1.sum + x.2.sum = 0)
-    (Filt.map (fun x => (none, none, x.1.toFinset, x.2.toFinset)))
+    (Filt.map (fun x => ⟨none, none, x.1.toFinset, x.2.toFinset⟩))
   | β =>
     let SqHu := S5.val
     let Q5 := toMultisetsOne S5
     let prod := SqHu.product Q5
     let Filt := prod.filter (fun x => - x.1 + x.2.sum = 0)
-    (Filt.map (fun x => (none, x.1, x.2.toFinset, ∅)))
+    (Filt.map (fun x => ⟨none, x.1, x.2.toFinset, ∅⟩))
   | topYukawa =>
     let SqHu := S5.val
     let Q10 := toMultisetsTwo S10
     let prod := SqHu.product Q10
     let Filt := prod.filter (fun x => - x.1 + x.2.sum = 0)
-    (Filt.map (fun x => (none, x.1, ∅, x.2.toFinset)))
+    (Filt.map (fun x => ⟨none, x.1, ∅, x.2.toFinset⟩))
   | bottomYukawa =>
     let SqHd := S5.val
     let Q5 := toMultisetsOne S5
     let Q10 := toMultisetsOne S10
     let prod := SqHd.product (Q5.product Q10)
     let Filt := prod.filter (fun x => x.1 + x.2.1.sum + x.2.2.sum = 0)
-    (Filt.map (fun x => (x.1, none,x.2.1.toFinset, x.2.2.toFinset)))
+    (Filt.map (fun x => ⟨x.1, none,x.2.1.toFinset, x.2.2.toFinset⟩))
 
 lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
     {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
@@ -253,67 +253,87 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩
   cases T
   all_goals
     simp [minimallyAllowsTermsOfFinset] at hx
-  case' W1 | W2 => have hx := hx.1
-  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ := hx
-  case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
-  all_goals
-    try rw [Multiset.card_eq_one] at h
-    try rw [Multiset.card_eq_two] at h
-    try rw [Multiset.card_eq_three] at h
-  case' W1 =>
-    obtain ⟨q51, rfl⟩ := h.1.1.2
-    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
-  case' W2 =>
-    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
-  case' W3 =>
-    obtain ⟨q51, q52, rfl⟩ := h.1.2.2
-  case' W4 =>
-    obtain ⟨q51, rfl⟩ := h.1.2.2.2
-  case' K1 =>
-    obtain ⟨q51, rfl⟩ := h.1.1.2
-    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
-  case' K2 =>
-    obtain ⟨q101, rfl⟩ := h.1.2.2.2
-  case' topYukawa =>
-    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
-  case' bottomYukawa =>
-    obtain ⟨q51, rfl⟩ := h.1.2.1.2
-    rw [Multiset.card_eq_one] at h
-    obtain ⟨q101, rfl⟩ := h.1.2.2.2
-  case' Λ =>
-    obtain ⟨q101, rfl⟩ := h.1.2.2
-    obtain ⟨q51, q52, rfl⟩ := h.1.1.2
-  case' β =>
-    obtain ⟨q51, rfl⟩ := h.1.2.2
-  all_goals
-    simp [allowsTermForm]
-  case' bottomYukawa => use a, q51
-  case' K2 => use a, b
-  case' K1 => use -q51, q101
-  case' W1 => use q101, q102, q103
-  case' W2 => use q101, q102, q103
-  case' W3 => use (-a), q51
-  case' W4 => use - b, q51
-  case' Λ => use q51, q52
-  case' β => use a
-  case' topYukawa => use -a, q101
-  case' μ => use a
-  all_goals
-    apply eq_of_parts
-    any_goals rfl
-  all_goals
+  case μ =>
+    obtain ⟨a, b, ⟨⟨ha, hb⟩, hsum⟩, rfl⟩ := hx
+    simp_all [allowsTermForm]
+    grind
+  case β =>
+    obtain ⟨a, b, ⟨⟨ha, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨c, rfl⟩ := Multiset.card_eq_one.mp hbcard
+    simp_all [allowsTermForm]
+    grind
+  case K1 =>
+    obtain ⟨a, b, ⟨⟨⟨ha, hacard⟩, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨c, rfl⟩ := Multiset.card_eq_one.mp hacard
+    obtain ⟨d, e, rfl⟩ := Multiset.card_eq_two.mp hbcard
+    simp_all [allowsTermForm]
+    use -c
+    simp only [neg_neg, true_and] at ⊢ hsum
+    use d
+    congr
+    grind
+  case Λ =>
+    obtain ⟨a, b, ⟨⟨⟨ha, hacard⟩, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨c, d, rfl⟩ := Multiset.card_eq_two.mp hacard
+    obtain ⟨e, rfl⟩ := Multiset.card_eq_one.mp hbcard
+    simp_all [allowsTermForm]
+    use c, d
     simp_all
-  all_goals
-    congr 2
-  case μ | topYukawa | β =>
-    rw [← add_zero a, ← h.2]
+    grind
+  case W1 =>
+    obtain ⟨⟨a, b, ⟨⟨⟨ha, hacard⟩, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩, _⟩ := hx
+    obtain ⟨c,  rfl⟩ := Multiset.card_eq_one.mp hacard
+    obtain ⟨e, d, f, rfl⟩ := Multiset.card_eq_three.mp hbcard
+    simp_all [allowsTermForm]
+    use e, d, f
+    simp_all
+    grind
+  case W2 =>
+    obtain ⟨⟨a, b, ⟨⟨ha, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩, _⟩ := hx
+    obtain ⟨e, d, f, rfl⟩ := Multiset.card_eq_three.mp hbcard
+    simp_all [allowsTermForm]
+    use e, d, f
+    simp_all
+    grind
+  case W3 =>
+    obtain ⟨a, b, ⟨⟨ha, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨c, d, rfl⟩ := Multiset.card_eq_two.mp hbcard
+    simp_all [allowsTermForm]
+    use -a
+    simp_all
+    use c
+    congr
+    trans d - 0
+    · simp
+    rw [← hsum]
     abel
-  case Λ | W4 | W1 | W3 | bottomYukawa =>
-    rw [← sub_zero q51, ← h.2]
-    abel
-  case K1 | K2 | W2 =>
-    rw [← sub_zero q101, ← h.2]
-    abel
+  case W4 =>
+    obtain ⟨a, b, c, ⟨⟨ha, ⟨hb, hc, hcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨d, rfl⟩ := Multiset.card_eq_one.mp hcard
+    simp_all [allowsTermForm]
+    use -b
+    simp_all
+    grind
+  case K2 =>
+    obtain ⟨a, b, c, ⟨⟨ha, ⟨hb, hc, hcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨d, rfl⟩ := Multiset.card_eq_one.mp hcard
+    simp_all [allowsTermForm]
+    grind
+  case topYukawa =>
+    obtain ⟨a, b, ⟨⟨ha, ⟨hb, hbcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨c, d, rfl⟩ := Multiset.card_eq_two.mp hbcard
+    simp_all [allowsTermForm]
+    use -a
+    simp_all
+    use c
+    congr
+    grind
+  case bottomYukawa =>
+    obtain ⟨a, b, c, ⟨⟨ha, ⟨⟨hb, hbcard⟩, hc, hcard⟩⟩, hsum⟩, rfl⟩ := hx
+    obtain ⟨e, rfl⟩ := Multiset.card_eq_one.mp hcard
+    obtain ⟨d, rfl⟩ := Multiset.card_eq_one.mp hbcard
+    simp_all [allowsTermForm]
+    grind
 
 lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
     {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
@@ -331,7 +351,6 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset �
     simp [allowsTermForm, minimallyAllowsTermsOfFinset]
     rw [mem_ofFinset_iff] at hx
   case μ =>
-    use a, a
     simp_all [allowsTermForm]
   case β =>
     use a, {a}
