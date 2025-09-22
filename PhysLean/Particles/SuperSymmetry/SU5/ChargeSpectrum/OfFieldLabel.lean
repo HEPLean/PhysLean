@@ -28,10 +28,10 @@ terms in the potential.
 ## iii. Table of contents
 
 - A. Charges associated with a field label
- - A.1. The field labels for the empty charge spectrum
- - A.2. Monotonicity of `ofFieldLabel`
- - A.3. Membership of conjugate charegs
- - A.4. Extensionality of charge spectra via `ofFieldLabel`
+  - A.1. The field labels for the empty charge spectrum
+  - A.2. Monotonicity of `ofFieldLabel`
+  - A.3. Membership of conjugate charegs
+  - A.4. Extensionality of charge spectra via `ofFieldLabel`
 
 ## iv. References
 

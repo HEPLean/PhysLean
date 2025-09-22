@@ -28,37 +28,37 @@ In this module we define the Higgs field and prove some basic properties.
 ## iii. Table of contents
 
 - A. The Higgs vector space
- - A.1. Definition of the Higgs vector space
- - A.2. Relation to `(Fin 2 → ℂ)`
- - A.3. Orthonormal basis
- - A.4. Generating Higgs vectors from real numbers
- - A.5. Action of the gauge group on `HiggsVec`
-  - A.5.1. Definition of the action
-  - A.5.2. Unitary nature of the action
- - A.6. The Gauge orbit of a Higgs vector
-  - A.6.1. The rotation matrix to ofReal
-  - A.6.2. Members of orbits
- - A.7. The stability group of a Higgs vector
+  - A.1. Definition of the Higgs vector space
+  - A.2. Relation to `(Fin 2 → ℂ)`
+  - A.3. Orthonormal basis
+  - A.4. Generating Higgs vectors from real numbers
+  - A.5. Action of the gauge group on `HiggsVec`
+    - A.5.1. Definition of the action
+    - A.5.2. Unitary nature of the action
+  - A.6. The Gauge orbit of a Higgs vector
+    - A.6.1. The rotation matrix to ofReal
+    - A.6.2. Members of orbits
+  - A.7. The stability group of a Higgs vector
 - B. The Higgs bundle
- - B.1. Definition of the Higgs bundle
- - B.2. Instance of a vector bundle
+  - B.1. Definition of the Higgs bundle
+  - B.2. Instance of a vector bundle
 - C. The Higgs fields
- - C.1. Relations between `HiggsField` and `HiggsVec`
-  - C.1.1. The constant Higgs field
-  - C.1.2. The map from `HiggsField` to `SpaceTime → HiggsVec`
- - C.2. Smoothness properties of components
- - C.3. The pointwise inner product
-  - C.3.1. Basic equaltities
-  - C.3.2. Symmetry properties
-  - C.3.3. Linearity conditions
-  - C.3.4. Smoothness of the inner product
- - C.4. The pointwise norm
-  - C.4.1. Basic equalities
-  - C.4.2. Positivity
-  - C.4.3. On the zero section
-  - C.4.4. Smoothness of the norm-squared
-  - C.4.5. Norm-squared of constant Higgs fields
- - C.5. The action of the gauge group on Higgs fields
+  - C.1. Relations between `HiggsField` and `HiggsVec`
+    - C.1.1. The constant Higgs field
+    - C.1.2. The map from `HiggsField` to `SpaceTime → HiggsVec`
+  - C.2. Smoothness properties of components
+  - C.3. The pointwise inner product
+    - C.3.1. Basic equaltities
+    - C.3.2. Symmetry properties
+    - C.3.3. Linearity conditions
+    - C.3.4. Smoothness of the inner product
+  - C.4. The pointwise norm
+    - C.4.1. Basic equalities
+    - C.4.2. Positivity
+    - C.4.3. On the zero section
+    - C.4.4. Smoothness of the norm-squared
+    - C.4.5. Norm-squared of constant Higgs fields
+  - C.5. The action of the gauge group on Higgs fields
 
 ## iv. References
 

@@ -36,7 +36,7 @@ The terms of the Kahler potential are:
 - A. The definition of `PotentialTerm`
 - B. Relation to field labels
 - C. Presence in the super-potential
- - C.1. In super potential implies no conjugate fields
+  - C.1. In super potential implies no conjugate fields
 - D. Degree of the potential term
 - E. R-parity of the potential terms
 - F. Terms which violate proton decay

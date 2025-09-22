@@ -32,18 +32,18 @@ are complete, and have their charges in the given subsets.
 ## iii. Table of contents
 
 - A. The IsComplete predicate
- - A.1. The empty spectrum is not complete
- - A.2. The predicate `IsCompelete` is monotonic
+  - A.1. The empty spectrum is not complete
+  - A.2. The predicate `IsCompelete` is monotonic
 - B. Multiset of completions
- - B.1. A membership condition
- - B.2. No duplicate condition
- - B.3. Completions of a complete charge spectrum
- - B.4. Membership of own completions
- - B.5. Completeness of members of completions
- - B.6. Subset of members of completions
+  - B.1. A membership condition
+  - B.2. No duplicate condition
+  - B.3. Completions of a complete charge spectrum
+  - B.4. Membership of own completions
+  - B.5. Completeness of members of completions
+  - B.6. Subset of members of completions
 - C. Completions for top Yukawa
- - C.1. No duplicates in completionsTopYukawa
- - C.2. Equivalence of completions and completionsTopYukawa
+  - C.1. No duplicates in completionsTopYukawa
+  - C.2. Equivalence of completions and completionsTopYukawa
 
 ## iv. References
 

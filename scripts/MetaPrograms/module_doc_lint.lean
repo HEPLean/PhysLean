@@ -113,8 +113,8 @@ def checkHeadings (f : FilePath) : IO (List DocLintError) := do
   let tocLines ← getTableOfContents f
   let expectedLevel1 (n : ℕ) := (otherHeadings.filter (fun l ↦ l.count '#' ≤ n)).map fun l =>
     let l' := l
-    let l' := l'.replace "#### "  "  - "
-    let l' := l'.replace "### "  " - "
+    let l' := l'.replace "#### "  "    - "
+    let l' := l'.replace "### "  "  - "
     let l' := l'.replace "## "  "- "
     l'
   let tocLinesNoEmpty := tocLines.filter (fun l ↦ l.trim ≠ "")
