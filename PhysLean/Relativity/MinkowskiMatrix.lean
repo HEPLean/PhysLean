@@ -162,7 +162,6 @@ lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
       simp_all only [one_apply_eq]
     · simp_all only [ne_eq, Sum.inr.injEq, not_false_eq_true, one_apply_ne]
 
-
 /-- Multiplying any element on the diagonal of the Minkowski matrix by itself gives `1`. -/
 @[simp]
 lemma η_apply_mul_η_apply_diag (μ : Fin 1 ⊕ Fin d) : η μ μ * η μ μ = 1 := by
@@ -190,7 +189,6 @@ The Minkowski matrix is symmetric, due to it being diagonal.
 lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
   simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_transpose]
 
-
 /-!
 
 ### A.6. Determinant of the Minkowski matrix
@@ -205,7 +203,6 @@ We show the determinant of the Minkowski matrix is equal to `(-1)^d` where
 @[simp]
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-
 
 /-!
 
@@ -264,7 +261,7 @@ variable (Λ Λ' : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ)
 
 /-- The dual of a matrix with respect to the Minkowski metric.
   A suitable name for this construction is the Minkowski dual. -/
-def dual :  Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ := η * Λᵀ * η
+def dual : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ := η * Λᵀ * η
 
 /-!
 
@@ -322,7 +319,6 @@ lemma dual_dual : Function.Involutive (@dual d) := by
 lemma dual_transpose : dual Λᵀ = (dual Λ)ᵀ := by
   simp only [dual, transpose_transpose, transpose_mul, eq_transpose]
   noncomm_ring
-
 
 /-!
 
