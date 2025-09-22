@@ -9,15 +9,67 @@ import Mathlib.Tactic.FinCases
 
 # Charges allowing terms
 
-The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
-if the zero charge is in the set of charges associated with that potential term.
+## i. Overview
 
-We define this proposition `AllowsTerm` and prove results about it.
+To each charge spectrum `x : ChargeSpectrum 𝓩` we say it
+allows the potential term `T : PotentialTerm`, if one of the charges associated with that
+potential term is zero.
 
-We also define `allowsTermForm`, which is a function that takes three integers `a`, `b`, and `c`
-and a potential term `T`, and returns a `Charges` that allows the term `T`.
-We prove that any charges that allows a term `T` has a
-subset which can be expressed as `allowsTermForm a b c T` for some integers `a`, `b`, and `c`.
+What this means, is that there is a choice of charges from the charge spectrum `x` that
+can be assigned to the fields in the potential term `T` such that the total charge is zero,
+and therefore that the term is present in the potential. The presence of
+absence of certain terms is of phenomenological importance.
+
+This concept is captured by the proposition `AllowsTerm`.
+
+In addition to this, for each potential term `T`, we define a function `allowsTermForm`
+which takes three elements of `𝓩`, `a`, `b`, and `c` and returns a charge spectrum
+which allows the term `T`. We will show in `allowsTerm_iff_subset_allowsTermForm`
+that any charge spectrum that allows a term `T` has a subset which can be expressed as
+`allowsTermForm a b c T` for some `a`, `b`, and `c`.
+
+We also define the propositions `AllowsTermQ5 x q5 T` and `AllowsTermQ10 x q10 T`
+which correspond to the condition that adding a charge `q5` to the `Q5` charges of
+the charge spectrum `x`, or adding a charge `q10` to the `Q10` charges of the
+charge spectrum `x`, leads to a zero charge in the charges of potential term `T`.
+
+## ii. Key results
+
+- `AllowsTerm` : The proposition that a charge spectrum allows a potential term.
+- `allowsTermForm` : A function which for each potential term `T` and three charges
+  `a`, `b`, and `c` returns a charge spectrum which allows the term `T`,
+  and such that any charge spectrum allowing `T` has a subset of this form.
+- `AllowsTermQ5` : The proposition that adding a charge `q5` to the `Q5` charges
+  of a charge spectrum `x` allows the potential term `T` due to the addition of that charge.
+- `AllowsTermQ10` : The proposition that adding a charge `q10` to the `Q10` charges
+  of a charge spectrum `x` allows the potential term `T` due to the addition of that charge.
+
+## iii. Table of contents
+
+- A. Charge spectrums allowing potential terms
+  - A.1. Deciability of `AllowsTerm`
+  - A.2. Monoticity of `AllowsTerm`
+- B. Forms of charges which allow potential terms
+  - B.1. `allowsTermForm` allows the potential term
+  - B.2. Subset relations for `allowsTermForm`
+  - B.3. Card of `allowsTermForm`
+  - B.4. If `AllowsTerm` then subset equal to `allowsTermForm a b c T`
+  - B.5. `AllowsTerm` if and only if subset equal to `allowsTermForm a b c T`
+  - B.6. Cardinality of subset allowing potential term
+- C. Allowing a potential term by insertion of a `Q5` charge
+  - C.1. Decidability of `AllowsTermQ5`
+  - C.2. AllowsTermQ5 or AllowsTerm from AllowsTerm with inserted of `Q5` charge
+  - C.3. AllowsTerm with inserted of `Q5` charge from AllowsTermQ5
+  - C.4. AllowsTerm with inserted of `Q5` charge iff AllowsTermQ5 or AllowsTerm
+- D. Allowing a potential term by insertion of a `Q10` charge
+  - D.1. Decidability of `AllowsTermQ5`
+  - D.2. AllowsTermQ10 or AllowsTerm from AllowsTerm with inserted of `Q10` charge
+  - D.3. AllowsTerm with inserted of `Q10` charge from AllowsTermQ5
+  - D.4. AllowsTerm with inserted of `Q10` charge iff AllowsTermQ10 or AllowsTerm
+
+## iv. References
+
+There are no known references for the results in this file.
 
 -/
 
@@ -28,9 +80,31 @@ namespace ChargeSpectrum
 
 variable {𝓩 : Type} [AddCommGroup 𝓩]
 
+/-!
+
+## A. Charge spectrums allowing potential terms
+
+We first define the proposition `AllowsTerm`, which for a charge spectrum `x : ChargeSpectrum 𝓩`
+and a potential term `T : PotentialTerm`, is true if the zero charge is in the set of
+charges associated with that potential term.
+
+That is, if there is some choice of representations present in the theory which will allow that
+potential term via symmetry.
+
+-/
+
 /-- The charges of representations `x : Charges` allow a potential term `T : PotentialTerm`
 if the zero charge is in the set of charges associated with that potential term. -/
 def AllowsTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Prop := 0 ∈ ofPotentialTerm x T
+
+/-!
+
+### A.1. Deciability of `AllowsTerm`
+
+We define the decidability of `AllowsTerm` through `ofPotentialTerm'` rather than
+`ofPotentialTerm` due to the speed of the former compared to the latter.
+
+-/
 
 lemma allowsTerm_iff_zero_mem_ofPotentialTerm' [DecidableEq 𝓩]
     {x : ChargeSpectrum 𝓩} {T : PotentialTerm} :
@@ -41,12 +115,28 @@ lemma allowsTerm_iff_zero_mem_ofPotentialTerm' [DecidableEq 𝓩]
 instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Decidable (x.AllowsTerm T) :=
   decidable_of_iff (0 ∈ x.ofPotentialTerm' T) allowsTerm_iff_zero_mem_ofPotentialTerm'.symm
 
+/-!
+
+### A.2. Monoticity of `AllowsTerm`
+
+The proposition `AllowsTerm` is monotone in its charge spectrum argument.
+That is if a charge spectrum `y` is a subset of a charge spectrum `x`,
+and `y` allows a potential term `T`, then `x` also allows that potential term `T`.
+
+-/
+
 lemma allowsTerm_mono {T : PotentialTerm} {y x : ChargeSpectrum 𝓩}
     (h : y ⊆ x) (hy : y.AllowsTerm T) : x.AllowsTerm T := ofPotentialTerm_mono h T hy
 
 /-!
 
-## allowsTermForm
+## B. Forms of charges which allow potential terms
+
+We now define the function `allowsTermForm` which for each potential term `T`
+and three charges `a`, `b`, and `c` returns a charge spectrum which allows the term `T`.
+
+These charges are in a minimal form, in the sense that any charge spectrum allowing `T`
+has a subset of this form.
 
 -/
 
@@ -69,6 +159,15 @@ def allowsTermForm (a b c : 𝓩) : (T : PotentialTerm) → ChargeSpectrum 𝓩
   | .topYukawa => ⟨none, some (-a), ∅, {b, - a - b}⟩
   | .bottomYukawa => ⟨some a, none, {b}, {- a - b}⟩
 
+/-!
+
+### B.1. `allowsTermForm` allows the potential term
+
+Any charge spectrum of the form `allowsTermForm a b c T` allows the potential term `T`.
+
+-/
+
+/-- The charge spectrum `allowsTermForm a b c T` allows the potential term `T`. -/
 lemma allowsTermForm_allowsTerm {a b c : 𝓩} {T : PotentialTerm} :
     (allowsTermForm a b c T).AllowsTerm T := by
   simp [AllowsTerm, ofPotentialTerm, allowsTermForm]
@@ -133,8 +232,21 @@ lemma allowsTerm_of_eq_allowsTermForm {T : PotentialTerm}
     x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := h
   exact allowsTermForm_allowsTerm
-open PotentialTerm in
 
+/-!
+
+### B.2. Subset relations for `allowsTermForm`
+
+For any potential term `T` except for `W¹ᵢⱼₖₗ 10ⁱ 10ʲ 10ᵏ 5̄Mˡ` or `W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd`,
+a charge spectrum `allowsTermForm a b c T` is a subset of another charge spectrum
+`allowsTermForm a' b' c' T` if they are equal.
+
+The reason this does not work for `W1` an `W2` is due to the presence of three
+charges in the 10d representation.
+
+-/
+
+open PotentialTerm in
 lemma allowsTermForm_eq_of_subset {a b c a' b' c' : 𝓩} {T : PotentialTerm}
     (h : allowsTermForm a b c T ⊆ allowsTermForm a' b' c' T) (hT : T ≠ W1 ∧ T ≠ W2) :
     allowsTermForm a b c T = allowsTermForm a' b' c' T := by
@@ -168,6 +280,15 @@ lemma allowsTermForm_eq_of_subset {a b c a' b' c' : 𝓩} {T : PotentialTerm}
     obtain ⟨rfl | rfl, h1 | h2⟩ := h2
     all_goals simp_all [Finset.pair_comm]
 
+/-!
+
+### B.3. Card of `allowsTermForm`
+
+The cardinality of the charge spectrum `allowsTermForm a b c T` is always
+less than or equal to the degree of the potential term `T`.
+
+-/
+
 lemma allowsTermForm_card_le_degree {a b c : 𝓩} {T : PotentialTerm} :
     (allowsTermForm a b c T).card ≤ T.degree := by
   cases T
@@ -188,6 +309,20 @@ lemma allowsTermForm_card_le_degree {a b c : 𝓩} {T : PotentialTerm} :
   all_goals
     have h1 : Finset.card {a, b, c} ≤ 3 := Finset.card_le_three
     omega
+
+/-!
+
+### B.4. If `AllowsTerm` then subset equal to `allowsTermForm a b c T`
+
+We now show one of the more important properties of `allowsTermForm`.
+Namely that if a charge spectrum `x`
+allows a potential term `T`, then there exists charges `a`, `b`, and `c` such that
+`allowsTermForm a b c T ⊆ x`.
+
+The proof of this result is rather long, relying on case-by-case anlaysis of each
+of the potential terms of intrest.
+
+-/
 
 lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
     (h : x.AllowsTerm T) :
@@ -312,6 +447,17 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     rw [← sub_zero f2, ← f1_add_f2_eq_zero]
     abel
 
+/-!
+
+### B.5. `AllowsTerm` if and only if subset equal to `allowsTermForm a b c T`
+
+We now lift the previous result to show that a charge spectrum `x`
+allows a potential term `T` if and only if there exists charges `a`, `b`, and `c` such that
+`allowsTermForm a b c T ⊆ x`.
+
+Given what has already been shown, this result is now trivial.
+
+-/
 lemma allowsTerm_iff_subset_allowsTermForm {T : PotentialTerm} {x : ChargeSpectrum 𝓩} :
     x.AllowsTerm T ↔ ∃ a b c, allowsTermForm a b c T ⊆ x := by
   constructor
@@ -322,6 +468,19 @@ lemma allowsTerm_iff_subset_allowsTermForm {T : PotentialTerm} {x : ChargeSpectr
     obtain ⟨a, b, c, h1⟩ := h
     apply allowsTerm_mono h1 allowsTermForm_allowsTerm
 
+/-!
+
+### B.6. Cardinality of subset allowing potential term
+
+We show that if a charge spectrum `x` allows a potential term `T`,
+then there exists a subset of `x` which allows `T` and whose cardinality is less than or equal
+to the degree of `T`.
+
+This follows from the fact that `allowsTermForm a b c T` always has cardinality
+less than or equal to the degree of `T`.
+
+-/
+
 lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
     (h : x.AllowsTerm T) : ∃ y ∈ x.powerset, y.card ≤ T.degree ∧ y.AllowsTerm T := by
   obtain ⟨a, b, c, h1, h2⟩ := allowsTermForm_subset_allowsTerm_of_allowsTerm h
@@ -331,7 +490,14 @@ lemma subset_card_le_degree_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
 
 /-!
 
-## Insertion of Q5
+## C. Allowing a potential term by insertion of a `Q5` charge
+
+We now study what happens when we add a charge `q5` to the `Q5` charges of a charge spectrum `x`.
+We define the proposition `AllowsTermQ5 x q5 T` which is true if adding the charge `q5`
+to the `Q5` charges of `x` allows the potential term `T` due to the addition of that charge.
+
+We prove a number of properties of this proposition, including its relation
+to `AllowsTerm` and its decidability.
 
 -/
 
@@ -365,6 +531,15 @@ def AllowsTermQ5 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : P
       (0 : 𝓩) ∈ (insert q5 x.Q5).val.map (fun y => y + q5 - qHu - qHu)
     | _ => false
 
+/-!
+
+### C.1. Decidability of `AllowsTermQ5`
+
+We show that if the type `𝓩` has decidable equality, then the proposition
+`AllowsTermQ5 x q5 T` is decidable for any charge spectrum `x`, charge `q5`, and
+potential term `T`.
+
+-/
 instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : PotentialTerm) :
     Decidable (AllowsTermQ5 x q5 T) :=
   match T with
@@ -402,6 +577,17 @@ instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : Potential
       ((0 : 𝓩) ∈ (insert q5 Q5).val.map (fun y => y + q5 - qHu - qHu))
       (by simp [AllowsTermQ5])
     | ⟨_, none, _, _⟩ => isFalse fun h => by simp [AllowsTermQ5] at h
+
+/-!
+
+### C.2. AllowsTermQ5 or AllowsTerm from AllowsTerm with inserted of `Q5` charge
+
+We show that if a charge spectrum `x` with an inserted charge `q5`
+allows a potential term `T`, then either the charge spectrum `x`
+allows that potential term `T` *due to* the addition of that charge,
+or the charge spectrum `x` already allows that potential term `T`.
+
+-/
 
 lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm)
@@ -522,6 +708,15 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
         use a1, a2
         simp_all
 
+/-!
+
+### C.3. AllowsTerm with inserted of `Q5` charge from AllowsTermQ5
+
+We show that if a charge spectrum `x` allows a potential term `T`
+*due to* the addition of a charge `q5`, then the charge spectrum `x` with that charge inserted
+allows that potential term `T`.
+
+-/
 lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm)
     (h : AllowsTermQ5 ⟨qHd, qHu, Q5, Q10⟩ q5 T) :
@@ -585,6 +780,17 @@ lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
       rw [← hsum]
       abel
 
+/-!
+
+### C.4. AllowsTerm with inserted of `Q5` charge iff AllowsTermQ5 or AllowsTerm
+
+We show that the charge spectrum `x` with that charge inserted
+allows that potential term `T` if and only if either the charge spectrum `x`
+allows that potential term `T` *due to* the addition of that charge,
+or the charge spectrum `x` already allows that potential term `T`.
+
+-/
+
 lemma allowsTerm_insertQ5_iff_allowsTermQ5 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q5 : 𝓩} (T : PotentialTerm) :
     AllowsTerm ⟨qHd, qHu, insert q5 Q5, Q10⟩ T ↔
@@ -600,7 +806,18 @@ lemma allowsTerm_insertQ5_iff_allowsTermQ5 {qHd qHu : Option 𝓩}
 
 /-!
 
-## AllowsTermQ10
+## D. Allowing a potential term by insertion of a `Q10` charge
+
+We now replicate the previous section, but for the insertion of a `Q10` charge, rather
+than a `Q5` charge.
+
+We study what happens when we add a charge `q10` to the `Q10` charges of a charge spectrum `x`.
+We define the proposition `AllowsTermQ10 x q10 T` which is true if adding the charge `q10`
+to the `Q10` charges of `x` allows the potential term `T` due to the addition of that charge.
+
+We prove a number of properties of this proposition, including its relation
+to `AllowsTerm` and its decidability.
+
 -/
 
 /-- The proposition for which says, given a charge `x` adding a charge `q5` permits the
@@ -633,6 +850,16 @@ def AllowsTermQ10 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T :
     | ⟨some qHd, some qHu, _, _⟩ => qHd + qHu + q10 = 0
     | _ => false
   | .W3 => false
+
+/-!
+
+### D.1. Decidability of `AllowsTermQ5`
+
+We show that if the type `𝓩` has decidable equality, then the proposition
+`AllowsTermQ10 x q10 T` is decidable for any charge spectrum `x`, charge `q10`, and
+potential term `T`.
+
+-/
 
 instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T : PotentialTerm) :
     Decidable (AllowsTermQ10 x q10 T) :=
@@ -674,6 +901,17 @@ instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T : Potentia
     | ⟨some qHd, none, _, _⟩ => isFalse fun h => by simp [AllowsTermQ10] at h
     | ⟨none, _, _, _⟩ => isFalse fun h => by simp [AllowsTermQ10] at h
   | .W3 => isFalse fun h => by simp [AllowsTermQ10] at h
+
+/-!
+
+### D.2. AllowsTermQ10 or AllowsTerm from AllowsTerm with inserted of `Q10` charge
+
+We show that if a charge spectrum `x` with an inserted charge `q10`
+allows a potential term `T`, then either the charge spectrum `x`
+allows that potential term `T` *due to* the addition of that charge,
+or the charge spectrum `x` already allows that potential term `T`.
+
+-/
 
 lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm)
@@ -831,6 +1069,16 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
     use a1, a2
     simp_all
 
+/-!
+
+### D.3. AllowsTerm with inserted of `Q10` charge from AllowsTermQ5
+
+We show that if a charge spectrum `x` allows a potential term `T`
+*due to* the addition of a charge `q10`, then the charge spectrum `x` with that charge inserted
+allows that potential term `T`.
+
+-/
+
 lemma allowsTerm_insertQ10_of_allowsTermQ10 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm)
     (h : AllowsTermQ10 ⟨qHd, qHu, Q5, Q10⟩ q10 T) :
@@ -884,6 +1132,16 @@ lemma allowsTerm_insertQ10_of_allowsTermQ10 {qHd qHu : Option 𝓩}
       simp_all
       rw [← hsum]
       abel
+/-!
+
+### D.4. AllowsTerm with inserted of `Q10` charge iff AllowsTermQ10 or AllowsTerm
+
+We show that the charge spectrum `x` with that charge inserted
+allows that potential term `T` if and only if either the charge spectrum `x`
+allows that potential term `T` *due to* the addition of that charge,
+or the charge spectrum `x` already allows that potential term `T`.
+
+-/
 
 lemma allowsTerm_insertQ10_iff_allowsTermQ10 {qHd qHu : Option 𝓩}
     {Q5 Q10: Finset 𝓩} {q10 : 𝓩} (T : PotentialTerm) :

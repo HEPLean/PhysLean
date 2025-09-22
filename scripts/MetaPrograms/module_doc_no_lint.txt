@@ -122,7 +122,6 @@ PhysLean/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/OrthogY3B3/PlaneWith
 PhysLean/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/OrthogY3B3/ToSols.lean
 PhysLean/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Permutations.lean
 PhysLean/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Y3.lean
-PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/AllowsTerm.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Basic.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Map.lean
 PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimalSuperSet.lean

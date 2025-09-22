@@ -411,8 +411,8 @@ however, we can show it has no duplicates.
 
 -/
 
-/-- The multiset `completionsTopYukawa S5 x` has no duplicates. -/
 omit [DecidableEq 𝓩] in
+/-- The multiset `completionsTopYukawa S5 x` has no duplicates. -/
 lemma completionsTopYukawa_nodup {S5 : Finset 𝓩} (x : ChargeSpectrum 𝓩) :
     (completionsTopYukawa S5 x).Nodup := by
   simp [completionsTopYukawa]
