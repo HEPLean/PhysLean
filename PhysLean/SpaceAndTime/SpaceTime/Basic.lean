@@ -104,6 +104,16 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       simp
   }
 
+@[simp]
+lemma toTimeAndSpace_fderiv {d : ℕ} (x : SpaceTime d) :
+    fderiv ℝ toTimeAndSpace x = toTimeAndSpace.toContinuousLinearMap := by
+  rw [ContinuousLinearEquiv.fderiv]
+
+@[simp]
+lemma toTimeAndSpace_symm_fderiv {d : ℕ} (x : Time × Space d) :
+    fderiv ℝ toTimeAndSpace.symm x = toTimeAndSpace.symm.toContinuousLinearMap := by
+  rw [ContinuousLinearEquiv.fderiv]
+
 lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
     toTimeAndSpace (Lorentz.Vector.basis (Sum.inr i))
     = (0, Space.basis i) := by
@@ -165,7 +175,7 @@ scoped notation "∂_" => deriv
 
 variable {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
 lemma deriv_eq {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) (y : SpaceTime d) :
-    SpaceTime.deriv μ f y =
+    ∂_ μ f y =
     fderiv ℝ f y (Lorentz.Vector.basis μ) := by
   rfl
 
@@ -174,6 +184,91 @@ lemma deriv_zero {d : ℕ} (μ : Fin 1 ⊕ Fin d) : SpaceTime.deriv μ (fun _ =>
   ext y
   rw [SpaceTime.deriv_eq]
   simp
+
+attribute [-simp] Fintype.sum_sum_type
+
+lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} (μ : Fin 1 ⊕ Fin d)
+    (f : SpaceTime d → M) (hf : Differentiable ℝ f) (Λ : LorentzGroup d)
+    (x : SpaceTime d) :
+    ∂_ μ (fun x => f (Λ • x)) x = ∑ ν, Λ.1 ν μ • ∂_ ν f (Λ • x) := by
+  change fderiv ℝ (f ∘ Lorentz.Vector.actionCLM Λ ) x (Lorentz.Vector.basis μ)   = _
+  rw [fderiv_comp]
+  simp only [Lorentz.Vector.actionCLM_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
+    ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply]
+    -- Fintype.sum_sum_type
+  rw [Lorentz.Vector.smul_basis]
+  simp
+  rfl
+  · fun_prop
+  · fun_prop
+
+/-!
+
+## Derivatives
+
+-/
+
+lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] (f : SpaceTime d → M)
+    (hf : Differentiable ℝ f) (x : SpaceTime d) (i : Fin d) :
+    ∂_ (Sum.inr i) f x
+    = Space.deriv i (fun y => f (toTimeAndSpace.symm ((toTimeAndSpace x).1, y)))
+      (toTimeAndSpace x).2 := by
+  rw [deriv_eq, Space.deriv_eq]
+  conv_rhs => rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
+  simp
+  congr 1
+  rw [fderiv_comp']
+  simp
+  change _ = toTimeAndSpace.symm ((fderiv ℝ ((toTimeAndSpace x).1, ·) (toTimeAndSpace x).2) (EuclideanSpace.single i 1))
+  rw [DifferentiableAt.fderiv_prodMk]
+  simp
+  trans toTimeAndSpace.symm (0, Space.basis i)
+  · rw [← toTimeAndSpace_basis_inr]
+    simp
+  · congr
+    rw [Space.basis]
+    simp
+  repeat' fun_prop
+
+lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] (f : SpaceTime d → M)
+    (hf : Differentiable ℝ f) (x : SpaceTime d) :
+    ∂_ (Sum.inl 0) f x
+    = Time.deriv (fun t => f (toTimeAndSpace.symm (t, (toTimeAndSpace x).2))) (toTimeAndSpace x).1 := by
+  rw [deriv_eq, Time.deriv_eq]
+  conv_rhs => rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
+  simp
+  congr 1
+  rw [fderiv_comp']
+  simp
+  rw [DifferentiableAt.fderiv_prodMk]
+  simp
+  rw [← toTimeAndSpace_basis_inl]
+  simp
+  repeat' fun_prop
+
+/-!
+
+## Measure space on SpaceTime
+
+-/
+open MeasureTheory
+
+instance : MeasurableSpace SpaceTime := borel SpaceTime
+
+instance : BorelSpace SpaceTime where
+  measurable_eq := by rfl
+
+def innerProductSpace (d : ℕ) : InnerProductSpace ℝ (SpaceTime d) :=
+  inferInstanceAs (InnerProductSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+
+instance : MeasureSpace SpaceTime where
+  volume := Lorentz.Vector.basis.addHaar
+
+instance : (volume (α := SpaceTime)).IsOpenPosMeasure :=
+  inferInstanceAs ((Lorentz.Vector.basis.addHaar).IsOpenPosMeasure)
+
+instance : IsFiniteMeasureOnCompacts (volume (α := SpaceTime)) :=
+  inferInstanceAs (IsFiniteMeasureOnCompacts (Lorentz.Vector.basis.addHaar))
 
 end SpaceTime
 

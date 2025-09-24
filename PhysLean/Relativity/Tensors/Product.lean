@@ -6,7 +6,9 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.Basic
 /-!
 
-# Tensors associated with a tensor species
+# The product of tensors
+
+In this file we give the product of two tensors, and prove some lemmas about it.
 
 -/
 
@@ -23,18 +25,16 @@ variable {k C G : Type} [CommRing k] [Group G]
   {S : TensorSpecies k C G} {n n' n2 : ℕ} {c : Fin n → C} {c' : Fin n' → C}
   {c2 : Fin n2 → C}
 
-/-!
 
-## Product
-
-And its interaction with
-- actions
-- permutations
-
--/
 
 TODO "6VZ3N" "Change products of tensors to use `Fin.append` rather then
   `Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm`."
+
+/-!
+
+## A. Products of components
+
+-/
 
 /-- The equivalence between `ComponentIdx (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)` and
   `Π (i : Fin n1 ⊕ Fin n2), Fin (S.repDim (Sum.elim c c1 i))`. -/
@@ -98,6 +98,12 @@ def ComponentIdx.splitEquiv {n1 n2 : ℕ} {c : Fin n1 → C} {c1 : Fin n2 → C}
         finCongr_apply, Fin.coe_cast]
       rw [prod_apply_finSumFinEquiv]
       rfl
+
+/-!
+
+## B. Products of pure tensors
+
+-/
 
 /-- The equivalence between pure tensors based on a product of lists of indices, and
   the type `Π (i : Fin n1 ⊕ Fin n2), S.FD.obj (Discrete.mk ((Sum.elim c c1) i))`. -/
@@ -176,6 +182,11 @@ lemma Pure.prodP_basisVector {n n1 : ℕ} {c : Fin n → C} {c1 : Fin n1 → C}
     · rw [ComponentIdx.prod_apply_finSumFinEquiv]
     · simp
 
+/-!
+
+## C. Products of tensors
+
+-/
 /-- The equivalence between the type `S.F.obj (OverColor.mk (Sum.elim c c1))` and the type
   `S.Tensor (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)`. -/
 noncomputable def prodEquiv {n1 n2} {c : Fin n1 → C} {c1 : Fin n2 → C} :
@@ -230,6 +241,115 @@ lemma prodT_pure {n1 n2} {c : Fin n1 → C} {c1 : Fin n2 → C}
     rfl
   | Sum.inr i =>
     rfl
+
+/-!
+
+## D. Basis
+
+-/
+
+open TensorProduct
+
+lemma prodT_basis {n1 n2} {c : Fin n1 → C} {c1 : Fin n2 → C}
+    (b : ComponentIdx c) (b1 : ComponentIdx (S := S) c1) :
+    (basis c b).prodT (basis c1 b1) =
+    (Pure.basisVector _ (b.prod b1)).toTensor := by
+  rw [basis_apply, basis_apply, prodT_pure]
+  congr
+  rw [Pure.prodP_basisVector]
+
+/-- The linear equivalence between `S.Tensor c ⊗[k] S.Tensor c1` and
+    `S.Tensor (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)`. -/
+noncomputable def tensorEquivProd {n n2 : ℕ} {c : Fin n → C} {c1 : Fin n2 → C} :
+    S.Tensor c ⊗[k] S.Tensor c1 ≃ₗ[k] S.Tensor (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) where
+  toLinearMap := TensorProduct.lift prodT
+  invFun := (Tensor.basis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).constr k (fun b =>
+    (Tensor.basis c) (ComponentIdx.splitEquiv b).1 ⊗ₜ[k]
+    (Tensor.basis c1) (ComponentIdx.splitEquiv b).2)
+  left_inv x := by
+    let f : S.Tensor (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) →ₗ[k]
+      S.Tensor c ⊗[k] S.Tensor c1 :=
+      (Tensor.basis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).constr k (fun b =>
+        (Tensor.basis c) (ComponentIdx.splitEquiv b).1 ⊗ₜ[k]
+        (Tensor.basis c1) (ComponentIdx.splitEquiv b).2)
+    let P (x : S.Tensor c ⊗[k] S.Tensor c1) := f (TensorProduct.lift prodT x) = x
+    change P x
+    apply TensorProduct.induction_on
+    · simp [P]
+    · intro t1 t2
+      apply induction_on_basis (t := t1)
+      · intro b1
+        · apply induction_on_basis (t := t2)
+          intro b2
+          dsimp [P]
+          rw [prodT_basis]
+          simp [f]
+          congr
+          · change (ComponentIdx.splitEquiv (ComponentIdx.splitEquiv.symm (b1, b2))).1  = _
+            simp
+          · change (ComponentIdx.splitEquiv (ComponentIdx.splitEquiv.symm (b1, b2))).2  = _
+            simp
+          · simp [P]
+          · intro r t h
+            simp [tmul_smul, P] at *
+            rw [h]
+          · intro t1 t2 h1 h2
+            simp [tmul_add, P] at *
+            rw [h1, h2]
+      · simp [P]
+      · intro r t h
+        simp [smul_tmul, P] at *
+        rw [h]
+      · intro t1 t2 h1 h2
+        simp [add_tmul, P] at *
+        rw [h1, h2]
+    · intro x y h1 h2
+      simp [P] at *
+      rw [h1, h2]
+  right_inv x := by
+    let f : S.Tensor (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) →ₗ[k]
+      S.Tensor c ⊗[k] S.Tensor c1 :=
+      (Tensor.basis (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm)).constr k (fun b =>
+        (Tensor.basis c) (ComponentIdx.splitEquiv b).1 ⊗ₜ[k]
+        (Tensor.basis c1) (ComponentIdx.splitEquiv b).2)
+    let P  (x : _) := (TensorProduct.lift prodT (f x)) = x
+    change P x
+    apply induction_on_basis (t := x)
+    · intro b
+      simp [P]
+      simp [f]
+      rw [prodT_basis]
+      rw [basis_apply]
+      congr
+      change (ComponentIdx.splitEquiv.symm (ComponentIdx.splitEquiv b)) = _
+      simp
+    · simp [P]
+    · intro r t h
+      simp [map_smul, P] at *
+      rw [h]
+    · intro t1 t2 h1 h2
+      simp [map_add, P] at *
+      rw [h1, h2]
+
+
+/-- Rewriting basis for the product in terms of the tensor product basis. -/
+lemma basis_prod_eq {n1 n2} {c : Fin n1 → C} {c1 : Fin n2 → C} :
+    basis (S := S) (Sum.elim c c1 ∘ ⇑finSumFinEquiv.symm) =
+    (((Tensor.basis (S := S) c).tensorProduct (Tensor.basis (S := S) c1)).reindex
+    (ComponentIdx.splitEquiv.symm)).map tensorEquivProd := by
+  ext b
+  simp [ComponentIdx.splitEquiv, tensorEquivProd]
+  rw [prodT_basis]
+  rw [← basis_apply]
+  congr
+  funext i
+  simp
+  obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
+  rw [ComponentIdx.prod_apply_finSumFinEquiv]
+  match i with
+  | Sum.inl i => rfl
+  | Sum.inr i => rfl
+
 
 /-
 
@@ -482,6 +602,7 @@ lemma prodT_basis_repr_apply {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
   · intro t1 t2 hp1 hp2
     simp only [map_add, LinearMap.add_apply, Finsupp.coe_add, Pi.add_apply, hp1, hp2]
     ring_nf
+
 
 @[simp]
 lemma Pure.prodP_equivariant {n1 n2} {c : Fin n1 → C} {c1 : Fin n2 → C}
@@ -819,6 +940,15 @@ lemma prodT_default_right {n} {c : Fin n → C}
     simp_all only [map_smul, LinearMap.smul_apply, P]
   · intro t1 t2 h1 h2
     simp_all only [map_add, LinearMap.add_apply, P]
+
+/-!
+
+## The equivalence of `Tensor S (λ i, c i)` and `Tensor S c ⊗[S.R] Tensor S c2`
+
+-/
+open TensorProduct
+
+
 
 end Tensor
 

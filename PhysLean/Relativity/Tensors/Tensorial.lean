@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.Basic
+import PhysLean.Relativity.Tensors.Product
 /-!
 
 # Tensorial class
@@ -71,8 +71,85 @@ lemma smul_toTensor_symm {g : G} {t : Tensor S c} [self : Tensorial S c M] :
   rw [smul_eq]
   simp
 
+/-- The action of the group on a `Tensorial` instance as a linear map. -/
+noncomputable def smulLinearMap (g : G) [Tensorial S c M] : M →ₗ[k] M where
+  toFun m := g • m
+  map_add' x y := by
+    apply toTensor.injective
+    simp [toTensor_smul]
+  map_smul' c x := by
+    apply toTensor.injective
+    simp [toTensor_smul]
+
+lemma smulLinearMap_apply {g : G} [Tensorial S c M] (m : M) :
+    smulLinearMap g m = g • m := rfl
+
+@[simp]
+lemma smul_add {g : G} [Tensorial S c M] (m m' : M) :
+    g • (m + m') = g • m + g • m' := by
+  apply toTensor.injective
+  simp [toTensor_smul, map_add]
+
+@[simp]
+lemma smul_neg {n : ℕ} {c : Fin n → C} {M : Type} [AddCommGroup M] [Module k M]
+    [Tensorial S c M] (g : G) (m : M) :
+    g • (-m) = - (g • m) := toTensor.injective <| by
+  simp [toTensor_smul, map_neg]
+
 /-- The number of indices of a elements `t : M` where `M` carries a tensorial instance. -/
 def numIndices (t : M) [Tensorial S c M] : ℕ :=
   TensorSpecies.numIndices (toTensor t)
+/-!
+
+## basis
+
+-/
+
+lemma basis_toTensor_apply [Tensorial S c M]   (m : M) :
+    (Tensor.basis c).repr (toTensor m) = ((Tensor.basis c).map toTensor.symm).repr m := rfl
+
+/-!
+
+## The product of two tensorial types is tensorial
+
+-/
+open TensorProduct
+
+noncomputable instance prod [Tensorial S c M]  {n2 : ℕ} {c2 : Fin n2 → C}
+    {M₂ : Type} [AddCommMonoid M₂] [Module k M₂] [Tensorial S c2 M₂] :
+    Tensorial S (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm)  (M ⊗[k] M₂) where
+  toTensor := (TensorProduct.congr toTensor toTensor).trans
+    (Tensor.tensorEquivProd)
+
+lemma toTensor_tprod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
+    [Tensorial S c M]  [AddCommMonoid M₂] [Module k M₂]
+    [Tensorial S c2 M₂] (m : M) (m2 : M₂) :
+    toTensor (m ⊗ₜ[k] m2) = Tensor.prodT (toTensor m) (toTensor m2) := rfl
+
+lemma smul_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
+    [Tensorial S c M]  [AddCommMonoid M₂] [Module k M₂]
+    [Tensorial S c2 M₂] (g : G) (m : M) (m2 : M₂) :
+    g • (m ⊗ₜ[k] m2) = (g • m) ⊗ₜ[k] (g • m2) := by
+  apply toTensor.injective
+  simp [toTensor_smul]
+  rw [toTensor_tprod, toTensor_tprod]
+  rw [← Tensor.prodT_equivariant, toTensor_smul, toTensor_smul]
+
+lemma basis_map_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
+    [Tensorial S c M]  [AddCommMonoid M₂] [Module k M₂]
+    [Tensorial S c2 M₂] :
+    (Tensor.basis (S := S) (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm)).map (toTensor (M := (M ⊗[k] M₂))).symm =
+    (((Tensor.basis (S := S) c).map (toTensor (M := M)).symm).tensorProduct
+    ((Tensor.basis (S := S) c2).map (toTensor (M := M₂)).symm)).reindex
+    (Tensor.ComponentIdx.splitEquiv.symm) := by
+  rw [Tensor.basis_prod_eq]
+  ext b
+  simp only [Tensor.ComponentIdx.splitEquiv, Module.Basis.map_apply, Module.Basis.coe_reindex,
+    Equiv.symm_symm, Equiv.coe_fn_mk, Function.comp_apply, Module.Basis.tensorProduct_apply]
+  apply toTensor.injective
+  simp only [LinearEquiv.apply_symm_apply]
+  rw [toTensor_tprod]
+  simp only [LinearEquiv.apply_symm_apply]
+  rfl
 
 end Tensorial

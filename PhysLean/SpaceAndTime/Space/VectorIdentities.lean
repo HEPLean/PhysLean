@@ -251,6 +251,11 @@ lemma grad_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
     exact fun a a_1 => False.elim (a (id (Eq.symm a_1)))
   · simp
 
+lemma grad_apply {d} (f : Space d → ℝ) (x : Space d) (i : Fin d) :
+    (∇ f x) i = deriv i f x := by
+  rw [grad_eq_sum]
+  simp [basis_apply]
+
 open InnerProductSpace
 
 lemma grad_inner_eq {d} (f : Space d → ℝ) (x : Space d) (y : Space d) :

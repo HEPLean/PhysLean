@@ -199,6 +199,7 @@ lemma const (u : X → U) (v : X → V) (hu : ContDiff ℝ ∞ u) (hv : ContDiff
   linearize := by simp
   adjoint := by simp; exact HasVarAdjoint.zero
 
+
 lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {u : X → U}
     {F' G'} (hF : HasVarAdjDerivAt F F' (G u)) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun u => F (G u)) (fun ψ => G' (F' ψ)) u where
@@ -582,7 +583,7 @@ lemma add
       apply hG.adjoint
 
 lemma mul
-    (F G : (X → ℝ) → (X → ℝ)) (F' G') (u)
+    (F G : (X → U) → (X → ℝ)) (F' G') (u)
     (hF : HasVarAdjDerivAt F F' u) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun φ x => F φ x * G φ x)
       (fun ψ x => F' (fun x' => ψ x' * G u x') x + G' (fun x' => F u x' * ψ x') x) u where
@@ -629,11 +630,37 @@ lemma mul
     case h =>
       apply HasVarAdjoint.add
       · apply HasVarAdjoint.mul_right
-        apply hF.adjoint
+        convert hF.adjoint
+        rw [deriv_smul_const]
+        simp
+        fun_prop
         exact apply_smooth_self hG
       · apply HasVarAdjoint.mul_left
-        apply hG.adjoint
+        convert hG.adjoint
+        rw [deriv_smul_const]
+        simp
+        fun_prop
         exact apply_smooth_self hF
+
+lemma const_mul
+    (F : (X → U) → (X → ℝ)) (F') (u)
+    (hF : HasVarAdjDerivAt F F' u) (c : ℝ) :
+    HasVarAdjDerivAt (fun φ x => c * F φ x) (fun ψ x => F' (fun x' => c * ψ x') x ) u := by
+  have h1 : HasVarAdjDerivAt (fun φ x => c) (fun x => 0) u := {
+    smooth_at :=  hF.smooth_at
+    diff := by intros; fun_prop
+    linearize := by simp
+    adjoint := {
+      test_fun_preserving _ hφ := by simp; exact IsTestFunction.zero (U := ℝ) (X := X)
+      test_fun_preserving' _ hφ := by exact IsTestFunction.zero (U := U) (X := X)
+      adjoint _ _ _ _ := by simp
+      ext' := fun K cK => ⟨∅,isCompact_empty,fun _ _ h _ _ => rfl⟩
+    }
+  }
+  convert mul (fun φ x => c) F (fun _ => 0) F' u h1 hF
+  simp
+
+
 
 omit [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)] in
 protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u)
