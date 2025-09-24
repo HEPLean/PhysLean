@@ -146,6 +146,7 @@ The type `χ.Charges` has the structure of a module over the field `ℚ`.
 instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.Charges :=
   Pi.addCommMonoid
 
+
 /--
   An instance to provide the necessary operations and properties for `charges` to form a module
   over the field `ℚ`.
@@ -153,6 +154,9 @@ instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.Charges
 @[simps!]
 instance chargesModule (χ : ACCSystemCharges) : Module ℚ χ.Charges :=
   Pi.module _ _ _
+
+instance ChargesAddCommGroup (χ : ACCSystemCharges) : AddCommGroup χ.Charges :=
+  Module.addCommMonoidToAddCommGroup ℚ
 
 /-!
 
@@ -251,6 +255,9 @@ instance linSolsModule (χ : ACCSystemLinear) : Module ℚ χ.LinSols where
   zero_smul S := LinSols.ext (χ.chargesModule.zero_smul _)
   smul_add a S T := LinSols.ext (χ.chargesModule.smul_add _ _ _)
   add_smul a b T:= LinSols.ext (χ.chargesModule.add_smul _ _ _)
+
+instance linSolsAddCommGroup (χ : ACCSystemLinear) : AddCommGroup χ.LinSols :=
+  Module.addCommMonoidToAddCommGroup ℚ
 
 /-!
 
