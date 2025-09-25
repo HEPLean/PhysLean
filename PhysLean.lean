@@ -26,8 +26,8 @@ import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.PointParticle
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
 import PhysLean.Electromagnetism.Homogeneous
-import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.KineticTerm
+import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Potential
 import PhysLean.Electromagnetism.Wave

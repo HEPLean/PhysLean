@@ -279,6 +279,7 @@ instance : MeasurableSpace SpaceTime := borel SpaceTime
 instance : BorelSpace SpaceTime where
   measurable_eq := by rfl
 
+/-- The Euclidean inner product structure on `SpaceTime`. -/
 def innerProductSpace (d : ℕ) : InnerProductSpace ℝ (SpaceTime d) :=
   inferInstanceAs (InnerProductSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 

@@ -272,6 +272,7 @@ of Gauss's law and Ampère's law in vacuum.
 
 -/
 
+/-- A local instance of an inner product structure on `SpaceTime`. -/
 noncomputable local instance : InnerProductSpace ℝ SpaceTime := SpaceTime.innerProductSpace 3
 
 /-- The variational gradient of the kinetic term of an electromagnetic potential. -/

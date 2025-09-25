@@ -481,7 +481,6 @@ lemma actionT_smul {g : G} {r : k} {t : S.Tensor c} :
 lemma actionT_zero {g : G} : g • (0 : S.Tensor c) = 0 := by
   simp [actionT_eq]
 
-@[simp]
 lemma actionT_neg {g : G} {t : S.Tensor c} :
     g • (-t) = -(g • t) := by
   rw [actionT_eq]
