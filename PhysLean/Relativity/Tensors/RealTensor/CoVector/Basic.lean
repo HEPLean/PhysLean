@@ -229,7 +229,7 @@ lemma smul_eq_sum {d : ℕ} (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : CoV
     simp only [Finset.sum_apply]
     congr
     funext j
-    simp  [Fin.isValue, Pi.smul_apply, transpose_apply, MulOpposite.smul_eq_mul_unop,
+    simp [Fin.isValue, Pi.smul_apply, transpose_apply, MulOpposite.smul_eq_mul_unop,
       MulOpposite.unop_op, Nat.succ_eq_add_one, Nat.reduceAdd]
     congr
     rw [toTensor_symm_pure, coBasisFin_repr_apply]

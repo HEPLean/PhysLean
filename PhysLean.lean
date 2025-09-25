@@ -296,6 +296,7 @@ import PhysLean.Relativity.Tensors.MetricTensor
 import PhysLean.Relativity.Tensors.OfInt
 import PhysLean.Relativity.Tensors.Product
 import PhysLean.Relativity.Tensors.RealTensor.Basic
+import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Derivative
 import PhysLean.Relativity.Tensors.RealTensor.Matrix.Pre
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
