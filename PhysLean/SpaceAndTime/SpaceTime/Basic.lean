@@ -179,6 +179,15 @@ lemma deriv_eq {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) (y : Spa
     fderiv ℝ f y (Lorentz.Vector.basis μ) := by
   rfl
 
+lemma deriv_apply_eq {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) (f : SpaceTime d → Lorentz.Vector d)
+    (hf : Differentiable ℝ f)
+    (y : SpaceTime d)  :
+    ∂_ μ f y ν = fderiv ℝ (fun x => f x ν) y (Lorentz.Vector.basis μ) := by
+  rw [deriv_eq]
+  rw [fderiv_pi]
+  rfl
+  fun_prop
+
 @[simp]
 lemma deriv_zero {d : ℕ} (μ : Fin 1 ⊕ Fin d) : SpaceTime.deriv μ (fun _ => (0 : ℝ)) = 0 := by
   ext y
@@ -269,6 +278,9 @@ instance : (volume (α := SpaceTime)).IsOpenPosMeasure :=
 
 instance : IsFiniteMeasureOnCompacts (volume (α := SpaceTime)) :=
   inferInstanceAs (IsFiniteMeasureOnCompacts (Lorentz.Vector.basis.addHaar))
+
+instance : Measure.IsAddHaarMeasure (volume (α := SpaceTime)) :=
+  inferInstanceAs (Measure.IsAddHaarMeasure (Lorentz.Vector.basis.addHaar))
 
 end SpaceTime
 

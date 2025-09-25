@@ -217,7 +217,6 @@ lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {u : X �
     apply hG.diff (φ := fun a x => φ 0 x + a • deriv (fun x_1 => φ x_1 x) 0)
     fun_prop [deriv]
   adjoint := by
-
     have : ContDiff ℝ ∞ u := hG.smooth_at
     have h := hF.adjoint.comp hG.adjoint
     apply h.congr_fun
@@ -227,6 +226,47 @@ lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {u : X �
     · simp [Function.HasUncurry.uncurry];
       apply hG.diff (φ := (fun s x => u x + s • φ x))
       fun_prop
+
+lemma congr {F G : (X → U) → (Y → V)} {F' } {u : X → U}
+    (hF : HasVarAdjDerivAt F F' u) (h : ∀ φ, ContDiff ℝ ∞ φ → F φ = G φ) :
+    HasVarAdjDerivAt G F' u where
+  smooth_at := hF.smooth_at
+  diff := by
+    intro φ hφ
+    conv => enter [3, s]; rw [← h (φ s.1) (by fun_prop)]
+    exact hF.diff φ hφ
+  linearize := by
+    intro φ hφ x
+    convert hF.linearize φ hφ x using 1
+    · congr
+      funext s
+      rw [h (φ s) (by fun_prop)]
+    · congr
+      funext s
+      rw [h]
+      apply ContDiff.add
+      · fun_prop
+      · apply ContDiff.smul
+        fun_prop
+        conv =>
+          enter [3, x];
+          rw [← fderiv_deriv]
+          erw [fderiv_uncurry_comp_fst _ _ ( hφ.differentiable (by simp))]
+          simp
+          rw [← fderiv_deriv]
+          rw [DifferentiableAt.fderiv_prodMk (by fun_prop) (by fun_prop)]
+        simp
+        fun_prop
+  adjoint := by
+    apply HasVarAdjoint.congr_fun hF.adjoint
+    intro φ hφ
+    funext x
+    congr
+    funext s
+    rw [h]
+    have : ContDiff ℝ ∞ u := hF.smooth_at
+    fun_prop
+
 
 lemma unique_on_test_functions
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
@@ -581,6 +621,35 @@ lemma add
       apply HasVarAdjoint.add
       apply hF.adjoint
       apply hG.adjoint
+
+lemma sum {ι : Type} [Fintype ι]
+    (F : ι → (X → U) → (X → V)) (F' : ι →  (X → V) → X → U) (u)
+    (hu : ContDiff ℝ ∞ u)
+    (hF : ∀ i, HasVarAdjDerivAt (F i) (F' i) u) :
+    HasVarAdjDerivAt (fun φ x => ∑ i, F i φ x) (fun ψ x => ∑ i, F' i ψ x) u := by
+  let P (ι : Type) [Fintype ι] : Prop :=
+    ∀ (F : ι → (X → U) → (X → V)), ∀ (F' : ι →  (X → V) → X → U), ∀ u, ∀ (hu : ContDiff ℝ ∞ u),
+    ∀ (hF : ∀ i, HasVarAdjDerivAt (F i) (F' i) u),
+    HasVarAdjDerivAt (fun φ x => ∑ i, F i φ x) (fun ψ x => ∑ i, F' i ψ x) u
+  have hp : P ι  := by
+    apply Fintype.induction_empty_option
+    · intro ι ι' inst e hp F F' u hu ih
+      convert hp (fun i => F (e i)) (fun i => F' (e i)) u hu (by
+        intro i
+        simpa using ih (e i))
+      rw [← @e.sum_comp]
+      rw [← @e.sum_comp]
+    · intro i ι' u hu ih
+      simp
+      apply HasVarAdjDerivAt.const
+      fun_prop
+      fun_prop
+    · intro i ι' hp F F' u hu ih
+      simp
+      apply HasVarAdjDerivAt.add
+      exact ih none
+      exact hp (fun i_1 => F (some i_1)) (fun i_1 => F' (some i_1)) u hu fun i_1 => ih (some i_1)
+  exact hp F F' u hu hF
 
 lemma mul
     (F G : (X → U) → (X → ℝ)) (F' G') (u)
