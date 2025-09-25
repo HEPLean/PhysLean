@@ -251,10 +251,12 @@ lemma congr {F G : (X → U) → (Y → V)} {F' } {u : X → U}
           enter [3, x];
           rw [← fderiv_deriv]
           erw [fderiv_uncurry_comp_fst _ _ (hφ.differentiable (by simp))]
-          simp
+          simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv,
+            one_smul]
           rw [← fderiv_deriv]
           rw [DifferentiableAt.fderiv_prodMk (by fun_prop) (by fun_prop)]
-        simp
+        simp only [fderiv_id', fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.prod_apply,
+          ContinuousLinearMap.coe_id', id_eq, ContinuousLinearMap.zero_apply]
         fun_prop
   adjoint := by
     apply HasVarAdjoint.congr_fun hF.adjoint
@@ -638,12 +640,12 @@ lemma sum {ι : Type} [Fintype ι]
       rw [← @e.sum_comp]
       rw [← @e.sum_comp]
     · intro i ι' u hu ih
-      simp
+      simp only [Finset.univ_eq_empty, Finset.sum_empty]
       apply HasVarAdjDerivAt.const
       fun_prop
       fun_prop
     · intro i ι' hp F F' u hu ih
-      simp
+      simp only [Fintype.sum_option]
       apply HasVarAdjDerivAt.add
       exact ih none
       exact hp (fun i_1 => F (some i_1)) (fun i_1 => F' (some i_1)) u hu fun i_1 => ih (some i_1)
@@ -699,13 +701,13 @@ lemma mul
       · apply HasVarAdjoint.mul_right
         convert hF.adjoint
         rw [deriv_smul_const]
-        simp
+        simp only [deriv_id'', one_smul]
         fun_prop
         exact apply_smooth_self hG
       · apply HasVarAdjoint.mul_left
         convert hG.adjoint
         rw [deriv_smul_const]
-        simp
+        simp only [deriv_id'', one_smul]
         fun_prop
         exact apply_smooth_self hF
 

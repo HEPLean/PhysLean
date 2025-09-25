@@ -226,14 +226,17 @@ lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
       (toTimeAndSpace x).2 := by
   rw [deriv_eq, Space.deriv_eq]
   conv_rhs => rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
-  simp
+  simp only [Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply, ContinuousLinearMap.coe_comp',
+    Function.comp_apply]
   congr 1
   rw [fderiv_comp']
-  simp
+  simp only [Prod.mk.eta, toTimeAndSpace_symm_fderiv, ContinuousLinearMap.coe_comp',
+    ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   change _ = toTimeAndSpace.symm ((fderiv ℝ ((toTimeAndSpace x).1, ·) (toTimeAndSpace x).2)
     (EuclideanSpace.single i 1))
   rw [DifferentiableAt.fderiv_prodMk]
-  simp
+  simp only [fderiv_fun_const, Pi.zero_apply, fderiv_id', ContinuousLinearMap.prod_apply,
+    ContinuousLinearMap.zero_apply, ContinuousLinearMap.coe_id', id_eq]
   trans toTimeAndSpace.symm (0, Space.basis i)
   · rw [← toTimeAndSpace_basis_inr]
     simp
@@ -250,14 +253,18 @@ lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M]
       (toTimeAndSpace x).1 := by
   rw [deriv_eq, Time.deriv_eq]
   conv_rhs => rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
-  simp
+  simp only [Fin.isValue, Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply,
+    ContinuousLinearMap.coe_comp', Function.comp_apply]
   congr 1
   rw [fderiv_comp']
-  simp
+  simp only [Fin.isValue, Prod.mk.eta, toTimeAndSpace_symm_fderiv, ContinuousLinearMap.coe_comp',
+    ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   rw [DifferentiableAt.fderiv_prodMk]
-  simp
+  simp only [Fin.isValue, fderiv_id', fderiv_fun_const, Pi.zero_apply,
+    ContinuousLinearMap.prod_apply, ContinuousLinearMap.coe_id', id_eq,
+    ContinuousLinearMap.zero_apply]
   rw [← toTimeAndSpace_basis_inl]
-  simp
+  simp only [Fin.isValue, ContinuousLinearEquiv.symm_apply_apply]
   repeat' fun_prop
 
 /-!

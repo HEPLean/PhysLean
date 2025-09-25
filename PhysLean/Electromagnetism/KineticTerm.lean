@@ -17,6 +17,31 @@ and show properties of its variational gradient.
 In particular the variational gradient `gradKineticTerm` of the kinetic term
 is directly related to Gauss's law and the Ampere law.
 
+## ii. Key results
+
+- `ElectromagneticPotential.kineticTerm` is the kinetic term of an electromagnetic potential.
+- `ElectromagneticPotential.kineticTerm_equivariant` shows that the kinetic term is
+  Lorentz invariant.
+- `ElectromagneticPotential.gradKineticTerm` is the variational gradient of the kinetic term.
+- `ElectromagneticPotential.gradKineticTerm_eq_electric_magnetic` gives a first expression for the
+  variational gradient in terms of the electric and magnetic fields.
+
+## iii. Table of contents
+
+- A. The kinetic term
+  - A.1. Lorentz invariance of the kinetic term
+  - A.2. Kinetic term simplified expressions
+  - A.3. The kinetic term in terms of the electric and magnetic fields
+- B. Variational gradient of the kinetic term
+  - B.1. Variational gradient in terms of fderiv
+  - B.2. Writing the variational gradient as a sums over double derivatives of the potential
+  - B.3. Variational gradient as a sums over fieldStrengthMatrix
+  - B.4. Variational gradient in terms of the Guass's and Ampère laws
+
+## iv. References
+
+- https://quantummechanics.ucsd.edu/ph130a/130_notes/node452.html
+
 -/
 
 namespace Electromagnetism
@@ -69,7 +94,7 @@ lemma kineticTerm_equivariant (A : ElectromagneticPotential) (Λ : LorentzGroup 
 
 /-!
 
-### A.2. Kinetic term equal sum
+### A.2. Kinetic term simplified expressions
 
 -/
 
@@ -154,7 +179,7 @@ lemma kineticTerm_eq_sum_potential (A : ElectromagneticPotential) (x : SpaceTime
       rw [Finset.sum_eq_single ν]
       · intro b _ hb
         nth_rewrite 2 [minkowskiMatrix.off_diag_zero]
-        simp
+        simp only [mul_zero, zero_mul]
         exact id (Ne.symm hb)
       · simp
     _ = - 1/4 * ∑ μ, ∑ ν, η μ μ * η ν ν *
@@ -166,7 +191,7 @@ lemma kineticTerm_eq_sum_potential (A : ElectromagneticPotential) (x : SpaceTime
       rw [Finset.sum_eq_single μ]
       · intro b _ hb
         rw [minkowskiMatrix.off_diag_zero]
-        simp
+        simp only [zero_mul]
         exact id (Ne.symm hb)
       · simp
     _ = - 1/4 * ∑ μ, ∑ ν,
@@ -218,7 +243,7 @@ lemma kineticTerm_eq_sum_potential (A : ElectromagneticPotential) (x : SpaceTime
 
 /-!
 
-### A.5. The kinetic term in terms of the electric and magnetic fields
+### A.3. The kinetic term in terms of the electric and magnetic fields
 
 -/
 open InnerProductSpace
@@ -228,7 +253,7 @@ lemma kineticTerm_eq_electric_magnetic (A : ElectromagneticPotential) (t : Time)
     A.kineticTerm (SpaceTime.toTimeAndSpace.symm (t, x)) =
     1/2 * (‖A.electricField t x‖ ^ 2 - ‖A.magneticField t x‖ ^ 2) := by
   rw [kineticTerm_eq_sum]
-  simp
+  simp only [one_div]
   conv_lhs =>
     enter [2, 2, μ, 2, ν, 2, μ', 2, ν']
     rw [fieldStrengthMatrix_eq_electric_magnetic A t x hA,
@@ -355,7 +380,7 @@ lemma gradKineticTerm_eq_sum_sum (A : ElectromagneticPotential) (x : SpaceTime)
         rw [Fintype.sum_prod_type]
         refine Finset.sum_congr rfl (fun μ _ => ?_)
         refine Finset.sum_congr rfl (fun ν _ => ?_)
-        simp
+        simp only [mul_one, neg_smul, neg_add_rev, neg_neg, mul_neg]
         ring_nf
       _ = ∑ (μ : (Fin 1 ⊕ Fin 3)), ∑ (ν : (Fin 1 ⊕ Fin 3)),
       ((- 2 * (fderiv ℝ (fun x' => (η μ μ * η ν ν * -1 / 2) * ∂_ μ A x' ν) x)
@@ -461,7 +486,7 @@ lemma gradKineticTerm_eq_fieldStrength (A : ElectromagneticPotential)
           apply Finset.sum_congr rfl (fun μ _ => ?_)
           congr
           rw [SpaceTime.deriv_eq, SpaceTime.deriv_eq, SpaceTime.deriv_eq, fderiv_fun_sub]
-          simp
+          simp only [ContinuousLinearMap.coe_sub', Pi.sub_apply]
           · conv => enter [2, x]; rw [SpaceTime.deriv_eq]
             apply Differentiable.differentiableAt
             apply Differentiable.const_mul
@@ -531,10 +556,10 @@ lemma gradKineticTerm_eq_electric_magnetic(A : ElectromagneticPotential)
       conv_lhs =>
         enter [2, i]
         rw [SpaceTime.deriv_sum_inr _ (hdiff _ _)]
-        simp
+        simp only [Fin.isValue]
         enter [2, y]
         rw [fieldStrengthMatrix_eq_electric_magnetic _ _ _ (ha.differentiable (by simp))]
-      simp
+      simp only
       rw [Space.div]
       simp [Space.coord]
   have term_inr (i : Fin 3) : (∑ (μ : (Fin 1 ⊕ Fin 3)),
@@ -545,7 +570,7 @@ lemma gradKineticTerm_eq_electric_magnetic(A : ElectromagneticPotential)
       congr
       conv_lhs =>
         rw [SpaceTime.deriv_sum_inl _ (hdiff _ _)]
-        simp
+        simp only [Fin.isValue]
         enter [1, t]
         rw [fieldStrengthMatrix_eq_electric_magnetic _ _ _ (ha.differentiable (by simp))]
         simp
@@ -558,7 +583,7 @@ lemma gradKineticTerm_eq_electric_magnetic(A : ElectromagneticPotential)
       conv_lhs =>
         enter [2, i]
         rw [SpaceTime.deriv_sum_inr _ (hdiff _ _)]
-        simp
+        simp only
         enter [2, y]
         rw [fieldStrengthMatrix_eq_electric_magnetic _ _ _ (ha.differentiable (by simp))]
       fin_cases i

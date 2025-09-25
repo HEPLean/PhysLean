@@ -28,9 +28,36 @@ the field strength tensor, the kinetic energy, and the electric and magnetic fie
 - `ElectromagneticPotential.deriv`: the derivative tensor `∂_μ A^ν`.
 - `ElectromagneticPotential.toFieldStrength`: the field strength tensor `F_μ^ν`.
 - `ElectromagneticPotential.scalarPotential`: the scalar potential `φ`.
-- `ElectromagneticPotential.vectorPotential`: the vector potential `A^i`.
-- `ElectromagneticPotential.electricField`: the electric field `E^i`.
-- `ElectromagneticPotential.magneticField`: the magnetic field `B^i`.
+- `ElectromagneticPotential.vectorPotential`: the vector potential `A_i`.
+- `ElectromagneticPotential.electricField`: the electric field `E`.
+- `ElectromagneticPotential.magneticField`: the magnetic field `B`.
+
+## iii. Table of contents
+
+- A. The electromagnetic potential
+  - A.1. The action on the space-time derivatives
+  - A.2. Differentiability
+  - A.3. Varitational adjoint derivative of component
+  - A.4. Variational adjoint derivative of derivatives of the potential
+- B. The derivative tensor of the electricomagnetic potential
+  - B.1. Equivariance of the derivative tensor
+  - B.2. The elements of the derivative tensor in terms of the basis
+- C. The field strength tensor
+  - C.1. Basic equalitites
+  - C.2. Elements of the field strength tensor in terms of basis
+  - C.3. The field strength matrix
+    - C.3.1. Differentiability of the field strength matrix
+  - C.4. The antisymmetry of the field strength tensor
+  - C.5. Equivariance of the field strength tensor
+- E. The electric and magnetic fields
+  - E.1. The scalar potential
+  - E.2. The vector potential
+  - E.3. The electric field
+    - E.3.1. Relation between the electric field and the field strength matrix
+    - E.3.2. Differentiability of the electric field
+  - E.4. The magnetic field
+    - E.4.1. Relation between the magnetic field and the field strength matrix
+  - E.5. Field strength matrix in terms of the electric and magnetic fields
 
 ## iv. References
 
@@ -67,7 +94,7 @@ attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 /-!
 
-## A.1. The action on the space-time derivatives
+### A.1. The action on the space-time derivatives
 
 Given a ElectromagneticPotential `A^μ`, we can consider its derivative `∂_μ A^ν`.
 Under a Lorentz transformation `Λ`, this transforms as
@@ -110,7 +137,8 @@ lemma spaceTime_deriv_action_eq_sum {μ ν : Fin 1 ⊕ Fin 3}
       conv_lhs =>
         enter [1, 2, i]
         rw [fderiv_const_mul (hdif i)]
-      simp
+      simp only [Nat.reduceSucc, ContinuousLinearMap.coe_sum', ContinuousLinearMap.coe_smul',
+        Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
       rw [Lorentz.Vector.smul_eq_sum]
       congr
       funext κ
@@ -130,12 +158,12 @@ lemma spaceTime_deriv_action_eq_sum {μ ν : Fin 1 ⊕ Fin 3}
   apply Finset.sum_congr rfl (fun κ _ => ?_)
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl (fun ρ _ => ?_)
-  simp
+  simp only [Nat.reduceSucc, smul_eq_mul]
   ring
 
 /-!
 
-## A.2. Differentiability
+### A.2. Differentiability
 
 We show that the components of field strength tensor are differentiable if the potential is.
 -/
@@ -149,7 +177,7 @@ lemma differentiable_component
 
 /-!
 
-## A.3. Varitational adjoint derivative of component
+### A.3. Varitational adjoint derivative of component
 
 We find the variational adjoint derivative of the components of the potential.
 This will be used to find e.g. the variational derivative of the kinetic term,
@@ -178,7 +206,9 @@ lemma hasVarAdjDerivAt_component (μ : Fin 1 ⊕ Fin 3) (A : SpaceTime → Loren
   intro u v
   simp [f,f']
   rw [PiLp.inner_apply]
-  simp
+  simp only [Lorentz.Vector.apply_smul, Lorentz.Vector.basis_apply, mul_ite, mul_one, mul_zero,
+    RCLike.inner_apply, conj_trivial, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte,
+    mul_eq_mul_right_iff]
   left
   let fCLM : Lorentz.Vector →L[ℝ] ℝ := {
     toFun := fun v => v μ,
@@ -192,7 +222,7 @@ lemma hasVarAdjDerivAt_component (μ : Fin 1 ⊕ Fin 3) (A : SpaceTime → Loren
 
 /-!
 
-## A.4 Variational adjoint derivative of derivatives of the potential
+### A.4. Variational adjoint derivative of derivatives of the potential
 
 We find the variational adjoint derivative of the derivatives of the components of the potential.
 This will again be used to find the variational derivative of the kinetic term,
@@ -209,7 +239,7 @@ lemma deriv_hasVarAdjDerivAt (μ ν : Fin 1 ⊕ Fin 3) (A : SpaceTime → Lorent
   refine HasVarAdjDerivAt.congr (G := (fun (A : SpaceTime → Lorentz.Vector) x => ∂_ μ A x ν)) h0' ?_
   intro φ hφ
   funext x
-  simp
+  simp only
   rw [deriv_apply_eq μ ν φ]
   exact hφ.differentiable (by simp)
 
@@ -230,7 +260,7 @@ noncomputable def deriv (A : ElectromagneticPotential) :
 
 /-!
 
-## B.1. Equivariance of the derivative tensor
+### B.1. Equivariance of the derivative tensor
 
 We show that the derivative tensor is equivariant under the action of the Lorentz group.
 That is, `∂_μ (fun x => Λ • A (Λ⁻¹ • x)) = Λ • (∂_μ A (Λ⁻¹ • x))`, or in words:
@@ -263,7 +293,7 @@ lemma deriv_equivariant {x : SpaceTime} (A : ElectromagneticPotential) (Λ : Lor
         refine Finset.sum_congr rfl (fun ρ _ => ?_)
         rw [smul_tmul, tmul_smul, tmul_smul, smul_smul, smul_smul]
         congr 1
-        simp
+        simp only [Nat.reduceSucc, smul_eq_mul]
         ring
       _ = ∑ κ, ∑ ρ, ∑ μ, ∑ ν, (∂_ ρ A (Λ⁻¹ • x) κ) •
           (Λ⁻¹.1 ρ μ • (Lorentz.CoVector.basis μ)) ⊗ₜ[ℝ]
@@ -297,7 +327,7 @@ lemma deriv_equivariant {x : SpaceTime} (A : ElectromagneticPotential) (Λ : Lor
 
 /-!
 
-### B.2. The elements of the derivative tensor in terms of the basis
+### B.2. The elements of the derivative tensor in terms of the basis
 
 We show that in the standard basis, the elements of the derivative tensor
 are just equal to `∂_ μ A x ν`.
@@ -312,7 +342,8 @@ lemma deriv_basis_repr_apply {μν : (Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)} (A 
   match μν with
   | (μ, ν) =>
   rw [deriv]
-  simp
+  simp only [map_sum, map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul, Finset.sum_apply,
+    Pi.smul_apply, Basis.tensorProduct_repr_tmul_apply, Basis.repr_self, smul_eq_mul]
   rw [Finset.sum_eq_single μ, Finset.sum_eq_single ν]
   · simp
   · intro μ' _ h
@@ -329,7 +360,8 @@ lemma toTensor_deriv_basis_repr_apply (A : ElectromagneticPotential)
     ∂_ (finSumFinEquiv.symm (b 0)) A x (finSumFinEquiv.symm (b 1)) := by
   rw [Tensorial.basis_toTensor_apply]
   rw [Tensorial.basis_map_prod]
-  simp
+  simp only [Nat.reduceSucc, Nat.reduceAdd, Basis.repr_reindex, Finsupp.mapDomain_equiv_apply,
+    Equiv.symm_symm, Fin.isValue]
   rw [Lorentz.Vector.tensor_basis_map_eq_basis_reindex,
     Lorentz.CoVector.tensor_basis_map_eq_basis_reindex]
   have hb : (((Lorentz.CoVector.basis (d := 3)).reindex
@@ -388,7 +420,7 @@ lemma toTensor_toFieldStrength (A : ElectromagneticPotential) (x : SpaceTime) :
 
 /-!
 
-## C.2. Elements of the field strength tensor in terms of basis
+### C.2. Elements of the field strength tensor in terms of basis
 
 -/
 
@@ -433,7 +465,8 @@ lemma toFieldStrength_tensor_basis_eq_basis (A : ElectromagneticPotential) (x : 
       (finSumFinEquiv.symm (b 0), finSumFinEquiv.symm (b 1)) := by
   rw [Tensorial.basis_toTensor_apply]
   rw [Tensorial.basis_map_prod]
-  simp
+  simp only [Nat.reduceSucc, Nat.reduceAdd, Basis.repr_reindex, Finsupp.mapDomain_equiv_apply,
+    Equiv.symm_symm, Fin.isValue]
   rw [Lorentz.Vector.tensor_basis_map_eq_basis_reindex]
   have hb : (((Lorentz.Vector.basis (d := 3)).reindex Lorentz.Vector.indexEquiv.symm).tensorProduct
           (Lorentz.Vector.basis.reindex Lorentz.Vector.indexEquiv.symm)) =
@@ -467,22 +500,22 @@ lemma toFieldStrength_basis_repr_apply_eq_single {μν : (Fin 1 ⊕ Fin 3) × (F
     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x) μν =
     ((η μν.1 μν.1 * ∂_ μν.1 A x μν.2) - η μν.2 μν.2 * ∂_ μν.2 A x μν.1) := by
   rw [toFieldStrength_basis_repr_apply]
-  simp
+  simp only [Finset.sum_sub_distrib]
   rw [Finset.sum_eq_single μν.1, Finset.sum_eq_single μν.2]
   · intro b _ hb
     rw [minkowskiMatrix.off_diag_zero]
-    simp
+    simp only [zero_mul]
     exact id (Ne.symm hb)
   · simp
   · intro b _ hb
     rw [minkowskiMatrix.off_diag_zero]
-    simp
+    simp only [zero_mul]
     exact id (Ne.symm hb)
   · simp
 
 /-!
 
-## C.3. The field strength matrix
+### C.3. The field strength matrix
 
 We define the field strength matrix to be the matrix representation of the field strength tensor
 in the standard basis.
@@ -497,7 +530,7 @@ noncomputable abbrev fieldStrengthMatrix (A : ElectromagneticPotential) (x : Spa
 
 /-!
 
-### C.3.1. Differentiability of the field strength matrix
+#### C.3.1. Differentiability of the field strength matrix
 
 -/
 
@@ -557,7 +590,7 @@ lemma fieldStrengthMatrix_diag_eq_zero (A : ElectromagneticPotential) (x : Space
 
 /-!
 
-## C.5. Equivariance of the field strength tensor
+### C.5. Equivariance of the field strength tensor
 
 We show that the field strength tensor is equivariant under the action of the Lorentz group.
 That is transforming the potential and then taking the field strength is the same
@@ -620,7 +653,7 @@ noncomputable def electricField (A : ElectromagneticPotential) : ElectricField :
 
 /-!
 
-#### E.3.1 Relation between the electric field and the field strength matrix
+#### E.3.1. Relation between the electric field and the field strength matrix
 
 -/
 
@@ -629,9 +662,9 @@ lemma electricField_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t : T
     A.electricField t x i = -
     A.fieldStrengthMatrix (SpaceTime.toTimeAndSpace.symm (t, x)) (Sum.inl 0, Sum.inr i) := by
   rw [toFieldStrength_basis_repr_apply_eq_single]
-  simp
+  simp only [Fin.isValue, inl_0_inl_0, one_mul, inr_i_inr_i, neg_mul, sub_neg_eq_add, neg_add_rev]
   rw [electricField]
-  simp
+  simp only [PiLp.sub_apply, PiLp.neg_apply, Fin.isValue]
   congr
   · rw [Space.grad_apply]
     trans ∂_ (Sum.inr i) (fun x => A x (Sum.inl 0)) (toTimeAndSpace.symm (t, x)); swap
@@ -644,7 +677,7 @@ lemma electricField_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t : T
       rfl
       · exact fun μ => (differentiable_component A hA _).differentiableAt
   · rw [SpaceTime.deriv_sum_inl]
-    simp
+    simp only [ContinuousLinearEquiv.apply_symm_apply]
     rw [Time.deriv_eq, Time.deriv_eq]
     rw [vectorPotential]
     simp [timeSlice]
@@ -668,7 +701,7 @@ lemma electricField_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t : T
 
 /-!
 
-#### E.3.2 Differentiability of the electric field
+#### E.3.2. Differentiability of the electric field
 
 -/
 
@@ -700,7 +733,7 @@ noncomputable def magneticField (A : ElectromagneticPotential) : MagneticField :
 
 /-!
 
-#### E.4.1 Relation between the magnetic field and the field strength matrix
+#### E.4.1. Relation between the magnetic field and the field strength matrix
 
 -/
 
@@ -709,14 +742,14 @@ lemma magneticField_fst_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t
     A.magneticField t x 0 =
     - A.fieldStrengthMatrix (SpaceTime.toTimeAndSpace.symm (t, x)) (Sum.inr 1, Sum.inr 2) := by
   rw [toFieldStrength_basis_repr_apply_eq_single]
-  simp
+  simp only [Fin.isValue, inr_i_inr_i, neg_mul, one_mul, sub_neg_eq_add, neg_add_rev, neg_neg]
   rw [magneticField]
   simp [Space.curl, Space.coord]
   rw [neg_add_eq_sub]
   congr
   all_goals
   · rw [SpaceTime.deriv_sum_inr _ hA]
-    simp
+    simp only [Fin.isValue, ContinuousLinearEquiv.apply_symm_apply]
     rw [Space.deriv_eq, Space.deriv_eq, fderiv_pi]
     rfl
     · intro μ
@@ -732,14 +765,14 @@ lemma magneticField_snd_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t
     A.magneticField t x 1 = A.fieldStrengthMatrix (SpaceTime.toTimeAndSpace.symm (t, x))
       (Sum.inr 0, Sum.inr 2) := by
   rw [toFieldStrength_basis_repr_apply_eq_single]
-  simp
+  simp only [Fin.isValue, inr_i_inr_i, neg_mul, one_mul, sub_neg_eq_add]
   rw [magneticField]
   simp [Space.curl, Space.coord]
   rw [neg_add_eq_sub]
   congr
   all_goals
   · rw [SpaceTime.deriv_sum_inr _ hA]
-    simp
+    simp only [Fin.isValue, ContinuousLinearEquiv.apply_symm_apply]
     rw [Space.deriv_eq, Space.deriv_eq, fderiv_pi]
     rfl
     · intro μ
@@ -755,14 +788,14 @@ lemma magneticField_thd_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t
     A.magneticField t x 2 =
     - A.fieldStrengthMatrix (SpaceTime.toTimeAndSpace.symm (t, x)) (Sum.inr 0, Sum.inr 1) := by
   rw [toFieldStrength_basis_repr_apply_eq_single]
-  simp
+  simp only [Fin.isValue, inr_i_inr_i, neg_mul, one_mul, sub_neg_eq_add, neg_add_rev, neg_neg]
   rw [magneticField]
   simp [Space.curl, Space.coord]
   rw [neg_add_eq_sub]
   congr
   all_goals
   · rw [SpaceTime.deriv_sum_inr _ hA]
-    simp
+    simp only [Fin.isValue, ContinuousLinearEquiv.apply_symm_apply]
     rw [Space.deriv_eq, Space.deriv_eq, fderiv_pi]
     rfl
     · intro μ
@@ -775,7 +808,7 @@ lemma magneticField_thd_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t
 
 /-!
 
-### E.6 Field strength matrix in terms of the electric and magnetic fields
+### E.5. Field strength matrix in terms of the electric and magnetic fields
 
 -/
 
