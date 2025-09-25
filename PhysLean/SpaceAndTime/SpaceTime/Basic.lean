@@ -181,7 +181,7 @@ lemma deriv_eq {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) (y : Spa
 
 lemma deriv_apply_eq {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) (f : SpaceTime d → Lorentz.Vector d)
     (hf : Differentiable ℝ f)
-    (y : SpaceTime d)  :
+    (y : SpaceTime d) :
     ∂_ μ f y ν = fderiv ℝ (fun x => f x ν) y (Lorentz.Vector.basis μ) := by
   rw [deriv_eq]
   rw [fderiv_pi]
@@ -196,11 +196,12 @@ lemma deriv_zero {d : ℕ} (μ : Fin 1 ⊕ Fin d) : SpaceTime.deriv μ (fun _ =>
 
 attribute [-simp] Fintype.sum_sum_type
 
-lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ} (μ : Fin 1 ⊕ Fin d)
+lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ}
+    (μ : Fin 1 ⊕ Fin d)
     (f : SpaceTime d → M) (hf : Differentiable ℝ f) (Λ : LorentzGroup d)
     (x : SpaceTime d) :
     ∂_ μ (fun x => f (Λ • x)) x = ∑ ν, Λ.1 ν μ • ∂_ ν f (Λ • x) := by
-  change fderiv ℝ (f ∘ Lorentz.Vector.actionCLM Λ ) x (Lorentz.Vector.basis μ)   = _
+  change fderiv ℝ (f ∘ Lorentz.Vector.actionCLM Λ) x (Lorentz.Vector.basis μ) = _
   rw [fderiv_comp]
   simp only [Lorentz.Vector.actionCLM_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
     ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply]
@@ -217,7 +218,8 @@ lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace �
 
 -/
 
-lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] (f : SpaceTime d → M)
+lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (f : SpaceTime d → M)
     (hf : Differentiable ℝ f) (x : SpaceTime d) (i : Fin d) :
     ∂_ (Sum.inr i) f x
     = Space.deriv i (fun y => f (toTimeAndSpace.symm ((toTimeAndSpace x).1, y)))
@@ -228,7 +230,8 @@ lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
   congr 1
   rw [fderiv_comp']
   simp
-  change _ = toTimeAndSpace.symm ((fderiv ℝ ((toTimeAndSpace x).1, ·) (toTimeAndSpace x).2) (EuclideanSpace.single i 1))
+  change _ = toTimeAndSpace.symm ((fderiv ℝ ((toTimeAndSpace x).1, ·) (toTimeAndSpace x).2)
+    (EuclideanSpace.single i 1))
   rw [DifferentiableAt.fderiv_prodMk]
   simp
   trans toTimeAndSpace.symm (0, Space.basis i)
@@ -239,10 +242,12 @@ lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
     simp
   repeat' fun_prop
 
-lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] (f : SpaceTime d → M)
+lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M]
+    [NormedSpace ℝ M] (f : SpaceTime d → M)
     (hf : Differentiable ℝ f) (x : SpaceTime d) :
     ∂_ (Sum.inl 0) f x
-    = Time.deriv (fun t => f (toTimeAndSpace.symm (t, (toTimeAndSpace x).2))) (toTimeAndSpace x).1 := by
+    = Time.deriv (fun t => f (toTimeAndSpace.symm (t, (toTimeAndSpace x).2)))
+      (toTimeAndSpace x).1 := by
   rw [deriv_eq, Time.deriv_eq]
   conv_rhs => rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
   simp

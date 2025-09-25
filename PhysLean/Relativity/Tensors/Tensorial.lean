@@ -105,7 +105,7 @@ def numIndices (t : M) [Tensorial S c M] : ℕ :=
 
 -/
 
-lemma basis_toTensor_apply [Tensorial S c M]   (m : M) :
+lemma basis_toTensor_apply [Tensorial S c M] (m : M) :
     (Tensor.basis c).repr (toTensor m) = ((Tensor.basis c).map toTensor.symm).repr m := rfl
 
 /-!
@@ -115,19 +115,19 @@ lemma basis_toTensor_apply [Tensorial S c M]   (m : M) :
 -/
 open TensorProduct
 
-noncomputable instance prod [Tensorial S c M]  {n2 : ℕ} {c2 : Fin n2 → C}
+noncomputable instance prod [Tensorial S c M] {n2 : ℕ} {c2 : Fin n2 → C}
     {M₂ : Type} [AddCommMonoid M₂] [Module k M₂] [Tensorial S c2 M₂] :
-    Tensorial S (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm)  (M ⊗[k] M₂) where
+    Tensorial S (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm) (M ⊗[k] M₂) where
   toTensor := (TensorProduct.congr toTensor toTensor).trans
     (Tensor.tensorEquivProd)
 
 lemma toTensor_tprod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
-    [Tensorial S c M]  [AddCommMonoid M₂] [Module k M₂]
+    [Tensorial S c M] [AddCommMonoid M₂] [Module k M₂]
     [Tensorial S c2 M₂] (m : M) (m2 : M₂) :
     toTensor (m ⊗ₜ[k] m2) = Tensor.prodT (toTensor m) (toTensor m2) := rfl
 
 lemma smul_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
-    [Tensorial S c M]  [AddCommMonoid M₂] [Module k M₂]
+    [Tensorial S c M] [AddCommMonoid M₂] [Module k M₂]
     [Tensorial S c2 M₂] (g : G) (m : M) (m2 : M₂) :
     g • (m ⊗ₜ[k] m2) = (g • m) ⊗ₜ[k] (g • m2) := by
   apply toTensor.injective
@@ -136,9 +136,10 @@ lemma smul_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
   rw [← Tensor.prodT_equivariant, toTensor_smul, toTensor_smul]
 
 lemma basis_map_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
-    [Tensorial S c M]  [AddCommMonoid M₂] [Module k M₂]
+    [Tensorial S c M] [AddCommMonoid M₂] [Module k M₂]
     [Tensorial S c2 M₂] :
-    (Tensor.basis (S := S) (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm)).map (toTensor (M := (M ⊗[k] M₂))).symm =
+    (Tensor.basis (S := S) (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm)).map
+      (toTensor (M := (M ⊗[k] M₂))).symm =
     (((Tensor.basis (S := S) c).map (toTensor (M := M)).symm).tensorProduct
     ((Tensor.basis (S := S) c2).map (toTensor (M := M₂)).symm)).reindex
     (Tensor.ComponentIdx.splitEquiv.symm) := by

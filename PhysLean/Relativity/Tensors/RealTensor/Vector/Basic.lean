@@ -36,11 +36,14 @@ namespace Vector
 open TensorSpecies
 open Tensor
 
-instance {d} : AddCommMonoid (Vector d) := inferInstanceAs (AddCommMonoid (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+instance {d} : AddCommMonoid (Vector d) :=
+  inferInstanceAs (AddCommMonoid (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
-instance {d} : Module ℝ (Vector d) := inferInstanceAs (Module ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+instance {d} : Module ℝ (Vector d) :=
+  inferInstanceAs (Module ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
-instance {d} : AddCommGroup (Vector d) := inferInstanceAs (AddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+instance {d} : AddCommGroup (Vector d) :=
+  inferInstanceAs (AddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
 instance {d} : FiniteDimensional ℝ (Vector d) :=
   inferInstanceAs (FiniteDimensional ℝ (Fin 1 ⊕ Fin d → ℝ))

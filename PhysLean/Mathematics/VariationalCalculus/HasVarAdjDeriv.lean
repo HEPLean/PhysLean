@@ -199,7 +199,6 @@ lemma const (u : X → U) (v : X → V) (hu : ContDiff ℝ ∞ u) (hv : ContDiff
   linearize := by simp
   adjoint := by simp; exact HasVarAdjoint.zero
 
-
 lemma comp {F : (Y → V) → (Z → W)} {G : (X → U) → (Y → V)} {u : X → U}
     {F' G'} (hF : HasVarAdjDerivAt F F' (G u)) (hG : HasVarAdjDerivAt G G' u) :
     HasVarAdjDerivAt (fun u => F (G u)) (fun ψ => G' (F' ψ)) u where
@@ -251,7 +250,7 @@ lemma congr {F G : (X → U) → (Y → V)} {F' } {u : X → U}
         conv =>
           enter [3, x];
           rw [← fderiv_deriv]
-          erw [fderiv_uncurry_comp_fst _ _ ( hφ.differentiable (by simp))]
+          erw [fderiv_uncurry_comp_fst _ _ (hφ.differentiable (by simp))]
           simp
           rw [← fderiv_deriv]
           rw [DifferentiableAt.fderiv_prodMk (by fun_prop) (by fun_prop)]
@@ -266,7 +265,6 @@ lemma congr {F G : (X → U) → (Y → V)} {F' } {u : X → U}
     rw [h]
     have : ContDiff ℝ ∞ u := hF.smooth_at
     fun_prop
-
 
 lemma unique_on_test_functions
     [IsFiniteMeasureOnCompacts (@volume X _)] [(@volume X _).IsOpenPosMeasure]
@@ -623,15 +621,15 @@ lemma add
       apply hG.adjoint
 
 lemma sum {ι : Type} [Fintype ι]
-    (F : ι → (X → U) → (X → V)) (F' : ι →  (X → V) → X → U) (u)
+    (F : ι → (X → U) → (X → V)) (F' : ι → (X → V) → X → U) (u)
     (hu : ContDiff ℝ ∞ u)
     (hF : ∀ i, HasVarAdjDerivAt (F i) (F' i) u) :
     HasVarAdjDerivAt (fun φ x => ∑ i, F i φ x) (fun ψ x => ∑ i, F' i ψ x) u := by
   let P (ι : Type) [Fintype ι] : Prop :=
-    ∀ (F : ι → (X → U) → (X → V)), ∀ (F' : ι →  (X → V) → X → U), ∀ u, ∀ (hu : ContDiff ℝ ∞ u),
+    ∀ (F : ι → (X → U) → (X → V)), ∀ (F' : ι → (X → V) → X → U), ∀ u, ∀ (hu : ContDiff ℝ ∞ u),
     ∀ (hF : ∀ i, HasVarAdjDerivAt (F i) (F' i) u),
     HasVarAdjDerivAt (fun φ x => ∑ i, F i φ x) (fun ψ x => ∑ i, F' i ψ x) u
-  have hp : P ι  := by
+  have hp : P ι := by
     apply Fintype.induction_empty_option
     · intro ι ι' inst e hp F F' u hu ih
       convert hp (fun i => F (e i)) (fun i => F' (e i)) u hu (by
@@ -714,9 +712,9 @@ lemma mul
 lemma const_mul
     (F : (X → U) → (X → ℝ)) (F') (u)
     (hF : HasVarAdjDerivAt F F' u) (c : ℝ) :
-    HasVarAdjDerivAt (fun φ x => c * F φ x) (fun ψ x => F' (fun x' => c * ψ x') x ) u := by
+    HasVarAdjDerivAt (fun φ x => c * F φ x) (fun ψ x => F' (fun x' => c * ψ x') x) u := by
   have h1 : HasVarAdjDerivAt (fun φ x => c) (fun x => 0) u := {
-    smooth_at :=  hF.smooth_at
+    smooth_at := hF.smooth_at
     diff := by intros; fun_prop
     linearize := by simp
     adjoint := {
@@ -728,8 +726,6 @@ lemma const_mul
   }
   convert mul (fun φ x => c) F (fun _ => 0) F' u h1 hF
   simp
-
-
 
 omit [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)] in
 protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u)

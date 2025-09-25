@@ -293,8 +293,8 @@ lemma sum {ι : Type} [Fintype ι] {F : ι → (X → U) → (X → V)} {F' : ι
       HasVarAdjoint (fun φ x => ∑ i, F i φ x) (fun φ x => ∑ i, F' i φ x)
   have h1 : P ι := by
     apply Fintype.induction_empty_option
-    · intro ι1 ι2 _ e h  F F' hF
-      convert h (fun i => F (e i)) (fun i => F' (e i)) fun i => hF (e i )
+    · intro ι1 ι2 _ e h F F' hF
+      convert h (fun i => F (e i)) (fun i => F' (e i)) fun i => hF (e i)
       rw [← @e.sum_comp _ _ _ (Fintype.ofEquiv ι2 e.symm)]
       rw [← @e.sum_comp _ _ _ (Fintype.ofEquiv ι2 e.symm)]
     · simp [P]

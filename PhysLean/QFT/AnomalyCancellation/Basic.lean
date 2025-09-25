@@ -146,7 +146,6 @@ The type `χ.Charges` has the structure of a module over the field `ℚ`.
 instance chargesAddCommMonoid (χ : ACCSystemCharges) : AddCommMonoid χ.Charges :=
   Pi.addCommMonoid
 
-
 /--
   An instance to provide the necessary operations and properties for `charges` to form a module
   over the field `ℚ`.
