@@ -7,14 +7,49 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.MinimallyAllowsTerm.B
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoConstrained
 /-!
 
-# Minimally allows terms given sets of allowed charges
+# The set of charges which minimally allows a potential term
 
-In this module our main definition is `minimallyAllowsTermsOfFinset S5 S10 T`,
-which is the set of charges that minimally allows the potential term `T`
-which live in `ofFinset S5 S10`.
+## i. Overview
 
-To define this function we need some auxiliary functions that take a finite set of integers
-and return multisets of integers of a given cardinality containing only those elements.
+In this module given finite sets for the `5`-bar and `10`d charges `S5` and `S10`
+we find the sets of charge spectra which minimally allowe a potential term `T`.
+The set we will actually define will be a multiset, for computational
+efficency (using multisets saves Lean having to manually check for duplicates,
+which can be very costly)
+
+To do this we define some auxillary results which create multisets of a given cardinality
+from a finset.
+
+## ii. Key results
+
+- `minimallyAllowsTermsOfFinset S5 S10 T` : the multiset of all charge spectra
+  with charges in `S5` and `S10` which minimally allow the potential term `T`.
+- `minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset` : the
+  statement that `minimallyAllowsTermsOfFinset S5 S10 T` contains exactly the charge spectra
+  with charges in `S5` and `S10` which minimally allow the potential term `T`.
+
+## iii. Table of contents
+
+- A. Construction of set of charges which minimally allow a potential term
+  - A.1. Preliminary: Multisets from finite sets
+    - A.1.1. Multisets of cardinality `1`
+    - A.1.2. Multisets of cardinality `2`
+    - A.1.3. Multisets of cardinality `3`
+  - A.2. `minimallyAllowsTermsOfFinset`: the set of charges which minimally allow a potential term
+  - A.3. Showing `minimallyAllowsTermsOfFinset` has charges in given sets
+- B. Proving the `minimallyAllowsTermsOfFinset` is set of charges which minimally allow a term
+  - B.1. An element of `minimallyAllowsTermsOfFinset` is of the form `allowsTermForm`
+  - B.2. Every element of `minimallyAllowsTermsOfFinset` allows the term
+  - B.3. Every element of `minimallyAllowsTermsOfFinset` minimally allows the term
+  - B.4. Every charge spectra which minimally allows term is in `minimallyAllowsTermsOfFinset`
+  - B.5. In `minimallyAllowsTermsOfFinset` iff minimally allowing term
+- C. Other properties of `minimallyAllowsTermsOfFinset`
+  - C.1. Monotonicity of `minimallyAllowsTermsOfFinset` in allowed sets of charges
+  - C.2. Not phenomenologically constrained if in `minimallyAllowsTermsOfFinset` for topYukawa
+
+## iv. References
+
+There are no known references for the material in this module.
 
 -/
 namespace SuperSymmetry
@@ -27,7 +62,27 @@ variable {𝓩 : Type}
 
 /-!
 
-## Auxillary results: Multisets from Finsets of given cardinality.
+## A. Construction of set of charges which minimally allow a potential term
+
+We start with the construction of the set of charges which minimally allow a potential term,
+and then later prover properties about this set.
+The set we will define is `minimallyAllowsTermsOfFinset`, the construction of
+which relies on some preliminary results.
+
+-/
+
+/-!
+
+### A.1. Preliminary: Multisets from finite sets
+
+We construct the multisets of cardinality `1`, `2` and `3` which
+contain elements of finite set `s`.
+
+-/
+
+/-!
+
+#### A.1.1. Multisets of cardinality `1`
 
 -/
 
@@ -44,6 +99,12 @@ lemma mem_toMultisetsOne_iff [DecidableEq 𝓩] {s : Finset 𝓩} (X : Multiset 
   rw [Multiset.card_eq_one] at h
   obtain ⟨x, h1, h2⟩ := h
   simp
+
+/-!
+
+#### A.1.2. Multisets of cardinality `2`
+
+-/
 
 /-- The multisets of cardinality `2` containing elements from a finite set `s`. -/
 def toMultisetsTwo (s : Finset 𝓩) : Multiset (Multiset 𝓩) :=
@@ -80,6 +141,12 @@ lemma mem_toMultisetsTwo_iff [DecidableEq 𝓩] {s : Finset 𝓩} (X : Multiset 
       refine (Multiset.le_iff_subset ?_).mpr ?_
       · simpa using hab
       · exact Multiset.dedup_subset'.mp hsub
+
+/-!
+
+#### A.1.3. Multisets of cardinality `3`
+
+-/
 
 /-- The multisets of cardinality `3` containing elements from a finite set `s`. -/
 def toMultisetsThree [DecidableEq 𝓩] (s : Finset 𝓩) : Multiset (Multiset 𝓩) :=
@@ -165,7 +232,13 @@ lemma mem_toMultisetsThree_iff [DecidableEq 𝓩] {s : Finset 𝓩} (X : Multise
           · exact Multiset.dedup_subset'.mp hsub
 /-!
 
-# minimallyAllowsTermOfFinset
+### A.2. `minimallyAllowsTermsOfFinset`: the set of charges which minimally allow a potential term
+
+Given the construction of the multisets above we can now define the set of charges
+which minimally allow a potential term.
+
+We will prove it has the desired properties later in this module.
+
 -/
 
 open PotentialTerm
@@ -247,6 +320,84 @@ def minimallyAllowsTermsOfFinset (S5 S10 : Finset 𝓩) :
     let Filt := prod.filter (fun x => x.1 + x.2.1.sum + x.2.2.sum = 0)
     (Filt.map (fun x => ⟨x.1, none,x.2.1.toFinset, x.2.2.toFinset⟩))
 
+/-!
+
+### A.3. Showing `minimallyAllowsTermsOfFinset` has charges in given sets
+
+We show that every element of `minimallyAllowsTermsOfFinset S5 S10 T` is in `ofFinset S5 S10`.
+That is every element of `minimallyAllowsTermsOfFinset S5 S10 T` has charges
+in the sets `S5` and `S10`.
+
+-/
+
+lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
+    {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+    x ∈ ofFinset S5 S10 := by
+  cases T
+  all_goals
+    simp [minimallyAllowsTermsOfFinset] at hx
+  case' W1 | W2 => have hx := hx.1
+  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ := hx
+  case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
+  all_goals
+    try rw [Multiset.card_eq_one] at h
+    try rw [Multiset.card_eq_two] at h
+    try rw [Multiset.card_eq_three] at h
+  case' W1 =>
+    obtain ⟨q51, rfl⟩ := h.1.1.2
+    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
+  case' W2 =>
+    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
+  case' W3 =>
+    obtain ⟨q51, q52, rfl⟩ := h.1.2.2
+  case' W4 =>
+    obtain ⟨q51, rfl⟩ := h.1.2.2.2
+  case' K1 =>
+    obtain ⟨q51, rfl⟩ := h.1.1.2
+    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
+  case' K2 =>
+    obtain ⟨q101, rfl⟩ := h.1.2.2.2
+  case' topYukawa =>
+    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
+  case' bottomYukawa =>
+    obtain ⟨q51, rfl⟩ := h.1.2.1.2
+    rw [Multiset.card_eq_one] at h
+    obtain ⟨q101, rfl⟩ := h.1.2.2.2
+  case' Λ =>
+    obtain ⟨q101, rfl⟩ := h.1.2.2
+    obtain ⟨q51, q52, rfl⟩ := h.1.1.2
+  case' β =>
+    obtain ⟨q51, rfl⟩ := h.1.2.2
+  all_goals
+    rw [mem_ofFinset_iff]
+    simp_all
+
+lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm} :
+    minimallyAllowsTermsOfFinset S5 S10 T ⊆ (ofFinset S5 S10).val := by
+  refine Multiset.subset_iff.mpr (fun x hx => ?_)
+  rw [Finset.mem_val]
+  exact mem_ofFinset_of_mem_minimallyAllowsTermOfFinset hx
+
+
+/-!
+
+## B. Proving the `minimallyAllowsTermsOfFinset` is set of charges which minimally allow a term
+
+We now prove that `minimallyAllowsTermsOfFinset` has the property
+that all charges spectra with charges in the sets `S5` and `S10`
+which minimally allow the potential term `T` are in
+`minimallyAllowsTermsOfFinset S5 S10 T`, and vice versa.
+
+-/
+
+/-!
+
+### B.1. An element of `minimallyAllowsTermsOfFinset` is of the form `allowsTermForm`
+
+We show that every element of `minimallyAllowsTermsOfFinset S5 S10 T` is of the form
+`allowsTermForm a b c T` for some `a`, `b` and `c`.
+
+-/
 lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
     {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     ∃ a b c, x = allowsTermForm a b c T := by
@@ -335,12 +486,55 @@ lemma eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩
     simp_all [allowsTermForm]
     grind
 
+/-!
+
+### B.2. Every element of `minimallyAllowsTermsOfFinset` allows the term
+
+We show that every element of `minimallyAllowsTermsOfFinset S5 S10 T` allows the term `T`.
+
+-/
+
 lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
     {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
     x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
   exact allowsTermForm_allowsTerm
 
+
+/-!
+
+### B.3. Every element of `minimallyAllowsTermsOfFinset` minimally allows the term
+
+We make the above condition stronger, showing that every element of
+`minimallyAllowsTermsOfFinset S5 S10 T` minimally allows the term `T`.
+
+-/
+
+lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩}
+    {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
+    (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
+    x.MinimallyAllowsTerm T := by
+  by_cases hT : T ≠ W1 ∧ T ≠ W2
+  · obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
+    exact allowsTermForm_minimallyAllowsTerm hT
+  · simp at hT
+    by_cases h : T = W1
+    · subst h
+      simp [minimallyAllowsTermsOfFinset] at hx
+      exact hx.2
+    · simp_all
+      subst hT
+      simp [minimallyAllowsTermsOfFinset] at hx
+      exact hx.2
+
+/-!
+
+### B.4. Every charge spectra which minimally allows term is in `minimallyAllowsTermsOfFinset`
+
+We show that every charge spectra which minimally allows term `T` and has charges
+in the sets `S5` and `S10` is in `minimallyAllowsTermsOfFinset S5 S10 T`.
+
+-/
 lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset 𝓩}
     {T : PotentialTerm} (x : ChargeSpectrum 𝓩) (h : x.MinimallyAllowsTerm T)
     (hx : x ∈ ofFinset S5 S10) :
@@ -390,70 +584,15 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset �
     use a, {b}, {- a - b}
     simp_all [allowsTermForm]
 
-lemma minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩}
-    {T : PotentialTerm} {x : ChargeSpectrum 𝓩}
-    (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
-    x.MinimallyAllowsTerm T := by
-  by_cases hT : T ≠ W1 ∧ T ≠ W2
-  · obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
-    exact allowsTermForm_minimallyAllowsTerm hT
-  · simp at hT
-    by_cases h : T = W1
-    · subst h
-      simp [minimallyAllowsTermsOfFinset] at hx
-      exact hx.2
-    · simp_all
-      subst hT
-      simp [minimallyAllowsTermsOfFinset] at hx
-      exact hx.2
+/-!
 
-lemma mem_ofFinset_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm}
-    {x : ChargeSpectrum 𝓩} (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 T) :
-    x ∈ ofFinset S5 S10 := by
-  cases T
-  all_goals
-    simp [minimallyAllowsTermsOfFinset] at hx
-  case' W1 | W2 => have hx := hx.1
-  case' μ | β | W1 | W2 | W3 | K1 | topYukawa | Λ => obtain ⟨a, b, h, rfl⟩ := hx
-  case' bottomYukawa | K2 | W4 => obtain ⟨a, b, c, h, rfl⟩ := hx
-  all_goals
-    try rw [Multiset.card_eq_one] at h
-    try rw [Multiset.card_eq_two] at h
-    try rw [Multiset.card_eq_three] at h
-  case' W1 =>
-    obtain ⟨q51, rfl⟩ := h.1.1.2
-    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
-  case' W2 =>
-    obtain ⟨q101, q102, q103, rfl⟩ := h.1.2.2
-  case' W3 =>
-    obtain ⟨q51, q52, rfl⟩ := h.1.2.2
-  case' W4 =>
-    obtain ⟨q51, rfl⟩ := h.1.2.2.2
-  case' K1 =>
-    obtain ⟨q51, rfl⟩ := h.1.1.2
-    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
-  case' K2 =>
-    obtain ⟨q101, rfl⟩ := h.1.2.2.2
-  case' topYukawa =>
-    obtain ⟨q101, q102, rfl⟩ := h.1.2.2
-  case' bottomYukawa =>
-    obtain ⟨q51, rfl⟩ := h.1.2.1.2
-    rw [Multiset.card_eq_one] at h
-    obtain ⟨q101, rfl⟩ := h.1.2.2.2
-  case' Λ =>
-    obtain ⟨q101, rfl⟩ := h.1.2.2
-    obtain ⟨q51, q52, rfl⟩ := h.1.1.2
-  case' β =>
-    obtain ⟨q51, rfl⟩ := h.1.2.2
-  all_goals
-    rw [mem_ofFinset_iff]
-    simp_all
+### B.5. In `minimallyAllowsTermsOfFinset` iff minimally allowing term
 
-lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset 𝓩} {T : PotentialTerm} :
-    minimallyAllowsTermsOfFinset S5 S10 T ⊆ (ofFinset S5 S10).val := by
-  refine Multiset.subset_iff.mpr (fun x hx => ?_)
-  rw [Finset.mem_val]
-  exact mem_ofFinset_of_mem_minimallyAllowsTermOfFinset hx
+We now show the key result of this section, that a charge spectrum `x`
+is in `minimallyAllowsTermsOfFinset S5 S10 T` if and only if
+it minimally allows the term `T`, provided it is in `ofFinset S5 S10`.
+
+-/
 
 lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
     {S5 S10 : Finset 𝓩} {T : PotentialTerm}
@@ -465,6 +604,20 @@ lemma minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
   · intro h
     exact minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset h
 
+/-!
+
+## C. Other properties of `minimallyAllowsTermsOfFinset`
+
+We show two other properties of `minimallyAllowsTermsOfFinset`.
+
+-/
+
+/-!
+
+### C.1. Monotonicity of `minimallyAllowsTermsOfFinset` in allowed sets of charges
+
+-/
+
 lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10' : Finset 𝓩} {T : PotentialTerm}
     (h5 : S5' ⊆ S5) (h10 : S10' ⊆ S10) :
     minimallyAllowsTermsOfFinset S5' S10' T ⊆ minimallyAllowsTermsOfFinset S5 S10 T := by
@@ -473,6 +626,15 @@ lemma minimallyAllowsTermOfFinset_subset_of_subset {S5 S5' S10 S10' : Finset �
   rw [← minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset
     (ofFinset_subset_of_subset h5 h10 h1)]
   exact (minimallyAllowsTerm_iff_mem_minimallyAllowsTermOfFinset h1).mpr hx
+
+/-!
+
+### C.2. Not phenomenologically constrained if in `minimallyAllowsTermsOfFinset` for topYukawa
+
+We show that every term which is in `minimallyAllowsTermsOfFinset S5 S10 topYukawa` is not
+phenomenologically constrained.
+
+-/
 
 lemma not_isPhenoConstrained_of_minimallyAllowsTermsOfFinset_topYukawa
     {S5 S10 : Finset 𝓩} {x : ChargeSpectrum 𝓩}
