@@ -465,7 +465,6 @@ lemma actionT_pure {g : G} {p : Pure S c} :
   rw [lift.toRep_ρ_tprod]
   rfl
 
-@[simp]
 lemma actionT_add {g : G} {t1 t2 : S.Tensor c} :
     g • (t1 + t2) = g • t1 + g • t2 := by
   rw [actionT_eq, actionT_eq, actionT_eq]
@@ -818,7 +817,7 @@ lemma toField_equivariant {c : Fin 0 → C} (g : G) (t : Tensor S c) :
   · intro r t hp
     simp [hp]
   · intro t1 t2 hp1 hp2
-    simp [hp1, hp2]
+    simp [hp1, hp2, actionT_add]
 
 end Tensor
 

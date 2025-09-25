@@ -184,6 +184,7 @@ and derive the equations of motion.
 
 -/
 
+/-- A local instance of the inner product structure on `SpaceTime`. -/
 noncomputable local instance : InnerProductSpace ℝ SpaceTime := SpaceTime.innerProductSpace 3
 
 open ContDiff

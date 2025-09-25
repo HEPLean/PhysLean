@@ -259,10 +259,8 @@ lemma smul_eq_mulVec {d} (Λ : LorentzGroup d) (p : CoVector d) :
     mul_comm]
   rfl
 
-@[simp]
 lemma smul_add {d : ℕ} (Λ : LorentzGroup d) (p q : CoVector d) :
-    Λ • (p + q) = Λ • p + Λ • q := by
-  rw [smul_eq_mulVec, smul_eq_mulVec, smul_eq_mulVec, Matrix.mulVec_add]
+    Λ • (p + q) = Λ • p + Λ • q := by simp
 
 @[simp]
 lemma smul_sub {d : ℕ} (Λ : LorentzGroup d) (p q : CoVector d) :

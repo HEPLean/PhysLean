@@ -76,7 +76,7 @@ noncomputable def smulLinearMap (g : G) [Tensorial S c M] : M →ₗ[k] M where
   toFun m := g • m
   map_add' x y := by
     apply toTensor.injective
-    simp [toTensor_smul]
+    simp [toTensor_smul, Tensor.actionT_add]
   map_smul' c x := by
     apply toTensor.injective
     simp [toTensor_smul]
@@ -88,13 +88,13 @@ lemma smulLinearMap_apply {g : G} [Tensorial S c M] (m : M) :
 lemma smul_add {g : G} [Tensorial S c M] (m m' : M) :
     g • (m + m') = g • m + g • m' := by
   apply toTensor.injective
-  simp [toTensor_smul, map_add]
+  simp [toTensor_smul, map_add, Tensor.actionT_add]
 
 @[simp]
 lemma smul_neg {n : ℕ} {c : Fin n → C} {M : Type} [AddCommGroup M] [Module k M]
     [Tensorial S c M] (g : G) (m : M) :
     g • (-m) = - (g • m) := toTensor.injective <| by
-  simp [toTensor_smul, map_neg]
+  simp [toTensor_smul, map_neg, Tensor.actionT_neg]
 
 /-- The number of indices of a elements `t : M` where `M` carries a tensorial instance. -/
 def numIndices (t : M) [Tensorial S c M] : ℕ :=

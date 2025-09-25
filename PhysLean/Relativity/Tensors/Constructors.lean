@@ -186,7 +186,7 @@ lemma actionT_fromPairT {c1 c2 : C}
       actionT_fromSingleT, actionT_fromSingleT]
     rfl
   · intro x y hx hy
-    simp [P, hx, hy]
+    simp [P, hx, hy, Tensor.actionT_add]
 
 lemma fromPairT_map_right {c1 c2 c2' : C} (h :c2 = c2')
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
@@ -672,9 +672,9 @@ lemma actionT_fromTripleT {c1 c2 c3 : C}
         · exact actionT_fromSingleT y g
         · exact actionT_fromSingleT z g
     · intro x y hx hy
-      simp [P1, P, hx, hy, tmul_add]
+      simp [P1, P, hx, hy, tmul_add, Tensor.actionT_add]
   · intro x y hx hy
-    simp [P, hx, hy]
+    simp [P, hx, hy, Tensor.actionT_add]
 
 lemma fromTripleT_basis_repr {c c1 c2 : C}
     (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] ((S.FD.obj (Discrete.mk c1)).V
