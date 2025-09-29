@@ -378,7 +378,6 @@ lemma minimallyAllowsTermOfFinset_subset_ofFinset {S5 S10 : Finset 𝓩} {T : Po
   rw [Finset.mem_val]
   exact mem_ofFinset_of_mem_minimallyAllowsTermOfFinset hx
 
-
 /-!
 
 ## B. Proving the `minimallyAllowsTermsOfFinset` is set of charges which minimally allow a term
@@ -499,7 +498,6 @@ lemma allowsTerm_of_mem_minimallyAllowsTermOfFinset {S5 S10 : Finset 𝓩} {T : 
     x.AllowsTerm T := by
   obtain ⟨a, b, c, rfl⟩ := eq_allowsTermForm_of_mem_minimallyAllowsTermOfFinset hx
   exact allowsTermForm_allowsTerm
-
 
 /-!
 

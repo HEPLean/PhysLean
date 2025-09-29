@@ -73,7 +73,6 @@ lemma map_map (f : 𝓩 →+ 𝓩1) (g : 𝓩1 →+ 𝓩2) (x : ChargeSpectrum �
     map g (map f x) = map (g.comp f) x := by
   simp [map, Option.map_map, Finset.image_image]
 
-
 @[simp]
 lemma map_id [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) : map (AddMonoidHom.id 𝓩) x = x := by
   simp [map, Finset.image_id]

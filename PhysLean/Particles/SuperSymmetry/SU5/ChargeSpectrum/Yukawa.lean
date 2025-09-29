@@ -57,7 +57,6 @@ variable {𝓩 : Type} [AddCommGroup 𝓩]
 
 ## A. Charges of the Yukawa terms
 
-
 -/
 
 /-- The collection of charges associated with Yukawa terms.
@@ -92,7 +91,6 @@ lemma ofYukawaTerms_subset_of_subset [DecidableEq 𝓩] {x y : ChargeSpectrum �
 ### A.2. upto n-copies of charges of the Yukawa terms (aka charges of singlet insertions)
 
 -/
-
 
 /-- The charges of those terms which can be regenerated with up-to `n`
   insertions of singlets needed to regenerate the Yukawa terms.
@@ -131,7 +129,6 @@ lemma ofYukawaTermsNSum_subset_of_subset [DecidableEq 𝓩] {x y : ChargeSpectru
     simp_all only [and_true]
     apply ofYukawaTerms_subset_of_subset h
     exact hz2
-
 
 /-!
 

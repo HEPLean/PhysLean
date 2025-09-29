@@ -322,6 +322,7 @@ import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.SpaceAndTime.SpaceTime.Boosts
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.Time.TimeMan

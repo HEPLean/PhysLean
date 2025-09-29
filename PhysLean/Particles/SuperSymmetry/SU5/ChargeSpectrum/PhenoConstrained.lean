@@ -67,7 +67,6 @@ variable {𝓩 : Type} [AddCommGroup 𝓩]
 
 ## A. Phenomenologicall constrained charge spectra
 
-
 -/
 
 /-- A charge is pheno-constrained if it leads to the presence of any term causing proton decay
@@ -138,7 +137,6 @@ def phenoConstrainingChargesSP (x : ChargeSpectrum 𝓩) : Multiset 𝓩 :=
 lemma phenoConstrainingChargesSP_empty :
     phenoConstrainingChargesSP (∅ : ChargeSpectrum 𝓩) = ∅ := by
   simp [phenoConstrainingChargesSP]
-
 
 /-!
 
@@ -223,7 +221,6 @@ lemma isPhenoConstrained_insertQ5_iff_isPhenoConstrainedQ5 [DecidableEq 𝓩] {q
         simp_all [IsPhenoConstrained]
     · apply isPhenoConstrained_mono _ hr
       simp [subset_def]
-
 
 /-!
 

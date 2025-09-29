@@ -11,7 +11,7 @@ import PhysLean.Relativity.Tensors.Product
 ## i. Overview
 
 We define a class called `Tensorial`.
-This class is used to enable the  use of index notation on a type `M` via a linear equivalence to a
+This class is used to enable the use of index notation on a type `M` via a linear equivalence to a
 tensor of a `TensorSpecies`.
 
 We define the class `Tensorial` here, and provide an API around its use.
@@ -60,7 +60,6 @@ variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G
 ## A. Defining the tensorial class
 
 We first define the `Tensorial` class.
-
 
 -/
 
@@ -124,7 +123,6 @@ noncomputable instance mulAction [Tensorial S c M] : MulAction G M where
     rw [← mul_smul]
     rfl
 
-
 /-!
 
 ### B.1. Relation between the action and the equivalence to tensors
@@ -187,7 +185,6 @@ noncomputable def smulLinearMap (g : G) [Tensorial S c M] : M →ₗ[k] M where
 
 lemma smulLinearMap_apply {g : G} [Tensorial S c M] (m : M) :
     smulLinearMap g m = g • m := rfl
-
 
 /-!
 

@@ -628,14 +628,16 @@ lemma fieldStrengthMatrix_equivariant (A : ElectromagneticPotential)
   generalize A.toFieldStrength (Λ⁻¹ • x) = F
   let P (F : Lorentz.Vector ⊗[ℝ] Lorentz.Vector) : Prop :=
     ((Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (Λ • F)) (μ, ν) =
-    ∑ κ, ∑ ρ, Λ.1 μ κ * Λ.1 ν ρ * ((Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr F) (κ, ρ)
+    ∑ κ, ∑ ρ, Λ.1 μ κ * Λ.1 ν ρ *
+    ((Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr F) (κ, ρ)
   change P F
   apply TensorProduct.induction_on
   · simp [P]
   · intro x y
     dsimp [P]
     rw [Tensorial.smul_prod]
-    simp [Lorentz.Vector.basis_repr_apply, Lorentz.CoVector.basis_repr_apply, Basis.tensorProduct_repr_tmul_apply]
+    simp only [Basis.tensorProduct_repr_tmul_apply, Lorentz.Vector.basis_repr_apply,
+      Lorentz.CoVector.basis_repr_apply, smul_eq_mul]
     rw [Lorentz.Vector.smul_eq_sum, Finset.sum_mul]
     conv_rhs => rw [Finset.sum_comm]
     apply Finset.sum_congr rfl (fun κ _ => ?_)
@@ -649,7 +651,6 @@ lemma fieldStrengthMatrix_equivariant (A : ElectromagneticPotential)
     rw [← Finset.sum_add_distrib]
     apply Finset.sum_congr rfl (fun ρ _ => ?_)
     ring
-
 
 /-!
 
@@ -904,7 +905,7 @@ lemma fieldStrengthMatrix_eq_electric_magnetic (A : ElectromagneticPotential) (t
 lemma fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime (A : ElectromagneticPotential)
     (x : SpaceTime) (hA : Differentiable ℝ A) (μ ν : Fin 1 ⊕ Fin 3) :
     let tx := SpaceTime.toTimeAndSpace x
-    A.fieldStrengthMatrix x (μ, ν)  =
+    A.fieldStrengthMatrix x (μ, ν) =
     match μ, ν with
     | Sum.inl 0, Sum.inl 0 => 0
     | Sum.inl 0, Sum.inr i => - A.electricField tx.1 tx.2 i
@@ -912,16 +913,16 @@ lemma fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime (A : Electromagnetic
     | Sum.inr i, Sum.inr j =>
     match i, j with
     | 0, 0 => 0
-    | 0, 1 => - A.magneticField tx.1 tx.2  2
-    | 0, 2 => A.magneticField tx.1 tx.2  1
-    | 1, 0 => A.magneticField tx.1 tx.2  2
+    | 0, 1 => - A.magneticField tx.1 tx.2 2
+    | 0, 2 => A.magneticField tx.1 tx.2 1
+    | 1, 0 => A.magneticField tx.1 tx.2 2
     | 1, 1 => 0
-    | 1, 2 => - A.magneticField tx.1 tx.2  0
-    | 2, 0 => - A.magneticField tx.1 tx.2  1
-    | 2, 1 => A.magneticField tx.1 tx.2  0
+    | 1, 2 => - A.magneticField tx.1 tx.2 0
+    | 2, 0 => - A.magneticField tx.1 tx.2 1
+    | 2, 1 => A.magneticField tx.1 tx.2 0
     | 2, 2 => 0 := by
   dsimp
-  rw [← fieldStrengthMatrix_eq_electric_magnetic A ]
+  rw [← fieldStrengthMatrix_eq_electric_magnetic A]
   simp only [Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply]
   exact hA
 

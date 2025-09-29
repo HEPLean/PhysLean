@@ -35,9 +35,9 @@ We have special focus on those charge spectra which minimally allow a top and bo
   - A.4. `MinimallyAllowsFinsetTerms` for the singleton set is equivalent to `MinimallyAllowsTerm`
 - B. Minimally allowing the top and bottom Yukawa
   - B.1. Finset of charge spectra containing those which minimally allow top and bottom Yukawa
-  - B.2.  Every element of `minTopBottom` allows a top Yuakawa
-  - B.3.  Every element of `minTopBottom` allows a botttom Yuakawa
-  - B.4.  Every charge spectrum minimallylowing a top and bottom Yukawa in `minTopBottom`
+  - B.2. Every element of `minTopBottom` allows a top Yuakawa
+  - B.3. Every element of `minTopBottom` allows a botttom Yuakawa
+  - B.4. Every charge spectrum minimallylowing a top and bottom Yukawa in `minTopBottom`
 
 ## iv. References
 
@@ -66,7 +66,6 @@ finite set of potential terms, and prove some basic properties there of.
 
 ### A.1. `MinimallyAllowsFinsetTerms`: Prop of minimally allowing a finset of potential terms
 
-
 -/
 /-- A collection of charge spectra is said to minimally allow
   a finite set of potential terms `Ts` if it allows
@@ -79,7 +78,6 @@ def MinimallyAllowsFinsetTerms (x : ChargeSpectrum 𝓩) (Ts : Finset PotentialT
 ### A.2. The prop `MinimallyAllowsFinsetTerms` is decidable
 
 -/
-
 
 instance (x : ChargeSpectrum 𝓩) (Ts : Finset PotentialTerm) :
     Decidable (x.MinimallyAllowsFinsetTerms Ts) :=
@@ -137,7 +135,7 @@ def minTopBottom (S5 S10 : Finset 𝓩) : Multiset (ChargeSpectrum 𝓩) := Mult
 
 /-!
 
-### B.2.  Every element of `minTopBottom` allows a top Yuakawa
+### B.2. Every element of `minTopBottom` allows a top Yuakawa
 
 -/
 
@@ -154,10 +152,9 @@ lemma allowsTerm_topYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
 
 /-!
 
-### B.3.  Every element of `minTopBottom` allows a botttom Yuakawa
+### B.3. Every element of `minTopBottom` allows a botttom Yuakawa
 
 -/
-
 
 lemma allowsTerm_bottomYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
     {x : ChargeSpectrum 𝓩} (h : x ∈ minTopBottom S5 S10) :
@@ -172,7 +169,7 @@ lemma allowsTerm_bottomYukawa_of_mem_minTopBottom {S5 S10 : Finset 𝓩}
 
 /-!
 
-### B.4.  Every charge spectrum minimallylowing a top and bottom Yukawa in `minTopBottom`
+### B.4. Every charge spectrum minimallylowing a top and bottom Yukawa in `minTopBottom`
 
 -/
 
