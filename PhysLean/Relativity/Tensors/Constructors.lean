@@ -179,7 +179,7 @@ lemma actionT_fromPairT {c1 c2 : C}
       ((S.FD.obj (Discrete.mk c2)).ρ g) x)
   change P x
   apply TensorProduct.induction_on
-  · simp [P]
+  · simp [P, actionT_zero]
   · intro x y
     simp [P]
     rw [fromPairT_tmul, ← permT_equivariant, ← prodT_equivariant,
@@ -652,13 +652,13 @@ lemma actionT_fromTripleT {c1 c2 c3 : C}
       (TensorProduct.map ((S.FD.obj (Discrete.mk c2)).ρ g) ((S.FD.obj (Discrete.mk c3)).ρ g)) x)
   change P x
   apply TensorProduct.induction_on
-  · simp [P]
+  · simp [P, actionT_zero]
   · intro x y
     let P1 (y : (S.FD.obj (Discrete.mk c2)).V ⊗[k] (S.FD.obj (Discrete.mk c3)).V) : Prop :=
       P (x ⊗ₜ[k] y)
     change P1 y
     apply TensorProduct.induction_on
-    · simp [P1, P]
+    · simp [P1, P, Tensor.actionT_zero]
     · intro y z
       simp [P1, P]
       rw [fromTripleT_tmul, fromTripleT_tmul]
