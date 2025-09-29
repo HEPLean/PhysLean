@@ -7,11 +7,13 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Yukawa
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Completions
 /-!
 
-# Mapping charges from different sets
+# Mapping charge spectra values
+
+## i. Overview
 
 In this module we define a function `map` which takes an additive monoid homomorphism
-`f : 𝓩 →+ 𝓩1` and a charge `x : Charges 𝓩`, and returns the charge
-`x.map f : Charges 𝓩1` obtained by mapping the elements of `x` by `f`.
+`f : 𝓩 →+ 𝓩1` and a charge spectra `x : ChargeSpectrum 𝓩`, and returns the charge
+`x.map f : ChargeSpectrum 𝓩1` obtained by mapping the elements of `x` by `f`.
 
 There are various properties which are preserved under this mapping:
 - Anomaly cancellation.
@@ -35,6 +37,11 @@ namespace ChargeSpectrum
 variable {𝓩 𝓩1 𝓩2 : Type} [AddCommGroup 𝓩] [AddCommGroup 𝓩1] [DecidableEq 𝓩1]
   [AddCommGroup 𝓩2] [DecidableEq 𝓩2]
 
+/-!
+
+## A. The mapping of charge spectra
+
+-/
 /-- Given an additive monoid homomorphisms `f : 𝓩 →+ 𝓩1`, for a charge
   `x : Charges 𝓩`, `x.map f` is the charge of `Charges 𝓩1` obtained by mapping the elements
   of `x` by `f`. -/
@@ -44,15 +51,28 @@ def map (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) : ChargeSpectrum 𝓩1 w
   Q5 := x.Q5.image f
   Q10 := x.Q10.image f
 
+/-
+
+## A.1. Mapping the empty charge spectrum gives the empty charge spectrum
+
+-/
+
 @[simp]
 lemma map_empty (f : 𝓩 →+ 𝓩1) : map f (∅ : ChargeSpectrum 𝓩) = ∅ := by
   simp only [map, empty_qHd, Option.map_eq_map, Option.map_none, empty_qHu, empty_Q5,
     Finset.image_empty, empty_Q10]
   rfl
 
+/-!
+
+## A.2. Mapping of charge spectra obeys composition
+
+-/
+
 lemma map_map (f : 𝓩 →+ 𝓩1) (g : 𝓩1 →+ 𝓩2) (x : ChargeSpectrum 𝓩) :
     map g (map f x) = map (g.comp f) x := by
   simp [map, Option.map_map, Finset.image_image]
+
 
 @[simp]
 lemma map_id [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) : map (AddMonoidHom.id 𝓩) x = x := by
