@@ -24,7 +24,6 @@ PhysLean/Electromagnetism/Electrostatics/ThreeDimension/PointParticle.lean
 PhysLean/Electromagnetism/FieldStrength/Basic.lean
 PhysLean/Electromagnetism/FieldStrength/Derivative.lean
 PhysLean/Electromagnetism/Homogeneous.lean
-PhysLean/Electromagnetism/LorentzAction.lean
 PhysLean/Electromagnetism/MaxwellEquations.lean
 PhysLean/Electromagnetism/Wave.lean
 PhysLean/Mathematics/Calculus/AdjFDeriv.lean
@@ -294,7 +293,6 @@ PhysLean/Relativity/Tensors/RealTensor/Vector/Pre/Contraction.lean
 PhysLean/Relativity/Tensors/RealTensor/Vector/Pre/Modules.lean
 PhysLean/Relativity/Tensors/RealTensor/Velocity/Basic.lean
 PhysLean/Relativity/Tensors/TensorSpecies/Basic.lean
-PhysLean/Relativity/Tensors/Tensorial.lean
 PhysLean/Relativity/Tensors/UnitTensor.lean
 PhysLean/SpaceAndTime/Space/Basic.lean
 PhysLean/SpaceAndTime/Space/Distributions.lean

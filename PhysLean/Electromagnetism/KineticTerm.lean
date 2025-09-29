@@ -524,7 +524,7 @@ explicitly relating it to Gauss's law and Ampère's law.
 -/
 open Time
 
-lemma gradKineticTerm_eq_electric_magnetic(A : ElectromagneticPotential)
+lemma gradKineticTerm_eq_electric_magnetic (A : ElectromagneticPotential)
     (x : SpaceTime) (ha : ContDiff ℝ ∞ A) :
     A.gradKineticTerm x =
     Space.div (A.electricField (toTimeAndSpace x).1) (toTimeAndSpace x).2 •

@@ -528,6 +528,15 @@ open ContDiff
 noncomputable abbrev fieldStrengthMatrix (A : ElectromagneticPotential) (x : SpaceTime) :=
     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x)
 
+lemma fieldStrengthMatrix_eq_tensor_basis_repr (A : ElectromagneticPotential) (x : SpaceTime)
+    (μ ν : (Fin 1 ⊕ Fin 3)) :
+    A.fieldStrengthMatrix x (μ, ν) =
+    (Tensor.basis _).repr (Tensorial.toTensor (toFieldStrength A x))
+    (fun | 0 => finSumFinEquiv μ | 1 => finSumFinEquiv ν) := by
+  rw [toFieldStrength_tensor_basis_eq_basis]
+  simp only [Nat.reduceAdd, Equiv.symm_apply_apply]
+  rfl
+
 /-!
 
 #### C.3.1. Differentiability of the field strength matrix
@@ -606,6 +615,41 @@ lemma toFieldStrength_equivariant (A : ElectromagneticPotential) (Λ : LorentzGr
   simp only [Tensorial.toTensor_smul, prodT_equivariant, contrT_equivariant, map_neg,
     permT_equivariant, map_add, ← Tensorial.smul_toTensor_symm, Tensorial.smul_add,
     Tensorial.smul_neg]
+
+lemma fieldStrengthMatrix_equivariant (A : ElectromagneticPotential)
+    (Λ : LorentzGroup 3) (hf : Differentiable ℝ A) (x : SpaceTime)
+    (μ : (Fin 1 ⊕ Fin 3)) (ν : Fin 1 ⊕ Fin 3) :
+    fieldStrengthMatrix (fun x => Λ • A (Λ⁻¹ • x)) x (μ, ν) =
+    ∑ κ, ∑ ρ, (Λ.1 μ κ * Λ.1 ν ρ) * A.fieldStrengthMatrix (Λ⁻¹ • x) (κ, ρ) := by
+  rw [fieldStrengthMatrix, toFieldStrength_equivariant A Λ hf x]
+  conv_rhs =>
+    enter [2, κ, 2, ρ]
+    rw [fieldStrengthMatrix]
+  generalize A.toFieldStrength (Λ⁻¹ • x) = F
+  let P (F : Lorentz.Vector ⊗[ℝ] Lorentz.Vector) : Prop :=
+    ((Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (Λ • F)) (μ, ν) =
+    ∑ κ, ∑ ρ, Λ.1 μ κ * Λ.1 ν ρ * ((Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr F) (κ, ρ)
+  change P F
+  apply TensorProduct.induction_on
+  · simp [P]
+  · intro x y
+    dsimp [P]
+    rw [Tensorial.smul_prod]
+    simp [Lorentz.Vector.basis_repr_apply, Lorentz.CoVector.basis_repr_apply, Basis.tensorProduct_repr_tmul_apply]
+    rw [Lorentz.Vector.smul_eq_sum, Finset.sum_mul]
+    conv_rhs => rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl (fun κ _ => ?_)
+    rw [Lorentz.Vector.smul_eq_sum, Finset.mul_sum]
+    apply Finset.sum_congr rfl (fun ρ _ => ?_)
+    ring
+  · intro F1 F2 h1 h2
+    simp [P, h1, h2]
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl (fun κ _ => ?_)
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl (fun ρ _ => ?_)
+    ring
+
 
 /-!
 
@@ -856,6 +900,30 @@ lemma fieldStrengthMatrix_eq_electric_magnetic (A : ElectromagneticPotential) (t
       simp [magneticField_fst_eq_fieldStrengthMatrix A t x hA]
       rw [fieldStrengthMatrix_antisymm]
     | 2, 2 => simp
+
+lemma fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime (A : ElectromagneticPotential)
+    (x : SpaceTime) (hA : Differentiable ℝ A) (μ ν : Fin 1 ⊕ Fin 3) :
+    let tx := SpaceTime.toTimeAndSpace x
+    A.fieldStrengthMatrix x (μ, ν)  =
+    match μ, ν with
+    | Sum.inl 0, Sum.inl 0 => 0
+    | Sum.inl 0, Sum.inr i => - A.electricField tx.1 tx.2 i
+    | Sum.inr i, Sum.inl 0 => A.electricField tx.1 tx.2 i
+    | Sum.inr i, Sum.inr j =>
+    match i, j with
+    | 0, 0 => 0
+    | 0, 1 => - A.magneticField tx.1 tx.2  2
+    | 0, 2 => A.magneticField tx.1 tx.2  1
+    | 1, 0 => A.magneticField tx.1 tx.2  2
+    | 1, 1 => 0
+    | 1, 2 => - A.magneticField tx.1 tx.2  0
+    | 2, 0 => - A.magneticField tx.1 tx.2  1
+    | 2, 1 => A.magneticField tx.1 tx.2  0
+    | 2, 2 => 0 := by
+  dsimp
+  rw [← fieldStrengthMatrix_eq_electric_magnetic A ]
+  simp only [Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply]
+  exact hA
 
 end ElectromagneticPotential
 
