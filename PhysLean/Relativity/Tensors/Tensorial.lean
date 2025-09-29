@@ -165,7 +165,7 @@ lemma smul_neg {n : ℕ} {c : Fin n → C} {M : Type} [AddCommGroup M] [Module k
 @[simp]
 lemma smul_zero [Tensorial S c M] {g : G} :
     g • (0 : M) = 0 := toTensor.injective <| by
-  simp [toTensor_smul, map_zero]
+  simp [toTensor_smul, map_zero, Tensor.actionT_zero]
 
 /-!
 

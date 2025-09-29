@@ -267,7 +267,6 @@ lemma smul_sub {d : ℕ} (Λ : LorentzGroup d) (p q : CoVector d) :
     Λ • (p - q) = Λ • p - Λ • q := by
   rw [smul_eq_mulVec, smul_eq_mulVec, smul_eq_mulVec, Matrix.mulVec_sub]
 
-@[simp]
 lemma smul_zero {d : ℕ} (Λ : LorentzGroup d) :
     Λ • (0 : CoVector d) = 0 := by
   rw [smul_eq_mulVec, Matrix.mulVec_zero]
