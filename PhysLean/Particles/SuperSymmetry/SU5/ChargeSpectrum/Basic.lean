@@ -38,6 +38,9 @@ of the charge spectrum, which can help in searching for viable theories.
 ## iii. Table of contents
 
 - A. The definition of the charge spectrum
+  - A.1. Extensionality properties
+  - A.2. Relation to products
+  - A.3. Rendering
 - B. The subset relation
 - C. The empty charge spectrum
 - D. The cardinality of a charge spectrum
