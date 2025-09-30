@@ -27,6 +27,43 @@ There are some properties which are reflected under this mapping:
 We define the preimage of this mapping within a subset `ofFinset S5 S10` of `Charges 𝓩` in
 a computationaly efficient way.
 
+## ii. Key results
+
+- `map` : The mapping of charge spectra under an additive monoid homomorphism.
+- `map_allowsTerm` : If a charge spectrum allows a potential term, then so does its mapping.
+- `map_isPhenoConstrained` : If a charge spectrum is pheno-constrained, then so is its mapping.
+- `map_isComplete_iff` : A charge spectrum is complete if and only if its mapping is complete.
+- `map_yukawaGeneratesDangerousAtLevel`  : A charge spectrum regenerates dangerous Yukawa terms
+  at a given level then so does its mapping.
+- `preimageOfFinset` : The preimage of a charge spectrum in `ofFinset S5 S10`
+  under a mapping.
+- `preimageOfFinsetCard` : The cardinality of the preimage of a charge spectrum
+  in `ofFinset S5 S10` under a mapping.
+
+## iii. Table of contents
+
+- A. The mapping of charge spectra
+  - A.1. Mapping the empty charge spectrum gives the empty charge spectrum
+  - A.2. Mapping of charge spectra obeys composing maps
+  - A.3. Mapping of charge spectra obeys the identity
+  - A.4. The charges of a field label commute with mapping of charge spectra
+  - A.5. Mappings of charge spectra preserve the subset relation
+  - A.6. Mappings of charge spectra and charges of potential terms
+  - A.7. Mapping charge spectra of `allowsTermForm
+  - A.8. Mapping preserves whether a charge spectrum allows a potential term
+  - A.9. Mapping preserves if a charge spectrum is pheno-constrained
+  - A.10. Mapping preserves completeness of charge spectra
+  - A.11. Mapping commutes with charges of Yukawa terms
+  - A.12. Mapping of chareg spectra and regenerating dangerous Yukawa terms
+- B. Preimage of a charge spectrum under a mapping
+  - B.1. `preimageOfFinset` gives the actual preimage
+  - B.2. Efficient definition for the cardinality of the preimage
+  - B.3. Definition for the cardinality equals cardinality of the preimage
+
+## iv. References
+
+There are no known references for the material in this module.
+
 -/
 
 namespace SuperSymmetry
@@ -42,6 +79,7 @@ variable {𝓩 𝓩1 𝓩2 : Type} [AddCommGroup 𝓩] [AddCommGroup 𝓩1] [Dec
 ## A. The mapping of charge spectra
 
 -/
+
 /-- Given an additive monoid homomorphisms `f : 𝓩 →+ 𝓩1`, for a charge
   `x : Charges 𝓩`, `x.map f` is the charge of `Charges 𝓩1` obtained by mapping the elements
   of `x` by `f`. -/
@@ -53,7 +91,7 @@ def map (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) : ChargeSpectrum 𝓩1 w
 
 /-
 
-## A.1. Mapping the empty charge spectrum gives the empty charge spectrum
+### A.1. Mapping the empty charge spectrum gives the empty charge spectrum
 
 -/
 
@@ -65,7 +103,7 @@ lemma map_empty (f : 𝓩 →+ 𝓩1) : map f (∅ : ChargeSpectrum 𝓩) = ∅ 
 
 /-!
 
-## A.2. Mapping of charge spectra obeys composition
+### A.2. Mapping of charge spectra obeys composing maps
 
 -/
 
@@ -73,9 +111,21 @@ lemma map_map (f : 𝓩 →+ 𝓩1) (g : 𝓩1 →+ 𝓩2) (x : ChargeSpectrum �
     map g (map f x) = map (g.comp f) x := by
   simp [map, Option.map_map, Finset.image_image]
 
+/-!
+
+### A.3. Mapping of charge spectra obeys the identity
+
+-/
+
 @[simp]
 lemma map_id [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) : map (AddMonoidHom.id 𝓩) x = x := by
   simp [map, Finset.image_id]
+
+/-!
+
+### A.4. The charges of a field label commute with mapping of charge spectra
+
+-/
 
 lemma map_ofFieldLabel (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) (F : FieldLabel) :
     ofFieldLabel (map f x) F = (ofFieldLabel x F).image f := by
@@ -103,6 +153,41 @@ lemma map_ofFieldLabel (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) (F : Fiel
       congr 1
       funext a
       simp
+/-!
+
+### A.5. Mappings of charge spectra preserve the subset relation
+
+-/
+
+lemma map_subset {f : 𝓩 →+ 𝓩1} {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) :
+    map f x ⊆ map f y := by
+  simp [map, subset_def] at *
+  obtain ⟨hHd, hHu, hQ5, hQ10⟩ := h
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · match x, y with
+    | ⟨a, _, _, _⟩, ⟨b, _, _, _⟩ =>
+      cases a
+      all_goals cases b
+      all_goals simp
+      all_goals simp at hHd
+      subst hHd
+      rfl
+  · match x, y with
+    | ⟨_, a, _, _⟩, ⟨_, b, _, _⟩ =>
+      cases a
+      all_goals cases b
+      all_goals simp
+      all_goals simp at hHu
+      subst hHu
+      rfl
+  · exact Finset.image_subset_image hQ5
+  · exact Finset.image_subset_image hQ10
+
+/-!
+
+### A.6. Mappings of charge spectra and charges of potential terms
+
+-/
 
 lemma map_ofPotentialTerm_toFinset [DecidableEq 𝓩]
     (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩) (T : PotentialTerm) :
@@ -225,36 +310,23 @@ lemma map_ofPotentialTerm'_toFinset [DecidableEq 𝓩]
   rw [mem_map_ofPotentialTerm'_iff]
   simp
 
-lemma map_subset {f : 𝓩 →+ 𝓩1} {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) :
-    map f x ⊆ map f y := by
-  simp [map, subset_def] at *
-  obtain ⟨hHd, hHu, hQ5, hQ10⟩ := h
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · match x, y with
-    | ⟨a, _, _, _⟩, ⟨b, _, _, _⟩ =>
-      cases a
-      all_goals cases b
-      all_goals simp
-      all_goals simp at hHd
-      subst hHd
-      rfl
-  · match x, y with
-    | ⟨_, a, _, _⟩, ⟨_, b, _, _⟩ =>
-      cases a
-      all_goals cases b
-      all_goals simp
-      all_goals simp at hHu
-      subst hHu
-      rfl
-  · exact Finset.image_subset_image hQ5
-  · exact Finset.image_subset_image hQ10
+/-!
 
+### A.7. Mapping charge spectra of `allowsTermForm
+
+-/
 variable [DecidableEq 𝓩]
 
 lemma allowsTermForm_map {T} {f : 𝓩 →+ 𝓩1} {a b c : 𝓩} :
     (allowsTermForm a b c T).map f = allowsTermForm (f a) (f b) (f c) T := by
   cases T
   all_goals simp [allowsTermForm, map]
+
+/-!
+
+### A.8. Mapping preserves whether a charge spectrum allows a potential term
+
+-/
 
 lemma map_allowsTerm {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum 𝓩} {T : PotentialTerm}
     (h : x.AllowsTerm T) : (map f x).AllowsTerm T := by
@@ -263,6 +335,12 @@ lemma map_allowsTerm {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum 𝓩} {T : Potent
   use f a, f b, f c
   rw [← allowsTermForm_map]
   exact map_subset h1
+
+/-!
+
+### A.9. Mapping preserves if a charge spectrum is pheno-constrained
+
+-/
 
 lemma map_isPhenoConstrained (f : 𝓩 →+ 𝓩1) {x : ChargeSpectrum 𝓩}
     (h : x.IsPhenoConstrained) : (map f x).IsPhenoConstrained := by
@@ -281,10 +359,22 @@ lemma not_isPhenoConstrained_of_map {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum �
     (h : ¬ (map f x).IsPhenoConstrained) : ¬ x.IsPhenoConstrained :=
   fun hn => h (map_isPhenoConstrained f hn)
 
+/-!
+
+### A.10. Mapping preserves completeness of charge spectra
+
+-/
+
 omit [DecidableEq 𝓩] in
 lemma map_isComplete_iff {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum 𝓩} :
     (map f x).IsComplete ↔ x.IsComplete := by
   simp [IsComplete, map]
+
+/-!
+
+### A.11. Mapping commutes with charges of Yukawa terms
+
+-/
 
 lemma map_ofYukawaTerms_toFinset {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum 𝓩} :
     (map f x).ofYukawaTerms.toFinset = x.ofYukawaTerms.toFinset.image f := by
@@ -301,6 +391,12 @@ lemma mem_map_ofYukawaTerms_iff {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum 𝓩} 
   · simp
   rw [map_ofYukawaTerms_toFinset]
   simp
+
+/-!
+
+### A.12. Mapping of chareg spectra and regenerating dangerous Yukawa terms
+
+-/
 
 lemma map_ofYukawaTermsNSum_toFinset {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum 𝓩} {n : ℕ}:
     ((map f x).ofYukawaTermsNSum n).toFinset = (x.ofYukawaTermsNSum n).toFinset.image f:= by
@@ -365,7 +461,11 @@ lemma not_yukawaGeneratesDangerousAtLevel_of_map {f : 𝓩 →+ 𝓩1} {x : Char
 
 /-!
 
-## Preimage
+## B. Preimage of a charge spectrum under a mapping
+
+We give a computationally efficient way of calculating the preimage of a charge
+`s : Charges 𝓩1` in a subset `ofFinset S5 S10`, and then show it is
+equal to the actual preimage.
 
 -/
 
@@ -383,6 +483,11 @@ def preimageOfFinset (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1)
   let SQ10 : Finset (Finset 𝓩) := SQ10'.powerset.filter fun y => y.image f = x.Q10
   (SHd.product <| SHu.product <| SQ5.product SQ10).map toProd.symm.toEmbedding
 
+/-!
+
+### B.1. `preimageOfFinset` gives the actual preimage
+
+-/
 lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩1) :
     preimageOfFinset S5 S10 f x = {y : ChargeSpectrum 𝓩 | y.map f = x ∧ y ∈ ofFinset S5 S10} := by
   ext y
@@ -430,6 +535,11 @@ lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Char
       refine ⟨h2.2.2.2 hx, ?_⟩
       use x
 
+/-!
+
+### B.2. Efficient definition for the cardinality of the preimage
+
+-/
 /-- The cardiniality of the
   preimage of a charge `Charges 𝓩1` in `ofFinset S5 S10 ⊆ Charges 𝓩` under
   mapping charges through `f : 𝓩 →+ 𝓩1`. -/
@@ -443,6 +553,12 @@ def preimageOfFinsetCard (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Charg
   let SQ10' := S10.filter fun y => f y ∈ x.Q10
   let SQ10 : Finset (Finset 𝓩) := SQ10'.powerset.filter fun y => y.image f = x.Q10
   SHd.card * SHu.card * SQ5.card * SQ10.card
+
+/-!
+
+### B.3. Definition for the cardinality equals cardinality of the preimage
+
+-/
 
 lemma preimageOfFinset_card_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩1) :
     preimageOfFinsetCard S5 S10 f x =
