@@ -139,7 +139,6 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.OfFieldLabel
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.OfPotentialTerm
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoClosed
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoConstrained
-import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.U1U1
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Yukawa
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.ZMod
 import PhysLean.Particles.SuperSymmetry.SU5.FieldLabels
