@@ -22,7 +22,6 @@ This lemma relies on the multiset of charge spectra satisfying a number of condi
 which include three which are defined in this file: `IsPhenoClosedQ5`, `IsPhenoClosedQ10` and
 `ContainsPhenoCompletionsOfMinimallyAllows`.
 
-
 ## ii. Key results
 
 - `IsPhenoClosedQ5` : The proposition that a multiset of charges is phenomologically closed
@@ -112,7 +111,6 @@ lemma isPhenClosedQ5_of_isPhenoConstrainedQ5 {S5 : Finset 𝓩} {charges : Multi
 
 -/
 
-
 /-- The proposition that for multiset set of charges `charges`,
   adding individual elements of `S10` to the `Q10` charges of elements of `charges` again
   leads to an element in `charges` or a charge which is phenomenologically constrained,
@@ -127,7 +125,6 @@ def IsPhenoClosedQ10 (S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum �
 ### B.1. Simplification using pheno-constrained due to additionial of 10d charge
 
 -/
-
 
 lemma isPhenClosedQ10_of_isPhenoConstrainedQ10 {S10 : Finset 𝓩}
     {charges : Multiset (ChargeSpectrum 𝓩)}
@@ -206,7 +203,6 @@ lemma containsPhenoCompletionsOfMinimallyAllows_of_subset {S5 S10 : Finset 𝓩}
     (h : ∀ x ∈ charges, x ∈ charges') :
     ContainsPhenoCompletionsOfMinimallyAllows S5 S10 charges' :=
   fun x hx hnot y h3 h4 => h y <| h' x hx hnot y h3 h4
-
 
 /-!
 

@@ -164,7 +164,6 @@ def ZModZModCharges (n m : ℕ) [NeZero n] [NeZero m] : Finset (ChargeSpectrum (
   S.filter (fun x => IsComplete x ∧
   ¬ x.IsPhenoConstrained ∧ ¬ x.YukawaGeneratesDangerousAtLevel 4)
 
-
 end ChargeSpectrum
 end SU5
 

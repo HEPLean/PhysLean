@@ -33,7 +33,7 @@ a computationaly efficient way.
 - `map_allowsTerm` : If a charge spectrum allows a potential term, then so does its mapping.
 - `map_isPhenoConstrained` : If a charge spectrum is pheno-constrained, then so is its mapping.
 - `map_isComplete_iff` : A charge spectrum is complete if and only if its mapping is complete.
-- `map_yukawaGeneratesDangerousAtLevel`  : A charge spectrum regenerates dangerous Yukawa terms
+- `map_yukawaGeneratesDangerousAtLevel` : A charge spectrum regenerates dangerous Yukawa terms
   at a given level then so does its mapping.
 - `preimageOfFinset` : The preimage of a charge spectrum in `ofFinset S5 S10`
   under a mapping.
