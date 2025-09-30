@@ -341,7 +341,6 @@ import PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ChiralIndices
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Completeness
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems
-import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5.Quanta.FiveQuanta
 import PhysLean.StringTheory.FTheory.SU5.Quanta.IsViable

@@ -311,11 +311,8 @@ PhysLean/StringTheory/FTheory/SU5/Basic.lean
 PhysLean/StringTheory/FTheory/SU5/Charges/AnomalyFree.lean
 PhysLean/StringTheory/FTheory/SU5/Charges/OfRationalSection.lean
 PhysLean/StringTheory/FTheory/SU5/Charges/Viable.lean
-PhysLean/StringTheory/FTheory/SU5/Fluxes/Basic.lean
-PhysLean/StringTheory/FTheory/SU5/Fluxes/NoExotics/ChiralIndices.lean
 PhysLean/StringTheory/FTheory/SU5/Fluxes/NoExotics/Completeness.lean
 PhysLean/StringTheory/FTheory/SU5/Fluxes/NoExotics/Elems.lean
-PhysLean/StringTheory/FTheory/SU5/Fluxes/NoExotics/ToList.lean
 PhysLean/StringTheory/FTheory/SU5/Quanta/Basic.lean
 PhysLean/StringTheory/FTheory/SU5/Quanta/FiveQuanta.lean
 PhysLean/StringTheory/FTheory/SU5/Quanta/IsViable.lean
