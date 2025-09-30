@@ -36,53 +36,28 @@ namespace Vector
 open TensorSpecies
 open Tensor
 
-instance {d} : AddCommMonoid (Vector d) :=
-  inferInstanceAs (AddCommMonoid (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
-
-instance {d} : Module ℝ (Vector d) :=
-  inferInstanceAs (Module ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
-
-instance {d} : AddCommGroup (Vector d) :=
-  inferInstanceAs (AddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
-
-instance {d} : FiniteDimensional ℝ (Vector d) :=
-  inferInstanceAs (FiniteDimensional ℝ (Fin 1 ⊕ Fin d → ℝ))
-
-instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (Vector d) :=
-    inferInstanceAs (NormedAddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
-
-instance isNormedSpace (d : ℕ) :
-    NormedSpace ℝ (Vector d) :=
-  inferInstanceAs (NormedSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
-
-/-- The instance of a `ChartedSpace` on `Vector d`. -/
-instance : ChartedSpace (Vector d) (Vector d) := chartedSpaceSelf (Vector d)
-
-instance {d} : CoeFun (Vector d) (fun _ => Fin 1 ⊕ Fin d → ℝ) where
-  coe := fun v => v
-
-@[simp]
-lemma apply_smul {d : ℕ} (c : ℝ) (v : Vector d) (i : Fin 1 ⊕ Fin d) :
-    (c • v) i = c * v i := rfl
-
-@[simp]
-lemma apply_add {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
-    (v + w) i = v i + w i := rfl
-
-@[simp]
-lemma apply_sub {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
-    (v - w) i = v i - w i := by rfl
-
-@[simp]
-lemma neg_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
-    (-v) i = - v i := rfl
-
-@[simp]
-lemma zero_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) :
-    (0 : Vector d) i = 0 := rfl
 /-!
 
-## Tensorial
+## B. Defining the tensorial instance
+
+-/
+
+/-!
+
+## B.1. The instance of a module
+
+-/
+
+instance {d} : AddCommMonoid (Vector d) :=
+  inferInstanceAs (AddCommMonoid ((Fin 1 ⊕ Fin d)→ ℝ ))
+
+instance {d} : Module ℝ (Vector d) :=
+  inferInstanceAs (Module ℝ ((Fin 1 ⊕ Fin d)→ ℝ ))
+
+
+/-!
+
+## B.2. Equivalence of indexing sets
 
 -/
 
@@ -101,18 +76,24 @@ def indexEquiv {d : ℕ} :
     right_inv := fun x => by rfl}
   e.trans finSumFinEquiv.symm
 
+/-!
+
+## B.3. The tensorial instance
+
+-/
+
 instance tensorial {d : ℕ} : Tensorial (realLorentzTensor d) ![.up] (Vector d) where
-  toTensor := LinearEquiv.symm <|
-    Equiv.toLinearEquiv
-    ((Tensor.basis (S := (realLorentzTensor d)) ![.up]).repr.toEquiv.trans <|
-  Finsupp.equivFunOnFinite.trans <|
-  (Equiv.piCongrLeft' _ indexEquiv))
-    { map_add := fun x y => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, map_add]
-        rfl
-      map_smul := fun c x => by
-        simp [Nat.succ_eq_add_one, Nat.reduceAdd, _root_.map_smul]
-        rfl}
+  toTensor :=
+    (LinearEquiv.piCongrLeft' ℝ _ indexEquiv).symm.trans <|
+    (Finsupp.linearEquivFunOnFinite ℝ ℝ
+        (ComponentIdx (S := realLorentzTensor d) ![.up])).symm.trans <|
+    (Tensor.basis (S := realLorentzTensor d) ![.up]).repr.symm
+
+/-!
+
+## B.4. Basic properties of toTensor
+
+-/
 
 open Tensorial
 
@@ -135,13 +116,107 @@ lemma toTensor_symm_pure {d : ℕ} (p : Pure (realLorentzTensor d) ![.up]) (i : 
 
 /-!
 
-## Basis
+## C. Topology and smoothness
 
+-/
+
+/-!
+
+### C.1. Induced instance of a normed space
+
+-/
+
+instance {d : ℕ} : NormedSpace ℝ (Vector d) := Tensorial.normedSpace
+
+/-!
+
+### C.2. Instance of a charted space
+
+-/
+
+/-- The instance of a `ChartedSpace` on `Vector d`. -/
+instance {d} : ChartedSpace (Vector d) (Vector d) := chartedSpaceSelf (Vector d)
+
+/-!
+
+### C.3. Structure of a smooth manifold
+
+-/
+
+open Manifold in
+/-- The structure of a smooth manifold on Vector . -/
+def asSmoothManifold (d : ℕ) : ModelWithCorners ℝ (Vector d) (Vector d) := 𝓘(ℝ, Vector d)
+
+/-!
+
+## D. As functions
+
+-/
+
+instance {d} : CoeFun (Vector d) (fun _ => Fin 1 ⊕ Fin d → ℝ) where
+  coe := fun v => v
+
+/-!
+
+### D.1. Relation to EuclideanSpace
+
+-/
+
+lemma apply_eq_toEuclideanSpace {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
+    v i = (toEuclideanSpace v) (indexEquiv.symm i) := by
+  simp [Tensorial.toEuclideanSpace, Tensor.toEuclideanSpace, toTensor]
+  erw [LinearEquiv.piCongrLeft'_symm_apply]
+  rw [Equiv.piCongrLeft'_symm_apply]
+  simp
+
+/-!
+
+### D.2. Linearlity of function application
+
+-/
+
+@[simp]
+lemma apply_smul {d : ℕ} (c : ℝ) (v : Vector d) (i : Fin 1 ⊕ Fin d) :
+    (c • v) i = c * v i := rfl
+
+@[simp]
+lemma apply_add {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
+    (v + w) i = v i + w i := rfl
+
+@[simp]
+lemma apply_sub {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
+    (v - w) i = v i - w i := by
+  rw [apply_eq_toEuclideanSpace (v := v - w)]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sub, PiLp.sub_apply]
+  simp [← apply_eq_toEuclideanSpace]
+
+@[simp]
+lemma neg_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
+    (-v) i = - v i := by
+  rw [apply_eq_toEuclideanSpace (v := -v)]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_neg, PiLp.neg_apply]
+  simp [← apply_eq_toEuclideanSpace]
+
+@[simp]
+lemma zero_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) :
+    (0 : Vector d) i = 0 := rfl
+
+/-!
+
+## E. The Basis
+
+We define the basis on `Vector d` indexed by `Fin 1 ⊕ Fin d`.
 -/
 
 /-- The basis on `Vector d` indexed by `Fin 1 ⊕ Fin d`. -/
 def basis {d : ℕ} : Basis (Fin 1 ⊕ Fin d) ℝ (Vector d) :=
   Pi.basisFun ℝ _
+
+/-!
+
+### E.1. Components of the basis vectors
+
+-/
 
 @[simp]
 lemma basis_apply {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) :
@@ -151,35 +226,63 @@ lemma basis_apply {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) :
   congr 1
   exact Lean.Grind.eq_congr' rfl rfl
 
-lemma toTensor_symm_basis {d : ℕ} (μ : Fin 1 ⊕ Fin d) :
-    (toTensor (self := tensorial)).symm (Tensor.basis ![Color.up] (indexEquiv.symm μ)) =
-    basis μ := by
+/-!
+
+### E.2. Components of a vector in the basis
+
+-/
+
+lemma basis_repr_apply {d : ℕ} (p : Vector d) (μ : Fin 1 ⊕ Fin d) :
+    basis.repr p μ = p μ := by
+  simp [basis]
+  erw [Pi.basisFun_repr]
+
+/-!
+
+### E.3. Relation to tensorial basis
+
+-/
+
+lemma basis_eq_tensorial_basis {d : ℕ} :
+    basis = (Tensorial.basis (Vector d)).reindex indexEquiv := by
+  ext μ
+  simp
+  rw [Tensorial.basis]
+  simp
   rw [Tensor.basis_apply]
   funext i
   rw [toTensor_symm_pure]
   simp [contrBasisFin, Pure.basisVector]
-  conv_lhs =>
+  conv_rhs =>
     enter [1, 2]
     change (contrBasisFin d) (indexEquiv.symm μ 0)
   simp [contrBasisFin, indexEquiv, Finsupp.single_apply]
 
+lemma tensorial_basis_eq_basis {d : ℕ} :
+    (Tensorial.basis (Vector d)) = basis.reindex indexEquiv.symm := by
+  rw [basis_eq_tensorial_basis]
+  ext μ
+  simp
+
+/-!
+
+### E.4. Relation to the tensor basis
+
+-/
+
 lemma toTensor_basis_eq_tensor_basis {d : ℕ} (μ : Fin 1 ⊕ Fin d) :
     toTensor (basis μ) = Tensor.basis ![Color.up] (indexEquiv.symm μ) := by
-  rw [← toTensor_symm_basis]
+  rw [basis_eq_tensorial_basis]
+  simp [Tensorial.toTensor_basis]
+
+lemma toTensor_symm_tensor_basis_eq_basis {d : ℕ}
+    (μ : ComponentIdx (S := realLorentzTensor d) ![Color.up]) :
+    (toTensor (self := tensorial)).symm (Tensor.basis ![Color.up] μ) =
+    basis (indexEquiv μ) := by
+  apply toTensor.injective
+  rw [toTensor_basis_eq_tensor_basis]
   simp
 
-lemma basis_eq_map_tensor_basis : basis =
-    ((Tensor.basis (S := realLorentzTensor) ![Color.up]).map toTensor.symm).reindex indexEquiv := by
-  ext μ
-  rw [← toTensor_symm_basis]
-  simp
-
-lemma tensor_basis_map_eq_basis_reindex :
-    (Tensor.basis (S := realLorentzTensor) ![Color.up]).map toTensor.symm =
-    basis.reindex indexEquiv.symm := by
-  rw [basis_eq_map_tensor_basis]
-  ext μ
-  simp
 
 lemma tensor_basis_repr_toTensor_apply {d : ℕ} (p : Vector d) (μ : ComponentIdx ![Color.up]) :
     (Tensor.basis ![Color.up]).repr (toTensor p) μ =
@@ -199,10 +302,11 @@ lemma tensor_basis_repr_toTensor_apply {d : ℕ} (p : Vector d) (μ : ComponentI
   · intro t1 t2 h1 h2
     simp [h1, h2]
 
-lemma basis_repr_apply {d : ℕ} (p : Vector d) (μ : Fin 1 ⊕ Fin d) :
-    basis.repr p μ = p μ := by
-  simp [basis]
-  erw [Pi.basisFun_repr]
+/-!
+
+### E.5. Maps in terms of the basis
+
+-/
 
 lemma map_apply_eq_basis_mulVec {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p : Vector d) :
     (f p) = (LinearMap.toMatrix basis basis) f *ᵥ p := by
@@ -210,7 +314,14 @@ lemma map_apply_eq_basis_mulVec {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p
 
 /-!
 
-## The action of the Lorentz group
+## F. The action of the Lorentz group
+
+The action of the Lorentz group is given to us for free by the `Tensorial` instance.
+-/
+
+/-!
+
+### F.1. Components of the action
 
 -/
 
@@ -255,6 +366,12 @@ lemma smul_eq_sum {d : ℕ} (i : Fin 1 ⊕ Fin d) (Λ : LorentzGroup d) (p : Vec
     funext x
     ring
 
+/-!
+
+### F.2. As a matrix multiplication
+
+-/
+
 lemma smul_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
     Λ • p = Λ.1 *ᵥ p := by
   funext i
@@ -262,21 +379,11 @@ lemma smul_eq_mulVec {d} (Λ : LorentzGroup d) (p : Vector d) :
   simp only [op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply, transpose_apply, smul_eq_mul,
     mul_comm]
 
-lemma smul_add {d : ℕ} (Λ : LorentzGroup d) (p q : Vector d) :
-    Λ • (p + q) = Λ • p + Λ • q := by simp
+/-!
 
-@[simp]
-lemma smul_sub {d : ℕ} (Λ : LorentzGroup d) (p q : Vector d) :
-    Λ • (p - q) = Λ • p - Λ • q := by
-  rw [smul_eq_mulVec, smul_eq_mulVec, smul_eq_mulVec, Matrix.mulVec_sub]
+### F.3. Applying the negative of a Lorentz transformation
 
-lemma smul_zero {d : ℕ} (Λ : LorentzGroup d) :
-    Λ • (0 : Vector d) = 0 := by
-  rw [smul_eq_mulVec, Matrix.mulVec_zero]
-
-lemma smul_neg {d : ℕ} (Λ : LorentzGroup d) (p : Vector d) :
-    Λ • (-p) = - (Λ • p) := by
-  rw [smul_eq_mulVec, smul_eq_mulVec, Matrix.mulVec_neg]
+-/
 
 lemma neg_smul {d} (Λ : LorentzGroup d) (p : Vector d) :
     (-Λ) • p = - (Λ • p) := by
@@ -284,31 +391,23 @@ lemma neg_smul {d} (Λ : LorentzGroup d) (p : Vector d) :
   rw [smul_eq_sum, neg_apply, smul_eq_sum]
   simp
 
+/-!
+
+### F.4. The action is faithful
+
+-/
+
 lemma _root_.LorentzGroup.eq_of_action_vector_eq {d : ℕ}
     {Λ Λ' : LorentzGroup d} (h : ∀ p : Vector d, Λ • p = Λ' • p) :
     Λ = Λ' := by
   apply LorentzGroup.eq_of_mulVec_eq
   simpa only [smul_eq_mulVec] using fun x => h x
 
-/-- The Lorentz action on vectors as a continuous linear map. -/
-def actionCLM {d : ℕ} (Λ : LorentzGroup d) :
-    Vector d →L[ℝ] Vector d :=
-  LinearMap.toContinuousLinearMap
-    { toFun := fun v => Λ • v
-      map_add' := smul_add Λ
-      map_smul' := fun c v => by
-        simp only [Nat.succ_eq_add_one, Nat.reduceAdd, RingHom.id_apply]
-        funext i
-        simp [smul_eq_sum]
-        ring_nf
-        congr
-        rw [Finset.mul_sum]
-        congr
-        funext j
-        ring}
+/-!
 
-lemma actionCLM_apply {d : ℕ} (Λ : LorentzGroup d) (p : Vector d) :
-    actionCLM Λ p = Λ • p := rfl
+### F.5. The action on the basis
+
+-/
 
 lemma smul_basis {d : ℕ} (Λ : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
     Λ • basis μ = ∑ ν, Λ.1 ν μ • basis ν := by
@@ -322,7 +421,13 @@ lemma smul_basis {d : ℕ} (Λ : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
 
 /-!
 
-## Spatial part
+## G. The spatial and time parts
+
+-/
+
+/-!
+
+### G.1. The spatial part
 
 -/
 
@@ -346,7 +451,7 @@ lemma spatialPart_basis_sum_inl {d : ℕ} (i : Fin d) :
 
 /-!
 
-## The time component
+### G.2. The time part
 
 -/
 
@@ -359,15 +464,6 @@ lemma timeComponent_basis_sum_inr {d : ℕ} (i : Fin d) :
 
 lemma timeComponent_basis_sum_inl {d : ℕ} :
     timeComponent (d := d) (basis (Sum.inl 0)) = 1 := by simp
-/-!
-
-## Smoothness
-
--/
-
-open Manifold in
-/-- The structure of a smooth manifold on Vector . -/
-def asSmoothManifold (d : ℕ) : ModelWithCorners ℝ (Vector d) (Vector d) := 𝓘(ℝ, Vector d)
 
 end Vector
 

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.Product
+import Mathlib.Algebra.Group.Hom.Defs
 /-!
 
 # Tensorial class
@@ -157,12 +158,6 @@ lemma smul_add {g : G} [Tensorial S c M] (m m' : M) :
   simp [toTensor_smul, map_add, Tensor.actionT_add]
 
 @[simp]
-lemma smul_neg {n : ℕ} {c : Fin n → C} {M : Type} [AddCommGroup M] [Module k M]
-    [Tensorial S c M] (g : G) (m : M) :
-    g • (-m) = - (g • m) := toTensor.injective <| by
-  simp [toTensor_smul, map_neg, Tensor.actionT_neg]
-
-@[simp]
 lemma smul_zero [Tensorial S c M] {g : G} :
     g • (0 : M) = 0 := toTensor.injective <| by
   simp [toTensor_smul, map_zero, Tensor.actionT_zero]
@@ -188,14 +183,23 @@ lemma smulLinearMap_apply {g : G} [Tensorial S c M] (m : M) :
 
 /-!
 
-## C. Properties of the basis
+## C. The tensorial basis
 
 We now prove some properties of the basis induced on a `Tensorial` instance.
 
 -/
 
+noncomputable def basis (M : Type) [AddCommMonoid M] [Module k M] [Tensorial S c M] :
+    Module.Basis (Tensor.ComponentIdx (S := S) c) k M :=
+  (Tensor.basis (S := S) c).map toTensor.symm
+
 lemma basis_toTensor_apply [Tensorial S c M] (m : M) :
-    (Tensor.basis c).repr (toTensor m) = ((Tensor.basis c).map toTensor.symm).repr m := rfl
+    (basis M).repr m = (Tensor.basis c).repr (toTensor m)  := rfl
+
+lemma toTensor_basis {i : Tensor.ComponentIdx (S := S) c} [Tensorial S c M] :
+    toTensor (basis M i) = (Tensor.basis c) i := by
+  rw [basis]
+  simp
 
 /-!
 
@@ -259,4 +263,164 @@ lemma basis_map_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
   simp only [LinearEquiv.apply_symm_apply]
   rfl
 
+/-!
+
+## E. The normed space and topological structure on tensorial instances
+
+-/
+
+
+/-!
+
+### E.1. The equivalence to Euclidean space
+
+-/
+
+noncomputable def toEuclideanSpace {n : ℕ} {c : Fin n → C} [Tensorial S c M] :
+    M ≃ₗ[k] EuclideanSpace k (Tensor.ComponentIdx (S := S) c) :=
+  (toTensor (S := S) (M := M)).trans <| Tensor.toEuclideanSpace (S := S) c
+
+lemma toEuclideanSpace_basis  [Tensorial S c M] (i : Tensor.ComponentIdx (S := S) c) :
+    toEuclideanSpace (basis M i) = Pi.single i 1 := by
+  simp [toEuclideanSpace, toTensor_basis, Tensor.toEuclideanSpace_basis]
+
+/-!
+
+### E.2. The instance of a commutative additive group
+
+-/
+
+noncomputable instance [Tensorial S c M] : AddCommGroup M where
+  neg x := (toEuclideanSpace (S := S) (M := M)).symm <|
+    - (toEuclideanSpace (S := S) (M := M)) x
+  zsmul n x := (toEuclideanSpace (S := S) (M := M)).symm <|
+    n • (toEuclideanSpace (S := S) (M := M)) x
+  neg_add_cancel x := by
+    apply toEuclideanSpace.injective
+    simp
+  zsmul_zero' x := by simp
+  zsmul_succ' n x := by
+    apply toEuclideanSpace.injective
+    simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, LinearEquiv.apply_symm_apply,
+      natCast_zsmul, map_nsmul, LinearEquiv.symm_apply_apply, map_add]
+    module
+  zsmul_neg' n x := by
+    apply toEuclideanSpace.injective
+    simp only [negSucc_zsmul, LinearEquiv.apply_symm_apply, Nat.succ_eq_add_one, Nat.cast_add,
+      Nat.cast_one, neg_inj]
+    module
+
+lemma neg_eq  [Tensorial S c M] (m : M) :
+    - m = (toEuclideanSpace (S := S) (M := M)).symm (- toEuclideanSpace m) := by
+  rfl
+
+lemma sub_eq [Tensorial S c M] (m1 m2 : M) :
+    m1 - m2 =
+    (toEuclideanSpace (S := S) (M := M)).symm (toEuclideanSpace m1 - toEuclideanSpace m2) := by
+  change m1 + (- m2) = _
+  rw [neg_eq]
+  simp only [map_neg, LinearEquiv.symm_apply_apply, map_sub]
+  rfl
+
+@[simp]
+lemma smul_neg [Tensorial S c M] (g : G) (m : M) :
+    g • (-m) = - (g • m) := toTensor.injective <| by
+  simp [toTensor_smul, map_neg, Tensor.actionT_neg]
+
+@[simp]
+lemma smul_sub [Tensorial S c M] (g : G) (m1 m2 : M) :
+    g • (m1 - m2) = g • m1 - g • m2 := by
+  change g • (m1 + -m2) = _
+  rw [smul_add, smul_neg]
+  rfl
+
+/-!
+
+### E.2. The instance of a normed additive commutative group
+
+-/
+
+
+section
+
+variable {k : Type} [RCLike k] {C G : Type} [Group G] {S : TensorSpecies k C G}
+    {n : ℕ} {c : Fin n → C} {M : Type} [AddCommMonoid M] [Module k M]
+    [Tensorial S c M]
+
+noncomputable instance  : NormedAddCommGroup M where
+  norm := fun m => ‖toEuclideanSpace m‖
+  dist_self m := by simp
+  dist_comm m1 m2 := by simp; exact norm_sub_rev (toEuclideanSpace m1) (toEuclideanSpace m2)
+  edist m1 m2 := edist (toEuclideanSpace m1) (toEuclideanSpace m2)
+  dist_triangle m1 m2 m3 := by
+    simpa [NormedAddCommGroup.dist_eq] using
+      dist_triangle (toEuclideanSpace m1) (toEuclideanSpace m2) (toEuclideanSpace m3)
+  eq_of_dist_eq_zero := by
+    intro m1 m2 h
+    apply toEuclideanSpace.injective
+    simp only [map_sub, norm_eq_zero] at h
+    rw [sub_eq_zero] at h
+    exact h
+  edist_dist m1 m2 := by
+    rw [edist_dist, NormedAddCommGroup.dist_eq]
+    simp
+
+/-!
+
+### E.3. Properties of the norm
+
+-/
+
+lemma norm_eq_toEuclideanSpace (m : M) : ‖m‖ = ‖toEuclideanSpace m‖ := rfl
+
+lemma norm_basis (i : Tensor.ComponentIdx (S := S) c) :
+    ‖basis M i‖ = 1 := by
+  rw [norm_eq_toEuclideanSpace, toEuclideanSpace_basis]
+  rw [@PiLp.norm_eq_of_L2]
+  simp
+  rw [Finset.sum_eq_single i]
+  . simp
+  · intro b hb hbi
+    rw [Pi.single_eq_of_ne hbi, norm_zero]
+    simp
+  · simp
+
+/-!
+
+### E.4. Finite dimensionality
+
+-/
+
+instance [Tensorial S c M] :  FiniteDimensional k M :=
+  FiniteDimensional.of_fintype_basis (basis M)
+
+
+
+/-!
+
+### E.5. The action as a continuous linear map
+
+-/
+
+noncomputable def smulCLM [ContinuousSMul k M] (g : G) : M →L[k] M :=
+  (smulLinearMap g).toContinuousLinearMap
+
+lemma smulCLM_apply [ContinuousSMul k M] (g : G) (m : M) :
+    smulCLM g m = g • m := rfl
+
+/-!
+
+### E.6. The instance of a normed space
+
+-/
+
+def normedSpace : NormedSpace k M where
+  norm_smul_le c x := by
+    rw [norm_eq_toEuclideanSpace]
+    simp only [map_smul]
+    exact norm_smul_le c (toEuclideanSpace x)
+
+
+
+end
 end Tensorial

@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import Mathlib.GroupTheory.GroupAction.Ring
+import Mathlib.Analysis.InnerProductSpace.PiL2
 /-!
 
 # Products of tensors.
@@ -817,6 +818,26 @@ lemma toField_equivariant {c : Fin 0 → C} (g : G) (t : Tensor S c) :
     simp [hp]
   · intro t1 t2 hp1 hp2
     simp [hp1, hp2, actionT_add]
+
+/-!
+
+## Equivalence to Euclidean space
+
+-/
+
+/-- The equivalence between tensors and euclidean space indexed by
+  `ComponentIdx c`. -/
+noncomputable def toEuclideanSpace {n : ℕ} (c : Fin n → C) :
+    S.Tensor c ≃ₗ[k] EuclideanSpace k (ComponentIdx (S := S) c) :=
+  (basis (S := S) c).repr.trans <|
+  (Finsupp.linearEquivFunOnFinite k k (ComponentIdx (S := S) c)).trans <|
+  (WithLp.linearEquiv 2 k ((i : ComponentIdx c) → (fun _ => k) i)).symm
+
+lemma toEuclideanSpace_basis {n : ℕ} (c : Fin n → C) (b : ComponentIdx (S := S) c) :
+    toEuclideanSpace c (basis c b) = Pi.single b 1 := by
+  simp only [toEuclideanSpace, LinearEquiv.trans_apply, Basis.repr_self,
+    Finsupp.linearEquivFunOnFinite_single, WithLp.linearEquiv_symm_apply]
+  rfl
 
 end Tensor
 
