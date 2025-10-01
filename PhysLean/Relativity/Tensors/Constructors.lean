@@ -120,17 +120,17 @@ lemma contrT_fromSingleT_fromSingleT {c : C} (x : S.FD.obj {as := c})
         (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inl 0))
       · rfl
       · rw [Pure.prodP_apply_finSumFinEquiv]
-        simp only [Nat.reduceAdd, Fin.isValue, Function.comp_apply, Matrix.cons_val_zero,
-          eqToHom_refl, Discrete.functor_map_id]
+        simp only [Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero, eqToHom_refl,
+          Discrete.functor_map_id]
         rfl
     · trans (ConcreteCategory.hom
-        (𝟙 (S.FD.obj { as := Sum.elim ![c] ![S.τ c] (finSumFinEquiv.symm 1) })))
+        (𝟙 (S.FD.obj { as := Fin.append ![c] ![S.τ c] 1})))
         (Pure.prodP (fun | (0 : Fin 1) => x)
         (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inr 0)))
       · rfl
       · rw [Pure.prodP_apply_finSumFinEquiv]
         simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
-          Function.comp_apply, eqToHom_refl, Discrete.functor_map_id, ConcreteCategory.id_apply]
+          eqToHom_refl, Discrete.functor_map_id, ConcreteCategory.id_apply]
         rfl
   · congr 1
     ext i
@@ -720,8 +720,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : C}
           enter [1, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))
           rw [Pure.prodP_apply_finSumFinEquiv]
-        simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
-          eqToHom_refl, Discrete.functor_map_id]
+        simp only [Fin.isValue, Nat.reduceAdd, eqToHom_refl, Discrete.functor_map_id]
         conv_lhs =>
           enter [1, 2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inl 0))
@@ -733,8 +732,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : C}
           enter [2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 1))
           rw [Pure.prodP_apply_finSumFinEquiv]
-        simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
-          eqToHom_refl, Discrete.functor_map_id]
+        simp only [Fin.isValue, eqToHom_refl, Discrete.functor_map_id, Nat.reduceAdd]
         conv_lhs =>
           enter [2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))

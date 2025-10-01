@@ -244,7 +244,6 @@ def numAntiChiralL (F : FluxesFive) : ℤ :=
 
 -/
 
-
 lemma numChiralL_eq_sum_sub_numAntiChiralL (F : FluxesFive) :
     F.numChiralL = (chiralIndicesOfL F).sum - F.numAntiChiralL := by
   have h1 : (chiralIndicesOfL F) =
@@ -391,7 +390,6 @@ def numChiralU (F : FluxesTen) : ℤ := ((chiralIndicesOfU F).filter (fun x => 0
 def numAntiChiralU (F : FluxesTen) : ℤ := ((chiralIndicesOfU F).filter (fun x => x < 0)).sum
 
 /-
-
 
 #### B.4.4. Relation between number of chiral and anti-chiral `Q`
 

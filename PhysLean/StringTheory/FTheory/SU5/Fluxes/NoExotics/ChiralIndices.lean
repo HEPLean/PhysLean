@@ -35,7 +35,7 @@ we state them for the representation `D = (bar 3,1)_{1/3}` only:
 - B. Chiral indices sum to three given no exotics
 - C. Each chiral index is less then or equal to three given no exotics
 - D. Each chiral index is 0, 1, 2, or 3 given no exotics
-- E.  Sum of a subset of chirial indices is less then or equal to 3 given no exotics
+- E. Sum of a subset of chirial indices is less then or equal to 3 given no exotics
 
 ## iv. References
 
@@ -252,7 +252,6 @@ lemma FluxesTen.chiralIndicesOfE_sum_eq_three_of_noExotics (F : FluxesTen) (hF :
 
 -/
 
-
 /-- The chiral indices of the representation `D = (bar 3,1)_{1/3}` are less then
   or equal to `3`. -/
 lemma FluxesFive.chiralIndicesOfD_le_three_of_noExotics (F : FluxesFive) (hF : NoExotics F)
@@ -461,10 +460,9 @@ lemma FluxesTen.mem_chiralIndicesOfE_mem_of_noExotics (F : FluxesTen)
 
 /-!
 
-## E.  Sum of a subset of chirial indices is less then or equal to 3 given no exotics
+## E. Sum of a subset of chirial indices is less then or equal to 3 given no exotics
 
 -/
-
 
 lemma FluxesFive.chiralIndicesOfD_subset_sum_le_three_of_noExotics (F : FluxesFive)
     (hF : NoExotics F) (S : Multiset (ℤ × ℤ))

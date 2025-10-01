@@ -9,19 +9,18 @@ import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems
 
 # Completeness of `Elems` with regard to the `NoExotics` condition
 
+## i. Overview
+
 In the module:
 
 - `PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems`
 
 we define finite sets of elements of `FluxesFive` and `FluxesTen` which satisfy the
-`NoExotics` condition.
+`NoExotics` and `HasNoZero` conditions.
 
 In this module we prove that these sets are complete, in the sense that every
-element of `FluxesFive` or `FluxesTen` which satisfies the `NoExotics` condition
-is contained in them. This statement corresponds to the following lemmas:
-
-- `FluxesFive.noExotics_iff_mem_elemsNoExotics`
-- `FluxesTen.noExotics_iff_mem_elemsNoExotics`
+element of `FluxesFive` or `FluxesTen` which satisfies the `NoExotics` and
+`HasNoZero` conditions is contained in them.
 
 Our proof follows by building allowed subsets of fluxes by their cardinality, and heavily relies
 on the `decide` tactic.
@@ -30,6 +29,43 @@ Note that the `10d` fluxes are much more constrained than the 5-bar fluxes. This
 they are constrained by `3` SM representations `Q`, `U`, and `E`, whereas the 5-bar fluxes
 are only constrained by `2` SM representations `D` and `L`.
 
+## ii. Key results
+
+- `FluxesFive.noExotics_iff_mem_elemsNoExotics` : An element of `FluxesFive` satisfies `NoExotics`
+  and `HasNoZero` if and only if it is an element of `elemsNoExotics`.
+- `FluxesTen.noExotics_iff_mem_elemsNoExotics` : An element of `FluxesTen` satisfies `NoExotics`
+  and `HasNoZero` if and only if it is an element of `elemsNoExotics`.
+
+## iii. Table of contents
+
+- A. All terms of `FluxesFive` obeying `NoExotics` and `HasNoZero`
+  - A.1. The allowed fluxes in a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.2. The allowed card-1 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.3. The allowed card-2 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.4. The allowed card-3 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.5. The allowed card-4 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.6. The allowed card-5 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.7. The allowed card-6 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.8. No allowed card-7 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.9. No card-7 or above subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.10. Terms of `FluxesFive` obeying `NoExotics` and `HasNoZero` have card ≤ 6
+  - A.11. Terms of `FluxesFive` obeying `NoExotics` and `HasNoZero` are in `elemsNoExotics`
+  - A.12. Terms of `FluxesFive` obey `NoExotics` and `HasNoZero` if and only if in `elemsNoExotics`
+- B. All terms of `FluxesTen` obeying `NoExotics` and `HasNoZero`
+  - B.1. The allowed fluxes in a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+  - B.2. The allowed card-1 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+  - B.3. The allowed card-2 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+  - B.4. The allowed card-3 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+  - B.5. No allowed card-4 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+  - B.6. No card-4 or above subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+  - B.7. Terms of `FluxesTen` obeying `NoExotics` and `HasNoZero` have card ≤ 3
+  - B.8. Terms of `FluxesTen` obeying `NoExotics` and `HasNoZero` are in `elemsNoExotics`
+  - B.9. Terms of `FluxesTen` obey `NoExotics` and `HasNoZero` if and only if in `elemsNoExotics`
+
+## iv. References
+
+There are no known references for the material in this module.
+
 -/
 namespace FTheory
 
@@ -37,10 +73,16 @@ namespace SU5
 
 /-!
 
-## Completeness for `FluxesFive`
+## A. All terms of `FluxesFive` obeying `NoExotics` and `HasNoZero`
 
 -/
 namespace FluxesFive
+
+/-!
+
+### A.1. The allowed fluxes in a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
 
 lemma mem_mem_finset_of_noExotics (F : FluxesFive) (hF : F.NoExotics)
     (hnZ : F.HasNoZero)
@@ -74,7 +116,7 @@ lemma mem_mem_finset_of_noExotics (F : FluxesFive) (hF : F.NoExotics)
 
 /-!
 
-### Allowed subsets of `FluxesFive` obeying `NoExotics`
+### A.2. The allowed card-1 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
 
 -/
 
@@ -89,6 +131,12 @@ lemma subset_le_mem_of_card_eq_one {F : FluxesFive} (hF : F.NoExotics)
   have hx := mem_mem_finset_of_noExotics F hF hnZ x (by simpa using hS)
   fin_cases hx
   all_goals decide
+
+/-!
+
+### A.3. The allowed card-2 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
 
 lemma subset_le_mem_of_card_eq_two {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 2) (hS : S ≤ F) :
@@ -131,6 +179,12 @@ lemma subset_le_mem_of_card_eq_two {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.
   revert a
   revert S
   decide
+
+/-!
+
+### A.4. The allowed card-3 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
 
 lemma subset_le_mem_of_card_eq_three {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 3) (hS : S ≤ F) :
@@ -176,6 +230,12 @@ lemma subset_le_mem_of_card_eq_three {F : FluxesFive} (hF : F.NoExotics) (hnZ : 
   revert S
   decide
 
+/-!
+
+### A.5. The allowed card-4 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
+
 lemma subset_le_mem_of_card_eq_four {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 4) (hS : S ≤ F) :
     S ∈ ({{(0, 1), (0, 1), (0, 1), (1, -1)},
@@ -217,6 +277,12 @@ lemma subset_le_mem_of_card_eq_four {F : FluxesFive} (hF : F.NoExotics) (hnZ : F
   revert S
   decide
 
+/-!
+
+### A.6. The allowed card-5 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
+
 lemma subset_le_mem_of_card_eq_five {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 5) (hS : S ≤ F) :
     S ∈ ({{(0, 1), (0, 1), (0, 1), (1, -1), (1, -1)},
@@ -254,6 +320,12 @@ lemma subset_le_mem_of_card_eq_five {F : FluxesFive} (hF : F.NoExotics) (hnZ : F
   revert S
   decide
 
+/-!
+
+### A.7. The allowed card-6 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
+
 lemma subset_le_mem_of_card_eq_six {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 6) (hS : S ≤ F) :
     S ∈ ({{(0, 1), (0, 1), (0, 1), (1, -1), (1, -1), (1, -1)}} :
@@ -287,6 +359,12 @@ lemma subset_le_mem_of_card_eq_six {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.
   revert S
   decide
 
+/-!
+
+### A.8. No allowed card-7 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
+
 lemma subset_le_mem_of_card_eq_seven {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 7) (hS : S ≤ F) :
     S ∈ ({} : Finset (Multiset (ℤ × ℤ))) := by
@@ -317,6 +395,12 @@ lemma subset_le_mem_of_card_eq_seven {F : FluxesFive} (hF : F.NoExotics) (hnZ : 
   revert a
   revert S
   decide
+
+/-!
+
+### A.9. No card-7 or above subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+
+-/
 
 lemma subset_le_mem_of_card_eq_seven_add {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) {n : ℕ} (hcard : S.card = 7 + n) (hS : S ≤ F) :
@@ -351,7 +435,7 @@ lemma subset_le_mem_of_card_ge_seven {F : FluxesFive} (hF : F.NoExotics) (hnZ : 
 
 /-!
 
-### Resulting properties on `FluxesFive` with `NoExotics`
+### A.10. Terms of `FluxesFive` obeying `NoExotics` and `HasNoZero` have card ≤ 6
 
 -/
 
@@ -366,6 +450,12 @@ lemma card_mem_range_seven_of_noExotics {F : FluxesFive} (hF : F.NoExotics) (hnZ
     F.card ∈ Finset.range 7 := by
   rw [Finset.mem_range_succ_iff]
   exact card_le_six_of_noExotics hF hnZ
+
+/-!
+
+### A.11. Terms of `FluxesFive` obeying `NoExotics` and `HasNoZero` are in `elemsNoExotics`
+
+-/
 
 lemma mem_elemsNoExotics_of_noExotics (F : FluxesFive) (hNE : F.NoExotics) (hnZ : F.HasNoZero) :
     F ∈ elemsNoExotics := by
@@ -405,6 +495,12 @@ lemma mem_elemsNoExotics_of_noExotics (F : FluxesFive) (hNE : F.NoExotics) (hnZ 
     revert hNE
     decide
 
+/-!
+
+### A.12. Terms of `FluxesFive` obey `NoExotics` and `HasNoZero` if and only if in `elemsNoExotics`
+
+-/
+
 /-- Completness of `elemsNoExotics`, that is, every element of `FluxesFive`
   which obeys `NoExotics` is an element of `elemsNoExotics`, and every
   element of `elemsNoExotics` obeys `NoExotics`. -/
@@ -418,11 +514,17 @@ end FluxesFive
 
 /-!
 
-## Completeness for `FluxesTen`
+## B. All terms of `FluxesTen` obeying `NoExotics` and `HasNoZero`
 
 -/
 
 namespace FluxesTen
+
+/-!
+
+### B.1. The allowed fluxes in a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+
+-/
 
 lemma mem_mem_finset_of_noExotics (F : FluxesTen) (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (x : ℤ × ℤ) (hx : x ∈ F) :
@@ -459,7 +561,7 @@ lemma mem_mem_finset_of_noExotics (F : FluxesTen) (hF : F.NoExotics) (hnZ : F.Ha
 
 /-!
 
-### Allowed subsets of `FluxesTen` obeying `NoExotics`
+### B.2. The allowed card-1 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
 
 -/
 
@@ -472,6 +574,12 @@ lemma subset_le_mem_of_card_eq_one {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.H
   have hx := mem_mem_finset_of_noExotics F hF hnZ x (by simpa using hS)
   fin_cases hx
   all_goals decide
+
+/-!
+
+### B.3. The allowed card-2 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+
+-/
 
 lemma subset_le_mem_of_card_eq_two {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 2) (hS : S ≤ F) :
@@ -508,6 +616,12 @@ lemma subset_le_mem_of_card_eq_two {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.H
   revert S
   decide
 
+/-!
+
+### B.4. The allowed card-3 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+
+-/
+
 lemma subset_le_mem_of_card_eq_three {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 3) (hS : S ≤ F) :
     S ∈ ({{(1, -1), (1, 0), (1, 1)}, {(1, 0), (1, 0), (1, 0)}} : Finset (Multiset (ℤ × ℤ))) := by
@@ -542,6 +656,12 @@ lemma subset_le_mem_of_card_eq_three {F : FluxesTen} (hF : F.NoExotics) (hnZ : F
   revert S
   decide
 
+/-!
+
+### B.5. No allowed card-4 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+
+-/
+
 lemma subset_le_mem_of_card_eq_four {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) (hcard : S.card = 4) (hS : S ≤ F) :
     S ∈ ({} : Finset (Multiset (ℤ × ℤ))) := by
@@ -573,6 +693,12 @@ lemma subset_le_mem_of_card_eq_four {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.
   revert a
   revert S
   decide
+
+/-!
+
+### B.6. No card-4 or above subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+
+-/
 
 lemma subset_le_mem_of_card_eq_four_add {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
     (S : Multiset (ℤ × ℤ)) {n : ℕ} (hcard : S.card = 4 + n) (hS : S ≤ F) :
@@ -607,7 +733,7 @@ lemma subset_le_mem_of_card_ge_four {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.
 
 /-!
 
-### Resulting properties on `FluxesTen` with `NoExotics`
+### B.7. Terms of `FluxesTen` obeying `NoExotics` and `HasNoZero` have card ≤ 3
 
 -/
 
@@ -622,6 +748,12 @@ lemma card_mem_range_four_of_noExotics {F : FluxesTen} (hF : F.NoExotics) (hnZ :
     F.card ∈ Finset.range 4 := by
   rw [Finset.mem_range_succ_iff]
   exact card_le_three_of_noExotics hF hnZ
+
+/-!
+
+### B.8. Terms of `FluxesTen` obeying `NoExotics` and `HasNoZero` are in `elemsNoExotics`
+
+-/
 
 lemma mem_elemsNoExotics_of_noExotics (F : FluxesTen) (hNE : F.NoExotics) (hnZ : F.HasNoZero) :
     F ∈ elemsNoExotics := by
@@ -646,6 +778,12 @@ lemma mem_elemsNoExotics_of_noExotics (F : FluxesTen) (hNE : F.NoExotics) (hnZ :
   · subst hr
     revert hNE
     decide
+
+/-!
+
+### B.9. Terms of `FluxesTen` obey `NoExotics` and `HasNoZero` if and only if in `elemsNoExotics`
+
+-/
 
 /-- Completness of `elemsNoExotics`, that is, every element of `FluxesTen`
   which obeys `NoExotics` is an element of `elemsNoExotics`, and every

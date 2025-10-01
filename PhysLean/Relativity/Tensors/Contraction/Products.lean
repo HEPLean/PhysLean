@@ -155,23 +155,18 @@ lemma Pure.dropPairEmb_permCond_prod {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
     {c1 : Fin n1 → C}
     (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j) :
     PermCond
-      ((Sum.elim c1 c ∘ finSumFinEquiv.symm) ∘
+      (Fin.append c1 c ∘
         (dropPairEmb (finSumFinEquiv (m := n1) (Sum.inr i))
         (finSumFinEquiv (m := n1) (Sum.inr j))))
-      (Sum.elim c1 (c ∘ (dropPairEmb i j)) ∘ finSumFinEquiv.symm)
+      (Fin.append c1 (c ∘ (dropPairEmb i j)))
       id := by
   apply And.intro (Function.bijective_id)
-  intro m
-  simp only [Nat.add_eq, finSumFinEquiv_apply_right, id_eq, Function.comp_apply]
-  obtain ⟨m, rfl⟩ := finSumFinEquiv.surjective m
-  simp only [Equiv.symm_apply_apply]
-  match m with
-  | Sum.inl m =>
-    simp only [finSumFinEquiv_apply_left, Sum.elim_inl]
+  simp [Fin.forall_fin_add]
+  apply And.intro
+  · intro m
     rw [dropPairEmb_natAdd_apply_castAdd i j hij.1]
     simp
-  | Sum.inr m =>
-    simp only [finSumFinEquiv_apply_right, Sum.elim_inr, Function.comp_apply]
+  · intro m
     rw [dropPairEmb_comm_natAdd i j hij.1]
     simp
 
@@ -185,8 +180,7 @@ lemma Pure.contrPCoeff_natAdd {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
   simp only [contrPCoeff, Function.comp_apply, Monoidal.tensorUnit_obj, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     Functor.comp_obj, Discrete.functor_obj_eq_as, prodP_apply_natAdd]
-  conv_lhs => erw [S.contr_congr
-    ((Sum.elim c1 c (finSumFinEquiv.symm (Fin.natAdd n1 i)))) ((c i)) (by simp)]
+  conv_lhs => erw [S.contr_congr _ ((c i)) (by simp)]
   apply congrArg
   congr 1
   · change (ConcreteCategory.hom (S.FD.map (Discrete.eqToHom _)))
@@ -249,7 +243,7 @@ lemma Pure.prodP_contrP_snd {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
     contrP
       (finSumFinEquiv (m := n1) (Sum.inr i))
       (finSumFinEquiv (m := n1) (Sum.inr j))
-      (by simp [hij, - finSumFinEquiv_apply_right, finSumFinEquiv.injective.eq_iff]) <|
+      (by simpa using hij) <|
     prodP p1 p) := by
   simp only [contrP, map_smul, Nat.add_eq, finSumFinEquiv_apply_right]
   rw [contrPCoeff_natAdd i j hij]
@@ -267,7 +261,7 @@ lemma prodT_contrT_snd {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
     contrT _
       (finSumFinEquiv (m := n1) (Sum.inr i))
       (finSumFinEquiv (m := n1) (Sum.inr j))
-      (by simp [hij, - finSumFinEquiv_apply_right, finSumFinEquiv.injective.eq_iff]) <|
+      (by simpa using hij) <|
     prodT t1 t) := by
   generalize_proofs ha hb hc hd
   let P (t : Tensor S c) (t1 : Tensor S c1) : Prop :=
@@ -308,7 +302,7 @@ lemma contrT_prodT_snd {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
     (contrT _
       (finSumFinEquiv (m := n1) (Sum.inr i))
       (finSumFinEquiv (m := n1) (Sum.inr j))
-      (by simp [hij, - finSumFinEquiv_apply_right, finSumFinEquiv.injective.eq_iff]) <|
+      (by simpa using hij) <|
     prodT t1 t) =
     ((permT id (PermCond.on_id_symm (Pure.dropPairEmb_permCond_prod i j hij))) <|
       (prodT t1 (contrT n i j hij t))) := by

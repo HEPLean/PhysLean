@@ -355,7 +355,7 @@ lemma deriv_basis_repr_apply {μν : (Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)} (A 
 
 lemma toTensor_deriv_basis_repr_apply (A : ElectromagneticPotential)
     (x : SpaceTime) (b : ComponentIdx (S := realLorentzTensor)
-      (Sum.elim ![Color.down] ![Color.up] ∘ ⇑finSumFinEquiv.symm)) :
+      (Fin.append ![Color.down] ![Color.up])) :
     (Tensor.basis _).repr (Tensorial.toTensor (deriv A x)) b =
     ∂_ (finSumFinEquiv.symm (b 0)) A x (finSumFinEquiv.symm (b 1)) := by
   rw [Tensorial.basis_toTensor_apply]
@@ -425,8 +425,7 @@ lemma toTensor_toFieldStrength (A : ElectromagneticPotential) (x : SpaceTime) :
 -/
 
 lemma toTensor_toFieldStrength_basis_repr (A : ElectromagneticPotential) (x : SpaceTime)
-    (b : ComponentIdx (S := realLorentzTensor)
-      (Sum.elim ![Color.up] ![Color.up] ∘ ⇑finSumFinEquiv.symm)) :
+    (b : ComponentIdx (S := realLorentzTensor) (Fin.append ![Color.up] ![Color.up])) :
     (Tensor.basis _).repr (Tensorial.toTensor (toFieldStrength A x)) b =
     ∑ κ, (η (finSumFinEquiv.symm (b 0)) κ * ∂_ κ A x (finSumFinEquiv.symm (b 1)) -
       η (finSumFinEquiv.symm (b 1)) κ * ∂_ κ A x (finSumFinEquiv.symm (b 0))) := by
@@ -458,8 +457,7 @@ lemma toTensor_toFieldStrength_basis_repr (A : ElectromagneticPotential) (x : Sp
   simp only [Nat.reduceAdd, Fin.isValue, Equiv.symm_apply_apply]
 
 lemma toFieldStrength_tensor_basis_eq_basis (A : ElectromagneticPotential) (x : SpaceTime)
-    (b : ComponentIdx (S := realLorentzTensor)
-      (Sum.elim ![Color.up] ![Color.up] ∘ ⇑finSumFinEquiv.symm)) :
+    (b : ComponentIdx (S := realLorentzTensor) (Fin.append ![Color.up] ![Color.up])) :
     (Tensor.basis _).repr (Tensorial.toTensor (toFieldStrength A x)) b =
     (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr (toFieldStrength A x)
       (finSumFinEquiv.symm (b 0), finSumFinEquiv.symm (b 1)) := by
@@ -574,8 +572,7 @@ lemma toFieldStrength_antisymmetric (A : ElectromagneticPotential) (x : SpaceTim
   ext b
   rw [toTensor_toFieldStrength_basis_repr]
   rw [permT_basis_repr_symm_apply, map_neg]
-  simp only [Nat.reduceAdd, Fin.isValue, Nat.reduceSucc, Function.comp_apply, Finsupp.coe_neg,
-    Pi.neg_apply]
+  simp only [Nat.reduceAdd, Fin.isValue, Nat.reduceSucc, Finsupp.coe_neg, Pi.neg_apply]
   rw [toTensor_toFieldStrength_basis_repr]
   rw [← Finset.sum_neg_distrib]
   apply Finset.sum_congr rfl (fun κ _ => ?_)

@@ -207,7 +207,7 @@ open TensorProduct
 
 noncomputable instance prod [Tensorial S c M] {n2 : ℕ} {c2 : Fin n2 → C}
     {M₂ : Type} [AddCommMonoid M₂] [Module k M₂] [Tensorial S c2 M₂] :
-    Tensorial S (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm) (M ⊗[k] M₂) where
+    Tensorial S (Fin.append c c2) (M ⊗[k] M₂) where
   toTensor := (TensorProduct.congr toTensor toTensor).trans
     (Tensor.tensorEquivProd)
 
@@ -241,17 +241,18 @@ lemma smul_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
 ### D.3. The basis on products
 
 -/
+
 lemma basis_map_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
     [Tensorial S c M] [AddCommMonoid M₂] [Module k M₂]
     [Tensorial S c2 M₂] :
-    (Tensor.basis (S := S) (Sum.elim c c2 ∘ ⇑finSumFinEquiv.symm)).map
+    (Tensor.basis (S := S) (Fin.append c c2)).map
       (toTensor (M := (M ⊗[k] M₂))).symm =
     (((Tensor.basis (S := S) c).map (toTensor (M := M)).symm).tensorProduct
     ((Tensor.basis (S := S) c2).map (toTensor (M := M₂)).symm)).reindex
-    (Tensor.ComponentIdx.splitEquiv.symm) := by
+    (Tensor.ComponentIdx.prodEquiv.symm) := by
   rw [Tensor.basis_prod_eq]
   ext b
-  simp only [Tensor.ComponentIdx.splitEquiv, Module.Basis.map_apply, Module.Basis.coe_reindex,
+  simp only [Tensor.ComponentIdx.prodEquiv, Module.Basis.map_apply, Module.Basis.coe_reindex,
     Equiv.symm_symm, Equiv.coe_fn_mk, Function.comp_apply, Module.Basis.tensorProduct_apply]
   apply toTensor.injective
   simp only [LinearEquiv.apply_symm_apply]
