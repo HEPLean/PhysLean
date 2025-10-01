@@ -41,14 +41,14 @@ def IsViable (I : CodimensionOneConfig) (x : Quanta) : Prop :=
   ¬ x.toCharges.IsPhenoConstrained ∧
   ¬ x.toCharges.YukawaGeneratesDangerousAtLevel 1 ∧
   AllowsTerm x.toCharges topYukawa ∧
-  x.2.2.1.toFluxesFive.NoExotics ∧
-  x.2.2.1.toFluxesFive.HasNoZero ∧
-  x.2.2.2.toFluxesTen.NoExotics ∧
-  x.2.2.2.toFluxesTen.HasNoZero ∧
-  AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2 ∧
+  x.F.toFluxesFive.NoExotics ∧
+  x.F.toFluxesFive.HasNoZero ∧
+  x.T.toFluxesTen.NoExotics ∧
+  x.T.toFluxesTen.HasNoZero ∧
+  AnomalyCancellation x.qHd x.qHu x.F x.T ∧
   x.toCharges ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges ∧
-  x.2.2.1.toCharges.Nodup ∧
-  x.2.2.2.toCharges.Nodup
+  x.F.toCharges.Nodup ∧
+  x.T.toCharges.Nodup
 
 lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
     IsViable I x ↔
@@ -56,16 +56,16 @@ lemma isViable_iff_expand_ofFinset (I : CodimensionOneConfig) (x : Quanta) :
   ¬ x.toCharges.IsPhenoConstrained ∧
   ¬ x.toCharges.YukawaGeneratesDangerousAtLevel 1 ∧
   AllowsTerm x.toCharges topYukawa ∧
-  x.2.2.1.toFluxesFive.NoExotics ∧
-  x.2.2.1.toFluxesFive.HasNoZero ∧
-  x.2.2.2.toFluxesTen.NoExotics ∧
-  x.2.2.2.toFluxesTen.HasNoZero ∧
-  AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2 ∧
-  (x.1.toFinset ⊆ I.allowedBarFiveCharges ∧ x.2.1.toFinset ⊆ I.allowedBarFiveCharges ∧
+  x.F.toFluxesFive.NoExotics ∧
+  x.F.toFluxesFive.HasNoZero ∧
+  x.T.toFluxesTen.NoExotics ∧
+  x.T.toFluxesTen.HasNoZero ∧
+  AnomalyCancellation x.qHd x.qHu x.F x.T ∧
+  (x.qHd.toFinset ⊆ I.allowedBarFiveCharges ∧ x.qHu.toFinset ⊆ I.allowedBarFiveCharges ∧
       x.toCharges.Q5 ⊆ I.allowedBarFiveCharges ∧ x.toCharges.Q10 ⊆ I.allowedTenCharges)
       ∧
-    x.2.2.1.toCharges.Nodup ∧
-    x.2.2.2.toCharges.Nodup := by
+    x.F.toCharges.Nodup ∧
+    x.T.toCharges.Nodup := by
   rw [IsViable, mem_ofFinset_iff]
   simp [toCharges]
 
@@ -80,11 +80,11 @@ instance (I : CodimensionOneConfig) (x : Quanta) : Decidable (IsViable I x) :=
 
 lemma toCharges_five_nodup_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.1.toCharges.Nodup := h.2.2.2.2.2.2.2.2.2.2.1
+    x.F.toCharges.Nodup := h.2.2.2.2.2.2.2.2.2.2.1
 
 lemma toCharges_ten_nodup_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.2.toCharges.Nodup := h.2.2.2.2.2.2.2.2.2.2.2
+    x.T.toCharges.Nodup := h.2.2.2.2.2.2.2.2.2.2.2
 
 lemma toCharges_mem_ofFinset_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
@@ -93,23 +93,23 @@ lemma toCharges_mem_ofFinset_of_isViable
 
 lemma toFluxesFive_noExotics_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.1.toFluxesFive.NoExotics := h.2.2.2.2.1
+    x.F.toFluxesFive.NoExotics := h.2.2.2.2.1
 
 lemma toFluxesTen_noExotics_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.2.toFluxesTen.NoExotics := h.2.2.2.2.2.2.1
+    x.T.toFluxesTen.NoExotics := h.2.2.2.2.2.2.1
 
 lemma toFluxesFive_hasNoZero_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.1.toFluxesFive.HasNoZero := h.2.2.2.2.2.1
+    x.F.toFluxesFive.HasNoZero := h.2.2.2.2.2.1
 
 lemma toFluxesTen_hasNoZero_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.2.toFluxesTen.HasNoZero := h.2.2.2.2.2.2.2.1
+    x.T.toFluxesTen.HasNoZero := h.2.2.2.2.2.2.2.1
 
 lemma Q10_charges_mem_allowedBarTenCharges_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    ∀ s ∈ x.2.2.2.toCharges, s ∈ I.allowedTenCharges := by
+    ∀ s ∈ x.T.toCharges, s ∈ I.allowedTenCharges := by
   have h1 := toCharges_mem_ofFinset_of_isViable I x h
   rw [mem_ofFinset_iff] at h1
   have h2 := h1.2.2.2
@@ -120,7 +120,7 @@ lemma Q10_charges_mem_allowedBarTenCharges_of_isViable
 
 lemma Q5_charges_mem_allowedBarFiveCharges_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    ∀ s ∈ x.2.2.1.toCharges, s ∈ I.allowedBarFiveCharges := by
+    ∀ s ∈ x.F.toCharges, s ∈ I.allowedBarFiveCharges := by
   have h1 := toCharges_mem_ofFinset_of_isViable I x h
   rw [mem_ofFinset_iff] at h1
   have h2 := h1.2.2.1
@@ -146,14 +146,14 @@ lemma toCharges_isComplete_of_isViable
 
 lemma anomalyCancellation_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2 := by
+    AnomalyCancellation x.qHd x.qHu x.F x.T := by
   exact h.2.2.2.2.2.2.2.2.1
 
 lemma reduce_five_eq_self_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.1.reduce = x.2.2.1 := by
+    x.F.reduce = x.F := by
   match x with
-  | (qHd, qHu, F, T) =>
+  | ⟨qHd, qHu, F, T⟩ =>
     simp only
     refine FiveQuanta.reduce_eq_self_of_ofCharges_nodup F ?_
     simp [IsViable] at h
@@ -161,9 +161,9 @@ lemma reduce_five_eq_self_of_isViable
 
 lemma reduce_ten_eq_self_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
-    x.2.2.2.reduce = x.2.2.2 := by
+    x.T.reduce = x.T := by
   match x with
-  | (qHd, qHu, F, T) =>
+  | ⟨qHd, qHu, F, T⟩ =>
     simp only
     refine TenQuanta.reduce_eq_self_of_ofCharges_nodup T ?_
     simp [IsViable] at h
@@ -173,7 +173,7 @@ lemma reduce_eq_self_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
     x.reduce = x := by
   match x with
-  | (qHd, qHu, F, T) =>
+  | ⟨qHd, qHu, F, T⟩ =>
     simp [reduce]
     constructor
     · exact reduce_five_eq_self_of_isViable I _ h
@@ -183,18 +183,18 @@ lemma mem_ofChargesExpand_of_isViable
     (I : CodimensionOneConfig) (x : Quanta) (h : IsViable I x) :
     x ∈ (ofChargesExpand x.toCharges).map reduce := by
   simp [ofChargesExpand]
-  have h_five : x.2.2.1 ∈ (FiveQuanta.ofChargesExpand x.2.2.1.toCharges.toFinset).map
+  have h_five : x.F ∈ (FiveQuanta.ofChargesExpand x.F.toCharges.toFinset).map
       FiveQuanta.reduce := by
-    refine (FiveQuanta.mem_ofChargesExpand_map_reduce_iff x.2.2.1.toCharges.toFinset x.2.2.1).mpr ?_
+    refine (FiveQuanta.mem_ofChargesExpand_map_reduce_iff x.F.toCharges.toFinset x.F).mpr ?_
     · refine ⟨?_, rfl, ?_⟩
       · rw [← SU5.FluxesFive.noExotics_iff_mem_elemsNoExotics]
         refine ⟨?_, ?_⟩
         · exact toFluxesFive_noExotics_of_isViable I x h
         · exact toFluxesFive_hasNoZero_of_isViable I x h
       · exact reduce_five_eq_self_of_isViable I x h
-  have h_ten : x.2.2.2 ∈ (TenQuanta.ofChargesExpand x.2.2.2.toCharges.toFinset).map
+  have h_ten : x.T ∈ (TenQuanta.ofChargesExpand x.T.toCharges.toFinset).map
       TenQuanta.reduce := by
-    refine (TenQuanta.mem_ofChargesExpand_map_reduce_iff x.2.2.2.toCharges.toFinset x.2.2.2).mpr ?_
+    refine (TenQuanta.mem_ofChargesExpand_map_reduce_iff x.T.toCharges.toFinset x.T).mpr ?_
     · refine ⟨?_, rfl, ?_⟩
       · rw [← SU5.FluxesTen.noExotics_iff_mem_elemsNoExotics]
         refine ⟨?_, ?_⟩
@@ -243,12 +243,12 @@ lemma toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViable
 
 /-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViable`. -/
 def viableElems : CodimensionOneConfig → Multiset Quanta
-  | .same => {(some 2, some (-2), {(-1, 1, 2), (1, 2, -2)}, {(-1, 3, 0)}),
-      (some 2, some (-2), {(-1, 0, 2), (1, 3, -2)}, {(-1, 3, 0)}),
-      (some (-2), some 2, {(-1, 2, -2), (1, 1, 2)}, {(1, 3, 0)}),
-      (some (-2), some 2, {(-1, 3, -2), (1, 0, 2)}, {(1, 3, 0)})}
-  | .nearestNeighbor => {(some 6, some (-14), {(-9, 1, 2), (1, 2, -2)}, {(-7, 3, 0)}),
-    (some 6, some (-14), {(-9, 0, 2), (1, 3, -2)}, {(-7, 3, 0)})}
+  | .same => {⟨some 2, some (-2), {(-1, 1, 2), (1, 2, -2)}, {(-1, 3, 0)}⟩,
+      ⟨some 2, some (-2), {(-1, 0, 2), (1, 3, -2)}, {(-1, 3, 0)}⟩,
+      ⟨some (-2), some 2, {(-1, 2, -2), (1, 1, 2)}, {(1, 3, 0)}⟩,
+      ⟨some (-2), some 2, {(-1, 3, -2), (1, 0, 2)}, {(1, 3, 0)}⟩}
+  | .nearestNeighbor => {⟨some 6, some (-14), {(-9, 1, 2), (1, 2, -2)}, {(-7, 3, 0)}⟩,
+    ⟨some 6, some (-14), {(-9, 0, 2), (1, 3, -2)}, {(-7, 3, 0)}⟩}
   | .nextToNearestNeighbor => {}
 
 lemma isViable_of_mem_viableElems

@@ -38,7 +38,7 @@ variable {𝓩 : Type}
 /-- The condition on a collection of charges `c` that it extends to an anomaly free `Quanta`.
   That anomaly free `Quanta` is not tracked by this proposition. -/
 def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : ChargeSpectrum 𝓩) : Prop :=
-  ∃ x ∈ Quanta.ofChargesExpand c, Quanta.AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2
+  ∃ x ∈ Quanta.ofChargesExpand c, Quanta.AnomalyCancellation x.qHd x.qHu x.F x.T
 
 instance [DecidableEq 𝓩] [CommRing 𝓩] {c : ChargeSpectrum 𝓩} : Decidable (IsAnomalyFree c) :=
   Multiset.decidableExistsMultiset
@@ -57,9 +57,9 @@ lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : ChargeSpectrum 𝓩}
     (h : IsAnomalyFree c) : IsAnomalyFree (c.map (f.toAddMonoidHom)) := by
   obtain ⟨Q, h1, h2⟩ := h
   match Q with
-  | (qHd, qHu, F5, F10) =>
-  let QM : Quanta 𝓩1 := (Option.map f qHd, Option.map f qHu, F5.map fun y => (f y.1, y.2),
-    F10.map fun y => (f y.1, y.2))
+  | ⟨qHd, qHu, F5, F10⟩ =>
+  let QM : Quanta 𝓩1 := ⟨Option.map f qHd, Option.map f qHu, F5.map fun y => (f y.1, y.2),
+    F10.map fun y => (f y.1, y.2)⟩
   use QM
   constructor
   · simp [QM, Quanta.ofChargesExpand] at ⊢ h1

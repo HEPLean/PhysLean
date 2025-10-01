@@ -28,7 +28,11 @@ variable {I : CodimensionOneConfig}
   5-bar matter content and the 10d matter content, and the charges of the `Hd` and
   `Hu` particles (there values of `(M,N)` are not included as they are
   forced to be `(0, 1)` and `(0, -1)` respectively. -/
-abbrev Quanta (𝓩 : Type := ℤ) : Type := Option 𝓩 × Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩
+structure Quanta (𝓩 : Type := ℤ) where
+  qHd : Option 𝓩
+  qHu : Option 𝓩
+  F : FiveQuanta 𝓩
+  T : TenQuanta 𝓩
 
 namespace Quanta
 open SuperSymmetry.SU5
@@ -36,16 +40,23 @@ open PotentialTerm ChargeSpectrum
 
 variable {𝓩 : Type}
 
-instance [DecidableEq 𝓩] : DecidableEq (Quanta 𝓩) :=
-  haveI : DecidableEq (FiveQuanta 𝓩) := by infer_instance
-  inferInstanceAs (DecidableEq (Option 𝓩 × Option 𝓩 × FiveQuanta 𝓩 × TenQuanta 𝓩))
+@[ext]
+lemma ext {𝓩 : Type} {x y : Quanta 𝓩} (h1 : x.qHd = y.qHd) (h2 : x.qHu = y.qHu)
+    (h3 : x.F = y.F) (h4 : x.T = y.T) : x = y := by
+  cases x; cases y;
+  simp_all
+
+instance [DecidableEq 𝓩] : DecidableEq (Quanta 𝓩) := fun x y =>
+  decidable_of_iff (x.qHd = y.qHd ∧ x.qHu = y.qHu ∧ x.F = y.F ∧ x.T = y.T) Quanta.ext_iff.symm
+
+
 
 /-- The underlying `ChargeSpectrum` of a `Quanta`. -/
 def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : ChargeSpectrum 𝓩 where
-  qHd := x.1
-  qHu := x.2.1
-  Q5 := x.2.2.1.toCharges.toFinset
-  Q10 := x.2.2.2.toCharges.toFinset
+  qHd := x.qHd
+  qHu := x.qHu
+  Q5 := x.F.toCharges.toFinset
+  Q10 := x.T.toCharges.toFinset
 
 /-!
 
@@ -55,8 +66,11 @@ def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : ChargeSpectrum 𝓩 where
 
 /-- The reduce of `Quanta` is a new `Quanta` with all the fluxes corresponding to the same
   charge (i.e. represenation) added together. -/
-def reduce [DecidableEq 𝓩] (x : Quanta 𝓩) : Quanta 𝓩 :=
-  (x.1, x.2.1, x.2.2.1.reduce, x.2.2.2.reduce)
+def reduce [DecidableEq 𝓩] (x : Quanta 𝓩) : Quanta 𝓩 where
+  qHd := x.qHd
+  qHu := x.qHu
+  F := x.F.reduce
+  T := x.T.reduce
 
 /-!
 
@@ -147,7 +161,7 @@ def ofChargesExpand [DecidableEq 𝓩] (c : ChargeSpectrum 𝓩) : Multiset (Qua
   let Q10s := TenQuanta.ofChargesExpand c.Q10
   Q5s.bind <| fun Q5 =>
   Q10s.map <| fun Q10 =>
-    (c.qHd, c.qHu, Q5, Q10)
+    ⟨c.qHd, c.qHu, Q5, Q10⟩
 
 end Quanta
 
