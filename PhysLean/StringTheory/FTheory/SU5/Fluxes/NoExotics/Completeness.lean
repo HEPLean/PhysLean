@@ -85,353 +85,121 @@ namespace FluxesFive
 -/
 
 lemma mem_mem_finset_of_noExotics (F : FluxesFive) (hF : F.NoExotics)
-    (hnZ : F.HasNoZero)
-    (x : ℤ × ℤ) (hx : x ∈ F) :
-    x ∈ ({(0, 1), (0, 2), (0, 3), (1, -1), (1, 0), (1, 1), (1, 2),
-      (2, -2), (2, -1), (2, 0), (2, 1), (3, -3), (3, -2), (3, -1), (3, 0)} : Finset (ℤ × ℤ)) := by
-  rcases x with ⟨M, N⟩
-  have hM : M ∈ F.chiralIndicesOfD := by
-    simp [chiralIndicesOfD]
-    use N
-  have hN : M + N ∈ F.chiralIndicesOfL := by
-    simp [chiralIndicesOfL]
-    use M, N
-  simp only [Int.reduceNeg, Finset.mem_insert, Prod.mk.injEq, Finset.mem_singleton]
-  have hL1 := F.mem_chiralIndicesOfL_mem_of_noExotics hF (M + N) hN
-  have hD1 := F.mem_chiralIndicesOfD_mem_of_noExotics hF M hM
-  have h0 : ¬ (M = 0 ∧ N = 0) := by
+    (hnZ : F.HasNoZero) (x : Fluxes) (hx : x ∈ F) :
+    x ∈ ({⟨0, 1⟩, ⟨0, 2⟩, ⟨0, 3⟩, ⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 1⟩, ⟨1, 2⟩,
+      ⟨2, -2⟩, ⟨2, -1⟩, ⟨2, 0⟩, ⟨2, 1⟩, ⟨3, -3⟩, ⟨3, -2⟩, ⟨3, -1⟩, ⟨3, 0⟩} : Finset Fluxes) := by
+  simp only [Int.reduceNeg, Finset.mem_insert,  Finset.mem_singleton]
+  have hL1 := F.mem_chiralIndicesOfL_mem_of_noExotics hF (x.M + x.N)
+    (Multiset.mem_map.mpr ⟨x, hx, rfl⟩)
+  have hD1 := F.mem_chiralIndicesOfD_mem_of_noExotics hF x.M
+    (Multiset.mem_map.mpr ⟨x, hx, rfl⟩)
+  have h0 : ¬ x = 0:= by
     by_contra hn
-    rcases hn with ⟨hn1, hn2⟩
-    subst hn1 hn2
+    subst hn
     exact hnZ hx
-  let D := M + N
-  have hd : N = D - M := by omega
-  generalize D = D' at *
+  have hd : x.N = (x.M + x.N) - x.M := by omega
+  generalize x.M + x.N = D' at *
+  rcases x with ⟨M, N⟩
+  simp_all only [ Fluxes.mk.injEq, Int.reduceNeg]
   subst hd
-  simp only [add_sub_cancel] at hL1
-  clear D hN hx hM
+  clear hx
   revert h0
   revert D' M
   decide
 
-/-!
 
-### A.2. The allowed card-1 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_one {F : FluxesFive} (hF : F.NoExotics)
-    (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 1) (hS : S ≤ F) :
-    S ∈ ({{(0, 1)}, {(0, 2)}, {(0, 3)}, {(1, -1)}, {(1, 0)}, {(1, 1)}, {(1, 2)},
-      {(2, -2)}, {(2, -1)}, {(2, 0)}, {(2, 1)}, {(3, -3)}, {(3, -2)}, {(3, -1)}, {(3, 0)}} :
-      Finset (Multiset (ℤ × ℤ))) := by
-  rw [Multiset.card_eq_one] at hcard
-  obtain ⟨x, rfl⟩ := hcard
-  have hx := mem_mem_finset_of_noExotics F hF hnZ x (by simpa using hS)
-  fin_cases hx
-  all_goals decide
-
-/-!
-
-### A.3. The allowed card-2 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_two {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 2) (hS : S ≤ F) :
-    S ∈ ({{(0, 1), (0, 1)}, {(0, 1), (1, -1)}, {(0, 1), (1, 0)}, {(0, 1), (0, 2)},
-      {(0, 1), (1, 1)}, {(0, 1), (2, -2)}, {(0, 1), (2, -1)}, {(0, 1), (2, 0)},
-      {(0, 1), (3, -3)}, {(0, 1), (3, -2)}, {(0, 1), (3, -1)},
-      {(0, 2), (1, -1)}, {(0, 2), (1, 0)}, {(0, 2), (2, -2)}, {(0, 2), (2, -1)},
-      {(0, 2), (3, -3)}, {(0, 2), (3, -2)}, {(0, 3), (1, -1)}, {(0, 3), (2, -2)},
-      {(0, 3), (3, -3)}, {(1, -1), (1, -1)}, {(1, -1), (1, 0)}, {(1, -1), (1, 1)},
-      {(1, -1), (1, 2)}, {(1, -1), (2, -2)}, {(1, -1), (2, -1)}, {(1, -1), (2, 0)},
-      {(1, 0), (1, 0)}, {(1, -1), (2, 1)}, {(1, 0), (1, 1)}, {(1, 0), (2, -2)},
-      {(1, 0), (2, -1)}, {(1, 0), (2, 0)}, {(1, 1), (2, -2)}, {(1, 1), (2, -1)},
-      {(1, 2), (2, -2)}} : Finset (Multiset (ℤ × ℤ))) := by
+lemma subset_le_mem_of_card_eq_succ {n : ℕ} {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
+    (S : Multiset Fluxes) (hcard : S.card = n.succ) (hS : S ≤ F) {Y X : Finset (Multiset Fluxes)}
+    (hY : ∀ (S : Multiset Fluxes), S.card = n → S ≤ F → S ∈ Y)
+    (hX : ∀ a ∈ ({⟨0, 1⟩, ⟨0, 2⟩, ⟨0, 3⟩, ⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 1⟩, ⟨1, 2⟩,
+      ⟨2, -2⟩, ⟨2, -1⟩, ⟨2, 0⟩, ⟨2, 1⟩, ⟨3, -3⟩, ⟨3, -2⟩, ⟨3, -1⟩, ⟨3, 0⟩} : Finset Fluxes),
+      ∀ y ∈ Y,
+      (Multiset.map (fun x => x.M + x.N) (a ::ₘ y)).sum ≤ 3 →
+      (Multiset.map (fun x => x.M) (a ::ₘ y)).sum ≤ 3 →
+      a ::ₘ y ∈ X):
+    S ∈ X := by
   have hSum1 := chiralIndicesOfL_subset_sum_le_three_of_noExotics F hF S hS
   have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
-    simp only [not_false_eq_true]
-  intro a S ih hcard hle hSum1 hSum2
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
+  · simp
+  intro a S ih hcard hle hsum1 hsum2
+  have hsub : S ≤ F := (S.le_cons_self a).trans hle
+  have ha : a ∈ F := Multiset.mem_of_le hle (S.mem_cons_self a)
   rw [Multiset.card_cons] at hcard
   simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_one hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2
-  revert a
-  revert S
-  decide
+  exact hX a (mem_mem_finset_of_noExotics F hF hnZ a ha) S (hY S hcard hsub) hsum1 hsum2
 
-/-!
+def noExoticsSubsets : (n : ℕ) → Finset (Multiset Fluxes)
+  | 0 => {{}}
+  | 1 => {{⟨0, 1⟩}, {⟨0, 2⟩}, {⟨0, 3⟩}, {⟨1, -1⟩}, {⟨1, 0⟩}, {⟨1, 1⟩}, {⟨1, 2⟩},
+      {⟨2, -2⟩}, {⟨2, -1⟩}, {⟨2, 0⟩}, {⟨2, 1⟩}, {⟨3, -3⟩}, {⟨3, -2⟩}, {⟨3, -1⟩}, {⟨3, 0⟩}}
+  | 2 => {{⟨0, 1⟩, ⟨0, 1⟩}, {⟨0, 1⟩, ⟨1, -1⟩}, {⟨0, 1⟩, ⟨1, 0⟩}, {⟨0, 1⟩, ⟨0, 2⟩},
+      {⟨0, 1⟩, ⟨1, 1⟩}, {⟨0, 1⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨2, -1⟩}, {⟨0, 1⟩, ⟨2, 0⟩},
+      {⟨0, 1⟩, ⟨3, -3⟩}, {⟨0, 1⟩, ⟨3, -2⟩}, {⟨0, 1⟩, ⟨3, -1⟩},
+      {⟨0, 2⟩, ⟨1, -1⟩}, {⟨0, 2⟩, ⟨1, 0⟩}, {⟨0, 2⟩, ⟨2, -2⟩}, {⟨0, 2⟩, ⟨2, -1⟩},
+      {⟨0, 2⟩, ⟨3, -3⟩}, {⟨0, 2⟩, ⟨3, -2⟩}, {⟨0, 3⟩, ⟨1, -1⟩}, {⟨0, 3⟩, ⟨2, -2⟩},
+      {⟨0, 3⟩, ⟨3, -3⟩}, {⟨1, -1⟩, ⟨1, -1⟩}, {⟨1, -1⟩, ⟨1, 0⟩}, {⟨1, -1⟩, ⟨1, 1⟩},
+      {⟨1, -1⟩, ⟨1, 2⟩}, {⟨1, -1⟩, ⟨2, -2⟩}, {⟨1, -1⟩, ⟨2, -1⟩}, {⟨1, -1⟩, ⟨2, 0⟩},
+      {⟨1, 0⟩, ⟨1, 0⟩}, {⟨1, -1⟩, ⟨2, 1⟩}, {⟨1, 0⟩, ⟨1, 1⟩}, {⟨1, 0⟩, ⟨2, -2⟩},
+      {⟨1, 0⟩, ⟨2, -1⟩}, {⟨1, 0⟩, ⟨2, 0⟩}, {⟨1, 1⟩, ⟨2, -2⟩}, {⟨1, 1⟩, ⟨2, -1⟩},
+      {⟨1, 2⟩, ⟨2, -2⟩}}
+  | 3 => {{⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩}, {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, 0⟩}, {⟨0, 1⟩, ⟨0, 1⟩, ⟨2, -2⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨2, -1⟩}, {⟨0, 1⟩, ⟨0, 1⟩, ⟨3, -3⟩}, {⟨0, 1⟩, ⟨0, 1⟩, ⟨3, -2⟩},
+    {⟨0, 1⟩, ⟨0, 2⟩, ⟨1, -1⟩}, {⟨0, 1⟩, ⟨0, 2⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨0, 2⟩, ⟨3, -3⟩},
+    {⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩}, {⟨0, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩}, {⟨0, 1⟩, ⟨1, -1⟩, ⟨1, 1⟩},
+    {⟨0, 1⟩, ⟨1, -1⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨1, -1⟩, ⟨2, -1⟩}, {⟨0, 1⟩, ⟨1, -1⟩, ⟨2, 0⟩},
+    {⟨0, 1⟩, ⟨1, 0⟩, ⟨1, 0⟩}, {⟨0, 1⟩, ⟨1, 0⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨1, 0⟩, ⟨2, -1⟩},
+    {⟨0, 1⟩, ⟨1, 1⟩, ⟨2, -2⟩}, {⟨0, 2⟩, ⟨1, -1⟩, ⟨1, -1⟩}, {⟨0, 2⟩, ⟨1, -1⟩, ⟨1, 0⟩},
+    {⟨0, 2⟩, ⟨1, -1⟩, ⟨2, -2⟩}, {⟨0, 2⟩, ⟨1, -1⟩, ⟨2, -1⟩}, {⟨0, 2⟩, ⟨1, 0⟩, ⟨2, -2⟩},
+    {⟨0, 3⟩, ⟨1, -1⟩, ⟨1, -1⟩}, {⟨0, 3⟩, ⟨1, -1⟩, ⟨2, -2⟩}, {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩},
+    {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, 0⟩}, {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, 1⟩}, {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, 2⟩},
+    {⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 0⟩}, {⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 1⟩}, {⟨1, 0⟩, ⟨1, 0⟩, ⟨1, 0⟩}}
+  | 4 => {{⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨3, -3⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩}, {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨2, -1⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, 0⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨0, 2⟩, ⟨1, -1⟩, ⟨1, -1⟩},
+    {⟨0, 1⟩, ⟨0, 2⟩, ⟨1, -1⟩, ⟨2, -2⟩}, {⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩},
+    {⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, 0⟩}, {⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, 1⟩},
+    {⟨0, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 0⟩}, {⟨0, 2⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩},
+    {⟨0, 2⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, 0⟩}, {⟨0, 3⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩}}
+  | 5 => {{⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨2, -2⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩},
+    {⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, 0⟩},
+    {⟨0, 1⟩, ⟨0, 2⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩}}
+  | 6 => {{⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩}}
+  | _ + 7 => ∅
 
-### A.4. The allowed card-3 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+lemma subset_of_fluxesFive_mem_noExoticsSubsets_of_noExotics {F : FluxesFive} (hF : F.NoExotics)
+    (hnZ : F.HasNoZero) (S : Multiset Fluxes) (hS : S ≤ F) :
+    S ∈ noExoticsSubsets S.card := recS S.card S rfl hS
+where recS : (n : ℕ) → (S : Multiset Fluxes) → S.card = n → S ≤ F → S ∈ noExoticsSubsets n
+  | 0, S, hcard, hS => by
+    rw [Multiset.card_eq_zero] at hcard
+    subst hcard
+    simp [noExoticsSubsets]
+  | 1, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 0 S hc) <| by decide
+  | 2, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 1 S hc) <| by decide
+  | 3, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 2 S hc) <| by decide
+  | 4, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 3 S hc) <| by decide
+  | 5, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 4 S hc) <| by decide
+  | 6, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 5 S hc) <| by decide
+  | 7, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 6 S hc) <| by decide
+  | (n + 1) + 7, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS (n + 7) S hc) <| by
+      simp [noExoticsSubsets]
 
--/
 
-lemma subset_le_mem_of_card_eq_three {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 3) (hS : S ≤ F) :
-    S ∈ ({{(0, 1), (0, 1), (0, 1)}, {(0, 1), (0, 1), (1, -1)},
-    {(0, 1), (0, 1), (1, 0)}, {(0, 1), (0, 1), (2, -2)},
-    {(0, 1), (0, 1), (2, -1)}, {(0, 1), (0, 1), (3, -3)}, {(0, 1), (0, 1), (3, -2)},
-    {(0, 1), (0, 2), (1, -1)}, {(0, 1), (0, 2), (2, -2)}, {(0, 1), (0, 2), (3, -3)},
-    {(0, 1), (1, -1), (1, -1)}, {(0, 1), (1, -1), (1, 0)}, {(0, 1), (1, -1), (1, 1)},
-    {(0, 1), (1, -1), (2, -2)}, {(0, 1), (1, -1), (2, -1)}, {(0, 1), (1, -1), (2, 0)},
-    {(0, 1), (1, 0), (1, 0)}, {(0, 1), (1, 0), (2, -2)}, {(0, 1), (1, 0), (2, -1)},
-    {(0, 1), (1, 1), (2, -2)}, {(0, 2), (1, -1), (1, -1)}, {(0, 2), (1, -1), (1, 0)},
-    {(0, 2), (1, -1), (2, -2)}, {(0, 2), (1, -1), (2, -1)}, {(0, 2), (1, 0), (2, -2)},
-    {(0, 3), (1, -1), (1, -1)}, {(0, 3), (1, -1), (2, -2)}, {(1, -1), (1, -1), (1, -1)},
-    {(1, -1), (1, -1), (1, 0)}, {(1, -1), (1, -1), (1, 1)}, {(1, -1), (1, -1), (1, 2)},
-    {(1, -1), (1, 0), (1, 0)}, {(1, -1), (1, 0), (1, 1)}, {(1, 0), (1, 0), (1, 0)} } :
-    Finset (Multiset (ℤ × ℤ))) := by
-  have hSum1 := chiralIndicesOfL_subset_sum_le_three_of_noExotics F hF S hS
-  have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
-  revert S
-  apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
-    Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg, Finset.mem_insert,
-    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
-    decide
-  intro a S ih hcard hle hSum1 hSum2
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
-  rw [Multiset.card_cons] at hcard
-  simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_two hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2
-  revert a
-  revert S
-  decide
-
-/-!
-
-### A.5. The allowed card-4 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_four {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 4) (hS : S ≤ F) :
-    S ∈ ({{(0, 1), (0, 1), (0, 1), (1, -1)},
-    {(0, 1), (0, 1), (0, 1), (2, -2)}, {(0, 1), (0, 1), (0, 1), (3, -3)},
-    {(0, 1), (0, 1), (1, -1), (1, -1)}, {(0, 1), (0, 1), (1, -1), (1, 0)},
-    {(0, 1), (0, 1), (1, -1), (2, -2)}, {(0, 1), (0, 1), (1, -1), (2, -1)},
-    {(0, 1), (0, 1), (1, 0), (2, -2)}, {(0, 1), (0, 2), (1, -1), (1, -1)},
-    {(0, 1), (0, 2), (1, -1), (2, -2)}, {(0, 1), (1, -1), (1, -1), (1, -1)},
-    {(0, 1), (1, -1), (1, -1), (1, 0)}, {(0, 1), (1, -1), (1, -1), (1, 1)},
-    {(0, 1), (1, -1), (1, 0), (1, 0)}, {(0, 2), (1, -1), (1, -1), (1, -1)},
-    {(0, 2), (1, -1), (1, -1), (1, 0)}, {(0, 3), (1, -1), (1, -1), (1, -1)}} :
-    Finset (Multiset (ℤ × ℤ))) := by
-  have hSum1 := chiralIndicesOfL_subset_sum_le_three_of_noExotics F hF S hS
-  have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
-  revert S
-  apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
-    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons, Finset.mem_insert,
-    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
-    decide
-  intro a S ih hcard hle hSum1 hSum2
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
-  rw [Multiset.card_cons] at hcard
-  simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_three hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2
-  revert a
-  revert S
-  decide
-
-/-!
-
-### A.6. The allowed card-5 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_five {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 5) (hS : S ≤ F) :
-    S ∈ ({{(0, 1), (0, 1), (0, 1), (1, -1), (1, -1)},
-    {(0, 1), (0, 1), (0, 1), (1, -1), (2, -2)},
-    {(0, 1), (0, 1), (1, -1), (1, -1), (1, -1)},
-    {(0, 1), (0, 1), (1, -1), (1, -1), (1, 0)},
-    {(0, 1), (0, 2), (1, -1), (1, -1), (1, -1)}} :
-    Finset (Multiset (ℤ × ℤ))) := by
-  have hSum1 := chiralIndicesOfL_subset_sum_le_three_of_noExotics F hF S hS
-  have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
-  revert S
-  apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
-    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons, Finset.mem_insert,
-    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
-    decide
-  intro a S ih hcard hle hSum1 hSum2
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
-  rw [Multiset.card_cons] at hcard
-  simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_four hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2
-  revert a
-  revert S
-  decide
-
-/-!
-
-### A.7. The allowed card-6 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_six {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 6) (hS : S ≤ F) :
-    S ∈ ({{(0, 1), (0, 1), (0, 1), (1, -1), (1, -1), (1, -1)}} :
-    Finset (Multiset (ℤ × ℤ))) := by
-  have hSum1 := chiralIndicesOfL_subset_sum_le_three_of_noExotics F hF S hS
-  have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
-  revert S
-  apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
-    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons,
-    Finset.mem_singleton, Multiset.zero_ne_cons, imp_false, not_true_eq_false]
-    decide
-  intro a S ih hcard hle hSum1 hSum2
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
-  rw [Multiset.card_cons] at hcard
-  simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_five hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2
-  revert a
-  revert S
-  decide
-
-/-!
-
-### A.8. No allowed card-7 subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_seven {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 7) (hS : S ≤ F) :
-    S ∈ ({} : Finset (Multiset (ℤ × ℤ))) := by
-  have hSum1 := chiralIndicesOfL_subset_sum_le_three_of_noExotics F hF S hS
-  have hSum2 := chiralIndicesOfD_subset_sum_le_three_of_noExotics F hF S hS
-  revert S
-  apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
-    Multiset.sum_zero, Nat.ofNat_nonneg]
-    decide
-  intro a S ih hcard hle hSum1 hSum2
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
-  rw [Multiset.card_cons] at hcard
-  simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_six hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2
-  revert a
-  revert S
-  decide
-
-/-!
-
-### A.9. No card-7 or above subsets of a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_seven_add {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) {n : ℕ} (hcard : S.card = 7 + n) (hS : S ≤ F) :
-    S ∈ ({} : Finset (Multiset (ℤ × ℤ))) := by
-  match n with
-  | 0 =>
-    exact subset_le_mem_of_card_eq_seven hF hnZ S hcard hS
-  | .succ n =>
-    revert S
-    apply Multiset.induction
-    · simp
-      omega
-    intro a S ih hle hcard
-    have hsub : S ≤ F := by
-      refine Multiset.le_iff_count.mpr ?_
-      intro b
-      rw [Multiset.le_iff_count] at hle
-      trans Multiset.count b (a ::ₘ S)
-      · exact Multiset.count_le_count_cons b a S
-      · exact hle b
-    have hSCard : S.card = 7 + n := by
-      rw [Multiset.card_cons] at hcard
-      simp at hcard
-      omega
-    have ih' := subset_le_mem_of_card_eq_seven_add hF hnZ S hSCard hsub
-    simp at ih'
-
-lemma subset_le_mem_of_card_ge_seven {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : 7 ≤ S.card) (hS : S ≤ F) :
-    S ∈ ({} : Finset (Multiset (ℤ × ℤ))) :=
-  subset_le_mem_of_card_eq_seven_add (n := S.card - 7) hF hnZ S (by omega) hS
 
 /-!
 
@@ -441,10 +209,19 @@ lemma subset_le_mem_of_card_ge_seven {F : FluxesFive} (hF : F.NoExotics) (hnZ : 
 
 lemma card_le_six_of_noExotics {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero) :
     F.card ≤ 6 := by
-  by_contra hn
-  simp at hn
-  have hn := subset_le_mem_of_card_ge_seven hF hnZ F hn (by simp)
-  simp at hn
+  have hx := subset_of_fluxesFive_mem_noExoticsSubsets_of_noExotics hF hnZ F
+    (Preorder.le_refl F)
+  generalize F.card = n at *
+  match n with
+  | 0 => simp
+  | 1 => simp
+  | 2 => simp
+  | 3 => simp
+  | 4 => simp
+  | 5 => simp
+  | 6 => simp
+  | _ + 7 => simp [noExoticsSubsets] at hx
+
 
 lemma card_mem_range_seven_of_noExotics {F : FluxesFive} (hF : F.NoExotics) (hnZ : F.HasNoZero) :
     F.card ∈ Finset.range 7 := by
@@ -460,39 +237,17 @@ lemma card_mem_range_seven_of_noExotics {F : FluxesFive} (hF : F.NoExotics) (hnZ
 lemma mem_elemsNoExotics_of_noExotics (F : FluxesFive) (hNE : F.NoExotics) (hnZ : F.HasNoZero) :
     F ∈ elemsNoExotics := by
   have h1 := card_mem_range_seven_of_noExotics hNE hnZ
-  simp [Finset.range] at h1
+  have hF := subset_of_fluxesFive_mem_noExoticsSubsets_of_noExotics hNE hnZ F
+    (Preorder.le_refl F)
+  simp only [Finset.range, Multiset.range_succ, Multiset.range_zero, Multiset.cons_zero,
+    Finset.mk_cons, Finset.cons_eq_insert, Finset.mem_insert, Finset.mem_mk,
+    Multiset.mem_singleton] at h1
   rcases h1 with hr | hr | hr | hr | hr | hr | hr
-  · have hF := subset_le_mem_of_card_eq_six hNE hnZ F hr (by rfl)
-    clear hr hnZ hNE
-    revert F
-    decide
-  · have hF := subset_le_mem_of_card_eq_five hNE hnZ F hr (by rfl)
+  all_goals
+  · rw [hr] at hF
     clear hr hnZ
     revert hNE
     revert F
-    decide
-  · have hF := subset_le_mem_of_card_eq_four hNE hnZ F hr (by rfl)
-    clear hr hnZ
-    revert hNE
-    revert F
-    decide
-  · have hF := subset_le_mem_of_card_eq_three hNE hnZ F hr (by rfl)
-    clear hr hnZ
-    revert hNE
-    revert F
-    decide
-  · have hF := subset_le_mem_of_card_eq_two hNE hnZ F hr (by rfl)
-    clear hr hnZ
-    revert hNE
-    revert F
-    decide
-  · have hF := subset_le_mem_of_card_eq_one hNE hnZ F hr (by rfl)
-    clear hr hnZ
-    revert hNE
-    revert F
-    decide
-  · subst hr
-    revert hNE
     decide
 
 /-!
@@ -527,209 +282,84 @@ namespace FluxesTen
 -/
 
 lemma mem_mem_finset_of_noExotics (F : FluxesTen) (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (x : ℤ × ℤ) (hx : x ∈ F) :
-    x ∈ ({(1, -1), (1, 0), (1, 1), (2, -1), (2, 0), (2, 1), (3, 0)} : Finset (ℤ × ℤ)) := by
-  rcases x with ⟨M, N⟩
-  have hQ : M ∈ F.chiralIndicesOfQ := by
-    simp [chiralIndicesOfQ]
-    use N
-  have hU : M - N ∈ F.chiralIndicesOfU := by
-    simp [chiralIndicesOfU]
-    use M, N
-  have hE : M + N ∈ F.chiralIndicesOfE := by
-    simp [chiralIndicesOfE]
-    use M, N
-  simp only [Int.reduceNeg, Finset.mem_insert, Prod.mk.injEq, Finset.mem_singleton]
-  have hQ1 := F.mem_chiralIndicesOfQ_mem_of_noExotics hF M hQ
-  have hU1 := F.mem_chiralIndicesOfU_mem_of_noExotics hF (M - N) hU
-  have hE1 := F.mem_chiralIndicesOfE_mem_of_noExotics hF (M + N) hE
-  have h0 : ¬ (M = 0 ∧ N = 0) := by
+    (x : Fluxes) (hx : x ∈ F) :
+    x ∈ ({⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 1⟩, ⟨2, -1⟩, ⟨2, 0⟩, ⟨2, 1⟩, ⟨3, 0⟩} : Finset Fluxes) := by
+  rcases x with f
+  simp only [Int.reduceNeg, Finset.mem_insert, Finset.mem_singleton]
+  have hQ1 := F.mem_chiralIndicesOfQ_mem_of_noExotics hF x.M (Multiset.mem_map.mpr ⟨x, hx, rfl⟩)
+  have hU1 := F.mem_chiralIndicesOfU_mem_of_noExotics hF (x.M - x.N)
+    (Multiset.mem_map.mpr ⟨x, hx, rfl⟩)
+  have hE1 := F.mem_chiralIndicesOfE_mem_of_noExotics hF (x.M + x.N)
+    (Multiset.mem_map.mpr ⟨x, hx, rfl⟩)
+  have h0 : ¬ x = 0 := by
     by_contra hn
-    rcases hn with ⟨hn1, hn2⟩
-    subst hn1 hn2
+    subst hn
     exact hnZ hx
+  rcases x with ⟨M, N⟩
   let D := M + N
   have hd : N = D - M := by omega
   generalize D = D' at *
   subst hd
   simp only [add_sub_cancel] at hE1
-  clear hU hE hQ hx D
+  simp_all only [Int.reduceNeg, Fluxes.mk.injEq]
+  clear hx D
   revert h0 hU1
   revert D'
   revert M
   decide
 
-/-!
 
-### B.2. The allowed card-1 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_one {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 1) (hS : S ≤ F) :
-    S ∈ ({{(1, -1)}, {(1, 0)}, {(1, 1)}, {(2, -1)}, {(2, 0)}, {(2, 1)}, {(3, 0)}} :
-    Finset (Multiset (ℤ × ℤ))) := by
-  rw [Multiset.card_eq_one] at hcard
-  obtain ⟨x, rfl⟩ := hcard
-  have hx := mem_mem_finset_of_noExotics F hF hnZ x (by simpa using hS)
-  fin_cases hx
-  all_goals decide
-
-/-!
-
-### B.3. The allowed card-2 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_two {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 2) (hS : S ≤ F) :
-    S ∈ ({{(1, -1), (1, 0)}, {(1, -1), (1, 1)}, {(1, -1), (2, 1)},
-      {(1, 0), (1, 0)}, {(1, 0), (1, 1)}, {(1, 0), (2, 0)}, {(1, 1), (2, -1)}} :
-      Finset (Multiset (ℤ × ℤ))) := by
+lemma subset_le_mem_of_card_eq_succ {n : ℕ} {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
+    (S : Multiset Fluxes) (hcard : S.card = n.succ) (hS : S ≤ F) {Y X : Finset (Multiset Fluxes)}
+    (hY : ∀ (S : Multiset Fluxes), S.card = n → S ≤ F → S ∈ Y)
+    (hX : ∀ a ∈ ({⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 1⟩, ⟨2, -1⟩, ⟨2, 0⟩, ⟨2, 1⟩, ⟨3, 0⟩} : Finset Fluxes),
+      ∀ y ∈ Y,
+      (Multiset.map (fun x => x.M) (a ::ₘ y)).sum ≤ 3 →
+      (Multiset.map (fun x => x.M - x.N) (a ::ₘ y)).sum ≤ 3 →
+      (Multiset.map (fun x => x.M + x.N) (a ::ₘ y)).sum ≤ 3 →
+      a ::ₘ y ∈ X):
+    S ∈ X := by
   have hSum1 := chiralIndicesOfQ_subset_sum_le_three_of_noExotics F hF S hS
   have hSum2 := chiralIndicesOfU_subset_sum_le_three_of_noExotics F hF S hS
   have hsum3 := chiralIndicesOfE_subset_sum_le_three_of_noExotics F hF S hS
   revert S
   apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
-    Multiset.sum_zero, Nat.ofNat_nonneg, Int.reduceNeg, Multiset.insert_eq_cons, Finset.mem_insert,
-    Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false, not_true_eq_false]
-    simp only [not_false_eq_true]
-  intro a S ih hcard hle hSum1 hSum2 hsum3
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
+  · simp
+  intro a S ih hcard hle hsum1 hsum2 hsum3
+  have hsub : S ≤ F := (S.le_cons_self a).trans hle
+  have ha : a ∈ F := Multiset.mem_of_le hle (S.mem_cons_self a)
   rw [Multiset.card_cons] at hcard
   simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_one hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2 hsum3
-  revert a
-  revert S
-  decide
+  exact hX a (mem_mem_finset_of_noExotics F hF hnZ a ha) S (hY S hcard hsub) hsum1 hsum2 hsum3
 
-/-!
+def noExoticsSubsets : (n : ℕ) → Finset (Multiset Fluxes)
+  | 0 => {{}}
+  | 1 => {{⟨1, -1⟩}, {⟨1, 0⟩}, {⟨1, 1⟩}, {⟨2, -1⟩}, {⟨2, 0⟩}, {⟨2, 1⟩}, {⟨3, 0⟩}}
+  | 2 => {{⟨1, -1⟩, ⟨1, 0⟩}, {⟨1, -1⟩, ⟨1, 1⟩}, {⟨1, -1⟩, ⟨2, 1⟩},
+      {⟨1, 0⟩, ⟨1, 0⟩}, {⟨1, 0⟩, ⟨1, 1⟩}, {⟨1, 0⟩, ⟨2, 0⟩}, {⟨1, 1⟩, ⟨2, -1⟩}}
+  | 3 => {{⟨1, -1⟩, ⟨1, 0⟩, ⟨1, 1⟩}, {⟨1, 0⟩, ⟨1, 0⟩, ⟨1, 0⟩}}
+  | _ + 4 => ∅
 
-### B.4. The allowed card-3 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
 
--/
-
-lemma subset_le_mem_of_card_eq_three {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 3) (hS : S ≤ F) :
-    S ∈ ({{(1, -1), (1, 0), (1, 1)}, {(1, 0), (1, 0), (1, 0)}} : Finset (Multiset (ℤ × ℤ))) := by
-  have hSum1 := chiralIndicesOfQ_subset_sum_le_three_of_noExotics F hF S hS
-  have hSum2 := chiralIndicesOfU_subset_sum_le_three_of_noExotics F hF S hS
-  have hsum3 := chiralIndicesOfE_subset_sum_le_three_of_noExotics F hF S hS
-  revert S
-  apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le,
-    Multiset.map_zero, Multiset.sum_zero, Nat.ofNat_nonneg, Multiset.insert_eq_cons, Int.reduceNeg,
-    Finset.mem_insert, Multiset.zero_ne_cons, Finset.mem_singleton, or_self, imp_false,
-    not_true_eq_false]
-    simp only [not_false_eq_true]
-  intro a S ih hcard hle hSum1 hSum2 hsum3
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
-  rw [Multiset.card_cons] at hcard
-  simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_two hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2 hsum3
-  revert a
-  revert S
-  decide
-
-/-!
-
-### B.5. No allowed card-4 subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_four {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : S.card = 4) (hS : S ≤ F) :
-    S ∈ ({} : Finset (Multiset (ℤ × ℤ))) := by
-  have hSum1 := chiralIndicesOfQ_subset_sum_le_three_of_noExotics F hF S hS
-  have hSum2 := chiralIndicesOfU_subset_sum_le_three_of_noExotics F hF S hS
-  have hsum3 := chiralIndicesOfE_subset_sum_le_three_of_noExotics F hF S hS
-  revert S
-  apply Multiset.induction
-  · simp only [Multiset.card_zero, OfNat.zero_ne_ofNat, zero_le, Multiset.map_zero,
-    Multiset.sum_zero, Nat.ofNat_nonneg]
-    simp
-  intro a S ih hcard hle hSum1 hSum2 hsum3
-  have hsub : S ≤ F := by
-    refine Multiset.le_iff_count.mpr ?_
-    intro b
-    rw [Multiset.le_iff_count] at hle
-    trans Multiset.count b (a ::ₘ S)
-    · exact Multiset.count_le_count_cons b a S
-    · exact hle b
-  have hmem : a ∈ F := by
-    apply Multiset.subset_of_le hle
-    simp
-  rw [Multiset.card_cons] at hcard
-  simp at hcard
-  have ha := mem_mem_finset_of_noExotics F hF hnZ a hmem
-  have hS := subset_le_mem_of_card_eq_three hF hnZ S hcard hsub
-  clear hle ih hmem hcard hsub
-  revert hSum1 hSum2 hsum3
-  revert a
-  revert S
-  decide
-
-/-!
-
-### B.6. No card-4 or above subsets of a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
-
--/
-
-lemma subset_le_mem_of_card_eq_four_add {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) {n : ℕ} (hcard : S.card = 4 + n) (hS : S ≤ F) :
-    S ∈ ({} : Finset (Multiset (ℤ × ℤ))) := by
-  match n with
-  | 0 =>
-    exact subset_le_mem_of_card_eq_four hF hnZ S hcard hS
-  | .succ n =>
-    revert S
-    apply Multiset.induction
-    · simp
-      omega
-    intro a S ih hle hcard
-    have hsub : S ≤ F := by
-      refine Multiset.le_iff_count.mpr ?_
-      intro b
-      rw [Multiset.le_iff_count] at hle
-      trans Multiset.count b (a ::ₘ S)
-      · exact Multiset.count_le_count_cons b a S
-      · exact hle b
-    have hSCard : S.card = 4 + n := by
-      rw [Multiset.card_cons] at hcard
-      simp at hcard
-      omega
-    have ih' := subset_le_mem_of_card_eq_four_add hF hnZ S hSCard hsub
-    simp at ih'
-
-lemma subset_le_mem_of_card_ge_four {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
-    (S : Multiset (ℤ × ℤ)) (hcard : 4 ≤ S.card) (hS : S ≤ F) :
-    S ∈ ({} : Finset (Multiset (ℤ × ℤ))) :=
-  subset_le_mem_of_card_eq_four_add (n := S.card - 4) hF hnZ S (by omega) hS
+lemma subset_of_fluxesTen_mem_noExoticsSubsets_of_noExotics {F : FluxesTen} (hF : F.NoExotics)
+    (hnZ : F.HasNoZero) (S : Multiset Fluxes) (hS : S ≤ F) :
+    S ∈ noExoticsSubsets S.card := recS S.card S rfl hS
+where recS : (n : ℕ) → (S : Multiset Fluxes) → S.card = n → S ≤ F → S ∈ noExoticsSubsets n
+  | 0, S, hcard, hS => by
+    rw [Multiset.card_eq_zero] at hcard
+    subst hcard
+    simp [noExoticsSubsets]
+  | 1, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 0 S hc) <| by decide
+  | 2, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 1 S hc) <| by decide
+  | 3, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 2 S hc) <| by decide
+  | 4, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS 3 S hc) <| by decide
+  | (n + 1) + 4, S, hcard, hS => subset_le_mem_of_card_eq_succ hF hnZ S hcard hS
+    (fun S hc => recS (n + 4) S hc) <| by
+      simp [noExoticsSubsets]
 
 /-!
 
@@ -739,10 +369,15 @@ lemma subset_le_mem_of_card_ge_four {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.
 
 lemma card_le_three_of_noExotics {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero) :
     F.card ≤ 3 := by
-  by_contra hn
-  simp at hn
-  have hn := subset_le_mem_of_card_ge_four hF hnZ F hn (by simp)
-  simp at hn
+  have hx := subset_of_fluxesTen_mem_noExoticsSubsets_of_noExotics hF hnZ F
+    (Preorder.le_refl F)
+  generalize F.card = n at *
+  match n with
+  | 0 => simp
+  | 1 => simp
+  | 2 => simp
+  | 3 => simp
+  | _ + 4 => simp [noExoticsSubsets] at hx
 
 lemma card_mem_range_four_of_noExotics {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero) :
     F.card ∈ Finset.range 4 := by
@@ -758,26 +393,19 @@ lemma card_mem_range_four_of_noExotics {F : FluxesTen} (hF : F.NoExotics) (hnZ :
 lemma mem_elemsNoExotics_of_noExotics (F : FluxesTen) (hNE : F.NoExotics) (hnZ : F.HasNoZero) :
     F ∈ elemsNoExotics := by
   have h1 := card_mem_range_four_of_noExotics hNE hnZ
-  simp [Finset.range] at h1
+  have hF := subset_of_fluxesTen_mem_noExoticsSubsets_of_noExotics hNE hnZ F
+    (Preorder.le_refl F)
+  simp only [Finset.range, Multiset.range_succ, Multiset.range_zero, Multiset.cons_zero,
+    Finset.mk_cons, Finset.cons_eq_insert, Finset.mem_insert, Finset.mem_mk,
+    Multiset.mem_singleton] at h1
   rcases h1 with hr | hr | hr | hr
-  · have hF := subset_le_mem_of_card_eq_three hNE hnZ F hr (by rfl)
+  all_goals
+  · rw [hr] at hF
     clear hr hnZ
     revert hNE
     revert F
     decide
-  · have hF := subset_le_mem_of_card_eq_two hNE hnZ F hr (by rfl)
-    clear hr hnZ
-    revert hNE
-    revert F
-    decide
-  · have hF := subset_le_mem_of_card_eq_one hNE hnZ F hr (by rfl)
-    clear hr hnZ
-    revert hNE
-    revert F
-    decide
-  · subst hr
-    revert hNE
-    decide
+
 
 /-!
 

@@ -243,12 +243,12 @@ lemma toCharges_mem_viableCharges_filter_isAnomalyFree_of_isViable
 
 /-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViable`. -/
 def viableElems : CodimensionOneConfig → Multiset Quanta
-  | .same => {⟨some 2, some (-2), {(-1, 1, 2), (1, 2, -2)}, {(-1, 3, 0)}⟩,
-      ⟨some 2, some (-2), {(-1, 0, 2), (1, 3, -2)}, {(-1, 3, 0)}⟩,
-      ⟨some (-2), some 2, {(-1, 2, -2), (1, 1, 2)}, {(1, 3, 0)}⟩,
-      ⟨some (-2), some 2, {(-1, 3, -2), (1, 0, 2)}, {(1, 3, 0)}⟩}
-  | .nearestNeighbor => {⟨some 6, some (-14), {(-9, 1, 2), (1, 2, -2)}, {(-7, 3, 0)}⟩,
-    ⟨some 6, some (-14), {(-9, 0, 2), (1, 3, -2)}, {(-7, 3, 0)}⟩}
+  | .same => {⟨some 2, some (-2), {(-1, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+      ⟨some 2, some (-2), {(-1, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+      ⟨some (-2), some 2, {(-1, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+      ⟨some (-2), some 2, {(-1, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩}
+  | .nearestNeighbor => {⟨some 6, some (-14), {(-9, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+    ⟨some 6, some (-14), {(-9, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩}
   | .nextToNearestNeighbor => {}
 
 lemma isViable_of_mem_viableElems
