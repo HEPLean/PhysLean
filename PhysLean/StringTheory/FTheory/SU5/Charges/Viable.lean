@@ -287,6 +287,12 @@ lemma viableCharges_card (I : CodimensionOneConfig) :
     if I = .nearestNeighbor then 71 else 51 := by
   decide +revert
 
+lemma viableCharges_mem_ofFinset (I : CodimensionOneConfig) :
+    ∀ x ∈ (viableCharges I), x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges := by
+  revert I
+  simp [mem_ofFinset_iff]
+  decide +kernel
+
 lemma isComplete_of_mem_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I), IsComplete x := by
   revert I
@@ -387,6 +393,22 @@ lemma mem_viableCharges_iff {I} {x : ChargeSpectrum}
       (containsPhenoCompletionsOfMinimallyAllows_viableCompletions I)
       (viableCompletions_subset_viableCharges I))
     hsub
+
+lemma mem_viableCharges_iff' {I} {x : ChargeSpectrum} :
+    x ∈ viableCharges I ↔
+     x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges ∧
+    AllowsTerm x topYukawa ∧
+    ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1 ∧ IsComplete x := by
+  constructor
+  · intro h
+    have h1 : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges := by
+      exact viableCharges_mem_ofFinset I x h
+    rw [mem_viableCharges_iff h1] at h
+    exact ⟨h1, h⟩
+  · rintro ⟨h1, h⟩
+    rw [mem_viableCharges_iff h1]
+    exact h
+
 
 end ChargeSpectrum
 

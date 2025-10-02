@@ -512,6 +512,24 @@ lemma reduce_noExotics_of_mem_elemsNoExotics {F : FiveQuanta 𝓩}
     reduce_numChiralD_of_mem_elemsNoExotics hx, reduce_numAntiChiralD_of_mem_elemsNoExotics hx]
   simp
 
+/-!
+
+#### B.11. Reduce member of `FluxesFive.elemsNoExotics`
+
+-/
+
+lemma reduce_mem_elemsNoExotics {F : FiveQuanta 𝓩}
+    (hx : F.toFluxesFive ∈ FluxesFive.elemsNoExotics) :
+    F.reduce.toFluxesFive ∈ FluxesFive.elemsNoExotics := by
+  rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics]
+  apply And.intro
+  · exact reduce_noExotics_of_mem_elemsNoExotics hx
+  · intro h
+    replace h := mem_powerset_sum_of_mem_reduce_toFluxesFive_filter h
+    generalize F.toFluxesFive = G at *
+    revert G
+    decide
+
 end reduce
 
 
@@ -875,7 +893,6 @@ lemma noExotics_of_mem_liftCharge (c : Finset 𝓩) (F : FiveQuanta 𝓩)
   rw [h2]
   decide
 
-
 lemma mem_liftCharge_iff (c : Finset 𝓩) (x : FiveQuanta 𝓩) :
     x ∈ liftCharge c ↔ x.toFluxesFive ∈ FluxesFive.elemsNoExotics
       ∧ x.toCharges.toFinset = c ∧ x.toCharges.Nodup := by
@@ -891,6 +908,18 @@ lemma mem_liftCharge_iff (c : Finset 𝓩) (x : FiveQuanta 𝓩) :
   · intro ⟨h1, h2, h3⟩
     rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics] at h1
     exact mem_liftCharge_of_mem_noExotics_hasNoZero c h1.1 h1.2 h2 h3
+
+lemma map_liftCharge {𝓩 𝓩1 : Type}[DecidableEq 𝓩] [DecidableEq 𝓩1] [CommRing 𝓩] [CommRing 𝓩1]
+    (f : 𝓩 →+* 𝓩1) (c : Finset 𝓩) (F : FiveQuanta 𝓩) (h : F ∈ liftCharge c):
+    FiveQuanta.reduce (F.map fun y => (f y.1, y.2)) ∈ liftCharge (c.image f) := by
+  rw [mem_liftCharge_iff] at h ⊢
+  refine ⟨?_, ?_, ?_⟩
+  · apply reduce_mem_elemsNoExotics
+    simpa [toFluxesFive, Multiset.map_map]  using h.1
+  · rw [reduce_toCharges]
+    simp [← h.2.1, ← Multiset.toFinset_map, toCharges]
+  · rw [reduce_toCharges]
+    exact Multiset.nodup_dedup (toCharges (Multiset.map (fun y => (f y.1, y.2)) F))
 
 end ofChargesExpand
 
@@ -941,6 +970,8 @@ lemma anomalyCoefficent_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
         intros x y
         simp [add_mul] }
     simpa [f] using reduce_sum_eq_sum_toCharges F f
+
+
 
 end ACCs
 

@@ -58,6 +58,9 @@ def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : ChargeSpectrum 𝓩 where
   Q5 := x.F.toCharges.toFinset
   Q10 := x.T.toCharges.toFinset
 
+lemma toCharges_qHd [DecidableEq 𝓩] (x : Quanta 𝓩) : (toCharges x).qHd = x.qHd := rfl
+
+lemma toCharges_qHu [DecidableEq 𝓩] (x : Quanta 𝓩) : (toCharges x).qHu = x.qHu := rfl
 /-!
 
 ## Reduce
@@ -156,12 +159,27 @@ lemma anomalyCoefficent_snd_eq_zero_of_anomalyCancellation [CommRing 𝓩]
   10d matter content, and finite set of charges equal to `c`.
 
   These quanta reduce to all viable quanta. -/
-def ofChargesExpand [DecidableEq 𝓩] (c : ChargeSpectrum 𝓩) : Multiset (Quanta 𝓩) :=
-  let Q5s := FiveQuanta.ofChargesExpand c.Q5
-  let Q10s := TenQuanta.ofChargesExpand c.Q10
+def liftCharge [DecidableEq 𝓩] (c : ChargeSpectrum 𝓩) : Multiset (Quanta 𝓩) :=
+  let Q5s := FiveQuanta.liftCharge c.Q5
+  let Q10s := TenQuanta.liftCharge c.Q10
   Q5s.bind <| fun Q5 =>
   Q10s.map <| fun Q10 =>
     ⟨c.qHd, c.qHu, Q5, Q10⟩
+
+lemma mem_liftCharge_iff [DecidableEq 𝓩] {c : ChargeSpectrum 𝓩}
+    {x : Quanta 𝓩} :
+    x ∈ liftCharge c ↔ x.qHd = c.qHd ∧ x.qHu = c.qHu ∧
+    x.F ∈ FiveQuanta.liftCharge c.Q5 ∧ x.T ∈ TenQuanta.liftCharge c.Q10:= by
+  simp [liftCharge, Multiset.mem_bind, Multiset.mem_map]
+  constructor
+  · rintro ⟨Q5, h1, Q10, h2, rfl⟩
+    simp_all
+  · intro h
+    use x.F
+    simp_all
+    use x.T
+    simp_all
+    rw [← h.1, ← h.2.1]
 
 end Quanta
 
