@@ -341,6 +341,28 @@ lemma mem_powerset_sum_of_mem_reduce_toFluxesFive {F : FiveQuanta 𝓩}
   refine Multiset.map_le_map ?_
   exact Multiset.filter_le (fun x => x.1 = q) F
 
+lemma mem_powerset_sum_of_mem_reduce_toFluxesFive_filter {F : FiveQuanta 𝓩}
+    {f : Fluxes} (hf : f ∈ F.reduce.toFluxesFive) :
+    f ∈ (F.toFluxesFive.powerset.filter fun s => s ≠ ∅ ).map fun s => s.sum := by
+  rw [toFluxesFive, Multiset.mem_map] at hf
+  obtain ⟨⟨q, f⟩, hp, rfl⟩ := hf
+  rw [mem_reduce_iff] at hp
+  simp at hp
+  obtain ⟨hq, rfl⟩ := hp
+  simp only [Multiset.mem_map]
+  use (Multiset.map (fun x => x.2) (Multiset.filter (fun x => x.1 = q) F))
+  simp only [and_true]
+  rw [Multiset.mem_filter]
+  apply And.intro
+  simp
+  rw [toFluxesFive]
+  refine Multiset.map_le_map ?_
+  exact Multiset.filter_le (fun x => x.1 = q) F
+  simp
+  rw [toCharges, Multiset.mem_map] at hq
+  obtain ⟨a, ha, rfl⟩ := hq
+  use a.2
+
 /-!
 
 ### B.10. No exotics condition on the reduced `FiveQuanta`
@@ -682,7 +704,7 @@ variable [DecidableEq 𝓩]
 /-- Given a finite set of charges `c` the `FiveQuanta`
   with fluxes `{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}`
   and finite set of charges equal to `c`. -/
-def ofChargesExpand (c : Finset 𝓩) : Multiset (FiveQuanta 𝓩) :=
+def liftCharge (c : Finset 𝓩) : Multiset (FiveQuanta 𝓩) :=
   /- The multisets of cardinality 3 containing 3 elements of `c`. -/
   let S53 : Multiset (Multiset 𝓩) := toMultisetsThree c
   /- Pairs of multisets (s1, s2) such that s1 and s2 are cardinality of `3` containing
@@ -691,21 +713,14 @@ def ofChargesExpand (c : Finset 𝓩) : Multiset (FiveQuanta 𝓩) :=
     (S53.product S53).filter fun (s1, s2) => c.val ≤ s1 + s2
   let Fp : Multiset (FiveQuanta 𝓩) :=
     S5p.map (fun y => y.1.map (fun z => (z, ⟨1, -1⟩)) + y.2.map (fun z => (z, ⟨0, 1⟩)))
-  Fp
+  Fp.map reduce
 
-lemma toFluxesFive_of_mem_ofChargesExpand (c : Finset 𝓩)
-    {x : FiveQuanta 𝓩} (h : x ∈ ofChargesExpand c) :
-    x.toFluxesFive = {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩} := by
-  simp [ofChargesExpand] at h
+lemma toCharges_toFinset_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
+    (h : x ∈ liftCharge c) : x.toCharges.toFinset = c := by
+  simp [liftCharge] at h
   obtain ⟨s1, s2, ⟨⟨⟨s1_subset, s1_card⟩, ⟨s2_subset, s2_card⟩⟩, hsum⟩, rfl⟩ := h
-  simp [toFluxesFive, s1_card, s2_card]
-  decide
-
-lemma toCharges_of_mem_ofChargesExpand (c : Finset 𝓩)
-    {x : FiveQuanta 𝓩} (h : x ∈ ofChargesExpand c) :
-    x.toCharges.toFinset = c := by
-  simp [ofChargesExpand] at h
-  obtain ⟨s1, s2, ⟨⟨⟨s1_subset, s1_card⟩, ⟨s2_subset, s2_card⟩⟩, hsum⟩, rfl⟩ := h
+  rw [← Multiset.toFinset_dedup, reduce_toCharges]
+  simp only [Int.reduceNeg, Multiset.dedup_idem, Multiset.toFinset_dedup]
   simp [toCharges]
   trans (s1 + s2).toFinset
   · exact Eq.symm (Multiset.toFinset_add s1 s2)
@@ -721,11 +736,40 @@ lemma toCharges_of_mem_ofChargesExpand (c : Finset 𝓩)
   · intro hr
     simpa using Multiset.mem_of_le hsum hr
 
-lemma mem_ofChargesExpand_of_toCharges_toFluxesFive (c : Finset 𝓩) {x : FiveQuanta 𝓩}
-    (h : x.toCharges.toFinset = c) (h2 : x.toFluxesFive =
+lemma toCharges_nodup_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
+    (h : x ∈ liftCharge c) : x.toCharges.Nodup := by
+  rw [liftCharge, Multiset.mem_map] at h
+  obtain ⟨x, h, rfl⟩ := h
+  rw [reduce_toCharges]
+  exact Multiset.nodup_dedup x.toCharges
+
+lemma exists_toCharges_toFluxesFive_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
+    (h : x ∈ liftCharge c) :
+    ∃ a : FiveQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c ∧ a.toFluxesFive =
+      {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩} := by
+  have h' := h
+  rw [liftCharge, Multiset.mem_map] at h
+  obtain ⟨a, h, rfl⟩ := h
+  use a
+  simp
+  apply And.intro
+  · trans a.toCharges.dedup.toFinset
+    · simp
+    rw [← reduce_toCharges]
+    exact toCharges_toFinset_of_mem_liftCharge c h'
+  · simp at h
+    obtain ⟨s1, s2, ⟨⟨⟨s1_subset, s1_card⟩, ⟨s2_subset, s2_card⟩⟩, hsum⟩, rfl⟩ := h
+    simp [toFluxesFive, s1_card, s2_card]
+    decide
+
+lemma mem_liftCharge_of_exists_toCharges_toFluxesFive (c : Finset 𝓩) {x : FiveQuanta 𝓩}
+    (h : ∃ a : FiveQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c ∧ a.toFluxesFive =
       {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩}) :
-    x ∈ ofChargesExpand c := by
-  simp [ofChargesExpand]
+    x ∈ liftCharge c := by
+  obtain ⟨x, rfl, h, h2⟩ := h
+  rw [liftCharge, Multiset.mem_map]
+  use x
+  simp
   let s1 := (x.filter (fun y => y.2 = ⟨1, -1⟩)).map Prod.fst
   let s2 := (x.filter (fun y => y.2 = ⟨0, 1⟩)).map Prod.fst
   use s1, s2
@@ -784,120 +828,69 @@ lemma mem_ofChargesExpand_of_toCharges_toFluxesFive (c : Finset 𝓩) {x : FiveQ
     rw [h1, h2, hx]
     exact Multiset.filter_add_not (fun y => y.2 = ⟨1, -1⟩) x
 
-lemma mem_ofChargesExpand_iff(c : Finset 𝓩) {x : FiveQuanta 𝓩} :
-    x ∈ ofChargesExpand c ↔
-    x.toCharges.toFinset = c ∧ x.toFluxesFive =
-      {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩} := by
-  constructor
-  · intro h
-    constructor
-    exact toCharges_of_mem_ofChargesExpand c h
-    exact toFluxesFive_of_mem_ofChargesExpand c h
-  · intro h
-    obtain ⟨h1, h2⟩ := h
-    exact mem_ofChargesExpand_of_toCharges_toFluxesFive c h1 h2
+lemma mem_liftCharge_iff_exists (c : Finset 𝓩) {x : FiveQuanta 𝓩} :
+    x ∈ liftCharge c ↔ ∃ a : FiveQuanta 𝓩, a.reduce = x ∧
+      a.toCharges.toFinset = c ∧ a.toFluxesFive =
+      {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩} :=
+  ⟨exists_toCharges_toFluxesFive_of_mem_liftCharge c,
+    mem_liftCharge_of_exists_toCharges_toFluxesFive c⟩
 
-lemma eq_sum_filter_of_mem_ofChargesExpand (c : Finset 𝓩) (F : FiveQuanta 𝓩)
-    (h : F ∈ ofChargesExpand c) :
-    F = (F.filter fun x => x.2 = ⟨1, -1⟩) + (F.filter fun x => x.2 = ⟨0, 1⟩) := by
-  rw [mem_ofChargesExpand_iff] at h
-  obtain ⟨hc, h⟩ := h
-  have h1 : Multiset.filter (fun x => x.2 = ⟨0, 1⟩) F
-      = Multiset.filter (fun x => ¬ x.2 = ⟨1, -1⟩) F := by
-    apply Multiset.filter_congr
-    intro x f
-    have h2 : x.2 ∈ F.toFluxesFive := by
-      simp [toFluxesFive]
-      use x.1
-    rw [h] at h2
-    simp at h2
-    rcases h2 with h | h
-    · simp [h]
-    · simp [h]
-  rw [h1]
-  exact Eq.symm (Multiset.filter_add_not (fun x => x.2 = ⟨1, -1⟩) F)
 
-lemma mem_ofChargesExpand_of_noExotics_hasNoZero (F : FiveQuanta 𝓩) (c : Finset 𝓩)
-    (hc : F.toCharges.toFinset = c)
-    (h1 : F.toFluxesFive.NoExotics) (h2 : F.toFluxesFive.HasNoZero) :
-    ∃ y ∈ ofChargesExpand c, y.reduce = F.reduce := by
-  have hf : F.toFluxesFive ∈ FluxesFive.elemsNoExotics := by
+lemma hasNoZero_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
+    (h : x ∈ liftCharge c) : x.toFluxesFive.HasNoZero := by
+  rw [mem_liftCharge_iff_exists] at h
+  obtain ⟨x, rfl, h1, h2⟩ := h
+  intro hf
+  have hx := mem_powerset_sum_of_mem_reduce_toFluxesFive_filter hf
+  rw [h2] at hx
+  revert hx
+  decide
+
+lemma mem_liftCharge_of_mem_noExotics_hasNoZero (c : Finset 𝓩) {x : FiveQuanta 𝓩}
+    (h1 : x.toFluxesFive.NoExotics) (h2 : x.toFluxesFive.HasNoZero)
+    (h3 : x.toCharges.toFinset = c) (h4 : x.toCharges.Nodup) :
+    x ∈ liftCharge c := by
+  have hf : x.toFluxesFive ∈ FluxesFive.elemsNoExotics := by
     rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics]
     simp_all
     exact h2
-  use F.decompose
+  rw [mem_liftCharge_iff_exists]
+  use x.decompose
   apply And.intro
-  · rw [mem_ofChargesExpand_iff]
-    constructor
-    · trans F.decompose.toCharges.dedup.toFinset
+  · rw [decompose_reduce x hf]
+    exact reduce_eq_self_of_ofCharges_nodup x h4
+  · constructor
+    · trans x.decompose.toCharges.dedup.toFinset
       · simp
-      · rw [decompose_toCharges_dedup F hf, ← hc]
+      · rw [decompose_toCharges_dedup x hf, ← h3]
         simp
-    · rw [decompose_toFluxesFive F hf]
-  · rw [decompose_reduce F hf]
+    · rw [decompose_toFluxesFive x hf]
 
-lemma reduce_hasNoZeros_of_mem_ofChargesExpand (c : Finset 𝓩) (F : FiveQuanta 𝓩)
-    (h : F ∈ ofChargesExpand c) :
-    F.reduce.toFluxesFive.HasNoZero := by
-  simp [reduce, toFluxesFive, FluxesFive.HasNoZero]
-  intro x hx
-  have hs : (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = x) F))
-      ∈ F.toFluxesFive.powerset := by
-    simp [toFluxesFive]
-  have h1 : Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = x) F) ≠ 0 := by
-    simp only [ne_eq, Multiset.map_eq_zero]
-    rw [@Multiset.filter_eq_nil]
-    simp [Prod.forall, not_forall, Classical.not_imp, Decidable.not_not, exists_and_right,
-      exists_eq_right]
-    simp [toCharges] at hx
-    obtain ⟨a, h⟩ := hx
-    use a
-  generalize (Multiset.map (fun y => y.2) (Multiset.filter (fun f => f.1 = x) F)) = s at *
-  rw [mem_ofChargesExpand_iff] at h
-  rw [h.2] at hs
-  fin_cases hs
-  · simp at h1
-  all_goals
-  · decide
-
-lemma reduce_noExotics_of_mem_ofChargesExpand (c : Finset 𝓩) (F : FiveQuanta 𝓩)
-    (h : F ∈ ofChargesExpand c) :
-    F.reduce.toFluxesFive.NoExotics := by
+lemma noExotics_of_mem_liftCharge (c : Finset 𝓩) (F : FiveQuanta 𝓩)
+    (h : F ∈ liftCharge c) :
+    F.toFluxesFive.NoExotics := by
+  rw [mem_liftCharge_iff_exists] at h
+  obtain ⟨x, rfl, h1, h2⟩ := h
   apply reduce_noExotics_of_mem_elemsNoExotics
-  rw [mem_ofChargesExpand_iff] at h
-  rw [h.2]
+  rw [h2]
   decide
 
-lemma reduce_mem_elemsNoExotics_of_mem_ofChargesExpand (c : Finset 𝓩) (F : FiveQuanta 𝓩)
-    (h : F ∈ ofChargesExpand c) :
-    F.reduce.toFluxesFive ∈ FluxesFive.elemsNoExotics := by
-  rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics]
-  constructor
-  · exact reduce_noExotics_of_mem_ofChargesExpand c F h
-  · exact reduce_hasNoZeros_of_mem_ofChargesExpand c F h
 
-lemma mem_ofChargesExpand_map_reduce_iff (c : Finset 𝓩) (S : FiveQuanta 𝓩) :
-    S ∈ (ofChargesExpand c).map reduce ↔ S.toFluxesFive ∈ FluxesFive.elemsNoExotics
-      ∧ S.toCharges.toFinset = c ∧ S.reduce = S := by
+lemma mem_liftCharge_iff (c : Finset 𝓩) (x : FiveQuanta 𝓩) :
+    x ∈ liftCharge c ↔ x.toFluxesFive ∈ FluxesFive.elemsNoExotics
+      ∧ x.toCharges.toFinset = c ∧ x.toCharges.Nodup := by
   constructor
   · intro h
-    simp at h
-    obtain ⟨F, h1, rfl⟩ := h
     refine ⟨?_, ?_, ?_⟩
-    · exact reduce_mem_elemsNoExotics_of_mem_ofChargesExpand c F h1
-    · rw [mem_ofChargesExpand_iff] at h1
-      rw [← h1.1, reduce_toCharges]
-      exact Multiset.toFinset_dedup F.toCharges
-    · rw [reduce_reduce]
-  · intro h
-    simp only [Multiset.mem_map]
-    rw [← h.2.2]
-    have h1 := h.1
+    · rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics]
+      refine ⟨?_, ?_⟩
+      · exact noExotics_of_mem_liftCharge c x h
+      · exact hasNoZero_of_mem_liftCharge c h
+    · exact toCharges_toFinset_of_mem_liftCharge c h
+    · exact toCharges_nodup_of_mem_liftCharge c h
+  · intro ⟨h1, h2, h3⟩
     rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics] at h1
-    refine mem_ofChargesExpand_of_noExotics_hasNoZero S c ?_ ?_ ?_
-    · exact h.2.1
-    · exact h1.1
-    · exact h1.2
+    exact mem_liftCharge_of_mem_noExotics_hasNoZero c h1.1 h1.2 h2 h3
 
 end ofChargesExpand
 
