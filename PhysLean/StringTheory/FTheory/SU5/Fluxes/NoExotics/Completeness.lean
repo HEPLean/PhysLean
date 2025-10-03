@@ -38,6 +38,23 @@ are only constrained by `2` SM representations `D` and `L`.
 
 ## iii. Table of contents
 
+- A. All terms of `FluxesFive` obeying `NoExotics` and `HasNoZero`
+  - A.1. The allowed fluxes in a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
+  - A.2. Sufficent condition for a set to contain allowed subsets of card `n.succ` based on `n`
+  - A.3. Statement of the allowed subsets of each cardinality
+  - A.4. Lemma that stated allowed subsets are complete
+  - A.5. Terms of `FluxesFive` obeying `NoExotics` and `HasNoZero` have card ≤ 6
+  - A.6. Terms of `FluxesFive` obeying `NoExotics` and `HasNoZero` are in `elemsNoExotics`
+  - A.7. Terms of `FluxesFive` obey `NoExotics` and `HasNoZero` if and only if in `elemsNoExotics`
+- B. All terms of `FluxesTen` obeying `NoExotics` and `HasNoZero`
+  - B.1. The allowed fluxes in a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
+  - B.2. Sufficent condition for a set to contain allowed subsets of card `n.succ` based on `n`
+  - B.3. Statement of the allowed subsets of each cardinality
+  - B.4. Lemma that stated allowed subsets are complete
+  - B.5. Terms of `FluxesTen` obeying `NoExotics` and `HasNoZero` have card ≤ 3
+  - B.6. Terms of `FluxesTen` obeying `NoExotics` and `HasNoZero` are in `elemsNoExotics`
+  - B.7. Terms of `FluxesTen` obey `NoExotics` and `HasNoZero` if and only if in `elemsNoExotics`
+
 ## iv. References
 
 There are no known references for the material in this module.

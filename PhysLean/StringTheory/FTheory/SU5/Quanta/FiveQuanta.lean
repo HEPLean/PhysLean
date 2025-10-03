@@ -9,13 +9,15 @@ import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Completeness
 
 # Quanta of 5-d representations
 
+## i. Overview
+
 The 5-bar representations of the `SU(5)×U(1)` carry
-the quantum numbers of their U(1) charges and their fluxes.
+the quantum numbers of their `U(1)` charges and their fluxes.
 
 In this module we define the data structure for these quanta and
 properties thereof.
 
-## Key results
+## ii. Key results
 
 - `FiveQuanta` is the type of quanta of 5-bar representations.
 - `FiveQuanta.toFluxesFive` is the underlying `FluxesFive` of a `FiveQuanta`.
@@ -26,18 +28,68 @@ properties thereof.
   charge `c` and no exotics or zero fluxes.
 - `FiveQuanta.anomalyCoefficent` is the anomaly coefficent associated with a `FiveQuanta`.
 
+## iii. Table of contents
+
+- A. The definition of `FiveQuanta`
+  - A.1. The map to underlying fluxes
+  - A.2. The map to underlying charges
+  - A.3. The map from charges to fluxes
+- B. The reduction of a `FiveQuanta`
+  - B.1. The reduced `FiveQuanta` has no duplicate elements
+  - B.2. The underlying charges of the reduced `FiveQuanta` are the deduped charges
+  - B.3. Membership condition on the reduced `FiveQuanta`
+  - B.4. Filter of the reduced `FiveQuanta` by a charge
+  - B.5. The reduction is idempotent
+  - B.6. Preservation of certain sums under reduction
+  - B.7. Reduction does nothing if no duplicate charges
+  - B.8. The charge map is preserved by reduction
+  - B.9. A fluxes in the reduced `FiveQuanta` is a sum of fluxes in the original `FiveQuanta`
+  - B.10. No exotics condition on the reduced `FiveQuanta`
+    - B.10.1. Number of chiral `L`
+    - B.10.2. Number of anti-chiral `L`
+    - B.10.3. Number of chiral `D`
+    - B.10.4. Number of anti-chiral `D`
+    - B.10.5. The `NoExotics` condition on the reduced `FiveQuanta`
+  - B.11. Reduce member of `FluxesFive.elemsNoExotics`
+- C. Decomposition of a `FiveQuanta` into basic fluxes
+  - C.1. Decomposition of fluxes
+  - C.2. Decomposition of a `FiveQuanta` (with no exotics)
+    - C.2.1. Decomposition distributes over addition
+    - C.2.2. Decomposition commutes with filtering charges
+    - C.2.3. Decomposition preserves the charge map
+    - C.2.4. Decomposition preserves the charges
+    - C.2.5. Decomposition preserves the reduction
+    - C.2.6. Fluxes of the decomposition of a `FiveQuanta`
+- D. Lifiting charges to `FiveQuanta`
+  - D.1. `liftCharge c`: multiset of five-quanta for a finite set of charges `c` with no exotics
+  - D.2. FiveQuanta in `liftCharge c` have a finite set of charges `c`
+  - D.3. FiveQuanta in `liftCharge c` have no duplicate charges
+  - D.4. Membership in `liftCharge c` iff is reduction of `FiveQuanta` with given fluxes
+  - D.5. FiveQuanta in `liftCharge c` do not have zero fluxes
+  - D.6. FiveQuanta in `liftCharge c` have no exotics
+  - D.7. Membership in `liftCharge c` iff have no exotics, no zero fluxes, and charges `c`
+  - D.8. `liftCharge c` is preserved under a map if reduced
+- E. Anomaly cancellation coefficents
+  - E.1. Anomaly coefficents of a `FiveQuanta`
+  - E.2. Anomaly coefficents under a map
+  - E.3. Anomaly coefficents is preserved under `reduce`.
+
+## iv. References
+
+A reference for the anomaly cancellation conditions is arXiv:1401.5084.
+
 -/
 namespace FTheory
 
 namespace SU5
 open SU5
-variable {I : CodimensionOneConfig}
 
 /-!
 
 ## A. The definition of `FiveQuanta`
 
 -/
+
 /-- The quanta of 5-bar representations corresponding to a multiset of
   `(q, M, N)` for each partcile. `(M, N)` are defined in the `FluxesFive` module. -/
 abbrev FiveQuanta (𝓩 : Type := ℤ) : Type := Multiset (𝓩 × Fluxes)
@@ -48,7 +100,7 @@ variable {𝓩 : Type}
 
 /-!
 
-## A.1. The map to underlying fluxes
+### A.1. The map to underlying fluxes
 
 -/
 
@@ -57,7 +109,7 @@ def toFluxesFive (x : FiveQuanta 𝓩) : FluxesFive := x.map Prod.snd
 
 /-!
 
-## A.2. The map to underlying charges
+### A.2. The map to underlying charges
 
 -/
 
@@ -66,7 +118,7 @@ def toCharges (x : FiveQuanta 𝓩) : Multiset 𝓩 := x.map Prod.fst
 
 /-!
 
-## A.3. The map from charges to fluxes
+### A.3. The map from charges to fluxes
 
 -/
 
@@ -79,7 +131,7 @@ lemma toChargeMap_of_not_mem [DecidableEq 𝓩] (x : FiveQuanta 𝓩) {z : 𝓩}
     x.toChargeMap z = 0 := by
   simp [toChargeMap]
   have hl : (Multiset.filter (fun p => p.1 = z) x) = 0 := by
-    simp
+    simp only [Multiset.filter_eq_nil, Prod.forall]
     intro a b f
     by_contra hn
     subst hn
@@ -90,7 +142,7 @@ lemma toChargeMap_of_not_mem [DecidableEq 𝓩] (x : FiveQuanta 𝓩) {z : 𝓩}
 
 /-!
 
-## B. The reducition of a `FiveQuanta`
+## B. The reduction of a `FiveQuanta`
 
 -/
 
@@ -124,13 +176,15 @@ lemma reduce_dedup (x : FiveQuanta 𝓩) : x.reduce.dedup = x.reduce :=
 /-!
 
 ### B.2. The underlying charges of the reduced `FiveQuanta` are the deduped charges
+
 -/
+
 lemma reduce_toCharges (x : FiveQuanta 𝓩) : x.reduce.toCharges = x.toCharges.dedup := by
   simp [reduce, toCharges]
 
 /-!
 
-### B.3. Membership condition on the reduced `FiveQuanta`
+### B.3. Membership condition on the reduced `FiveQuanta`
 
 -/
 
@@ -150,7 +204,7 @@ lemma mem_reduce_iff (x : FiveQuanta 𝓩) (p : 𝓩 × Fluxes) :
 
 /-!
 
-### B.4. Filter of the reduced `FiveQuanta` by a charge
+### B.4. Filter of the reduced `FiveQuanta` by a charge
 
 -/
 
@@ -296,7 +350,7 @@ lemma reduce_eq_self_of_ofCharges_nodup (x : FiveQuanta 𝓩) (h : x.toCharges.N
 
 /-!
 
-### B.8 The charge map is preserved by reduction
+### B.8. The charge map is preserved by reduction
 
 -/
 
@@ -348,11 +402,12 @@ lemma mem_powerset_sum_of_mem_reduce_toFluxesFive_filter {F : FiveQuanta 𝓩}
   simp only [and_true]
   rw [Multiset.mem_filter]
   apply And.intro
-  simp
+  simp only [Multiset.mem_powerset]
   rw [toFluxesFive]
   refine Multiset.map_le_map ?_
   exact Multiset.filter_le (fun x => x.1 = q) F
-  simp
+  simp [Multiset.empty_eq_zero, ne_eq, Multiset.map_eq_zero, Multiset.filter_eq_nil,
+    Prod.forall, not_forall, Decidable.not_not]
   rw [toCharges, Multiset.mem_map] at hq
   obtain ⟨a, ha, rfl⟩ := hq
   use a.2
@@ -508,7 +563,7 @@ lemma reduce_noExotics_of_mem_elemsNoExotics {F : FiveQuanta 𝓩}
 
 /-!
 
-#### B.11. Reduce member of `FluxesFive.elemsNoExotics`
+### B.11. Reduce member of `FluxesFive.elemsNoExotics`
 
 -/
 
@@ -573,7 +628,7 @@ lemma decompose_add (x y : FiveQuanta 𝓩) :
 
 /-!
 
-#### C.2.2. Decomposition computes with filtering charges
+#### C.2.2. Decomposition commutes with filtering charges
 
 -/
 
@@ -585,7 +640,7 @@ lemma decompose_filter_charge [DecidableEq 𝓩] (x : FiveQuanta 𝓩) (q : 𝓩
   apply Multiset.induction
   · simp [decompose]
   · intro a x ih
-    simp
+    simp only [Multiset.cons_bind, Multiset.filter_add]
     rw [Multiset.filter_cons, decompose_add, ih]
     congr
     match a with
@@ -620,7 +675,7 @@ lemma decompose_toChargeMap [DecidableEq 𝓩] (x : FiveQuanta 𝓩)
   rw [toChargeMap, decompose_filter_charge]
   simp [decompose]
   rw [Multiset.map_bind]
-  simp
+  simp only [Multiset.map_map, Function.comp_apply, Multiset.map_id', Multiset.sum_bind]
   rw [toChargeMap]
   congr 1
   apply Multiset.map_congr
@@ -674,7 +729,7 @@ lemma decompose_reduce (x : FiveQuanta 𝓩) [DecidableEq 𝓩]
   apply Multiset.map_congr
   · rw [decompose_toCharges_dedup x hx]
   · intro q hx'
-    simp
+    simp only [Prod.mk.injEq, true_and]
     change x.decompose.toChargeMap q = x.toChargeMap q
     rw [decompose_toChargeMap x hx]
 
@@ -689,7 +744,8 @@ lemma decompose_toFluxesFive (x : FiveQuanta 𝓩)
     x.decompose.toFluxesFive = {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩} := by
   rw [toFluxesFive, decompose]
   rw [Multiset.map_bind]
-  simp
+  simp only [Multiset.map_map, Function.comp_apply, Multiset.map_id', Int.reduceNeg,
+    Multiset.insert_eq_cons]
   trans (Multiset.bind x.toFluxesFive fun a => decomposeFluxes a)
   · rw [toFluxesFive, Multiset.bind_map]
   · generalize x.toFluxesFive = F at *
@@ -771,7 +827,7 @@ lemma toCharges_nodup_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
 
 /-!
 
-### D.3. Membership in `liftCharge c` iff is reduction of `FiveQuanta` with given fluxes
+### D.4. Membership in `liftCharge c` iff is reduction of `FiveQuanta` with given fluxes
 
 -/
 
@@ -783,7 +839,7 @@ lemma exists_toCharges_toFluxesFive_of_mem_liftCharge (c : Finset 𝓩) {x : Fiv
   rw [liftCharge, Multiset.mem_map] at h
   obtain ⟨a, h, rfl⟩ := h
   use a
-  simp
+  simp only [Int.reduceNeg, Multiset.insert_eq_cons, true_and]
   apply And.intro
   · trans a.toCharges.dedup.toFinset
     · simp
@@ -801,7 +857,8 @@ lemma mem_liftCharge_of_exists_toCharges_toFluxesFive (c : Finset 𝓩) {x : Fiv
   obtain ⟨x, rfl, h, h2⟩ := h
   rw [liftCharge, Multiset.mem_map]
   use x
-  simp
+  simp only [Int.reduceNeg, Multiset.mem_map, Multiset.mem_filter, Multiset.mem_product,
+    mem_toMultisetsThree_iff, Prod.exists, and_true]
   let s1 := (x.filter (fun y => y.2 = ⟨1, -1⟩)).map Prod.fst
   let s2 := (x.filter (fun y => y.2 = ⟨0, 1⟩)).map Prod.fst
   use s1, s2
@@ -869,7 +926,7 @@ lemma mem_liftCharge_iff_exists (c : Finset 𝓩) {x : FiveQuanta 𝓩} :
 
 /-!
 
-### D.4. FiveQuanta in `liftCharge c` do not have zero fluxes
+### D.5. FiveQuanta in `liftCharge c` do not have zero fluxes
 
 -/
 
@@ -885,7 +942,7 @@ lemma hasNoZero_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
 
 /-!
 
-### D.5. FiveQuanta in `liftCharge c` have no exotics
+### D.6. FiveQuanta in `liftCharge c` have no exotics
 
 -/
 
@@ -900,7 +957,7 @@ lemma noExotics_of_mem_liftCharge (c : Finset 𝓩) (F : FiveQuanta 𝓩)
 
 /-!
 
-### D.6. Membership in `liftCharge c` iff have no exotics, no zero fluxes, and charges `c`
+### D.7. Membership in `liftCharge c` iff have no exotics, no zero fluxes, and charges `c`
 
 -/
 
@@ -939,6 +996,12 @@ lemma mem_liftCharge_iff (c : Finset 𝓩) (x : FiveQuanta 𝓩) :
   · intro ⟨h1, h2, h3⟩
     rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics] at h1
     exact mem_liftCharge_of_mem_noExotics_hasNoZero c h1.1 h1.2 h2 h3
+
+/-!
+
+### D.8. `liftCharge c` is preserved under a map if reduced
+
+-/
 
 lemma map_liftCharge {𝓩 𝓩1 : Type}[DecidableEq 𝓩] [DecidableEq 𝓩1] [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (c : Finset 𝓩) (F : FiveQuanta 𝓩) (h : F ∈ liftCharge c) :

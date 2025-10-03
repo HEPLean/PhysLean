@@ -310,10 +310,6 @@ PhysLean/StringTheory/FTheory/SU5/Basic.lean
 PhysLean/StringTheory/FTheory/SU5/Charges/AnomalyFree.lean
 PhysLean/StringTheory/FTheory/SU5/Charges/OfRationalSection.lean
 PhysLean/StringTheory/FTheory/SU5/Charges/Viable.lean
-PhysLean/StringTheory/FTheory/SU5/Quanta/Basic.lean
-PhysLean/StringTheory/FTheory/SU5/Quanta/FiveQuanta.lean
-PhysLean/StringTheory/FTheory/SU5/Quanta/IsViable.lean
-PhysLean/StringTheory/FTheory/SU5/Quanta/TenQuanta.lean
 PhysLean/Thermodynamics/Basic.lean
 PhysLean/Thermodynamics/Temperature/Basic.lean
 PhysLean/Thermodynamics/Temperature/TemperatureUnits.lean

@@ -74,39 +74,44 @@ they can be derived from other data structures.
 
 ## iii. Table of contents
 
-- A. Fluxes of the 5d matter representation
-  - A.1. Deciability instance on `FluxesFive`
-  - A.2. The proposition for no element to be zero
-  - A.3. The SM representation `D = (bar 3,1)_{1/3}`
-    - A.3.1. Chiral indices of `D`
-    - A.3.2. The number of chiral `D`
-    - A.3.3. The number of anti-chiral `D`
-    - A.3.4. Relation between number of chiral and anti-chiral `D`
-  - A.4. The SM representation `L = (1,2)_{-1/2}`
-    - A.4.1. Chiral indices of `L`
-    - A.4.2. The number of chiral `L`
-    - A.4.3. The number of anti-chiral `L`
-    - A.4.4. Relation between number of chiral and anti-chiral `L`
-  - A.5. No exotics from the 5-bar matter fields
-- B. Fluxes of the 10d matter representation
-  - B.1. Deciability instance on `FluxesTen`
+- A. Fluxes
+  - A.1. Extensionality lemma for the fluxes
+  - A.2. The zero flux
+  - A.3. Addition of fluxes
+  - A.4. The instance of an additive commutative monoid on fluxes
+- B. Fluxes of the 5d matter representation
+  - B.1. Deciability instance on `FluxesFive`
   - B.2. The proposition for no element to be zero
-  - B.3. The SM representation `Q = (3,2)_{1/6}`
-    - B.3.1. Chiral indices of `Q`
-    - B.3.2. The number of chiral `Q`
-    - B.3.3. The number of anti-chiral `Q`
-    - B.3.4. Relation between number of chiral and anti-chiral `Q`
-  - B.4. The SM representation `U = (bar 3,1)_{-2/3}`
-    - B.4.1. Chiral indices of `U`
-    - B.4.2. The number of chiral `U`
-    - B.4.3. The number of anti-chiral `U`
-    - B.4.4. Relation between number of chiral and anti-chiral `Q`
-  - B.5. The SM representation `E = (1,1)_{1}`
-    - B.5.1. Chiral indices of `E`
-    - B.5.2. The number of chiral `E`
-    - B.5.3. The number of anti-chiral `E`
-    - B.5.4. Relation between number of chiral and anti-chiral `E`
-  - B.6. No exotics from the 10d matter fields
+  - B.3. The SM representation `D = (bar 3,1)_{1/3}`
+    - B.3.1. Chiral indices of `D`
+    - B.3.2. The number of chiral `D`
+    - B.3.3. The number of anti-chiral `D`
+    - B.3.4. Relation between number of chiral and anti-chiral `D`
+  - B.4. The SM representation `L = (1,2)_{-1/2}`
+    - B.4.1. Chiral indices of `L`
+    - B.4.2. The number of chiral `L`
+    - B.4.3. The number of anti-chiral `L`
+    - B.4.4. Relation between number of chiral and anti-chiral `L`
+  - B.5. No exotics from the 5-bar matter fields
+- C. Fluxes of the 10d matter representation
+  - C.1. Deciability instance on `FluxesTen`
+  - C.2. The proposition for no element to be zero
+  - C.3. The SM representation `Q = (3,2)_{1/6}`
+    - C.3.1. Chiral indices of `Q`
+    - C.3.2. The number of chiral `Q`
+    - C.3.3. The number of anti-chiral `Q`
+    - C.3.4. Relation between number of chiral and anti-chiral `Q`
+  - C.4. The SM representation `U = (bar 3,1)_{-2/3}`
+    - C.4.1. Chiral indices of `U`
+    - C.4.2. The number of chiral `U`
+    - C.4.3. The number of anti-chiral `U`
+    - C.4.4. Relation between number of chiral and anti-chiral `Q`
+  - C.5. The SM representation `E = (1,1)_{1}`
+    - C.5.1. Chiral indices of `E`
+    - C.5.2. The number of chiral `E`
+    - C.5.3. The number of anti-chiral `E`
+    - C.5.4. Relation between number of chiral and anti-chiral `E`
+  - C.6. No exotics from the 10d matter fields
 
 ## iv. References
 
