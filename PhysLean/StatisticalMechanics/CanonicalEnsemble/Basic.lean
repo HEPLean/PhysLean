@@ -633,6 +633,15 @@ lemma integrable_energy_nsmul (n : ℕ) (T : Temperature)
 /-- The mean energy of the canonical ensemble at temperature `T`. -/
 noncomputable def meanEnergy (T : Temperature) : ℝ := ∫ i, 𝓒.energy i ∂𝓒.μProd T
 
+/-- The mean square energy ⟨E²⟩ of the canonical ensemble at temperature T. -/
+noncomputable def meanSquareEnergy (T : Temperature) : ℝ :=
+  ∫ i, (𝓒.energy i)^2 ∂ 𝓒.μProd T
+
+/-- Energy variance at temperature `T`. -/
+noncomputable def energyVariance (T : Temperature) : ℝ :=
+  ∫ i, (𝓒.energy i - 𝓒.meanEnergy T)^2 ∂ 𝓒.μProd T
+
+
 lemma meanEnergy_add {T : Temperature}
     [IsFiniteMeasure (𝓒1.μBolt T)] [IsFiniteMeasure (𝓒.μBolt T)]
     [NeZero 𝓒.μ] [NeZero 𝓒1.μ]
