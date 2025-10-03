@@ -15,23 +15,17 @@ the quantum numbers of their U(1) charges and their fluxes.
 In this module we define the data structure for these quanta and
 properties thereof.
 
-## Key definitions
+## Key results
 
 - `FiveQuanta` is the type of quanta of 5-bar representations.
 - `FiveQuanta.toFluxesFive` is the underlying `FluxesFive` of a `FiveQuanta`.
 - `FiveQuanta.toCharges` is the underlying Multiset charges of a `FiveQuanta`.
 - `FiveQuanta.reduce` is the reduction of a `FiveQuanta` which adds together
   all the fluxes corresponding to the same charge (i.e. representation).
+- `FiveQuanta.liftCharges` given a charge `c` the `FiveQuanta` which have
+  charge `c` and no exotics or zero fluxes.
 - `FiveQuanta.anomalyCoefficent` is the anomaly coefficent associated with a `FiveQuanta`.
-- `FiveQuanta.ofChargesExpand` is the `FiveQuanta` with fluxes
-  `{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}` and finite set of charges equal to a given
-  `c`.
 
-## Key theorems
-
-- `mem_ofChargesExpand_map_reduce_iff` states that a `FiveQuanta` is in the
-  image of `ofChargesExpand c` under `reduce` if and only if it is a `FiveQuanta` with
-  charges equal to `c` and fluxes which have no exotics or zero.
 -/
 namespace FTheory
 
@@ -343,7 +337,7 @@ lemma mem_powerset_sum_of_mem_reduce_toFluxesFive {F : FiveQuanta 𝓩}
 
 lemma mem_powerset_sum_of_mem_reduce_toFluxesFive_filter {F : FiveQuanta 𝓩}
     {f : Fluxes} (hf : f ∈ F.reduce.toFluxesFive) :
-    f ∈ (F.toFluxesFive.powerset.filter fun s => s ≠ ∅ ).map fun s => s.sum := by
+    f ∈ (F.toFluxesFive.powerset.filter fun s => s ≠ ∅).map fun s => s.sum := by
   rw [toFluxesFive, Multiset.mem_map] at hf
   obtain ⟨⟨q, f⟩, hp, rfl⟩ := hf
   rw [mem_reduce_iff] at hp
@@ -379,7 +373,7 @@ lemma reduce_numChiralL_of_mem_elemsNoExotics {F : FiveQuanta 𝓩}
     (hx : F.toFluxesFive ∈ FluxesFive.elemsNoExotics) :
     F.reduce.toFluxesFive.numChiralL = 3 := by
   have hE : F.toFluxesFive.NoExotics := by
-    rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics]  at hx
+    rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics] at hx
     exact hx.1
   rw [← hE.1, FluxesFive.numChiralL, FluxesFive.numChiralL, FluxesFive.chiralIndicesOfL]
   trans (F.reduce.toFluxesFive.map (fun f => f.M + f.N)).sum
@@ -444,7 +438,7 @@ lemma reduce_numChiralD_of_mem_elemsNoExotics {F : FiveQuanta 𝓩}
     (hx : F.toFluxesFive ∈ FluxesFive.elemsNoExotics) :
     F.reduce.toFluxesFive.numChiralD = 3 := by
   have hE : F.toFluxesFive.NoExotics := by
-    rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics]  at hx
+    rw [← FluxesFive.noExotics_iff_mem_elemsNoExotics] at hx
     exact hx.1
   rw [← hE.2.2.1, FluxesFive.numChiralD, FluxesFive.numChiralD, FluxesFive.chiralIndicesOfD]
   trans (F.reduce.toFluxesFive.map (fun f => f.M)).sum
@@ -532,8 +526,6 @@ lemma reduce_mem_elemsNoExotics {F : FiveQuanta 𝓩}
 
 end reduce
 
-
-
 /-!
 
 ## C. Decomposition of a `FiveQuanta` into basic fluxes
@@ -546,8 +538,9 @@ end reduce
 
 -/
 
+/-- The decomposition of a flux into `⟨1, -1⟩` and `⟨0, 1⟩`. -/
 def decomposeFluxes (f : Fluxes) : Multiset Fluxes :=
-  Multiset.replicate (Int.natAbs f.M) ⟨1, -1⟩  +
+  Multiset.replicate (Int.natAbs f.M) ⟨1, -1⟩ +
   Multiset.replicate (Int.natAbs (f.M + f.N)) ⟨0, 1⟩
 
 lemma decomposeFluxes_sum_of_noExotics (f : Fluxes) (hf : ∃ F ∈ FluxesFive.elemsNoExotics, f ∈ F) :
@@ -563,6 +556,8 @@ lemma decomposeFluxes_sum_of_noExotics (f : Fluxes) (hf : ∃ F ∈ FluxesFive.e
 
 -/
 
+/-- The decomposition of a `FiveQuanta` into a `FiveQuanta` which has the
+  same `reduce` by has fluxes `⟨1, -1⟩` and `⟨0,1⟩` only. -/
 def decompose (x : FiveQuanta 𝓩) : FiveQuanta 𝓩 :=
   x.bind fun p => (decomposeFluxes p.2).map fun f => (p.1, f)
 
@@ -584,7 +579,7 @@ lemma decompose_add (x y : FiveQuanta 𝓩) :
 
 lemma decompose_filter_charge [DecidableEq 𝓩] (x : FiveQuanta 𝓩) (q : 𝓩) :
     (x.decompose).filter (fun p => p.1 = q) =
-    decompose (x.filter (fun p => p.1 = q)):= by
+    decompose (x.filter (fun p => p.1 = q)) := by
   rw [decompose]
   revert x
   apply Multiset.induction
@@ -633,7 +628,7 @@ lemma decompose_toChargeMap [DecidableEq 𝓩] (x : FiveQuanta 𝓩)
   intro a ha
   apply decomposeFluxes_sum_of_noExotics
   use x.toFluxesFive
-  simp_all  [toFluxesFive]
+  simp_all [toFluxesFive]
   use a.1
   exact ha.1
 
@@ -644,7 +639,7 @@ lemma decompose_toChargeMap [DecidableEq 𝓩] (x : FiveQuanta 𝓩)
 -/
 
 lemma decompose_toCharges_dedup [DecidableEq 𝓩] (x : FiveQuanta 𝓩)
-   (hx : x.toFluxesFive ∈ FluxesFive.elemsNoExotics):
+    (hx : x.toFluxesFive ∈ FluxesFive.elemsNoExotics) :
     x.decompose.toCharges.dedup = x.toCharges.dedup := by
   refine Multiset.dedup_ext.mpr ?_
   intro q
@@ -691,7 +686,7 @@ lemma decompose_reduce (x : FiveQuanta 𝓩) [DecidableEq 𝓩]
 
 lemma decompose_toFluxesFive (x : FiveQuanta 𝓩)
     (hx : x.toFluxesFive ∈ FluxesFive.elemsNoExotics) :
-    x.decompose.toFluxesFive = {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩}  := by
+    x.decompose.toFluxesFive = {⟨1, -1⟩, ⟨1, -1⟩, ⟨1, -1⟩, ⟨0, 1⟩, ⟨0, 1⟩, ⟨0, 1⟩} := by
   rw [toFluxesFive, decompose]
   rw [Multiset.map_bind]
   simp
@@ -715,13 +710,14 @@ variable [DecidableEq 𝓩]
 
 /-!
 
-### D.1.
+### D.1. `liftCharge c`: multiset of five-quanta for a finite set of charges `c` with no exotics
+
+This is an efficent definition, we will later show that it gives the correct answer
 
 -/
 
 /-- Given a finite set of charges `c` the `FiveQuanta`
-  with fluxes `{(1, -1), (1, -1), (1, -1), (0, 1), (0, 1), (0, 1)}`
-  and finite set of charges equal to `c`. -/
+  which do not have exotics, duplicate charges or zero fluxes, which map down to `c`. -/
 def liftCharge (c : Finset 𝓩) : Multiset (FiveQuanta 𝓩) :=
   /- The multisets of cardinality 3 containing 3 elements of `c`. -/
   let S53 : Multiset (Multiset 𝓩) := toMultisetsThree c
@@ -732,6 +728,12 @@ def liftCharge (c : Finset 𝓩) : Multiset (FiveQuanta 𝓩) :=
   let Fp : Multiset (FiveQuanta 𝓩) :=
     S5p.map (fun y => y.1.map (fun z => (z, ⟨1, -1⟩)) + y.2.map (fun z => (z, ⟨0, 1⟩)))
   Fp.map reduce
+
+/-!
+
+### D.2. FiveQuanta in `liftCharge c` have a finite set of charges `c`
+
+-/
 
 lemma toCharges_toFinset_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
     (h : x ∈ liftCharge c) : x.toCharges.toFinset = c := by
@@ -754,12 +756,24 @@ lemma toCharges_toFinset_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta �
   · intro hr
     simpa using Multiset.mem_of_le hsum hr
 
+/-!
+
+### D.3. FiveQuanta in `liftCharge c` have no duplicate charges
+
+-/
+
 lemma toCharges_nodup_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
     (h : x ∈ liftCharge c) : x.toCharges.Nodup := by
   rw [liftCharge, Multiset.mem_map] at h
   obtain ⟨x, h, rfl⟩ := h
   rw [reduce_toCharges]
   exact Multiset.nodup_dedup x.toCharges
+
+/-!
+
+### D.3. Membership in `liftCharge c` iff is reduction of `FiveQuanta` with given fluxes
+
+-/
 
 lemma exists_toCharges_toFluxesFive_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
     (h : x ∈ liftCharge c) :
@@ -853,6 +867,11 @@ lemma mem_liftCharge_iff_exists (c : Finset 𝓩) {x : FiveQuanta 𝓩} :
   ⟨exists_toCharges_toFluxesFive_of_mem_liftCharge c,
     mem_liftCharge_of_exists_toCharges_toFluxesFive c⟩
 
+/-!
+
+### D.4. FiveQuanta in `liftCharge c` do not have zero fluxes
+
+-/
 
 lemma hasNoZero_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
     (h : x ∈ liftCharge c) : x.toFluxesFive.HasNoZero := by
@@ -863,6 +882,27 @@ lemma hasNoZero_of_mem_liftCharge (c : Finset 𝓩) {x : FiveQuanta 𝓩}
   rw [h2] at hx
   revert hx
   decide
+
+/-!
+
+### D.5. FiveQuanta in `liftCharge c` have no exotics
+
+-/
+
+lemma noExotics_of_mem_liftCharge (c : Finset 𝓩) (F : FiveQuanta 𝓩)
+    (h : F ∈ liftCharge c) :
+    F.toFluxesFive.NoExotics := by
+  rw [mem_liftCharge_iff_exists] at h
+  obtain ⟨x, rfl, h1, h2⟩ := h
+  apply reduce_noExotics_of_mem_elemsNoExotics
+  rw [h2]
+  decide
+
+/-!
+
+### D.6. Membership in `liftCharge c` iff have no exotics, no zero fluxes, and charges `c`
+
+-/
 
 lemma mem_liftCharge_of_mem_noExotics_hasNoZero (c : Finset 𝓩) {x : FiveQuanta 𝓩}
     (h1 : x.toFluxesFive.NoExotics) (h2 : x.toFluxesFive.HasNoZero)
@@ -884,15 +924,6 @@ lemma mem_liftCharge_of_mem_noExotics_hasNoZero (c : Finset 𝓩) {x : FiveQuant
         simp
     · rw [decompose_toFluxesFive x hf]
 
-lemma noExotics_of_mem_liftCharge (c : Finset 𝓩) (F : FiveQuanta 𝓩)
-    (h : F ∈ liftCharge c) :
-    F.toFluxesFive.NoExotics := by
-  rw [mem_liftCharge_iff_exists] at h
-  obtain ⟨x, rfl, h1, h2⟩ := h
-  apply reduce_noExotics_of_mem_elemsNoExotics
-  rw [h2]
-  decide
-
 lemma mem_liftCharge_iff (c : Finset 𝓩) (x : FiveQuanta 𝓩) :
     x ∈ liftCharge c ↔ x.toFluxesFive ∈ FluxesFive.elemsNoExotics
       ∧ x.toCharges.toFinset = c ∧ x.toCharges.Nodup := by
@@ -910,12 +941,12 @@ lemma mem_liftCharge_iff (c : Finset 𝓩) (x : FiveQuanta 𝓩) :
     exact mem_liftCharge_of_mem_noExotics_hasNoZero c h1.1 h1.2 h2 h3
 
 lemma map_liftCharge {𝓩 𝓩1 : Type}[DecidableEq 𝓩] [DecidableEq 𝓩1] [CommRing 𝓩] [CommRing 𝓩1]
-    (f : 𝓩 →+* 𝓩1) (c : Finset 𝓩) (F : FiveQuanta 𝓩) (h : F ∈ liftCharge c):
+    (f : 𝓩 →+* 𝓩1) (c : Finset 𝓩) (F : FiveQuanta 𝓩) (h : F ∈ liftCharge c) :
     FiveQuanta.reduce (F.map fun y => (f y.1, y.2)) ∈ liftCharge (c.image f) := by
   rw [mem_liftCharge_iff] at h ⊢
   refine ⟨?_, ?_, ?_⟩
   · apply reduce_mem_elemsNoExotics
-    simpa [toFluxesFive, Multiset.map_map]  using h.1
+    simpa [toFluxesFive, Multiset.map_map] using h.1
   · rw [reduce_toCharges]
     simp [← h.2.1, ← Multiset.toFinset_map, toCharges]
   · rw [reduce_toCharges]
@@ -923,16 +954,21 @@ lemma map_liftCharge {𝓩 𝓩1 : Type}[DecidableEq 𝓩] [DecidableEq 𝓩1] [
 
 end ofChargesExpand
 
-
 /-!
 
-## Anomaly cancellation
+## E. Anomaly cancellation coefficents
 
 -/
 
 section ACCs
 
 variable [CommRing 𝓩]
+
+/-!
+
+### E.1. Anomaly coefficents of a `FiveQuanta`
+
+-/
 
 /--
   The anomaly coefficent of a `FiveQuanta` is given by the pair of integers:
@@ -945,12 +981,24 @@ variable [CommRing 𝓩]
 def anomalyCoefficent (F : FiveQuanta 𝓩) : 𝓩 × 𝓩 :=
   ((F.map fun x => x.2.2 • x.1).sum, (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
+/-!
+
+### E.2. Anomaly coefficents under a map
+
+-/
+
 @[simp]
 lemma anomalyCoefficent_of_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (F : FiveQuanta 𝓩) :
     FiveQuanta.anomalyCoefficent (F.map fun y => (f y.1, y.2) : FiveQuanta 𝓩1) =
     (f.prodMap f) F.anomalyCoefficent := by
   simp [FiveQuanta.anomalyCoefficent, map_multiset_sum, Multiset.map_map]
+
+/-!
+
+### E.3. Anomaly coefficents is preserved under `reduce`.
+
+-/
 
 lemma anomalyCoefficent_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
     F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
@@ -970,8 +1018,6 @@ lemma anomalyCoefficent_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
         intros x y
         simp [add_mul] }
     simpa [f] using reduce_sum_eq_sum_toCharges F f
-
-
 
 end ACCs
 

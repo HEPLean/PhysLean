@@ -29,9 +29,14 @@ variable {I : CodimensionOneConfig}
   `Hu` particles (there values of `(M,N)` are not included as they are
   forced to be `(0, 1)` and `(0, -1)` respectively. -/
 structure Quanta (𝓩 : Type := ℤ) where
+  /-- The charge of the Hd matter field. -/
   qHd : Option 𝓩
+  /-- The negative charge of the Hu matter field.
+    In other words the charge of the Hu considered as a 5-bar field. -/
   qHu : Option 𝓩
+  /-- The quanta carried by the 5-bar matter fields. -/
   F : FiveQuanta 𝓩
+  /-- The quanta carried by the 10d matter fields. -/
   T : TenQuanta 𝓩
 
 namespace Quanta
@@ -48,8 +53,6 @@ lemma ext {𝓩 : Type} {x y : Quanta 𝓩} (h1 : x.qHd = y.qHd) (h2 : x.qHu = y
 
 instance [DecidableEq 𝓩] : DecidableEq (Quanta 𝓩) := fun x y =>
   decidable_of_iff (x.qHd = y.qHd ∧ x.qHu = y.qHu ∧ x.F = y.F ∧ x.T = y.T) Quanta.ext_iff.symm
-
-
 
 /-- The underlying `ChargeSpectrum` of a `Quanta`. -/
 def toCharges [DecidableEq 𝓩] (x : Quanta 𝓩) : ChargeSpectrum 𝓩 where

@@ -53,7 +53,8 @@ def toFluxesTen (x : TenQuanta 𝓩) : FluxesTen := x.map Prod.snd
 /-- The underlying Multiset charges from a `TenQuanta`. -/
 def toCharges (x : TenQuanta 𝓩) : Multiset 𝓩 := x.map Prod.fst
 
-
+/-- The map which takes a charge to the overall flux it
+  corresponds to in a `TenQuanta`. -/
 def toChargeMap [DecidableEq 𝓩] (x : TenQuanta 𝓩) : 𝓩 → Fluxes :=
   fun z => ((x.filter fun p => p.1 = z).map Prod.snd).sum
 
@@ -244,8 +245,6 @@ lemma reduce_eq_self_of_ofCharges_nodup (x : TenQuanta 𝓩) (h : x.toCharges.No
   · rintro ⟨rfl⟩
     simp_all
 
-
-
 lemma reduce_toChargeMap_eq (x : TenQuanta 𝓩) :
     x.reduce.toChargeMap = x.toChargeMap := by
   funext q
@@ -296,7 +295,7 @@ lemma reduce_numChiralU_of_mem_elemsNoExotics {F : TenQuanta 𝓩}
     (hx : F.toFluxesTen ∈ FluxesTen.elemsNoExotics) :
     F.reduce.toFluxesTen.numChiralU = 3 := by
   have hE : F.toFluxesTen.NoExotics := by
-    rw [← FluxesTen.noExotics_iff_mem_elemsNoExotics]  at hx
+    rw [← FluxesTen.noExotics_iff_mem_elemsNoExotics] at hx
     exact hx.1
   rw [← hE.2.2.1, FluxesTen.numChiralU, FluxesTen.numChiralU, FluxesTen.chiralIndicesOfU]
   trans (F.reduce.toFluxesTen.map (fun f => f.M - f.N)).sum
@@ -349,7 +348,7 @@ lemma reduce_numChiralQ_of_mem_elemsNoExotics {F : TenQuanta 𝓩}
     (hx : F.toFluxesTen ∈ FluxesTen.elemsNoExotics) :
     F.reduce.toFluxesTen.numChiralQ = 3 := by
   have hE : F.toFluxesTen.NoExotics := by
-    rw [← FluxesTen.noExotics_iff_mem_elemsNoExotics]  at hx
+    rw [← FluxesTen.noExotics_iff_mem_elemsNoExotics] at hx
     exact hx.1
   rw [← hE.1, FluxesTen.numChiralQ, FluxesTen.numChiralQ, FluxesTen.chiralIndicesOfQ]
   trans (F.reduce.toFluxesTen.map (fun f => f.M)).sum
@@ -398,12 +397,11 @@ lemma reduce_numAntiChiralQ_of_mem_elemsNoExotics {F : TenQuanta 𝓩}
   rw [hx]
   rfl
 
-
 lemma reduce_numChiralE_of_mem_elemsNoExotics {F : TenQuanta 𝓩}
     (hx : F.toFluxesTen ∈ FluxesTen.elemsNoExotics) :
     F.reduce.toFluxesTen.numChiralE = 3 := by
   have hE : F.toFluxesTen.NoExotics := by
-    rw [← FluxesTen.noExotics_iff_mem_elemsNoExotics]  at hx
+    rw [← FluxesTen.noExotics_iff_mem_elemsNoExotics] at hx
     exact hx.1
   rw [← hE.2.2.2.2.1, FluxesTen.numChiralE, FluxesTen.numChiralE, FluxesTen.chiralIndicesOfE]
   trans (F.reduce.toFluxesTen.map (fun f => f.M + f.N)).sum
@@ -460,8 +458,6 @@ lemma reduce_noExotics_of_mem_elemsNoExotics {F : TenQuanta 𝓩}
     reduce_numChiralE_of_mem_elemsNoExotics hx, reduce_numAntiChiralE_of_mem_elemsNoExotics hx]
   simp
 
-
-
 lemma reduce_mem_elemsNoExotics {F : TenQuanta 𝓩}
     (hx : F.toFluxesTen ∈ FluxesTen.elemsNoExotics) :
     F.reduce.toFluxesTen ∈ FluxesTen.elemsNoExotics := by
@@ -482,7 +478,7 @@ end reduce
 
 -/
 
-
+/-- The decomposition of a relevant flux into `⟨1, 0⟩`, `⟨1, 1⟩` and `⟨1, -1⟩` . -/
 def decomposeFluxes (f : Fluxes) : Multiset Fluxes :=
   if f = ⟨1, 0⟩ then {⟨1, 0⟩}
   else if f = ⟨1, 1⟩ then {⟨1, 1⟩}
@@ -500,6 +496,10 @@ lemma decomposeFluxes_sum_of_noExotics (f : Fluxes) (hf : ∃ F ∈ FluxesTen.el
   revert F
   decide
 
+/-- The decomposition of a `TenQuanta` into a `TenQuanta` which has the
+  same `reduce` by has fluxes `{⟨1, 0⟩, ⟨1, 0⟩, ⟨1, 0⟩}` or `{⟨1, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩}` only.
+
+  This only works for fluxes which have no exotics or zeros. -/
 def decompose (x : TenQuanta 𝓩) : TenQuanta 𝓩 :=
   x.bind fun p => (decomposeFluxes p.2).map fun f => (p.1, f)
 
@@ -507,10 +507,9 @@ lemma decompose_add (x y : TenQuanta 𝓩) :
     (x + y).decompose = x.decompose + y.decompose := by
   simp [decompose]
 
-
 lemma decompose_filter_charge [DecidableEq 𝓩] (x : TenQuanta 𝓩) (q : 𝓩) :
     (x.decompose).filter (fun p => p.1 = q) =
-    decompose (x.filter (fun p => p.1 = q)):= by
+    decompose (x.filter (fun p => p.1 = q)) := by
   rw [decompose]
   revert x
   apply Multiset.induction
@@ -526,7 +525,6 @@ lemma decompose_filter_charge [DecidableEq 𝓩] (x : TenQuanta 𝓩) (q : 𝓩)
     · subst h
       simp [decompose, decomposeFluxes]
     · simp [h, decompose]
-
 
 lemma decompose_toChargeMap [DecidableEq 𝓩] (x : TenQuanta 𝓩)
     (hx : x.toFluxesTen ∈ FluxesTen.elemsNoExotics) :
@@ -548,7 +546,7 @@ lemma decompose_toChargeMap [DecidableEq 𝓩] (x : TenQuanta 𝓩)
   exact ha.1
 
 lemma decompose_toCharges_dedup [DecidableEq 𝓩] (x : TenQuanta 𝓩)
-   (hx : x.toFluxesTen ∈ FluxesTen.elemsNoExotics):
+    (hx : x.toFluxesTen ∈ FluxesTen.elemsNoExotics) :
     x.decompose.toCharges.dedup = x.toCharges.dedup := by
   refine Multiset.dedup_ext.mpr ?_
   intro q
@@ -610,8 +608,8 @@ open SuperSymmetry.SU5.ChargeSpectrum
 variable [DecidableEq 𝓩]
 
 /-- Given a finite set of charges `c` the `TenQuanta`
-  with fluxes `{(1, 0), (1, 0), (1, 0)}` and `{(1, 1), (1, -1), (1, 0)}`
-  and finite set of charges equal to `c`. -/
+  which do not have exotics, duplicate charges or zero fluxes, which map down to `c`.
+  This is defined to be as efficent as possible. -/
 def liftCharge (c : Finset 𝓩) : Multiset (TenQuanta 𝓩) :=
   /- The {(1, 0), (1, 0), (1, 0)} case. -/
   /- The multisets of cardinality 3 containing 3 elements of `c`. -/
@@ -623,7 +621,6 @@ def liftCharge (c : Finset 𝓩) : Multiset (TenQuanta 𝓩) :=
     fun (x, y, z) => {(x, ⟨1, 1⟩), (y, ⟨1, -1⟩), (z, ⟨1, 0⟩)}).filter (fun s => c.val ≤ s.toCharges)
   /- All together-/
   (F1 + F2).map reduce
-
 
 lemma toCharge_toFinset_of_mem_liftCharge (c : Finset 𝓩)
     {x : TenQuanta 𝓩} (h : x ∈ liftCharge c) :
@@ -667,9 +664,9 @@ lemma toCharges_nodup_of_mem_liftCharge (c : Finset 𝓩) {x : TenQuanta 𝓩}
 
 lemma exists_toCharges_toFluxesTen_of_mem_liftCharge (c : Finset 𝓩)
     {x : TenQuanta 𝓩} (h : x ∈ liftCharge c) :
-    ∃ a : TenQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c  ∧
+    ∃ a : TenQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c ∧
     (a.toFluxesTen = {⟨1, 0⟩, ⟨1, 0⟩, ⟨1, 0⟩}
-    ∨ a.toFluxesTen = {⟨1, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩}):= by
+    ∨ a.toFluxesTen = {⟨1, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩}) := by
   have h' := h
   rw [liftCharge, Multiset.mem_map] at h
   obtain ⟨a, h, rfl⟩ := h
@@ -689,7 +686,7 @@ lemma exists_toCharges_toFluxesTen_of_mem_liftCharge (c : Finset 𝓩)
     simp [toFluxesTen]
 
 lemma mem_liftCharge_of_exists_toCharges_toFluxesTen (c : Finset 𝓩) {x : TenQuanta 𝓩}
-    (h :∃ a : TenQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c  ∧
+    (h :∃ a : TenQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c ∧
     (a.toFluxesTen = {⟨1, 0⟩, ⟨1, 0⟩, ⟨1, 0⟩}
     ∨ a.toFluxesTen = {⟨1, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩})) :
     x ∈ liftCharge c := by
@@ -779,13 +776,12 @@ lemma mem_liftCharge_of_exists_toCharges_toFluxesTen (c : Finset 𝓩) {x : TenQ
 
 lemma mem_liftCharge_iff_exists (c : Finset 𝓩) {x : TenQuanta 𝓩} :
     x ∈ liftCharge c ↔
-    ∃ a : TenQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c  ∧
+    ∃ a : TenQuanta 𝓩, a.reduce = x ∧ a.toCharges.toFinset = c ∧
     (a.toFluxesTen = {⟨1, 0⟩, ⟨1, 0⟩, ⟨1, 0⟩}
     ∨ a.toFluxesTen = {⟨1, 1⟩, ⟨1, -1⟩, ⟨1, 0⟩}) := by
   constructor
   · exact exists_toCharges_toFluxesTen_of_mem_liftCharge c
   · exact mem_liftCharge_of_exists_toCharges_toFluxesTen c
-
 
 lemma hasNoZero_of_mem_liftCharge (c : Finset 𝓩) {x : TenQuanta 𝓩}
     (h : x ∈ liftCharge c) : x.toFluxesTen.HasNoZero := by
@@ -847,20 +843,18 @@ lemma mem_liftCharge_iff (c : Finset 𝓩) (x : TenQuanta 𝓩) :
     exact mem_liftCharge_of_mem_noExotics_hasNoZero c h1.1 h1.2 h2 h3
 
 lemma map_liftCharge {𝓩 𝓩1 : Type}[DecidableEq 𝓩] [DecidableEq 𝓩1] [CommRing 𝓩] [CommRing 𝓩1]
-    (f : 𝓩 →+* 𝓩1) (c : Finset 𝓩) (F : TenQuanta 𝓩) (h : F ∈ liftCharge c):
+    (f : 𝓩 →+* 𝓩1) (c : Finset 𝓩) (F : TenQuanta 𝓩) (h : F ∈ liftCharge c) :
     TenQuanta.reduce (F.map fun y => (f y.1, y.2)) ∈ liftCharge (c.image f) := by
   rw [mem_liftCharge_iff] at h ⊢
   refine ⟨?_, ?_, ?_⟩
   · apply reduce_mem_elemsNoExotics
-    simpa [toFluxesTen, Multiset.map_map]  using h.1
+    simpa [toFluxesTen, Multiset.map_map] using h.1
   · rw [reduce_toCharges]
     simp [← h.2.1, ← Multiset.toFinset_map, toCharges]
   · rw [reduce_toCharges]
     exact Multiset.nodup_dedup (toCharges (Multiset.map (fun y => (f y.1, y.2)) F))
 
-
 end toChargesExpand
-
 
 /-!
 

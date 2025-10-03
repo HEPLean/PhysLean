@@ -396,7 +396,7 @@ lemma mem_viableCharges_iff {I} {x : ChargeSpectrum}
 
 lemma mem_viableCharges_iff' {I} {x : ChargeSpectrum} :
     x ∈ viableCharges I ↔
-     x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges ∧
+    x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges ∧
     AllowsTerm x topYukawa ∧
     ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1 ∧ IsComplete x := by
   constructor
@@ -408,7 +408,6 @@ lemma mem_viableCharges_iff' {I} {x : ChargeSpectrum} :
   · rintro ⟨h1, h⟩
     rw [mem_viableCharges_iff h1]
     exact h
-
 
 end ChargeSpectrum
 

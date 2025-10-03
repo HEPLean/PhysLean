@@ -53,9 +53,6 @@ def IsViable (x : Quanta) : Prop :=
   /- 3. Conditions on the combination of the charges on the flux. -/
   AnomalyCancellation x.qHd x.qHu x.F x.T
 
-
-
-
 lemma isViable_iff_charges_mem_viableCharges (x : Quanta) :
     IsViable x ↔
         /- 1. Conditions just on the charges. -/
@@ -100,14 +97,13 @@ lemma isViable_iff_filter (x : Quanta) :
 -/
 
 /-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViable`. -/
-def viableElems :  Multiset Quanta :=
+def viableElems : Multiset Quanta :=
   {⟨some 2, some (-2), {(-1, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
     ⟨some 2, some (-2), {(-1, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
     ⟨some (-2), some 2, {(-1, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
     ⟨some (-2), some 2, {(-1, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
     ⟨some 6, some (-14), {(-9, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
     ⟨some 6, some (-14), {(-9, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩}
-
 
 lemma isViable_of_mem_viableElems (x : Quanta) (h : x ∈ viableElems) :
     IsViable x := by
