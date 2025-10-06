@@ -10,7 +10,6 @@ import Mathlib.Algebra.BigOperators.Group.List.Basic
 
 # Allowed charges
 
-
 ## i. Overview
 
 Within SU(5) F-theory with 10d and 5-bar matter fields there are constraints on the

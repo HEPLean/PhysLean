@@ -351,7 +351,6 @@ lemma reduce_eq_self_of_ofCharges_nodup (x : TenQuanta 𝓩) (h : x.toCharges.No
   · rintro ⟨rfl⟩
     simp_all
 
-
 /-!
 
 ### B.8. The charge map is preserved by reduction
@@ -457,7 +456,6 @@ lemma reduce_numChiralU_of_mem_elemsNoExotics {F : TenQuanta 𝓩}
     generalize F.toFluxesTen = G at *
     revert G
     decide
-
 
 /-!
 
@@ -653,7 +651,6 @@ end reduce
 ## C. Decomposition of a `TenQuanta` into basic fluxes
 
 -/
-
 
 /-!
 
