@@ -75,10 +75,11 @@ they can be derived from other data structures.
 ## iii. Table of contents
 
 - A. Fluxes
-  - A.1. Extensionality lemma for the fluxes
-  - A.2. The zero flux
-  - A.3. Addition of fluxes
-  - A.4. The instance of an additive commutative monoid on fluxes
+  - A.1. Repr instance on `Fluxes`
+  - A.2. Extensionality lemma for the fluxes
+  - A.3. The zero flux
+  - A.4. Addition of fluxes
+  - A.5. The instance of an additive commutative monoid on fluxes
 - B. Fluxes of the 5d matter representation
   - B.1. Deciability instance on `FluxesFive`
   - B.2. The proposition for no element to be zero
@@ -138,13 +139,22 @@ structure Fluxes where
   M : ℤ
   /-- The hypercharge flux. -/
   N : ℤ
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 namespace Fluxes
 
 /-!
 
-### A.1. Extensionality lemma for the fluxes
+### A.1. Repr instance on `Fluxes`
+
+-/
+
+instance : Repr Fluxes where
+  reprPrec x _ := "⟨" ++ repr x.M ++ ", " ++ repr x.N ++ "⟩"
+
+/-!
+
+### A.2. Extensionality lemma for the fluxes
 
 -/
 
@@ -155,7 +165,7 @@ instance : Zero Fluxes := ⟨0, 0⟩
 
 /-!
 
-### A.2. The zero flux
+### A.3. The zero flux
 
 -/
 
@@ -167,7 +177,7 @@ lemma zero_N : (0 : Fluxes).N = 0 := rfl
 
 /-!
 
-### A.3. Addition of fluxes
+### A.4. Addition of fluxes
 
 -/
 
@@ -182,7 +192,7 @@ lemma add_N (f1 f2 : Fluxes) : (f1 + f2).N = f1.N + f2.N := rfl
 
 /-!
 
-### A.4. The instance of an additive commutative monoid on fluxes
+### A.5. The instance of an additive commutative monoid on fluxes
 
 -/
 

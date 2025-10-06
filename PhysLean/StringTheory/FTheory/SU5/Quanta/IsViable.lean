@@ -17,13 +17,8 @@ We say a term of a type `Quanta` is viable
 - It leads to a top Yukawa coupling.
 - It does not lead to a pheno constraining terms.
 - It does not lead to a dangerous Yukawa coupling at one insertion of the Yukawa singlets.
-- It satisfies anomaly cancellation.
+- It satisfies linear anomaly cancellation.
 - The charges are allowed by an `I` configuration.
-
-This somes with one caveat, the `IsViable` constraint enforces the anomaly
-  cancellation condition:
-`∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0`
-to hold, which is not always necessary, see arXiv:1401.5084.
 
 We also write down the explicit set of viable quanta, and prove that this set is complete.
 
@@ -44,6 +39,7 @@ We also write down the explicit set of viable quanta, and prove that this set is
   - B.1. Every element of the multiset is viable
   - B.2. A quanta is viable if and only if it is in the multiset
   - B.3. Every element of the multiset regenerates Yukawa at two insertions of the Yukawa singlets
+  - B.4. Those quanta which satisfy the quartic anomaly cancellation condition
 
 ## iv. References
 
@@ -83,7 +79,7 @@ def IsViable (x : Quanta) : Prop :=
   x.T.toFluxesTen.NoExotics ∧
   x.T.toFluxesTen.HasNoZero ∧
   /- 3. Conditions on the combination of the charges on the flux. -/
-  AnomalyCancellation x.qHd x.qHu x.F x.T
+  x.LinearAnomalyCancellation
 
 /-!
 
@@ -103,7 +99,7 @@ lemma isViable_iff_charges_mem_viableCharges (x : Quanta) :
         x.T.toFluxesTen.NoExotics ∧
         x.T.toFluxesTen.HasNoZero ∧
         /- 3. Conditions on the fluxes and the charges. -/
-        AnomalyCancellation x.qHd x.qHu x.F x.T := by
+        x.LinearAnomalyCancellation := by
   rw [IsViable]
   conv_rhs =>
     enter [1, 1, I]
@@ -119,7 +115,7 @@ lemma isViable_iff_charges_mem_viableCharges (x : Quanta) :
 lemma isViable_iff_charges_mem_viableCharges_mem_liftCharges (x : Quanta) :
     IsViable x ↔ (∃ I, x.toCharges ∈ viableCharges I) ∧
       x ∈ Quanta.liftCharge x.toCharges ∧
-      AnomalyCancellation x.qHd x.qHu x.F x.T := by
+      x.LinearAnomalyCancellation := by
   rw [Quanta.mem_liftCharge_iff]
   simp [toCharges_qHd, toCharges_qHu]
   rw [FiveQuanta.mem_liftCharge_iff, TenQuanta.mem_liftCharge_iff]
@@ -136,7 +132,7 @@ lemma isViable_iff_charges_mem_viableCharges_mem_liftCharges (x : Quanta) :
 lemma isViable_iff_filter (x : Quanta) :
     IsViable x ↔ (∃ I, x.toCharges ∈ (viableCharges I).filter IsAnomalyFree) ∧
       x ∈ Quanta.liftCharge x.toCharges
-      ∧ AnomalyCancellation x.qHd x.qHu x.F x.T := by
+      ∧ x.LinearAnomalyCancellation := by
   rw [isViable_iff_charges_mem_viableCharges_mem_liftCharges]
   simp [IsAnomalyFree]
   aesop
@@ -145,16 +141,54 @@ lemma isViable_iff_filter (x : Quanta) :
 
 ## B. The multiset of viable quanta
 
+We find all the viable quanta. This can be evalluated with
+
+```
+  ((((viableCharges .same ∪ viableCharges .nearestNeighbor ∪
+  viableCharges .nextToNearestNeighbor).filter IsAnomalyFree).bind
+    Quanta.liftCharge).filter LinearAnomalyCancellation)
+```
+
 -/
 
 /-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViable`. -/
 def viableElems : Multiset Quanta :=
-  {⟨some 2, some (-2), {(-1, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
-    ⟨some 2, some (-2), {(-1, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
-    ⟨some (-2), some 2, {(-1, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
-    ⟨some (-2), some 2, {(-1, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
-    ⟨some 6, some (-14), {(-9, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
-    ⟨some 6, some (-14), {(-9, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩}
+  {⟨some 2, some (-2), {(-1, ⟨3, -2⟩), (-3, ⟨0, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some (-2), {(-1, ⟨3, -2⟩), (-3, ⟨0, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some (-2), {(-1, ⟨2, -2⟩), (-3, ⟨1, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some (-2), {(-1, ⟨2, -2⟩), (-3, ⟨1, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some (-2), {(1, ⟨3, -2⟩), (-1, ⟨0, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some (-2), {(1, ⟨3, -2⟩), (-1, ⟨0, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some (-2), {(1, ⟨2, -2⟩), (-1, ⟨1, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some (-2), {(1, ⟨2, -2⟩), (-1, ⟨1, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(-1, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(-1, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(-1, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(-1, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(1, ⟨3, -2⟩), (3, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(1, ⟨3, -2⟩), (3, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(1, ⟨2, -2⟩), (3, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-2), some 2, {(1, ⟨2, -2⟩), (3, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+  ⟨some (-4), some (-14), {(11, ⟨3, -2⟩), (6, ⟨0, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some (-4), some (-14), {(11, ⟨3, -2⟩), (6, ⟨0, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some (-4), some (-14), {(11, ⟨2, -2⟩), (6, ⟨1, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some (-4), some (-14), {(11, ⟨2, -2⟩), (6, ⟨1, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(1, ⟨3, -2⟩), (-9, ⟨0, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(1, ⟨3, -2⟩), (-9, ⟨0, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(1, ⟨2, -2⟩), (-9, ⟨1, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(1, ⟨2, -2⟩), (-9, ⟨1, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(11, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(11, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(11, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some 6, some (-14), {(11, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+  ⟨some (-14), some 6, {(1, ⟨3, -2⟩), (11, ⟨0, 2⟩)}, {(3, ⟨3, 0⟩)}⟩,
+  ⟨some (-14), some 6, {(1, ⟨3, -2⟩), (11, ⟨0, 2⟩)}, {(3, ⟨3, 0⟩)}⟩,
+  ⟨some (-14), some 6, {(1, ⟨2, -2⟩), (11, ⟨1, 2⟩)}, {(3, ⟨3, 0⟩)}⟩,
+  ⟨some (-14), some 6, {(1, ⟨2, -2⟩), (11, ⟨1, 2⟩)}, {(3, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some 12, {(-13, ⟨3, -2⟩), (-8, ⟨0, 2⟩)}, {(6, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some 12, {(-13, ⟨3, -2⟩), (-8, ⟨0, 2⟩)}, {(6, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some 12, {(-13, ⟨2, -2⟩), (-8, ⟨1, 2⟩)}, {(6, ⟨3, 0⟩)}⟩,
+  ⟨some 2, some 12, {(-13, ⟨2, -2⟩), (-8, ⟨1, 2⟩)}, {(6, ⟨3, 0⟩)}⟩}
 
 /-!
 
@@ -173,6 +207,7 @@ lemma isViable_of_mem_viableElems (x : Quanta) (h : x ∈ viableElems) :
 ### B.2. A quanta is viable if and only if it is in the multiset
 
 -/
+
 lemma isViable_iff_mem_viableElems (x : Quanta) :
     x.IsViable ↔ x ∈ viableElems := by
   constructor
@@ -199,6 +234,24 @@ lemma isViable_iff_mem_viableElems (x : Quanta) :
 lemma yukawaSingletsRegenerateDangerousInsertion_two_of_isViable
     (x : Quanta) (h : IsViable x) :
     (toCharges x).YukawaGeneratesDangerousAtLevel 2 := by
+  rw [isViable_iff_mem_viableElems] at h
+  revert x
+  decide
+
+/-!
+
+### B.4. Those quanta which satisfy the quartic anomaly cancellation condition
+
+-/
+
+lemma quarticAnomalyCancellation_iff_mem_of_isViable (x : Quanta) (h : IsViable x) :
+    x.QuarticAnomalyCancellation ↔ x ∈
+    ({⟨some 2, some (-2), {(-1, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+    ⟨some 2, some (-2), {(-1, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
+    ⟨some (-2), some 2, {(-1, ⟨2, -2⟩), (1, ⟨1, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+    ⟨some (-2), some 2, {(-1, ⟨3, -2⟩), (1, ⟨0, 2⟩)}, {(1, ⟨3, 0⟩)}⟩,
+    ⟨some 6, some (-14), {(-9, ⟨1, 2⟩), (1, ⟨2, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩,
+    ⟨some 6, some (-14), {(-9, ⟨0, 2⟩), (1, ⟨3, -2⟩)}, {(-7, ⟨3, 0⟩)}⟩} : Finset Quanta) := by
   rw [isViable_iff_mem_viableElems] at h
   revert x
   decide

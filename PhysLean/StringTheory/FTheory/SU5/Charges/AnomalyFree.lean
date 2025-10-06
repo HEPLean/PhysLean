@@ -60,7 +60,7 @@ variable {𝓩 : Type}
 /-- The condition on a collection of charges `c` that it extends to an anomaly free `Quanta`.
   That anomaly free `Quanta` is not tracked by this proposition. -/
 def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : ChargeSpectrum 𝓩) : Prop :=
-  ∃ x ∈ Quanta.liftCharge c, Quanta.AnomalyCancellation x.qHd x.qHu x.F x.T
+  ∃ x ∈ Quanta.liftCharge c, x.LinearAnomalyCancellation
 
 /-!
 
@@ -92,20 +92,13 @@ lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : ChargeSpectrum 𝓩}
   constructor
   · rw [Quanta.mem_liftCharge_iff] at ⊢ h1
     simp [Quanta.reduce, QM] at ⊢ h1
-    refine ⟨?_, ?_, ?_, ?_⟩
+    refine ⟨?_, ?_, FiveQuanta.map_liftCharge _ _ _ h1.2.2.1,
+      TenQuanta.map_liftCharge _ _ _ h1.2.2.2⟩
     · simp [ChargeSpectrum.map, h1.1]
     · simp [ChargeSpectrum.map, h1.2]
-    · exact FiveQuanta.map_liftCharge _ _ _ h1.2.2.1
-    · exact TenQuanta.map_liftCharge _ _ _ h1.2.2.2
-  · simp at h2
-    simp only [Quanta.AnomalyCancellation, Quanta.reduce, FiveQuanta.anomalyCoefficent_of_reduce,
-      FiveQuanta.anomalyCoefficent_of_map, RingHom.coe_prodMap,
-      TenQuanta.anomalyCoefficent_of_reduce, TenQuanta.anomalyCoefficent_of_map, QM]
-    trans (f.prodMap f) ((Quanta.HdAnomalyCoefficent qHd) +
-      (Quanta.HuAnomalyCoefficent qHu) + F5.anomalyCoefficent + F10.anomalyCoefficent)
-    · simp [map_add]
-    rw [h2]
-    exact map_zero _
+  · rw [Quanta.LinearAnomalyCancellation] at h2
+    simp [QM, ← map_add, h2, Quanta.reduce, Quanta.LinearAnomalyCancellation,
+      FiveQuanta.anomalyCoefficent_of_reduce, TenQuanta.anomalyCoefficent_of_reduce]
 
 end map
 
@@ -120,9 +113,15 @@ set_option maxRecDepth 2000 in
 lemma viable_anomalyFree (I : CodimensionOneConfig) :
     (viableCharges I).filter IsAnomalyFree =
     (match I with
-    | .same => {⟨some 2, some (-2), {-1, 1}, {-1}⟩, ⟨some (-2), some 2, {-1, 1}, {1}⟩}
-    | .nearestNeighbor => {⟨some 6, some (-14), {-9, 1}, {-7}⟩}
-    | .nextToNearestNeighbor => ∅) := by
+    | .same => {⟨some 2, some (-2), {-3, -1}, {-1}⟩,
+      ⟨some 2, some (-2), {-1, 1}, {-1}⟩,
+      ⟨some (-2), some 2, {-1, 1}, {1}⟩,
+      ⟨some (-2), some 2, {1, 3}, {1}⟩}
+    | .nearestNeighbor => {⟨some (-4), some (-14), {6, 11}, {-7}⟩,
+      ⟨some 6, some (-14), {-9, 1}, {-7}⟩,
+      ⟨some 6, some (-14), {1, 11}, {-7}⟩,
+      ⟨some (-14), some 6, {1, 11}, {3}⟩}
+    | .nextToNearestNeighbor => {⟨some 2, some 12, {-13, -8}, {6}⟩}) := by
   revert I
   decide
 

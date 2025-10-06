@@ -29,9 +29,10 @@ properties thereof.
 ## iii. Table of contents
 
 - A. The Quanta structure
-  - A.1. Extensionality lemma
-  - A.2. Decidable equality instance
-  - A.3. Map to the underlying `ChargeSpectrum`
+  - A.1. Repr instance on `Quanta`
+  - A.2. Extensionality lemma
+  - A.3. Decidable equality instance
+  - A.4. Map to the underlying `ChargeSpectrum`
 - B. The reduction of a `Quanta`
 - C. Lifiting a charge spectrum to quanta with no exotics or zero fluxes
   - C.1. Simplification of membership in the liftCharge multiset
@@ -39,13 +40,12 @@ properties thereof.
 - D. Anomaly cancellation conditions
   - D.1. The anomaly coefficent of Hd
   - D.2. The anomaly coefficent of Hu
-  - D.3. The anomaly cancellation condition proposition
-    - D.3.1. The proposition is decidable
-    - D.3.2. The quartic anomaly cancellation condition
+  - D.3. The anomaly cancellation condition propositions
+    - D.3.1. The propositions are decidable
 
 ## iv. References
 
-A reference for the anomaly cancellation conditions is arXiv:1401.5084.
+A reference for the anomaly cancellation conditions is arXiv:1401.5084 equation 22.
 
 -/
 namespace FTheory
@@ -84,7 +84,21 @@ variable {𝓩 : Type}
 
 /-!
 
-### A.1. Extensionality lemma
+### A.1. Repr instance on `Quanta`
+
+-/
+
+unsafe instance [Repr 𝓩] : Repr (Quanta 𝓩) where
+  reprPrec x _ := "⟨" ++
+    repr x.qHd ++ ", " ++
+    repr x.qHu ++ ", " ++
+    repr x.F ++ ", " ++
+    repr x.T ++
+    "⟩"
+
+/-!
+
+### A.2. Extensionality lemma
 
 -/
 
@@ -96,7 +110,7 @@ lemma ext {𝓩 : Type} {x y : Quanta 𝓩} (h1 : x.qHd = y.qHd) (h2 : x.qHu = y
 
 /-!
 
-### A.2. Decidable equality instance
+### A.3. Decidable equality instance
 
 -/
 
@@ -105,7 +119,7 @@ instance [DecidableEq 𝓩] : DecidableEq (Quanta 𝓩) := fun x y =>
 
 /-!
 
-### A.3. Map to the underlying `ChargeSpectrum`
+### A.4. Map to the underlying `ChargeSpectrum`
 
 -/
 /-- The underlying `ChargeSpectrum` of a `Quanta`. -/
@@ -247,47 +261,39 @@ lemma HuAnomalyCoefficent_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩
 
 /-!
 
-### D.3. The anomaly cancellation condition proposition
+### D.3. The anomaly cancellation condition propositions
 
 -/
 
-/-- The anomaly cancellation conditions on quanta making up the fields present in
-  the theory. This corresponds to the conditions that:
+/-- The linear anomaly cancellation condition, corresponding to
+`∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar represenations and the second
+  is over all 10d representations. -/
+def LinearAnomalyCancellation [CommRing 𝓩] (Q : Quanta 𝓩) : Prop :=
+  (HdAnomalyCoefficent Q.qHd).1 + (HuAnomalyCoefficent Q.qHu).1 + Q.F.anomalyCoefficent.1 +
+  Q.T.anomalyCoefficent.1 = 0
 
-- `∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar represenations and the second
-  is over all 10d representations.
-- `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar represenations and the
+/-- The quartic anomaly cancellation condition, corresponding to
+`∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar represenations and the
   second is over all 10d representations.
 -/
-def AnomalyCancellation [CommRing 𝓩] (qHd qHu : Option 𝓩) (F : FiveQuanta 𝓩) (T : TenQuanta 𝓩) :
+def QuarticAnomalyCancellation [CommRing 𝓩] (Q : Quanta 𝓩) :
     Prop :=
-  HdAnomalyCoefficent qHd + HuAnomalyCoefficent qHu + F.anomalyCoefficent +
-    T.anomalyCoefficent = (0, 0)
+  (HdAnomalyCoefficent Q.qHd).2 + (HuAnomalyCoefficent Q.qHu).2 + Q.F.anomalyCoefficent.2 +
+    Q.T.anomalyCoefficent.2 = 0
 
 /-!
 
-#### D.3.1. The proposition is decidable
+#### D.3.1. The propositions are decidable
 
 -/
 
-instance {qHd qHu F T} [CommRing 𝓩] [DecidableEq 𝓩] :
-    Decidable (AnomalyCancellation (𝓩 := 𝓩) qHd qHu F T) :=
-  inferInstanceAs (Decidable ((HdAnomalyCoefficent qHd + HuAnomalyCoefficent qHu
-    + F.anomalyCoefficent + T.anomalyCoefficent) = (0, 0)))
+instance [CommRing 𝓩] [DecidableEq 𝓩] (Q : Quanta 𝓩) : Decidable Q.LinearAnomalyCancellation :=
+    inferInstanceAs (Decidable ((HdAnomalyCoefficent Q.qHd).1 +
+    (HuAnomalyCoefficent Q.qHu).1 + Q.F.anomalyCoefficent.1 + Q.T.anomalyCoefficent.1 = 0))
 
-/-!
-
-#### D.3.2. The quartic anomaly cancellation condition
-
--/
-
-lemma anomalyCoefficent_snd_eq_zero_of_anomalyCancellation [CommRing 𝓩]
-    {qHd qHu : Option 𝓩} {F : FiveQuanta 𝓩} {T : TenQuanta 𝓩}
-    (h : AnomalyCancellation qHd qHu F T) :
-    ((HdAnomalyCoefficent qHd).2 + (HuAnomalyCoefficent qHu).2
-    + (F.anomalyCoefficent).2 + (T.anomalyCoefficent).2) = 0 := by
-  simp only [← Prod.snd_add]
-  rw [h]
+instance [CommRing 𝓩] [DecidableEq 𝓩] (Q : Quanta 𝓩) : Decidable Q.QuarticAnomalyCancellation :=
+    inferInstanceAs (Decidable ((HdAnomalyCoefficent Q.qHd).2 +
+    (HuAnomalyCoefficent Q.qHu).2 + Q.F.anomalyCoefficent.2 + Q.T.anomalyCoefficent.2 = 0))
 
 end Quanta
 
