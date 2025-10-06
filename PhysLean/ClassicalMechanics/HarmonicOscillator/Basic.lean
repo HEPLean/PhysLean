@@ -46,17 +46,17 @@ In the `Solution` module:
   - C.4. Time derivatives of the energies
 - D. Lagrangian and the equation of motion
   - D.1. The Lagrangian
-    - D.1.1.
-    - D.1.2.
-    - D.1.3.
+    - D.1.1. Equalitites for the lagrangian
+    - D.1.2. Smoothness of the lagrangian
+    - D.1.3. Gradients of the lagrangian
   - D.2. The Euler-Lagrange operator
-    - D.2.1.
-    - D.2.2.
+    - D.2.1. Equality for the Euler-Lagrange operator
+    - D.2.2. Euler lagrange oeprator and variational derivative of the action
   - D.3. The equation of motion
-    - D.3.1.
+    - D.3.1. Equation of motion if and only if Euler-Lagrange operator is zero
 - E. Newton's second law
   - E.1. The force
-    - E.1.1.
+    - E.1.1. The force is equal to `- k x`
   - E.2. Euler-Lagrange operator and force
   - E.3. Equation of motion if and only if Newton's second law
 - F. Energy conservation
@@ -64,11 +64,11 @@ In the `Solution` module:
   - F.2. Energy conservation in terms of constant energy
 - G. Hamiltonian formulation
   - G.1. The canonical momentum
-    - G.1.1.
+    - G.1.1. Equality for the canonical momentum
   - G.2. The Hamiltonian
-    - G.2.1.
-    - G.2.2.
-    - G.2.3.
+    - G.2.1. Equality for the Hamiltonian
+    - G.2.2. Smoothness of the Hamiltonian
+    - G.2.3. Gradients of the Hamiltonian
   - G.3. Relation between Hamiltonian and energy
   - G.4. Hamilton equation operator
   - G.5. Equation of motion if and only if Hamilton's equations
@@ -327,7 +327,7 @@ noncomputable def lagrangian (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (F
 
 /-!
 
-#### D.1.1.
+#### D.1.1. Equalitites for the lagrangian
 
 Equalitites for the lagrangian. We prove some simple equalities for the lagrangian,
 in particular that when applied to a trajectory it is the kinetic energy minus the potential energy.
@@ -350,7 +350,7 @@ lemma lagrangian_eq_kineticEnergy_sub_potentialEnergy (t : Time) (xₜ : Time �
 
 /-!
 
-#### D.1.2.
+#### D.1.2. Smoothness of the lagrangian
 
 The lagrangian is smooth in all its arguments.
 
@@ -363,7 +363,7 @@ lemma contDiff_lagrangian (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.lagrangian 
 
 /-!
 
-#### D.1.3.
+#### D.1.3. Gradients of the lagrangian
 
 We now show results related to the gradients of the lagrangian with respect to the
 position and velocity.
@@ -428,7 +428,7 @@ noncomputable def eulerLagrangeOp (xₜ : Time → Space 1) : Time → Space 1 :
 
 /-!
 
-#### D.2.1.
+#### D.2.1. Equality for the Euler-Lagrange operator
 
 Basic equaltities for the Euler-Lagrange operator.
 
@@ -441,7 +441,7 @@ lemma eulerLagrangeOp_eq (xₜ : Time → Space 1) :
 
 /-!
 
-#### D.2.2.
+#### D.2.2. Euler lagrange oeprator and variational derivative of the action
 
 Relation of the Euler-Lagrange operator to variational derivative of the action.
 
@@ -466,7 +466,7 @@ def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
 
 /-!
 
-#### D.3.1.
+#### D.3.1. Equation of motion if and only if Euler-Lagrange operator is zero
 
 We write a simple iff statment for the definition of the equation of motions.
 
@@ -500,7 +500,7 @@ noncomputable def force (S : HarmonicOscillator) (x : Space 1) : EuclideanSpace 
 
 /-!
 
-#### E.1.1.
+#### E.1.1. The force is equal to `- k x`
 
 We now show that the force is equal to `- k x`.
 
@@ -662,7 +662,7 @@ noncomputable def toCanonicalMomentum (t : Time) (x : Space 1) :
 
 /-!
 
-#### G.1.1.
+#### G.1.1. Equality for the canonical momentum
 
 An simple equality for the canonical momentum.
 
@@ -690,7 +690,7 @@ noncomputable def hamiltonian (t : Time) (p : EuclideanSpace ℝ (Fin 1)) (x : S
 
 /-!
 
-#### G.2.1.
+#### G.2.1. Equality for the Hamiltonian
 
 We prove a simple equality for the Hamiltonian, to help in computations.
 
@@ -707,7 +707,7 @@ lemma hamiltonian_eq :
 
 /-!
 
-#### G.2.2.
+#### G.2.2. Smoothness of the Hamiltonian
 
 We show that the Hamiltonian is smooth in all its arguments.
 
@@ -720,7 +720,7 @@ lemma hamiltonian_contDiff (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.hamiltonia
 
 /-!
 
-#### G.2.3.
+#### G.2.3. Gradients of the Hamiltonian
 
 We now write down the graidents of the Hamiltonian with respect to the momentum and position.
 

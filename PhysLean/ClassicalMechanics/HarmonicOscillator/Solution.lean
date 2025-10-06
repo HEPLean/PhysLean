@@ -29,13 +29,13 @@ prove that they satisfy the equation of motion, and prove some properties of the
 
 - A. The initial conditions
   - A.1. Definition of the initial conditions
-    - A.1.1.
+    - A.1.1. Extensionality lemma
   - A.2. Relation to other types of initial conditions
   - A.3. The zero initial conditions
-    - A.3.1.
+    - A.3.1. Simple results for the zero initial conditions
 - B. Trajectories associated with the initial conditions
   - B.1. The trajectory associated with the initial conditions
-    - B.1.1.
+    - B.1.1. Definitional equality for the trajectory
   - B.2. The trajectory for zero initial conditions
   - B.3. Smoothness of the trajectories
   - B.4. Velocity of the trajectories
@@ -91,7 +91,7 @@ structure InitialConditions where
 
 /-!
 
-#### A.1.1.
+#### A.1.1. Extensionality lemma
 
 We prove an extensionality lemma for `InitialConditions`.
 That is, a lemma which states that two initial conditions are equal if their
@@ -142,7 +142,7 @@ instance : Zero InitialConditions := ⟨0, 0⟩
 
 /-!
 
-#### A.3.1.
+#### A.3.1. Simple results for the zero initial conditions
 
 Some simple results about the zero initial conditions.
 
@@ -182,7 +182,7 @@ noncomputable def trajectory (IC : InitialConditions) : Time → Space 1 := fun 
 
 /-!
 
-#### B.1.1.
+#### B.1.1. Definitional equality for the trajectory
 
 We show a basic definitional equality for the trajectory.
 

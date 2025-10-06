@@ -43,7 +43,7 @@ Related to these are the different types of spaces of charges:
   - A.1. A constructor for `ACCSystemCharges`
 - B. The module of charges
   - B.1. The `ℚ`-module structure on the type `Charges`
-  - B.2. The finitness of the `ℚ`-module structure on `Charges`.
+  - B.2. The finitness of the `ℚ`-module structure on `Charges`
 - C. The linear anomaly cancellation conditions
 - D. The module of solutions to the linear ACCs
   - D.1. Extensionality of solutions to the linear ACCs
@@ -159,7 +159,7 @@ instance ChargesAddCommGroup (χ : ACCSystemCharges) : AddCommGroup χ.Charges :
 
 /-!
 
-### B.2. The finitness of the `ℚ`-module structure on `Charges`.
+### B.2. The finitness of the `ℚ`-module structure on `Charges`
 
 The type `χ.Charges` is a finite module.
 

@@ -7,16 +7,39 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoClosed
 import PhysLean.StringTheory.FTheory.SU5.Charges.OfRationalSection
 /-!
 
-Note this file takes a long time to compile.
-
 # Charges which are not pheno-constrained and do not regenerate dangerous couplings with Yukawas
 
-In this module we give a multiset of `ℤ`-valued charges which have values allowed
-by a `CodimensionOneConfig`, `I`, which permit a top Yukawa coupling,
-are not phenomenologically constrained, and do not regenerate dangerous couplings
-with one insertion of a Yuakawa coupling.
+## i. Overview
 
-## Key results
+WARNING: This file can take a long time to compute.
+
+In this module, given a configuration of the sections in codimension one
+fiber `CodimensionOneConfig`, we find the multiset of all
+`ℤ`-valued charges which have values allowed by the configuration,
+permit a top Yukawa coupling, are not phenomenologically constrained,
+and do not regenerate dangerous couplings with one insertion of a Yuakawa coupling.
+
+The multiset of charge spectrum is called `viableCharges`.
+The main proof that `viableCharges` contains all such charges is
+using `completeness_of_isPhenoClosedQ5_isPhenoClosedQ10`.
+Note this proof relies on us stating `viableCharges` and then verifying
+that it has the required properties.
+
+To make our lives easier, we first construct a multiset of charge spectrum called
+`viableCompletions` which contains all completions of charges which minimally allow the top Yukawa,
+which are not phenomenologically constrained, and do not regenerate dangerous couplings.
+Again the proof that `viableCompletions` has these properties is done by
+first stating `viableCompletions` and then verifying that it has the required properties,
+primarily using `ContainsPhenoCompletionsOfMinimallyAllows`.
+
+We also define `viableChargesAdditional` which are the multiset of charge spectrum
+which are in `viableCharges` but not in `viableCompletions`. This helps split some of the
+proofs.
+
+Note that this file is slow to run, any improvements to the speed of this file
+will be very welcome. In particular working out a way to restrict by anomaly cancellation.
+
+## ii. Key results
 
 - `viableCharges` contains all charges, for a given `CodimensionOneConfig`, `I`,
   which permit a top Yukawa coupling, are not phenomenologically constrained,
@@ -32,10 +55,40 @@ with one insertion of a Yuakawa coupling.
   contains all completions of charges which minimally allow the top Yukawa,
   which are not phenomenologically constrained, and do not regenerate dangerous couplings.
 
-## Implementation details
+## iii. Table of contents
 
-- Note that this file is slow to run, any improvements to the speed of this file
-  will be very welcome. In particular working out a way to restrict by anomaly cancellation.
+- A. Viable completions of charges permitting a top Yukawa coupling
+  - A.1. Stating the multiset `viableCompletions`
+  - A.2. Cardinality of `viableCompletions`
+  - A.3. No duplicates of `viableCompletions`
+  - A.4. Elements of `viableCompletions` are not pheno-constrained
+  - A.5. Elements of `viableCompletions` do not regenerate dangerous couplings
+  - A.6. `viableCompletions` contain all pheno-viable completions of top-yukawa permitting
+- B. The multiset of additional viable charges
+  - B.1. Stating the multiset `viableChargesAdditional`
+  - B.2. `viableChargesAdditional` has no duplicates
+  - B.3. Elements of `viableChargesAdditional` are not pheno-constrained
+  - B.4. Elements of `viableChargesAdditional` do not regenerate dangerous couplings
+  - B.5. `viableChargesAdditional` is disjoint from `viableCompletions`
+- C. The multiset of all viable charges given a configuration of sections
+  - C.1. Stating the multiset `viableCharges`
+  - C.2. `viableCharges` has no duplicates
+  - C.3. Cardinality of `viableCharges`
+  - C.4. Elements of `viableCharges` have charges allowed by configuration
+  - C.5. Elements of `viableCharges` are complete
+  - C.6. Elements of `viableCharges` permit a top Yukawa coupling
+  - C.7. Elements of `viableCharges` are not pheno-constrained
+  - C.8. Elements of `viableCharges` do not regenerate dangerous couplings
+  - C.9. Elements of `viableCharges` have at most two 5-bar reps
+  - C.10. Elements of `viableCharges` have at most two 10d reps
+  - C.11. `viableCharges` is phenomenologically closed under adding 5-bar charges
+  - C.12. `viableCharges` is phenomenologically closed under adding 10d charges
+  - C.13. `viableCompletions` is a subset of `viableCharges`
+  - C.14. `viableCharges` contains all pheno-viable charges given a section configuration
+
+## iv. References
+
+There are no known references for the material in this section.
 
 -/
 namespace FTheory
@@ -51,7 +104,13 @@ open PhysLean
 
 /-!
 
-## Viable completions
+## A. Viable completions of charges permitting a top Yukawa coupling
+
+-/
+
+/-!
+
+### A.1. Stating the multiset `viableCompletions`
 
 -/
 
@@ -61,7 +120,7 @@ The multiset of charges which are completions of charges which minimally allow t
 
 This can be constructed via
 
-#eval completeMinSubset same.allowedBarFiveCharges same.allowedTenCharges
+`#eval completeMinSubset same.allowedBarFiveCharges same.allowedTenCharges`
 -/
 private def viableCompletions (I : CodimensionOneConfig) : Multiset (ChargeSpectrum ℤ) :=
   match I with
@@ -165,22 +224,52 @@ private def viableCompletions (I : CodimensionOneConfig) : Multiset (ChargeSpect
     ⟨some 2, some 12, {7}, {6}⟩, ⟨some 7, some 12, {-13}, {6}⟩,
     ⟨some 7, some 12, {-8}, {6}⟩, ⟨some 7, some 12, {2}, {6}⟩}
 
+/-!
+
+### A.2. Cardinality of `viableCompletions`
+
+-/
+
 lemma viableCompletions_card (I : CodimensionOneConfig) :
     (viableCompletions I).card = if I = same then 70 else
       if I = nearestNeighbor then 48 else 37 := by
   cases I <;> rfl
 
+/-!
+
+### A.3. No duplicates of `viableCompletions`
+
+-/
+
 lemma viableCompletions_nodup (I : CodimensionOneConfig) :
     (viableCompletions I).Nodup := by
   cases I <;> decide +kernel
+
+/-!
+
+### A.4. Elements of `viableCompletions` are not pheno-constrained
+
+-/
 
 lemma viableCompletions_isPhenoConstrained (I : CodimensionOneConfig) :
     ∀ x ∈ viableCompletions I, ¬ IsPhenoConstrained x := by
   cases I <;> decide +kernel
 
+/-!
+
+### A.5. Elements of `viableCompletions` do not regenerate dangerous couplings
+
+-/
+
 lemma viableCompletions_yukawaGeneratesDangerousAtLevel_one (I : CodimensionOneConfig) :
     ∀ x ∈ viableCompletions I, ¬ YukawaGeneratesDangerousAtLevel x 1 := by
   cases I <;> decide +kernel
+
+/-!
+
+### A.6. `viableCompletions` contain all pheno-viable completions of top-yukawa permitting
+
+-/
 
 lemma containsPhenoCompletionsOfMinimallyAllows_viableCompletions :
     (I : CodimensionOneConfig) →
@@ -190,7 +279,13 @@ lemma containsPhenoCompletionsOfMinimallyAllows_viableCompletions :
 
 /-!
 
-## The multisets of viable charges.
+## B. The multiset of additional viable charges
+
+-/
+
+/-!
+
+### B.1. Stating the multiset `viableChargesAdditional`
 
 -/
 
@@ -199,7 +294,7 @@ lemma containsPhenoCompletionsOfMinimallyAllows_viableCompletions :
   and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
 
   These can be found with e.g.
-  #eval (viableChargesMultiset same.allowedBarFiveCharges same.allowedTenCharges).toFinset \
+  - #eval (viableChargesMultiset same.allowedBarFiveCharges same.allowedTenCharges).toFinset \
     (completeMinSubset same.allowedBarFiveCharges
       same.allowedTenCharges).toFinset
 -/
@@ -243,24 +338,60 @@ def viableChargesAdditional : CodimensionOneConfig → Multiset (ChargeSpectrum 
       ⟨some (-8), some 12, {2, 7}, {6}⟩, ⟨some 2, some 12, {-13, -8}, {6}⟩,
       ⟨some 2, some 12, {-8, 7}, {6}⟩, ⟨some 7, some 12, {-13, 2}, {6}⟩}
 
+/-!
+
+### B.2. `viableChargesAdditional` has no duplicates
+
+-/
+
 lemma viableChargesAdditional_nodup (I : CodimensionOneConfig) :
     (viableChargesAdditional I).Nodup := by
   cases I <;> decide +kernel
 
+/-!
+
+### B.3. Elements of `viableChargesAdditional` are not pheno-constrained
+
+-/
+
 lemma not_isPhenoConstrained_of_mem_viableChargesAdditional (I : CodimensionOneConfig) :
     ∀ x ∈ (viableChargesAdditional I), ¬ IsPhenoConstrained x := by
   cases I <;> decide +kernel
+
+/-!
+
+### B.4. Elements of `viableChargesAdditional` do not regenerate dangerous couplings
+
+-/
 
 lemma yukawaGeneratesDangerousAtLevel_one_of_mem_viableChargesAdditional
     (I : CodimensionOneConfig) :
     ∀ x ∈ (viableChargesAdditional I), ¬ YukawaGeneratesDangerousAtLevel x 1 := by
   cases I <;> decide +kernel
 
+/-!
+
+### B.5. `viableChargesAdditional` is disjoint from `viableCompletions`
+
+-/
+
 lemma viableCompletions_disjiont_viableChargesAdditional (I : CodimensionOneConfig) :
     Disjoint (viableCompletions I) (viableChargesAdditional I) := by
   refine Multiset.inter_eq_zero_iff_disjoint.mp ?_
   cases I
   <;> decide +kernel
+
+/-!
+
+## C. The multiset of all viable charges given a configuration of sections
+
+-/
+
+/-!
+
+### C.1. Stating the multiset `viableCharges`
+
+-/
 
 /-- All charges, for a given `CodimensionOneConfig`, `I`,
   which permit a top Yukawa coupling, are not phenomenologically constrained,
@@ -273,7 +404,7 @@ def viableCharges (I : CodimensionOneConfig) : Multiset (ChargeSpectrum ℤ) :=
 
 /-!
 
-## Basic properties
+### C.2. `viableCharges` has no duplicates
 
 -/
 
@@ -281,11 +412,23 @@ lemma viableCharges_nodup (I : CodimensionOneConfig) :
     (viableCharges I).Nodup := (Multiset.Nodup.add_iff (viableCompletions_nodup I)
     (viableChargesAdditional_nodup I)).mpr (viableCompletions_disjiont_viableChargesAdditional I)
 
+/-!
+
+### C.3. Cardinality of `viableCharges`
+
+-/
+
 lemma viableCharges_card (I : CodimensionOneConfig) :
     (viableCharges I).card =
     if I = .same then 102 else
     if I = .nearestNeighbor then 71 else 51 := by
   decide +revert
+
+/-!
+
+### C.4. Elements of `viableCharges` have charges allowed by configuration
+
+-/
 
 lemma viableCharges_mem_ofFinset (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I), x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges := by
@@ -293,15 +436,32 @@ lemma viableCharges_mem_ofFinset (I : CodimensionOneConfig) :
   simp [mem_ofFinset_iff]
   decide +kernel
 
+/-!
+
+### C.5. Elements of `viableCharges` are complete
+
+-/
 lemma isComplete_of_mem_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I), IsComplete x := by
   revert I
   decide
 
+/-!
+
+### C.6. Elements of `viableCharges` permit a top Yukawa coupling
+
+-/
+
 lemma allowsTerm_topYukawa_of_mem_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I), x.AllowsTerm topYukawa := by
   revert I
   decide
+
+/-!
+
+### C.7. Elements of `viableCharges` are not pheno-constrained
+
+-/
 
 lemma not_isPhenoConstrained_of_mem_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I), ¬ IsPhenoConstrained x := by
@@ -311,6 +471,12 @@ lemma not_isPhenoConstrained_of_mem_viableCharges (I : CodimensionOneConfig) :
   rcases hs with hs | hs
   · exact viableCompletions_isPhenoConstrained I x hs
   · exact not_isPhenoConstrained_of_mem_viableChargesAdditional I x hs
+
+/-!
+
+### C.8. Elements of `viableCharges` do not regenerate dangerous couplings
+
+-/
 
 lemma not_yukawaGeneratesDangerousAtLevel_one_of_mem_viableCharges
     (I : CodimensionOneConfig) :
@@ -322,10 +488,22 @@ lemma not_yukawaGeneratesDangerousAtLevel_one_of_mem_viableCharges
   · exact viableCompletions_yukawaGeneratesDangerousAtLevel_one I x hs
   · exact yukawaGeneratesDangerousAtLevel_one_of_mem_viableChargesAdditional I x hs
 
+/-!
+
+### C.9. Elements of `viableCharges` have at most two 5-bar reps
+
+-/
+
 lemma card_five_bar_le_of_mem_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I), x.Q5.card ≤ 2 := by
   revert I
   decide
+
+/-!
+
+### C.10. Elements of `viableCharges` have at most two 10d reps
+
+-/
 
 lemma card_ten_le_of_mem_viableCharges (I : CodimensionOneConfig) :
     ∀ x ∈ (viableCharges I), x.Q10.card ≤ 2 := by
@@ -334,7 +512,7 @@ lemma card_ten_le_of_mem_viableCharges (I : CodimensionOneConfig) :
 
 /-!
 
-## Closed under inserting charges
+### C.11. `viableCharges` is phenomenologically closed under adding 5-bar charges
 
 We now show that adding a Q5 or a Q10 charge to an element of `viableCharges I` leads to a
 charge which is either not phenomenologically constrained, or does not regenerate dangerous
@@ -353,6 +531,12 @@ lemma isPhenoClosedQ5_viableCharges : (I : CodimensionOneConfig) →
   revert I
   decide +kernel
 
+/-!
+
+### C.12. `viableCharges` is phenomenologically closed under adding 10d charges
+
+-/
+
 /-- Inserting a `q10` charge into an element of `viableCharges I` either
 1. produces another element of `viableCharges I`, or
 2. produce a charge which is phenomenolically constrained or regenerates dangourous couplings
@@ -366,7 +550,7 @@ lemma isPhenoClosedQ10_viableCharges : (I : CodimensionOneConfig) →
 
 /-!
 
-## Proof of completeness.
+### C.13. `viableCompletions` is a subset of `viableCharges`
 
 -/
 
@@ -377,6 +561,12 @@ lemma viableCompletions_subset_viableCharges (I : CodimensionOneConfig) :
   simp only [Multiset.mem_add]
   left
   exact hx
+
+/-!
+
+### C.14. `viableCharges` contains all pheno-viable charges given a section configuration
+
+-/
 
 lemma mem_viableCharges_iff {I} {x : ChargeSpectrum}
     (hsub : x ∈ ofFinset I.allowedBarFiveCharges I.allowedTenCharges) :

@@ -9,11 +9,34 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Map
 
 # Anomaly cancellation
 
-In this module we define the proposition `IsAnomalyFree` on charges, which states
-that the charges can be extended to quanta which are anomaly free.
+## i. Overview
 
-We give the viable charges which are anomaly free for each of the three codimension one
-configurations. This is in the lemma `viable_anomalyFree`.
+In this module we do two things. The first is to define a proposition `IsAnomalyFree`
+on a `ChargeSpectrum` which states that the charge spectrum can be lifted
+to an anomaly-free `Quanta` with fluxes which do not have exotics.
+
+We then find all the viable charges given a configuration of the sections in codimension one
+fiber `CodimensionOneConfig` that can be lifted to an anomaly-free `Quanta` with fluxes
+which do not have exotics.
+
+## ii. Key results
+
+- `IsAnomalyFree` : The proposition on a `ChargeSpectrum` that it can be lifted to an
+  anomaly-free `Quanta` with fluxes which do not have exotics.
+- `viable_anomalyFree` : The viable charges given a configuration of the sections
+  in codimension one fiber `CodimensionOneConfig` which can be lifted to an anomaly-free
+  `Quanta` with fluxes which do not have exotics.
+
+## iii. Table of contents
+
+- A. Charge spectrum which lift to anomaly free quanta
+  - A.1. Decidability of the proposition
+  - A.2. The proposition is preserved under mappings of charge spectra
+- B. The viable charges which lift to anomaly free quanta
+
+## iv. References
+
+There are no known references for the material in this section.
 
 -/
 namespace FTheory
@@ -25,12 +48,11 @@ open SuperSymmetry.SU5
 open SuperSymmetry.SU5.ChargeSpectrum
 open PotentialTerm
 open CodimensionOneConfig
-open Tree
 open PhysLean
 
 /-!
 
-## Anomaly coefficents of charges
+## A. Charge spectrum which lift to anomaly free quanta
 
 -/
 
@@ -40,12 +62,18 @@ variable {𝓩 : Type}
 def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : ChargeSpectrum 𝓩) : Prop :=
   ∃ x ∈ Quanta.liftCharge c, Quanta.AnomalyCancellation x.qHd x.qHu x.F x.T
 
+/-!
+
+### A.1. Decidability of the proposition
+
+-/
+
 instance [DecidableEq 𝓩] [CommRing 𝓩] {c : ChargeSpectrum 𝓩} : Decidable (IsAnomalyFree c) :=
   Multiset.decidableExistsMultiset
 
 /-!
 
-## The IsAnomalyFree condition under a map
+### A.2. The proposition is preserved under mappings of charge spectra
 
 -/
 
@@ -83,7 +111,7 @@ end map
 
 /-!
 
-## The viable charges which are anomaly free.
+## B. The viable charges which lift to anomaly free quanta
 
 -/
 

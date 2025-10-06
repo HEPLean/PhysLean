@@ -7,7 +7,7 @@ import PhysLean.Electromagnetism.Potential
 import PhysLean.SpaceAndTime.SpaceTime.Boosts
 /-!
 
-# The Lorentz action on the electric and magnetic fields.
+# The Lorentz action on the electric and magnetic fields
 
 ## i. Overview
 

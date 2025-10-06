@@ -72,7 +72,7 @@ properties thereof.
 - E. Anomaly cancellation coefficents
   - E.1. Anomaly coefficents of a `FiveQuanta`
   - E.2. Anomaly coefficents under a map
-  - E.3. Anomaly coefficents is preserved under `reduce`.
+  - E.3. Anomaly coefficents is preserved under `reduce`
 
 ## iv. References
 
@@ -1059,7 +1059,7 @@ lemma anomalyCoefficent_of_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing �
 
 /-!
 
-### E.3. Anomaly coefficents is preserved under `reduce`.
+### E.3. Anomaly coefficents is preserved under `reduce`
 
 -/
 

@@ -47,6 +47,7 @@ inductive Steps where
   | tableOfContentsHead
   | referencesHead
   | otherHeadings
+  | headingsNoFullStops
   | tableOfContentsCorrect
 deriving DecidableEq
 
@@ -57,12 +58,14 @@ def Steps.toString : Steps → String
   | .tableOfContentsHead => "Add a table of contents section '## iii. Table of contents' after the key results section. This can be filled in later."
   | .referencesHead => "Add a references section '## iv. References' after the table of contents section."
   | .otherHeadings => "Add other headings for sections and subsections using e.g. '## A.', '### A.1.', '#### A.1.2' etc."
+  | .headingsNoFullStops => "Ensure all headings do not end in a full stop."
   | .tableOfContentsCorrect => "Fix the table of contents to match the headings in the file."
 
 def Steps.anyTrue (e  : Steps → Bool × String) : Bool :=
   (e .titleHead).1 || (e .overviewHead).1 || (e .keyResultsHead).1 ||
   (e .tableOfContentsHead).1 || (e .referencesHead).1 ||
-  (e .otherHeadings).1 || (e .tableOfContentsCorrect).1
+  (e .otherHeadings).1 || (e .headingsNoFullStops).1 ||
+  (e .tableOfContentsCorrect).1
 
 def checkHeadings (f : FilePath) : IO (List DocLintError) := do
   let headings ← getHeaddings f
@@ -159,6 +162,14 @@ def checkHeadings (f : FilePath) : IO (List DocLintError) := do
     otherHeadingsError := otherHeadingsError ++ s!"\n Duplicate section tags found {dups}"
   if otherHeadingsError ≠ "" then
     errors := Function.update errors .otherHeadings (true, otherHeadingsError)
+  /- Step: headingsNoFullStops -/
+
+  let mut headingsNoFullStopsError := ""
+  let headingsWithFullStops := headings.filter (fun h ↦ h.trim.endsWith ".")
+  if headingsWithFullStops.size ≠ 0 then
+    headingsNoFullStopsError := s!"  Headings ending in a full stop found: {headingsWithFullStops}"
+  if headingsNoFullStopsError ≠ "" then
+    errors := Function.update errors .headingsNoFullStops (true, headingsNoFullStopsError)
   /- Table of contents check. -/
   let tocLines ← getTableOfContents f
   let mut tocCorrectError := ""
@@ -183,7 +194,7 @@ def checkHeadings (f : FilePath) : IO (List DocLintError) := do
     let mut errormsg := "\n"
     let mut n := (1 : ℕ)
     for e in  [Steps.titleHead, .overviewHead, .keyResultsHead, .tableOfContentsHead,
-      .referencesHead, .otherHeadings, .tableOfContentsCorrect] do
+      .referencesHead, .otherHeadings, .headingsNoFullStops, .tableOfContentsCorrect] do
       let (b, s) := errors e
 
       if b then
