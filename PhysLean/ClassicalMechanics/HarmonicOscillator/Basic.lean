@@ -49,15 +49,14 @@ In the `Solution` module:
     - D.1.1. Equalitites for the lagrangian
     - D.1.2. Smoothness of the lagrangian
     - D.1.3. Gradients of the lagrangian
-  - D.2. The Euler-Lagrange operator
-    - D.2.1. Equality for the Euler-Lagrange operator
-    - D.2.2. Euler lagrange oeprator and variational derivative of the action
+  - D.2. The variational derivative of the action
+    - D.2.1. Equality for the variational derivative
   - D.3. The equation of motion
-    - D.3.1. Equation of motion if and only if Euler-Lagrange operator is zero
+    - D.3.1. Equation of motion if and only if variational-gradient of Lagrangian is zero
 - E. Newton's second law
   - E.1. The force
     - E.1.1. The force is equal to `- k x`
-  - E.2. Euler-Lagrange operator and force
+  - E.2. Variational derivative of lagrangian and force
   - E.3. Equation of motion if and only if Newton's second law
 - F. Energy conservation
   - F.1. Energy conservation in terms of time derivatives
@@ -409,9 +408,9 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpa
 
 /-!
 
-### D.2. The Euler-Lagrange operator
+### D.2. The variational derivative of the action
 
-We now write down the Euler-Lagrange operator for the harmonic oscillator, for
+We now write down the varitional derivative for the harmonic oscillator, for
 a trajectory $x(t)$ this is equal to
 
 $$t\mapsto \left.\frac{\partial L(t, \dot x (t), q)}{\partial q}\right|_{q = x(t)} -
@@ -423,57 +422,45 @@ equation of motion.
 -/
 
 /-- The Euler-Lagrange operator for the classical harmonic osscilator. -/
-noncomputable def eulerLagrangeOp (xₜ : Time → Space 1) : Time → Space 1 :=
-  ClassicalMechanics.eulerLagrangeOp (lagrangian S) xₜ
+noncomputable def gradLagrangian (xₜ : Time → Space 1) : Time → Space 1 :=
+  (δ (q':=xₜ), ∫ t, lagrangian S t (q' t) (fderiv ℝ q' t 1))
 
 /-!
 
-#### D.2.1. Equality for the Euler-Lagrange operator
+#### D.2.1. Equality for the variational derivative
 
-Basic equaltities for the Euler-Lagrange operator.
-
--/
-
-lemma eulerLagrangeOp_eq (xₜ : Time → Space 1) :
-    eulerLagrangeOp S xₜ = fun t => gradient (S.lagrangian t · (∂ₜ xₜ t)) (xₜ t)
-    - ∂ₜ (fun t' => gradient (S.lagrangian t' (xₜ t') ·) (∂ₜ xₜ t')) t := by
-  rw [eulerLagrangeOp, ClassicalMechanics.eulerLagrangeOp_eq]
-
-/-!
-
-#### D.2.2. Euler lagrange oeprator and variational derivative of the action
-
-Relation of the Euler-Lagrange operator to variational derivative of the action.
+Basic equaltities for the variational derivative of the action.
 
 -/
 
-lemma variational_gradient_action (xₜ : Time → Space 1) (hq : ContDiff ℝ ∞ xₜ) :
-    (δ (q':=xₜ), ∫ t, lagrangian S t (q' t) (fderiv ℝ q' t 1)) = eulerLagrangeOp S xₜ :=
-  euler_lagrange_varGradient S.lagrangian xₜ hq (S.contDiff_lagrangian _)
+lemma gradLagrangian_eq_eulerLagrangeOp (xₜ : Time → Space 1) (hq : ContDiff ℝ ∞ xₜ) :
+    gradLagrangian S xₜ = eulerLagrangeOp S.lagrangian xₜ := by
+  rw [gradLagrangian,
+    ClassicalMechanics.euler_lagrange_varGradient _ _ hq (S.contDiff_lagrangian _)]
 
 /-!
 
 ### D.3. The equation of motion
 
 The equation of motion for the harmonic oscillator is given by setting the
-Euler-Lagrange operator equal to zero.
+varitaional derivative of the action equal to zero.
 
 -/
 
 /-- THe equation of motion for the Harmonic oscillator. -/
 def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
-  eulerLagrangeOp S xₜ = 0
+  S.gradLagrangian xₜ = 0
 
 /-!
 
-#### D.3.1. Equation of motion if and only if Euler-Lagrange operator is zero
+#### D.3.1. Equation of motion if and only if variational-gradient of Lagrangian is zero
 
 We write a simple iff statment for the definition of the equation of motions.
 
 -/
 
-lemma equationOfMotion_iff_eulerLagrangeOp (xₜ : Time → Space 1) :
-    S.EquationOfMotion xₜ ↔ eulerLagrangeOp S xₜ = 0 := by rfl
+lemma equationOfMotion_iff_gradLagrangian_zero (xₜ : Time → Space 1) :
+    S.EquationOfMotion xₜ ↔ S.gradLagrangian xₜ = 0 := by rfl
 
 /-!
 
@@ -521,18 +508,18 @@ lemma force_eq_linear (x : Space 1) : force S x = - S.k • x := by
 
 /-!
 
-### E.2. Euler-Lagrange operator and force
+### E.2. Variational derivative of lagrangian and force
 
-We relate the Euler-Lagrange operator to the force, and show the relation
+We relate the variational derivative of lagrangian to the force, and show the relation
 to Newton's second law.
 
 -/
 
 /-- The Euler lagrange operator corresponds to Newton's second law. -/
-lemma eulerLagrangeOp_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
-    eulerLagrangeOp S xₜ = fun t => force S (xₜ t) - S.m • ∂ₜ (∂ₜ xₜ) t := by
+lemma gradLagrangian_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+    S.gradLagrangian xₜ = fun t => force S (xₜ t) - S.m • ∂ₜ (∂ₜ xₜ) t := by
   funext t
-  rw [eulerLagrangeOp_eq]
+  rw [gradLagrangian_eq_eulerLagrangeOp S xₜ hx, eulerLagrangeOp]
   simp only
   congr
   · simp [lagrangian_eq]
@@ -567,7 +554,7 @@ We show that the equation of motion is equivalent to Newton's second law.
 lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
     S.EquationOfMotion xₜ ↔
     (∀ t, S.m • ∂ₜ (∂ₜ xₜ) t = force S (xₜ t)) := by
-  rw [EquationOfMotion, eulerLagrangeOp_eq_force S xₜ hx, funext_iff]
+  rw [EquationOfMotion, gradLagrangian_eq_force S xₜ hx, funext_iff]
   simp only [Pi.zero_apply]
   conv_lhs =>
     enter [x]
@@ -830,7 +817,7 @@ lemma equationOfMotion_tfae (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x�
   rw [← equationOfMotion_iff_hamiltonEqOp_eq_zero, ← equationOfMotion_iff_newtons_2nd_law]
   rw [hamiltons_equations_varGradient, euler_lagrange_varGradient]
   simp only [List.tfae_cons_self]
-  erw [← equationOfMotion_iff_eulerLagrangeOp]
+  rw [← gradLagrangian_eq_eulerLagrangeOp, ← equationOfMotion_iff_gradLagrangian_zero]
   simp only [List.tfae_cons_self]
   erw [← equationOfMotion_iff_hamiltonEqOp_eq_zero]
   simp only [List.tfae_cons_self, List.tfae_singleton]

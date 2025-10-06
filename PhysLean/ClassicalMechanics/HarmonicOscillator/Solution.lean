@@ -313,7 +313,7 @@ The trajectories satsify the equation of motion for the harmonic oscillator.
 
 lemma trajectory_equationOfMotion (IC : InitialConditions) :
     EquationOfMotion S (IC.trajectory S) := by
-  rw [EquationOfMotion, eulerLagrangeOp_eq_force]
+  rw [EquationOfMotion, gradLagrangian_eq_force]
   funext t
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]
