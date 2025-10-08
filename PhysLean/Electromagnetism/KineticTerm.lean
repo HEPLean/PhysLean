@@ -364,7 +364,9 @@ lemma gradKineticTerm_eq_sum_sum (A : ElectromagneticPotential) (x : SpaceTime)
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
     rw [← differentiable_pi]
     refine Differentiable.clm_apply ?_ ?_
-    · exact differentiable_fderiv _ (ContDiff.of_le ha ENat.LEInfty.out)
+    · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
+        (Preorder.le_refl 1)
+      exact ContDiff.of_le ha (right_eq_inf.mp rfl)
     · fun_prop
   rw [gradKineticTerm_eq_sum_fderiv A ha]
   calc _
@@ -453,7 +455,9 @@ lemma gradKineticTerm_eq_fieldStrength (A : ElectromagneticPotential)
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
     rw [← differentiable_pi]
     refine Differentiable.clm_apply ?_ ?_
-    · exact differentiable_fderiv _ (ContDiff.of_le ha ENat.LEInfty.out)
+    · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
+        (Preorder.le_refl 1)
+      exact ContDiff.of_le ha (right_eq_inf.mp rfl)
     · fun_prop
   calc _
       _ = ∑ (ν : (Fin 1 ⊕ Fin 3)), ∑ (μ : (Fin 1 ⊕ Fin 3)),
@@ -536,7 +540,9 @@ lemma gradKineticTerm_eq_electric_magnetic (A : ElectromagneticPotential)
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
     rw [← differentiable_pi]
     refine Differentiable.clm_apply ?_ ?_
-    · exact differentiable_fderiv _ (ContDiff.of_le ha ENat.LEInfty.out)
+    · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
+        (Preorder.le_refl 1)
+      exact ContDiff.of_le ha (right_eq_inf.mp rfl)
     · fun_prop
   have hdiff (μ ν) : Differentiable ℝ fun x => (A.fieldStrengthMatrix x) (μ, ν) := by
     conv => enter [2, x]; rw [toFieldStrength_basis_repr_apply_eq_single,

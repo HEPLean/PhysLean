@@ -548,7 +548,8 @@ lemma fieldStrengthMatrix_differentiable {A : ElectromagneticPotential}
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
     rw [← differentiable_pi]
     refine Differentiable.clm_apply ?_ ?_
-    · exact differentiable_fderiv _ (ContDiff.of_le hA (by simp))
+    · exact ((contDiff_succ_iff_fderiv (n := 1)).mp hA).2.2.differentiable
+        (Preorder.le_refl 1)
     · fun_prop
   conv => enter [2, x]; rw [toFieldStrength_basis_repr_apply_eq_single,
     SpaceTime.deriv_eq, SpaceTime.deriv_eq]

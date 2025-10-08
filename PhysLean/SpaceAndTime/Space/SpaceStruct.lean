@@ -6,14 +6,15 @@ Authors: Hou Run Feng, Joseph Tooby-Smith
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 /-!
 
-  # `SpaceStruct d`
+# `SpaceStruct d`
 
-  This is a work in progress reimplmentation of `Space d`
-  that abstracts over the underlying `EuclideanSpace`
+This is a work in progress reimplmentation of `Space d`
+that abstracts over the underlying `EuclideanSpace`
 
-  `Space d` is planned to be deprecated in favor of `SpaceStruct d`.
-  Once the necessary components are migrated to be compatible with `SpaceStruct`,
-  it will become the default implementation of `Space`
+`Space d` is planned to be deprecated in favor of `SpaceStruct d`.
+Once the necessary components are migrated to be compatible with `SpaceStruct`,
+it will become the default implementation of `Space`
+
 -/
 
 /--

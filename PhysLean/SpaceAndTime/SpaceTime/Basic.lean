@@ -7,13 +7,70 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 import PhysLean.SpaceAndTime.Space.Basic
 import PhysLean.SpaceAndTime.Time.Basic
 /-!
-# Space time
+# Spacetime
 
-This file introduce 4d Minkowski spacetime.
+## i. Overview
+
+In this file we define the type `SpaceTime d` which corresponds to `d+1` dimensional
+spacetime. This is equipped with an instance of the action of a Lorentz group,
+corresponding to Minkowski-spacetime.
+
+It is defined through `Lorentz.Vector d`, and carries the tensorial instance,
+allowing it to be used in tensorial expressions.
+
+## ii. Key results
+
+- `SpaceTime d` : The type corresponding to `d+1` dimensional spacetime.
+- `toTimeAndSpace` : A continuous linear equivalence between `SpaceTime d`
+  and `Time × Space d`.
+- `deriv` : The derivative of a function `SpaceTime d → M` along the `μ` coordinte.
+- `deriv_sum_inr` : The derivative along a spatial coordinate in terms of the
+  derivative on `Space d`.
+- `deriv_sum_inl` : The derivative along the temporal coordinate in terms of the
+  derivative on `Time`.
+- `innerProductSpace` : The Euclidean inner product structure on `SpaceTime d`.
+
+## iii. Table of contents
+
+- A. The definition of `SpaceTime d`
+- B. Maps to and from `Space` and `Time`
+  - B.1. Linear map to `Space d`
+    - B.1.1. Explicit expansion of map to space
+    - B.1.2. Equivariance of the to space under rotations
+  - B.2. Linear map to `Time`
+    - B.2.1. Explicit expansion of map to time in terms of coordinates
+  - B.3. `toTimeAndSpace`: Continuous linear equivalence to `Time × Space d`
+    - B.3.1. Derivative of `toTimeAndSpace`
+    - B.3.2. Derivative of the inverse of `toTimeAndSpace`
+    - B.3.3. `toTimeAndSpace` acting on spatial basis vectors
+    - B.3.4. `toTimeAndSpace` acting on the temperal basis vectors
+- C. Continous linear map to coordinates
+- D. Derivatives of functions on `SpaceTime d`
+  - D.1. The definition of the derivative
+  - D.2. Basic equality lemmas
+  - D.3. Derivative of the zero function
+  - D.4. The derivative of a function composed with a Lorentz transformation
+  - D.5. Spacetime derivatives in terms of time and space derivatives
+- E. Measures on `SpaceTime d`
+  - E.1. Instance of a measureable space
+  - E.2. Instance of a borel space
+  - E.3. Definition of an inner product space structure on `SpaceTime d`
+  - E.4. Instance of a measure space
+  - E.5. Volume measure is positive on non-empty open sets
+  - E.6. Volume measure is a finite measure on compact sets
+  - E.7. Volume measure is an additive Haar measure
+
+## iv. References
 
 -/
 
 noncomputable section
+
+/-!
+
+## A. The definition of `SpaceTime d`
+
+-/
 
 TODO "6V2DR" "SpaceTime should be refactored into a structure, or similar, to prevent casting."
 
@@ -32,7 +89,13 @@ open TensorSpecies
 
 /-!
 
-## To space and time
+## B. Maps to and from `Space` and `Time`
+
+-/
+
+/-!
+
+### B.1. Linear map to `Space d`
 
 -/
 
@@ -46,11 +109,23 @@ def space {d : ℕ} : SpaceTime d →ₗ[ℝ] Space d where
     ext i
     simp [Lorentz.Vector.spatialPart]
 
+/-!
+
+#### B.1.1. Explicit expansion of map to space
+
+-/
+
 @[simp]
 lemma space_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
     space f = fun i => f (Sum.inr i) := by
   funext i
   simp [space, Lorentz.Vector.spatialPart]
+
+/-!
+
+#### B.1.2. Equivariance of the to space under rotations
+
+-/
 
 open realLorentzTensor
 open Tensor
@@ -59,6 +134,12 @@ open Tensor
 informal_lemma space_equivariant where
   deps := [``space]
   tag := "7MTYX"
+
+/-!
+
+### B.2. Linear map to `Time`
+
+-/
 
 /-- The time part of spacetime. -/
 def time {d : ℕ} : SpaceTime d →ₗ[ℝ] Time where
@@ -70,10 +151,22 @@ def time {d : ℕ} : SpaceTime d →ₗ[ℝ] Time where
     ext
     simp [Lorentz.Vector.timeComponent]
 
+/-!
+
+#### B.2.1. Explicit expansion of map to time in terms of coordinates
+
+-/
+
 @[simp]
 lemma time_val_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
     (time f).val = f (Sum.inl 0) := by
   simp [time, Lorentz.Vector.timeComponent]
+
+/-!
+
+### B.3. `toTimeAndSpace`: Continuous linear equivalence to `Time × Space d`
+
+-/
 
 /-- A continuous linear equivalence between `SpaceTime d` and
   `Time × Space d`. -/
@@ -104,16 +197,33 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       simp
   }
 
+/-!
+
+#### B.3.1. Derivative of `toTimeAndSpace`
+
+-/
+
 @[simp]
 lemma toTimeAndSpace_fderiv {d : ℕ} (x : SpaceTime d) :
     fderiv ℝ toTimeAndSpace x = toTimeAndSpace.toContinuousLinearMap := by
   rw [ContinuousLinearEquiv.fderiv]
+
+/-!
+
+#### B.3.2. Derivative of the inverse of `toTimeAndSpace`
+
+-/
 
 @[simp]
 lemma toTimeAndSpace_symm_fderiv {d : ℕ} (x : Time × Space d) :
     fderiv ℝ toTimeAndSpace.symm x = toTimeAndSpace.symm.toContinuousLinearMap := by
   rw [ContinuousLinearEquiv.fderiv]
 
+/-!
+
+#### B.3.3. `toTimeAndSpace` acting on spatial basis vectors
+
+-/
 lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
     toTimeAndSpace (Lorentz.Vector.basis (Sum.inr i))
     = (0, Space.basis i) := by
@@ -124,6 +234,12 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
   · simp
   funext j
   simp [Space.basis_apply]
+
+/-!
+
+#### B.3.4. `toTimeAndSpace` acting on the temperal basis vectors
+
+-/
 
 lemma toTimeAndSpace_basis_inl {d : ℕ} :
     toTimeAndSpace (d := d) (Lorentz.Vector.basis (Sum.inl 0)) = (1, 0) := by
@@ -137,7 +253,7 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
 
 /-!
 
-## Coordinates
+## C. Continous linear map to coordinates
 
 -/
 
@@ -161,7 +277,13 @@ lemma coord_apply {d : ℕ} (μ : Fin (1 + d)) (y : SpaceTime d) :
 
 /-!
 
-## Derivatives
+## D. Derivatives of functions on `SpaceTime d`
+
+-/
+
+/-!
+
+### D.1. The definition of the derivative
 
 -/
 
@@ -172,6 +294,12 @@ noncomputable def deriv {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalS
 
 @[inherit_doc deriv]
 scoped notation "∂_" => deriv
+
+/-!
+
+### D.2. Basic equality lemmas
+
+-/
 
 variable {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
 lemma deriv_eq {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) (y : SpaceTime d) :
@@ -188,6 +316,12 @@ lemma deriv_apply_eq {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) (f : SpaceTime d → Lo
   rfl
   fun_prop
 
+/-!
+
+### D.3. Derivative of the zero function
+
+-/
+
 @[simp]
 lemma deriv_zero {d : ℕ} (μ : Fin 1 ⊕ Fin d) : SpaceTime.deriv μ (fun _ => (0 : ℝ)) = 0 := by
   ext y
@@ -195,6 +329,12 @@ lemma deriv_zero {d : ℕ} (μ : Fin 1 ⊕ Fin d) : SpaceTime.deriv μ (fun _ =>
   simp
 
 attribute [-simp] Fintype.sum_sum_type
+
+/-!
+
+### D.4. The derivative of a function composed with a Lorentz transformation
+
+-/
 
 lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ}
     (μ : Fin 1 ⊕ Fin d)
@@ -214,7 +354,7 @@ lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace �
 
 /-!
 
-## Derivatives
+### D.5. Spacetime derivatives in terms of time and space derivatives
 
 -/
 
@@ -269,28 +409,70 @@ lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M]
 
 /-!
 
-## Measure space on SpaceTime
+## E. Measures on `SpaceTime d`
 
 -/
 open MeasureTheory
 
+/-!
+
+### E.1. Instance of a measureable space
+
+-/
+
 instance : MeasurableSpace SpaceTime := borel SpaceTime
+
+/-!
+
+### E.2. Instance of a borel space
+
+-/
 
 instance : BorelSpace SpaceTime where
   measurable_eq := by rfl
+
+/-!
+
+### E.3. Definition of an inner product space structure on `SpaceTime d`
+
+-/
 
 /-- The Euclidean inner product structure on `SpaceTime`. -/
 def innerProductSpace (d : ℕ) : InnerProductSpace ℝ (SpaceTime d) :=
   inferInstanceAs (InnerProductSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
+/-!
+
+### E.4. Instance of a measure space
+
+-/
+
 instance : MeasureSpace SpaceTime where
   volume := Lorentz.Vector.basis.addHaar
+
+/-!
+
+### E.5. Volume measure is positive on non-empty open sets
+
+-/
 
 instance : (volume (α := SpaceTime)).IsOpenPosMeasure :=
   inferInstanceAs ((Lorentz.Vector.basis.addHaar).IsOpenPosMeasure)
 
+/-!
+
+### E.6. Volume measure is a finite measure on compact sets
+
+-/
+
 instance : IsFiniteMeasureOnCompacts (volume (α := SpaceTime)) :=
   inferInstanceAs (IsFiniteMeasureOnCompacts (Lorentz.Vector.basis.addHaar))
+
+/-!
+
+### E.7. Volume measure is an additive Haar measure
+
+-/
 
 instance : Measure.IsAddHaarMeasure (volume (α := SpaceTime)) :=
   inferInstanceAs (Measure.IsAddHaarMeasure (Lorentz.Vector.basis.addHaar))
