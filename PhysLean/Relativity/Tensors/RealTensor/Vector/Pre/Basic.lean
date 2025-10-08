@@ -102,6 +102,9 @@ lemma coBasisFin_toFin1dℝ {d : ℕ} (i : Fin (1 + d)) :
     (coBasisFin d i).toFin1dℝ = Pi.single (finSumFinEquiv.symm i) 1 := by
   simp only [coBasisFin, Basis.reindex_apply, coBasis_toFin1dℝ]
 
+lemma coBasisFin_repr_apply {d : ℕ} (p : Co d) (i : Fin (1 + d)) :
+    (coBasisFin d).repr p i = p.val (finSumFinEquiv.symm i) := by rfl
+
 open CategoryTheory.MonoidalCategory
 
 /-!

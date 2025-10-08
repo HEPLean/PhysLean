@@ -441,6 +441,11 @@ lemma drop_actionP {n : ℕ} {c : Fin (n + 1) → C} {i : Fin (n + 1)} {p : Pure
 
 end Pure
 
+/-!
+
+## The action on tensors
+
+-/
 noncomputable instance actionT : MulAction G (S.Tensor c) where
   smul g t := (S.F.obj (OverColor.mk c)).ρ g t
   one_smul t := by
@@ -460,7 +465,6 @@ lemma actionT_pure {g : G} {p : Pure S c} :
   rw [lift.toRep_ρ_tprod]
   rfl
 
-@[simp]
 lemma actionT_add {g : G} {t1 t2 : S.Tensor c} :
     g • (t1 + t2) = g • t1 + g • t2 := by
   rw [actionT_eq, actionT_eq, actionT_eq]
@@ -472,9 +476,14 @@ lemma actionT_smul {g : G} {r : k} {t : S.Tensor c} :
   rw [actionT_eq, actionT_eq (S := S)]
   simp
 
-@[simp]
 lemma actionT_zero {g : G} : g • (0 : S.Tensor c) = 0 := by
   simp [actionT_eq]
+
+lemma actionT_neg {g : G} {t : S.Tensor c} :
+    g • (-t) = -(g • t) := by
+  rw [actionT_eq]
+  simp only [map_neg, neg_inj]
+  rfl
 
 /-!
 
@@ -807,7 +816,7 @@ lemma toField_equivariant {c : Fin 0 → C} (g : G) (t : Tensor S c) :
   · intro r t hp
     simp [hp]
   · intro t1 t2 hp1 hp2
-    simp [hp1, hp2]
+    simp [hp1, hp2, actionT_add]
 
 end Tensor
 

@@ -35,6 +35,14 @@ lemma γ_zero : γ 0 = 1 := by simp [γ]
 @[simp]
 lemma γ_neg (β : ℝ) : γ (-β) = γ β := by simp [γ]
 
+@[simp]
+lemma γ_det_not_zero (β : ℝ) (hβ : |β| < 1) : (1 - β^2) ≠ 0 := by
+  rw [abs_lt] at hβ
+  by_contra hn
+  have h1 : β ^ 2 = 1 := by linear_combination (norm := ring) (-hn)
+  simp at h1
+  aesop
+
 /-- The Lorentz boost with in the space direction `i` with speed `β` with
   `|β| < 1`. -/
 def boost (i : Fin d) (β : ℝ) (hβ : |β| < 1) : LorentzGroup d :=

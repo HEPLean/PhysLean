@@ -79,7 +79,7 @@ lemma contrT_equivariant {n : ℕ} {c : Fin (n + 1 + 1) → C}
   · intro p q hp
     simp [P, hp]
   · intro p r hr hp
-    simp [P, hp, hr]
+    simp [P, hp, hr, Tensor.actionT_add]
 
 lemma contrT_permT {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
     {c1 : Fin (n1 + 1 + 1) → C}

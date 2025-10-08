@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.StandardModel.HiggsBoson.PointwiseInnerProd
+import PhysLean.Particles.StandardModel.HiggsBoson.Basic
 import Mathlib.Tactic.Cases
 /-!
 # The potential of the Higgs field
@@ -82,8 +82,8 @@ lemma 𝓵_neg : P.neg.𝓵 = - P.𝓵 := by rfl
 -/
 
 @[simp]
-lemma toFun_zero (x : SpaceTime) : P.toFun HiggsField.zero x = 0 := by
-  simp [toFun, zero, ofReal]
+lemma toFun_zero (x : SpaceTime) : P.toFun 0 x = 0 := by
+  simp [toFun]
 
 lemma complete_square (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     P.toFun φ x = P.𝓵 * (‖φ‖_H^2 x - P.μ2 / (2 * P.𝓵)) ^ 2 - P.μ2 ^ 2 / (4 * P.𝓵) := by
@@ -254,9 +254,9 @@ lemma neg_𝓵_sol_exists_iff (h𝓵 : P.𝓵 < 0) (c : ℝ) : (∃ φ x, P.toFu
               rw [h1] at h
               simpa using h.2
       · linarith
-    use (ofReal a)
+    use (const (HiggsVec.ofReal a))
     use 0
-    rw [ofReal_normSq ha]
+    simp [HiggsVec.ofReal_normSq ha]
     trans P.𝓵 * a * a + (- P.μ2) * a + (- c)
     · ring
     have hd : 0 ≤ (discrim P.𝓵 (- P.μ2) (-c)) := by
@@ -394,7 +394,7 @@ lemma isMinOn_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤
   simp only [Prod.forall]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · have h1' : P.toFun φ x ≤ 0 := by
-      simpa using h HiggsField.zero 0
+      simpa using h 0 0
     have h1'' : 0 ≤ P.toFun φ x := by
       have hx := (h1 (P.toFun φ x)).mp ⟨φ, x, rfl⟩
       rcases hx with hx | hx

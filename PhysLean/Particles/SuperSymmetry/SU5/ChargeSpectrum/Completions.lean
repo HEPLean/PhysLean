@@ -8,14 +8,46 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.MinimallyAllowsTerm.O
 
 # Completions of charges
 
-We say a set of charges is complete if it has all types of fields.
+## i. Overview
 
-Given a collection of charges `x` in `ofFinset S5 S10`,
-  the completions of `x` are the, minimimal charges `y` in `ofFinset S5 S10` which are a super sets
-  of `x` and are complete.
+Recall that a charge spectrum has optional `Hu` and `Hd` charges, and
+can have an empty set of `5`-bar or `10` charges.
 
-This module defines the `IsComplete` proposition and completions of charges and provides
-lemmas about them.
+We say a charge spectrum is complete if it has all types of fields present, i.e.
+the `Hd` and `Hu` charges are present, and the sets of `5`-bar and `10` charges are non-empty.
+
+Given a non-complete charge spectrum `x` we can find all the completions of `x`,
+which charges in given subsets. That is, all charge spectra `y` which are a super set of `x`,
+are complete, and have their charges in the given subsets.
+
+## ii. Key results
+
+- `IsComplete` : A predicate saying a charge spectrum is complete.
+- `completions` : Given a charge spectrum `x` and finite sets of charges `S5` and `S10`,
+  the multiset of completions of `x` with charges in `S5` and `S10`.
+- `completionsTopYukawa` : A fast version of `completions` for an `x` which is in
+  `minimallyAllowsTermsOfFinset S5 S10 .topYukawa`, or in other words has a `qHu` charge,
+  a non-empty set of `10` charges, but does not have a `qHd` charge or any `5`-bar charges.
+
+## iii. Table of contents
+
+- A. The IsComplete predicate
+  - A.1. The empty spectrum is not complete
+  - A.2. The predicate `IsCompelete` is monotonic
+- B. Multiset of completions
+  - B.1. A membership condition
+  - B.2. No duplicate condition
+  - B.3. Completions of a complete charge spectrum
+  - B.4. Membership of own completions
+  - B.5. Completeness of members of completions
+  - B.6. Subset of members of completions
+- C. Completions for top Yukawa
+  - C.1. No duplicates in completionsTopYukawa
+  - C.2. Equivalence of completions and completionsTopYukawa
+
+## iv. References
+
+There are no known references for the material in this module.
 
 -/
 
@@ -28,20 +60,40 @@ namespace ChargeSpectrum
 variable {𝓩 : Type}
 /-!
 
-## Completions
+## A. The IsComplete predicate
+
+We say a charge spectrum is complete if it has all types of fields present, i.e.
+the `Hd` and `Hu` charges are present, and the sets of `5`-bar and `10` charges are non-empty.
 
 -/
 
 /-- A charge spectrum is complete if it has all types of fields. -/
 def IsComplete (x : ChargeSpectrum 𝓩) : Prop :=
-  x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅
+  x.qHd.isSome ∧ x.qHu.isSome ∧ x.Q5 ≠ ∅ ∧ x.Q10 ≠ ∅
 
 instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) : Decidable (IsComplete x) :=
-  inferInstanceAs (Decidable (x.1.isSome ∧ x.2.1.isSome ∧ x.2.2.1 ≠ ∅ ∧ x.2.2.2 ≠ ∅))
+  inferInstanceAs (Decidable (x.qHd.isSome ∧ x.qHu.isSome ∧ x.Q5 ≠ ∅ ∧ x.Q10 ≠ ∅))
+
+/-!
+
+### A.1. The empty spectrum is not complete
+
+The empty charge spectrum is not complete, since it has no charges present.
+
+-/
 
 @[simp]
 lemma not_isComplete_empty : ¬ IsComplete (∅ : ChargeSpectrum 𝓩) := by
   simp [IsComplete]
+
+/-!
+
+### A.2. The predicate `IsCompelete` is monotonic
+
+The predicate `IsComplete` is monotonic with respect to the subset relation. That is, if `x` is a
+subset of `y` and `x` is complete, then `y` is also complete.
+
+-/
 
 lemma isComplete_mono {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (hx : IsComplete x) :
     IsComplete y := by
@@ -71,9 +123,11 @@ lemma isComplete_mono {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (hx : IsComplete
 
 /-!
 
-## Completions
+## B. Multiset of completions
 
-Note the completions are not monotonic with respect to the subset relation.
+The completions of a charge spectrum `x` with charges in given finite sets `S5` and `S10`
+are all the charge spectra `y` which are a super set of `x`, are complete, and have
+their charges in `S5` and `S10`.
 
 -/
 
@@ -83,61 +137,117 @@ variable [DecidableEq 𝓩]
   the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x` and are
   complete. -/
 def completions (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) : Multiset (ChargeSpectrum 𝓩) :=
-  let SqHd := if x.1.isSome then {x.1} else S5.val.map fun y => some y
-  let SqHu := if x.2.1.isSome then {x.2.1} else S5.val.map fun y => some y
-  let SQ5 := if x.2.2.1 ≠ ∅ then {x.2.2.1} else S5.val.map fun y => {y}
-  let SQ10 := if x.2.2.2 ≠ ∅ then {x.2.2.2} else S10.val.map fun y => {y}
-  (SqHd.product (SqHu.product (SQ5.product SQ10)))
+  let SqHd := if x.qHd.isSome then {x.qHd} else S5.val.map fun y => some y
+  let SqHu := if x.qHu.isSome then {x.qHu} else S5.val.map fun y => some y
+  let SQ5 := if x.Q5 ≠ ∅ then {x.Q5} else S5.val.map fun y => {y}
+  let SQ10 := if x.Q10 ≠ ∅ then {x.Q10} else S10.val.map fun y => {y}
+  (SqHd.product (SqHu.product (SQ5.product SQ10))).map (toProd).symm
 
+/-!
+
+### B.1. A membership condition
+
+A simple relation for membership of a charge spectrum in the completions of another.
+
+-/
+
+lemma mem_completions_iff {S5 S10 : Finset 𝓩} {x y : ChargeSpectrum 𝓩} :
+    y ∈ completions S5 S10 x ↔
+    y.qHd ∈ (if x.qHd.isSome then {x.qHd} else S5.val.map fun y => some y) ∧
+    y.qHu ∈ (if x.qHu.isSome then {x.qHu} else S5.val.map fun y => some y) ∧
+    y.Q5 ∈ (if x.Q5 ≠ ∅ then {x.Q5} else S5.val.map fun y => {y}) ∧
+    y.Q10 ∈ (if x.Q10 ≠ ∅ then {x.Q10} else S10.val.map fun y => {y}) := by
+  rw [completions]
+  rw [Multiset.mem_map]
+  constructor
+  · rintro ⟨a, h, hy⟩
+    have ha : a = toProd y := by subst hy; simp
+    subst ha
+    simpa [toProd] using h
+  · intro h
+    use toProd y
+    simpa [toProd] using h
+
+/-!
+
+### B.2. No duplicate condition
+
+-/
+
+/-- For speed we define `completions` to be a multiset, but in fact it has no duplicates,
+so it could be defined as a finite set. -/
 lemma completions_nodup (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) :
     (completions S5 S10 x).Nodup := by
   simp [completions]
   split_ifs
   all_goals
+    refine Multiset.Nodup.map toProd.symm.injective ?_
     refine Multiset.Nodup.product ?_ (Multiset.Nodup.product ?_ (Multiset.Nodup.product ?_ ?_))
   any_goals exact Multiset.nodup_singleton _
   any_goals exact Finset.nodup_map_iff_injOn.mpr (by simp)
 
+/-!
+
+### B.3. Completions of a complete charge spectrum
+
+-/
+
+/-- The completions of a complete charge spectrum is just the singleton containing itself. -/
 lemma completions_eq_singleton_of_complete {S5 S10 : Finset 𝓩} (x : ChargeSpectrum 𝓩)
     (hcomplete : IsComplete x) :
     completions S5 S10 x = {x} := by
   simp [completions]
   simp [IsComplete] at hcomplete
-  by_cases h1 : x.1.isSome
+  by_cases h1 : x.qHd.isSome
   case' neg => simp_all
-  by_cases h2 : x.2.1.isSome
+  by_cases h2 : x.qHu.isSome
   case' neg => simp_all
-  by_cases h3 : x.2.2.1 ≠ ∅
+  by_cases h3 : x.Q5 ≠ ∅
   case' neg => simp_all
-  by_cases h4 : x.2.2.2 ≠ ∅
+  by_cases h4 : x.Q10 ≠ ∅
   case' neg => simp_all
   simp_all
   rfl
 
+/-!
+
+### B.4. Membership of own completions
+
+-/
+
+/-- If a charge spectrum `x` is a member of its own completion then it is complete,
+  and vice versa. -/
 @[simp]
 lemma self_mem_completions_iff_isComplete {S5 S10 : Finset 𝓩} (x : ChargeSpectrum 𝓩) :
     x ∈ completions S5 S10 x ↔ IsComplete x := by
-  simp [completions, IsComplete]
-  repeat rw [Multiset.mem_product]
-  by_cases h1 : x.1.isSome
+  simp [mem_completions_iff, IsComplete]
+  by_cases h1 : x.qHd.isSome
+  case neg => simp_all
+  by_cases h2 : x.qHu.isSome
   case' neg => simp_all
-  by_cases h2 : x.2.1.isSome
+  by_cases h3 : x.Q5 ≠ ∅
   case' neg => simp_all
-  by_cases h3 : x.2.2.1 ≠ ∅
-  case' neg => simp_all
-  by_cases h4 : x.2.2.2 ≠ ∅
+  by_cases h4 : x.Q10 ≠ ∅
   case' neg => simp_all
   simp_all
 
+/-!
+
+### B.5. Completeness of members of completions
+
+We now show that any member of the completions of a charge spectrum is complete.
+
+-/
+
+/-- A charge spectrum which is a member of the completions of another charge
+  spectrum is complete. -/
 lemma mem_completions_isComplete {S5 S10 : Finset 𝓩} {x y : ChargeSpectrum 𝓩}
     (hx : y ∈ completions S5 S10 x) : IsComplete y := by
   match y with
-  | (qHd, qHu, Q5, Q10) =>
-  simp [completions] at hx
-  repeat rw [Multiset.mem_product] at hx
-  simp at hx
+  | ⟨qHd, qHu, Q5, Q10⟩ =>
+  simp [mem_completions_iff] at hx
   match x with
-  | (x1, x2, x3, x4) =>
+  | ⟨x1, x2, x3, x4⟩ =>
   simp_all
   rw [IsComplete]
   refine ⟨?_, ?_, ?_, ?_⟩
@@ -166,23 +276,32 @@ lemma mem_completions_isComplete {S5 S10 : Finset 𝓩} {x y : ChargeSpectrum �
       obtain ⟨a, h, rfl⟩ := hx.2.2.2
       simp
 
+/-!
+
+### B.6. Subset of members of completions
+
+We show that any member of the completions of a charge spectrum is a super set of that
+charge spectrum.
+
+-/
+
+/-- If `y` is in the completions of `x` then `x ⊆ y`. -/
 lemma self_subset_mem_completions (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 𝓩)
     (hy : y ∈ completions S5 S10 x) : x ⊆ y := by
-  simp [completions] at hy
-  repeat rw [Multiset.mem_product] at hy
+  simp [mem_completions_iff] at hy
   rw [Subset]
   dsimp [hasSubset]
   refine ⟨?_, ?_, ?_, ?_⟩
-  · by_cases h : x.1.isSome
+  · by_cases h : x.qHd.isSome
     · simp_all
     · simp_all
-  · by_cases h : x.2.1.isSome
+  · by_cases h : x.qHu.isSome
     · simp_all
     · simp_all
-  · by_cases h : x.2.2.1 ≠ ∅
+  · by_cases h : x.Q5 ≠ ∅
     · simp_all
     · simp_all
-  · by_cases h : x.2.2.2 ≠ ∅
+  · by_cases h : x.Q10 ≠ ∅
     · simp_all
     · simp_all
 
@@ -195,7 +314,7 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeS
   rw [Subset] at hsubset
   dsimp [hasSubset] at hsubset
   match x, y with
-  | (x1, x2, x3, x4), (y1, y2, y3, y4) =>
+  | ⟨x1, x2, x3, x4⟩, ⟨y1, y2, y3, y4⟩ =>
   simp [IsComplete] at hycomplete
   rw [Option.isSome_iff_exists, Option.isSome_iff_exists] at hycomplete
   obtain ⟨y1, rfl⟩ := hycomplete.1
@@ -204,11 +323,12 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeS
   simp at hycomplete
   obtain ⟨z3, hz3⟩ := hycomplete.1
   obtain ⟨z4, hz4⟩ := hycomplete.2
+  simp [mem_ofFinset_iff] at hy
   have hz3Mem : z3 ∈ S5 := by
-    apply mem_ofFinset_Q5_subset S5 S10 hy
+    apply hy.2.2.1
     simp_all
   have hz4Mem : z4 ∈ S10 := by
-    apply mem_ofFinset_Q10_subset S5 S10 hy
+    apply hy.2.2.2
     simp_all
   have hy1' : some y1 ∈ if x1.isSome = true then {x1} else
       Multiset.map (fun y => some y) S5.val := by
@@ -218,7 +338,6 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeS
       obtain ⟨a, rfl⟩ := h1
       simp_all
     · simp_all
-      exact qHd_mem_ofFinset S5 S10 y1 (some y2, y3, y4) hy
   have hy2' : some y2 ∈ if x2.isSome = true then {x2} else
       Multiset.map (fun y => some y) S5.val := by
     by_cases h2 : x2.isSome
@@ -227,53 +346,53 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeS
       obtain ⟨a, rfl⟩ := h2
       simp_all
     · simp_all
-      exact qHu_mem_ofFinset S5 S10 y2 (some y1) (y3, y4) hy
   simp_all
   by_cases h3 : x3 ≠ ∅
   · by_cases h4 : x4 ≠ ∅
-    · use (y1, y2, x3, x4)
+    · use ⟨y1, y2, x3, x4⟩
       constructor
-      · simp_all [completions]
-        repeat rw [Multiset.mem_product]
-        simp_all
+      · simp_all [mem_completions_iff]
       · rw [Subset]
         dsimp [hasSubset]
         simp_all
     · simp at h4
       subst h4
-      use (y1, y2, x3, {z4})
+      use ⟨y1, y2, x3, {z4}⟩
       constructor
-      · simp [completions]
-        repeat rw [Multiset.mem_product]
-        simp_all
+      · simp_all [mem_completions_iff]
       · rw [Subset]
         dsimp [hasSubset]
         simp_all
   · simp at h3
     subst h3
     by_cases h4 : x4 ≠ ∅
-    · use (y1, y2, {z3}, x4)
+    · use ⟨y1, y2, {z3}, x4⟩
       constructor
-      · simp [completions]
-        repeat rw [Multiset.mem_product]
-        simp_all
+      · simp_all [mem_completions_iff]
       · rw [Subset]
         dsimp [hasSubset]
         simp_all
     · simp at h4
       subst h4
-      use (y1, y2, {z3}, {z4})
+      use ⟨y1, y2, {z3}, {z4}⟩
       constructor
-      · simp [completions]
-        repeat rw [Multiset.mem_product]
-        simp_all
+      · simp_all [mem_completions_iff]
       · rw [Subset]
         dsimp [hasSubset]
         simp_all
 
 /-!
 
-## Completions of minimal top yukawa
+## C. Completions for top Yukawa
+
+We give a fast version of `completions` in the case when `x` has a `qHu` charge,
+and a non-empty set of `10` charges, but does not have a `qHd` charge or any `5`-bar charges.
+Here we only need to specifiy the allowed `5`-bar charges, not the allowed `10` charges.
+
+This is the case for charges which minimally allow the top Yukawa coupling.
+
+These definitions are primarily for speed, as this is the most common case we will
+look at.
 
 -/
 
@@ -281,9 +400,19 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeS
   `minimallyAllowsTermsOfFinset S5 S10 .topYukawa`. -/
 def completionsTopYukawa (S5 : Finset 𝓩) (x : ChargeSpectrum 𝓩) :
     Multiset (ChargeSpectrum 𝓩) :=
-  (S5.val.product S5.val).map fun (qHd, q5) => (qHd, x.2.1, {q5}, x.2.2.2)
+  (S5.val.product S5.val).map fun (qHd, q5) => ⟨qHd, x.qHu, {q5}, x.Q10⟩
+
+/-!
+
+### C.1. No duplicates in completionsTopYukawa
+
+Like for `completions`, we define `completionsTopYukawa` as a multiset for speed,
+however, we can show it has no duplicates.
+
+-/
 
 omit [DecidableEq 𝓩] in
+/-- The multiset `completionsTopYukawa S5 x` has no duplicates. -/
 lemma completionsTopYukawa_nodup {S5 : Finset 𝓩} (x : ChargeSpectrum 𝓩) :
     (completionsTopYukawa S5 x).Nodup := by
   simp [completionsTopYukawa]
@@ -293,6 +422,17 @@ lemma completionsTopYukawa_nodup {S5 : Finset 𝓩} (x : ChargeSpectrum 𝓩) :
   simp_all
   exact (S5.product S5).nodup
 
+/-!
+
+### C.2. Equivalence of completions and completionsTopYukawa
+
+For charges `x` which are in `minimallyAllowsTermsOfFinset S5 S10 .topYukawa`,
+we show that `completions S5 S10 x` and `completionsTopYukawa S5 x` are equal multisets.
+
+-/
+
+/-- The multisets `completions S5 S10 x` and `completionsTopYukawa S5 x` are equivalent if
+  `x` minimally allows the top Yukawa. -/
 lemma completions_eq_completionsTopYukawa_of_mem_minimallyAllowsTermsOfFinset [AddCommGroup 𝓩]
     {S5 S10 : Finset 𝓩} (x : ChargeSpectrum 𝓩)
     (hx : x ∈ minimallyAllowsTermsOfFinset S5 S10 .topYukawa) :
@@ -310,8 +450,7 @@ lemma completions_eq_completionsTopYukawa_of_mem_minimallyAllowsTermsOfFinset [A
     simp at hcard
   simp [Q10_neq_zero]
   match a with
-  | (xqHd, xqHu, xQ5, xQ10) =>
-  repeat rw [Multiset.mem_product]
+  | ⟨xqHd, xqHu, xQ5, xQ10⟩ =>
   simp [eq_iff]
   aesop
 

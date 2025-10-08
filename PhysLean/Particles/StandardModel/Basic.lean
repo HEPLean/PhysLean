@@ -26,6 +26,54 @@ open ComplexConjugate
 abbrev GaugeGroupI : Type :=
   specialUnitaryGroup (Fin 3) ℂ × specialUnitaryGroup (Fin 2) ℂ × unitary ℂ
 
+namespace GaugeGroupI
+
+/-- The underlying element of `SU(3)` of an element in `GaugeGroupI`. -/
+def toSU3 : GaugeGroupI →* specialUnitaryGroup (Fin 3) ℂ where
+  toFun g := g.1
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
+/-- The underlying element of `SU(2)` of an element in `GaugeGroupI`. -/
+def toSU2 : GaugeGroupI →* specialUnitaryGroup (Fin 2) ℂ where
+  toFun g := g.2.1
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
+/-- The underlying element of `U(1)` of an element in `GaugeGroupI`. -/
+def toU1 : GaugeGroupI →* unitary ℂ where
+  toFun g := g.2.2
+  map_one' := rfl
+  map_mul' _ _ := rfl
+
+@[ext]
+lemma ext {g g' : GaugeGroupI} (hSU3 : toSU3 g = toSU3 g')
+    (hSU2 : toSU2 g = toSU2 g') (hU1 : toU1 g = toU1 g') : g = g' := by
+  rcases g with ⟨g1, g2, g3⟩
+  cases g'
+  simp only [toSU3, toSU2, toU1] at hSU3 hSU2 hU1
+  simp_all
+
+instance : Star GaugeGroupI where
+  star g := (star g.1, star g.2.1, star g.2.2)
+
+lemma star_eq (g : GaugeGroupI) : star g = (star g.1, star g.2.1, star g.2.2) := rfl
+
+@[simp]
+lemma star_toSU3 (g : GaugeGroupI) : toSU3 (star g) = star (toSU3 g) := rfl
+
+@[simp]
+lemma star_toSU2 (g : GaugeGroupI) : toSU2 (star g) = star (toSU2 g) := rfl
+
+@[simp]
+lemma star_toU1 (g : GaugeGroupI) : toU1 (star g) = star (toU1 g) := rfl
+
+instance : InvolutiveStar GaugeGroupI where
+  star_involutive g := by
+    ext1 <;> simp
+
+end GaugeGroupI
+
 /-- The subgroup of the un-quotiented gauge group which acts trivially on all particles in the
 standard model, i.e., the ℤ₆-subgroup of `GaugeGroupI` with elements `(α^2 * I₃, α^(-3) * I₂, α)`,
 where `α` is a sixth complex root of unity.

@@ -26,8 +26,10 @@ import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.PointParticle
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
 import PhysLean.Electromagnetism.Homogeneous
+import PhysLean.Electromagnetism.KineticTerm
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
+import PhysLean.Electromagnetism.Potential
 import PhysLean.Electromagnetism.Wave
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.Calculus.Divergence
@@ -114,8 +116,6 @@ import PhysLean.Particles.StandardModel.AnomalyCancellation.NoGrav.One.LinearPar
 import PhysLean.Particles.StandardModel.AnomalyCancellation.Permutations
 import PhysLean.Particles.StandardModel.Basic
 import PhysLean.Particles.StandardModel.HiggsBoson.Basic
-import PhysLean.Particles.StandardModel.HiggsBoson.GaugeAction
-import PhysLean.Particles.StandardModel.HiggsBoson.PointwiseInnerProd
 import PhysLean.Particles.StandardModel.HiggsBoson.Potential
 import PhysLean.Particles.StandardModel.Representations
 import PhysLean.Particles.SuperSymmetry.MSSMNu.AnomalyCancellation.B3
@@ -139,7 +139,6 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.OfFieldLabel
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.OfPotentialTerm
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoClosed
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoConstrained
-import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.U1U1
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Yukawa
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.ZMod
 import PhysLean.Particles.SuperSymmetry.SU5.FieldLabels
@@ -296,6 +295,7 @@ import PhysLean.Relativity.Tensors.MetricTensor
 import PhysLean.Relativity.Tensors.OfInt
 import PhysLean.Relativity.Tensors.Product
 import PhysLean.Relativity.Tensors.RealTensor.Basic
+import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Relativity.Tensors.RealTensor.Derivative
 import PhysLean.Relativity.Tensors.RealTensor.Matrix.Pre
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
@@ -321,6 +321,7 @@ import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.SpaceAndTime.SpaceTime.Boosts
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.Time.TimeMan
@@ -340,7 +341,6 @@ import PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ChiralIndices
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Completeness
 import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.Elems
-import PhysLean.StringTheory.FTheory.SU5.Fluxes.NoExotics.ToList
 import PhysLean.StringTheory.FTheory.SU5.Quanta.Basic
 import PhysLean.StringTheory.FTheory.SU5.Quanta.FiveQuanta
 import PhysLean.StringTheory.FTheory.SU5.Quanta.IsViable

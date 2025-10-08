@@ -25,13 +25,29 @@ prove that they satisfy the equation of motion, and prove some properties of the
 - `trajectories` is the trajectories to the harmonic oscillator for given initial conditions.
 - `trajectories_equationOfMotion` proves that the solution satisfies the equation of motion.
 
-## iii. Table of contents for this module
+## iii. Table of contents
 
 - A. The initial conditions
+  - A.1. Definition of the initial conditions
+    - A.1.1. Extensionality lemma
+  - A.2. Relation to other types of initial conditions
+  - A.3. The zero initial conditions
+    - A.3.1. Simple results for the zero initial conditions
 - B. Trajectories associated with the initial conditions
+  - B.1. The trajectory associated with the initial conditions
+    - B.1.1. Definitional equality for the trajectory
+  - B.2. The trajectory for zero initial conditions
+  - B.3. Smoothness of the trajectories
+  - B.4. Velocity of the trajectories
+  - B.5. Acceleration of the trajectories
+  - B.6. The initial conditions of the trajectories
 - C. Trajectories and Equation of motion
+  - C.1. Uniqueness of the solutions
 - D. The energy of the trajectories
 - E. The trajectories at zero velocity
+  - E.1. The times at which the velocity is zero
+  - E.2. A time when the velocity is zero
+  - E.3. The position when the velocity is zero
 - F. Some open TODOs
 
 ## iv. References
@@ -75,7 +91,7 @@ structure InitialConditions where
 
 /-!
 
-#### Part A.1.I
+#### A.1.1. Extensionality lemma
 
 We prove an extensionality lemma for `InitialConditions`.
 That is, a lemma which states that two initial conditions are equal if their
@@ -126,7 +142,7 @@ instance : Zero InitialConditions := ⟨0, 0⟩
 
 /-!
 
-#### Part A.3.I
+#### A.3.1. Simple results for the zero initial conditions
 
 Some simple results about the zero initial conditions.
 
@@ -166,7 +182,7 @@ noncomputable def trajectory (IC : InitialConditions) : Time → Space 1 := fun 
 
 /-!
 
-#### Part B.1.I
+#### B.1.1. Definitional equality for the trajectory
 
 We show a basic definitional equality for the trajectory.
 
@@ -270,7 +286,7 @@ lemma trajectory_acceleration (IC : InitialConditions) : ∂ₜ (∂ₜ (IC.traj
 
 /-!
 
-### B.6. The initial conditions of the trajectories
+### B.6. The initial conditions of the trajectories
 
 We show that, unsurprisingly, the trajectories have the initial conditions
 used to define them.
@@ -297,7 +313,7 @@ The trajectories satsify the equation of motion for the harmonic oscillator.
 
 lemma trajectory_equationOfMotion (IC : InitialConditions) :
     EquationOfMotion S (IC.trajectory S) := by
-  rw [EquationOfMotion, eulerLagrangeOp_eq_force]
+  rw [EquationOfMotion, gradLagrangian_eq_force]
   funext t
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]

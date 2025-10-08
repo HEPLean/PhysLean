@@ -10,12 +10,12 @@ import PhysLean.ClassicalMechanics.HamiltonsEquations
 
 # The Classical Harmonic Oscillator
 
-## i. Description
+## i. Overview
 
 The classical harmonic oscillator is a classical mechanical system corresponding to a
 mass `m` under a force `- k x` where `k` is the spring constant and `x` is the position.
 
-## ii. Summary of the key results
+## ii. Key results
 
 The key results in the study of the classical harmonic oscillator are the follows:
 
@@ -35,18 +35,45 @@ In the `Solution` module:
 - `trajectories` is the trajectories to the harmonic oscillator for given initial conditions.
 - `trajectories_equationOfMotion` proves that the solution satisfies the equation of motion.
 
-## iii. Table of content for this module
+## iii. Table of contents
 
 - A. The input data
 - B. The angular frequency
 - C. The energies
+  - C.1. The definitions of the energies
+  - C.2. Simple equalties for the energies
+  - C.3. Differentiability of the energies
+  - C.4. Time derivatives of the energies
 - D. Lagrangian and the equation of motion
+  - D.1. The Lagrangian
+    - D.1.1. Equalitites for the lagrangian
+    - D.1.2. Smoothness of the lagrangian
+    - D.1.3. Gradients of the lagrangian
+  - D.2. The variational derivative of the action
+    - D.2.1. Equality for the variational derivative
+  - D.3. The equation of motion
+    - D.3.1. Equation of motion if and only if variational-gradient of Lagrangian is zero
 - E. Newton's second law
+  - E.1. The force
+    - E.1.1. The force is equal to `- k x`
+  - E.2. Variational derivative of lagrangian and force
+  - E.3. Equation of motion if and only if Newton's second law
 - F. Energy conservation
+  - F.1. Energy conservation in terms of time derivatives
+  - F.2. Energy conservation in terms of constant energy
 - G. Hamiltonian formulation
+  - G.1. The canonical momentum
+    - G.1.1. Equality for the canonical momentum
+  - G.2. The Hamiltonian
+    - G.2.1. Equality for the Hamiltonian
+    - G.2.2. Smoothness of the Hamiltonian
+    - G.2.3. Gradients of the Hamiltonian
+  - G.3. Relation between Hamiltonian and energy
+  - G.4. Hamilton equation operator
+  - G.5. Equation of motion if and only if Hamilton's equations
 - H. Equivalences between the different formulations of the equations of motion
 
-## iiv. References
+## iv. References
 
 References for the classical harmonic oscillator include:
 - Landau & Lifshitz, Mechanics, page 58, section 21.
@@ -177,7 +204,7 @@ lemma energy_eq (xₜ : Time → Space 1) :
     energy S xₜ = fun t => kineticEnergy S xₜ t + potentialEnergy S (xₜ t) := by rfl
 /-!
 
-### C.2. Differentiability of the energies
+### C.3. Differentiability of the energies
 
 On smooth trajectories the energies are differentiable.
 
@@ -209,7 +236,7 @@ lemma energy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x�
 
 /-!
 
-### C.3. Time derivatives of the energies
+### C.4. Time derivatives of the energies
 
 For a general smooth trajectory (which may not satisfy the equations of motion) we can compute
 the time derivatives of the energies.
@@ -299,7 +326,7 @@ noncomputable def lagrangian (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (F
 
 /-!
 
-#### Part D.1.I
+#### D.1.1. Equalitites for the lagrangian
 
 Equalitites for the lagrangian. We prove some simple equalities for the lagrangian,
 in particular that when applied to a trajectory it is the kinetic energy minus the potential energy.
@@ -322,7 +349,7 @@ lemma lagrangian_eq_kineticEnergy_sub_potentialEnergy (t : Time) (xₜ : Time �
 
 /-!
 
-#### Part D.1.II
+#### D.1.2. Smoothness of the lagrangian
 
 The lagrangian is smooth in all its arguments.
 
@@ -335,7 +362,7 @@ lemma contDiff_lagrangian (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.lagrangian 
 
 /-!
 
-#### Part D.1.III
+#### D.1.3. Gradients of the lagrangian
 
 We now show results related to the gradients of the lagrangian with respect to the
 position and velocity.
@@ -381,9 +408,9 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpa
 
 /-!
 
-### D.2. The Euler-Lagrange operator
+### D.2. The variational derivative of the action
 
-We now write down the Euler-Lagrange operator for the harmonic oscillator, for
+We now write down the varitional derivative for the harmonic oscillator, for
 a trajectory $x(t)$ this is equal to
 
 $$t\mapsto \left.\frac{\partial L(t, \dot x (t), q)}{\partial q}\right|_{q = x(t)} -
@@ -395,57 +422,45 @@ equation of motion.
 -/
 
 /-- The Euler-Lagrange operator for the classical harmonic osscilator. -/
-noncomputable def eulerLagrangeOp (xₜ : Time → Space 1) : Time → Space 1 :=
-  ClassicalMechanics.eulerLagrangeOp (lagrangian S) xₜ
+noncomputable def gradLagrangian (xₜ : Time → Space 1) : Time → Space 1 :=
+  (δ (q':=xₜ), ∫ t, lagrangian S t (q' t) (fderiv ℝ q' t 1))
 
 /-!
 
-#### Part D.2.I
+#### D.2.1. Equality for the variational derivative
 
-Basic equaltities for the Euler-Lagrange operator.
+Basic equaltities for the variational derivative of the action.
 
 -/
 
-lemma eulerLagrangeOp_eq (xₜ : Time → Space 1) :
-    eulerLagrangeOp S xₜ = fun t => gradient (S.lagrangian t · (∂ₜ xₜ t)) (xₜ t)
-    - ∂ₜ (fun t' => gradient (S.lagrangian t' (xₜ t') ·) (∂ₜ xₜ t')) t := by
-  rw [eulerLagrangeOp, ClassicalMechanics.eulerLagrangeOp_eq]
+lemma gradLagrangian_eq_eulerLagrangeOp (xₜ : Time → Space 1) (hq : ContDiff ℝ ∞ xₜ) :
+    gradLagrangian S xₜ = eulerLagrangeOp S.lagrangian xₜ := by
+  rw [gradLagrangian,
+    ClassicalMechanics.euler_lagrange_varGradient _ _ hq (S.contDiff_lagrangian _)]
 
 /-!
 
-#### Part D.2.II
-
-Relation of the Euler-Lagrange operator to variational derivative of the action.
-
--/
-
-lemma variational_gradient_action (xₜ : Time → Space 1) (hq : ContDiff ℝ ∞ xₜ) :
-    (δ (q':=xₜ), ∫ t, lagrangian S t (q' t) (fderiv ℝ q' t 1)) = eulerLagrangeOp S xₜ :=
-  euler_lagrange_varGradient S.lagrangian xₜ hq (S.contDiff_lagrangian _)
-
-/-!
-
-### Part D.3. The equation of motion
+### D.3. The equation of motion
 
 The equation of motion for the harmonic oscillator is given by setting the
-Euler-Lagrange operator equal to zero.
+varitaional derivative of the action equal to zero.
 
 -/
 
 /-- THe equation of motion for the Harmonic oscillator. -/
 def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
-  eulerLagrangeOp S xₜ = 0
+  S.gradLagrangian xₜ = 0
 
 /-!
 
-#### Part D.3.I.
+#### D.3.1. Equation of motion if and only if variational-gradient of Lagrangian is zero
 
 We write a simple iff statment for the definition of the equation of motions.
 
 -/
 
-lemma equationOfMotion_iff_eulerLagrangeOp (xₜ : Time → Space 1) :
-    S.EquationOfMotion xₜ ↔ eulerLagrangeOp S xₜ = 0 := by rfl
+lemma equationOfMotion_iff_gradLagrangian_zero (xₜ : Time → Space 1) :
+    S.EquationOfMotion xₜ ↔ S.gradLagrangian xₜ = 0 := by rfl
 
 /-!
 
@@ -472,7 +487,7 @@ noncomputable def force (S : HarmonicOscillator) (x : Space 1) : EuclideanSpace 
 
 /-!
 
-#### part E.1.I
+#### E.1.1. The force is equal to `- k x`
 
 We now show that the force is equal to `- k x`.
 
@@ -493,18 +508,18 @@ lemma force_eq_linear (x : Space 1) : force S x = - S.k • x := by
 
 /-!
 
-### E.2. Euler-Lagrange operator and force
+### E.2. Variational derivative of lagrangian and force
 
-We relate the Euler-Lagrange operator to the force, and show the relation
+We relate the variational derivative of lagrangian to the force, and show the relation
 to Newton's second law.
 
 -/
 
 /-- The Euler lagrange operator corresponds to Newton's second law. -/
-lemma eulerLagrangeOp_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
-    eulerLagrangeOp S xₜ = fun t => force S (xₜ t) - S.m • ∂ₜ (∂ₜ xₜ) t := by
+lemma gradLagrangian_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+    S.gradLagrangian xₜ = fun t => force S (xₜ t) - S.m • ∂ₜ (∂ₜ xₜ) t := by
   funext t
-  rw [eulerLagrangeOp_eq]
+  rw [gradLagrangian_eq_eulerLagrangeOp S xₜ hx, eulerLagrangeOp]
   simp only
   congr
   · simp [lagrangian_eq]
@@ -539,7 +554,7 @@ We show that the equation of motion is equivalent to Newton's second law.
 lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
     S.EquationOfMotion xₜ ↔
     (∀ t, S.m • ∂ₜ (∂ₜ xₜ) t = force S (xₜ t)) := by
-  rw [EquationOfMotion, eulerLagrangeOp_eq_force S xₜ hx, funext_iff]
+  rw [EquationOfMotion, gradLagrangian_eq_force S xₜ hx, funext_iff]
   simp only [Pi.zero_apply]
   conv_lhs =>
     enter [x]
@@ -547,7 +562,7 @@ lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → Space 1) (hx : ContD
 
 /-!
 
-### F. Energy conservation
+## F. Energy conservation
 
 In this section we show that any trajectory satisfying the equation of motion
 conserves energy. This result simply follows from the definition of the energies,
@@ -558,7 +573,7 @@ to Newton's second law.
 
 /-!
 
-#### F.1. Energy conservation in terms of time derivatives
+### F.1. Energy conservation in terms of time derivatives
 
 We prove that the time derivative of the energy is zero for any trajectory satisfying
 the equation of motion.
@@ -576,7 +591,7 @@ lemma energy_conservation_of_equationOfMotion (xₜ : Time → Space 1) (hx : Co
 
 /-!
 
-#### F.1. Energy conservation in terms of constant energy
+### F.2. Energy conservation in terms of constant energy
 
 We prove that the energy is constant for any trajectory satisfying the equation of motion.
 
@@ -634,7 +649,7 @@ noncomputable def toCanonicalMomentum (t : Time) (x : Space 1) :
 
 /-!
 
-#### Part G.1.I.
+#### G.1.1. Equality for the canonical momentum
 
 An simple equality for the canonical momentum.
 
@@ -662,7 +677,7 @@ noncomputable def hamiltonian (t : Time) (p : EuclideanSpace ℝ (Fin 1)) (x : S
 
 /-!
 
-#### Part G.2.I.
+#### G.2.1. Equality for the Hamiltonian
 
 We prove a simple equality for the Hamiltonian, to help in computations.
 
@@ -679,7 +694,7 @@ lemma hamiltonian_eq :
 
 /-!
 
-#### Part G.2.II.
+#### G.2.2. Smoothness of the Hamiltonian
 
 We show that the Hamiltonian is smooth in all its arguments.
 
@@ -692,7 +707,7 @@ lemma hamiltonian_contDiff (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.hamiltonia
 
 /-!
 
-#### Part G.2.II.
+#### G.2.3. Gradients of the Hamiltonian
 
 We now write down the graidents of the Hamiltonian with respect to the momentum and position.
 
@@ -749,7 +764,7 @@ lemma hamiltonian_eq_energy (xₜ : Time → Space 1) :
 
 /-!
 
-### G.3. Hamilton equation operator
+### G.4. Hamilton equation operator
 
 We define the operator on momentum-position phase-space whose vanishing is equivalent
 to Hamilton's equations.
@@ -763,7 +778,7 @@ noncomputable def hamiltonEqOp (p : Time → EuclideanSpace ℝ (Fin 1)) (q : Ti
 
 /-!
 
-### G.4. Equation of motion if and only if Hamilton's equations
+### G.5. Equation of motion if and only if Hamilton's equations
 
 We show that the equation of motion is equivalent to Hamilton's equations, that is
 to the vanishing of the Hamilton equation operator.
@@ -802,7 +817,7 @@ lemma equationOfMotion_tfae (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x�
   rw [← equationOfMotion_iff_hamiltonEqOp_eq_zero, ← equationOfMotion_iff_newtons_2nd_law]
   rw [hamiltons_equations_varGradient, euler_lagrange_varGradient]
   simp only [List.tfae_cons_self]
-  erw [← equationOfMotion_iff_eulerLagrangeOp]
+  rw [← gradLagrangian_eq_eulerLagrangeOp, ← equationOfMotion_iff_gradLagrangian_zero]
   simp only [List.tfae_cons_self]
   erw [← equationOfMotion_iff_hamiltonEqOp_eq_zero]
   simp only [List.tfae_cons_self, List.tfae_singleton]

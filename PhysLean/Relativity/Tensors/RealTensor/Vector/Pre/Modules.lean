@@ -408,6 +408,10 @@ lemma mulVec_toFin1dℝ (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v 
     (M *ᵥ v).toFin1dℝ = M *ᵥ v.toFin1dℝ := by
   rfl
 
+@[simp]
+lemma mulVec_val (M : Matrix (Fin 1 ⊕ Fin d) (Fin 1 ⊕ Fin d) ℝ) (v : CoMod d) :
+    (M *ᵥ v).val = M *ᵥ v.val := by
+  rfl
 /-!
 
 ## The representation

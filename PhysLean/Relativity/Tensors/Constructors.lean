@@ -120,17 +120,17 @@ lemma contrT_fromSingleT_fromSingleT {c : C} (x : S.FD.obj {as := c})
         (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inl 0))
       · rfl
       · rw [Pure.prodP_apply_finSumFinEquiv]
-        simp only [Nat.reduceAdd, Fin.isValue, Function.comp_apply, Matrix.cons_val_zero,
-          eqToHom_refl, Discrete.functor_map_id]
+        simp only [Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero, eqToHom_refl,
+          Discrete.functor_map_id]
         rfl
     · trans (ConcreteCategory.hom
-        (𝟙 (S.FD.obj { as := Sum.elim ![c] ![S.τ c] (finSumFinEquiv.symm 1) })))
+        (𝟙 (S.FD.obj { as := Fin.append ![c] ![S.τ c] 1})))
         (Pure.prodP (fun | (0 : Fin 1) => x)
         (fun | (0 : Fin 1) => y) (finSumFinEquiv (Sum.inr 0)))
       · rfl
       · rw [Pure.prodP_apply_finSumFinEquiv]
         simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
-          Function.comp_apply, eqToHom_refl, Discrete.functor_map_id, ConcreteCategory.id_apply]
+          eqToHom_refl, Discrete.functor_map_id, ConcreteCategory.id_apply]
         rfl
   · congr 1
     ext i
@@ -179,14 +179,14 @@ lemma actionT_fromPairT {c1 c2 : C}
       ((S.FD.obj (Discrete.mk c2)).ρ g) x)
   change P x
   apply TensorProduct.induction_on
-  · simp [P]
+  · simp [P, actionT_zero]
   · intro x y
     simp [P]
     rw [fromPairT_tmul, ← permT_equivariant, ← prodT_equivariant,
       actionT_fromSingleT, actionT_fromSingleT]
     rfl
   · intro x y hx hy
-    simp [P, hx, hy]
+    simp [P, hx, hy, Tensor.actionT_add]
 
 lemma fromPairT_map_right {c1 c2 c2' : C} (h :c2 = c2')
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
@@ -652,13 +652,13 @@ lemma actionT_fromTripleT {c1 c2 c3 : C}
       (TensorProduct.map ((S.FD.obj (Discrete.mk c2)).ρ g) ((S.FD.obj (Discrete.mk c3)).ρ g)) x)
   change P x
   apply TensorProduct.induction_on
-  · simp [P]
+  · simp [P, actionT_zero]
   · intro x y
     let P1 (y : (S.FD.obj (Discrete.mk c2)).V ⊗[k] (S.FD.obj (Discrete.mk c3)).V) : Prop :=
       P (x ⊗ₜ[k] y)
     change P1 y
     apply TensorProduct.induction_on
-    · simp [P1, P]
+    · simp [P1, P, Tensor.actionT_zero]
     · intro y z
       simp [P1, P]
       rw [fromTripleT_tmul, fromTripleT_tmul]
@@ -672,9 +672,9 @@ lemma actionT_fromTripleT {c1 c2 c3 : C}
         · exact actionT_fromSingleT y g
         · exact actionT_fromSingleT z g
     · intro x y hx hy
-      simp [P1, P, hx, hy, tmul_add]
+      simp [P1, P, hx, hy, tmul_add, Tensor.actionT_add]
   · intro x y hx hy
-    simp [P, hx, hy]
+    simp [P, hx, hy, Tensor.actionT_add]
 
 lemma fromTripleT_basis_repr {c c1 c2 : C}
     (x : (S.FD.obj (Discrete.mk c)).V ⊗[k] ((S.FD.obj (Discrete.mk c1)).V
@@ -720,8 +720,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : C}
           enter [1, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))
           rw [Pure.prodP_apply_finSumFinEquiv]
-        simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
-          eqToHom_refl, Discrete.functor_map_id]
+        simp only [Fin.isValue, Nat.reduceAdd, eqToHom_refl, Discrete.functor_map_id]
         conv_lhs =>
           enter [1, 2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inl 0))
@@ -733,8 +732,7 @@ lemma fromTripleT_basis_repr {c c1 c2 : C}
           enter [2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 1))
           rw [Pure.prodP_apply_finSumFinEquiv]
-        simp only [Fin.isValue, Function.comp_apply, Nat.succ_eq_add_one, Nat.reduceAdd,
-          eqToHom_refl, Discrete.functor_map_id]
+        simp only [Fin.isValue, eqToHom_refl, Discrete.functor_map_id, Nat.reduceAdd]
         conv_lhs =>
           enter [2, 2, 2]
           change Pure.prodP _ _ (finSumFinEquiv (Sum.inr 0))

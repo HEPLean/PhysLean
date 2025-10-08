@@ -4,15 +4,39 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.StringTheory.FTheory.SU5.Quanta.Basic
+import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Map
 /-!
 
 # Anomaly cancellation
 
-In this module we define the proposition `IsAnomalyFree` on charges, which states
-that the charges can be extended to quanta which are anomaly free.
+## i. Overview
 
-We give the viable charges which are anomaly free for each of the three codimension one
-configurations. This is in the lemma `viable_anomalyFree`.
+In this module we do two things. The first is to define a proposition `IsAnomalyFree`
+on a `ChargeSpectrum` which states that the charge spectrum can be lifted
+to an anomaly-free `Quanta` with fluxes which do not have exotics.
+
+We then find all the viable charges given a configuration of the sections in codimension one
+fiber `CodimensionOneConfig` that can be lifted to an anomaly-free `Quanta` with fluxes
+which do not have exotics.
+
+## ii. Key results
+
+- `IsAnomalyFree` : The proposition on a `ChargeSpectrum` that it can be lifted to an
+  anomaly-free `Quanta` with fluxes which do not have exotics.
+- `viable_anomalyFree` : The viable charges given a configuration of the sections
+  in codimension one fiber `CodimensionOneConfig` which can be lifted to an anomaly-free
+  `Quanta` with fluxes which do not have exotics.
+
+## iii. Table of contents
+
+- A. Charge spectrum which lift to anomaly free quanta
+  - A.1. Decidability of the proposition
+  - A.2. The proposition is preserved under mappings of charge spectra
+- B. The viable charges which lift to anomaly free quanta
+
+## iv. References
+
+There are no known references for the material in this section.
 
 -/
 namespace FTheory
@@ -24,12 +48,11 @@ open SuperSymmetry.SU5
 open SuperSymmetry.SU5.ChargeSpectrum
 open PotentialTerm
 open CodimensionOneConfig
-open Tree
 open PhysLean
 
 /-!
 
-## Anomaly coefficents of charges
+## A. Charge spectrum which lift to anomaly free quanta
 
 -/
 
@@ -37,14 +60,20 @@ variable {𝓩 : Type}
 /-- The condition on a collection of charges `c` that it extends to an anomaly free `Quanta`.
   That anomaly free `Quanta` is not tracked by this proposition. -/
 def IsAnomalyFree [DecidableEq 𝓩] [CommRing 𝓩] (c : ChargeSpectrum 𝓩) : Prop :=
-  ∃ x ∈ Quanta.ofChargesExpand c, Quanta.AnomalyCancellation x.1 x.2.1 x.2.2.1 x.2.2.2
+  ∃ x ∈ Quanta.liftCharge c, x.LinearAnomalyCancellation
+
+/-!
+
+### A.1. Decidability of the proposition
+
+-/
 
 instance [DecidableEq 𝓩] [CommRing 𝓩] {c : ChargeSpectrum 𝓩} : Decidable (IsAnomalyFree c) :=
   Multiset.decidableExistsMultiset
 
 /-!
 
-## The IsAnomalyFree condition under a map
+### A.2. The proposition is preserved under mappings of charge spectra
 
 -/
 
@@ -56,54 +85,26 @@ lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : ChargeSpectrum 𝓩}
     (h : IsAnomalyFree c) : IsAnomalyFree (c.map (f.toAddMonoidHom)) := by
   obtain ⟨Q, h1, h2⟩ := h
   match Q with
-  | (qHd, qHu, F5, F10) =>
-  let QM : Quanta 𝓩1 := (Option.map f qHd, Option.map f qHu, F5.map fun y => (f y.1, y.2),
-    F10.map fun y => (f y.1, y.2))
-  use QM
+  | ⟨qHd, qHu, F5, F10⟩ =>
+  let QM : Quanta 𝓩1 := ⟨Option.map f qHd, Option.map f qHu, F5.map fun y => (f y.1, y.2),
+    F10.map fun y => (f y.1, y.2)⟩
+  use QM.reduce
   constructor
-  · simp [QM, Quanta.ofChargesExpand] at ⊢ h1
-    have hqHd := h1.2.2.1
-    have hqHu := h1.2.2.2
-    subst hqHd hqHu
-    simp [ChargeSpectrum.map]
-    refine ⟨?_, ?_⟩
-    · have h5 := h1.1
-      rw [FiveQuanta.mem_ofChargesExpand_iff] at h5 ⊢
-      constructor
-      · rw [← h5.1]
-        simp [FiveQuanta.toCharges]
-        rw [← Finset.image_toFinset, ← Finset.image_toFinset, Finset.image_image]
-        rfl
-      · rw [← h5.2]
-        simp [FiveQuanta.toFluxesFive]
-    · have h10 := h1.2.1
-      rw [TenQuanta.mem_ofChargesExpand_iff] at h10 ⊢
-      constructor
-      · rw [← h10.1]
-        simp [TenQuanta.toCharges]
-        rw [← Finset.image_toFinset, ← Finset.image_toFinset, Finset.image_image]
-        rfl
-      · have hr := h10.2
-        rcases hr with hr | hr
-        all_goals
-          rw [← hr]
-          simp [TenQuanta.toFluxesTen]
-  · simp at h2
-    simp [QM]
-    rw [Quanta.AnomalyCancellation]
-    simp only [Quanta.HdAnomalyCoefficent_map, RingHom.coe_prodMap, Quanta.HuAnomalyCoefficent_map,
-      FiveQuanta.anomalyCoefficent_of_map, TenQuanta.anomalyCoefficent_of_map]
-    trans (f.prodMap f) ((Quanta.HdAnomalyCoefficent qHd) +
-      (Quanta.HuAnomalyCoefficent qHu) + F5.anomalyCoefficent + F10.anomalyCoefficent)
-    · simp [map_add]
-    rw [h2]
-    exact map_zero _
+  · rw [Quanta.mem_liftCharge_iff] at ⊢ h1
+    simp [Quanta.reduce, QM] at ⊢ h1
+    refine ⟨?_, ?_, FiveQuanta.map_liftCharge _ _ _ h1.2.2.1,
+      TenQuanta.map_liftCharge _ _ _ h1.2.2.2⟩
+    · simp [ChargeSpectrum.map, h1.1]
+    · simp [ChargeSpectrum.map, h1.2]
+  · rw [Quanta.LinearAnomalyCancellation] at h2
+    simp [QM, ← map_add, h2, Quanta.reduce, Quanta.LinearAnomalyCancellation,
+      FiveQuanta.anomalyCoefficent_of_reduce, TenQuanta.anomalyCoefficent_of_reduce]
 
 end map
 
 /-!
 
-## The viable charges which are anomaly free.
+## B. The viable charges which lift to anomaly free quanta
 
 -/
 
@@ -112,9 +113,15 @@ set_option maxRecDepth 2000 in
 lemma viable_anomalyFree (I : CodimensionOneConfig) :
     (viableCharges I).filter IsAnomalyFree =
     (match I with
-    | .same => {(some 2, some (-2), {-1, 1}, {-1}), (some (-2), some 2, {-1, 1}, {1})}
-    | .nearestNeighbor => {(some 6, some (-14), {-9, 1}, {-7})}
-    | .nextToNearestNeighbor => ∅) := by
+    | .same => {⟨some 2, some (-2), {-3, -1}, {-1}⟩,
+      ⟨some 2, some (-2), {-1, 1}, {-1}⟩,
+      ⟨some (-2), some 2, {-1, 1}, {1}⟩,
+      ⟨some (-2), some 2, {1, 3}, {1}⟩}
+    | .nearestNeighbor => {⟨some (-4), some (-14), {6, 11}, {-7}⟩,
+      ⟨some 6, some (-14), {-9, 1}, {-7}⟩,
+      ⟨some 6, some (-14), {1, 11}, {-7}⟩,
+      ⟨some (-14), some 6, {1, 11}, {3}⟩}
+    | .nextToNearestNeighbor => {⟨some 2, some 12, {-13, -8}, {6}⟩}) := by
   revert I
   decide
 

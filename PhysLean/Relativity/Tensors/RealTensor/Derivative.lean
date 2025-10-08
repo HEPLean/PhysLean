@@ -29,8 +29,7 @@ open ComponentIdx
     `ℝT(d, cm) → ℝT(d, (Sum.elim cm cn) ∘ finSumFinEquiv.symm)`. -/
 noncomputable def derivative {d n m : ℕ} {cm : Fin m → realLorentzTensor.Color}
     {cn : Fin n → realLorentzTensor.Color} (f : ℝT(d, cm) → ℝT(d, cn)) :
-    ℝT(d, cm) → ℝT(d, (Sum.elim (fun i => (realLorentzTensor d).τ (cm i)) cn) ∘
-      finSumFinEquiv.symm) := fun y =>
+    ℝT(d, cm) → ℝT(d, (Fin.append (fun i => (realLorentzTensor d).τ (cm i)) cn)) := fun y =>
       (Tensor.basis _).repr.toEquiv.symm <|
       Finsupp.equivFunOnFinite.symm <| fun b =>
   /- The `b` componenet of the derivative of `f` evaluated at `y` is: -/
@@ -39,9 +38,9 @@ noncomputable def derivative {d n m : ℕ} {cm : Fin m → realLorentzTensor.Col
   /- evaluated at the point `y` in `ℝT(d, cm)` -/
     (Finsupp.equivFunOnFinite ((basis cm).repr y))
   /- In the direction of `(splitEquiv b).1` -/
-    (Finsupp.single (fun i => Fin.cast (by simp) ((splitEquiv b).1 i)) (1 : ℝ))
+    (Finsupp.single (fun i => Fin.cast (by simp) ((ComponentIdx.prodEquiv b).1 i)) (1 : ℝ))
   /- The `(splitEquiv b).2` component of that derivative. -/
-    (splitEquiv b).2
+    (ComponentIdx.prodEquiv b).2
 
 @[inherit_doc realLorentzTensor.derivative]
 scoped[realLorentzTensor] notation "∂" => realLorentzTensor.derivative
@@ -49,15 +48,14 @@ scoped[realLorentzTensor] notation "∂" => realLorentzTensor.derivative
 lemma derivative_repr {d n m : ℕ} {cm : Fin m → realLorentzTensor.Color}
     {cn : Fin n → realLorentzTensor.Color} (f : ℝT(d, cm) → ℝT(d, cn))
     (y : ℝT(d, cm))
-    (b : (j : Fin (m + n)) →
-      Fin ((realLorentzTensor d).repDim
-      ((((fun i => (realLorentzTensor d).τ (cm i)) ⊕ᵥ cn) ∘ ⇑finSumFinEquiv.symm) j)))
+    (b : (j : Fin (m + n)) → Fin ((realLorentzTensor d).repDim
+      (Fin.append (fun i => (realLorentzTensor d).τ (cm i)) cn j)))
     (h1 : DifferentiableAt ℝ (mapToBasis f)
       (Finsupp.equivFunOnFinite ((basis cm).repr y))) :
     (Tensor.basis _).repr (∂ f y) b =
-    fderiv ℝ (fun y => mapToBasis f y (splitEquiv b).2)
+    fderiv ℝ (fun y => mapToBasis f y (ComponentIdx.prodEquiv b).2)
       ((basis cm).repr y)
-      (Finsupp.single (fun i => Fin.cast (by simp) ((splitEquiv b).1 i)) (1 : ℝ)) := by
+      (Finsupp.single (fun i => Fin.cast (by simp) ((ComponentIdx.prodEquiv b).1 i)) (1 : ℝ)) := by
   simp [derivative]
   rw [fderiv_pi]
   · simp

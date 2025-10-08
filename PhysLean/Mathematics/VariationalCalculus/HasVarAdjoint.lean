@@ -284,6 +284,29 @@ lemma add {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
   ext' := IsLocalizedFunctionTransform.add hF.ext' hG.ext'
   -- ext := IsLocalizedFunctionTransform.add hF.ext hG.ext
 
+lemma sum {ι : Type} [Fintype ι] {F : ι → (X → U) → (X → V)} {F' : ι → (X → V) → (X → U)}
+    (hF : ∀ i, HasVarAdjoint (F i) (F' i)) :
+    HasVarAdjoint (fun φ x => ∑ i, F i φ x) (fun φ x => ∑ i, F' i φ x) := by
+  let P (ι : Type) [Fintype ι] : Prop :=
+    ∀ (F : ι → (X → U) → (X → V)) (F' : ι → (X → V) → (X → U))
+      (hF : ∀ i, HasVarAdjoint (F i) (F' i)),
+      HasVarAdjoint (fun φ x => ∑ i, F i φ x) (fun φ x => ∑ i, F' i φ x)
+  have h1 : P ι := by
+    apply Fintype.induction_empty_option
+    · intro ι1 ι2 _ e h F F' hF
+      convert h (fun i => F (e i)) (fun i => F' (e i)) fun i => hF (e i)
+      rw [← @e.sum_comp _ _ _ (Fintype.ofEquiv ι2 e.symm)]
+      rw [← @e.sum_comp _ _ _ (Fintype.ofEquiv ι2 e.symm)]
+    · simp [P]
+      exact zero
+    · intro ι _ h
+      simp [P]
+      intro F F' hF
+      apply add
+      · exact hF none
+      · exact h (fun i => F (some i)) (fun i => F' (some i)) fun i => hF (some i)
+  exact h1 F F' hF
+
 lemma sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
     (hF : HasVarAdjoint F F') (hG : HasVarAdjoint G G') :
     HasVarAdjoint (fun φ x => F φ x - G φ x) (fun φ x => F' φ x - G' φ x) := by
@@ -292,7 +315,7 @@ lemma sub {F G : (X → U) → (X → V)} {F' G' : (X → V) → (X → U)}
 
 end OnFiniteMeasures
 
-lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
+lemma mul_left {F : (X → U) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → U)}
     (hF : HasVarAdjoint F F') (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => ψ x * F φ x) (fun φ x => F' (fun x => ψ x * φ x) x) where
   test_fun_preserving φ hφ := by
@@ -314,7 +337,7 @@ lemma mul_left {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → �
     exact ⟨L,cL,by intro _ _ hφ _ _; apply h <;> simp_all⟩
   -- ext := IsLocalizedFunctionTransform.mul_left hF.ext
 
-lemma mul_right {F : (X → ℝ) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → ℝ)}
+lemma mul_right {F : (X → U) → (X → ℝ)} {ψ : X → ℝ} {F' : (X → ℝ) → (X → U)}
     (hF : HasVarAdjoint F F') (hψ : ContDiff ℝ ∞ ψ) :
     HasVarAdjoint (fun φ x => F φ x * ψ x) (fun φ x => F' (fun x => φ x * ψ x) x) where
   test_fun_preserving φ hφ := by
