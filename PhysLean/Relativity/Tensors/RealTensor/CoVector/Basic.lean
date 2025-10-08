@@ -165,14 +165,15 @@ lemma toTensor_basis_eq_tensor_basis {d : ℕ} (μ : Fin 1 ⊕ Fin d) :
   rw [← toTensor_symm_basis]
   simp
 
-lemma basis_eq_map_tensor_basis : basis = ((Tensor.basis (S := realLorentzTensor) ![Color.down]).map
+lemma basis_eq_map_tensor_basis {d} : basis =
+    ((Tensor.basis (S := realLorentzTensor d) ![Color.down]).map
     toTensor.symm).reindex indexEquiv := by
   ext μ
   rw [← toTensor_symm_basis]
   simp
 
-lemma tensor_basis_map_eq_basis_reindex :
-    (Tensor.basis (S := realLorentzTensor) ![Color.down]).map toTensor.symm =
+lemma tensor_basis_map_eq_basis_reindex {d} :
+    (Tensor.basis (S := realLorentzTensor d) ![Color.down]).map toTensor.symm =
     basis.reindex indexEquiv.symm := by
   rw [basis_eq_map_tensor_basis]
   ext μ

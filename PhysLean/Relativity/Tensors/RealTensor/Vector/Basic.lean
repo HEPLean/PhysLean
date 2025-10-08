@@ -73,6 +73,25 @@ lemma apply_add {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
 lemma apply_sub {d : ℕ} (v w : Vector d) (i : Fin 1 ⊕ Fin d) :
     (v - w) i = v i - w i := by rfl
 
+lemma apply_sum {d : ℕ} {ι : Type} [Fintype ι] (f : ι → Vector d) (i : Fin 1 ⊕ Fin d) :
+    (∑ j, f j) i = ∑ j, f j i := by
+  let P (ι : Type) [Fintype ι] :=  ∀  (f : ι → Vector d) (i : Fin 1 ⊕ Fin d),
+    (∑ j : ι, f j) i = ∑ j, f j i
+  revert i f
+  change P ι
+  apply Fintype.induction_empty_option
+  · intro ι1 ι2 _ e h1
+    dsimp [P]
+    intro f i
+    have h' := h1 (f ∘ e) i
+    simp at h'
+    rw [← @e.sum_comp, ← @e.sum_comp, h']
+  · intro f i
+    simp
+    rfl
+  · intro ι _ h f i
+    rw [Fintype.sum_option, apply_add, h, Fintype.sum_option]
+
 @[simp]
 lemma neg_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
     (-v) i = - v i := rfl
@@ -168,14 +187,14 @@ lemma toTensor_basis_eq_tensor_basis {d : ℕ} (μ : Fin 1 ⊕ Fin d) :
   rw [← toTensor_symm_basis]
   simp
 
-lemma basis_eq_map_tensor_basis : basis =
-    ((Tensor.basis (S := realLorentzTensor) ![Color.up]).map toTensor.symm).reindex indexEquiv := by
+lemma basis_eq_map_tensor_basis {d} : basis =
+    ((Tensor.basis (S := realLorentzTensor d) ![Color.up]).map toTensor.symm).reindex indexEquiv := by
   ext μ
   rw [← toTensor_symm_basis]
   simp
 
-lemma tensor_basis_map_eq_basis_reindex :
-    (Tensor.basis (S := realLorentzTensor) ![Color.up]).map toTensor.symm =
+lemma tensor_basis_map_eq_basis_reindex {d} :
+    (Tensor.basis (S := realLorentzTensor d) ![Color.up]).map toTensor.symm =
     basis.reindex indexEquiv.symm := by
   rw [basis_eq_map_tensor_basis]
   ext μ

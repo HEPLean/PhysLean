@@ -79,8 +79,8 @@ contravariant Lorentz vectors, and prove some simple results about it.
 
 -/
 /-- The electricomagnetic potential is a tensor `A^μ`. -/
-noncomputable abbrev ElectromagneticPotential :=
-  SpaceTime → Lorentz.Vector
+noncomputable abbrev ElectromagneticPotential (d : ℕ := 3) :=
+  SpaceTime d → Lorentz.Vector d
 
 namespace ElectromagneticPotential
 
@@ -102,8 +102,8 @@ Under a Lorentz transformation `Λ`, this transforms as
 
 -/
 
-lemma spaceTime_deriv_action_eq_sum {μ ν : Fin 1 ⊕ Fin 3}
-    (Λ : LorentzGroup 3) (A : ElectromagneticPotential) (hA : Differentiable ℝ A) :
+lemma spaceTime_deriv_action_eq_sum {d} {μ ν : Fin 1 ⊕ Fin d} {x : SpaceTime d}
+    (Λ : LorentzGroup d) (A : ElectromagneticPotential d) (hA : Differentiable ℝ A) :
     ∂_ μ (fun x => Λ • A (Λ⁻¹ • x)) x ν =
     ∑ κ, ∑ ρ, (Λ.1 ν κ * Λ⁻¹.1 ρ μ) * ∂_ ρ A (Λ⁻¹ • x) κ := by
   calc _
@@ -153,6 +153,10 @@ lemma spaceTime_deriv_action_eq_sum {μ ν : Fin 1 ⊕ Fin 3}
       · exact hA
     _ = (∑ κ, Λ.1 ν κ * (∑ ρ, Λ⁻¹.1 ρ μ • ∂_ ρ A (Λ⁻¹ • x) κ)) := by
       rw [Lorentz.Vector.smul_eq_sum]
+      congr
+      funext j
+      congr
+      rw [Lorentz.Vector.apply_sum]
       rfl
   apply Finset.sum_congr rfl (fun κ _ => ?_)
   rw [Finset.mul_sum]
@@ -167,8 +171,8 @@ lemma spaceTime_deriv_action_eq_sum {μ ν : Fin 1 ⊕ Fin 3}
 We show that the components of field strength tensor are differentiable if the potential is.
 -/
 
-lemma differentiable_component
-    (A : ElectromagneticPotential) (hA : Differentiable ℝ A) (μ : Fin 1 ⊕ Fin 3) :
+lemma differentiable_component {d : ℕ}
+    (A : ElectromagneticPotential d) (hA : Differentiable ℝ A) (μ : Fin 1 ⊕ Fin d) :
     Differentiable ℝ (fun x => A x μ) := by
   revert μ
   rw [← differentiable_pi]
@@ -185,15 +189,16 @@ and derive the equations of motion.
 -/
 
 /-- A local instance of the inner product structure on `SpaceTime`. -/
-noncomputable local instance : InnerProductSpace ℝ SpaceTime := SpaceTime.innerProductSpace 3
+noncomputable local instance {d : ℕ}: InnerProductSpace ℝ (SpaceTime d) :=
+  SpaceTime.innerProductSpace d
 
 open ContDiff
-lemma hasVarAdjDerivAt_component (μ : Fin 1 ⊕ Fin 3) (A : SpaceTime → Lorentz.Vector)
+lemma hasVarAdjDerivAt_component {d : ℕ} (μ : Fin 1 ⊕ Fin d) (A : SpaceTime d → Lorentz.Vector d)
     (hA : ContDiff ℝ ∞ A) :
-        HasVarAdjDerivAt (fun (A' : SpaceTime → Lorentz.Vector) x => A' x μ)
-          (fun (A' : SpaceTime → ℝ) x => A' x • Lorentz.Vector.basis μ) A := by
-  let f : SpaceTime → Lorentz.Vector → ℝ := fun x v => v μ
-  let f' : SpaceTime → Lorentz.Vector → ℝ → Lorentz.Vector := fun x _ c =>
+        HasVarAdjDerivAt (fun (A' : SpaceTime d → Lorentz.Vector d) x => A' x μ)
+          (fun (A' : SpaceTime d → ℝ) x => A' x • Lorentz.Vector.basis μ) A := by
+  let f : SpaceTime d → Lorentz.Vector d → ℝ := fun x v => v μ
+  let f' : SpaceTime d → Lorentz.Vector d → ℝ → Lorentz.Vector d := fun x _ c =>
     c • Lorentz.Vector.basis μ
   change HasVarAdjDerivAt (fun A' x => f x (A' x)) (fun ψ x => f' x (A x) (ψ x)) A
   apply HasVarAdjDerivAt.fmap
@@ -210,7 +215,7 @@ lemma hasVarAdjDerivAt_component (μ : Fin 1 ⊕ Fin 3) (A : SpaceTime → Loren
     RCLike.inner_apply, conj_trivial, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte,
     mul_eq_mul_right_iff]
   left
-  let fCLM : Lorentz.Vector →L[ℝ] ℝ := {
+  let fCLM : Lorentz.Vector d →L[ℝ] ℝ := {
     toFun := fun v => v μ,
     map_add' := by intros; simp,
     map_smul' := by intros; simp
@@ -230,13 +235,14 @@ and derive the equations of motion (Maxwell's equations).
 
 -/
 
-lemma deriv_hasVarAdjDerivAt (μ ν : Fin 1 ⊕ Fin 3) (A : SpaceTime → Lorentz.Vector)
+lemma deriv_hasVarAdjDerivAt {d} (μ ν : Fin 1 ⊕ Fin d) (A : SpaceTime d → Lorentz.Vector d)
     (hA : ContDiff ℝ ∞ A) :
-    HasVarAdjDerivAt (fun (A : SpaceTime → Lorentz.Vector) x => ∂_ μ A x ν)
+    HasVarAdjDerivAt (fun (A : SpaceTime d → Lorentz.Vector d) x => ∂_ μ A x ν)
       (fun ψ x => - (fderiv ℝ ψ x) (Lorentz.Vector.basis μ) • Lorentz.Vector.basis ν) A := by
   have h0' := HasVarAdjDerivAt.fderiv' _ _
         (hF := hasVarAdjDerivAt_component ν A hA) A (Lorentz.Vector.basis μ)
-  refine HasVarAdjDerivAt.congr (G := (fun (A : SpaceTime → Lorentz.Vector) x => ∂_ μ A x ν)) h0' ?_
+  refine HasVarAdjDerivAt.congr (G := (fun (A : SpaceTime d →
+    Lorentz.Vector d) x => ∂_ μ A x ν)) h0' ?_
   intro φ hφ
   funext x
   simp only
@@ -254,8 +260,8 @@ under Lorentz transformations.
 -/
 
 /-- The derivative of the electric potential, `∂_μ A^ν`. -/
-noncomputable def deriv (A : ElectromagneticPotential) :
-    SpaceTime → Lorentz.CoVector ⊗[ℝ] Lorentz.Vector := fun x =>
+noncomputable def deriv {d} (A : ElectromagneticPotential d) :
+    SpaceTime d → Lorentz.CoVector d ⊗[ℝ] Lorentz.Vector d := fun x =>
   ∑ μ, ∑ ν, (∂_ μ A x ν) • Lorentz.CoVector.basis μ ⊗ₜ[ℝ] Lorentz.Vector.basis ν
 
 /-!
@@ -268,7 +274,8 @@ applying the Lorentz transformation to the potential and then taking the derivat
 as taking the derivative and then applying the Lorentz transformation to the resulting tensor.
 
 -/
-lemma deriv_equivariant {x : SpaceTime} (A : ElectromagneticPotential) (Λ : LorentzGroup 3)
+lemma deriv_equivariant {d} {x : SpaceTime d} (A : ElectromagneticPotential d)
+    (Λ : LorentzGroup d)
     (hf : Differentiable ℝ A) : deriv (fun x => Λ • A (Λ⁻¹ • x)) x = Λ • (deriv A (Λ⁻¹ • x)) := by
     calc _
       _ = ∑ μ, ∑ ν, ∑ κ, ∑ ρ, (Λ.1 ν κ * (Λ⁻¹.1 ρ μ • ∂_ ρ A (Λ⁻¹ • x) κ)) •
@@ -335,8 +342,9 @@ are just equal to `∂_ μ A x ν`.
 -/
 
 @[simp]
-lemma deriv_basis_repr_apply {μν : (Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)} (A : ElectromagneticPotential)
-    (x : SpaceTime) :
+lemma deriv_basis_repr_apply {d} {μν : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)}
+    (A : ElectromagneticPotential d)
+    (x : SpaceTime d) :
     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (deriv A x) μν =
     ∂_ μν.1 A x μν.2 := by
   match μν with
@@ -353,8 +361,8 @@ lemma deriv_basis_repr_apply {μν : (Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)} (A 
     simp [h]
   · simp
 
-lemma toTensor_deriv_basis_repr_apply (A : ElectromagneticPotential)
-    (x : SpaceTime) (b : ComponentIdx (S := realLorentzTensor)
+lemma toTensor_deriv_basis_repr_apply  {d} (A : ElectromagneticPotential d)
+    (x : SpaceTime d) (b : ComponentIdx (S := realLorentzTensor d)
       (Fin.append ![Color.down] ![Color.up])) :
     (Tensor.basis _).repr (Tensorial.toTensor (deriv A x)) b =
     ∂_ (finSumFinEquiv.symm (b 0)) A x (finSumFinEquiv.symm (b 1)) := by
@@ -364,10 +372,10 @@ lemma toTensor_deriv_basis_repr_apply (A : ElectromagneticPotential)
     Equiv.symm_symm, Fin.isValue]
   rw [Lorentz.Vector.tensor_basis_map_eq_basis_reindex,
     Lorentz.CoVector.tensor_basis_map_eq_basis_reindex]
-  have hb : (((Lorentz.CoVector.basis (d := 3)).reindex
+  have hb : (((Lorentz.CoVector.basis (d := d)).reindex
       Lorentz.CoVector.indexEquiv.symm).tensorProduct
       (Lorentz.Vector.basis.reindex Lorentz.Vector.indexEquiv.symm)) =
-      ((Lorentz.CoVector.basis (d := 3)).tensorProduct (Lorentz.Vector.basis (d := 3))).reindex
+      ((Lorentz.CoVector.basis (d := d)).tensorProduct (Lorentz.Vector.basis (d := d))).reindex
       (Lorentz.CoVector.indexEquiv.symm.prodCongr Lorentz.Vector.indexEquiv.symm) := by
     ext b
     match b with
@@ -387,10 +395,10 @@ under Lorentz transformations.
 
 -/
 /-- The field strength from an electromagnetic potential, as a tensor `F_μ^ν`. -/
-noncomputable def toFieldStrength (A : ElectromagneticPotential) :
-    SpaceTime → Lorentz.Vector ⊗[ℝ] Lorentz.Vector := fun x =>
+noncomputable def toFieldStrength {d} (A : ElectromagneticPotential d) :
+    SpaceTime d → Lorentz.Vector d ⊗[ℝ] Lorentz.Vector d := fun x =>
   Tensorial.toTensor.symm
-  (permT id (PermCond.auto) {(η 3 | μ μ' ⊗ A.deriv x | μ' ν) + - (η 3 | ν ν' ⊗ A.deriv x | ν' μ)}ᵀ)
+  (permT id (PermCond.auto) {(η d | μ μ' ⊗ A.deriv x | μ' ν) + - (η d | ν ν' ⊗ A.deriv x | ν' μ)}ᵀ)
 
 /-!
 
@@ -398,11 +406,11 @@ noncomputable def toFieldStrength (A : ElectromagneticPotential) :
 
 -/
 
-lemma toFieldStrength_eq_add (A : ElectromagneticPotential) (x : SpaceTime) :
+lemma toFieldStrength_eq_add {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
     toFieldStrength A x =
-    Tensorial.toTensor.symm (permT id (PermCond.auto) {(η 3 | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ)
+    Tensorial.toTensor.symm (permT id (PermCond.auto) {(η d | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ)
     - Tensorial.toTensor.symm (permT ![1, 0] (PermCond.auto)
-      {(η 3 | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ) := by
+      {(η d | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ) := by
   rw [toFieldStrength]
   simp only [map_add, map_neg]
   rw [sub_eq_add_neg]
@@ -411,10 +419,10 @@ lemma toFieldStrength_eq_add (A : ElectromagneticPotential) (x : SpaceTime) :
   · rw [permT_permT]
     rfl
 
-lemma toTensor_toFieldStrength (A : ElectromagneticPotential) (x : SpaceTime) :
+lemma toTensor_toFieldStrength {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
     Tensorial.toTensor (toFieldStrength A x) =
-    (permT id (PermCond.auto) {(η 3 | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ)
-    - (permT ![1, 0] (PermCond.auto) {(η 3 | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ) := by
+    (permT id (PermCond.auto) {(η d | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ)
+    - (permT ![1, 0] (PermCond.auto) {(η d | μ μ' ⊗ A.deriv x | μ' ν)}ᵀ) := by
   rw [toFieldStrength_eq_add]
   simp
 
@@ -424,8 +432,8 @@ lemma toTensor_toFieldStrength (A : ElectromagneticPotential) (x : SpaceTime) :
 
 -/
 
-lemma toTensor_toFieldStrength_basis_repr (A : ElectromagneticPotential) (x : SpaceTime)
-    (b : ComponentIdx (S := realLorentzTensor) (Fin.append ![Color.up] ![Color.up])) :
+lemma toTensor_toFieldStrength_basis_repr {d} (A : ElectromagneticPotential d) (x : SpaceTime d)
+    (b : ComponentIdx (S := realLorentzTensor d) (Fin.append ![Color.up] ![Color.up])) :
     (Tensor.basis _).repr (Tensorial.toTensor (toFieldStrength A x)) b =
     ∑ κ, (η (finSumFinEquiv.symm (b 0)) κ * ∂_ κ A x (finSumFinEquiv.symm (b 1)) -
       η (finSumFinEquiv.symm (b 1)) κ * ∂_ κ A x (finSumFinEquiv.symm (b 0))) := by
@@ -454,10 +462,10 @@ lemma toTensor_toFieldStrength_basis_repr (A : ElectromagneticPotential) (x : Sp
     change ∂_ (finSumFinEquiv.symm n) A x (finSumFinEquiv.symm (b 0))
   rw [← Finset.sum_sub_distrib]
   rw [← finSumFinEquiv.sum_comp]
-  simp only [Nat.reduceAdd, Fin.isValue, Equiv.symm_apply_apply]
+  simp only [Fin.isValue, Equiv.symm_apply_apply]
 
-lemma toFieldStrength_tensor_basis_eq_basis (A : ElectromagneticPotential) (x : SpaceTime)
-    (b : ComponentIdx (S := realLorentzTensor) (Fin.append ![Color.up] ![Color.up])) :
+lemma toFieldStrength_tensor_basis_eq_basis {d} (A : ElectromagneticPotential d) (x : SpaceTime d)
+    (b : ComponentIdx (S := realLorentzTensor d) (Fin.append ![Color.up] ![Color.up])) :
     (Tensor.basis _).repr (Tensorial.toTensor (toFieldStrength A x)) b =
     (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr (toFieldStrength A x)
       (finSumFinEquiv.symm (b 0), finSumFinEquiv.symm (b 1)) := by
@@ -466,9 +474,9 @@ lemma toFieldStrength_tensor_basis_eq_basis (A : ElectromagneticPotential) (x : 
   simp only [Nat.reduceSucc, Nat.reduceAdd, Basis.repr_reindex, Finsupp.mapDomain_equiv_apply,
     Equiv.symm_symm, Fin.isValue]
   rw [Lorentz.Vector.tensor_basis_map_eq_basis_reindex]
-  have hb : (((Lorentz.Vector.basis (d := 3)).reindex Lorentz.Vector.indexEquiv.symm).tensorProduct
+  have hb : (((Lorentz.Vector.basis (d := d)).reindex Lorentz.Vector.indexEquiv.symm).tensorProduct
           (Lorentz.Vector.basis.reindex Lorentz.Vector.indexEquiv.symm)) =
-          ((Lorentz.Vector.basis (d := 3)).tensorProduct (Lorentz.Vector.basis (d := 3))).reindex
+          ((Lorentz.Vector.basis (d := d)).tensorProduct (Lorentz.Vector.basis (d := d))).reindex
           (Lorentz.Vector.indexEquiv.symm.prodCongr Lorentz.Vector.indexEquiv.symm) := by
         ext b
         match b with
@@ -478,8 +486,8 @@ lemma toFieldStrength_tensor_basis_eq_basis (A : ElectromagneticPotential) (x : 
   rw [Module.Basis.repr_reindex_apply]
   congr 1
 
-lemma toFieldStrength_basis_repr_apply {μν : (Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)}
-    (A : ElectromagneticPotential) (x : SpaceTime) :
+lemma toFieldStrength_basis_repr_apply {d} {μν : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)}
+    (A : ElectromagneticPotential d) (x : SpaceTime d) :
     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x) μν =
     ∑ κ, ((η μν.1 κ * ∂_ κ A x μν.2) - η μν.2 κ * ∂_ κ A x μν.1) := by
   match μν with
@@ -493,8 +501,8 @@ lemma toFieldStrength_basis_repr_apply {μν : (Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ F
   change _ = (finSumFinEquiv.symm (finSumFinEquiv μ), finSumFinEquiv.symm (finSumFinEquiv ν))
   simp
 
-lemma toFieldStrength_basis_repr_apply_eq_single {μν : (Fin 1 ⊕ Fin 3) × (Fin 1 ⊕ Fin 3)}
-    (A : ElectromagneticPotential) (x : SpaceTime) :
+lemma toFieldStrength_basis_repr_apply_eq_single {d} {μν : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)}
+    (A : ElectromagneticPotential d) (x : SpaceTime d) :
     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x) μν =
     ((η μν.1 μν.1 * ∂_ μν.1 A x μν.2) - η μν.2 μν.2 * ∂_ μν.2 A x μν.1) := by
   rw [toFieldStrength_basis_repr_apply]
@@ -523,16 +531,16 @@ This is currently not used as much as it could be.
 open ContDiff
 
 /-- The matrix corresponding to the field strength in the standard basis. -/
-noncomputable abbrev fieldStrengthMatrix (A : ElectromagneticPotential) (x : SpaceTime) :=
+noncomputable abbrev fieldStrengthMatrix {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :=
     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x)
 
-lemma fieldStrengthMatrix_eq_tensor_basis_repr (A : ElectromagneticPotential) (x : SpaceTime)
-    (μ ν : (Fin 1 ⊕ Fin 3)) :
+lemma fieldStrengthMatrix_eq_tensor_basis_repr {d} (A : ElectromagneticPotential d)
+    (x : SpaceTime d) (μ ν : (Fin 1 ⊕ Fin d)) :
     A.fieldStrengthMatrix x (μ, ν) =
     (Tensor.basis _).repr (Tensorial.toTensor (toFieldStrength A x))
     (fun | 0 => finSumFinEquiv μ | 1 => finSumFinEquiv ν) := by
   rw [toFieldStrength_tensor_basis_eq_basis]
-  simp only [Nat.reduceAdd, Equiv.symm_apply_apply]
+  simp only [Equiv.symm_apply_apply]
   rfl
 
 /-!
@@ -541,7 +549,7 @@ lemma fieldStrengthMatrix_eq_tensor_basis_repr (A : ElectromagneticPotential) (x
 
 -/
 
-lemma fieldStrengthMatrix_differentiable {A : ElectromagneticPotential}
+lemma fieldStrengthMatrix_differentiable {d} {A : ElectromagneticPotential d}
     {μν} (hA : ContDiff ℝ 2 A) :
     Differentiable ℝ (A.fieldStrengthMatrix · μν) := by
   have diff_partial (μ) :
@@ -567,7 +575,7 @@ We show that the field strength tensor is antisymmetric.
 
 -/
 
-lemma toFieldStrength_antisymmetric (A : ElectromagneticPotential) (x : SpaceTime) :
+lemma toFieldStrength_antisymmetric {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
     {A.toFieldStrength x | μ ν = - (A.toFieldStrength x | ν μ)}ᵀ := by
   apply (Tensor.basis _).repr.injective
   ext b
@@ -577,11 +585,11 @@ lemma toFieldStrength_antisymmetric (A : ElectromagneticPotential) (x : SpaceTim
   rw [toTensor_toFieldStrength_basis_repr]
   rw [← Finset.sum_neg_distrib]
   apply Finset.sum_congr rfl (fun κ _ => ?_)
-  simp only [Fin.isValue, Nat.reduceAdd, Fin.cast_eq_self, neg_sub]
+  simp only [Fin.isValue, Fin.cast_eq_self, neg_sub]
   rfl
 
-lemma fieldStrengthMatrix_antisymm (A : ElectromagneticPotential) (x : SpaceTime)
-    (μ ν : Fin 1 ⊕ Fin 3) :
+lemma fieldStrengthMatrix_antisymm {d} (A : ElectromagneticPotential d) (x : SpaceTime d)
+    (μ ν : Fin 1 ⊕ Fin d) :
     A.fieldStrengthMatrix x (μ, ν) = - A.fieldStrengthMatrix x (ν, μ) := by
   rw [toFieldStrength_basis_repr_apply, toFieldStrength_basis_repr_apply]
   rw [← Finset.sum_neg_distrib]
@@ -589,8 +597,8 @@ lemma fieldStrengthMatrix_antisymm (A : ElectromagneticPotential) (x : SpaceTime
   simp
 
 @[simp]
-lemma fieldStrengthMatrix_diag_eq_zero (A : ElectromagneticPotential) (x : SpaceTime)
-    (μ : Fin 1 ⊕ Fin 3) :
+lemma fieldStrengthMatrix_diag_eq_zero {d} (A : ElectromagneticPotential d) (x : SpaceTime d)
+    (μ : Fin 1 ⊕ Fin d) :
     A.fieldStrengthMatrix x (μ, μ) = 0 := by
   rw [toFieldStrength_basis_repr_apply_eq_single]
   simp
@@ -605,8 +613,8 @@ as taking the field strength and then transforming the resulting tensor.
 
 -/
 
-lemma toFieldStrength_equivariant (A : ElectromagneticPotential) (Λ : LorentzGroup 3)
-    (hf : Differentiable ℝ A) (x : SpaceTime) :
+lemma toFieldStrength_equivariant {d} (A : ElectromagneticPotential d) (Λ : LorentzGroup d)
+    (hf : Differentiable ℝ A) (x : SpaceTime d) :
     toFieldStrength (fun x => Λ • A (Λ⁻¹ • x)) x =
       Λ • toFieldStrength A (Λ⁻¹ • x) := by
   rw [toFieldStrength, deriv_equivariant A Λ hf, ← actionT_contrMetric Λ, toFieldStrength]
@@ -614,9 +622,9 @@ lemma toFieldStrength_equivariant (A : ElectromagneticPotential) (Λ : LorentzGr
     permT_equivariant, map_add, ← Tensorial.smul_toTensor_symm, Tensorial.smul_add,
     Tensorial.smul_neg]
 
-lemma fieldStrengthMatrix_equivariant (A : ElectromagneticPotential)
-    (Λ : LorentzGroup 3) (hf : Differentiable ℝ A) (x : SpaceTime)
-    (μ : (Fin 1 ⊕ Fin 3)) (ν : Fin 1 ⊕ Fin 3) :
+lemma fieldStrengthMatrix_equivariant {d} (A : ElectromagneticPotential d)
+    (Λ : LorentzGroup d) (hf : Differentiable ℝ A) (x : SpaceTime d)
+    (μ : (Fin 1 ⊕ Fin d)) (ν : Fin 1 ⊕ Fin d) :
     fieldStrengthMatrix (fun x => Λ • A (Λ⁻¹ • x)) x (μ, ν) =
     ∑ κ, ∑ ρ, (Λ.1 μ κ * Λ.1 ν ρ) * A.fieldStrengthMatrix (Λ⁻¹ • x) (κ, ρ) := by
   rw [fieldStrengthMatrix, toFieldStrength_equivariant A Λ hf x]
@@ -624,7 +632,7 @@ lemma fieldStrengthMatrix_equivariant (A : ElectromagneticPotential)
     enter [2, κ, 2, ρ]
     rw [fieldStrengthMatrix]
   generalize A.toFieldStrength (Λ⁻¹ • x) = F
-  let P (F : Lorentz.Vector ⊗[ℝ] Lorentz.Vector) : Prop :=
+  let P (F : Lorentz.Vector d ⊗[ℝ] Lorentz.Vector d) : Prop :=
     ((Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (Λ • F)) (μ, ν) =
     ∑ κ, ∑ ρ, Λ.1 μ κ * Λ.1 ν ρ *
     ((Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr F) (κ, ρ)

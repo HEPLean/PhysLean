@@ -420,7 +420,7 @@ open MeasureTheory
 
 -/
 
-instance : MeasurableSpace SpaceTime := borel SpaceTime
+instance {d : ℕ} : MeasurableSpace (SpaceTime d) := borel (SpaceTime d)
 
 /-!
 
@@ -428,7 +428,7 @@ instance : MeasurableSpace SpaceTime := borel SpaceTime
 
 -/
 
-instance : BorelSpace SpaceTime where
+instance {d : ℕ} : BorelSpace (SpaceTime d) where
   measurable_eq := by rfl
 
 /-!
@@ -447,7 +447,7 @@ def innerProductSpace (d : ℕ) : InnerProductSpace ℝ (SpaceTime d) :=
 
 -/
 
-instance : MeasureSpace SpaceTime where
+instance {d : ℕ} : MeasureSpace (SpaceTime d) where
   volume := Lorentz.Vector.basis.addHaar
 
 /-!
@@ -456,7 +456,7 @@ instance : MeasureSpace SpaceTime where
 
 -/
 
-instance : (volume (α := SpaceTime)).IsOpenPosMeasure :=
+instance {d : ℕ} : (volume (α := SpaceTime d)).IsOpenPosMeasure :=
   inferInstanceAs ((Lorentz.Vector.basis.addHaar).IsOpenPosMeasure)
 
 /-!
@@ -465,7 +465,7 @@ instance : (volume (α := SpaceTime)).IsOpenPosMeasure :=
 
 -/
 
-instance : IsFiniteMeasureOnCompacts (volume (α := SpaceTime)) :=
+instance {d : ℕ} : IsFiniteMeasureOnCompacts (volume (α := SpaceTime d)) :=
   inferInstanceAs (IsFiniteMeasureOnCompacts (Lorentz.Vector.basis.addHaar))
 
 /-!
@@ -474,7 +474,7 @@ instance : IsFiniteMeasureOnCompacts (volume (α := SpaceTime)) :=
 
 -/
 
-instance : Measure.IsAddHaarMeasure (volume (α := SpaceTime)) :=
+instance {d : ℕ} : Measure.IsAddHaarMeasure (volume (α := SpaceTime d)) :=
   inferInstanceAs (Measure.IsAddHaarMeasure (Lorentz.Vector.basis.addHaar))
 
 end SpaceTime
