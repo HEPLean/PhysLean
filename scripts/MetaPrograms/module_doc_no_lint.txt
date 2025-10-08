@@ -25,7 +25,6 @@ PhysLean/Electromagnetism/FieldStrength/Basic.lean
 PhysLean/Electromagnetism/FieldStrength/Derivative.lean
 PhysLean/Electromagnetism/Homogeneous.lean
 PhysLean/Electromagnetism/MaxwellEquations.lean
-PhysLean/Electromagnetism/Wave.lean
 PhysLean/Mathematics/Calculus/AdjFDeriv.lean
 PhysLean/Mathematics/Calculus/Divergence.lean
 PhysLean/Mathematics/DataStructures/FourTree/Basic.lean

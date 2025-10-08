@@ -23,6 +23,14 @@ We say a term of a type `Quanta` is viable
 
 We also write down the explicit set of viable quanta, and prove that this set is complete.
 
+One can view the dependencies of this module with:
+
+```
+lake exe graph --from
+  PhysLean.StringTheory.FTheory.SU5.Fluxes.Basic,PhysLean.Particles.SuperSymmetry.SU5.FieldLabels
+  my_graph.pdf
+```
+
 ## ii. Key results
 
 - `Quanta.IsViable` : The proposition on a `Quanta` that it is viable.
