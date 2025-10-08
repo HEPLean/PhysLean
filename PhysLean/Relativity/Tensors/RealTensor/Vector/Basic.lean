@@ -188,7 +188,8 @@ lemma toTensor_basis_eq_tensor_basis {d : ℕ} (μ : Fin 1 ⊕ Fin d) :
   simp
 
 lemma basis_eq_map_tensor_basis {d} : basis =
-    ((Tensor.basis (S := realLorentzTensor d) ![Color.up]).map toTensor.symm).reindex indexEquiv := by
+    ((Tensor.basis
+    (S := realLorentzTensor d) ![Color.up]).map toTensor.symm).reindex indexEquiv := by
   ext μ
   rw [← toTensor_symm_basis]
   simp
