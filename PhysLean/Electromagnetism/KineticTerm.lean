@@ -37,6 +37,7 @@ is directly related to Gauss's law and the Ampere law.
   - B.2. Writing the variational gradient as a sums over double derivatives of the potential
   - B.3. Variational gradient as a sums over fieldStrengthMatrix
   - B.4. Variational gradient in terms of the Guass's and Ampère laws
+  - B.5. Linearity properties of the variational gradient
 
 ## iv. References
 
@@ -610,6 +611,67 @@ lemma gradKineticTerm_eq_electric_magnetic (A : ElectromagneticPotential)
   funext x
   rw [← neg_smul]
   ring_nf
+
+/-!
+
+### B.5. Linearity properties of the variational gradient
+
+-/
+
+lemma gradKineticTerm_add {d} (A1 A2 : ElectromagneticPotential d)
+    (hA1 : ContDiff ℝ ∞ A1) (hA2 : ContDiff ℝ ∞ A2) :
+    (A1 + A2).gradKineticTerm = A1.gradKineticTerm + A2.gradKineticTerm := by
+  funext x
+  rw [gradKineticTerm_eq_fieldStrength]
+  simp only [Pi.add_apply]
+  rw [gradKineticTerm_eq_fieldStrength, gradKineticTerm_eq_fieldStrength]
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl (fun ν _ => ?_)
+  rw [← smul_add, ← add_smul, ← Finset.sum_add_distrib]
+  congr
+  funext μ
+  rw [SpaceTime.deriv_eq, SpaceTime.deriv_eq, SpaceTime.deriv_eq]
+  conv_lhs =>
+    enter [1, 2, x]
+    rw [fieldStrengthMatrix_add _ _ _ (hA1.differentiable (by simp))
+      (hA2.differentiable (by simp))]
+    simp [Finsupp.coe_add, Pi.add_apply]
+  rw [fderiv_fun_add]
+  rfl
+  · apply fieldStrengthMatrix_differentiable <| hA1.of_le (ENat.LEInfty.out)
+  · apply fieldStrengthMatrix_differentiable <| hA2.of_le (ENat.LEInfty.out)
+  · exact hA2
+  · exact hA1
+  · exact hA1.add hA2
+
+lemma gradKineticTerm_smul {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ ∞ A) (c : ℝ) :
+    (c • A).gradKineticTerm = c • A.gradKineticTerm := by
+  funext x
+  rw [gradKineticTerm_eq_fieldStrength]
+  simp only [Pi.smul_apply]
+  rw [gradKineticTerm_eq_fieldStrength]
+  rw [Finset.smul_sum]
+  apply Finset.sum_congr rfl (fun ν _ => ?_)
+  conv_rhs => rw [smul_comm]
+  congr 1
+  rw [smul_smul]
+  congr
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl (fun μ _ => ?_)
+  conv_rhs =>
+    rw [SpaceTime.deriv_eq]
+    change (c • fderiv ℝ (fun x => (A.fieldStrengthMatrix x) (μ, ν)) x) (Lorentz.Vector.basis μ)
+    rw [← fderiv_const_smul
+      (fieldStrengthMatrix_differentiable <| hA.of_le (ENat.LEInfty.out)).differentiableAt]
+    rw [← SpaceTime.deriv_eq]
+  congr
+  funext x
+  rw [fieldStrengthMatrix_smul _ _ _]
+  rfl
+  · exact hA.differentiable (by simp)
+  · exact hA
+  · exact hA.const_smul c
 
 end ElectromagneticPotential
 

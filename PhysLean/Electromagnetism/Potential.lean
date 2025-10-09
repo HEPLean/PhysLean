@@ -48,6 +48,7 @@ the field strength tensor, the kinetic energy, and the electric and magnetic fie
     - C.3.1. Differentiability of the field strength matrix
   - C.4. The antisymmetry of the field strength tensor
   - C.5. Equivariance of the field strength tensor
+  - C.6. Linearlity of the field strength tensor
 - E. The electric and magnetic fields
   - E.1. The scalar potential
   - E.2. The vector potential
@@ -361,7 +362,7 @@ lemma deriv_basis_repr_apply {d} {μν : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)}
     simp [h]
   · simp
 
-lemma toTensor_deriv_basis_repr_apply  {d} (A : ElectromagneticPotential d)
+lemma toTensor_deriv_basis_repr_apply {d} (A : ElectromagneticPotential d)
     (x : SpaceTime d) (b : ComponentIdx (S := realLorentzTensor d)
       (Fin.append ![Color.down] ![Color.up])) :
     (Tensor.basis _).repr (Tensorial.toTensor (deriv A x)) b =
@@ -657,6 +658,60 @@ lemma fieldStrengthMatrix_equivariant {d} (A : ElectromagneticPotential d)
     rw [← Finset.sum_add_distrib]
     apply Finset.sum_congr rfl (fun ρ _ => ?_)
     ring
+
+/-!
+
+### C.6. Linearlity of the field strength tensor
+
+We show that the field strength tensor is linear in the potential.
+
+-/
+
+lemma toFieldStrength_add {d} (A1 A2 : ElectromagneticPotential d)
+    (x : SpaceTime d) (hA1 : Differentiable ℝ A1) (hA2 : Differentiable ℝ A2) :
+    toFieldStrength (A1 + A2) x = toFieldStrength A1 x + toFieldStrength A2 x := by
+  apply (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr.injective
+  ext μν
+  simp only [map_add, Finsupp.coe_add, Pi.add_apply]
+  repeat rw [toFieldStrength_basis_repr_apply]
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl (fun κ _ => ?_)
+  repeat rw [SpaceTime.deriv_eq]
+  rw [fderiv_add]
+  simp only [ContinuousLinearMap.add_apply, Lorentz.Vector.apply_add]
+  ring
+  · exact hA1.differentiableAt
+  · exact hA2.differentiableAt
+
+lemma fieldStrengthMatrix_add {d} (A1 A2 : ElectromagneticPotential d)
+    (x : SpaceTime d) (hA1 : Differentiable ℝ A1) (hA2 : Differentiable ℝ A2) :
+    (A1 + A2).fieldStrengthMatrix x =
+    A1.fieldStrengthMatrix x + A2.fieldStrengthMatrix x := by
+  rw [fieldStrengthMatrix, toFieldStrength_add A1 A2 x hA1 hA2]
+  conv_rhs => rw [fieldStrengthMatrix, fieldStrengthMatrix]
+  simp
+
+lemma toFieldStrength_smul {d} (c : ℝ) (A : ElectromagneticPotential d)
+    (x : SpaceTime d) (hA : Differentiable ℝ A) :
+    toFieldStrength (c • A) x = c • toFieldStrength A x := by
+  apply (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr.injective
+  ext μν
+  simp only [map_smul, Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
+  repeat rw [toFieldStrength_basis_repr_apply]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl (fun κ _ => ?_)
+  repeat rw [SpaceTime.deriv_eq]
+  rw [fderiv_const_smul]
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, Lorentz.Vector.apply_smul]
+  ring
+  exact hA.differentiableAt
+
+lemma fieldStrengthMatrix_smul {d} (c : ℝ) (A : ElectromagneticPotential d)
+    (x : SpaceTime d) (hA : Differentiable ℝ A) :
+    (c • A).fieldStrengthMatrix x = c • A.fieldStrengthMatrix x := by
+  rw [fieldStrengthMatrix, toFieldStrength_smul c A x hA]
+  conv_rhs => rw [fieldStrengthMatrix]
+  simp
 
 /-!
 
