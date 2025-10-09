@@ -147,13 +147,14 @@ lemma constantEB_electricField {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
     (constantEB E₀ B₀).electricField = fun _ _ => E₀ := by
   funext t x
   rw [electricField_eq]
-  simp
+  simp only
   rw [constantEB_vectorPotential]
-  simp
+  simp only [one_div, WithLp.equiv_apply, WithLp.ofLp_smul, map_smul, LinearMap.smul_apply,
+    WithLp.equiv_symm_apply, WithLp.toLp_smul]
   rw [Time.deriv_eq, fderiv_fun_const]
-  simp
+  simp only [Pi.zero_apply, ContinuousLinearMap.zero_apply, sub_zero]
   rw [constantEB_scalarPotential]
-  simp
+  simp only
   erw [Space.grad_neg]
   rw [Space.grad_inner_right]
   simp
@@ -171,9 +172,10 @@ lemma constantEB_magneticField {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
     (constantEB E₀ B₀).magneticField = fun _ _ => B₀ := by
   funext t x
   rw [magneticField_eq]
-  simp
+  simp only
   rw [constantEB_vectorPotential]
-  simp
+  simp only [one_div, WithLp.equiv_apply, WithLp.ofLp_smul, map_smul, LinearMap.smul_apply,
+    WithLp.equiv_symm_apply, WithLp.toLp_smul]
   ext i
   fin_cases i
   all_goals
@@ -187,10 +189,12 @@ lemma constantEB_magneticField {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
     rw [fderiv_const_mul (by fun_prop)]
     rw [fderiv_const_mul (by fun_prop)]
     rw [fderiv_const_mul (by fun_prop)]
-    simp
+    simp only [Fin.isValue, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub',
+      Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
     repeat rw [← Space.deriv_eq]
     repeat rw [Space.deriv_component]
-    simp
+    simp only [Fin.isValue, ↓reduceIte, mul_one, one_ne_zero, mul_zero, sub_zero, Fin.reduceEq,
+      zero_sub, mul_neg, sub_neg_eq_add]
     ring
 
 /-!
@@ -207,7 +211,7 @@ lemma constantEB_kineticTerm {E₀ B₀ : EuclideanSpace ℝ (Fin 3)}
     (constantEB E₀ B₀).kineticTerm x = 1/2 * (‖E₀‖ ^ 2 - ‖B₀‖ ^ 2) := by
   obtain ⟨t, rfl⟩ := SpaceTime.toTimeAndSpace.symm.surjective x
   rw [kineticTerm_eq_electric_magnetic]
-  simp
+  simp only [one_div, constantEB_electricField, constantEB_magneticField]
   exact constantEB_smooth.differentiable (ENat.LEInfty.out)
 
 /-!
@@ -223,11 +227,12 @@ lemma constantEB_gradKineticTerm {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
   funext x
   rw [gradKineticTerm_eq_electric_magnetic]
   rw [constantEB_electricField, constantEB_magneticField]
-  simp
+  simp only [Space.div_const, Pi.zero_apply, Fin.isValue, zero_smul, Space.curl_const,
+    PiLp.zero_apply, sub_zero, zero_add]
   apply Finset.sum_eq_zero
   intro x _
   rw [Time.deriv, fderiv_fun_const]
-  simp
+  simp only [Pi.zero_apply, ContinuousLinearMap.zero_apply, PiLp.zero_apply, zero_smul]
   exact constantEB_smooth
 
 end ElectromagneticPotential
