@@ -100,7 +100,7 @@ open TensorSpecies
 -/
 
 /-- The space part of spacetime. -/
-def space {d : ℕ} : SpaceTime d →ₗ[ℝ] Space d where
+def space {d : ℕ} : SpaceTime d →L[ℝ] Space d where
   toFun x := Lorentz.Vector.spatialPart x
   map_add' x1 x2 := by
     ext i
@@ -108,6 +108,8 @@ def space {d : ℕ} : SpaceTime d →ₗ[ℝ] Space d where
   map_smul' c x := by
     ext i
     simp [Lorentz.Vector.spatialPart]
+  cont := by
+    fun_prop
 
 /-!
 
@@ -185,7 +187,7 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       | Sum.inr i => simp [Lorentz.Vector.spatialPart]
     right_inv tx := by
       simp only [time, Lorentz.Vector.timeComponent, Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk,
-        space]
+        space, ContinuousLinearMap.coe_mk']
     map_add' x y := by
       simp only [space_toCoord_symm, Lorentz.Vector.apply_add, Prod.mk_add_mk, Prod.mk.injEq]
       constructor

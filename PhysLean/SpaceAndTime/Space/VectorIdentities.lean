@@ -43,6 +43,7 @@ show their action on basic functions, and prove vector calculus identities
   - B.2. Gradient distributes over addition
   - B.3. Gradient of a constant function
   - B.4. Gradient distributes over scalar multiplication
+  - B.5. Gradient distributes over negation
   - B.6. Expansion in terms of basis vectors
   - B.7. Components of the gradient
   - B.8. Inner product with a gradient
@@ -336,6 +337,20 @@ lemma grad_smul (f : Space d → ℝ) (k : ℝ)
 
 /-!
 
+### B.5. Gradient distributes over negation
+
+-/
+
+lemma grad_neg (f : Space d → ℝ) :
+    ∇ (- f) = - ∇ f := by
+  unfold grad
+  ext x i
+  simp only [Pi.neg_apply]
+  rw [Space.deriv_eq, fderiv_neg]
+  rfl
+
+/-!
+
 ### B.6. Expansion in terms of basis vectors
 
 -/
@@ -513,6 +528,48 @@ lemma grad_inner {d : ℕ} :
     refine DifferentiableAt.inner ℝ ?_ ?_
     · fun_prop
     · fun_prop
+
+lemma grad_inner_left {d : ℕ} (x : Space d) :
+    ∇ (fun y : Space d => ⟪y, x⟫_ℝ) = fun _ => x := by
+  ext z i
+  simp [Space.grad]
+  rw [deriv]
+  erw [fderiv_fun_sum]
+  · simp
+    rw [Finset.sum_eq_single i]
+    rw [fderiv_const_mul]
+    simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
+    trans x i * fderiv ℝ (Space.coordCLM i) z (EuclideanSpace.single i 1)
+    · congr
+      funext x
+      simp [Space.coordCLM, Space.coord_apply]
+    simp only [ContinuousLinearMap.fderiv]
+    simp [Space.coordCLM, Space.coord_apply]
+    · fun_prop
+    · intro b hb _
+      rw [fderiv_const_mul]
+      simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul, mul_eq_zero]
+      right
+      trans fderiv ℝ (Space.coordCLM b) z (EuclideanSpace.single i 1)
+      · congr
+        funext x
+        simp [Space.coordCLM, Space.coord_apply]
+      simp only [ContinuousLinearMap.fderiv]
+      simp [Space.coordCLM, Space.coord_apply]
+      (expose_names; exact h)
+      fun_prop
+    · simp
+  · intro i _
+    apply DifferentiableAt.inner ℝ ?_ ?_
+    fun_prop
+    fun_prop
+
+lemma grad_inner_right {d : ℕ} (x : Space d) :
+    ∇ (fun y : Space d => ⟪x, y⟫_ℝ) = fun _ => x := by
+  rw [← grad_inner_left x]
+  congr
+  funext y
+  exact real_inner_comm y x
 
 /-!
 

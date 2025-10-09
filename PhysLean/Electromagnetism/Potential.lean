@@ -757,6 +757,10 @@ open Space Time
 noncomputable def electricField (A : ElectromagneticPotential) : ElectricField :=
   fun t x => - ∇ (A.scalarPotential t) x - ∂ₜ (fun t => A.vectorPotential t x) t
 
+lemma electricField_eq (A : ElectromagneticPotential) :
+    A.electricField = fun t x =>
+      - ∇ (A.scalarPotential t) x - ∂ₜ (fun t => A.vectorPotential t x) t := rfl
+
 /-!
 
 #### E.3.1. Relation between the electric field and the field strength matrix
@@ -836,6 +840,9 @@ lemma electricField_differentiable {A : ElectromagneticPotential}
 /-- The magnetic field from the electromagnetic potential. -/
 noncomputable def magneticField (A : ElectromagneticPotential) : MagneticField :=
   fun t x => (∇ × (A.vectorPotential t)) x
+
+lemma magneticField_eq (A : ElectromagneticPotential) :
+    A.magneticField = fun t x => (∇ × (A.vectorPotential t)) x := rfl
 
 /-!
 

@@ -17,6 +17,7 @@ import PhysLean.Cosmology.Basic
 import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
 import PhysLean.Electromagnetism.Charge.ChargeUnit
+import PhysLean.Electromagnetism.Constant
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.PointParticle
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.Vacuum
