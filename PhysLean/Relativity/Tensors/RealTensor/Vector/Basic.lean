@@ -111,7 +111,7 @@ lemma coordCLM_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
 
 @[simp]
 lemma fderiv_apply {d : ℕ} (μ : Fin 1 ⊕ Fin d) (x : Vector d) :
-    fderiv ℝ (fun v : Vector d => v μ) x = coordCLM μ  := by
+    fderiv ℝ (fun v : Vector d => v μ) x = coordCLM μ := by
   change fderiv ℝ (coordCLM μ) x = coordCLM μ
   simp
 

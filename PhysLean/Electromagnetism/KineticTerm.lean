@@ -156,8 +156,8 @@ lemma kineticTerm_eq_sum {d} (A : ElectromagneticPotential d) (x : SpaceTime d) 
   conv_lhs => enter [2, 2, μ']; rw [Finset.sum_comm]
   rfl
 
-lemma kineticTerm_eq_sum_fieldStrengthMatrix {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
-    A.kineticTerm x =
+lemma kineticTerm_eq_sum_fieldStrengthMatrix {d}
+    (A : ElectromagneticPotential d) (x : SpaceTime d) : A.kineticTerm x =
     - 1/4 * ∑ μ, ∑ ν, ∑ μ', ∑ ν', η μ μ' * η ν ν' *
       A.fieldStrengthMatrix x (μ, ν) * A.fieldStrengthMatrix x (μ', ν') := by
   rw [kineticTerm_eq_sum]
@@ -280,8 +280,6 @@ lemma kineticTerm_eq_electric_magnetic' {A : ElectromagneticPotential} (hA : Dif
   simp only [space_toCoord_symm, ContinuousLinearEquiv.apply_symm_apply]
   rfl
 
-
-
 /-!
 
 ### A.4. The kinetic term for constant fields
@@ -342,6 +340,136 @@ lemma kineticTerm_contDiff {d} {n : WithTop ℕ∞} (A : ElectromagneticPotentia
     exact fieldStrengthMatrix_contDiff hA
   exact fieldStrengthMatrix_contDiff hA
 
+/-!
+
+### A.6. The kinetic term shifted by time mul a constant
+
+This result is used in finding the canonical momentum.
+-/
+
+lemma kineticTerm_add_time_mul_const {d} (A : ElectromagneticPotential d)
+    (ha : Differentiable ℝ A)
+    (c : Lorentz.Vector d) (x : SpaceTime d) :
+    kineticTerm (fun x => A x + x (Sum.inl 0) • c) x = A.kineticTerm x +
+        (-1 / 2 * ∑ ν, ((2 * c ν * η ν ν * ∂_ (Sum.inl 0) A x ν + η ν ν * c ν ^ 2 -
+        2 * c ν * (∂_ ν A x (Sum.inl 0)))) + 1/2 * c (Sum.inl 0) ^2) := by
+  have diff_a : ∂_ (Sum.inl 0) (fun x => A x + x (Sum.inl 0) • c) =
+      ∂_ (Sum.inl 0) A + (fun x => c) := by
+    funext x ν
+    rw [SpaceTime.deriv_eq]
+    rw [fderiv_fun_add _ (by fun_prop)]
+    simp
+    congr
+    rw [fderiv_smul_const (by fun_prop)]
+    simp [Lorentz.Vector.coordCLM]
+    exact ha.differentiableAt
+  have diff_b (i : Fin d) : ∂_ (Sum.inr i) (fun x => A x + x (Sum.inl 0) • c) =
+      ∂_ (Sum.inr i) A := by
+    funext x ν
+    rw [SpaceTime.deriv_eq]
+    rw [fderiv_fun_add _ (by fun_prop)]
+    simp
+    rw [fderiv_smul_const (by fun_prop)]
+    simp
+    rw [← SpaceTime.deriv_eq]
+    simp [Lorentz.Vector.coordCLM]
+    exact ha.differentiableAt
+  have hdiff (μ : Fin 1 ⊕ Fin d) :
+      ∂_ μ (fun x => A x + x (Sum.inl 0) • c) x =
+      ∂_ μ A x + if μ = Sum.inl 0 then c else 0 := by
+    match μ with
+    | Sum.inl 0 => simp [diff_a]
+    | Sum.inr i => simp [diff_b i]
+  rw [kineticTerm_eq_sum_potential]
+  calc _
+    _ = -1 / 2 *
+    ∑ μ, ∑ ν, (η μ μ * η ν ν * (∂_ μ A x + if μ = Sum.inl 0 then c else 0) ν ^ 2 -
+          (∂_ μ A x + if μ = Sum.inl 0 then c else 0) ν *
+          (∂_ ν A x + if ν = Sum.inl 0 then c else 0) μ) := by
+      congr
+      funext μ
+      congr
+      funext ν
+      rw [hdiff μ, hdiff ν]
+    _ = -1 / 2 *
+      ∑ μ, ∑ ν, (η μ μ * η ν ν * (∂_ μ A x ν + if μ = Sum.inl 0 then c ν else 0) ^ 2 -
+          (∂_ μ A x ν + if μ = Sum.inl 0 then c ν else 0) *
+          (∂_ ν A x μ + if ν = Sum.inl 0 then c μ else 0)) := by
+      congr
+      funext μ
+      congr
+      funext ν
+      congr
+      all_goals
+      · simp
+        split_ifs
+        simp
+        rfl
+    _ = -1 / 2 *
+      ∑ μ, ∑ ν, ((η μ μ * η ν ν * (∂_ μ A x ν) ^ 2 - ∂_ μ A x ν * ∂_ ν A x μ) +
+          (if μ = Sum.inl 0 then c ν else 0) * (2 * η μ μ * η ν ν * ∂_ μ A x ν +
+          η μ μ * η ν ν * (if μ = Sum.inl 0 then c ν else 0) -
+          (∂_ ν A x μ) - (if ν = Sum.inl 0 then c μ else 0))
+          - (∂_ μ A x ν) * (if ν = Sum.inl 0 then c μ else 0)) := by
+      congr
+      funext μ
+      congr
+      funext ν
+      ring
+    _ = -1 / 2 *
+        ∑ μ, ∑ ν, ((η μ μ * η ν ν * (∂_ μ A x ν) ^ 2 - ∂_ μ A x ν * ∂_ ν A x μ)) +
+        -1 / 2 * ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) * (2 * η μ μ * η ν ν * ∂_ μ A x ν +
+          η μ μ * η ν ν * (if μ = Sum.inl 0 then c ν else 0) -
+          (∂_ ν A x μ) - (if ν = Sum.inl 0 then c μ else 0))
+          - (∂_ μ A x ν) * (if ν = Sum.inl 0 then c μ else 0)) := by
+      rw [← mul_add]
+      rw [← Finset.sum_add_distrib]
+      congr
+      funext μ
+      rw [← Finset.sum_add_distrib]
+      congr
+      ring_nf
+    _ = A.kineticTerm x +
+        -1 / 2 * ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) * (2 * η μ μ * η ν ν * ∂_ μ A x ν +
+        η μ μ * η ν ν * (if μ = Sum.inl 0 then c ν else 0) -
+        (∂_ ν A x μ) - (if ν = Sum.inl 0 then c μ else 0))
+        - (∂_ μ A x ν) * (if ν = Sum.inl 0 then c μ else 0)) := by
+      rw [kineticTerm_eq_sum_potential]
+    _ = A.kineticTerm x +
+        -1 / 2 * ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) * (2 * η μ μ * η ν ν * ∂_ μ A x ν +
+        η μ μ * η ν ν * (if μ = Sum.inl 0 then c ν else 0) -
+        (∂_ ν A x μ) - (if ν = Sum.inl 0 then c μ else 0))
+        - (∂_ ν A x μ) * (if μ = Sum.inl 0 then c ν else 0)) := by
+      congr 1
+      conv_rhs =>
+        enter [2, 2, μ]
+        rw [Finset.sum_sub_distrib]
+      conv_rhs =>
+        rw [Finset.sum_sub_distrib]
+        enter [2, 2]
+        rw [Finset.sum_comm]
+      rw [← Finset.sum_sub_distrib]
+      conv_rhs =>
+        enter [2, 2, μ]
+        rw [← Finset.sum_sub_distrib]
+    _ = A.kineticTerm x +
+        -1 / 2 * ∑ ν, (c ν * (2 * η ν ν * ∂_ (Sum.inl 0) A x ν + η ν ν * c ν -
+        (∂_ ν A x (Sum.inl 0)) - (if ν = Sum.inl 0 then c (Sum.inl 0) else 0))
+        - (∂_ ν A x (Sum.inl 0)) * c ν) := by
+      congr 1
+      simp
+    _ = A.kineticTerm x +
+        -1 / 2 * ∑ ν, ((2 * c ν * η ν ν * ∂_ (Sum.inl 0) A x ν + η ν ν * c ν ^ 2 -
+        2 * c ν * (∂_ ν A x (Sum.inl 0))) - c ν *
+        (if ν = Sum.inl 0 then c (Sum.inl 0) else 0)) := by
+      congr
+      funext ν
+      ring
+    _ = A.kineticTerm x +
+        (-1 / 2 * ∑ ν, ((2 * c ν * η ν ν * ∂_ (Sum.inl 0) A x ν + η ν ν * c ν ^ 2 -
+        2 * c ν * (∂_ ν A x (Sum.inl 0)))) + 1/2 * c (Sum.inl 0) ^2) := by
+          simp
+          ring
 
 /-!
 

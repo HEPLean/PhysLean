@@ -574,7 +574,7 @@ lemma fieldStrengthMatrix_contDiff {d} {n : WithTop ℕ∞} {A : Electromagnetic
     revert ν
     rw [← contDiff_euclidean]
     apply ContDiff.clm_apply
-    · exact ContDiff.fderiv_right (m := n ) hA (by rfl)
+    · exact ContDiff.fderiv_right (m := n) hA (by rfl)
     · fun_prop
   apply ContDiff.mul
   · fun_prop
@@ -584,7 +584,7 @@ lemma fieldStrengthMatrix_contDiff {d} {n : WithTop ℕ∞} {A : Electromagnetic
     revert μ
     rw [← contDiff_euclidean]
     apply ContDiff.clm_apply
-    · exact ContDiff.fderiv_right (m := n ) hA (by rfl)
+    · exact ContDiff.fderiv_right (m := n) hA (by rfl)
     · fun_prop
 
 lemma fieldStrengthMatrix_smooth {d} {A : ElectromagneticPotential d}

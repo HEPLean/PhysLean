@@ -81,7 +81,7 @@ lemma HasVarGradientAt.sum {ι : Type} [Fintype ι] (F : ι → (X → U) → (X
   let P (ι : Type) [Fintype ι] : Prop :=
     ∀ (F : ι → (X → U) → (X → ℝ)), ∀ (F' : ι → X → U), ∀ u, ∀ (hu : ContDiff ℝ ∞ u),
     ∀ (hF : ∀ i, HasVarGradientAt (F i) (F' i) u),
-    HasVarGradientAt (fun φ x => ∑ i, F i φ x) (∑ i, F' i ) u
+    HasVarGradientAt (fun φ x => ∑ i, F i φ x) (∑ i, F' i) u
   have hp : P ι := by
     apply Fintype.induction_empty_option
     · intro ι ι' inst e hp F F' u hu ih
@@ -115,8 +115,6 @@ lemma HasVarGradientAt.neg {F : (X → U) → (X → ℝ)}
   · apply hF'.neg (V := ℝ)
   · simp
     rw [eq]
-
-
 
 open Classical in
 

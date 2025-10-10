@@ -424,8 +424,7 @@ lemma differentiable_meanEnergyBetaReal
     refine (Differentiable.div ?_ ?_ ?_).const_mul (𝓒.energy i)
     · apply Differentiable.exp; simp
     · refine Differentiable.fun_sum ?_; intro j _; apply Differentiable.exp; simp
-    · intro x; exact (mathematicalPartitionFunctionBetaReal_pos 𝓒 x).ne'
-  )
+    · intro x; exact (mathematicalPartitionFunctionBetaReal_pos 𝓒 x).ne')
 
 /-! Derivatives of Z and numerator -/
 
@@ -523,7 +522,7 @@ lemma deriv_meanEnergyBetaReal (b : ℝ) :
     simpa using deriv_div hN_diff hZ_diff hZ_ne_zero
   have hquot'' := hquot'
   have hnum := deriv_meanEnergyNumerator (𝓒 := 𝓒) b
-  have hz   := deriv_mathematicalPartitionFunctionBetaReal (𝓒 := 𝓒) b
+  have hz := deriv_mathematicalPartitionFunctionBetaReal (𝓒 := 𝓒) b
   simp [Num, Z, hnum, hz, sub_eq_add_neg, mul_comm] at hquot''
   have h₁ :
       deriv (fun x => Num x / Z x) b =

@@ -205,7 +205,7 @@ lemma toTimeAndSpace_symm_apply_time_space {d : ℕ} (x : SpaceTime d) :
   apply toTimeAndSpace.left_inv
 
 @[simp]
-lemma toTimeAndSpace_symm_apply_time_space' {d : ℕ}  (x : SpaceTime d) :
+lemma toTimeAndSpace_symm_apply_time_space' {d : ℕ} (x : SpaceTime d) :
     toTimeAndSpace.symm (x.time, fun i => x (Sum.inr i)) = x := by
   apply toTimeAndSpace.left_inv
 
@@ -337,7 +337,7 @@ lemma deriv_apply_eq {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) (f : SpaceTime d → Lo
   fun_prop
 
 @[simp]
-lemma deriv_coord {d : ℕ} (μ ν : Fin 1 ⊕ Fin d):
+lemma deriv_coord {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) :
     ∂_ μ (fun x => x ν) = if μ = ν then 1 else 0 := by
   change ∂_ μ (coordCLM ν) = _
   funext x
@@ -470,7 +470,7 @@ instance {d : ℕ} : BorelSpace (SpaceTime d) where
 -/
 
 /-- The Euclidean inner product structure on `SpaceTime`. -/
-def innerProductSpace (d : ℕ) : InnerProductSpace ℝ (SpaceTime d) :=
+instance innerProductSpace (d : ℕ) : InnerProductSpace ℝ (SpaceTime d) :=
   inferInstanceAs (InnerProductSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
 /-!
