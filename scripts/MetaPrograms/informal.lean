@@ -97,13 +97,13 @@ where
   printInformalDecls (module : Name) (informalDecls : Array InformalDecl) : CoreM Unit := do
     println! module
     for {kind, name, lineNo, docString, deps, ..} in informalDecls do
-      println! s!"
+      println! "
 Informal {kind}: {name}
 - {module.toRelativeFilePath}:{lineNo}
 - Description: {docString}
 - Dependencies:"
       for {name, module, lineNo, ..} in deps do
-        println! s!"    * {name}: {module.toRelativeFilePath}:{lineNo}"
+        println! "    * {name}: {module.toRelativeFilePath}:{lineNo}"
 
 /-- Making the Markdown file for dependency graph. -/
 def mkMarkdown (depDecls : DepDecls) : IO Unit := do
@@ -122,14 +122,14 @@ There is an implicit invitation to the reader to contribute to the formalization
 
 "
   for (module, informalDecls) in depDecls.informalModuleMap do
-    println! s!"## {module}"
+    println! "## {module}"
     for {kind, name, lineNo, docString, deps, ..} in informalDecls do
-      println! s!"
+      println! "
 **Informal {kind}**: [{name}]({module.toGitHubLink lineNo}) :=
   *{docString}*
 - Dependencies:"
       for {name, module, lineNo, ..} in deps do
-        println! s!"    * {name}: {module.toRelativeFilePath}:{lineNo}"
+        println! "    * {name}: {module.toRelativeFilePath}:{lineNo}"
 
 /-- Making the DOT file for dependency graph. -/
 def mkDOT (depDecls : DepDecls) : IO Unit := do
@@ -151,9 +151,9 @@ def mkDOT (depDecls : DepDecls) : IO Unit := do
       let cluster := name.getPrefix
       unless cluster.isAnonymous do
         clusters := clusters.insert cluster
-        println! s!"subgraph cluster_{cluster.toString.replace "." "_"}" ++ "
-      {
-          label=\"" ++ cluster.toString ++ "\";
+        println! "subgraph cluster_{cluster.toString.replace "." "_"}
+      \{
+          label=\"{cluster.toString}\";
           color=steelblue;
               }"
 
@@ -169,7 +169,7 @@ def mkDOT (depDecls : DepDecls) : IO Unit := do
   for (_, informalDecls) in depDecls.informalModuleMap do
     for informalDecl in informalDecls do
       for dep in informalDecl.deps do
-        println! s!"\"{dep.name}\" -> \"{informalDecl.name}\""
+        println! "\"{dep.name}\" -> \"{informalDecl.name}\""
 
   println! "}"
 where

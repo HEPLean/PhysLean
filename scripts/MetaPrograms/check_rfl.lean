@@ -22,63 +22,58 @@ Modifications have been made to the original content of these files here.
 See also:
 - https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Memory.20increase.20in.20loops.2E
 -/
-open Lean Elab System
 
 namespace Lean.Elab.TacticInfo
 
-def name? (t : TacticInfo) : Option Name :=
-  match t.stx with
-  | Syntax.node _ n _ => some n
+def name? : TacticInfo → Option Name
+  | {stx := .node _ kind _, ..} => kind
   | _ => none
 
 /-- Decide whether a tactic is "substantive",
 or is merely a tactic combinator (e.g. `by`, `;`, multiline tactics, parenthesized tactics). -/
 def isSubstantive (t : TacticInfo) : Bool :=
   match t.name? with
-  | none => false
-  | some `null => false
-  | some ``cdot => false
-  | some ``cdotTk => false
-  | some ``Lean.Parser.Tactic.inductionAlt => false
-  | some ``Lean.Parser.Tactic.case => false
-  | some ``Lean.Parser.Term.byTactic => false
-  | some ``Lean.Parser.Tactic.tacticSeq => false
-  | some ``Lean.Parser.Tactic.tacticSeq1Indented => false
-  | some ``Lean.Parser.Tactic.«tactic_<;>_» => false
-  | some ``Lean.Parser.Tactic.paren => false
-  | some ``Lean.Parser.Tactic.exact => false
+  | none
+  | `null
+  | ``cdot
+  | ``cdotTk
+  | ``Lean.Parser.Tactic.inductionAlt
+  | ``Lean.Parser.Tactic.case
+  | ``Lean.Parser.Term.byTactic
+  | ``Lean.Parser.Tactic.tacticSeq
+  | ``Lean.Parser.Tactic.tacticSeq1Indented
+  | ``Lean.Parser.Tactic.«tactic_<;>_»
+  | ``Lean.Parser.Tactic.paren
+  | ``Lean.Parser.Tactic.exact
+      => false
   | _ => true
 
 end Lean.Elab.TacticInfo
 
-def visitTacticInfo (file : FilePath) (ci : ContextInfo) (ti : TacticInfo) : MetaM Unit := do
-  if not ti.isSubstantive then return ()
-  let stx := ti.stx
-  match stx.getHeadInfo? with
-  | .some (.synthetic ..) =>
-     -- Not actual concrete syntax the user wrote. Ignore.
-    return ()
-  | _ =>  pure ()
-  let some sp := stx.getPos? | return ()
-  let startPosition := ci.fileMap.toPosition sp
-  let some ep := stx.getTailPos? | return ()
-  let s := Substring.mk ci.fileMap.source sp ep
+open Lean Elab
+open System (FilePath)
+
+def visitTacticInfo (file : FilePath) (ci : ContextInfo) (ti : TacticInfo) : CoreM Unit := do
+  unless ti.isSubstantive do return
+  let {stx, ..} := ti
+  let some sp := stx.getPos? (canonicalOnly := true) | return -- Ignore `Lean.SourceInfo.synthetic`
+  let some ep := stx.getTailPos? | return
+  let s := ci.fileMap.source.extract sp ep
   for g in ti.goalsBefore do
     (← IO.getStdout).flush
     let mctx := ti.mctxBefore
     --let doprint : MetaM _ := Meta.ppGoal g
-    --let x ← doprint.run' (s := { mctx := mctx })
+    --let x ← doprint.run' (s := {mctx})
     let dotac := Term.TermElabM.run (ctx := {declName? := ci.parentDecl?})
-              <| Tactic.run g (Tactic.evalTactic  (← `(tactic| rfl)))
+              <| Tactic.run g (Tactic.evalTactic (← `(tactic| rfl)))
     try
-      let ((mvars, _tstate), _mstate) ← dotac.run {} { mctx := mctx }
-      if mvars.length == 0 ∧ s.toString ≠ "rfl"
-      then
-        println! "./{file}:{startPosition.line}"
-      pure ()
-    catch _e =>
-      pure ()
-    pure ()
+      let (mvars, _) ← dotac.run' {} {mctx}
+      if mvars.isEmpty && s != "rfl" then
+        let {line, column} := ci.fileMap.toPosition sp
+        println! "{file}:{line}:{column} {s}"
+    catch _ => pure ()
+    return
+    -- println! "extra"
 
 
 /- See conversation here: https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Memory.20increase.20in.20loops.2E -/
@@ -88,7 +83,7 @@ unsafe def processAllFiles : IO Unit := do
     ((IO.asTask $ IO.Process.run
     {cmd := "lake", args := #["exe", "check_rfl", f.toString]}), f)
   tasks.toList.enum.forM fun (n, (t, path)) => do
-    println! "{n} of {tasks.toList.length}: {path}"
+    println! "{n} of {tasks.size}: {path}"
     let tn ← IO.wait (← t)
     match tn with
     | .ok x => println! x
