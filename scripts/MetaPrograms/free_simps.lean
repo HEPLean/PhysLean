@@ -43,7 +43,7 @@ def isSimp (t : TacticInfo) : Bool :=
 
 end Lean.Elab.TacticInfo
 
-def visitTacticInfo (file : FilePath) (ci : ContextInfo) (ti : TacticInfo) : MetaM Unit := do
+def visitTacticInfo (file : FilePath) (ci : ContextInfo) (ti : TacticInfo) : CoreM Unit := do
   if not ti.isSimp then return ()
   let stx := ti.stx
   match stx.getHeadInfo? with
@@ -69,14 +69,14 @@ unsafe def processAllFiles : IO Unit := do
     match tn with
     | .ok x =>
       if x ≠ "" then
-      println! "{n} of {tasks.toList.length}: {path}"
+      println! "{n} of {tasks.size}: {path}"
       println! x
     | .error _ => println! "Error"
 
 unsafe def processFileArray (files : Array FilePath) : IO Unit := do
-  if files.toList.length = 0 then
-    return ()
-  if files.toList.length = 1 then
+  if files.isEmpty then
+    return
+  if files.size = 1 then
     let path? := files.get? 0
     match path? with
     | some path =>

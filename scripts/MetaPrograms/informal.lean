@@ -17,11 +17,24 @@ To make the dot file for the dependency graph run:
 
 open Lean
 
+/-- Turns a name into a system file path. -/
+def nameToFilePath (c : String) : System.FilePath :=
+  System.mkFilePath (c.splitOn ".") |>.addExtension "lean"
+
+/-- Turns a name into a Lean file. -/
+def nameToRelativeFilePath (c : String) : System.FilePath :=
+  .join "." (nameToFilePath c)
+
+/-- Turns a name, which represents a module, into a link to github. -/
+@[inline]
+def toGitHubLink (c : String) (line : Nat) : String :=
+  s!"https://github.com/HEPLean/HepLean/blob/master/{nameToFilePath c}#L{line}"
+
 /- To make private definitions completely invisible, place them in a separate importable file. -/
 
 structure Decl where
-  name : Name
-  module : Name
+  name : String
+  module : String
   lineNo : Nat
   docString : String
 
@@ -49,8 +62,8 @@ private def Decl.ofName (name : Name) (module : Option Name := none) : DeclsM De
     return decl
   let env ← getEnv
   let decl : Decl := {
-    name
-    module := module.getD (env.getModuleFor? name).get!
+    name := name.toString
+    module := (module.getD (env.getModuleFor? name).get!).toString
     lineNo := (← findDeclarationRanges? name).get!.range.pos.line
     docString := (← findDocString? env name).getD "No docstring."
   }
@@ -58,11 +71,11 @@ private def Decl.ofName (name : Name) (module : Option Name := none) : DeclsM De
 
 private unsafe def InformalDecl.ofName? (name module : Name) : OptionT DeclsM InformalDecl := do
   unless name.isInternalDetail do
-    if let some const := (← getEnv).find? name then
-      if Informal.isInformalDef const then
-        return ← ofName .def (← evalConst InformalDefinition name).deps
-      else if Informal.isInformalLemma const then
-        return ← ofName .lemma (← evalConst InformalLemma name).deps
+    let some const := (← getEnv).find? name | .fail
+    if Informal.isInformalDef const then
+      return ← ofName .def (← evalConst InformalDefinition name).deps
+    else if Informal.isInformalLemma const then
+      return ← ofName .lemma (← evalConst InformalLemma name).deps
   .fail
 where
   ofName (kind : InformalDeclKind) (deps : List Name) : DeclsM InformalDecl :=
@@ -103,7 +116,7 @@ Informal {kind}: {name}
 - Description: {docString}
 - Dependencies:"
       for {name, module, lineNo, ..} in deps do
-        println! "    * {name}: {module.toRelativeFilePath}:{lineNo}"
+        println! "    * {name}: {nameToRelativeFilePath module}:{lineNo}"
 
 /-- Making the Markdown file for dependency graph. -/
 def mkMarkdown (depDecls : DepDecls) : IO Unit := do
@@ -129,7 +142,7 @@ There is an implicit invitation to the reader to contribute to the formalization
   *{docString}*
 - Dependencies:"
       for {name, module, lineNo, ..} in deps do
-        println! "    * {name}: {module.toRelativeFilePath}:{lineNo}"
+        println! "    * {name}: {nameToRelativeFilePath module}:{lineNo}"
 
 /-- Making the DOT file for dependency graph. -/
 def mkDOT (depDecls : DepDecls) : IO Unit := do
@@ -148,12 +161,12 @@ def mkDOT (depDecls : DepDecls) : IO Unit := do
   let mut clusters : NameSet := ∅
   for (_, informalDecls) in depDecls.informalModuleMap do
     for {name, ..} in informalDecls do
-      let cluster := name.getPrefix
-      unless cluster.isAnonymous do
+      let cluster := name.extract 0 <| name.revFind (BEq.beq '.') |>.getD 0
+      unless cluster.isEmpty do
         clusters := clusters.insert cluster
-        println! "subgraph cluster_{cluster.toString.replace "." "_"}
+        println! "subgraph \"cluster_{cluster}\"
       \{
-          label=\"{cluster.toString}\";
+          label=\"{cluster}\";
           color=steelblue;
               }"
 
@@ -181,7 +194,7 @@ where
     if prefixName.isAnonymous then
       nodeStr
     else
-      s!"subgraph cluster_{prefixName.toString.replace "." "_"} \{ {nodeStr}; }"
+      s!"subgraph \"cluster_{prefixName}\" \{ {nodeStr}; }"
 
 /-- Making the HTML file for dependency graph. -/
 def mkHTML (depDecls : DepDecls) : IO Unit := do

@@ -7,6 +7,7 @@ import Batteries.Lean.HashSet
 import Lean
 import HepLean.Meta.AllFilePaths
 import HepLean.Meta.TransverseTactics
+import Lake.Util.Log
 /-!
 
 This file produces a list of places where `rfl` will complete the goal.
@@ -32,19 +33,23 @@ def name? : TacticInfo → Option Name
 /-- Decide whether a tactic is "substantive",
 or is merely a tactic combinator (e.g. `by`, `;`, multiline tactics, parenthesized tactics). -/
 def isSubstantive (t : TacticInfo) : Bool :=
+  open Lean.Parser in
   match t.name? with
-  | none
-  | `null
   | ``cdot
   | ``cdotTk
-  | ``Lean.Parser.Tactic.inductionAlt
-  | ``Lean.Parser.Tactic.case
-  | ``Lean.Parser.Term.byTactic
-  | ``Lean.Parser.Tactic.tacticSeq
-  | ``Lean.Parser.Tactic.tacticSeq1Indented
-  | ``Lean.Parser.Tactic.«tactic_<;>_»
-  | ``Lean.Parser.Tactic.paren
-  | ``Lean.Parser.Tactic.exact
+  | ``Tactic.«tactic_<;>_»
+  | ``Tactic.case
+  | ``Tactic.change
+  | ``Tactic.changeWith
+  | ``Tactic.exact
+  | ``Tactic.inductionAlt
+  | ``Tactic.paren
+  | ``Tactic.tacticSeq
+  | ``Tactic.tacticSeq1Indented
+  | ``Tactic.tacticSeqBracketed
+  | ``Term.byTactic
+  | `null
+  | none
       => false
   | _ => true
 
@@ -53,12 +58,30 @@ end Lean.Elab.TacticInfo
 open Lean Elab
 open System (FilePath)
 
+#check Lake.LogLevel.ansiColor
+#check Lake.Ansi.chalk
+
+def printRfl (s : String) : IO Unit :=
+  println! Lake.Ansi.chalk (Lake.LogLevel.ansiColor .warning) s
+def printSynthetic (s : String) : IO Unit :=
+  println! Lake.Ansi.chalk (Lake.LogLevel.ansiColor .info) s
+
 def visitTacticInfo (file : FilePath) (ci : ContextInfo) (ti : TacticInfo) : CoreM Unit := do
-  unless ti.isSubstantive do return
   let {stx, ..} := ti
   let some sp := stx.getPos? (canonicalOnly := true) | return -- Ignore `Lean.SourceInfo.synthetic`
   let some ep := stx.getTailPos? | return
   let s := ci.fileMap.source.extract sp ep
+  let {line, column} := ci.fileMap.toPosition sp
+  let message := s!"{file}:{line}:{column + 1} [{ti.name?}] {s}"
+  unless ti.isSubstantive do
+    printSynthetic message
+    return
+  if s == "rfl" then
+    printRfl message
+  else
+    println! message
+  -- println! s!"goalsBefore.size == {ti.goalsBefore.length}"
+  /-
   for g in ti.goalsBefore do
     (← IO.getStdout).flush
     let mctx := ti.mctxBefore
@@ -70,9 +93,10 @@ def visitTacticInfo (file : FilePath) (ci : ContextInfo) (ti : TacticInfo) : Cor
       let (mvars, _) ← dotac.run' {} {mctx}
       if mvars.isEmpty && s != "rfl" then
         let {line, column} := ci.fileMap.toPosition sp
-        println! "{file}:{line}:{column} {s}"
+        println! "{file}:{line}:{column + 1} {s}"
     catch _ => pure ()
     return
+  -/
     -- println! "extra"
 
 
