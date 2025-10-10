@@ -1,0 +1,744 @@
+strict digraph G {
+    graph [
+    pack=true;
+    packmode="array1";
+    ];
+    tooltip = "Informal HepLean graph";
+    node [margin="0.2,0.05";  fontsize=10;  fontname="Georgia", height=0.1];
+    bgcolor="white";
+    labelloc="t";
+    labeljust="l";
+    edge [arrowhead=vee];
+subgraph cluster_TwoHDM
+      {
+          label="TwoHDM";
+          color=steelblue;
+              }
+subgraph cluster_LorentzGroup
+      {
+          label="LorentzGroup";
+          color=steelblue;
+              }
+subgraph cluster_StandardModel_HiggsVec
+      {
+          label="StandardModel.HiggsVec";
+          color=steelblue;
+              }
+subgraph cluster_Fermion
+      {
+          label="Fermion";
+          color=steelblue;
+              }
+subgraph cluster_TensorSpecies
+      {
+          label="TensorSpecies";
+          color=steelblue;
+              }
+subgraph cluster_StandardModel
+      {
+          label="StandardModel";
+          color=steelblue;
+              }
+subgraph cluster_GeorgiGlashow
+      {
+          label="GeorgiGlashow";
+          color=steelblue;
+              }
+subgraph cluster_PatiSalam
+      {
+          label="PatiSalam";
+          color=steelblue;
+              }
+subgraph cluster_complexLorentzTensor
+      {
+          label="complexLorentzTensor";
+          color=steelblue;
+              }
+subgraph cluster_StandardModel_HiggsField
+      {
+          label="StandardModel.HiggsField";
+          color=steelblue;
+              }
+subgraph cluster_Lorentz_SL2C
+      {
+          label="Lorentz.SL2C";
+          color=steelblue;
+              }
+subgraph cluster_StandardModel_HiggsField_Potential
+      {
+          label="StandardModel.HiggsField.Potential";
+          color=steelblue;
+              }
+subgraph cluster_TensorTree
+      {
+          label="TensorTree";
+          color=steelblue;
+              }
+subgraph cluster_Spin10Model
+      {
+          label="Spin10Model";
+          color=steelblue;
+              }
+subgraph cluster_IndexNotation_OverColor
+      {
+          label="IndexNotation.OverColor";
+          color=steelblue;
+              }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_TwoHDM { "TwoHDM.prodMatrix"[label="TwoHDM.prodMatrix", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="For two Higgs fields `Φ₁` and `Φ₂`, the map from space time to 2 x 2 complex matrices
+defined by `((Φ₁^†Φ₁, Φ₂^†Φ₁), (Φ₁^†Φ₂, Φ₂^†Φ₂))`. "]; }
+subgraph cluster_TwoHDM { "TwoHDM.prodMatrix"[label="TwoHDM.prodMatrix", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="For two Higgs fields `Φ₁` and `Φ₂`, the map from space time to 2 x 2 complex matrices
+defined by `((Φ₁^†Φ₁, Φ₂^†Φ₁), (Φ₁^†Φ₂, Φ₂^†Φ₂))`. "]; }
+subgraph cluster_StandardModel_HiggsField { "StandardModel.HiggsField"[label="StandardModel.HiggsField", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A Higgs field is a smooth section of the Higgs bundle. "]; }
+subgraph cluster_TwoHDM { "TwoHDM.prodMatrix_smooth"[label="TwoHDM.prodMatrix_smooth", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The map `prodMatrix` is a smooth function on spacetime. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrBispinorUp"[label="complexLorentzTensor.contrBispinorUp", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A bispinor `pᵃᵃ` created from a lorentz vector `p^μ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrBispinorDown"[label="complexLorentzTensor.contrBispinorDown", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A bispinor `pₐₐ` created from a lorentz vector `p^μ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftMetric"[label="complexLorentzTensor.leftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εᵃᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightMetric"[label="complexLorentzTensor.rightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε^{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coBispinorUp"[label="complexLorentzTensor.coBispinorUp", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A bispinor `pᵃᵃ` created from a lorentz vector `p_μ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coBispinorDown"[label="complexLorentzTensor.coBispinorDown", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A bispinor `pₐₐ` created from a lorentz vector `p_μ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftMetric"[label="complexLorentzTensor.leftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εᵃᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightMetric"[label="complexLorentzTensor.rightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε^{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coMetric"[label="complexLorentzTensor.coMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ηᵢᵢ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrMetric"[label="complexLorentzTensor.contrMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ηⁱⁱ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftMetric"[label="complexLorentzTensor.leftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εᵃᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightMetric"[label="complexLorentzTensor.rightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε^{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftMetric"[label="complexLorentzTensor.altLeftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εₐₐ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightMetric"[label="complexLorentzTensor.altRightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε_{dot a}_{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coMetric"[label="complexLorentzTensor.coMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ηᵢᵢ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrMetric"[label="complexLorentzTensor.contrMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ηⁱⁱ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coContrUnit"[label="complexLorentzTensor.coContrUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δᵢⁱ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrMetric"[label="complexLorentzTensor.contrMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ηⁱⁱ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coMetric"[label="complexLorentzTensor.coMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ηᵢᵢ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrCoUnit"[label="complexLorentzTensor.contrCoUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δⁱᵢ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftMetric"[label="complexLorentzTensor.leftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εᵃᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftMetric"[label="complexLorentzTensor.altLeftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εₐₐ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftAltLeftUnit"[label="complexLorentzTensor.leftAltLeftUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δᵃₐ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightMetric"[label="complexLorentzTensor.rightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε^{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightMetric"[label="complexLorentzTensor.altRightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε_{dot a}_{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightAltRightUnit"[label="complexLorentzTensor.rightAltRightUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δ^{dot a}_{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftMetric"[label="complexLorentzTensor.altLeftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εₐₐ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftMetric"[label="complexLorentzTensor.leftMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `εᵃᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftLeftUnit"[label="complexLorentzTensor.altLeftLeftUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δₐᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightMetric"[label="complexLorentzTensor.altRightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε_{dot a}_{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightMetric"[label="complexLorentzTensor.rightMetric", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric `ε^{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightRightUnit"[label="complexLorentzTensor.altRightRightUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δ_{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coContrUnit"[label="complexLorentzTensor.coContrUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δᵢⁱ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrCoUnit"[label="complexLorentzTensor.contrCoUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δⁱᵢ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrCoUnit"[label="complexLorentzTensor.contrCoUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δⁱᵢ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coContrUnit"[label="complexLorentzTensor.coContrUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δᵢⁱ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftLeftUnit"[label="complexLorentzTensor.altLeftLeftUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δₐᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftAltLeftUnit"[label="complexLorentzTensor.leftAltLeftUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δᵃₐ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftAltLeftUnit"[label="complexLorentzTensor.leftAltLeftUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δᵃₐ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftLeftUnit"[label="complexLorentzTensor.altLeftLeftUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δₐᵃ` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightRightUnit"[label="complexLorentzTensor.altRightRightUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δ_{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightAltRightUnit"[label="complexLorentzTensor.rightAltRightUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δ^{dot a}_{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightAltRightUnit"[label="complexLorentzTensor.rightAltRightUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δ^{dot a}_{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightRightUnit"[label="complexLorentzTensor.altRightRightUnit", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit `δ_{dot a}^{dot a}` as a complex Lorentz tensor. "]; }
+subgraph cluster_LorentzGroup { "LorentzGroup"[label="LorentzGroup", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The Lorentz group is the subset of matrices for which
+`Λ * dual Λ = 1`. "]; }
+subgraph cluster_LorentzGroup { "LorentzGroup.IsProper"[label="LorentzGroup.IsProper", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A Lorentz Matrix is proper if its determinant is 1. "]; }
+subgraph cluster_LorentzGroup { "LorentzGroup.IsOrthochronous"[label="LorentzGroup.IsOrthochronous", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A Lorentz transformation is `orthochronous` if its `0 0` element is non-negative. "]; }
+subgraph cluster_Lorentz_SL2C { "Lorentz.SL2C.toLorentzGroup"[label="Lorentz.SL2C.toLorentzGroup", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The group homomorphism from `SL(2, ℂ)` to the Lorentz group `𝓛`. "]; }
+subgraph cluster_Lorentz_SL2C { "Lorentz.SL2C.toLorentzGroup_det_one"[label="Lorentz.SL2C.toLorentzGroup_det_one", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The determinant of the image of `SL(2, ℂ)` in the Lorentz group is one. "]; }
+subgraph cluster_Lorentz_SL2C { "Lorentz.SL2C.toLorentzGroup_isOrthochronous"[label="Lorentz.SL2C.toLorentzGroup_isOrthochronous", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The image of `SL(2, ℂ)` in the Lorentz group is orthochronous. "]; }
+subgraph cluster_Fermion { "Fermion.rightHanded"[label="Fermion.rightHanded", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
+In index notation corresponds to a Weyl fermion with indices ψ^{dot a}. "]; }
+subgraph cluster_Fermion { "Fermion.altRightHanded"[label="Fermion.altRightHanded", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The vector space ℂ^2 carrying the representation of SL(2,C) given by
+M → (M⁻¹)^†.
+In index notation this corresponds to a Weyl fermion with index `ψ_{dot a}`. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupQuot"[label="StandardModel.GaugeGroupQuot", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="Specifies the allowed quotients of `SU(3) x SU(2) x U(1)` which give a valid
+gauge group of the Standard Model. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupI"[label="StandardModel.GaugeGroupI", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The global gauge group of the Standard Model with no discrete quotients.
+The `I` in the Name is an indication of the statement that this has no discrete quotients. "]; }
+"SpaceTime"[label="SpaceTime", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The space-time "]
+subgraph cluster_StandardModel_HiggsField { "StandardModel.HiggsField.zero"[label="StandardModel.HiggsField.zero", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The higgs field which is all zero. "]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec.rotate_fst_zero_snd_real"[label="StandardModel.HiggsVec.rotate_fst_zero_snd_real", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="For every Higgs vector there exists an element of the gauge group which rotates that
+Higgs vector to have `0` in the first component and be a non-negative real in the second
+componenet. "]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec"[label="StandardModel.HiggsVec", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The complex vector space in which the Higgs field takes values. "]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec.rep"[label="StandardModel.HiggsVec.rep", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The representation of the gauge group acting on `higgsVec`. "]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec"[label="StandardModel.HiggsVec", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The complex vector space in which the Higgs field takes values. "]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec.rep"[label="StandardModel.HiggsVec.rep", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The representation of the gauge group acting on `higgsVec`. "]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec.rep"[label="StandardModel.HiggsVec.rep", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The representation of the gauge group acting on `higgsVec`. "]; }
+subgraph cluster_StandardModel_HiggsField { "StandardModel.HiggsField"[label="StandardModel.HiggsField", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A Higgs field is a smooth section of the Higgs bundle. "]; }
+"SpaceTime"[label="SpaceTime", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The space-time "]
+subgraph cluster_StandardModel_HiggsField_Potential { "StandardModel.HiggsField.Potential.IsBounded"[label="StandardModel.HiggsField.Potential.IsBounded", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The proposition on the coefficients for a potential to be bounded. "]; }
+subgraph cluster_StandardModel_HiggsField_Potential { "StandardModel.HiggsField.Potential"[label="StandardModel.HiggsField.Potential", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The parameters of the Higgs potential. "]; }
+subgraph cluster_IndexNotation_OverColor { "IndexNotation.OverColor.forget"[label="IndexNotation.OverColor.forget", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The forgetful map from `BraidedFunctor (OverColor C) (Rep k G)` to `Discrete C ⥤ Rep k G`
+built on the inclusion `incl` and forgetting the monoidal structure. "]; }
+subgraph cluster_IndexNotation_OverColor { "IndexNotation.OverColor.lift"[label="IndexNotation.OverColor.lift", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The functor taking functors in `Discrete C ⥤ Rep k G` to monoidal functors in
+`BraidedFunctor (OverColor C) (Rep k G)`, built on the PiTensorProduct. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.contractSelfField"[label="TensorSpecies.contractSelfField", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The contraction of two vectors in a tensor species of the same color, as a linear
+map to the underlying field. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.contractSelfField"[label="TensorSpecies.contractSelfField", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The contraction of two vectors in a tensor species of the same color, as a linear
+map to the underlying field. "]; }
+subgraph cluster_TensorTree { "TensorTree"[label="TensorTree", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A syntax tree for tensor expressions. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.dualRepIsoDiscrete"[label="TensorSpecies.dualRepIsoDiscrete", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The isomorphism between the representation associated with a color, and that associated with
+its dual. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.unitTensor"[label="TensorSpecies.unitTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.metricTensor"[label="TensorSpecies.metricTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.unitTensor"[label="TensorSpecies.unitTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.metricTensor"[label="TensorSpecies.metricTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.unitTensor"[label="TensorSpecies.unitTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.metricTensor"[label="TensorSpecies.metricTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.unitTensor"[label="TensorSpecies.unitTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The unit of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.metricTensor"[label="TensorSpecies.metricTensor", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="The metric of a tensor species in a `PiTensorProduct`. "]; }
+subgraph cluster_TensorTree { "TensorTree.constVecNode"[label="TensorTree.constVecNode", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A constant vector. "]; }
+subgraph cluster_TensorTree { "TensorTree.vecNode"[label="TensorTree.vecNode", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A node consisting of a single vector. "]; }
+subgraph cluster_TensorTree { "TensorTree.constTwoNode"[label="TensorTree.constTwoNode", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A constant two tensor (e.g. metric and unit). "]; }
+subgraph cluster_TensorTree { "TensorTree.twoNode"[label="TensorTree.twoNode", shape=box, style=filled, fillcolor=steelblue,
+    tooltip="A node consisting of a two tensor. "]; }
+subgraph cluster_GeorgiGlashow { "GeorgiGlashow.GaugeGroupI"[label="GeorgiGlashow.GaugeGroupI", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The gauge group of the Georgi-Glashow model, i.e., `SU(5)`. "]; }
+subgraph cluster_GeorgiGlashow { "GeorgiGlashow.inclSM"[label="GeorgiGlashow.inclSM", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The homomorphism of the Standard Model gauge group into the Georgi-Glashow gauge group, i.e.,
+the group homomorphism `SU(3) × SU(2) × U(1) → SU(5)` taking `(h, g, α)` to
+`blockdiag (α ^ 3 g, α ^ (-2) h)`.
+
+See page 34 of https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_GeorgiGlashow { "GeorgiGlashow.inclSM_ker"[label="GeorgiGlashow.inclSM_ker", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The kernel of the map `inclSM` is equal to the subgroup `StandardModel.gaugeGroupℤ₆SubGroup`.
+
+See page 34 of https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_GeorgiGlashow { "GeorgiGlashow.embedSMℤ₆"[label="GeorgiGlashow.embedSMℤ₆", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The group embedding from `StandardModel.GaugeGroupℤ₆` to `GaugeGroupI` induced by `inclSM` by
+quotienting by the kernal `inclSM_ker`.
+"]; }
+subgraph cluster_PatiSalam { "PatiSalam.GaugeGroupI"[label="PatiSalam.GaugeGroupI", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The gauge group of the Pati-Salam model (unquotiented by ℤ₂), i.e., `SU(4) × SU(2) × SU(2)`. "]; }
+subgraph cluster_PatiSalam { "PatiSalam.inclSM"[label="PatiSalam.inclSM", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The homomorphism of the Standard Model gauge group into the Pati-Salam gauge group, i.e., the
+group homomorphism `SU(3) × SU(2) × U(1) → SU(4) × SU(2) × SU(2)` taking `(h, g, α)` to
+`(blockdiag (α h, α ^ (-3)), g, diag (α ^ 3, α ^(-3))`.
+
+See page 54 of https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_PatiSalam { "PatiSalam.inclSM_ker"[label="PatiSalam.inclSM_ker", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The kernel of the map `inclSM` is equal to the subgroup `StandardModel.gaugeGroupℤ₃SubGroup`.
+
+See footnote 10 of https://arxiv.org/pdf/2201.07245
+"]; }
+subgraph cluster_PatiSalam { "PatiSalam.embedSMℤ₃"[label="PatiSalam.embedSMℤ₃", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The group embedding from `StandardModel.GaugeGroupℤ₃` to `GaugeGroupI` induced by `inclSM` by
+quotienting by the kernal `inclSM_ker`.
+"]; }
+subgraph cluster_PatiSalam { "PatiSalam.gaugeGroupISpinEquiv"[label="PatiSalam.gaugeGroupISpinEquiv", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The equivalence between `GaugeGroupI` and `Spin(6) × Spin(4)`. "]; }
+subgraph cluster_PatiSalam { "PatiSalam.gaugeGroupℤ₂SubGroup"[label="PatiSalam.gaugeGroupℤ₂SubGroup", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The ℤ₂-subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` with the non-trivial element `(-1, -1, -1)`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_PatiSalam { "PatiSalam.GaugeGroupℤ₂"[label="PatiSalam.GaugeGroupℤ₂", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The gauge group of the Pati-Salam model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI`
+by the ℤ₂-subgroup `gaugeGroupℤ₂SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_PatiSalam { "PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup"[label="PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The group `StandardModel.gaugeGroupℤ₆SubGroup` under the homomorphism `embedSM` factors through
+the subgroup `gaugeGroupℤ₂SubGroup`.
+"]; }
+subgraph cluster_PatiSalam { "PatiSalam.embedSMℤ₆Toℤ₂"[label="PatiSalam.embedSMℤ₆Toℤ₂", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The group homomorphism from `StandardModel.GaugeGroupℤ₆` to `GaugeGroupℤ₂` induced by `embedSM`.
+"]; }
+subgraph cluster_Spin10Model { "Spin10Model.GaugeGroupI"[label="Spin10Model.GaugeGroupI", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The gauge group of the Spin(10) model, i.e., the group `Spin(10)`. "]; }
+subgraph cluster_Spin10Model { "Spin10Model.inclPatiSalam"[label="Spin10Model.inclPatiSalam", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The inclusion of the Pati-Salam gauge group into Spin(10), i.e., the lift of the embedding
+`SO(6) × SO(4) → SO(10)` to universal covers, giving a homomorphism `Spin(6) × Spin(4) → Spin(10)`.
+Precomposed with the isomorphism, `PatiSalam.gaugeGroupISpinEquiv`, between `SU(4) × SU(2) × SU(2)`
+and `Spin(6) × Spin(4)`.
+
+See page 56 of https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_Spin10Model { "Spin10Model.inclSM"[label="Spin10Model.inclSM", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The inclusion of the Standard Model gauge group into Spin(10), i.e., the compoisiton of
+`embedPatiSalam` and `PatiSalam.inclSM`.
+
+See page 56 of https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_Spin10Model { "Spin10Model.inclGeorgiGlashow"[label="Spin10Model.inclGeorgiGlashow", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The inclusion of the Georgi-Glashow gauge group into Spin(10), i.e., the Lie group homomorphism
+from `SU(n) → Spin(2n)` discussed on page 46 of https://math.ucr.edu/home/baez/guts.pdf for `n = 5`.
+"]; }
+subgraph cluster_Spin10Model { "Spin10Model.inclSMThruGeorgiGlashow"[label="Spin10Model.inclSMThruGeorgiGlashow", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The inclusion of the Standard Model gauge group into Spin(10), i.e., the composition of
+`inclGeorgiGlashow` and `GeorgiGlashow.inclSM`.
+"]; }
+subgraph cluster_Spin10Model { "Spin10Model.inclSM_eq_inclSMThruGeorgiGlashow"[label="Spin10Model.inclSM_eq_inclSMThruGeorgiGlashow", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The inclusion `inclSM` is equal to the inclusion `inclSMThruGeorgiGlashow`. "]; }
+subgraph cluster_TwoHDM { "TwoHDM.prodMatrix_invariant"[label="TwoHDM.prodMatrix_invariant", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The map `prodMatrix` is invariant under the simultanous action of `gaugeAction` on the two Higgs
+fields. "]; }
+subgraph cluster_TwoHDM { "TwoHDM.prodMatrix_to_higgsField"[label="TwoHDM.prodMatrix_to_higgsField", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Given any smooth map `f` from spacetime to 2-by-2 complex matrices landing on positive
+semi-definite matrices, there exist smooth Higgs fields `Φ1` and `Φ2` such that `f` is equal to
+`prodMatrix Φ1 Φ2`.
+
+See https://arxiv.org/pdf/hep-ph/0605184
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown"[label="complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="`{contrBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ contrBispinorDown p | α' β' }ᵀ`.
+
+Proof: expand `contrBispinorDown` and use fact that metrics contract to the identity.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown"[label="complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="`{coBispinorUp p | α β = εL | α α' ⊗ εR | β β'⊗ coBispinorDown p | α' β' }ᵀ`.
+
+proof: expand `coBispinorDown` and use fact that metrics contract to the identity.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coMetric_symm"[label="complexLorentzTensor.coMetric_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The covariant metric is symmetric `{η' | μ ν = η' | ν μ}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrMetric_symm"[label="complexLorentzTensor.contrMetric_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contravariant metric is symmetric `{η | μ ν = η | ν μ}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftMetric_antisymm"[label="complexLorentzTensor.leftMetric_antisymm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The left metric is antisymmetric `{εL | α α' = - εL | α' α}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightMetric_antisymm"[label="complexLorentzTensor.rightMetric_antisymm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The right metric is antisymmetric `{εR | β β' = - εR | β' β}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftMetric_antisymm"[label="complexLorentzTensor.altLeftMetric_antisymm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The alt-left metric is antisymmetric `{εL' | α α' = - εL' | α' α}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightMetric_antisymm"[label="complexLorentzTensor.altRightMetric_antisymm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The alt-right metric is antisymmetric `{εR' | β β' = - εR' | β' β}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coMetric_contr_contrMetric"[label="complexLorentzTensor.coMetric_contr_contrMetric", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction of the covariant metric with the contravariant metric is the unit
+`{η' | μ ρ ⊗ η | ρ ν = δ' | μ ν}ᵀ`.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrMetric_contr_coMetric"[label="complexLorentzTensor.contrMetric_contr_coMetric", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction of the contravariant metric with the covariant metric is the unit
+`{η | μ ρ ⊗ η' | ρ ν = δ | μ ν}ᵀ`.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftMetric_contr_altLeftMetric"[label="complexLorentzTensor.leftMetric_contr_altLeftMetric", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction of the left metric with the alt-left metric is the unit
+`{εL | α β ⊗ εL' | β γ = δL | α γ}ᵀ`.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightMetric_contr_altRightMetric"[label="complexLorentzTensor.rightMetric_contr_altRightMetric", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction of the right metric with the alt-right metric is the unit
+`{εR | α β ⊗ εR' | β γ = δR | α γ}ᵀ`.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftMetric_contr_leftMetric"[label="complexLorentzTensor.altLeftMetric_contr_leftMetric", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction of the alt-left metric with the left metric is the unit
+`{εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ`.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightMetric_contr_rightMetric"[label="complexLorentzTensor.altRightMetric_contr_rightMetric", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction of the alt-right metric with the right metric is the unit
+`{εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ`.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.coContrUnit_symm"[label="complexLorentzTensor.coContrUnit_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Swapping indices of `coContrUnit` returns `contrCoUnit`: `{δ' | μ ν = δ | ν μ}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.contrCoUnit_symm"[label="complexLorentzTensor.contrCoUnit_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Swapping indices of `contrCoUnit` returns `coContrUnit`: `{δ | μ ν = δ' | ν μ}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altLeftLeftUnit_symm"[label="complexLorentzTensor.altLeftLeftUnit_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Swapping indices of `altLeftLeftUnit` returns `leftAltLeftUnit`: `{δL' | α α' = δL | α' α}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.leftAltLeftUnit_symm"[label="complexLorentzTensor.leftAltLeftUnit_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Swapping indices of `leftAltLeftUnit` returns `altLeftLeftUnit`: `{δL | α α' = δL' | α' α}ᵀ`. "]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.altRightRightUnit_symm"[label="complexLorentzTensor.altRightRightUnit_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Swapping indices of `altRightRightUnit` returns `rightAltRightUnit`:
+`{δR' | β β' = δR | β' β}ᵀ`.
+"]; }
+subgraph cluster_complexLorentzTensor { "complexLorentzTensor.rightAltRightUnit_symm"[label="complexLorentzTensor.rightAltRightUnit_symm", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Swapping indices of `rightAltRightUnit` returns `altRightRightUnit`:
+`{δR | β β' = δR' | β' β}ᵀ`.
+"]; }
+subgraph cluster_LorentzGroup { "LorentzGroup.Restricted"[label="LorentzGroup.Restricted", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The subgroup of the Lorentz group consisting of elements which are proper and orthochronous. "]; }
+subgraph cluster_Lorentz_SL2C { "Lorentz.SL2C.toRestrictedLorentzGroup"[label="Lorentz.SL2C.toRestrictedLorentzGroup", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The homomorphism from `SL(2, ℂ)` to the restricted Lorentz group. "]; }
+subgraph cluster_Fermion { "Fermion.rightHandedWeylAltEquiv"[label="Fermion.rightHandedWeylAltEquiv", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The linear equivalence between `rightHandedWeyl` and `altRightHandedWeyl` given by multiplying
+an element of `rightHandedWeyl` by the matrix `εᵃ⁰ᵃ¹ = !![0, 1; -1, 0]]`.
+"]; }
+subgraph cluster_Fermion { "Fermion.rightHandedWeylAltEquiv_equivariant"[label="Fermion.rightHandedWeylAltEquiv_equivariant", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The linear equivalence `rightHandedWeylAltEquiv` is equivariant with respect to the action of
+`SL(2,C)` on `rightHandedWeyl` and `altRightHandedWeyl`.
+"]; }
+subgraph cluster_StandardModel { "StandardModel.gaugeGroupℤ₆SubGroup"[label="StandardModel.gaugeGroupℤ₆SubGroup", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₆-subgroup of `GaugeGroupI` with elements `(α^2 * I₃, α^(-3) * I₂, α)`,
+where `α` is a sixth complex root of unity.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupℤ₆"[label="StandardModel.GaugeGroupℤ₆", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The smallest possible gauge group of the Standard Model, i.e., the quotient of `GaugeGroupI` by
+the ℤ₆-subgroup `gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_StandardModel { "StandardModel.gaugeGroupℤ₂SubGroup"[label="StandardModel.gaugeGroupℤ₂SubGroup", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The ℤ₂subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₂-subgroup of `GaugeGroupI` derived from the ℤ₂ subgroup of
+`gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupℤ₂"[label="StandardModel.GaugeGroupℤ₂", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The guage group of the Standard Model with a ℤ₂ quotient, i.e., the quotient of `GaugeGroupI` by
+the ℤ₂-subgroup `gaugeGroupℤ₂SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_StandardModel { "StandardModel.gaugeGroupℤ₃SubGroup"[label="StandardModel.gaugeGroupℤ₃SubGroup", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The ℤ₃-subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+standard model, i.e., the ℤ₃-subgroup of `GaugeGroupI` derived from the ℤ₃ subgroup of
+`gaugeGroupℤ₆SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroupℤ₃"[label="StandardModel.GaugeGroupℤ₃", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The guage group of the Standard Model with a ℤ₃-quotient, i.e., the quotient of `GaugeGroupI` by
+the ℤ₃-subgroup `gaugeGroupℤ₃SubGroup`.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_StandardModel { "StandardModel.GaugeGroup"[label="StandardModel.GaugeGroup", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The (global) gauge group of the Standard Model given a choice of quotient, i.e., the map from
+`GaugeGroupQuot` to `Type` which gives the gauge group of the Standard Model for a given choice of
+quotient.
+
+See https://math.ucr.edu/home/baez/guts.pdf
+"]; }
+subgraph cluster_StandardModel { "StandardModel.gaugeGroupI_lie"[label="StandardModel.gaugeGroupI_lie", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The gauge group `GaugeGroupI` is a Lie group. "]; }
+subgraph cluster_StandardModel { "StandardModel.gaugeGroup_lie"[label="StandardModel.gaugeGroup_lie", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="For every `q` in `GaugeGroupQuot` the group `GaugeGroup q` is a Lie group. "]; }
+subgraph cluster_StandardModel { "StandardModel.gaugeBundleI"[label="StandardModel.gaugeBundleI", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The trivial principal bundle over SpaceTime with structure group `GaugeGroupI`. "]; }
+subgraph cluster_StandardModel { "StandardModel.gaugeTransformI"[label="StandardModel.gaugeTransformI", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="A global section of `gaugeBundleI`. "]; }
+subgraph cluster_StandardModel_HiggsField { "StandardModel.HiggsField.zero_is_zero_section"[label="StandardModel.HiggsField.zero_is_zero_section", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The zero Higgs field is the zero section of the Higgs bundle, i.e., the HiggsField `zero`
+defined by `ofReal 0` is the constant zero-section of the bundle `HiggsBundle`.
+"]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec.guage_orbit"[label="StandardModel.HiggsVec.guage_orbit", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="There exists a `g` in `GaugeGroupI` such that `rep g φ = φ'` iff `‖φ‖ = ‖φ'‖`. "]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec.stability_group_single"[label="StandardModel.HiggsVec.stability_group_single", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The Higgs boson breaks electroweak symmetry down to the electromagnetic force, i.e., the
+stablity group of the action of `rep` on `![0, Complex.ofReal ‖φ‖]`, for non-zero `‖φ‖`, is the
+`SU(3) × U(1)` subgroup of `gaugeGroup := SU(3) × SU(2) × U(1)` with the embedding given by
+`(g, e^{i θ}) ↦ (g, diag (e ^ {3 * i θ}, e ^ {- 3 * i θ}), e^{i θ})`.
+"]; }
+subgraph cluster_StandardModel_HiggsVec { "StandardModel.HiggsVec.stability_group"[label="StandardModel.HiggsVec.stability_group", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The subgroup of `gaugeGroup := SU(3) × SU(2) × U(1)` which preserves every `HiggsVec` by the
+action of `StandardModel.HiggsVec.rep` is given by `SU(3) × ℤ₆` where `ℤ₆` is the subgroup of
+`SU(2) × U(1)` with elements `(α^(-3) * I₂, α)` where `α` is a sixth root of unity.
+"]; }
+subgraph cluster_StandardModel_HiggsField { "StandardModel.HiggsField.gaugeAction"[label="StandardModel.HiggsField.gaugeAction", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The action of `gaugeTransformI` on `HiggsField` acting pointwise through `HiggsVec.rep`. "]; }
+subgraph cluster_StandardModel_HiggsField { "StandardModel.HiggsField.guage_orbit"[label="StandardModel.HiggsField.guage_orbit", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="There exists a `g` in `gaugeTransformI` such that `gaugeAction g φ = φ'` iff
+`φ(x)^† φ(x) = φ'(x)^† φ'(x)`.
+"]; }
+subgraph cluster_StandardModel_HiggsField { "StandardModel.HiggsField.gauge_orbit_surject"[label="StandardModel.HiggsField.gauge_orbit_surject", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="For every smooth map `f` from `SpaceTime` to `ℝ` such that `f` is positive semidefinite, there
+exists a Higgs field `φ` such that `f = φ^† φ`.
+"]; }
+subgraph cluster_StandardModel_HiggsField_Potential { "StandardModel.HiggsField.Potential.isBounded_iff_of_𝓵_zero"[label="StandardModel.HiggsField.Potential.isBounded_iff_of_𝓵_zero", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="When there is no quartic coupling, the potential is bounded iff the mass squared is
+non-positive, i.e., for `P : Potential` then `P.IsBounded` iff `P.μ2 ≤ 0`. That is to say
+`- P.μ2 * ‖φ‖_H^2 x` is bounded below ifff `P.μ2 ≤ 0`."]; }
+subgraph cluster_IndexNotation_OverColor { "IndexNotation.OverColor.forgetLift"[label="IndexNotation.OverColor.forgetLift", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="The natural isomorphism between `lift (C := C) ⋙ forget` and
+`Functor.id (Discrete C ⥤ Rep k G)`.
+"]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.contractSelfField_non_degenerate"[label="TensorSpecies.contractSelfField_non_degenerate", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction of two vectors of the same color is non-degenerate, i.e., `⟪ψ, φ⟫ₜₛ = 0` for all
+`φ` implies `ψ = 0`.
+
+Proof: the basic idea is that being degenerate contradicts the assumption of having a
+unit in the tensor species.
+"]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.contractSelfField_tensorTree"[label="TensorSpecies.contractSelfField_tensorTree", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="The contraction `⟪ψ, φ⟫ₜₛ` is related to the tensor tree
+`{ψ | μ ⊗ (S.dualRepIsoDiscrete c).hom φ | μ}ᵀ`. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.dualRepIso"[label="TensorSpecies.dualRepIso", shape=box, style=filled, fillcolor=lightgray,
+    tooltip="Given a `i : Fin n` the isomorphism between `S.F.obj (OverColor.mk c)` and
+`S.F.obj (OverColor.mk (Function.update c i (S.τ (c i))))` induced by `dualRepIsoDiscrete` acting on
+the `i`-th component of the color.
+"]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.dualRepIso_unitTensor_fst"[label="TensorSpecies.dualRepIso_unitTensor_fst", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Acting with `dualRepIso` on the fst component of a `unitTensor` returns a metric. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.dualRepIso_unitTensor_snd"[label="TensorSpecies.dualRepIso_unitTensor_snd", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Acting with `dualRepIso` on the snd component of a `unitTensor` returns a metric. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.dualRepIso_metricTensor_fst"[label="TensorSpecies.dualRepIso_metricTensor_fst", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Acting with `dualRepIso` on the fst component of a `metricTensor` returns a unitTensor. "]; }
+subgraph cluster_TensorSpecies { "TensorSpecies.dualRepIso_metricTensor_snd"[label="TensorSpecies.dualRepIso_metricTensor_snd", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="Acting with `dualRepIso` on the snd component of a `metricTensor` returns a unitTensor. "]; }
+subgraph cluster_TensorTree { "TensorTree.constVecNode_eq_vecNode"[label="TensorTree.constVecNode_eq_vecNode", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="A `constVecNode` has equal tensor to the `vecNode` with the map evaluated at 1. "]; }
+subgraph cluster_TensorTree { "TensorTree.constTwoNode_eq_twoNode"[label="TensorTree.constTwoNode_eq_twoNode", shape=ellipse, style=filled, fillcolor=lightgray,
+    tooltip="A `constTwoNode` has equal tensor to the `twoNode` with the map evaluated at 1. "]; }
+"GeorgiGlashow.GaugeGroupI" -> "GeorgiGlashow.inclSM"
+"StandardModel.GaugeGroupI" -> "GeorgiGlashow.inclSM"
+"GeorgiGlashow.inclSM" -> "GeorgiGlashow.inclSM_ker"
+"StandardModel.gaugeGroupℤ₆SubGroup" -> "GeorgiGlashow.inclSM_ker"
+"GeorgiGlashow.inclSM" -> "GeorgiGlashow.embedSMℤ₆"
+"StandardModel.GaugeGroupℤ₆" -> "GeorgiGlashow.embedSMℤ₆"
+"GeorgiGlashow.GaugeGroupI" -> "GeorgiGlashow.embedSMℤ₆"
+"GeorgiGlashow.inclSM_ker" -> "GeorgiGlashow.embedSMℤ₆"
+"PatiSalam.GaugeGroupI" -> "PatiSalam.inclSM"
+"StandardModel.GaugeGroupI" -> "PatiSalam.inclSM"
+"PatiSalam.inclSM" -> "PatiSalam.inclSM_ker"
+"StandardModel.gaugeGroupℤ₃SubGroup" -> "PatiSalam.inclSM_ker"
+"PatiSalam.inclSM" -> "PatiSalam.embedSMℤ₃"
+"StandardModel.GaugeGroupℤ₃" -> "PatiSalam.embedSMℤ₃"
+"PatiSalam.GaugeGroupI" -> "PatiSalam.embedSMℤ₃"
+"PatiSalam.inclSM_ker" -> "PatiSalam.embedSMℤ₃"
+"PatiSalam.GaugeGroupI" -> "PatiSalam.gaugeGroupISpinEquiv"
+"PatiSalam.GaugeGroupI" -> "PatiSalam.gaugeGroupℤ₂SubGroup"
+"PatiSalam.GaugeGroupI" -> "PatiSalam.GaugeGroupℤ₂"
+"PatiSalam.gaugeGroupℤ₂SubGroup" -> "PatiSalam.GaugeGroupℤ₂"
+"PatiSalam.inclSM" -> "PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup"
+"StandardModel.gaugeGroupℤ₆SubGroup" -> "PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup"
+"PatiSalam.gaugeGroupℤ₂SubGroup" -> "PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup"
+"PatiSalam.inclSM" -> "PatiSalam.embedSMℤ₆Toℤ₂"
+"StandardModel.GaugeGroupℤ₆" -> "PatiSalam.embedSMℤ₆Toℤ₂"
+"PatiSalam.GaugeGroupℤ₂" -> "PatiSalam.embedSMℤ₆Toℤ₂"
+"PatiSalam.sm_ℤ₆_factor_through_gaugeGroupℤ₂SubGroup" -> "PatiSalam.embedSMℤ₆Toℤ₂"
+"Spin10Model.GaugeGroupI" -> "Spin10Model.inclPatiSalam"
+"PatiSalam.GaugeGroupI" -> "Spin10Model.inclPatiSalam"
+"PatiSalam.gaugeGroupISpinEquiv" -> "Spin10Model.inclPatiSalam"
+"Spin10Model.inclPatiSalam" -> "Spin10Model.inclSM"
+"PatiSalam.inclSM" -> "Spin10Model.inclSM"
+"Spin10Model.GaugeGroupI" -> "Spin10Model.inclGeorgiGlashow"
+"GeorgiGlashow.GaugeGroupI" -> "Spin10Model.inclGeorgiGlashow"
+"Spin10Model.inclGeorgiGlashow" -> "Spin10Model.inclSMThruGeorgiGlashow"
+"GeorgiGlashow.inclSM" -> "Spin10Model.inclSMThruGeorgiGlashow"
+"Spin10Model.inclSM" -> "Spin10Model.inclSM_eq_inclSMThruGeorgiGlashow"
+"Spin10Model.inclSMThruGeorgiGlashow" -> "Spin10Model.inclSM_eq_inclSMThruGeorgiGlashow"
+"TwoHDM.prodMatrix" -> "TwoHDM.prodMatrix_invariant"
+"StandardModel.HiggsField.gaugeAction" -> "TwoHDM.prodMatrix_invariant"
+"TwoHDM.prodMatrix" -> "TwoHDM.prodMatrix_to_higgsField"
+"StandardModel.HiggsField" -> "TwoHDM.prodMatrix_to_higgsField"
+"TwoHDM.prodMatrix_smooth" -> "TwoHDM.prodMatrix_to_higgsField"
+"complexLorentzTensor.contrBispinorUp" -> "complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown"
+"complexLorentzTensor.contrBispinorDown" -> "complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown"
+"complexLorentzTensor.leftMetric" -> "complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown"
+"complexLorentzTensor.rightMetric" -> "complexLorentzTensor.contrBispinorUp_eq_metric_contr_contrBispinorDown"
+"complexLorentzTensor.coBispinorUp" -> "complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown"
+"complexLorentzTensor.coBispinorDown" -> "complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown"
+"complexLorentzTensor.leftMetric" -> "complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown"
+"complexLorentzTensor.rightMetric" -> "complexLorentzTensor.coBispinorUp_eq_metric_contr_coBispinorDown"
+"complexLorentzTensor.coMetric" -> "complexLorentzTensor.coMetric_symm"
+"complexLorentzTensor.contrMetric" -> "complexLorentzTensor.contrMetric_symm"
+"complexLorentzTensor.leftMetric" -> "complexLorentzTensor.leftMetric_antisymm"
+"complexLorentzTensor.rightMetric" -> "complexLorentzTensor.rightMetric_antisymm"
+"complexLorentzTensor.altLeftMetric" -> "complexLorentzTensor.altLeftMetric_antisymm"
+"complexLorentzTensor.altRightMetric" -> "complexLorentzTensor.altRightMetric_antisymm"
+"complexLorentzTensor.coMetric" -> "complexLorentzTensor.coMetric_contr_contrMetric"
+"complexLorentzTensor.contrMetric" -> "complexLorentzTensor.coMetric_contr_contrMetric"
+"complexLorentzTensor.coContrUnit" -> "complexLorentzTensor.coMetric_contr_contrMetric"
+"complexLorentzTensor.contrMetric" -> "complexLorentzTensor.contrMetric_contr_coMetric"
+"complexLorentzTensor.coMetric" -> "complexLorentzTensor.contrMetric_contr_coMetric"
+"complexLorentzTensor.contrCoUnit" -> "complexLorentzTensor.contrMetric_contr_coMetric"
+"complexLorentzTensor.leftMetric" -> "complexLorentzTensor.leftMetric_contr_altLeftMetric"
+"complexLorentzTensor.altLeftMetric" -> "complexLorentzTensor.leftMetric_contr_altLeftMetric"
+"complexLorentzTensor.leftAltLeftUnit" -> "complexLorentzTensor.leftMetric_contr_altLeftMetric"
+"complexLorentzTensor.rightMetric" -> "complexLorentzTensor.rightMetric_contr_altRightMetric"
+"complexLorentzTensor.altRightMetric" -> "complexLorentzTensor.rightMetric_contr_altRightMetric"
+"complexLorentzTensor.rightAltRightUnit" -> "complexLorentzTensor.rightMetric_contr_altRightMetric"
+"complexLorentzTensor.altLeftMetric" -> "complexLorentzTensor.altLeftMetric_contr_leftMetric"
+"complexLorentzTensor.leftMetric" -> "complexLorentzTensor.altLeftMetric_contr_leftMetric"
+"complexLorentzTensor.altLeftLeftUnit" -> "complexLorentzTensor.altLeftMetric_contr_leftMetric"
+"complexLorentzTensor.altRightMetric" -> "complexLorentzTensor.altRightMetric_contr_rightMetric"
+"complexLorentzTensor.rightMetric" -> "complexLorentzTensor.altRightMetric_contr_rightMetric"
+"complexLorentzTensor.altRightRightUnit" -> "complexLorentzTensor.altRightMetric_contr_rightMetric"
+"complexLorentzTensor.coContrUnit" -> "complexLorentzTensor.coContrUnit_symm"
+"complexLorentzTensor.contrCoUnit" -> "complexLorentzTensor.coContrUnit_symm"
+"complexLorentzTensor.contrCoUnit" -> "complexLorentzTensor.contrCoUnit_symm"
+"complexLorentzTensor.coContrUnit" -> "complexLorentzTensor.contrCoUnit_symm"
+"complexLorentzTensor.altLeftLeftUnit" -> "complexLorentzTensor.altLeftLeftUnit_symm"
+"complexLorentzTensor.leftAltLeftUnit" -> "complexLorentzTensor.altLeftLeftUnit_symm"
+"complexLorentzTensor.leftAltLeftUnit" -> "complexLorentzTensor.leftAltLeftUnit_symm"
+"complexLorentzTensor.altLeftLeftUnit" -> "complexLorentzTensor.leftAltLeftUnit_symm"
+"complexLorentzTensor.altRightRightUnit" -> "complexLorentzTensor.altRightRightUnit_symm"
+"complexLorentzTensor.rightAltRightUnit" -> "complexLorentzTensor.altRightRightUnit_symm"
+"complexLorentzTensor.rightAltRightUnit" -> "complexLorentzTensor.rightAltRightUnit_symm"
+"complexLorentzTensor.altRightRightUnit" -> "complexLorentzTensor.rightAltRightUnit_symm"
+"LorentzGroup" -> "LorentzGroup.Restricted"
+"LorentzGroup.IsProper" -> "LorentzGroup.Restricted"
+"LorentzGroup.IsOrthochronous" -> "LorentzGroup.Restricted"
+"Lorentz.SL2C.toLorentzGroup" -> "Lorentz.SL2C.toRestrictedLorentzGroup"
+"Lorentz.SL2C.toLorentzGroup_det_one" -> "Lorentz.SL2C.toRestrictedLorentzGroup"
+"Lorentz.SL2C.toLorentzGroup_isOrthochronous" -> "Lorentz.SL2C.toRestrictedLorentzGroup"
+"LorentzGroup.Restricted" -> "Lorentz.SL2C.toRestrictedLorentzGroup"
+"Fermion.rightHanded" -> "Fermion.rightHandedWeylAltEquiv"
+"Fermion.altRightHanded" -> "Fermion.rightHandedWeylAltEquiv"
+"Fermion.rightHandedWeylAltEquiv" -> "Fermion.rightHandedWeylAltEquiv_equivariant"
+"StandardModel.GaugeGroupI" -> "StandardModel.gaugeGroupℤ₆SubGroup"
+"StandardModel.GaugeGroupI" -> "StandardModel.GaugeGroupℤ₆"
+"StandardModel.gaugeGroupℤ₆SubGroup" -> "StandardModel.GaugeGroupℤ₆"
+"StandardModel.GaugeGroupI" -> "StandardModel.gaugeGroupℤ₂SubGroup"
+"StandardModel.gaugeGroupℤ₆SubGroup" -> "StandardModel.gaugeGroupℤ₂SubGroup"
+"StandardModel.GaugeGroupI" -> "StandardModel.GaugeGroupℤ₂"
+"StandardModel.gaugeGroupℤ₂SubGroup" -> "StandardModel.GaugeGroupℤ₂"
+"StandardModel.GaugeGroupI" -> "StandardModel.gaugeGroupℤ₃SubGroup"
+"StandardModel.gaugeGroupℤ₆SubGroup" -> "StandardModel.gaugeGroupℤ₃SubGroup"
+"StandardModel.GaugeGroupI" -> "StandardModel.GaugeGroupℤ₃"
+"StandardModel.gaugeGroupℤ₃SubGroup" -> "StandardModel.GaugeGroupℤ₃"
+"StandardModel.GaugeGroupI" -> "StandardModel.GaugeGroup"
+"StandardModel.gaugeGroupℤ₆SubGroup" -> "StandardModel.GaugeGroup"
+"StandardModel.gaugeGroupℤ₂SubGroup" -> "StandardModel.GaugeGroup"
+"StandardModel.gaugeGroupℤ₃SubGroup" -> "StandardModel.GaugeGroup"
+"StandardModel.GaugeGroupQuot" -> "StandardModel.GaugeGroup"
+"StandardModel.GaugeGroupI" -> "StandardModel.gaugeGroupI_lie"
+"StandardModel.GaugeGroup" -> "StandardModel.gaugeGroup_lie"
+"StandardModel.GaugeGroupI" -> "StandardModel.gaugeBundleI"
+"SpaceTime" -> "StandardModel.gaugeBundleI"
+"StandardModel.gaugeBundleI" -> "StandardModel.gaugeTransformI"
+"StandardModel.HiggsField.zero" -> "StandardModel.HiggsField.zero_is_zero_section"
+"StandardModel.HiggsVec.rotate_fst_zero_snd_real" -> "StandardModel.HiggsVec.guage_orbit"
+"StandardModel.HiggsVec" -> "StandardModel.HiggsVec.stability_group_single"
+"StandardModel.HiggsVec.rep" -> "StandardModel.HiggsVec.stability_group_single"
+"StandardModel.HiggsVec" -> "StandardModel.HiggsVec.stability_group"
+"StandardModel.HiggsVec.rep" -> "StandardModel.HiggsVec.stability_group"
+"StandardModel.HiggsVec.rep" -> "StandardModel.HiggsField.gaugeAction"
+"StandardModel.gaugeTransformI" -> "StandardModel.HiggsField.gaugeAction"
+"StandardModel.HiggsField.gaugeAction" -> "StandardModel.HiggsField.guage_orbit"
+"StandardModel.HiggsField" -> "StandardModel.HiggsField.gauge_orbit_surject"
+"SpaceTime" -> "StandardModel.HiggsField.gauge_orbit_surject"
+"StandardModel.HiggsField.Potential.IsBounded" -> "StandardModel.HiggsField.Potential.isBounded_iff_of_𝓵_zero"
+"StandardModel.HiggsField.Potential" -> "StandardModel.HiggsField.Potential.isBounded_iff_of_𝓵_zero"
+"IndexNotation.OverColor.forget" -> "IndexNotation.OverColor.forgetLift"
+"IndexNotation.OverColor.lift" -> "IndexNotation.OverColor.forgetLift"
+"TensorSpecies.contractSelfField" -> "TensorSpecies.contractSelfField_non_degenerate"
+"TensorSpecies.contractSelfField" -> "TensorSpecies.contractSelfField_tensorTree"
+"TensorTree" -> "TensorSpecies.contractSelfField_tensorTree"
+"TensorSpecies.dualRepIsoDiscrete" -> "TensorSpecies.dualRepIso"
+"TensorSpecies.dualRepIso" -> "TensorSpecies.dualRepIso_unitTensor_fst"
+"TensorSpecies.unitTensor" -> "TensorSpecies.dualRepIso_unitTensor_fst"
+"TensorSpecies.metricTensor" -> "TensorSpecies.dualRepIso_unitTensor_fst"
+"TensorSpecies.dualRepIso" -> "TensorSpecies.dualRepIso_unitTensor_snd"
+"TensorSpecies.unitTensor" -> "TensorSpecies.dualRepIso_unitTensor_snd"
+"TensorSpecies.metricTensor" -> "TensorSpecies.dualRepIso_unitTensor_snd"
+"TensorSpecies.dualRepIso" -> "TensorSpecies.dualRepIso_metricTensor_fst"
+"TensorSpecies.unitTensor" -> "TensorSpecies.dualRepIso_metricTensor_fst"
+"TensorSpecies.metricTensor" -> "TensorSpecies.dualRepIso_metricTensor_fst"
+"TensorSpecies.dualRepIso" -> "TensorSpecies.dualRepIso_metricTensor_snd"
+"TensorSpecies.unitTensor" -> "TensorSpecies.dualRepIso_metricTensor_snd"
+"TensorSpecies.metricTensor" -> "TensorSpecies.dualRepIso_metricTensor_snd"
+"TensorTree.constVecNode" -> "TensorTree.constVecNode_eq_vecNode"
+"TensorTree.vecNode" -> "TensorTree.constVecNode_eq_vecNode"
+"TensorTree.constTwoNode" -> "TensorTree.constTwoNode_eq_twoNode"
+"TensorTree.twoNode" -> "TensorTree.constTwoNode_eq_twoNode"
+}
