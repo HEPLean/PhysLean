@@ -156,6 +156,12 @@ lemma kineticTerm_eq_sum {d} (A : ElectromagneticPotential d) (x : SpaceTime d) 
   conv_lhs => enter [2, 2, μ']; rw [Finset.sum_comm]
   rfl
 
+lemma kineticTerm_eq_sum_fieldStrengthMatrix {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
+    A.kineticTerm x =
+    - 1/4 * ∑ μ, ∑ ν, ∑ μ', ∑ ν', η μ μ' * η ν ν' *
+      A.fieldStrengthMatrix x (μ, ν) * A.fieldStrengthMatrix x (μ', ν') := by
+  rw [kineticTerm_eq_sum]
+
 lemma kineticTerm_eq_sum_potential {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
     A.kineticTerm x = - 1 / 2 * ∑ μ, ∑ ν,
         (η μ μ * η ν ν * (∂_ μ A x ν) ^ 2 - ∂_ μ A x ν * ∂_ ν A x μ) := by
@@ -263,6 +269,79 @@ lemma kineticTerm_eq_electric_magnetic (A : ElectromagneticPotential) (t : Time)
   rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq]
   simp [Fin.sum_univ_three]
   ring
+
+lemma kineticTerm_eq_electric_magnetic' {A : ElectromagneticPotential} (hA : Differentiable ℝ A)
+    (x : SpaceTime) :
+    A.kineticTerm x =
+    1/2 * (‖A.electricField x.time x.space‖ ^ 2 - ‖A.magneticField x.time x.space‖ ^ 2) := by
+  rw [← kineticTerm_eq_electric_magnetic _ _ _ hA]
+  congr
+  apply toTimeAndSpace.injective
+  simp only [space_toCoord_symm, ContinuousLinearEquiv.apply_symm_apply]
+  rfl
+
+
+
+/-!
+
+### A.4. The kinetic term for constant fields
+
+-/
+
+lemma kineticTerm_const {d} (A₀ : Lorentz.Vector d) :
+    kineticTerm (fun _ : SpaceTime d => A₀) = 0 := by
+  funext x
+  rw [kineticTerm_eq_sum_potential]
+  conv_lhs =>
+    enter [2, 2, μ, 2, ν]
+    repeat rw [SpaceTime.deriv_eq]
+    simp
+  simp
+
+lemma kineticTerm_add_const {d} (A : ElectromagneticPotential d)
+    (A₀ : Lorentz.Vector d) :
+    kineticTerm (fun x => A x + A₀) = kineticTerm A := by
+  funext x
+  rw [kineticTerm_eq_sum_potential, kineticTerm_eq_sum_potential]
+  congr
+  funext μ
+  congr
+  funext ν
+  congr
+  all_goals
+  · rw [SpaceTime.deriv_eq]
+    simp
+    rfl
+
+/-!
+
+### A.5. Smoothness of the kinetic term
+
+-/
+
+lemma kineticTerm_contDiff {d} {n : WithTop ℕ∞} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ (n + 1) A) :
+    ContDiff ℝ n A.kineticTerm := by
+  change ContDiff ℝ n (fun x => A.kineticTerm x)
+  conv =>
+    enter [3, x]
+    rw [kineticTerm_eq_sum_fieldStrengthMatrix]
+  apply ContDiff.mul
+  · fun_prop
+  apply ContDiff.sum
+  intro μ _
+  apply ContDiff.sum
+  intro ν _
+  apply ContDiff.sum
+  intro μ' _
+  apply ContDiff.sum
+  intro ν' _
+  apply ContDiff.mul
+  · apply ContDiff.mul
+    · fun_prop
+    exact fieldStrengthMatrix_contDiff hA
+  exact fieldStrengthMatrix_contDiff hA
+
 
 /-!
 
@@ -672,6 +751,57 @@ lemma gradKineticTerm_smul {d} (A : ElectromagneticPotential d)
   · exact hA.differentiable (by simp)
   · exact hA
   · exact hA.const_smul c
+
+/-!
+
+### B.6. HasVarGradientAt for the variational gradient
+
+-/
+
+lemma kineticTerm_hasVarGradientAt {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ ∞ A) : HasVarGradientAt kineticTerm A.gradKineticTerm A := by
+  rw [gradKineticTerm_eq_sum_fderiv A hA]
+  change HasVarGradientAt (fun A' x => ElectromagneticPotential.kineticTerm A' x) _ A
+  conv =>
+    enter [1, A', x]
+    rw [kineticTerm_eq_sum_potential]
+  let F : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d) → (SpaceTime d → Lorentz.Vector d) →
+    SpaceTime d → ℝ := fun (μ, ν) A' x =>
+        (η μ μ * η ν ν * ∂_ μ A' x ν ^ 2 - ∂_ μ A' x ν * ∂_ ν A' x μ)
+  let F' : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d) → (SpaceTime d → ℝ) →
+    SpaceTime d → Lorentz.Vector d := fun μν => (fun ψ x =>
+    -(fderiv ℝ (fun x' => (fun x' => η μν.1 μν.1 * η μν.2 μν.2 * ψ x') x' * ∂_ μν.1 A x' μν.2) x)
+              (Lorentz.Vector.basis μν.1) •
+          Lorentz.Vector.basis μν.2 +
+        -(fderiv ℝ (fun x' => ∂_ μν.1 A x' μν.2 *
+          (fun x' => η μν.1 μν.1 * η μν.2 μν.2 * ψ x') x') x)
+              (Lorentz.Vector.basis μν.1) • Lorentz.Vector.basis μν.2 +
+      -(-(fderiv ℝ (fun x' => ψ x' * ∂_ μν.2 A x' μν.1) x) (Lorentz.Vector.basis μν.1) •
+        Lorentz.Vector.basis μν.2 +
+          -(fderiv ℝ (fun x' => ∂_ μν.1 A x' μν.2 * ψ x') x) (Lorentz.Vector.basis μν.2) •
+            Lorentz.Vector.basis μν.1))
+  have F_hasVarAdjDerivAt (μν : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)) :
+      HasVarAdjDerivAt (F μν) (F' μν) A := by
+    have h1 :=
+      HasVarAdjDerivAt.mul _ _ _ _ A (deriv_hasVarAdjDerivAt μν.1 μν.2 A hA)
+        (deriv_hasVarAdjDerivAt μν.1 μν.2 A hA)
+    have h1' := HasVarAdjDerivAt.const_mul _ _ A h1 (c := η μν.1 μν.1 * η μν.2 μν.2)
+    have h2 :=
+      HasVarAdjDerivAt.mul _ _ _ _ A (deriv_hasVarAdjDerivAt μν.1 μν.2 A hA)
+        (deriv_hasVarAdjDerivAt μν.2 μν.1 A hA)
+    have h3 := HasVarAdjDerivAt.neg _ _ A h2
+    have h4 := HasVarAdjDerivAt.add _ _ _ _ _ h1' h3
+    convert h4
+    simp [F]
+    ring
+  have F_sum_hasVarAdjDerivAt :
+      HasVarAdjDerivAt (fun A' x => ∑ μ, ∑ ν, F (μ, ν) A' x) (fun ψ x => ∑ μν, F' μν ψ x) A := by
+    convert HasVarAdjDerivAt.sum _ _ A (hA) (fun i => F_hasVarAdjDerivAt i)
+    exact Eq.symm (Fintype.sum_prod_type fun x => F x _ _)
+  have hF_mul := HasVarAdjDerivAt.const_mul _ _ A F_sum_hasVarAdjDerivAt (c := -1/2)
+  change HasVarGradientAt (fun A' x => -1 / 2 * ∑ μ, ∑ ν, F (μ, ν) A' x) _ A
+  apply HasVarGradientAt.intro _ hF_mul
+  rfl
 
 end ElectromagneticPotential
 

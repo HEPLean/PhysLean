@@ -199,6 +199,16 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       simp
   }
 
+@[simp]
+lemma toTimeAndSpace_symm_apply_time_space {d : ℕ} (x : SpaceTime d) :
+    toTimeAndSpace.symm (x.time, x.space) = x := by
+  apply toTimeAndSpace.left_inv
+
+@[simp]
+lemma toTimeAndSpace_symm_apply_time_space' {d : ℕ}  (x : SpaceTime d) :
+    toTimeAndSpace.symm (x.time, fun i => x (Sum.inr i)) = x := by
+  apply toTimeAndSpace.left_inv
+
 /-!
 
 #### B.3.1. Derivative of `toTimeAndSpace`
@@ -277,6 +287,14 @@ lemma coord_apply {d : ℕ} (μ : Fin (1 + d)) (y : SpaceTime d) :
     𝔁 μ y = y (finSumFinEquiv.symm μ) := by
   rfl
 
+def coordCLM (μ : Fin 1 ⊕ Fin d) : SpaceTime d →L[ℝ] ℝ where
+  toFun x := x μ
+  map_add' x1 x2 := by
+    simp
+  map_smul' c x := by
+    simp
+  cont := by
+    fun_prop
 /-!
 
 ## D. Derivatives of functions on `SpaceTime d`
@@ -317,6 +335,18 @@ lemma deriv_apply_eq {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) (f : SpaceTime d → Lo
   rw [fderiv_pi]
   rfl
   fun_prop
+
+@[simp]
+lemma deriv_coord {d : ℕ} (μ ν : Fin 1 ⊕ Fin d):
+    ∂_ μ (fun x => x ν) = if μ = ν then 1 else 0 := by
+  change ∂_ μ (coordCLM ν) = _
+  funext x
+  rw [deriv_eq]
+  simp
+  simp [coordCLM]
+  split_ifs
+  rfl
+  rfl
 
 /-!
 
