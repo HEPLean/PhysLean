@@ -5,13 +5,11 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.KineticTerm
 import PhysLean.Electromagnetism.CurrentDensity
-import PhysLean.ClassicalMechanics.VectorFields
-import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 /-!
 
 # The Lagrangian in electromagnetism
 
-## i. Overivew
+## i. Overview
 
 In this module we defin the Lagrangian density for the electromagnetic field in
 presence of a current density. We prover properties of this lagrangian density,
@@ -26,6 +24,16 @@ and find it's variational gradient.
   density expressed in Guass's and Ampère laws.
 
 ## iii. Table of contents
+
+- A. The Lagrangian density
+  - A.1. Shifts in the lagrangian under shifts in the potential
+- B. The variational gradient of the lagrangian density
+  - B.1. The lagrangian density has a variational gradient
+  - B.2. The definition of, `gradLagrangian`, the variational gradient of the lagrangian density
+  - B.3. The variational gradient in terms of the gradient of the kinetic term
+  - B.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
+  - B.5. The variational gradient in terms of the field strength tensor
+  - B.6. The lagrangian gradient recovering Guass's and Ampère laws
 
 ## iv. References
 
@@ -75,7 +83,7 @@ lemma lagrangian_add_const {d} (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) (c : Lorentz.Vector d) (x : SpaceTime d) :
     lagrangian (fun x => A x + c) J x = lagrangian A J x - ⟪c, J x⟫ₘ := by
   rw [lagrangian, lagrangian, kineticTerm_add_const]
-  simp
+  simp only [map_add, ContinuousLinearMap.add_apply]
   ring
 
 /-!
@@ -123,6 +131,7 @@ lemma lagrangian_hasVarGradientAt_eq_add_gradKineticTerm (A : ElectromagneticPot
 
 -/
 
+/-- The varitional gradient of the lagrangian of electromagnetic field. -/
 noncomputable def gradLagrangian {d} (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) : SpaceTime d → Lorentz.Vector d :=
   (δ (q':=A), ∫ x, lagrangian q' J x)
@@ -143,7 +152,7 @@ lemma gradLagrangian_eq_kineticTerm_sub (A : ElectromagneticPotential d)
 
 /-!
 
-### B.3. The lagrangian density has the variational gradient equal to `gradLagrangian`
+### B.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
 
 -/
 lemma lagrangian_hasVarGradientAt_gradLagrangian (A : ElectromagneticPotential d)
@@ -154,7 +163,7 @@ lemma lagrangian_hasVarGradientAt_gradLagrangian (A : ElectromagneticPotential d
 
 /-!
 
-### B.4. The variational gradient in terms of the field strength tensor
+### B.5. The variational gradient in terms of the field strength tensor
 
 -/
 
@@ -165,7 +174,7 @@ lemma gradLagrangian_eq_sum_fieldStrengthMatrix (A : ElectromagneticPotential d)
       • Lorentz.Vector.basis ν) := by
   rw [gradLagrangian_eq_kineticTerm_sub A hA J hJ]
   funext x
-  simp
+  simp only [Pi.sub_apply, Finset.sum_apply]
   rw [gradKineticTerm_eq_fieldStrength]
   rw [← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun ν _ => ?_)
@@ -175,7 +184,7 @@ open Time
 
 /-!
 
-### B.5. The lagrangian gradient recovering Guass's and Ampère laws
+### B.6. The lagrangian gradient recovering Guass's and Ampère laws
 -/
 
 lemma gradLagrangian_eq_electricField_magneticField (A : ElectromagneticPotential 3)

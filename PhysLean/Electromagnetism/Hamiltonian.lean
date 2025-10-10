@@ -24,6 +24,18 @@ in the case of three spatial dimensions.
 - `hamiltonian_eq_electricField_magneticField` : The Hamiltonian expressed
   in terms of the electric and magnetic fields.
 
+## iii. Table of contents
+
+- A. The canonical momentum
+  - A.1. The canonical momentum in terms of the kinetic term
+  - A.2. The canonical momentum in terms of the field strength tensor
+- B. The Hamiltonian
+  - B.1. The hamiltonian in terms of the electric and magnetic fields
+
+## iv. References
+
+- https://quantummechanics.ucsd.edu/ph130a/130_notes/node452.html
+
 -/
 
 namespace Electromagnetism
@@ -78,7 +90,7 @@ lemma canonicalMomentum_eq_gradient_kineticTerm {d} (A : ElectromagneticPotentia
   apply ext_inner_right (𝕜 := ℝ)
   intro v
   rw [gradient, canonicalMomentum]
-  simp
+  simp only [Fin.isValue, toDual_symm_apply]
   rw [inner_sub_left, inner_smul_left]
   simp [gradient]
   conv_lhs =>
@@ -96,9 +108,10 @@ lemma canonicalMomentum_eq_gradient_kineticTerm {d} (A : ElectromagneticPotentia
     simp only [lagrangian, Fin.isValue, map_add, map_smul,
       LinearMap.smul_apply, smul_eq_mul]
     rw [fderiv_fun_sub hx (by fun_prop)]
-    simp
+    simp only [Fin.isValue, ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_smul',
+      Pi.smul_apply, smul_eq_mul, fderiv_const_add, ContinuousLinearMap.coe_sub', Pi.sub_apply]
     rw [fderiv_const_mul (by fun_prop)]
-  simp
+  simp only [Fin.isValue, ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
   rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
   simp
 
@@ -119,7 +132,7 @@ lemma canonicalMomentum_eq {d} (A : ElectromagneticPotential d)
   conv_lhs =>
     enter [1, 2, v]
     rw [kineticTerm_add_time_mul_const _ (hA.differentiable (by simp))]
-  simp
+  simp only [Fin.isValue, Finset.sum_sub_distrib, one_div, fderiv_const_add]
   rw [fderiv_fun_add (by fun_prop) (by fun_prop)]
   rw [fderiv_const_mul (by fun_prop)]
   rw [fderiv_const_mul (by fun_prop)]
@@ -146,15 +159,15 @@ lemma canonicalMomentum_eq {d} (A : ElectromagneticPotential d)
   rw [Finset.mul_sum]
   congr
   funext μ
-  simp
+  simp only [Fin.isValue, RCLike.inner_apply, conj_trivial]
   rw [fieldStrengthMatrix, toFieldStrength_basis_repr_apply_eq_single]
-  simp
+  simp only [Fin.isValue, inl_0_inl_0, one_mul]
   ring_nf
   simp
 
 /-!
 
-### B. The Hamiltonian
+## B. The Hamiltonian
 
 -/
 
@@ -184,14 +197,14 @@ lemma hamiltonian_eq_electricField_magneticField (A : ElectromagneticPotential 3
     rw [kineticTerm_eq_electric_magnetic' (hA.differentiable (by simp))]
     simp [Fintype.sum_sum_type, Fin.sum_univ_three]
   repeat rw [fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime]
-  simp
+  simp only [Fin.isValue, one_div, space_toCoord_symm]
   have h1 (i : Fin 3) : ∂_ (Sum.inl 0) A x (Sum.inr i) = -
     (A.fieldStrengthMatrix x (Sum.inr i, Sum.inl 0) + ∂_ (Sum.inr i) A x (Sum.inl 0)) := by
     rw [fieldStrengthMatrix, toFieldStrength_basis_repr_apply_eq_single]
     simp
   rw [h1, h1, h1]
   repeat rw [fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime]
-  simp
+  simp only [Fin.isValue, neg_add_rev]
   calc _
     _ = ∑ i, (A.electricField (toTimeAndSpace x).1 (toTimeAndSpace x).2 i)^2
       + ∑ i, (A.electricField (toTimeAndSpace x).1 (toTimeAndSpace x).2 i *
@@ -219,7 +232,7 @@ lemma hamiltonian_eq_electricField_magneticField (A : ElectromagneticPotential 3
     _ = 1/2 * (‖A.electricField x.time x.space‖ ^ 2 + ‖A.magneticField x.time x.space‖ ^ 2)
       + ∑ i, (A.electricField x.time x.space i * ∂_ (Sum.inr i) A x (Sum.inl 0)) +
       ⟪A x, J x⟫ₘ := by simp; ring
-  simp
+  simp only [one_div, space_toCoord_symm, Fin.isValue]
   repeat exact hA.differentiable (by simp)
 
 end ElectromagneticPotential

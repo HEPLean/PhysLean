@@ -570,7 +570,7 @@ lemma fieldStrengthMatrix_contDiff {d} {n : WithTop ℕ∞} {A : Electromagnetic
   · fun_prop
   · match μν with
     | (μ, ν) =>
-    simp
+    simp only
     revert ν
     rw [← contDiff_euclidean]
     apply ContDiff.clm_apply
@@ -580,7 +580,7 @@ lemma fieldStrengthMatrix_contDiff {d} {n : WithTop ℕ∞} {A : Electromagnetic
   · fun_prop
   · match μν with
     | (μ, ν) =>
-    simp
+    simp only
     revert μ
     rw [← contDiff_euclidean]
     apply ContDiff.clm_apply

@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.KineticTerm
 import PhysLean.ClassicalMechanics.VectorFields
-import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 /-!
 
 # The Lorentz Current Density
@@ -25,6 +24,10 @@ The Lorentz current density is often called the four-current and given then the 
   Lorentz current density.
 
 ## iii. Table of contents
+
+- A. The Lorentz Current Density
+- B. The underlying charge desnity
+- C. The underlying current desnity
 
 ## iv. References
 

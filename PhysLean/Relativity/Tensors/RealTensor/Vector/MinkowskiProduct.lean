@@ -157,7 +157,7 @@ def minkowskiProduct {d : ℕ} : Vector d →L[ℝ] Vector d →L[ℝ] ℝ where
   cont := by
     rw [continuous_clm_apply]
     intro q
-    simp
+    simp only [ContinuousLinearMap.coe_mk', LinearMap.coe_mk, AddHom.coe_mk]
     conv =>
         enter [1, p]
         rw [minkowskiProductMap_toCoord]

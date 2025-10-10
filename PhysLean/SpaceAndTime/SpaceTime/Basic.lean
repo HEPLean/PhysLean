@@ -199,7 +199,6 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       simp
   }
 
-@[simp]
 lemma toTimeAndSpace_symm_apply_time_space {d : ℕ} (x : SpaceTime d) :
     toTimeAndSpace.symm (x.time, x.space) = x := by
   apply toTimeAndSpace.left_inv
@@ -287,6 +286,7 @@ lemma coord_apply {d : ℕ} (μ : Fin (1 + d)) (y : SpaceTime d) :
     𝔁 μ y = y (finSumFinEquiv.symm μ) := by
   rfl
 
+/-- The continuous linear map from a point in space time to one of its coordinates. -/
 def coordCLM (μ : Fin 1 ⊕ Fin d) : SpaceTime d →L[ℝ] ℝ where
   toFun x := x μ
   map_add' x1 x2 := by
@@ -342,7 +342,7 @@ lemma deriv_coord {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) :
   change ∂_ μ (coordCLM ν) = _
   funext x
   rw [deriv_eq]
-  simp
+  simp only [ContinuousLinearMap.fderiv]
   simp [coordCLM]
   split_ifs
   rfl

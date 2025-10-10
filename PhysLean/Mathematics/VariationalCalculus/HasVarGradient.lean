@@ -106,8 +106,7 @@ lemma HasVarGradientAt.sum {ι : Type} [Fintype ι] (F : ι → (X → U) → (X
   exact hp F grad u hu h
 
 lemma HasVarGradientAt.neg {F : (X → U) → (X → ℝ)}
-    {grad : X → U} {u : X → U} [OpensMeasurableSpace X]
-    [IsFiniteMeasureOnCompacts (@volume X _)]
+    {grad : X → U} {u : X → U}
     (h : HasVarGradientAt F grad u) :
     HasVarGradientAt (-F) (-grad) u := by
   obtain ⟨F',hF',eq⟩ := h

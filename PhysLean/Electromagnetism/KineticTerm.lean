@@ -32,12 +32,16 @@ is directly related to Gauss's law and the Ampere law.
   - A.1. Lorentz invariance of the kinetic term
   - A.2. Kinetic term simplified expressions
   - A.3. The kinetic term in terms of the electric and magnetic fields
+  - A.4. The kinetic term for constant fields
+  - A.5. Smoothness of the kinetic term
+  - A.6. The kinetic term shifted by time mul a constant
 - B. Variational gradient of the kinetic term
   - B.1. Variational gradient in terms of fderiv
   - B.2. Writing the variational gradient as a sums over double derivatives of the potential
   - B.3. Variational gradient as a sums over fieldStrengthMatrix
   - B.4. Variational gradient in terms of the Guass's and Ampère laws
   - B.5. Linearity properties of the variational gradient
+  - B.6. HasVarGradientAt for the variational gradient
 
 ## iv. References
 
@@ -282,7 +286,7 @@ lemma kineticTerm_eq_electric_magnetic' {A : ElectromagneticPotential} (hA : Dif
 
 /-!
 
-### A.4. The kinetic term for constant fields
+### A.4. The kinetic term for constant fields
 
 -/
 
@@ -358,7 +362,7 @@ lemma kineticTerm_add_time_mul_const {d} (A : ElectromagneticPotential d)
     funext x ν
     rw [SpaceTime.deriv_eq]
     rw [fderiv_fun_add _ (by fun_prop)]
-    simp
+    simp only [Fin.isValue, ContinuousLinearMap.add_apply, Lorentz.Vector.apply_add, Pi.add_apply]
     congr
     rw [fderiv_smul_const (by fun_prop)]
     simp [Lorentz.Vector.coordCLM]
@@ -368,9 +372,10 @@ lemma kineticTerm_add_time_mul_const {d} (A : ElectromagneticPotential d)
     funext x ν
     rw [SpaceTime.deriv_eq]
     rw [fderiv_fun_add _ (by fun_prop)]
-    simp
+    simp only [Fin.isValue, ContinuousLinearMap.add_apply, Lorentz.Vector.apply_add]
     rw [fderiv_smul_const (by fun_prop)]
-    simp
+    simp only [Fin.isValue, Lorentz.Vector.fderiv_apply, ContinuousLinearMap.smulRight_apply,
+      Lorentz.Vector.apply_smul]
     rw [← SpaceTime.deriv_eq]
     simp [Lorentz.Vector.coordCLM]
     exact ha.differentiableAt
@@ -468,7 +473,8 @@ lemma kineticTerm_add_time_mul_const {d} (A : ElectromagneticPotential d)
     _ = A.kineticTerm x +
         (-1 / 2 * ∑ ν, ((2 * c ν * η ν ν * ∂_ (Sum.inl 0) A x ν + η ν ν * c ν ^ 2 -
         2 * c ν * (∂_ ν A x (Sum.inl 0)))) + 1/2 * c (Sum.inl 0) ^2) := by
-          simp
+          simp only [Fin.isValue, mul_ite, mul_zero, Finset.sum_sub_distrib, Finset.sum_ite_eq',
+            Finset.mem_univ, ↓reduceIte, one_div, add_right_inj]
           ring
 
 /-!
