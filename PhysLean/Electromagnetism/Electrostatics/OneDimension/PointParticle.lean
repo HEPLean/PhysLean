@@ -11,8 +11,37 @@ import PhysLean.Mathematics.Distribution.PowMul
 
 # The electrostatics of a stationary point particle in 1d
 
-In this module we study the electrostatics of a point particle of charge `q`
-sitting at the origin of 1d space.
+## i. Overview
+
+In this module we give the electromagnetic properties of a point particle
+sitting at the origin in 1d space.
+
+The electric field is given by the Heaviside step function, and the scalar potential
+is given by a function proportional to the absolute value of the distance from the particle.
+
+## ii. Key results
+
+- `oneDimPointParticleCurrentDensity` : The Lorentz current density of a point particle
+  stationary at the origin of 1d space.
+- `oneDimPointParticle` : The electromagnetic potential of a point particle
+  stationary at the origin of 1d space.
+- `oneDimPointParticle_gradLagrangian` : The variational gradient of the Lagrangian
+  for a point particle stationary at the origin of 1d space is zero for the
+  given electromagnetic potential. (i.e. Maxwell's equations are satisfied).
+
+## iii. Table of contents
+
+- A. The electromagentic potential
+- B. The Potentials
+  - B.1. The electromagnetic potential
+  - B.2. The vector potential is zero
+  - B.3. The scalar potential
+- C. The electric field
+- D. Maxwell's equations
+  - D.1. Gauss' law
+  - D.2. The variational gradient of the Lagrangian is zero
+
+## iv. References
 
 -/
 
@@ -20,10 +49,39 @@ namespace Electromagnetism
 open Distribution SchwartzMap
 open Space StaticElectricField MeasureTheory
 
+/-!
+
+## A. The electromagentic potential
+
+-/
+
+/-- The current density of of a point particle stationary at the origin
+  of 1d space. -/
+noncomputable def oneDimPointParticleCurrentDensity (q : ℝ) : LorentzCurrentDensityD 1 :=
+  LorentzCurrentDensityD.toComponents.symm fun μ =>
+  match μ with
+  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| constantTime (q • diracDelta ℝ 0)
+  | Sum.inr _ => 0
+
+/-!
+
+## B. The Potentials
+
+-/
+
+/-!
+
+### B.1. The electromagnetic potential
+
+-/
+
+/-- The electromangetic potential of a point particle stationary at the origin
+  of 1d space. -/
 noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
   ElectromagneticPotentialD.toComponents.symm fun μ =>
   match μ with
-  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| Space.constantTime ( - Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| Space.constantTime
+    (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
     (by
       apply IsDistBounded.const_smul
       convert IsDistBounded.pow (n := 1) (by simp)
@@ -31,13 +89,11 @@ noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
     (by fun_prop))
   | Sum.inr i => 0
 
+/-!
 
-noncomputable def oneDimPointParticleCurrentDensity (q : ℝ) : LorentzCurrentDensityD 1 :=
-  LorentzCurrentDensityD.toComponents.symm fun μ =>
-  match μ with
-  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| constantTime (q • diracDelta ℝ 0)
-  | Sum.inr _ => 0
+### B.2. The vector potential is zero
 
+-/
 
 @[simp]
 lemma oneDimPointParticle_vectorPotential (q : ℝ) :
@@ -45,6 +101,12 @@ lemma oneDimPointParticle_vectorPotential (q : ℝ) :
   rw [Electromagnetism.ElectromagneticPotentialD.vectorPotential]
   ext i
   simp [oneDimPointParticle]
+
+/-!
+
+### B.3. The scalar potential
+
+-/
 
 lemma oneDimPointParticle_scalarPotential (q : ℝ) :
     (oneDimPointParticle q).scalarPotential =
@@ -58,10 +120,16 @@ lemma oneDimPointParticle_scalarPotential (q : ℝ) :
   ext x
   simp [oneDimPointParticle]
 
+/-!
+
+## C. The electric field
+
+-/
+
 set_option maxHeartbeats 400000 in
 lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
     (oneDimPointParticle q).electricField = constantTime (q •
-    ((heavisideStep 0).smulRight (basis 0) - (1 / (2 : ℝ)) • constD 1 (basis 0)))  := by
+    ((heavisideStep 0).smulRight (basis 0) - (1 / (2 : ℝ)) • constD 1 (basis 0))) := by
   suffices hE : - Space.gradD (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
       (by
         apply IsDistBounded.const_smul
@@ -69,8 +137,10 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
         simp)
       (by fun_prop)) = ((q) • ((heavisideStep 0).smulRight (basis 0) -
       (1/(2 : ℝ)) • constD 1 (basis 0))) by
-    rw [Electromagnetism.ElectromagneticPotentialD.electricField,
-      oneDimPointParticle_scalarPotential, constantTime_spaceGradD, ← map_neg, hE]
+    rw [Electromagnetism.ElectromagneticPotentialD.electricField]
+    simp only [LinearMap.coe_mk, AddHom.coe_mk, oneDimPointParticle_vectorPotential, map_zero,
+      sub_zero, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub]
+    rw [oneDimPointParticle_scalarPotential, constantTime_spaceGradD, ← map_neg, hE]
     simp
   /- Some preamble for results which are used throughout this proof. -/
   let s : Set (EuclideanSpace ℝ (Fin 1)) :=
@@ -336,7 +406,7 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
     /- We now turn back to integrals over `Space 1` instead of integrals over `x`.
     Schematically the integral remains the same.
     `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε) ∫_(-∞)^0 x, η x)`. -/
-    _ = (q/(2)) * (∫ x in s, η x) + - (q/(2 )) * (∫ x in sᶜ, η x) := by
+    _ = (q/(2)) * (∫ x in s, η x) + - (q/2) * (∫ x in sᶜ, η x) := by
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
         (oneEquiv_symm_measurableEmbedding)]
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
@@ -365,6 +435,18 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
   rw [integral_smul_const]
   simp
 
+/-!
+
+## D. Maxwell's equations
+
+-/
+
+/-!
+
+### D.1. Gauss' law
+
+-/
+
 lemma oneDimPointParticle_gaussLaw (q : ℝ) :
     spaceDivD (oneDimPointParticle q).electricField = constantTime (q • diracDelta ℝ 0) := by
   ext η
@@ -373,8 +455,7 @@ lemma oneDimPointParticle_gaussLaw (q : ℝ) :
   congr
   ext η
   change (divD ((q) • (ContinuousLinearMap.smulRight (heavisideStep 0) (basis 0) -
-    (1 / 2) • constD 1 (basis 0)))) η =
-    ( q • diracDelta ℝ 0) η
+    (1 / 2) • constD 1 (basis 0)))) η = (q • diracDelta ℝ 0) η
   haveI : SMulZeroClass ℝ ((Space 1)→d[ℝ] ℝ) := by infer_instance
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub,
     divD_constD, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub', Pi.smul_apply,
@@ -423,6 +504,12 @@ lemma oneDimPointParticle_gaussLaw (q : ℝ) :
   · simp [f]
   · exact oneEquiv_symm_measurePreserving
   · exact oneEquiv_symm_measurableEmbedding
+
+/-!
+
+### D.2. The variational gradient of the Lagrangian is zero
+
+-/
 
 lemma oneDimPointParticle_gradLagrangian (q : ℝ) :
     (oneDimPointParticle q).gradLagrangian (oneDimPointParticleCurrentDensity q) = 0 := by

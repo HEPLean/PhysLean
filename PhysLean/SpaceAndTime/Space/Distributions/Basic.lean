@@ -207,7 +207,6 @@ lemma gradD_apply {d} (f : (Space d) →d[ℝ] ℝ) (ε : 𝓢(Space d, ℝ)) :
   change (gradD f).toFun ε = fun i => derivD i f ε
   rw [gradD_toFun_eq_derivD]
 
-
 /-!
 
 ## The divergence
@@ -472,8 +471,6 @@ lemma curlD_gradD_eq_zero (f : (Space) →d[ℝ] ℝ) :
 
 -/
 
-
-
 /-- The time derivative of a distribution dependent on time and space. -/
 noncomputable def timeDerivD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
     ((Time × Space d) →d[ℝ] M) →ₗ[ℝ] (Time × Space d) →d[ℝ] M where
@@ -538,7 +535,7 @@ lemma spaceGradD_apply {d} (f : (Time × Space d) →d[ℝ] ℝ) (ε : 𝓢(Time
 noncomputable def spaceDivD {d} :
     ((Time × Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d))) →ₗ[ℝ] (Time × Space d) →d[ℝ] ℝ where
   toFun f := {
-    toFun ε :=  ∑ i, spaceDerivD i f ε i
+    toFun ε := ∑ i, spaceDerivD i f ε i
     map_add' ε1 ε2 := by simp [Finset.sum_add_distrib]
     map_smul' a ε := by simp [Finset.mul_sum]
     cont := by fun_prop}
@@ -553,12 +550,11 @@ lemma spaceDivD_apply_eq_sum_spaceDerivD {d}
     (f : (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Time ×Space d, ℝ)) :
     spaceDivD f η = ∑ i, spaceDerivD i f η i := by rfl
 
-
 /-- The curl of a distribution dependent on time and space. -/
 noncomputable def spaceCurlD : ((Time × Space 3) →d[ℝ] (EuclideanSpace ℝ (Fin 3))) →ₗ[ℝ]
     (Time × Space 3) →d[ℝ] (EuclideanSpace ℝ (Fin 3)) where
   toFun f :={
-    toFun ε :=  fun i =>
+    toFun ε := fun i =>
       match i with
       | 0 => spaceDerivD 2 f ε 1 - spaceDerivD 1 f ε 2
       | 1 => spaceDerivD 0 f ε 2 - spaceDerivD 2 f ε 0
@@ -596,6 +592,5 @@ noncomputable def spaceCurlD : ((Time × Space 3) →d[ℝ] (EuclideanSpace ℝ 
         PiLp.smul_apply, smul_eq_mul, Fin.reduceFinMk, ContinuousLinearMap.coe_mk',
         LinearMap.coe_mk, AddHom.coe_mk, RingHom.id_apply]
       ring
-
 
 end Space

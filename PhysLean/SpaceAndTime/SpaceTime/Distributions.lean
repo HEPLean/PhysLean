@@ -4,12 +4,37 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.SpaceAndTime.Space.Distributions
+import PhysLean.SpaceAndTime.Space.Distributions.Basic
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.Mathematics.Distribution.Function.OfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
+/-!
 
+# Distributions on SpaceTime
 
+## i. Overview
+
+In this module we give the basic properties of distributions on `SpaceTime d`,
+and derivatives thereof.
+
+## ii. Key results
+
+- `SpaceTime.constD d m` : the constant distribution on `SpaceTime d` with value `m`.
+- `SpaceTime.timeSliceD` : the time slice of a distribution on `SpaceTime d` to a distribution
+  on `Time × Space d`.
+- `SpaceTime.derivD μ f` : the derivative of a distribution `f : (SpaceTime d) →d[ℝ] M` in
+  direction `μ : Fin 1 ⊕ Fin d`.
+
+## iii. Table of contents
+
+- A. The constant distribution on SpaceTime
+- B. The time slice of a distribution on SpaceTime
+- C. Derivatives of distributions
+  - C.1. Relationship between the time slice and derivatives
+
+## iv. References
+
+-/
 namespace SpaceTime
 
 open Distribution
@@ -17,7 +42,7 @@ open SchwartzMap
 
 /-!
 
-## The constant distribution on SpaceTime
+## A. The constant distribution on SpaceTime
 
 -/
 
@@ -28,7 +53,40 @@ noncomputable def constD {M } [NormedAddCommGroup M] [NormedSpace ℝ M] (d : �
 
 /-!
 
-## Derivatives
+## B. The time slice of a distribution on SpaceTime
+
+-/
+
+/-- The time slice of a  distribution on `SpaceTime d` to forma a distribution
+  on `Time × Space d`. -/
+noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
+    ((SpaceTime d) →d[ℝ] M) ≃L[ℝ] ((Time × Space d) →d[ℝ] M) where
+  toFun f :=
+    f ∘L SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ (SpaceTime.toTimeAndSpace (d := d))
+  invFun f :=
+    f ∘L SchwartzMap.compCLMOfContinuousLinearEquiv
+      (F := ℝ) ℝ (SpaceTime.toTimeAndSpace (d := d)).symm
+  left_inv f := by
+    ext κ
+    simp
+    congr
+    ext x
+    simp [SchwartzMap.compCLMOfContinuousLinearEquiv_apply]
+  right_inv f := by
+    ext κ
+    simp
+    congr
+  map_add' f1 f2 := by
+    simp
+  map_smul' a f := by simp
+  continuous_toFun := ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace).precomp M).continuous
+  continuous_invFun :=
+    ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace.symm).precomp M).continuous
+
+
+/-!
+
+## C. Derivatives of distributions
 
 -/
 
@@ -54,28 +112,11 @@ lemma derivD_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (derivD μ f) ε = fderivD ℝ f ε (Lorentz.Vector.basis μ) := by
   simp [derivD, Distribution.fderivD]
 
-noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
-    ((SpaceTime d) →d[ℝ] M) ≃L[ℝ] ((Time × Space d) →d[ℝ] M) where
-  toFun f :=
-    f ∘L SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ (SpaceTime.toTimeAndSpace (d := d))
-  invFun f :=
-    f ∘L SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ (SpaceTime.toTimeAndSpace (d := d)).symm
-  left_inv f := by
-    ext κ
-    simp
-    congr
-    ext x
-    simp [SchwartzMap.compCLMOfContinuousLinearEquiv_apply]
-  right_inv f := by
-    ext κ
-    simp
-    congr
-  map_add' f1 f2 := by
-    simp
-  map_smul' a f := by simp
-  continuous_toFun := ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace).precomp M ).continuous
-  continuous_invFun := ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace.symm).precomp M ).continuous
+/-!
 
+### C.1. Relationship between the time slice and derivatives
+
+-/
 
 lemma timeSliceD_derivD_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f : (SpaceTime d) →d[ℝ] M) :
@@ -95,7 +136,7 @@ lemma timeSliceD_derivD_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   · rfl
   rw [SpaceTime.deriv_sum_inl]
   simp [Time.deriv]
-  change  (fderiv ℝ (ε ∘ (fun t =>  (t, (toTimeAndSpace x).2))) (toTimeAndSpace x).1) 1 = _
+  change (fderiv ℝ (ε ∘ (fun t => (t, (toTimeAndSpace x).2))) (toTimeAndSpace x).1) 1 = _
   rw [fderiv_comp, DifferentiableAt.fderiv_prodMk]
   simp
   · fun_prop
@@ -107,14 +148,13 @@ lemma timeSliceD_derivD_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 lemma timeSliceD_symm_derivD_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f : (Time × Space d) →d[ℝ] M) :
-     (derivD (Sum.inl 0) (timeSliceD.symm f)) =
+    (derivD (Sum.inl 0) (timeSliceD.symm f)) =
     timeSliceD.symm (Space.timeDerivD f) := by
   obtain ⟨f, rfl⟩ := timeSliceD.surjective f
   simp
   apply timeSliceD.injective
   simp
   exact timeSliceD_derivD_inl f
-
 
 lemma timeSliceD_derivD_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (i : Fin d) (f : (SpaceTime d) →d[ℝ] M) :
@@ -134,7 +174,7 @@ lemma timeSliceD_derivD_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   · rfl
   rw [SpaceTime.deriv_sum_inr]
   simp [Space.deriv]
-  change  (fderiv ℝ (ε ∘ (fun y =>  ((toTimeAndSpace x).1, y))) (toTimeAndSpace x).2) _ = _
+  change (fderiv ℝ (ε ∘ (fun y => ((toTimeAndSpace x).1, y))) (toTimeAndSpace x).2) _ = _
   rw [fderiv_comp, DifferentiableAt.fderiv_prodMk]
   simp
   congr 1
@@ -150,7 +190,7 @@ lemma timeSliceD_derivD_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 lemma timeSliceD_symm_derivD_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] (i : Fin d)
     (f : (Time × Space d) →d[ℝ] M) :
-     (derivD (Sum.inr i) (timeSliceD.symm f)) =
+    (derivD (Sum.inr i) (timeSliceD.symm f)) =
     timeSliceD.symm (Space.spaceDerivD i f) := by
   obtain ⟨f, rfl⟩ := timeSliceD.surjective f
   simp

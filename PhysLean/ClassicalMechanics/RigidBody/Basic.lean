@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.Space.Distributions
+import PhysLean.SpaceAndTime.Space.Distributions.Basic
 import Mathlib.Geometry.Manifold.Algebra.SmoothFunctions
 /-!
 
@@ -62,7 +62,7 @@ informal_definition kineticEnergy where
   tag := "MEYBM"
   deps := [``RigidBody]
 
-/-- We can describe the motion of rigid body with a fixed (inertial) coordinate system (X,Y,Z)
+/-- One can describe the motion of rigid body with a fixed (inertial) coordinate system (X,Y,Z)
     and a moving system (x₁,x₂,x₃) rigidly attached to the body. -/
 informal_definition coordinate_system where
   tag := "LL31.3"
