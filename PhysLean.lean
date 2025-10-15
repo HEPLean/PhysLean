@@ -108,6 +108,7 @@ import PhysLean.Particles.FlavorPhysics.CKMMatrix.Relations
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.Rows
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
+import PhysLean.Particles.NeutrinoPhysics.Basic
 import PhysLean.Particles.StandardModel.AnomalyCancellation.Basic
 import PhysLean.Particles.StandardModel.AnomalyCancellation.FamilyMaps
 import PhysLean.Particles.StandardModel.AnomalyCancellation.NoGrav.Basic
