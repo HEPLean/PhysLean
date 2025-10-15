@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong
 -/
 import PhysLean.SpaceAndTime.Space.VectorIdentities
+import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.Mathematics.Distribution.Function.OfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
@@ -107,6 +108,11 @@ lemma derivD_constD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   ext η
   simp [derivD, constD]
 
+lemma derivD_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (μ : Fin d) (f : (Space d) →d[ℝ] M) (ε : 𝓢(Space d, ℝ)) :
+    (derivD μ f) ε = fderivD ℝ f ε (basis μ) := by
+  simp [derivD, Distribution.fderivD]
+
 /-!
 
 ## The gradient
@@ -181,6 +187,27 @@ lemma gradD_constD {d} (m : ℝ) :
   ext η
   simp [gradD, constD]
 
+lemma gradD_toFun_eq_derivD {d} (f : (Space d) →d[ℝ] ℝ) :
+    (gradD f).toFun = fun ε i => derivD i f ε := by
+  ext ε i
+  simp
+  rw [gradD_eq_sum_basis]
+  simp
+  rw [Finset.sum_eq_single i]
+  · simp
+    rfl
+  · intro b _ h
+    simp
+    right
+    simpa [basis_apply] using h
+  · simp
+
+lemma gradD_apply {d} (f : (Space d) →d[ℝ] ℝ) (ε : 𝓢(Space d, ℝ)) :
+    (gradD f) ε = fun i => derivD i f ε := by
+  change (gradD f).toFun ε = fun i => derivD i f ε
+  rw [gradD_toFun_eq_derivD]
+
+
 /-!
 
 ## The divergence
@@ -214,6 +241,12 @@ lemma divD_apply_eq_sum_fderivD {d}
     (f : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Space d, ℝ)) :
     divD f η = ∑ i, fderivD ℝ f η (basis i) i := by
   simp [divD]
+
+lemma divD_apply_eq_sum_derivD {d}
+    (f : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Space d, ℝ)) :
+    divD f η = ∑ i, derivD i f η i := by
+  rw [divD_apply_eq_sum_fderivD]
+  rfl
 
 @[simp]
 lemma divD_constD {d} (m : EuclideanSpace ℝ (Fin d)) :
@@ -432,5 +465,137 @@ lemma curlD_gradD_eq_zero (f : (Space) →d[ℝ] ℝ) :
       - ((SchwartzMap.evalCLM (𝕜 := ℝ) _)
         ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) _) ((fderivCLM ℝ) η)))) x = _
     simp
+
+/-!
+
+## For time-dependent distributions
+
+-/
+
+
+
+/-- The time derivative of a distribution dependent on time and space. -/
+noncomputable def timeDerivD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
+    ((Time × Space d) →d[ℝ] M) →ₗ[ℝ] (Time × Space d) →d[ℝ] M where
+  toFun f :=
+    let ev : ((Time × Space d) →L[ℝ] M) →L[ℝ] M := {
+      toFun v := v (1, 0)
+      map_add' v1 v2 := by
+        simp only [ContinuousLinearMap.add_apply]
+      map_smul' a v := by
+        simp
+    }
+    ev.comp (Distribution.fderivD ℝ f)
+  map_add' f1 f2 := by
+    simp
+  map_smul' a f := by simp
+
+lemma timeDerivD_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (f : (Time × Space d) →d[ℝ] M) (ε : 𝓢(Time × Space d, ℝ)) :
+    (timeDerivD f) ε = fderivD ℝ f ε (1, 0) := by
+  simp [timeDerivD]
+
+/-- The space derivative of a distribution dependent on time and space. -/
+noncomputable def spaceDerivD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (i : Fin d) : ((Time × Space d) →d[ℝ] M) →ₗ[ℝ] (Time × Space d) →d[ℝ] M where
+  toFun f :=
+    let ev : (Time × Space d →L[ℝ] M) →L[ℝ] M := {
+      toFun v := v (0, basis i)
+      map_add' v1 v2 := by
+        simp only [ContinuousLinearMap.add_apply]
+      map_smul' a v := by
+        simp
+    }
+    ev.comp (Distribution.fderivD ℝ f)
+  map_add' f1 f2 := by
+    simp
+  map_smul' a f := by simp
+
+lemma spaceDerivD_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (i : Fin d) (f : (Time × Space d) →d[ℝ] M) (ε : 𝓢(Time × Space d, ℝ)) :
+    (spaceDerivD i f) ε = fderivD ℝ f ε (0, basis i) := by
+  simp [spaceDerivD]
+
+/-- The spatial gradient of a distribution dependent on time and spaace. -/
+noncomputable def spaceGradD {d} :
+    ((Time × Space d) →d[ℝ] ℝ) →ₗ[ℝ] (Time × Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d)) where
+  toFun f := {
+      toFun := fun ε i => spaceDerivD i f ε
+      map_add' ε1 ε2 := by funext i; simp
+      map_smul' a ε := by funext i; simp
+      cont := by fun_prop}
+  map_add' f1 f2 := by
+    ext x
+    simp
+  map_smul' a f := by
+    ext x
+    simp
+
+lemma spaceGradD_apply {d} (f : (Time × Space d) →d[ℝ] ℝ) (ε : 𝓢(Time × Space d, ℝ)) :
+    spaceGradD f ε = fun i => spaceDerivD i f ε := by
+  rfl
+/-- The spatial divergence of a distribution dependent on time and space. -/
+noncomputable def spaceDivD {d} :
+    ((Time × Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d))) →ₗ[ℝ] (Time × Space d) →d[ℝ] ℝ where
+  toFun f := {
+    toFun ε :=  ∑ i, spaceDerivD i f ε i
+    map_add' ε1 ε2 := by simp [Finset.sum_add_distrib]
+    map_smul' a ε := by simp [Finset.mul_sum]
+    cont := by fun_prop}
+  map_add' f1 f2 := by
+    ext x
+    simp [Finset.sum_add_distrib]
+  map_smul' a f := by
+    ext x
+    simp [Finset.mul_sum]
+
+lemma spaceDivD_apply_eq_sum_spaceDerivD {d}
+    (f : (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Time ×Space d, ℝ)) :
+    spaceDivD f η = ∑ i, spaceDerivD i f η i := by rfl
+
+
+/-- The curl of a distribution dependent on time and space. -/
+noncomputable def spaceCurlD : ((Time × Space 3) →d[ℝ] (EuclideanSpace ℝ (Fin 3))) →ₗ[ℝ]
+    (Time × Space 3) →d[ℝ] (EuclideanSpace ℝ (Fin 3)) where
+  toFun f :={
+    toFun ε :=  fun i =>
+      match i with
+      | 0 => spaceDerivD 2 f ε 1 - spaceDerivD 1 f ε 2
+      | 1 => spaceDerivD 0 f ε 2 - spaceDerivD 2 f ε 0
+      | 2 => spaceDerivD 1 f ε 0 - spaceDerivD 0 f ε 1
+    map_add' ε1 ε2 := by
+      funext i
+      fin_cases i
+      all_goals
+        simp only [Fin.isValue, map_add, PiLp.add_apply, Fin.reduceFinMk]
+        ring
+    map_smul' a ε := by
+      funext i
+      fin_cases i
+      all_goals
+        simp only [Fin.isValue, map_smul, PiLp.smul_apply, smul_eq_mul, RingHom.id_apply,
+          Fin.zero_eta]
+        ring
+    cont := by
+      rw [continuous_pi_iff]
+      intro i
+      fin_cases i <;> fun_prop
+      }
+  map_add' f1 f2 := by
+    ext x i
+    fin_cases i
+    all_goals
+      simp only [Fin.isValue, map_add, ContinuousLinearMap.add_apply, PiLp.add_apply, Fin.zero_eta,
+        ContinuousLinearMap.coe_mk', LinearMap.coe_mk, AddHom.coe_mk]
+      ring
+  map_smul' a f := by
+    ext x i
+    fin_cases i
+    all_goals
+      simp only [Fin.isValue, map_smul, ContinuousLinearMap.coe_smul', Pi.smul_apply,
+        PiLp.smul_apply, smul_eq_mul, Fin.reduceFinMk, ContinuousLinearMap.coe_mk',
+        LinearMap.coe_mk, AddHom.coe_mk, RingHom.id_apply]
+      ring
+
 
 end Space

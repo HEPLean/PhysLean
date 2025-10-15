@@ -218,7 +218,7 @@ lemma IsDistBounded.inv {n : ℕ} :
 
 -/
 
-private lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ))
+lemma schwartzMap_mul_pow_integrable {dm1 : ℕ} (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ))
     (p : ℤ) (hp : - (dm1 : ℤ) ≤ p) :
     Integrable (fun x => ‖η x‖ * ‖x‖ ^ p) volume := by
   by_cases hp : p = 0
