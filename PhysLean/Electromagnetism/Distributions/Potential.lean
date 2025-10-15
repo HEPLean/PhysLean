@@ -8,7 +8,6 @@ import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.SpaceAndTime.SpaceTime.Distributions
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
-import PhysLean.SpaceAndTime.Space.Distributions.Basic
 /-!
 
 # The electromagnetic potential for distributions
@@ -152,13 +151,15 @@ noncomputable def fieldStrengthMatrix {d : ℕ} :
     ext μν
     match μν with
     | (μ, ν) =>
-    simp
+    simp only [map_add, Pi.add_apply, smul_add, ContinuousLinearMap.coe_sub', Pi.sub_apply,
+      ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
     ring
   map_smul' a A := by
     ext μν
     match μν with
     | (μ, ν) =>
-    simp
+    simp only [map_smul, Pi.smul_apply, ContinuousLinearMap.coe_sub', ContinuousLinearMap.coe_smul',
+      Pi.sub_apply, smul_eq_mul, RingHom.id_apply]
     ring
 
 /-!
@@ -303,26 +304,28 @@ lemma toComponentsEuclidean_apply {d : ℕ} (E : (Time × Space d) →d[ℝ] Euc
 -/
 
 /-- The electric field associated with a electromagnetic potential which is a distribution. -/
-noncomputable def electricField {d}  :
-   ElectromagneticPotentialD d →ₗ[ℝ] (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
+noncomputable def electricField {d} :
+    ElectromagneticPotentialD d →ₗ[ℝ] (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
   toFun A :=
     - Space.spaceGradD (A.scalarPotential) - Space.timeDerivD (A.vectorPotential)
   map_add' A1 A2 := by
     ext κ i
-    simp
+    simp only [map_add, neg_add_rev, ContinuousLinearMap.coe_sub', Pi.sub_apply,
+      ContinuousLinearMap.add_apply, ContinuousLinearMap.neg_apply, PiLp.sub_apply, PiLp.add_apply,
+      PiLp.neg_apply]
     ring
   map_smul' a A := by
     ext κ i
-    simp
+    simp only [map_smul, ContinuousLinearMap.coe_sub', ContinuousLinearMap.coe_smul', Pi.sub_apply,
+      ContinuousLinearMap.neg_apply, Pi.smul_apply, PiLp.sub_apply, PiLp.neg_apply, PiLp.smul_apply,
+      smul_eq_mul, RingHom.id_apply]
     ring
-
 
 /-!
 
 #### D.2.1. The electric field in terms of the field strength matrix
 
 -/
-
 
 lemma electricField_fieldStrengthMatrix {d} {A : ElectromagneticPotentialD d} (i : Fin d) :
     toComponentsEuclidean A.electricField i =
@@ -333,7 +336,6 @@ lemma electricField_fieldStrengthMatrix {d} {A : ElectromagneticPotentialD d} (i
   simp [timeSliceD_derivD_inl, timeSliceD_derivD_inr, Space.spaceGradD_apply]
   ring_nf
   rfl
-
 
 /-!
 
@@ -354,7 +356,6 @@ lemma fieldStrengthMatrix_col_eq_electricField {d} {A : ElectromagneticPotential
 
 -/
 
-
 lemma fieldStrengthMatrix_row_eq_electricField {d} {A : ElectromagneticPotentialD d}
     (i : Fin d) :
     (A.fieldStrengthMatrix (Sum.inl 0, Sum.inr i)) =
@@ -367,7 +368,6 @@ lemma fieldStrengthMatrix_row_eq_electricField {d} {A : ElectromagneticPotential
 ### D.3. The magnetic field in 3-dimensions
 
 -/
-
 
 /-- The magnetic field associated with a electromagnetic potential in 3 dimensions. -/
 noncomputable def magneticField :
@@ -464,7 +464,6 @@ We take the definition to be:
 which matches the result of the calcultation from the function case.
 -/
 
-
 /-- The variational gradient of the lagrangian for an electromagnetic potential
   which is a distribution. This is defined nor proved for distributions. -/
 noncomputable def gradLagrangian {d : ℕ} (A : ElectromagneticPotentialD d)
@@ -499,7 +498,7 @@ lemma gradLagrangian_one_dimension_electricField (A : ElectromagneticPotentialD 
       Space.spaceDivD (A.electricField) := by
       ext ε
       rw [Space.spaceDivD_apply_eq_sum_spaceDerivD]
-      simp
+      simp only [Fin.isValue, Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
       rw [Space.spaceDerivD_apply, Space.spaceDerivD_apply, Distribution.fderivD_apply,
         Distribution.fderivD_apply]
       simp
@@ -507,7 +506,7 @@ lemma gradLagrangian_one_dimension_electricField (A : ElectromagneticPotentialD 
   | Sum.inr 0 =>
     simp [gradLagrangian]
     rw [fieldStrengthMatrix_row_eq_electricField]
-    simp
+    simp only [Fin.isValue, map_neg, sub_neg_eq_add, add_right_inj]
     rw [SpaceTime.timeSliceD_symm_derivD_inl]
     have h1 : (Space.timeDerivD (toComponentsEuclidean A.electricField 0))
       = toComponentsEuclidean (Space.timeDerivD (A.electricField)) 0:= by

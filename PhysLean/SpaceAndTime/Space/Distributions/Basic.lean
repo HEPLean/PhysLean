@@ -190,14 +190,15 @@ lemma gradD_constD {d} (m : ℝ) :
 lemma gradD_toFun_eq_derivD {d} (f : (Space d) →d[ℝ] ℝ) :
     (gradD f).toFun = fun ε i => derivD i f ε := by
   ext ε i
-  simp
+  simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, ContinuousLinearMap.coe_coe]
   rw [gradD_eq_sum_basis]
-  simp
+  simp only [neg_smul, sum_apply, PiLp.neg_apply, PiLp.smul_apply, smul_eq_mul,
+    Finset.sum_neg_distrib]
   rw [Finset.sum_eq_single i]
   · simp
     rfl
   · intro b _ h
-    simp
+    simp only [mul_eq_zero]
     right
     simpa [basis_apply] using h
   · simp
