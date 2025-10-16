@@ -383,4 +383,47 @@ lemma deriv_contDiff_of_contDiff {M : Type}
   · fun_prop
   · fun_prop
 
+
+noncomputable def basis : OrthonormalBasis (Fin 1) ℝ Time where
+  repr := {
+    toFun := fun x => fun _ => x
+    invFun := fun f => ⟨f 0⟩
+    left_inv := by
+      intro x
+      rfl
+    right_inv := by
+      intro f
+      ext i
+      fin_cases i
+      rfl
+    map_add' := by
+      intro f g
+      ext i
+      fin_cases i
+      rfl
+    map_smul' := by
+      intro c f
+      ext i
+      fin_cases i
+      rfl
+    norm_map' := by
+      intro x
+      simp
+      rw [@PiLp.norm_eq_of_L2]
+      simp
+      rw [Real.sqrt_sq_eq_abs]
+      rfl
+  }
+
+@[simp]
+lemma basis_apply_eq_one (i : Fin 1) :
+    basis i = 1 := by
+  fin_cases i
+  simp [basis]
+  rfl
+
+lemma volume_eq_basis_addHaar :
+    (volume (α := Time)) = basis.toBasis.addHaar := by
+  exact (OrthonormalBasis.addHaar_eq_volume _).symm
+
 end Time

@@ -344,8 +344,21 @@ def actionCLM {d : ℕ} (Λ : LorentzGroup d) :
         funext j
         ring}
 
+
 lemma actionCLM_apply {d : ℕ} (Λ : LorentzGroup d) (p : Vector d) :
     actionCLM Λ p = Λ • p := rfl
+
+lemma actionCLM_surjective {d : ℕ} (Λ : LorentzGroup d) :
+    Function.Surjective (actionCLM Λ) := by
+  intro y
+  use (Λ⁻¹ • y)
+  simp [actionCLM_apply]
+
+lemma actionCLM_injective {d : ℕ} (Λ : LorentzGroup d) :
+    Function.Injective (actionCLM Λ) := by
+  intro x y h
+  simp [actionCLM_apply] at h
+  exact h
 
 lemma smul_basis {d : ℕ} (Λ : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
     Λ • basis μ = ∑ ν, Λ.1 ν μ • basis ν := by

@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.Distributions.Basic
+import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.SpaceAndTime.Space.Distributions.IsDistBounded
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 /-!
 
@@ -1030,9 +1032,7 @@ lemma constantTime_timeDerivD {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
     (f : (Space d.succ) →d[ℝ] M) :
     Space.timeDerivD (constantTime f) = 0 := by
   ext η
-  rw [Space.timeDerivD_apply]
-  rw [fderivD_apply]
-  simp [constantTime_apply]
+  simp [Space.timeDerivD_apply, fderivD_apply, constantTime_apply]
   suffices h : (timeIntegralSchwartz ((SchwartzMap.evalCLM (1, 0)) ((fderivCLM ℝ) η))) = 0 by
     rw [h]
     simp
@@ -1077,5 +1077,36 @@ lemma constantTime_timeDerivD {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
         · exact η.smooth'.differentiable (by simp)
         · fun_prop
   simp
+
+/-!
+
+## E.6. ofFunction apply
+-/
+
+lemma consantTime_ofFunction_apply_eq_integral_time_space {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [CompleteSpace M]
+    {d : ℕ} (f : (Space d.succ) → M) (hf : IsDistBounded f)
+    (hae : AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(Time × Space d.succ, ℝ)) :
+    constantTime (ofFunction f hf hae) η = ∫ x, η x • f x.2 ∂(volume.prod volume) := by
+  simp [constantTime_apply, ofFunction_apply]
+  rw [MeasureTheory.integral_prod_symm _ (hf.time_schwartzMap_smul_integrable hae)]
+  congr
+  funext x
+  simp
+  rw [integral_smul_const]
+  rfl
+
+open SpaceTime
+
+lemma consantTime_ofFunction_apply_eq_integral_spaceTime {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [CompleteSpace M]
+    {d : ℕ} (f : (Space d.succ) → M) (hf : IsDistBounded f)
+    (hae : AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(Time × Space d.succ, ℝ)) :
+    constantTime (ofFunction f hf hae) η = ∫ x, η (toTimeAndSpace x) • f x.space ∂(volume) := by
+  rw [spaceTime_integral_eq_time_space_integral]
+  rw [consantTime_ofFunction_apply_eq_integral_time_space f hf hae η]
+  simp only [Nat.succ_eq_add_one, ContinuousLinearEquiv.apply_symm_apply, space_toCoord_symm]
+  rfl
+
 
 end Space

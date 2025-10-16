@@ -135,6 +135,11 @@ noncomputable def toComponents {d : ℕ} :
     ext μ ε
     simp
 
+open SchwartzMap
+
+lemma toComponents_symm_apply {d : ℕ} (A : ((Fin 1 ⊕ Fin d) → (SpaceTime d) →d[ℝ] ℝ))
+    (μ : Fin 1 ⊕ Fin d) (ε : 𝓢(SpaceTime d, ℝ)) :
+    (toComponents.symm A) ε μ = A μ ε := by rfl
 /-!
 
 ## B. The field strength tensor matrix
@@ -439,6 +444,11 @@ noncomputable def toComponents {d : ℕ} :
     intro c J
     ext μ ε
     simp
+open SchwartzMap
+
+lemma toComponents_symm_apply {d : ℕ} (J : ((Fin 1 ⊕ Fin d) → (SpaceTime d) →d[ℝ] ℝ))
+    (μ : Fin 1 ⊕ Fin d) (ε : 𝓢(SpaceTime d, ℝ)) :
+    (toComponents.symm J) ε μ = J μ ε := by rfl
 
 end LorentzCurrentDensityD
 
@@ -473,7 +483,27 @@ noncomputable def gradLagrangian {d : ℕ} (A : ElectromagneticPotentialD d)
 
 /-!
 
-### F.1. The variational gradient in 1-dimension
+### F.1. Gauss's law
+
+
+-/
+
+lemma gradLagrangian_gauss_law {d} (A : ElectromagneticPotentialD d)
+    (J : LorentzCurrentDensityD d) :
+    A.gradLagrangian J (Sum.inl 0) = SpaceTime.timeSliceD.symm
+      (Space.spaceDivD A.electricField) - J.toComponents (Sum.inl 0) := by
+  simp only [gradLagrangian, Fin.isValue, inl_0_inl_0, Fintype.sum_sum_type, Finset.univ_unique,
+    Fin.default_eq_zero, Finset.sum_singleton, fieldStrengthMatrix_same_same, map_zero, zero_add,
+    one_smul, sub_left_inj]
+  ext ε
+  simp only [Fin.isValue, fieldStrengthMatrix_col_eq_electricField,
+    SpaceTime.timeSliceD_symm_derivD_inr, ContinuousLinearMap.coe_sum', Finset.sum_apply,
+    SpaceTime.timeSliceD_symm_apply, Space.spaceDivD_apply_eq_sum_spaceDerivD]
+  rfl
+
+/-!
+
+### F.2. The variational gradient in 1-dimension
 
 We simplify the variational gradient in 1-dimension.
 
@@ -491,18 +521,7 @@ lemma gradLagrangian_one_dimension_electricField (A : ElectromagneticPotentialD 
   funext μ
   match μ with
   | Sum.inl 0 =>
-    simp [gradLagrangian]
-    rw [fieldStrengthMatrix_col_eq_electricField]
-    simp [SpaceTime.timeSliceD_symm_derivD_inr]
-    have h1 : ((Space.spaceDerivD 0) (toComponentsEuclidean A.electricField 0)) =
-      Space.spaceDivD (A.electricField) := by
-      ext ε
-      rw [Space.spaceDivD_apply_eq_sum_spaceDerivD]
-      simp only [Fin.isValue, Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
-      rw [Space.spaceDerivD_apply, Space.spaceDerivD_apply, Distribution.fderivD_apply,
-        Distribution.fderivD_apply]
-      simp
-    rw [h1]
+    rw [gradLagrangian_gauss_law]
   | Sum.inr 0 =>
     simp [gradLagrangian]
     rw [fieldStrengthMatrix_row_eq_electricField]

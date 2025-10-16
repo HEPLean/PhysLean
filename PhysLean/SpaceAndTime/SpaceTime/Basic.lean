@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 import PhysLean.SpaceAndTime.Space.Basic
 import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.SpaceAndTime.Space.Distributions.Basic
 /-!
 # Spacetime
 
@@ -262,6 +263,7 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
   funext j
   simp [space]
 
+
 /-!
 
 ## C. Continous linear map to coordinates
@@ -508,6 +510,107 @@ instance {d : ℕ} : IsFiniteMeasureOnCompacts (volume (α := SpaceTime d)) :=
 
 instance {d : ℕ} : Measure.IsAddHaarMeasure (volume (α := SpaceTime d)) :=
   inferInstanceAs (Measure.IsAddHaarMeasure (Lorentz.Vector.basis.addHaar))
+
+
+/-!
+
+### E.8. Spacetime integrals in terms of time and space integrals
+
+-/
+open MeasureTheory
+
+lemma toTimeAndSpace_symm_measurePreserving {d : ℕ} :
+    MeasurePreserving toTimeAndSpace.symm (volume.prod (volume (α := Space d))) volume := by
+  have h : volume (α := SpaceTime d)  =  Lorentz.Vector.basis.addHaar := rfl
+  refine { measurable := ?_, map_eq := ?_ }
+  · fun_prop
+  have hs : volume (α := Space d) = Space.basis.toBasis.addHaar := by
+    exact Space.volume_eq_addHaar
+  have ht : volume (α := Time) = Time.basis.toBasis.addHaar := by
+    exact Time.volume_eq_basis_addHaar
+  rw [hs, ht]
+  rw [← Module.Basis.prod_addHaar]
+  rw [Module.Basis.map_addHaar]
+  rw [h]
+  congr
+  ext μ
+  match μ with
+  | Sum.inl 0 =>
+    simp
+    apply toTimeAndSpace.injective
+    simp
+    rw [toTimeAndSpace_basis_inl]
+  | Sum.inr i =>
+    simp
+    apply toTimeAndSpace.injective
+    simp
+    rw [toTimeAndSpace_basis_inr]
+
+lemma spaceTime_integral_eq_time_space_integral {M} [NormedAddCommGroup M]
+    [NormedSpace ℝ M] {d : ℕ}
+    (f : SpaceTime d → M)  :
+    ∫ x : SpaceTime d, f x ∂(volume) =
+    ∫ tx : Time × Space d, f (toTimeAndSpace.symm tx) ∂(volume.prod volume) := by
+  symm
+  apply MeasureTheory.MeasurePreserving.integral_comp
+  · have h : volume (α := SpaceTime d)  =  Lorentz.Vector.basis.addHaar := rfl
+    refine { measurable := ?_, map_eq := ?_ }
+    · fun_prop
+    have hs : volume (α := Space d) = Space.basis.toBasis.addHaar := by
+      exact Space.volume_eq_addHaar
+    have ht : volume (α := Time) = Time.basis.toBasis.addHaar := by
+      exact Time.volume_eq_basis_addHaar
+    rw [hs, ht]
+    rw [← Module.Basis.prod_addHaar]
+    rw [Module.Basis.map_addHaar]
+    rw [h]
+    congr
+    ext μ
+    match μ with
+    | Sum.inl 0 =>
+      simp
+      apply toTimeAndSpace.injective
+      simp
+      rw [toTimeAndSpace_basis_inl]
+    | Sum.inr i =>
+      simp
+      apply toTimeAndSpace.injective
+      simp
+      rw [toTimeAndSpace_basis_inr]
+
+
+  · refine Measurable.measurableEmbedding ?_ ?_
+    · fun_prop
+    · exact ContinuousLinearEquiv.injective toTimeAndSpace.symm
+
+lemma spaceTime_integrable_iff_space_time_integrable {M} [NormedAddCommGroup M]
+    [NormedSpace ℝ M] {d : ℕ}
+    (f : SpaceTime d → M) :
+    Integrable f volume ↔ Integrable (f ∘ (toTimeAndSpace.symm)) (volume.prod volume) := by
+  symm
+  apply MeasureTheory.MeasurePreserving.integrable_comp_emb
+  · exact toTimeAndSpace_symm_measurePreserving
+  · refine Measurable.measurableEmbedding ?_ ?_
+    · fun_prop
+    · exact ContinuousLinearEquiv.injective toTimeAndSpace.symm
+
+lemma spaceTime_integral_eq_time_integral_space_integral {M} [NormedAddCommGroup M]
+    [NormedSpace ℝ M] {d : ℕ}
+    (f : SpaceTime d → M)
+    (h :  Integrable f volume) :
+    ∫ x : SpaceTime d, f x = ∫ t: Time, ∫ x : Space d, f (toTimeAndSpace.symm (t, x)) := by
+  rw [spaceTime_integral_eq_time_space_integral, MeasureTheory.integral_prod]
+  rw [spaceTime_integrable_iff_space_time_integrable] at h
+  exact h
+
+lemma spaceTime_integral_eq_space_integral_time_integral {M} [NormedAddCommGroup M]
+    [NormedSpace ℝ M] {d : ℕ}
+    (f : SpaceTime d → M)
+    (h :  Integrable f volume) :
+    ∫ x : SpaceTime d, f x = ∫ x : Space d, ∫ t : Time, f (toTimeAndSpace.symm (t, x)) := by
+  rw [spaceTime_integral_eq_time_space_integral, MeasureTheory.integral_prod_symm]
+  rw [spaceTime_integrable_iff_space_time_integrable] at h
+  exact h
 
 end SpaceTime
 

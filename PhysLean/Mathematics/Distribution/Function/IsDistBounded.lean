@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.Distribution.Function.InvPowMeasure
+import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Time.Basic
 import Mathlib.Tactic.Cases
 /-!
 

@@ -80,6 +80,11 @@ noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
   continuous_invFun :=
     ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace.symm).precomp M).continuous
 
+lemma timeSliceD_symm_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (f : (Time × Space d) →d[ℝ] M) (η : 𝓢(SpaceTime d, ℝ)) :
+    timeSliceD.symm f η = f (SchwartzMap.compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace.symm η) :=
+  rfl
+
 /-!
 
 ## C. Derivatives of distributions
@@ -197,5 +202,115 @@ lemma timeSliceD_symm_derivD_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M
   apply timeSliceD.injective
   simp only [ContinuousLinearEquiv.apply_symm_apply]
   exact timeSliceD_derivD_inr i f
+
+/-!
+
+## D. Lorentz actions on distributions
+
+-/
+
+open ContDiff
+/-- The continuous linear map translating Schwartz maps. -/
+noncomputable def lorentzActionSchwartz {d : ℕ} (Λ : LorentzGroup d) :
+    𝓢(SpaceTime d, ℝ) →L[ℝ] 𝓢(SpaceTime d, ℝ) := by
+  refine SchwartzMap.compCLM (𝕜 := ℝ) (g := Lorentz.Vector.actionCLM (Λ⁻¹)) ?_ ?_
+  · apply And.intro
+    · fun_prop
+    · intro n
+      match n with
+      | 0 =>
+        simp
+        use 1, ‖Lorentz.Vector.actionCLM (Λ⁻¹)‖
+        intro x
+        apply le_trans (ContinuousLinearMap.le_opNorm (Lorentz.Vector.actionCLM Λ⁻¹) x)
+        simp [mul_add]
+      | 1 =>
+        have h1 (x : SpaceTime d) :
+            ‖iteratedFDeriv ℝ 1 (⇑(Lorentz.Vector.actionCLM Λ⁻¹)) x‖ =
+              ‖Lorentz.Vector.actionCLM Λ⁻¹‖ := by
+          rw [iteratedFDeriv_succ_eq_comp_right]
+          simp
+        use 1, ‖Lorentz.Vector.actionCLM (Λ⁻¹)‖
+        intro x
+        rw [h1]
+        simp [mul_add]
+        positivity
+      | .succ (.succ n) =>
+        have h1 (x : SpaceTime d) :
+            ‖iteratedFDeriv ℝ (n.succ.succ) (⇑(Lorentz.Vector.actionCLM Λ⁻¹)) x‖ = 0 := by
+          rw [iteratedFDeriv_succ_eq_comp_right]
+          simp [iteratedFDeriv_succ_const]
+          exact ContinuousMultilinearMap.opNorm_zero
+        use 0, 1
+        intro x
+        rw [h1]
+        simp
+  · use 1, ‖Lorentz.Vector.actionCLM (Λ)‖
+    intro x
+    obtain ⟨x, rfl⟩ := (Lorentz.Vector.actionCLM_surjective Λ) x
+    apply le_trans (ContinuousLinearMap.le_opNorm (Lorentz.Vector.actionCLM Λ) x)
+    simp [Lorentz.Vector.actionCLM_apply, mul_add]
+
+lemma lorentzActionSchwartz_apply {d : ℕ} (Λ : LorentzGroup d)
+    (η : 𝓢(SpaceTime d, ℝ)) (x : SpaceTime d) :
+    lorentzActionSchwartz Λ η x = η ((Λ⁻¹) • x) := by
+  simp [lorentzActionSchwartz, SchwartzMap.compCLM_apply, Lorentz.Vector.actionCLM_apply]
+
+lemma lorentzActionSchwartz_mul {d : ℕ} (Λ1 Λ2 : LorentzGroup d) :
+    (lorentzActionSchwartz (Λ2 * Λ1)) =
+    (lorentzActionSchwartz Λ2).comp (lorentzActionSchwartz Λ1) := by
+  ext η x
+  simp [lorentzActionSchwartz_apply, mul_smul]
+
+@[simp]
+lemma lorentzActionSchwartz_id {d : ℕ} :
+    (lorentzActionSchwartz (1 : LorentzGroup d)) =
+    ContinuousLinearMap.id ℝ (𝓢(SpaceTime d, ℝ)) := by
+  ext η x
+  simp [lorentzActionSchwartz_apply, one_smul]
+
+noncomputable instance {d} :
+    SMul (LorentzGroup d) ((SpaceTime d) →d[ℝ] Lorentz.Vector d) where
+  smul Λ f := (Lorentz.Vector.actionCLM Λ).comp (f.comp  (lorentzActionSchwartz Λ⁻¹))
+
+lemma distribution_smul_lorentzGroup_eq {d} (Λ : LorentzGroup d)
+    (f : (SpaceTime d) →d[ℝ] Lorentz.Vector d) :
+    (Λ • f)  = (Lorentz.Vector.actionCLM Λ).comp (f.comp  (lorentzActionSchwartz Λ⁻¹)) := by rfl
+
+lemma distribution_smul_lorentzGroup_apply {d} (Λ : LorentzGroup d)
+    (f : (SpaceTime d) →d[ℝ] Lorentz.Vector d) (η : 𝓢(SpaceTime d, ℝ)) :
+    (Λ • f) η = Λ • (f (lorentzActionSchwartz Λ⁻¹ η)) := by
+  simp [distribution_smul_lorentzGroup_eq, ContinuousLinearMap.comp_apply]
+  rfl
+
+noncomputable instance {d} :
+    MulAction (LorentzGroup d) ((SpaceTime d) →d[ℝ] Lorentz.Vector d) where
+  one_smul f := by
+    ext η
+    simp [distribution_smul_lorentzGroup_apply]
+  mul_smul Λ1 Λ2 f := by
+    ext η
+    simp [distribution_smul_lorentzGroup_apply, mul_smul, lorentzActionSchwartz_mul]
+
+lemma distribution_mulAction_lorentzGroup_derivD {d} (Λ : LorentzGroup d)
+    (μ : Fin 1 ⊕ Fin d) (f : (SpaceTime d) →d[ℝ] Lorentz.Vector d) :
+    Λ • (derivD μ f) = derivD μ (Λ • f) := by
+  ext η
+  rw [distribution_smul_lorentzGroup_apply, derivD_apply, derivD_apply,
+  fderivD_apply, fderivD_apply]
+  simp [distribution_smul_lorentzGroup_apply]
+  congr 1
+  ext x
+  change fderiv ℝ  (⇑((lorentzActionSchwartz Λ⁻¹) η)) _ _ = fderiv ℝ _ _ _
+  have h1 : (⇑((lorentzActionSchwartz Λ⁻¹) η)) = η ∘ ( Lorentz.Vector.actionCLM (Λ)) := by
+    ext x
+    simp [lorentzActionSchwartz_apply]
+    rfl
+  rw [h1]
+  rw [fderiv_comp]
+  simp
+  sorry
+
+
 
 end SpaceTime

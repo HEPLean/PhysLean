@@ -63,6 +63,20 @@ noncomputable def oneDimPointParticleCurrentDensity (q : ℝ) : LorentzCurrentDe
   | Sum.inl 0 => SpaceTime.timeSliceD.symm <| constantTime (q • diracDelta ℝ 0)
   | Sum.inr _ => 0
 
+
+lemma oneDimPointParticleCurrentDensity_apply (q : ℝ) (η : 𝓢(SpaceTime 1, ℝ)) :
+    (oneDimPointParticleCurrentDensity q) η = fun μ =>
+      match μ with
+      | Sum.inl 0 => q * ∫ t, η (SpaceTime.toTimeAndSpace.symm (t, 0))
+      | Sum.inr _ => 0 := by
+  funext μ
+  fin_cases μ
+  · simp [oneDimPointParticleCurrentDensity, LorentzCurrentDensityD.toComponents_symm_apply,
+      SpaceTime.timeSliceD_symm_apply, constantTime_apply]
+    left
+    rfl
+  · simp [oneDimPointParticleCurrentDensity, LorentzCurrentDensityD.toComponents_symm_apply]
+
 /-!
 
 ## B. The Potentials
@@ -88,6 +102,19 @@ noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
       simp)
     (by fun_prop))
   | Sum.inr i => 0
+
+lemma oneDimPointParticle_apply (q : ℝ) (η : 𝓢(SpaceTime 1, ℝ)) :
+    (oneDimPointParticle q) η = fun μ =>
+      match μ with
+      | Sum.inl 0 => ∫ x, η x • (- (q/(2)) • ‖x.space‖)
+      | Sum.inr _ => 0 := by
+  funext μ
+  fin_cases μ
+  · simp [oneDimPointParticle, ElectromagneticPotentialD.toComponents_symm_apply,
+      SpaceTime.timeSliceD_symm_apply,
+      consantTime_ofFunction_apply_eq_integral_spaceTime]
+    rw [integral_neg]
+  · simp [oneDimPointParticle, ElectromagneticPotentialD.toComponents_symm_apply]
 
 /-!
 
@@ -157,7 +184,6 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
   ext η i
   fin_cases i
   calc _
-
     /- By the definition of the gradiant on distributions
       `-⟪∇ (- q/(2 * ε) |x|), η⟫ 0 = - ⟪(-q/(2 * ε) |x|), -dη/dx⟫`
       which is equal to `- ⟪(q/(2 * ε) |x|), dη/dx⟫`.
