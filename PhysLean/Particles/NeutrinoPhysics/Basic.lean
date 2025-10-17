@@ -112,7 +112,7 @@ lemma PMNS_dirac_equivalence_symm :
     simp [diagPhase_mul]
 
 /-- The relation `PMNS_dirac_equivalence` is transitive. -/
-lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
+lemma PMNS_dirac_equivalence_trans {U V W : unitaryGroup (Fin 3) ℂ} :
     PMNS_dirac_equivalence U V → PMNS_dirac_equivalence V W → PMNS_dirac_equivalence U W := by
     intros h1 h2
     rcases h1 with ⟨θ1, φ1, hUV⟩
