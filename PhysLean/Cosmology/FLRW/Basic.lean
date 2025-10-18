@@ -23,7 +23,8 @@ namespace Cosmology
 /-- The inductive type with three constructors:
 - `Spherical (k : ℝ)`
 - `Flat`
-- `Saddle (k : ℝ)` -/
+- `Saddle (k : ℝ)`
+-/
 
 -- def SpatialGeometry : Type := sorry
 inductive SpatialGeometry : Type where
