@@ -99,6 +99,23 @@ lemma neg_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
 @[simp]
 lemma zero_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) :
     (0 : Vector d) i = 0 := rfl
+
+/-- The continuous linear map from a Lorentz vector to one of its coordinates. -/
+def coordCLM {d : ℕ} (i : Fin 1 ⊕ Fin d) : Vector d →L[ℝ] ℝ where
+  toFun v := v i
+  map_add' := by simp
+  map_smul' := by simp
+  cont := by fun_prop
+
+lemma coordCLM_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
+    coordCLM i v = v i := rfl
+
+@[simp]
+lemma fderiv_apply {d : ℕ} (μ : Fin 1 ⊕ Fin d) (x : Vector d) :
+    fderiv ℝ (fun v : Vector d => v μ) x = coordCLM μ := by
+  change fderiv ℝ (coordCLM μ) x = coordCLM μ
+  simp
+
 /-!
 
 ## Tensorial

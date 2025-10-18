@@ -216,14 +216,6 @@ lemma hasVarAdjDerivAt_component {d : ℕ} (μ : Fin 1 ⊕ Fin d) (A : SpaceTime
     RCLike.inner_apply, conj_trivial, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte,
     mul_eq_mul_right_iff]
   left
-  let fCLM : Lorentz.Vector d →L[ℝ] ℝ := {
-    toFun := fun v => v μ,
-    map_add' := by intros; simp,
-    map_smul' := by intros; simp
-    cont := by fun_prop
-  }
-  change _ = (fderiv ℝ fCLM A) u
-  simp only [ContinuousLinearMap.fderiv]
   rfl
 
 /-!
@@ -567,6 +559,39 @@ lemma fieldStrengthMatrix_differentiable {d} {A : ElectromagneticPotential d}
   · exact diff_partial _ _
   apply Differentiable.const_mul
   · exact diff_partial _ _
+
+lemma fieldStrengthMatrix_contDiff {d} {n : WithTop ℕ∞} {A : ElectromagneticPotential d}
+    {μν} (hA : ContDiff ℝ (n + 1) A) :
+    ContDiff ℝ n (A.fieldStrengthMatrix · μν) := by
+  conv => enter [3, x]; rw [toFieldStrength_basis_repr_apply_eq_single,
+    SpaceTime.deriv_eq, SpaceTime.deriv_eq]
+  apply ContDiff.sub
+  apply ContDiff.mul
+  · fun_prop
+  · match μν with
+    | (μ, ν) =>
+    simp only
+    revert ν
+    rw [← contDiff_euclidean]
+    apply ContDiff.clm_apply
+    · exact ContDiff.fderiv_right (m := n) hA (by rfl)
+    · fun_prop
+  apply ContDiff.mul
+  · fun_prop
+  · match μν with
+    | (μ, ν) =>
+    simp only
+    revert μ
+    rw [← contDiff_euclidean]
+    apply ContDiff.clm_apply
+    · exact ContDiff.fderiv_right (m := n) hA (by rfl)
+    · fun_prop
+
+lemma fieldStrengthMatrix_smooth {d} {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ ∞ A) (μν) :
+    ContDiff ℝ ∞ (A.fieldStrengthMatrix · μν) := by
+  apply fieldStrengthMatrix_contDiff
+  simpa using hA
 
 /-!
 

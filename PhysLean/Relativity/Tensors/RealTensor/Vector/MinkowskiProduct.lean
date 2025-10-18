@@ -133,22 +133,35 @@ lemma minkowskiProductMap_smul_snd {d : ℕ} (c : ℝ) (p q : Vector d) :
   rw [minkowskiProductMap_symm, minkowskiProductMap_smul_fst, minkowskiProductMap_symm q p]
 
 /-- The Minkowski product of two Lorentz vectors as a linear map. -/
-def minkowskiProduct {d : ℕ} : Vector d →ₗ[ℝ] Vector d →ₗ[ℝ] ℝ where
+def minkowskiProduct {d : ℕ} : Vector d →L[ℝ] Vector d →L[ℝ] ℝ where
   toFun p := {
     toFun := fun q => minkowskiProductMap p q
     map_add' := fun q r => by
       simp
     map_smul' := fun c q => by
       simp
+    cont := by
+      conv =>
+        enter [1, q]
+        rw [minkowskiProductMap_toCoord]
+      fun_prop
   }
   map_add' := fun p r => by
-    apply LinearMap.ext
+    apply ContinuousLinearMap.ext
     intro x
     simp
   map_smul' := fun c p => by
-    apply LinearMap.ext
+    apply ContinuousLinearMap.ext
     intro x
     simp
+  cont := by
+    rw [continuous_clm_apply]
+    intro q
+    simp only [ContinuousLinearMap.coe_mk', LinearMap.coe_mk, AddHom.coe_mk]
+    conv =>
+        enter [1, p]
+        rw [minkowskiProductMap_toCoord]
+    fun_prop
 
 @[inherit_doc minkowskiProduct]
 scoped notation "⟪" p ", " q "⟫ₘ" => minkowskiProduct p q
@@ -314,8 +327,7 @@ lemma isLorentz_iff_basis {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
   have hq : q = ∑ ν, q ν • basis ν := by
     exact Eq.symm (Basis.sum_repr basis q)
   rw [hp, hq]
-  simp only [map_sum, map_smul, LinearMap.coeFn_sum, Finset.sum_apply, LinearMap.smul_apply, h,
-    minkowskiProduct_basis_left, smul_eq_mul]
+  simp [- Fintype.sum_sum_type, h]
 
 lemma isLorentz_iff_comp_adjoint_eq_id {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
     IsLorentz f ↔ adjoint f ∘ₗ f = LinearMap.id := by

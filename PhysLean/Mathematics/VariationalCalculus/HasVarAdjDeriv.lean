@@ -729,6 +729,24 @@ lemma const_mul
   convert mul (fun φ x => c) F (fun _ => 0) F' u h1 hF
   simp
 
+lemma fun_mul {f : X → ℝ} (hf : ContDiff ℝ ∞ f)
+    (F : (X → U) → (X → ℝ)) (F') (u)
+    (hF : HasVarAdjDerivAt F F' u) :
+    HasVarAdjDerivAt (fun φ x => f x * F φ x) (fun ψ x => F' (fun x' => f x' * ψ x') x) u := by
+  have h1 : HasVarAdjDerivAt (fun φ x => f x) (fun ψ x => 0) u := {
+    smooth_at := hF.smooth_at
+    diff := by intros; fun_prop
+    linearize := by simp
+    adjoint := {
+      test_fun_preserving _ hφ := by simp; exact IsTestFunction.zero (U := ℝ) (X := X)
+      test_fun_preserving' _ hφ := by exact IsTestFunction.zero
+      adjoint _ _ _ _ := by simp
+      ext' := fun K cK => ⟨∅,isCompact_empty,fun _ _ h _ _ => rfl⟩
+    }
+  }
+  convert mul (fun φ x => f x) F (fun _ => 0) F' u h1 hF
+  simp
+
 omit [OpensMeasurableSpace X] [IsFiniteMeasureOnCompacts (@volume X _)] in
 protected lemma fderiv (u : X → U) (dx : X) (hu : ContDiff ℝ ∞ u)
     [ProperSpace X] [BorelSpace X]

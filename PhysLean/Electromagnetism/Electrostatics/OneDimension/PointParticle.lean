@@ -4,61 +4,144 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Electrostatics.Basic
+import PhysLean.Electromagnetism.Distributions.Potential
+import PhysLean.SpaceAndTime.Space.Distributions.ConstantTime
 import PhysLean.Mathematics.Distribution.PowMul
 /-!
 
-# A electrostatics of a point particle in 1d.
+# The electrostatics of a stationary point particle in 1d
 
-In this module we study the electrostatics of a point particle of charge `q`
-sitting at the origin of 1d space.
+## i. Overview
+
+In this module we give the electromagnetic properties of a point particle
+sitting at the origin in 1d space.
+
+The electric field is given by the Heaviside step function, and the scalar potential
+is given by a function proportional to the absolute value of the distance from the particle.
+
+## ii. Key results
+
+- `oneDimPointParticleCurrentDensity` : The Lorentz current density of a point particle
+  stationary at the origin of 1d space.
+- `oneDimPointParticle` : The electromagnetic potential of a point particle
+  stationary at the origin of 1d space.
+- `oneDimPointParticle_gradLagrangian` : The variational gradient of the Lagrangian
+  for a point particle stationary at the origin of 1d space is zero for the
+  given electromagnetic potential. (i.e. Maxwell's equations are satisfied).
+
+## iii. Table of contents
+
+- A. The electromagentic potential
+- B. The Potentials
+  - B.1. The electromagnetic potential
+  - B.2. The vector potential is zero
+  - B.3. The scalar potential
+- C. The electric field
+- D. Maxwell's equations
+  - D.1. Gauss' law
+  - D.2. The variational gradient of the Lagrangian is zero
+
+## iv. References
 
 -/
 
 namespace Electromagnetism
 open Distribution SchwartzMap
-
-namespace OneDimPointParticle
 open Space StaticElectricField MeasureTheory
-noncomputable section
 
-/-- The charge distribution of a point particle of charge `q` in 1d space sitting at the origin.
-  Mathematically, this corresponds to a dirac delta distribution centered at the origin. -/
-def chargeDistribution (q : ℝ) : ChargeDistribution 1 := q • diracDelta ℝ 0
+/-!
 
-/-- An electric potential of a charge distribution of a point particle. Mathematically
-  this corresponds to the distribution formed by the function `|x|` multiplied by a
-  scalar. -/
-def electricPotential (q ε : ℝ) : StaticElectricPotential 1 :=
-  - Distribution.ofFunction (fun x => (q/(2 * ε)) • ‖x‖)
-  (by
-    apply IsDistBounded.const_smul
-    convert IsDistBounded.pow (n := 1) (by simp)
-    simp)
-  (by fun_prop)
+## A. The electromagentic potential
 
-@[simp]
-lemma electricPotential_eq_zero_of_ε_eq_zero (q : ℝ) :
-    electricPotential q 0 = 0 := by
-  ext x
-  simp [electricPotential]
-
-/-- An electric field corresponding to a charge distribution of a point particle,
-  defined as the negative of the gradient of `electricPotential q ε`.
-
-  This is the electric field which is symmetric about the origin, and in this sense
-  does not sit in a constant electric field.
 -/
-def electricField (q ε : ℝ) : StaticElectricField 1 := - Space.gradD (electricPotential q ε)
+
+/-- The current density of of a point particle stationary at the origin
+  of 1d space. -/
+noncomputable def oneDimPointParticleCurrentDensity (q : ℝ) : LorentzCurrentDensityD 1 :=
+  LorentzCurrentDensityD.toComponents.symm fun μ =>
+  match μ with
+  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| constantTime (q • diracDelta ℝ 0)
+  | Sum.inr _ => 0
+
+/-!
+
+## B. The Potentials
+
+-/
+
+/-!
+
+### B.1. The electromagnetic potential
+
+-/
+
+/-- The electromangetic potential of a point particle stationary at the origin
+  of 1d space. -/
+noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
+  ElectromagneticPotentialD.toComponents.symm fun μ =>
+  match μ with
+  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| Space.constantTime
+    (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+    (by
+      apply IsDistBounded.const_smul
+      convert IsDistBounded.pow (n := 1) (by simp)
+      simp)
+    (by fun_prop))
+  | Sum.inr i => 0
+
+/-!
+
+### B.2. The vector potential is zero
+
+-/
 
 @[simp]
-lemma electricField_eq_zero_of_ε_eq_zero (q : ℝ) :
-    electricField q 0 = 0 := by
-  simp [electricField]
+lemma oneDimPointParticle_vectorPotential (q : ℝ) :
+    (oneDimPointParticle q).vectorPotential = 0 := by
+  rw [Electromagnetism.ElectromagneticPotentialD.vectorPotential]
+  ext i
+  simp [oneDimPointParticle]
 
-/-- The electric field `electricField q ε` is related to the `heavisideStep` function. -/
-lemma electricField_eq_heavisideStep (q ε : ℝ) :
-    (electricField q ε) = ((q/ε) • ((heavisideStep 0).smulRight (basis 0) -
-    (1/(2 : ℝ)) • constD 1 (basis 0))) := by
+/-!
+
+### B.3. The scalar potential
+
+-/
+
+lemma oneDimPointParticle_scalarPotential (q : ℝ) :
+    (oneDimPointParticle q).scalarPotential =
+    Space.constantTime (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+    (by
+      apply IsDistBounded.const_smul
+      convert IsDistBounded.pow (n := 1) (by simp)
+      simp)
+    (by fun_prop)) := by
+  rw [Electromagnetism.ElectromagneticPotentialD.scalarPotential]
+  ext x
+  simp [oneDimPointParticle]
+
+/-!
+
+## C. The electric field
+
+-/
+
+set_option maxHeartbeats 400000 in
+lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
+    (oneDimPointParticle q).electricField = constantTime (q •
+    ((heavisideStep 0).smulRight (basis 0) - (1 / (2 : ℝ)) • constD 1 (basis 0))) := by
+  suffices hE : - Space.gradD (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+      (by
+        apply IsDistBounded.const_smul
+        convert IsDistBounded.pow (n := 1) (by simp)
+        simp)
+      (by fun_prop)) = ((q) • ((heavisideStep 0).smulRight (basis 0) -
+      (1/(2 : ℝ)) • constD 1 (basis 0))) by
+    rw [Electromagnetism.ElectromagneticPotentialD.electricField]
+    simp only [LinearMap.coe_mk, AddHom.coe_mk, oneDimPointParticle_vectorPotential, map_zero,
+      sub_zero, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub]
+    rw [oneDimPointParticle_scalarPotential, constantTime_spaceGradD, ← map_neg, hE]
+    simp
   /- Some preamble for results which are used throughout this proof. -/
   let s : Set (EuclideanSpace ℝ (Fin 1)) :=
     {x : EuclideanSpace ℝ (Fin 1) | 0 < x (Fin.last 0)}
@@ -74,22 +157,18 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
   ext η i
   fin_cases i
   calc _
-    /- `⟪E, η⟫ 0 = ⟪- ∇ (- q/(2 * ε) |x|), η⟫ 0`-/
-    _ = - Space.gradD (electricPotential q ε) η 0 := by rw [electricField]; rfl
+
     /- By the definition of the gradiant on distributions
       `-⟪∇ (- q/(2 * ε) |x|), η⟫ 0 = - ⟪(-q/(2 * ε) |x|), -dη/dx⟫`
       which is equal to `- ⟪(q/(2 * ε) |x|), dη/dx⟫`.
       By definition of `(q/(2 * ε) |x|)` as a distribution this is equal to
       `- ∫ x, dη/dx • (q/(2 * ε) |x|)`.
     -/
-    _ = - (∫ x, fderiv ℝ η x (basis 0) • (q/(2 *ε)) • ‖x‖) := by
-      simp only [Fin.isValue, gradD_eq_sum_basis,
-        Finset.univ_unique, Fin.default_eq_zero, neg_smul, Finset.sum_neg_distrib,
-        Finset.sum_singleton, PiLp.neg_apply, PiLp.smul_apply, basis_self, smul_eq_mul, mul_one,
-        neg_neg]
-      rw [electricPotential]
-      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, Fin.isValue,
-        ContinuousLinearMap.neg_apply, neg_inj]
+    _ = - (∫ x, fderiv ℝ η x (basis 0) • (q/(2)) • ‖x‖) := by
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, map_neg, neg_neg, Fin.zero_eta,
+        Fin.isValue, gradD_eq_sum_basis, Finset.univ_unique, Fin.default_eq_zero, neg_smul,
+        Finset.sum_neg_distrib, Finset.sum_singleton, PiLp.neg_apply, PiLp.smul_apply, basis_self,
+        mul_one, neg_inj]
       rw [ofFunction_apply]
       rfl
     /- Pulling out the scalar `q/(2 * ε)` gives
@@ -97,7 +176,7 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       With the bounds of the integral explicit this is
       `- q/(2 * ε) ∫_(-∞)^(∞) x, dη/dx • |x|`
     -/
-    _ = - (q/(2 * ε)) * (∫ x, fderiv ℝ η x (basis 0) • ‖x‖) := by
+    _ = - (q/(2)) * (∫ x, fderiv ℝ η x (basis 0) • ‖x‖) := by
       rw [← integral_const_mul, ← integral_neg]
       congr
       funext x
@@ -108,8 +187,8 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       into two halfs
       `- q/(2 * ε) ∫_0^(∞) x, dη/dx • |x| - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • |x| `
     -/
-    _ = - (q/(2 * ε)) * (∫ x in s, fderiv ℝ η x (basis 0) • ‖x‖) +
-        - (q/(2 * ε)) * (∫ x in sᶜ, fderiv ℝ η x (basis 0) • ‖x‖) := by
+    _ = - (q/(2)) * (∫ x in s, fderiv ℝ η x (basis 0) • ‖x‖) +
+        - (q/(2)) * (∫ x in sᶜ, fderiv ℝ η x (basis 0) • ‖x‖) := by
       rw [← integral_add_compl₀ hs ?_]
       · ring
       change Integrable (fun x : EuclideanSpace ℝ (Fin 1) =>
@@ -121,8 +200,8 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
     /- In the first of these integrals `|x|=x` whilst in the second `|x| = -x` giving
       us
       `- q/(2 * ε) ∫_0^(∞) x, dη/dx • x - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • (-x)` -/
-    _ = - (q/(2 * ε)) * (∫ x in s, fderiv ℝ η x (basis 0) • x 0) +
-        - (q/(2 * ε)) * (∫ x in sᶜ, fderiv ℝ η x (basis 0) • (- x 0)) := by
+    _ = - (q/(2)) * (∫ x in s, fderiv ℝ η x (basis 0) • x 0) +
+        - (q/(2)) * (∫ x in sᶜ, fderiv ℝ η x (basis 0) • (- x 0)) := by
       congr 2
       · refine setIntegral_congr_ae₀ hs ?_
         filter_upwards with x hx
@@ -160,9 +239,9 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       `- q/(2 * ε) ∫_0^(∞) x, dη/dx • x - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • (-x)`
       exacpt `x` is now `ℝ` rather then `Space 1`.
         -/
-    _ = - (q/(2 * ε)) * (∫ x in Set.Ioi (0 : ℝ),
+    _ = - (q/(2)) * (∫ x in Set.Ioi (0 : ℝ),
         deriv (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm) x * x) +
-        - (q/(2 * ε)) * (∫ x in Set.Iic (0 : ℝ),
+        - (q/(2)) * (∫ x in Set.Iic (0 : ℝ),
         deriv (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm) x * (-x)) := by
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
         (oneEquiv_symm_measurableEmbedding)]
@@ -201,10 +280,10 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
     `- q/(2 * ε) ∫_0^(∞) x, dη/dx • x - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • (-x)`
     as
     `- q/(2 * ε) ∫_0^(∞) x, (d(η • x)/dx - η x) - q/(2 * ε) ∫_(-∞)^0 x, (d(η • (-x))/dx + η x)` -/
-    _ = - (q/(2 * ε)) * (∫ x in Set.Ioi (0 : ℝ),
+    _ = - (q/(2)) * (∫ x in Set.Ioi (0 : ℝ),
         deriv (fun x => η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x * (fun x => x) x) x
         - η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
-        - (q/(2 * ε)) * (∫ x in Set.Iic (0 : ℝ),
+        - (q/(2)) * (∫ x in Set.Iic (0 : ℝ),
         deriv (fun x => η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x * (fun x => - x) x) x
         + η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) := by
       congr
@@ -223,10 +302,10 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
     /- By definition of `powOneMul` we rewrite `η • x` using `powOneMul`. Symatically we now have
       `- q/(2 * ε) ∫_0^(∞) x, (d(η • x)/dx - η x) - q/(2 * ε) ∫_(-∞)^0 x, (d(- (η • x)))/dx + η x)`
       things are just written in different ways. -/
-    _ = - (q/(2 * ε)) * (∫ x in Set.Ioi (0 : ℝ),
+    _ = - (q/(2)) * (∫ x in Set.Ioi (0 : ℝ),
         deriv (powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) x
         - η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
-        - (q/(2 * ε)) * (∫ x in Set.Iic (0 : ℝ),
+        - (q/(2)) * (∫ x in Set.Iic (0 : ℝ),
         deriv (-powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) x
         + η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) := by
       congr
@@ -244,10 +323,10 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
     /- We seperate the integrals to get
       `- q/(2 * ε) (∫_0^(∞) x, d(η • x)/dx - ∫_0^(∞) x, η x) `
       `- q/(2 * ε) (∫_(-∞)^0 x, d(- (η • x)))/dx + ∫_(-∞)^0 x, η x)`. -/
-    _ = - (q/(2 * ε)) * ((∫ x in Set.Ioi (0 : ℝ),
+    _ = - (q/(2)) * ((∫ x in Set.Ioi (0 : ℝ),
         deriv (powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) x)
         - ∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
-        - (q/(2 * ε)) * ((∫ x in Set.Iic (0 : ℝ),
+        - (q/(2)) * ((∫ x in Set.Iic (0 : ℝ),
         deriv (-powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) x)
         + ∫ x in Set.Iic (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) := by
       rw [integral_sub, integral_add]
@@ -270,10 +349,10 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       and `∫_(-∞)^0 x, d(- (η • x)))/dx = (- η 0 • 0) - 0`. This gives us
       `- q/(2 * ε) ((0 - (η 0 • 0))- ∫_0^(∞) x, η x)`
       `- q/(2 * ε) (((- η 0 • 0) - 0)+ ∫_(-∞)^0 x, η x)`. -/
-    _ = - (q/(2 * ε)) * ((0 -
+    _ = - (q/(2)) * ((0 -
         (powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) 0)
         - ∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
-        - (q/(2 * ε)) *
+        - (q/(2)) *
         (((-powOneMul ℝ (η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm)) 0 - 0)
         + ∫ x in Set.Iic (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) := by
       congr
@@ -309,9 +388,9 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
     /- We simplify the `(η 0 • 0)` and `(- η 0 • 0)` terms to be `0`. Giving us
     `- q/(2 * ε) ((0 - 0)- ∫_0^(∞) x, η x)`
     `- q/(2 * ε) ((0 - 0)+ ∫_(-∞)^0 x, η x)`. -/
-    _ = - (q/(2 * ε)) * ((0 - 0)
+    _ = - (q/(2)) * ((0 - 0)
         - ∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
-        - (q/(2 * ε)) * ((0 - 0)
+        - (q/(2)) * ((0 - 0)
         + ∫ x in Set.Iic (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) := by
       congr
       · simp [powOneMul_apply]
@@ -319,15 +398,15 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
         simp [powOneMul_apply]
     /- Simplifying further gives
     `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε) ∫_(-∞)^0 x, η x)`. -/
-    _ = (q/(2 * ε)) *
+    _ = (q/(2)) *
         (∫ x in Set.Ioi (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) +
-        - (q/(2 * ε)) *
+        - (q/(2)) *
           (∫ x in Set.Iic (0 : ℝ), η.compCLMOfContinuousLinearEquiv ℝ oneEquivCLE.symm x) := by
       simp
     /- We now turn back to integrals over `Space 1` instead of integrals over `x`.
     Schematically the integral remains the same.
     `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε) ∫_(-∞)^0 x, η x)`. -/
-    _ = (q/(2 * ε)) * (∫ x in s, η x) + - (q/(2 * ε)) * (∫ x in sᶜ, η x) := by
+    _ = (q/(2)) * (∫ x in s, η x) + - (q/2) * (∫ x in sᶜ, η x) := by
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
         (oneEquiv_symm_measurableEmbedding)]
       rw [← oneEquiv_symm_measurePreserving.setIntegral_preimage_emb
@@ -337,14 +416,14 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
       simp [oneEquiv_symm_apply, s]
     /- We rewrite the second integral `∫_(-∞)^0 = ∫_(-∞)^∞ - ∫_0^∞` to give
     `q/(2 * ε) ∫_0^(∞) x, η x + - q/(2 * ε) (∫_(-∞)^∞ x, η x - ∫_0^∞ x, η x)`. -/
-    _ = (q/(2 * ε)) * (∫ x in s, η x) + - (q/(2 * ε)) * ((∫ x, η x) - ∫ x in s, η x) := by
+    _ = (q/(2)) * (∫ x in s, η x) + - (q/(2)) * ((∫ x, η x) - ∫ x in s, η x) := by
       congr 2
       rw [← integral_add_compl₀ hs]
       · ring
       exact integrable η
     /- Simplifying we get:
     `q/(ε) ∫_0^(∞) x, η x + - q/(2 * ε) ∫_(-∞)^∞ x, η x`. -/
-    _ = (q/(ε)) * (∫ x in s, η x) + - (q/(2 * ε)) * (∫ x, η x) := by
+    _ = (q) * (∫ x in s, η x) + - (q/(2)) * (∫ x, η x) := by
       ring
   /- Both sides are now essentially equal, by the definition of the heaviside step,
     and the constant distribution. What is left is some small tidying up. -/
@@ -352,24 +431,31 @@ lemma electricField_eq_heavisideStep (q ε : ℝ) :
   congr 2
   rw [← mul_assoc]
   congr 1
-  ring
   simp [constD, const_apply]
   rw [integral_smul_const]
   simp
 
-/-- The electric field `electricField q ε` corresponding to a charge distribution of a point
-  particle satisfies Gauss's law for the charge distribution of the point particle.
+/-!
+
+## D. Maxwell's equations
+
 -/
-lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistribution q) := by
-  by_cases h : ε = 0
-  · subst h
-    simp [GaussLaw]
-  rw [gaussLaw_iff]
+
+/-!
+
+### D.1. Gauss' law
+
+-/
+
+lemma oneDimPointParticle_gaussLaw (q : ℝ) :
+    spaceDivD (oneDimPointParticle q).electricField = constantTime (q • diracDelta ℝ 0) := by
   ext η
-  rw [electricField_eq_heavisideStep, chargeDistribution]
-  change (divD ((q / ε) • (ContinuousLinearMap.smulRight (heavisideStep 0) (basis 0) -
-    (1 / 2) • constD 1 (basis 0)))) η =
-    ((1 / ε) • q • diracDelta ℝ 0) η
+  rw [oneDimPointParticle_electricField_eq_heavisideStep]
+  rw [constantTime_spaceDivD]
+  congr
+  ext η
+  change (divD ((q) • (ContinuousLinearMap.smulRight (heavisideStep 0) (basis 0) -
+    (1 / 2) • constD 1 (basis 0)))) η = (q • diracDelta ℝ 0) η
   haveI : SMulZeroClass ℝ ((Space 1)→d[ℝ] ℝ) := by infer_instance
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub,
     divD_constD, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub', Pi.smul_apply,
@@ -419,23 +505,22 @@ lemma gaussLaw (q ε : ℝ) : (electricField q ε).GaussLaw ε (chargeDistributi
   · exact oneEquiv_symm_measurePreserving
   · exact oneEquiv_symm_measurableEmbedding
 
-/-- For the charge distribution of a point particle in 1-dimension, a static electric field
-  satifies Gauss's law if and only if it is the linear combination of the
-  electric field `electricField q ε` (corresponding to the symmetric step function), plus
-  a constant electric field.
+/-!
 
-  The `if` direction of this result is easy to prove, whilst the `only if` direction
-  is difficult.
+### D.2. The variational gradient of the Lagrangian is zero
 
-  Note: This result follows from the (as yet unproven) analgous result for the
-  vacuum.
 -/
-@[sorryful]
-lemma gaussLaw_iff (q ε : ℝ) (E : StaticElectricField 1) :
-    E.GaussLaw ε (chargeDistribution q) ↔ ∃ m, E = electricField q ε + constD 1 m := by
-  sorry
 
-end
-end OneDimPointParticle
+lemma oneDimPointParticle_gradLagrangian (q : ℝ) :
+    (oneDimPointParticle q).gradLagrangian (oneDimPointParticleCurrentDensity q) = 0 := by
+  rw [ElectromagneticPotentialD.gradLagrangian_one_dimension_electricField]
+  funext μ
+  match μ with
+  | Sum.inl 0 =>
+    simp [oneDimPointParticleCurrentDensity]
+    rw [oneDimPointParticle_gaussLaw]
+    simp
+  | Sum.inr 0 =>
+    simp [oneDimPointParticleCurrentDensity, oneDimPointParticle_electricField_eq_heavisideStep]
 
 end Electromagnetism

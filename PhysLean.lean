@@ -18,6 +18,8 @@ import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
 import PhysLean.Electromagnetism.Charge.ChargeUnit
 import PhysLean.Electromagnetism.Constant
+import PhysLean.Electromagnetism.CurrentDensity
+import PhysLean.Electromagnetism.Distributions.Potential
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.PointParticle
 import PhysLean.Electromagnetism.Electrostatics.OneDimension.Vacuum
@@ -26,8 +28,10 @@ import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.InfinitePlane
 import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.PointParticle
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
+import PhysLean.Electromagnetism.Hamiltonian
 import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.KineticTerm
+import PhysLean.Electromagnetism.Lagrangian
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Potential
@@ -109,6 +113,7 @@ import PhysLean.Particles.FlavorPhysics.CKMMatrix.Relations
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.Rows
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.StandardParameterization.Basic
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.StandardParameterization.StandardParameters
+import PhysLean.Particles.NeutrinoPhysics.Basic
 import PhysLean.Particles.StandardModel.AnomalyCancellation.Basic
 import PhysLean.Particles.StandardModel.AnomalyCancellation.FamilyMaps
 import PhysLean.Particles.StandardModel.AnomalyCancellation.NoGrav.Basic
@@ -316,13 +321,15 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.Tensorial
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.SpaceAndTime.Space.Basic
-import PhysLean.SpaceAndTime.Space.Distributions
+import PhysLean.SpaceAndTime.Space.Distributions.Basic
+import PhysLean.SpaceAndTime.Space.Distributions.ConstantTime
 import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.SpaceAndTime.SpaceTime.Boosts
+import PhysLean.SpaceAndTime.SpaceTime.Distributions
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.Time.TimeMan

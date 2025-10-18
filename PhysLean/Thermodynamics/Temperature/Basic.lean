@@ -305,19 +305,19 @@ lemma deriv_beta_wrt_T (T : Temperature) (hT_pos : 0 < T.val) :
       ring
   have h_inv :
       HasDerivAt (fun t : ℝ => t⁻¹)
-        (-( (T.val : ℝ) ^ 2)⁻¹) (T.val : ℝ) := by
+        (-((T.val : ℝ) ^ 2)⁻¹) (T.val : ℝ) := by
     simpa using (hasDerivAt_inv (x := (T.val : ℝ)) hTne)
   have h_deriv_aux :
       HasDerivAt (fun t : ℝ => (kB)⁻¹ * t⁻¹)
-        ((kB)⁻¹ * (-( (T.val : ℝ) ^ 2)⁻¹)) (T.val : ℝ) :=
+        ((kB)⁻¹ * (-((T.val : ℝ) ^ 2)⁻¹)) (T.val : ℝ) :=
     h_inv.const_mul ((kB)⁻¹)
   have h_pow_simp :
-      (kB)⁻¹ * (-( (T.val : ℝ) ^ 2)⁻¹) = -1 / (kB * (T.val : ℝ)^2) := by
+      (kB)⁻¹ * (-((T.val : ℝ) ^ 2)⁻¹) = -1 / (kB * (T.val : ℝ)^2) := by
     calc
-      (kB)⁻¹ * (-( (T.val : ℝ) ^ 2)⁻¹)
+      (kB)⁻¹ * (-((T.val : ℝ) ^ 2)⁻¹)
           = -((kB)⁻¹ * ((T.val : ℝ) ^ 2)⁻¹) := by
             ring
-      _   = -(1 / kB * (1 / (T.val : ℝ) ^ 2)) := by
+      _ = -(1 / kB * (1 / (T.val : ℝ) ^ 2)) := by
             simp [one_div]
       _ = -1 / (kB * (T.val : ℝ) ^ 2) := by
         rw [one_div]
@@ -328,7 +328,7 @@ lemma deriv_beta_wrt_T (T : Temperature) (hT_pos : 0 < T.val) :
   have h_mem : (T.val : ℝ) ∈ Set.Ioi (0 : ℝ) := hT_pos
   exact (h_deriv_f.hasDerivWithinAt).congr h_eq (h_eq h_mem)
 
-/-- Chain rule for β(T): d/dT F(β(T)) = F'(β(T)) * (-1 / (kB * T^2)), within `Ioi 0`. -/
+/-- Chain rule for β(T) : d/dT F(β(T)) = F'(β(T)) * (-1 / (kB * T^2)), within `Ioi 0`. -/
 lemma chain_rule_T_beta {F : ℝ → ℝ} {F' : ℝ}
     (T : Temperature) (hT_pos : 0 < T.val)
     (hF_deriv : HasDerivWithinAt F F' (Set.Ioi 0) (T.β : ℝ)) :
