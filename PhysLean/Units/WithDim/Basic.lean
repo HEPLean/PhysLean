@@ -27,6 +27,10 @@ lemma ext {d M} [MulAction ℝ≥0 M] (x1 x2 : WithDim d M) (h : x1.val = x2.val
   cases x2
   simp_all
 
+instance (d : Dimension) (M : Type) [inst : MulAction ℝ≥0 M] :
+    HasDim (WithDim d M) where
+  d := d
+
 instance (d : Dimension) (M : Type) [MulAction ℝ≥0 M] : MulAction ℝ≥0 (WithDim d M) where
   smul a m := ⟨a • m.val⟩
   one_smul m := ext _ _ (one_smul ℝ≥0 m.val)
@@ -44,7 +48,7 @@ instance (d : Dimension) (M : Type) [inst : MulAction ℝ≥0 M] :
 
 @[simp]
 lemma carriesDimension_d (d : Dimension) (M : Type) [MulAction ℝ≥0 M] :
-    CarriesDimension.d (WithDim d M) = d := rfl
+    (dim (WithDim d M)) = d := rfl
 
 instance {d1 d2 : Dimension} :
     HMul (WithDim d1 ℝ) (WithDim d2 ℝ) (WithDim (d1 * d2) ℝ) where

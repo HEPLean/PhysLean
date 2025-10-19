@@ -32,10 +32,10 @@ variable {M1 M2 : Type} [NormedAddCommGroup M1] [NormedSpace ℝ M1]
 lemma fderiv_apply_scaleUnit (u1 u2 : UnitChoices) (x dm : M1)
     (f : M1 → M2) (hf : IsDimensionallyCorrect f) (f_diff : Differentiable ℝ f) :
     fderiv ℝ f (scaleUnit u2 u1 x) dm =
-    u2.dimScale u1 (d M2) • u1.dimScale u2 (d M1) • fderiv ℝ f x dm := by
+    u2.dimScale u1 (dim M2) • u1.dimScale u2 (dim M1) • fderiv ℝ f x dm := by
   conv_lhs => rw [← hf u2 u1]
-  change (fderiv ℝ ((u2.dimScale u1 (d M2)).1 • fun mx => f
-      ((u1.dimScale u2 (d M1)).1 • mx)) ((u2.dimScale u1 (d M1)).1 • x)) dm = _
+  change (fderiv ℝ ((u2.dimScale u1 (dim M2)).1 • fun mx => f
+      ((u1.dimScale u2 (dim M1)).1 • mx)) ((u2.dimScale u1 (dim M1)).1 • x)) dm = _
   rw [fderiv_const_smul (by fun_prop), fderiv_comp_smul]
   simp [smul_smul]
   rfl
@@ -54,8 +54,8 @@ lemma fderiv_isDimensionallyCorrect (f : M1 → M2) (hf : IsDimensionallyCorrect
   simp only [← smul_def, smul_smul]
   trans (1 : ℝ≥0) • (fderiv ℝ f m) m'
   · congr
-    trans (u1.dimScale u2 (d M2) * u2.dimScale u1 (d M2))
-      * (u2.dimScale u1 (d M1) * u1.dimScale u2 (d M1))
+    trans (u1.dimScale u2 (dim M2) * u2.dimScale u1 (dim M2))
+      * (u2.dimScale u1 (dim M1) * u1.dimScale u2 (dim M1))
     · simp
     simp
   simp
@@ -68,7 +68,7 @@ lemma fderiv_isDimensionallyCorrect (f : M1 → M2) (hf : IsDimensionallyCorrect
   quantities are considered dimensionful. -/
 lemma fderiv_dimension_const_direction (dm : M1) (f : M1 → M2) (hf : IsDimensionallyCorrect f)
     (f_diff : Differentiable ℝ f) :
-    IsDimensionallyCorrect (fun x (v : WithDim (d M2 * (d M1)⁻¹) M2) =>
+    IsDimensionallyCorrect (fun x (v : WithDim (dim M2 * (dim M1)⁻¹) M2) =>
       fderiv ℝ f x dm = v.1) := by
   simp [isDimensionallyCorrect_fun_iff, funext_iff, WithDim.scaleUnit_val,
     fderiv_apply_scaleUnit _ _ _ dm f hf f_diff,

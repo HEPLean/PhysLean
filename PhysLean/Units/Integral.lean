@@ -30,16 +30,16 @@ noncomputable instance (M : Type)
     funext m
     simp [scaleUnit_trans]
     simp [CarriesDimension.scaleUnit_apply']
-    · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (CarriesDimension.d M)).1
-    · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (CarriesDimension.d M)).1
+    · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (dim M)).1
+    · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (dim M)).1
   scaleUnit_trans' u1 u2 u3 μ := by
     rw [Measure.map_map]
     congr 1
     funext m
     simp [scaleUnit_trans']
     simp [CarriesDimension.scaleUnit_apply']
-    · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (CarriesDimension.d M)).1
-    · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (CarriesDimension.d M)).1
+    · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (dim M)).1
+    · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (dim M)).1
   scaleUnit_id u μ := by
     simp [scaleUnit_id]
   scaleUnit_mul u1 u2 r μ := by
@@ -67,7 +67,7 @@ fun (μ : DimSet (MeasureTheory.Measure M) d)
   is dimensionally correct. -/
 lemma integral_isDimensionallyCorrect (d : Dimension) :
     IsDimensionallyCorrect (fun (μ : DimSet (MeasureTheory.Measure M) d)
-      (f : DimSet (M → G) (CarriesDimension.d G * d⁻¹)) ↦ ∫ x, f.1 x ∂μ.1) := by
+      (f : DimSet (M → G) (dim G * d⁻¹)) ↦ ∫ x, f.1 x ∂μ.1) := by
   intro u1 u2
   funext ⟨μ, hμ⟩ ⟨f, hf⟩
   /- We have to prove that
@@ -88,20 +88,20 @@ lemma integral_isDimensionallyCorrect (d : Dimension) :
     /- Since we assumed `f` has dimension `CarriesDimension.d G * d⁻¹`, `(scaleUnit u2 f u1)`
       is equal to `u2.dimScale u1 (CarriesDimension.d G * d⁻¹) • f`. -/
     _ = scaleUnit u1 u2 (u2.dimScale u1 d •
-      u2.dimScale u1 (CarriesDimension.d G * d⁻¹) • ∫ (x : M), f x ∂ μ) := by
+      u2.dimScale u1 (dim G * d⁻¹) • ∫ (x : M), f x ∂ μ) := by
       rw [hf]
       congr
       erw [MeasureTheory.integral_smul]
       rfl
     /- What remains is a simple cancellation of the dimensional scales. -/
-    _ = (u1.dimScale u2 (CarriesDimension.d G)) • ((u2.dimScale u1 d) •
-        u2.dimScale u1 (CarriesDimension.d G * d⁻¹) • ∫ (x : M), f x ∂ μ) := by
+    _ = (u1.dimScale u2 (dim G)) • ((u2.dimScale u1 d) •
+        u2.dimScale u1 (dim G * d⁻¹) • ∫ (x : M), f x ∂ μ) := by
       rw [← CarriesDimension.scaleUnit_apply]
-    _ = (u1.dimScale u2 (CarriesDimension.d G) * (u2.dimScale u1 d) *
-        u2.dimScale u1 (CarriesDimension.d G * d⁻¹)) • ∫ (x : M), f x ∂ μ := by
+    _ = (u1.dimScale u2 (dim G) * (u2.dimScale u1 d) *
+        u2.dimScale u1 (dim G * d⁻¹)) • ∫ (x : M), f x ∂ μ := by
       simp [smul_smul]
       ring_nf
-    _ = ((u1.dimScale u2 (CarriesDimension.d G) * u2.dimScale u1 (CarriesDimension.d G))
+    _ = ((u1.dimScale u2 (dim G) * u2.dimScale u1 (dim G))
         * (u2.dimScale u1 d * u1.dimScale u2 d)) • ∫ (x : M), f x ∂ μ := by
       congr 1
       conv_lhs => simp only [map_mul]
