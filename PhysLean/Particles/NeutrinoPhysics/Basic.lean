@@ -39,7 +39,7 @@ lemma diagPhase_zero_eq : diagPhase 0 = diagPhase (fun _ : Fin 3 => 0) := by
 is just diagPhase with entries diag(-iθ_i) -/
 @[simp]
 lemma diagPhase_star (θ : Fin 3 → ℝ) :
-    (diagPhase θ )ᴴ = diagPhase (- θ) := by
+    (diagPhase θ)ᴴ = diagPhase (- θ) := by
     ext i j
     fin_cases i <;> fin_cases j <;>
     simp [diagPhase, Matrix.conjTranspose_apply, ← exp_conj]
@@ -61,8 +61,7 @@ def diagPhase_unitary (θ : Fin 3 → ℝ) : unitaryGroup (Fin 3) ℂ :=
     ext i j
     fin_cases i <;> fin_cases j <;> simp [diagPhase,
     Matrix.mul_apply,
-    ← exp_add]
-    ⟩
+    ← exp_add]⟩
 
 /-- The underlying matrix of the phase-shift element of the unitary group is the
   phase-shift matrix. -/

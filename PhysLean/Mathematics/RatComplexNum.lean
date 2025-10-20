@@ -227,7 +227,6 @@ lemma one_fst : (1 : RatComplexNum).fst = 1 := rfl
 @[simp]
 lemma one_snd : (1 : RatComplexNum).snd = 0 := rfl
 
-
 @[simp]
 lemma zero_fst : (0 : RatComplexNum).fst = 0 := rfl
 
