@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Matrix
 import PhysLean.Particles.StandardModel.HiggsBoson.Basic
-import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Analysis.Matrix.Order
 /-!
 
