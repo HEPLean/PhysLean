@@ -70,7 +70,7 @@ lemma unit_fromSingleTContrFromPairT_eq_fromSingleT {c : C} (x : S.FD.obj (Discr
 @[simp]
 lemma contrT_single_unitTensor {c : C} (x : Tensor S ![c]) :
     contrT 1 0 1 (by simp; rfl) (prodT x (unitTensor c)) =
-    permT id (by simp; intro i; fin_cases i; rfl) x := by
+    permT id (by simp; rfl) x := by
   obtain ⟨x, rfl⟩ := fromSingleT.surjective x
   rw [unitTensor, fromConstPair, contrT_fromSingleT_fromPairT]
   congr 1
@@ -79,7 +79,7 @@ lemma contrT_single_unitTensor {c : C} (x : Tensor S ![c]) :
 
 lemma contrT_unitTensor_dual_single {c : C} (x : Tensor S ![S.τ c]) :
     contrT 1 1 2 (by simp; rfl) (prodT (unitTensor c) x) =
-    permT id (by simp; intro i; fin_cases i; rfl) x := by
+    permT id (by simp; rfl) x := by
   rw [unitTensor_eq_permT_dual]
   rw [prodT_permT_left]
   rw [contrT_permT]

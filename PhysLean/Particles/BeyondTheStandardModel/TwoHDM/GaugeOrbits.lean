@@ -6,6 +6,7 @@ Authors: Joseph Tooby-Smith
 import Mathlib.Analysis.Matrix
 import PhysLean.Particles.StandardModel.HiggsBoson.Basic
 import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Analysis.Matrix.Order
 /-!
 
 # Gauge orbits for the 2HDM
@@ -62,12 +63,16 @@ local instance : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) :=
   `Matrix.normedSpace`. -/
 local instance : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) := Matrix.normedSpace
 
+open Matrix
+open MatrixOrder
+
 /-- The matrix `prodMatrix` is positive semi-definite. -/
 lemma prodMatrix_posSemiDef (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
     (prodMatrix Φ1 Φ2 x).PosSemidef := by
-  rw [Matrix.posSemidef_iff_eq_conjTranspose_mul_self]
-  use (fieldCompMatrix Φ1 Φ2 x).conjTranspose
-  simpa using prodMatrix_eq_fieldCompMatrix_sq Φ1 Φ2 x
+  rw [prodMatrix_eq_fieldCompMatrix_sq Φ1 Φ2 x, ← nonneg_iff_posSemidef]
+  apply (CStarAlgebra.nonneg_iff_eq_mul_star_self (A := Matrix (Fin 2) (Fin 2) ℂ)).mpr
+  use (fieldCompMatrix Φ1 Φ2 x)
+  rfl
 
 /-- The matrix `prodMatrix` is hermitian. -/
 lemma prodMatrix_hermitian (Φ1 Φ2 : HiggsField) (x : SpaceTime) :

@@ -60,6 +60,7 @@ open Time
 open ClassicalMechanics
 
 variable (OM : OpticalMedium)
+open Matrix
 
 local notation "ε" => OM.ε
 local notation "μ" => OM.μ
@@ -106,7 +107,7 @@ theorem waveEquation_electricField_of_freeMaxwellEquations
     rfl
     · exact fun x ↦ fderiv_curry_differentiableAt_fst_comp_snd (hf := hB) ..
     · exact neg_one_smul ..
-  simp only [smul_eq_mul, mul_inv_rev, hcn, Pi.neg_apply, neg_neg]
+  simp only [smul_eq_mul, _root_.mul_inv_rev, hcn, Pi.neg_apply, neg_neg]
   rw [← time_deriv_curl_commute]
   have hdt_smul : ∂ₜ (fun t => (OM.ε⁻¹ * OM.μ⁻¹) • curl (B t) x) t =
       (OM.ε⁻¹ * OM.μ⁻¹) • ∂ₜ (fun t => curl (B t) x) t := by
@@ -170,7 +171,7 @@ theorem waveEquation_magneticField_of_freeMaxwellEquations
   have hcn : (OM.μ • OM.ε)⁻¹ • (-(fun x =>
       curl (OM.μ • OM.ε • fun x => ∂ₜ (fun t => E t x) t)) x) x =
       - curl (fun x => ∂ₜ (fun t => E t x) t) x := by
-    simp only [smul_eq_mul, mul_inv_rev, Pi.neg_apply, smul_neg, neg_inj]
+    simp only [smul_eq_mul, _root_.mul_inv_rev, Pi.neg_apply, smul_neg, neg_inj]
     change ((OM.ε⁻¹ * OM.μ⁻¹) • (curl (OM.μ • OM.ε • fun x => ∂ₜ (fun t => E t x) t))) x = _
     rw [← curl_smul]
     simp only [← smul_assoc, smul_eq_mul, mul_assoc, ne_eq, OM.mu_ge_zero, ne_of_gt,

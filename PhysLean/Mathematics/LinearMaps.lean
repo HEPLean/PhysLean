@@ -7,6 +7,7 @@ import Mathlib.Tactic.Polyrith
 import Mathlib.Algebra.Module.LinearMap.Defs
 import Mathlib.Data.Fintype.BigOperators
 import PhysLean.Meta.TODO.Basic
+import Mathlib.Algebra.Ring.Rat
 /-!
 # Linear maps
 
@@ -71,10 +72,10 @@ def mk₂ (f : V × V → ℚ) (map_smul : ∀ a S T, f (a • S, T) = a * f (S,
     map_add' := by
       intro T1 T2
       rw [swap, map_add]
-      exact Mathlib.Tactic.LinearCombination.add_eq_eq (swap T1 S) (swap T2 S)
+      simp [swap]
     map_smul' := by
       intro a T
-      simp only [eq_ratCast, Rat.cast_eq_id, id_eq, smul_eq_mul]
+      simp only [RingHom.id_apply, smul_eq_mul]
       rw [swap, map_smul]
       exact congrArg (HMul.hMul a) (swap T S)
   }
@@ -123,14 +124,14 @@ def toHomogeneousQuad {V : Type} [AddCommMonoid V] [Module ℚ V]
   toFun S := τ S S
   map_smul' a S := by
     simp only [τ.map_smul₁, τ.map_smul₂, smul_eq_mul]
-    ring
+    grind
 
 lemma toHomogeneousQuad_add {V : Type} [AddCommMonoid V] [Module ℚ V]
     (τ : BiLinearSymm V) (S T : V) :
     τ.toHomogeneousQuad (S + T) = τ.toHomogeneousQuad S +
     τ.toHomogeneousQuad T + 2 * τ S T := by
   simp only [HomogeneousQuadratic, toHomogeneousQuad_apply, τ.map_add₁, map_add, τ.swap T S]
-  ring
+  grind
 
 end BiLinearSymm
 
@@ -273,7 +274,7 @@ def toCubic {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
   map_smul' a S := by
     simp only [smul_eq_mul]
     rw [τ.map_smul₁, τ.map_smul₂, τ.map_smul₃]
-    ring
+    grind
 
 lemma toCubic_add {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
     (τ : TriLinearSymm charges) (S T : charges) :
@@ -282,6 +283,6 @@ lemma toCubic_add {charges : Type} [AddCommMonoid charges] [Module ℚ charges]
   simp only [HomogeneousCubic, toCubic_apply]
   rw [τ.map_add₁, τ.map_add₂, τ.map_add₂, τ.map_add₃, τ.map_add₃, τ.map_add₃, τ.map_add₃]
   rw [τ.swap₂ S T S, τ.swap₁ T S S, τ.swap₂ S T S, τ.swap₂ T S T, τ.swap₁ S T T, τ.swap₂ T S T]
-  ring
+  grind
 
 end TriLinearSymm

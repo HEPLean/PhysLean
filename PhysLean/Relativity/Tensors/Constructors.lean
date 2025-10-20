@@ -156,7 +156,7 @@ noncomputable def fromPairT {c1 c2 : C} :
   toFun x :=
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl))
     (TensorProduct.lift prodT (TensorProduct.map (fromSingleT (S := S) (c := c1))
-      (fromSingleT (S := S) (c := c2)) (x) : S.Tensor ![c1] ⊗[k] S.Tensor ![c2]))
+      (fromSingleT (S := S) (c := c2)).toLinearMap (x) : S.Tensor ![c1] ⊗[k] S.Tensor ![c2]))
   map_add' x y := by
     simp
   map_smul' r x := by
@@ -191,11 +191,11 @@ lemma actionT_fromPairT {c1 c2 : C}
 lemma fromPairT_map_right {c1 c2 c2' : C} (h :c2 = c2')
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     fromPairT (TensorProduct.map LinearMap.id (S.FD.map (eqToHom (by rw [h]))).hom.hom' x) =
-    permT id (by simp; intro i; fin_cases i <;> simp [h])
+    permT id (by simp [h])
     (fromPairT x) := by
   let P (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) : Prop :=
     fromPairT (TensorProduct.map LinearMap.id (S.FD.map (eqToHom (by rw [h]))).hom.hom' x) =
-    permT id (by simp; intro i; fin_cases i <;> simp [h])
+    permT id (by simp [h])
     (fromPairT x)
   change P x
   apply TensorProduct.induction_on
@@ -282,8 +282,8 @@ lemma fromSingleT_contr_fromPairT_tmul {c c2 : C}
     (y2 : (S.FD.obj (Discrete.mk c2)).V) :
     contrT 1 0 1 (by simp; rfl)
       (prodT (fromSingleT x) (fromPairT (y1 ⊗ₜ[k] y2))) =
-    permT id (by simp; intro i; fin_cases i; rfl) (fromSingleTContrFromPairT x (y1 ⊗ₜ[k] y2)) := by
-  trans permT id (by simp; intro i; fin_cases i; rfl)
+    permT id (by simp; rfl) (fromSingleTContrFromPairT x (y1 ⊗ₜ[k] y2)) := by
+  trans permT id (by simp; rfl)
     (prodT (contrT 0 0 1 (by simp; rfl) (prodT (fromSingleT x) (fromSingleT y1))) (fromSingleT y2))
   · conv_rhs =>
       enter [2]
@@ -346,12 +346,12 @@ lemma contrT_fromSingleT_fromPairT {c c2 : C}
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     contrT 1 0 1 (by simp; rfl)
       (prodT (fromSingleT x) (fromPairT y)) =
-    permT id (by simp; intro i; fin_cases i; rfl) (fromSingleTContrFromPairT x y) := by
+    permT id (by simp; rfl) (fromSingleTContrFromPairT x y) := by
   /- The proof -/
   let P (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) : Prop :=
     contrT 1 0 1 (by simp; rfl)
       (prodT (fromSingleT x) (fromPairT y)) =
-    permT id (by simp; intro i; fin_cases i; rfl) (fromSingleTContrFromPairT x y)
+    permT id (by simp; rfl) (fromSingleTContrFromPairT x y)
   change P y
   apply TensorProduct.induction_on
   · simp only [fromSingleTContrFromPairT, map_zero, tmul_zero, P]
@@ -414,7 +414,7 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : C)
     (y2 : (S.FD.obj (Discrete.mk c2)).V) :
     contrT 2 1 2 (by simp; rfl)
       (prodT (fromPairT (x1 ⊗ₜ[k] x2)) (fromPairT (y1 ⊗ₜ[k] y2))) =
-    permT id (by simp; intro i; fin_cases i <;> rfl)
+    permT id (by simp; exact ⟨rfl, rfl⟩)
     (fromPairTContr (x1 ⊗ₜ[k] x2) (y1 ⊗ₜ[k] y2)) := by
   rw [fromPairT_tmul, fromPairT_tmul]
   rw [prodT_permT_left, prodT_permT_right, permT_permT]
@@ -423,7 +423,7 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : C)
   have h1 : ((contrT 2 1 2 (by simp; rfl))
     ((prodT ((prodT (fromSingleT x1)) (fromSingleT x2)))
     ((prodT (fromSingleT y1)) (fromSingleT y2))))
-    = permT id (by simp; intro i; fin_cases i <;> rfl) (prodT (prodT (fromSingleT x1)
+    = permT id (by simp; exact ⟨rfl, rfl⟩) (prodT (prodT (fromSingleT x1)
       (contrT 0 0 1 (by simp; rfl) (prodT (fromSingleT x2) (fromSingleT y1))))
       (fromSingleT y2)) := by
     conv_rhs => enter [2]; rw [prodT_contrT_snd]
@@ -467,13 +467,13 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : C)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
     contrT 2 1 2 (by simp; rfl)
       (prodT (fromPairT x) (fromPairT y)) =
-    permT id (by simp; intro i; fin_cases i <;> rfl) (fromPairTContr x y) := by
+    permT id (by simp; exact ⟨rfl, rfl⟩) (fromPairTContr x y) := by
   /- The proof-/
   let P (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
       (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) : Prop :=
     contrT 2 1 2 (by simp; rfl)
       (prodT (fromPairT x) (fromPairT y)) =
-    permT id (by simp; intro i; fin_cases i <;> rfl) (fromPairTContr x y)
+    permT id (by simp; exact ⟨rfl, rfl⟩) (fromPairTContr x y)
   let P1 (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V) := P x y
   change P1 x
   apply TensorProduct.induction_on
@@ -624,7 +624,8 @@ noncomputable def fromTripleT {c1 c2 c3 : C} :
   toFun x :=
     let x1 : S.Tensor ![c1] ⊗[k] (S.Tensor ![c2] ⊗[k] S.Tensor ![c3]) :=
       TensorProduct.map (fromSingleT (S := S) (c := c1))
-        (TensorProduct.map (fromSingleT (S := S) (c := c2)) (fromSingleT (S := S) (c := c3))) x
+        (TensorProduct.map (fromSingleT (S := S) (c := c2))
+        (fromSingleT (S := S) (c := c3)).toLinearMap) x
     let x2 :=
       TensorProduct.lift prodT (TensorProduct.map LinearMap.id (TensorProduct.lift prodT) x1)
     permT id (And.intro Function.bijective_id (fun i => by fin_cases i <;> rfl)) x2

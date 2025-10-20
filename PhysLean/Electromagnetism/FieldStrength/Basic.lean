@@ -324,10 +324,8 @@ lemma magneticField_ofElectricField (E : ElectricField) :
     magneticField (ofElectricField E) = 0 := by
   ext t x j
   rw [magneticField_apply, ofElectricField_coe, timeSliceLinearEquiv_ofElectricFieldAux]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
-    repDim_up, Matrix.cons_val_one, Basis.repr_symm_apply,
-    Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun, Fin.zero_eta,
-    Fin.reduceEq, imp_false, IsEmpty.forall_iff, implies_true, one_ne_zero, Fin.one_eq_mk]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Basis.repr_symm_apply,
+    Basis.repr_linearCombination, Finsupp.equivFunOnFinite_symm_apply_toFun]
   fin_cases j <;> rfl
 
 lemma eq_ofElectricField_add_ofMagneticField (F : FieldStrength) : F =

@@ -245,7 +245,7 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
     erw [orderedInsertEquiv_succ]
   conv_rhs => erw [orderedInsertEquiv_fin_succ]
   ext
-  simp only [Fin.coe_cast, Fin.eta, Fin.cast_trans]
+  simp only [Fin.coe_cast, Fin.eta, Fin.cast_cast]
   let a1 : Fin ((List.orderedInsert r b (List.insertionSort r l)).length + 1) :=
     ⟨↑(orderedInsertPos r (List.orderedInsert r b (List.insertionSort r l)) a),
       orderedInsertPos_lt_length r (List.orderedInsert r b (List.insertionSort r l)) a⟩
@@ -364,7 +364,7 @@ lemma insertionSortEquiv_orderedInsert_append {α : Type} (r : α → α → Pro
       rw [orderedInsertEquiv_congr _ _ _ hl]
       simp only [List.length_cons, List.cons_append, List.insertionSort, finCongr_apply,
         Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.cast_succ_eq,
-        Fin.cast_trans, Fin.cast_eq_self]
+        Fin.cast_cast, Fin.cast_eq_self]
       change Fin.cast _
         ((insertionSortEquiv r (b :: a :: (l1 ++ a2 :: l2))) ⟨l1.length + 2, by simp⟩) = _
       have hl : l1.length + 1 +1 = l1.length + 2 := by omega

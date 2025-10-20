@@ -124,5 +124,3 @@ lemma PMNS_dirac_equivalence_trans {U V W : unitaryGroup (Fin 3) ℂ} :
     rw [← mul_assoc]
     simp [diagPhase_mul]
     simp [add_comm]
-
-#lint

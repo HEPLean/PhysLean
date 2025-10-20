@@ -66,6 +66,7 @@ given by
 where `x` is the spatial position vector.
 
 -/
+open Matrix
 
 /-- An electric potential in 3d which gives a given constant E-field and B-field. -/
 noncomputable def constantEB (E₀ B₀ : EuclideanSpace ℝ (Fin 3)) : ElectromagneticPotential 3 :=
