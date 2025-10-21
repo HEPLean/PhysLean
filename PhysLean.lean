@@ -82,6 +82,7 @@ import PhysLean.Meta.Notes.NoteFile
 import PhysLean.Meta.Notes.ToHTML
 import PhysLean.Meta.Remark.Basic
 import PhysLean.Meta.Remark.Properties
+import PhysLean.Meta.Sorry
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.TransverseTactics
 import PhysLean.Optics.Basic

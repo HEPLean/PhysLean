@@ -47,6 +47,10 @@ name = "check_dup_tags"
 supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 
+[[lean_exe]]
+name = "sorry_lint"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
 
 ### Other linting scripts
 
