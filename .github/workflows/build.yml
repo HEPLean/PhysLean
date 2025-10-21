@@ -54,8 +54,12 @@ jobs:
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe sorry_lint"
 
       - name: runLinter on PhysLean
-        run: |
-          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean"
+        if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
+        id: lint
+        uses: liskin/gh-problem-matcher-wrap@v3
+        with:
+          linters: gcc
+          run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
 
   style_lint:
     name: Python based style linter
