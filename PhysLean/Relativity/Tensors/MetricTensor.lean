@@ -88,7 +88,7 @@ lemma contrT_metricTensor_metricTensor_eq_dual_unit {c : C} :
 lemma contrT_dual_metricTensor_metricTensor {c : C} :
     contrT 2 1 2 (by change _ ∧ S.τ (S.τ c) = c; simp)
       (prodT (metricTensor (S.τ c)) (metricTensor c)) =
-      permT id (by simp; intro i; fin_cases i <;> rfl) (unitTensor c) := by
+      permT id (by simp; exact ⟨rfl,rfl⟩) (unitTensor c) := by
   have hm := S.metricTensor_congr (by simp : c = S.τ (S.τ c))
   rw [hm]
   rw [prodT_permT_right, contrT_permT]

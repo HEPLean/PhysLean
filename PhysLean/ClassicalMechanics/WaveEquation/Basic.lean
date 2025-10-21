@@ -247,6 +247,8 @@ lemma time_differentiable_of_eq_planewave {s : Direction d}
   unfold planeWave
   fun_prop
 
+open Matrix
+
 lemma crossProduct_time_differentiable_of_right_eq_planewave {s : Direction}
     {f₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {f : Time → Space → EuclideanSpace ℝ (Fin 3)}
     (h' : Differentiable ℝ f₀) (hf : f = planeWave f₀ c s) :

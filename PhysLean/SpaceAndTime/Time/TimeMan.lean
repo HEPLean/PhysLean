@@ -106,8 +106,8 @@ def valHomeomorphism : TimeMan ≃ₜ ℝ where
 
 /-- The structure of a charted space on `TimeMan` -/
 instance : ChartedSpace ℝ TimeMan where
-  atlas := { valHomeomorphism.toPartialHomeomorph }
-  chartAt _ := valHomeomorphism.toPartialHomeomorph
+  atlas := { valHomeomorphism.toOpenPartialHomeomorph }
+  chartAt _ := valHomeomorphism.toOpenPartialHomeomorph
   mem_chart_source := by
     simp
   chart_mem_atlas := by
@@ -122,7 +122,7 @@ instance : IsManifold 𝓘(ℝ, ℝ) ω TimeMan where
     intro e1 e2 h1 h2
     simp [atlas, ChartedSpace.atlas] at h1 h2
     subst h1 h2
-    exact symm_trans_mem_contDiffGroupoid valHomeomorphism.toPartialHomeomorph
+    exact symm_trans_mem_contDiffGroupoid valHomeomorphism.toOpenPartialHomeomorph
 
 lemma val_contDiff : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ω TimeMan.val := by
   refine contMDiffOn_univ.mp ?_

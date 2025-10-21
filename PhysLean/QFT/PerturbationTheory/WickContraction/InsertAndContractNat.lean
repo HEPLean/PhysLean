@@ -447,7 +447,8 @@ lemma insertAndContractNat_some_getDual?_of_neq (c : WickContraction n) (i : Fin
         some (i.succAbove ((c.getDual? k).get h)) := by
       rw [← insertAndContractNat_some_getDual?_neq_isSome_get c i j k hkj]
       refine Eq.symm (Option.some_get ?_)
-      simpa [hkj, insertAndContractNat_some_getDual?_neq_isSome] using h
+      all_goals
+        simpa [hkj, insertAndContractNat_some_getDual?_neq_isSome] using h
     rw [h1]
     have h2 :(c.getDual? k) = some ((c.getDual? k).get h) := by simp
     conv_rhs => rw [h2]

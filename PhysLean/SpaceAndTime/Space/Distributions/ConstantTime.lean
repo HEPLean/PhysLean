@@ -883,12 +883,12 @@ def timeIntegralSchwartz {d : ℕ} :
     𝓢(Time × Space d.succ, ℝ) →L[ℝ] 𝓢(Space d.succ, ℝ) := by
   refine SchwartzMap.mkCLM (fun η x => ∫ (t : Time), η (t, x)) ?_ ?_ ?_ ?_
   · intro η1 η2 x
-    simp only [Nat.succ_eq_add_one, Pi.add_apply]
+    simp only [Nat.succ_eq_add_one, add_apply]
     rw [integral_add]
     · exact integrable_time_integral η1 x
     · exact integrable_time_integral η2 x
   · intro a η x
-    simp only [Nat.succ_eq_add_one, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+    simp only [Nat.succ_eq_add_one, smul_apply, smul_eq_mul, RingHom.id_apply]
     rw [integral_const_mul]
   · intro η
     simp only [Nat.succ_eq_add_one]

@@ -74,7 +74,7 @@ instance [IsFinite 𝓒] [IsFinite 𝓒1] : IsFinite (𝓒 + 𝓒1) where
     rw [Measure.count_apply, Measure.count_apply, Measure.count_apply]
     rw [← ENat.toENNReal_mul]
     congr
-    simp [Set.encard, ENat.card_congr (Equiv.Set.prod ..)]
+    simp only [Set.encard_prod]
     · exact ht
     · exact hs
     · exact MeasurableSet.prod hs ht

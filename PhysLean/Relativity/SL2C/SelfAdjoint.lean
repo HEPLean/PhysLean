@@ -5,7 +5,7 @@ Authors: Gordon Hsu
 -/
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 import PhysLean.Mathematics.SchurTriangulation
-
+import Mathlib.LinearAlgebra.Matrix.Hermitian
 /-! # Extra lemmas regarding `Lorentz.SL2C.toSelfAdjointMap`
 
 This file redefines `Lorentz.SL2C.toSelfAdjointMap` by dropping the special linear condition for its
@@ -86,6 +86,7 @@ This concludes `Lorentz.SL2C.toSelfAdjointMap_det_one'`. To get
 which is 1.
 
 -/
+open Matrix
 
 open Complex (I normSq) in
 lemma toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM : M.det = 1) :
@@ -121,7 +122,7 @@ lemma toSelfAdjointMap_det_one' {M : ℂ²ˣ²} (hM : M.IsUpperTriangular) (detM
     calc ↑(normSq x * normSq y)
       _ = x * conj x * (y * conj y) := by simp [Complex.mul_conj]
       _ = x * y * (conj y * conj x) := by ring
-      _ = x * y * conj (x * y) := congrArg _ (star_mul ..).symm
+      _ = x * y * conj (x * y) := congrArg _ (StarMul.star_mul ..).symm
       _ = 1 := suffices x * y = 1 by simp [this]
         calc x * y
           _ = !![x, _; 0, y].det := by simp

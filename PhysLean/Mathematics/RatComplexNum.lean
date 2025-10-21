@@ -43,17 +43,23 @@ def equivToProd : RatComplexNum ≃ ℚ × ℚ where
 
 instance : DecidableEq RatComplexNum := Equiv.decidableEq equivToProd
 
-instance : AddCommGroup RatComplexNum where
+instance : Add RatComplexNum where
   add := fun x y => ⟨x.fst + y.fst, x.snd + y.snd⟩
+
+@[simp]
+lemma add_fst (x y : RatComplexNum) : (x + y).fst = x.fst + y.fst := rfl
+
+@[simp]
+lemma add_snd (x y : RatComplexNum) : (x + y).snd = x.snd + y.snd := rfl
+
+instance : AddCommGroup RatComplexNum where
   add_assoc := by
     intro a b c
-    match a, b, c with
-    | ⟨a1, a2⟩, ⟨b1, b2⟩, ⟨c1, c2⟩ =>
-      ext
-      · change a1 + b1 + c1 = a1 + (b1 + c1)
-        ring
-      · change a2 + b2 + c2 = a2 + (b2 + c2)
-        ring
+    ext
+    · simp only [add_fst]
+      ring
+    · simp only [add_snd]
+      ring
   zero := ⟨0, 0⟩
   zero_add := by
     intro a
@@ -87,28 +93,66 @@ instance : AddCommGroup RatComplexNum where
         simp
   add_comm := by
     intro x y
-    match x, y with
-    | ⟨x1, x2⟩, ⟨y1, y2⟩ =>
-      ext
-      · change x1 + y1 = y1 + x1
-        simp [add_comm]
-      · change x2 + y2 = y2 + x2
-        simp [add_comm]
+    ext
+    · simp only [add_fst]
+      ring
+    · simp only [add_snd]
+      ring
+  nsmul_zero := by
+    intro x
+    simp only [zero_nsmul]
+    rfl
+  nsmul_succ := by
+    intro x y
+    ext
+    · simp only [add_fst]
+      ring
+    · simp only [add_snd]
+      ring
+  zsmul_zero' := by
+    intro a
+    ext
+    · simp only [zero_smul]
+      rfl
+    · simp only [zero_smul]
+      rfl
+  zsmul_succ' := by
+    intro a n
+    ext
+    · simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, zsmul_eq_mul, Int.cast_add,
+      Int.cast_natCast, Int.cast_one, add_fst]
+      ring
+    · simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, zsmul_eq_mul, Int.cast_add,
+      Int.cast_natCast, Int.cast_one, add_snd]
+      ring
+  zsmul_neg' := by
+    intro a n
+    ext
+    · simp only [zsmul_eq_mul, Int.cast_negSucc, Nat.cast_add, Nat.cast_one, neg_add_rev,
+      Nat.succ_eq_add_one, Int.cast_add, Int.cast_natCast, Int.cast_one]
+      ring
+    · simp only [zsmul_eq_mul, Int.cast_negSucc, Nat.cast_add, Nat.cast_one, neg_add_rev,
+      Nat.succ_eq_add_one, Int.cast_add, Int.cast_natCast, Int.cast_one]
+      ring
+
+instance : Mul RatComplexNum where
+  mul := fun x y => ⟨x.fst * y.fst - x.snd * y.snd, x.fst * y.snd + x.snd * y.fst⟩
+
+@[simp]
+lemma mul_fst (x y : RatComplexNum) : (x * y).fst = x.fst * y.fst - x.snd * y.snd := rfl
+
+@[simp]
+lemma mul_snd (x y : RatComplexNum) : (x * y).snd = x.fst * y.snd + x.snd * y.fst := rfl
 
 instance : Ring RatComplexNum where
-  mul := fun x y => ⟨x.fst * y.fst - x.snd * y.snd, x.fst * y.snd + x.snd * y.fst⟩
   one := ⟨1, 0⟩
   mul_assoc := by
     intro x y z
-    match x, y, z with
-    | ⟨x1, x2⟩, ⟨y1, y2⟩, ⟨z1, z2⟩ =>
-      ext
-      · change (x1 * y1 - x2 * y2) * z1 - (x1 * y2 + x2 * y1) * z2 =
-          x1 * (y1 * z1 - y2 * z2) - x2 * (y1 * z2 + y2 * z1)
-        ring
-      · change (x1 * y1 - x2 * y2) * z2 + (x1 * y2 + x2 * y1) * z1 =
-          x1 * (y1 * z2 + y2 * z1) + x2 * (y1 * z1 - y2 * z2)
-        ring
+    ext
+    · simp only [mul_fst, mul_snd]
+      ring
+    · simp only [mul_fst, mul_snd]
+      ring
   one_mul := by
     intro x
     match x with
@@ -127,7 +171,6 @@ instance : Ring RatComplexNum where
         simp
       · change x1 * 0 + x2 * 1 = x2
         simp
-
   left_distrib := by
     intro a b c
     match a, b, c with
@@ -168,7 +211,6 @@ instance : Ring RatComplexNum where
         simp
       · change a1 * 0 + a2 * 0 = 0
         simp
-  zsmul := fun n x => ⟨n • x.1, n • x.2⟩
   neg_add_cancel := by
     intro a
     match a with
@@ -184,18 +226,6 @@ lemma one_fst : (1 : RatComplexNum).fst = 1 := rfl
 
 @[simp]
 lemma one_snd : (1 : RatComplexNum).snd = 0 := rfl
-
-@[simp]
-lemma add_fst (x y : RatComplexNum) : (x + y).fst = x.fst + y.fst := rfl
-
-@[simp]
-lemma add_snd (x y : RatComplexNum) : (x + y).snd = x.snd + y.snd := rfl
-
-@[simp]
-lemma mul_fst (x y : RatComplexNum) : (x * y).fst = x.fst * y.fst - x.snd * y.snd := rfl
-
-@[simp]
-lemma mul_snd (x y : RatComplexNum) : (x * y).snd = x.fst * y.snd + x.snd * y.fst := rfl
 
 @[simp]
 lemma zero_fst : (0 : RatComplexNum).fst = 0 := rfl

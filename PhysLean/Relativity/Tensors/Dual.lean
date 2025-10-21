@@ -24,7 +24,7 @@ namespace Tensor
 /-- The linear map taking a tensor based on the color `S.τ c` to a tensor
   based on the color `c`, defined by contraction with the metric tensor. -/
 noncomputable def fromDualMap {c : C} : S.Tensor ![S.τ c] →ₗ[k] S.Tensor ![c] where
-  toFun t := permT id (by simp; intro i; fin_cases i; rfl)
+  toFun t := permT id (by simp; rfl)
     (contrT 1 1 2 (by simp; rfl) (prodT (metricTensor c) t))
   map_add' t1 t2 := by
     simp
@@ -32,7 +32,7 @@ noncomputable def fromDualMap {c : C} : S.Tensor ![S.τ c] →ₗ[k] S.Tensor ![
     simp
 
 lemma fromDualMap_apply {c : C} (t : S.Tensor ![S.τ c]) :
-    fromDualMap t = permT id (by simp; intro i; fin_cases i; rfl)
+    fromDualMap t = permT id (by simp; rfl)
       (contrT 1 1 2 (by simp; rfl) (prodT (metricTensor c) t)) := by
   rfl
 
@@ -40,7 +40,7 @@ lemma fromDualMap_apply {c : C} (t : S.Tensor ![S.τ c]) :
   based on the color `S.τ c`, defined by contraction with the metric tensor. -/
 noncomputable def toDualMap {c : C} : S.Tensor ![c] →ₗ[k] S.Tensor ![S.τ c] where
   toFun t := permT id (by
-    simp;intro i; fin_cases i; rfl) (contrT 1 1 2 (by
+    simp; rfl) (contrT 1 1 2 (by
     change _ ∧ S.τ (S.τ c) = c
     simp) (prodT (metricTensor (S.τ c)) t))
   map_add' t1 t2 := by
@@ -50,7 +50,7 @@ noncomputable def toDualMap {c : C} : S.Tensor ![c] →ₗ[k] S.Tensor ![S.τ c]
 
 lemma toDualMap_apply {c : C} (t : S.Tensor ![c]) :
     toDualMap t = permT id (by
-      simp;intro i; fin_cases i; rfl) (contrT 1 1 2 (by
+      simp; rfl) (contrT 1 1 2 (by
       change _ ∧ S.τ (S.τ c) = c
       simp) (prodT (metricTensor (S.τ c)) t)) := by
   rfl

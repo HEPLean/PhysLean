@@ -129,28 +129,6 @@ lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
   unfold divergence
   simp [fderiv_fun_const_smul hf]
 
-lemma LinearMap.toMatrix_smulRight {R M M₁ m n : Type*} [CommSemiring R] [AddCommMonoid M]
-    [AddCommMonoid M₁] [Module R M] [Module R M₁] [Finite m] [Fintype n] [DecidableEq n]
-    (f : M₁ →ₗ[R] R) (x : M) (v₁ : Module.Basis n R M₁) (v₂ : Module.Basis m R M) :
-    toMatrix v₁ v₂ (f.smulRight x) = Matrix.vecMulVec (v₂.repr x) (⇑f ∘ ⇑v₁) := by
-  ext i j
-  simpa [toMatrix_apply, Matrix.vecMulVec_apply] using mul_comm _ _
-
--- from latest mathlib
-@[simp]
-theorem Matrix.trace_vecMulVec {R n : Type*} [Fintype n] [NonUnitalNonAssocSemiring R]
-    (a b : n → R) : trace (vecMulVec a b) = a ⬝ᵥ b := by
-  rw [vecMulVec_eq Unit, trace_replicateCol_mul_replicateRow]
-
-@[simp]
-lemma LinearMap.trace_smulRight {R M : Type*} [CommSemiring R] [AddCommMonoid M]
-    [Module R M] [Module.Free R M] [Module.Finite R M] (f : M →ₗ[R] R) (x : M) :
-    trace R M (f.smulRight x) = f x := by
-  classical
-  rw [trace_eq_matrix_trace _ (Module.Free.chooseBasis R M)]
-  simp only [toMatrix_smulRight, Matrix.trace_vecMulVec, dotProduct, Function.comp_apply]
-  simp_rw +singlePass [← smul_eq_mul, ← map_smul, ← map_sum, Module.Basis.sum_repr]
-
 @[simp]
 lemma ContinuousLinearMap.smulRight_toLinearMap {M₁ : Type*} [TopologicalSpace M₁]
     [AddCommMonoid M₁] {M₂ : Type*} [TopologicalSpace M₂] [AddCommMonoid M₂] {R : Type*} {S : Type*}
