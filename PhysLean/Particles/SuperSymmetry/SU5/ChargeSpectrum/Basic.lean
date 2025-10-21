@@ -47,6 +47,7 @@ of the charge spectrum, which can help in searching for viable theories.
 - E. The power set of a charge spectrum
 - F. Finite sets of charge spectra with values
   - F.1. Cardinality of finite sets of charge spectra with values
+
 ## iv. References
 
 There are no known references for charge spectra in the literature.
