@@ -46,7 +46,7 @@ of the charge spectrum, which can help in searching for viable theories.
 - D. The cardinality of a charge spectrum
 - E. The power set of a charge spectrum
 - F. Finite sets of charge spectra with values
-
+  - F.1. Cardinality of finite sets of charge spectra with values
 ## iv. References
 
 There are no known references for charge spectra in the literature.
@@ -490,6 +490,21 @@ lemma ofFinset_univ [Fintype 𝓩] (x : ChargeSpectrum 𝓩) :
     x ∈ ofFinset (Finset.univ : Finset 𝓩) (Finset.univ : Finset 𝓩) := by
   rw [mem_ofFinset_iff]
   simp
+
+/-!
+
+### F.1. Cardinality of finite sets of charge spectra with values
+
+-/
+
+/-- The cardinality of `ofFinset S5 S10`. -/
+def ofFinsetCard (S5 S10 : Finset 𝓩) : ℕ :=
+    (S5.card + 1) * (S5.card + 1) * (2 ^ S5.card : ℕ) * (2 ^ S10.card : ℕ)
+
+lemma ofFinset_card_eq_ofFinsetCard (S5 S10 : Finset 𝓩) :
+    (ofFinset S5 S10).card = ofFinsetCard S5 S10 := by
+  simp [ofFinset, Finset.card_map, Finset.card_product, Finset.card_powerset, ofFinsetCard]
+  grind
 
 end ChargeSpectrum
 
