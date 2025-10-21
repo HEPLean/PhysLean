@@ -84,6 +84,7 @@ We start by defining the type of initial conditions for the harmonic oscillator.
 /-- The initial conditions for the harmonic oscillator specified by an initial position,
   and an initial velocity. -/
 structure InitialConditions where
+  /-- The initial position of the harmonic oscillator. -/
   x₀ : Space 1
   /-- The initial velocity of the harmonic oscillator. -/
   v₀ : Space 1
