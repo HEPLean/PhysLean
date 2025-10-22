@@ -29,7 +29,7 @@ noncomputable instance (M : Type)
     congr 1
     funext m
     simp [scaleUnit_trans]
-    simp [HasDim.scaleUnit_apply']
+    simp [HasDim.scaleUnit_apply]
     · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (dim M)).1
     · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (dim M)).1
   scaleUnit_trans' u1 u2 u3 μ := by
@@ -37,7 +37,7 @@ noncomputable instance (M : Type)
     congr 1
     funext m
     simp [scaleUnit_trans']
-    simp [HasDim.scaleUnit_apply']
+    simp [HasDim.scaleUnit_apply]
     · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (dim M)).1
     · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (dim M)).1
   scaleUnit_id u μ := by

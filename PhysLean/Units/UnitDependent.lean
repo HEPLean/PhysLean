@@ -252,12 +252,6 @@ lemma HasDim.scaleUnit_apply {M : Type} [CarriesDimension M]
     scaleUnit u1 u2 m = (u1.dimScale u2 (dim M)) • m := by
   simp [scaleUnit, toDimensionful_apply_apply]
 
-lemma HasDim.scaleUnit_apply' {M : Type} [MulAction ℝ M] [HasDim M]
-    (u1 u2 : UnitChoices) (m : M) :
-    scaleUnit u1 u2 m = ((u1.dimScale u2 (dim M) : ℝ) • m : M) := by
-  simp [scaleUnit, toDimensionful_apply_apply]
-  rfl
-
 noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M] [HasDim M] :
     LinearUnitDependent M where
   scaleUnit_add u1 u2 m1 m2 := by
