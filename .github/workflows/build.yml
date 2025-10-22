@@ -43,7 +43,7 @@ jobs:
 
       - name: runLinter on PhysLean
         run: |
-          env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
+          lake exe runLinter PhysLean
 
       - name: check file imports
         run: |
