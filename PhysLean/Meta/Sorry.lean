@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Meta.Linters.Sorry
 /-!
 
-# Meta results regarding `sorry` and `psuedo` attributions
+# Meta results regarding `sorry` and `pseudo` attributions
 
 Some of the code here is adapted from from the file: Lean.Util.CollectAxioms
 copyright (c) 2020 Microsoft Corporation. Authored by Leonardo de Moura.
@@ -95,7 +95,7 @@ unsafe def allSorryfulAttributed : CoreM (Array Name) := do
   let sorryfulInfos := (sorryfulExtension.getState env)
   return sorryfulInfos.map fun info => info.name
 
-/-- All names which are attributed `psuedo`. -/
+/-- All names which are attributed `pseudo`. -/
 unsafe def allPseudoAttributed : CoreM (Array Name) := do
   let env ← getEnv
   let pseudoInfos := (pseudoExtension.getState env)
@@ -104,33 +104,33 @@ unsafe def allPseudoAttributed : CoreM (Array Name) := do
 /-- Checks whether all results attributed `sorryful` depend on the ```sorryAx`
   axiom and vice versa. -/
 unsafe def sorryfulPseudoTest : MetaM Unit := do
-  let (allWithSorry, allWithPsuedo) ← PhysLean.allWithSorryPseudo
+  let (allWithSorry, allWithPseudo) ← PhysLean.allWithSorryPseudo
   let allConst ← PhysLean.allUserConsts
   let allConst := allConst.map fun c => c.name
   let allWithSorry := allWithSorry.filter fun n => n ∈ allConst
-  let allWithPsuedo := allWithPsuedo.filter fun n => n ∈ allConst
+  let allWithPseudo := allWithPseudo.filter fun n => n ∈ allConst
   let sorryAttributed ← allSorryfulAttributed
-  let psuedoAttributed ← allPseudoAttributed
+  let pseudoAttributed ← allPseudoAttributed
   let withSorryAxiomNotAttributed :=
     allWithSorry.filter fun x => ¬ x ∈ sorryAttributed
-  let withPsuedoAxiomNotAttributed :=
-    allWithPsuedo.filter fun x => ¬ x ∈ psuedoAttributed
+  let withPseudoAxiomNotAttributed :=
+    allWithPseudo.filter fun x => ¬ x ∈ pseudoAttributed
   let attributedNotWithSorryAxiom :=
     sorryAttributed.filter fun x => ¬ x ∈ allWithSorry
-  let attributedNotWithPsuedoAxiom :=
-    psuedoAttributed.filter fun x => ¬ x ∈ allWithPsuedo
+  let attributedNotWithPseudoAxiom :=
+    pseudoAttributed.filter fun x => ¬ x ∈ allWithPseudo
   if withSorryAxiomNotAttributed ≠ #[] ∨ attributedNotWithSorryAxiom ≠ #[]
-    ∨ withPsuedoAxiomNotAttributed ≠ #[] ∨ attributedNotWithPsuedoAxiom ≠ #[] then
+    ∨ withPseudoAxiomNotAttributed ≠ #[] ∨ attributedNotWithPseudoAxiom ≠ #[] then
     panic! s!"
-\x1b[31mThere is an error in the sorryful/psuedo attribution system:\x1b[0m
-  The following names depend on `sorryAx` but are not attributed `sorryful:
+\x1b[31mThere is an error in the sorryful/pseudo attribution system:\x1b[0m
+  The following names depend on `sorryAx` but are not attributed `sorryful`:
   {withSorryAxiomNotAttributed}
   The following names are attributed `sorryful` but do not depend on `sorryAx`:
   {attributedNotWithSorryAxiom}
-  The following names depend on `Lean.ofReduceBool` but are not attributed `psuedo`:
-  {withPsuedoAxiomNotAttributed}
-  The following names are attributed `psuedo` but do not depend on `Lean.ofReduceBool`:
-  {attributedNotWithPsuedoAxiom}"
-  println! "\x1b[32mSorryful/psuedo results are all correctly attributed test passed.\x1b[0m"
+  The following names depend on `Lean.ofReduceBool` but are not attributed `pseudo`:
+  {withPseudoAxiomNotAttributed}
+  The following names are attributed `pseudo` but do not depend on `Lean.ofReduceBool`:
+  {attributedNotWithPseudoAxiom}"
+  println! "\x1b[32mSorryful/pseudo results are all correctly attributed test passed.\x1b[0m"
 
 end PhysLean

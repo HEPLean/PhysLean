@@ -64,7 +64,7 @@ srcDir = "scripts/MetaPrograms"
 
 
 [[lean_exe]]
-name = "redundent_imports"
+name = "redundant_imports"
 supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 

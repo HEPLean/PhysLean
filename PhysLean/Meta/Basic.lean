@@ -215,7 +215,6 @@ def noFilesWithTODOs : IO Nat := do
 /-- All user defined declerations. -/
 def allUserConsts : CoreM (Array ConstantInfo) := do
   let imports ← PhysLean.allImports
-  let x ← imports.mapM PhysLean.Imports.getUserConsts
-  return x.flatten
+  return (← imports.flatMapM PhysLean.Imports.getUserConsts)
 
 end PhysLean
