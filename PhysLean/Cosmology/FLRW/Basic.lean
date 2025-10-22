@@ -24,20 +24,18 @@ namespace Cosmology
 - `Flat`
 - `Saddle (k : ℝ)`
 -/
-
--- def SpatialGeometry : Type := sorry
 inductive SpatialGeometry : Type where
   | Spherical (k : ℝ) (h: k < 0)
   | Flat (k : ℝ) (h: k = 0)
   | Saddle (k : ℝ) (h : k > 0)
 
 namespace SpatialGeometry
+
 /-- For `s` corresponding to
 - `Spherical k`, `S s r = k * sin (r / k)`
 - `Flat`, `S s r = r`,
 - `Saddle k`, `S s r = k * sinh (r / k)`.
 -/
-
 noncomputable def S (s : SpatialGeometry) : ℝ → ℝ :=
   fun r =>
     match s with
@@ -50,9 +48,9 @@ First show that `k * sinh(r / k) = sinh(r / k) / (1 / k)` pointwise. -/
 lemma mul_sinh_as_div (r k : ℝ) :
     k * Real.sinh (r / k) = Real.sinh (r / k) / (1 / k) := by field_simp
 
-@[sorryful]
 /-- First, show that limit of `sinh(r * x) / x` is r at the limit x goes to zero.
 Then the next theorem will address the rewrite using Filter.Tendsto.comp -/
+@[sorryful]
 lemma tendsto_sinh_rx_over_x (r : ℝ) :
     Tendsto (fun x : ℝ => Real.sinh (r * x) / x) (𝓝[≠] 0) (𝓝 r) := by sorry
 
