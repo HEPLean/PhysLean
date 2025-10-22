@@ -212,4 +212,10 @@ def noFilesWithTODOs : IO Nat := do
   let x := x.filter fun bs => bs.any fun l => l.startsWith "TODO "
   return x.size
 
+/-- All user defined declerations. -/
+def allUserConsts : CoreM (Array ConstantInfo) := do
+  let imports ← PhysLean.allImports
+  let x ← imports.mapM PhysLean.Imports.getUserConsts
+  return x.flatten
+
 end PhysLean
