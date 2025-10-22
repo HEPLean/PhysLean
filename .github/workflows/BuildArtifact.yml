@@ -1,0 +1,53 @@
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+name: Style linters
+
+jobs:
+  doc_lint:
+    name: Lean based style linters
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          set -o pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
+          ~/.elan/bin/lean --version
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: check versions
+        run: |
+          lean --version
+          lake --version
+          elan --version
+
+      - name: build cache
+        run: |
+          lake exe cache get
+
+      - name: build PhysLean
+        id: build
+        uses: liskin/gh-problem-matcher-wrap@v3
+        with:
+          linters: gcc
+          run: |
+            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
+      - name: copy build data
+        run: |
+          mv .lake lake-artifact/.lake
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lake
+          path: lake-artifact/
+          retention-days: 90
