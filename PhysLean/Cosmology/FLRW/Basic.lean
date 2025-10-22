@@ -6,8 +6,6 @@ Authors: Joseph Tooby-Smith, Luis Gabriel C. Bariuan
 import Mathlib
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.SpaceAndTime.Space.Basic
-open Filter
-open scoped Topology
 /-!
 
 # The Friedmann-Lemaître-Robertson-Walker metric
@@ -15,6 +13,9 @@ open scoped Topology
 Parts of this file is currently informal or semiformal.
 
 -/
+
+open Filter
+open scoped Topology
 
 namespace Cosmology
 
@@ -43,18 +44,22 @@ noncomputable def S (s : SpatialGeometry) : ℝ → ℝ :=
     | SpatialGeometry.Spherical k _ => k * Real.sin (r / k)
     | SpatialGeometry.Flat _ _ => r
     | SpatialGeometry.Saddle k _ => k * Real.sinh (r / k)
-/-- The limit of `S (Saddle k) r` as `k → ∞` is equal to `S (Flat) r`. -/
-/-- First show that `k * sinh(r / k) = sinh(r / k) / (1 / k)` pointwise. -/
+
+/-- The limit of `S (Saddle k) r` as `k → ∞` is equal to `S (Flat) r`.
+First show that `k * sinh(r / k) = sinh(r / k) / (1 / k)` pointwise. -/
 lemma mul_sinh_as_div (r k : ℝ) :
-  k * Real.sinh (r / k) = Real.sinh (r / k) / (1 / k) := by field_simp
+    k * Real.sinh (r / k) = Real.sinh (r / k) / (1 / k) := by field_simp
+
 @[sorryful]
 /-- First, show that limit of `sinh(r * x) / x` is r at the limit x goes to zero.
 Then the next theorem will address the rewrite using Filter.Tendsto.comp -/
 lemma tendsto_sinh_rx_over_x (r : ℝ) :
-  Tendsto (fun x : ℝ => Real.sinh (r * x) / x) (𝓝[≠] 0) (𝓝 r) := by sorry
+    Tendsto (fun x : ℝ => Real.sinh (r * x) / x) (𝓝[≠] 0) (𝓝 r) := by sorry
+
 @[sorryful]
 lemma limit_S_saddle(r : ℝ) :
-  Tendsto (fun k : ℝ => k * Real.sinh (r / k)) atTop (𝓝 r) := by sorry
+    Tendsto (fun k : ℝ => k * Real.sinh (r / k)) atTop (𝓝 r) := by sorry
+
 /-- The limit of `S (Sphere k) r` as `k → ∞` is equal to `S (Flat) r`. -/
 informal_lemma limit_S_sphere where
   deps := []
