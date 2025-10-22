@@ -247,20 +247,19 @@ noncomputable instance {M1 : Type} [CarriesDimension M1] : MulUnitDependent M1 w
     simp [toDimensionful]
     exact smul_comm (u1.dimScale u2 (dim M1)) r m
 
-lemma CarriesDimension.scaleUnit_apply {M : Type} [CarriesDimension M]
+lemma HasDim.scaleUnit_apply {M : Type} [CarriesDimension M]
     (u1 u2 : UnitChoices) (m : M) :
     scaleUnit u1 u2 m = (u1.dimScale u2 (dim M)) • m := by
   simp [scaleUnit, toDimensionful_apply_apply]
 
-lemma CarriesDimension.scaleUnit_apply' {M : Type} [AddCommMonoid M] [Module ℝ M]
-    [ModuleCarriesDimension M]
+lemma HasDim.scaleUnit_apply' {M : Type} [MulAction ℝ M] [HasDim M]
     (u1 u2 : UnitChoices) (m : M) :
     scaleUnit u1 u2 m = ((u1.dimScale u2 (dim M) : ℝ) • m : M) := by
   simp [scaleUnit, toDimensionful_apply_apply]
   rfl
 
-noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
-    [ModuleCarriesDimension M] : LinearUnitDependent M where
+noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M] [HasDim M] :
+    LinearUnitDependent M where
   scaleUnit_add u1 u2 m1 m2 := by
     change (toDimensionful u1 (m1 + m2)).1 u2 = _
     rw [toDimensionful_apply_apply]
@@ -273,7 +272,7 @@ noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
     rfl
 
 noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
-    [ModuleCarriesDimension M] [TopologicalSpace M]
+    [HasDim M] [TopologicalSpace M]
     [ContinuousConstSMul ℝ M] : ContinuousLinearUnitDependent M where
   scaleUnit_cont u1 u2 := by
     change Continuous fun m => (toDimensionful u1 m).1 u2
@@ -283,13 +282,6 @@ noncomputable instance {M : Type} [AddCommMonoid M] [Module ℝ M]
     change Continuous fun m => (u1.dimScale u2 (dim M)).1 • m
     apply Continuous.const_smul
     exact continuous_id'
-
-lemma ModuleCarriesDimension.scaleUnit_apply {M : Type} [AddCommMonoid M] [Module ℝ M]
-    [ModuleCarriesDimension M] (u1 u2 : UnitChoices) (m : M) :
-    scaleUnit u1 u2 m = ((u1.dimScale u2 (dim M) : ℝ) • m : M) := by
-  simp [scaleUnit, toDimensionful_apply_apply]
-
-  rfl
 
 /-!
 
@@ -576,7 +568,7 @@ instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
 lemma scaleUnit_dimSet_val {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension)
     (m : DimSet M d) (u1 u2 : UnitChoices) :
     (scaleUnit u1 u2 m).1 = scaleUnit u1 u2 m.1 := by
-  rw [scaleUnit_apply, m.2]
+  rw [HasDim.scaleUnit_apply, m.2]
   rfl
 
 lemma DimSet.mem_iff {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) (m : M) :

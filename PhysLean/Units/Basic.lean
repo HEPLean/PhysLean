@@ -280,11 +280,6 @@ alias dim := HasDim.d
   this dimension. For example, the type `Time` will carry a dimension `T𝓭`. -/
 class abbrev CarriesDimension (M : Type) := HasDim M, MulAction ℝ≥0 M
 
-/-- A module `M` carries a dimension `d` if every element of `M` is supposed to have
-  this dimension.
-  This is defined in addition to `CarriesDimension` to prevent a type-casting diamond. -/
-class ModuleCarriesDimension (M : Type) [AddCommMonoid M] [Module ℝ M] extends HasDim M
-
 /-!
 
 ## Terms of the current dimension

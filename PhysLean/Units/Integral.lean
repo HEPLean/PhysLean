@@ -15,12 +15,12 @@ In this module we prove that the dimensional properties of the integral.
 
 open UnitDependent NNReal
 variable (M : Type)
-    [NormedAddCommGroup M] [NormedSpace ℝ M] [ModuleCarriesDimension M]
+    [NormedAddCommGroup M] [NormedSpace ℝ M] [HasDim M]
     [MeasurableSpace M] [self : MeasurableConstSMul ℝ M]
 
 open MeasureTheory
 noncomputable instance (M : Type)
-    [NormedAddCommGroup M] [NormedSpace ℝ M] [ModuleCarriesDimension M]
+    [NormedAddCommGroup M] [NormedSpace ℝ M] [HasDim M]
     [MeasurableSpace M] [self : MeasurableConstSMul ℝ M] :
       MulUnitDependent (MeasureTheory.Measure M) where
   scaleUnit u1 u2 μ := μ.map (fun m => scaleUnit u1 u2 m)
@@ -29,7 +29,7 @@ noncomputable instance (M : Type)
     congr 1
     funext m
     simp [scaleUnit_trans]
-    simp [CarriesDimension.scaleUnit_apply']
+    simp [HasDim.scaleUnit_apply']
     · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (dim M)).1
     · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (dim M)).1
   scaleUnit_trans' u1 u2 u3 μ := by
@@ -37,7 +37,7 @@ noncomputable instance (M : Type)
     congr 1
     funext m
     simp [scaleUnit_trans']
-    simp [CarriesDimension.scaleUnit_apply']
+    simp [HasDim.scaleUnit_apply']
     · exact measurable_const_smul (α := M) ↑(u1.dimScale u2 (dim M)).1
     · exact measurable_const_smul (α := M) ↑(u2.dimScale u3 (dim M)).1
   scaleUnit_id u μ := by
@@ -45,10 +45,10 @@ noncomputable instance (M : Type)
   scaleUnit_mul u1 u2 r μ := by
     simp
 
-variable {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] [ModuleCarriesDimension M]
+variable {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] [HasDim M]
     [MeasurableSpace M] [MeasurableConstSMul ℝ M]
     {G : Type}
-    [NormedAddCommGroup G] [NormedSpace ℝ G] [ModuleCarriesDimension G]
+    [NormedAddCommGroup G] [NormedSpace ℝ G] [HasDim G]
 
 lemma scaleUnit_measure (u1 u2 : UnitChoices) (μ : MeasureTheory.Measure M) :
     scaleUnit u1 u2 μ = μ.map (fun m => scaleUnit u1 u2 m) := by rfl
@@ -96,7 +96,7 @@ lemma integral_isDimensionallyCorrect (d : Dimension) :
     /- What remains is a simple cancellation of the dimensional scales. -/
     _ = (u1.dimScale u2 (dim G)) • ((u2.dimScale u1 d) •
         u2.dimScale u1 (dim G * d⁻¹) • ∫ (x : M), f x ∂ μ) := by
-      rw [← CarriesDimension.scaleUnit_apply]
+      rw [← HasDim.scaleUnit_apply]
     _ = (u1.dimScale u2 (dim G) * (u2.dimScale u1 d) *
         u2.dimScale u1 (dim G * d⁻¹)) • ∫ (x : M), f x ∂ μ := by
       simp [smul_smul]

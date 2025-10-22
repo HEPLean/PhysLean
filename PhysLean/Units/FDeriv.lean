@@ -24,10 +24,10 @@ in which the derivative is taken.
 open UnitDependent CarriesDimension NNReal
 
 variable {M1 M2 : Type} [NormedAddCommGroup M1] [NormedSpace ℝ M1]
-    [ContinuousConstSMul ℝ M1] [ModuleCarriesDimension M1]
+    [ContinuousConstSMul ℝ M1] [HasDim M1]
     [NormedAddCommGroup M2] [NormedSpace ℝ M2]
     [SMulCommClass ℝ ℝ M2] [ContinuousConstSMul ℝ M2]
-    [ModuleCarriesDimension M2]
+    [HasDim M2]
 
 lemma fderiv_apply_scaleUnit (u1 u2 : UnitChoices) (x dm : M1)
     (f : M1 → M2) (hf : IsDimensionallyCorrect f) (f_diff : Differentiable ℝ f) :
@@ -50,7 +50,7 @@ lemma fderiv_isDimensionallyCorrect (f : M1 → M2) (hf : IsDimensionallyCorrect
   ext m'
   simp only [ContinuousLinearUnitDependent.scaleUnit_apply_fun]
   rw [fderiv_apply_scaleUnit u1 u2 m (scaleUnit u2 u1 m') f hf f_diff]
-  simp only [ModuleCarriesDimension.scaleUnit_apply, map_smul]
+  simp only [HasDim.scaleUnit_apply', map_smul]
   simp only [← smul_def, smul_smul]
   trans (1 : ℝ≥0) • (fderiv ℝ f m) m'
   · congr
