@@ -41,6 +41,14 @@ jobs:
           run: |
             bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
 
+      - name: runLinter on PhysLean
+        if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
+        id: lint
+        uses: liskin/gh-problem-matcher-wrap@v3
+        with:
+          linters: gcc
+          run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
+
       - name: check file imports
         run: |
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports"
@@ -53,13 +61,6 @@ jobs:
         run: |
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe sorry_lint"
 
-      - name: runLinter on PhysLean
-        if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
-        id: lint
-        uses: liskin/gh-problem-matcher-wrap@v3
-        with:
-          linters: gcc
-          run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
 
   style_lint:
     name: Python based style linter
