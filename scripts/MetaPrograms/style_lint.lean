@@ -141,5 +141,5 @@ def main (_ : List String) : IO UInt32 := do
   if errors.size > 0 then
     throw <| IO.userError s!"Errors found."
   else
-    IO.println "No linting issues found."
+    IO.println "\x1b[32mNo linting issues found.\x1b[0m"
   return 0

@@ -6,12 +6,12 @@ Authors: Joseph Tooby-Smith
 
 def main (args : List String) : IO UInt32 := do
 
-  println! "\x1b[36m- Style lint \x1b[0m"
+  println! "\x1b[36m(1/7) Style lint \x1b[0m"
   println! "\x1b[2mThis linter is not checked by GitHub but if you have time please fix these errors.\x1b[0m"
   let styleLint ← IO.Process.output {cmd := "lake", args := #["exe", "style_lint"]}
   println! styleLint.stdout
 
-  println! "\x1b[36m- Building \x1b[0m"
+  println! "\x1b[36m(2/7) Building \x1b[0m"
   let build ← IO.Process.output {cmd := "lake", args := #["build"]}
   let s1 := "Build completed successfully"
   let s2 := build.stdout
@@ -20,26 +20,32 @@ def main (args : List String) : IO UInt32 := do
   else
     println! "\x1b[32mBuild is successful.\x1b[0m\n"
 
-  println! "\x1b[36m- File imports \x1b[0m"
+  println! "\x1b[36m(3/7) File imports \x1b[0m"
   let importCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_file_imports"]}
   println! importCheck.stdout
 
-  println! "\x1b[36m- TODO tag duplicates \x1b[0m"
+  println! "\x1b[36m(4/7) TODO tag duplicates \x1b[0m"
   let todoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_dup_tags"]}
   println! todoCheck.stdout
 
-  if ¬ "--fast" ∈ args then
-    println! "\x1b[36m- Transitive imports \x1b[0m"
-    println! "\x1b[2mExpect this linter may take a while to run, it can be skipped with
-        lake exe lint_all --fast\x1b[0m"
-    let redundentImports ← IO.Process.output {cmd := "lake", args := #["exe", "redundent_imports"]}
-    println! redundentImports.stdout
+  println! "\x1b[36m(5/7) Sorry and pseudo attribute linter \x1b[0m"
+  let sorryPseudoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "sorry_lint"]}
+  println! sorryPseudoCheck.stdout
 
-    println! "\x1b[36m- Lean linter \x1b[0m"
-    println! "\x1b[2mExpect this linter may take a while to run, it can be skipped with
+  if ¬ "--fast" ∈ args then
+    println! "\x1b[36m(6/7) Lean linter \x1b[0m"
+    println! "\x1b[2mExpect this linter to take a while to run, it can be skipped with
       lake exe lint_all --fast"
     println! "You can manually perform this linter by placing `#lint` at the end of the files you have modified.\x1b[0m"
     let leanCheck ← IO.Process.output {cmd := "lake", args := #["exe", "runLinter", "PhysLean"]}
     println! leanCheck.stdout
+
+    println! "\x1b[36m(7/7) Transitive imports \x1b[0m"
+    println! "\x1b[2mExpect this linter to take a while to run, it can be skipped with
+        lake exe lint_all --fast\x1b[0m"
+    let redundentImports ← IO.Process.output {cmd := "lake", args := #["exe", "redundent_imports"]}
+    println! redundentImports.stdout
+
+
 
   pure 0

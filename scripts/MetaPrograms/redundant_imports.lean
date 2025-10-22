@@ -16,7 +16,7 @@ import Mathlib.Lean.CoreM
 open Lean System Meta PhysLean
 
 
-def Imports.RedundentImports (imp : Import) : MetaM UInt32 := do
+def Imports.RedundantImports (imp : Import) : MetaM UInt32 := do
   let x ← redundantImports (some imp.module)
   if x.isEmpty then return 0
   println! "\n"
@@ -27,5 +27,5 @@ def Imports.RedundentImports (imp : Import) : MetaM UInt32 := do
 unsafe def main (_ : List String) : IO UInt32 := do
   initSearchPath (← findSysroot)
   let imports ← allImports
-  let _ ← CoreM.withImportModules #[`PhysLean] (imports.mapM Imports.RedundentImports).run'
+  let _ ← CoreM.withImportModules #[`PhysLean] (imports.mapM Imports.RedundantImports).run'
   return 0
