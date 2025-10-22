@@ -28,6 +28,7 @@ jobs:
         run: |
           lean --version
           lake --version
+          elan --version
 
       - name: build cache
         run: |
@@ -43,7 +44,7 @@ jobs:
 
       - name: runLinter on PhysLean
         run: |
-          lake exe runLinter PhysLean
+          env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
 
       - name: check file imports
         run: |
