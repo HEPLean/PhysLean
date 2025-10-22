@@ -25,8 +25,8 @@ namespace Cosmology
 - `Saddle (k : ℝ)`
 -/
 inductive SpatialGeometry : Type where
-  | Spherical (k : ℝ) (h: k < 0)
-  | Flat (k : ℝ) (h: k = 0)
+  | Spherical (k : ℝ) (h : k < 0)
+  | Flat
   | Saddle (k : ℝ) (h : k > 0)
 
 namespace SpatialGeometry
@@ -40,7 +40,7 @@ noncomputable def S (s : SpatialGeometry) : ℝ → ℝ :=
   fun r =>
     match s with
     | SpatialGeometry.Spherical k _ => k * Real.sin (r / k)
-    | SpatialGeometry.Flat _ _ => r
+    | SpatialGeometry.Flat => r
     | SpatialGeometry.Saddle k _ => k * Real.sinh (r / k)
 
 /-- The limit of `S (Saddle k) r` as `k → ∞` is equal to `S (Flat) r`.
