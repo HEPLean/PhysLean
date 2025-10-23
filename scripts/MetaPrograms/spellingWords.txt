@@ -24,7 +24,7 @@ reimplementation
 represent
 stating
 sufficient
-tersorial
+tensorial
 topologically
 traid
 uniquely
