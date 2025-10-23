@@ -12,7 +12,7 @@ efficiency
 execution
 formulae
 greatly
-higges
+higgses
 homogenous
 isometry
 lifshitz
