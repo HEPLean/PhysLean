@@ -423,7 +423,7 @@ color
 coloring
 colorings
 colors
-columbs
+coulombs
 column
 combine
 combined
