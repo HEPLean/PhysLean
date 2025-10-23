@@ -278,7 +278,7 @@ class CarriesDimension (M : Type) extends MulAction ℝ≥0 M where
 
 /-- A module `M` carries a dimension `d` if every element of `M` is supposed to have
   this dimension.
-  This is defined in additon to `CarriesDimension` to prevent a type-casting dimond. -/
+  This is defined in addition to `CarriesDimension` to prevent a type-casting dimond. -/
 class ModuleCarriesDimension (M : Type) [AddCommMonoid M] [Module ℝ M] where
   /-- The dimension carried by a module `M`. -/
   d : Dimension

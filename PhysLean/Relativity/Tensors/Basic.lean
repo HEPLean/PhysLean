@@ -608,7 +608,7 @@ lemma fin_cast_permCond (n n1 : ℕ) {c : Fin n → C} (h : n1 = n) :
 -/
 
 /-- Given a permutation `σ : Fin m → Fin n` of indices satisfying `PermCond` through `h`,
-  and a pure tensor `p`, `permP σ h p` is the pure tensor permuted accordinge to `σ`.
+  and a pure tensor `p`, `permP σ h p` is the pure tensor permuted according to `σ`.
 
   For example if `m = n = 2` and `σ = ![1, 0]`, and `p = v ⊗ₜ w` then
   `permP σ _ p = w ⊗ₜ v`. -/
@@ -632,7 +632,7 @@ lemma Pure.permP_basisVector {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
   simp [h.preserve_color]
 
 /-- Given a permutation `σ : Fin m → Fin n` of indices satisfying `PermCond` through `h`,
-  and a tensor `t`, `permT σ h t` is the tensor tensor permuted accordinge to `σ`. -/
+  and a tensor `t`, `permT σ h t` is the tensor tensor permuted according to `σ`. -/
 noncomputable def permT {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
     (σ : Fin m → Fin n) (h : PermCond c c1 σ) : S.Tensor c →ₗ[k] S.Tensor c1 where
   toFun t := (ConcreteCategory.hom (S.F.map h.toHom).hom) t

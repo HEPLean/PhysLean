@@ -17,7 +17,7 @@ The set we will actually define will be a multiset, for computational
 efficency (using multisets saves Lean having to manually check for duplicates,
 which can be very costly)
 
-To do this we define some auxillary results which create multisets of a given cardinality
+To do this we define some auxiliary results which create multisets of a given cardinality
 from a finset.
 
 ## ii. Key results

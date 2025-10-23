@@ -59,6 +59,10 @@ name = "free_simps"
 srcDir = "scripts/MetaPrograms"
 
 [[lean_exe]]
+name = "spelling"
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
 name = "check_rfl"
 srcDir = "scripts/MetaPrograms"
 

@@ -447,7 +447,7 @@ varitaional derivative of the action equal to zero.
 
 -/
 
-/-- THe equation of motion for the Harmonic oscillator. -/
+/-- The equation of motion for the Harmonic oscillator. -/
 def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
   S.gradLagrangian xₜ = 0
 
@@ -663,7 +663,7 @@ lemma toCanonicalMomentum_eq (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (F
 
 ### G.2. The Hamiltonian
 
-THe hamiltonian is defined as a function of time, canonical momentum and position, as
+The hamiltonian is defined as a function of time, canonical momentum and position, as
 ```
 H = ⟪p, v⟫ - L(t, x, v)
 ```

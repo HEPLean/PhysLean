@@ -260,7 +260,7 @@ def tmul : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) →ₗ[R]
     map_add' := fun a b ↦ by simp
     map_smul' := fun r a ↦ by simp}
 
-/-- THe equivalence formed by combining a `TensorProduct` into a `PiTensorProduct`. -/
+/-- The equivalence formed by combining a `TensorProduct` into a `PiTensorProduct`. -/
 def tmulEquiv : ((⨂[R] i : ι1, s1 i) ⊗[R] (⨂[R] i : ι2, s2 i)) ≃ₗ[R]
     ⨂[R] i : ι1 ⊕ ι2, (Sum.elim s1 s2) i :=
   LinearEquiv.ofLinear tmul tmulSymm

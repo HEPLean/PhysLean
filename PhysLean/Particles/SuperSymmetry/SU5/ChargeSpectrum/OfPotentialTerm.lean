@@ -122,7 +122,7 @@ fields.
 /-- Given a charges `x : ChargeSpectrum` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term.
 
-  This is a more explicit form of `PotentialTerm`, which has the benifit that
+  This is a more explicit form of `PotentialTerm`, which has the benefit that
   it is quick with `decide`, but it is not defined based on more fundamental
   concepts, like `ofPotentialTerm` is. -/
 def ofPotentialTerm' (y : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=

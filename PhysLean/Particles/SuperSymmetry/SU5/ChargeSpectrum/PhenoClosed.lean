@@ -396,7 +396,7 @@ TODO "JGVOQ" "Make the result `viableChargesMultiset` a safe definition, that is
 unsafe def viableChargesMultiset (S5 S10 : Finset 𝓩) :
     Multiset (ChargeSpectrum 𝓩) := (aux (completeMinSubset S5 S10) (completeMinSubset S5 S10)).dedup
 where
-  /-- Auxillary recursive function to define `viableChargesMultiset`. -/
+  /-- Auxiliary recursive function to define `viableChargesMultiset`. -/
   aux : Multiset (ChargeSpectrum 𝓩) → Multiset (ChargeSpectrum 𝓩) → Multiset (ChargeSpectrum 𝓩) :=
     fun all add =>
       /- Note that aux terminates since that every iteration the size of `all` increases,

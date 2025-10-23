@@ -23,7 +23,7 @@ allowing it to be used in tensorial expressions.
 - `SpaceTime d` : The type corresponding to `d+1` dimensional spacetime.
 - `toTimeAndSpace` : A continuous linear equivalence between `SpaceTime d`
   and `Time × Space d`.
-- `deriv` : The derivative of a function `SpaceTime d → M` along the `μ` coordinte.
+- `deriv` : The derivative of a function `SpaceTime d → M` along the `μ` coordinate.
 - `deriv_sum_inr` : The derivative along a spatial coordinate in terms of the
   derivative on `Space d`.
 - `deriv_sum_inl` : The derivative along the temporal coordinate in terms of the
@@ -307,7 +307,7 @@ def coordCLM (μ : Fin 1 ⊕ Fin d) : SpaceTime d →L[ℝ] ℝ where
 
 -/
 
-/-- The derivative of a function `SpaceTime d → ℝ` along the `μ` coordinte. -/
+/-- The derivative of a function `SpaceTime d → ℝ` along the `μ` coordinate. -/
 noncomputable def deriv {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) : SpaceTime d → M :=
   fun y => fderiv ℝ f y (Lorentz.Vector.basis μ)
