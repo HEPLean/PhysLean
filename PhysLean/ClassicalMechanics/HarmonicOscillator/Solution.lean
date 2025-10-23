@@ -461,18 +461,85 @@ lemma trajectory_velocity_eq_zero_at_arctan (IC : InitialConditions) (hx : IC.x�
 ### E.3. The position when the velocity is zero
 
 We show that the position is equal to `√(‖IC.x₀‖^2 + (‖IC.v₀‖/S.ω)^2) ` when
-the velocity is zero, as long as the initial conditions are not both zero.
-This is currently a TODO.
+the velocity is zero.
 
 -/
 
-@[sorryful]
-lemma trajectory_velocity_eq_zero_iff (IC : InitialConditions) (t : Time)
-    (hx : IC.x₀ ≠ 0 ∨ IC.v₀ ≠ 0) :
+lemma trajectory_velocity_eq_zero_iff (IC : InitialConditions) (t : Time) :
     ∂ₜ (IC.trajectory S) t = 0 ↔
     ‖(IC.trajectory S) t‖ = √(‖IC.x₀‖^2 + (‖IC.v₀‖/S.ω)^2) := by
-  sorry
-
+  have := by exact energy_eq S (trajectory S IC)
+  have h_energy_t := congrFun this t
+  simp [kineticEnergy_eq, potentialEnergy_eq] at h_energy_t
+  rw [real_inner_self_eq_norm_sq (trajectory S IC t)] at h_energy_t
+  have := by exact trajectory_energy S IC
+  have h_init := congrFun this t
+  have h_ω := by exact ω_sq S
+  constructor
+  · intro h_partial
+    rw [h_partial, inner_zero_left, mul_zero, zero_add] at h_energy_t
+    have h₁ : ‖trajectory S IC t‖ ^ 2 =  S.energy (trajectory S IC) t * 2 * (1 / S.k) := by
+      simp [h_energy_t]
+      field_simp
+    symm
+    refine (sqrt_eq_iff_mul_self_eq ?_ ?_).mpr ?_
+    · apply add_nonneg <;> apply sq_nonneg
+    · apply norm_nonneg
+    rw [← pow_two]
+    rw [h₁, h_init]
+    ring_nf
+    rw [mul_assoc]
+    rw [mul_inv_cancel₀]
+    · rw [mul_one, inv_eq_one_div S.k, mul_assoc]
+      rw [ mul_one_div S.m S.k, ← inverse_ω_sq]
+      ring
+    · exact k_neq_zero S
+  · intro h_norm
+    apply norm_eq_zero.mp
+    rw [real_inner_self_eq_norm_sq (∂ₜ (trajectory S IC) t)] at h_energy_t
+    have energies : S.energy (trajectory S IC) t = S.energy (trajectory S IC) t := by rfl
+    nth_rewrite 1 [h_energy_t] at energies
+    nth_rewrite 1 [h_init] at energies
+    rw [h_norm] at energies
+    have h₁ : S.m * ‖∂ₜ (trajectory S IC) t‖ ^ 2 + S.k * (√(‖IC.x₀‖ ^ 2 + (‖IC.v₀‖ / S.ω) ^ 2) ^ 2) 
+            = S.m * ‖IC.v₀‖ ^ 2 + S.k * ‖IC.x₀‖ ^ 2 := by
+      calc
+        S.m * ‖∂ₜ (trajectory S IC) t‖ ^ 2 + S.k * (√(‖IC.x₀‖ ^ 2 + (‖IC.v₀‖ / S.ω) ^ 2) ^ 2) 
+            = 2 * ( 2⁻¹ * S.m * ‖∂ₜ (trajectory S IC) t‖ ^ 2 + 2⁻¹ * (S.k * √(‖IC.x₀‖ ^ 2 + (‖IC.v₀‖ / S.ω) ^ 2) ^ 2)) := by
+          simp [mul_add]
+          rw [← mul_assoc, ← mul_assoc]
+          rw [mul_inv_cancel_of_invertible 2, one_mul]
+      _ = 2 * (1 / 2 * (S.m * ‖IC.v₀‖ ^ 2 + S.k * ‖IC.x₀‖ ^ 2)) := by rw [energies]
+      _ = S.m * ‖IC.v₀‖ ^ 2 + S.k * ‖IC.x₀‖ ^ 2 := by simp
+    have h₂ : S.m * ‖∂ₜ (trajectory S IC) t‖ ^ 2 + S.k * (‖IC.x₀‖ ^ 2 + (‖IC.v₀‖ / S.ω) ^ 2) 
+        = S.m * ‖IC.v₀‖ ^ 2 + S.k * ‖IC.x₀‖ ^ 2 := by
+      rw [← h₁, sq_sqrt ?_]
+      apply add_nonneg
+      apply sq_nonneg
+      apply sq_nonneg
+    have h₃: ‖∂ₜ (trajectory S IC) t‖ ^ 2 = ‖IC.v₀‖ ^ 2 - (S.k / S.m) * (‖IC.v₀‖ / S.ω) ^ 2 := by
+      calc
+        ‖∂ₜ (trajectory S IC) t‖ ^ 2 = (1 / S.m) * (S.m * ‖∂ₜ (trajectory S IC) t‖ ^ 2 + S.k * (‖IC.x₀‖ ^ 2 
+                                    + (‖IC.v₀‖ / S.ω) ^ 2) - S.k * (‖IC.x₀‖ ^ 2 + (‖IC.v₀‖ / S.ω) ^ 2)) := by simp
+        _ = (1 / S.m) * (S.m * ‖IC.v₀‖ ^ 2 + S.k * ‖IC.x₀‖ ^ 2 - S.k * (‖IC.x₀‖ ^ 2 + (‖IC.v₀‖ / S.ω) ^ 2)) := by rw [h₂]
+        _ = (1 / S.m) * (S.m * ‖IC.v₀‖ ^ 2 + S.k * ‖IC.x₀‖ ^ 2 -  S.k * ‖IC.x₀‖ ^ 2 -  S.k * (‖IC.v₀‖ / S.ω) ^ 2) := by
+          rw [mul_add S.k (‖IC.x₀‖ ^ 2) ((‖IC.v₀‖ /S.ω) ^2)]
+          rw [←sub_sub_sub_eq (S.m * ‖IC.v₀‖ ^ 2) (S.k * ‖IC.x₀‖ ^ 2) (S.k * (‖IC.v₀‖ / S.ω) ^ 2) (S.k * ‖IC.x₀‖ ^ 2)]
+          simp
+        _ = (1 / S.m) * (S.m * ‖IC.v₀‖ ^ 2 -  S.k * (‖IC.v₀‖ / S.ω) ^ 2) := by simp
+        _ = (1 / S.m) * (S.m * ‖IC.v₀‖ ^ 2) - (1 / S.m) * (S.k * (‖IC.v₀‖ / S.ω) ^ 2):= by
+          rw [mul_sub (1 / S.m) (S.m * ‖IC.v₀‖ ^ 2) (S.k * (‖IC.v₀‖ / S.ω) ^ 2)]
+        _ = ‖IC.v₀‖ ^ 2 - (S.k / S.m) * (‖IC.v₀‖ / S.ω) ^ 2 := by
+          simp
+          rw [← mul_assoc, inv_mul_eq_div S.m S.k]
+    rw [← ω_sq, div_pow ‖IC.v₀‖ S.ω 2] at h₃
+    rw [mul_div_cancel₀ (‖IC.v₀‖ ^ 2) ?_] at h₃
+    rw [sub_self (‖IC.v₀‖ ^ 2)] at h₃
+    rw [sq_eq_zero_iff] at h₃
+    exact h₃
+    rw [pow_ne_zero_iff ?_]
+    apply ω_neq_zero
+    exact Ne.symm (Nat.zero_ne_add_one 1)
 /-!
 
 ## F. Some open TODOs
