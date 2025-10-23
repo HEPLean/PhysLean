@@ -113,7 +113,7 @@ lemma timeSliceLinearEquiv_ofElectricFieldAux {d : ℕ} (E : ElectricField d) (t
       | _, _ => 0) := by
   simp [timeSliceLinearEquiv, timeSlice, ofElectricFieldAux]
 
-/-- The field strength from an eletric field. -/
+/-- The field strength from an electric field. -/
 noncomputable def ofElectricField {d : ℕ} : ElectricField d →ₗ[ℝ] FieldStrength d where
   toFun E := by
     refine ⟨fun x ↦ ofElectricFieldAux E x, ?_⟩

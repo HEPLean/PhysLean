@@ -26,7 +26,7 @@ open Tensor
 
 /--A complex Lorentz tensor from a map
   `(Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum`. All
-  complex Lorentz tensors with rational coefficents with respect to the basis are of this
+  complex Lorentz tensors with rational coefficients with respect to the basis are of this
   form. -/
 noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.Color} :
     ((ComponentIdx (S := complexLorentzTensor) c) → RatComplexNum) →ₛₗ[toComplexNum] ℂT(c) where

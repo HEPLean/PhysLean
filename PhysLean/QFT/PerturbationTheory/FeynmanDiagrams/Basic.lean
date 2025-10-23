@@ -15,12 +15,12 @@ Feynman diagrams form a type into which permissible Wick contractions
 embed.
 
 A permissible Wick contraction is one which does not contribute zero to
-the vacuum expection value.
+the vacuum expectation value.
 
 Feynman diagrams are based on multisets of `FieldOp`. This should be contrasted
 with Wick contractions which are based on lists of `FieldOp`.
 
-In particular a Feynman diagram is a partion of a Multiset into
+In particular a Feynman diagram is a partition of a Multiset into
 disjoint pairs.
 
 ## Note

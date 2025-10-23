@@ -7,7 +7,7 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.
 /-!
 # B Minus L in SM with RHN.
 
-Relavent definitions for the SM `B-L`.
+Relevant definitions for the SM `B-L`.
 
 -/
 

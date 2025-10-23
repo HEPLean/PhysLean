@@ -41,12 +41,12 @@ In the `Solution` module:
 - B. The angular frequency
 - C. The energies
   - C.1. The definitions of the energies
-  - C.2. Simple equalties for the energies
+  - C.2. Simple equalities for the energies
   - C.3. Differentiability of the energies
   - C.4. Time derivatives of the energies
 - D. Lagrangian and the equation of motion
   - D.1. The Lagrangian
-    - D.1.1. Equalitites for the lagrangian
+    - D.1.1. Equalities for the lagrangian
     - D.1.2. Smoothness of the lagrangian
     - D.1.3. Gradients of the lagrangian
   - D.2. The variational derivative of the action
@@ -131,23 +131,23 @@ Here we both define and proof properties related to the angular frequency.
 
 -/
 
-/-- The angular frequency of the classical harmonic osscilator, `ω`, is defined
+/-- The angular frequency of the classical harmonic oscillator, `ω`, is defined
   as `√(k/m)`. -/
 noncomputable def ω : ℝ := √(S.k / S.m)
 
-/-- The angular frequency of the classical harmonic osscilator is positive. -/
+/-- The angular frequency of the classical harmonic oscillator is positive. -/
 @[simp]
 lemma ω_pos : 0 < S.ω := sqrt_pos.mpr (div_pos S.k_pos S.m_pos)
 
-/-- The square of the angular frequency of the classical harmonic osscilator is equal to `k/m`. -/
+/-- The square of the angular frequency of the classical harmonic oscillator is equal to `k/m`. -/
 lemma ω_sq : S.ω^2 = S.k / S.m := by
   rw [ω, sq_sqrt]
   exact div_nonneg (le_of_lt S.k_pos) (le_of_lt S.m_pos)
 
-/-- The angular frequency of the classical harmonic osscilator is not equal to zero. -/
+/-- The angular frequency of the classical harmonic oscillator is not equal to zero. -/
 lemma ω_neq_zero : S.ω ≠ 0 := Ne.symm (ne_of_lt S.ω_pos)
 
-/-- The inverse of the square of the angular frequency of the classical harmonic osscilator
+/-- The inverse of the square of the angular frequency of the classical harmonic oscillator
   is `m/k`. -/
 lemma inverse_ω_sq : (S.ω ^ 2)⁻¹ = S.m/S.k := by
   rw [ω_sq]
@@ -158,7 +158,7 @@ lemma inverse_ω_sq : (S.ω ^ 2)⁻¹ = S.m/S.k := by
 ## C. The energies
 
 The harmonic oscillator has a kinetic energy determined by it's velocity and
-a potential energy deetermined by it's position.
+a potential energy determined by it's position.
 These combine to give the total energy of the harmonic oscillator.
 
 Here we state and prove a number of properties of these energies.
@@ -190,7 +190,7 @@ noncomputable def energy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
 
 /-!
 
-### C.2. Simple equalties for the energies
+### C.2. Simple equalities for the energies
 
 -/
 
@@ -326,9 +326,9 @@ noncomputable def lagrangian (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (F
 
 /-!
 
-#### D.1.1. Equalitites for the lagrangian
+#### D.1.1. Equalities for the lagrangian
 
-Equalitites for the lagrangian. We prove some simple equalities for the lagrangian,
+Equalities for the lagrangian. We prove some simple equalities for the lagrangian,
 in particular that when applied to a trajectory it is the kinetic energy minus the potential energy.
 
 -/
@@ -410,7 +410,7 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpa
 
 ### D.2. The variational derivative of the action
 
-We now write down the varitional derivative for the harmonic oscillator, for
+We now write down the variational derivative for the harmonic oscillator, for
 a trajectory $x(t)$ this is equal to
 
 $$t\mapsto \left.\frac{\partial L(t, \dot x (t), q)}{\partial q}\right|_{q = x(t)} -
@@ -421,7 +421,7 @@ equation of motion.
 
 -/
 
-/-- The Euler-Lagrange operator for the classical harmonic osscilator. -/
+/-- The Euler-Lagrange operator for the classical harmonic oscillator. -/
 noncomputable def gradLagrangian (xₜ : Time → Space 1) : Time → Space 1 :=
   (δ (q':=xₜ), ∫ t, lagrangian S t (q' t) (fderiv ℝ q' t 1))
 
@@ -429,7 +429,7 @@ noncomputable def gradLagrangian (xₜ : Time → Space 1) : Time → Space 1 :=
 
 #### D.2.1. Equality for the variational derivative
 
-Basic equaltities for the variational derivative of the action.
+Basic equalities for the variational derivative of the action.
 
 -/
 
@@ -443,7 +443,7 @@ lemma gradLagrangian_eq_eulerLagrangeOp (xₜ : Time → Space 1) (hq : ContDiff
 ### D.3. The equation of motion
 
 The equation of motion for the harmonic oscillator is given by setting the
-varitaional derivative of the action equal to zero.
+variational derivative of the action equal to zero.
 
 -/
 
@@ -455,7 +455,7 @@ def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
 
 #### D.3.1. Equation of motion if and only if variational-gradient of Lagrangian is zero
 
-We write a simple iff statment for the definition of the equation of motions.
+We write a simple iff statement for the definition of the equation of motions.
 
 -/
 
@@ -475,7 +475,7 @@ motion is equivalent to Newton's second law.
 
 ### E.1. The force
 
-We define the force of the harmoic oscillator as the negative gradient of the potential energy,
+We define the force of the harmonic oscillator as the negative gradient of the potential energy,
 and show that this is equal to `- k x`.
 
 -/

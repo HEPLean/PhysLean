@@ -124,7 +124,7 @@ scoped[realLorentzTensor] notation "ℝT(" d "," c ")" =>
 
 /-!
 
-## Simplyfing repDim
+## Simplifying repDim
 
 -/
 
@@ -141,7 +141,7 @@ lemma repDim_eq_one_plus_dim {d : ℕ} {c : realLorentzTensor.Color} :
 
 /-!
 
-## Simplyfing τ
+## Simplifying τ
 
 -/
 

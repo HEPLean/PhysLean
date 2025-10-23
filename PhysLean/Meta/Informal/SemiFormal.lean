@@ -8,7 +8,7 @@ import Lean.Elab.Command
 
 # Semiformal results
 
-Semiformal results sit inbetween informal and formal results. There type or propsoition is
+Semiformal results sit in between informal and formal results. There type or proposition is
 defined, by the proof or definition is not.
 
 ## Note
@@ -34,7 +34,7 @@ structure WantedInfo where
   /-- The tag of the TODO item -/
   tag : String
 
-/-- The enviroment extension for semiformal results. -/
+/-- The environment extension for semiformal results. -/
 initialize wantedExtension : SimplePersistentEnvExtension WantedInfo (Array WantedInfo) ←
   registerSimplePersistentEnvExtension {
     name := `wantedExtension

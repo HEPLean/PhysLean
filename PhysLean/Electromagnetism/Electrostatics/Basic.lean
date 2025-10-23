@@ -14,7 +14,7 @@ time variation or magnetic fields.
 The study of electrostatics usually necessitates the use of distributions, since point charges
 are often used to model charged particles. The formal definition of such distributions
 are often glossed over in physics. As a result some of the definitions or proofs
-within PhysLean's electrostatics may seem obtruce - but this is necessary for complete
+within PhysLean's electrostatics may seem over the top - but this is necessary for complete
 mathematical correctness.
 
 -/
@@ -49,7 +49,7 @@ lemma gaussLaw_iff {d : ℕ} (E : StaticElectricField d) (ε : ℝ) (ρ : Charge
     E.GaussLaw ε ρ ↔ Space.divD E = (1 / ε) • ρ := by
   rw [GaussLaw]
 
-TODO "IBQW4" "Generalize Faraday's law to arbitary space dimensions.
+TODO "IBQW4" "Generalize Faraday's law to arbitrary space dimensions.
   This may involve generalizing the curl operator to arbitrary dimensions."
 
 /-- Faraday's law in 3d for static electric fields. -/

@@ -23,7 +23,7 @@ namespace HilbertSpace
 open MeasureTheory SchwartzMap
 
 /-- Plane waves as a member of the dual of the
-  Schwartz submoudle of the Hilbert space.
+  Schwartz submodule of the Hilbert space.
 
   For a given `k` this corresponds to the plane wave
   `exp (2π I k x)`. -/

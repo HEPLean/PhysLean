@@ -142,7 +142,7 @@ has a subset of this form.
 
 variable [DecidableEq 𝓩]
 
-/-- A element of `Charges` from three intergers `a b c : ℤ` for a given potential term `T`.
+/-- A element of `Charges` from three integers `a b c : ℤ` for a given potential term `T`.
   Defined such that `allowsTermForm a b c T` always allows the potential term `T`,
   and if any over charge `x` allows `T` then it is due to a subset of the form
   `allowsTermForm a b c T`. -/
@@ -319,8 +319,8 @@ Namely that if a charge spectrum `x`
 allows a potential term `T`, then there exists charges `a`, `b`, and `c` such that
 `allowsTermForm a b c T ⊆ x`.
 
-The proof of this result is rather long, relying on case-by-case anlaysis of each
-of the potential terms of intrest.
+The proof of this result is rather long, relying on case-by-case analysis of each
+of the potential terms of interest.
 
 -/
 

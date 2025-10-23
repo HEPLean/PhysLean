@@ -266,7 +266,7 @@ Dimensions are assigned to types with the following type-classes
 - `CarriesDimension` for a type carrying an instance of `MulAction ℝ≥0 M`
 - `ModuleCarriesDimension` for a type carrying an instance of `Module ℝ M`.
 
-The latter is need to prevent a typeclass dimond.
+The latter is need to prevent a typeclass diamond.
 
 -/
 
@@ -278,7 +278,7 @@ class CarriesDimension (M : Type) extends MulAction ℝ≥0 M where
 
 /-- A module `M` carries a dimension `d` if every element of `M` is supposed to have
   this dimension.
-  This is defined in addition to `CarriesDimension` to prevent a type-casting dimond. -/
+  This is defined in addition to `CarriesDimension` to prevent a type-casting diamond. -/
 class ModuleCarriesDimension (M : Type) [AddCommMonoid M] [Module ℝ M] where
   /-- The dimension carried by a module `M`. -/
   d : Dimension
@@ -297,7 +297,7 @@ lemma ModuleCarriesDimension.d_eq_CarriesDimension_d {M : Type} [AddCommMonoid M
 ## Terms of the current dimension
 
 Given a type `M` which carries a dimension `d`,
-we are intrested in elements of `M` which depend on a choice of units, i.e. functions
+we are interested in elements of `M` which depend on a choice of units, i.e. functions
 `UnitChoices → M`.
 
 We define both a proposition
@@ -350,7 +350,7 @@ lemma Dimensionful.smul_apply {M : Type} [CarriesDimension M]
     (a : ℝ≥0) (f : Dimensionful M) (u : UnitChoices) :
     (a • f).1 u = a • f.1 u := rfl
 
-/-- For `M` carying a dimension `d`, the equivalence between `M` and `Dimension M`,
+/-- For `M` carrying a dimension `d`, the equivalence between `M` and `Dimension M`,
   given a choice of units. -/
 noncomputable def CarriesDimension.toDimensionful {M : Type} [CarriesDimension M]
     (u : UnitChoices) :

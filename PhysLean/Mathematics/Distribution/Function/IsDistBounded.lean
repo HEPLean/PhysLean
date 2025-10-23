@@ -13,7 +13,7 @@ In this module we define the property `IsDistBounded f` for a function `f`.
 It says that `f` is bounded by a finite sum of terms of the form `c * ‖x + g‖ ^ p` for
 constants `c`, `g` and `-d ≤ p ` where `d` is the dimension of the space minus 1.
 
-We prove a number of properties of these functions, inparticular that they
+We prove a number of properties of these functions, in particular that they
 are integrable when multiplied by a Schwartz map. This allows us to define distributions
 from such functions.
 

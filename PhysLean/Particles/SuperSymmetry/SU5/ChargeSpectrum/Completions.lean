@@ -134,7 +134,7 @@ their charges in `S5` and `S10`.
 variable [DecidableEq 𝓩]
 
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
-  the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x` and are
+  the minimal charges `y` in `ofFinset S5 S10` which are a super sets of `x` and are
   complete. -/
 def completions (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) : Multiset (ChargeSpectrum 𝓩) :=
   let SqHd := if x.qHd.isSome then {x.qHd} else S5.val.map fun y => some y
@@ -387,7 +387,7 @@ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeS
 
 We give a fast version of `completions` in the case when `x` has a `qHu` charge,
 and a non-empty set of `10` charges, but does not have a `qHd` charge or any `5`-bar charges.
-Here we only need to specifiy the allowed `5`-bar charges, not the allowed `10` charges.
+Here we only need to specify the allowed `5`-bar charges, not the allowed `10` charges.
 
 This is the case for charges which minimally allow the top Yukawa coupling.
 

@@ -514,7 +514,7 @@ lemma spaceDerivD_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (spaceDerivD i f) ε = fderivD ℝ f ε (0, basis i) := by
   simp [spaceDerivD]
 
-/-- The spatial gradient of a distribution dependent on time and spaace. -/
+/-- The spatial gradient of a distribution dependent on time and space. -/
 noncomputable def spaceGradD {d} :
     ((Time × Space d) →d[ℝ] ℝ) →ₗ[ℝ] (Time × Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d)) where
   toFun f := {

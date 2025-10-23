@@ -44,16 +44,16 @@ def pauliMatrix : Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ
 @[inherit_doc pauliMatrix]
 scoped[PauliMatrix] notation "σ" => pauliMatrix
 
-/-- The 'Pauli matrix' corresponding to the identit `1`. -/
+/-- The 'Pauli matrix' corresponding to the identity `1`. -/
 scoped[PauliMatrix] notation "σ0" => σ (Sum.inl 0)
 
-/-- The Pauli matrix corresponding to the identit `!![0, 1; 1, 0]`. -/
+/-- The Pauli matrix corresponding to the matrix `!![0, 1; 1, 0]`. -/
 scoped[PauliMatrix] notation "σ1" => σ (Sum.inr 0)
 
-/-- The Pauli matrix corresponding to the identit `!![0, -I; I, 0]`. -/
+/-- The Pauli matrix corresponding to the matrix `!![0, -I; I, 0]`. -/
 scoped[PauliMatrix] notation "σ2" => σ (Sum.inr 1)
 
-/-- The Pauli matrix corresponding to the identit `!![1, 0; 0, -1]`. -/
+/-- The Pauli matrix corresponding to the matrix `!![1, 0; 0, -1]`. -/
 scoped[PauliMatrix] notation "σ3" => σ (Sum.inr 2)
 
 lemma pauliMatrix_inl_zero_eq_one : pauliMatrix (Sum.inl 0) = 1 := by

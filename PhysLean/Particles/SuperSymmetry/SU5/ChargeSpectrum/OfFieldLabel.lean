@@ -6,14 +6,14 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.Basic
 /-!
 
-# Charges assocaited with a field label
+# Charges associated with a field label
 
 ## i. Overview
 
 Recall that a `FieldLabel` is one of the seven possible superfields in the SU(5) GUT,
 corresponding to the fields present and their conjugates.
 
-Given a charge spectrum `x : ChargeSpectrum 𝓩`, we are intrested in the finite set of
+Given a charge spectrum `x : ChargeSpectrum 𝓩`, we are interested in the finite set of
 charges carried by representations associated with a given `FieldLabel`.
 
 Results in this module will be used to find the charges associated with
@@ -30,7 +30,7 @@ terms in the potential.
 - A. Charges associated with a field label
   - A.1. The field labels for the empty charge spectrum
   - A.2. Monotonicity of `ofFieldLabel`
-  - A.3. Membership of conjugate charegs
+  - A.3. Membership of conjugate charges
   - A.4. Extensionality of charge spectra via `ofFieldLabel`
 
 ## iv. References
@@ -103,7 +103,7 @@ lemma ofFieldLabel_mono {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (F : FieldLabe
 
 /-!
 
-### A.3. Membership of conjugate charegs
+### A.3. Membership of conjugate charges
 
 We show that a charge is a member of the finite sets associated with a field label if and only if
 its negative is a member of the finite set associated with the conjugate field label.
@@ -132,7 +132,7 @@ lemma mem_ofFieldLabel_fiveMatter (x : 𝓩) (y : ChargeSpectrum 𝓩) :
 
 ### A.4. Extensionality of charge spectra via `ofFieldLabel`
 
-We whow that two charge spectra are equal if they are equal on all field labels.
+We show that two charge spectra are equal if they are equal on all field labels.
 
 This extensionality lemma is actually overkill in most cases, as there are a lot more
 direct ways to show that two charge spectra are equal.

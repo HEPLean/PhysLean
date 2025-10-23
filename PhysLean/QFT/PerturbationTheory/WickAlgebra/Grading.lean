@@ -182,7 +182,7 @@ lemma fermionicProj_eq_fermionicProjFree (a : 𝓕.FieldOpFreeAlgebra) :
 
 /-!
 
-## Interactino between bosonicProj and fermionicProj
+## Interaction between bosonicProj and fermionicProj
 
 -/
 

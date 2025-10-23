@@ -37,11 +37,15 @@ def allWords : MetaM (Array String) := do
       (s.split (fun c => c.isWhitespace || ".,?!:;()[]{}<>\"'".contains c)).toArray)
   let allList := (allList.filter (fun w => w ≠ "" ∧ w ≠ " ")).toList.dedup.toArray
 
-  let allList := allList.qsort (fun a b => a < b)
+  let allList := allList.qsort (fun a b => a.toLower < b.toLower)
   let allList := allList.filter (fun s => s.all Char.isAlpha)
 
-
   return allList
+
+def dictionary : MetaM (Array String) := do
+  let path : System.FilePath := "./scripts/MetaPrograms/spellingWords.txt"
+  let lines ← IO.FS.lines path
+  return lines.map (fun s => s.toLower)
 
 unsafe def main (_ : List String) : IO Unit := do
   initSearchPath (← findSysroot)
@@ -52,4 +56,8 @@ unsafe def main (_ : List String) : IO Unit := do
   let ctx : Core.Context := {fileName, options, fileMap := default }
   let state := {env}
   let (array, _) ← (Lean.Core.CoreM.toIO · ctx state) do (allWords).run'
-  println! "{array}"
+  let (dict, _) ← (Lean.Core.CoreM.toIO · ctx state) do (dictionary).run'
+  let misspelled := array.filter fun w => ¬ (w.toLower) ∈ dict
+  println! "The following words are not in the dictionary, please correct or add them to
+    the spellingWords.txt file:"
+  println! "{misspelled}"

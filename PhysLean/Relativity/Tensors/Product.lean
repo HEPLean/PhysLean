@@ -33,7 +33,7 @@ The following results exist for both `prodP` and `prodT` :
 ## iii. Table of contents
 
 - A. Products of index components
-  - A.1. Indexing componets by `Fin n1 ⊕ Fin n2` rather than `Fin (n1 + n2)`
+  - A.1. Indexing components by `Fin n1 ⊕ Fin n2` rather than `Fin (n1 + n2)`
   - A.2. The product of two index components
   - A.3. The product of component indices as an equivalence
 - B. Products of pure tensors
@@ -91,7 +91,7 @@ variable {k C G : Type} [CommRing k] [Group G]
 
 /-!
 
-### A.1. Indexing componets by `Fin n1 ⊕ Fin n2` rather than `Fin (n1 + n2)`
+### A.1. Indexing components by `Fin n1 ⊕ Fin n2` rather than `Fin (n1 + n2)`
 
 -/
 

@@ -254,7 +254,7 @@ def toRepFunc : Functor (OverColor C) (Rep k G) where
 
 ## The braiding of toRepFunc
 
-The functor `toRepFunc` is a braided monodial functor.
+The functor `toRepFunc` is a braided monoidal functor.
 This is made manifest in the result
 - `toRepFunc_braidedFunctor`.
 

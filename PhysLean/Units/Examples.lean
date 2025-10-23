@@ -207,7 +207,7 @@ lemma example2_energyMass (u : UnitChoices) :
 ## Examples with other functions
 -/
 
-/-- An example of a dimensionafully correct result using functions. -/
+/-- An example of a dimensionally correct result using functions. -/
 def CosDim (t : WithDim T𝓭 ℝ) (ω : WithDim T𝓭⁻¹ ℝ) (a : ℝ) : Prop :=
   Real.cos (ω.1 * t.1) = a
 

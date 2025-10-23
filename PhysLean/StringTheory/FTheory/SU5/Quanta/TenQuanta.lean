@@ -26,7 +26,7 @@ properties thereof.
   all the fluxes corresponding to the same charge (i.e. representation).
 - `TenQuanta.liftCharges` given a charge `c` the `TenQuanta` which have
   charge `c` and no exotics or zero fluxes.
-- `TenQuanta.anomalyCoefficent` is the anomaly coefficent associated with a `TenQuanta`.
+- `TenQuanta.anomalyCoefficient` is the anomaly coefficient associated with a `TenQuanta`.
 
 ## iii. Table of contents
 
@@ -62,7 +62,7 @@ properties thereof.
     - C.2.4. Decomposition preserves the charges
     - C.2.5. Decomposition preserves the reduction
     - C.2.6. Fluxes of the decomposition of a `TenQuanta`
-- D. Lifiting charges to `TenQuanta`
+- D. Lifting charges to `TenQuanta`
   - D.1. `liftCharge c`: multiset of ten-quanta for a finite set of charges `c` with no exotics
   - D.2. TenQuanta in `liftCharge c` have a finite set of charges `c`
   - D.3. TenQuanta in `liftCharge c` have no duplicate charges
@@ -71,10 +71,10 @@ properties thereof.
   - D.6. TenQuanta in `liftCharge c` have no exotics
   - D.7. Membership in `liftCharge c` iff have no exotics, no zero fluxes, and charges `c`
   - D.8. `liftCharge c` is preserved under a map if reduced
-- E. Anomaly cancellation coefficents
-  - E.1. Anomaly coefficents of a `TenQuanta`
-  - E.2. Anomaly coefficents under a map
-  - E.3. Anomaly coefficents is preserved under `reduce`
+- E. Anomaly cancellation coefficients
+  - E.1. Anomaly coefficients of a `TenQuanta`
+  - E.2. Anomaly coefficients under a map
+  - E.3. Anomaly coefficients is preserved under `reduce`
 
 ## iv. References
 
@@ -93,7 +93,7 @@ open SU5
 -/
 
 /-- The quanta of w0d representations corresponding to a multiset of
-  `(q, M, N)` for each partcile. `(M, N)` are defined in the `FluxesFive` module. -/
+  `(q, M, N)` for each particle. `(M, N)` are defined in the `FluxesFive` module. -/
 abbrev TenQuanta (𝓩 : Type := ℤ) : Type := Multiset (𝓩 × Fluxes)
 
 namespace TenQuanta
@@ -153,7 +153,7 @@ section reduce
 variable [DecidableEq 𝓩]
 
 /-- The `reduce` of `TenQuanta` is a new `TenQuanta` with all the fluxes
-  corresponding to the same charge (i.e. represenation) added together. -/
+  corresponding to the same charge (i.e. representation) added together. -/
 def reduce (x : TenQuanta 𝓩) : TenQuanta 𝓩 :=
   x.toCharges.dedup.map fun q10 => (q10, ((x.filter (fun f => f.1 = q10)).map (fun y => y.2)).sum)
 
@@ -820,7 +820,7 @@ lemma decompose_toFluxesTen (x : TenQuanta 𝓩)
 
 /-!
 
-## D. Lifiting charges to `TenQuanta`
+## D. Lifting charges to `TenQuanta`
 
 -/
 
@@ -834,13 +834,13 @@ variable [DecidableEq 𝓩]
 
 ### D.1. `liftCharge c`: multiset of ten-quanta for a finite set of charges `c` with no exotics
 
-This is an efficent definition, we will later show that it gives the correct answer
+This is an efficient definition, we will later show that it gives the correct answer
 
 -/
 
 /-- Given a finite set of charges `c` the `TenQuanta`
   which do not have exotics, duplicate charges or zero fluxes, which map down to `c`.
-  This is defined to be as efficent as possible. -/
+  This is defined to be as efficient as possible. -/
 def liftCharge (c : Finset 𝓩) : Multiset (TenQuanta 𝓩) :=
   /- The {(1, 0), (1, 0), (1, 0)} case. -/
   /- The multisets of cardinality 3 containing 3 elements of `c`. -/
@@ -1133,7 +1133,7 @@ end toChargesExpand
 
 /-!
 
-## E. Anomaly cancellation coefficents
+## E. Anomaly cancellation coefficients
 
 -/
 
@@ -1143,43 +1143,43 @@ variable [CommRing 𝓩]
 
 /-!
 
-### E.1. Anomaly coefficents of a `TenQuanta`
+### E.1. Anomaly coefficients of a `TenQuanta`
 
 -/
 
 /--
-  The anomaly coefficent of a `TenQuanta` is given by the pair of integers:
+  The anomaly coefficient of a `TenQuanta` is given by the pair of integers:
   `(∑ᵢ qᵢ Nᵢ, 3 * ∑ᵢ qᵢ² Nᵢ)`.
 
   The first components is for the mixed U(1)-MSSM, see equation (22) of arXiv:1401.5084.
   The second component is for the mixed U(1)Y-U(1)-U(1) gauge anomaly,
     see equation (23) of arXiv:1401.5084.
 -/
-def anomalyCoefficent (F : TenQuanta 𝓩) : 𝓩 × 𝓩 :=
+def anomalyCoefficient (F : TenQuanta 𝓩) : 𝓩 × 𝓩 :=
   ((F.map fun x => x.2.2 • x.1).sum, 3 * (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
 /-!
 
-### E.2. Anomaly coefficents under a map
+### E.2. Anomaly coefficients under a map
 
 -/
 
 @[simp]
-lemma anomalyCoefficent_of_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
+lemma anomalyCoefficient_of_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (F : TenQuanta 𝓩) :
-    TenQuanta.anomalyCoefficent (F.map fun y => (f y.1, y.2) : TenQuanta 𝓩1) =
-    (f.prodMap f) F.anomalyCoefficent := by
-  simp [TenQuanta.anomalyCoefficent, map_multiset_sum, Multiset.map_map, map_ofNat]
+    TenQuanta.anomalyCoefficient (F.map fun y => (f y.1, y.2) : TenQuanta 𝓩1) =
+    (f.prodMap f) F.anomalyCoefficient := by
+  simp [TenQuanta.anomalyCoefficient, map_multiset_sum, Multiset.map_map, map_ofNat]
 
 /-!
 
-### E.3. Anomaly coefficents is preserved under `reduce`
+### E.3. Anomaly coefficients is preserved under `reduce`
 
 -/
 
-lemma anomalyCoefficent_of_reduce [DecidableEq 𝓩] (F : TenQuanta 𝓩) :
-    F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
-  simp [anomalyCoefficent]
+lemma anomalyCoefficient_of_reduce [DecidableEq 𝓩] (F : TenQuanta 𝓩) :
+    F.reduce.anomalyCoefficient = F.anomalyCoefficient := by
+  simp [anomalyCoefficient]
   constructor
   · let f : 𝓩 → Fluxes →+ 𝓩 := fun q5 => {
       toFun := fun x => x.2 • q5

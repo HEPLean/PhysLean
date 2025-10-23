@@ -27,7 +27,7 @@ variable {n : ℕ} {c : Fin (n + 1) → C}
 
 /-!
 
-## The evaluation coefficent.
+## The evaluation coefficient.
 
 -/
 

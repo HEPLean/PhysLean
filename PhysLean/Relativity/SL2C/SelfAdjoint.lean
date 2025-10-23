@@ -29,7 +29,7 @@ open scoped ComplexConjugate
 open Module
 
 /-- A notation for the type of complex 2-by-2 matrices. It would have been better to make it an
-abbreviation if it wasn't for Lean's inability to recognize `ℂ²ˣ²` as an identifier. -/
+abbreviation if it was not for Lean's inability to recognize `ℂ²ˣ²` as an identifier. -/
 scoped notation "ℂ²ˣ²" => Matrix (Fin 2) (Fin 2) ℂ
 
 /-- A convenient abbreviation for the type of self-adjoint complex 2-by-2 matrices. -/

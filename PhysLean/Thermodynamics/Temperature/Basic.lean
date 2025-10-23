@@ -22,7 +22,7 @@ The choice of units can be made on a case-by-case basis, as long as they are don
 -/
 open NNReal
 
-/-- The type `Temperature` represents the temperature in a given (but arbitary) set of units
+/-- The type `Temperature` represents the temperature in a given (but arbitrary) set of units
   (preserving zero). It currently wraps `ℝ≥0`, i.e., absolute temperature in nonnegative reals. -/
 structure Temperature where
   /-- The nonnegative real value of the temperature. -/
@@ -49,7 +49,7 @@ instance : Zero Temperature := ⟨⟨0⟩⟩
 @[ext] lemma ext {T₁ T₂ : Temperature} (h : T₁.val = T₂.val) : T₁ = T₂ := by
   cases T₁; cases T₂; cases h; rfl
 
-/-- The inverse temperature defined as `1/(kB * T)` in a given, but arbitary set of units.
+/-- The inverse temperature defined as `1/(kB * T)` in a given, but arbitrary set of units.
   This has dimensions equivalent to `Energy`. -/
 noncomputable def β (T : Temperature) : ℝ≥0 :=
   ⟨1 / (kB * (T : ℝ)), by

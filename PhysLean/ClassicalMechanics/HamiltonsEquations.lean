@@ -11,7 +11,7 @@ import PhysLean.SpaceAndTime.Time.Basic
 
 In this module, given a Hamiltonian function `H : Time → X → X → ℝ`,
 we define the operator `hamiltonEqOp`
-whichn when equals zero implies hamilton's equations.
+which when equals zero implies hamilton's equations.
 
 We show that the variational derivative of the action functional
 `∫ ⟪p, dq/dt⟫ - H(t, p, q) dt` is equal to the `hamiltonEqOp`

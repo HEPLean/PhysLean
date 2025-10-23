@@ -54,7 +54,7 @@ noncomputable def constD {M } [NormedAddCommGroup M] [NormedSpace ℝ M] (d : �
 
 -/
 
-/-- The time slice of a distribution on `SpaceTime d` to forma a distribution
+/-- The time slice of a distribution on `SpaceTime d` to form a distribution
   on `Time × Space d`. -/
 noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
     ((SpaceTime d) →d[ℝ] M) ≃L[ℝ] ((Time × Space d) →d[ℝ] M) where

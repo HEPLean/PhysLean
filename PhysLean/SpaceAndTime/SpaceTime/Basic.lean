@@ -43,7 +43,7 @@ allowing it to be used in tensorial expressions.
     - B.3.1. Derivative of `toTimeAndSpace`
     - B.3.2. Derivative of the inverse of `toTimeAndSpace`
     - B.3.3. `toTimeAndSpace` acting on spatial basis vectors
-    - B.3.4. `toTimeAndSpace` acting on the temperal basis vectors
+    - B.3.4. `toTimeAndSpace` acting on the temporal basis vectors
 - C. Continuous linear map to coordinates
 - D. Derivatives of functions on `SpaceTime d`
   - D.1. The definition of the derivative
@@ -52,7 +52,7 @@ allowing it to be used in tensorial expressions.
   - D.4. The derivative of a function composed with a Lorentz transformation
   - D.5. Spacetime derivatives in terms of time and space derivatives
 - E. Measures on `SpaceTime d`
-  - E.1. Instance of a measureable space
+  - E.1. Instance of a measurable space
   - E.2. Instance of a borel space
   - E.3. Definition of an inner product space structure on `SpaceTime d`
   - E.4. Instance of a measure space
@@ -75,7 +75,7 @@ noncomputable section
 TODO "6V2DR" "SpaceTime should be refactored into a structure, or similar, to prevent casting."
 
 /-- `SpaceTime d` corresponds to `d+1` dimensional space-time.
-  This is equipped with an instaance of the action of a Lorentz group,
+  This is equipped with an instance of the action of a Lorentz group,
   corresponding to Minkowski-spacetime. -/
 abbrev SpaceTime (d : ℕ := 3) := Lorentz.Vector d
 
@@ -248,7 +248,7 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
 
 /-!
 
-#### B.3.4. `toTimeAndSpace` acting on the temperal basis vectors
+#### B.3.4. `toTimeAndSpace` acting on the temporal basis vectors
 
 -/
 
@@ -448,7 +448,7 @@ open MeasureTheory
 
 /-!
 
-### E.1. Instance of a measureable space
+### E.1. Instance of a measurable space
 
 -/
 

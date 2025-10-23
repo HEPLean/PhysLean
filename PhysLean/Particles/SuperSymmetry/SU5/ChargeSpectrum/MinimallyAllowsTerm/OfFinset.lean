@@ -12,9 +12,9 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.PhenoConstrained
 ## i. Overview
 
 In this module given finite sets for the `5`-bar and `10`d charges `S5` and `S10`
-we find the sets of charge spectra which minimally allowe a potential term `T`.
+we find the sets of charge spectra which minimally allowed a potential term `T`.
 The set we will actually define will be a multiset, for computational
-efficency (using multisets saves Lean having to manually check for duplicates,
+efficiency (using multisets saves Lean having to manually check for duplicates,
 which can be very costly)
 
 To do this we define some auxiliary results which create multisets of a given cardinality

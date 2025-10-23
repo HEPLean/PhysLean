@@ -6,10 +6,10 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Units.WithDim.Basic
 /-!
 
-# Dimensional invarance of fderiv
+# Dimensional invariance of fderiv
 
 In this module we prove that the derivative is dimensionally correct.
-That is to say for a function `f : M1 → M2` where `M1` carrys dimensions `d1` and `M2` carrys
+That is to say for a function `f : M1 → M2` where `M1` carries dimensions `d1` and `M2` carries
 dimension `d2` such that `f` has the correct dimension, then
 `fderiv ℝ f : M1 → M1 →L[ℝ] M2` has the correct dimensions.
 
@@ -65,7 +65,7 @@ lemma fderiv_isDimensionallyCorrect (f : M1 → M2) (hf : IsDimensionallyCorrect
   ordinary manifestation of dimensions of a derivative, usually `dm` is taken as e.g. `1`.
 
   This result also shows that dimensional correctness does depend on what
-  quantities are condsidered dimensionful. -/
+  quantities are considered dimensionful. -/
 lemma fderiv_dimension_const_direction (dm : M1) (f : M1 → M2) (hf : IsDimensionallyCorrect f)
     (f_diff : Differentiable ℝ f) :
     IsDimensionallyCorrect (fun x (v : WithDim (d M2 * (d M1)⁻¹) M2) =>

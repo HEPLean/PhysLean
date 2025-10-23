@@ -60,7 +60,7 @@ variable {𝓩 : Type} [AddCommGroup 𝓩]
 
 ## A. Charges of a potential term from field labels
 
-We first define `ofPotentialTerm`, and prover properites of it.
+We first define `ofPotentialTerm`, and prover properties of it.
 This is slow to compute in practice.
 
 -/

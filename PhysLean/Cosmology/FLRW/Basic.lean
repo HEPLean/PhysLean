@@ -70,7 +70,7 @@ end SpatialGeometry
 - The scale factor `a(t)`
 - An element of `SpatialGeometry`.
 
-Semiformal implementation note: It is possible that we should restirct
+Semiformal implementation note: It is possible that we should restrict
 `a(t)` to be smooth or at least twice differentiable.
 -/
 @[sorryful]

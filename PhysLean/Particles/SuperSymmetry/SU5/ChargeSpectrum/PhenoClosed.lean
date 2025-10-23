@@ -24,15 +24,15 @@ which include three which are defined in this file: `IsPhenoClosedQ5`, `IsPhenoC
 
 ## ii. Key results
 
-- `IsPhenoClosedQ5` : The proposition that a multiset of charges is phenomologically closed
+- `IsPhenoClosedQ5` : The proposition that a multiset of charges is phenomenologically closed
   under addition of `5`-bar charges from a finite set `S5`.
-- `IsPhenoClosedQ10` : The proposition that a multiset of charges is phenomologically closed
+- `IsPhenoClosedQ10` : The proposition that a multiset of charges is phenomenologically closed
   under addition of `10`-dimensional charges from a finite set `S10`.
 - `ContainsPhenoCompletionsOfMinimallyAllows` : The proposition that a multiset of charges
   contains all phenomenologically viable completions of charge spectra which permit the
-  top Yukukwa.
+  top Yukawa.
 - `completeMinSubset` : For a given `S5 S10 : Finset 𝓩`,
-  the minimal multiset of charges which satifies the condition
+  the minimal multiset of charges which satisfies the condition
   `ContainsPhenoCompletionsOfMinimallyAllows`.
 - `completeness_of_isPhenoClosedQ5_isPhenoClosedQ10` : A lemma for simplifying the proof
   that a multiset contains all phenomenologically viable charge spectra.
@@ -42,14 +42,14 @@ which include three which are defined in this file: `IsPhenoClosedQ5`, `IsPhenoC
 ## iii. Table of contents
 
 - A. Phenomenologically closed under additions of 5-bar charges
-  - A.1. Simplification using pheno-constrained due to additionial of 5-bar charge
+  - A.1. Simplification using pheno-constrained due to additional of 5-bar charge
 - B. Phenomenologically closed under additions of 10d charges
-  - B.1. Simplification using pheno-constrained due to additionial of 10d charge
+  - B.1. Simplification using pheno-constrained due to additional of 10d charge
 - C. Prop for multiset containing all pheno-viable completions of charges permitting top Yukawa
   - C.1. Simplification using fast version of completions of charges permitting top Yukawa
   - C.2. Decidability of proposition
   - C.3. Monoticity of proposition
-  - C.4. `completeMinSubset`: Minimial multiset with viable completions of top-permitting charges
+  - C.4. `completeMinSubset`: Minimal multiset with viable completions of top-permitting charges
     - C.4.1. The multiset `completeMinSubset` has no duplicates
     - C.4.2. The multiset `completeMinSubset` is minimal
     - C.4.3. The multiset `completeMinSubset` contains all completions
@@ -87,7 +87,7 @@ def IsPhenoClosedQ5 (S5 : Finset 𝓩) (charges : Multiset (ChargeSpectrum 𝓩)
 
 /-!
 
-### A.1. Simplification using pheno-constrained due to additionial of 5-bar charge
+### A.1. Simplification using pheno-constrained due to additional of 5-bar charge
 
 -/
 
@@ -122,7 +122,7 @@ def IsPhenoClosedQ10 (S10 : Finset 𝓩) (charges : Multiset (ChargeSpectrum �
 
 /-!
 
-### B.1. Simplification using pheno-constrained due to additionial of 10d charge
+### B.1. Simplification using pheno-constrained due to additional of 10d charge
 
 -/
 
@@ -206,12 +206,12 @@ lemma containsPhenoCompletionsOfMinimallyAllows_of_subset {S5 S10 : Finset 𝓩}
 
 /-!
 
-### C.4. `completeMinSubset`: Minimial multiset with viable completions of top-permitting charges
+### C.4. `completeMinSubset`: Minimal multiset with viable completions of top-permitting charges
 
 -/
-/-- For a given `S5 S10 : Finset 𝓩`, the minimal multiset of charges which satifies
+/-- For a given `S5 S10 : Finset 𝓩`, the minimal multiset of charges which satisfies
   the condition `ContainsPhenoCompletionsOfMinimallyAllows`.
-  That is to say, every multiset of charges which satifies
+  That is to say, every multiset of charges which satisfies
   `ContainsPhenoCompletionsOfMinimallyAllows` has `completeMinSubset` as a subset. -/
 def completeMinSubset (S5 S10 : Finset 𝓩) : Multiset (ChargeSpectrum 𝓩) :=
   ((minimallyAllowsTermsOfFinset S5 S10 topYukawa).bind <|
@@ -310,7 +310,7 @@ lemma completeness_of_isPhenoClosedQ5_isPhenoClosedQ10
     x ∈ charges ↔ AllowsTerm x .topYukawa ∧
     ¬ IsPhenoConstrained x ∧ ¬ YukawaGeneratesDangerousAtLevel x 1 ∧ IsComplete x := by
   constructor
-  · /- Showing that if `x ∈ Charges` it satifies the conditions. -/
+  · /- Showing that if `x ∈ Charges` it satisfies the conditions. -/
     intro h
     exact ⟨charges_topYukawa x h, charges_not_isPhenoConstrained x h, charges_yukawa x h,
       charges_complete x h⟩
@@ -389,7 +389,7 @@ TODO "JGVOQ" "Make the result `viableChargesMultiset` a safe definition, that is
   which permit a top Yukawa coupling, are not phenomenologically constrained,
   and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
 
-  This is the unique multiset without duplicates which satifies:
+  This is the unique multiset without duplicates which satisfies:
   `completeness_of_isPhenoClosedQ5_isPhenoClosedQ10`.
 
   Note this is fast for evaluation, but to slow with `decide`. -/

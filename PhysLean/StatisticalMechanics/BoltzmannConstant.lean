@@ -22,7 +22,7 @@ namespace Constants
 /-- The axiom introducing the Boltzmann constant in a given but arbitrary set of units. -/
 axiom kBAx : {p : ℝ | 0 < p}
 
-/-- The Boltzmann constant in a given but arbitary set of units.
+/-- The Boltzmann constant in a given but arbitrary set of units.
   Boltzman's constant has dimension equivalent to `Energy/Temperature`. -/
 noncomputable def kB : ℝ := kBAx.1
 

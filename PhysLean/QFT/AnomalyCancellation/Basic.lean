@@ -43,7 +43,7 @@ Related to these are the different types of spaces of charges:
   - A.1. A constructor for `ACCSystemCharges`
 - B. The module of charges
   - B.1. The `ℚ`-module structure on the type `Charges`
-  - B.2. The finitness of the `ℚ`-module structure on `Charges`
+  - B.2. The finiteness of the `ℚ`-module structure on `Charges`
 - C. The linear anomaly cancellation conditions
 - D. The module of solutions to the linear ACCs
   - D.1. Extensionality of solutions to the linear ACCs
@@ -53,7 +53,7 @@ Related to these are the different types of spaces of charges:
 - F. The solutions to the quadratic and linear anomaly cancellation conditions
   - F.1. Extensionality of solutions to the quadratic and linear ACCs
   - F.2. MulAction of rationals on the solutions to the quadratic and linear ACCs
-  - F.3. Embeddings of quadratic solutions into linera solutions
+  - F.3. Embeddings of quadratic solutions into linear solutions
   - F.4. Embeddings of solutions to linear ACCs into quadratic solutions when no quadratics
   - F.5. Embeddings of quadratic solutions into all charges
 - G. The full anomaly cancellation conditions
@@ -159,7 +159,7 @@ instance ChargesAddCommGroup (χ : ACCSystemCharges) : AddCommGroup χ.Charges :
 
 /-!
 
-### B.2. The finitness of the `ℚ`-module structure on `Charges`
+### B.2. The finiteness of the `ℚ`-module structure on `Charges`
 
 The type `χ.Charges` is a finite module.
 
@@ -262,7 +262,7 @@ instance linSolsAddCommGroup (χ : ACCSystemLinear) : AddCommGroup χ.LinSols :=
 
 ### D.3. Embedding of the solutions to the linear ACCs into the module of charges
 
-We give the linear embeding of solutions to the linear ACCs `LinSols` into
+We give the linear embedding of solutions to the linear ACCs `LinSols` into
 the module of all `charges`.
 
 -/
@@ -288,7 +288,7 @@ We extend `ACCSystemLinear` to `ACCSystemQuad` by adding a finite number
 (determined by `numberQuadratic`) of quadratic equations in the rational charges.
 
 These quadratic anomaly cancellation conditions correspond to the interaction
-of the `u(1)` part of the gauge group of intrest with another abelian part.
+of the `u(1)` part of the gauge group of interest with another abelian part.
 
 -/
 
@@ -334,7 +334,7 @@ lemma QuadSols.ext {χ : ACCSystemQuad} {S T : χ.QuadSols} (h : S.val = T.val) 
 
 ### F.2. MulAction of rationals on the solutions to the quadratic and linear ACCs
 
-The type `QuadSols` does not carry the sturucture of a module over `ℚ` as
+The type `QuadSols` does not carry the structure of a module over `ℚ` as
 the quadratic ACCs are not linear. However it does carry the structure of
 a `MulAction` of `ℚ`.
 
@@ -348,7 +348,7 @@ instance quadSolsMulAction (χ : ACCSystemQuad) : MulAction ℚ χ.QuadSols wher
 
 /-!
 
-### F.3. Embeddings of quadratic solutions into linera solutions
+### F.3. Embeddings of quadratic solutions into linear solutions
 
 We give the equivariant of solutions to the quadratic and linear ACCs `QuadSols` into
 the solutions to the linear ACCs `LinSols`.
@@ -385,7 +385,7 @@ def linSolsInclQuadSolsZero (χ : ACCSystemQuad) (h : χ.numberQuadratic = 0) :
 
 ### F.5. Embeddings of quadratic solutions into all charges
 
-We give the equivariant embeding of solutions to the quadratic and linear ACCs `QuadSols` into
+We give the equivariant embedding of solutions to the quadratic and linear ACCs `QuadSols` into
 the module of all charges `Charges`.
 
 -/
@@ -461,7 +461,7 @@ def IsSolution (χ : ACCSystem) (S : χ.Charges) : Prop :=
 
 ### H.3. MulAction of `ℚ` on the solutions to the ACCs
 
-Like with `QuadSols`, the type `Sols` does not carry the sturucture of a module over `ℚ`
+Like with `QuadSols`, the type `Sols` does not carry the structure of a module over `ℚ`
 as the cubic nor quadratic ACC is not linear. However it does carry the structure of
 a `MulAction` of `ℚ`.
 

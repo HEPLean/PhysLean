@@ -35,7 +35,7 @@ this module.
   - A.3. Monoticity of set of charges of upto n-copies of the Yukawa terms
 - B. Regeneration of phenomenologically constrained terms via upto n Yukawa singlet insertions
   - B.1. Decidability of `YukawaGeneratesDangerousAtLevel`
-  - B.2. Simplififications of condition for regenerating dangerous terms
+  - B.2. Simplifications of condition for regenerating dangerous terms
   - B.3. Empty charge spectrum does not regenerate dangerous terms
   - B.4. Monotonicity of regeneration of dangerous terms in charge spectra
   - B.5. Monotonicity of regeneration of dangerous terms in level
@@ -139,11 +139,11 @@ lemma ofYukawaTermsNSum_subset_of_subset [DecidableEq 𝓩] {x y : ChargeSpectru
 variable [DecidableEq 𝓩]
 
 /-- For charges `x : Charges`, the proposition which states that the singlets
-  needed to regenerate the Yukawa couplings regnerate a dangerous coupling
+  needed to regenerate the Yukawa couplings regenerate a dangerous coupling
   (in the superpotential) with up-to `n` insertions of the scalars.
 
   Note: If defined as (x.ofYukawaTermsNSum n).toFinset ∩ x.phenoConstrainingChargesSP.toFinset ≠ ∅
-  the exicution time is greatley increased. -/
+  the execution time is greatly increased. -/
 def YukawaGeneratesDangerousAtLevel (x : ChargeSpectrum 𝓩) (n : ℕ) : Prop :=
   (x.ofYukawaTermsNSum n) ∩ x.phenoConstrainingChargesSP ≠ ∅
 
@@ -159,7 +159,7 @@ instance (x : ChargeSpectrum 𝓩) (n : ℕ) : Decidable (YukawaGeneratesDangero
 
 /-!
 
-### B.2. Simplififications of condition for regenerating dangerous terms
+### B.2. Simplifications of condition for regenerating dangerous terms
 
 -/
 

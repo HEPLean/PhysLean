@@ -26,7 +26,7 @@ properties thereof.
   all the fluxes corresponding to the same charge (i.e. representation).
 - `FiveQuanta.liftCharges` given a charge `c` the `FiveQuanta` which have
   charge `c` and no exotics or zero fluxes.
-- `FiveQuanta.anomalyCoefficent` is the anomaly coefficent associated with a `FiveQuanta`.
+- `FiveQuanta.anomalyCoefficient` is the anomaly coefficient associated with a `FiveQuanta`.
 
 ## iii. Table of contents
 
@@ -60,7 +60,7 @@ properties thereof.
     - C.2.4. Decomposition preserves the charges
     - C.2.5. Decomposition preserves the reduction
     - C.2.6. Fluxes of the decomposition of a `FiveQuanta`
-- D. Lifiting charges to `FiveQuanta`
+- D. Lifting charges to `FiveQuanta`
   - D.1. `liftCharge c`: multiset of five-quanta for a finite set of charges `c` with no exotics
   - D.2. FiveQuanta in `liftCharge c` have a finite set of charges `c`
   - D.3. FiveQuanta in `liftCharge c` have no duplicate charges
@@ -69,10 +69,10 @@ properties thereof.
   - D.6. FiveQuanta in `liftCharge c` have no exotics
   - D.7. Membership in `liftCharge c` iff have no exotics, no zero fluxes, and charges `c`
   - D.8. `liftCharge c` is preserved under a map if reduced
-- E. Anomaly cancellation coefficents
-  - E.1. Anomaly coefficents of a `FiveQuanta`
-  - E.2. Anomaly coefficents under a map
-  - E.3. Anomaly coefficents is preserved under `reduce`
+- E. Anomaly cancellation coefficients
+  - E.1. Anomaly coefficients of a `FiveQuanta`
+  - E.2. Anomaly coefficients under a map
+  - E.3. Anomaly coefficients is preserved under `reduce`
 
 ## iv. References
 
@@ -91,7 +91,7 @@ open SU5
 -/
 
 /-- The quanta of 5-bar representations corresponding to a multiset of
-  `(q, M, N)` for each partcile. `(M, N)` are defined in the `FluxesFive` module. -/
+  `(q, M, N)` for each particle. `(M, N)` are defined in the `FluxesFive` module. -/
 abbrev FiveQuanta (𝓩 : Type := ℤ) : Type := Multiset (𝓩 × Fluxes)
 
 namespace FiveQuanta
@@ -151,7 +151,7 @@ section reduce
 variable [DecidableEq 𝓩]
 
 /-- The `reduce` of `FiveQuanta` is a new `FiveQuanta` with all the fluxes
-  corresponding to the same charge (i.e. represenation) added together. -/
+  corresponding to the same charge (i.e. representation) added together. -/
 def reduce (x : FiveQuanta 𝓩) : FiveQuanta 𝓩 :=
   x.toCharges.dedup.map fun q5 => (q5, ((x.filter (fun f => f.1 = q5)).map (fun y => y.2)).sum)
 
@@ -754,7 +754,7 @@ lemma decompose_toFluxesFive (x : FiveQuanta 𝓩)
 
 /-!
 
-## D. Lifiting charges to `FiveQuanta`
+## D. Lifting charges to `FiveQuanta`
 
 -/
 
@@ -768,7 +768,7 @@ variable [DecidableEq 𝓩]
 
 ### D.1. `liftCharge c`: multiset of five-quanta for a finite set of charges `c` with no exotics
 
-This is an efficent definition, we will later show that it gives the correct answer
+This is an efficient definition, we will later show that it gives the correct answer
 
 -/
 
@@ -1019,7 +1019,7 @@ end ofChargesExpand
 
 /-!
 
-## E. Anomaly cancellation coefficents
+## E. Anomaly cancellation coefficients
 
 -/
 
@@ -1029,43 +1029,43 @@ variable [CommRing 𝓩]
 
 /-!
 
-### E.1. Anomaly coefficents of a `FiveQuanta`
+### E.1. Anomaly coefficients of a `FiveQuanta`
 
 -/
 
 /--
-  The anomaly coefficent of a `FiveQuanta` is given by the pair of integers:
+  The anomaly coefficient of a `FiveQuanta` is given by the pair of integers:
   `(∑ᵢ qᵢ Nᵢ, ∑ᵢ qᵢ² Nᵢ)`.
 
   The first components is for the mixed U(1)-MSSM, see equation (22) of arXiv:1401.5084.
   The second component is for the mixed U(1)Y-U(1)-U(1) gauge anomaly,
   see equation (23) of arXiv:1401.5084.
 -/
-def anomalyCoefficent (F : FiveQuanta 𝓩) : 𝓩 × 𝓩 :=
+def anomalyCoefficient (F : FiveQuanta 𝓩) : 𝓩 × 𝓩 :=
   ((F.map fun x => x.2.2 • x.1).sum, (F.map fun x => x.2.2 • (x.1 * x.1)).sum)
 
 /-!
 
-### E.2. Anomaly coefficents under a map
+### E.2. Anomaly coefficients under a map
 
 -/
 
 @[simp]
-lemma anomalyCoefficent_of_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
+lemma anomalyCoefficient_of_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (F : FiveQuanta 𝓩) :
-    FiveQuanta.anomalyCoefficent (F.map fun y => (f y.1, y.2) : FiveQuanta 𝓩1) =
-    (f.prodMap f) F.anomalyCoefficent := by
-  simp [FiveQuanta.anomalyCoefficent, map_multiset_sum, Multiset.map_map]
+    FiveQuanta.anomalyCoefficient (F.map fun y => (f y.1, y.2) : FiveQuanta 𝓩1) =
+    (f.prodMap f) F.anomalyCoefficient := by
+  simp [FiveQuanta.anomalyCoefficient, map_multiset_sum, Multiset.map_map]
 
 /-!
 
-### E.3. Anomaly coefficents is preserved under `reduce`
+### E.3. Anomaly coefficients is preserved under `reduce`
 
 -/
 
-lemma anomalyCoefficent_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
-    F.reduce.anomalyCoefficent = F.anomalyCoefficent := by
-  simp [anomalyCoefficent]
+lemma anomalyCoefficient_of_reduce (F : FiveQuanta 𝓩) [DecidableEq 𝓩] :
+    F.reduce.anomalyCoefficient = F.anomalyCoefficient := by
+  simp [anomalyCoefficient]
   constructor
   · let f : 𝓩 → Fluxes →+ 𝓩 := fun q5 => {
       toFun := fun x => x.2 • q5

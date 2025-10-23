@@ -58,7 +58,7 @@ def chargeDistribution (q : ℝ) (r₀ : Space) : ChargeDistribution 3 := q • 
 
 /-- The electric potential of a point particle of charge `q` in 3d space sitting at the `r₀`.
   In physics notation this corresponds to the 'function' `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹`.
-  Here it is defined as the distribution corresponing to that function. -/
+  Here it is defined as the distribution corresponding to that function. -/
 def electricPotential (q ε : ℝ) (r₀ : Space) : StaticElectricPotential 3 :=
   Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹)
   (by
@@ -225,7 +225,7 @@ Notice that in the integral
 the integrand is has the structure of the total derivative of the function
 `η r * ‖r‖⁻¹` in the direction `y`, i.e. `d_y (η r * ‖r‖⁻¹)`.
 
-However, this doesn't quite work because `‖r‖⁻¹` is not differentiable at `r = 0`.
+However, this does not quite work because `‖r‖⁻¹` is not differentiable at `r = 0`.
 To get around this we define a sequence of functions, which for `n : ℕ` are given by
 `potentialLimitSeries n r = (‖r‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)`.
 
@@ -837,9 +837,9 @@ in-line within the proof) :
       `d³r` as `r² dr dn` where `dn` is the integral over the unit vectors `n`.
       In `d³r` the `r` is a vector whilst in `r² dr dn` the `r` is a scalar (the distance).
       `- q/(4 * π * ε) * ∫ dr² dr dn r⁻¹ ^ 2 * (d(η (a • n))/d a)_r`
-- **Step 6**: The integral is rearanged to
+- **Step 6**: The integral is rearranged to
       `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)`
-- **Step 7**: The integral is further rearanged to
+- **Step 7**: The integral is further rearranged to
     `- q/(4 * π * ε) * ∫ dn (∫_0^∞ dr (d(η (a • n))/d a)_r)`
 - **Step 8**: The inner integral `(∫_0^∞ dr (d(η (a • n))/d a)_r)` is an integral over
       a total derivative of a function which tends to zero at infinity,
@@ -853,7 +853,7 @@ in-line within the proof) :
 
 -/
 
-/-- Guass' law for a point particle in 3-dimensions at the origin, that is this theorem states that
+/-- Gauss' law for a point particle in 3-dimensions at the origin, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
 lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeDistribution q 0) := by
   /- Step 1: `∇ ⬝ E = 1/ε ρ` if for all Schwartz maps`η`, `∇ ⬝ E η = (1/ε ρ) η`. -/
@@ -939,7 +939,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
         exact compl_compl _
       · symm
         simp
-    /- Step 6: The integral is rearanged to
+    /- Step 6: The integral is rearranged to
       `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (∫ r, ‖r.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • n)) ‖r.1‖)
@@ -979,7 +979,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       simp [inner_smul_left, x, norm_smul, abs_of_nonneg (le_of_lt hr)]
       field_simp
       exact SchwartzMap.differentiable η
-    /- Step 7: The integral is further rearanged to
+    /- Step 7: The integral is further rearranged to
       `- q/(4 * π * ε) * ∫ dn (∫_0^∞ dr (d(η (a • n))/d a)_r)` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (∫ (r : Set.Ioi (0 : ℝ)),
         (_root_.deriv (fun a => η (a • n)) r.1) ∂(.comap Subtype.val volume))
@@ -1069,7 +1069,7 @@ lemma gaussLaw (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
 
 /-!
 
-## G. Rotational invaraiance
+## G. Rotational invariance
 
 We now prove the electric field, charge distribution and potential of a point particle
 are rotationally invariant.

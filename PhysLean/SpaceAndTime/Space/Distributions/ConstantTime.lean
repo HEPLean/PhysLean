@@ -29,12 +29,12 @@ to get a Schwartz Map on `Space d`.
 - A. Properties of time integrals of Schwartz maps
   - A.1. Continuity as a function of space
   - A.2. Derivative a function of space
-  - A.3. Differentiablity as a function of space
+  - A.3. Differentiability as a function of space
   - A.4. Integrability of the derivative as a function of space
   - A.5. Smoothness as a function of space
 - B. Properties of schwartz maps at a constant space point
   - B.1. Integrability
-  - B.2. Integrability of powers times norm of interated derivatives
+  - B.2. Integrability of powers times norm of iterated derivatives
     - B.2.1. Bounds on powers times norm of iterated derivatives
     - B.2.2. Integrability of powers times norm of iterated derivatives
   - B.3. Integrability of iterated derivatives
@@ -293,7 +293,7 @@ lemma time_integral_hasFDerivAt {d : ℕ} (η : 𝓢(Time × Space d.succ, ℝ))
 
 /-!
 
-### A.3. Differentiablity as a function of space
+### A.3. Differentiability as a function of space
 
 -/
 
@@ -517,7 +517,7 @@ lemma integrable_time_integral {d : ℕ} (η : 𝓢(Time × Space d.succ, ℝ)) 
 
 /-!
 
-### B.2. Integrability of powers times norm of interated derivatives
+### B.2. Integrability of powers times norm of iterated derivatives
 
 -/
 
