@@ -1,4 +1,4 @@
-boundness
+boundedness
 coefficient
 comp
 complexification
