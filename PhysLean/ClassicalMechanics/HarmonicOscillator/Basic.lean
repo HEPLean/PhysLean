@@ -709,7 +709,7 @@ lemma hamiltonian_contDiff (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.hamiltonia
 
 #### G.2.3. Gradients of the Hamiltonian
 
-We now write down the graidents of the Hamiltonian with respect to the momentum and position.
+We now write down the gradients of the Hamiltonian with respect to the momentum and position.
 
 -/
 

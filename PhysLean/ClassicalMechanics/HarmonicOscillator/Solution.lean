@@ -353,7 +353,7 @@ lemma trajectories_unique (IC : InitialConditions) (x : Time → Space 1) :
 
 ## D. The energy of the trajectories
 
-For a given set of initial conditions, the enrgy of the trajectory is constant,
+For a given set of initial conditions, the energy of the trajectory is constant,
 due to the conservation of energy. Here we show it's value.
 
 -/
@@ -369,7 +369,7 @@ lemma trajectory_energy (IC : InitialConditions) : S.energy (IC.trajectory S) =
 
 ## E. The trajectories at zero velocity
 
-We study the properties of the trajectories when the vleocity is zero.
+We study the properties of the trajectories when the velocity is zero.
 
 -/
 

@@ -48,7 +48,7 @@ the field strength tensor, the kinetic energy, and the electric and magnetic fie
     - C.3.1. Differentiability of the field strength matrix
   - C.4. The antisymmetry of the field strength tensor
   - C.5. Equivariance of the field strength tensor
-  - C.6. Linearlity of the field strength tensor
+  - C.6. Linearity of the field strength tensor
 - E. The electric and magnetic fields
   - E.1. The scalar potential
   - E.2. The vector potential
@@ -686,7 +686,7 @@ lemma fieldStrengthMatrix_equivariant {d} (A : ElectromagneticPotential d)
 
 /-!
 
-### C.6. Linearlity of the field strength tensor
+### C.6. Linearity of the field strength tensor
 
 We show that the field strength tensor is linear in the potential.
 

@@ -47,7 +47,7 @@ charge spectrum `x`, leads to a zero charge in the charges of potential term `T`
 ## iii. Table of contents
 
 - A. Charge spectrums allowing potential terms
-  - A.1. Deciability of `AllowsTerm`
+  - A.1. Decidability of `AllowsTerm`
   - A.2. Monoticity of `AllowsTerm`
 - B. Forms of charges which allow potential terms
   - B.1. `allowsTermForm` allows the potential term
@@ -99,7 +99,7 @@ def AllowsTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Prop := 0 ∈ ofP
 
 /-!
 
-### A.1. Deciability of `AllowsTerm`
+### A.1. Decidability of `AllowsTerm`
 
 We define the decidability of `AllowsTerm` through `ofPotentialTerm'` rather than
 `ofPotentialTerm` due to the speed of the former compared to the latter.

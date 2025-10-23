@@ -264,7 +264,7 @@ lemma mem_elemsNoExotics_of_noExotics (F : FluxesFive) (hNE : F.NoExotics) (hnZ 
 
 -/
 
-/-- Completness of `elemsNoExotics`, that is, every element of `FluxesFive`
+/-- Completeness of `elemsNoExotics`, that is, every element of `FluxesFive`
   which obeys `NoExotics` is an element of `elemsNoExotics`, and every
   element of `elemsNoExotics` obeys `NoExotics`. -/
 lemma noExotics_iff_mem_elemsNoExotics (F : FluxesFive) :
@@ -436,7 +436,7 @@ lemma mem_elemsNoExotics_of_noExotics (F : FluxesTen) (hNE : F.NoExotics) (hnZ :
 
 -/
 
-/-- Completness of `elemsNoExotics`, that is, every element of `FluxesTen`
+/-- Completeness of `elemsNoExotics`, that is, every element of `FluxesTen`
   which obeys `NoExotics` is an element of `elemsNoExotics`, and every
   element of `elemsNoExotics` obeys `NoExotics`. -/
 lemma noExotics_iff_mem_elemsNoExotics (F : FluxesTen) :

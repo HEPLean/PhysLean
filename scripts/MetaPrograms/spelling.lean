@@ -8,6 +8,8 @@ import Mathlib.Lean.CoreM
 import PhysLean.Meta.Linters.Sorry
 import PhysLean.Meta.Sorry
 import Mathlib.Data.List.Defs
+import Lean.DocString.Extension
+import PhysLean.Meta.AllFilePaths
 /-!
 
 # Script to help checking spelling of results
@@ -16,9 +18,20 @@ import Mathlib.Data.List.Defs
 
 open Lean
 
+def moduleDocs : MetaM (Array String) := do
+  let env ← getEnv
+  let allModules ← allPhysLeanModules
+  let modDocs := allModules.filterMap fun c =>
+    Lean.getModuleDoc? env c
+  let modDocs := modDocs.flatten
+  let modDocs := modDocs.map fun d => d.doc
+  return modDocs
+
 def allWords : MetaM (Array String) := do
   let allConstants ← PhysLean.allUserConsts
+  let allModuleDocs ← moduleDocs
   let allDocStrings ← allConstants.mapM fun c => Lean.Name.getDocString c.name
+  let allDocStrings := allDocStrings ++ allModuleDocs
   let allDocStrings := allDocStrings.filter (fun x => x ≠ "")
   let allList := allDocStrings.flatMap (fun s =>
       (s.split (fun c => c.isWhitespace || ".,?!:;()[]{}<>\"'".contains c)).toArray)
@@ -26,6 +39,8 @@ def allWords : MetaM (Array String) := do
 
   let allList := allList.qsort (fun a b => a < b)
   let allList := allList.filter (fun s => s.all Char.isAlpha)
+
+
   return allList
 
 unsafe def main (_ : List String) : IO Unit := do

@@ -45,7 +45,7 @@ to get a Schwartz Map on `Space d`.
 - D. The time integral as a schwartz map
 - E. Constant time distributions
   - E.1. Space derivatives of constant time distributions
-  - E.2. Space garadient of constant time distributions
+  - E.2. Space gradient of constant time distributions
   - E.3. Space divergence of constant time distributions
   - E.4. Space curl of constant time distributions
   - E.5. Time derivative of constant time distributions
@@ -976,7 +976,7 @@ lemma constantTime_spaceDerivD {M : Type} {d : ℕ} [NormedAddCommGroup M] [Norm
 
 /-!
 
-### E.2. Space garadient of constant time distributions
+### E.2. Space gradient of constant time distributions
 
 -/
 

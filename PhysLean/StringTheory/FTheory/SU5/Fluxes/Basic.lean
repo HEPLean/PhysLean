@@ -81,7 +81,7 @@ they can be derived from other data structures.
   - A.4. Addition of fluxes
   - A.5. The instance of an additive commutative monoid on fluxes
 - B. Fluxes of the 5d matter representation
-  - B.1. Deciability instance on `FluxesFive`
+  - B.1. Decidability instance on `FluxesFive`
   - B.2. The proposition for no element to be zero
   - B.3. The SM representation `D = (bar 3,1)_{1/3}`
     - B.3.1. Chiral indices of `D`
@@ -95,7 +95,7 @@ they can be derived from other data structures.
     - B.4.4. Relation between number of chiral and anti-chiral `L`
   - B.5. No exotics from the 5-bar matter fields
 - C. Fluxes of the 10d matter representation
-  - C.1. Deciability instance on `FluxesTen`
+  - C.1. Decidability instance on `FluxesTen`
   - C.2. The proposition for no element to be zero
   - C.3. The SM representation `Q = (3,2)_{1/6}`
     - C.3.1. Chiral indices of `Q`
@@ -221,7 +221,7 @@ namespace FluxesFive
 
 /-!
 
-### B.1. Deciability instance on `FluxesFive`
+### B.1. Decidability instance on `FluxesFive`
 
 -/
 
@@ -376,7 +376,7 @@ namespace FluxesTen
 
 /-!
 
-### C.1. Deciability instance on `FluxesTen`
+### C.1. Decidability instance on `FluxesTen`
 
 -/
 

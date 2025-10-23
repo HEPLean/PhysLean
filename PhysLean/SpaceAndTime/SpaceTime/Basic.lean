@@ -44,7 +44,7 @@ allowing it to be used in tensorial expressions.
     - B.3.2. Derivative of the inverse of `toTimeAndSpace`
     - B.3.3. `toTimeAndSpace` acting on spatial basis vectors
     - B.3.4. `toTimeAndSpace` acting on the temperal basis vectors
-- C. Continous linear map to coordinates
+- C. Continuous linear map to coordinates
 - D. Derivatives of functions on `SpaceTime d`
   - D.1. The definition of the derivative
   - D.2. Basic equality lemmas
@@ -264,7 +264,7 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
 
 /-!
 
-## C. Continous linear map to coordinates
+## C. Continuous linear map to coordinates
 
 -/
 
