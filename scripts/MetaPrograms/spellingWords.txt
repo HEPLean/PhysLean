@@ -17,7 +17,7 @@ homogenous
 isometry
 lifshitz
 matches
-mircrostate
+microstate
 orthonormality
 rearranged
 reimplementation
