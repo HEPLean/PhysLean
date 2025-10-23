@@ -57,6 +57,7 @@ jobs:
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
         id: lint
         uses: liskin/gh-problem-matcher-wrap@v3
+        timeout-minutes: 4
         with:
           linters: gcc
           run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
