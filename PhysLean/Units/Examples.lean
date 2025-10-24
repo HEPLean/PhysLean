@@ -16,7 +16,7 @@ should not be used in the proofs of any other results other then those in this f
 -/
 
 namespace UnitExamples
-open Dimension CarriesDimension UnitChoices UnitDependent
+open Dimension CarriesDimension UnitChoices UnitDependent HasDim
 /-!
 
 ## Defining a length dependent on units

@@ -15,17 +15,24 @@ WithDim is the type `M` which carrying the dimension `d`.
 open NNReal
 
 /-- The type `M` carrying an instance of a dimension `d`. -/
-structure WithDim (d : Dimension) (M : Type) [MulAction ℝ≥0 M] where
+structure WithDim (d : Dimension) (M : Type) where
   /-- The underlying value of `M`. -/
   val : M
 
 namespace WithDim
 
 @[ext]
-lemma ext {d M} [MulAction ℝ≥0 M] (x1 x2 : WithDim d M) (h : x1.val = x2.val) : x1 = x2 := by
+lemma ext {d M} (x1 x2 : WithDim d M) (h : x1.val = x2.val) : x1 = x2 := by
   cases x1
   cases x2
   simp_all
+
+instance (d : Dimension) (M : Type) : HasDim (WithDim d M) where
+  d := d
+
+@[simp]
+lemma dim_apply (d : Dimension) (M : Type) :
+    dim (WithDim d M) = d := rfl
 
 instance (d : Dimension) (M : Type) [MulAction ℝ≥0 M] : MulAction ℝ≥0 (WithDim d M) where
   smul a m := ⟨a • m.val⟩
@@ -37,14 +44,6 @@ instance (d : Dimension) (M : Type) [MulAction ℝ≥0 M] : MulAction ℝ≥0 (W
 @[simp]
 lemma smul_val {d : Dimension} {M : Type} [MulAction ℝ≥0 M] (a : ℝ≥0) (m : WithDim d M) :
     (a • m).val = a • m.val := rfl
-
-instance (d : Dimension) (M : Type) [inst : MulAction ℝ≥0 M] :
-    CarriesDimension (WithDim d M) where
-  d := d
-
-@[simp]
-lemma carriesDimension_d (d : Dimension) (M : Type) [MulAction ℝ≥0 M] :
-    CarriesDimension.d (WithDim d M) = d := rfl
 
 instance {d1 d2 : Dimension} :
     HMul (WithDim d1 ℝ) (WithDim d2 ℝ) (WithDim (d1 * d2) ℝ) where
@@ -58,9 +57,9 @@ instance {d1 d2 : Dimension} :
   mul_dim m1 m2 := by
     intro u1 u2
     ext
-    simp only [withDim_hMul_val, carriesDimension_d, map_mul, smul_val]
+    simp only [withDim_hMul_val, dim_apply, map_mul, smul_val]
     rw [m1.2 u1, m2.2 u1]
-    simp only [carriesDimension_d, smul_val, Algebra.mul_smul_comm, Algebra.smul_mul_assoc]
+    simp only [dim_apply, smul_val, Algebra.mul_smul_comm, Algebra.smul_mul_assoc]
     rw [smul_smul]
     congr 1
     rw [mul_comm]
@@ -140,14 +139,12 @@ lemma scaleUnit_dim_eq_zero {d : Dimension} (m : WithDim d ℝ) (u1 u2 : UnitCho
 set_option linter.unusedVariables false in
 /-- The casting from `WithDim d M` to `WithDim d2 M` when `d = d2`. -/
 @[nolint unusedArguments]
-def cast {d d2 : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M)
+def cast {d d2 : Dimension} {M : Type} (m : WithDim d M)
     (h : d = d2 := by ext <;> {simp; try ring}) : WithDim d2 M := ⟨m.val⟩
 
 @[simp]
-lemma cast_refl {d : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M) :
-    cast m rfl = m := by
-  ext
-  rfl
+lemma cast_refl {d : Dimension} {M : Type} (m : WithDim d M) :
+    cast m rfl = m := rfl
 
 @[simp]
 lemma cast_scaleUnit {d d2 : Dimension} {M : Type} [MulAction ℝ≥0 M] (m : WithDim d M)
