@@ -17,7 +17,6 @@ homogenous
 isometry
 lifshitz
 matches
-microstate
 orthonormality
 rearranged
 reimplementation
@@ -1740,7 +1739,6 @@ monad
 monochromatic
 monoid
 monoidal
-monoticity
 monotone
 monotonic
 monotonicity
