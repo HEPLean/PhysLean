@@ -60,7 +60,7 @@ jobs:
         timeout-minutes: 4
         with:
           linters: gcc
-          run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter PhysLean
+          run: env LEAN_ABORT_ON_PANIC=1 lake exe runPhysLeanLinter
 
   style_lint:
     name: Python based style linter
