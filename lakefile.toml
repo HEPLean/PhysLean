@@ -52,6 +52,11 @@ name = "sorry_lint"
 supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 
+[[lean_exe]]
+name = "runPhysLeanLinters"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
 ### Other linting scripts
 
 [[lean_exe]]
