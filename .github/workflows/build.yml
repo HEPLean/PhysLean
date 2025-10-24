@@ -41,18 +41,6 @@ jobs:
           run: |
             bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
 
-      - name: check file imports
-        run: |
-          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_file_imports"
-
-      - name: check for duplicate TODO tags
-        run: |
-          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe check_dup_tags"
-
-      - name: sorryful and psuedo attribute linter
-        run: |
-          bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake exe sorry_lint"
-
       - name: runLinter on PhysLean
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
         id: lint

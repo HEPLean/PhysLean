@@ -14,4 +14,4 @@ import PhysLean.Meta.Remark.Properties
 import PhysLean.Meta.Sorry
 import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.TransverseTactics
-import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.StringTheory.FTheory.SU5.Quanta.IsViable
