@@ -45,9 +45,6 @@ instance (d : Dimension) (M : Type) [MulAction ℝ≥0 M] : MulAction ℝ≥0 (W
 lemma smul_val {d : Dimension} {M : Type} [MulAction ℝ≥0 M] (a : ℝ≥0) (m : WithDim d M) :
     (a • m).val = a • m.val := rfl
 
-instance (d : Dimension) (M : Type) [inst : MulAction ℝ≥0 M] :
-    CarriesDimension (WithDim d M) where
-
 instance {d1 d2 : Dimension} :
     HMul (WithDim d1 ℝ) (WithDim d2 ℝ) (WithDim (d1 * d2) ℝ) where
   hMul m1 m2 := ⟨m1.val * m2.val⟩
