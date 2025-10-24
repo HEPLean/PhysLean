@@ -14,10 +14,19 @@ import PhysLean.Meta.AllFilePaths
 
 # Script to help checking spelling of results
 
+This script collects all words in doc-strings of definitions, theorems and lemmas
+in PhysLean, as well as module doc-strings, and compares them to a custom dictionary
+of correctly spelled words. It then outputs all words which are not in the dictionary,
+so that the user can either correct them or add them to the dictionary file.
+
+This code makes no attempt to guess the correct spelling of words, it simply lists
+all unkown words found.
+
 -/
 
 open Lean
 
+/-- The strings appearing as documentation within PhysLean. -/
 def moduleDocs : MetaM (Array String) := do
   let env ← getEnv
   let allModules ← allPhysLeanModules
@@ -27,6 +36,8 @@ def moduleDocs : MetaM (Array String) := do
   let modDocs := modDocs.map fun d => d.doc
   return modDocs
 
+/-- All the words in either module doc-strings or doc-strings of definitions, theorems
+  and lemmas. -/
 def allWords : MetaM (Array String) := do
   let allConstants ← PhysLean.allUserConsts
   let allModuleDocs ← moduleDocs
@@ -42,6 +53,7 @@ def allWords : MetaM (Array String) := do
 
   return allList
 
+/-- The custom dictionary of correctly spelled words. -/
 def dictionary : MetaM (Array String) := do
   let path : System.FilePath := "./scripts/MetaPrograms/spellingWords.txt"
   let lines ← IO.FS.lines path
