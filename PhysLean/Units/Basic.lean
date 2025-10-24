@@ -263,15 +263,15 @@ end UnitChoices
 
 Dimensions are assigned to types with the following type-classes
 
-- `CarriesDimension` for a type carrying an instance of `MulAction ℝ≥0 M`
-- `ModuleCarriesDimension` for a type carrying an instance of `Module ℝ M`.
-
-The latter is need to prevent a typeclass diamond.
+- `HasDim` for any type `M` with an associated dimension
+- `CarriesDimension` for a type that also has an instance of `MulAction ℝ≥0 M`
 
 -/
 
+/-- This typeclass indicates that there is a dimension `dim M : Dimension`
+  associated with the type `M`. -/
 class HasDim (M : Type) where
-  /-- The dimension carried by a type `M`. -/
+  /-- The dimension associated with a type `M`. -/
   d : Dimension
 
 alias dim := HasDim.d
