@@ -31,7 +31,6 @@ unsafe def runLinterOnModule  (module : Name): IO Unit := do
     }
     _ ← child.wait
   let nolints := #[]
-  unsafe Lean.enableInitializersExecution
   let env ← importModules #[module, lintModule] {} (trustLevel := 1024) (loadExts := true)
   let ctx := { fileName := "", fileMap := default }
   let state := { env }
@@ -40,7 +39,8 @@ unsafe def runLinterOnModule  (module : Name): IO Unit := do
     let linters ← getChecks (slow := true) (runAlways := none) (runOnly := none)
     println! "Results been linted with the following linters:"
     println! linters.map (·.name)
-    println! "Starting parallel running on linters on all declerations:"
+    println! "Starting parallel running on linters on all declerations. Results if any are
+      shown below."
     let results ← lintCore decls linters
     let results := results.map fun (linter, decls) =>
       .mk linter <| nolints.foldl (init := decls) fun decls (linter', decl') =>
@@ -55,15 +55,6 @@ unsafe def runLinterOnModule  (module : Name): IO Unit := do
     else
       IO.println s!"-- Linting passed for {module}."
 
-/--
-Usage: `runLinter [--update] [Batteries.Data.Nat.Basic]`
-
-Runs the linters on all declarations in the given module
-(or all root modules of Lake `lean_lib` and `lean_exe` default targets if no module is specified).
-If `--update` is set, the `nolints` file is updated to remove any declarations that no longer need
-to be nolinted.
--/
 unsafe def main (_ : List String) : IO Unit := do
   let modulesToLint := #[`PhysLean]
-  println! "Modules to lint: {modulesToLint}"
   modulesToLint.forM <| runLinterOnModule
