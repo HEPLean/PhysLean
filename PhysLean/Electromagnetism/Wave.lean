@@ -667,7 +667,7 @@ theorem magneticField_transverse_upto_const_of_EMwave {s : Direction}
 
 -/
 
-/-- Unit vectors in the direction of `B`, `E` and `s` form an orthonormal traid for an EMwave
+/-- Unit vectors in the direction of `B`, `E` and `s` form an orthonormal triad for an EMwave
 after subtracting the appropriate constant fields. -/
 theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}

@@ -198,7 +198,7 @@ TODO "LCSAY" "Make SI : UnitChoices computable, probably by
 - meters,
 - seconds,
 - kilograms,
-- columbs,
+- coulombs,
 - kelvin.
 -/
 noncomputable def SI : UnitChoices where

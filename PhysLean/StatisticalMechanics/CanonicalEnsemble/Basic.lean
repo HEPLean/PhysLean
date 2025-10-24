@@ -110,7 +110,7 @@ open scoped Temperature
 and a map `ι → ℝ` which associates which each microstate an energy
 and physical constants needed to define dimensionless thermodynamic quantities. -/
 structure CanonicalEnsemble (ι : Type) [MeasurableSpace ι] : Type where
-  /-- The energy of associated with a mircrostate of the canonical ensemble. -/
+  /-- The energy of associated with a microstate of the canonical ensemble. -/
   energy : ι → ℝ
   /-- The number of degrees of freedom, used to make the partition function dimensionless.
   For a classical system of N particles in 3D, this is `3N`. For a system of N spins,

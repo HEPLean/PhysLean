@@ -30,7 +30,7 @@ open Tensorial
 
 /-!
 
-## Tersorial structure
+## Tensorial structure
 
 The tensorial structure on the type
 `Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ`

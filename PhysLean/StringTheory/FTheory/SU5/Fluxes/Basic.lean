@@ -67,7 +67,7 @@ The above theory is implemented by defining two data structures:
   `N` of the 10d-matter curves.
 - `FluxesFive` of type `Multiset Fluxes`
   which contains the chirality `M` and hypercharge fluxes
-  `N` of the 5-bar-matter curves (excluding the higges).
+  `N` of the 5-bar-matter curves (excluding the higgses).
 
 Note: Neither `FluxesTen` or `FluxesFive` are fundamental to the theory,
 they can be derived from other data structures.

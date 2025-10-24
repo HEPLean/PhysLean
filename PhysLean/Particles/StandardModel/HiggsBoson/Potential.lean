@@ -294,7 +294,7 @@ lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵) (c : ℝ) : (∃ φ x, P.toFu
 
 /-!
 
-## Boundness of the potential
+## Boundedness of the potential
 
 -/
 
