@@ -88,28 +88,48 @@ def FLRW : Type := sorry
 
 namespace FLRW
 
-/-!
-Formalization sketch for the first-order Friedmann equation,
-using units `c = 1`.
-
-`a : ℝ → ℝ` is the FLRW scale factor as a function of cosmic time `t`.
-`ρ : ℝ → ℝ` is the total energy density.
-`k : ℝ` is the spatial curvature parameter.
-`Λ : ℝ` is the cosmological constant.
-`G : ℝ` is Newton's constant.
-`c : ℝ` is the speed of light. It may be set to 1 for convenience.
-We will leave it here for generality and accounting purposes.
-
-At time `t` the equation reads:
-`(a' / a)^2 = (8πG/3) ρ − k c^2 / a^2 + Λ c^2 / 3`.
-
--/
-
 namespace FriedmannEquation
 
-def FirstOrderFriedmann (a: ℝ → ℝ) (ρ k Λ G c: ℝ) (t : ℝ) : Prop :=
+/--
+The first-order Friedmann equation.
+
+- `a : ℝ → ℝ` is the FLRW scale factor as a function of cosmic time `t`.
+- `ρ : ℝ → ℝ` is the total energy density as a function of cosmic time `t`.
+- `k : ℝ` is the spatial curvature parameter.
+- `Λ : ℝ` is the cosmological constant.
+- `G : ℝ` is Newton's constant.
+- `c : ℝ` is the speed of light. It may be set to 1 for convenience.
+
+Note: We will leave `c` explicit for generality and accounting purposes.
+
+At time `t` the equation reads:
+`(a'(t) / a(t))^2 = (8πG/3) ρ(t) − k c^2 / a(t)^2 + Λ c^2 / 3`.
+
+-/
+def FirstOrderFriedmann (a ρ: ℝ → ℝ) (k Λ G c : ℝ) (t : ℝ) : Prop :=
     ((deriv a t / a t)^2
-      = ((8 * Real.pi * G) / 3) * ρ - k * c^2 / (a t)^2 + Λ * c ^2/ 3)
+      = ((8 * Real.pi * G) / 3) * ρ t - k * c^2 / (a t)^2 + Λ * c ^2/ 3)
+
+/--
+The second-order Friedmann equation.
+Note: Other sources may call this the Raychaudhuri equation.
+We choose not to use that terminology to avoid the Raychaudhuri equation
+related to describing congruences of geodesics in general relativity.
+- `a : ℝ → ℝ` is the FLRW scale factor as a function of cosmic time `t`.
+- `ρ : ℝ → ℝ` is the total energy density as a function of cosmic time `t`.
+- `p : ℝ → ℝ` is the pressure. It is related to `ρ` via `p = w * ρ ` where `w` is the equation of state.
+- `Λ : ℝ` is the cosmological constant.
+- `G : ℝ` is Newton's constant.
+- `c : ℝ` is the speed of light. It may be set to 1 for convenience.
+
+Note: We will leave `c` explicit for generality and accounting purposes.
+
+At time `t` the equation reads:
+`(a''(t) / a (t)) = - (4πG/3) * (ρ(t) + 3 * p(t) / c^2) + Λ * c^2 / 3`.
+
+-/
+def SecondOrderFriedmann (a ρ p: ℝ → ℝ) (Λ G c : ℝ) (t : ℝ) : Prop :=
+    (deriv (deriv a) t) / a t = - (4 * Real.pi * G / 3) * (ρ t + 3 * p t / c^2) + Λ * c^2 / 3
 
 /-- The hubble constant defined in terms of the scale factor
   as `(dₜ a) / a`.
