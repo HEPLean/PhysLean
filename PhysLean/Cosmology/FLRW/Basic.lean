@@ -100,9 +100,9 @@ using units `c = 1`.
 `c : ℝ` is the speed of light. It may be set to 1 for convenience.
 We will leave it here for generality and accounting purposes.
 
-At time `t` the equation reads
-
+At time `t` the equation reads:
 `(a' / a)^2 = (8πG/3) ρ − k c^2 / a^2 + Λ c^2 / 3`.
+
 -/
 
 namespace FriedmannEquation
