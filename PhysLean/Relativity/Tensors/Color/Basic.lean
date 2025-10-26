@@ -12,7 +12,7 @@ import PhysLean.Meta.TODO.Basic
 # Color
 
 In the context of tensors `Color` is defined as the type of indices of a tensor.
-For example if `A_μ^ν` is a real Lorentz tensors, we say it has indicies of color `[down, up]`.
+For example if `A_μ^ν` is a real Lorentz tensors, we say it has indices of color `[down, up]`.
 For complex Lorentz Tensors there are six different colors, corresponding to the
 up and down indices of the Lorentz group, the dotted and undotted Weyl fermion indices.
 
@@ -27,7 +27,7 @@ Let `C` be the type of colors for a given species of tensor.
 In this file we define the category `OverColor C`. The objects of `OverColor C`
 correspond to allowed colorings of indices represented as a map `X → C` from a type `X` to `C`.
 Usually `X` will be `Fin n` for some `n : ℕ`.
-The morphisms of `OverColor C` correspond to color-preserving permutaitons of indices.
+The morphisms of `OverColor C` correspond to color-preserving permutations of indices.
 
 We also define here a symmetric-monoidal structure on `OverColor C`.
 
@@ -38,7 +38,7 @@ The file `Discrete` contains some basic properties of the category `Discrete C`.
 **Lift**
 
 The file `Lift` we define the lift of a functor `F : Discrete C ⥤ Rep k G` to
-a symmetric monodial functor `OverColor C ⥤ Rep k G`, given by taking tensor products.
+a symmetric monoidal functor `OverColor C ⥤ Rep k G`, given by taking tensor products.
 
 ## References
 - *Formalization of physics index notation in Lean 4*, Tooby-Smith.
@@ -471,7 +471,7 @@ lemma equivToIso_mkIso_inv {c1 c2 : X → C} (h : c1 = c2) :
   rfl
 
 TODO "6VZTR" "In the definition equivToHomEq the tactic `try {simp; decide}; try decide`
-  can probably be made more efficent."
+  can probably be made more efficient."
 
 /-- The morphism from `mk c` to `mk c1` obtained by an equivalence and
   an equality lemma. -/

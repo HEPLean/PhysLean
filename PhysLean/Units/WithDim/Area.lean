@@ -9,7 +9,7 @@ import PhysLean.Units.WithDim.Basic
 # Area
 
 In this module we define the dimensionful type corresponding to an area.
-We define specific insances of areas, such as square meters, square feet, etc.
+We define specific instances of areas, such as square meters, square feet, etc.
 
 -/
 open Dimension

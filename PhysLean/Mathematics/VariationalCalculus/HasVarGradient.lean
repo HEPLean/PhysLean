@@ -8,7 +8,7 @@ import PhysLean.Mathematics.VariationalCalculus.HasVarAdjDeriv
 
 # Variational gradient
 
-Definition of variational gradient that allows for formal treatement of variational calculus
+Definition of variational gradient that allows for formal treatment of variational calculus
 as used in physics textbooks.
 -/
 
@@ -118,7 +118,7 @@ lemma HasVarGradientAt.neg {F : (X → U) → (X → ℝ)}
 open Classical in
 
 /--
-The variational gradient of a function `F : (X → U) → (X → ℝ)` evaulated
+The variational gradient of a function `F : (X → U) → (X → ℝ)` evaluated
 at a function `u : X → U`.
 
 This not defined defined for a functional `S : (X → U) → ℝ` but rather for the function

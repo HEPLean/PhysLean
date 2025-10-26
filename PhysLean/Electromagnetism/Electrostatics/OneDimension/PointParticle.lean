@@ -31,7 +31,7 @@ is given by a function proportional to the absolute value of the distance from t
 
 ## iii. Table of contents
 
-- A. The electromagentic potential
+- A. The electromagnetic potential
 - B. The Potentials
   - B.1. The electromagnetic potential
   - B.2. The vector potential is zero
@@ -51,7 +51,7 @@ open Space StaticElectricField MeasureTheory
 
 /-!
 
-## A. The electromagentic potential
+## A. The electromagnetic potential
 
 -/
 
@@ -75,7 +75,7 @@ noncomputable def oneDimPointParticleCurrentDensity (q : ℝ) : LorentzCurrentDe
 
 -/
 
-/-- The electromangetic potential of a point particle stationary at the origin
+/-- The electromagnetic potential of a point particle stationary at the origin
   of 1d space. -/
 noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
   ElectromagneticPotentialD.toComponents.symm fun μ =>

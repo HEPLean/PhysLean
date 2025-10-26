@@ -11,7 +11,7 @@ import PhysLean.Mathematics.Distribution.PowMul
 
 In this module we study the electrostatics in 1d with the presence of no charges.
 
-The aim of this module is to show that, in 1-dimension, if an electric field satifies
+The aim of this module is to show that, in 1-dimension, if an electric field satisfies
 Gauss's law for the vacuum, then it must be the constant electric field.
 
 -/

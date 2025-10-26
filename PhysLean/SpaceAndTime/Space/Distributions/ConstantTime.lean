@@ -29,12 +29,12 @@ to get a Schwartz Map on `Space d`.
 - A. Properties of time integrals of Schwartz maps
   - A.1. Continuity as a function of space
   - A.2. Derivative a function of space
-  - A.3. Differentiablity as a function of space
+  - A.3. Differentiability as a function of space
   - A.4. Integrability of the derivative as a function of space
   - A.5. Smoothness as a function of space
 - B. Properties of schwartz maps at a constant space point
   - B.1. Integrability
-  - B.2. Integrability of powers times norm of interated derivatives
+  - B.2. Integrability of powers times norm of iterated derivatives
     - B.2.1. Bounds on powers times norm of iterated derivatives
     - B.2.2. Integrability of powers times norm of iterated derivatives
   - B.3. Integrability of iterated derivatives
@@ -45,7 +45,7 @@ to get a Schwartz Map on `Space d`.
 - D. The time integral as a schwartz map
 - E. Constant time distributions
   - E.1. Space derivatives of constant time distributions
-  - E.2. Space garadient of constant time distributions
+  - E.2. Space gradient of constant time distributions
   - E.3. Space divergence of constant time distributions
   - E.4. Space curl of constant time distributions
   - E.5. Time derivative of constant time distributions
@@ -293,7 +293,7 @@ lemma time_integral_hasFDerivAt {d : ℕ} (η : 𝓢(Time × Space d.succ, ℝ))
 
 /-!
 
-### A.3. Differentiablity as a function of space
+### A.3. Differentiability as a function of space
 
 -/
 
@@ -517,7 +517,7 @@ lemma integrable_time_integral {d : ℕ} (η : 𝓢(Time × Space d.succ, ℝ)) 
 
 /-!
 
-### B.2. Integrability of powers times norm of interated derivatives
+### B.2. Integrability of powers times norm of iterated derivatives
 
 -/
 
@@ -976,7 +976,7 @@ lemma constantTime_spaceDerivD {M : Type} {d : ℕ} [NormedAddCommGroup M] [Norm
 
 /-!
 
-### E.2. Space garadient of constant time distributions
+### E.2. Space gradient of constant time distributions
 
 -/
 

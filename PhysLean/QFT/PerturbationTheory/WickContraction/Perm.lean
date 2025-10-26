@@ -16,7 +16,7 @@ if the Wick term they produce is equal.
 ## TODO
 
 The long term aim is to simplify this condition as much as possible,
-so that it can eventually be made decideable.
+so that it can eventually be made decidable.
 
 It should become apparent that two Wick contractions are permutations of each other
 if they correspond to the same Feynman diagram.

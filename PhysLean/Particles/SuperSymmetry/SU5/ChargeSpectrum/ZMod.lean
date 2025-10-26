@@ -40,8 +40,8 @@ In other files we usually just consider one.
   - A.3. Finite set of viable `ZMod 2` charge spectra is empty
   - A.4. Finite set of viable `ZMod 3` charge spectra is empty
   - A.5. Finite set of viable `ZMod 4` has four elements
-  - A.6. Finite set of viable `ZMod 5` charge spectra is empty (pseduo result)
-  - A.7. Finite set of viable `ZMod 6` charge spectra is non-empty (pseduo result)
+  - A.6. Finite set of viable `ZMod 5` charge spectra is empty (pseudo result)
+  - A.7. Finite set of viable `ZMod 6` charge spectra is non-empty (pseudo result)
 - B. The finite set of viable `ZMod n × ZMod m` charge spectra
   - B.1. General construction
 
@@ -120,7 +120,7 @@ lemma ZModCharges_four_eq : ZModCharges 4 = {⟨some 0, some 2, {1}, {3}⟩,
 
 /-!
 
-### A.6. Finite set of viable `ZMod 5` charge spectra is empty (pseduo result)
+### A.6. Finite set of viable `ZMod 5` charge spectra is empty (pseudo result)
 
 -/
 
@@ -131,7 +131,7 @@ lemma ZModCharges_five_eq : ZModCharges 5 = ∅ := by native_decide
 
 /-!
 
-### A.7. Finite set of viable `ZMod 6` charge spectra is non-empty (pseduo result)
+### A.7. Finite set of viable `ZMod 6` charge spectra is non-empty (pseudo result)
 
 -/
 

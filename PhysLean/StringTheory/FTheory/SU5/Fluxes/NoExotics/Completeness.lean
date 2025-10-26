@@ -40,7 +40,7 @@ are only constrained by `2` SM representations `D` and `L`.
 
 - A. All terms of `FluxesFive` obeying `NoExotics` and `HasNoZero`
   - A.1. The allowed fluxes in a `FluxesFive` which obeys `NoExotics` and `HasNoZero`
-  - A.2. Sufficent condition for a set to contain allowed subsets of card `n.succ` based on `n`
+  - A.2. Sufficient condition for a set to contain allowed subsets of card `n.succ` based on `n`
   - A.3. Statement of the allowed subsets of each cardinality
   - A.4. Lemma that stated allowed subsets are complete
   - A.5. Terms of `FluxesFive` obeying `NoExotics` and `HasNoZero` have card ≤ 6
@@ -48,7 +48,7 @@ are only constrained by `2` SM representations `D` and `L`.
   - A.7. Terms of `FluxesFive` obey `NoExotics` and `HasNoZero` if and only if in `elemsNoExotics`
 - B. All terms of `FluxesTen` obeying `NoExotics` and `HasNoZero`
   - B.1. The allowed fluxes in a `FluxesTen` which obeys `NoExotics` and `HasNoZero`
-  - B.2. Sufficent condition for a set to contain allowed subsets of card `n.succ` based on `n`
+  - B.2. Sufficient condition for a set to contain allowed subsets of card `n.succ` based on `n`
   - B.3. Statement of the allowed subsets of each cardinality
   - B.4. Lemma that stated allowed subsets are complete
   - B.5. Terms of `FluxesTen` obeying `NoExotics` and `HasNoZero` have card ≤ 3
@@ -102,7 +102,7 @@ lemma mem_mem_finset_of_noExotics (F : FluxesFive) (hF : F.NoExotics)
 
 /-!
 
-### A.2. Sufficent condition for a set to contain allowed subsets of card `n.succ` based on `n`
+### A.2. Sufficient condition for a set to contain allowed subsets of card `n.succ` based on `n`
 
 -/
 
@@ -264,7 +264,7 @@ lemma mem_elemsNoExotics_of_noExotics (F : FluxesFive) (hNE : F.NoExotics) (hnZ 
 
 -/
 
-/-- Completness of `elemsNoExotics`, that is, every element of `FluxesFive`
+/-- Completeness of `elemsNoExotics`, that is, every element of `FluxesFive`
   which obeys `NoExotics` is an element of `elemsNoExotics`, and every
   element of `elemsNoExotics` obeys `NoExotics`. -/
 lemma noExotics_iff_mem_elemsNoExotics (F : FluxesFive) :
@@ -318,7 +318,7 @@ lemma mem_mem_finset_of_noExotics (F : FluxesTen) (hF : F.NoExotics) (hnZ : F.Ha
 
 /-!
 
-### B.2. Sufficent condition for a set to contain allowed subsets of card `n.succ` based on `n`
+### B.2. Sufficient condition for a set to contain allowed subsets of card `n.succ` based on `n`
 
 -/
 lemma subset_le_mem_of_card_eq_succ {n : ℕ} {F : FluxesTen} (hF : F.NoExotics) (hnZ : F.HasNoZero)
@@ -436,7 +436,7 @@ lemma mem_elemsNoExotics_of_noExotics (F : FluxesTen) (hNE : F.NoExotics) (hnZ :
 
 -/
 
-/-- Completness of `elemsNoExotics`, that is, every element of `FluxesTen`
+/-- Completeness of `elemsNoExotics`, that is, every element of `FluxesTen`
   which obeys `NoExotics` is an element of `elemsNoExotics`, and every
   element of `elemsNoExotics` obeys `NoExotics`. -/
 lemma noExotics_iff_mem_elemsNoExotics (F : FluxesTen) :

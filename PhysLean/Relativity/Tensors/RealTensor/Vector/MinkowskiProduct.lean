@@ -307,7 +307,7 @@ lemma minkowskiProduct_map_eq_adjoint {d : ℕ} (f : Vector d →ₗ[ℝ] Vector
 
 -/
 
-/-- A linear map `Vector d →ₗ[ℝ] Vector d` satsfies `IsLorentz` if it preserves
+/-- A linear map `Vector d →ₗ[ℝ] Vector d` satisfies `IsLorentz` if it preserves
   the minkowski product. -/
 def IsLorentz {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) :
     Prop := ∀ p q : Vector d, ⟪f p, f q⟫ₘ = ⟪p, q⟫ₘ

@@ -9,7 +9,7 @@ import PhysLean.Units.WithDim.Basic
 # Pressure
 
 In this module we define the dimensionful type corresponding to an pressure.
-We define specific insances of pressure.
+We define specific instances of pressure.
 
 -/
 open Dimension

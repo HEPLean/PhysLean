@@ -351,7 +351,7 @@ lemma dropPairEmbPre_dropPairEmb (i j : Fin (n + 1 + 1)) (hij : i ≠ j)
 
 /-!
 
-## commuativity of dropPairEmb
+## Commutativity of dropPairEmb
 
 -/
 lemma dropPairEmb_comm (i1 j1 : Fin (n + 1 + 1 + 1 + 1)) (i2 j2 : Fin (n + 1 + 1))
@@ -438,7 +438,7 @@ lemma permCond_dropPairEmb_comm {n : ℕ} {c : Fin (n + 1 + 1 + 1 + 1) → C}
 -/
 
 /-- Given a bijection `Fin (n1 + 1 + 1) → Fin (n + 1 + 1))` and a pair `i j : Fin (n1 + 1 + 1)`,
-  then `dropPairOfMap i j _ σ _ : Fin n1 → Fin n` corressponds to the induced bijection
+  then `dropPairOfMap i j _ σ _ : Fin n1 → Fin n` corresponds to the induced bijection
   formed by dropping `i` and `j` in the source and their image in the target. -/
 def dropPairOfMap {n n1 : ℕ} (i j : Fin (n1 + 1 + 1)) (hij : i ≠ j)
     (σ : Fin (n1 + 1 + 1) → Fin (n + 1 + 1)) (hσ : Function.Bijective σ)
@@ -595,7 +595,7 @@ lemma dropPair_permP {n n1 : ℕ} {c : Fin (n + 1 + 1) → C}
 
 /-!
 
-## Contraction coefficent
+## Contraction coefficient
 
 -/
 

@@ -13,7 +13,7 @@ import Mathlib.Analysis.NormedSpace.HahnBanach.SeparatingDual
 In this module we define the type class `InnerProductSpace' 𝕜 E` which is a
 generalization of `InnerProductSpace 𝕜 E`, as it does not require the condition `‖x‖^2 = ⟪x,x⟫`
 but instead the condition `∃ (c > 0) (d > 0), c • ‖x‖^2 ≤ ⟪x,x⟫ ≤ d • ‖x‖^2`.
-Instead `E` is equipped with a L₂ norm `‖x‖₂` which statifies `‖x‖₂ = √⟪x,x⟫`.
+Instead `E` is equipped with a L₂ norm `‖x‖₂` which satisfies `‖x‖₂ = √⟪x,x⟫`.
 
 This allows us to define the inner product space structure on product types `E × F` and
 pi types `ι → E`, which would otherwise not be possible due to the use of max norm on these types.
@@ -72,7 +72,7 @@ class InnerProductSpace' (𝕜 : Type*) (E : Type*) [RCLike 𝕜] [NormedAddComm
   core : InnerProductSpace.Core 𝕜 E
   /-- The inner product induces the L₂ norm. -/
   norm₂_sq_eq_re_inner : ∀ x : E, ‖x‖₂ ^ 2 = re (core.inner x x)
-  /-- Norm induced by inner product is topologicaly equivalent to the given norm on E. -/
+  /-- Norm induced by inner product is topologically equivalent to the given norm on E. -/
   inner_top_equiv_norm : ∃ c d : ℝ,
     0 < c ∧ 0 < d ∧
     ∀ x : E, (c • ‖x‖^2 ≤ re (core.inner x x)) ∧ (re (core.inner x x) ≤ d • ‖x‖^2)

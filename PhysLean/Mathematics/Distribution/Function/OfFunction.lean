@@ -54,7 +54,7 @@ def ofFunction {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F)
       enter [2, a]
       rw [← smul_smul]
     rw [integral_smul]
-  /- boundness -/
+  /- boundedness -/
   obtain ⟨r, hr⟩ := hf.norm_inv_mul_exists_pow_integrable f hae
   use Finset.Iic (r, 0), 2 ^ r * ∫ x, ‖f x‖ * ‖((1 + ‖x‖) ^ r)⁻¹‖
   refine ⟨by positivity, fun η ↦ (norm_integral_le_integral_norm _).trans ?_⟩

@@ -10,7 +10,7 @@ import PhysLean.Electromagnetism.CurrentDensity
 
 ## i. Overview
 
-In this module we defin the Lagrangian density for the electromagnetic field in
+In this module we define the Lagrangian density for the electromagnetic field in
 presence of a current density. We prover properties of this lagrangian density,
 and find it's variational gradient.
 
@@ -20,7 +20,7 @@ and find it's variational gradient.
   Lorentz current density.
 - `gradLagrangian` : The variational gradient of the lagrangian density.
 - `gradLagrangian_eq_electricField_magneticField` : The variational gradient of the lagrangian
-  density expressed in Guass's and Ampère laws.
+  density expressed in Gauss's and Ampère laws.
 
 ## iii. Table of contents
 
@@ -32,7 +32,7 @@ and find it's variational gradient.
   - B.3. The variational gradient in terms of the gradient of the kinetic term
   - B.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
   - B.5. The variational gradient in terms of the field strength tensor
-  - B.6. The lagrangian gradient recovering Guass's and Ampère laws
+  - B.6. The lagrangian gradient recovering Gauss's and Ampère laws
 
 ## iv. References
 
@@ -66,7 +66,7 @@ The lagrangian density for the electromagnetic field in presence of a current de
 
 -/
 
-/-- The langrangian density associated with a electromagnetic potential and a Lorentz
+/-- The lagrangian density associated with a electromagnetic potential and a Lorentz
   current density. -/
 noncomputable def lagrangian (A : ElectromagneticPotential d) (J : LorentzCurrentDensity d)
     (x : SpaceTime d) : ℝ :=
@@ -130,7 +130,7 @@ lemma lagrangian_hasVarGradientAt_eq_add_gradKineticTerm (A : ElectromagneticPot
 
 -/
 
-/-- The varitional gradient of the lagrangian of electromagnetic field. -/
+/-- The variational gradient of the lagrangian of electromagnetic field. -/
 noncomputable def gradLagrangian {d} (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) : SpaceTime d → Lorentz.Vector d :=
   (δ (q':=A), ∫ x, lagrangian q' J x)
@@ -183,7 +183,7 @@ open Time
 
 /-!
 
-### B.6. The lagrangian gradient recovering Guass's and Ampère laws
+### B.6. The lagrangian gradient recovering Gauss's and Ampère laws
 -/
 
 lemma gradLagrangian_eq_electricField_magneticField (A : ElectromagneticPotential 3)

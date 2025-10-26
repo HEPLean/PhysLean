@@ -9,7 +9,7 @@ import PhysLean.Meta.Notes.Basic
 import PhysLean.Meta.Informal.Basic
 /-!
 
-## Turns a delaration into a html note structure.
+## Turns a declaration into a html note structure.
 
 -/
 

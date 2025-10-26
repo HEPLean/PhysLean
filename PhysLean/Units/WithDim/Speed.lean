@@ -9,7 +9,7 @@ import PhysLean.Units.WithDim.Basic
 # Speed
 
 In this module we define the dimensionful type corresponding to an speed.
-We define specific insances of speed, such as miles per hour, kilometers per hour, etc.
+We define specific instances of speed, such as miles per hour, kilometers per hour, etc.
 
 -/
 open Dimension
@@ -44,7 +44,7 @@ noncomputable def oneKilometerPerHour : DimSpeed := toDimensionful ({SI with
 noncomputable def oneKnot : DimSpeed := toDimensionful ({SI with
   length := LengthUnit.nauticalMiles, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
 
-/-- The dimensionful speed of light correspnoding to 299792458 meters per second. -/
+/-- The dimensionful speed of light corresponding to 299792458 meters per second. -/
 noncomputable def speedOfLight : Dimensionful (WithDim (L𝓭 * T𝓭⁻¹) ℝ) :=
   toDimensionful SI ⟨299792458⟩
 

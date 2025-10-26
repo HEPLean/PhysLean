@@ -46,7 +46,7 @@ In this module we define the Higgs field and prove some basic properties.
     - C.1.2. The map from `HiggsField` to `SpaceTime → HiggsVec`
   - C.2. Smoothness properties of components
   - C.3. The pointwise inner product
-    - C.3.1. Basic equaltities
+    - C.3.1. Basic equalities
     - C.3.2. Symmetry properties
     - C.3.3. Linearity conditions
     - C.3.4. Smoothness of the inner product
@@ -507,7 +507,7 @@ instance : Inner (SpaceTime → ℂ) (HiggsField) where
 
 /-!
 
-#### C.3.1. Basic equaltities
+#### C.3.1. Basic equalities
 
 -/
 

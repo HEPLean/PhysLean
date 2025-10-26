@@ -75,7 +75,7 @@ contravariant Lorentz vectors, and prove some simple results about it.
 
 -/
 
-/-- The electricomagnetic potential is a tensor `A^μ`. -/
+/-- The electromagnetic potential is a tensor `A^μ`. -/
 noncomputable abbrev ElectromagneticPotentialD (d : ℕ := 3) :=
   (SpaceTime d) →d[ℝ] Lorentz.Vector d
 
@@ -95,7 +95,7 @@ attribute [-simp] Nat.succ_eq_add_one
 ### A.1. The components of the electromagnetic potential
 -/
 
-/-- The linear map from an electromagnetic potential to its componenets. -/
+/-- The linear map from an electromagnetic potential to its components. -/
 noncomputable def toComponents {d : ℕ} :
     ElectromagneticPotentialD d ≃ₗ[ℝ] ((Fin 1 ⊕ Fin d) → (SpaceTime d) →d[ℝ] ℝ) where
   toFun A := fun μ => {
@@ -250,7 +250,7 @@ noncomputable def vectorPotential {d}:
 
 -/
 
-/-- The linear map taking a distribution on Euclidean space to its componenets. -/
+/-- The linear map taking a distribution on Euclidean space to its components. -/
 noncomputable def toComponentsEuclidean {d : ℕ} :
     ((Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) ≃ₗ[ℝ]
     (Fin d → (Time × Space d) →d[ℝ] ℝ) where
@@ -400,7 +400,7 @@ namespace LorentzCurrentDensityD
 
 -/
 
-/-- The linear map taking a Lorentz current density to its componenets. -/
+/-- The linear map taking a Lorentz current density to its components. -/
 noncomputable def toComponents {d : ℕ} :
     LorentzCurrentDensityD d ≃ₗ[ℝ] ((Fin 1 ⊕ Fin d) → (SpaceTime d) →d[ℝ] ℝ) where
   toFun J := fun μ => {
@@ -461,7 +461,7 @@ We take the definition to be:
   • Lorentz.Vector.basis ν)
 ```
 
-which matches the result of the calcultation from the function case.
+which matches the result of the calculation from the function case.
 -/
 
 /-- The variational gradient of the lagrangian for an electromagnetic potential

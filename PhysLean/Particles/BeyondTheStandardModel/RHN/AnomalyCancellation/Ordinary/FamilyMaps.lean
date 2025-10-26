@@ -8,7 +8,7 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.FamilyM
 /-!
 # Family Maps for SM with RHN (no hypercharge)
 
-We give some propererties of the family maps for the SM with RHN, in particular, we
+We give some properties of the family maps for the SM with RHN, in particular, we
 define family universal maps in the case of `LinSols`, `QuadSols`, and `Sols`.
 -/
 

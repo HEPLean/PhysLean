@@ -33,7 +33,7 @@ open SpaceTime
 -/
 
 /-- The structure `Potential` is defined with two fields, `μ2` corresponding
-  to the mass-squared of the Higgs boson, and `l` corresponding to the coefficent
+  to the mass-squared of the Higgs boson, and `l` corresponding to the coefficient
   of the quartic term in the Higgs potential. Note that `l` is usually denoted `λ`. -/
 structure Potential where
   /-- The mass-squared of the Higgs boson. -/
@@ -124,7 +124,7 @@ lemma toFun_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
 
 /-!
 
-## The descriminant
+## The discriminant
 
 -/
 
@@ -294,7 +294,7 @@ lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵) (c : ℝ) : (∃ φ x, P.toFu
 
 /-!
 
-## Boundness of the potential
+## Boundedness of the potential
 
 -/
 
@@ -307,7 +307,7 @@ def IsBounded : Prop :=
   ∃ c, ∀ Φ x, c ≤ P.toFun Φ x
 
 /-- Given a element `P` of `Potential` which is bounded,
-  the quartic coefficent `𝓵` of `P` is non-negative. -/
+  the quartic coefficient `𝓵` of `P` is non-negative. -/
 lemma isBounded_𝓵_nonneg (h : P.IsBounded) : 0 ≤ P.𝓵 := by
   by_contra hl
   rw [not_le] at hl

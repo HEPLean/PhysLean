@@ -14,7 +14,7 @@ Note that currently the equations are defined for isotropic and homogeneous doma
 
 namespace Electromagnetism
 
-/-- An optcial medium refers to an isotropic medium
+/-- An optical medium refers to an isotropic medium
   (which may or may not be free space)
   which consists of the electric permittivity
   and the magnetic permeability. -/

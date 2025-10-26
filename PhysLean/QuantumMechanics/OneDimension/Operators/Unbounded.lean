@@ -41,7 +41,7 @@ variable {S : Type} [AddCommGroup S] [Module ℂ S] [TopologicalSpace S]
 instance : CoeFun (UnboundedOperator ι hι) (fun _ => S → HilbertSpace) where
   coe := fun U => U.toFun
 
-/-- An unbounded operator created from a continous linear map ` S →L[ℂ] S`. -/
+/-- An unbounded operator created from a continuous linear map ` S →L[ℂ] S`. -/
 def ofSelfCLM (Op : S →L[ℂ] S) : UnboundedOperator ι hι := ι ∘L Op
 
 @[simp]

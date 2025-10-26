@@ -35,7 +35,7 @@ In this file we define the minimal super set and prove some basic properties of 
   - A.5. Existence of a minimal super set member between two charges
 - B. Induction properties on the minimal super set
   - B.1. Lifting propositions from minimal super sets to super sets
-  - B.2. Closure of multisets based on proposition for minimial super sets
+  - B.2. Closure of multisets based on proposition for minimal super sets
   - B.3. Closure of multisets based on propositions
 
 ## iv. References
@@ -60,7 +60,7 @@ We define the minimal super set.
 
 -/
 /-- Given a collection of charges `x` in `ofFinset S5 S10`,
-  the minimimal charges `y` in `ofFinset S5 S10` which are a super sets of `x`. -/
+  the minimal charges `y` in `ofFinset S5 S10` which are a super sets of `x`. -/
 def minimalSuperSet (S5 S10 : Finset 𝓩) (x : ChargeSpectrum 𝓩) : Finset (ChargeSpectrum 𝓩) :=
   let SqHd := if x.qHd.isSome then ∅ else S5.map ⟨fun y => ⟨some y, x.qHu, x.Q5, x.Q10⟩,
     by intro y1 y2; simp⟩
@@ -324,7 +324,7 @@ lemma exists_minimalSuperSet (S5 S10 : Finset 𝓩) {x y : ChargeSpectrum 𝓩}
 
 ## B. Induction properties on the minimal super set
 
-We now prove a number of induction properties related to mininmal super sets.
+We now prove a number of induction properties related to minimal super sets.
 
 -/
 
@@ -333,7 +333,7 @@ We now prove a number of induction properties related to mininmal super sets.
 ### B.1. Lifting propositions from minimal super sets to super sets
 
 We show that for a proposition `p` on charge spectra with the property that
-it is true on all minimial super sets of `x` if it true on `x` itself, then it is true on all
+it is true on all minimal super sets of `x` if it true on `x` itself, then it is true on all
 super sets of `x` if it is true for `x` itself.
 
 -/
@@ -365,11 +365,11 @@ lemma minimalSuperSet_induction_on_inductive {S5 S10 : Finset 𝓩}
 
 /-!
 
-### B.2. Closure of multisets based on proposition for minimial super sets
+### B.2. Closure of multisets based on proposition for minimal super sets
 
 We show that for a predicate `p` on charge spectrum,
 if a multiset `T` of complete charge spectra has the property that
-- all insersions of a `q10` charge either ends in `T` or fails `p`.
+- all insertions of a `q10` charge either ends in `T` or fails `p`.
 - all insertions of a `q5` charge either ends in `T` or fails `p`.
 Then if `x` is in `T` then all members of the minimal super set of `x` either
 are in `T` or fail `p`.
@@ -413,7 +413,7 @@ lemma insert_filter_card_zero
 We show that for a predicate `p` on charge spectrum which if false on a charge spectrum
 is also false on all its super sets,
 if a multiset `T` of complete charge spectra has the property that
-- all insersions of a `q10` charge either ends in `T` or fails `p`.
+- all insertions of a `q10` charge either ends in `T` or fails `p`.
 - all insertions of a `q5` charge either ends in `T` or fails `p`.
 Then if `y` is not in `T` then it does not satisfy `p`.
 

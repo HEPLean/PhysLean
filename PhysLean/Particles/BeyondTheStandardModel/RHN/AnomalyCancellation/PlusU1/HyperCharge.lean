@@ -7,7 +7,7 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.
 /-!
 # Hypercharge in SM with RHN.
 
-Relavent definitions for the SM hypercharge.
+Relevant definitions for the SM hypercharge.
 
 -/
 

@@ -14,7 +14,7 @@ import PhysLean.ClassicalMechanics.VectorFields
 In this module we define the electromagnetic potential which gives rise to a
 given constant electric and magnetic field in 3d.
 
-We show that the kinetic term for this potential has a varaiational gradient equal to
+We show that the kinetic term for this potential has a variational gradient equal to
 zero, i.e. it satisfies the source-free Maxwell equations.
 
 ## ii. Key results

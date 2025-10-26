@@ -119,7 +119,7 @@ lemma ContDiff.two_fderiv_differentiable (f : X → Y → Z) (hf : ContDiff 𝕜
   apply ContDiff.differentiable hd2
   rfl
 
-/- Helper rw lemmas for proving differentiablity conditions. -/
+/- Helper rw lemmas for proving differentiability conditions. -/
 lemma fderiv_uncurry_comp_fst (f : X → Y → Z) (y : Y) (hf : Differentiable 𝕜 (↿f)) :
     fderiv 𝕜 (fun x' => (↿f) (x', y))
     =
@@ -178,7 +178,7 @@ lemma fderiv_inl_snd_clm (x : X) (y : Y) :
     (fderiv 𝕜 (·, y) x) = ContinuousLinearMap.inl 𝕜 X Y := by
   rw [(hasFDerivAt_prodMk_left x y).fderiv]
 
-/- Differentiablity conditions. -/
+/- Differentiability conditions. -/
 
 lemma function_differentiableAt_fst (f : X → Y → Z) (x : X) (y : Y) (hf : Differentiable 𝕜 (↿f)) :
     DifferentiableAt 𝕜 (fun x' => f x' y) x := by
@@ -343,7 +343,7 @@ lemma fderiv_swap [IsRCLikeNormedField 𝕜] (f : X → Y → Z) (x dx : X) (y d
     ContinuousLinearMap.coe_fst', Function.comp_apply, map_zero, ContinuousLinearMap.coe_snd',
     zero_add, add_zero] at h
   exact h
-  /- Start of differentiablity conditions. -/
+  /- Start of differentiability conditions. -/
   · refine Differentiable.add ?_ ?_
     · refine Differentiable.clm_comp ?_ ?_
       · apply fderiv_uncurry_differentiable_fst_comp_snd

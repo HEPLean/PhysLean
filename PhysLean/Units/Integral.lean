@@ -7,7 +7,7 @@ import PhysLean.Units.UnitDependent
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 /-!
 
-# Dimensional invarance of the integral
+# Dimensional invariance of the integral
 
 In this module we prove that the dimensional properties of the integral.
 

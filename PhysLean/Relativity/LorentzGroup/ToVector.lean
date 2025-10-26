@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 /-!
 
-# Vectors from Lorents group elements
+# Vectors from Lorentz group elements
 
 Every element of the Lorentz group defines a Lorentz vector, but it's first column.
 

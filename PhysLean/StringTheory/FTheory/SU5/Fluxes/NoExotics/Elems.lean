@@ -35,8 +35,8 @@ elements of those elements.
   - A.2. The cardinality of the multiset is 31
   - A.3. The multiset has no duplicates
   - A.4. Every element of the multiset obeys `NoExotics`
-  - A.5. Every element of the multiset has at most 4 distinct fluxe pairs
-  - A.6. Every element of the multiset has at most 6 fluxe pairs
+  - A.5. Every element of the multiset has at most 4 distinct flux pairs
+  - A.6. Every element of the multiset has at most 6 flux pairs
   - A.7. The sum of all flux-pairs in any element of the multiset is (3, 0)
   - A.8. Every element of the multiset obeys `HasNoZero`
   - A.9. A sum relation for subsets of elements of the multiset
@@ -45,7 +45,7 @@ elements of those elements.
   - B.2. The cardinality of the multiset is 6
   - B.3. The multiset has no duplicates
   - B.4. Every element of the multiset obeys `NoExotics`
-  - B.5. Every element of the multiset has at most 3 distinct fluxe pairs
+  - B.5. Every element of the multiset has at most 3 distinct flux pairs
   - B.6. The sum of all flux-pairs in any element of the multiset is (3, 0)
   - B.7. Every element of the multiset obeys `HasNoZero`
 
@@ -128,7 +128,7 @@ lemma noExotics_of_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elemsNoExotics
 
 /-!
 
-### A.5. Every element of the multiset has at most 4 distinct fluxe pairs
+### A.5. Every element of the multiset has at most 4 distinct flux pairs
 
 -/
 
@@ -139,7 +139,7 @@ lemma toFinset_card_le_four_mem_elemsNoExotics (F : FluxesFive) (h : F ∈ elems
 
 /-!
 
-### A.6. Every element of the multiset has at most 6 fluxe pairs
+### A.6. Every element of the multiset has at most 6 flux pairs
 
 -/
 
@@ -238,7 +238,7 @@ lemma noExotics_of_mem_elemsNoExotics (F : FluxesTen) (h : F ∈ elemsNoExotics)
 
 /-!
 
-### B.5. Every element of the multiset has at most 3 distinct fluxe pairs
+### B.5. Every element of the multiset has at most 3 distinct flux pairs
 
 -/
 

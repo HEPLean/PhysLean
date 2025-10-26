@@ -10,7 +10,7 @@ import Mathlib.Geometry.Manifold.Algebra.SmoothFunctions
 # Rigid bodies
 
 A rigid body is one where the distance and relative orientation between particles does not change.
-In otherwords, the body remains undeformed.
+In other words, the body remains undeformed.
 
 In this module we will define the basic properties of a rigid body, including
 - mass

@@ -30,7 +30,7 @@ open Tensorial
 
 /-!
 
-## Tersorial structure
+## Tensorial structure
 
 The tensorial structure on the type
 `Fin 1 ⊕ Fin 3 → Matrix (Fin 2) (Fin 2) ℂ`
@@ -106,7 +106,7 @@ lemma toTensor_symm_basis (b : (x : Fin (Nat.succ 0).succ.succ) →
 
 -/
 
-/-- The Pauli matarices as a tensor `toTensor pauliMatrix` in `ℂT[.up, .upL, .upR]`. -/
+/-- The Pauli matrices as a tensor `toTensor pauliMatrix` in `ℂT[.up, .upL, .upR]`. -/
 scoped[PauliMatrix] notation "σ^^^" => toTensor pauliMatrix
 
 lemma toTensor_basis_expand : σ^^^ =

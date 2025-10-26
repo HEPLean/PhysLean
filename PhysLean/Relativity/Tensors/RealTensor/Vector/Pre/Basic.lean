@@ -93,7 +93,7 @@ lemma coBasis_toFin1dℝ {d : ℕ} (i : Fin 1 ⊕ Fin d) :
   simp only [coBasis, Basis.coe_ofEquivFun]
   rfl
 
-/-- The standard basis of covaraitn Lorentz vectors indexed by `Fin (1 + d)`. -/
+/-- The standard basis of covariant Lorentz vectors indexed by `Fin (1 + d)`. -/
 def coBasisFin (d : ℕ := 3) : Basis (Fin (1 + d)) ℝ (Co d) :=
   Basis.reindex (coBasis d) finSumFinEquiv
 

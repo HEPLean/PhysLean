@@ -14,7 +14,7 @@ import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
 The tight binding chain corresponds to an electron in motion
 in a 1d solid with the assumption the electron can sit only on the atoms of the solid.
 
-The solid is assumed to consist of `N` sites with a seperation of `a` between them
+The solid is assumed to consist of `N` sites with a separation of `a` between them
 
 Mathematically, the tight binding chain corresponds to a
 QM problem located on a lattice with only self and nearest neighbour interactions,
@@ -146,7 +146,7 @@ lemma energy_localizedState (n : Fin T.N) (htn : 1 < T.N) : ⟪|n⟩, T.hamilton
   · simp
 
 /-- The Brillouin zone of the tight binding model is `[-π/a, π/a)`.
-  This is the set in which wave functions are uniquly defined. -/
+  This is the set in which wave functions are uniquely defined. -/
 def BrillouinZone : Set ℝ := Set.Ico (- Real.pi / T.a) (Real.pi / T.a)
 
 /-- The wavenumbers associated with the energy eigenstates.
