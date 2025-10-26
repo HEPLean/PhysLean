@@ -17,23 +17,23 @@ open MonoidalCategory
 namespace TensorSpecies
 open OverColor
 
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
 
 namespace Tensor
 
 namespace Pure
 
-variable {n : ℕ} {c : Fin (n + 1) → S.C}
+variable {n : ℕ} {c : Fin (n + 1) → C}
 
 /-!
 
-## The evaluation coefficent.
+## The evaluation coefficient.
 
 -/
 
 /-- Given a `i : Fin (n + 1)`, a `b : Fin (S.repDim (c i))` and a pure tensor
   `p : Pure S c`, `evalPCoeff i b p` is the `b`th component of `p i`. -/
-def evalPCoeff (i : Fin (n + 1)) (b : Fin (S.repDim (c i))) (p : Pure S c) : k :=
+noncomputable def evalPCoeff (i : Fin (n + 1)) (b : Fin (S.repDim (c i))) (p : Pure S c) : k :=
   (S.basis (c i)).repr (p i) b
 
 @[simp]
@@ -93,7 +93,7 @@ lemma evalP_update_smul [inst : DecidableEq (Fin (n + 1))] (i j : Fin (n + 1))
 -/
 
 /-- The multi-linear map formed by evaluation of an index of pure tensors. -/
-noncomputable def evalPMultilinear {n : ℕ} {c : Fin (n + 1)→ S.C}
+noncomputable def evalPMultilinear {n : ℕ} {c : Fin (n + 1)→ C}
     (i : Fin (n + 1)) (b : Fin (S.repDim (c i))) :
     MultilinearMap k (fun i => S.FD.obj (Discrete.mk (c i)))
       (S.Tensor (c ∘ i.succAbove)) where
@@ -112,7 +112,7 @@ end Pure
 /-- Given a `i : Fin (n + 1)`, a `b : Fin (S.repDim (c i))` and a tensor
   `t : Tensor S c`, `evalT i b t` is the tensor formed by evaluating the `i`th index
   of `t` at `b`. -/
-noncomputable def evalT {n : ℕ} {c : Fin (n + 1) → S.C} (i : Fin (n + 1))
+noncomputable def evalT {n : ℕ} {c : Fin (n + 1) → C} (i : Fin (n + 1))
       (b : Fin (S.repDim (c i))) :
     Tensor S c →ₗ[k] Tensor S (c ∘ i.succAbove) :=
   PiTensorProduct.lift (Pure.evalPMultilinear i b)

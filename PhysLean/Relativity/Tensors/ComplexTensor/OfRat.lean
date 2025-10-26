@@ -4,16 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Basic
-import PhysLean.Relativity.Tensors.Product
-import PhysLean.Relativity.Tensors.Contraction.Basis
 import PhysLean.Mathematics.RatComplexNum
+import PhysLean.Relativity.Tensors.Dual
 /-!
 
 # Basis for tensors in a tensor species
 
 -/
 
-open IndexNotation
+open Module IndexNotation
 open CategoryTheory
 open MonoidalCategory
 
@@ -24,14 +23,13 @@ open PhysLean
 
 open TensorSpecies
 open Tensor
-variable {k : Type} [CommRing k] {G : Type} [Group G] (S : TensorSpecies k G)
 
 /--A complex Lorentz tensor from a map
   `(Π j, Fin (complexLorentzTensor.repDim (c j))) → RatComplexNum`. All
-  complex Lorentz tensors with rational coefficents with respect to the basis are of this
+  complex Lorentz tensors with rational coefficients with respect to the basis are of this
   form. -/
-noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
-    ((ComponentIdx c) → RatComplexNum) →ₛₗ[toComplexNum] ℂT(c) where
+noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.Color} :
+    ((ComponentIdx (S := complexLorentzTensor) c) → RatComplexNum) →ₛₗ[toComplexNum] ℂT(c) where
   toFun f := (Tensor.basis c).repr.symm <|
     (Finsupp.linearEquivFunOnFinite ℂ ℂ
     ((j : Fin n) → Fin (complexLorentzTensor.repDim (c j)))).symm <|
@@ -48,14 +46,14 @@ noncomputable def ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
     rfl
 
 @[simp]
-lemma ofRat_basis_repr_apply {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+lemma ofRat_basis_repr_apply {n : ℕ} {c : Fin n → complexLorentzTensor.Color}
     (f : (ComponentIdx c) → RatComplexNum)
     (b :(ComponentIdx c)) :
   (Tensor.basis c).repr (ofRat f) b = toComplexNum (f b) := by
   simp [ofRat]
   rfl
 
-lemma basis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
+lemma basis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.Color}
     (b : (ComponentIdx c)) :
     Tensor.basis c b
     = ofRat (fun b' => if b = b' then ⟨1, 0⟩ else ⟨0, 0⟩) := by
@@ -69,7 +67,7 @@ lemma basis_eq_ofRat {n : ℕ} {c : Fin n → complexLorentzTensor.C}
   simp only [Rat.cast_one, Rat.cast_zero, zero_mul, add_zero]
   simp
 
-lemma contr_basis_ratComplexNum {c : complexLorentzTensor.C}
+lemma contr_basis_ratComplexNum {c : complexLorentzTensor.Color}
     (i : Fin (complexLorentzTensor.repDim c))
     (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))) :
     complexLorentzTensor.castToField
@@ -107,19 +105,19 @@ lemma contr_basis_ratComplexNum {c : complexLorentzTensor.C}
 open TensorSpecies
 open Tensor
 
-lemma prodT_ofRat_ofRat {n n1 : ℕ} {c : Fin n → complexLorentzTensor.C}
+lemma prodT_ofRat_ofRat {n n1 : ℕ} {c : Fin n → complexLorentzTensor.Color}
     (f : (ComponentIdx c) → RatComplexNum)
-    {c1 : Fin n1 → complexLorentzTensor.C}
+    {c1 : Fin n1 → complexLorentzTensor.Color}
     (f1 : (ComponentIdx c1) → RatComplexNum) :
     (prodT (ofRat f) (ofRat f1)) =
-    ((ofRat (fun b => f (ComponentIdx.splitEquiv b).1 *
-      f1 (ComponentIdx.splitEquiv b).2))) := by
+    ((ofRat (fun b => f (ComponentIdx.prodEquiv b).1 *
+      f1 (ComponentIdx.prodEquiv b).2))) := by
   apply (Tensor.basis _).repr.injective
   ext b
   rw [prodT_basis_repr_apply]
-  simp only [ofRat_basis_repr_apply, Function.comp_apply, map_mul]
+  simp only [ofRat_basis_repr_apply, map_mul]
 
-lemma contrT_ofRat_eq_sum_dropPairSection {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C}
+lemma contrT_ofRat_eq_sum_dropPairSection {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.Color}
     {i j : Fin (n + 1 + 1)} {h : i ≠ j ∧ complexLorentzTensor.τ (c i) = c j }
     (f : (ComponentIdx c) → RatComplexNum) :
   (contrT n i j h (ofRat f)) = ((ofRat (fun b =>
@@ -139,7 +137,7 @@ lemma contrT_ofRat_eq_sum_dropPairSection {n : ℕ} {c : Fin (n + 1 + 1) → com
   erw [ofRat_basis_repr_apply]
 
 open ComponentIdx
-lemma contrT_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C}
+lemma contrT_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.Color}
     {i j : Fin (n + 1 + 1)} {h : i ≠ j ∧ complexLorentzTensor.τ (c i) = c j }
     (f : (ComponentIdx c) → RatComplexNum) :
   (contrT n i j h (ofRat f)) = ((ofRat (fun b =>
@@ -163,8 +161,8 @@ lemma contrT_ofRat {n : ℕ} {c : Fin (n + 1 + 1) → complexLorentzTensor.C}
       exact fun a => hy ((Eq.symm a))
   · simp
 
-lemma permT_ofRat {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
-    {c1 : Fin m → complexLorentzTensor.C}
+lemma permT_ofRat {n m : ℕ} {c : Fin n → complexLorentzTensor.Color}
+    {c1 : Fin m → complexLorentzTensor.Color}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ)
     (f : ComponentIdx c → RatComplexNum) :
     (permT σ h ((ofRat f))) =
@@ -172,6 +170,6 @@ lemma permT_ofRat {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
       (b (h.inv σ i)))))) := by
   apply (Tensor.basis _).repr.injective
   ext b
-  simp only [permT_basis_repr_symm_apply, mk_hom, ofRat_basis_repr_apply]
+  simp only [permT_basis_repr_symm_apply, ofRat_basis_repr_apply]
 
 end complexLorentzTensor

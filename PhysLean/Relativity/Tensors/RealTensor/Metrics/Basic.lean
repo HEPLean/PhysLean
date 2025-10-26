@@ -4,24 +4,23 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Basic
+import PhysLean.Relativity.Tensors.MetricTensor
 /-!
 
 ## Metrics as real Lorentz tensors
 
 -/
-open IndexNotation
+open Module IndexNotation
 open CategoryTheory
 open MonoidalCategory
 open Matrix
 open MatrixGroups
 open TensorProduct
 open IndexNotation
-open CategoryTheory
-open OverColor.Discrete
+
 noncomputable section
 
 namespace realLorentzTensor
-open Fermion
 
 /-!
 
@@ -107,7 +106,7 @@ lemma coMetric_repr_apply_eq_minkowskiMatrix {d : ℕ}
   rw [coMetric_eq_fromPairT]
   simp [Lorentz.preCoMetricVal]
   erw [Lorentz.coCoToMatrixRe_symm_expand_tmul]
-  simp only [map_sum, _root_.map_smul, C_eq_color, Finsupp.coe_finset_sum, Finsupp.coe_smul,
+  simp only [map_sum, _root_.map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Fin.isValue]
   conv_lhs =>
     enter [2, x1, 2, x2]
@@ -143,8 +142,8 @@ lemma contrMetric_repr_apply_eq_minkowskiMatrix {d : ℕ}
   rw [contrMetric_eq_fromPairT]
   simp [Lorentz.preContrMetricVal]
   erw [Lorentz.contrContrToMatrixRe_symm_expand_tmul]
-  simp only [map_sum, _root_.map_smul, C_eq_color, Finsupp.coe_finset_sum, Finsupp.coe_smul,
-  Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Fin.isValue]
+  simp only [map_sum, map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul, Finset.sum_apply,
+    Pi.smul_apply, smul_eq_mul, Fin.isValue]
   conv_lhs =>
     enter [2, x1, 2, x2]
     rw [fromPairT_basis_repr]

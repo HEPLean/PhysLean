@@ -55,8 +55,6 @@ section PseudoRiemannianMetric
 
 noncomputable section
 
-universe u v w
-
 open Bundle Set Finset Function Filter Module Topology ContinuousLinearMap
 open scoped Manifold Bundle LinearMap Dual
 
@@ -133,7 +131,7 @@ lemma neg_weight_implies_neg_value {E : Type*} [AddCommGroup E] [Module ℝ E]
       intro j; simp only [v_std]
     rw [heq, hw]
     have : (w i : ℝ) = -1 := by simp only [hi, SignType.neg_eq_neg_one, SignType.coe_neg,
-      SignType.coe_one, v_std]
+      SignType.coe_one]
     rw [this]
     exact neg_one_lt_zero
   exact ⟨v, hv_ne_zero, hq_neg⟩
@@ -168,7 +166,7 @@ theorem rankNeg_eq_zero {E : Type*} [AddCommGroup E]
     Classical.choose_spec h_exists
   have h_no_neg : ∀ i, w i ≠ SignType.neg :=
     QuadraticForm.posDef_no_neg_weights hq h_equiv
-  simp [Finset.card_eq_zero, Finset.filter_eq_empty_iff, h_no_neg]
+  simp [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
   exact fun ⦃x⦄ => h_no_neg x
 
 end QuadraticForm
@@ -196,9 +194,9 @@ private def pseudoRiemannianMetricValToQuadraticForm
     (x : M) : QuadraticForm ℝ (TangentSpace I x) where
   toFun v := val x v v
   toFun_smul a v := by
-    simp only [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_smul, pow_two]
+    simp only [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_smul]
   exists_companion' :=
-      ⟨ LinearMap.mk₂ ℝ (fun v y => val x v y + val x y v)
+      ⟨LinearMap.mk₂ ℝ (fun v y => val x v y + val x y v)
         (fun v₁ v₂ y => by simp only [map_add, add_apply]; ring)
         (fun a v y => by simp only [map_smul, smul_apply]; ring_nf; exact Eq.symm (smul_add ..))
         (fun v y₁ y₂ => by simp only [map_add, add_apply]; ring)
@@ -215,7 +213,7 @@ continuous bilinear form `gₓ` of constant negative dimension on the tangent sp
 at each point `x`. Requires `M` to be `C^{n+1}` smooth.
 This structure formalizes O'Neill's Definition 3.1 (p. 54) of a metric tensor `g` on `M`
 as a "symmetric non-degenerate (0,2) tensor field on M of constant index."
-Each `gₓ` is a scalar product (O'Neill, Definition 20, p. 47) on `TₓM`.-/
+Each `gₓ` is a scalar product (O'Neill, Definition 20, p. 47) on `TₓM`. -/
 @[ext]
 structure PseudoRiemannianMetric
     (E : Type v) (H : Type w) (M : Type w) (n : WithTop ℕ∞)
@@ -240,7 +238,7 @@ structure PseudoRiemannianMetric
   /-- The metric varies smoothly: Expressed in local coordinates via the chart
       `e := extChartAt I x₀`, the function
       `y ↦ g_{e.symm y}(mfderiv I I e.symm y v, mfderiv I I e.symm y w)` is `C^n` smooth on the
-      chart's target `e.target` for any constant vectors `v, w` in the model space  `E`. -/
+      chart's target `e.target` for any constant vectors `v, w` in the model space `E`. -/
   smooth_in_charts' : ∀ (x₀ : M) (v w : E),
     let e := extChartAt I x₀
     ContDiffWithinAt ℝ n
@@ -271,7 +269,7 @@ def toBilinForm (g : PseudoRiemannianMetric E H M n I) (x : M) :
     LinearMap.BilinForm ℝ (TangentSpace I x) where
   toFun := λ v => { toFun := λ w => g.val x v w,
                     map_add' := λ w₁ w₂ => by
-                      simp only [ContinuousLinearMap.map_add, ContinuousLinearMap.add_apply],
+                      simp only [ContinuousLinearMap.map_add],
                     map_smul' := λ c w => by
                       simp only [map_smul, smul_eq_mul, RingHom.id_apply] }
   map_add' := λ v₁ v₂ => by
@@ -290,7 +288,7 @@ abbrev toQuadraticForm (g : PseudoRiemannianMetric E H M n I) (x : M) :
 /-- Coercion from PseudoRiemannianMetric to its function representation. -/
 instance coeFunInst : CoeFun (PseudoRiemannianMetric E H M n I)
         (fun _ => ∀ x : M, TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)) where
-   coe g := g.val
+  coe g := g.val
 
 @[simp]
 lemma toBilinForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M)
@@ -305,6 +303,7 @@ lemma toQuadraticForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M)
 @[simp]
 lemma toBilinForm_isSymm (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (toBilinForm g x).IsSymm := by
+  refine { eq := ?_ }
   intro v w; simp only [toBilinForm_apply]; exact g.symm x v w
 
 @[simp]
@@ -460,8 +459,7 @@ lemma flat_sharp_apply
     (g : PseudoRiemannianMetric E H M n I) (x : M) (ω : TangentSpace I x →L[ℝ] ℝ) :
     g.flat x (g.sharp x ω) = ω := by
   have := flatL_apply_sharpL g x ω
-  simp only [sharp, sharpL, flat, flatL, coe_flatEquiv]; simp only [coe_sharpEquiv,
-             ContinuousLinearEquiv.coe_coe, LinearEquiv.coe_coe] at this ⊢
+  simp only [flat, sharp]; simp only [LinearEquiv.coe_coe] at this ⊢
   exact this
 
 @[simp]
@@ -469,8 +467,7 @@ lemma sharp_flat_apply
     (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) :
     g.sharp x (g.flat x v) = v := by
   have := sharpL_apply_flatL g x v
-  simp only [sharp, sharpL, flat, flatL]; simp only [coe_flatEquiv, coe_sharpEquiv,
-             ContinuousLinearEquiv.coe_coe, LinearEquiv.coe_coe] at this ⊢
+  simp only [sharp, flat]; simp only [LinearEquiv.coe_coe] at this ⊢
   exact this
 
 /-- The metric evaluated at `sharp ω₁` and `sharp ω₂`. -/
@@ -527,8 +524,7 @@ noncomputable def cotangentToBilinForm (g : PseudoRiemannianMetric E H M n I) (x
   toFun ω₁ := { toFun := λ ω₂ => cotangentMetricVal g x ω₁ ω₂,
                 map_add' := λ ω₂ ω₃ => by
                   simp only [cotangentMetricVal,
-                    ContinuousLinearMap.map_add,
-                    ContinuousLinearMap.add_apply],
+                    ContinuousLinearMap.map_add],
                 map_smul' := λ c ω₂ => by
                   simp only [cotangentMetricVal,
                     map_smul, smul_eq_mul, RingHom.id_apply] }
@@ -555,9 +551,9 @@ noncomputable def cotangentToQuadraticForm (g : PseudoRiemannianMetric E H M n I
     simp only [cotangentMetricVal,
       ContinuousLinearMap.map_smul,
       ContinuousLinearMap.smul_apply,
-      smul_smul, pow_two]
+      smul_smul]
   exists_companion' :=
-      ⟨ LinearMap.mk₂ ℝ (fun ω₁ ω₂ =>
+      ⟨LinearMap.mk₂ ℝ (fun ω₁ ω₂ =>
           cotangentMetricVal g x ω₁ ω₂ + cotangentMetricVal g x ω₂ ω₁)
         (fun ω₁ ω₂ ω₃ => by simp only [cotangentMetricVal, map_add, add_apply]; ring)
         (fun a ω₁ ω₂ => by
@@ -587,6 +583,7 @@ lemma cotangentToQuadraticForm_apply (g : PseudoRiemannianMetric E H M n I) (x :
 @[simp]
 lemma cotangentToBilinForm_isSymm (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (cotangentToBilinForm g x).IsSymm := by
+  refine { eq := ?_ }
   intro ω₁ ω₂; simp only [cotangentToBilinForm_apply]; exact cotangentMetricVal_symm g x ω₁ ω₂
 
 /-- The cotangent metric is non-degenerate: if `cotangentMetricVal g x ω v = 0` for all `v`,
@@ -617,3 +614,7 @@ lemma cotangentToBilinForm_nondegenerate (g : PseudoRiemannianMetric E H M n I) 
   exact hω v
 
 end Cotangent
+
+end PseudoRiemannianMetric
+end
+end PseudoRiemannianMetric

@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
+import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Gaussians
 /-!
 
 # Completeness of the eigenfunctions of the Harmonic Oscillator
@@ -26,7 +26,7 @@ namespace OneDimension
 namespace HarmonicOscillator
 variable (Q : HarmonicOscillator)
 
-open Nat
+open Module Nat
 open PhysLean
 open MeasureTheory HilbertSpace InnerProductSpace
 
@@ -62,7 +62,7 @@ lemma mul_physHermite_integrable (f : ℝ → ℂ) (hf : MemHS f) (n : ℕ) :
       Q.eigenfunction n x * f x := by
     funext x
     simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-      neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+      Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
       Complex.ofReal_ofNat, Pi.smul_apply, smul_eq_mul, eigenfunction_eq]
     ring
   have h1 := Q.mul_eigenfunction_integrable f hf (n := n)
@@ -102,9 +102,8 @@ lemma mul_polynomial_integrable (f : ℝ → ℂ) (hf : MemHS f) (P : Polynomial
     (f x * Real.exp (- (x ^ 2) / (2 * Q.ξ^2)))))
     = fun x => (a i) • (physHermite i (x/Q.ξ) * (f x * Real.exp (- x ^ 2 / (2 * Q.ξ^2)))) := by
     funext x
-    simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
-      Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, Complex.real_smul,
-      mul_eq_mul_left_iff, Complex.ofReal_eq_zero]
+    simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+      Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.real_smul]
   rw [hf']
   apply MeasureTheory.Integrable.smul
   exact Q.mul_physHermite_integrable f hf i
@@ -113,7 +112,7 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
     MeasureTheory.Integrable (fun x => x ^ r * (f x * Real.exp (- x^2 / (2 * Q.ξ^2)))) volume := by
   by_cases hr : r ≠ 0
   · have h1 := Q.mul_polynomial_integrable f hf (Polynomial.X ^ r)
-    simp only [map_pow, Polynomial.aeval_X, Complex.ofReal_pow, Complex.ofReal_mul, neg_mul,
+    simp only [map_pow, Polynomial.aeval_X, Complex.ofReal_pow, Complex.ofReal_mul,
       Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_ofNat] at h1
     have h2 : (fun x => (x /Q.ξ) ^ r * (f x * Complex.exp (- x ^ 2/ (2 * Q.ξ^2))))
       = (1/Q.ξ : ℂ) ^ r • (fun x => (x ^r * (f x * Real.exp (- ↑x ^ 2 / (2 * Q.ξ^2))))) := by
@@ -125,8 +124,7 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
     suffices h2 : IsUnit (↑((1/Q.ξ)^ r : ℂ)) by
       rw [IsUnit.integrable_smul_iff h2] at h1
       simpa using h1
-    simp only [isUnit_iff_ne_zero, ne_eq, pow_eq_zero_iff', Complex.ofReal_eq_zero, not_and,
-      Decidable.not_not]
+    simp only [isUnit_iff_ne_zero, ne_eq, pow_eq_zero_iff', not_and, Decidable.not_not]
     simp
   · simp only [ne_eq, Decidable.not_not] at hr
     subst hr
@@ -162,12 +160,12 @@ lemma orthogonal_physHermite_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       = fun x => Q.eigenfunction n x * f x := by
     funext x
     simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-      neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+      Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
       Complex.ofReal_ofNat, eigenfunction_eq]
     ring
   rw [← h2, MeasureTheory.integral_const_mul] at h1
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-    neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+    Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
     Complex.ofReal_ofNat, _root_.mul_eq_zero, inv_eq_zero, Complex.ofReal_eq_zero, cast_nonneg,
     Real.sqrt_eq_zero, cast_eq_zero, pow_eq_zero_iff', OfNat.ofNat_ne_zero, ne_eq, false_and,
     or_false, Real.sqrt_nonneg] at h1
@@ -178,7 +176,7 @@ lemma orthogonal_physHermite_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
   rw [← h1]
   congr
   funext x
-  simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+  simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
     Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring
 
@@ -186,33 +184,24 @@ lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0)
     (P : Polynomial ℤ) :
     ∫ x : ℝ, (P (x /Q.ξ)) * (f x * Real.exp (- x^2 / (2 * Q.ξ^2))) = 0 := by
-  have h1 := polynomial_mem_physHermite_span P
-  rw [Finsupp.mem_span_range_iff_exists_finsupp] at h1
-  obtain ⟨a, ha⟩ := h1
-  have h2 : (fun x => ↑(P (x /Q.ξ)) *
-    (f x * ↑(Real.exp (- x ^ 2 / (2 * Q.ξ^2)))))
-    = (fun x => ∑ r ∈ a.support, a r * (physHermite r (x/Q.ξ)) *
-    (f x * Real.exp (- x ^ 2 / (2 * Q.ξ^2)))) := by
+  obtain ⟨a, ha⟩ := Finsupp.mem_span_range_iff_exists_finsupp.mp <|
+    polynomial_mem_physHermite_span P
+  have h2 : (fun x => ↑(P (x /Q.ξ)) * (f x * ↑(Real.exp (- x ^ 2 / (2 * Q.ξ^2)))))
+      = (fun x => ∑ r ∈ a.support, a r * (physHermite r (x/Q.ξ)) *
+      (f x * Real.exp (- x ^ 2 / (2 * Q.ξ^2)))) := by
     funext x
     rw [← ha]
-    rw [← Finset.sum_mul]
-    congr
-    rw [Finsupp.sum]
-    simp
-  rw [h2]
-  rw [MeasureTheory.integral_finset_sum]
+    simp [← Finset.sum_mul, Finsupp.sum]
+  rw [h2, MeasureTheory.integral_finset_sum]
   · apply Finset.sum_eq_zero
     intro x hx
-    simp only [neg_mul, mul_assoc, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
-      Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
-    rw [MeasureTheory.integral_const_mul]
-    simp only [_root_.mul_eq_zero, Complex.ofReal_eq_zero]
-    right
-    rw [← Q.orthogonal_physHermite_of_mem_orthogonal f hf hOrth x]
-    congr
-    funext x
     simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
-      Complex.ofReal_mul, Complex.ofReal_ofNat]
+      Complex.ofReal_mul, Complex.ofReal_ofNat, mul_assoc, integral_const_mul, _root_.mul_eq_zero,
+      Complex.ofReal_eq_zero]
+    right
+    simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
+      Complex.ofReal_mul, Complex.ofReal_ofNat,
+      ← Q.orthogonal_physHermite_of_mem_orthogonal f hf hOrth x]
   · /- Integrablility -/
     intro i hi
     have hf' : (fun x => ↑(a i) * ↑(physHermite i (x /Q.ξ)) *
@@ -220,13 +209,11 @@ lemma orthogonal_polynomial_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         = a i • (fun x => (physHermite i (x/Q.ξ)) *
         (f x * ↑(Real.exp (- x ^ 2 / (2 * Q.ξ^2))))) := by
       funext x
-      simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+      simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
         Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, Pi.smul_apply,
         Complex.real_smul]
       ring
-    rw [hf']
-    apply Integrable.smul
-    exact Q.mul_physHermite_integrable f hf i
+    exact hf' ▸ (MeasureTheory.Integrable.smul _ (Q.mul_physHermite_integrable f hf i))
 
 /-- If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
   to all `eigenfunction n` then it is orthogonal to
@@ -239,8 +226,8 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (r : ℕ) : ∫ x : ℝ, (x ^ r * (f x * Real.exp (- x^2 / (2 * Q.ξ^2)))) = 0 := by
   by_cases hr : r ≠ 0
   · have h1 := Q.orthogonal_polynomial_of_mem_orthogonal f hf hOrth (Polynomial.X ^ r)
-    simp only [map_pow, Polynomial.aeval_X, Complex.ofReal_pow, Complex.ofReal_mul, neg_mul,
-      Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_ofNat] at h1
+    simp only [map_pow, Polynomial.aeval_X, Complex.ofReal_pow, Complex.ofReal_div,
+      Complex.ofReal_exp, Complex.ofReal_neg, Complex.ofReal_mul, Complex.ofReal_ofNat] at h1
     have h2 : (fun x => (x /Q.ξ) ^ r *
       (f x * Complex.exp (- x ^ 2 / (2 * Q.ξ^2))))
       = (fun x => (1/Q.ξ : ℂ) ^ r * (↑x ^r *
@@ -256,7 +243,7 @@ lemma orthogonal_power_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     simp
   · simp only [ne_eq, Decidable.not_not] at hr
     subst hr
-    simp only [pow_zero, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    simp only [pow_zero, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
       Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, one_mul]
     rw [← Q.orthogonal_physHermite_of_mem_orthogonal f hf hOrth 0]
     congr
@@ -311,14 +298,14 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       (Real.exp (- x ^ 2 / (2 * Q.ξ^2)))
     apply MeasureTheory.tendsto_integral_of_dominated_convergence bound
     · intro n
-      apply Finset.aestronglyMeasurable_sum
+      refine aestronglyMeasurable_fun_sum (range n) ?_
       intro r hr
       have h1 : (fun a => (Complex.I * ↑c * ↑a) ^ r / ↑r ! *
         (f a * ↑(Real.exp (- a ^ 2 / (2 * Q.ξ^2)))))
         = fun a => (Complex.I * ↑c) ^ r / ↑r ! *
         (f a * Complex.ofReal (a ^ r * (Real.exp (- a ^ 2 / (2 * Q.ξ^2))))) := by
         funext a
-        simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
           Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
         ring
       rw [h1]
@@ -354,7 +341,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       apply Filter.Eventually.of_forall
       intro y
       rw [← Finset.sum_mul]
-      simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+      simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
         Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, norm_mul,
         bound]
       rw [mul_assoc]
@@ -362,7 +349,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         rw [mul_assoc]
       have h1 : (norm (f y) * norm (Complex.exp (-(↑y ^ 2) / (2 * Q.ξ^2))))
         = norm (f y) * Real.exp (-(y ^ 2) / (2 * Q.ξ^2)) := by
-        simp only [mul_eq_mul_left_iff, map_eq_zero, bound]
+        simp only [mul_eq_mul_left_iff]
         left
         rw [Complex.norm_exp]
         congr
@@ -373,7 +360,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
       rw [h1]
       by_cases hf : norm (f y) = 0
       · simp [hf]
-      rw [_root_.mul_le_mul_right]
+      rw [mul_le_mul_iff_left₀]
       · have h1 := Real.sum_le_exp_of_nonneg (x := |c * y|) (abs_nonneg (c * y)) n
         refine le_trans ?_ h1
         have h2 : norm (∑ i ∈ range n, (Complex.I * (↑c * ↑y)) ^ i / ↑i !) ≤
@@ -384,7 +371,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         congr
         funext i
         simp only [Complex.norm_div, norm_pow, Complex.norm_mul, Complex.norm_I, Complex.norm_real,
-          Real.norm_eq_abs, one_mul, RCLike.norm_natCast, bound]
+          Real.norm_eq_abs, one_mul, RCLike.norm_natCast]
         congr
         rw [abs_mul]
       · refine mul_pos ?_ ?_
@@ -406,7 +393,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         = fun a => ((Complex.I * ↑c) ^ r / ↑r !) *
         (a^ r * (f a * ↑(Real.exp (- a ^ 2 / (2 * Q.ξ^2))))) := by
         funext a
-        simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
           Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat]
         ring
       rw [hf']
@@ -419,7 +406,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
         = ((Complex.I * ↑c) ^ r / ↑r !) •
         fun a => (a^ r * (f a * ↑(Real.exp (- a ^ 2 / (2 * Q.ξ^2))))) := by
         funext a
-        simp only [neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
           Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_ofNat, Pi.smul_apply, smul_eq_mul]
         ring
       rw [hf']
@@ -429,7 +416,7 @@ lemma orthogonal_exp_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
   apply tendsto_nhds_unique h1'
   rw [tendsto_const_nhds_iff]
 
-open FourierTransform MeasureTheory Real Lp Memℒp Filter Complex Topology
+open FourierTransform MeasureTheory Real Lp MemLp Filter Complex Topology
   ComplexInnerProductSpace ComplexConjugate
 
 /-- If `f` is a function `ℝ → ℂ` satisfying `MemHS f` such that it is orthogonal
@@ -445,7 +432,7 @@ lemma fourierIntegral_zero_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     𝓕 (fun x => f x * Real.exp (- x^2 / (2 * Q.ξ^2))) = 0 := by
   funext c
   rw [Real.fourierIntegral_eq]
-  simp only [RCLike.inner_apply, conj_trivial, neg_mul, ofReal_exp, ofReal_div, ofReal_neg,
+  simp only [RCLike.inner_apply, conj_trivial, ofReal_exp, ofReal_div, ofReal_neg,
     ofReal_mul, ofReal_pow, ofReal_ofNat, Pi.zero_apply]
   rw [← Q.orthogonal_exp_of_mem_orthogonal f hf hOrth (- 2 * Real.pi * c)]
   congr
@@ -470,6 +457,7 @@ lemma zero_of_orthogonal_mk (f : ℝ → ℂ) (hf : MemHS f)
     left
     congr
     field_simp
+    simp
   have h1 : eLpNorm (fun x => f x * Real.exp (- x^2 / (2 * Q.ξ^2))) 2 volume = 0 := by
     rw [← plancherel_theorem]
     rw [Q.fourierIntegral_zero_of_mem_orthogonal f hf hOrth]
@@ -488,7 +476,7 @@ lemma zero_of_orthogonal_mk (f : ℝ → ℂ) (hf : MemHS f)
   have h2 : eLpNorm f 2 volume = 0 := by
     rw [MeasureTheory.eLpNorm_eq_zero_iff] at h1 ⊢
     rw [Filter.eventuallyEq_iff_all_subsets] at h1 ⊢
-    simp only [neg_mul, ofReal_exp, ofReal_div, ofReal_neg, ofReal_mul, ofReal_pow, ofReal_ofNat,
+    simp only [ofReal_exp, ofReal_div, ofReal_neg, ofReal_mul, ofReal_pow, ofReal_ofNat,
       Pi.zero_apply, _root_.mul_eq_zero, Complex.exp_ne_zero, or_false] at h1
     exact h1
     exact aeStronglyMeasurable_of_memHS hf

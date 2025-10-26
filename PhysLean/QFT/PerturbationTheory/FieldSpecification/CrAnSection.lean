@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldSpecification.CrAnFieldOp
+import PhysLean.Mathematics.List
 /-!
 
 # Creation and annihilation sections
@@ -12,7 +13,7 @@ In the module
 `PhysLean.QFT.PerturbationTheory.FieldSpecification.Basic`
 we defined states for a field specification, and in the module
 `PhysLean.QFT.PerturbationTheory.FieldStatistics.CrAnFieldOp`
-we defined a refinement of states called `CrAnFieldOp` which distinquishes between the
+we defined a refinement of states called `CrAnFieldOp` which distinguishes between the
 creation and annihilation components of states.
 There exists, in particular, a map from `CrAnFieldOp` to `FieldOp` called `crAnFieldOpToFieldOp`.
 

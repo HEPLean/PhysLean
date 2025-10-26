@@ -13,7 +13,6 @@ The main result of this file is the conclusion of this paper:
 That every solution to the ACCs without gravity satisfies for free the gravitational anomaly.
 -/
 
-universe v u
 namespace SM
 namespace SMNoGrav
 namespace One

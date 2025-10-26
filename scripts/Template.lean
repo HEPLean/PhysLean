@@ -64,7 +64,7 @@ def baseHtmlGenerator (title : String) (site : Array Html) : BaseHtmlM Html := d
           PhysLean Documentation</a>
           </span></h1>
           <h2  style="color: #fff; font-family: serif">[breakWithin title]</h2>
-          <form action="https://google.com/search" method="get" id="search_form">
+          <form action="https://google.com/search" method="get" id="search_form" style="color: var(--text-color);">
             <input type="hidden" name="sitesearch" value="https://leanprover-community.github.io/mathlib4_docs"/>
             <input type="text" name="q" autocomplete="off"/>{.raw "&#32;"}
             <button id="search_button" onclick={s!"javascript: form.action='{← getRoot}search.html';"}>Search</button>

@@ -1,43 +1,62 @@
 /-
 Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Joseph Tooby-Smith
+Authors: Luis Gabriel C. Bariuan, Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.SpaceTime.Basic
+import Mathlib.Analysis.Complex.Trigonometric
 import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.SpaceAndTime.Space.Basic
 /-!
 
 # The Friedmann-Lemaître-Robertson-Walker metric
 
-Everything in this file is currently informal or semiformal.
+Parts of this file is currently informal or semiformal.
 
 -/
+
+open Filter
+open scoped Topology
 
 namespace Cosmology
 
 /-- The inductive type with three constructors:
 - `Spherical (k : ℝ)`
 - `Flat`
-- `Saddle (k : ℝ)` -/
-semiformal_result "6ZZLH" SpatialGeometry : Type
-
-/- This variable should be removed once the above `semiformal_result` is implemented. -/
-variable (SpatialGeometry : Type)
+- `Saddle (k : ℝ)`
+-/
+inductive SpatialGeometry : Type where
+  | Spherical (k : ℝ) (h : k < 0)
+  | Flat
+  | Saddle (k : ℝ) (h : k > 0)
 
 namespace SpatialGeometry
 
 /-- For `s` corresponding to
 - `Spherical k`, `S s r = k * sin (r / k)`
 - `Flat`, `S s r = r`,
-- `Saddle k`, `S s r = k * sin (r / k)`.
+- `Saddle k`, `S s r = k * sinh (r / k)`.
+-/
+noncomputable def S (s : SpatialGeometry) : ℝ → ℝ :=
+  fun r =>
+    match s with
+    | SpatialGeometry.Spherical k _ => k * Real.sin (r / k)
+    | SpatialGeometry.Flat => r
+    | SpatialGeometry.Saddle k _ => k * Real.sinh (r / k)
 
-Semiformal implementation note: There is likely a better name for this function. -/
-semiformal_result "6ZZTV" S (s : SpatialGeometry) : ℝ → ℝ
+/-- The limit of `S (Saddle k) r` as `k → ∞` is equal to `S (Flat) r`.
+First show that `k * sinh(r / k) = sinh(r / k) / (1 / k)` pointwise. -/
+lemma mul_sinh_as_div (r k : ℝ) :
+    k * Real.sinh (r / k) = Real.sinh (r / k) / (1 / k) := by field_simp
 
-/-- The limit of `S (Saddle k) r` as `k → ∞` is equal to `S (Flat) r`. -/
-informal_lemma limit_S_saddle where
-  deps := []
-  tag := "6ZZ3D"
+/-- First, show that limit of `sinh(r * x) / x` is r at the limit x goes to zero.
+Then the next theorem will address the rewrite using Filter.Tendsto.comp -/
+@[sorryful]
+lemma tendsto_sinh_rx_over_x (r : ℝ) :
+    Tendsto (fun x : ℝ => Real.sinh (r * x) / x) (𝓝[≠] 0) (𝓝 r) := by sorry
+
+@[sorryful]
+lemma limit_S_saddle(r : ℝ) :
+    Tendsto (fun k : ℝ => k * Real.sinh (r / k)) atTop (𝓝 r) := by sorry
 
 /-- The limit of `S (Sphere k) r` as `k → ∞` is equal to `S (Flat) r`. -/
 informal_lemma limit_S_sphere where
@@ -51,10 +70,11 @@ end SpatialGeometry
 - The scale factor `a(t)`
 - An element of `SpatialGeometry`.
 
-Semiformal implementation note: It is possible that we should restirct
+Semiformal implementation note: It is possible that we should restrict
 `a(t)` to be smooth or at least twice differentiable.
 -/
-semiformal_result "6Z2AV" FLRW : Type
+@[sorryful]
+def FLRW : Type := sorry
 
 namespace FLRW
 

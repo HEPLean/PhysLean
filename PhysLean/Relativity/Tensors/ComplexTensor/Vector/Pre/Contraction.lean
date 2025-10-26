@@ -12,7 +12,7 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Vector.Pre.Basic
 
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -89,20 +89,18 @@ lemma contrCoContraction_basis (i j : Fin 4) :
     contrCoContraction.hom (complexContrBasisFin4 i ⊗ₜ complexCoBasisFin4 j) =
     if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [contrCoContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, complexContrBasisFin4, Basis.coe_reindex,
-    Function.comp_apply, complexContrBasis_toFin13ℂ, complexCoBasisFin4, complexCoBasis_toFin13ℂ,
-    dotProduct_single, mul_one]
+  simp only [complexContrBasisFin4, Basis.coe_reindex, Function.comp_apply,
+    complexContrBasis_toFin13ℂ, complexCoBasisFin4, complexCoBasis_toFin13ℂ, dotProduct_single,
+    mul_one]
   rw [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
-  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
+  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_comm]
 
 lemma contrCoContraction_basis' (i j : Fin 1 ⊕ Fin 3) :
     contrCoContraction.hom (complexContrBasis i ⊗ₜ complexCoBasis j) =
     if i = j then (1 : ℂ) else 0 := by
   rw [contrCoContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, complexContrBasisFin4, Basis.coe_reindex,
-    Function.comp_apply, complexContrBasis_toFin13ℂ, complexCoBasisFin4, complexCoBasis_toFin13ℂ,
-    dotProduct_single, mul_one]
+  simp only [complexContrBasis_toFin13ℂ, complexCoBasis_toFin13ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
@@ -129,23 +127,20 @@ lemma coContrContraction_basis (i j : Fin 4) :
     coContrContraction.hom (complexCoBasisFin4 i ⊗ₜ complexContrBasisFin4 j) =
     if i.1 = j.1 then (1 : ℂ) else 0 := by
   rw [coContrContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, complexCoBasisFin4, Basis.coe_reindex,
-    Function.comp_apply, complexCoBasis_toFin13ℂ, complexContrBasisFin4, complexContrBasis_toFin13ℂ,
-    dotProduct_single, mul_one]
+  simp only [complexCoBasisFin4, Basis.coe_reindex, Function.comp_apply, complexCoBasis_toFin13ℂ,
+    complexContrBasisFin4, complexContrBasis_toFin13ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
-  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
+  simp only [eq_comm, EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff]
 
 lemma coContrContraction_basis' (i j : Fin 1 ⊕ Fin 3) :
     coContrContraction.hom (complexCoBasis i ⊗ₜ complexContrBasis j) =
     if i = j then (1 : ℂ) else 0 := by
   rw [coContrContraction_hom_tmul]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, complexCoBasisFin4, Basis.coe_reindex,
-    Function.comp_apply, complexCoBasis_toFin13ℂ, complexContrBasisFin4, complexContrBasis_toFin13ℂ,
-    dotProduct_single, mul_one]
+  simp only [complexCoBasis_toFin13ℂ, complexContrBasis_toFin13ℂ, dotProduct_single, mul_one]
   rw [Pi.single_apply]
   refine ite_congr ?h₁ (congrFun rfl) (congrFun rfl)
-  simp only [EmbeddingLike.apply_eq_iff_eq, Fin.ext_iff, eq_iff_iff, eq_comm]
+  simp only [eq_comm]
 
 /-!
 

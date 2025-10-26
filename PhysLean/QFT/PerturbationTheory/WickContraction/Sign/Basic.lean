@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.InsertAndContract
-
+import PhysLean.QFT.PerturbationTheory.WickContraction.Basic
+import PhysLean.QFT.PerturbationTheory.Koszul.KoszulSign
 /-!
 
 # Sign associated with a contraction

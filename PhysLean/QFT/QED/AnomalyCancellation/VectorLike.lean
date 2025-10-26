@@ -10,7 +10,6 @@ import PhysLean.QFT.QED.AnomalyCancellation.Sorts
 For the `n`-even case we define the property of a charge assignment being vector like.
 
 -/
-universe v u
 
 open Nat
 open Finset

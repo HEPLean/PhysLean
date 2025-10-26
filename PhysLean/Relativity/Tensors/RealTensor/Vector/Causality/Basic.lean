@@ -3,8 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina, Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.RealTensor.Vector.Basic
-
+import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 /-!
 
 ## Causality of Lorentz vectors
@@ -42,8 +41,8 @@ def causalCharacter {d : ℕ} (p : Vector d) : CausalCharacter :=
 /-- `causalCharacter` are invariant under an action of the Lorentz group. -/
 lemma causalCharacter_invariant {d : ℕ} (p : Vector d) (Λ : LorentzGroup d) :
     causalCharacter (Λ • p) = causalCharacter p := by
-  simp only [causalCharacter, C_eq_color, Nat.succ_eq_add_one, Nat.reduceAdd]
-  rw [innerProduct_invariant]
+  simp only [causalCharacter, Nat.succ_eq_add_one, Nat.reduceAdd]
+  rw [minkowskiProduct_invariant]
 
 lemma spaceLike_iff_norm_sq_neg {d : ℕ} (p : Vector d) :
     causalCharacter p = CausalCharacter.spaceLike ↔ ⟪p, p⟫ₘ < 0 := by
@@ -65,10 +64,9 @@ lemma spaceLike_iff_norm_sq_neg {d : ℕ} (p : Vector d) :
 lemma neg_causalCharacter_eq_self {d : ℕ} (p : Vector d) :
     causalCharacter (-p) = causalCharacter p := by
   have h : ⟪-p, -p⟫ₘ = ⟪p, p⟫ₘ := by
-    simp only [innerProduct_toCoord, toCoord];
-    simp only [C_eq_color, Nat.succ_eq_add_one,
-      Nat.reduceAdd, Fin.isValue, map_neg, Pi.neg_apply, mul_neg, neg_mul, _root_.neg_neg]
-  simp only [causalCharacter, h];
+    rw [minkowskiProduct_toCoord]
+    simp [minkowskiProduct_toCoord]
+  simp only [causalCharacter, h]
 
 /-- The future light cone of a Lorentz vector `p` is defined as those
   vectors `q` such that
@@ -99,13 +97,7 @@ def pastLightConeBoundary {d : ℕ} (p : Vector d) : Set (Vector d) :=
 /-- Any point `p` lies on its own light cone boundary, as `p - p = 0` has
     zero Minkowski norm squared. -/
 lemma self_mem_lightConeBoundary {d : ℕ} (p : Vector d) : p ∈ lightConeBoundary p := by
-  simp [lightConeBoundary]
-  have : p - p = 0 := by simp
-  rw [← this]
-  simp only [causalCharacter]
-  have h0 : ⟪(0 : Vector d), 0⟫ₘ = 0 := by
-    simp only [innerProduct_zero_left]
-  simp [h0]
+  simp [causalCharacter, lightConeBoundary]
 
 /-- A proposition which is true if `q` is in the causal future of event `p`. -/
 def causallyFollows {d : ℕ} (p q : Vector d) : Prop :=

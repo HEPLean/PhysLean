@@ -3,18 +3,17 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
-import Lean.Elab.Exception
 import Lean.Elab.Command
 /-!
 
 # Semiformal results
 
-Semiformal results sit inbetween informal and formal results. There type or propsoition is
+Semiformal results sit in between informal and formal results. There type or proposition is
 defined, by the proof or definition is not.
 
 ## Note
 
-The code here is modified from the Util.ProofWanted module of the Battires library.
+The code here is modified from the Util.ProofWanted module of the Batteries library.
 Released under the Apache 2.0 license, copyright 2023 Lean FRO, authored by
 David Thrane Christiansen.
 
@@ -35,7 +34,7 @@ structure WantedInfo where
   /-- The tag of the TODO item -/
   tag : String
 
-/-- The enviroment extension for semiformal results. -/
+/-- The environment extension for semiformal results. -/
 initialize wantedExtension : SimplePersistentEnvExtension WantedInfo (Array WantedInfo) ←
   registerSimplePersistentEnvExtension {
     name := `wantedExtension

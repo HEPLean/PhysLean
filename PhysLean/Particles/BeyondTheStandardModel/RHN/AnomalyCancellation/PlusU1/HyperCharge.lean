@@ -7,10 +7,9 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.
 /-!
 # Hypercharge in SM with RHN.
 
-Relavent definitions for the SM hypercharge.
+Relevant definitions for the SM hypercharge.
 
 -/
-universe v u
 
 namespace SMRHN
 namespace PlusU1
@@ -116,7 +115,7 @@ lemma add_AFL_cube (S : (PlusU1 n).LinSols) (a b : ℚ) :
   erw [TriLinearSymm.toCubic_add, cubeSol (b • (Y n)), accCube.map_smul]
   repeat rw [cubeTriLin.map_smul₁, cubeTriLin.map_smul₂, cubeTriLin.map_smul₃]
   rw [on_cubeTriLin_AFL]
-  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply, Fin.isValue,
+  simp only [HomogeneousCubic, accCube, TriLinearSymm.toCubic_apply,
     add_zero, Y_val, mul_zero]
   ring
 

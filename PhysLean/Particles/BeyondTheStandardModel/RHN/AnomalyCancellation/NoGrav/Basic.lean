@@ -12,8 +12,6 @@ We define the ACC system for the Standard Model with right-handed neutrinos and 
 anomaly.
 -/
 
-universe v u
-
 namespace SMRHN
 open SMνCharges
 open SMνACCs

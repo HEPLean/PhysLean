@@ -5,18 +5,31 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.AnomalyCancellation.Basic
 /-!
-# Pure U(1) ACC system.
 
-We define the anomaly cancellation conditions for a pure U(1) gauge theory with `n` fermions.
+# Anomaly cancellation of a theory with a pure U(1)-gauge group
+
+In a pure U(1) gauge theory with `n` Weyl fermions carrying charges `xᵢ` the anomaly cancellation
+conditions (ACCs) which must be satisfied for a consistent gauge theory correspond to:
+
+- The linear ACC: `∑ xᵢ = 0`
+- The cubic ACC: `∑ xᵢ³ = 0`
+
+The charges `xᵢ` have rational fractions with one another, here they are specified as
+rational numbers.
 
 -/
-universe v u
+
 open Nat
 
 open Finset
 
 namespace PureU1
 open BigOperators
+
+TODO "K3HYF" "The implementation of pure U(1) anomaly cancellation conditions is done
+  currently through the type `ACCSystemCharges`. This whole directory could be
+  simplified by refactoring to remove `ACCSystemCharges` defining `PureU1Charges` as
+  `Fin n → ℚ` directly, or this space quotiented by permutations and overall factors."
 
 /-- The vector space of charges. -/
 @[simps!]
@@ -107,7 +120,7 @@ open BigOperators
 lemma pureU1_linear {n : ℕ} (S : (PureU1 n).LinSols) :
     ∑ (i : Fin n), S.val i = 0 := by
   have hS := S.linearSol
-  simp only [succ_eq_add_one, PureU1_numberLinear, PureU1_linearACCs] at hS
+  simp only [PureU1_numberLinear, PureU1_linearACCs] at hS
   exact hS 0
 
 /-- A solution to the pure U(1) accs satisfies the cubic ACCs. -/
@@ -121,7 +134,7 @@ lemma pureU1_cube {n : ℕ} (S : (PureU1 n).Sols) :
 lemma pureU1_last {n : ℕ} (S : (PureU1 n.succ).LinSols) :
     S.val (Fin.last n) = - ∑ i : Fin n, S.val i.castSucc := by
   have hS := pureU1_linear S
-  simp only [succ_eq_add_one, PureU1_numberCharges] at hS
+  simp only [succ_eq_add_one] at hS
   rw [Fin.sum_univ_castSucc] at hS
   linear_combination hS
 

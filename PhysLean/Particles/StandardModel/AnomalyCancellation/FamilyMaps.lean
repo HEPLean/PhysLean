@@ -11,8 +11,6 @@ We define the a series of maps between the charges for different numbers of fami
 
 -/
 
-universe v u
-
 namespace SM
 open SMCharges
 open SMACCs

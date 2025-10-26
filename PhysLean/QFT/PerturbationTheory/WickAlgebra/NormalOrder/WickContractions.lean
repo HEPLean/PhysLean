@@ -111,13 +111,13 @@ lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
     𝓝(ofFieldOpList [φsΛ ↩Λ φ i (some k)]ᵘᶜ)
     = 𝓝(ofFieldOpList (optionEraseZ [φsΛ]ᵘᶜ φ ((uncontractedFieldOpEquiv φs φsΛ) k))) := by
   simp only [Nat.succ_eq_add_one, insertAndContract, optionEraseZ, uncontractedFieldOpEquiv,
-    Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply,
+    Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply,
     Fin.coe_cast, uncontractedListGet]
   congr
   rw [congr_uncontractedList]
   erw [uncontractedList_extractEquiv_symm_some]
   simp only [Fin.coe_succAboveEmb, List.map_eraseIdx, List.map_map]
-  congr
+  congr 1
   conv_rhs => rw [get_eq_insertIdx_succAbove φ φs i]
 
 end WickAlgebra

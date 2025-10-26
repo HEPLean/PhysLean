@@ -134,12 +134,12 @@ def main (_ : List String) : IO UInt32 := do
   let errors := (← filePaths.mapM hepLeanLintFile).flatten
   let errorMessagesPresent := (errors.map (fun e => e.error)).sortDedup
   for eM in errorMessagesPresent do
-    IO.println s!"\n\nError: {eM}"
+    IO.println s!"\n\n\x1b[31mError: {eM}\x1b[0m"
     for e in errors do
       if e.error == eM then
         IO.println s!"{e.path}:{e.lineNumber}:{e.columnNumber}: {e.error}"
   if errors.size > 0 then
     throw <| IO.userError s!"Errors found."
   else
-    IO.println "No linting issues found."
+    IO.println "\x1b[32mNo linting issues found.\x1b[0m"
   return 0

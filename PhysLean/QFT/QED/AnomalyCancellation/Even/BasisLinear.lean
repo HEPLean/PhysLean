@@ -11,11 +11,8 @@ import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
 We give a basis of `LinSols` in the even case. This basis has the special property
 that splits into two planes on which every point is a solution to the ACCs.
 -/
-universe v u
 
-open Nat
-open Finset
-open BigOperators
+open Nat Module Finset BigOperators
 
 namespace PureU1
 
@@ -163,7 +160,7 @@ lemma basis_on_evenFst_other {k j : Fin n.succ} (h : k ≠ j) :
       simp_all only [succ_eq_add_one, ne_eq, Fin.natAdd_eq_addNat, Fin.cast_inj, neg_eq_zero,
         one_ne_zero]
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_addNat] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_addNat] at h2
       omega
     · rfl
 
@@ -191,7 +188,7 @@ lemma basis!_on_evenShiftFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_natAdd, Fin.coe_castAdd, Fin.coe_addNat, add_right_inj] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_addNat] at h2
       omega
     · rfl
 
@@ -426,7 +423,7 @@ lemma Pa_evenShitZero (f : Fin n.succ → ℚ) (g : Fin n → ℚ) : Pa f g (eve
   rw [P!_evenShiftZero, evenShiftZero_eq_evenFst_zero, P_evenFst]
   exact Rat.add_zero (f 0)
 
-lemma P!_evenShiftLast (f : Fin n → ℚ) : P! f (evenShiftLast) = 0 := by
+lemma P!_evenShiftLast (f : Fin n → ℚ) : P! f evenShiftLast = 0 := by
   rw [P!, sum_of_charges]
   simp [HSMul.hSMul, SMul.smul, basis!_on_evenShiftLast]
 
@@ -522,7 +519,7 @@ lemma Pa_zero (f : Fin n.succ → ℚ) (g : Fin n → ℚ) (h : Pa f g = 0) :
     have h1 := Pa_evenShiftFst f g ⟨iv, succ_lt_succ_iff.mp hiv⟩
     have h2 := Pa_evenShiftSnd f g ⟨iv, succ_lt_succ_iff.mp hiv⟩
     rw [h] at h1 h2
-    simp only [Fin.succ_mk, succ_eq_add_one, Fin.castSucc_mk] at h1 h2
+    simp only [Fin.succ_mk, Fin.castSucc_mk] at h1 h2
     erw [hi2] at h2
     change 0 = _ at h2
     simp only [neg_zero, zero_sub, zero_eq_neg] at h2

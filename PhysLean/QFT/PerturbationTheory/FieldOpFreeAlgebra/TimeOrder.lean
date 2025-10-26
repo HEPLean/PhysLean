@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldSpecification.TimeOrder
 import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.SuperCommute
-import PhysLean.QFT.PerturbationTheory.Koszul.KoszulSign
 /-!
 
 # Time Ordering in the FieldOpFreeAlgebra
@@ -14,7 +13,7 @@ import PhysLean.QFT.PerturbationTheory.Koszul.KoszulSign
 
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
-open FieldStatistic
+open Module FieldStatistic
 
 namespace FieldOpFreeAlgebra
 

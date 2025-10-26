@@ -28,8 +28,7 @@ instance : Fintype CreateAnnihilate where
     intro c
     cases c
     · exact Finset.mem_insert_self create {annihilate}
-    · refine Finset.insert_eq_self.mp ?_
-      exact rfl
+    · exact Finset.insert_eq_self.mp rfl
 
 lemma eq_create_or_annihilate (φ : CreateAnnihilate) : φ = create ∨ φ = annihilate := by
   cases φ <;> simp
@@ -61,9 +60,7 @@ instance : IsTrans CreateAnnihilate normalOrder where
 @[simp]
 lemma not_normalOrder_annihilate_iff_false (a : CreateAnnihilate) :
     (¬ normalOrder a annihilate) ↔ False := by
-  cases a
-  · simp [normalOrder]
-  · simp [normalOrder]
+  cases a <;> simp [normalOrder]
 
 lemma sum_eq {M : Type} [AddCommMonoid M] (f : CreateAnnihilate → M) :
     ∑ i, f i = f create + f annihilate := by
@@ -71,7 +68,6 @@ lemma sum_eq {M : Type} [AddCommMonoid M] (f : CreateAnnihilate → M) :
   simp
 
 @[simp]
-lemma CreateAnnihilate_card_eq_two : Fintype.card CreateAnnihilate = 2 := by
-  rfl
+lemma CreateAnnihilate_card_eq_two : Fintype.card CreateAnnihilate = 2 := rfl
 
 end CreateAnnihilate

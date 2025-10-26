@@ -16,7 +16,7 @@ if the Wick term they produce is equal.
 ## TODO
 
 The long term aim is to simplify this condition as much as possible,
-so that it can eventually be made decideable.
+so that it can eventually be made decidable.
 
 It should become apparent that two Wick contractions are permutations of each other
 if they correspond to the same Feynman diagram.
@@ -65,13 +65,15 @@ lemma trans (h12 : Perm φsΛ₁ φsΛ₂) (h23 : Perm φsΛ₂ φsΛ₃) :
   then `φsΛ₂` is a full Wick contraction..
 
 Implementation note: Please contact JTS before attempting this. -/
-semiformal_result "ABLGD"isFull_of_isFull (h : Perm φsΛ₁ φsΛ₂) (hf : IsFull φsΛ₁) : IsFull φsΛ₂
+@[sorryful]
+lemma isFull_of_isFull (h : Perm φsΛ₁ φsΛ₂) (hf : IsFull φsΛ₁) : IsFull φsΛ₂ := by
+  sorry
 
 /-- If `Perm φsΛ₁ φsΛ₂` then the uncontracted lists of
-  `φsΛ₁` and `φsΛ₂` are permutations of each other.
-
-Implementation note: Please contact JTS before attempting this. -/
-semiformal_result "ABJD5" perm_uncontractedList (h : Perm φsΛ₁ φsΛ₂) : [φsΛ₁]ᵘᶜ.Perm [φsΛ₂]ᵘᶜ
+  `φsΛ₁` and `φsΛ₂` are permutations of each other. -/
+@[sorryful]
+lemma perm_uncontractedList (h : Perm φsΛ₁ φsΛ₂) : [φsΛ₁]ᵘᶜ.Perm [φsΛ₂]ᵘᶜ := by
+  sorry
 
 end Perm
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
-import Mathlib.Topology.Algebra.Polynomial
+import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 /-!
 
 # Eigenfunction of the Harmonic Oscillator
@@ -18,10 +18,7 @@ namespace HarmonicOscillator
 
 variable (Q : HarmonicOscillator)
 
-open Nat
-open PhysLean
-open HilbertSpace
-open MeasureTheory
+open Nat PhysLean HilbertSpace MeasureTheory Constants
 
 /-- The `n`th eigenfunction of the Harmonic oscillator is defined as the function `ℝ → ℂ`
   taking `x : ℝ` to
@@ -38,7 +35,7 @@ lemma eigenfunction_eq (n : ℕ) :
     Complex.ofReal (physHermite n (x / Q.ξ) * Real.exp (- x^2 / (2 * Q.ξ^2))) := by
   funext x
   simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div,
-    mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    mul_inv_rev, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
     Complex.ofReal_pow, Complex.ofReal_ofNat]
   ring
 
@@ -55,7 +52,10 @@ lemma eigenfunction_eq_mul_eigenfunction_zero (n : ℕ) :
     simp
   | n + 1 =>
     funext x
-    field_simp [eigenfunction, eigenfunction_zero]
+    simp only [eigenfunction, one_div, Complex.ofReal_inv, pow_zero, factorial_zero, cast_one,
+      mul_one, Real.sqrt_one, Complex.ofReal_one, ne_eq, one_ne_zero, not_false_eq_true, div_self,
+      one_mul, physHermite_zero, map_one]
+    field_simp
 
 /-!
 
@@ -89,7 +89,7 @@ lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
     ‖Q.eigenfunction n x‖ = (1/√(2 ^ n * n !) * (1/ √(√Real.pi * Q.ξ))) *
     (|physHermite n (x / Q.ξ)| * Real.exp (- x ^ 2 / (2 * Q.ξ ^ 2))) := by
   rw [eigenfunction_eq]
-  simp only [neg_mul, Complex.ofReal_mul]
+  simp only [Complex.ofReal_mul]
   rw [norm_mul, norm_mul]
   congr
   · simp [Real.sqrt_nonneg, abs_of_nonneg]
@@ -98,7 +98,7 @@ lemma eigenfunction_point_norm (n : ℕ) (x : ℝ) :
     congr 1
     · simp
     · rw [Complex.norm_real]
-      simp [abs_of_nonneg]
+      simp
 
 lemma eigenfunction_point_norm_sq (n : ℕ) (x : ℝ) :
     ‖Q.eigenfunction n x‖ ^ 2 = (1/√(2 ^ n * n !) * (1/ √(√Real.pi * Q.ξ))) ^ 2 *
@@ -161,10 +161,10 @@ lemma eigenfunction_continuous (n : ℕ) : Continuous (Q.eigenfunction n) := by
 /-- The `n`th eigenfunction is an eigenfunction of the parity operator with
   the eigenvalue `(-1) ^ n`. -/
 lemma eigenfunction_parity (n : ℕ) :
-    parity (Q.eigenfunction n) = (-1) ^ n * Q.eigenfunction n := by
+    parityOperator (Q.eigenfunction n) = (-1) ^ n * Q.eigenfunction n := by
   funext x
   rw [eigenfunction_eq]
-  simp only [parity, LinearMap.coe_mk, AddHom.coe_mk, mul_neg, Pi.mul_apply, Pi.pow_apply,
+  simp only [parityOperator, LinearMap.coe_mk, AddHom.coe_mk, Pi.mul_apply, Pi.pow_apply,
     Pi.neg_apply, Pi.one_apply]
   rw [show -x / Q.ξ = - (x / Q.ξ) by ring]
   rw [← physHermite_eq_aeval, physHermite_parity]
@@ -173,7 +173,7 @@ lemma eigenfunction_parity (n : ℕ) :
 
 /-!
 
-## Orthnormality
+## Orthonormality
 
 -/
 
@@ -187,7 +187,7 @@ lemma eigenfunction_mul (n p : ℕ) :
         (physHermite n (x/Q.ξ) * physHermite p (x/Q.ξ)) *
         (Real.exp (- x^2 / (2 * Q.ξ^2)) * Real.exp (- x^2 / (2 * Q.ξ^2))) := by
       simp only [eigenfunction, ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul,
-        one_div, mul_inv_rev, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+        one_div, mul_inv_rev, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
         Complex.ofReal_pow, Complex.ofReal_ofNat, mul_one]
       ring
     _ = (1/√(2 ^ n * n !) * 1/√(2 ^ p * p !)) * (1/ (√Real.pi * Q.ξ)) *
@@ -202,11 +202,11 @@ lemma eigenfunction_mul (n p : ℕ) :
       · rw [← Complex.ofReal_mul]
         congr
         rw [← Real.exp_add]
-        simp only [neg_mul, Real.exp_eq_exp]
+        simp only [Real.exp_eq_exp]
         field_simp
         ring
   simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
-    mul_one, neg_mul, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
+    mul_one, Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg,
     Complex.ofReal_pow]
   ring
 
@@ -216,7 +216,9 @@ lemma eigenfunction_mul_self (n : ℕ) : (Q.eigenfunction n x) * (Q.eigenfunctio
   rw [eigenfunction_mul]
   congr 2
   · trans 1 / ↑(√(2 ^ n * ↑n !) * ↑√(2 ^ n * ↑n !))
-    · field_simp
+    · simp only [ofNat_nonneg, pow_nonneg, Real.sqrt_mul, Complex.ofReal_mul, one_div, mul_inv_rev,
+      mul_one]
+      field_simp
     congr
     trans Complex.ofReal ((2 ^ n * ↑n !))
     · congr 1
@@ -249,8 +251,9 @@ lemma eigenfunction_normalized (n : ℕ) : ⟪HilbertSpace.mk (Q.eigenfunction_m
   have : (n ! : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos <| by simpa using factorial_pos n
   have := Complex.ofReal_ne_zero.mpr (ne_of_gt Q.ξ_pos)
   have := Complex.ofReal_ne_zero.mpr (Real.sqrt_ne_zero'.mpr Real.pi_pos)
+  simp only [smul_eq_mul, Complex.ofReal_mul, Complex.ofReal_natCast, Complex.ofReal_pow,
+    Complex.ofReal_ofNat]
   field_simp
-  ring
 
 /-- The eigenfunctions of the quantum harmonic oscillator are orthogonal. -/
 lemma eigenfunction_orthogonal {n p : ℕ} (hnp : n ≠ p) :

@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina, Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.TimeLike
+import PhysLean.Relativity.Tensors.RealTensor.Vector.Causality.Basic
 
 /-!
 
@@ -22,7 +22,7 @@ lemma lightLike_iff_norm_sq_zero {d : ℕ} (p : Vector d) :
   simp only [causalCharacter]
   split
   · rename_i h
-    simp only [reduceCtorEq, h, eq_self_iff_true]
+    simp only [h]
   · rename_i h
     simp only [h, iff_false]
     split
@@ -33,7 +33,7 @@ lemma lightLike_iff_norm_sq_zero {d : ℕ} (p : Vector d) :
 @[simp]
 lemma causalCharacter_zero {d : ℕ} : causalCharacter (0 : Vector d) =
     CausalCharacter.lightLike := by
-  simp [causalCharacter, lightLike_iff_norm_sq_zero]
+  simp [causalCharacter]
 
 /-- Causally preceding is reflexive -/
 @[simp]
@@ -47,7 +47,7 @@ lemma lightlike_eq_spatial_norm_of_eq_time {d : ℕ} {v w : Vector d}
     (hv : causalCharacter v = .lightLike) (hw : causalCharacter w = .lightLike)
     (h_time : timeComponent v = timeComponent w) :
     ⟪spatialPart v, spatialPart v⟫_ℝ = ⟪spatialPart w, spatialPart w⟫_ℝ := by
-  rw [lightLike_iff_norm_sq_zero, innerProduct_toCoord] at hv hw
+  rw [lightLike_iff_norm_sq_zero, minkowskiProduct_toCoord] at hv hw
   have hv_eq : v (Sum.inl 0) * v (Sum.inl 0) = ∑ i, v (Sum.inr i) * v (Sum.inr i) := by
     dsimp only [Fin.isValue]; linarith
   have hw_eq : w (Sum.inl 0) * w (Sum.inl 0) = ∑ i, w (Sum.inr i) * w (Sum.inr i) := by
@@ -66,7 +66,7 @@ lemma lightlike_spatial_parallel_implies_proportional {d : ℕ} {v w : Vector d}
     ∃ (r : ℝ), |v (Sum.inl 0)| = |r| * |w (Sum.inl 0)| := by
   rcases h_spatial_parallel with ⟨r, hr⟩
   rw [lightLike_iff_norm_sq_zero] at hv hw
-  rw [innerProduct_toCoord] at hv hw
+  rw [minkowskiProduct_toCoord] at hv hw
   have hv_eq : v (Sum.inl 0) * v (Sum.inl 0) = ∑ i, v (Sum.inr i) * v (Sum.inr i) := by
     simp_all only [Fin.isValue]
     linarith

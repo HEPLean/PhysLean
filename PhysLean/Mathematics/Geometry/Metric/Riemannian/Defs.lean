@@ -3,13 +3,9 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
-
 /-!
 # Riemannian Metric Definitions
 
@@ -116,7 +112,7 @@ noncomputable def tangentInnerCore (g : RiemannianMetric I n M) (x : M) :
   re_inner_nonneg := λ v => by
     simp only [inner_apply, RCLike.re_to_real]
     by_cases hv : v = 0
-    · simp [hv, inner_apply, map_zero]
+    · simp [hv, map_zero]
     · exact le_of_lt (g.pos_def x v hv)
   add_left := λ u v w => by
     simp only [inner_apply, map_add, ContinuousLinearMap.add_apply]
@@ -134,7 +130,7 @@ These instances are defined locally to be used when a specific Riemannian metric
 and point `x` are in context. They are not global instances to avoid typeclass conflicts
 and to respect the fact that a manifold might not have a canonical Riemannian metric,
 or might be studied with an indefinite (pseudo-Riemannian) metric where these
-standard norm structures are not appropriate.-/
+standard norm structures are not appropriate. -/
 
 /-- Creates a `NormedAddCommGroup` structure on `TₓM` from a Riemannian metric `g`. -/
 noncomputable def TangentSpace.metricNormedAddCommGroup (g : RiemannianMetric I n M) (x : M) :
@@ -216,3 +212,6 @@ def curveLength (g : RiemannianMetric I n M) (γ : ℝ → M) (t₀ t₁ : ℝ)
 end Curve
 
 end RiemannianMetric
+end
+end RiemannianMetric
+end PseudoRiemannianMetric

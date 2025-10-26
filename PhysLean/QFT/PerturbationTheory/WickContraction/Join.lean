@@ -3,12 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
-import PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
-import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeContraction
-import PhysLean.QFT.PerturbationTheory.WickContraction.SubContraction
 import PhysLean.QFT.PerturbationTheory.WickContraction.Singleton
-
 /-!
 
 # Join of contractions
@@ -547,11 +542,11 @@ lemma join_getDual?_apply_uncontractedListEmb {φs : List 𝓕.FieldOp}
     have h1 : (φsucΛ.getDual? i) = (φsucΛ.getDual? i).get (by simpa using h) :=
       Eq.symm (Option.some_get h)
     conv_rhs => rw [h1]
-    simp only [Option.map_some']
+    simp only [Option.map_some]
     exact (join_getDual?_apply_uncontractedListEmb_isSome_iff φsΛ φsucΛ i).mpr h
-  · simp only [Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none] at h
+  · simp only [Bool.not_eq_true, Option.isSome_eq_false_iff, Option.isNone_iff_eq_none] at h
     rw [h]
-    simp only [Option.map_none', join_getDual?_apply_uncontractedListEmb_eq_none_iff]
+    simp only [Option.map_none, join_getDual?_apply_uncontractedListEmb_eq_none_iff]
     exact h
 
 /-!
@@ -636,24 +631,24 @@ lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : W
   simp only [Fin.getElem_fin]
   apply And.intro
   · have h1 := join_congr (subContraction_singleton_eq_singleton _ ⟨a, ha⟩).symm (φsucΛ := φsucΛ)
-    simp only [id_eq, eq_mpr_eq_cast, h1, congr_trans_apply, congr_refl, φsucΛ]
+    simp only [h1, congr_trans_apply, congr_refl, φsucΛ]
     rw [join_sub_quot]
   · apply And.intro (hc ⟨a, ha⟩)
     apply And.intro
-    · simp only [id_eq, eq_mpr_eq_cast, φsucΛ]
+    · simp only [φsucΛ]
       rw [gradingCompliant_congr (φs' := [(φsΛ.subContraction {a} (by simpa using ha))]ᵘᶜ)]
-      simp only [id_eq, eq_mpr_eq_cast, congr_trans_apply, congr_refl]
+      simp only [congr_trans_apply, congr_refl]
       exact quotContraction_gradingCompliant hc
       rw [← subContraction_singleton_eq_singleton]
-    · simp only [id_eq, eq_mpr_eq_cast, card_congr, φsucΛ]
+    · simp only [card_congr, φsucΛ]
       have h1 := subContraction_card_plus_quotContraction_card_eq _ {a} (by simpa using ha)
-      simp only [subContraction, Finset.card_singleton, id_eq, eq_mpr_eq_cast] at h1
+      simp only [subContraction, Finset.card_singleton] at h1
       omega
 
 lemma join_not_gradingCompliant_of_left_not_gradingCompliant {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) (φsucΛ : WickContraction [φsΛ]ᵘᶜ.length)
     (hc : ¬ φsΛ.GradingCompliant) : ¬ (join φsΛ φsucΛ).GradingCompliant := by
-  simp_all only [GradingCompliant, Fin.getElem_fin, Subtype.forall, not_forall]
+  simp_all only [GradingCompliant, Subtype.forall, not_forall]
   obtain ⟨a, ha, ha2⟩ := hc
   use (joinLiftLeft (φsucΛ := φsucΛ) ⟨a, ha⟩).1
   use (joinLiftLeft (φsucΛ := φsucΛ) ⟨a, ha⟩).2

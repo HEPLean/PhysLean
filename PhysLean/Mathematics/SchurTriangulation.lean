@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gordon Hsu
 -/
 import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-import Mathlib.LinearAlgebra.Matrix.Spectrum
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 /-! # Schur triangulation
 
 Schur triangulation is more commonly known as Schur decomposition or Schur triangularization, but
@@ -23,6 +23,7 @@ be decomposed as `A = U * T * star U` where `U` is unitary and `T` is upper tria
 -/
 
 open scoped InnerProductSpace
+open Module
 
 /-- `subNat' i h` subtracts `m` from `i`. This is an alternative form of `Fin.subNat`. -/
 @[inline] def Fin.subNat' (i : Fin (m + n)) (h : ¬ i < m) : Fin n :=
@@ -149,7 +150,7 @@ protected noncomputable def SchurTriangulationAux.of
     have hV := V.orthogonalFamily_self
     have int : DirectSum.IsInternal (cond · V W) :=
       suffices ⨆ b, cond b V W = ⊤ from (hV.decomposition this).isInternal _
-      (sup_eq_iSup V W).symm.trans Submodule.sup_orthogonal_of_completeSpace
+      (sup_eq_iSup V W).symm.trans Submodule.sup_orthogonal_of_hasOrthogonalProjection
     let B (b : Bool) : OrthonormalBasis (cond b (Fin m) (Fin n)) 𝕜 ↥(cond b V W) := b.rec bW bV
     let bE : OrthonormalBasis (Σ b, cond b (Fin m) (Fin n)) 𝕜 E :=
       int.collectedOrthonormalBasis hV B
@@ -228,15 +229,12 @@ decreasing_by exact
 end LinearMap
 
 namespace Matrix
-/- IMPORTANT: existing `DecidableEq n` should take precedence over `LinearOrder.decidableEq`,
-a.k.a., `instDecidableEq_mathlib`. -/
+
 variable [RCLike 𝕜] [IsAlgClosed 𝕜] [Fintype n] [DecidableEq n] [LinearOrder n] (A : Matrix n n 𝕜)
 
-/-- **Don't use this definition directly.** Instead, use `Matrix.schurTriangulationBasis`,
-`Matrix.schurTriangulationUnitary`, and `Matrix.schurTriangulation` for which this is their
-simultaneous definition. This is `LinearMap.SchurTriangulationAux` adapted for matrices in the
+/-- This is `LinearMap.SchurTriangulationAux` adapted for matrices in the
 Euclidean space. -/
-noncomputable def schurTriangulationAux :
+private noncomputable def schurTriangulationAux :
     OrthonormalBasis n 𝕜 (EuclideanSpace 𝕜 n) × UpperTriangular n 𝕜 :=
   let f := toEuclideanLin A
   let ⟨d, hd, b, hut⟩ := LinearMap.SchurTriangulationAux.of f

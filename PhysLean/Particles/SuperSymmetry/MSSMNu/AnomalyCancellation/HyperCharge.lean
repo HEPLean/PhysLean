@@ -11,8 +11,6 @@ Relevant definitions for the MSSM hypercharge.
 
 -/
 
-universe v u
-
 namespace MSSMACC
 open MSSMCharges
 open MSSMACCs

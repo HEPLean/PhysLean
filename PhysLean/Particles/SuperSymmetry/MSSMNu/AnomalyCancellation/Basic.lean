@@ -12,7 +12,6 @@ We define the system of charges for 1-species. We prove some basic lemmas about 
 
 -/
 
-universe v u
 open Nat
 open BigOperators
 
@@ -154,7 +153,7 @@ lemma accGrav_ext {S T : MSSMCharges.Charges}
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
     accGrav S = accGrav T := by
   simp only [accGrav, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue,
-    Fin.reduceFinMk, LinearMap.coe_mk, AddHom.coe_mk]
+    LinearMap.coe_mk, AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   repeat erw [hj]
@@ -187,7 +186,7 @@ lemma accSU2_ext {S T : MSSMCharges.Charges}
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
     accSU2 S = accSU2 T := by
   simp only [accSU2, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue,
-    Fin.reduceFinMk, LinearMap.coe_mk, AddHom.coe_mk]
+    LinearMap.coe_mk, AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   repeat erw [hj]
@@ -251,7 +250,7 @@ lemma accYY_ext {S T : MSSMCharges.Charges}
     (hd : Hd S = Hd T) (hu : Hu S = Hu T) :
     accYY S = accYY T := by
   simp only [accYY, MSSMSpecies_numberCharges, toSMSpecies_apply, Fin.isValue,
-    Fin.reduceFinMk, LinearMap.coe_mk, AddHom.coe_mk]
+    LinearMap.coe_mk, AddHom.coe_mk]
   repeat erw [Finset.sum_add_distrib]
   repeat erw [← Finset.mul_sum]
   repeat erw [hj]

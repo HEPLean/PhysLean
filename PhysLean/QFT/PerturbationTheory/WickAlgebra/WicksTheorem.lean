@@ -3,17 +3,12 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
-import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertNone
-import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.InsertSome
-import PhysLean.QFT.PerturbationTheory.WickAlgebra.NormalOrder.WickContractions
 import PhysLean.QFT.PerturbationTheory.WickAlgebra.WickTerm
-import PhysLean.Meta.Remark.Basic
 /-!
 
 # Wick's theorem
 
-This file contrains the time-dependent version of Wick's theorem
+This file constrains the time-dependent version of Wick's theorem
 for lists of fields containing both fermions and bosons.
 
 Wick's theorem is related to Isserlis' theorem in mathematics.
@@ -45,21 +40,6 @@ lemma wicks_theorem_congr {φs φs' : List 𝓕.FieldOp} (h : φs = φs') :
     = ∑ (φs'Λ : WickContraction φs'.length), φs'Λ.wickTerm := by
   subst h
   rfl
-
-remark wicks_theorem_context := "
-  In perturbative quantum field theory, Wick's theorem allows
-  us to expand expectation values of time-ordered products of fields in terms of normal-orders
-  and time contractions.
-  The theorem is used to simplify the calculation of scattering amplitudes, and is the precursor
-  to Feynman diagrams.
-
-  There are actually three different versions of Wick's theorem used.
-  The static version, the time-dependent version, and the normal-ordered time-dependent version.
-  PhysLean contains a formalization of all three of these theorems in complete generality for
-  mixtures of bosonic and fermionic fields.
-
-  The statement of these theorems for bosons is simpler then when fermions are involved, since
-  one does not have to worry about the minus-signs picked up on exchanging fields."
 
 /--
 For a list `φs` of `𝓕.FieldOp`, Wick's theorem states that
@@ -98,7 +78,7 @@ theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     ∑ (φsΛ : WickContraction φs.length), φsΛ.wickTerm
   | [] => by
     rw [timeOrder_ofFieldOpList_nil]
-    simp only [map_one, List.length_nil, Algebra.smul_mul_assoc]
+    simp only [List.length_nil]
     rw [sum_WickContraction_nil]
     simp only [wickTerm_empty_nil]
   | φ :: φs => by
@@ -118,11 +98,10 @@ theorem wicks_theorem : (φs : List 𝓕.FieldOp) → 𝓣(ofFieldOpList φs) =
     trans (1 : ℂ) • ∑ k : Option { x // x ∈ c.uncontracted },
       (c ↩Λ (maxTimeField φ φs) (maxTimeFieldPosFin φ φs) k).wickTerm
     swap
-    · simp [uncontractedListGet]
+    · simp
     rw [smul_smul]
-    simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one,
-      Algebra.smul_mul_assoc, Fintype.sum_option, timeContract_insert_none,
-      Finset.univ_eq_attach, smul_add, one_smul, uncontractedListGet]
+    simp only [instCommGroup.eq_1, exchangeSign_mul_self, Nat.succ_eq_add_one, Fintype.sum_option,
+      Finset.univ_eq_attach, smul_add, one_smul]
     · exact fun k => timeOrder_maxTimeField _ _ k
     · exact fun k => lt_maxTimeFieldPosFin_not_timeOrder _ _ k
 termination_by φs => φs.length

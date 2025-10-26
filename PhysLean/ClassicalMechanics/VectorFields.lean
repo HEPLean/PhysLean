@@ -4,9 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.FDerivCurry
-import PhysLean.ClassicalMechanics.Space.VectorIdentities
-import PhysLean.ClassicalMechanics.Time.Basic
-import Mathlib.Tactic.FunProp.Differentiable
+import PhysLean.SpaceAndTime.Time.Basic
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.LinearAlgebra.CrossProduct
+import Mathlib.Analysis.Calculus.FDeriv.Pi
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import PhysLean.SpaceAndTime.Space.Basic
 /-!
 # Classical vector calculus properties
 
@@ -33,9 +36,8 @@ lemma fderiv_coord_dt (f : Time → Space → EuclideanSpace ℝ (Fin 3)) (t dt 
     (fun x => (fderiv ℝ (fun t => f t x) t) dt i) := by
   ext x
   rw [fderiv_pi]
-  · rfl
-  · intro i
-    fun_prop
+  rfl
+  · fun_prop
 
 /-- Derivatives along space coordinates and time commute. -/
 lemma fderiv_swap_time_space_coord
@@ -81,11 +83,11 @@ lemma fderiv_swap_time_space_coord
   rw [fderiv_comp']
   simp only [PiLp.proj_apply, ContinuousLinearMap.fderiv,
     ContinuousLinearMap.coe_comp', Function.comp_apply]
-  /- Start of differentiablity conditions. -/
+  /- Start of differentiability conditions. -/
   · fun_prop
   · apply fderiv_curry_differentiableAt_fst_comp_snd
     exact hf
-  · exact hf
+  · fun_prop
   · fun_prop
   · apply fderiv_curry_differentiableAt_snd_comp_fst
     exact hf
@@ -108,22 +110,13 @@ lemma differentiableAt_fderiv_coord_single
       ext w
       simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.inr_apply]
       rw [fderiv_uncurry]
-      simp only [fderiv_eq_smul_deriv, smul_eq_mul, zero_mul, zero_add]
+      simp only [map_zero, zero_add]
       fun_prop
     conv =>
       enter [2, y]
       change fderiv ℝ (fun x => ftt y x) x
       rw [h1]
-    refine Differentiable.clm_comp ?_ ?_
-    · have hn (t : Time) : fderiv ℝ (↿ftt) (t, x)=
-        fderiv ℝ (↿ftt) ((t, ·) x) := rfl
-      conv =>
-        enter [2, y]
-        rw [hn]
-      refine Differentiable.comp' ?_ ?_
-      · exact hd.two_fderiv_differentiable
-      · fun_prop
-    · fun_prop
+    fun_prop
   · fun_prop
 
 /-- Curl and time derivative commute. -/
@@ -139,12 +132,12 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
     · simp only [Fin.zero_eta, Fin.isValue, EuclideanSpace.basisFun_apply, PiLp.inner_apply,
       EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul,
       Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
-      rw [fderiv_sub]
+      rw [fderiv_fun_sub]
       rw [dt_distrib]
       rw [fderiv_swap_time_space_coord, fderiv_swap_time_space_coord]
       rw [fderiv_coord_dt, fderiv_coord_dt]
       repeat exact hf.two_differentiable
-      repeat exact hf
+      repeat fun_prop
       repeat
         apply differentiableAt_fderiv_coord_single
         exact hf
@@ -152,9 +145,77 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
     unfold curl Space.deriv Space.coord Space.basis
     fin_cases i <;>
     · simp only [Fin.isValue, EuclideanSpace.basisFun_apply, PiLp.inner_apply,
-      EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
+        EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul,
+        Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
       apply DifferentiableAt.sub
       repeat
         apply differentiableAt_fderiv_coord_single
         exact hf
+
+open Matrix
+
+set_option quotPrecheck false in
+/-- Cross product in `EuclideanSpace ℝ (Fin 3)`. Uses `⨯` which is typed using `\X` or
+`\vectorproduct` or `\crossproduct`. -/
+infixl:70 " ⨯ₑ₃ " => fun a b => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
+    (WithLp.equiv 2 (Fin 3 → ℝ) a ⨯₃ WithLp.equiv 2 (Fin 3 → ℝ) b)
+
+/-- Cross product and fderiv commute. -/
+lemma fderiv_cross_commute {u : Time} {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
+    (hf : Differentiable ℝ f) :
+    s ⨯ₑ₃ (fderiv ℝ (fun u => f u) u) 1
+    =
+    fderiv ℝ (fun u => s ⨯ₑ₃ (f u)) u 1 := by
+  have h (i j : Fin 3) : s i * (fderiv ℝ (fun u => f u) u) 1 j -
+      s j * (fderiv ℝ (fun u => f u) u) 1 i
+      =
+      (fderiv ℝ (fun t => s i * f t j - s j * f t i) u) 1:= by
+    rw [fderiv_fun_sub, fderiv_const_mul, fderiv_const_mul]
+    rw [fderiv_pi]
+    rfl
+    intro i
+    repeat fun_prop
+  rw [crossProduct]
+  ext i
+  fin_cases i <;>
+  · simp [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,
+      LinearMap.mk₂_apply, PiLp.ofLp_apply, Fin.reduceFinMk, WithLp.equiv_symm_apply,
+      PiLp.toLp_apply, cons_val]
+    rw [h]
+    simp only [Fin.isValue]
+    rw [fderiv_pi]
+    simp only [Fin.isValue, PiLp.toLp_apply]
+    rfl
+    · intro i
+      fin_cases i <;>
+      · simp
+        fun_prop
+
+/-- Cross product and time derivative commute. -/
+lemma time_deriv_cross_commute {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
+    (hf : Differentiable ℝ f) :
+    s ⨯ₑ₃ (∂ₜ (fun t => f t) t)
+    =
+    ∂ₜ (fun t => s ⨯ₑ₃ (f t)) t := by
+  repeat rw [Time.deriv]
+  rw [fderiv_cross_commute]
+  fun_prop
+
+lemma inner_cross_self (v w : EuclideanSpace ℝ (Fin 3)) :
+    inner ℝ v (w ⨯ₑ₃ v) = 0 := by
+  cases v using WithLp.rec with | _ v =>
+  cases w using WithLp.rec with | _ w =>
+  simp only [WithLp.equiv_apply, WithLp.ofLp_toLp, WithLp.equiv_symm_apply]
+  change (crossProduct w) v ⬝ᵥ v = _
+  rw [dotProduct_comm, dot_cross_self]
+
+lemma inner_self_cross (v w : EuclideanSpace ℝ (Fin 3)) :
+    inner ℝ v (v ⨯ₑ₃ w) = 0 := by
+  cases v using WithLp.rec with | _ v =>
+  cases w using WithLp.rec with | _ w =>
+  simp only [WithLp.equiv_apply, WithLp.ofLp_toLp, WithLp.equiv_symm_apply, PiLp.inner_apply,
+    PiLp.toLp_apply, RCLike.inner_apply, conj_trivial]
+  change (crossProduct v) w ⬝ᵥ v = _
+  rw [dotProduct_comm, dot_self_cross]
+
+end ClassicalMechanics

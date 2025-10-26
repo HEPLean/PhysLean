@@ -3,15 +3,13 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.Fin.Involutions
 import PhysLean.QFT.PerturbationTheory.WickContraction.ExtractEquiv
-import PhysLean.QFT.PerturbationTheory.WickContraction.Involutions
 /-!
 
 # Cardinality of Wick contractions
 -/
 
-open FieldSpecification
+open Module FieldSpecification
 variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} (c : WickContraction n)
@@ -31,7 +29,8 @@ lemma wickContraction_card_eq_sum_zero_none_isSome : Fintype.card (WickContracti
 lemma wickContraction_zero_none_card :
     Fintype.card {c : WickContraction n.succ // ¬ (c.getDual? 0).isSome} =
     Fintype.card (WickContraction n) := by
-  simp only [succ_eq_add_one, Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none]
+  simp only [succ_eq_add_one, Bool.not_eq_true, Option.isSome_eq_false_iff,
+    Option.isNone_iff_eq_none]
   symm
   exact Fintype.card_of_bijective (insertAndContractNat_bijective 0)
 
@@ -57,7 +56,7 @@ lemma finset_succAbove_succ_disjoint (a : Finset (Fin n)) (i : Fin n.succ) :
     Disjoint ((Finset.map (Fin.succEmb (n + 1))) ((Finset.map i.succAboveEmb) a)) {0, i.succ} := by
   simp only [succ_eq_add_one, Finset.disjoint_insert_right, Finset.mem_map, Fin.succAboveEmb_apply,
     Fin.coe_succEmb, exists_exists_and_eq_and, not_exists, not_and, Finset.disjoint_singleton_right,
-    Fin.succ_inj, exists_eq_right]
+    Fin.succ_inj]
   apply And.intro
   · exact fun x hx => Fin.succ_ne_zero (i.succAbove x)
   · exact fun x hx => Fin.succAbove_ne i x
@@ -179,17 +178,17 @@ lemma consAddContract_surjective_on_zero_contract (i : Fin n.succ)
   apply Iff.intro
   · intro h
     rcases h with h | h
+    · subst h
+      rw [← h2]
+      simp
     · obtain ⟨b, hb, rfl⟩ := h
       rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply]
       simp only [succ_eq_add_one, Finset.mem_filter, Finset.mem_univ, true_and, c'] at hb
       exact hb
-    · subst h
-      rw [← h2]
-      simp
   · intro h
     by_cases ha : a = {0, i.succ}
     · simp [ha]
-    · left
+    · right
       have hd := c.2.2 a h {0, i.succ} (by rw [← h2]; simp)
       simp_all only [succ_eq_add_one, Finset.disjoint_insert_right, Finset.disjoint_singleton_right,
         false_or]
@@ -203,8 +202,7 @@ lemma consAddContract_surjective_on_zero_contract (i : Fin n.succ)
       obtain ⟨x, rfl⟩ := (Fin.exists_succAbove_eq (x := x) (y := i)) (by omega)
       obtain ⟨y, rfl⟩ := (Fin.exists_succAbove_eq (x := y) (y := i)) (by omega)
       use {x, y}
-      simp only [Finset.map_insert, Fin.succAboveEmb_apply, Finset.map_singleton, Fin.coe_succEmb,
-        h, true_and, c']
+      simp only [c']
       rw [Finset.mapEmbedding_apply, Finset.mapEmbedding_apply]
       simpa using h
 

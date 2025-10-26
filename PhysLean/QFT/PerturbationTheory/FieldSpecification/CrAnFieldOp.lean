@@ -138,18 +138,4 @@ scoped[FieldSpecification] notation 𝓕 "|>ₛ" φ => FieldStatistic.ofList
 scoped[FieldSpecification] infixl:80 "|>ᶜ" =>
     crAnFieldOpToCreateAnnihilate
 
-remark notation_remark := "When working with a field specification `𝓕` the
-following notation will be used within doc-strings:
-- when field statistics occur in exchange signs the `𝓕 |>ₛ _` may be dropped.
-- lists of `FieldOp` or `CrAnFieldOp` `φs` may be written as `φ₀…φₙ`,
-  which should be interpreted within the context in which it appears.
-- `φᶜ` may be used to indicate the creation part of an operator and
-  `φᵃ` to indicate the annihilation part of an operator.
-
-Some examples of these notation-conventions are:
-- `𝓢(φ, φs)` which corresponds to `𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs)`
-- `φ₀…φᵢ₋₁φᵢ₊₁…φₙ` which corresponds to a (given) list `φs = φ₀…φₙ` with the element at the
-  `i`th position removed.
-"
-
 end FieldSpecification

@@ -15,8 +15,6 @@ The plane spanned by Y₃, B₃ and third orthogonal point.
 
 -/
 
-universe v u
-
 namespace MSSMACC
 open MSSMCharges
 open MSSMACCs
@@ -49,7 +47,7 @@ lemma planeY₃B₃_val_eq' (R : MSSMACC.AnomalyFreePerp) (a b c : ℚ) (hR' : R
   rw [planeY₃B₃_val, planeY₃B₃_val] at h
   have h1 := congrArg (fun S => dot Y₃.val S) h
   have h2 := congrArg (fun S => dot B₃.val S) h
-  simp only [Fin.isValue, ACCSystemCharges.chargesAddCommMonoid_add, Fin.reduceFinMk] at h1 h2
+  simp only at h1 h2
   erw [dot.map_add₂, dot.map_add₂] at h1 h2
   erw [dot.map_add₂ Y₃.val (a' • Y₃.val + b' • B₃.val) (c' • R.val)] at h1
   erw [dot.map_add₂ B₃.val (a' • Y₃.val + b' • B₃.val) (c' • R.val)] at h2

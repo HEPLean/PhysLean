@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.FieldOpFreeAlgebra.TimeOrder
 import PhysLean.QFT.PerturbationTheory.WickAlgebra.Basic
 /-!
 
@@ -171,11 +170,11 @@ lemma superCommute_anPart_ofFieldOpF_diff_grade_zero (φ ψ : 𝓕.FieldOp)
   | FieldOp.inAsymp _ =>
     simp
   | FieldOp.position φ =>
-    simp only [anPartF_position]
+    simp only
     apply superCommute_ofCrAnOp_ofFieldOp_diff_stat_zero _ _ _
     simpa [crAnStatistics] using h
   | FieldOp.outAsymp _ =>
-    simp only [anPartF_posAsymp]
+    simp only
     apply superCommute_ofCrAnOp_ofFieldOp_diff_stat_zero _ _
     simpa [crAnStatistics] using h
 

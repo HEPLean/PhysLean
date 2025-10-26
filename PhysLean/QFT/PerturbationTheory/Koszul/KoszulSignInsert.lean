@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.PerturbationTheory.FieldStatistics.ExchangeSign
+import PhysLean.Mathematics.List
 /-!
 
 # Koszul sign insert
@@ -32,7 +33,7 @@ lemma koszulSignInsert_boson (q : 𝓕 → FieldStatistic) (le : 𝓕 → 𝓕 �
   | [] => by
     simp [koszulSignInsert]
   | φ' :: φs => by
-    simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
+    simp only [koszulSignInsert]
     rw [koszulSignInsert_boson q le φ ha φs, ha]
     simp only [reduceCtorEq, false_and, ↓reduceIte, ite_self]
 
@@ -42,7 +43,7 @@ lemma koszulSignInsert_mul_self (φ : 𝓕) :
   | [] => by
     simp [koszulSignInsert]
   | φ' :: φs => by
-    simp only [koszulSignInsert, Fin.isValue, mul_ite, ite_mul, neg_mul, mul_neg]
+    simp only [koszulSignInsert, mul_ite, ite_mul, neg_mul, mul_neg]
     by_cases hr : le φ φ'
     · simp only [hr, ↓reduceIte]
       rw [koszulSignInsert_mul_self]
@@ -58,9 +59,9 @@ lemma koszulSignInsert_le_forall (φ : 𝓕) (φs : List 𝓕) (hi : ∀ φ', le
   induction φs with
   | nil => rfl
   | cons φ' φs ih =>
-    simp only [koszulSignInsert, Fin.isValue, ite_eq_left_iff]
+    simp only [koszulSignInsert]
     rw [ih]
-    simp only [Fin.isValue, ite_eq_left_iff, ite_eq_right_iff, and_imp]
+    simp only [ite_eq_left_iff, ite_eq_right_iff, and_imp]
     intro h
     exact False.elim (h (hi φ'))
 
@@ -81,15 +82,15 @@ lemma koszulSignInsert_eq_filter (φ : 𝓕) : (φs : List 𝓕) →
     simp [koszulSignInsert]
   | φ1 :: φs => by
     dsimp only [koszulSignInsert, Fin.isValue]
-    simp only [Fin.isValue, List.filter, decide_not]
+    simp only [List.filter, decide_not]
     by_cases h : le φ φ1
     · simp only [h, ↓reduceIte, decide_true, Bool.not_true]
       rw [koszulSignInsert_eq_filter]
       congr
       simp
-    · simp only [h, ↓reduceIte, Fin.isValue, decide_false, Bool.not_false]
+    · simp only [h, ↓reduceIte, decide_false, Bool.not_false]
       dsimp only [Fin.isValue, koszulSignInsert]
-      simp only [Fin.isValue, h, ↓reduceIte]
+      simp only [h, ↓reduceIte]
       rw [koszulSignInsert_eq_filter]
       congr
       · simp only [decide_not]
@@ -97,7 +98,7 @@ lemma koszulSignInsert_eq_filter (φ : 𝓕) : (φs : List 𝓕) →
 
 lemma koszulSignInsert_eq_cons [IsTotal 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
     koszulSignInsert q le φ φs = koszulSignInsert q le φ (φ :: φs) := by
-  simp only [koszulSignInsert, Fin.isValue, and_self]
+  simp only [koszulSignInsert, and_self]
   have h1 : le φ φ := by
     simpa only [or_self] using IsTotal.total (r := le) φ φ
   simp [h1]
@@ -131,7 +132,7 @@ lemma koszulSignInsert_eq_grade (φ : 𝓕) (φs : List 𝓕) :
           simpa [ofList] using ih
       · simp [hr1]
     · rw [List.filter_cons_of_neg]
-      · simp only [decide_not, Fin.isValue]
+      · simp only [decide_not]
         rw [koszulSignInsert_eq_filter] at ih
         simpa [ofList] using ih
       · simpa using hr1
@@ -140,7 +141,7 @@ lemma koszulSignInsert_eq_perm (φs φs' : List 𝓕) (φ : 𝓕) (h : φs.Perm 
     koszulSignInsert q le φ φs = koszulSignInsert q le φ φs' := by
   rw [koszulSignInsert_eq_grade, koszulSignInsert_eq_grade]
   congr 1
-  simp only [Fin.isValue, decide_not, eq_iff_iff, and_congr_right_iff]
+  simp only [decide_not, eq_iff_iff, and_congr_right_iff]
   intro h'
   have hg : ofList q (List.filter (fun i => !decide (le φ i)) φs) =
       ofList q (List.filter (fun i => !decide (le φ i)) φs') := by
@@ -194,12 +195,12 @@ lemma koszulSignInsert_eq_exchangeSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] 
     (k := (orderedInsertPos le (List.insertionSort le φs) φ).1 + 1)
     (List.sorted_insertionSort le (φ :: φs)) ?_ ?_
   · simp only [List.insertionSort, List.orderedInsert_eq_take_drop, decide_not]
-    rw [List.take_append_eq_append_take]
+    rw [List.take_append]
     rw [List.take_of_length_le]
     · simp [orderedInsertPos]
     · simp [orderedInsertPos]
   · simp only [List.insertionSort, List.orderedInsert_eq_take_drop, decide_not]
-    rw [List.drop_append_eq_append_drop, List.drop_of_length_le]
+    rw [List.drop_append, List.drop_of_length_le]
     · simpa [orderedInsertPos] using ha
     · simp [orderedInsertPos]
 
@@ -216,8 +217,7 @@ def koszulSignCons (φ0 φ1 : 𝓕) : ℂ :=
 
 lemma koszulSignCons_eq_exchangeSign (φ0 φ1 : 𝓕) : koszulSignCons q le φ0 φ1 =
     if le φ0 φ1 then 1 else 𝓢(q φ0, q φ1) := by
-  simp only [koszulSignCons, Fin.isValue, ofList, ite_eq_right_iff, zero_ne_one,
-    imp_false]
+  simp only [koszulSignCons]
   congr 1
   by_cases h0 : q φ0 = fermionic
   · by_cases h1 : q φ1 = fermionic
@@ -281,6 +281,6 @@ lemma koszulSignInsert_eq_remove_same_stat_append {ψ φ φ' : 𝓕} [IsTrans �
       intro hφ'ψ
       apply hφ'φ
       apply IsTrans.trans φ' ψ φ hφ'ψ h2
-    simp_all [hφ'φ, hφ'ψ]
+    simp_all
 
 end Wick

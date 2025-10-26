@@ -10,7 +10,6 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.Basic
 We define the a series of maps between the charges for different numbers of families.
 -/
 
-universe v u
 namespace SMRHN
 open SMνCharges
 open SMνACCs

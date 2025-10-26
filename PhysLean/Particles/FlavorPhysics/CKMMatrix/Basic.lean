@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.LinearAlgebra.UnitaryGroup
-import Mathlib.Data.Complex.Trigonometric
+import Mathlib.Analysis.Complex.Trigonometric
 import Mathlib.Tactic.Polyrith
 /-!
 # The CKM Matrix
@@ -93,8 +93,8 @@ def PhaseShiftRelation (U V : unitaryGroup (Fin 3) ℂ) : Prop :=
 /-- The relation `PhaseShiftRelation` is reflective. -/
 lemma phaseShiftRelation_refl (U : unitaryGroup (Fin 3) ℂ) : PhaseShiftRelation U U := by
   use 0, 0, 0, 0, 0, 0
-  rw [Subtype.ext_iff_val]
-  simp only [Submonoid.coe_mul, phaseShift_coe_matrix, ofReal_zero, mul_zero, exp_zero]
+  rw [Subtype.ext_iff]
+  simp only [Submonoid.coe_mul, phaseShift_coe_matrix]
   rw [phaseShiftMatrix_one]
   simp only [one_mul, mul_one]
 
@@ -104,10 +104,10 @@ lemma phaseShiftRelation_symm {U V : unitaryGroup (Fin 3) ℂ} :
   intro h
   obtain ⟨a, b, c, e, f, g, h⟩ := h
   use (- a), (- b), (- c), (- e), (- f), (- g)
-  rw [Subtype.ext_iff_val]
+  rw [Subtype.ext_iff]
   rw [h]
   repeat rw [mul_assoc]
-  simp only [Submonoid.coe_mul, phaseShift_coe_matrix, ofReal_neg, mul_neg]
+  simp only [Submonoid.coe_mul, phaseShift_coe_matrix]
   rw [phaseShiftMatrix_mul]
   repeat rw [← mul_assoc]
   simp only [phaseShiftMatrix_mul, neg_add_cancel, phaseShiftMatrix_one, one_mul, add_neg_cancel,
@@ -120,7 +120,7 @@ lemma phaseShiftRelation_trans {U V W : unitaryGroup (Fin 3) ℂ} :
   obtain ⟨a, b, c, e, f, g, hUV⟩ := hUV
   obtain ⟨d, i, j, k, l, m, hVW⟩ := hVW
   use (a + d), (b + i), (c + j), (e + k), (f + l), (g + m)
-  rw [Subtype.ext_iff_val, hUV, hVW]
+  rw [Subtype.ext_iff, hUV, hVW]
   simp only [Submonoid.coe_mul, phaseShift_coe_matrix]
   rw [mul_assoc, mul_assoc, phaseShiftMatrix_mul, ← mul_assoc, ← mul_assoc, phaseShiftMatrix_mul,
     add_comm k e, add_comm l f, add_comm m g]
@@ -192,8 +192,8 @@ lemma ud (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [mul_apply, Fin.sum_univ_three]
   rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
   simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one, vecCons_const,
-    cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons, head_fin_const, mul_zero,
-    tail_val', head_val']
+    cons_val_one, zero_mul, add_zero, cons_val_two, tail_cons, head_cons, mul_zero, tail_val',
+    head_val']
   change _ + _ * _ * 0 = _
   rw [exp_add]
   ring_nf
@@ -229,8 +229,8 @@ lemma cd (V : CKMMatrix) (a b c d e f : ℝ) :
   rw [mul_apply, Fin.sum_univ_three]
   rw [mul_apply, mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three]
   simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one, vecCons_const,
-    cons_val_one, head_fin_const, zero_mul, head_cons, zero_add, cons_val_two, tail_cons, add_zero,
-    mul_zero, tail_val', head_val']
+    cons_val_one, zero_mul, zero_add, cons_val_two, tail_cons, head_cons, add_zero, mul_zero,
+    tail_val', head_val']
   change _ + _ * _ * 0 = _
   rw [exp_add]
   ring_nf
@@ -317,11 +317,10 @@ lemma VAbs'_equiv (i j : Fin 3) (V U : CKMMatrix) (h : V ≈ U) :
   rw [mul_apply, Fin.sum_univ_three]
   rw [mul_apply, mul_apply, Fin.sum_univ_three, Fin.sum_univ_three]
   simp only [phaseShiftMatrix, Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
-    vecCons_const, cons_val_one, head_cons, zero_mul, add_zero, cons_val_two, tail_cons,
-    head_fin_const, mul_zero]
+    vecCons_const, cons_val_one, cons_val_two, tail_cons, head_cons, head_fin_const]
   fin_cases i <;> fin_cases j <;>
     simp only [Fin.zero_eta, Fin.isValue, cons_val_zero, zero_mul, add_zero, mul_zero,
-      _root_.map_mul, mul_re, I_re, ofReal_re, I_im, ofReal_im, sub_self, Real.exp_zero,
+      mul_re, I_re, ofReal_re, I_im, ofReal_im, sub_self, Real.exp_zero,
       one_mul, mul_one,Fin.mk_one, cons_val_one, head_cons, zero_add,
       head_fin_const, Fin.reduceFinMk, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons,
       tail_val', head_val', Complex.norm_exp, Complex.norm_mul]

@@ -48,8 +48,7 @@ noncomputable instance : (φ φ' : 𝓕.FieldOp) → Decidable (timeOrderRel φ 
 instance : IsTotal 𝓕.FieldOp 𝓕.timeOrderRel where
   total a b := by
     cases a <;> cases b <;>
-      simp only [or_self, or_false, or_true, timeOrderRel, Fin.isValue, implies_true, imp_self,
-        IsEmpty.forall_iff]
+      simp only [or_self, or_false, or_true, timeOrderRel, Fin.isValue]
     exact LinearOrder.le_total _ _
 
 /-- Time ordering is transitive. -/
@@ -295,10 +294,9 @@ lemma orderedInsert_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
   rw [List.dropWhile_append]
   simp only [List.isEmpty_iff, List.dropWhile_eq_nil_iff, Bool.not_eq_eq_eq_not, Bool.not_true,
     decide_eq_false_iff_not, crAnTimeOrderRel_refl, decide_true, Bool.false_eq_true,
-    not_false_eq_true, List.dropWhile_cons_of_neg, ite_eq_left_iff, not_forall, Classical.not_imp,
-    Decidable.not_not, List.append_left_eq_self, forall_exists_index, and_imp]
-  intro x hx hxψ
-  intro y hy
+    not_false_eq_true, List.dropWhile_cons_of_neg, ite_eq_left_iff, not_forall, Decidable.not_not,
+    List.append_left_eq_self, forall_exists_index]
+  intro x hx hxψ y hy
   simpa using List.mem_takeWhile_imp hy
 
 lemma orderedInsert_in_swap_eq_time {φ ψ φ': 𝓕.CrAnFieldOp} (h1 : crAnTimeOrderRel φ ψ)

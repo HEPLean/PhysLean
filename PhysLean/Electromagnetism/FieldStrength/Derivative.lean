@@ -19,12 +19,7 @@ open IndexNotation
 /-!
 
 ## Derivative of the field strength
-
-This file needs updating after:
-
-- [semiformal_result (7Z2GA) : timeSlice_spatial_deriv](https://physlean.com/TODOList#7Z2GA)
-- [semiformal_result (7Z2LF) : timeSlice_time_deriv](https://physlean.com/TODOList#7Z2LF)
-are complete.
+The proofs in this file need to be rewritten based on modifications to other files.
 
 -/
 open TensorSpecies
@@ -64,12 +59,12 @@ lemma derivative_fromElectricMagneticField_repr_diag (EM : ElectricField × Magn
     (y : SpaceTime) (j : ℕ) (hj : j < 4) :
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨j, hj⟩ | 2 => ⟨j, hj⟩) = 0 := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue]
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
       exact hdiff _
   conv_lhs => erw [derivative_repr _ _ _ h_diff]
-  simp only [Nat.reduceAdd, C_eq_color, Fin.isValue]
+  simp only [Nat.reduceAdd, Fin.isValue]
   rw [finsupp_single_prodEquiv]
   rw [mapTobasis_prodEquiv]
   trans SpaceTime.deriv μ (fun y => 0) y
@@ -94,7 +89,7 @@ lemma derivative_fromElectricMagneticField_repr_zero_row (EM : ElectricField × 
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ| 1 => ⟨0, by simp⟩ | 2 => ⟨j + 1, hj⟩) =
     - SpaceTime.deriv μ (fun y => EM.1 y ⟨j, by omega⟩) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
@@ -124,7 +119,7 @@ lemma derivative_fromElectricMagneticField_repr_zero_col (EM : ElectricField × 
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨j + 1, hj⟩ | 2 => ⟨0, by simp⟩) =
     SpaceTime.deriv μ (fun y => EM.1 y ⟨j, by omega⟩) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
@@ -153,7 +148,7 @@ lemma derivative_fromElectricMagneticField_repr_one_two (EM : ElectricField × M
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨1, by simp⟩ | 2 => ⟨2, by simp⟩) =
     - SpaceTime.deriv μ (fun y => EM.2 y 2) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
@@ -183,7 +178,7 @@ lemma derivative_fromElectricMagneticField_repr_two_one (EM : ElectricField × M
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨2, by simp⟩ | 2 => ⟨1, by simp⟩) =
     SpaceTime.deriv μ (fun y => EM.2 y 2) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
@@ -212,7 +207,7 @@ lemma derivative_fromElectricMagneticField_repr_one_three (EM : ElectricField ×
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨1, by simp⟩ | 2 => ⟨3, by simp⟩) =
     SpaceTime.deriv μ (fun y => EM.2 y 1) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
@@ -241,7 +236,7 @@ lemma derivative_fromElectricMagneticField_repr_three_one (EM : ElectricField ×
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨3, by simp⟩ | 2 => ⟨1, by simp⟩) =
     - SpaceTime.deriv μ (fun y => EM.2 y 1) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
@@ -271,7 +266,7 @@ lemma derivative_fromElectricMagneticField_repr_two_three (EM : ElectricField ×
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨2, by simp⟩ | 2 => ⟨3, by simp⟩) =
     - SpaceTime.deriv μ (fun y => EM.2 y 3) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by
@@ -301,7 +296,7 @@ lemma derivative_fromElectricMagneticField_repr_three_two (EM : ElectricField ×
     (Tensor.basis _).repr (∂ (fromElectricMagneticField EM).1 y)
     (fun | 0 => μ | 1 => ⟨3, by simp⟩ | 2 => ⟨2, by simp⟩) =
     SpaceTime.deriv μ (fun y => EM.2 y 3) y := by
-  simp only [Nat.reduceAdd, C_eq_color, Function.comp_apply, Fin.isValue,
+  simp only [Nat.reduceAdd, Function.comp_apply, Fin.isValue,
     Basis.repr_symm_apply, Basis.repr_linearCombination]
   have h_diff : DifferentiableAt ℝ (mapToBasis (toElectricMagneticField.symm EM).1)
       (Finsupp.equivFunOnFinite ((Tensor.basis _).repr y)) := by

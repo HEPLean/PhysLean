@@ -17,8 +17,6 @@ The main reference for the material in this file is:
 
 -/
 
-universe v u
-
 namespace MSSMACC
 open MSSMCharges
 open MSSMACCs
@@ -63,7 +61,7 @@ lemma B₃_val : B₃.val = B₃AsCharge := by
 
 lemma doublePoint_B₃_B₃ (R : MSSMACC.LinSols) : cubeTriLin B₃.val B₃.val R.val = 0 := by
   simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun,
-    MSSMSpecies_numberCharges, Fin.isValue, Fin.reduceFinMk]
+    MSSMSpecies_numberCharges]
   rw [Fin.sum_univ_three]
   rw [B₃_val]
   rw [B₃AsCharge]

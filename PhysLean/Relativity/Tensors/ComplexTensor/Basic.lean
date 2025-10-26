@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Pre
 import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Metric
-import PhysLean.Relativity.Tensors.Dual
 /-!
 
 ## Complex Lorentz tensors
@@ -82,8 +81,7 @@ end complexLorentzTensor
 noncomputable section
 open complexLorentzTensor in
 /-- The tensor structure for complex Lorentz tensors. -/
-def complexLorentzTensor : TensorSpecies ℂ SL(2, ℂ) where
-  C := complexLorentzTensor.Color
+def complexLorentzTensor : TensorSpecies ℂ complexLorentzTensor.Color SL(2, ℂ) where
   FD := Discrete.functor fun c =>
     match c with
     | Color.upL => Fermion.leftHanded
@@ -183,65 +181,17 @@ def complexLorentzTensor : TensorSpecies ℂ SL(2, ℂ) where
   contr_metric := fun c =>
     match c with
     | Color.upL => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Fermion.leftAltContraction_apply_metric
+      simpa using Fermion.leftAltContraction_apply_metric
     | Color.downL => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Fermion.altLeftContraction_apply_metric
+      simpa using Fermion.altLeftContraction_apply_metric
     | Color.upR => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Fermion.rightAltContraction_apply_metric
+      simpa using Fermion.rightAltContraction_apply_metric
     | Color.downR => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Fermion.altRightContraction_apply_metric
+      simpa using Fermion.altRightContraction_apply_metric
     | Color.up => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Lorentz.contrCoContraction_apply_metric
+      simpa using Lorentz.contrCoContraction_apply_metric
     | Color.down => by
-      simp only [Discrete.functor_obj_eq_as, Action.instMonoidalCategory_tensorObj_V,
-        Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_whiskerLeft_hom,
-        Action.instMonoidalCategory_leftUnitor_hom_hom, Monoidal.tensorUnit_obj,
-        Discrete.natTrans_app, Action.instMonoidalCategory_whiskerRight_hom,
-        Action.instMonoidalCategory_associator_inv_hom,
-        Action.instMonoidalCategory_associator_hom_hom, Equivalence.symm_inverse,
-        Action.functorCategoryEquivalence_functor,
-        Action.FunctorCategoryEquivalence.functor_obj_obj]
-      exact Lorentz.coContrContraction_apply_metric
+      simpa using Lorentz.coContrContraction_apply_metric
 
 namespace complexLorentzTensor
 
@@ -257,12 +207,9 @@ macro_rules
 /-- Complex Lorentz tensor. -/
 scoped[complexLorentzTensor] notation "ℂT(" c ")" => complexLorentzTensor.Tensor c
 
-/-- Color for complex Lorentz tensors is decidable. -/
-instance : DecidableEq complexLorentzTensor.C := complexLorentzTensor.instDecidableEqColor
-
 /-- Contracting two basis elements gives `1` if the index for the basis elements is the same,
   and `0` otherwise. Holds for any color of index. -/
-lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.repDim c))
+lemma basis_contr (c : complexLorentzTensor.Color) (i : Fin (complexLorentzTensor.repDim c))
     (j : Fin (complexLorentzTensor.repDim (complexLorentzTensor.τ c))) :
     complexLorentzTensor.castToField
     ((complexLorentzTensor.contr.app {as := c}).hom
@@ -277,16 +224,16 @@ lemma basis_contr (c : complexLorentzTensor.C) (i : Fin (complexLorentzTensor.re
   | Color.down => Lorentz.coContrContraction_basis _ _
 
 /-- For any object in the over color category, with source `Fin n`, has a decidable source. -/
-instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
+instance {n : ℕ} {c : Fin n → complexLorentzTensor.Color} :
     DecidableEq (OverColor.mk c).left := instDecidableEqFin n
 
 /-- For any object in the over color category, with source `Fin n`, has a finite source. -/
-instance {n : ℕ} {c : Fin n → complexLorentzTensor.C} :
+instance {n : ℕ} {c : Fin n → complexLorentzTensor.Color} :
     Fintype (OverColor.mk c).left := Fin.fintype n
 
 /-- The equality of two maps in `OverColor C` from objects based on `Fin _` is decidable. -/
-instance {n m : ℕ} {c : Fin n → complexLorentzTensor.C}
-    {c1 : Fin m → complexLorentzTensor.C} (σ σ' : OverColor.mk c ⟶ OverColor.mk c1) :
+instance {n m : ℕ} {c : Fin n → complexLorentzTensor.Color}
+    {c1 : Fin m → complexLorentzTensor.Color} (σ σ' : OverColor.mk c ⟶ OverColor.mk c1) :
     Decidable (σ = σ') :=
   decidable_of_iff _ (OverColor.Hom.ext_iff σ σ')
 

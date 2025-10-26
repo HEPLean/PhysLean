@@ -13,8 +13,6 @@ We define the group of permutations for the SM charges with no RHN.
 
 -/
 
-universe v u
-
 open Nat
 open Finset
 

@@ -3,8 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.Sign.Basic
 import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeContraction
+import PhysLean.QFT.PerturbationTheory.WickContraction.InsertAndContract
 /-!
 
 # Time contractions
@@ -101,7 +101,7 @@ lemma timeContract_insert_some_of_lt
   rw [timeContract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-    Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+    Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc, uncontractedListGet]
   · simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
@@ -145,7 +145,7 @@ lemma timeContract_insert_some_of_not_lt
   rw [timeContract_insertAndContract_some]
   simp only [Nat.succ_eq_add_one, Fin.getElem_fin, ite_mul, instCommGroup.eq_1,
     contractStateAtIndex, uncontractedFieldOpEquiv, Equiv.optionCongr_apply,
-    Equiv.coe_trans, Option.map_some', Function.comp_apply, finCongr_apply, Fin.coe_cast,
+    Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply, Fin.coe_cast,
     List.getElem_map, uncontractedList_getElem_uncontractedIndexEquiv_symm, List.get_eq_getElem,
     Algebra.smul_mul_assoc, uncontractedListGet]
   simp only [hik, ↓reduceIte, MulMemClass.coe_mul]
@@ -190,7 +190,7 @@ lemma timeContract_of_not_gradingCompliant (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (h : ¬ GradingCompliant φs φsΛ) :
     φsΛ.timeContract = 0 := by
   rw [timeContract]
-  simp only [GradingCompliant, Fin.getElem_fin, Subtype.forall, not_forall] at h
+  simp only [GradingCompliant, Subtype.forall, not_forall] at h
   obtain ⟨a, ha⟩ := h
   obtain ⟨ha, ha2⟩ := ha
   apply Finset.prod_eq_zero (i := ⟨a, ha⟩)

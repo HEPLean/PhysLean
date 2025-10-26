@@ -52,17 +52,21 @@ structure Potential where
 namespace Potential
 
 variable (P : Potential) (Φ1 Φ2 : HiggsField)
+open InnerProductSpace
 
 /-- The potential of the two Higgs doublet model. -/
 def toFun (Φ1 Φ2 : HiggsField) (x : SpaceTime) : ℝ :=
   P.m₁₁2 * ‖Φ1‖_H^2 x + P.m₂₂2 * ‖Φ2‖_H^2 x -
-  (P.m₁₂2 * ⟪Φ1, Φ2⟫_H x + conj P.m₁₂2 * ⟪Φ2, Φ1⟫_H x).re
+  (P.m₁₂2 * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x + conj P.m₁₂2 * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x).re
   + 1/2 * P.𝓵₁ * ‖Φ1‖_H^2 x * ‖Φ1‖_H^2 x + 1/2 * P.𝓵₂ * ‖Φ2‖_H^2 x * ‖Φ2‖_H^2 x
   + P.𝓵₃ * ‖Φ1‖_H^2 x * ‖Φ2‖_H^2 x
-  + P.𝓵₄ * ‖⟪Φ1, Φ2⟫_H x‖ ^ 2
-  + (1/2 * P.𝓵₅ * ⟪Φ1, Φ2⟫_H x ^ 2 + 1/2 * conj P.𝓵₅ * ⟪Φ2, Φ1⟫_H x ^ 2).re
-  + (P.𝓵₆ * ‖Φ1‖_H^2 x * ⟪Φ1, Φ2⟫_H x + conj P.𝓵₆ * ‖Φ1‖_H^2 x * ⟪Φ2, Φ1⟫_H x).re
-  + (P.𝓵₇ * ‖Φ2‖_H^2 x * ⟪Φ1, Φ2⟫_H x + conj P.𝓵₇ * ‖Φ2‖_H^2 x * ⟪Φ2, Φ1⟫_H x).re
+  + P.𝓵₄ * ‖⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x‖ ^ 2
+  + (1/2 * P.𝓵₅ * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x ^ 2 +
+    1/2 * conj P.𝓵₅ * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x ^ 2).re
+  + (P.𝓵₆ * ‖Φ1‖_H^2 x * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x +
+    conj P.𝓵₆ * ‖Φ1‖_H^2 x * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x).re
+  + (P.𝓵₇ * ‖Φ2‖_H^2 x * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x +
+    conj P.𝓵₇ * ‖Φ2‖_H^2 x * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x).re
 
 /-- The potential where all parameters are zero. -/
 def zero : Potential := ⟨0, 0, 0, 0, 0, 0, 0, 0, 0, 0⟩
@@ -72,24 +76,25 @@ lemma swap_fields : P.toFun Φ1 Φ2 =
     (conj P.𝓵₅) (conj P.𝓵₇) (conj P.𝓵₆)).toFun Φ2 Φ1 := by
   funext x
   simp only [toFun, normSq, Complex.add_re, Complex.mul_re, Complex.conj_re, Complex.conj_im,
-    neg_mul, sub_neg_eq_add, one_div, Complex.inv_re, Complex.re_ofNat,
-    Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div,
-    zero_mul, sub_zero, Complex.mul_im, add_zero, mul_neg, Complex.ofReal_pow, normSq_apply_re_self,
-    normSq_apply_im_zero, mul_zero, zero_add, RingHomCompTriple.comp_apply, RingHom.id_apply]
+    neg_mul, sub_neg_eq_add, one_div, Complex.inv_re, Complex.re_ofNat, Complex.normSq_ofNat,
+    div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div, zero_mul, sub_zero,
+    Complex.mul_im, add_zero, mul_neg, Complex.ofReal_pow, RingHomCompTriple.comp_apply,
+    RingHom.id_apply]
   ring_nf
   simp only [one_div, add_left_inj, add_right_inj, mul_eq_mul_left_iff]
   left
-  rw [HiggsField.innerProd, HiggsField.innerProd, ← inner_conj_symm, Complex.norm_conj]
+  rw [← inner_symm]
+  simp
 
 /-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
 lemma right_zero : P.toFun Φ1 0 =
     (HiggsField.Potential.mk (- P.m₁₁2) (P.𝓵₁/2)).toFun Φ1 := by
   funext x
   simp only [toFun, normSq, ContMDiffSection.coe_zero, Pi.zero_apply, norm_zero, ne_eq,
-    OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero, innerProd_right_zero,
-    innerProd_left_zero, Complex.zero_re, sub_zero, one_div, Complex.ofReal_pow,
-    Complex.ofReal_zero, neg_neg, add_right_inj, mul_eq_mul_right_iff, pow_eq_zero_iff,
-    norm_eq_zero, HiggsField.Potential.toFun, or_self_right]
+    OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero,
+    HiggsField.inner_zero_right, HiggsField.inner_zero_left, Complex.zero_re, sub_zero, one_div,
+    Complex.ofReal_pow, Complex.ofReal_zero, HiggsField.Potential.toFun, neg_neg, add_right_inj,
+    mul_eq_mul_right_iff, pow_eq_zero_iff, norm_eq_zero, or_self_right]
   ring_nf
   simp only [true_or]
 
@@ -104,11 +109,11 @@ lemma neg_left : P.toFun (- Φ1) Φ2
     Φ1 Φ2 := by
   funext x
   simp only [toFun, normSq, ContMDiffSection.coe_neg, Pi.neg_apply, norm_neg,
-    innerProd_neg_left, mul_neg, innerProd_neg_right, Complex.add_re, Complex.neg_re,
+    HiggsField.inner_neg_left, mul_neg, HiggsField.inner_neg_right, Complex.add_re, Complex.neg_re,
     Complex.mul_re, neg_sub, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add, neg_add_rev,
-    one_div, even_two, Even.neg_pow, Complex.inv_re, Complex.re_ofNat,
-    Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div,
-    zero_mul, sub_zero, Complex.mul_im, add_zero, Complex.ofReal_pow, map_neg]
+    one_div, even_two, Even.neg_pow, Complex.inv_re, Complex.re_ofNat, Complex.normSq_ofNat,
+    div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div, zero_mul, sub_zero,
+    Complex.mul_im, add_zero, Complex.ofReal_pow, map_neg]
 
 /-- Negating `Φ₁` is equivalent to negating `m₁₂2`, `𝓵₆` and `𝓵₇`. -/
 lemma neg_right : P.toFun Φ1 (- Φ2)
@@ -121,18 +126,19 @@ lemma left_eq_right : P.toFun Φ1 Φ1 =
     (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 + 2 * P.m₁₂2.re)
     (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re)).toFun Φ1 := by
   funext x
-  simp only [toFun, normSq, innerProd_self_eq_normSq, Complex.ofReal_pow, Complex.add_re,
-    Complex.mul_re, normSq_apply_re_self, normSq_apply_im_zero, mul_zero, sub_zero, Complex.conj_re,
-    Complex.conj_im, one_div, norm_pow, Complex.norm_real, norm_norm, Complex.inv_re,
-    Complex.re_ofNat, Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat,
-    neg_zero, zero_div, zero_mul, Complex.mul_im, add_zero, mul_neg, neg_mul, sub_neg_eq_add,
-    sub_add_add_cancel, zero_add, HiggsField.Potential.toFun, neg_add_rev, neg_sub]
+  simp only [toFun, normSq, inner_self_eq_normSq, Complex.ofReal_pow, Complex.add_re,
+    Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add, sub_add_add_cancel,
+    one_div, norm_pow, Complex.norm_real, norm_norm, Complex.inv_re, Complex.re_ofNat,
+    Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div,
+    zero_mul, sub_zero, Complex.mul_im, add_zero, mul_neg, HiggsField.Potential.toFun, neg_add_rev,
+    neg_sub]
   ring_nf
-  erw [show ((Complex.ofRealHom ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
-    erw [← Complex.ofReal_pow]; rfl]
-  erw [show ((Complex.ofRealHom ‖Φ1 x‖) ^ 2).re = ‖Φ1 x‖ ^ 2 by
-    erw [← Complex.ofReal_pow]; rfl]
-  erw [show (Complex.ofRealHom ‖Φ1 x‖ ^ 2).im = 0 by exact normSq_apply_im_zero Φ1 x]
+  rw [show ((Complex.ofReal ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
+    rw [← Complex.ofReal_pow]; rfl]
+  rw [show ((Complex.ofReal ‖Φ1 x‖) ^ 2).re = ‖Φ1 x‖ ^ 2 by
+    rw [← Complex.ofReal_pow]; rfl]
+  rw [show (Complex.ofReal ‖Φ1 x‖ ^ 2).im = 0 by
+    rw [← Complex.ofReal_pow, Complex.ofReal_im]]
   ring
 
 lemma left_eq_neg_right : P.toFun Φ1 (- Φ1) =

@@ -52,5 +52,5 @@ unsafe def main (args : List String) : IO UInt32 := do
   let ctx : Core.Context := {fileName, options, fileMap := default }
   let state := {env}
   let _ ← (Lean.Core.CoreM.toIO · ctx state) do (tagDuplicateTest).run'
-  println! "Finish duplicate tag check."
+  println! "\x1b[32mLinter finished, no duplicaate tags found.\x1b[0m"
   pure 0

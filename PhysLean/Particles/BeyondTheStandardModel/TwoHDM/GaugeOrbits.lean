@@ -3,9 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
-import PhysLean.Particles.StandardModel.HiggsBoson.GaugeAction
-import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Analysis.Matrix
+import PhysLean.Particles.StandardModel.HiggsBoson.Basic
+import Mathlib.Analysis.Matrix.Order
 /-!
 
 # Gauge orbits for the 2HDM
@@ -25,11 +25,13 @@ open Complex
 open SpaceTime
 
 noncomputable section
+open InnerProductSpace
 
 /-- For two Higgs fields `Φ₁` and `Φ₂`, the map from space time to 2 x 2 complex matrices
   defined by `((Φ₁^†Φ₁, Φ₂^†Φ₁), (Φ₁^†Φ₂, Φ₂^†Φ₂))`. -/
 def prodMatrix (Φ1 Φ2 : HiggsField) (x : SpaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
-  !![⟪Φ1, Φ1⟫_H x, ⟪Φ2, Φ1⟫_H x; ⟪Φ1, Φ2⟫_H x, ⟪Φ2, Φ2⟫_H x]
+  !![⟪Φ1, Φ1⟫_(SpaceTime → ℂ) x, ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x;
+    ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x, ⟪Φ2, Φ2⟫_(SpaceTime → ℂ) x]
 
 /-- The 2 x 2 complex matrices made up of components of the two Higgs fields. -/
 def fieldCompMatrix (Φ1 Φ2 : HiggsField) (x : SpaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
@@ -41,8 +43,8 @@ lemma prodMatrix_eq_fieldCompMatrix_sq (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
   rw [fieldCompMatrix]
   trans !![Φ1 x 0, Φ1 x 1; Φ2 x 0, Φ2 x 1] *
     !![conj (Φ1 x 0), conj (Φ2 x 0); conj (Φ1 x 1), conj (Φ2 x 1)]
-  · rw [Matrix.mul_fin_two, prodMatrix, innerProd_expand', innerProd_expand', innerProd_expand',
-      innerProd_expand']
+  · rw [Matrix.mul_fin_two, prodMatrix, inner_expand_conj, inner_expand_conj, inner_expand_conj,
+      inner_expand_conj]
     funext i j
     fin_cases i <;> fin_cases j <;> ring_nf
   · funext i j
@@ -60,12 +62,16 @@ local instance : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) :=
   `Matrix.normedSpace`. -/
 local instance : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) := Matrix.normedSpace
 
+open Matrix
+open MatrixOrder
+
 /-- The matrix `prodMatrix` is positive semi-definite. -/
 lemma prodMatrix_posSemiDef (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
     (prodMatrix Φ1 Φ2 x).PosSemidef := by
-  rw [Matrix.posSemidef_iff_eq_transpose_mul_self]
-  use (fieldCompMatrix Φ1 Φ2 x).conjTranspose
-  simpa using prodMatrix_eq_fieldCompMatrix_sq Φ1 Φ2 x
+  rw [prodMatrix_eq_fieldCompMatrix_sq Φ1 Φ2 x, ← nonneg_iff_posSemidef]
+  apply (CStarAlgebra.nonneg_iff_eq_mul_star_self (A := Matrix (Fin 2) (Fin 2) ℂ)).mpr
+  use (fieldCompMatrix Φ1 Φ2 x)
+  rfl
 
 /-- The matrix `prodMatrix` is hermitian. -/
 lemma prodMatrix_hermitian (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
@@ -81,7 +87,7 @@ lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
   intro j
   fin_cases i <;> fin_cases j <;>
     simpa only [prodMatrix, Fin.zero_eta, Fin.isValue, of_apply, cons_val', cons_val_zero,
-      empty_val', cons_val_fin_one] using smooth_innerProd _ _
+      empty_val', cons_val_fin_one] using inner_smooth _ _
 
 /-- The map `prodMatrix` is invariant under the simultaneous action of `gaugeAction` on the two
 Higgs fields. -/

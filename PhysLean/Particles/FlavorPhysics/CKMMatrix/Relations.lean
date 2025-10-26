@@ -187,7 +187,7 @@ lemma VAbs_thd_eq_one_snd_eq_zero {V : Quotient CKMMatrixSetoid} {i : Fin 3} (hV
 section crossProduct
 
 lemma conj_Vtb_cross_product {V : CKMMatrix} {τ : ℝ}
-    (hτ : [V]t = cexp (τ * I) • (conj [V]u ×₃ conj [V]c)) :
+    (hτ : [V]t = cexp (τ * I) • (conj [V]u ⨯₃ conj [V]c)) :
     conj [V]tb = cexp (- τ * I) * ([V]cs * [V]ud - [V]us * [V]cd) := by
   have h1 := congrFun hτ 2
   simp only [tRow, Fin.isValue, cons_val_two, Nat.succ_eq_add_one, Nat.reduceAdd, tail_cons,
@@ -198,13 +198,13 @@ lemma conj_Vtb_cross_product {V : CKMMatrix} {τ : ℝ}
     RingHom.id_apply] at h1
   rw [h1]
   simp only [← exp_conj, _root_.map_mul, conj_ofReal, conj_I, mul_neg, Fin.isValue, neg_mul]
-  field_simp
-  ring_nf
+  simp only [Fin.isValue, mul_eq_mul_left_iff, sub_left_inj, exp_ne_zero, or_false]
+  exact mul_comm _ _
 
 end crossProduct
 
 lemma conj_Vtb_mul_Vud {V : CKMMatrix} {τ : ℝ}
-    (hτ : [V]t = cexp (τ * I) • (conj [V]u ×₃ conj [V]c)) :
+    (hτ : [V]t = cexp (τ * I) • (conj [V]u ⨯₃ conj [V]c)) :
     cexp (τ * I) * conj [V]tb * conj [V]ud =
     [V]cs * (normSq [V]ud + normSq [V]us) + [V]cb * conj [V]ub * [V]us := by
   rw [conj_Vtb_cross_product hτ]
@@ -219,7 +219,7 @@ lemma conj_Vtb_mul_Vud {V : CKMMatrix} {τ : ℝ}
   ring
 
 lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
-    (hτ : [V]t = cexp (τ * I) • (conj [V]u ×₃ conj [V]c)) :
+    (hτ : [V]t = cexp (τ * I) • (conj [V]u ⨯₃ conj [V]c)) :
     cexp (τ * I) * conj [V]tb * conj [V]us =
     - ([V]cd * (normSq [V]ud + normSq [V]us) + [V]cb * conj ([V]ub) * [V]ud) := by
   rw [conj_Vtb_cross_product hτ]
@@ -234,7 +234,7 @@ lemma conj_Vtb_mul_Vus {V : CKMMatrix} {τ : ℝ}
   ring
 
 lemma cs_of_ud_us_ub_cb_tb {V : CKMMatrix} (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
-    {τ : ℝ} (hτ : [V]t = cexp (τ * I) • (conj ([V]u) ×₃ conj ([V]c))) :
+    {τ : ℝ} (hτ : [V]t = cexp (τ * I) • (conj ([V]u) ⨯₃ conj ([V]c))) :
     [V]cs = (- conj [V]ub * [V]us * [V]cb +
       cexp (τ * I) * conj [V]tb * conj [V]ud) / (normSq [V]ud + normSq [V]us) := by
   have h1 := normSq_Vud_plus_normSq_Vus_neq_zero_ℂ h
@@ -243,7 +243,7 @@ lemma cs_of_ud_us_ub_cb_tb {V : CKMMatrix} (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
   ring
 
 lemma cd_of_ud_us_ub_cb_tb {V : CKMMatrix} (h : [V]ud ≠ 0 ∨ [V]us ≠ 0)
-    {τ : ℝ} (hτ : [V]t = cexp (τ * I) • (conj ([V]u) ×₃ conj ([V]c))) :
+    {τ : ℝ} (hτ : [V]t = cexp (τ * I) • (conj ([V]u) ⨯₃ conj ([V]c))) :
     [V]cd = - (conj [V]ub * [V]ud * [V]cb + cexp (τ * I) * conj [V]tb * conj [V]us) /
       (normSq [V]ud + normSq [V]us) := by
   have h1 := normSq_Vud_plus_normSq_Vus_neq_zero_ℂ h
@@ -304,8 +304,7 @@ lemma cb_eq_zero_of_ud_us_zero {V : CKMMatrix} (h : [V]ud = 0 ∧ [V]us = 0) :
     [V]cb = 0 := by
   have h1 := fst_row_normalized_abs V
   rw [← thd_col_normalized_abs V] at h1
-  simp only [Fin.isValue, h, map_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
-    add_zero, zero_add] at h1
+  simp only [Fin.isValue, h] at h1
   rw [add_assoc] at h1
   simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, Fin.isValue,
     zero_add, add_assoc, left_eq_add] at h1
@@ -352,8 +351,7 @@ lemma cb_tb_neq_zero_iff_ub_neq_one (V : CKMMatrix) :
   · by_contra hn
     rw [not_or] at hn
     simp only [Fin.isValue, ne_eq, Decidable.not_not] at hn
-    simp_all only [map_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero,
-      sq_eq_one_iff, false_or, one_ne_zero]
+    simp_all only [ne_eq]
     simp only [Fin.isValue, norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
       add_zero, sq_eq_one_iff] at h2
     simp_all only [false_or]

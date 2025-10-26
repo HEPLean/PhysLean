@@ -3,9 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QFT.PerturbationTheory.WickContraction.TimeContract
-import PhysLean.QFT.PerturbationTheory.WickContraction.StaticContract
-import PhysLean.QFT.PerturbationTheory.WickAlgebra.TimeContraction
+import PhysLean.QFT.PerturbationTheory.WickContraction.UncontractedList
 /-!
 
 # Sub contractions
@@ -18,7 +16,6 @@ variable {𝓕 : FieldSpecification}
 namespace WickContraction
 variable {n : ℕ} {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
 open PhysLean.List
-open WickAlgebra
 
 /-- Given a Wick contraction `φsΛ`, and a subset of `φsΛ.1`, the Wick contraction
   consisting of contracted pairs within that subset. -/
@@ -177,7 +174,7 @@ lemma quotContraction_sndFieldOfContract_uncontractedListEmd {S : Finset (Finset
 lemma quotContraction_gradingCompliant {S : Finset (Finset (Fin φs.length))} {hs : S ⊆ φsΛ.1}
     (hsΛ : φsΛ.GradingCompliant) :
     GradingCompliant [φsΛ.subContraction S hs]ᵘᶜ (quotContraction S hs) := by
-  simp only [GradingCompliant, Fin.getElem_fin, Subtype.forall]
+  simp only [GradingCompliant, Subtype.forall]
   intro a ha
   erw [subContraction_uncontractedList_get]
   erw [subContraction_uncontractedList_get]

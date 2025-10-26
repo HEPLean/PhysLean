@@ -3,9 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Lorentz.Group.Restricted
 import PhysLean.Relativity.SL2C.SelfAdjoint
-import Mathlib.Analysis.Complex.Polynomial.Basic -- Complex.isAlgClosed
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import PhysLean.Relativity.LorentzGroup.Restricted.Basic
 /-!
 # The group SL(2, ℂ) and it's relation to the Lorentz group
 
@@ -14,7 +14,7 @@ The aim of this file is to give the relationship between `SL(2, ℂ)` and the Lo
 -/
 namespace Lorentz
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 
@@ -69,23 +69,24 @@ def toSelfAdjointMap (M : SL(2, ℂ)) :
 
 lemma toSelfAdjointMap_apply_det (M : SL(2, ℂ)) (A : selfAdjoint (Matrix (Fin 2) (Fin 2) ℂ)) :
     det ((toSelfAdjointMap M) A).1 = det A.1 := by
-  simp only [LinearMap.coe_mk, AddHom.coe_mk, toSelfAdjointMap, det_mul,
-    selfAdjoint.mem_iff, det_conjTranspose, det_mul, det_one, RingHom.id_apply]
+  simp only [toSelfAdjointMap, LinearMap.coe_mk, AddHom.coe_mk, det_mul, det_conjTranspose]
   simp only [SpecialLinearGroup.det_coe, one_mul, star_one, mul_one]
 
-lemma toSelfAdjointMap_apply_σSAL_inl (M : SL(2, ℂ)) :
-    toSelfAdjointMap M (PauliMatrix.σSAL (Sum.inl 0)) =
+lemma toSelfAdjointMap_apply_pauliBasis'_inl (M : SL(2, ℂ)) :
+    toSelfAdjointMap M (PauliMatrix.pauliBasis' (Sum.inl 0)) =
     ((‖M.1 0 0‖ ^ 2 + ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2) •
-      PauliMatrix.σSAL (Sum.inl 0) +
+      PauliMatrix.pauliBasis' (Sum.inl 0) +
     (- ((M.1 0 1).re * (M.1 1 1).re + (M.1 0 1).im * (M.1 1 1).im +
-      (M.1 0 0).im * (M.1 1 0).im + (M.1 0 0).re * (M.1 1 0).re)) • PauliMatrix.σSAL (Sum.inr 0)
+      (M.1 0 0).im * (M.1 1 0).im + (M.1 0 0).re * (M.1 1 0).re)) •
+        PauliMatrix.pauliBasis' (Sum.inr 0)
     + ((- (M.1 0 0).re * (M.1 1 0).im + ↑(M.1 1 0).re * (M.1 0 0).im
-      - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re)) • PauliMatrix.σSAL (Sum.inr 1)
+      - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re)) •
+        PauliMatrix.pauliBasis' (Sum.inr 1)
     + ((- ‖M.1 0 0‖ ^ 2 - ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2) •
-      PauliMatrix.σSAL (Sum.inr 2) := by
-  simp only [toSelfAdjointMap, PauliMatrix.σSAL, Fin.isValue, Basis.coe_mk, PauliMatrix.σSAL',
-    PauliMatrix.σ0, LinearMap.coe_mk, AddHom.coe_mk, neg_add_rev, PauliMatrix.σ1,
-    neg_of, neg_cons, neg_zero, neg_empty, neg_mul, PauliMatrix.σ2, neg_neg, PauliMatrix.σ3]
+      PauliMatrix.pauliBasis' (Sum.inr 2) := by
+  simp only [toSelfAdjointMap, PauliMatrix.pauliBasis', Fin.isValue, Basis.coe_mk,
+    PauliMatrix.pauliSelfAdjoint', PauliMatrix.pauliMatrix, one_fin_two, LinearMap.coe_mk,
+    AddHom.coe_mk, neg_add_rev, neg_of, neg_cons, neg_zero, neg_empty, neg_mul, neg_neg]
   ext1
   simp only [Fin.isValue, AddSubgroup.coe_add, selfAdjoint.val_smul, smul_of, smul_cons, real_smul,
     ofReal_div, ofReal_add, ofReal_pow, ofReal_ofNat, mul_one, smul_zero, smul_empty, smul_neg,
@@ -105,7 +106,7 @@ lemma toSelfAdjointMap_apply_σSAL_inl (M : SL(2, ℂ)) :
     simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one]
     ring_nf
   | 0, 1 =>
-    simp only [Fin.isValue, cons_val', cons_val_one, head_cons, empty_val',
+    simp only [Fin.isValue, cons_val', cons_val_one, empty_val',
       cons_val_fin_one, cons_val_zero]
     ring_nf
     rw [← re_add_im (M.1 0 0), ← re_add_im (M.1 0 1), ← re_add_im (M.1 1 0), ← re_add_im (M.1 1 1)]
@@ -117,7 +118,7 @@ lemma toSelfAdjointMap_apply_σSAL_inl (M : SL(2, ℂ)) :
     ring
   | 1, 0 =>
     simp only [Fin.isValue, cons_val', cons_val_zero, empty_val', cons_val_fin_one,
-      cons_val_one, head_fin_const]
+      cons_val_one]
     ring_nf
     rw [← re_add_im (M.1 0 0), ← re_add_im (M.1 0 1), ← re_add_im (M.1 1 0), ← re_add_im (M.1 1 1)]
     simp only [Fin.isValue, map_add, conj_ofReal, _root_.map_mul, conj_I, mul_neg, add_re,
@@ -127,14 +128,13 @@ lemma toSelfAdjointMap_apply_σSAL_inl (M : SL(2, ℂ)) :
     simp only [Fin.isValue, I_sq, mul_neg, mul_one, neg_mul, neg_neg, one_mul, sub_neg_eq_add]
     ring
   | 1, 1 =>
-    simp only [Fin.isValue, cons_val', cons_val_one, head_cons, empty_val',
-      cons_val_fin_one, head_fin_const]
+    simp only [Fin.isValue, cons_val', cons_val_one, cons_val_fin_one, empty_val']
     ring_nf
 
 /-- The monoid homomorphisms from `SL(2, ℂ)` to matrices indexed by `Fin 1 ⊕ Fin 3`
   formed by the action `M A Mᴴ`. -/
 def toMatrix : SL(2, ℂ) →* Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ where
-  toFun M := LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL (toSelfAdjointMap M)
+  toFun M := LinearMap.toMatrix PauliMatrix.pauliBasis' PauliMatrix.pauliBasis' (toSelfAdjointMap M)
   map_one' := by
     simp only [toSelfAdjointMap, SpecialLinearGroup.coe_one, one_mul, conjTranspose_one,
       mul_one, Subtype.coe_eta]
@@ -158,8 +158,9 @@ lemma toMatrix_apply_contrMod (M : SL(2, ℂ)) (v : ContrMod 3) :
   simp only [ContrMod.toSelfAdjoint, LinearEquiv.trans_symm, LinearEquiv.symm_symm,
     LinearEquiv.trans_apply]
   change ContrMod.toFin1dℝEquiv.symm
-    ((((LinearMap.toMatrix PauliMatrix.σSAL PauliMatrix.σSAL) (toSelfAdjointMap M)))
-    *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3)) (PauliMatrix.σSAL.repr a)))) = _
+    ((((LinearMap.toMatrix PauliMatrix.pauliBasis' PauliMatrix.pauliBasis') (toSelfAdjointMap M)))
+    *ᵥ (((Finsupp.linearEquivFunOnFinite ℝ ℝ (Fin 1 ⊕ Fin 3))
+    (PauliMatrix.pauliBasis'.repr a)))) = _
   apply congrArg
   erw [LinearMap.toMatrix_mulVec_repr]
   rfl
@@ -185,33 +186,32 @@ def toLorentzGroup : SL(2, ℂ) →* LorentzGroup 3 where
     ext1
     simp only [_root_.map_mul, lorentzGroupIsGroup_mul_coe]
 
-lemma toLorentzGroup_eq_σSAL (M : SL(2, ℂ)) :
+lemma toLorentzGroup_eq_pauliBasis' (M : SL(2, ℂ)) :
     toLorentzGroup M = LinearMap.toMatrix
-    PauliMatrix.σSAL PauliMatrix.σSAL (toSelfAdjointMap M) := by
+    PauliMatrix.pauliBasis' PauliMatrix.pauliBasis' (toSelfAdjointMap M) := by
   rfl
 
 lemma toSelfAdjointMap_basis (i : Fin 1 ⊕ Fin 3) :
-    toSelfAdjointMap M (PauliMatrix.σSAL i) =
-    ∑ j, (toLorentzGroup M).1 j i • PauliMatrix.σSAL j := by
-  rw [toLorentzGroup_eq_σSAL]
-  simp only [LinearMap.toMatrix_apply, Finset.univ_unique,
-    Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
-  nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.σSAL
-    ((toSelfAdjointMap M) (PauliMatrix.σSAL i)))]
+    toSelfAdjointMap M (PauliMatrix.pauliBasis' i) =
+    ∑ j, (toLorentzGroup M).1 j i • PauliMatrix.pauliBasis' j := by
+  rw [toLorentzGroup_eq_pauliBasis']
+  simp only [LinearMap.toMatrix_apply]
+  nth_rewrite 1 [← (Basis.sum_repr PauliMatrix.pauliBasis'
+    ((toSelfAdjointMap M) (PauliMatrix.pauliBasis' i)))]
   rfl
 
-lemma toSelfAdjointMap_σSA (i : Fin 1 ⊕ Fin 3) :
-    toSelfAdjointMap M (PauliMatrix.σSA i) =
-    ∑ j, (toLorentzGroup M⁻¹).1 i j • PauliMatrix.σSA j := by
+lemma toSelfAdjointMap_pauliBasis (i : Fin 1 ⊕ Fin 3) :
+    toSelfAdjointMap M (PauliMatrix.pauliBasis i) =
+    ∑ j, (toLorentzGroup M⁻¹).1 i j • PauliMatrix.pauliBasis j := by
   have h1 : (toLorentzGroup M⁻¹).1 = minkowskiMatrix.dual (toLorentzGroup M).1 := by
-    simp
+    simp [LorentzGroup.inv_eq_dual]
   simp only [h1]
-  rw [PauliMatrix.σSA_minkowskiMetric_σSAL, _root_.map_smul]
+  rw [PauliMatrix.pauliBasis_minkowskiMetric_pauliBasis', _root_.map_smul]
   rw [toSelfAdjointMap_basis]
   rw [Finset.smul_sum]
   apply congrArg
   funext j
-  rw [smul_smul, PauliMatrix.σSA_minkowskiMetric_σSAL, smul_smul]
+  rw [smul_smul, PauliMatrix.pauliBasis_minkowskiMetric_pauliBasis', smul_smul]
   apply congrFun
   apply congrArg
   exact Eq.symm (minkowskiMatrix.dual_apply_minkowskiMatrix ((toLorentzGroup M).1) i j)
@@ -235,22 +235,23 @@ lemma toLorentzGroup_fst_col (M : SL(2, ℂ)) :
       - (M.1 0 1).re * (M.1 1 1).im + (M.1 0 1).im * (M.1 1 1).re))
     | Sum.inr 2 => ((- ‖M.1 0 0‖ ^ 2 - ‖M.1 0 1‖ ^ 2 + ‖M.1 1 0‖ ^ 2 + ‖M.1 1 1‖ ^ 2) / 2)
   change (fun μ => (toLorentzGroup M).1 μ (Sum.inl 0)) = k
-  have h1 : toSelfAdjointMap M (PauliMatrix.σSAL (Sum.inl 0)) = ∑ μ, k μ • PauliMatrix.σSAL μ := by
+  have h1 : toSelfAdjointMap M (PauliMatrix.pauliBasis' (Sum.inl 0)) =
+      ∑ μ, k μ • PauliMatrix.pauliBasis' μ := by
     simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
       Finset.sum_singleton, Fin.sum_univ_three]
-    rw [toSelfAdjointMap_apply_σSAL_inl]
+    rw [toSelfAdjointMap_apply_pauliBasis'_inl]
     abel
   rw [toSelfAdjointMap_basis] at h1
   have h1x := sub_eq_zero_of_eq h1
   rw [← Finset.sum_sub_distrib] at h1x
   funext μ
   refine sub_eq_zero.mp ?_
-  refine Fintype.linearIndependent_iff.mp PauliMatrix.σSAL.linearIndependent
+  refine Fintype.linearIndependent_iff.mp PauliMatrix.pauliBasis'.linearIndependent
     (fun x => ((toLorentzGroup M).1 x (Sum.inl 0) - k x)) ?_ μ
   rw [← h1x]
   congr
   funext x
-  exact sub_smul ((toLorentzGroup M).1 x (Sum.inl 0)) (k x) (PauliMatrix.σSAL x)
+  exact sub_smul ((toLorentzGroup M).1 x (Sum.inl 0)) (k x) (PauliMatrix.pauliBasis' x)
 
 /-- The first element of the image of `SL(2, ℂ)` in the Lorentz group. -/
 lemma toLorentzGroup_inl_inl (M : SL(2, ℂ)) :

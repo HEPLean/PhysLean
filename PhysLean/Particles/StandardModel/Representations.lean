@@ -10,7 +10,7 @@ import Mathlib.Geometry.Manifold.Instances.Real
 This file defines the basic representations which appear in the Standard Model.
 
 -/
-universe v u
+
 namespace StandardModel
 
 open Manifold

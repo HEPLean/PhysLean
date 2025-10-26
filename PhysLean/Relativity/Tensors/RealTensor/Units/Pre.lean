@@ -12,11 +12,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Contraction
 -/
 noncomputable section
 
-open Matrix
-open MatrixGroups
-open Complex
-open TensorProduct
-open CategoryTheory.MonoidalCategory
+open Module Matrix MatrixGroups Complex TensorProduct CategoryTheory.MonoidalCategory
 namespace Lorentz
 
 /-- The contra-co unit for complex lorentz vectors. Usually denoted `δⁱᵢ`. -/
@@ -26,7 +22,7 @@ def preContrCoUnitVal (d : ℕ := 3) : (Contr d ⊗ Co d).V :=
 /-- Expansion of `preContrCoUnitVal` into basis. -/
 lemma preContrCoUnitVal_expand_tmul {d : ℕ} : preContrCoUnitVal d =
     ∑ i, contrBasis d i ⊗ₜ[ℝ] coBasis d i := by
-  simp only [preContrCoUnitVal, Fin.isValue]
+  simp only [preContrCoUnitVal]
   rw [contrCoToMatrixRe_symm_expand_tmul]
   simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
     Finset.sum_singleton, ne_eq, reduceCtorEq, not_false_eq_true, one_apply_ne, zero_smul,
@@ -56,12 +52,14 @@ def preContrCoUnit (d : ℕ := 3) : 𝟙_ (Rep ℝ (LorentzGroup d)) ⟶ Contr d
   comm M := by
     refine ModuleCat.hom_ext ?_
     refine LinearMap.ext fun x : ℝ => ?_
-    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ, CategoryTheory.Category.id_comp, Action.tensor_ρ, ModuleCat.hom_comp,
+    simp only [Action.tensorObj_V, Action.tensorUnit_V, Action.tensorUnit_ρ,
+      CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, CategoryTheory.Category.id_comp,
+      ModuleCat.hom_ofHom, Action.tensor_ρ, ModuleCat.hom_comp, LinearMap.coe_comp,
       Function.comp_apply]
     change x • preContrCoUnitVal d =
       (TensorProduct.map ((Contr d).ρ M) ((Co d).ρ M)) (x • preContrCoUnitVal d)
-    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
+    simp only [Action.tensorObj_V, map_smul]
     apply congrArg
     simp only [preContrCoUnitVal]
     rw [contrCoToMatrixRe_ρ_symm]
@@ -109,12 +107,14 @@ def preCoContrUnit (d : ℕ) : 𝟙_ (Rep ℝ (LorentzGroup d)) ⟶ Co d ⊗ Con
   comm M := by
     refine ModuleCat.hom_ext ?_
     refine LinearMap.ext fun x : ℝ => ?_
-    simp only [Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-      Action.tensorUnit_ρ, CategoryTheory.Category.id_comp, Action.tensor_ρ, ModuleCat.hom_comp,
+    simp only [Action.tensorObj_V, Action.tensorUnit_V, Action.tensorUnit_ρ,
+      CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, CategoryTheory.Category.id_comp,
+      ModuleCat.hom_ofHom, Action.tensor_ρ, ModuleCat.hom_comp, LinearMap.coe_comp,
       Function.comp_apply]
     change x • preCoContrUnitVal d =
       (TensorProduct.map ((Co d).ρ M) ((Contr d).ρ M)) (x • preCoContrUnitVal d)
-    simp only [Action.instMonoidalCategory_tensorObj_V, _root_.map_smul]
+    simp only [Action.tensorObj_V, map_smul]
     apply congrArg
     simp only [preCoContrUnitVal]
     rw [coContrToMatrixRe_ρ_symm]

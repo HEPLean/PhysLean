@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.Contraction.Basic
 import PhysLean.Relativity.Tensors.Evaluation
-import PhysLean.Relativity.Tensors.Product
+import PhysLean.Relativity.Tensors.Tensorial
 /-!
 
 # Elaboration of tensor expressions
@@ -49,7 +49,7 @@ import PhysLean.Relativity.Tensors.Product
   this information.
 
 -/
-open Lean Meta Elab Tactic Term IndexNotation
+open Lean Meta Elab Tactic Term
 namespace TensorSpecies
 namespace Tensor
 
@@ -143,7 +143,7 @@ def getEvalPos (ind : List (TSyntax `indexExpr)) : TermElabM (List (ℕ × ℕ))
 /-- For list of `indexExpr` e.g. `[α, 3, β, α, 2, γ]`, `getContrPos`
   first removes all indices which are numbers (e.g. `[α, β, α, γ]`).
   It then outputs pairs `(a, b)` in `ℕ × ℕ` of positions of this list with `a < b`
-  such that the index at `a` is equal to the index at `b`. It checkes whether or not
+  such that the index at `a` is equal to the index at `b`. It checks whether or not
   an element is contracted more then once. -/
 def getContrPos (ind : List (TSyntax `indexExpr)) : TermElabM (List (ℕ × ℕ)) := do
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
@@ -263,7 +263,7 @@ syntax "-" tensorExpr : tensorExpr
 def getNumIndicesExact (stx : Syntax) : TermElabM ℕ := do
   match stx with
   | `($t:term) =>
-    let a ← elabTerm (← `(TensorSpecies.numIndices $t)) (some (mkConst ``Nat))
+    let a ← elabTerm (← `(Tensorial.numIndices $t)) (some (mkConst ``Nat))
     let a' ← whnf a
     match a' with
     | Expr.lit (Literal.natVal n) =>
@@ -302,7 +302,7 @@ partial def getProdIndices (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)
   | _ =>
     throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
 
-/-- Returns the remaining indices of a tensor expression after contraction and evaulation.
+/-- Returns the remaining indices of a tensor expression after contraction and evaluation.
   Thus every index in the output of `getIndicesFull` is ident and there are no duplicates.
   Examples are:
 1. `T | α β 2 β` gives `[α]`
@@ -368,7 +368,8 @@ open TensorSpecies
 
 /-- For a term of the form `T` where `T` is `S.F.obj (OverColor.mk c)`,
   `tensorTermToTensorTree` returns the term corresponding to the `tensorNode T` -/
-def nodeTermMap (T : Term) : Term := T
+def nodeTermMap (T : Term) : Term :=
+  Syntax.mkApp (mkIdent ``Tensorial.toTensor) #[T]
 
 /-- Given a list `l` of pairs `ℕ × ℕ` and a term `T` corresponding to a tensor tree,
   for each `(a, b)` in `l`, `evalSyntax` applies `TensorTree.eval a b` to `T` recursively.
@@ -424,7 +425,7 @@ def equalTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
 -/
 
 /-- Takes a syntax corresponding to a tensor expression and turns it into a
-  term correspondnig to a tensor tree. -/
+  term corresponding to a tensor tree. -/
 partial def syntaxFull (stx : Syntax) : TermElabM Term := do
   match stx with
   | `(tensorExpr| $T:term | $[$args]*) =>
@@ -489,19 +490,25 @@ elab_rules (kind:=tensorExprSyntax) : term
 ## Test cases
 
 -/
-
-open Tensor
 /-
-variable {k : Type} [CommRing k] {G : Type} [Group G] {S : TensorSpecies k G}
-  {c : Fin (Nat.succ (Nat.succ 0)) → S.C} {t : S.Tensor c}
-  {c1 c2 : S.C}
+open Tensor
+
+variable {k : Type} [CommRing k] {C G : Type} [Group G] {S : TensorSpecies k C G}
+  {c : Fin (Nat.succ (Nat.succ 0)) → C} {t : S.Tensor c}
+  {c1 c2 : C}
   {t2 : S.Tensor ![c1, c2]}
   {t3 : S.Tensor ![S.τ c1, S.τ c2]}
   {t4 : S.Tensor ![c1, c2]}
   {t5 : S.Tensor ![S.τ c1, S.τ c2]}
+
+#synth Tensorial S ![c1, c2] (S.Tensor ![c1, c2])
+def x := Tensorial.toTensor t
+
 #check {t | α β }ᵀ
 
-#check {t4 | α β ⊗ t5 | α β}ᵀ-/
+#check {t4 | α β ⊗ t5 | α β}ᵀ
+
+-/
 end Tensor
 
 end TensorSpecies

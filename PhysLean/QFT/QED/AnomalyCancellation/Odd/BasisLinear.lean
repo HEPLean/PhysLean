@@ -11,11 +11,8 @@ import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
 We give a basis of `LinSols` in the odd case. This basis has the special property
 that splits into two planes on which every point is a solution to the ACCs.
 -/
-universe v u
 
-open Nat
-open Finset
-open BigOperators
+open Module Nat Finset BigOperators
 
 namespace PureU1
 
@@ -193,7 +190,7 @@ lemma basis_on_oddFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
       omega
     · rfl
 
@@ -211,7 +208,7 @@ lemma basis!_on_oddShiftFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
       omega
     rfl
 
@@ -420,11 +417,11 @@ lemma P!_oddShiftSnd (f : Fin n → ℚ) (j : Fin n) : P! f (oddShiftSnd j) = - 
     exact Rat.mul_zero (f k)
   · simp
 
-lemma P_oddMid (f : Fin n → ℚ) : P f (oddMid) = 0 := by
+lemma P_oddMid (f : Fin n → ℚ) : P f oddMid = 0 := by
   rw [P, sum_of_charges]
   simp [HSMul.hSMul, SMul.smul, basis_on_oddMid]
 
-lemma P!_oddShiftZero (f : Fin n → ℚ) : P! f (oddShiftZero) = 0 := by
+lemma P!_oddShiftZero (f : Fin n → ℚ) : P! f oddShiftZero = 0 := by
   rw [P!, sum_of_charges]
   simp [HSMul.hSMul, SMul.smul, basis!_on_oddShiftZero]
 
@@ -444,7 +441,7 @@ lemma Pa_oddShiftShiftFst (f g : Fin n.succ → ℚ) (j : Fin n) :
   rw [oddShiftShiftFst_eq_oddShiftFst_castSucc]
   rw [P_oddFst, P!_oddShiftFst]
 
-lemma Pa_oddShiftShiftMid (f g : Fin n.succ → ℚ) : Pa f g (oddShiftShiftMid) = g (Fin.last n) := by
+lemma Pa_oddShiftShiftMid (f g : Fin n.succ → ℚ) : Pa f g oddShiftShiftMid = g (Fin.last n) := by
   rw [Pa]
   simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   nth_rewrite 1 [oddShiftShiftMid_eq_oddMid]

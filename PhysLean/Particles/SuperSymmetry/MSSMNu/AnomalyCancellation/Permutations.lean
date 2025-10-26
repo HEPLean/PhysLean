@@ -13,8 +13,6 @@ and its action on the MSSM.
 
 -/
 
-universe v u
-
 open Nat
 open Finset
 
@@ -65,7 +63,7 @@ def repCharges : Representation ℚ PermGroup (MSSMCharges).Charges where
     rw [charges_eq_toSpecies_eq]
     refine And.intro ?_ $ Prod.mk_inj.mp rfl
     intro i
-    simp only [Pi.mul_apply, Pi.inv_apply, Equiv.Perm.coe_mul, Module.End.mul_apply]
+    simp only [Module.End.mul_apply]
     rw [chargeMap_toSpecies, chargeMap_toSpecies]
     simp only [Pi.mul_apply, Pi.inv_apply]
     rw [chargeMap_toSpecies]

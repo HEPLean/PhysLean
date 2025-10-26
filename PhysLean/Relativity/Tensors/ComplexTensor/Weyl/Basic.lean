@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Modules
+import PhysLean.Relativity.SL2C.Basic
 /-!
 
 # Weyl fermions
@@ -16,7 +17,7 @@ https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrul
 namespace Fermion
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -52,7 +53,7 @@ lemma leftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
   rw [LinearMap.toMatrix_apply]
   simp only [leftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (M.1 *ᵥ (Pi.single j 1)) i = _
-  simp only [mulVec_single, MulOpposite.op_one, Pi.smul_apply, transpose_apply, one_smul]
+  simp
 
 @[simp]
 lemma leftBasis_toFin2ℂ (i : Fin 2) : (leftBasis i).toFin2ℂ = Pi.single i 1 := by
@@ -97,7 +98,7 @@ lemma altLeftBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
   rw [LinearMap.toMatrix_apply]
   simp only [altLeftBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
   change ((M.1⁻¹)ᵀ *ᵥ (Pi.single j 1)) i = _
-  simp only [mulVec_single, MulOpposite.op_one, transpose_transpose, Pi.smul_apply, one_smul]
+  simp
 
 /-- The vector space ℂ^2 carrying the conjugate representation of SL(2,C).
   In index notation corresponds to a Weyl fermion with indices ψ^{dot a}. -/
@@ -132,9 +133,9 @@ lemma rightBasis_toFin2ℂ (i : Fin 2) : (rightBasis i).toFin2ℂ = Pi.single i 
 lemma rightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
     (LinearMap.toMatrix rightBasis rightBasis) (rightHanded.ρ M) i j = (M.1.map star) i j := by
   rw [LinearMap.toMatrix_apply]
-  simp only [rightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  simp only [rightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change (M.1.map star *ᵥ (Pi.single j 1)) i = _
-  simp [mulVec_single, transpose_apply, mul_one]
+  simp [mulVec_single]
 
 /-- The vector space ℂ^2 carrying the representation of SL(2,C) given by
     M → (M⁻¹)^†.
@@ -174,9 +175,9 @@ lemma altRightBasis_ρ_apply (M : SL(2,ℂ)) (i j : Fin 2) :
     (LinearMap.toMatrix altRightBasis altRightBasis) (altRightHanded.ρ M) i j =
     ((M.1⁻¹).conjTranspose) i j := by
   rw [LinearMap.toMatrix_apply]
-  simp only [altRightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply, transpose_apply]
+  simp only [altRightBasis, Basis.coe_ofEquivFun, Basis.ofEquivFun_repr_apply]
   change ((M.1⁻¹).conjTranspose *ᵥ (Pi.single j 1)) i = _
-  simp [mulVec_single, transpose_apply, mul_one]
+  simp [mulVec_single]
 
 /-!
 

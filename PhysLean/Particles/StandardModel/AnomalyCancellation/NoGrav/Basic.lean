@@ -11,7 +11,6 @@ This file defines the system of anomaly equations for the SM without RHN, and
 without the gravitational ACC.
 
 -/
-universe v u
 
 namespace SM
 open SMCharges

@@ -3,7 +3,8 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Particles.StandardModel.HiggsBoson.PointwiseInnerProd
+import PhysLean.Particles.StandardModel.HiggsBoson.Basic
+import Mathlib.Tactic.Cases
 /-!
 # The potential of the Higgs field
 
@@ -32,7 +33,7 @@ open SpaceTime
 -/
 
 /-- The structure `Potential` is defined with two fields, `μ2` corresponding
-  to the mass-squared of the Higgs boson, and `l` corresponding to the coefficent
+  to the mass-squared of the Higgs boson, and `l` corresponding to the coefficient
   of the quartic term in the Higgs potential. Note that `l` is usually denoted `λ`. -/
 structure Potential where
   /-- The mass-squared of the Higgs boson. -/
@@ -81,8 +82,8 @@ lemma 𝓵_neg : P.neg.𝓵 = - P.𝓵 := by rfl
 -/
 
 @[simp]
-lemma toFun_zero (x : SpaceTime) : P.toFun HiggsField.zero x = 0 := by
-  simp [toFun, zero, ofReal]
+lemma toFun_zero (x : SpaceTime) : P.toFun 0 x = 0 := by
+  simp [toFun]
 
 lemma complete_square (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     P.toFun φ x = P.𝓵 * (‖φ‖_H^2 x - P.μ2 / (2 * P.𝓵)) ^ 2 - P.μ2 ^ 2 / (4 * P.𝓵) := by
@@ -112,16 +113,18 @@ lemma toFun_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     · apply Or.inr
       field_simp at h2 ⊢
       ring_nf
+      simp only [normSq]
       linear_combination h2
   · cases' hD with hD hD
     · simp [toFun, hD]
     · simp only [toFun, neg_mul]
       rw [hD]
       field_simp
+      simp
 
 /-!
 
-## The descriminant
+## The discriminant
 
 -/
 
@@ -133,7 +136,7 @@ lemma quadDiscrim_nonneg (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     0 ≤ P.quadDiscrim φ x := by
   have h1 := P.as_quad φ x
   rw [mul_assoc, quadratic_eq_zero_iff_discrim_eq_sq] at h1
-  · simp only [h1, ne_eq, quadDiscrim, div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false]
+  · simp only [quadDiscrim, h1]
     exact sq_nonneg (2 * P.𝓵 * ‖φ‖_H^2 x + - P.μ2)
   · exact h
 
@@ -147,7 +150,9 @@ lemma quadDiscrim_eq_zero_iff (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTim
   refine Iff.intro (fun hD => ?_) (fun hV => ?_)
   · field_simp
     linear_combination hD
-  · field_simp [hV]
+  · simp only [even_two, Even.neg_pow, hV, mul_neg, sub_neg_eq_add]
+    field_simp
+    simp
 
 lemma quadDiscrim_eq_zero_iff_normSq (h : P.𝓵 ≠ 0) (φ : HiggsField) (x : SpaceTime) :
     P.quadDiscrim φ x = 0 ↔ ‖φ‖_H^2 x = P.μ2 / (2 * P.𝓵) := by
@@ -249,9 +254,9 @@ lemma neg_𝓵_sol_exists_iff (h𝓵 : P.𝓵 < 0) (c : ℝ) : (∃ φ x, P.toFu
               rw [h1] at h
               simpa using h.2
       · linarith
-    use (ofReal a)
+    use (const (HiggsVec.ofReal a))
     use 0
-    rw [ofReal_normSq ha]
+    simp [HiggsVec.ofReal_normSq ha]
     trans P.𝓵 * a * a + (- P.μ2) * a + (- c)
     · ring
     have hd : 0 ≤ (discrim P.𝓵 (- P.μ2) (-c)) := by
@@ -289,7 +294,7 @@ lemma pos_𝓵_sol_exists_iff (h𝓵 : 0 < P.𝓵) (c : ℝ) : (∃ φ x, P.toFu
 
 /-!
 
-## Boundness of the potential
+## Boundedness of the potential
 
 -/
 
@@ -302,7 +307,7 @@ def IsBounded : Prop :=
   ∃ c, ∀ Φ x, c ≤ P.toFun Φ x
 
 /-- Given a element `P` of `Potential` which is bounded,
-  the quartic coefficent `𝓵` of `P` is non-negative. -/
+  the quartic coefficient `𝓵` of `P` is non-negative. -/
 lemma isBounded_𝓵_nonneg (h : P.IsBounded) : 0 ≤ P.𝓵 := by
   by_contra hl
   rw [not_le] at hl
@@ -389,7 +394,7 @@ lemma isMinOn_iff_of_μSq_nonpos_𝓵_pos (h𝓵 : 0 < P.𝓵) (hμ2 : P.μ2 ≤
   simp only [Prod.forall]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · have h1' : P.toFun φ x ≤ 0 := by
-      simpa using h HiggsField.zero 0
+      simpa using h 0 0
     have h1'' : 0 ≤ P.toFun φ x := by
       have hx := (h1 (P.toFun φ x)).mp ⟨φ, x, rfl⟩
       rcases hx with hx | hx

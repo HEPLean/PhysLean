@@ -14,8 +14,6 @@ The main result of this file is `eleven_dim_plane_of_no_sols_exists`, which stat
 an 11 dimensional plane of charges exists on which there are no solutions except the origin.
 -/
 
-universe v u
-
 namespace SMRHN
 namespace PlusU1
 

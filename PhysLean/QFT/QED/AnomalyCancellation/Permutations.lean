@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QFT.QED.AnomalyCancellation.Basic
 import PhysLean.QFT.AnomalyCancellation.GroupActions
-import Mathlib.Logic.Equiv.Fintype
 /-!
 # Permutations of Pure U(1) ACC
 
@@ -13,8 +12,6 @@ We define the permutation group action on the charges of the Pure U(1) ACC syste
 We further define the action on the ACC System.
 
 -/
-
-universe v u
 
 open Nat
 open Finset

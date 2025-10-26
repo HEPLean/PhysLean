@@ -318,7 +318,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           use fermionicProjF d
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
-          simp [hby, hfy]
+          simp [hfy]
         · aesop
       apply TwoSidedIdeal.add_mem
       · /- boson, fermion, fermion mem-/
@@ -331,7 +331,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           use bosonicProjF d
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
-          simp [hby, hfy]
+          simp [hfy]
         · aesop
       · /- fermion, boson, fermion mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
@@ -343,9 +343,9 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           use fermionicProjF d
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProjF y).1
-          simp [hby, hfy]
+          simp [hby]
         · simp only [Set.mem_univ, mul_eq_mul_left_iff, mul_eq_zero, ZeroMemClass.coe_eq_zero,
-          true_and, exists_or_eq_left, p]
+          true_and, exists_or_eq_left]
     · simp only [hby, ZeroMemClass.coe_zero, mul_zero, zero_mul, zero_add, add_zero]
       apply TwoSidedIdeal.add_mem
       · /- fermion, fermion, boson mem-/
@@ -358,7 +358,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           use fermionicProjF d
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
-          simp [hby, hfy]
+          simp [hfy]
         · aesop
       · /- boson, fermion, fermion mem-/
         rw [TwoSidedIdeal.mem_span_iff_mem_addSubgroup_closure]
@@ -370,9 +370,9 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           use bosonicProjF d
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (fermionicProjF y).1
-          simp [hby, hfy]
+          simp [hfy]
         · simp only [Set.mem_univ, mul_eq_mul_left_iff, mul_eq_zero, ZeroMemClass.coe_eq_zero,
-          true_and, exists_or_eq_left, p]
+          true_and, exists_or_eq_left]
     · simp only [hfy, ZeroMemClass.coe_zero, mul_zero, zero_mul, add_zero, zero_add]
       apply TwoSidedIdeal.add_mem
       · /- boson, boson, boson mem-/
@@ -397,7 +397,7 @@ lemma bosonicProjF_mem_ideal (x : FieldOpFreeAlgebra 𝓕)
           use fermionicProjF d
           simp only [Set.mem_univ, mul_eq_mul_left_iff, ZeroMemClass.coe_eq_zero, true_and]
           use (bosonicProjF y).1
-          simp [hby, hfy]
+          simp [hby]
         · aesop
     · simp [hfy, hby]
   · simp only [TwoSidedIdeal.mem_mk, map_zero, ZeroMemClass.coe_zero, p]
@@ -499,9 +499,6 @@ lemma ofFieldOpList_eq_sum (φs : List 𝓕.FieldOp) :
     ofFieldOpList φs = ∑ s : CrAnSection φs, ofCrAnList s.1 := by
   rw [ofFieldOpList, ofFieldOpListF_sum]
   aesop
-
-remark notation_drop := "In doc-strings we will often drop explicit applications of `ofCrAnOp`,
-`ofCrAnList`, `ofFieldOp`, and `ofFieldOpList`"
 
 /-- For a field specification `𝓕`, and an element `φ` of `𝓕.FieldOp`, the
   annihilation part of `𝓕.FieldOp` as an element of `𝓕.WickAlgebra`.

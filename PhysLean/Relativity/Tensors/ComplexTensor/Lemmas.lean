@@ -4,8 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Basic
-import PhysLean.Relativity.Tensors.Contraction.Basis
-import PhysLean.Relativity.Tensors.Elab
 /-!
 
 ## Lemmas related to complex Lorentz tensors.
@@ -27,6 +25,7 @@ namespace complexLorentzTensor
 open TensorSpecies
 open Tensor
 
+set_option maxHeartbeats 400000 in
 lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
     (hA : {A | μ ν = - (A | ν μ)}ᵀ) (hs : {S | μ ν = S | ν μ}ᵀ) :
     {A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ := by
@@ -44,7 +43,8 @@ lemma antiSymm_contr_symm {A : ℂT[.up, .up]} {S : ℂT[.down, .down]}
   rw [permT_permT, permT_permT, permT_permT, permT_permT]
   apply permT_congr
   · decide
-  · simp
+  · simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, id_eq, map_neg,
+    LinearMap.neg_apply]
 
 end complexLorentzTensor
 

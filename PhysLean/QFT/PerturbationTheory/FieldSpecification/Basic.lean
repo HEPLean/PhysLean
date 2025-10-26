@@ -3,12 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Basic
-import PhysLean.QFT.PerturbationTheory.FieldStatistics.ExchangeSign
-import PhysLean.Relativity.SpaceTime.Basic
+import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.Units.WithDim.Momentum
 import PhysLean.QFT.PerturbationTheory.FieldStatistics.OfFinset
-import PhysLean.Meta.Remark.Basic
-import PhysLean.ClassicalMechanics.Momentum.Basic
 /-!
 
 # Field specification

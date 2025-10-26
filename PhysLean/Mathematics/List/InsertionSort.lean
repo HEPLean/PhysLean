@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.List.InsertIdx
+import PhysLean.Mathematics.List
 /-!
 # List lemmas
 
@@ -70,14 +70,12 @@ lemma insertionSortMin_lt_mem_insertionSortDropMinPos_of_lt {α : Type} (r : α 
     ((insertionSortMinPosFin r a l).succAbove i)) := by
     trans (insertionSortDropMinPos r a l).get i
     simp only [Fin.getElem_fin, List.get_eq_getElem]
-    simp only [insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one,
-      finCongr_apply, Fin.coe_cast]
+    simp only [insertionSortDropMinPos, List.length_cons, Nat.succ_eq_add_one, finCongr_apply]
     rw [eraseIdx_get]
     simp only [List.length_cons, Function.comp_apply, List.get_eq_getElem, Fin.coe_cast]
     rfl
   erw [h1]
-  simp only [List.length_cons, Nat.succ_eq_add_one, List.get_eq_getElem,
-    Fin.coe_cast]
+  simp only [List.length_cons, Nat.succ_eq_add_one, List.get_eq_getElem]
   apply insertionSortEquiv_order
   simpa using h
   simp only [List.insertionSort.eq_2, List.length_cons, finCongr_apply]
@@ -247,7 +245,7 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
     erw [orderedInsertEquiv_succ]
   conv_rhs => erw [orderedInsertEquiv_fin_succ]
   ext
-  simp only [Fin.coe_cast, Fin.eta, Fin.cast_trans]
+  simp only [Fin.coe_cast, Fin.eta, Fin.cast_cast]
   let a1 : Fin ((List.orderedInsert r b (List.insertionSort r l)).length + 1) :=
     ⟨↑(orderedInsertPos r (List.orderedInsert r b (List.insertionSort r l)) a),
       orderedInsertPos_lt_length r (List.orderedInsert r b (List.insertionSort r l)) a⟩
@@ -268,15 +266,15 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
         decide_not]
       congr
       funext c
-      simp only [Bool.iff_self_and, Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]
+      simp only [Bool.eq_self_and, Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]
       intro hbc hac
       refine hbc ?_
       exact IsTrans.trans _ _ _ hrba hac
   have ha1 : b1.1 ≤ a2.1 := by
-    simp only [orderedInsertPos, decide_not, b1, b2]
+    simp only [orderedInsertPos, decide_not, b1]
     rw [ht]
     apply List.Sublist.length_le
-    simp only [decide_not, b1]
+    simp only [decide_not]
     exact List.takeWhile_sublist _
   have ha2 : a1.1 = a2.1 + 1 := by
     simp only [orderedInsertPos, decide_not, a1, a2]
@@ -303,13 +301,13 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
     · simp [ha]
   have hbs1 : (b1.succAbove n).1 = if n.1 < b1.1 then n.1 else n.1 + 1 := by
     rw [Fin.succAbove]
-    simp only [Fin.castSucc_mk, Fin.lt_def, Fin.succ_mk]
+    simp only [Fin.lt_def]
     by_cases ha : n.1 < b1.1
     · simp [ha]
     · simp [ha]
   have has2 : (a2.succAbove n).1 = if n.1 < a2.1 then n.1 else n.1 + 1 := by
     rw [Fin.succAbove]
-    simp only [Fin.castSucc_mk, Fin.lt_def, Fin.succ_mk]
+    simp only [Fin.lt_def]
     by_cases ha : n.1 < a2.1
     · simp [ha]
     · simp [ha]
@@ -366,7 +364,7 @@ lemma insertionSortEquiv_orderedInsert_append {α : Type} (r : α → α → Pro
       rw [orderedInsertEquiv_congr _ _ _ hl]
       simp only [List.length_cons, List.cons_append, List.insertionSort, finCongr_apply,
         Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.cast_succ_eq,
-        Fin.cast_trans, Fin.cast_eq_self]
+        Fin.cast_cast, Fin.cast_eq_self]
       change Fin.cast _
         ((insertionSortEquiv r (b :: a :: (l1 ++ a2 :: l2))) ⟨l1.length + 2, by simp⟩) = _
       have hl : l1.length + 1 +1 = l1.length + 2 := by omega

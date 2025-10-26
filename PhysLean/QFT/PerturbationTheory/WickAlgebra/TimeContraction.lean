@@ -51,11 +51,11 @@ lemma timeContract_of_timeOrderRel (φ ψ : 𝓕.FieldOp) (h : timeOrderRel φ �
 lemma timeContract_of_not_timeOrderRel (φ ψ : 𝓕.FieldOp) (h : ¬ timeOrderRel φ ψ) :
     timeContract φ ψ = 𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ ψ) • timeContract ψ φ := by
   rw [timeContract_eq_smul]
-  simp only [Int.reduceNeg, one_smul, map_add]
+  simp only
   rw [normalOrder_ofFieldOp_ofFieldOp_swap]
   rw [timeOrder_ofFieldOp_ofFieldOp_not_ordered_eq_timeOrder h]
   rw [timeContract_eq_smul]
-  simp only [instCommGroup.eq_1, map_smul, map_add, smul_add]
+  simp only [instCommGroup.eq_1, smul_add]
   rw [smul_smul, smul_smul, mul_comm]
 
 /-- For a field specification `𝓕`, and `φ` and `ψ` elements of `𝓕.FieldOp`, if
@@ -131,12 +131,12 @@ lemma timeOrder_timeContract_eq_time_mid {φ ψ : 𝓕.FieldOp}
   | .inAsymp φ =>
     simp
   | .position φ =>
-    simp only [anPart_position, instCommGroup.eq_1]
+    simp only [anPart_position,]
     apply timeOrder_superCommute_eq_time_mid _ _
     simp only [crAnTimeOrderRel, h1]
     simp [crAnTimeOrderRel, h2]
   | .outAsymp φ =>
-    simp only [anPart_outAsymp, instCommGroup.eq_1]
+    simp only [anPart_outAsymp]
     apply timeOrder_superCommute_eq_time_mid _ _
     simp only [crAnTimeOrderRel, h1]
     simp [crAnTimeOrderRel, h2]
@@ -164,11 +164,11 @@ lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
     | .inAsymp φ =>
       simp
     | .position φ =>
-      simp only [anPart_position, instCommGroup.eq_1]
+      simp only [anPart_position]
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
     | .outAsymp φ =>
-      simp only [anPart_outAsymp, instCommGroup.eq_1]
+      simp only [anPart_outAsymp]
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
   · rw [timeContract_of_not_timeOrderRel_expand _ _ h2]
@@ -182,11 +182,11 @@ lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
     | .inAsymp ψ =>
       simp
     | .position ψ =>
-      simp only [anPart_position, instCommGroup.eq_1]
+      simp only [anPart_position]
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
     | .outAsymp ψ =>
-      simp only [anPart_outAsymp, instCommGroup.eq_1]
+      simp only [anPart_outAsymp]
       apply timeOrder_superCommute_neq_time
       simp_all [crAnTimeOrderRel]
 

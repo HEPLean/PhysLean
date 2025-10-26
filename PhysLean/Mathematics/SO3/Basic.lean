@@ -3,7 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 /-!
@@ -24,10 +23,10 @@ instance SO3Group : Group SO3 where
     by
       simp only [det_mul, A.2.1, B.2.1, mul_one],
     by
-      simp only [transpose_mul, ← Matrix.mul_assoc, Matrix.mul_assoc, B.2.2, mul_one, A.2.2]
+      simp only [transpose_mul, Matrix.mul_assoc]
       trans A.1 * ((B.1 * (B.1)ᵀ) * (A.1)ᵀ)
       · noncomm_ring
-      · simp [Matrix.mul_assoc, B.2.2, mul_one, A.2.2]⟩
+      · simp [B.2.2, A.2.2]⟩
   mul_assoc A B C := Subtype.eq (Matrix.mul_assoc A.1 B.1 C.1)
   one := ⟨1, det_one, by rw [transpose_one, mul_one]⟩
   one_mul A := Subtype.eq (Matrix.one_mul A.1)
@@ -117,7 +116,7 @@ lemma det_minus_id (A : SO(3)) : det (A.1 - 1) = 0 := by
       _ = det (1 - A.1ᵀ)ᵀ := by rw [det_transpose]
       _ = det (1 - A.1) := rfl
       _ = det (- (A.1 - 1)) := by simp
-      _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
+      _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin]
       _ = - det (A.1 - 1) := by simp [pow_three]
   exact CharZero.eq_neg_self_iff.mp h1
 
@@ -127,7 +126,7 @@ lemma det_id_minus (A : SO(3)) : det (1 - A.1) = 0 := by
   have h1 : det (1 - A.1) = - det (A.1 - 1) := by
     calc
       det (1 - A.1) = det (- (A.1 - 1)) := by simp
-      _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin, neg_mul, one_mul]
+      _ = (- 1) ^ 3 * det (A.1 - 1) := by simp only [det_neg, Fintype.card_fin]
       _ = - det (A.1 - 1) := by simp [pow_three]
   rw [h1, det_minus_id]
   exact neg_zero
@@ -164,12 +163,12 @@ lemma exists_stationary_vec (A : SO(3)) :
   constructor
   · rw [@orthonormal_iff_ite]
     intro v1 v2
-    simp only [one_div, Set.mem_singleton_iff]
+    simp only [one_div]
     have hveq : v1 = v2 := by aesop
     subst hveq
     rw [Set.restrict_apply, inner_smul_right, inner_smul_left, real_inner_self_eq_norm_sq v]
+    simp only [map_inv₀, conj_trivial, Fin.isValue, ↓reduceIte]
     field_simp
-    ring
   · simp [End.mem_eigenspace_iff.mp hv.1]
 
 /-- For every element of `SO(3)` there exists a basis indexed by `Fin 3` under which the first

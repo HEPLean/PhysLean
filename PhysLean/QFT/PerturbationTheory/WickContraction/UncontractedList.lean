@@ -86,7 +86,7 @@ lemma fin_list_sorted_split :
       rw [List.filter_cons_of_pos]
       simp only [List.cons.injEq, true_and]
       have hl' := fin_list_sorted_split l hl.2 i
-      have hx : List.filter (fun x => decide (x.1 < i)) (l) = [] := by
+      have hx : List.filter (fun x => decide (x.1 < i)) l = [] := by
         simp only [List.filter_eq_nil_iff, decide_eq_true_eq, not_lt]
         intro b hb
         have hb' := hl.1 b hb
@@ -128,7 +128,7 @@ lemma fin_list_sorted_indexOf_mem :
     l.idxOf i = (l.filter (fun x => x.1 < i.1)).length := by
   intro l hl i hi
   conv_lhs => rw [fin_list_sorted_split l hl i]
-  rw [List.idxOf_append_of_not_mem]
+  rw [List.idxOf_append_of_notMem]
   erw [fin_list_sorted_indexOf_filter_le_mem l hl i hi]
   · simp
   · simp

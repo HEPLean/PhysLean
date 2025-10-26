@@ -74,10 +74,7 @@ lemma rep_linSolRep_commute {χ : ACCSystem} (G : ACCSystemGroupAction χ) (g : 
 /-- A multiplicative action of `G.group` on `quadSols`. -/
 instance quadSolAction {χ : ACCSystem} (G : ACCSystemGroupAction χ) :
     MulAction G.group χ.QuadSols where
-  smul f S := ⟨G.linSolRep f S.1, by
-    intro i
-    simp only [linSolRep_apply_apply_val]
-    rw [G.quadInvariant, S.quadSol]⟩
+  smul f S := ⟨G.linSolRep f S.1, by simp [linSolRep_apply_apply_val, G.quadInvariant, S.quadSol]⟩
   mul_smul f1 f2 S := by
     apply ACCSystemQuad.QuadSols.ext
     change (G.rep.toFun (f1 * f2)) S.val = _

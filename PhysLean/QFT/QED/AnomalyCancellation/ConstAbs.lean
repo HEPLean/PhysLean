@@ -10,7 +10,6 @@ import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
 We look at charge assignments in which all charges have the same absolute value.
 
 -/
-universe v u
 
 open Nat
 open Finset
@@ -135,7 +134,7 @@ lemma boundary_accGrav'' (k : Fin n) (hk : Boundary S k) :
       S (Fin.cast (boundary_split k) (Fin.natAdd (k.succ.val) i)) = S k.succ := by
     apply gt_eq hS (le_of_lt hk.right) (by rw [Fin.le_def]; exact le.intro rfl)
   simp only [hfst, hsnd]
-  simp only [Fin.val_succ, sum_const, card_fin, nsmul_eq_mul, cast_add, cast_one,
+  simp only [Fin.val_succ, sum_const, Finset.card_fin, nsmul_eq_mul, cast_add, cast_one,
     succ_sub_succ_eq_sub, Fin.is_le', cast_sub]
   rw [boundary_castSucc hS hk, boundary_succ hS hk]
   ring
@@ -214,8 +213,7 @@ lemma AFL_even_Boundary {A : (PureU1 (2 * n.succ)).LinSols} (h : ConstAbsSorted 
   simp only [succ_eq_add_one, PureU1_numberCharges, mul_eq, cast_add, cast_mul, cast_ofNat,
     cast_one, add_sub_add_right_eq_sub] at h0
   rw [pureU1_linear A] at h0
-  simp only [mul_eq, cast_add, cast_mul, cast_ofNat, cast_one, add_sub_add_right_eq_sub,
-    succ_eq_add_one, zero_eq_mul, hA, or_false] at h0
+  simp only [zero_eq_mul, hA, or_false] at h0
   rw [← @Nat.cast_inj ℚ]
   linear_combination h0 / 2
 

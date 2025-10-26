@@ -43,7 +43,6 @@ lemma jarlskogℂCKM_equiv (V U : CKMMatrix) (h : V ≈ U) :
   have hf : cexp (↑f * I) ≠ 0 := exp_ne_zero _
   have hg : cexp (↑g * I) ≠ 0 := exp_ne_zero _
   field_simp
-  ring
 
 /-- The complex jarlskog invariant for an equivalence class of CKM matrices. -/
 @[simp]

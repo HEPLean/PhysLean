@@ -52,7 +52,7 @@ def normalOrderSign (φs : List 𝓕.CrAnFieldOp) : ℂ :=
 @[simp]
 lemma normalOrderSign_mul_self (φs : List 𝓕.CrAnFieldOp) :
     normalOrderSign φs * normalOrderSign φs = 1 := by
-  simp [normalOrderSign, Wick.koszulSign, Wick.koszulSign_mul_self]
+  simp [normalOrderSign, Wick.koszulSign_mul_self]
 
 lemma koszulSignInsert_create (φ : 𝓕.CrAnFieldOp)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) : (φs : List 𝓕.CrAnFieldOp) →
@@ -239,7 +239,7 @@ lemma normalOrderList_nil : normalOrderList (𝓕 := 𝓕) [] = [] := by
 @[simp]
 lemma normalOrderList_statistics (φs : List 𝓕.CrAnFieldOp) :
     (𝓕 |>ₛ (normalOrderList φs)) = 𝓕 |>ₛ φs := by
-  simp [normalOrderList, List.insertionSort]
+  simp [normalOrderList]
 
 lemma orderedInsert_create (φ : 𝓕.CrAnFieldOp)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) :
@@ -263,7 +263,7 @@ lemma orderedInsert_append_annihilate (φ' φ : 𝓕.CrAnFieldOp)
     (φs : List 𝓕.CrAnFieldOp) → List.orderedInsert normalOrderRel φ' (φs ++ [φ]) =
     List.orderedInsert normalOrderRel φ' φs ++ [φ]
   | [] => by
-    simp [Wick.koszulSignInsert, normalOrderRel, hφ]
+    simp [normalOrderRel, hφ]
   | φ'' :: φs => by
     dsimp only [List.cons_append, List.orderedInsert.eq_2]
     have hi := orderedInsert_append_annihilate φ' φ hφ φs
@@ -278,7 +278,7 @@ lemma normalOrderList_append_annihilate (φ : 𝓕.CrAnFieldOp)
     normalOrderList (φs ++ [φ]) = normalOrderList φs ++ [φ]
   | [] => by simp [normalOrderList]
   | φ' :: φs => by
-    simp only [normalOrderList, List.insertionSort, List.append_eq]
+    simp only [normalOrderList, List.insertionSort]
     have hi := normalOrderList_append_annihilate φ hφ φs
     dsimp only [normalOrderList] at hi
     simp only [List.cons_append, List.insertionSort]

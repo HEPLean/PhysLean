@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.ComplexTensor.Metrics.Basic
-import PhysLean.Relativity.Tensors.ComplexTensor.Units.Symm
+import PhysLean.Relativity.Tensors.ComplexTensor.Units.Basic
 /-!
 
 ## Basic lemmas regarding metrics
@@ -35,6 +35,7 @@ open Tensor
 lemma coMetric_symm : {η' | μ ν = η' | ν μ}ᵀ := by
   apply (Tensor.basis _).repr.injective
   ext b
+  simp only [Tensorial.self_toTensor_apply]
   rw [permT_basis_repr_symm_apply]
   rw [coMetric_eq_ofRat, ofRat_basis_repr_apply, ofRat_basis_repr_apply]
   congr 1
@@ -45,6 +46,7 @@ lemma coMetric_symm : {η' | μ ν = η' | ν μ}ᵀ := by
 lemma contrMetric_symm : {η | μ ν = η | ν μ}ᵀ := by
   apply (Tensor.basis _).repr.injective
   ext b
+  simp only [Tensorial.self_toTensor_apply]
   rw [permT_basis_repr_symm_apply]
   rw [contrMetric_eq_ofRat, ofRat_basis_repr_apply, ofRat_basis_repr_apply]
   congr 1
@@ -55,6 +57,7 @@ lemma contrMetric_symm : {η | μ ν = η | ν μ}ᵀ := by
 lemma leftMetric_antisymm : {εL | α α' = - (εL| α' α)}ᵀ := by
   apply (Tensor.basis _).repr.injective
   ext b
+  simp only [Tensorial.self_toTensor_apply]
   rw [permT_basis_repr_symm_apply]
   rw [leftMetric_eq_ofRat, ofRat_basis_repr_apply, ← map_neg, ofRat_basis_repr_apply]
   congr 1
@@ -65,6 +68,7 @@ lemma leftMetric_antisymm : {εL | α α' = - (εL| α' α)}ᵀ := by
 lemma rightMetric_antisymm : {εR | β β' = - (εR| β' β)}ᵀ := by
   apply (Tensor.basis _).repr.injective
   ext b
+  simp only [Tensorial.self_toTensor_apply]
   rw [permT_basis_repr_symm_apply]
   rw [rightMetric_eq_ofRat, ofRat_basis_repr_apply, ← map_neg, ofRat_basis_repr_apply]
   congr 1
@@ -75,6 +79,7 @@ lemma rightMetric_antisymm : {εR | β β' = - (εR| β' β)}ᵀ := by
 lemma altLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀ := by
   apply (Tensor.basis _).repr.injective
   ext b
+  simp only [Tensorial.self_toTensor_apply]
   rw [permT_basis_repr_symm_apply]
   rw [altLeftMetric_eq_ofRat, ofRat_basis_repr_apply, ← map_neg, ofRat_basis_repr_apply]
   congr 1
@@ -85,6 +90,7 @@ lemma altLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀ := by
 lemma altRightMetric_antisymm : {εR' | α α' = - (εR' | α' α)}ᵀ := by
   apply (Tensor.basis _).repr.injective
   ext b
+  simp only [Tensorial.self_toTensor_apply]
   rw [permT_basis_repr_symm_apply]
   rw [altRightMetric_eq_ofRat, ofRat_basis_repr_apply, ← map_neg, ofRat_basis_repr_apply]
   congr 1

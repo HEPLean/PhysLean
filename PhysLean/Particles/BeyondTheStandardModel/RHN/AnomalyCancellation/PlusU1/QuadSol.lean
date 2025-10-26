@@ -17,8 +17,6 @@ and show that it is a surjection. The main reference for this is:
 
 -/
 
-universe v u
-
 namespace SMRHN
 namespace PlusU1
 
@@ -59,7 +57,7 @@ lemma accQuad_α₁_α₂_zero (S : (PlusU1 n).LinSols) (h1 : α₁ C S = 0)
   simp only [α₁, quadBiLin_toFun_apply, Fin.isValue, neg_mul, neg_eq_zero, mul_eq_zero,
     OfNat.ofNat_ne_zero, false_or, α₂, HomogeneousQuadratic.eq_1, accQuad,
     BiLinearSymm.toHomogeneousQuad_apply] at h1 h2
-  field_simp [h1, h2]
+  simp [h1, h2]
 
 /-- The construction of a `QuadSol` from a `LinSols` in the generic case. -/
 def genericToQuad (S : (PlusU1 n).LinSols) :

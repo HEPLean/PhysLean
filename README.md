@@ -1,20 +1,31 @@
 
-![PhysLean](./docs/PhysLeanLogo.jpeg)
-_A project to digitalize physics._
+<div align="center">
+<img src="./docs/PhysLeanLogo.jpeg" alt="PhysLean logo" width="500">
+</div>
 
 
-- [![](https://img.shields.io/badge/Getting-Started-green)](https://physlean.com/GettingStarted.html)
-[![](https://img.shields.io/badge/The-Website-green)](https://physlean.com)
-[![](https://img.shields.io/badge/How_To-Get_Involved-green)](https://physlean.com/GetInvolved.html)
-[![](https://img.shields.io/badge/Lean-Zulip-green)](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/)
-[![](https://img.shields.io/badge/TODO-List-green)](https://physlean.com/TODOList)
+<div align="center">
 
-- [![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
+## An open-source, community, project to digitalize results from physics into Lean 4
+
+
+
+[![](https://img.shields.io/badge/Getting-Started-darkgreen)](https://physlean.com/GettingStarted.html)
+[![](https://img.shields.io/badge/The-Website-darkgreen)](https://physlean.com)
+[![](https://img.shields.io/badge/How_To-Get_Involved-darkgreen)](https://physlean.com/GetInvolved.html)
+[![](https://img.shields.io/badge/PhysLean_Zulip-Discussion-darkgreen)](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/)
+[![](https://img.shields.io/badge/TODO-List-darkgreen)](https://physlean.com/TODOList)
+
+[![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
 [![](https://img.shields.io/badge/PhysLean-Online-purple)](https://live.physlean.com)
 
-- [![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
-[![](https://img.shields.io/badge/Lean-v4.19.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.19.0)
+ [![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
+[![](https://img.shields.io/badge/Lean-v4.24.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.24.0)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HEPLean/PhysLean)
+
+</div>
+
 
 ## Aims of this project
 
@@ -26,34 +37,55 @@ into Lean 4.
 
 🎯 Create good documentation so that the project can be used for __pedagogical__ purposes.
 
+## How to get involved
 
-## Some parts of PhysLean
-PhysLean _currently_ includes, but is not limited to, the following parts:
+See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. Some suggestions:
 
-__Lorentz [🗂️](https://physlean.com/docs/PhysLean/Relativity/Lorentz/Group/Basic.html):__  The Lorentz group, Lorentz algebra, Weyl fermions, Real Lorentz vectors, complex Lorentz vectors, complex Lorentz tensors, bispinors, Pauli matrices, etc.
+📣 write **informal** results - no need to learn Lean for this - see the [Getting Started](https://physlean.com/GettingStarted) page for more details,
 
-__Index notation [🗂️](https://physlean.com/docs/PhysLean/Relativity/Tensors/OverColor/Basic.html) [📄](https://arxiv.org/abs/2411.07667):__  Formalization of index notation using category theory allowing commands like
+📣 tackle a [TODO item](https://physlean.com/TODOList),
 
-```Lean
-{A | μ ν ⊗ S | μ ν = - A | μ ν ⊗ S | μ ν}ᵀ
-```
+📣 or, start formalizing an area that you find intresting.
 
-__Anomaly cancellation [🗂️](https://physlean.com/docs/PhysLean/QFT/AnomalyCancellation/Basic.html):__  Results related to solutions to the anomaly cancellation conditions of several theories.
+Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
 
-__Standard Model physics [🗂️](https://physlean.com/docs/PhysLean/Particles/StandardModel/Basic.html):__ Properties of the Higgs potential.
+> [!NOTE]
+> When making contributing to PhysLean it is much better to do it with small steps. This makes it easier for us to review, and allows you to get feedback sooner.
 
-__BSM physics [🗂️](https://physlean.com/docs/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.html):__ Starts to: Georgi Glashow model, Pati-Salam, Spin(10), Two Higgs doublet model.
 
-__Flavor physics [🗂️](https://physlean.com/docs/PhysLean/Particles/FlavorPhysics/CKMMatrix/Basic.html):__ Properties of the CKM matrix.
+## Places in the project to start
 
-__Perturbation Theory [🗂️](https://physlean.com/docs/PhysLean/QFT/PerturbationTheory/WickContraction/Basic.html):__ Time-dependent version of Wick's theorem for both fermions and bosons.
+Good places to start an exploration of the project.
+
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Electromagnetism/MaxwellEquations.lean)
+[💻](https://live.physlean.com/#url=https%3A%2F%2Fraw.githubusercontent.com%2FHEPLean%2FPhysLean%2Frefs%2Fheads%2Fmaster%2FPhysLean%2FElectromagnetism%2FMaxwellEquations.lean)
+**Maxwell's equations** in electromagnetism.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QuantumMechanics/OneDimension/HarmonicOscillator/Basic.lean)
+[💻](https://live.physlean.com/#url=https%3A%2F%2Fraw.githubusercontent.com%2FHEPLean%2FPhysLean%2Frefs%2Fheads%2Fmaster%2FPhysLean%2FQuantumMechanics%2FOneDimension%2FHarmonicOscillator%2FBasic.lean)
+**Quantum Harmonic Oscillator** in quantum mechanics.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/StatisticalMechanics/CanonicalEnsemble/TwoState.lean)
+[💻](https://live.physlean.com/#url=https%3A%2F%2Fraw.githubusercontent.com%2FHEPLean%2FPhysLean%2Frefs%2Fheads%2Fmaster%2FPhysLean%2FStatisticalMechanics%2FCanonicalEnsemble%2FTwoState.lean)
+The two state **canonical ensemble** in statistical mechanics.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/CondensedMatter/TightBindingChain/Basic.lean)
+[💻](https://live.physlean.com/#url=https%3A%2F%2Fraw.githubusercontent.com%2FHEPLean%2FPhysLean%2Frefs%2Fheads%2Fmaster%2FPhysLean%2FCondensedMatter%2FTightBindingChain%2FBasic.lean)
+The **tight-binding model** in condensed matter physics
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Relativity/Special/TwinParadox/Basic.lean)
+[💻](https://live.physlean.com/#url=https%3A%2F%2Fraw.githubusercontent.com%2FHEPLean%2FPhysLean%2Frefs%2Fheads%2Fmaster%2FPhysLean%2FRelativity%2FSpecial%2FTwinParadox%2FBasic.lean)
+The **twin paradox** in special relativity.
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean)
+[💻](https://live.physlean.com/#url=https%3A%2F%2Fraw.githubusercontent.com%2FHEPLean%2FPhysLean%2Frefs%2Fheads%2Fmaster%2FPhysLean%2FParticles%2FBeyondTheStandardModel%2FTwoHDM%2FBasic.lean) The **two-Higgs doublet model** in particle physics
+- [🗂️](https://github.com/HEPLean/PhysLean/blob/master/PhysLean/QFT/PerturbationTheory/WickAlgebra/WicksTheorem.lean)
+[💻](https://live.physlean.com/#url=https%3A%2F%2Fraw.githubusercontent.com%2FHEPLean%2FPhysLean%2Frefs%2Fheads%2Fmaster%2FPhysLean%2FQFT%2FPerturbationTheory%2FWickAlgebra%2FWicksTheorem.lean)
+**Wick's theorem** in quantum field theory.
+
 
 ## Associated media and publications
 - [📄](https://arxiv.org/abs/2405.08863) Joseph Tooby-Smith,
 __HepLean: Digitalising high energy physics__, Computer Physics Communications, Volume 308,
 2025, 109457, ISSN 0010-4655, https://doi.org/10.1016/j.cpc.2024.109457. \[arXiv:2405.08863\]
 - [📄](https://arxiv.org/abs/2411.07667) Joseph Tooby-Smith, __Formalization of physics index notation in Lean 4__, arXiv:2411.07667
-- [💻](https://live.lean-lang.org/#code=import%20Mathlib.Tactic.Polyrith%20%0A%0Atheorem%20threeFamily%20(a%20b%20c%20%3A%20ℚ)%20(h%20%3A%20a%20%2B%20b%20%2B%20c%20%3D%200)%20(h3%20%3A%20a%20%5E%203%20%2B%20b%20%5E%203%20%2B%20c%20%5E%203%20%3D%200)%20%3A%20%0A%20%20%20%20a%20%3D%200%20∨%20b%20%3D%200%20∨%20c%20%3D%200%20%20%3A%3D%20by%20%0A%20%20have%20h1%20%3A%20c%20%3D%20-%20(a%20%2B%20b)%20%3A%3D%20by%20%0A%20%20%20%20linear_combination%20h%20%0A%20%20have%20h4%20%3A%20%203%20*%20a%20*%20b%20*%20c%20%3D%200%20%3A%3D%20by%20%0A%20%20%20%20rw%20%5B←%20h3%2C%20h1%5D%0A%20%20%20%20ring%20%0A%20%20simp%20at%20h4%20%0A%20%20exact%20or_assoc.mp%20h4%0A%20%20%0A) Example code snippet related to Anomaly cancellation conditions.
+- [📄](https://arxiv.org/abs/2505.07939) Joseph Tooby-Smith, __Digitalizing Wick's Theorem__, arXiv:2505.07939
+- [🎥](https://www.youtube.com/watch?v=U7Xf5p6jAUU&t=62s) Lean Together 2025: Joseph Tooby-Smith, Physics and Lean
 - [🎥](https://www.youtube.com/watch?v=W2cObnopqas) Seminar recording of "HepLean: Lean and high energy physics" by J. Tooby-Smith
 
 ### Papers referencing PhysLean
@@ -88,8 +120,3 @@ or
 - Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
 - Run `lake build`.
 - Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
-
-### Optional extras
-
-- [Lean Copilot](https://github.com/lean-dojo/LeanCopilot) and [LLMLean](https://github.com/cmu-l3/llmlean) allow for the use of large language models in Lean
-- [tryAtEachStep](https://github.com/dwrensha/tryAtEachStep) allows one to apply a tactic, e.g. `exact?` at each step of a lemma in a file to see if it completes the goal. This is useful for golfing proofs.

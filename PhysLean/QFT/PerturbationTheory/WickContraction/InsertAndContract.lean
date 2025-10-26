@@ -107,8 +107,8 @@ lemma insertAndContract_fstFieldOfContract_some_incl (φ : 𝓕.FieldOp) (φs : 
 lemma insertAndContract_none_getDual?_self (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
     (φsΛ : WickContraction φs.length) (i : Fin φs.length.succ) :
     (φsΛ ↩Λ φ i none).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm i) = none := by
-  simp only [Nat.succ_eq_add_one, insertAndContract, getDual?_congr, finCongr_apply, Fin.cast_trans,
-    Fin.cast_eq_self, Option.map_eq_none']
+  simp only [Nat.succ_eq_add_one, insertAndContract, getDual?_congr, finCongr_apply, Fin.cast_cast,
+    Fin.cast_eq_self, Option.map_eq_none_iff]
   simp
 
 lemma insertAndContract_isSome_getDual?_self (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
@@ -155,7 +155,7 @@ lemma insertAndContract_some_succAbove_getDual?_eq_option (φ : 𝓕.FieldOp) (�
     (φsΛ ↩Λ φ i (some k)).getDual? (Fin.cast (insertIdx_length_fin φ φs i).symm
     (i.succAbove j)) = Option.map (Fin.cast (insertIdx_length_fin φ φs i).symm ∘ i.succAbove)
     (φsΛ.getDual? j) := by
-  simp only [Nat.succ_eq_add_one, insertAndContract, getDual?_congr, finCongr_apply, Fin.cast_trans,
+  simp only [Nat.succ_eq_add_one, insertAndContract, getDual?_congr, finCongr_apply, Fin.cast_cast,
     Fin.cast_eq_self, ne_eq, hkj, not_false_eq_true, insertAndContractNat_some_getDual?_of_neq,
     Option.map_map]
   rfl
@@ -252,7 +252,7 @@ lemma self_not_mem_insertAndContractLiftFinset (φ : 𝓕.FieldOp) {φs : List �
     (i : Fin φs.length.succ) (a : Finset (Fin φs.length)) :
     Fin.cast (insertIdx_length_fin φ φs i).symm i ∉ insertAndContractLiftFinset φ i a := by
   simp only [Nat.succ_eq_add_one, insertAndContractLiftFinset, Finset.mem_map_equiv, finCongr_symm,
-    finCongr_apply, Fin.cast_trans, Fin.cast_eq_self]
+    finCongr_apply, Fin.cast_cast, Fin.cast_eq_self]
   simp only [Finset.mem_map, Fin.succAboveEmb_apply, not_exists, not_and]
   intro x
   exact fun a => Fin.succAbove_ne i x
@@ -262,7 +262,7 @@ lemma succAbove_mem_insertAndContractLiftFinset (φ : 𝓕.FieldOp) {φs : List 
     Fin.cast (insertIdx_length_fin φ φs i).symm (i.succAbove j)
     ∈ insertAndContractLiftFinset φ i a ↔ j ∈ a := by
   simp only [insertAndContractLiftFinset, Finset.mem_map_equiv, finCongr_symm, finCongr_apply,
-    Fin.cast_trans, Fin.cast_eq_self]
+    Fin.cast_cast, Fin.cast_eq_self]
   simp only [Finset.mem_map, Fin.succAboveEmb_apply]
   apply Iff.intro
   · intro h
