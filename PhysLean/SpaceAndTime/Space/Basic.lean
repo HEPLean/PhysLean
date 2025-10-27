@@ -282,6 +282,15 @@ noncomputable def toDirection {d : ℕ} (x : Space d) (h : x ≠ 0) : Direction 
   unit := (‖x‖⁻¹) • (x)
   norm := norm_smul_inv_norm h
 
+@[simp]
+lemma direction_unit_sq_sum {d} (s : Direction d) :
+    ∑ i : Fin d, (s.unit i) ^ 2 = 1 := by
+  trans (‖s.unit‖) ^ 2
+  · rw [PiLp.norm_sq_eq_of_L2]
+    simp
+  · rw [s.norm]
+    simp
+
 /-!
 
 ## One equiv

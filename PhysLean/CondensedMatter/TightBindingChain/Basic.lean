@@ -68,7 +68,6 @@ with periodic boundary conditions.
 
 -/
 
-
 namespace CondensedMatter
 
 /-!
