@@ -30,6 +30,7 @@ This linter may need running a number of times.
   style errors e.g. too long lines or wrong indentations, as well as checking if all necessary `simp` lemmas are of the form `simp only [...]`. For this linter
   to work properly you must first commit your changes to github.
 - `lake exe style_lint` : A linter which only does step 1 of `lake exe lint_all`.
+- `lake exe runPhysLeanLinters` : A linter which only does step 6 of `lake exe lint_all`.
 - `lake exe module_doc_lint` : Checks that module documentation is laid out according to a set standard. This does not check any file in the list `./scripts/MetaPrograms/module_doc_no_lint.txt`. Slowly we will empty this list of files.
 - `lake exe spelling` : Checks the spelling of words in PhysLean against a given list
   of correctly spelled words which can be found in `./scripts/MetaPrograms/spellingWords.txt`
