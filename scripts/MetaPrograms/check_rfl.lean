@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 Authors: Joseph Tooby-Smith
 -/
 import Batteries.Lean.HashSet
+import Batteries.Data.List.Basic
 import Lean
 import PhysLean.Meta.AllFilePaths
 import PhysLean.Meta.TransverseTactics
@@ -87,7 +88,7 @@ unsafe def processAllFiles : IO Unit := do
   let tasks := files.map fun f =>
     ((IO.asTask $ IO.Process.run
     {cmd := "lake", args := #["exe", "check_rfl", f.toString]}), f)
-  tasks.toList.enum.forM fun (n, (t, path)) => do
+  (tasks.toList.indexesValues (fun _ => true)).forM fun (n, (t, path)) => do
     println! "{n} of {tasks.toList.length}: {path}"
     let tn ← IO.wait (← t)
     match tn with

@@ -93,21 +93,13 @@ lemma contrMetric_eq_fromConstPair : η = fromConstPair Lorentz.contrMetric := b
   rw [Lorentz.contrMetric]
   rfl
 
-lemma leftMetric_eq_fromConstPair : εL = fromConstPair Fermion.leftMetric := by
-  rw [Fermion.leftMetric]
-  rfl
+lemma leftMetric_eq_fromConstPair : εL = fromConstPair Fermion.leftMetric := rfl
 
-lemma rightMetric_eq_fromConstPair : εR = fromConstPair Fermion.rightMetric := by
-  rw [Fermion.rightMetric]
-  rfl
+lemma rightMetric_eq_fromConstPair : εR = fromConstPair Fermion.rightMetric := rfl
 
-lemma altLeftMetric_eq_fromConstPair : εL' = fromConstPair Fermion.altLeftMetric := by
-  rw [Fermion.altLeftMetric]
-  rfl
+lemma altLeftMetric_eq_fromConstPair : εL' = fromConstPair Fermion.altLeftMetric := rfl
 
-lemma altRightMetric_eq_fromConstPair : εR' = fromConstPair Fermion.altRightMetric := by
-  rw [Fermion.altRightMetric]
-  rfl
+lemma altRightMetric_eq_fromConstPair : εR' = fromConstPair Fermion.altRightMetric := rfl
 
 /-!
 

@@ -60,7 +60,7 @@ lemma exp_transpose_of_mem_algebra (A : lorentzAlgebra) :
       inv_val := minkowskiMatrix.sq }
   rw [show -(η * A.1 * η) = η * (-A.1) * η by noncomm_ring]
   erw [NormedSpace.exp_units_conj ℝ P_gl (-A.1)]
-  simp [P_gl]
+  rfl
 
 /--
 The exponential of an element of the Lorentz algebra is a member of the Lorentz group.
@@ -90,8 +90,7 @@ instance [UniformSpace 𝕂] : UniformSpace (Matrix m n 𝕂) := by unfold Matri
 
 /-- The trace of a matrix equals the sum of its diagonal elements. -/
 lemma trace_eq_sum_diagonal (A : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) ℝ) :
-    trace A = ∑ i, A i i := by
-  simp only [trace, diag_apply]
+    trace A = ∑ i, A i i := rfl
 
 /-- The trace of any element of the Lorentz algebra is zero. -/
 lemma trace_of_mem_is_zero (A : lorentzAlgebra) : trace A.1 = 0 := by
