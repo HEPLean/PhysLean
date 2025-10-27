@@ -7,7 +7,7 @@ import PhysLean.Relativity.Tensors.Contraction.Basic
 import PhysLean.Relativity.Tensors.Product
 /-!
 
-# The interfaction of contractions and products
+# The interaction of contractions and products
 
 -/
 

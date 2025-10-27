@@ -98,7 +98,7 @@ lemma isAnomalyFree_map (f : 𝓩 →+* 𝓩1) {c : ChargeSpectrum 𝓩}
     · simp [ChargeSpectrum.map, h1.2]
   · rw [Quanta.LinearAnomalyCancellation] at h2
     simp [QM, ← map_add, h2, Quanta.reduce, Quanta.LinearAnomalyCancellation,
-      FiveQuanta.anomalyCoefficent_of_reduce, TenQuanta.anomalyCoefficent_of_reduce]
+      FiveQuanta.anomalyCoefficient_of_reduce, TenQuanta.anomalyCoefficient_of_reduce]
 
 end map
 

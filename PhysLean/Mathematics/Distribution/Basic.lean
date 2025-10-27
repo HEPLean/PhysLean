@@ -165,9 +165,9 @@ variable [NormedSpace ℝ E] [NormedSpace ℝ F] [NormedSpace 𝕜 F] [SMulCommC
 /-- The Fréchet derivative of a distribution.
 
 Informally, for a distribution `u : E →d[𝕜] F`,
-the Fréchet derivative `fderiv u x v` corresponds to the dervative of `u` at the
+the Fréchet derivative `fderiv u x v` corresponds to the derivative of `u` at the
 point `x` in the direction `v`. For example, if `F = ℝ³`
-then `fderiv u x v` is a vector in `ℝ³` corrsponding to
+then `fderiv u x v` is a vector in `ℝ³` corresponding to
 `(v₁ ∂u₁/∂x₁ + v₂ ∂u₁/∂x₂ + v₃ ∂u₁/∂x₃, v₁ ∂u₂/∂x₁ + v₂ ∂u₂/∂x₂ + v₃ ∂u₂/∂x₃,...)`.
 
 Formally, for a distribution `u : E →d[𝕜] F`, this is actually defined
@@ -276,7 +276,7 @@ end Complex
 We now define specific distributions, which are used throughout physics. In particular, we define:
 - The constant distribution.
 - The dirac delta distribution.
-- The heaviside step funciton.
+- The heaviside step function.
 
 -/
 
@@ -380,7 +380,7 @@ end constant
 ### E.2. The dirac delta distribution
 
 The dirac delta distribution centered at `a : E` is the distribution which takes
-`η` to `η a`. We also define `diracDelta'` whick takes in an element of `v` of `F` and
+`η` to `η a`. We also define `diracDelta'` which takes in an element of `v` of `F` and
 outputs `η a • v`.
 
 -/
@@ -398,7 +398,7 @@ def diracDelta (a : E) : E →d[𝕜] 𝕜 :=
     diracDelta 𝕜 a η = η a :=
   rfl
 
-/-- Dirac delta in a given direction `v : F`. `diracDelta' 𝕜 a v` takesn in a test function
+/-- Dirac delta in a given direction `v : F`. `diracDelta' 𝕜 a v` takes in a test function
 `η : 𝓢(E, 𝕜)` and outputs `η a • v`. Intuitively this is an infinitely intense vector field
 at a single point `a` pointing at the direction `v`. -/
 def diracDelta' (a : E) (v : F) : E →d[𝕜] F :=

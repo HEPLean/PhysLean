@@ -15,6 +15,6 @@ in `d`-dimensional space, in an arbitrary (but given) set of units.
 -/
 open Dimension
 
-/-- Momentum in `d`-dimensional space in an arbitary, but given, set of units.
+/-- Momentum in `d`-dimensional space in an arbitrary, but given, set of units.
   In `(3+1)d` space time this corresponds to `3`-momentum not `4`-momentum. -/
 abbrev Momentum (d : ℕ := 3) : Type := WithDim (M𝓭 * L𝓭 * T𝓭⁻¹) (Fin d → ℝ)

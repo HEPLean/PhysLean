@@ -306,7 +306,7 @@ def harmonicOscillator : Note where
     .p "Note that we do not give every definition and theorem which is part of
       the formalization.
      Our goal is give key aspects, in such a way that we hope this note will be useful
-     to newcomers to Lean or those simply intrested in learning about the
+     to newcomers to Lean or those simply interested in learning about the
      quantum harmonic oscillator.",
     .h1 "Hilbert Space",
     .name ``QuantumMechanics.OneDimension.HilbertSpace .complete,
@@ -380,7 +380,7 @@ def tensors : Note where
     .warning "This note is a work in progress. (5th March 2025)",
     .h1 "Introduction",
     .p "This note is related to: https://arxiv.org/pdf/2411.07667, and concerns the
-      implmentation of tensors and index notation into PhysLean, and
+      implementation of tensors and index notation into PhysLean, and
       its mathematical structure.",
     .p  "This note is not intended to be a first-introduction to tensors and index notation.",
     .h1 "Tensor Species",

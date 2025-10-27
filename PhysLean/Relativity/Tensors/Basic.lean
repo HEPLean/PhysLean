@@ -18,7 +18,7 @@ open OverColor
 
 variable {k : Type} [CommRing k] {C G : Type} [Group G] (S : TensorSpecies k C G)
 
-/-- The tensors associated with a list of indicies of a given color
+/-- The tensors associated with a list of indices of a given color
   `c : Fin n → C`. -/
 noncomputable abbrev Tensor {n : ℕ} (c : Fin n → C) : Type := (S.F.obj (OverColor.mk c))
 
@@ -90,7 +90,7 @@ lemma map_map_apply {n : ℕ} {c : Fin n → C} (c1 c2 : C) (p : Pure S c) (i : 
     S.FD.map (f ≫ g) (p i) := by
   simp only [Functor.map_comp, ConcreteCategory.comp_apply]
 
-/-- The tensor correpsonding to a pure tensor. -/
+/-- The tensor corresponding to a pure tensor. -/
 noncomputable def toTensor {n : ℕ} {c : Fin n → C} (p : Pure S c) : S.Tensor c :=
   PiTensorProduct.tprod k p
 
@@ -188,7 +188,7 @@ lemma μ_toTensor_tmul_toTensor {n1 n2} {c : Fin n1 → C} {c1 : Fin n2 → C}
 -/
 
 /-- Given an element `b` of `ComponentIdx c` and a pure tensor `p` then
-  `component p b` is the element of the ring `k` correpsonding to
+  `component p b` is the element of the ring `k` corresponding to
   the component of `p` in the direction `b`.
 
   For example, if `p = v ⊗ₜ w` and `b = ⟨0, 1⟩` then `component p b = v⁰ ⊗ₜ w¹`. -/
@@ -581,7 +581,7 @@ lemma PermCond.ofHom {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
   · intro x
     simpa [OverColor.mk_hom] using Hom.toEquiv_symm_apply σ x
 
-/-- The composition of two maps satisfying `PermCond` also satifies the `PermCond`. -/
+/-- The composition of two maps satisfying `PermCond` also satisfies the `PermCond`. -/
 lemma PermCond.comp {n n1 n2 : ℕ} {c : Fin n → C} {c1 : Fin n1 → C}
     {c2 : Fin n2 → C} {σ : Fin n1 → Fin n} {σ2 : Fin n2 → Fin n1}
     (h : PermCond c c1 σ) (h2 : PermCond c1 c2 σ2) :
@@ -592,8 +592,8 @@ lemma PermCond.comp {n n1 n2 : ℕ} {c : Fin n → C} {c1 : Fin n1 → C}
     simp only [Function.comp_apply]
     rw [h.2, h2.2]
 
-TODO "6VZ3C" "Prove that if `σ` satifies `PermCond c c1 σ` then `PermCond.inv σ h`
-  satifies `PermCond c1 c (PermCond.inv σ h)`."
+TODO "6VZ3C" "Prove that if `σ` satisfies `PermCond c c1 σ` then `PermCond.inv σ h`
+  satisfies `PermCond c1 c (PermCond.inv σ h)`."
 
 lemma fin_cast_permCond (n n1 : ℕ) {c : Fin n → C} (h : n1 = n) :
     PermCond c (c ∘ Fin.cast h) (Fin.cast h) := by
@@ -608,7 +608,7 @@ lemma fin_cast_permCond (n n1 : ℕ) {c : Fin n → C} (h : n1 = n) :
 -/
 
 /-- Given a permutation `σ : Fin m → Fin n` of indices satisfying `PermCond` through `h`,
-  and a pure tensor `p`, `permP σ h p` is the pure tensor permuted accordinge to `σ`.
+  and a pure tensor `p`, `permP σ h p` is the pure tensor permuted according to `σ`.
 
   For example if `m = n = 2` and `σ = ![1, 0]`, and `p = v ⊗ₜ w` then
   `permP σ _ p = w ⊗ₜ v`. -/
@@ -632,7 +632,7 @@ lemma Pure.permP_basisVector {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
   simp [h.preserve_color]
 
 /-- Given a permutation `σ : Fin m → Fin n` of indices satisfying `PermCond` through `h`,
-  and a tensor `t`, `permT σ h t` is the tensor tensor permuted accordinge to `σ`. -/
+  and a tensor `t`, `permT σ h t` is the tensor tensor permuted according to `σ`. -/
 noncomputable def permT {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
     (σ : Fin m → Fin n) (h : PermCond c c1 σ) : S.Tensor c →ₗ[k] S.Tensor c1 where
   toFun t := (ConcreteCategory.hom (S.F.map h.toHom).hom) t

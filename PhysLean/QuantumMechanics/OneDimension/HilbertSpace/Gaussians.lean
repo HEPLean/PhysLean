@@ -6,7 +6,7 @@ Authors: Joseph Tooby-Smith
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 /-!
 
-# Guassians and the hilbert space
+# Gaussians and the hilbert space
 
 -/
 

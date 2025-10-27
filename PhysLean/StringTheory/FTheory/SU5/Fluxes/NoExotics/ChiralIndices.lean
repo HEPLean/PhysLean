@@ -31,11 +31,11 @@ we state them for the representation `D = (bar 3,1)_{1/3}` only:
 
 ## iii. Table of contents
 
-- A. Positivity of the chirial indices given no exotics
+- A. Positivity of the chiral indices given no exotics
 - B. Chiral indices sum to three given no exotics
 - C. Each chiral index is less then or equal to three given no exotics
 - D. Each chiral index is 0, 1, 2, or 3 given no exotics
-- E. Sum of a subset of chirial indices is less then or equal to 3 given no exotics
+- E. Sum of a subset of chiral indices is less then or equal to 3 given no exotics
 
 ## iv. References
 
@@ -48,7 +48,7 @@ namespace SU5
 
 /-!
 
-## A. Positivity of the chirial indices given no exotics
+## A. Positivity of the chiral indices given no exotics
 
 The chiral indices of all the SM representations are non-negative if there are no chiral exotics.
 
@@ -460,7 +460,7 @@ lemma FluxesTen.mem_chiralIndicesOfE_mem_of_noExotics (F : FluxesTen)
 
 /-!
 
-## E. Sum of a subset of chirial indices is less then or equal to 3 given no exotics
+## E. Sum of a subset of chiral indices is less then or equal to 3 given no exotics
 
 -/
 

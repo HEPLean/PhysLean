@@ -17,7 +17,7 @@ In this module, given a configuration of the sections in codimension one
 fiber `CodimensionOneConfig`, we find the multiset of all
 `ℤ`-valued charges which have values allowed by the configuration,
 permit a top Yukawa coupling, are not phenomenologically constrained,
-and do not regenerate dangerous couplings with one insertion of a Yuakawa coupling.
+and do not regenerate dangerous couplings with one insertion of a Yukawa coupling.
 
 The multiset of charge spectrum is called `viableCharges`.
 The main proof that `viableCharges` contains all such charges is
@@ -522,7 +522,7 @@ couplings, or is already in `viableCharges I`.
 
 /-- Inserting a `q5` charge into an element of `viableCharges I` either
 1. produces another element of `viableCharges I`, or
-2. produce a charge which is phenomenolically constrained or regenerates dangourous couplings
+2. produce a charge which is phenomenologically constrained or regenerates dangerous couplings
   with the Yukawas. -/
 lemma isPhenoClosedQ5_viableCharges : (I : CodimensionOneConfig) →
     IsPhenoClosedQ5 I.allowedBarFiveCharges (viableCharges I) := by
@@ -539,7 +539,7 @@ lemma isPhenoClosedQ5_viableCharges : (I : CodimensionOneConfig) →
 
 /-- Inserting a `q10` charge into an element of `viableCharges I` either
 1. produces another element of `viableCharges I`, or
-2. produce a charge which is phenomenolically constrained or regenerates dangourous couplings
+2. produce a charge which is phenomenologically constrained or regenerates dangerous couplings
   with the Yukawas. -/
 lemma isPhenoClosedQ10_viableCharges : (I : CodimensionOneConfig) →
     IsPhenoClosedQ10 I.allowedTenCharges (viableCharges I) := by

@@ -190,7 +190,7 @@ lemma normalOrderF_mul_anPartF (φ : 𝓕.FieldOp) (a : FieldOpFreeAlgebra 𝓕)
 
 /-!
 
-## Normal ordering for an adjacent creation and annihliation state
+## Normal ordering for an adjacent creation and annihilation state
 
 The main result of this section is `normalOrderF_superCommuteF_annihilate_create`.
 -/
@@ -392,7 +392,7 @@ lemma normalOrderF_ofFieldOpF_mul_ofFieldOpF (φ φ' : 𝓕.FieldOp) :
 
 /-!
 
-## Normal order with super commutors
+## Normal order with super commutators
 
 -/
 
@@ -527,7 +527,7 @@ lemma normalOrderF_superCommuteF_ofCrAnListF_annihilate_annihilate_ofCrAnListF
 
 /-!
 
-## Super commututators involving a normal order.
+## Super commutators involving a normal order.
 
 -/
 

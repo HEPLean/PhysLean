@@ -34,12 +34,12 @@ properties thereof.
   - A.3. Decidable equality instance
   - A.4. Map to the underlying `ChargeSpectrum`
 - B. The reduction of a `Quanta`
-- C. Lifiting a charge spectrum to quanta with no exotics or zero fluxes
+- C. Lifting a charge spectrum to quanta with no exotics or zero fluxes
   - C.1. Simplification of membership in the liftCharge multiset
   - C.2. Charge spectrum of a lifted quanta
 - D. Anomaly cancellation conditions
-  - D.1. The anomaly coefficent of Hd
-  - D.2. The anomaly coefficent of Hu
+  - D.1. The anomaly coefficient of Hd
+  - D.2. The anomaly coefficient of Hu
   - D.3. The anomaly cancellation condition propositions
     - D.3.1. The propositions are decidable
 
@@ -61,7 +61,7 @@ variable {I : CodimensionOneConfig}
 -/
 
 /-- The quanta associated with the representations in a `SU(5) x U(1)` F-theory.
-  This contains the value of the charges and the flux intergers `(M, N)` for the
+  This contains the value of the charges and the flux integers `(M, N)` for the
   5-bar matter content and the 10d matter content, and the charges of the `Hd` and
   `Hu` particles (there values of `(M,N)` are not included as they are
   forced to be `(0, 1)` and `(0, -1)` respectively. -/
@@ -140,7 +140,7 @@ lemma toCharges_qHu [DecidableEq 𝓩] (x : Quanta 𝓩) : (toCharges x).qHu = x
 -/
 
 /-- The reduce of `Quanta` is a new `Quanta` with all the fluxes corresponding to the same
-  charge (i.e. represenation) added together. -/
+  charge (i.e. representation) added together. -/
 def reduce [DecidableEq 𝓩] (x : Quanta 𝓩) : Quanta 𝓩 where
   qHd := x.qHd
   qHu := x.qHu
@@ -149,7 +149,7 @@ def reduce [DecidableEq 𝓩] (x : Quanta 𝓩) : Quanta 𝓩 where
 
 /-!
 
-## C. Lifiting a charge spectrum to quanta with no exotics or zero fluxes
+## C. Lifting a charge spectrum to quanta with no exotics or zero fluxes
 
 -/
 
@@ -209,9 +209,9 @@ lemma toCharges_of_mem_liftCharge [DecidableEq 𝓩] {c : ChargeSpectrum 𝓩}
 There are two anomaly cancellation conditions in the SU(5)×U(1) model which involve the
 `U(1)` charges. These are
 
-- `∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar represenations and the second
+- `∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar representations and the second
   is over all 10d representations.
-- `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar represenations and the
+- `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar representations and the
   second is over all 10d representations.
 
 According to arXiv:1401.5084 it is unclear whether this second condition should necessarily be
@@ -221,43 +221,43 @@ imposed.
 
 /-!
 
-### D.1. The anomaly coefficent of Hd
+### D.1. The anomaly coefficient of Hd
 
 -/
 
-/-- The pair of anomaly cancellation coefficents associated with the `Hd` particle. -/
-def HdAnomalyCoefficent [CommRing 𝓩] (qHd : Option 𝓩) : 𝓩 × 𝓩 :=
+/-- The pair of anomaly cancellation coefficients associated with the `Hd` particle. -/
+def HdAnomalyCoefficient [CommRing 𝓩] (qHd : Option 𝓩) : 𝓩 × 𝓩 :=
   match qHd with
   | none => (0, 0)
   | some qHd => (qHd, qHd ^ 2)
 
 @[simp]
-lemma HdAnomalyCoefficent_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
+lemma HdAnomalyCoefficient_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (qHd : Option 𝓩) :
-    HdAnomalyCoefficent (qHd.map f) = (f.prodMap f) (HdAnomalyCoefficent qHd) := by
+    HdAnomalyCoefficient (qHd.map f) = (f.prodMap f) (HdAnomalyCoefficient qHd) := by
   match qHd with
-  | none => simp [HdAnomalyCoefficent]
-  | some qHd => simp [HdAnomalyCoefficent]
+  | none => simp [HdAnomalyCoefficient]
+  | some qHd => simp [HdAnomalyCoefficient]
 
 /-!
 
-### D.2. The anomaly coefficent of Hu
+### D.2. The anomaly coefficient of Hu
 
 -/
 
-/-- The pair of anomaly cancellation coefficents associated with the `Hu` particle. -/
-def HuAnomalyCoefficent [CommRing 𝓩] (qHu : Option 𝓩) : 𝓩 × 𝓩 :=
+/-- The pair of anomaly cancellation coefficients associated with the `Hu` particle. -/
+def HuAnomalyCoefficient [CommRing 𝓩] (qHu : Option 𝓩) : 𝓩 × 𝓩 :=
   match qHu with
   | none => (0, 0)
   | some qHu => (-qHu, -qHu ^ 2)
 
 @[simp]
-lemma HuAnomalyCoefficent_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
+lemma HuAnomalyCoefficient_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩1]
     (f : 𝓩 →+* 𝓩1) (qHu : Option 𝓩) :
-    HuAnomalyCoefficent (qHu.map f) = (f.prodMap f) (HuAnomalyCoefficent qHu) := by
+    HuAnomalyCoefficient (qHu.map f) = (f.prodMap f) (HuAnomalyCoefficient qHu) := by
   match qHu with
-  | none => simp [HuAnomalyCoefficent]
-  | some qHu => simp [HuAnomalyCoefficent]
+  | none => simp [HuAnomalyCoefficient]
+  | some qHu => simp [HuAnomalyCoefficient]
 
 /-!
 
@@ -266,20 +266,20 @@ lemma HuAnomalyCoefficent_map {𝓩 𝓩1 : Type} [CommRing 𝓩] [CommRing 𝓩
 -/
 
 /-- The linear anomaly cancellation condition, corresponding to
-`∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar represenations and the second
+`∑ᵢ qᵢ Nᵢ + ∑ₐ qₐ Nₐ = 0` where the first sum is over all 5-bar representations and the second
   is over all 10d representations. -/
 def LinearAnomalyCancellation [CommRing 𝓩] (Q : Quanta 𝓩) : Prop :=
-  (HdAnomalyCoefficent Q.qHd).1 + (HuAnomalyCoefficent Q.qHu).1 + Q.F.anomalyCoefficent.1 +
-  Q.T.anomalyCoefficent.1 = 0
+  (HdAnomalyCoefficient Q.qHd).1 + (HuAnomalyCoefficient Q.qHu).1 + Q.F.anomalyCoefficient.1 +
+  Q.T.anomalyCoefficient.1 = 0
 
 /-- The quartic anomaly cancellation condition, corresponding to
-`∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar represenations and the
+`∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar representations and the
   second is over all 10d representations.
 -/
 def QuarticAnomalyCancellation [CommRing 𝓩] (Q : Quanta 𝓩) :
     Prop :=
-  (HdAnomalyCoefficent Q.qHd).2 + (HuAnomalyCoefficent Q.qHu).2 + Q.F.anomalyCoefficent.2 +
-    Q.T.anomalyCoefficent.2 = 0
+  (HdAnomalyCoefficient Q.qHd).2 + (HuAnomalyCoefficient Q.qHu).2 + Q.F.anomalyCoefficient.2 +
+    Q.T.anomalyCoefficient.2 = 0
 
 /-!
 
@@ -288,12 +288,12 @@ def QuarticAnomalyCancellation [CommRing 𝓩] (Q : Quanta 𝓩) :
 -/
 
 instance [CommRing 𝓩] [DecidableEq 𝓩] (Q : Quanta 𝓩) : Decidable Q.LinearAnomalyCancellation :=
-    inferInstanceAs (Decidable ((HdAnomalyCoefficent Q.qHd).1 +
-    (HuAnomalyCoefficent Q.qHu).1 + Q.F.anomalyCoefficent.1 + Q.T.anomalyCoefficent.1 = 0))
+    inferInstanceAs (Decidable ((HdAnomalyCoefficient Q.qHd).1 +
+    (HuAnomalyCoefficient Q.qHu).1 + Q.F.anomalyCoefficient.1 + Q.T.anomalyCoefficient.1 = 0))
 
 instance [CommRing 𝓩] [DecidableEq 𝓩] (Q : Quanta 𝓩) : Decidable Q.QuarticAnomalyCancellation :=
-    inferInstanceAs (Decidable ((HdAnomalyCoefficent Q.qHd).2 +
-    (HuAnomalyCoefficent Q.qHu).2 + Q.F.anomalyCoefficent.2 + Q.T.anomalyCoefficent.2 = 0))
+    inferInstanceAs (Decidable ((HdAnomalyCoefficient Q.qHd).2 +
+    (HuAnomalyCoefficient Q.qHu).2 + Q.F.anomalyCoefficient.2 + Q.T.anomalyCoefficient.2 = 0))
 
 end Quanta
 

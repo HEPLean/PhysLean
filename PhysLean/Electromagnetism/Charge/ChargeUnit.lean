@@ -11,7 +11,7 @@ import PhysLean.Meta.TODO.Basic
 
 # The units of charge
 
-A unit of charge correspondings to a choice of translationally-invariant
+A unit of charge corresponding to a choice of translationally-invariant
 metric on the charge manifold (to be defined diffeomorphic to `ℝ`).
 Such a choice is (non-canonically) equivalent to a
 choice of positive real number. We define the type `ChargeUnit` to be equivalent to the

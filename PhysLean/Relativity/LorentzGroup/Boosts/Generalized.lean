@@ -9,8 +9,8 @@ import PhysLean.Meta.Linters.Sorry
 
 # Generalized Boosts
 
-This module defines a generalization of the tradiational boosts.
-They are define given two elocities `u` and `v`, as an input an take
+This module defines a generalization of the traditional boosts.
+They are define given two velocities `u` and `v`, as an input an take
 the velocity `u` to the velocity `v`.
 
 We show that these generalised boosts are Lorentz transformations,
@@ -461,7 +461,7 @@ The time component of a generalised boost is equal to
 A proof of this result can be found at the below link:
 https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/Lorentz.20group/near/523249684
 
-Note that the decleration of this semiformal result will be similar once
+Note that the declaration of this semiformal result will be similar once
 the TODO item `FXQ45` is completed.
 -/
 @[sorryful]

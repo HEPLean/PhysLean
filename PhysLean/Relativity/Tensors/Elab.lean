@@ -143,7 +143,7 @@ def getEvalPos (ind : List (TSyntax `indexExpr)) : TermElabM (List (ℕ × ℕ))
 /-- For list of `indexExpr` e.g. `[α, 3, β, α, 2, γ]`, `getContrPos`
   first removes all indices which are numbers (e.g. `[α, β, α, γ]`).
   It then outputs pairs `(a, b)` in `ℕ × ℕ` of positions of this list with `a < b`
-  such that the index at `a` is equal to the index at `b`. It checkes whether or not
+  such that the index at `a` is equal to the index at `b`. It checks whether or not
   an element is contracted more then once. -/
 def getContrPos (ind : List (TSyntax `indexExpr)) : TermElabM (List (ℕ × ℕ)) := do
   let indFilt : List (TSyntax `indexExpr) := ind.filter (fun x => ¬ indexExprIsNum x)
@@ -302,7 +302,7 @@ partial def getProdIndices (stx : Syntax) : TermElabM (List (TSyntax `indexExpr)
   | _ =>
     throwError "Unsupported tensor expression syntax in getIndicesProd: {stx}"
 
-/-- Returns the remaining indices of a tensor expression after contraction and evaulation.
+/-- Returns the remaining indices of a tensor expression after contraction and evaluation.
   Thus every index in the output of `getIndicesFull` is ident and there are no duplicates.
   Examples are:
 1. `T | α β 2 β` gives `[α]`
@@ -425,7 +425,7 @@ def equalTermMap (P : Term) (T1 T2 : Term) : TermElabM Term := do
 -/
 
 /-- Takes a syntax corresponding to a tensor expression and turns it into a
-  term correspondnig to a tensor tree. -/
+  term corresponding to a tensor tree. -/
 partial def syntaxFull (stx : Syntax) : TermElabM Term := do
   match stx with
   | `(tensorExpr| $T:term | $[$args]*) =>

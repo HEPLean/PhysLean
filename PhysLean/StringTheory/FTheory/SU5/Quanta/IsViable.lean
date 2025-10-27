@@ -13,7 +13,7 @@ import PhysLean.Particles.SuperSymmetry.SU5.ChargeSpectrum.ZMod
 
 We say a term of a type `Quanta` is viable
   if it satisfies the following properties:
-- It has a `Hd`, `Hu` and at leat one matter particle in the 5 and 10 representation.
+- It has a `Hd`, `Hu` and at least one matter particle in the 5 and 10 representation.
 - It has no exotic chiral particles.
 - It leads to a top Yukawa coupling.
 - It does not lead to a pheno constraining terms.
@@ -185,7 +185,7 @@ lemma isViable_iff_filter (x : Quanta) :
 
 ## B. The multiset of viable quanta
 
-We find all the viable quanta. This can be evalluated with
+We find all the viable quanta. This can be evaluated with
 
 ```
   ((((viableCharges .same ∪ viableCharges .nearestNeighbor ∪
@@ -195,7 +195,7 @@ We find all the viable quanta. This can be evalluated with
 
 -/
 
-/-- Given a `CodimensionOneConfig` the `Quanta` which statisfy the condition `IsViable`. -/
+/-- Given a `CodimensionOneConfig` the `Quanta` which satisfy the condition `IsViable`. -/
 def viableElems : Multiset Quanta :=
   {⟨some 2, some (-2), {(-1, ⟨3, -2⟩), (-3, ⟨0, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,
   ⟨some 2, some (-2), {(-1, ⟨3, -2⟩), (-3, ⟨0, 2⟩)}, {(-1, ⟨3, 0⟩)}⟩,

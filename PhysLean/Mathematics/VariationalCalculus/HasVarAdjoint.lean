@@ -41,7 +41,7 @@ The canonical example is the function `F = deriv` that has adjoint `F' = - deriv
 
 This notion of adjoint allows us to do formally variational calculus as often encountered in physics
 textbooks. In mathematical literature, the adjoint is often defined for unbounded operators, but
-such formal treatement is unnecessarily complicated for physics applications.
+such formal treatment is unnecessarily complicated for physics applications.
 -/
 structure HasVarAdjoint
     (F : (X → U) → (Y → V)) (F' : (Y → V) → (X → U)) where

@@ -40,7 +40,7 @@ We will show that these two multisets have the same elements.
   - C.1. Showing that `ofPotentialTerm` is a subset of `ofPotentialTerm'`
   - C.2. Showing that `ofPotentialTerm'` is a subset of `ofPotentialTerm`
   - C.3. Equivalence of elements of `ofPotentialTerm` and `ofPotentialTerm'`
-  - C.4. Induced monoticity of `ofPotentialTerm'`
+  - C.4. Induced monotonicity of `ofPotentialTerm'`
 
 ## iv. References
 
@@ -60,7 +60,7 @@ variable {𝓩 : Type} [AddCommGroup 𝓩]
 
 ## A. Charges of a potential term from field labels
 
-We first define `ofPotentialTerm`, and prover properites of it.
+We first define `ofPotentialTerm`, and prover properties of it.
 This is slow to compute in practice.
 
 -/
@@ -122,7 +122,7 @@ fields.
 /-- Given a charges `x : ChargeSpectrum` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term.
 
-  This is a more explicit form of `PotentialTerm`, which has the benifit that
+  This is a more explicit form of `PotentialTerm`, which has the benefit that
   it is quick with `decide`, but it is not defined based on more fundamental
   concepts, like `ofPotentialTerm` is. -/
 def ofPotentialTerm' (y : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
@@ -465,7 +465,7 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
 
 /-!
 
-### C.4. Induced monoticity of `ofPotentialTerm'`
+### C.4. Induced monotonicity of `ofPotentialTerm'`
 
 Due to the equivalence of elements of `ofPotentialTerm` and `ofPotentialTerm'`,
 we can now also show that `ofPotentialTerm'` is monotone in its charge spectrum argument.

@@ -32,7 +32,7 @@ TODO "HB6RR" "In the above documentation describe the notion of a type, and
 
 TODO "HB6VC" "Convert `Space` from an `abbrev` to a `def`."
 
-/-- The type `Space d` representes `d` dimensional Euclidean space.
+/-- The type `Space d` represents `d` dimensional Euclidean space.
   The default value of `d` is `3`. Thus `Space = Space 3`.
 
 -/

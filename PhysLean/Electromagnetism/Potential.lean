@@ -36,19 +36,19 @@ the field strength tensor, the kinetic energy, and the electric and magnetic fie
 - A. The electromagnetic potential
   - A.1. The action on the space-time derivatives
   - A.2. Differentiability
-  - A.3. Varitational adjoint derivative of component
+  - A.3. Variational adjoint derivative of component
   - A.4. Variational adjoint derivative of derivatives of the potential
-- B. The derivative tensor of the electricomagnetic potential
+- B. The derivative tensor of the electromagnetic potential
   - B.1. Equivariance of the derivative tensor
   - B.2. The elements of the derivative tensor in terms of the basis
 - C. The field strength tensor
-  - C.1. Basic equalitites
+  - C.1. Basic equalities
   - C.2. Elements of the field strength tensor in terms of basis
   - C.3. The field strength matrix
     - C.3.1. Differentiability of the field strength matrix
   - C.4. The antisymmetry of the field strength tensor
   - C.5. Equivariance of the field strength tensor
-  - C.6. Linearlity of the field strength tensor
+  - C.6. Linearity of the field strength tensor
 - E. The electric and magnetic fields
   - E.1. The scalar potential
   - E.2. The vector potential
@@ -79,7 +79,7 @@ We define the electromagnetic potential as a function from spacetime to
 contravariant Lorentz vectors, and prove some simple results about it.
 
 -/
-/-- The electricomagnetic potential is a tensor `A^μ`. -/
+/-- The electromagnetic potential is a tensor `A^μ`. -/
 noncomputable abbrev ElectromagneticPotential (d : ℕ := 3) :=
   SpaceTime d → Lorentz.Vector d
 
@@ -98,7 +98,7 @@ attribute [-simp] Nat.succ_eq_add_one
 
 Given a ElectromagneticPotential `A^μ`, we can consider its derivative `∂_μ A^ν`.
 Under a Lorentz transformation `Λ`, this transforms as
-`∂_ μ (fun x => Λ • A (Λ⁻¹ • x))`, we write an expression for this in terms of the tenosr.
+`∂_ μ (fun x => Λ • A (Λ⁻¹ • x))`, we write an expression for this in terms of the tensor.
 `∂_ ρ A (Λ⁻¹ • x) κ`.
 
 -/
@@ -181,7 +181,7 @@ lemma differentiable_component {d : ℕ}
 
 /-!
 
-### A.3. Varitational adjoint derivative of component
+### A.3. Variational adjoint derivative of component
 
 We find the variational adjoint derivative of the components of the potential.
 This will be used to find e.g. the variational derivative of the kinetic term,
@@ -244,7 +244,7 @@ lemma deriv_hasVarAdjDerivAt {d} (μ ν : Fin 1 ⊕ Fin d) (A : SpaceTime d → 
 
 /-!
 
-## B. The derivative tensor of the electricomagnetic potential
+## B. The derivative tensor of the electromagnetic potential
 
 We define the derivative as a tensor in `Lorentz.CoVector ⊗[ℝ] Lorentz.Vector` for the
 electromagnetic potential `A^μ`. We then prove that this tensor transforms correctly
@@ -395,7 +395,7 @@ noncomputable def toFieldStrength {d} (A : ElectromagneticPotential d) :
 
 /-!
 
-### C.1. Basic equalitites
+### C.1. Basic equalities
 
 -/
 
@@ -686,7 +686,7 @@ lemma fieldStrengthMatrix_equivariant {d} (A : ElectromagneticPotential d)
 
 /-!
 
-### C.6. Linearlity of the field strength tensor
+### C.6. Linearity of the field strength tensor
 
 We show that the field strength tensor is linear in the potential.
 

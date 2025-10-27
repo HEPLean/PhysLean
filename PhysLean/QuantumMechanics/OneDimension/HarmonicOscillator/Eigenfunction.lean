@@ -173,7 +173,7 @@ lemma eigenfunction_parity (n : ℕ) :
 
 /-!
 
-## Orthnormality
+## Orthonormality
 
 -/
 

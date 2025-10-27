@@ -13,7 +13,7 @@ import Mathlib.Tactic.DeriveFintype
 To each field and it's conjugate in the `SU(5)` SUSY GUT we assign a label,
 namely an element of the inductive type `FieldLabel`.
 
-This field label will be used to specify the representations of fiels present in
+This field label will be used to specify the representations of fields present in
 terms of the lagrangian.
 
 ## ii. Key results

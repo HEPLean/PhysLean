@@ -26,8 +26,8 @@ The Lorentz current density is often called the four-current and given then the 
 ## iii. Table of contents
 
 - A. The Lorentz Current Density
-- B. The underlying charge desnity
-- C. The underlying current desnity
+- B. The underlying charge
+- C. The underlying current density
 
 ## iv. References
 
@@ -58,7 +58,7 @@ namespace LorentzCurrentDensity
 
 /-!
 
-## B. The underlying charge desnity
+## B. The underlying charge
 
 -/
 
@@ -68,7 +68,7 @@ noncomputable def chargeDensity (J : LorentzCurrentDensity d) : Time → Space d
 
 /-!
 
-## C. The underlying current desnity
+## C. The underlying current density
 
 -/
 

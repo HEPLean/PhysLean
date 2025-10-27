@@ -8,7 +8,7 @@ import PhysLean.QFT.AnomalyCancellation.Basic
 
 # Anomaly cancellation conditions for the Standard Model with right-handed neutrinos
 
-This directory is relted to the anomaly cancellation conditions (ACCs) for the Standard Model with
+This directory is related to the anomaly cancellation conditions (ACCs) for the Standard Model with
 right-handed neutrinos (SMν).
 
 -/

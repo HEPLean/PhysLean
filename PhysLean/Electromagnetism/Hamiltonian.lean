@@ -67,7 +67,7 @@ This is equivalent to `∂ L/∂ (∂_0 A)`.
 -/
 
 /-- The canonical momentum associated with the lagrangian of an electromagnetic potential
-  and a Lorentz current desnity. -/
+  and a Lorentz current density. -/
 noncomputable def canonicalMomentum (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) :
     SpaceTime d → Lorentz.Vector d := fun x =>
@@ -172,7 +172,7 @@ lemma canonicalMomentum_eq {d} (A : ElectromagneticPotential d)
 -/
 
 /-- The Hamiltonian associated with an electromagnetic potential
-  and a Lorentz current desnity. -/
+  and a Lorentz current density. -/
 noncomputable def hamiltonian (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) (x : SpaceTime d) : ℝ :=
     ∑ μ, A.canonicalMomentum J x μ * ∂_ (Sum.inl 0) A x μ - lagrangian A J x

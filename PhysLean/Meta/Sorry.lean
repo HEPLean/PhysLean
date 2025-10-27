@@ -6,16 +6,54 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Meta.Linters.Sorry
 /-!
 
-# Meta results regarding `sorry` and `psuedo` attributions
+# Meta results regarding `sorry` and `pseudo` attributions
 
-Some of the code here is adapted from from the file: Lean.Util.CollectAxioms
+## i. Overview
+
+The purpose of this module is to collect all results which depend on the
+`sorryAx` axiom and the `Lean.ofReduceBool` axiom, and check that these results
+are correctly attributed `sorryful` and `pseudo` respectively.
+
+## ii. Key results
+
+- `sorryfulPseudoTest` : A test that all results attributed `sorryful` depend on the
+  `sorryAx` axiom and vice versa, and all results attributed `pseudo` depend on the
+  `Lean.ofReduceBool` axiom and vice versa.
+
+## iii. Table of contents
+
+- A. Collectings results depending on `sorryAx` and `Lean.ofReduceBool`
+  - A.1. The state information to be collected
+  - A.2. The monad for collecting names
+  - A.3. The collection function
+  - A.4. Given an array updating the state with all names depending on axioms
+  - A.5. Given an array getting all names depending on axioms
+  - A.6. Getting all names depending on axioms from all user defined constants
+- B. Collecting all names attributed `sorryful` and `pseudo`
+- C. Testing the `sorryful` and `pseudo` attributions are correctly applied
+
+## iv. References
+
+Some of the code here is adapted from from the file: `Lean.Util.CollectAxioms`
 copyright (c) 2020 Microsoft Corporation. Authored by Leonardo de Moura.
 
 -/
 open Lean
 namespace PhysLean
 
+/-!
+
+## A. Collectings results depending on `sorryAx` and `Lean.ofReduceBool`
+
+-/
+
 namespace CollectSorry
+
+/-!
+
+### A.1. The state information to be collected
+
+-/
 
 /-- A structure used for collecting names of results dependent on the
   `sorryAx` axiom and the `Lean.ofReduceBool` axiom. -/
@@ -27,9 +65,21 @@ structure State where
   /-- The names which depend on the `Lean.ofReduceBool` axiom. -/
   containsOfReduceBool : NameSet := {}
 
+/-!
+
+### A.2. The monad for collecting names
+
+-/
+
 /-- A monad used for collecting names of results dependent on the
   `sorryAx` axiom and the `Lean.ofReduceBool` axiom. -/
 abbrev M := ReaderT Environment $ StateM State
+
+/-!
+
+### A.3. The collection function
+
+-/
 
 /-- Given a `c : Name` updating the monad `M` based on which results which `c` uses
   depend on the `sorryAx` axiom and the `Lean.ofReduceBool` axiom. -/
@@ -37,7 +87,6 @@ partial def collect (c : Name) (parents : NameSet) : M Unit := do
   let collectExpr (e : Expr) : M Unit := e.getUsedConstants.forM fun x =>
     collect x (parents.insert c)
   let s ← get
-
   if s.containsSorry.contains c then
     modify fun s => { s with containsSorry := s.containsSorry.append parents}
   if s.containsOfReduceBool.contains c then
@@ -70,12 +119,24 @@ partial def collect (c : Name) (parents : NameSet) : M Unit := do
         collectExpr v.type *> v.ctors.forM fun x => collect x (parents.insert c)
     | none => pure ()
 
+/-!
+
+### A.4. Given an array updating the state with all names depending on axioms
+
+-/
+
 /-- Given a `c : Array Name` updating the monad `M` based on which results
   depend on the `sorryAx` axiom and the `Lean.ofReduceBool` axiom. -/
 partial def allSorryPseudo (c : Array Name) : M Unit := do
   c.forM fun x => collect x {}
 
 end CollectSorry
+
+/-!
+
+### A.5. Given an array getting all names depending on axioms
+
+-/
 
 /-- Given a `c : Array Name` the names of all results used to defined
   the results in `c` with the `sorryAx` axiom and the `Lean.ofReduceBool` axiom. -/
@@ -84,10 +145,22 @@ def collectSorryPseudo (c : Array Name) : CoreM (Array Name × Array Name) := do
   let (_, s) := ((CollectSorry.allSorryPseudo c).run env).run {}
   pure (s.containsSorry.toArray, s.containsOfReduceBool.toArray)
 
+/-!
+
+### A.6. Getting all names depending on axioms from all user defined constants
+
+-/
+
 /-- The axioms of a constant. -/
 def allWithSorryPseudo : CoreM (Array Name × Array Name) := do
   let x ← collectSorryPseudo ((← allUserConsts).map fun c => c.name)
   return x
+
+/-!
+
+## B. Collecting all names attributed `sorryful` and `pseudo`
+
+-/
 
 /-- All names which are attributed `sorryful`. -/
 unsafe def allSorryfulAttributed : CoreM (Array Name) := do
@@ -95,42 +168,48 @@ unsafe def allSorryfulAttributed : CoreM (Array Name) := do
   let sorryfulInfos := (sorryfulExtension.getState env)
   return sorryfulInfos.map fun info => info.name
 
-/-- All names which are attributed `psuedo`. -/
+/-- All names which are attributed `pseudo`. -/
 unsafe def allPseudoAttributed : CoreM (Array Name) := do
   let env ← getEnv
   let pseudoInfos := (pseudoExtension.getState env)
   return pseudoInfos.map fun info => info.name
 
+/-!
+
+## C. Testing the `sorryful` and `pseudo` attributions are correctly applied
+
+-/
+
 /-- Checks whether all results attributed `sorryful` depend on the ```sorryAx`
   axiom and vice versa. -/
 unsafe def sorryfulPseudoTest : MetaM Unit := do
-  let (allWithSorry, allWithPsuedo) ← PhysLean.allWithSorryPseudo
+  let (allWithSorry, allWithPseudo) ← PhysLean.allWithSorryPseudo
   let allConst ← PhysLean.allUserConsts
   let allConst := allConst.map fun c => c.name
   let allWithSorry := allWithSorry.filter fun n => n ∈ allConst
-  let allWithPsuedo := allWithPsuedo.filter fun n => n ∈ allConst
+  let allWithPseudo := allWithPseudo.filter fun n => n ∈ allConst
   let sorryAttributed ← allSorryfulAttributed
-  let psuedoAttributed ← allPseudoAttributed
+  let pseudoAttributed ← allPseudoAttributed
   let withSorryAxiomNotAttributed :=
     allWithSorry.filter fun x => ¬ x ∈ sorryAttributed
-  let withPsuedoAxiomNotAttributed :=
-    allWithPsuedo.filter fun x => ¬ x ∈ psuedoAttributed
+  let withPseudoAxiomNotAttributed :=
+    allWithPseudo.filter fun x => ¬ x ∈ pseudoAttributed
   let attributedNotWithSorryAxiom :=
     sorryAttributed.filter fun x => ¬ x ∈ allWithSorry
-  let attributedNotWithPsuedoAxiom :=
-    psuedoAttributed.filter fun x => ¬ x ∈ allWithPsuedo
+  let attributedNotWithPseudoAxiom :=
+    pseudoAttributed.filter fun x => ¬ x ∈ allWithPseudo
   if withSorryAxiomNotAttributed ≠ #[] ∨ attributedNotWithSorryAxiom ≠ #[]
-    ∨ withPsuedoAxiomNotAttributed ≠ #[] ∨ attributedNotWithPsuedoAxiom ≠ #[] then
+    ∨ withPseudoAxiomNotAttributed ≠ #[] ∨ attributedNotWithPseudoAxiom ≠ #[] then
     panic! s!"
-\x1b[31mThere is an error in the sorryful/psuedo attribution system:\x1b[0m
-  The following names depend on `sorryAx` but are not attributed `sorryful:
+\x1b[31mThere is an error in the sorryful/pseudo attribution system:\x1b[0m
+  The following names depend on `sorryAx` but are not attributed `sorryful`:
   {withSorryAxiomNotAttributed}
   The following names are attributed `sorryful` but do not depend on `sorryAx`:
   {attributedNotWithSorryAxiom}
-  The following names depend on `Lean.ofReduceBool` but are not attributed `psuedo`:
-  {withPsuedoAxiomNotAttributed}
-  The following names are attributed `psuedo` but do not depend on `Lean.ofReduceBool`:
-  {attributedNotWithPsuedoAxiom}"
-  println! "\x1b[32mSorryful/psuedo results are all correctly attributed test passed.\x1b[0m"
+  The following names depend on `Lean.ofReduceBool` but are not attributed `pseudo`:
+  {withPseudoAxiomNotAttributed}
+  The following names are attributed `pseudo` but do not depend on `Lean.ofReduceBool`:
+  {attributedNotWithPseudoAxiom}"
+  println! "\x1b[32mSorryful/pseudo results are all correctly attributed test passed.\x1b[0m"
 
 end PhysLean

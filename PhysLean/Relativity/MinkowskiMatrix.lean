@@ -30,7 +30,7 @@ This will be used to help define the Lorentz group in later files.
 ## iii. Table of contents
 
 - A. The Minkowski Matrix
-  - A.1. Basic equalitites
+  - A.1. Basic equalities
   - A.2. Notation for the Minkowski matrix
   - A.3. Components of the Minkowski matrix
   - A.4. Squaring the Minkowski matrix
@@ -72,7 +72,7 @@ variable {d : ℕ}
 
 /-!
 
-### A.1. Basic equalitites
+### A.1. Basic equalities
 
 We show some basic equalities for the Minkowski matrix.
 In particular, we show it can be expressed as a block matrix.
@@ -210,7 +210,7 @@ lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
 
 If `x` and `y` are reals then since `η μ μ` is non-zero for any `μ`, the equation
 `η μ μ * x = η μ μ * y` implies `x = y`. We prove this as a lemma.
-This is a useful part of the API but is not used oten.
+This is a useful part of the API but is not used often.
 
 -/
 

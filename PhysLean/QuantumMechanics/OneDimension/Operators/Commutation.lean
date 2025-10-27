@@ -22,7 +22,7 @@ open HilbertSpace SchwartzMap
 
 /-!
 
-## Commutation relation betwen position and momentum operators
+## Commutation relation between position and momentum operators
 
 -/
 

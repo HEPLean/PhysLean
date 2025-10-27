@@ -83,7 +83,7 @@ lemma fderiv_swap_time_space_coord
   rw [fderiv_comp']
   simp only [PiLp.proj_apply, ContinuousLinearMap.fderiv,
     ContinuousLinearMap.coe_comp', Function.comp_apply]
-  /- Start of differentiablity conditions. -/
+  /- Start of differentiability conditions. -/
   · fun_prop
   · apply fderiv_curry_differentiableAt_fst_comp_snd
     exact hf

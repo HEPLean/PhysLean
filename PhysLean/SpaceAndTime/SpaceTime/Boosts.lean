@@ -14,7 +14,7 @@ import PhysLean.Mathematics.FDerivCurry
 ## i. Overview
 
 In this module we consider boosts acting on points in space time,and recover simple
-formulea for such applications.
+formulae for such applications.
 
 Note that the material here currently assumes that the speed of light `c = 1`.
 

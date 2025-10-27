@@ -39,7 +39,7 @@ is directly related to Gauss's law and the Ampere law.
   - B.1. Variational gradient in terms of fderiv
   - B.2. Writing the variational gradient as a sums over double derivatives of the potential
   - B.3. Variational gradient as a sums over fieldStrengthMatrix
-  - B.4. Variational gradient in terms of the Guass's and Ampère laws
+  - B.4. Variational gradient in terms of the Gauss's and Ampère laws
   - B.5. Linearity properties of the variational gradient
   - B.6. HasVarGradientAt for the variational gradient
 
@@ -736,7 +736,7 @@ lemma gradKineticTerm_eq_fieldStrength {d} (A : ElectromagneticPotential d)
 
 /-!
 
-### B.4. Variational gradient in terms of the Guass's and Ampère laws
+### B.4. Variational gradient in terms of the Gauss's and Ampère laws
 
 We rewrite the variational gradient in terms of the electric and magnetic fields,
 explicitly relating it to Gauss's law and Ampère's law.

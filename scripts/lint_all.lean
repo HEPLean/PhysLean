@@ -28,16 +28,16 @@ def main (args : List String) : IO UInt32 := do
   let todoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "check_dup_tags"]}
   println! todoCheck.stdout
 
-  println! "\x1b[36m(5/7) Sorry and psuedo attribute linter \x1b[0m"
-  let sorrPsuedoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "sorry_lint"]}
-  println! sorrPsuedoCheck.stdout
+  println! "\x1b[36m(5/7) Sorry and pseudo attribute linter \x1b[0m"
+  let sorryPseudoCheck ← IO.Process.output {cmd := "lake", args := #["exe", "sorry_lint"]}
+  println! sorryPseudoCheck.stdout
 
   if ¬ "--fast" ∈ args then
     println! "\x1b[36m(6/7) Lean linter \x1b[0m"
     println! "\x1b[2mExpect this linter to take a while to run, it can be skipped with
       lake exe lint_all --fast"
     println! "You can manually perform this linter by placing `#lint` at the end of the files you have modified.\x1b[0m"
-    let leanCheck ← IO.Process.output {cmd := "lake", args := #["exe", "runLinter", "PhysLean"]}
+    let leanCheck ← IO.Process.output {cmd := "lake", args := #["exe", "runPhysLeanLinters", "PhysLean"]}
     println! leanCheck.stdout
 
     println! "\x1b[36m(7/7) Transitive imports \x1b[0m"

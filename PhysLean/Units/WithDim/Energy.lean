@@ -9,7 +9,7 @@ import PhysLean.Units.WithDim.Basic
 # Energy
 
 In this module we define the dimensionful type corresponding to an energy.
-We define specific insances of energy.
+We define specific instances of energy.
 
 -/
 open Dimension

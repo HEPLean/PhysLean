@@ -15,7 +15,7 @@ We define a predicate `IsPhenoConstrained` on `ChargeSpectrum 𝓩` which is tru
 spectrum allows any super-potential or Kähler potential term leading to proton decay or
 R-parity violation.
 
-We prove basic properties of this predicate including monoticity.
+We prove basic properties of this predicate including monotonicity.
 
 We define some variations of this result.
 
@@ -32,7 +32,7 @@ We define some variations of this result.
 
 ## iii. Table of contents
 
-- A. Phenomenologicall constrained charge spectra
+- A. Phenomenological constrained charge spectra
   - A.1. Decidability of `IsPhenoConstrained`
   - A.2. The empty charge spectrum is not pheno-constrained
   - A.3. Monotonicity of being pheno-constrained
@@ -65,7 +65,7 @@ variable {𝓩 : Type} [AddCommGroup 𝓩]
 
 /-!
 
-## A. Phenomenologicall constrained charge spectra
+## A. Phenomenological constrained charge spectra
 
 -/
 
@@ -164,7 +164,7 @@ pheno-constrained after adding a single charge to the `Q5` set.
 
 -/
 
-/-- The proposition which is true if the addition of a charge `q5` to a set of charegs `x` leads
+/-- The proposition which is true if the addition of a charge `q5` to a set of charge `x` leads
   `x` to being phenomenologically constrained. -/
 def IsPhenoConstrainedQ5 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q5 : 𝓩) : Prop :=
   x.AllowsTermQ5 q5 μ ∨ x.AllowsTermQ5 q5 β ∨ x.AllowsTermQ5 q5 Λ ∨ x.AllowsTermQ5 q5 W2 ∨
@@ -231,7 +231,7 @@ pheno-constrained after adding a single charge to the `Q10` set.
 
 -/
 
-/-- The proposition which is true if the addition of a charge `q10` to a set of charegs `x` leads
+/-- The proposition which is true if the addition of a charge `q10` to a set of charges `x` leads
   `x` to being phenomenologically constrained. -/
 def IsPhenoConstrainedQ10 [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (q10 : 𝓩) : Prop :=
   x.AllowsTermQ10 q10 μ ∨ x.AllowsTermQ10 q10 β ∨ x.AllowsTermQ10 q10 Λ ∨ x.AllowsTermQ10 q10 W2 ∨

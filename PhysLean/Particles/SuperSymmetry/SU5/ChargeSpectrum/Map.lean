@@ -25,7 +25,7 @@ There are some properties which are reflected under this mapping:
 - Not regenerating dangerous Yukawa terms at a given level.
 
 We define the preimage of this mapping within a subset `ofFinset S5 S10` of `Charges 𝓩` in
-a computationaly efficient way.
+a computationally efficient way.
 
 ## ii. Key results
 
@@ -54,7 +54,7 @@ a computationaly efficient way.
   - A.9. Mapping preserves if a charge spectrum is pheno-constrained
   - A.10. Mapping preserves completeness of charge spectra
   - A.11. Mapping commutes with charges of Yukawa terms
-  - A.12. Mapping of chareg spectra and regenerating dangerous Yukawa terms
+  - A.12. Mapping of charge spectra and regenerating dangerous Yukawa terms
 - B. Preimage of a charge spectrum under a mapping
   - B.1. `preimageOfFinset` gives the actual preimage
   - B.2. Efficient definition for the cardinality of the preimage
@@ -394,7 +394,7 @@ lemma mem_map_ofYukawaTerms_iff {f : 𝓩 →+ 𝓩1} {x : ChargeSpectrum 𝓩} 
 
 /-!
 
-### A.12. Mapping of chareg spectra and regenerating dangerous Yukawa terms
+### A.12. Mapping of charge spectra and regenerating dangerous Yukawa terms
 
 -/
 
@@ -540,7 +540,7 @@ lemma preimageOfFinset_eq (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : Char
 ### B.2. Efficient definition for the cardinality of the preimage
 
 -/
-/-- The cardiniality of the
+/-- The cardinality of the
   preimage of a charge `Charges 𝓩1` in `ofFinset S5 S10 ⊆ Charges 𝓩` under
   mapping charges through `f : 𝓩 →+ 𝓩1`. -/
 def preimageOfFinsetCard (S5 S10 : Finset 𝓩) (f : 𝓩 →+ 𝓩1) (x : ChargeSpectrum 𝓩1) : ℕ :=

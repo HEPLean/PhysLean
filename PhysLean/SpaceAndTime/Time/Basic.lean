@@ -11,7 +11,7 @@ import Mathlib.Geometry.Manifold.IsManifold.Basic
 # Time
 
 In this module we define the type `Time`, corresponding to time in a given
-(but arbitary) set of units, with a given (but arbitary) choice of origin (time zero),
+(but arbitrary) set of units, with a given (but arbitrary) choice of origin (time zero),
 and a choice of orientation (i.e. a positive time direction).
 
 We note that this is the version of time most often used in undergraduate and
@@ -35,8 +35,8 @@ or origin.
 
 -/
 
-/-- The type `Time` represents the time in a given (but arbitary) set of units, and
-  with a given (but arbitary) choice of origin. -/
+/-- The type `Time` represents the time in a given (but arbitrary) set of units, and
+  with a given (but arbitrary) choice of origin. -/
 @[ext]
 structure Time where
   /-- The underlying real number associated with a point in time. -/
@@ -281,7 +281,7 @@ noncomputable def toRealCLE : Time ≃L[ℝ] ℝ := LinearEquiv.toContinuousLine
   map_smul' := by simp
   }
 
-/-- The linear isomentry equivalence from `Time` to `ℝ`. -/
+/-- The linear isometry equivalence from `Time` to `ℝ`. -/
 noncomputable def toRealLIE : Time ≃ₗᵢ[ℝ] ℝ where
   toFun := Time.val
   invFun := fun x => ⟨x⟩

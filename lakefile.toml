@@ -52,10 +52,19 @@ name = "sorry_lint"
 supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 
+[[lean_exe]]
+name = "runPhysLeanLinters"
+supportInterpreter = true
+srcDir = "scripts/MetaPrograms"
+
 ### Other linting scripts
 
 [[lean_exe]]
 name = "free_simps"
+srcDir = "scripts/MetaPrograms"
+
+[[lean_exe]]
+name = "spelling"
 srcDir = "scripts/MetaPrograms"
 
 [[lean_exe]]
@@ -64,7 +73,7 @@ srcDir = "scripts/MetaPrograms"
 
 
 [[lean_exe]]
-name = "redundent_imports"
+name = "redundant_imports"
 supportInterpreter = true
 srcDir = "scripts/MetaPrograms"
 

@@ -8,7 +8,7 @@ import PhysLean.QFT.PerturbationTheory.WickAlgebra.WickTerm
 
 # Wick's theorem
 
-This file contrains the time-dependent version of Wick's theorem
+This file constrains the time-dependent version of Wick's theorem
 for lists of fields containing both fermions and bosons.
 
 Wick's theorem is related to Isserlis' theorem in mathematics.

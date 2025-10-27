@@ -20,7 +20,7 @@ open Temperature
 open Real MeasureTheory
 
 TODO "EVJNH" "Generalize the results for the two-state canonical ensemble so that the two
-  states have arbitary energies, rather than one state having energy `0`."
+  states have arbitrary energies, rather than one state having energy `0`."
 
 /-- The canonical ensemble corresponding to state system, with one state of energy
   `E` and the other state of energy `0`. -/

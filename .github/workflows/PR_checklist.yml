@@ -28,7 +28,7 @@ jobs:
 
                     - [ ] I have updated the module doc-strings of any modules modified, or this comment is not relevant.
                     - [ ] I created a new module doc-string for any new modules created, including an overall description of the module and the main results, or this comment is not relevant.
-                    - [ ] I have changed all doc-string occurances of decleration names which I have changed, or this comment is not relevant.
+                    - [ ] I have changed all doc-string occurances of declaration names which I have changed, or this comment is not relevant.
                     - [ ] For definitions and key theorems I have added, I have added an english-readable statement of the result, which is as self-contained as possible, and where appropriate contain a readable UTF-8 version of the result.
                     - [ ] Where appropriate and helpful I have included references to the original source of results in the module doc-string.
 

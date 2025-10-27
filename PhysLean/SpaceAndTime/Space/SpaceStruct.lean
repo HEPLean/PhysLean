@@ -8,7 +8,7 @@ import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 # `SpaceStruct d`
 
-This is a work in progress reimplmentation of `Space d`
+This is a work in progress reimplementation of `Space d`
 that abstracts over the underlying `EuclideanSpace`
 
 `Space d` is planned to be deprecated in favor of `SpaceStruct d`.
@@ -18,7 +18,7 @@ it will become the default implementation of `Space`
 -/
 
 /--
-  The type `SpaceStruct d` representes `d` dimensional Euclidean space.
+  The type `SpaceStruct d` represents `d` dimensional Euclidean space.
   The default value of `d` is `3`. Thus `SpaceStuct = Spacestruct 3`.
 -/
 structure SpaceStruct (d : ℕ := 3) where

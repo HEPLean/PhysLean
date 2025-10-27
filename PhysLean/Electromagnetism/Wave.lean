@@ -31,18 +31,18 @@ The second part shows orthogonality properties of plane waves.
 ## iii. Table of contents
 
 - A. The wave equation from Maxwell's equations
-  - A.1. The electric field of an EM field in free space stisfies the wave equation
-  - A.2. The magnetic field of an EM field in free space stisfies the wave equation
+  - A.1. The electric field of an EM field in free space satisfies the wave equation
+  - A.2. The magnetic field of an EM field in free space satisfies the wave equation
 - B. Orthogonality properties of plane waves
   - B.1. Definition of the electric and magnetic plane waves
   - B.2. Up to a time-dependent constant, the E field is transverse to the direction of propagation
   - B.3. Up to a time-dependent constant, the B field is transverse to the direction of propagation
   - B.4. E proportional to cross of direction of propagation & B, up to a constant
-    - B.4.1. Time derivative of E-field proportional to propogation cross time derivative of B-field
+    - B.4.1. Time derivative of E-field proportional to propagation cross time derivative of B-field
     - B.4.2. Proportional up to a space-dependent constant
     - B.4.3. Proportional up to a constant
-  - B.5. B propotional to cross of direction of propagation & B, up to a constant
-    - B.5.1. Time derivative of B-field propotional to propogation cross time derivative of E-field
+  - B.5. B proportional to cross of direction of propagation & B, up to a constant
+    - B.5.1. Time derivative of B-field proportional to propagation cross time derivative of E-field
     - B.5.2. Proportional up to a space-dependent constant
     - B.5.3. Proportional up to a constant
   - B.6. E-field orthogonal to direction of propagation up to a constant
@@ -73,7 +73,7 @@ local notation "μ" => OM.μ
 
 /-!
 
-### A.1. The electric field of an EM field in free space stisfies the wave equation
+### A.1. The electric field of an EM field in free space satisfies the wave equation
 
 -/
 
@@ -127,7 +127,7 @@ theorem waveEquation_electricField_of_freeMaxwellEquations
 
 /-!
 
-### A.2. The magnetic field of an EM field in free space stisfies the wave equation
+### A.2. The magnetic field of an EM field in free space satisfies the wave equation
 
 -/
 
@@ -324,7 +324,7 @@ lemma transverse_upto_time_fun_of_eq_magneticPlaneWave {B₀ : ℝ → Euclidean
 
 /-!
 
-#### B.4.1. Time derivative of E-field proportional to propogation cross time derivative of B-field
+#### B.4.1. Time derivative of E-field proportional to propagation cross time derivative of B-field
 
 -/
 
@@ -454,13 +454,13 @@ lemma electricField_add_cross_magneticField_eq_const_of_planeWave
 
 /-!
 
-### B.5. B propotional to cross of direction of propagation & B, up to a constant
+### B.5. B proportional to cross of direction of propagation & B, up to a constant
 
 -/
 
 /-!
 
-#### B.5.1. Time derivative of B-field propotional to propogation cross time derivative of E-field
+#### B.5.1. Time derivative of B-field proportional to propagation cross time derivative of E-field
 
 -/
 
@@ -667,7 +667,7 @@ theorem magneticField_transverse_upto_const_of_EMwave {s : Direction}
 
 -/
 
-/-- Unit vectors in the direction of `B`, `E` and `s` form an orthonormal traid for an EMwave
+/-- Unit vectors in the direction of `B`, `E` and `s` form an orthonormal triad for an EMwave
 after subtracting the appropriate constant fields. -/
 theorem orthonormal_triad_of_electromagneticplaneWave {s : Direction}
     {E₀ : ℝ → EuclideanSpace ℝ (Fin 3)} {B₀ : ℝ → EuclideanSpace ℝ (Fin 3)}

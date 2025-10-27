@@ -23,7 +23,7 @@ allowing it to be used in tensorial expressions.
 - `SpaceTime d` : The type corresponding to `d+1` dimensional spacetime.
 - `toTimeAndSpace` : A continuous linear equivalence between `SpaceTime d`
   and `Time × Space d`.
-- `deriv` : The derivative of a function `SpaceTime d → M` along the `μ` coordinte.
+- `deriv` : The derivative of a function `SpaceTime d → M` along the `μ` coordinate.
 - `deriv_sum_inr` : The derivative along a spatial coordinate in terms of the
   derivative on `Space d`.
 - `deriv_sum_inl` : The derivative along the temporal coordinate in terms of the
@@ -43,8 +43,8 @@ allowing it to be used in tensorial expressions.
     - B.3.1. Derivative of `toTimeAndSpace`
     - B.3.2. Derivative of the inverse of `toTimeAndSpace`
     - B.3.3. `toTimeAndSpace` acting on spatial basis vectors
-    - B.3.4. `toTimeAndSpace` acting on the temperal basis vectors
-- C. Continous linear map to coordinates
+    - B.3.4. `toTimeAndSpace` acting on the temporal basis vectors
+- C. Continuous linear map to coordinates
 - D. Derivatives of functions on `SpaceTime d`
   - D.1. The definition of the derivative
   - D.2. Basic equality lemmas
@@ -52,7 +52,7 @@ allowing it to be used in tensorial expressions.
   - D.4. The derivative of a function composed with a Lorentz transformation
   - D.5. Spacetime derivatives in terms of time and space derivatives
 - E. Measures on `SpaceTime d`
-  - E.1. Instance of a measureable space
+  - E.1. Instance of a measurable space
   - E.2. Instance of a borel space
   - E.3. Definition of an inner product space structure on `SpaceTime d`
   - E.4. Instance of a measure space
@@ -75,7 +75,7 @@ noncomputable section
 TODO "6V2DR" "SpaceTime should be refactored into a structure, or similar, to prevent casting."
 
 /-- `SpaceTime d` corresponds to `d+1` dimensional space-time.
-  This is equipped with an instaance of the action of a Lorentz group,
+  This is equipped with an instance of the action of a Lorentz group,
   corresponding to Minkowski-spacetime. -/
 abbrev SpaceTime (d : ℕ := 3) := Lorentz.Vector d
 
@@ -248,7 +248,7 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
 
 /-!
 
-#### B.3.4. `toTimeAndSpace` acting on the temperal basis vectors
+#### B.3.4. `toTimeAndSpace` acting on the temporal basis vectors
 
 -/
 
@@ -264,7 +264,7 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
 
 /-!
 
-## C. Continous linear map to coordinates
+## C. Continuous linear map to coordinates
 
 -/
 
@@ -307,7 +307,7 @@ def coordCLM (μ : Fin 1 ⊕ Fin d) : SpaceTime d →L[ℝ] ℝ where
 
 -/
 
-/-- The derivative of a function `SpaceTime d → ℝ` along the `μ` coordinte. -/
+/-- The derivative of a function `SpaceTime d → ℝ` along the `μ` coordinate. -/
 noncomputable def deriv {M : Type} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) : SpaceTime d → M :=
   fun y => fderiv ℝ f y (Lorentz.Vector.basis μ)
@@ -448,7 +448,7 @@ open MeasureTheory
 
 /-!
 
-### E.1. Instance of a measureable space
+### E.1. Instance of a measurable space
 
 -/
 

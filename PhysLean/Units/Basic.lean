@@ -198,7 +198,7 @@ TODO "LCSAY" "Make SI : UnitChoices computable, probably by
 - meters,
 - seconds,
 - kilograms,
-- columbs,
+- coulombs,
 - kelvin.
 -/
 noncomputable def SI : UnitChoices where
@@ -263,41 +263,29 @@ end UnitChoices
 
 Dimensions are assigned to types with the following type-classes
 
-- `CarriesDimension` for a type carrying an instance of `MulAction ℝ≥0 M`
-- `ModuleCarriesDimension` for a type carrying an instance of `Module ℝ M`.
-
-The latter is need to prevent a typeclass dimond.
+- `HasDim` for any type `M` with an associated dimension
+- `CarriesDimension` for a type that also has an instance of `MulAction ℝ≥0 M`
 
 -/
 
+/-- This typeclass indicates that there is a dimension `dim M : Dimension`
+  associated with the type `M`. -/
+class HasDim (M : Type) where
+  /-- The dimension associated with a type `M`. -/
+  d : Dimension
+
+alias dim := HasDim.d
+
 /-- A type `M` carries a dimension `d` if every element of `M` is supposed to have
   this dimension. For example, the type `Time` will carry a dimension `T𝓭`. -/
-class CarriesDimension (M : Type) extends MulAction ℝ≥0 M where
-  /-- The dimension carried by a type `M`. -/
-  d : Dimension
-
-/-- A module `M` carries a dimension `d` if every element of `M` is supposed to have
-  this dimension.
-  This is defined in additon to `CarriesDimension` to prevent a type-casting dimond. -/
-class ModuleCarriesDimension (M : Type) [AddCommMonoid M] [Module ℝ M] where
-  /-- The dimension carried by a module `M`. -/
-  d : Dimension
-
-instance {M : Type} [AddCommMonoid M] [Module ℝ M] [ModuleCarriesDimension M] :
-    CarriesDimension M where
-  d := ModuleCarriesDimension.d M
-
-@[simp]
-lemma ModuleCarriesDimension.d_eq_CarriesDimension_d {M : Type} [AddCommMonoid M] [Module ℝ M]
-    [ModuleCarriesDimension M] :
-    ModuleCarriesDimension.d M = CarriesDimension.d M := rfl
+class abbrev CarriesDimension (M : Type) := HasDim M, MulAction ℝ≥0 M
 
 /-!
 
 ## Terms of the current dimension
 
 Given a type `M` which carries a dimension `d`,
-we are intrested in elements of `M` which depend on a choice of units, i.e. functions
+we are interested in elements of `M` which depend on a choice of units, i.e. functions
 `UnitChoices → M`.
 
 We define both a proposition
@@ -310,11 +298,11 @@ and a type
 /-- A quantity of type `M` which depends on a choice of units `UnitChoices` is said to be
   of dimension `d` if it scales by `UnitChoices.dimScale u1 u2 d` under a change in units. -/
 def HasDimension {M : Type} [CarriesDimension M] (f : UnitChoices → M) : Prop :=
-  ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 (CarriesDimension.d M) • f u1
+  ∀ u1 u2 : UnitChoices, f u2 = UnitChoices.dimScale u1 u2 (dim M) • f u1
 
 lemma hasDimension_iff {M : Type} [CarriesDimension M] (f : UnitChoices → M) :
     HasDimension f ↔ ∀ u1 u2 : UnitChoices, f u2 =
-    UnitChoices.dimScale u1 u2 (CarriesDimension.d M) • f u1 := by
+    UnitChoices.dimScale u1 u2 (dim M) • f u1 := by
   rfl
 
 /-- The subtype of functions `UnitChoices → M`, for which `M` carries a dimension,
@@ -350,13 +338,13 @@ lemma Dimensionful.smul_apply {M : Type} [CarriesDimension M]
     (a : ℝ≥0) (f : Dimensionful M) (u : UnitChoices) :
     (a • f).1 u = a • f.1 u := rfl
 
-/-- For `M` carying a dimension `d`, the equivalence between `M` and `Dimension M`,
+/-- For `M` carrying a dimension `d`, the equivalence between `M` and `Dimension M`,
   given a choice of units. -/
 noncomputable def CarriesDimension.toDimensionful {M : Type} [CarriesDimension M]
     (u : UnitChoices) :
     M ≃ Dimensionful M where
   toFun m := {
-    val := fun u1 => (u.dimScale u1 (CarriesDimension.d M)) • m
+    val := fun u1 => (u.dimScale u1 (dim M)) • m
     property := fun u1 u2 => by
       simp [smul_smul]
       rw [mul_comm, UnitChoices.dimScale_transitive]}
@@ -370,4 +358,4 @@ noncomputable def CarriesDimension.toDimensionful {M : Type} [CarriesDimension M
 
 lemma CarriesDimension.toDimensionful_apply_apply
     {M : Type} [CarriesDimension M] (u1 u2 : UnitChoices) (m : M) :
-    (toDimensionful u1 m).1 u2 = (u1.dimScale u2 (CarriesDimension.d M)) • m := by rfl
+    (toDimensionful u1 m).1 u2 = (u1.dimScale u2 (dim M)) • m := by rfl
