@@ -40,7 +40,7 @@ We will show that these two multisets have the same elements.
   - C.1. Showing that `ofPotentialTerm` is a subset of `ofPotentialTerm'`
   - C.2. Showing that `ofPotentialTerm'` is a subset of `ofPotentialTerm`
   - C.3. Equivalence of elements of `ofPotentialTerm` and `ofPotentialTerm'`
-  - C.4. Induced monoticity of `ofPotentialTerm'`
+  - C.4. Induced monotonicity of `ofPotentialTerm'`
 
 ## iv. References
 
@@ -465,7 +465,7 @@ lemma mem_ofPotentialTerm_iff_mem_ofPotentialTerm [DecidableEq 𝓩]
 
 /-!
 
-### C.4. Induced monoticity of `ofPotentialTerm'`
+### C.4. Induced monotonicity of `ofPotentialTerm'`
 
 Due to the equivalence of elements of `ofPotentialTerm` and `ofPotentialTerm'`,
 we can now also show that `ofPotentialTerm'` is monotone in its charge spectrum argument.

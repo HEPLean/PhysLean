@@ -30,9 +30,9 @@ this module.
 ## iii. Table of contents
 
 - A. Charges of the Yukawa terms
-  - A.1. Monoticity of charges of the Yukawa terms
+  - A.1. Monotonicity of charges of the Yukawa terms
   - A.2. upto n-copies of charges of the Yukawa terms (aka charges of singlet insertions)
-  - A.3. Monoticity of set of charges of upto n-copies of the Yukawa terms
+  - A.3. Monotonicity of set of charges of upto n-copies of the Yukawa terms
 - B. Regeneration of phenomenologically constrained terms via upto n Yukawa singlet insertions
   - B.1. Decidability of `YukawaGeneratesDangerousAtLevel`
   - B.2. Simplifications of condition for regenerating dangerous terms
@@ -67,7 +67,7 @@ def ofYukawaTerms (x : ChargeSpectrum 𝓩) : Multiset 𝓩 :=
 
 /-!
 
-### A.1. Monoticity of charges of the Yukawa terms
+### A.1. Monotonicity of charges of the Yukawa terms
 
 -/
 
@@ -103,7 +103,7 @@ def ofYukawaTermsNSum (x : ChargeSpectrum 𝓩) : ℕ → Multiset 𝓩
 
 /-!
 
-### A.3. Monoticity of set of charges of upto n-copies of the Yukawa terms
+### A.3. Monotonicity of set of charges of upto n-copies of the Yukawa terms
 
 -/
 

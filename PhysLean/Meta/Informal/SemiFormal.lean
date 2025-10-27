@@ -13,7 +13,7 @@ defined, by the proof or definition is not.
 
 ## Note
 
-The code here is modified from the Util.ProofWanted module of the Batteries library.
+The code here is modified from the `Util.ProofWanted` module of the Batteries library.
 Released under the Apache 2.0 license, copyright 2023 Lean FRO, authored by
 David Thrane Christiansen.
 

@@ -11,6 +11,8 @@ import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
 
 # The tight binding chain
 
+## i. Overview
+
 The tight binding chain corresponds to an electron in motion
 in a 1d solid with the assumption the electron can sit only on the atoms of the solid.
 
@@ -20,17 +22,66 @@ Mathematically, the tight binding chain corresponds to a
 QM problem located on a lattice with only self and nearest neighbour interactions,
 with periodic boundary conditions.
 
-## Refs.
+## ii. Key results
+
+- `TightBindingChain` : The physical parameters making up the tight binding chain.
+- `localizedState` : The orthonormal basis of localized states.
+- `hamiltonian` : The Hamiltonian of the tight binding chain.
+- `BrillouinZone` : The Brillouin zone of the tight binding chain.
+- `QuantaWaveNumber` : The quantized wavenumbers of the energy eigenstates.
+- `energyEigenstate` : The energy eigenstates of the tight binding chain.
+- `energyEigenvalue` : The energy eigenvalues of the tight binding chain.
+- `hamiltonian_energyEigenstate` : The Hamiltonian acting on an energy eigenstate
+  gives the corresponding energy eigenvalue times the energy eigenstate.
+
+## iii. Table of contents
+
+- A. The setup
+  - A.1. The input data for the tight binding chain
+  - A.2. The Hilbert space
+- B. The localized states
+  - B.1. The orthonormal basis of localized states
+  - B.2. Notation for localized states
+  - B.3. Orthonormality of the localized states
+- C. The operator `|m⟩⟨n|`
+  - C.1. Definition of the operator `|m⟩⟨n|`
+  - C.2. Notation for the operator `|m⟩⟨n|`
+  - C.3. The operator `|m⟩⟨n|` applied to a localized state
+- D. The Hamiltonian of the tight binding chain
+  - D.1. Hermiticity of the Hamiltonian
+  - D.2. Hamiltonian applied to a localized state
+  - D.3. Mean energy of a localized state
+- E. The Brillouin zone and quantized wavenumbers
+  - E.1. The Brillouin zone
+  - E.2. The quantized wavenumbers of the energy eigenstates
+  - E.3. Wavenumbers lie in the Brillouin zone
+  - E.4. Expotentials related to the quantized wavenumbers
+- F. The energy eigenstates and eigenvalues
+  - F.1. The energy eigenstates
+  - F.2. Orthonormality of the energy eigenstates
+  - F.3. The energy eigenvalues
+  - F.4. The time-independent Schrodinger equation
+
+## iv. References
 
 - https://www.damtp.cam.ac.uk/user/tong/aqm/aqmtwo.pdf
 
 -/
 
-TODO "BBZAB" "Prove results related to the one-dimensional tight binding chain.
-  This is related to the following issue/feature-request:
-  https://github.com/HEPLean/PhysLean/issues/523 "
 
 namespace CondensedMatter
+
+/-!
+
+## A. The setup
+
+-/
+
+/-!
+
+### A.1. The input data for the tight binding chain
+
+-/
 
 /-- The physical parameters making up the tight binding chain. -/
 structure TightBindingChain where
@@ -49,22 +100,54 @@ namespace TightBindingChain
 open InnerProductSpace
 variable (T : TightBindingChain)
 
+instance : NeZero T.N := T.N_ne_zero
+
+/-!
+
+### A.2. The Hilbert space
+
+-/
+
 /-- The Hilbert space of a `TightBindingchain` is the `N`-dimensional finite dimensional
 Hilbert space. -/
 abbrev HilbertSpace := QuantumMechanics.FiniteHilbertSpace T.N
 
-instance : NeZero T.N := T.N_ne_zero
+/-!
+
+## B. The localized states
+
+Localized states correspond to the electron being located on a specific site in the chain.
+
+-/
+
+/-!
+
+### B.1. The orthonormal basis of localized states
+
+-/
 
 /-- The eigenstate corresponding to the particle been located on the `n`th site. -/
 noncomputable def localizedState {T : TightBindingChain} :
     OrthonormalBasis (Fin T.N) ℂ (HilbertSpace T) :=
   EuclideanSpace.basisFun (Fin T.N) ℂ
 
+/-!
+
+### B.2. Notation for localized states
+
+-/
+
 @[inherit_doc localizedState]
 scoped notation "|" n "⟩" => localizedState n
 
 /-- The inner product of two localized states. -/
 scoped notation "⟨" m "|" n "⟩" => ⟪localizedState m, localizedState n⟫_ℂ
+
+/-!
+
+### B.3. Orthonormality of the localized states
+
+-/
 
 /-- The localized states are normalized. -/
 lemma localizedState_orthonormal : Orthonormal ℂ (localizedState (T := T)) :=
@@ -73,6 +156,18 @@ lemma localizedState_orthonormal : Orthonormal ℂ (localizedState (T := T)) :=
 lemma localizedState_orthonormal_eq_ite (m n : Fin T.N) :
     ⟨m|n⟩ = if m = n then 1 else 0 := orthonormal_iff_ite.mp T.localizedState_orthonormal _ _
 
+/-!
+
+## C. The operator `|m⟩⟨n|`
+
+-/
+
+/-!
+
+### C.1. Definition of the operator `|m⟩⟨n|`
+
+-/
+
 /-- The linear map `|m⟩⟨n|` for `⟨n|` localized states. -/
 noncomputable def localizedComp {T : TightBindingChain} (m n : Fin T.N) :
     T.HilbertSpace →ₗ[ℂ] T.HilbertSpace where
@@ -80,13 +175,30 @@ noncomputable def localizedComp {T : TightBindingChain} (m n : Fin T.N) :
   map_add' ψ1 ψ2 := by rw [inner_add_right, add_smul]
   map_smul' _ _ := by rw [inner_smul_right, RingHom.id_apply, smul_smul]
 
+/-!
+
+### C.2. Notation for the operator `|m⟩⟨n|`
+
+-/
+
 @[inherit_doc localizedComp]
 scoped notation "|" n "⟩⟨" m "|" => localizedComp n m
 
+/-!
+
+### C.3. The operator `|m⟩⟨n|` applied to a localized state
+
+-/
 lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
     |m⟩⟨n| |p⟩ = if n = p then |m⟩ else 0 := by
   rw [localizedComp, LinearMap.coe_mk, AddHom.coe_mk,
     orthonormal_iff_ite.mp T.localizedState_orthonormal n p, ite_smul, one_smul, zero_smul]
+
+/-!
+
+## D. The Hamiltonian of the tight binding chain
+
+-/
 
 /-- The Hamiltonian of the tight binding chain with periodic
   boundary conditions is given by `E₀ ∑ n, |n⟩⟨n| - t ∑ n, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)`.
@@ -95,10 +207,22 @@ lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
 noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
   T.E0 • ∑ n : Fin T.N, |n⟩⟨n| - T.t • ∑ n : Fin T.N, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)
 
+/-!
+
+### D.1. Hermiticity of the Hamiltonian
+
+-/
+
 /-- The hamiltonian of the tight binding chain is hermitian. -/
 @[sorryful]
 lemma hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
     ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ := by sorry
+
+/-!
+
+### D.2. Hamiltonian applied to a localized state
+
+-/
 
 /-- The Hamiltonian applied to the localized state `|n⟩` gives
   `T.E0 • |n⟩ - T.t • (|n + 1⟩ + |n - 1⟩)`. -/
@@ -124,6 +248,12 @@ lemma hamiltonian_apply_localizedState (n : Fin T.N) :
       · aesop
       · simp
 
+/-!
+
+### D.3. Mean energy of a localized state
+
+-/
+
 /-- The energy of a localized state in the tight binding chain is `E0`.
   This lemma assumes that there is more then one site in the chain otherwise the
   result is not true. -/
@@ -145,15 +275,39 @@ lemma energy_localizedState (n : Fin T.N) (htn : 1 < T.N) : ⟪|n⟩, T.hamilton
     aesop
   · simp
 
+/-!
+
+## E. The Brillouin zone and quantized wavenumbers
+
+-/
+
+/-!
+
+### E.1. The Brillouin zone
+
+-/
+
 /-- The Brillouin zone of the tight binding model is `[-π/a, π/a)`.
   This is the set in which wave functions are uniquely defined. -/
 def BrillouinZone : Set ℝ := Set.Ico (- Real.pi / T.a) (Real.pi / T.a)
+
+/-!
+
+### E.2. The quantized wavenumbers of the energy eigenstates
+
+-/
 
 /-- The wavenumbers associated with the energy eigenstates.
   This corresponds to the set `2 π / (a N) * (n - ⌊N/2⌋)` for `n : Fin T.N`.
   It is defined as such so it sits in the Brillouin zone. -/
 def QuantaWaveNumber : Set ℝ := {x | (∃ n : Fin T.N,
     2 * Real.pi / (T.a * T.N) * ((n : ℝ) - (T.N / 2 : ℕ)) = x)}
+
+/-!
+
+### E.3. Wavenumbers lie in the Brillouin zone
+
+-/
 
 /-- The quantized wavenumbers form a subset of the `BrillouinZone`. -/
 lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.BrillouinZone := by
@@ -231,6 +385,12 @@ lemma quantaWaveNumber_subset_brillouinZone : T.QuantaWaveNumber ⊆ T.Brillouin
         simp [lt_of_le_of_lt hn'']
     · positivity
 
+/-!
+
+### E.4. Expotentials related to the quantized wavenumbers
+
+-/
+
 lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
     Complex.exp (Complex.I * k * n * T.N * T.a) = 1 := by
   refine Complex.exp_eq_one_iff.mpr ?_
@@ -296,20 +456,50 @@ lemma quantaWaveNumber_exp_add_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
     rw [hn, quantaWaveNumber_exp_sub_one, mul_assoc, ← Complex.exp_add]
     simp
 
+/-!
+
+## F. The energy eigenstates and eigenvalues
+
+-/
+
+/-!
+
+### F.1. The energy eigenstates
+
+-/
+
 /-- The energy eigenstates of the tight binding chain They are given by
   `∑ n, exp (I * k * n * T.a) • |n⟩`. -/
 noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
   ∑ n : Fin T.N, Complex.exp (Complex.I * k * n * T.a) • |n⟩
+
+/-!
+
+### F.2. Orthonormality of the energy eigenstates
+
+-/
 
 /-- The energy eigenstates of the tight binding chain are orthogonal. -/
 @[sorryful]
 lemma energyEigenstate_orthogonal :
     Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by sorry
 
+/-!
+
+### F.3. The energy eigenvalues
+
+-/
+
 /-- The energy eigenvalue of the tight binding chain for a `k` in `QuantaWaveNumber` is
   `E0 - 2 * t * Real.cos (k * T.a)`. -/
 noncomputable def energyEigenvalue (k : T.QuantaWaveNumber) : ℝ :=
   T.E0 - 2 * T.t * Real.cos (k * T.a)
+
+/-!
+
+### F.4. The time-independent Schrodinger equation
+
+-/
 
 /-- The energy eigenstates satisfy the time-independent Schrodinger equation. -/
 lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :

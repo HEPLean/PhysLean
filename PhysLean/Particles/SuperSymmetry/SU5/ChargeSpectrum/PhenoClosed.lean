@@ -48,7 +48,7 @@ which include three which are defined in this file: `IsPhenoClosedQ5`, `IsPhenoC
 - C. Prop for multiset containing all pheno-viable completions of charges permitting top Yukawa
   - C.1. Simplification using fast version of completions of charges permitting top Yukawa
   - C.2. Decidability of proposition
-  - C.3. Monoticity of proposition
+  - C.3. Monotonicity of proposition
   - C.4. `completeMinSubset`: Minimal multiset with viable completions of top-permitting charges
     - C.4.1. The multiset `completeMinSubset` has no duplicates
     - C.4.2. The multiset `completeMinSubset` is minimal
@@ -193,7 +193,7 @@ instance [DecidableEq 𝓩] {S5 S10 : Finset 𝓩} {charges : Multiset (ChargeSp
 
 /-!
 
-### C.3. Monoticity of proposition
+### C.3. Monotonicity of proposition
 
 -/
 

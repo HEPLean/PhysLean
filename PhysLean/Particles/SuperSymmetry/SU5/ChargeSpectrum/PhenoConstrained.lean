@@ -15,7 +15,7 @@ We define a predicate `IsPhenoConstrained` on `ChargeSpectrum 𝓩` which is tru
 spectrum allows any super-potential or Kähler potential term leading to proton decay or
 R-parity violation.
 
-We prove basic properties of this predicate including monoticity.
+We prove basic properties of this predicate including monotonicity.
 
 We define some variations of this result.
 

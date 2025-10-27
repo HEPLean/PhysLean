@@ -48,7 +48,7 @@ charge spectrum `x`, leads to a zero charge in the charges of potential term `T`
 
 - A. Charge spectrums allowing potential terms
   - A.1. Decidability of `AllowsTerm`
-  - A.2. Monoticity of `AllowsTerm`
+  - A.2. Monotonicity of `AllowsTerm`
 - B. Forms of charges which allow potential terms
   - B.1. `allowsTermForm` allows the potential term
   - B.2. Subset relations for `allowsTermForm`
@@ -117,7 +117,7 @@ instance [DecidableEq 𝓩] (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Deci
 
 /-!
 
-### A.2. Monoticity of `AllowsTerm`
+### A.2. Monotonicity of `AllowsTerm`
 
 The proposition `AllowsTerm` is monotone in its charge spectrum argument.
 That is if a charge spectrum `y` is a subset of a charge spectrum `x`,
