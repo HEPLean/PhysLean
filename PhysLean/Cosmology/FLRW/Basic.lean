@@ -117,7 +117,8 @@ We choose not to use that terminology to avoid the Raychaudhuri equation
 related to describing congruences of geodesics in general relativity.
 - `a : ℝ → ℝ` is the FLRW scale factor as a function of cosmic time `t`.
 - `ρ : ℝ → ℝ` is the total energy density as a function of cosmic time `t`.
-- `p : ℝ → ℝ` is the pressure. It is related to `ρ` via `p = w * ρ ` where `w` is the equation of state.
+- `p : ℝ → ℝ` is the pressure. It is related to `ρ` via `p = w * ρ `
+- `w` is the equation of state. We will introduce this later.
 - `Λ : ℝ` is the cosmological constant.
 - `G : ℝ` is Newton's constant.
 - `c : ℝ` is the speed of light. It may be set to 1 for convenience.
