@@ -14,7 +14,6 @@ open IndexNotation
 open TensorSpecies
 open Tensor
 
-
 namespace ElectromagneticPotential
 
 open TensorSpecies

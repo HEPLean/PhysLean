@@ -67,7 +67,7 @@ noncomputable def chargeDensity (J : LorentzCurrentDensity d) : Time → Space d
   fun t x => J (toTimeAndSpace.symm (t, x)) (Sum.inl 0)
 
 lemma chargeDensity_eq_timeSlice {d : ℕ} {J : LorentzCurrentDensity d} :
-    J.chargeDensity  =  timeSlice (fun x => J x (Sum.inl 0)) := by rfl
+    J.chargeDensity = timeSlice (fun x => J x (Sum.inl 0)) := by rfl
 /-!
 
 ### B.1. Differentiability of the charge density
@@ -103,7 +103,7 @@ noncomputable def currentDensity (J : LorentzCurrentDensity d) :
   fun t x i => J (toTimeAndSpace.symm (t, x)) (Sum.inr i)
 
 lemma currentDensity_eq_timeSlice {d : ℕ} {J : LorentzCurrentDensity d} :
-    J.currentDensity  =  timeSlice (fun x i => J x (Sum.inr i)) := by rfl
+    J.currentDensity = timeSlice (fun x i => J x (Sum.inr i)) := by rfl
 /-!
 
 ### C.1. Differentiability of the current density
@@ -144,7 +144,6 @@ lemma currentDensity_apply_differentiable_space {d : ℕ} {J : LorentzCurrentDen
   · apply Differentiable.comp ?_ ?_
     · exact currentDensity_differentiable hJ
     · fun_prop
-
 
 lemma currentDensity_differentiable_time {d : ℕ} {J : LorentzCurrentDensity d}
     (hJ : Differentiable ℝ J) (x : Space d) :

@@ -14,7 +14,6 @@ open IndexNotation
 open TensorSpecies
 open Tensor
 
-
 namespace ElectromagneticPotential
 
 open TensorSpecies
@@ -24,7 +23,6 @@ open TensorProduct
 open minkowskiMatrix
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
-
 
 /-- The vector potential from the electromagnetic potential. -/
 noncomputable def vectorPotential {d} (A : ElectromagneticPotential d) :
@@ -48,21 +46,20 @@ lemma vectorPotential_contDiff {n} {d} (A : ElectromagneticPotential d)
   exact fun i => h1 (Sum.inr i)
 
 lemma vectorPotential_apply_contDiff {n} {d} (A : ElectromagneticPotential d)
-    (hA : ContDiff ℝ n A) (i : Fin d): ContDiff ℝ n ↿(fun t x => A.vectorPotential t x i) := by
+    (hA : ContDiff ℝ n A) (i : Fin d) : ContDiff ℝ n ↿(fun t x => A.vectorPotential t x i) := by
   change ContDiff ℝ n (EuclideanSpace.proj i ∘ ↿A.vectorPotential)
   refine ContDiff.comp ?_ ?_
   · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) (n := n) (EuclideanSpace.proj i)
   · exact vectorPotential_contDiff A hA
-
 
 lemma vectorPotential_comp_contDiff {n} {d} (A : ElectromagneticPotential d)
-    (hA : ContDiff ℝ n A) (i : Fin d): ContDiff ℝ n ↿(fun t x => A.vectorPotential t x i) := by
+    (hA : ContDiff ℝ n A) (i : Fin d) : ContDiff ℝ n ↿(fun t x => A.vectorPotential t x i) := by
   change ContDiff ℝ n (EuclideanSpace.proj i ∘ ↿A.vectorPotential)
   refine ContDiff.comp ?_ ?_
   · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) (n := n) (EuclideanSpace.proj i)
   · exact vectorPotential_contDiff A hA
 
-lemma vectorPotential_contDiff_space  {n} {d} (A : ElectromagneticPotential d)
+lemma vectorPotential_contDiff_space {n} {d} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ n A) (t : Time) : ContDiff ℝ n (A.vectorPotential t) := by
   change ContDiff ℝ n (↿A.vectorPotential ∘ fun x => (t, x))
   refine ContDiff.comp ?_ ?_
@@ -70,13 +67,14 @@ lemma vectorPotential_contDiff_space  {n} {d} (A : ElectromagneticPotential d)
   · fun_prop
 
 lemma vectorPotential_apply_contDiff_space {n} {d} (A : ElectromagneticPotential d)
-    (hA : ContDiff ℝ n A) (t : Time) (i : Fin d): ContDiff ℝ n (fun x => A.vectorPotential t x i) := by
+    (hA : ContDiff ℝ n A) (t : Time) (i : Fin d) :
+    ContDiff ℝ n (fun x => A.vectorPotential t x i) := by
   change ContDiff ℝ n (EuclideanSpace.proj i ∘ (↿A.vectorPotential ∘ fun x => (t, x)))
   refine ContDiff.comp ?_ ?_
   · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) (n := n) (EuclideanSpace.proj i)
   · exact vectorPotential_contDiff_space A hA t
 
-lemma vectorPotential_contDiff_time  {n} {d} (A : ElectromagneticPotential d)
+lemma vectorPotential_contDiff_time {n} {d} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ n A) (x : Space d) : ContDiff ℝ n (A.vectorPotential · x) := by
   change ContDiff ℝ n (↿A.vectorPotential ∘ fun t => (t, x))
   refine ContDiff.comp ?_ ?_
@@ -90,7 +88,7 @@ lemma vectorPotential_contDiff_time  {n} {d} (A : ElectromagneticPotential d)
 -/
 
 lemma vectorPotential_differentiable {d} (A : ElectromagneticPotential d)
-    (hA : Differentiable ℝ  A) : Differentiable ℝ ↿A.vectorPotential := by
+    (hA : Differentiable ℝ A) : Differentiable ℝ ↿A.vectorPotential := by
   simp [vectorPotential]
   apply timeSlice_differentiable
   refine differentiable_euclidean.mpr ?_
@@ -100,7 +98,7 @@ lemma vectorPotential_differentiable {d} (A : ElectromagneticPotential d)
   exact fun i => h1 (Sum.inr i)
 
 lemma vectorPotential_differentiable_time {d} (A : ElectromagneticPotential d)
-    (hA : Differentiable ℝ  A) (x : Space d) : Differentiable ℝ (A.vectorPotential · x)  := by
+    (hA : Differentiable ℝ A) (x : Space d) : Differentiable ℝ (A.vectorPotential · x) := by
   change Differentiable ℝ (↿A.vectorPotential ∘ fun t => (t, x))
   refine Differentiable.comp ?_ ?_
   · exact vectorPotential_differentiable A hA

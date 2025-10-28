@@ -36,7 +36,7 @@ def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d �
     funext x t
     simp
 
-lemma timeSlice_contDiff {d : ℕ} {M : Type}  [NormedAddCommGroup M]
+lemma timeSlice_contDiff {d : ℕ} {M : Type} [NormedAddCommGroup M]
   [NormedSpace ℝ M]
     {n} (f : SpaceTime d → M) (h : ContDiff ℝ n f) :
     ContDiff ℝ n ↿(timeSlice f) := by
@@ -45,11 +45,11 @@ lemma timeSlice_contDiff {d : ℕ} {M : Type}  [NormedAddCommGroup M]
   · exact h
   · exact ContinuousLinearEquiv.contDiff toTimeAndSpace.symm
 
-lemma timeSlice_differentiable {d : ℕ} {M : Type}  [NormedAddCommGroup M]
+lemma timeSlice_differentiable {d : ℕ} {M : Type} [NormedAddCommGroup M]
   [NormedSpace ℝ M]
     (f : SpaceTime d → M) (h : Differentiable ℝ f) :
-    Differentiable ℝ  ↿(timeSlice f) := by
-  change Differentiable ℝ  (f ∘ toTimeAndSpace.symm)
+    Differentiable ℝ ↿(timeSlice f) := by
+  change Differentiable ℝ (f ∘ toTimeAndSpace.symm)
   apply Differentiable.comp
   · exact h
   · exact ContinuousLinearEquiv.differentiable toTimeAndSpace.symm

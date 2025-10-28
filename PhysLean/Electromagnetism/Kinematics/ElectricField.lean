@@ -16,7 +16,6 @@ open IndexNotation
 open TensorSpecies
 open Tensor
 
-
 namespace ElectromagneticPotential
 
 open TensorSpecies
@@ -26,7 +25,6 @@ open TensorProduct
 open minkowskiMatrix
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
-
 
 open Space Time
 
@@ -152,14 +150,14 @@ lemma electricField_differentiable {A : ElectromagneticPotential d}
   · exact ContinuousLinearEquiv.differentiable toTimeAndSpace.symm
 
 lemma electricField_differentiable_time {A : ElectromagneticPotential d}
-    (hA : ContDiff ℝ 2 A) (x : Space d): Differentiable ℝ (A.electricField · x) := by
+    (hA : ContDiff ℝ 2 A) (x : Space d) : Differentiable ℝ (A.electricField · x) := by
   change Differentiable ℝ (↿A.electricField ∘ fun t => (t, x))
   refine Differentiable.comp ?_ ?_
   · exact electricField_differentiable hA
   · fun_prop
 
 lemma electricField_differentiable_space {A : ElectromagneticPotential d}
-    (hA : ContDiff ℝ 2 A) (t : Time): Differentiable ℝ (A.electricField t) := by
+    (hA : ContDiff ℝ 2 A) (t : Time) : Differentiable ℝ (A.electricField t) := by
   change Differentiable ℝ (↿A.electricField ∘ fun x => (t, x))
   refine Differentiable.comp ?_ ?_
   · exact electricField_differentiable hA
@@ -195,7 +193,6 @@ lemma time_deriv_comp_vectorPotential_eq_electricField {d} {A : ElectromagneticP
   simp
   rfl
   apply vectorPotential_differentiable_time A hA x
-
 
 end ElectromagneticPotential
 

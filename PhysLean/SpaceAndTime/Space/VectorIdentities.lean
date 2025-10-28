@@ -318,7 +318,6 @@ lemma deriv_differentiable {M} [NormedAddCommGroup M]
   funext x
   rw [deriv_eq_fderiv_basis]
 
-
 /-!
 
 ## B. Properties of the gradient operator

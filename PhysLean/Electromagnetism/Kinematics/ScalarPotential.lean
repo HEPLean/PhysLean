@@ -14,7 +14,6 @@ open IndexNotation
 open TensorSpecies
 open Tensor
 
-
 namespace ElectromagneticPotential
 
 open TensorSpecies
@@ -45,15 +44,14 @@ lemma scalarPotential_contDiff {n} {d} (A : ElectromagneticPotential d)
     exact hA
   exact h1 (Sum.inl 0)
 
-
-lemma scalarPotential_contDiff_space  {n} {d} (A : ElectromagneticPotential d)
+lemma scalarPotential_contDiff_space {n} {d} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ n A) (t : Time) : ContDiff ℝ n (A.scalarPotential t) := by
   change ContDiff ℝ n (↿A.scalarPotential ∘ fun x => (t, x))
   refine ContDiff.comp ?_ ?_
   · exact scalarPotential_contDiff A hA
   · fun_prop
 
-lemma scalarPotential_contDiff_time  {n} {d} (A : ElectromagneticPotential d)
+lemma scalarPotential_contDiff_time {n} {d} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ n A) (x : Space d) : ContDiff ℝ n (A.scalarPotential · x) := by
   change ContDiff ℝ n (↿A.scalarPotential ∘ fun t => (t, x))
   refine ContDiff.comp ?_ ?_
@@ -66,9 +64,8 @@ lemma scalarPotential_contDiff_time  {n} {d} (A : ElectromagneticPotential d)
 
 -/
 
-
 lemma scalarPotential_differentiable {d} (A : ElectromagneticPotential d)
-    (hA : Differentiable ℝ  A) : Differentiable ℝ ↿A.scalarPotential := by
+    (hA : Differentiable ℝ A) : Differentiable ℝ ↿A.scalarPotential := by
   simp [scalarPotential]
   apply timeSlice_differentiable
   have h1 : ∀ i, Differentiable ℝ (fun x => A x i) := by
@@ -77,14 +74,14 @@ lemma scalarPotential_differentiable {d} (A : ElectromagneticPotential d)
   exact h1 (Sum.inl 0)
 
 lemma scalarPotential_differentiable_space {d} (A : ElectromagneticPotential d)
-    (hA : Differentiable ℝ  A) (t : Time) : Differentiable ℝ (A.scalarPotential t)  := by
+    (hA : Differentiable ℝ A) (t : Time) : Differentiable ℝ (A.scalarPotential t) := by
   change Differentiable ℝ (↿A.scalarPotential ∘ fun x => (t, x))
   refine Differentiable.comp ?_ ?_
   · exact scalarPotential_differentiable A hA
   · fun_prop
 
 lemma scalarPotential_differentiable_time {d} (A : ElectromagneticPotential d)
-    (hA : Differentiable ℝ  A) (x : Space d) : Differentiable ℝ (A.scalarPotential · x)  := by
+    (hA : Differentiable ℝ A) (x : Space d) : Differentiable ℝ (A.scalarPotential · x) := by
   change Differentiable ℝ (↿A.scalarPotential ∘ fun t => (t, x))
   refine Differentiable.comp ?_ ?_
   · exact scalarPotential_differentiable A hA

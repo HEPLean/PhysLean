@@ -3,7 +3,7 @@ Copyright (c) 2025 Zhi Kai Pong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong
 -/
-import PhysLean.Electromagnetism.Homogeneous
+import PhysLean.Electromagnetism.Vacuum.Homogeneous
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 /-!

@@ -9,13 +9,11 @@ import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
 import PhysLean.ClassicalMechanics.VectorFields
 
-
 namespace Electromagnetism
 open Module realLorentzTensor
 open IndexNotation
 open TensorSpecies
 open Tensor
-
 
 namespace ElectromagneticPotential
 
@@ -27,9 +25,7 @@ open minkowskiMatrix
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
-
 open Space Time
-
 
 /-!
 
@@ -132,7 +128,6 @@ lemma magneticField_div_eq_zero (A : ElectromagneticPotential)
   rw [Space.div_of_curl_eq_zero]
   exact vectorPotential_contDiff_space A hA t
 
-
 /-!
 
 ### E.5. Magnetic field matrix
@@ -148,7 +143,7 @@ lemma magneticFieldMatrix_eq (A : ElectromagneticPotential d) :
       A.fieldStrengthMatrix (toTimeAndSpace.symm (t, x)) (Sum.inr ij.1, Sum.inr ij.2) := rfl
 
 lemma magneticFieldMatrix_antisymm (A : ElectromagneticPotential d) (t : Time)
-    (x : Space d)  (i j : Fin d) :
+    (x : Space d) (i j : Fin d) :
     A.magneticFieldMatrix t x (i, j) = - A.magneticFieldMatrix t x (j, i) := by
   rw [magneticFieldMatrix_eq]
   exact fieldStrengthMatrix_antisymm A (toTimeAndSpace.symm (t, x)) (Sum.inr i) (Sum.inr j)
@@ -161,12 +156,12 @@ lemma magneticFieldMatrix_diag_eq_zero (A : ElectromagneticPotential d) (t : Tim
   exact fieldStrengthMatrix_diag_eq_zero A (toTimeAndSpace.symm (t, x)) (Sum.inr i)
 
 lemma magneticField_eq_magneticFieldMatrix (A : ElectromagneticPotential)
-    (hA : Differentiable ℝ A)  :
-    A.magneticField  = fun t x i =>
+    (hA : Differentiable ℝ A) :
+    A.magneticField = fun t x i =>
       match i with
       | 0 => - A.magneticFieldMatrix t x (1, 2)
       | 1 => A.magneticFieldMatrix t x (0, 2)
-      | 2 => - A.magneticFieldMatrix t x (0, 1):= by
+      | 2 => - A.magneticFieldMatrix t x (0, 1) := by
   rw [magneticFieldMatrix_eq]
   funext t x i
   fin_cases i
@@ -210,7 +205,7 @@ lemma magneticFieldMatrix_eq_vectorPotential (A : ElectromagneticPotential d)
   simp
   rw [toFieldStrength_basis_repr_apply_eq_single]
   simp
-  rw [SpaceTime.deriv_sum_inr _ hA, SpaceTime.deriv_sum_inr _ hA ]
+  rw [SpaceTime.deriv_sum_inr _ hA, SpaceTime.deriv_sum_inr _ hA]
   simp [vectorPotential]
   rw [add_comm]
   congr
@@ -231,7 +226,7 @@ lemma magneticFieldMatrix_eq_vectorPotential (A : ElectromagneticPotential d)
 lemma magneticFieldMatrix_contDiff {n} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ (n + 1) A) (ij) : ContDiff ℝ n ↿(fun t x => A.magneticFieldMatrix t x ij) := by
   simp [magneticFieldMatrix_eq]
-  change  ContDiff ℝ n ((A.fieldStrengthMatrix · (Sum.inr ij.1, Sum.inr ij.2)) ∘
+  change ContDiff ℝ n ((A.fieldStrengthMatrix · (Sum.inr ij.1, Sum.inr ij.2)) ∘
     toTimeAndSpace.symm)
   refine ContDiff.comp ?_ ?_
   · exact fieldStrengthMatrix_contDiff (hA)
@@ -256,7 +251,7 @@ lemma magneticFieldMatrix_time_contDiff {n} (A : ElectromagneticPotential d)
 lemma magneticFieldMatrix_differentiable (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ 2 A) (ij) : Differentiable ℝ ↿(fun t x => A.magneticFieldMatrix t x ij) := by
   simp [magneticFieldMatrix_eq]
-  change  Differentiable ℝ ((A.fieldStrengthMatrix · (Sum.inr ij.1, Sum.inr ij.2)) ∘
+  change Differentiable ℝ ((A.fieldStrengthMatrix · (Sum.inr ij.1, Sum.inr ij.2)) ∘
     toTimeAndSpace.symm)
   refine Differentiable.comp ?_ ?_
   · exact fieldStrengthMatrix_differentiable (hA)
@@ -320,7 +315,6 @@ lemma magneticFieldMatrix_space_deriv_eq (A : ElectromagneticPotential d)
   · apply Differentiable.differentiableAt
     apply Space.deriv_differentiable
     apply vectorPotential_apply_contDiff_space _ hA
-
 
 /-!
 
@@ -397,7 +391,6 @@ lemma fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime (A : Electromagnetic
   simp only [Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply]
   exact hA
 
-
 lemma time_deriv_magneticFieldMatrix {d : ℕ} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ 2 A) (t : Time) (x : Space d) (i j : Fin d) :
     ∂ₜ (A.magneticFieldMatrix · x (i, j)) t =
@@ -414,7 +407,7 @@ lemma time_deriv_magneticFieldMatrix {d : ℕ} (A : ElectromagneticPotential d)
       · apply Differentiable.differentiableAt
         apply ClassicalMechanics.space_deriv_differentiable_time
         apply vectorPotential_comp_contDiff _ hA
-    _ = ∂[j] (fun x =>  ∂ₜ (fun t => A.vectorPotential t x i) t) x
+    _ = ∂[j] (fun x => ∂ₜ (fun t => A.vectorPotential t x i) t) x
         - ∂[i] (fun x => ∂ₜ (fun t => A.vectorPotential t x j) t) x := by
       rw [ClassicalMechanics.time_deriv_comm_space_deriv _]
       rw [ClassicalMechanics.time_deriv_comm_space_deriv _]
@@ -432,7 +425,7 @@ lemma time_deriv_magneticFieldMatrix {d : ℕ} (A : ElectromagneticPotential d)
         (by
           apply Differentiable.differentiableAt
           apply Space.deriv_differentiable
-          exact scalarPotential_contDiff_space A hA t), fderiv_fun_neg ]
+          exact scalarPotential_contDiff_space A hA t), fderiv_fun_neg]
       conv_lhs =>
         enter [2]
         rw [Space.deriv_eq_fderiv_basis, fderiv_fun_sub
@@ -440,7 +433,7 @@ lemma time_deriv_magneticFieldMatrix {d : ℕ} (A : ElectromagneticPotential d)
         (by
           apply Differentiable.differentiableAt
           apply Space.deriv_differentiable
-          exact scalarPotential_contDiff_space A hA t), fderiv_fun_neg ]
+          exact scalarPotential_contDiff_space A hA t), fderiv_fun_neg]
       conv_lhs =>
         enter [1]
         simp

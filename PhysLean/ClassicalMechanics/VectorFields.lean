@@ -226,7 +226,7 @@ lemma inner_self_cross (v w : EuclideanSpace ℝ (Fin 3)) :
 
 @[fun_prop]
 lemma space_deriv_differentiable_time {d i} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
-    {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f)  (x : Space d):
+    {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f) (x : Space d) :
     Differentiable ℝ (fun t => Space.deriv i (f t) x) := by
   conv =>
     enter [2, t];
@@ -247,10 +247,9 @@ lemma space_deriv_differentiable_time {d i} {M} [NormedAddCommGroup M] [NormedSp
     fun_prop
   · fun_prop
 
-
 @[fun_prop]
 lemma time_deriv_differentiable_space {d } {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
-    {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f)  (t : Time):
+    {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f) (t : Time) :
     Differentiable ℝ (fun x => Time.deriv (f · x) t) := by
   conv =>
     enter [2, x];
