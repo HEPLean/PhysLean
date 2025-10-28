@@ -35,27 +35,11 @@ spacetime to contravariant Lorentz vectors.
 - B. The derivative tensor of the electromagnetic potential
   - B.1. Equivariance of the derivative tensor
   - B.2. The elements of the derivative tensor in terms of the basis
-- C. The field strength tensor
-  - C.1. Basic equalities
-  - C.2. Elements of the field strength tensor in terms of basis
-  - C.3. The field strength matrix
-    - C.3.1. Differentiability of the field strength matrix
-  - C.4. The antisymmetry of the field strength tensor
-  - C.5. Equivariance of the field strength tensor
-  - C.6. Linearity of the field strength tensor
-- E. The electric and magnetic fields
-  - E.1. The scalar potential
-  - E.2. The vector potential
-  - E.3. The electric field
-    - E.3.1. Relation between the electric field and the field strength matrix
-    - E.3.2. Differentiability of the electric field
-  - E.4. The magnetic field
-    - E.4.1. Relation between the magnetic field and the field strength matrix
-  - E.5. Field strength matrix in terms of the electric and magnetic fields
 
 ## iv. References
 
 - https://quantummechanics.ucsd.edu/ph130a/130_notes/node452.html
+- https://ph.qmul.ac.uk/sites/default/files/EMT10new.pdf
 
 -/
 

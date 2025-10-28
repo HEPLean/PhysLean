@@ -7,7 +7,37 @@ import PhysLean.Electromagnetism.Kinematics.EMPotential
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
+/-!
 
+# The Scalar Potential
+
+## i. Overview
+
+The electromagnetic potential is given by
+`A = (1/c φ, \vec A)`
+where `φ` is the scalar potential and `\vec A` is the vector potential.
+
+In this module we define the scalar potential, and prove lemmas about it.
+In our current implementation `c = 1` so the scalar potential is simply given
+by the time component of the electromagnetic potential.
+
+Since `A` is relativistic it is a function of `SpaceTime d`, whilst
+the scalar potential is non-relativistic and is therefore a function of `Time` and `Space d`.
+
+## ii. Key results
+
+- `ElectromagneticPotential.scalarPotential` : The scalar potential from an
+  electromagnetic potential.
+
+## iii. Table of contents
+
+- A. Definition of the Scalar Potential
+- B. Smoothness of the Scalar Potential
+- C. Differentiability of the Scalar Potential
+
+## iv. References
+
+-/
 namespace Electromagnetism
 open Module realLorentzTensor
 open IndexNotation
@@ -24,6 +54,12 @@ open minkowskiMatrix
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
+/-!
+
+## A. Definition of the Scalar Potential
+
+-/
+
 /-- The scalar potential from the electromagnetic potential. -/
 noncomputable def scalarPotential {d} (A : ElectromagneticPotential d) :
     Time → Space d → ℝ := timeSlice <|
@@ -32,6 +68,8 @@ noncomputable def scalarPotential {d} (A : ElectromagneticPotential d) :
 /-!
 
 ## B. Smoothness of the Scalar Potential
+
+We prove various lemmas about the smoothness of the scalar potential.
 
 -/
 
@@ -61,6 +99,8 @@ lemma scalarPotential_contDiff_time {n} {d} (A : ElectromagneticPotential d)
 /-!
 
 ## C. Differentiability of the Scalar Potential
+
+We prove various lemmas about the differentiability of the scalar potential.
 
 -/
 

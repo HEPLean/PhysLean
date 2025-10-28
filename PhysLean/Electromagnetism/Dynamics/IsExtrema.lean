@@ -4,7 +4,44 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Dynamics.Lagrangian
+/-!
 
+# Extrema of the Lagrangian density
+
+## i. Overview
+
+In this module we define what it means for an electromagnetic potential
+to be an extremum of the Lagrangian density in presence of a Lorentz current density.
+
+This is equivalent to the electromagnetic potential satisfying
+Maxwell's equations with sources, i.e. Gauss's law and Ampère's law.
+
+## ii. Key results
+
+- `IsExtrema` : The condition on an electromagnetic potential to be an extrema of the lagrangian.
+- `isExtrema_iff_gauss_ampere_magneticFieldMatrix` : The electromagnetic potential is an extrema
+  of the lagrangian if and only if Gauss's law and Ampère's law hold
+  (in terms of the magnetic field matrix).
+- `time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema` : A wave-like equation for the
+  magnetic field matrix from the extrema condition.
+- `time_deriv_time_deriv_electricField_of_isExtrema` : A wave-like equation for the
+  electric field from the extrema condition.
+
+## iii. Table of contents
+
+- A. The condition for an extrema of the Lagrangian density
+  - A.1. Extrema condition in terms of the field strength matrix
+- B. Gauss's law and Ampère's law and the extrema condition
+  - B.1. Gauss's law from the extrema condition
+  - B.2. Ampere's law from the extrema condition
+  - B.3. Extrema condition if and only if Gauss's law and Ampère's law
+- C. Second time derivatives from the extrema condition
+  - C.1. Second time derivatives of the magnetic field from the extrema condition
+  - C.2. Second time derivatives of the electric field from the extrema condition
+
+## iv. References
+
+-/
 namespace Electromagnetism
 open Module realLorentzTensor
 open IndexNotation
@@ -26,9 +63,11 @@ attribute [-simp] Nat.succ_eq_add_one
 
 /-!
 
-## C. Extrema of the Lagrangian density
+## A. The condition for an extrema of the Lagrangian density
+
 -/
 
+/-- The condition on an electromagnetic potential to be an extrema of the lagrangian. -/
 def IsExtrema {d} (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) : Prop :=
   gradLagrangian A J = 0
@@ -36,6 +75,12 @@ def IsExtrema {d} (A : ElectromagneticPotential d)
 lemma isExtrema_iff_gradLagrangian (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) :
     IsExtrema A J ↔ A.gradLagrangian J = 0 := by rfl
+
+/-!
+
+### A.1. Extrema condition in terms of the field strength matrix
+
+-/
 
 lemma isExtrema_iff_fieldStrengthMatrix (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d) (hJ : ContDiff ℝ ∞ J) :
@@ -70,6 +115,18 @@ lemma isExtrema_iff_fieldStrengthMatrix (A : ElectromagneticPotential d)
     rw [h x]
     simp
 
+/-!
+
+## B. Gauss's law and Ampère's law and the extrema condition
+
+-/
+
+/-!
+
+### B.1. Gauss's law from the extrema condition
+
+-/
+
 lemma gaussLaw_electricField_of_isExtrema {A : ElectromagneticPotential d}
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
     (hJ : ContDiff ℝ ∞ J) (h : IsExtrema A J)
@@ -87,9 +144,17 @@ lemma gaussLaw_electricField_of_isExtrema {A : ElectromagneticPotential d}
   simp [Space.coord_apply]
   rw [electricField_eq_fieldStrengthMatrix A t x i (hA.differentiable (by simp))]
   rw [fieldStrengthMatrix_antisymm]
-  simp
+  simp only [Fin.isValue, neg_neg]
   · refine fieldStrengthMatrix_differentiable ?_
     exact hA.of_le (ENat.LEInfty.out)
+
+/-!
+
+### B.2. Ampere's law from the extrema condition
+
+Working in general spatial dimension `d`.
+
+-/
 
 lemma ampereLaw_magneticFieldMatrix_of_isExtrema {A : ElectromagneticPotential d}
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
@@ -113,7 +178,8 @@ lemma ampereLaw_magneticFieldMatrix_of_isExtrema {A : ElectromagneticPotential d
       trans (fderiv ℝ (EuclideanSpace.proj i ∘ fun t => A.electricField t x) t) 1;swap
       · rfl
       rw [fderiv_comp]
-      simp
+      simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply,
+        PiLp.proj_apply]
       · fun_prop
       · apply Differentiable.differentiableAt
         apply A.electricField_differentiable_time
@@ -133,6 +199,12 @@ lemma ampereLaw_magneticFieldMatrix_of_isExtrema {A : ElectromagneticPotential d
     rfl
   rw [h1, h2]
   simp
+
+/-!
+
+### B.3. Extrema condition if and only if Gauss's law and Ampère's law
+
+-/
 
 lemma isExtrema_iff_gauss_ampere_magneticFieldMatrix {d} {A : ElectromagneticPotential d}
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
@@ -179,7 +251,8 @@ lemma isExtrema_iff_gauss_ampere_magneticFieldMatrix {d} {A : ElectromagneticPot
         trans -(fderiv ℝ (EuclideanSpace.proj i ∘ fun t => A.electricField t x.space) x.time) 1;swap
         · rfl
         rw [fderiv_comp]
-        simp
+        simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply,
+          PiLp.proj_apply]
         · fun_prop
         · apply Differentiable.differentiableAt
           apply A.electricField_differentiable_time
@@ -200,7 +273,18 @@ lemma isExtrema_iff_gauss_ampere_magneticFieldMatrix {d} {A : ElectromagneticPot
     rw [← h1, ← h2, hn]
     simp [LorentzCurrentDensity.currentDensity]
 
+/-!
+
+## C. Second time derivatives from the extrema condition
+
+-/
 open Time
+
+/-!
+
+### C.1. Second time derivatives of the magnetic field from the extrema condition
+
+-/
 
 lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : ElectromagneticPotential d}
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d) (hJd : Differentiable ℝ J)
@@ -291,7 +375,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
       all_goals
         rw [Space.deriv_eq_fderiv_basis]
         rw [fderiv_fun_sum]
-        simp
+        simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply]
         congr
         funext k
         rw [Space.deriv_eq_fderiv_basis]
@@ -319,7 +403,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
       trans fderiv ℝ (Space.deriv i (fun x => A.magneticFieldMatrix t x (k, j))
         - Space.deriv j fun x => A.magneticFieldMatrix t x (k, i)) x (Space.basis k)
       · rw [fderiv_sub]
-        simp
+        simp only [ContinuousLinearMap.coe_sub', Pi.sub_apply]
         all_goals
         apply Differentiable.differentiableAt
         apply Space.deriv_differentiable
@@ -332,6 +416,12 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
       conv_rhs =>
         rw [magneticFieldMatrix_space_deriv_eq _ (hA.of_le (ENat.LEInfty.out))]
       simp
+
+/-!
+
+### C.2. Second time derivatives of the electric field from the extrema condition
+
+-/
 
 lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d) (hJd : Differentiable ℝ J)
@@ -367,7 +457,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
       congr
       rw [Time.deriv_eq]
       rw [fderiv_fun_sum]
-      simp
+      simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply]
       rfl
       intro i _
       apply Differentiable.differentiableAt
@@ -377,7 +467,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
     _ = (∑ j, ∂[j] (fun x => ∂ₜ (A.magneticFieldMatrix · x (j, i)) t)) x -
         ∂ₜ (J.currentDensity · x i) t := by
       congr
-      simp
+      simp only [Finset.sum_apply]
       congr
       funext k
       rw [ClassicalMechanics.time_deriv_comm_space_deriv]
@@ -386,7 +476,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
     _ = (∑ j, ∂[j] (fun x => ∂[j] (A.electricField t · i) x - ∂[i] (A.electricField t · j) x)) x -
           ∂ₜ (J.currentDensity · x i) t := by
         congr
-        simp
+        simp only [Finset.sum_apply]
         congr
         funext k
         congr

@@ -7,6 +7,35 @@ import PhysLean.Electromagnetism.Kinematics.EMPotential
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
+/-!
+
+# The vector Potential
+
+## i. Overview
+
+The electromagnetic potential is given by
+`A = (1/c φ, \vec A)`
+where `φ` is the scalar potential and `\vec A` is the vector potential.
+
+In this module we define the vector potential, and prove lemmas about it.
+
+Since `A` is relativistic it is a function of `SpaceTime d`, whilst
+the vector potential is non-relativistic and is therefore a function of `Time` and `Space d`.
+
+## ii. Key results
+
+- `ElectromagneticPotential.vectorPotential` : The vector potential from an
+  electromagnetic potential.
+
+## iii. Table of contents
+
+- A. Definition of the Vector Potential
+- B. Smoothness of the vector potential
+- C. Differentiablity of the vector potential
+
+## iv. References
+
+-/
 
 namespace Electromagnetism
 open Module realLorentzTensor
@@ -24,6 +53,12 @@ open minkowskiMatrix
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
+/-!
+
+## A. Definition of the Vector Potential
+
+-/
+
 /-- The vector potential from the electromagnetic potential. -/
 noncomputable def vectorPotential {d} (A : ElectromagneticPotential d) :
     Time → Space d → EuclideanSpace ℝ (Fin d) := timeSlice <|
@@ -32,6 +67,9 @@ noncomputable def vectorPotential {d} (A : ElectromagneticPotential d) :
 /-!
 
 ## B. Smoothness of the vector potential
+
+We prove various lemmas about the smoothness of the vector potential from
+the smoothness of the electromagnetic potential.
 
 -/
 
@@ -84,6 +122,9 @@ lemma vectorPotential_contDiff_time {n} {d} (A : ElectromagneticPotential d)
 /-!
 
 ## C. Differentiablity of the vector potential
+
+We prove various lemmas about the differentiablity of the vector potential from
+the differentiablity of the electromagnetic potential.
 
 -/
 

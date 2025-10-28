@@ -33,12 +33,14 @@ show their action on basic functions, and prove vector calculus identities
   - A.3. Two spatial derivatives commute
   - A.4. Derivative of a component
   - A.5. Derivative of a component squared
-  - A.6. Derivative of a norm squared
-    - A.6.1. Differentiability of the norm squared function
-    - A.6.2. Derivative of the norm squared function
-  - A.7. Derivative of the inner product
-    - A.7.1. Differentiability of the inner product function
-    - A.7.2. Derivative of the inner product function
+  - A.6. Derivivatives of components
+  - A.7. Derivative of a norm squared
+    - A.7.1. Differentiability of the norm squared function
+    - A.7.2. Derivative of the norm squared function
+  - A.8. Derivative of the inner product
+    - A.8.1. Differentiability of the inner product function
+    - A.8.2. Derivative of the inner product function
+  - A.9. Differentiability of derivatives
 - B. Properties of the gradient operator
   - B.1. Gradient of the zero function
   - B.2. Gradient distributes over addition
@@ -237,13 +239,13 @@ lemma deriv_lorentz_vector {d ν μ} {f : Space d → Lorentz.Vector d}
 
 /-!
 
-### A.6. Derivative of a norm squared
+### A.7. Derivative of a norm squared
 
 -/
 
 /-!
 
-#### A.6.1. Differentiability of the norm squared function
+#### A.7.1. Differentiability of the norm squared function
 
 -/
 @[fun_prop]
@@ -253,7 +255,7 @@ lemma norm_sq_differentiable : Differentiable ℝ (fun x : Space d => ‖x‖ ^ 
 
 /-!
 
-#### A.6.2. Derivative of the norm squared function
+#### A.7.2. Derivative of the norm squared function
 
 -/
 
@@ -273,7 +275,7 @@ lemma deriv_norm_sq (x : Space d) (i : Fin d) :
 
 /-!
 
-### A.7. Derivative of the inner product
+### A.8. Derivative of the inner product
 
 -/
 
@@ -281,7 +283,7 @@ open InnerProductSpace
 
 /-!
 
-#### A.7.1. Differentiability of the inner product function
+#### A.8.1. Differentiability of the inner product function
 
 -/
 
@@ -293,7 +295,7 @@ lemma inner_differentiable {d : ℕ} :
 
 /-!
 
-#### A.7.2. Derivative of the inner product function
+#### A.8.2. Derivative of the inner product function
 
 -/
 
@@ -304,7 +306,7 @@ lemma deriv_eq_inner_self (x : Space d) (i : Fin d) :
 
 /-!
 
-## A.8 Differentiability of derivatives
+### A.9. Differentiability of derivatives
 
 -/
 

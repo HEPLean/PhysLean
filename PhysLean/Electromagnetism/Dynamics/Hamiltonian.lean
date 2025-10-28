@@ -231,7 +231,7 @@ lemma hamiltonian_eq_electricField_magneticField (A : ElectromagneticPotential 3
       (minkowskiProduct (A x)) (J x) := by rfl
     _ = 1/2 * (‖A.electricField x.time x.space‖ ^ 2 + ‖A.magneticField x.time x.space‖ ^ 2)
       + ∑ i, (A.electricField x.time x.space i * ∂_ (Sum.inr i) A x (Sum.inl 0)) +
-      ⟪A x, J x⟫ₘ := by simp; ring
+      ⟪A x, J x⟫ₘ := by simp [space]; ring
   simp only [one_div, space_toCoord_symm, Fin.isValue]
   repeat exact hA.differentiable (by simp)
 

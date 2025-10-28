@@ -261,7 +261,7 @@ lemma time_deriv_differentiable_space {d } {M} [NormedAddCommGroup M] [NormedSpa
       ext w
       simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.inl_apply]
       rw [fderiv_uncurry]
-      simp
+      simp only [map_zero, add_zero]
       fun_prop
     conv =>
       enter [2, t']

@@ -10,12 +10,14 @@ import PhysLean.Electromagnetism.Kinematics.MagneticField
 
 ## i. Overview
 
-The kinetic term of the electromagnetic field is `- 1/4 F_μν F^μν`.
+The kinetic term of the electromagnetic field is `- 1/(4 μ₀) F_μν F^μν`.
 We define this, show it is invariant under Lorentz transformations,
 and show properties of its variational gradient.
 
 In particular the variational gradient `gradKineticTerm` of the kinetic term
 is directly related to Gauss's law and the Ampere law.
+
+In this implementation we have set `μ₀ = 1`. It is a TODO to introduce this constant.
 
 ## ii. Key results
 

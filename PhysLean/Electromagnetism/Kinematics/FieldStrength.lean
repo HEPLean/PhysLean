@@ -7,7 +7,36 @@ import PhysLean.Electromagnetism.Kinematics.EMPotential
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
+/-!
 
+# The Field Strength Tensor
+
+## i. Overview
+
+In this module we define the field strength tensor in terms of the electromagnetic potential.
+
+We define a tensor version and a matrix version and prover various properties of these.
+
+## ii. Key results
+
+- `toFieldStrength` : The field strength tensor from an electromagnetic potential.
+- `fieldStrengthMatrix` : The field strength matrix from an electromagnetic potential
+  (matrix representation of the field strength tensor in the standard basis).
+
+## iii. Table of contents
+
+- A. The field strength tensor
+  - A.1. Basic equalities
+  - A.2. Elements of the field strength tensor in terms of basis
+  - A.3. The field strength matrix
+    - A.3.1. Differentiability of the field strength matrix
+  - A.4. The antisymmetry of the field strength tensor
+  - A.5. Equivariance of the field strength tensor
+  - A.6. Linearity of the field strength tensor
+
+## iv. References
+
+-/
 namespace Electromagnetism
 open Module realLorentzTensor
 open IndexNotation
@@ -26,7 +55,7 @@ attribute [-simp] Nat.succ_eq_add_one
 
 /-!
 
-## C. The field strength tensor
+## A. The field strength tensor
 
 We define the field strength tensor `F_μ^ν` in terms of the derivative of the
 electromagnetic potential `A^μ`. We then prove that this tensor transforms correctly
@@ -41,7 +70,7 @@ noncomputable def toFieldStrength {d} (A : ElectromagneticPotential d) :
 
 /-!
 
-### C.1. Basic equalities
+### A.1. Basic equalities
 
 -/
 
@@ -67,7 +96,7 @@ lemma toTensor_toFieldStrength {d} (A : ElectromagneticPotential d) (x : SpaceTi
 
 /-!
 
-### C.2. Elements of the field strength tensor in terms of basis
+### A.2. Elements of the field strength tensor in terms of basis
 
 -/
 
@@ -160,7 +189,7 @@ lemma toFieldStrength_basis_repr_apply_eq_single {d} {μν : (Fin 1 ⊕ Fin d) �
 
 /-!
 
-### C.3. The field strength matrix
+### A.3. The field strength matrix
 
 We define the field strength matrix to be the matrix representation of the field strength tensor
 in the standard basis.
@@ -184,7 +213,7 @@ lemma fieldStrengthMatrix_eq_tensor_basis_repr {d} (A : ElectromagneticPotential
 
 /-!
 
-#### C.3.1. Differentiability of the field strength matrix
+#### A.3.1. Differentiability of the field strength matrix
 
 -/
 
@@ -241,7 +270,7 @@ lemma fieldStrengthMatrix_smooth {d} {A : ElectromagneticPotential d}
 
 /-!
 
-### C.4. The antisymmetry of the field strength tensor
+### A.4. The antisymmetry of the field strength tensor
 
 We show that the field strength tensor is antisymmetric.
 
@@ -277,7 +306,7 @@ lemma fieldStrengthMatrix_diag_eq_zero {d} (A : ElectromagneticPotential d) (x :
 
 /-!
 
-### C.5. Equivariance of the field strength tensor
+### A.5. Equivariance of the field strength tensor
 
 We show that the field strength tensor is equivariant under the action of the Lorentz group.
 That is transforming the potential and then taking the field strength is the same
@@ -332,7 +361,7 @@ lemma fieldStrengthMatrix_equivariant {d} (A : ElectromagneticPotential d)
 
 /-!
 
-### C.6. Linearity of the field strength tensor
+### A.6. Linearity of the field strength tensor
 
 We show that the field strength tensor is linear in the potential.
 

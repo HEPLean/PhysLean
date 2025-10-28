@@ -9,7 +9,34 @@ import PhysLean.Electromagnetism.Kinematics.FieldStrength
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
+/-!
 
+# The Electric Field
+
+## i. Overview
+
+The electric field is defined in terms of the electromagnetic potential `A` as
+`E = - ∇ φ - ∂ₜ \vec A`.
+
+In this module we define the electric field, and prove lemmas about it.
+
+## ii. Key results
+
+- `electricField` : The electric field from the electromagnetic potential.
+- `electricField_eq_fieldStrengthMatrix` : The electric field expressed in terms of the
+  field strength tensor.
+
+## iii. Table of contents
+
+- A. Definition of the Electric Field
+- B. Relation to the field strength tensor
+- C. Smoothness of the electric field
+- D. Differentiability of the electric field
+- E. Time derivative of the vector potential in terms of the electric field
+
+## iv. References
+
+-/
 namespace Electromagnetism
 open Module realLorentzTensor
 open IndexNotation
@@ -28,6 +55,12 @@ attribute [-simp] Nat.succ_eq_add_one
 
 open Space Time
 
+/-!
+
+## A. Definition of the Electric Field
+
+-/
+
 /-- The electric field from the electromagnetic potential. -/
 noncomputable def electricField {d} (A : ElectromagneticPotential d) : ElectricField d :=
   fun t x => - ∇ (A.scalarPotential t) x - ∂ₜ (fun t => A.vectorPotential t x) t
@@ -38,7 +71,7 @@ lemma electricField_eq (A : ElectromagneticPotential d) :
 
 /-!
 
-#### E.3.1. Relation between the electric field and the field strength matrix
+## B. Relation to the field strength tensor
 
 -/
 
@@ -86,7 +119,7 @@ lemma electricField_eq_fieldStrengthMatrix (A : ElectromagneticPotential d) (t :
 
 /-!
 
-#### E.3.2. Differentiability of the electric field
+## C. Smoothness of the electric field
 
 -/
 
@@ -133,6 +166,12 @@ lemma electricField_apply_contDiff_time {n} {A : ElectromagneticPotential d}
     · exact electricField_contDiff hA
     · fun_prop
 
+/-!
+
+## D. Differentiability of the electric field
+
+-/
+
 lemma electricField_differentiable {A : ElectromagneticPotential d}
     (hA : ContDiff ℝ 2 A) : Differentiable ℝ (↿A.electricField) := by
   rw [differentiable_pi]
@@ -173,7 +212,7 @@ lemma electricField_apply_differentiable_space {A : ElectromagneticPotential d}
 
 /-!
 
-#### E.3.3. Vector potential in terms of electric field
+## E. Time derivative of the vector potential in terms of the electric field
 
 -/
 

@@ -12,8 +12,13 @@ import PhysLean.Electromagnetism.Kinematics.MagneticField
 ## i. Overview
 
 In this module we define the Lagrangian density for the electromagnetic field in
-presence of a current density. We prover properties of this lagrangian density,
+presence of a current density. We prove properties of this lagrangian density,
 and find it's variational gradient.
+
+The lagrangian density is given by
+`L = -1/(4 μ₀) F_{μν} F^{μν} - A_μ J^μ`
+
+In this implementation we set `μ₀ = 1`. It is a TODO to introduce this constant.
 
 ## ii. Key results
 
@@ -38,6 +43,7 @@ and find it's variational gradient.
 ## iv. References
 
 - https://quantummechanics.ucsd.edu/ph130a/130_notes/node452.html
+- https://ph.qmul.ac.uk/sites/default/files/EMT10new.pdf
 
 -/
 
@@ -63,7 +69,7 @@ attribute [-simp] Nat.succ_eq_add_one
 ## A. The Lagrangian density
 
 The lagrangian density for the electromagnetic field in presence of a current density `J` is
-`L = 1/4 F_{μν} F^{μν} - A_μ J^μ`
+`L = -1/(4 μ₀) F_{μν} F^{μν} - A_μ J^μ`
 
 -/
 

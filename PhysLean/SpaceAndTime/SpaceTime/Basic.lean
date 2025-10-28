@@ -117,7 +117,6 @@ def space {d : ℕ} : SpaceTime d →L[ℝ] Space d where
 
 -/
 
-@[simp]
 lemma space_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
     space f = fun i => f (Sum.inr i) := by
   funext i
@@ -212,7 +211,7 @@ lemma space_toTimeAndSpace_symm {d : ℕ} (t : Time) (s : Space d) :
 
 @[simp]
 lemma toTimeAndSpace_symm_apply_time_space' {d : ℕ} (x : SpaceTime d) :
-    toTimeAndSpace.symm (x.time, fun i => x (Sum.inr i)) = x := by
+    toTimeAndSpace.symm (x.time, x.space) = x := by
   apply toTimeAndSpace.left_inv
 
 @[simp]
@@ -258,7 +257,7 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
   constructor
   · simp
   funext j
-  simp [Space.basis_apply]
+  simp [Space.basis_apply, space]
 
 /-!
 

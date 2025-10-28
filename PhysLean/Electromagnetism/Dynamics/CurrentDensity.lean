@@ -15,6 +15,9 @@ In this module we define the Lorentz current density
 and its decomposition into charge density and current density.
 The Lorentz current density is often called the four-current and given then the symbol `J`.
 
+The current density is given in terms of the charge density `ρ` and the current density
+` \vec j` as `J = (c ρ, \vec j)`.
+
 ## ii. Key results
 
 - `LorentzCurrentDensity` : The type of Lorentz current densities.
@@ -27,7 +30,9 @@ The Lorentz current density is often called the four-current and given then the 
 
 - A. The Lorentz Current Density
 - B. The underlying charge
+  - B.1. Differentiability of the charge density
 - C. The underlying current density
+  - C.1. Differentiability of the current density
 
 ## iv. References
 
