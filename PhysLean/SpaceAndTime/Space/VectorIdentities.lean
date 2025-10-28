@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 -/
 import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.SpaceTime.Basic
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
@@ -207,6 +208,35 @@ lemma deriv_component_sq {d : ℕ} {ν μ : Fin d} (x : Space d) :
 
 /-!
 
+### A.6. Derivivatives of components
+
+-/
+
+lemma deriv_euclid {d ν μ} {f : Space d → EuclideanSpace ℝ (Fin n)}
+    (hf : Differentiable ℝ f) (x : Space d) :
+    deriv ν (fun x => f x μ) x = deriv ν (fun x => f x) x μ := by
+  rw [deriv_eq_fderiv_basis]
+  change fderiv ℝ (EuclideanSpace.proj μ ∘ fun x => f x) x (basis ν) = _
+  rw [fderiv_comp]
+  · simp
+    rw [← deriv_eq_fderiv_basis]
+  · fun_prop
+  · fun_prop
+
+lemma deriv_lorentz_vector {d ν μ} {f : Space d → Lorentz.Vector d}
+    (hf : Differentiable ℝ f) (x : Space d) :
+    deriv ν (fun x => f x μ) x = deriv ν (fun x => f x) x μ := by
+  rw [deriv_eq_fderiv_basis]
+  change fderiv ℝ (Lorentz.Vector.coordCLM μ ∘ fun x => f x) x (basis ν) = _
+  rw [fderiv_comp]
+  · simp
+    rw [← deriv_eq_fderiv_basis]
+    rfl
+  · fun_prop
+  · fun_prop
+
+/-!
+
 ### A.6. Derivative of a norm squared
 
 -/
@@ -271,6 +301,23 @@ lemma deriv_eq_inner_self (x : Space d) (i : Fin d) :
     deriv i (fun x => ⟪x, x⟫_ℝ) x = 2 * x i := by
   convert deriv_norm_sq x i
   exact real_inner_self_eq_norm_sq _
+
+/-!
+
+## A.8 Differentiability of derivatives
+
+-/
+
+lemma deriv_differentiable {M} [NormedAddCommGroup M]
+    [NormedSpace ℝ M] {d : ℕ} {f : Space d → M}
+    (hf : ContDiff ℝ 2 f) (i : Fin d) :
+    Differentiable ℝ (deriv i f) := by
+  have h1 : Differentiable ℝ (fun x => fderiv ℝ f x (basis i)) := by
+    fun_prop
+  convert h1 using 1
+  funext x
+  rw [deriv_eq_fderiv_basis]
+
 
 /-!
 

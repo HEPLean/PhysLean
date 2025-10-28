@@ -383,4 +383,15 @@ lemma deriv_contDiff_of_contDiff {M : Type}
   · fun_prop
   · fun_prop
 
+lemma deriv_euclid { μ} {f : Time→ EuclideanSpace ℝ (Fin n)}
+    (hf : Differentiable ℝ f) (t : Time) :
+    deriv (fun t => f t μ) t = deriv (fun t => f t) t μ := by
+  rw [deriv_eq]
+  change fderiv ℝ (EuclideanSpace.proj μ ∘ fun x => f x) t 1 = _
+  rw [fderiv_comp]
+  · simp
+    rw [← deriv_eq]
+  · fun_prop
+  · fun_prop
+
 end Time

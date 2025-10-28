@@ -36,6 +36,24 @@ def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d �
     funext x t
     simp
 
+lemma timeSlice_contDiff {d : ℕ} {M : Type}  [NormedAddCommGroup M]
+  [NormedSpace ℝ M]
+    {n} (f : SpaceTime d → M) (h : ContDiff ℝ n f) :
+    ContDiff ℝ n ↿(timeSlice f) := by
+  change ContDiff ℝ n (f ∘ toTimeAndSpace.symm)
+  apply ContDiff.comp
+  · exact h
+  · exact ContinuousLinearEquiv.contDiff toTimeAndSpace.symm
+
+lemma timeSlice_differentiable {d : ℕ} {M : Type}  [NormedAddCommGroup M]
+  [NormedSpace ℝ M]
+    (f : SpaceTime d → M) (h : Differentiable ℝ f) :
+    Differentiable ℝ  ↿(timeSlice f) := by
+  change Differentiable ℝ  (f ∘ toTimeAndSpace.symm)
+  apply Differentiable.comp
+  · exact h
+  · exact ContinuousLinearEquiv.differentiable toTimeAndSpace.symm
+
 /-- The timeslice of a function `SpaceTime d → M` forming a function
   `Time → Space d → M`, as a linear equivalence. -/
 def timeSliceLinearEquiv {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M] :

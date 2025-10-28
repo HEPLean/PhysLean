@@ -218,4 +218,64 @@ lemma inner_self_cross (v w : EuclideanSpace ℝ (Fin 3)) :
   change (crossProduct v) w ⬝ᵥ v = _
   rw [dotProduct_comm, dot_self_cross]
 
+/-!
+
+## Differentiablity conditions
+
+-/
+
+@[fun_prop]
+lemma space_deriv_differentiable_time {d i} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f)  (x : Space d):
+    Differentiable ℝ (fun t => Space.deriv i (f t) x) := by
+  conv =>
+    enter [2, t];
+    rw [Space.deriv_eq_fderiv_basis]
+  apply Differentiable.clm_apply
+  · have hdd : Differentiable ℝ ↿f := hf.two_differentiable
+    have h1 (t : Time) : fderiv ℝ (fun x => f t x) x
+      = fderiv ℝ (↿f) (t, x) ∘L (ContinuousLinearMap.inr ℝ Time (Space d)) := by
+      ext w
+      simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.inr_apply]
+      rw [fderiv_uncurry]
+      simp only [map_zero, zero_add]
+      fun_prop
+    conv =>
+      enter [2, y]
+      change fderiv ℝ (fun x => f y x) x
+      rw [h1]
+    fun_prop
+  · fun_prop
+
+
+@[fun_prop]
+lemma time_deriv_differentiable_space {d } {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f)  (t : Time):
+    Differentiable ℝ (fun x => Time.deriv (f · x) t) := by
+  conv =>
+    enter [2, x];
+    rw [Time.deriv_eq]
+  apply Differentiable.clm_apply
+  · have hdd : Differentiable ℝ ↿f := hf.two_differentiable
+    have h1 (x : Space d) : fderiv ℝ (fun t => f t x) t
+      = fderiv ℝ (↿f) (t, x) ∘L (ContinuousLinearMap.inl ℝ Time (Space d)) := by
+      ext w
+      simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.inl_apply]
+      rw [fderiv_uncurry]
+      simp
+      fun_prop
+    conv =>
+      enter [2, t']
+      change fderiv ℝ (fun x => f x t') t
+      rw [h1]
+    fun_prop
+  · fun_prop
+
+lemma time_deriv_comm_space_deriv {d i} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f) (t : Time) (x : Space d) :
+    Time.deriv (fun t' => Space.deriv i (f t') x) t
+    = Space.deriv i (fun x' => Time.deriv (fun t' => f t' x') t) x := by
+  simp only [Time.deriv_eq, Space.deriv_eq_fderiv_basis]
+  exact fderiv_swap (𝕜 := ℝ) f t 1 x (basis i) hf
+
 end ClassicalMechanics

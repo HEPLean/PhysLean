@@ -756,8 +756,63 @@ This assumes that the spee of light is set to `1`.
 -/
 
 /-- The scalar potential from the electromagnetic potential. -/
-noncomputable def scalarPotential (A : ElectromagneticPotential) : Time → Space → ℝ := timeSlice <|
+noncomputable def scalarPotential {d} (A : ElectromagneticPotential d) :
+    Time → Space d → ℝ := timeSlice <|
   fun x => A x (Sum.inl 0)
+
+/-!
+
+### E.1.1 Smoothness of the scalar potential
+
+-/
+
+lemma scalarPotential_contDiff {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) : ContDiff ℝ n ↿A.scalarPotential := by
+  simp [scalarPotential]
+  apply timeSlice_contDiff
+  have h1 : ∀ i, ContDiff ℝ n (fun x => A x i) := by
+    rw [← contDiff_euclidean]
+    exact hA
+  exact h1 (Sum.inl 0)
+
+
+lemma scalarPotential_differentiable {d} (A : ElectromagneticPotential d)
+    (hA : Differentiable ℝ  A) : Differentiable ℝ ↿A.scalarPotential := by
+  simp [scalarPotential]
+  apply timeSlice_differentiable
+  have h1 : ∀ i, Differentiable ℝ (fun x => A x i) := by
+    rw [← differentiable_euclidean]
+    exact hA
+  exact h1 (Sum.inl 0)
+
+lemma scalarPotential_contDiff_space  {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) (t : Time) : ContDiff ℝ n (A.scalarPotential t) := by
+  change ContDiff ℝ n (↿A.scalarPotential ∘ fun x => (t, x))
+  refine ContDiff.comp ?_ ?_
+  · exact scalarPotential_contDiff A hA
+  · fun_prop
+
+
+lemma scalarPotential_differentiable_space {d} (A : ElectromagneticPotential d)
+    (hA : Differentiable ℝ  A) (t : Time) : Differentiable ℝ (A.scalarPotential t)  := by
+  change Differentiable ℝ (↿A.scalarPotential ∘ fun x => (t, x))
+  refine Differentiable.comp ?_ ?_
+  · exact scalarPotential_differentiable A hA
+  · fun_prop
+
+lemma scalarPotential_contDiff_time  {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) (x : Space d) : ContDiff ℝ n (A.scalarPotential · x) := by
+  change ContDiff ℝ n (↿A.scalarPotential ∘ fun t => (t, x))
+  refine ContDiff.comp ?_ ?_
+  · exact scalarPotential_contDiff A hA
+  · fun_prop
+
+lemma scalarPotential_differentiable_time {d} (A : ElectromagneticPotential d)
+    (hA : Differentiable ℝ  A) (x : Space d) : Differentiable ℝ (A.scalarPotential · x)  := by
+  change Differentiable ℝ (↿A.scalarPotential ∘ fun t => (t, x))
+  refine Differentiable.comp ?_ ?_
+  · exact scalarPotential_differentiable A hA
+  · fun_prop
 
 /-!
 
@@ -766,9 +821,78 @@ noncomputable def scalarPotential (A : ElectromagneticPotential) : Time → Spac
 -/
 
 /-- The vector potential from the electromagnetic potential. -/
-noncomputable def vectorPotential (A : ElectromagneticPotential) :
-    Time → Space → EuclideanSpace ℝ (Fin 3) := timeSlice <|
+noncomputable def vectorPotential {d} (A : ElectromagneticPotential d) :
+    Time → Space d → EuclideanSpace ℝ (Fin d) := timeSlice <|
   fun x i => A x (Sum.inr i)
+
+/-!
+
+### E.2.1 Smoothness of the vector potential
+
+-/
+
+
+lemma vectorPotential_contDiff {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) : ContDiff ℝ n ↿A.vectorPotential := by
+  simp [vectorPotential]
+  apply timeSlice_contDiff
+  refine contDiff_euclidean.mpr ?_
+  have h1 : ∀ i, ContDiff ℝ n (fun x => A x i) := by
+    rw [← contDiff_euclidean]
+    exact hA
+  exact fun i => h1 (Sum.inr i)
+
+lemma vectorPotential_apply_contDiff {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) (i : Fin d): ContDiff ℝ n ↿(fun t x => A.vectorPotential t x i) := by
+  change ContDiff ℝ n (EuclideanSpace.proj i ∘ ↿A.vectorPotential)
+  refine ContDiff.comp ?_ ?_
+  · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) (n := n) (EuclideanSpace.proj i)
+  · exact vectorPotential_contDiff A hA
+
+lemma vectorPotential_differentiable {d} (A : ElectromagneticPotential d)
+    (hA : Differentiable ℝ  A) : Differentiable ℝ ↿A.vectorPotential := by
+  simp [vectorPotential]
+  apply timeSlice_differentiable
+  refine differentiable_euclidean.mpr ?_
+  have h1 : ∀ i, Differentiable ℝ (fun x => A x i) := by
+    rw [← differentiable_euclidean]
+    exact hA
+  exact fun i => h1 (Sum.inr i)
+
+lemma vectorPotential_comp_contDiff {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) (i : Fin d): ContDiff ℝ n ↿(fun t x => A.vectorPotential t x i) := by
+  change ContDiff ℝ n (EuclideanSpace.proj i ∘ ↿A.vectorPotential)
+  refine ContDiff.comp ?_ ?_
+  · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) (n := n) (EuclideanSpace.proj i)
+  · exact vectorPotential_contDiff A hA
+
+lemma vectorPotential_contDiff_space  {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) (t : Time) : ContDiff ℝ n (A.vectorPotential t) := by
+  change ContDiff ℝ n (↿A.vectorPotential ∘ fun x => (t, x))
+  refine ContDiff.comp ?_ ?_
+  · exact vectorPotential_contDiff A hA
+  · fun_prop
+
+lemma vectorPotential_apply_contDiff_space {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) (t : Time) (i : Fin d): ContDiff ℝ n (fun x => A.vectorPotential t x i) := by
+  change ContDiff ℝ n (EuclideanSpace.proj i ∘ (↿A.vectorPotential ∘ fun x => (t, x)))
+  refine ContDiff.comp ?_ ?_
+  · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) (n := n) (EuclideanSpace.proj i)
+  · exact vectorPotential_contDiff_space A hA t
+
+lemma vectorPotential_contDiff_time  {n} {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ n A) (x : Space d) : ContDiff ℝ n (A.vectorPotential · x) := by
+  change ContDiff ℝ n (↿A.vectorPotential ∘ fun t => (t, x))
+  refine ContDiff.comp ?_ ?_
+  · exact vectorPotential_contDiff A hA
+  · fun_prop
+
+lemma vectorPotential_differentiable_time {d} (A : ElectromagneticPotential d)
+    (hA : Differentiable ℝ  A) (x : Space d) : Differentiable ℝ (A.vectorPotential · x)  := by
+  change Differentiable ℝ (↿A.vectorPotential ∘ fun t => (t, x))
+  refine Differentiable.comp ?_ ?_
+  · exact vectorPotential_differentiable A hA
+  · fun_prop
 
 /-!
 
@@ -779,10 +903,10 @@ noncomputable def vectorPotential (A : ElectromagneticPotential) :
 open Space Time
 
 /-- The electric field from the electromagnetic potential. -/
-noncomputable def electricField (A : ElectromagneticPotential) : ElectricField :=
+noncomputable def electricField {d} (A : ElectromagneticPotential d) : ElectricField d :=
   fun t x => - ∇ (A.scalarPotential t) x - ∂ₜ (fun t => A.vectorPotential t x) t
 
-lemma electricField_eq (A : ElectromagneticPotential) :
+lemma electricField_eq (A : ElectromagneticPotential d) :
     A.electricField = fun t x =>
       - ∇ (A.scalarPotential t) x - ∂ₜ (fun t => A.vectorPotential t x) t := rfl
 
@@ -792,8 +916,8 @@ lemma electricField_eq (A : ElectromagneticPotential) :
 
 -/
 
-lemma electricField_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t : Time)
-    (x : Space) (i : Fin 3) (hA : Differentiable ℝ A) :
+lemma electricField_eq_fieldStrengthMatrix (A : ElectromagneticPotential d) (t : Time)
+    (x : Space d) (i : Fin d) (hA : Differentiable ℝ A) :
     A.electricField t x i = -
     A.fieldStrengthMatrix (SpaceTime.toTimeAndSpace.symm (t, x)) (Sum.inl 0, Sum.inr i) := by
   rw [toFieldStrength_basis_repr_apply_eq_single]
@@ -840,7 +964,50 @@ lemma electricField_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t : T
 
 -/
 
-lemma electricField_differentiable {A : ElectromagneticPotential}
+lemma electricField_contDiff {n} {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ (n + 1) A) : ContDiff ℝ n (↿A.electricField) := by
+  rw [@contDiff_euclidean]
+  intro i
+  conv =>
+    enter [3, x];
+    change A.electricField x.1 x.2 i
+    rw [electricField_eq_fieldStrengthMatrix (A) x.1 x.2 i (hA.differentiable (by simp))]
+    change - A.fieldStrengthMatrix (toTimeAndSpace.symm (x.1, x.2)) (Sum.inl 0, Sum.inr i)
+  apply ContDiff.neg
+  change ContDiff ℝ n ((fun x => A.fieldStrengthMatrix x (Sum.inl 0, Sum.inr i))
+    ∘ (toTimeAndSpace (d := d)).symm)
+  refine ContDiff.comp ?_ ?_
+  · exact fieldStrengthMatrix_contDiff (hA)
+  · exact ContinuousLinearEquiv.contDiff toTimeAndSpace.symm
+
+lemma electricField_apply_contDiff {n} {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ (n + 1) A) : ContDiff ℝ n (↿(fun t x => A.electricField t x i)) := by
+  change ContDiff ℝ n (EuclideanSpace.proj i ∘ ↿A.electricField)
+  refine ContDiff.comp ?_ ?_
+  · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) _
+  · exact electricField_contDiff hA
+
+lemma electricField_apply_contDiff_space {n} {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ (n + 1) A) (t : Time) :
+    ContDiff ℝ n (fun x => A.electricField t x i) := by
+  change ContDiff ℝ n (EuclideanSpace.proj i ∘ (↿A.electricField ∘ fun x => (t, x)))
+  refine ContDiff.comp ?_ ?_
+  · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) _
+  · refine ContDiff.comp ?_ ?_
+    · exact electricField_contDiff hA
+    · fun_prop
+
+lemma electricField_apply_contDiff_time {n} {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ (n + 1) A) (x : Space d) :
+    ContDiff ℝ n (fun t => A.electricField t x i) := by
+  change ContDiff ℝ n (EuclideanSpace.proj i ∘ (↿A.electricField ∘ fun t => (t, x)))
+  refine ContDiff.comp ?_ ?_
+  · exact ContinuousLinearMap.contDiff (𝕜 := ℝ) _
+  · refine ContDiff.comp ?_ ?_
+    · exact electricField_contDiff hA
+    · fun_prop
+
+lemma electricField_differentiable {A : ElectromagneticPotential d}
     (hA : ContDiff ℝ 2 A) : Differentiable ℝ (↿A.electricField) := by
   rw [differentiable_pi]
   intro i
@@ -851,10 +1018,55 @@ lemma electricField_differentiable {A : ElectromagneticPotential}
     change - A.fieldStrengthMatrix (toTimeAndSpace.symm (x.1, x.2)) (Sum.inl 0, Sum.inr i)
   apply Differentiable.neg
   change Differentiable ℝ ((fun x => A.fieldStrengthMatrix x (Sum.inl 0, Sum.inr i))
-    ∘ (toTimeAndSpace (d := 3)).symm)
+    ∘ (toTimeAndSpace (d := d)).symm)
   refine Differentiable.comp ?_ ?_
   · exact fieldStrengthMatrix_differentiable (hA)
   · exact ContinuousLinearEquiv.differentiable toTimeAndSpace.symm
+
+lemma electricField_differentiable_time {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ 2 A) (x : Space d): Differentiable ℝ (A.electricField · x) := by
+  change Differentiable ℝ (↿A.electricField ∘ fun t => (t, x))
+  refine Differentiable.comp ?_ ?_
+  · exact electricField_differentiable hA
+  · fun_prop
+
+lemma electricField_differentiable_space {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ 2 A) (t : Time): Differentiable ℝ (A.electricField t) := by
+  change Differentiable ℝ (↿A.electricField ∘ fun x => (t, x))
+  refine Differentiable.comp ?_ ?_
+  · exact electricField_differentiable hA
+  · fun_prop
+
+lemma electricField_apply_differentiable_space {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ 2 A) (t : Time) (i : Fin d) :
+    Differentiable ℝ (fun x => A.electricField t x i) := by
+  change Differentiable ℝ (EuclideanSpace.proj i ∘ (A.electricField t))
+  refine Differentiable.comp ?_ ?_
+  · exact ContinuousLinearMap.differentiable (𝕜 := ℝ) (EuclideanSpace.proj i)
+  · exact electricField_differentiable_space hA t
+
+/-!
+
+#### E.3.3. Vector potential in terms of electric field
+
+-/
+
+lemma time_deriv_vectorPotential_eq_electricField {d} (A : ElectromagneticPotential d)
+    (t : Time) (x : Space d) :
+    ∂ₜ (fun t => A.vectorPotential t x) t =
+    - A.electricField t x - ∇ (A.scalarPotential t) x := by
+  rw [electricField]
+  abel
+
+lemma time_deriv_comp_vectorPotential_eq_electricField {d} {A : ElectromagneticPotential d}
+    (hA : Differentiable ℝ A)
+    (t : Time) (x : Space d) (i : Fin d) :
+    ∂ₜ (fun t => A.vectorPotential t x i) t =
+    - A.electricField t x i - ∂[i] (A.scalarPotential t) x := by
+  rw [Time.deriv_euclid, time_deriv_vectorPotential_eq_electricField]
+  simp
+  rfl
+  apply vectorPotential_differentiable_time A hA x
 
 /-!
 
@@ -946,6 +1158,212 @@ lemma magneticField_thd_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t
 
 /-!
 
+#### E.4.2. Divergence of the magnetic field
+
+-/
+
+lemma magneticField_div_eq_zero (A : ElectromagneticPotential)
+    (hA : ContDiff ℝ 2 A) (t : Time) : Space.div (A.magneticField t) = 0 := by
+  rw [magneticField_eq]
+  simp
+  rw [Space.div_of_curl_eq_zero]
+  exact vectorPotential_contDiff_space A hA t
+
+
+/-!
+
+### E.5. Magnetic field matrix
+
+-/
+
+noncomputable def magneticFieldMatrix (A : ElectromagneticPotential d) :
+    Time → Space d → (Fin d × Fin d) → ℝ := timeSlice <| fun x ij =>
+    A.fieldStrengthMatrix x (Sum.inr ij.1, Sum.inr ij.2)
+
+lemma magneticFieldMatrix_eq (A : ElectromagneticPotential d) :
+    A.magneticFieldMatrix = fun t x ij =>
+      A.fieldStrengthMatrix (toTimeAndSpace.symm (t, x)) (Sum.inr ij.1, Sum.inr ij.2) := rfl
+
+lemma magneticFieldMatrix_antisymm (A : ElectromagneticPotential d) (t : Time)
+    (x : Space d)  (i j : Fin d) :
+    A.magneticFieldMatrix t x (i, j) = - A.magneticFieldMatrix t x (j, i) := by
+  rw [magneticFieldMatrix_eq]
+  exact fieldStrengthMatrix_antisymm A (toTimeAndSpace.symm (t, x)) (Sum.inr i) (Sum.inr j)
+
+@[simp]
+lemma magneticFieldMatrix_diag_eq_zero (A : ElectromagneticPotential d) (t : Time)
+    (x : Space d) (i : Fin d) :
+    A.magneticFieldMatrix t x (i, i) = 0 := by
+  rw [magneticFieldMatrix_eq]
+  exact fieldStrengthMatrix_diag_eq_zero A (toTimeAndSpace.symm (t, x)) (Sum.inr i)
+
+lemma magneticField_eq_magneticFieldMatrix (A : ElectromagneticPotential)
+    (hA : Differentiable ℝ A)  :
+    A.magneticField  = fun t x i =>
+      match i with
+      | 0 => - A.magneticFieldMatrix t x (1, 2)
+      | 1 => A.magneticFieldMatrix t x (0, 2)
+      | 2 => - A.magneticFieldMatrix t x (0, 1):= by
+  rw [magneticFieldMatrix_eq]
+  funext t x i
+  fin_cases i
+  · simp [magneticField_fst_eq_fieldStrengthMatrix A t x hA]
+  · simp [magneticField_snd_eq_fieldStrengthMatrix A t x hA]
+  · simp [magneticField_thd_eq_fieldStrengthMatrix A t x hA]
+
+lemma magneticField_curl_eq_magneticFieldMatrix (A : ElectromagneticPotential)
+    (hA : ContDiff ℝ 2 A) (t : Time) :
+    (∇ × A.magneticField t) x i = ∑ j, Space.deriv j (A.magneticFieldMatrix t · (j, i)) x:= by
+  rw [magneticField_eq_magneticFieldMatrix A (hA.differentiable (by simp))]
+  simp [Space.curl, Space.coord]
+  fin_cases i
+  · simp only [Fin.isValue, deriv_eq_fderiv_basis, fderiv_fun_neg, ContinuousLinearMap.neg_apply,
+    Fin.zero_eta, Fin.sum_univ_three, magneticFieldMatrix_diag_eq_zero, fderiv_fun_const,
+    Pi.zero_apply, ContinuousLinearMap.zero_apply, zero_add]
+    conv_lhs =>
+      enter [2, 1, 2, x]
+      rw [magneticFieldMatrix_antisymm]
+    conv_lhs =>
+      enter [1, 1, 1, 2, x]
+      rw [magneticFieldMatrix_antisymm]
+    simp
+  · simp only [Fin.isValue, deriv_eq_fderiv_basis, fderiv_fun_neg, ContinuousLinearMap.neg_apply,
+    sub_neg_eq_add, Fin.mk_one, Fin.sum_univ_three, magneticFieldMatrix_diag_eq_zero,
+    fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.zero_apply, add_zero]
+    conv_lhs =>
+      enter [1, 1, 1, 2, x]
+      rw [magneticFieldMatrix_antisymm]
+    simp
+    ring
+  · simp only [Fin.isValue, deriv_eq_fderiv_basis, fderiv_fun_neg, ContinuousLinearMap.neg_apply,
+    sub_neg_eq_add, Fin.reduceFinMk, Fin.sum_univ_three, magneticFieldMatrix_diag_eq_zero,
+    fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.zero_apply, add_zero]
+
+lemma magneticFieldMatrix_eq_vectorPotential (A : ElectromagneticPotential d)
+    (hA : Differentiable ℝ A) (t : Time) (x : Space d) (i j : Fin d) :
+    A.magneticFieldMatrix t x (i, j) = Space.deriv j (A.vectorPotential t · i) x -
+    Space.deriv i (A.vectorPotential t · j) x := by
+  rw [magneticFieldMatrix_eq]
+  simp
+  rw [toFieldStrength_basis_repr_apply_eq_single]
+  simp
+  rw [SpaceTime.deriv_sum_inr _ hA, SpaceTime.deriv_sum_inr _ hA ]
+  simp [vectorPotential]
+  rw [add_comm]
+  congr
+  all_goals
+  · rw [← Space.deriv_lorentz_vector]
+    rfl
+    apply Differentiable.comp
+    · exact hA
+    · apply Differentiable.fun_comp
+      · exact ContinuousLinearEquiv.differentiable toTimeAndSpace.symm
+      · fun_prop
+
+/-!
+
+### E.5.1. Differentiablity of the magnetic field matrix
+-/
+
+lemma magneticFieldMatrix_contDiff {n} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ (n + 1) A) (ij) : ContDiff ℝ n ↿(fun t x => A.magneticFieldMatrix t x ij) := by
+  simp [magneticFieldMatrix_eq]
+  change  ContDiff ℝ n ((A.fieldStrengthMatrix · (Sum.inr ij.1, Sum.inr ij.2)) ∘
+    toTimeAndSpace.symm)
+  refine ContDiff.comp ?_ ?_
+  · exact fieldStrengthMatrix_contDiff (hA)
+  · exact ContinuousLinearEquiv.contDiff toTimeAndSpace.symm
+
+lemma magneticFieldMatrix_space_contDiff {n} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ (n + 1) A) (t : Time) (ij) :
+    ContDiff ℝ n (fun x => A.magneticFieldMatrix t x ij) := by
+  change ContDiff ℝ n (↿(fun t x => A.magneticFieldMatrix t x ij) ∘ fun x => (t, x))
+  refine ContDiff.comp ?_ ?_
+  · exact magneticFieldMatrix_contDiff A hA ij
+  · fun_prop
+
+lemma magneticFieldMatrix_time_contDiff {n} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ (n + 1) A) (x : Space d) (ij) :
+    ContDiff ℝ n (fun t => A.magneticFieldMatrix t x ij) := by
+  change ContDiff ℝ n (↿(fun t x => A.magneticFieldMatrix t x ij) ∘ fun t => (t, x))
+  refine ContDiff.comp ?_ ?_
+  · exact magneticFieldMatrix_contDiff A hA ij
+  · fun_prop
+
+lemma magneticFieldMatrix_differentiable (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ 2 A) (ij) : Differentiable ℝ ↿(fun t x => A.magneticFieldMatrix t x ij) := by
+  simp [magneticFieldMatrix_eq]
+  change  Differentiable ℝ ((A.fieldStrengthMatrix · (Sum.inr ij.1, Sum.inr ij.2)) ∘
+    toTimeAndSpace.symm)
+  refine Differentiable.comp ?_ ?_
+  · exact fieldStrengthMatrix_differentiable (hA)
+  · exact ContinuousLinearEquiv.differentiable toTimeAndSpace.symm
+
+lemma magneticFieldMatrix_differentiable_space (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ 2 A) (t : Time) (ij) :
+    Differentiable ℝ (fun x => A.magneticFieldMatrix t x ij) := by
+  change Differentiable ℝ (↿(fun t x => A.magneticFieldMatrix t x ij) ∘ fun x => (t, x))
+  refine Differentiable.comp ?_ ?_
+  · exact magneticFieldMatrix_differentiable A hA ij
+  · fun_prop
+
+lemma magneticFieldMatrix_differentiable_time (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ 2 A) (x : Space d) (ij) :
+    Differentiable ℝ (fun t => A.magneticFieldMatrix t x ij) := by
+  change Differentiable ℝ (↿(fun t x => A.magneticFieldMatrix t x ij) ∘ fun t => (t, x))
+  refine Differentiable.comp ?_ ?_
+  · exact magneticFieldMatrix_differentiable A hA ij
+  · fun_prop
+
+/-!
+
+### E.5.2. Space derivative of the magnetic field matrix
+
+-/
+
+lemma magneticFieldMatrix_space_deriv_eq (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ 2 A) (t : Time) (x : Space d) (i j k : Fin d) :
+    ∂[k] (A.magneticFieldMatrix t · (i, j)) x =
+    ∂[i] (A.magneticFieldMatrix t · (k, j)) x
+    - ∂[j] (A.magneticFieldMatrix t · (k, i)) x := by
+  conv_lhs =>
+    enter [2, x]
+    rw [magneticFieldMatrix_eq_vectorPotential A (hA.differentiable (by simp)) t x i j]
+  conv_rhs =>
+    enter [1, 2, x]
+    rw [magneticFieldMatrix_eq_vectorPotential A (hA.differentiable (by simp)) t x]
+  conv_rhs =>
+    enter [2, 2, x]
+    rw [magneticFieldMatrix_eq_vectorPotential A (hA.differentiable (by simp)) t x]
+  conv_lhs =>
+    rw [Space.deriv_eq_fderiv_basis]
+  rw [fderiv_fun_sub]
+  simp [← Space.deriv_eq_fderiv_basis]
+  conv_rhs =>
+    rw [Space.deriv_eq_fderiv_basis]
+    enter [2]
+    rw [Space.deriv_eq_fderiv_basis]
+  rw [fderiv_fun_sub, fderiv_fun_sub]
+  simp [← Space.deriv_eq_fderiv_basis]
+  conv_lhs =>
+    rw [Space.deriv_commute _ (vectorPotential_apply_contDiff_space _ hA _ _)]
+    enter [2]
+    rw [Space.deriv_commute _ ((vectorPotential_apply_contDiff_space _ hA _ _))]
+  conv_rhs =>
+    enter [1, 1]
+    rw [Space.deriv_commute _ ((vectorPotential_apply_contDiff_space _ hA _ _))]
+  ring
+  all_goals
+  · apply Differentiable.differentiableAt
+    apply Space.deriv_differentiable
+    apply vectorPotential_apply_contDiff_space _ hA
+
+
+
+
+
+/-!
+
 ### E.5. Field strength matrix in terms of the electric and magnetic fields
 
 -/
@@ -1018,6 +1436,65 @@ lemma fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime (A : Electromagnetic
   rw [← fieldStrengthMatrix_eq_electric_magnetic A]
   simp only [Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply]
   exact hA
+
+/-!
+
+#### E.6. Curl of the magnetic field
+
+-/
+
+lemma curl_magneticField_eq_fieldStrengthMatrix (A : ElectromagneticPotential) (t : Time)
+    (x : Space) (hA : ContDiff ℝ 2 A) :
+    (∇ × A.magneticField t) x i = ∑ j, ∂_ (Sum.inr j)
+      (A.fieldStrengthMatrix  · (Sum.inr j, Sum.inr i)) (toTimeAndSpace.symm (t, x)) := by
+  fin_cases i
+  all_goals
+    simp [curl, Space.coord_apply, Fin.sum_univ_three]
+    conv_rhs =>
+      enter [1, 2, ν]
+      rw [fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime A _ (hA.differentiable (by simp))]
+      simp
+    conv_rhs =>
+      enter [2, 2, ν]
+      rw [fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime A _ (hA.differentiable (by simp))]
+      simp
+    rw [SpaceTime.deriv_sum_inr, SpaceTime.deriv_sum_inr]
+    simp [Space.deriv_eq]
+    ring
+  · apply Differentiable.neg
+    conv =>
+      enter [2, x]
+      rw [magneticField_snd_eq_fieldStrengthMatrix _ _ _ (hA.differentiable (by simp))]
+    simp
+    exact fieldStrengthMatrix_differentiable hA
+  · conv =>
+      enter [2, x]
+      rw [magneticField_thd_eq_fieldStrengthMatrix _ _ _ (hA.differentiable (by simp))]
+    simp
+    exact fieldStrengthMatrix_differentiable hA
+  · conv =>
+      enter [2, x]
+      rw [magneticField_fst_eq_fieldStrengthMatrix _ _ _ (hA.differentiable (by simp))]
+    simp
+    exact fieldStrengthMatrix_differentiable hA
+  · apply Differentiable.neg
+    conv =>
+      enter [2, x]
+      rw [magneticField_thd_eq_fieldStrengthMatrix _ _ _ (hA.differentiable (by simp))]
+    simp
+    exact fieldStrengthMatrix_differentiable hA
+  · apply Differentiable.neg
+    conv =>
+      enter [2, x]
+      rw [magneticField_fst_eq_fieldStrengthMatrix _ _ _ (hA.differentiable (by simp))]
+    simp
+    exact fieldStrengthMatrix_differentiable hA
+  · conv =>
+      enter [2, x]
+      rw [magneticField_snd_eq_fieldStrengthMatrix _ _ _ (hA.differentiable (by simp))]
+    simp
+    exact fieldStrengthMatrix_differentiable hA
+
 
 end ElectromagneticPotential
 
