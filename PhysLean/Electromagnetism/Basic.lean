@@ -10,6 +10,8 @@ import PhysLean.SpaceAndTime.SpaceTime.Basic
 
 In this file we define the electric field, the magnetic field, and the field strength tensor.
 
+This module is old and parts of it will soon be replaced.
+
 -/
 
 namespace Electromagnetism

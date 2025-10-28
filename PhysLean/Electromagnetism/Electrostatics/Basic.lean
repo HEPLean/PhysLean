@@ -17,6 +17,8 @@ are often glossed over in physics. As a result some of the definitions or proofs
 within PhysLean's electrostatics may seem over the top - but this is necessary for complete
 mathematical correctness.
 
+This script is old, and will soon be replaced.
+
 -/
 
 namespace Electromagnetism

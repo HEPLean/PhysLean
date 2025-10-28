@@ -10,6 +10,7 @@ import PhysLean.Electromagnetism.Basic
 
 Note that currently the equations are defined for isotropic and homogeneous domains.
 
+This module is old, and will soon be replaced.
 -/
 
 namespace Electromagnetism

@@ -12,6 +12,8 @@ Basic properties for homogeneous medium and free space.
 Variables are bundled in structure, for unbundled version use
 PhysLean.Electromagnetism.MaxwellEquations.
 
+This module is old, and will soon be replaced.
+
 -/
 
 namespace Electromagnetism

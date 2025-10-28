@@ -26,15 +26,12 @@ import PhysLean.Electromagnetism.Electrostatics.OneDimension.Vacuum
 import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.FiniteCollection
 import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.InfinitePlane
 import PhysLean.Electromagnetism.Electrostatics.ThreeDimension.PointParticle
-import PhysLean.Electromagnetism.FieldStrength.Basic
-import PhysLean.Electromagnetism.FieldStrength.Derivative
 import PhysLean.Electromagnetism.Hamiltonian
 import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.KineticTerm
 import PhysLean.Electromagnetism.Lagrangian
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
-import PhysLean.Electromagnetism.Potential
 import PhysLean.Electromagnetism.Wave
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.Calculus.Divergence
