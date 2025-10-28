@@ -36,6 +36,7 @@ import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Potential
 import PhysLean.Electromagnetism.Wave
+import PhysLean.Mathematics.Analysis.ContDiff
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.DataStructures.FourTree.Basic
@@ -49,8 +50,15 @@ import PhysLean.Mathematics.Distribution.PowMul
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
+import PhysLean.Mathematics.Geometry.Manifold.Chart.Utilities
+import PhysLean.Mathematics.Geometry.Manifold.Chart.BilinearSmoothness
+import PhysLean.Mathematics.Geometry.Manifold.Chart.Smoothness
+import PhysLean.Mathematics.Geometry.Manifold.Chart.CoordinateTransformations
+import PhysLean.Mathematics.Geometry.Manifold.PartialHomeomorph
+import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Chart
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
+import PhysLean.Mathematics.LinearAlgebra.BilinearForm
 import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.InnerProductSpace.Basic
 import PhysLean.Mathematics.InnerProductSpace.Calculus
