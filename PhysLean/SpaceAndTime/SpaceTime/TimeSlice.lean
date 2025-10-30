@@ -26,9 +26,10 @@ open Space
 
 /-- The timeslice of a function `SpaceTime d → M` forming a function
   `Time → Space d → M`. -/
-def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d → M) where
-  toFun f := Function.curry (f ∘ toTimeAndSpace.symm)
-  invFun f := Function.uncurry f ∘ toTimeAndSpace
+def timeSlice {d : ℕ} {M : Type} (c : SpeedOfLight := 1) :
+    (SpaceTime d → M) ≃ (Time → Space d → M) where
+  toFun f := Function.curry (f ∘ (toTimeAndSpace c).symm)
+  invFun f := Function.uncurry f ∘ toTimeAndSpace c
   left_inv f := by
     funext x
     simp
@@ -38,28 +39,29 @@ def timeSlice {d : ℕ} {M : Type} : (SpaceTime d → M) ≃ (Time → Space d �
 
 lemma timeSlice_contDiff {d : ℕ} {M : Type} [NormedAddCommGroup M]
     [NormedSpace ℝ M]
-    {n} (f : SpaceTime d → M) (h : ContDiff ℝ n f) :
-    ContDiff ℝ n ↿(timeSlice f) := by
-  change ContDiff ℝ n (f ∘ toTimeAndSpace.symm)
+    {n} (c : SpeedOfLight) (f : SpaceTime d → M) (h : ContDiff ℝ n f) :
+    ContDiff ℝ n ↿(timeSlice c f) := by
+  change ContDiff ℝ n (f ∘ (toTimeAndSpace c).symm)
   apply ContDiff.comp
   · exact h
-  · exact ContinuousLinearEquiv.contDiff toTimeAndSpace.symm
+  · exact ContinuousLinearEquiv.contDiff (toTimeAndSpace c).symm
 
 lemma timeSlice_differentiable {d : ℕ} {M : Type} [NormedAddCommGroup M]
-    [NormedSpace ℝ M]
+    [NormedSpace ℝ M] (c : SpeedOfLight)
     (f : SpaceTime d → M) (h : Differentiable ℝ f) :
-    Differentiable ℝ ↿(timeSlice f) := by
-  change Differentiable ℝ (f ∘ toTimeAndSpace.symm)
+    Differentiable ℝ ↿(timeSlice c f) := by
+  change Differentiable ℝ (f ∘ (toTimeAndSpace c).symm)
   apply Differentiable.comp
   · exact h
-  · exact ContinuousLinearEquiv.differentiable toTimeAndSpace.symm
+  · exact ContinuousLinearEquiv.differentiable (toTimeAndSpace c).symm
 
 /-- The timeslice of a function `SpaceTime d → M` forming a function
   `Time → Space d → M`, as a linear equivalence. -/
-def timeSliceLinearEquiv {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M] :
+def timeSliceLinearEquiv {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M]
+    (c : SpeedOfLight := 1) :
     (SpaceTime d → M) ≃ₗ[ℝ] (Time → Space d → M) where
-  toFun := timeSlice
-  invFun := timeSlice.symm
+  toFun := timeSlice c
+  invFun := (timeSlice c).symm
   map_add' f g := by
     ext t x
     simp [timeSlice]
@@ -71,11 +73,12 @@ def timeSliceLinearEquiv {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M] :
   right_inv f := by simp
 
 lemma timeSliceLinearEquiv_apply {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M]
-    (f : SpaceTime d → M) : timeSliceLinearEquiv f = timeSlice f := by
+    (c : SpeedOfLight) (f : SpaceTime d → M) : timeSliceLinearEquiv c f = timeSlice c f := by
   simp [timeSliceLinearEquiv, timeSlice]
 
 lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Module ℝ M]
-    (f : Time → Space d → M) : timeSliceLinearEquiv.symm f = timeSlice.symm f := by
+    (c : SpeedOfLight) (f : Time → Space d → M) :
+    (timeSliceLinearEquiv c).symm f = (timeSlice c).symm f := by
   simp [timeSliceLinearEquiv, timeSlice]
 
 end SpaceTime

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Informal.Basic
+import PhysLean.SpaceAndTime.Space.Basic
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import Mathlib.Geometry.Manifold.IsManifold.Basic

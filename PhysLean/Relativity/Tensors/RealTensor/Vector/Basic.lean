@@ -245,6 +245,28 @@ lemma map_apply_eq_basis_mulVec {d : ℕ} (f : Vector d →ₗ[ℝ] Vector d) (p
     (f p) = (LinearMap.toMatrix basis basis) f *ᵥ p := by
   exact Eq.symm (LinearMap.toMatrix_mulVec_repr basis basis f p)
 
+lemma sum_basis_eq_zero_iff {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
+    (∑ μ, f μ • basis μ) = 0 ↔ ∀ μ, f μ = 0 := by
+  apply Iff.intro
+  · intro h
+    have h1 := (linearIndependent_iff').mp basis.linearIndependent Finset.univ f h
+    intro μ
+    exact h1 μ (by simp)
+  · intro h
+    simp [h]
+
+lemma sum_inl_inr_basis_eq_zero_iff {d : ℕ} (f₀ : ℝ) (f : Fin d → ℝ) :
+    f₀ • basis (Sum.inl 0) + (∑ i, f i • basis (Sum.inr i)) = 0 ↔
+    f₀ = 0 ∧ ∀ i, f i = 0 := by
+  let f' : Fin 1 ⊕ Fin d → ℝ := fun μ =>
+    match μ with
+    | Sum.inl 0 => f₀
+    | Sum.inr i => f i
+  have h1 : f₀ • basis (Sum.inl 0) + (∑ i, f i • basis (Sum.inr i))
+    = ∑ μ,  f' μ • basis μ := by simp [f']
+  rw [h1, sum_basis_eq_zero_iff]
+  simp [f']
+
 /-!
 
 ## The action of the Lorentz group

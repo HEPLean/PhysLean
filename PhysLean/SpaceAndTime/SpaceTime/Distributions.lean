@@ -73,6 +73,8 @@ noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
     ext κ
     simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
     congr
+    ext x
+    simp
   map_add' f1 f2 := by
     simp
   map_smul' a f := by simp

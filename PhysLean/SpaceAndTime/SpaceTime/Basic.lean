@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
+import PhysLean.Relativity.SpeedOfLight
 import PhysLean.SpaceAndTime.Space.Basic
 import PhysLean.SpaceAndTime.Time.Basic
 /-!
@@ -143,14 +144,16 @@ informal_lemma space_equivariant where
 -/
 
 /-- The time part of spacetime. -/
-def time {d : ℕ} : SpaceTime d →ₗ[ℝ] Time where
-  toFun x := ⟨Lorentz.Vector.timeComponent x⟩
+def time {d : ℕ} (c : SpeedOfLight := 1) : SpaceTime d →ₗ[ℝ] Time where
+  toFun x := ⟨Lorentz.Vector.timeComponent x / c⟩
   map_add' x1 x2 := by
     ext
     simp [Lorentz.Vector.timeComponent]
+    grind
   map_smul' c x := by
     ext
     simp [Lorentz.Vector.timeComponent]
+    grind
 
 /-!
 
@@ -159,8 +162,8 @@ def time {d : ℕ} : SpaceTime d →ₗ[ℝ] Time where
 -/
 
 @[simp]
-lemma time_val_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
-    (time f).val = f (Sum.inl 0) := by
+lemma time_val_toCoord_symm {d : ℕ} (c : SpeedOfLight) (f : Fin 1 ⊕ Fin d → ℝ) :
+    (time c f).val = f (Sum.inl 0) / c := by
   simp [time, Lorentz.Vector.timeComponent]
 
 /-!
@@ -171,22 +174,25 @@ lemma time_val_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
 
 /-- A continuous linear equivalence between `SpaceTime d` and
   `Time × Space d`. -/
-def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
+def toTimeAndSpace {d : ℕ} (c : SpeedOfLight := 1) : SpaceTime d ≃L[ℝ] Time × Space d :=
   LinearEquiv.toContinuousLinearEquiv {
-    toFun x := (x.time, x.space)
+    toFun x := (x.time c, x.space)
     invFun tx := (fun i =>
       match i with
-      | Sum.inl _ => tx.1.val
+      | Sum.inl _ => c * tx.1.val
       | Sum.inr i => tx.2 i)
     left_inv x := by
       simp only [time, LinearMap.coe_mk, AddHom.coe_mk, space]
       funext i
       match i with
-      | Sum.inl 0 => simp [Lorentz.Vector.timeComponent]
+      | Sum.inl 0 =>
+        simp [Lorentz.Vector.timeComponent]
+        field_simp
       | Sum.inr i => simp [Lorentz.Vector.spatialPart]
     right_inv tx := by
       simp only [time, Lorentz.Vector.timeComponent, Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk,
-        space, ContinuousLinearMap.coe_mk']
+        ne_eq, SpeedOfLight.val_ne_zero, not_false_eq_true, mul_div_cancel_left₀, space,
+        ContinuousLinearMap.coe_mk']
     map_add' x y := by
       simp only [space_toCoord_symm, Lorentz.Vector.apply_add, Prod.mk_add_mk, Prod.mk.injEq]
       constructor
@@ -198,25 +204,22 @@ def toTimeAndSpace {d : ℕ} : SpaceTime d ≃L[ℝ] Time × Space d :=
       simp
   }
 
-lemma toTimeAndSpace_symm_apply_time_space {d : ℕ} (x : SpaceTime d) :
-    toTimeAndSpace.symm (x.time, x.space) = x := by
-  apply toTimeAndSpace.left_inv
+@[simp]
+lemma toTimeAndSpace_symm_apply_time_space {d : ℕ} {c : SpeedOfLight} (x : SpaceTime d) :
+    (toTimeAndSpace c).symm (x.time c, x.space) = x := by
+  apply (toTimeAndSpace c).left_inv
 
 @[simp]
-lemma space_toTimeAndSpace_symm {d : ℕ} (t : Time) (s : Space d) :
-    (toTimeAndSpace.symm (t, s)).space = s := by
+lemma space_toTimeAndSpace_symm {d : ℕ} {c : SpeedOfLight} (t : Time) (s : Space d) :
+    ((toTimeAndSpace c).symm (t, s)).space = s := by
   simp only [space, toTimeAndSpace]
   funext i
   simp
 
-@[simp]
-lemma toTimeAndSpace_symm_apply_time_space' {d : ℕ} (x : SpaceTime d) :
-    toTimeAndSpace.symm (x.time, x.space) = x := by
-  apply toTimeAndSpace.left_inv
 
 @[simp]
-lemma time_toTimeAndSpace_symm {d : ℕ} (t : Time) (s : Space d) :
-    (toTimeAndSpace.symm (t, s)).time = t := by
+lemma time_toTimeAndSpace_symm {d : ℕ} {c : SpeedOfLight} (t : Time) (s : Space d) :
+    ((toTimeAndSpace c).symm (t, s)).time c = t := by
   simp only [time, toTimeAndSpace]
   ext
   simp
@@ -228,8 +231,8 @@ lemma time_toTimeAndSpace_symm {d : ℕ} (t : Time) (s : Space d) :
 -/
 
 @[simp]
-lemma toTimeAndSpace_fderiv {d : ℕ} (x : SpaceTime d) :
-    fderiv ℝ toTimeAndSpace x = toTimeAndSpace.toContinuousLinearMap := by
+lemma toTimeAndSpace_fderiv {d : ℕ} {c : SpeedOfLight} (x : SpaceTime d) :
+    fderiv ℝ (toTimeAndSpace c) x = (toTimeAndSpace c).toContinuousLinearMap := by
   rw [ContinuousLinearEquiv.fderiv]
 
 /-!
@@ -239,8 +242,8 @@ lemma toTimeAndSpace_fderiv {d : ℕ} (x : SpaceTime d) :
 -/
 
 @[simp]
-lemma toTimeAndSpace_symm_fderiv {d : ℕ} (x : Time × Space d) :
-    fderiv ℝ toTimeAndSpace.symm x = toTimeAndSpace.symm.toContinuousLinearMap := by
+lemma toTimeAndSpace_symm_fderiv {d : ℕ} {c : SpeedOfLight} (x : Time × Space d) :
+    fderiv ℝ (toTimeAndSpace c).symm x = (toTimeAndSpace c).symm.toContinuousLinearMap := by
   rw [ContinuousLinearEquiv.fderiv]
 
 /-!
@@ -248,8 +251,8 @@ lemma toTimeAndSpace_symm_fderiv {d : ℕ} (x : Time × Space d) :
 #### B.3.3. `toTimeAndSpace` acting on spatial basis vectors
 
 -/
-lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
-    toTimeAndSpace (Lorentz.Vector.basis (Sum.inr i))
+lemma toTimeAndSpace_basis_inr {d : ℕ} {c : SpeedOfLight} (i : Fin d) :
+    toTimeAndSpace c (Lorentz.Vector.basis (Sum.inr i))
     = (0, Space.basis i) := by
   simp only [toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
@@ -265,8 +268,8 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} (i : Fin d) :
 
 -/
 
-lemma toTimeAndSpace_basis_inl {d : ℕ} :
-    toTimeAndSpace (d := d) (Lorentz.Vector.basis (Sum.inl 0)) = (1, 0) := by
+lemma toTimeAndSpace_basis_inl {d : ℕ} {c : SpeedOfLight} :
+    toTimeAndSpace (d := d) c (Lorentz.Vector.basis (Sum.inl 0)) = (⟨1/c.val⟩, 0) := by
   simp only [toTimeAndSpace, time, LinearMap.coe_mk,
     AddHom.coe_mk, LinearEquiv.coe_toContinuousLinearEquiv', LinearEquiv.coe_mk, Prod.mk.injEq]
   rw [Lorentz.Vector.timeComponent_basis_sum_inl]
@@ -274,6 +277,13 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} :
   · simp
   funext j
   simp [space]
+
+lemma toTimeAndSpace_basis_inl' {d : ℕ} {c : SpeedOfLight} :
+    toTimeAndSpace (d := d) c (Lorentz.Vector.basis (Sum.inl 0)) = (1/c.val) • (1, 0) := by
+  rw [toTimeAndSpace_basis_inl]
+  simp
+  congr
+  simp
 
 /-!
 
@@ -403,12 +413,12 @@ lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace �
 
 -/
 
-lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M]
-    (f : SpaceTime d → M)
+lemma deriv_sum_inr {d : ℕ} {M : Type}  [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (c : SpeedOfLight) (f : SpaceTime d → M)
     (hf : Differentiable ℝ f) (x : SpaceTime d) (i : Fin d) :
     ∂_ (Sum.inr i) f x
-    = Space.deriv i (fun y => f (toTimeAndSpace.symm ((toTimeAndSpace x).1, y)))
-      (toTimeAndSpace x).2 := by
+    = Space.deriv i (fun y => f ((toTimeAndSpace c).symm ((toTimeAndSpace c x).1, y)))
+      (toTimeAndSpace c x).2 := by
   rw [deriv_eq, Space.deriv_eq]
   conv_rhs => rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
   simp only [Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply, ContinuousLinearMap.coe_comp',
@@ -417,13 +427,13 @@ lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
   rw [fderiv_comp']
   simp only [Prod.mk.eta, toTimeAndSpace_symm_fderiv, ContinuousLinearMap.coe_comp',
     ContinuousLinearEquiv.coe_coe, Function.comp_apply]
-  change _ = toTimeAndSpace.symm ((fderiv ℝ ((toTimeAndSpace x).1, ·) (toTimeAndSpace x).2)
+  change _ = (toTimeAndSpace c).symm ((fderiv ℝ ((toTimeAndSpace c x).1, ·) (toTimeAndSpace c x).2)
     (EuclideanSpace.single i 1))
   rw [DifferentiableAt.fderiv_prodMk]
   simp only [fderiv_fun_const, Pi.zero_apply, fderiv_id', ContinuousLinearMap.prod_apply,
     ContinuousLinearMap.zero_apply, ContinuousLinearMap.coe_id', id_eq]
-  trans toTimeAndSpace.symm (0, Space.basis i)
-  · rw [← toTimeAndSpace_basis_inr]
+  trans (toTimeAndSpace c).symm (0, Space.basis i)
+  · rw [← toTimeAndSpace_basis_inr (c := c)]
     simp
   · congr
     rw [Space.basis]
@@ -431,16 +441,22 @@ lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
   repeat' fun_prop
 
 lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M]
-    [NormedSpace ℝ M] (f : SpaceTime d → M)
+    [NormedSpace ℝ M] (c : SpeedOfLight) (f : SpaceTime d → M)
     (hf : Differentiable ℝ f) (x : SpaceTime d) :
     ∂_ (Sum.inl 0) f x
-    = Time.deriv (fun t => f (toTimeAndSpace.symm (t, (toTimeAndSpace x).2)))
-      (toTimeAndSpace x).1 := by
+    = (1/(c : ℝ)) • Time.deriv (fun t => f ((toTimeAndSpace c).symm (t, (toTimeAndSpace c x).2)))
+      (toTimeAndSpace c x).1 := by
   rw [deriv_eq, Time.deriv_eq]
   conv_rhs => rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
   simp only [Fin.isValue, Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply,
     ContinuousLinearMap.coe_comp', Function.comp_apply]
+  trans
+    (fderiv ℝ f x)
+      ( (1 / c.val) • (fderiv ℝ (fun t => (toTimeAndSpace c).symm (t, ((toTimeAndSpace c) x).2)) ((toTimeAndSpace c) x).1) 1)
+  swap
+  · exact ContinuousLinearMap.map_smul_of_tower (fderiv ℝ f x) (1 / c.val) _
   congr 1
+
   rw [fderiv_comp']
   simp only [Fin.isValue, Prod.mk.eta, toTimeAndSpace_symm_fderiv, ContinuousLinearMap.coe_comp',
     ContinuousLinearEquiv.coe_coe, Function.comp_apply]
@@ -448,7 +464,8 @@ lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M]
   simp only [Fin.isValue, fderiv_id', fderiv_fun_const, Pi.zero_apply,
     ContinuousLinearMap.prod_apply, ContinuousLinearMap.coe_id', id_eq,
     ContinuousLinearMap.zero_apply]
-  rw [← toTimeAndSpace_basis_inl]
+  rw [← map_smul]
+  rw [← toTimeAndSpace_basis_inl' (c := c)]
   simp only [Fin.isValue, ContinuousLinearEquiv.symm_apply_apply]
   repeat' fun_prop
 
