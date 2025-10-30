@@ -129,12 +129,12 @@ lemma timeSliceD_derivD_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   ext x
   simp only [Fin.isValue, compCLMOfContinuousLinearEquiv_apply, Function.comp_apply]
   change ((fderivCLM ℝ) ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace) ε))
-    x (Lorentz.Vector.basis (Sum.inl 0)) = ((fderivCLM ℝ) ε) (toTimeAndSpace x) (1, 0)
+    x (Lorentz.Vector.basis (Sum.inl 0)) = ((fderivCLM ℝ) ε) (toTimeAndSpace 1 x) (1, 0)
   trans SpaceTime.deriv (Sum.inl 0) ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace) ε) x
   · rfl
-  rw [SpaceTime.deriv_sum_inl]
+  rw [SpaceTime.deriv_sum_inl 1]
   simp [Time.deriv]
-  change (fderiv ℝ (ε ∘ (fun t => (t, (toTimeAndSpace x).2))) (toTimeAndSpace x).1) 1 = _
+  change (fderiv ℝ (ε ∘ (fun t => (t, (toTimeAndSpace 1 x).2))) (toTimeAndSpace 1 x).1) 1 = _
   rw [fderiv_comp, DifferentiableAt.fderiv_prodMk]
   simp only [Prod.mk.eta, fderiv_id', fderiv_fun_const, Pi.zero_apply,
     ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.prod_apply,
@@ -169,12 +169,12 @@ lemma timeSliceD_derivD_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   ext x
   simp only [compCLMOfContinuousLinearEquiv_apply, Function.comp_apply]
   change ((fderivCLM ℝ) ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace) ε))
-    x (Lorentz.Vector.basis (Sum.inr i)) = ((fderivCLM ℝ) ε) (toTimeAndSpace x) (0, Space.basis i)
+    x (Lorentz.Vector.basis (Sum.inr i)) = ((fderivCLM ℝ) ε) (toTimeAndSpace 1 x) (0, Space.basis i)
   trans SpaceTime.deriv (Sum.inr i) ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace) ε) x
   · rfl
-  rw [SpaceTime.deriv_sum_inr]
+  rw [SpaceTime.deriv_sum_inr 1]
   simp [Space.deriv]
-  change (fderiv ℝ (ε ∘ (fun y => ((toTimeAndSpace x).1, y))) (toTimeAndSpace x).2) _ = _
+  change (fderiv ℝ (ε ∘ (fun y => ((toTimeAndSpace 1 x).1, y))) (toTimeAndSpace 1 x).2) _ = _
   rw [fderiv_comp, DifferentiableAt.fderiv_prodMk]
   simp only [Prod.mk.eta, fderiv_fun_const, Pi.zero_apply, fderiv_id',
     ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.prod_apply,

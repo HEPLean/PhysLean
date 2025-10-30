@@ -160,8 +160,6 @@ lemma constantEB_vectorPotential_time_deriv {c : SpeedOfLight}
     ∂ₜ ((constantEB c E₀ B₀ B₀_antisymm).vectorPotential c ·  x) t = 0 := by
   rw [constantEB_vectorPotential]
   simp
-  rw [Time.deriv_eq, fderiv_fun_const]
-  simp
 
 /-!
 
