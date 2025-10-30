@@ -129,6 +129,22 @@ lemma electricField_eq_fieldStrengthMatrix {c : SpeedOfLight}
       · fun_prop
     · exact hA
 
+lemma fieldStrengthMatrix_inl_inr_eq_electricField {c : SpeedOfLight}
+    (A : ElectromagneticPotential d)
+    (x : SpaceTime d) (i : Fin d) (hA : Differentiable ℝ A) :
+    A.fieldStrengthMatrix x (Sum.inl 0, Sum.inr i) =
+    - (1 /c) * A.electricField c (x.time c) x.space i  := by
+  rw [electricField_eq_fieldStrengthMatrix A (x.time c) x.space i hA]
+  simp
+
+lemma fieldStrengthMatrix_inr_inl_eq_electricField {c : SpeedOfLight}
+    (A : ElectromagneticPotential d)
+    (x : SpaceTime d) (i : Fin d) (hA : Differentiable ℝ A) :
+    A.fieldStrengthMatrix x (Sum.inr i, Sum.inl 0) =
+    (1 /c) * A.electricField c (x.time c) x.space i  := by
+  rw [electricField_eq_fieldStrengthMatrix A (x.time c) x.space i hA]
+  simp
+  rw [fieldStrengthMatrix_antisymm A x (Sum.inr i) (Sum.inl 0)]
 /-!
 
 ## C. Smoothness of the electric field

@@ -224,6 +224,13 @@ lemma time_toTimeAndSpace_symm {d : ℕ} {c : SpeedOfLight} (t : Time) (s : Spac
   ext
   simp
 
+@[simp]
+lemma toTimeAndSpace_symm_apply_inl {d : ℕ} {c : SpeedOfLight} (t : Time) (s : Space d) :
+    (toTimeAndSpace c).symm (t, s) (Sum.inl 0) = c * t := by rfl
+
+@[simp]
+lemma toTimeAndSpace_symm_apply_inr {d : ℕ} {c : SpeedOfLight} (t : Time) (x : Space d) (i : Fin d) :
+    (toTimeAndSpace c).symm (t, x) (Sum.inr i) = x i := by rfl
 /-!
 
 #### B.3.1. Derivative of `toTimeAndSpace`

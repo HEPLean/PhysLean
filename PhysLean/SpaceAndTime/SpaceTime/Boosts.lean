@@ -83,6 +83,38 @@ lemma boost_x_smul (β : ℝ) (hβ : |β| < 1) (x : SpaceTime) :
       LorentzGroup.boost_inr_other_inr _ (by decide)]
     simp
 
+lemma boost_zero_apply_time_space {d : ℕ} {β : ℝ} (hβ : |β| < 1) (c : SpeedOfLight)
+    (t : Time) (x : Space d.succ) :
+   ((boost (0 : Fin d.succ) β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x)) =
+   (SpaceTime.toTimeAndSpace c).symm
+   (γ β * (t.val + β /c * x 0),
+    fun | (0 : Fin d.succ) => γ β * (x 0 + c * β * t.val)
+        | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩) := by
+  funext μ
+  rw [boost_inverse, Lorentz.Vector.smul_eq_sum]
+  simp
+  rw [Fin.sum_univ_succ]
+  match μ with
+  | Sum.inl 0 =>
+    simp
+    field_simp
+  | Sum.inr ⟨0, h⟩ =>
+    simp only [Nat.succ_eq_add_one, Fin.isValue, toTimeAndSpace_symm_apply_inr]
+    simp
+    field_simp
+    ring
+  | Sum.inr ⟨Nat.succ n, h⟩ =>
+    simp
+    rw [Finset.sum_eq_single ⟨n, by omega⟩]
+    simp [boost_inr_inr_other]
+    simp
+    simp [boost_inr_inr_other]
+    intro b hb
+    left
+    simpa [Fin.ext_iff] using hb
+    simp
+
+
 end SpaceTime
 
 end

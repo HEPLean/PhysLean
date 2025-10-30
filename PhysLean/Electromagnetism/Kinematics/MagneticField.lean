@@ -263,6 +263,15 @@ lemma magneticFieldMatrix_eq {c : SpeedOfLight} (A : ElectromagneticPotential d)
     A.magneticFieldMatrix c = fun t x ij =>
       A.fieldStrengthMatrix ((toTimeAndSpace c).symm (t, x)) (Sum.inr ij.1, Sum.inr ij.2) := rfl
 
+
+lemma fieldStrengthMatrix_inr_inr_eq_magneticFieldMatrix {c : SpeedOfLight}
+    (A : ElectromagneticPotential d)
+    (x : SpaceTime d) (i j : Fin d) :
+    A.fieldStrengthMatrix x (Sum.inr i, Sum.inr j) =
+    A.magneticFieldMatrix c (x.time c) x.space (i, j) := by
+  rw [magneticFieldMatrix_eq]
+  simp
+
 /-!
 
 ### C.1. Antisymmetry of the magnetic field matrix
