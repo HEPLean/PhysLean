@@ -87,7 +87,6 @@ lemma chargeDensity_zero {d : ℕ} {c : SpeedOfLight}:
   simp [chargeDensity_eq_timeSlice, timeSlice]
   rfl
 
-
 /-!
 
 ### B.1. Differentiability of the charge density
@@ -177,7 +176,8 @@ lemma currentDensity_differentiable_space {d : ℕ} {c : SpeedOfLight} {J : Lore
   · exact currentDensity_differentiable hJ
   · fun_prop
 
-lemma currentDensity_apply_differentiable_space {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDensity d}
+lemma currentDensity_apply_differentiable_space {d : ℕ} {c : SpeedOfLight}
+    {J : LorentzCurrentDensity d}
     (hJ : Differentiable ℝ J) (t : Time) (i : Fin d) :
     Differentiable ℝ (fun x => J.currentDensity c t x i) := by
   change Differentiable ℝ (EuclideanSpace.proj i ∘ (↿(J.currentDensity c) ∘ fun x => (t, x)))
@@ -195,7 +195,8 @@ lemma currentDensity_differentiable_time {d : ℕ} {c : SpeedOfLight} {J : Loren
   · exact currentDensity_differentiable hJ
   · fun_prop
 
-lemma currentDensity_apply_differentiable_time {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDensity d}
+lemma currentDensity_apply_differentiable_time {d : ℕ} {c : SpeedOfLight}
+    {J : LorentzCurrentDensity d}
     (hJ : Differentiable ℝ J) (x : Space d) (i : Fin d) :
     Differentiable ℝ (fun t => J.currentDensity c t x i) := by
   change Differentiable ℝ (EuclideanSpace.proj i ∘ (↿(J.currentDensity c) ∘ fun t => (t, x)))

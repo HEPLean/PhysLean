@@ -91,9 +91,10 @@ We show that the kinetic energy is Lorentz invariant.
 
 -/
 
-lemma kineticTerm_equivariant {d} {𝓕 : FreeSpace} (A : ElectromagneticPotential d) (Λ : LorentzGroup d)
+lemma kineticTerm_equivariant {d} {𝓕 : FreeSpace} (A : ElectromagneticPotential d)
+    (Λ : LorentzGroup d)
     (hf : Differentiable ℝ A) (x : SpaceTime d) :
-    kineticTerm  𝓕 (fun x => Λ • A (Λ⁻¹ • x)) x = kineticTerm 𝓕 A (Λ⁻¹ • x) := by
+    kineticTerm 𝓕 (fun x => Λ • A (Λ⁻¹ • x)) x = kineticTerm 𝓕 A (Λ⁻¹ • x) := by
   rw [kineticTerm, kineticTerm]
   conv_lhs =>
     enter [2]
@@ -195,7 +196,7 @@ lemma kineticTerm_eq_sum_fieldStrengthMatrix_sq {d} {𝓕 : FreeSpace}
     exact id (Ne.symm hb)
   · simp
 
-lemma kineticTerm_eq_sum_potential {d}  {𝓕 : FreeSpace}
+lemma kineticTerm_eq_sum_potential {d} {𝓕 : FreeSpace}
     (A : ElectromagneticPotential d) (x : SpaceTime d) :
     A.kineticTerm 𝓕 x = - 1 / (2 * 𝓕.μ₀) * ∑ μ, ∑ ν,
         (η μ μ * η ν ν * (∂_ μ A x ν) ^ 2 - ∂_ μ A x ν * ∂_ ν A x μ) := by
@@ -307,7 +308,7 @@ lemma kineticTerm_eq_electric_magnetic {𝓕 : FreeSpace} (A : ElectromagneticPo
   field_simp
   ring
 
-lemma kineticTerm_eq_electric_magnetic' {𝓕 : FreeSpace}  {A : ElectromagneticPotential}
+lemma kineticTerm_eq_electric_magnetic' {𝓕 : FreeSpace} {A : ElectromagneticPotential}
     (hA : Differentiable ℝ A) (x : SpaceTime) :
     A.kineticTerm 𝓕 x =
     1/2 * (𝓕.ε₀ * ‖A.electricField 𝓕.c (x.time 𝓕.c) x.space‖ ^ 2 -
@@ -333,17 +334,18 @@ lemma kineticTerm_eq_electricMatrix_magneticFieldMatrix_time_space {𝓕 : FreeS
   simp [Fintype.sum_sum_type]
   rw [Finset.sum_add_distrib]
   simp
-  have h1 :  ∑ i, ∑ j, magneticFieldMatrix 𝓕.c A t x (i, j) ^ 2
+  have h1 : ∑ i, ∑ j, magneticFieldMatrix 𝓕.c A t x (i, j) ^ 2
       = ∑ i, ∑ j, (A.fieldStrengthMatrix ((toTimeAndSpace 𝓕.c).symm (t, x)))
         (Sum.inr i, Sum.inr j) ^ 2 := by rfl
   rw [h1]
   ring_nf
-  have h2 : ‖electricField 𝓕.c A t x‖ ^ 2  = 𝓕.c.val ^ 2 *
-      ∑ i, |(A.fieldStrengthMatrix ((toTimeAndSpace 𝓕.c).symm (t, x))) (Sum.inl 0, Sum.inr i)| ^ 2  := by
+  have h2 : ‖electricField 𝓕.c A t x‖ ^ 2 = 𝓕.c.val ^ 2 *
+      ∑ i, |(A.fieldStrengthMatrix ((toTimeAndSpace 𝓕.c).symm (t, x)))
+      (Sum.inl 0, Sum.inr i)| ^ 2 := by
     rw [EuclideanSpace.norm_sq_eq]
     conv_lhs =>
       enter [2, i]
-      rw [electricField_eq_fieldStrengthMatrix A t x i hA ]
+      rw [electricField_eq_fieldStrengthMatrix A t x i hA]
       simp
       rw [mul_pow]
     rw [← Finset.mul_sum]
@@ -505,7 +507,8 @@ lemma kineticTerm_add_time_mul_const {d} {𝓕 : FreeSpace} (A : Electromagnetic
       ring
     _ = -1 / (2 * 𝓕.μ₀) *
         ∑ μ, ∑ ν, ((η μ μ * η ν ν * (∂_ μ A x ν) ^ 2 - ∂_ μ A x ν * ∂_ ν A x μ)) +
-        -1 / (2 * 𝓕.μ₀) * ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) * (2 * η μ μ * η ν ν * ∂_ μ A x ν +
+        -1 / (2 * 𝓕.μ₀) * ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) *
+        (2 * η μ μ * η ν ν * ∂_ μ A x ν +
           η μ μ * η ν ν * (if μ = Sum.inl 0 then c ν else 0) -
           (∂_ ν A x μ) - (if ν = Sum.inl 0 then c μ else 0))
           - (∂_ μ A x ν) * (if ν = Sum.inl 0 then c μ else 0)) := by
@@ -517,13 +520,15 @@ lemma kineticTerm_add_time_mul_const {d} {𝓕 : FreeSpace} (A : Electromagnetic
       congr
       ring_nf
     _ = A.kineticTerm 𝓕 x +
-        -1 / (2 * 𝓕.μ₀) * ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) * (2 * η μ μ * η ν ν * ∂_ μ A x ν +
+        -1 / (2 * 𝓕.μ₀) * ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) *
+        (2 * η μ μ * η ν ν * ∂_ μ A x ν +
         η μ μ * η ν ν * (if μ = Sum.inl 0 then c ν else 0) -
         (∂_ ν A x μ) - (if ν = Sum.inl 0 then c μ else 0))
         - (∂_ μ A x ν) * (if ν = Sum.inl 0 then c μ else 0)) := by
       rw [kineticTerm_eq_sum_potential]
     _ = A.kineticTerm 𝓕 x +
-        -1 / (2 * 𝓕.μ₀)* ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) * (2 * η μ μ * η ν ν * ∂_ μ A x ν +
+        -1 / (2 * 𝓕.μ₀)* ∑ μ, ∑ ν, ((if μ = Sum.inl 0 then c ν else 0) *
+        (2 * η μ μ * η ν ν * ∂_ μ A x ν +
         η μ μ * η ν ν * (if μ = Sum.inl 0 then c ν else 0) -
         (∂_ ν A x μ) - (if ν = Sum.inl 0 then c μ else 0))
         - (∂_ ν A x μ) * (if μ = Sum.inl 0 then c ν else 0)) := by
@@ -653,8 +658,8 @@ second derivatives of the potential.
 
 -/
 
-lemma gradKineticTerm_eq_sum_sum {d} {𝓕 : FreeSpace} (A : ElectromagneticPotential d) (x : SpaceTime d)
-    (ha : ContDiff ℝ ∞ A) :
+lemma gradKineticTerm_eq_sum_sum {d} {𝓕 : FreeSpace}
+    (A : ElectromagneticPotential d) (x : SpaceTime d) (ha : ContDiff ℝ ∞ A) :
     A.gradKineticTerm 𝓕 x = ∑ (ν : (Fin 1 ⊕ Fin d)), ∑ (μ : (Fin 1 ⊕ Fin d)),
         (1 / (𝓕.μ₀) * (η μ μ * η ν ν * ∂_ μ (fun x' => ∂_ μ A x' ν) x -
         ∂_ μ (fun x' => ∂_ ν A x' μ) x)) • Lorentz.Vector.basis ν:= by
@@ -725,8 +730,8 @@ lemma gradKineticTerm_eq_sum_sum {d} {𝓕 : FreeSpace} (A : ElectromagneticPote
           simp [SpaceTime.deriv_eq]
           conv => enter [2, x]; rw [SpaceTime.deriv_eq]
           apply diff_partial ν μ
-      _ = ∑ (μ : (Fin 1 ⊕ Fin d)), ∑ (ν : (Fin 1 ⊕ Fin d)), (
-        (1 / (𝓕.μ₀) * (η μ μ * η ν ν * ∂_ μ (fun x' => ∂_ μ A x' ν) x -
+      _ = ∑ (μ : (Fin 1 ⊕ Fin d)), ∑ (ν : (Fin 1 ⊕ Fin d)),
+        ((1 / (𝓕.μ₀) * (η μ μ * η ν ν * ∂_ μ (fun x' => ∂_ μ A x' ν) x -
         ∂_ μ (fun x' => ∂_ ν A x' μ) x)) • Lorentz.Vector.basis ν) := by
         apply Finset.sum_congr rfl (fun μ _ => ?_)
         apply Finset.sum_congr rfl (fun ν _ => ?_)
@@ -799,7 +804,8 @@ lemma gradKineticTerm_eq_fieldStrength {d} {𝓕 : FreeSpace} (A : Electromagnet
             apply Differentiable.const_mul
             exact diff_partial ν μ
       _ = ∑ (ν : (Fin 1 ⊕ Fin d)), ∑ (μ : (Fin 1 ⊕ Fin d)),
-        ((1/𝓕.μ₀ * η ν ν) * (∂_ μ (A.fieldStrengthMatrix · (μ, ν)) x)) • Lorentz.Vector.basis ν := by
+        ((1/𝓕.μ₀ * η ν ν) * (∂_ μ (A.fieldStrengthMatrix · (μ, ν)) x)) •
+            Lorentz.Vector.basis ν := by
           apply Finset.sum_congr rfl (fun ν _ => ?_)
           apply Finset.sum_congr rfl (fun μ _ => ?_)
           congr
@@ -829,10 +835,11 @@ open Time Space
 lemma gradKineticTerm_eq_electric_magnetic {𝓕 : FreeSpace} (A : ElectromagneticPotential d)
     (x : SpaceTime d) (ha : ContDiff ℝ ∞ A) :
     A.gradKineticTerm 𝓕 x =
-    (1/(𝓕.μ₀ * 𝓕.c) * Space.div (A.electricField 𝓕.c (x.time 𝓕.c)) x.space) • Lorentz.Vector.basis (Sum.inl 0) +
+    (1/(𝓕.μ₀ * 𝓕.c) * Space.div (A.electricField 𝓕.c (x.time 𝓕.c)) x.space) •
+    Lorentz.Vector.basis (Sum.inl 0) +
     ∑ i, (𝓕.μ₀⁻¹ * (1 / 𝓕.c ^ 2 * ∂ₜ (fun t => A.electricField 𝓕.c t x.space) (x.time 𝓕.c) i-
-           ∑ j, Space.deriv j (A.magneticFieldMatrix 𝓕.c (x.time 𝓕.c) · (j, i)) x.space)) •
-          Lorentz.Vector.basis (Sum.inr i) := by
+      ∑ j, Space.deriv j (A.magneticFieldMatrix 𝓕.c (x.time 𝓕.c) · (j, i)) x.space)) •
+      Lorentz.Vector.basis (Sum.inr i) := by
   have diff_partial (μ) :
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
     rw [← differentiable_pi]
@@ -865,15 +872,16 @@ lemma gradKineticTerm_eq_electric_magnetic {𝓕 : FreeSpace} (A : Electromagnet
     rw [smul_smul, ← neg_smul]
     congr
     simp
-    apply  ha.of_le (ENat.LEInfty.out)
+    apply ha.of_le (ENat.LEInfty.out)
 
 lemma gradKineticTerm_eq_electric_magnetic_three {𝓕 : FreeSpace} (A : ElectromagneticPotential)
     (x : SpaceTime) (ha : ContDiff ℝ ∞ A) :
     A.gradKineticTerm 𝓕 x =
-    (1/(𝓕.μ₀ * 𝓕.c) * Space.div (A.electricField 𝓕.c (x.time 𝓕.c)) x.space) • Lorentz.Vector.basis (Sum.inl 0) +
+    (1/(𝓕.μ₀ * 𝓕.c) * Space.div (A.electricField 𝓕.c (x.time 𝓕.c)) x.space) •
+      Lorentz.Vector.basis (Sum.inl 0) +
     ∑ i, (𝓕.μ₀⁻¹ * (1 / 𝓕.c ^ 2 * ∂ₜ (fun t => A.electricField 𝓕.c t x.space) (x.time 𝓕.c) i-
-           Space.curl (A.magneticField 𝓕.c (x.time 𝓕.c)) x.space i)) •
-          Lorentz.Vector.basis (Sum.inr i) := by
+      Space.curl (A.magneticField 𝓕.c (x.time 𝓕.c)) x.space i)) •
+      Lorentz.Vector.basis (Sum.inr i) := by
   rw [gradKineticTerm_eq_electric_magnetic A x ha]
   congr
   funext i

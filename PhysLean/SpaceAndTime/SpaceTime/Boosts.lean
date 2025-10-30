@@ -85,9 +85,9 @@ lemma boost_x_smul (β : ℝ) (hβ : |β| < 1) (x : SpaceTime) :
 
 lemma boost_zero_apply_time_space {d : ℕ} {β : ℝ} (hβ : |β| < 1) (c : SpeedOfLight)
     (t : Time) (x : Space d.succ) :
-   ((boost (0 : Fin d.succ) β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x)) =
-   (SpaceTime.toTimeAndSpace c).symm
-   (γ β * (t.val + β /c * x 0),
+    ((boost (0 : Fin d.succ) β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x)) =
+    (SpaceTime.toTimeAndSpace c).symm
+    (γ β * (t.val + β /c * x 0),
     fun | (0 : Fin d.succ) => γ β * (x 0 + c * β * t.val)
         | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩) := by
   funext μ
@@ -113,7 +113,6 @@ lemma boost_zero_apply_time_space {d : ℕ} {β : ℝ} (hβ : |β| < 1) (c : Spe
     left
     simpa [Fin.ext_iff] using hb
     simp
-
 
 end SpaceTime
 

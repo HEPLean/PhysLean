@@ -19,7 +19,6 @@ where `φ` is the scalar potential and `\vec A` is the vector potential.
 
 In this module we define the scalar potential, and prove lemmas about it.
 
-
 Since `A` is relativistic it is a function of `SpaceTime d`, whilst
 the scalar potential is non-relativistic and is therefore a function of `Time` and `Space d`.
 

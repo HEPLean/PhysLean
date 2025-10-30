@@ -216,7 +216,6 @@ lemma space_toTimeAndSpace_symm {d : ℕ} {c : SpeedOfLight} (t : Time) (s : Spa
   funext i
   simp
 
-
 @[simp]
 lemma time_toTimeAndSpace_symm {d : ℕ} {c : SpeedOfLight} (t : Time) (s : Space d) :
     ((toTimeAndSpace c).symm (t, s)).time c = t := by
@@ -229,7 +228,8 @@ lemma toTimeAndSpace_symm_apply_inl {d : ℕ} {c : SpeedOfLight} (t : Time) (s :
     (toTimeAndSpace c).symm (t, s) (Sum.inl 0) = c * t := by rfl
 
 @[simp]
-lemma toTimeAndSpace_symm_apply_inr {d : ℕ} {c : SpeedOfLight} (t : Time) (x : Space d) (i : Fin d) :
+lemma toTimeAndSpace_symm_apply_inr {d : ℕ} {c : SpeedOfLight} (t : Time) (x : Space d)
+    (i : Fin d) :
     (toTimeAndSpace c).symm (t, x) (Sum.inr i) = x i := by rfl
 /-!
 
@@ -420,7 +420,7 @@ lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace �
 
 -/
 
-lemma deriv_sum_inr {d : ℕ} {M : Type}  [NormedAddCommGroup M] [NormedSpace ℝ M]
+lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (c : SpeedOfLight) (f : SpaceTime d → M)
     (hf : Differentiable ℝ f) (x : SpaceTime d) (i : Fin d) :
     ∂_ (Sum.inr i) f x
@@ -459,7 +459,8 @@ lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M]
     ContinuousLinearMap.coe_comp', Function.comp_apply]
   trans
     (fderiv ℝ f x)
-      ( (1 / c.val) • (fderiv ℝ (fun t => (toTimeAndSpace c).symm (t, ((toTimeAndSpace c) x).2)) ((toTimeAndSpace c) x).1) 1)
+      ((1 / c.val) • (fderiv ℝ (fun t => (toTimeAndSpace c).symm (t, ((toTimeAndSpace c) x).2))
+      ((toTimeAndSpace c) x).1) 1)
   swap
   · exact ContinuousLinearMap.map_smul_of_tower (fderiv ℝ f x) (1 / c.val) _
   congr 1

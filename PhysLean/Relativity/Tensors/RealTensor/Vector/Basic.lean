@@ -263,7 +263,7 @@ lemma sum_inl_inr_basis_eq_zero_iff {d : ℕ} (f₀ : ℝ) (f : Fin d → ℝ) :
     | Sum.inl 0 => f₀
     | Sum.inr i => f i
   have h1 : f₀ • basis (Sum.inl 0) + (∑ i, f i • basis (Sum.inr i))
-    = ∑ μ,  f' μ • basis μ := by simp [f']
+    = ∑ μ, f' μ • basis μ := by simp [f']
   rw [h1, sum_basis_eq_zero_iff]
   simp [f']
 

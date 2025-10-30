@@ -179,12 +179,12 @@ lemma canonicalMomentum_eq_electricField {d} {𝓕 : FreeSpace} (A : Electromagn
     A.canonicalMomentum 𝓕 J = fun x => fun μ =>
       match μ with
       | Sum.inl 0 => 0
-      | Sum.inr i  => - (1/(𝓕.μ₀ * 𝓕.c)) * A.electricField 𝓕.c (x.time 𝓕.c) x.space i := by
+      | Sum.inr i => - (1/(𝓕.μ₀ * 𝓕.c)) * A.electricField 𝓕.c (x.time 𝓕.c) x.space i := by
   rw [canonicalMomentum_eq A hA J]
   funext x μ
   match μ with
   | Sum.inl 0 => simp
-  | Sum.inr i  =>
+  | Sum.inr i =>
   simp
   rw [electricField_eq_fieldStrengthMatrix]
   simp
@@ -199,7 +199,7 @@ lemma canonicalMomentum_eq_electricField {d} {𝓕 : FreeSpace} (A : Electromagn
 
 /-- The Hamiltonian associated with an electromagnetic potential
   and a Lorentz current density. -/
-noncomputable def hamiltonian  (𝓕 : FreeSpace) (A : ElectromagneticPotential d)
+noncomputable def hamiltonian (𝓕 : FreeSpace) (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) (x : SpaceTime d) : ℝ :=
     ∑ μ, A.canonicalMomentum 𝓕 J x μ * ∂_ (Sum.inl 0) A x μ - lagrangian 𝓕 A J x
 
@@ -229,7 +229,8 @@ lemma hamiltonian_eq_electricField_vectorPotential {d} {𝓕 : FreeSpace}
   congr
   rw [← Time.deriv_lorentzVector]
   rfl
-  · change Differentiable ℝ (A ∘ fun t =>((toTimeAndSpace 𝓕.c).symm (t, ((toTimeAndSpace 𝓕.c) x).2)))
+  · change Differentiable ℝ (A ∘ fun t =>((toTimeAndSpace 𝓕.c).symm
+      (t, ((toTimeAndSpace 𝓕.c) x).2)))
     apply Differentiable.comp
     · exact hA.differentiable (by simp)
     · fun_prop
@@ -241,10 +242,10 @@ lemma hamiltonian_eq_electricField_scalarPotential {d} {𝓕 : FreeSpace}
     (A : ElectromagneticPotential d) (hA : ContDiff ℝ 2 A)
     (J : LorentzCurrentDensity d) (x : SpaceTime d) :
     A.hamiltonian 𝓕 J x =
-       (1/ 𝓕.c.val^2 * 𝓕.μ₀⁻¹) * (‖A.electricField 𝓕.c (x.time 𝓕.c) x.space‖ ^ 2
+      (1/ 𝓕.c.val^2 * 𝓕.μ₀⁻¹) * (‖A.electricField 𝓕.c (x.time 𝓕.c) x.space‖ ^ 2
       + ⟪A.electricField 𝓕.c (x.time 𝓕.c) x.space,
-        Space.grad  (A.scalarPotential 𝓕.c  (x.time 𝓕.c) ·) x.space⟫_ℝ)
-       - lagrangian 𝓕 A J x := by
+        Space.grad (A.scalarPotential 𝓕.c (x.time 𝓕.c) ·) x.space⟫_ℝ)
+        - lagrangian 𝓕 A J x := by
   rw [hamiltonian_eq_electricField_vectorPotential A hA J x]
   congr 1
   conv_lhs =>
@@ -260,7 +261,6 @@ lemma hamiltonian_eq_electricField_scalarPotential {d} {𝓕 : FreeSpace}
   simp
   ring
 
-
 /-!
 
 ### B.1. The hamiltonian in terms of the electric and magnetic fields
@@ -272,12 +272,12 @@ This only holds in three spatial dimensions.
 lemma hamiltonian_eq_electricField_magneticField (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ 2 A) (J : LorentzCurrentDensity d) (x : SpaceTime d) :
     A.hamiltonian 𝓕 J x = 1/2 * 𝓕.ε₀ * (‖A.electricField 𝓕.c (x.time 𝓕.c) x.space‖ ^ 2
-      + 𝓕.c ^ 2 / 2 *  ∑ i, ∑ j, ‖A.magneticFieldMatrix 𝓕.c (x.time 𝓕.c) x.space (i, j)‖ ^ 2)
+      + 𝓕.c ^ 2 / 2 * ∑ i, ∑ j, ‖A.magneticFieldMatrix 𝓕.c (x.time 𝓕.c) x.space (i, j)‖ ^ 2)
       + 𝓕.ε₀ * ⟪A.electricField 𝓕.c (x.time 𝓕.c) x.space,
-        Space.grad  (A.scalarPotential 𝓕.c  (x.time 𝓕.c) ·) x.space⟫_ℝ
+        Space.grad (A.scalarPotential 𝓕.c (x.time 𝓕.c) ·) x.space⟫_ℝ
       + A.scalarPotential 𝓕.c (x.time 𝓕.c) x.space * J.chargeDensity 𝓕.c (x.time 𝓕.c) x.space
-      - ∑ i,  A.vectorPotential 𝓕.c (x.time 𝓕.c) x.space i *
-        J.currentDensity 𝓕.c (x.time 𝓕.c) x.space i  := by
+      - ∑ i, A.vectorPotential 𝓕.c (x.time 𝓕.c) x.space i *
+        J.currentDensity 𝓕.c (x.time 𝓕.c) x.space i := by
   rw [hamiltonian_eq_electricField_scalarPotential A hA J x]
   rw [lagrangian_eq_electric_magnetic A hA J x]
   simp [FreeSpace.c_sq 𝓕]

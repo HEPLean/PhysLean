@@ -74,7 +74,8 @@ open Space Time
 -/
 
 /-- The magnetic field from the electromagnetic potential. -/
-noncomputable def magneticField (c : SpeedOfLight := 1) (A : ElectromagneticPotential) : MagneticField :=
+noncomputable def magneticField (c : SpeedOfLight := 1) (A : ElectromagneticPotential) :
+    MagneticField :=
   fun t x => (∇ × (A.vectorPotential c t)) x
 
 lemma magneticField_eq {c : SpeedOfLight} (A : ElectromagneticPotential) :
@@ -222,7 +223,7 @@ lemma fieldStrengthMatrix_eq_electric_magnetic {c} (A : ElectromagneticPotential
       rw [fieldStrengthMatrix_antisymm]
     | 2, 2 => simp
 
-lemma fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime  (c : SpeedOfLight)
+lemma fieldStrengthMatrix_eq_electric_magnetic_of_spaceTime (c : SpeedOfLight)
     (A : ElectromagneticPotential)
     (x : SpaceTime) (hA : Differentiable ℝ A) (μ ν : Fin 1 ⊕ Fin 3) :
     let tx := SpaceTime.toTimeAndSpace c x
@@ -262,7 +263,6 @@ noncomputable def magneticFieldMatrix (c : SpeedOfLight := 1) (A : Electromagnet
 lemma magneticFieldMatrix_eq {c : SpeedOfLight} (A : ElectromagneticPotential d) :
     A.magneticFieldMatrix c = fun t x ij =>
       A.fieldStrengthMatrix ((toTimeAndSpace c).symm (t, x)) (Sum.inr ij.1, Sum.inr ij.2) := rfl
-
 
 lemma fieldStrengthMatrix_inr_inr_eq_magneticFieldMatrix {c : SpeedOfLight}
     (A : ElectromagneticPotential d)
@@ -374,7 +374,7 @@ lemma magneticFieldMatrix_eq_vectorPotential {c : SpeedOfLight} (A : Electromagn
 
 -/
 
-lemma magneticFieldMatrix_contDiff {n}  {c : SpeedOfLight} (A : ElectromagneticPotential d)
+lemma magneticFieldMatrix_contDiff {n} {c : SpeedOfLight} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ (n + 1) A) (ij) :
     ContDiff ℝ n ↿(fun t x => A.magneticFieldMatrix c t x ij) := by
   simp [magneticFieldMatrix_eq]
@@ -415,7 +415,7 @@ lemma magneticFieldMatrix_differentiable {c : SpeedOfLight} (A : Electromagnetic
   · exact fieldStrengthMatrix_differentiable (hA)
   · exact ContinuousLinearEquiv.differentiable (toTimeAndSpace c).symm
 
-lemma magneticFieldMatrix_differentiable_space {c : SpeedOfLight}  (A : ElectromagneticPotential d)
+lemma magneticFieldMatrix_differentiable_space {c : SpeedOfLight} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ 2 A) (t : Time) (ij) :
     Differentiable ℝ (fun x => A.magneticFieldMatrix c t x ij) := by
   change Differentiable ℝ (↿(fun t x => A.magneticFieldMatrix c t x ij) ∘ fun x => (t, x))
@@ -561,23 +561,22 @@ lemma time_deriv_time_deriv_magneticFieldMatrix {d : ℕ} {c : SpeedOfLight}
     apply ClassicalMechanics.space_deriv_differentiable_time
     apply electricField_apply_contDiff hA
 
-
 /-!
 
 ### C.8. `curl` of the magnetic field matrix
 
 -/
 
-lemma curl_magneticFieldMatrix_eq_electricField_fieldStrengthMatrix  {d : ℕ} {c : SpeedOfLight}
+lemma curl_magneticFieldMatrix_eq_electricField_fieldStrengthMatrix {d : ℕ} {c : SpeedOfLight}
     (A : ElectromagneticPotential d)
-    (hA : ContDiff ℝ 2 A) (t : Time) (x : Space d) (i  : Fin d) :
+    (hA : ContDiff ℝ 2 A) (t : Time) (x : Space d) (i : Fin d) :
     ∑ j, Space.deriv j (A.magneticFieldMatrix c t · (j, i)) x =
-   (1/c^2) * ∂ₜ (fun t => A.electricField c t x) t i +
+    (1/c^2) * ∂ₜ (fun t => A.electricField c t x) t i +
     (∑ (μ : (Fin 1 ⊕ Fin d)), (∂_ μ (A.fieldStrengthMatrix · (μ, Sum.inr i))
     ((toTimeAndSpace c).symm (t, x)))) := by
   trans (1/c^2) * ∂ₜ (fun t => A.electricField c t x) t i +
-    (-  (1/c^2) * ∂ₜ (fun t => A.electricField c t x) t i +
-    ∑ j, Space.deriv j (A.magneticFieldMatrix c t · (j, i)) x )
+    (- (1/c^2) * ∂ₜ (fun t => A.electricField c t x) t i +
+    ∑ j, Space.deriv j (A.magneticFieldMatrix c t · (j, i)) x)
   · ring
   congr 1
   rw [Fintype.sum_sum_type]
@@ -590,7 +589,6 @@ lemma curl_magneticFieldMatrix_eq_electricField_fieldStrengthMatrix  {d : ℕ} {
     simp
     rfl
     · apply fieldStrengthMatrix_differentiable hA
-
 
 end ElectromagneticPotential
 

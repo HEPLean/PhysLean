@@ -185,7 +185,7 @@ lemma deriv_eq_fderiv_basis [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
 
 @[simp]
 lemma deriv_const [NormedAddCommGroup M] [NormedSpace ℝ M] (m : M) (μ : Fin d) :
-    deriv μ  (fun _ => m) t = 0 := by
+    deriv μ (fun _ => m) t = 0 := by
   rw [deriv]
   simp
 

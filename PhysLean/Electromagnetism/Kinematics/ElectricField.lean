@@ -133,7 +133,7 @@ lemma fieldStrengthMatrix_inl_inr_eq_electricField {c : SpeedOfLight}
     (A : ElectromagneticPotential d)
     (x : SpaceTime d) (i : Fin d) (hA : Differentiable ℝ A) :
     A.fieldStrengthMatrix x (Sum.inl 0, Sum.inr i) =
-    - (1 /c) * A.electricField c (x.time c) x.space i  := by
+    - (1 /c) * A.electricField c (x.time c) x.space i := by
   rw [electricField_eq_fieldStrengthMatrix A (x.time c) x.space i hA]
   simp
 
@@ -141,7 +141,7 @@ lemma fieldStrengthMatrix_inr_inl_eq_electricField {c : SpeedOfLight}
     (A : ElectromagneticPotential d)
     (x : SpaceTime d) (i : Fin d) (hA : Differentiable ℝ A) :
     A.fieldStrengthMatrix x (Sum.inr i, Sum.inl 0) =
-    (1 /c) * A.electricField c (x.time c) x.space i  := by
+    (1 /c) * A.electricField c (x.time c) x.space i := by
   rw [electricField_eq_fieldStrengthMatrix A (x.time c) x.space i hA]
   simp
   rw [fieldStrengthMatrix_antisymm A x (Sum.inr i) (Sum.inl 0)]
@@ -278,7 +278,7 @@ open Space
 lemma time_deriv_electricField_eq_fieldStrengthMatrix {d} {A : ElectromagneticPotential d}
     {c : SpeedOfLight} (hA : ContDiff ℝ 2 A) (t : Time) (x : Space d) (i : Fin d) :
     ∂ₜ (fun t => A.electricField c t x) t i =
-    - c ^ 2 *  ∂_ (Sum.inl 0) (fun x => (A.fieldStrengthMatrix x) (Sum.inl 0, Sum.inr i))
+    - c ^ 2 * ∂_ (Sum.inl 0) (fun x => (A.fieldStrengthMatrix x) (Sum.inl 0, Sum.inr i))
     ((toTimeAndSpace c).symm (t, x)) := by
   rw [SpaceTime.deriv_sum_inl c]
   simp
@@ -295,11 +295,10 @@ lemma time_deriv_electricField_eq_fieldStrengthMatrix {d} {A : ElectromagneticPo
   · apply electricField_differentiable_time hA x
   · apply fieldStrengthMatrix_differentiable hA
 
-
 lemma div_electricField_eq_fieldStrengthMatrix{d} {A : ElectromagneticPotential d}
     {c : SpeedOfLight} (hA : ContDiff ℝ 2 A) (t : Time) (x : Space d) :
-    (∇ ⬝ A.electricField c t) x =  c * ∑ (μ : (Fin 1 ⊕ Fin d)),
-      (∂_ μ (A.fieldStrengthMatrix · (μ, Sum.inl 0)) ((toTimeAndSpace c).symm (t, x)))  := by
+    (∇ ⬝ A.electricField c t) x = c * ∑ (μ : (Fin 1 ⊕ Fin d)),
+      (∂_ μ (A.fieldStrengthMatrix · (μ, Sum.inl 0)) ((toTimeAndSpace c).symm (t, x))) := by
   rw [Finset.mul_sum]
   simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
     Finset.sum_singleton, fieldStrengthMatrix_diag_eq_zero, SpaceTime.deriv_zero, Pi.ofNat_apply,

@@ -21,7 +21,6 @@ structure SpeedOfLight where
 
 namespace SpeedOfLight
 
-
 instance : Coe SpeedOfLight ℝ := ⟨SpeedOfLight.val⟩
 
 instance : One SpeedOfLight := ⟨1, by grind⟩

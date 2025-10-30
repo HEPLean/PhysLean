@@ -313,7 +313,7 @@ lemma boost_zero_inl_0_inr_succ {d : ℕ} {β : ℝ} (hβ : |β| < 1) (i : Fin d
 
 @[simp]
 lemma boost_zero_inr_succ_inl_0{d : ℕ} {β : ℝ} (hβ : |β| < 1) (i : Fin d) :
-    (boost (0 : Fin d.succ) β hβ).1 (Sum.inr i.succ) (Sum.inl 0)  = 0 := by
+    (boost (0 : Fin d.succ) β hβ).1 (Sum.inr i.succ) (Sum.inl 0) = 0 := by
   rw [boost_inr_other_inl_0]
   simp
 
@@ -329,18 +329,15 @@ lemma boost_zero_inr_nat_succ_inl_0 {d : ℕ} {β : ℝ} (hβ : |β| < 1) (i : �
   rw [boost_inr_other_inl_0]
   simp
 
-
 @[simp]
 lemma boost_zero_inr_0_inr_succ {d : ℕ} {β : ℝ} (hβ : |β| < 1) (i : Fin d) :
     (boost (0 : Fin d.succ) β hβ).1 (Sum.inr 0) (Sum.inr i.succ) = 0 := by
   rw [boost_inr_self_inr_other]
   simp
 
-
-
 @[simp]
 lemma boost_zero_inr_succ_inr_0 {d : ℕ} {β : ℝ} (hβ : |β| < 1) (i : Fin d) :
-    (boost (0 : Fin d.succ) β hβ).1 (Sum.inr i.succ) (Sum.inr 0)  = 0 := by
+    (boost (0 : Fin d.succ) β hβ).1 (Sum.inr i.succ) (Sum.inr 0) = 0 := by
   rw [boost_inr_other_inr_self]
   simp
 
@@ -357,14 +354,13 @@ lemma boost_zero_inr_nat_succ_inr_0 {d : ℕ} {β : ℝ} (hβ : |β| < 1) (i : �
   simp
 
 lemma boost_zero_inr_succ_inr_succ {d : ℕ} {β : ℝ} (hβ : |β| < 1) (i1 i2 : Fin d) :
-    (boost (0 : Fin d.succ) β hβ).1 (Sum.inr i1.succ) (Sum.inr i2.succ)  =
+    (boost (0 : Fin d.succ) β hβ).1 (Sum.inr i1.succ) (Sum.inr i2.succ) =
     if i1 = i2 then 1 else 0 := by
   rw [boost_inr_inr_other]
   simp
   congr 1
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
   simp
-
 
 end LorentzGroup
 

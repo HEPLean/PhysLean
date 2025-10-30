@@ -128,7 +128,6 @@ lemma constantEB_scalarPotential {c : SpeedOfLight}
   simp [scalarPotential, timeSlice, constantEB, space_toCoord_symm, Equiv.coe_fn_mk,
     Function.curry_apply, Function.comp_apply]
 
-
 /-!
 
 ## D. The vector potential
@@ -157,7 +156,7 @@ open Time
 lemma constantEB_vectorPotential_time_deriv {c : SpeedOfLight}
     {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
     {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} (t : Time) (x : Space d) :
-    ∂ₜ ((constantEB c E₀ B₀ B₀_antisymm).vectorPotential c ·  x) t = 0 := by
+    ∂ₜ ((constantEB c E₀ B₀ B₀_antisymm).vectorPotential c · x) t = 0 := by
   rw [constantEB_vectorPotential]
   simp
 
@@ -169,9 +168,9 @@ lemma constantEB_vectorPotential_time_deriv {c : SpeedOfLight}
 
 lemma constantEB_vectorPotential_space_deriv {c : SpeedOfLight}
     {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
-    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} (t : Time) (x : Space d) (i j : Fin d):
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} (t : Time) (x : Space d) (i j : Fin d) :
     Space.deriv i ((constantEB c E₀ B₀ B₀_antisymm).vectorPotential c t · j) x =
-       (1 / 2) *  B₀ (j, i) := by
+    (1 / 2) * B₀ (j, i) := by
   rw [constantEB_vectorPotential]
   rw [Space.deriv_eq]
   rw [fderiv_const_mul (by fun_prop)]
@@ -188,7 +187,6 @@ lemma constantEB_vectorPotential_space_deriv {c : SpeedOfLight}
     exact id (Ne.symm hk)
   · simp
 
-
 /-!
 
 ## E. The electric field
@@ -198,7 +196,7 @@ The electric field for `constantEB E₀ B₀` is given by `E₀`.
 -/
 
 @[simp]
-lemma constantEB_electricField  {c : SpeedOfLight}
+lemma constantEB_electricField {c : SpeedOfLight}
     {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
     {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
     (constantEB c E₀ B₀ B₀_antisymm).electricField c = fun _ _ => E₀ := by

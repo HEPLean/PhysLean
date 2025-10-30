@@ -18,8 +18,6 @@ we use the magnetic field matrix rather than the magnetic field vector.
 
 ## ii. Key results
 
-
-
 ## iii. Table of contents
 
 - A. Boost of the electric field
@@ -53,7 +51,6 @@ electric `E'` and magnetic fields `B'` in `F'` at the point
 
 -/
 
-
 lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (hβ : |β| < 1)
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
@@ -73,7 +70,7 @@ lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
   conv_lhs =>
     enter [2]
     rw [fieldStrengthMatrix_antisymm]
-  trans  γ β ^ 2 * (1 - β ^ 2) *
+  trans γ β ^ 2 * (1 - β ^ 2) *
       (A.fieldStrengthMatrix
       ((boost (d := d.succ) 0 β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x)))
       (Sum.inl 0, Sum.inr 0)
@@ -91,7 +88,6 @@ lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
     · apply Differentiable.comp
       · exact hA
       · exact ContinuousLinearMap.differentiable (Lorentz.Vector.actionCLM (boost 0 β hβ)⁻¹)
-
 
 lemma electricField_apply_x_boost_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (hβ : |β| < 1)
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ)
@@ -169,7 +165,6 @@ lemma magneticFieldMatrix_apply_x_boost_succ_succ {d : ℕ} {c : SpeedOfLight} (
   simp [Fintype.sum_sum_type, boost_zero_inr_succ_inr_succ, Fin.sum_univ_succ]
   rw [SpaceTime.boost_zero_apply_time_space]
   rfl
-
 
 end ElectromagneticPotential
 end Electromagnetism

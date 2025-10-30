@@ -59,10 +59,9 @@ lemma c_sq : (𝓕.c : ℝ) ^ 2 = 1 / (𝓕.ε₀ * 𝓕.μ₀) := by
   · positivity
 
 @[simp]
-lemma c_abs :  abs (𝓕.c : ℝ) = 𝓕.c := by
+lemma c_abs : abs (𝓕.c : ℝ) = 𝓕.c := by
   rw [abs_of_pos (SpeedOfLight.val_pos 𝓕.c)]
 
 end FreeSpace
-
 
 end Electromagnetism
