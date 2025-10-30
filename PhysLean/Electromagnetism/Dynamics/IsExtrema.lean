@@ -32,12 +32,10 @@ Maxwell's equations with sources, i.e. Gauss's law and Ampère's law.
 - A. The condition for an extrema of the Lagrangian density
   - A.1. Extrema condition in terms of the field strength matrix
 - B. Gauss's law and Ampère's law and the extrema condition
-  - B.1. Gauss's law from the extrema condition
-  - B.2. Ampere's law from the extrema condition
-  - B.3. Extrema condition if and only if Gauss's law and Ampère's law
-- C. Second time derivatives from the extrema condition
-  - C.1. Second time derivatives of the magnetic field from the extrema condition
-  - C.2. Second time derivatives of the electric field from the extrema condition
+- C. Time derivatives from the extrema condition
+- D. Second time derivatives from the extrema condition
+  - D.1. Second time derivatives of the magnetic field from the extrema condition
+  - D.2. Second time derivatives of the electric field from the extrema condition
 
 ## iv. References
 
@@ -93,7 +91,7 @@ lemma isExtrema_iff_fieldStrengthMatrix {𝓕 : FreeSpace}
     rw [smul_smul]
   conv_lhs =>
     enter [x]
-    simp
+    simp only [one_div, Pi.zero_apply]
     rw [Lorentz.Vector.sum_basis_eq_zero_iff]
   apply Iff.intro
   · intro h x ν
@@ -105,7 +103,7 @@ lemma isExtrema_iff_fieldStrengthMatrix {𝓕 : FreeSpace}
     ring
   · intro h x ν
     specialize h x ν
-    simp
+    simp only [mul_eq_zero]
     right
     linear_combination (norm := field_simp) 𝓕.μ₀⁻¹ * h
     ring
@@ -183,14 +181,13 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
 
 /-!
 
-## C. Second time derivatives from the extrema condition
+## D. Second time derivatives from the extrema condition
 
 -/
-open Time
 
 /-!
 
-### C.1. Second time derivatives of the magnetic field from the extrema condition
+### D.1. Second time derivatives of the magnetic field from the extrema condition
 
 -/
 
@@ -273,12 +270,12 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
     enter [2]
     rw [Space.deriv_commute _ (by
       apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl)))]
-  simp
+  simp only [Finset.sum_sub_distrib]
   ring
 
 /-!
 
-### C.2. Second time derivatives of the electric field from the extrema condition
+### D.2. Second time derivatives of the electric field from the extrema condition
 
 -/
 
@@ -306,7 +303,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
       1 / 𝓕.ε₀ * ∂ₜ (J.currentDensity 𝓕.c · x i) t := by
       rw [Time.deriv_eq]
       rw [fderiv_fun_sub]
-      simp
+      simp only [one_div, mul_inv_rev, ContinuousLinearMap.coe_sub', Pi.sub_apply]
       rw [fderiv_const_mul (by
         apply Differentiable.fun_sum
         intro j _

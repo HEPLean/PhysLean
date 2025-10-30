@@ -23,6 +23,9 @@ In this implementation we set `μ₀ = 1`. It is a TODO to introduce this consta
 
 ## ii. Key results
 
+- `freeCurrentPotential` : The potential energy from the interaction of the electromagnetic
+  potential with a free Lorentz current density.
+- `gradFreeCurrentPotential` : The variational gradient of the free current potential.
 - `lagrangian` : The lagrangian density for the electromagnetic field in presence of a
   Lorentz current density.
 - `gradLagrangian` : The variational gradient of the lagrangian density.
@@ -31,15 +34,21 @@ In this implementation we set `μ₀ = 1`. It is a TODO to introduce this consta
 
 ## iii. Table of contents
 
-- A. The Lagrangian density
-  - A.1. Shifts in the lagrangian under shifts in the potential
-- B. The variational gradient of the lagrangian density
-  - B.1. The lagrangian density has a variational gradient
-  - B.2. The definition of, `gradLagrangian`, the variational gradient of the lagrangian density
-  - B.3. The variational gradient in terms of the gradient of the kinetic term
-  - B.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
-  - B.5. The variational gradient in terms of the field strength tensor
-  - B.6. The lagrangian gradient recovering Gauss's and Ampère laws
+- A. Free current potential
+  - A.1. Shifts in the free current potential under shifts in the potential
+  - A.2. The free current potential has a variational gradient
+  - A.3. The free current potential in terms of the scalar and vector potentials
+  - A.4. The variational gradient of the free current potential
+- B. The Lagrangian density
+  - B.1. Shifts in the lagrangian under shifts in the potential
+  - B.2. Lagrangian in terms of electric and magnetic fields
+- C. The variational gradient of the lagrangian density
+  - C.1. The lagrangian density has a variational gradient
+  - C.2. The definition of, `gradLagrangian`, the variational gradient of the lagrangian density
+  - C.3. The variational gradient in terms of the gradient of the kinetic term
+  - C.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
+  - C.5. The variational gradient in terms of the field strength tensor
+  - C.6. The lagrangian gradient recovering Gauss's and Ampère laws
 
 ## iv. References
 
@@ -72,15 +81,29 @@ attribute [-simp] Nat.succ_eq_add_one
 
 -/
 
+/-- The potential energy from the interaction of the electromagnetic potential
+  with the free current `J`. -/
 noncomputable def freeCurrentPotential (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d)
     (x : SpaceTime d) : ℝ := ⟪A x, J x⟫ₘ
+
+/-!
+
+### A.1. Shifts in the free current potential under shifts in the potential
+
+-/
 
 lemma freeCurrentPotential_add_const (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) (c : Lorentz.Vector d) (x : SpaceTime d) :
     freeCurrentPotential (fun x => A x + c) J x = freeCurrentPotential A J x + ⟪c, J x⟫ₘ := by
   rw [freeCurrentPotential, freeCurrentPotential]
   simp
+
+/-!
+
+### A.2. The free current potential has a variational gradient
+
+-/
 
 lemma freeCurrentPotential_hasVarGradientAt (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
@@ -104,6 +127,12 @@ lemma freeCurrentPotential_hasVarGradientAt (A : ElectromagneticPotential d)
   apply HasVarGradientAt.intro _ h2
   simp
 
+/-!
+
+### A.3. The free current potential in terms of the scalar and vector potentials
+
+-/
+
 lemma freeCurrentPotential_eq_sum_scalarPotential_vectorPotential
     (𝓕 : FreeSpace) (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) (x : SpaceTime d) :
@@ -117,6 +146,13 @@ lemma freeCurrentPotential_eq_sum_scalarPotential_vectorPotential
   field_simp
   ring
 
+/-!
+
+### A.4. The variational gradient of the free current potential
+
+-/
+
+/-- The variational gradient of the free current potential. -/
 noncomputable def gradFreeCurrentPotential {d} (A : ElectromagneticPotential d)
     (J : LorentzCurrentDensity d) : SpaceTime d → Lorentz.Vector d :=
   (δ (q':=A), ∫ x, freeCurrentPotential q' J x)
@@ -137,14 +173,16 @@ lemma gradFreeCurrentPotential_eq_chargeDensity_currentDensity {d}
       (∑ i, - J.currentDensity 𝓕.c (x.time 𝓕.c) x.space i • Lorentz.Vector.basis (Sum.inr i)) := by
   rw [gradFreeCurrentPotential_eq_sum_basis A hA J hJ]
   rw [Fintype.sum_sum_type]
-  simp
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton,
+    inl_0_inl_0, one_mul, inr_i_inr_i, neg_mul, _root_.neg_smul, Pi.add_apply, Finset.sum_apply,
+    Finset.sum_neg_distrib]
   congr
   · simp [LorentzCurrentDensity.chargeDensity]
   · simp [LorentzCurrentDensity.currentDensity]
 
 /-!
 
-## A. The Lagrangian density
+## B. The Lagrangian density
 
 The lagrangian density for the electromagnetic field in presence of a current density `J` is
 `L = -1/(4 μ₀) F_{μν} F^{μν} - A_μ J^μ`
@@ -159,7 +197,7 @@ noncomputable def lagrangian (𝓕 : FreeSpace) (A : ElectromagneticPotential d)
 
 /-!
 
-### A.1. Shifts in the lagrangian under shifts in the potential
+### B.1. Shifts in the lagrangian under shifts in the potential
 
 -/
 
@@ -171,7 +209,7 @@ lemma lagrangian_add_const {d} {𝓕 : FreeSpace} (A : ElectromagneticPotential 
 
 /-!
 
-### A.2. Lagrangian in terms of electric and magnetic fields
+### B.2. Lagrangian in terms of electric and magnetic fields
 
 -/
 
@@ -191,12 +229,12 @@ lemma lagrangian_eq_electric_magnetic {d} {𝓕 : FreeSpace}
 
 /-!
 
-## B. The variational gradient of the lagrangian density
+## C. The variational gradient of the lagrangian density
 -/
 
 /-!
 
-### B.1. The lagrangian density has a variational gradient
+### C.1. The lagrangian density has a variational gradient
 
 -/
 
@@ -216,7 +254,7 @@ lemma lagrangian_hasVarGradientAt_eq_add_gradKineticTerm {𝓕 : FreeSpace}
 
 /-!
 
-### B.2. The definition of, `gradLagrangian`, the variational gradient of the lagrangian density
+### C.2. The definition of, `gradLagrangian`, the variational gradient of the lagrangian density
 
 -/
 
@@ -227,7 +265,7 @@ noncomputable def gradLagrangian {d} (𝓕 : FreeSpace) (A : ElectromagneticPote
 
 /-!
 
-### B.3. The variational gradient in terms of the gradient of the kinetic term
+### C.3. The variational gradient in terms of the gradient of the kinetic term
 
 -/
 
@@ -240,7 +278,7 @@ lemma gradLagrangian_eq_kineticTerm_sub {𝓕 : FreeSpace} (A : ElectromagneticP
 
 /-!
 
-### B.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
+### C.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
 
 -/
 lemma lagrangian_hasVarGradientAt_gradLagrangian {𝓕 : FreeSpace} (A : ElectromagneticPotential d)
@@ -251,7 +289,7 @@ lemma lagrangian_hasVarGradientAt_gradLagrangian {𝓕 : FreeSpace} (A : Electro
 
 /-!
 
-### B.5. The variational gradient in terms of the field strength tensor
+### C.5. The variational gradient in terms of the field strength tensor
 
 -/
 
@@ -264,7 +302,7 @@ lemma gradLagrangian_eq_sum_fieldStrengthMatrix {𝓕 : FreeSpace} (A : Electrom
   funext x
   simp only [Pi.sub_apply]
   rw [gradKineticTerm_eq_fieldStrength, gradFreeCurrentPotential_eq_sum_basis A hA J hJ]
-  simp
+  simp only [one_div, Finset.sum_apply]
   rw [← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun ν _ => ?_)
   rw [smul_smul, smul_smul, ← sub_smul]
@@ -273,7 +311,7 @@ lemma gradLagrangian_eq_sum_fieldStrengthMatrix {𝓕 : FreeSpace} (A : Electrom
 
 /-!
 
-### B.6. The lagrangian gradient recovering Gauss's and Ampère laws
+### C.6. The lagrangian gradient recovering Gauss's and Ampère laws
 
 -/
 
@@ -290,7 +328,7 @@ lemma gradLagrangian_eq_electricField_magneticField {𝓕 : FreeSpace} (A : Elec
       J.currentDensity 𝓕.c (x.time 𝓕.c) x.space i) •
         Lorentz.Vector.basis (Sum.inr i) := by
   rw [gradLagrangian_eq_kineticTerm_sub A hA J hJ]
-  simp
+  simp only [Pi.sub_apply, one_div, mul_inv_rev, neg_mul, Fin.isValue]
   rw [gradKineticTerm_eq_electric_magnetic _ _ hA]
   rw [gradFreeCurrentPotential_eq_chargeDensity_currentDensity 𝓕 A hA J hJ x]
   conv_lhs =>

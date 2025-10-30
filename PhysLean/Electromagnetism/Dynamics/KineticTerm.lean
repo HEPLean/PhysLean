@@ -35,9 +35,10 @@ In this implementation we have set `μ₀ = 1`. It is a TODO to introduce this c
   - A.1. Lorentz invariance of the kinetic term
   - A.2. Kinetic term simplified expressions
   - A.3. The kinetic term in terms of the electric and magnetic fields
-  - A.4. The kinetic term for constant fields
-  - A.5. Smoothness of the kinetic term
-  - A.6. The kinetic term shifted by time mul a constant
+  - A.4. The kinetic term in terms of the electric and magnetic matrix
+  - A.5. The kinetic term for constant fields
+  - A.6. Smoothness of the kinetic term
+  - A.7. The kinetic term shifted by time mul a constant
 - B. Variational gradient of the kinetic term
   - B.1. Variational gradient in terms of fderiv
   - B.2. Writing the variational gradient as a sums over double derivatives of the potential
@@ -185,14 +186,14 @@ lemma kineticTerm_eq_sum_fieldStrengthMatrix_sq {d} {𝓕 : FreeSpace}
       ring
     · intro b _ hb
       nth_rewrite 2 [minkowskiMatrix.off_diag_zero]
-      simp
+      simp only [mul_zero, zero_mul]
       exact id (Ne.symm hb)
     · simp
   · intro b _ hb
     rw [Finset.sum_eq_zero]
     intro ν' _
     rw [minkowskiMatrix.off_diag_zero]
-    simp
+    simp only [zero_mul]
     exact id (Ne.symm hb)
   · simp
 
@@ -333,7 +334,7 @@ lemma kineticTerm_eq_electricMatrix_magneticFieldMatrix_time_space {𝓕 : FreeS
   rw [kineticTerm_eq_sum_fieldStrengthMatrix_sq]
   simp [Fintype.sum_sum_type]
   rw [Finset.sum_add_distrib]
-  simp
+  simp only [Fin.isValue, Finset.sum_neg_distrib]
   have h1 : ∑ i, ∑ j, magneticFieldMatrix 𝓕.c A t x (i, j) ^ 2
       = ∑ i, ∑ j, (A.fieldStrengthMatrix ((toTimeAndSpace 𝓕.c).symm (t, x)))
         (Sum.inr i, Sum.inr j) ^ 2 := by rfl
@@ -346,11 +347,11 @@ lemma kineticTerm_eq_electricMatrix_magneticFieldMatrix_time_space {𝓕 : FreeS
     conv_lhs =>
       enter [2, i]
       rw [electricField_eq_fieldStrengthMatrix A t x i hA]
-      simp
+      simp only [Fin.isValue, neg_mul, norm_neg, norm_mul, Real.norm_eq_abs, FreeSpace.c_abs]
       rw [mul_pow]
     rw [← Finset.mul_sum]
   rw [h2]
-  simp
+  simp only [Fin.isValue, one_div, sq_abs]
   conv_lhs =>
     enter [1, 2, 1, 2, 2, i]
     rw [fieldStrengthMatrix_antisymm]
@@ -365,12 +366,12 @@ lemma kineticTerm_eq_electricMatrix_magneticFieldMatrix {𝓕 : FreeSpace}
     1/2 * (𝓕.ε₀ * ‖A.electricField 𝓕.c (x.time 𝓕.c) x.space‖ ^ 2 -
     (1 / (2 * 𝓕.μ₀)) * ∑ i, ∑ j, ‖A.magneticFieldMatrix 𝓕.c (x.time 𝓕.c) x.space (i, j)‖ ^ 2) := by
   rw [← kineticTerm_eq_electricMatrix_magneticFieldMatrix_time_space A (x.time 𝓕.c)]
-  simp
+  simp only [toTimeAndSpace_symm_apply_time_space]
   exact hA
 
 /-!
 
-### A.4. The kinetic term for constant fields
+### A.5. The kinetic term for constant fields
 
 -/
 
@@ -401,7 +402,7 @@ lemma kineticTerm_add_const {d} {𝓕 : FreeSpace} (A : ElectromagneticPotential
 
 /-!
 
-### A.5. Smoothness of the kinetic term
+### A.6. Smoothness of the kinetic term
 
 -/
 
@@ -430,7 +431,7 @@ lemma kineticTerm_contDiff {d} {n : WithTop ℕ∞} {𝓕 : FreeSpace} (A : Elec
 
 /-!
 
-### A.6. The kinetic term shifted by time mul a constant
+### A.7. The kinetic term shifted by time mul a constant
 
 This result is used in finding the canonical momentum.
 -/
@@ -862,16 +863,17 @@ lemma gradKineticTerm_eq_electric_magnetic {𝓕 : FreeSpace} (A : Electromagnet
   · rw [smul_smul]
     congr 1
     rw [div_electricField_eq_fieldStrengthMatrix]
-    simp
+    simp only [one_div, Fin.isValue, inl_0_inl_0, mul_one, mul_inv_rev,
+      toTimeAndSpace_symm_apply_time_space]
     field_simp
     apply ha.of_le (ENat.LEInfty.out)
   · congr
     funext j
-    simp
+    simp only [one_div, inr_i_inr_i, mul_neg, mul_one, neg_smul]
     rw [curl_magneticFieldMatrix_eq_electricField_fieldStrengthMatrix]
     rw [smul_smul, ← neg_smul]
     congr
-    simp
+    simp only [one_div, toTimeAndSpace_symm_apply_time_space, sub_add_cancel_left, mul_neg]
     apply ha.of_le (ENat.LEInfty.out)
 
 lemma gradKineticTerm_eq_electric_magnetic_three {𝓕 : FreeSpace} (A : ElectromagneticPotential)

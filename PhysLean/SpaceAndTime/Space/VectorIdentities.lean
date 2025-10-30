@@ -70,6 +70,7 @@ show their action on basic functions, and prove vector calculus identities
   - D.4. The divergence distributes over scalar multiplication
   - D.5. The divergence of a linear map is a linear map
 - E. Properties of the Laplacian operator
+- F. Properites of derivatives of time
 
 ## iv. References
 

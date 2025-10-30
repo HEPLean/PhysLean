@@ -357,7 +357,7 @@ lemma boost_zero_inr_succ_inr_succ {d : ℕ} {β : ℝ} (hβ : |β| < 1) (i1 i2 
     (boost (0 : Fin d.succ) β hβ).1 (Sum.inr i1.succ) (Sum.inr i2.succ) =
     if i1 = i2 then 1 else 0 := by
   rw [boost_inr_inr_other]
-  simp
+  simp only [Nat.succ_eq_add_one, Fin.succ_inj]
   congr 1
   exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
   simp

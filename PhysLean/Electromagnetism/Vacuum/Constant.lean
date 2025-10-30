@@ -14,15 +14,10 @@ import PhysLean.ClassicalMechanics.VectorFields
 In this module we define the electromagnetic potential which gives rise to a
 given constant electric and magnetic field matrix.
 
-We show that the kinetic term for this potential has a variational gradient equal to
-zero, i.e. it satisfies the source-free Maxwell equations.
+We will show that this electromagnetic potential is an extrema of the free-space
+electromagnetic action.
 
 ## ii. Key results
-
-- `ElectromagneticPotential.constantEB E₀ B₀` : An electromagnetic potential which gives rise to a
-  given constant electric field `E₀` and magnetic field `B₀` in 3d.
-- `ElectromagneticPotential.constantEB_gradKineticTerm` : The variational gradient of the kinetic
-  term for the potential `constantEB E₀ B₀` is equal to zero.
 
 ## iii. Table of contents
 
@@ -30,10 +25,11 @@ zero, i.e. it satisfies the source-free Maxwell equations.
 - B. Smoothness of the potential
 - C. The scalar potential
 - D. The vector potential
+  - D.1. Time derivative of the vector potential
+  - D.2. Space derivative of the vector potential
 - E. The electric field
 - F. The magnetic field
-- G. The kinetic term
-- H. The variational gradient of the kinetic term
+- G. Is extrema
 
 ## iv. References
 
@@ -60,15 +56,13 @@ attribute [-simp] Nat.succ_eq_add_one
 
 ## A. The definition of the potential
 
-The potential which gives rise to a constant electric field `E₀` and magnetic field `B₀` in 3d is
-given by
-`(- ⟪E₀, x⟫, (1/2) B₀ × x)`
-where `x` is the spatial position vector.
+The electromagnetic potential which gives rise to a constant electric field `E₀`
+and a constant magnetic field matrix `B₀`.
 
 -/
 open Matrix
 set_option linter.unusedVariables false
-/-- An electric potential in 3d which gives a given constant E-field and B-field. -/
+/-- An electric potential which gives a given constant E-field and B-field. -/
 @[nolint unusedArguments]
 noncomputable def constantEB {d : ℕ} (c : SpeedOfLight)
     (E₀ : EuclideanSpace ℝ (Fin d)) (B₀ : Fin d × Fin d → ℝ)
@@ -82,7 +76,7 @@ noncomputable def constantEB {d : ℕ} (c : SpeedOfLight)
 
 ## B. Smoothness of the potential
 
-The potential `constantEB E₀ B₀` is smooth.
+The potential is smooth.
 
 -/
 
@@ -116,7 +110,7 @@ lemma constantEB_smooth {c : SpeedOfLight}
 
 ## C. The scalar potential
 
-The scalar potential for `constantEB E₀ B₀` is given by `-⟪E₀, x⟫`.
+The scalar potential of the electromagnetic potential is given by `-⟪E₀, x⟫`.
 
 -/
 
@@ -132,7 +126,7 @@ lemma constantEB_scalarPotential {c : SpeedOfLight}
 
 ## D. The vector potential
 
-The vector potential for `constantEB E₀ B₀` is given by `(1/2) B₀ × x`.
+The vector potential of the electromagnetic potential is `(1 / 2) * ∑ j, B₀ (i, j) * x j `.
 
 -/
 
@@ -175,7 +169,8 @@ lemma constantEB_vectorPotential_space_deriv {c : SpeedOfLight}
   rw [Space.deriv_eq]
   rw [fderiv_const_mul (by fun_prop)]
   rw [fderiv_fun_sum (by fun_prop)]
-  simp
+  simp only [one_div, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sum', Pi.smul_apply,
+    Finset.sum_apply, smul_eq_mul, mul_eq_mul_left_iff, inv_eq_zero, OfNat.ofNat_ne_zero, or_false]
   rw [Finset.sum_eq_single i]
   · rw [fderiv_const_mul (by fun_prop)]
     simp [← Space.deriv_eq]
@@ -183,7 +178,7 @@ lemma constantEB_vectorPotential_space_deriv {c : SpeedOfLight}
     rw [fderiv_const_mul (by fun_prop)]
     simp [← Space.deriv_eq]
     rw [Space.deriv_component_diff]
-    simp
+    simp only [or_true]
     exact id (Ne.symm hk)
   · simp
 
@@ -191,7 +186,6 @@ lemma constantEB_vectorPotential_space_deriv {c : SpeedOfLight}
 
 ## E. The electric field
 
-The electric field for `constantEB E₀ B₀` is given by `E₀`.
 
 -/
 
@@ -210,8 +204,6 @@ lemma constantEB_electricField {c : SpeedOfLight}
 /-!
 
 ## F. The magnetic field
-
-The magnetic field for `constantEB E₀ B₀` is given by `B₀`.
 
 -/
 

@@ -30,9 +30,13 @@ The current density is given in terms of the charge density `ρ` and the current
 
 - A. The Lorentz Current Density
 - B. The underlying charge
-  - B.1. Differentiability of the charge density
+  - B.1. Charge density of zero Lorentz current density
+  - B.2. Differentiability of the charge density
+  - B.3. Smoothness of the charge density
 - C. The underlying current density
-  - C.1. Differentiability of the current density
+  - C.1. current density of zero Lorentz current density
+  - C.2. Differentiability of the current density
+  - C.3. Smoothness of the current density
 
 ## iv. References
 
@@ -89,7 +93,7 @@ lemma chargeDensity_zero {d : ℕ} {c : SpeedOfLight}:
 
 /-!
 
-### B.1. Differentiability of the charge density
+### B.2. Differentiability of the charge density
 -/
 
 lemma chargeDensity_differentiable {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDensity d}
@@ -109,6 +113,13 @@ lemma chargeDensity_differentiable_space {d : ℕ} {c : SpeedOfLight} {J : Loren
   refine Differentiable.comp ?_ ?_
   · exact chargeDensity_differentiable hJ
   · fun_prop
+
+
+/-!
+
+### B.3. Smoothness of the charge density
+
+-/
 
 lemma chargeDensity_contDiff {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDensity d}
     (hJ : ContDiff ℝ n J) : ContDiff ℝ n ↿(J.chargeDensity c) := by
@@ -147,7 +158,7 @@ lemma currentDensity_zero {d : ℕ} {c : SpeedOfLight}:
   rfl
 /-!
 
-### C.1. Differentiability of the current density
+### C.2. Differentiability of the current density
 
 -/
 
@@ -205,6 +216,12 @@ lemma currentDensity_apply_differentiable_time {d : ℕ} {c : SpeedOfLight}
   · apply Differentiable.comp ?_ ?_
     · exact currentDensity_differentiable hJ
     · fun_prop
+
+/-!
+
+### C.3. Smoothness of the current density
+
+-/
 
 lemma currentDensity_ContDiff {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDensity d}
     (hJ : ContDiff ℝ n J) : ContDiff ℝ n ↿(J.currentDensity c) := by

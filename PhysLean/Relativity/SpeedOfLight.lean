@@ -5,28 +5,74 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Algebra.Lie.Classical
 import Mathlib.Analysis.Normed.Ring.Lemmas
-
-open Matrix
 /-!
 
-## A. The Minkowski Matrix
+# The Speed of Light
 
-We first define the Minkowski matrix in `d+1` dimensions, and prove some basic properties.
+## i. Overview
+
+In this module we deine a type for the speed of light in a vacuum,
+along with some basic properties. An element of this type is a positive real number,
+and should be thought of as the speed of light in some chosen but arbitary system of units.
+
+## ii. Key results
+
+- `SpeedOfLight` : The type of speeds of light in a vacuum.
+
+## iii. Table of contents
+
+- A. The Speed of Light type
+- B. Instances on the type
+- C. The instance of one
+- D. Positivity properties
+
+## iv. References
+
+-/
+open Matrix
+
+/-!
+
+## A. The Speed of Light type
 
 -/
 
+/-- The speed of light in a vacuum. An element of this type should be thought of as
+  the speed of light in some chosen but arbitary system of units. -/
 structure SpeedOfLight where
   val : ℝ
   pos : 0 < val
 
 namespace SpeedOfLight
 
+/-!
+
+## B. Instances on the type
+
+-/
+
 instance : Coe SpeedOfLight ℝ := ⟨SpeedOfLight.val⟩
+
+/-!
+
+## C. The instance of one
+
+We define the instance of one for `SpeedOfLight` to be the speed of light equal to `1`.
+This is useful when we are working in units where the speed of light is equal to one.
+
+-/
 
 instance : One SpeedOfLight := ⟨1, by grind⟩
 
 @[simp]
 lemma val_one : (1 : SpeedOfLight).val = 1 := rfl
+
+
+/-!
+
+## D. Positivity properties
+
+-/
 
 @[simp]
 lemma val_pos (c : SpeedOfLight) : 0 < (c : ℝ) := c.pos

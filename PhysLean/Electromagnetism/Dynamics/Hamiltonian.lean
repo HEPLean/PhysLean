@@ -29,8 +29,10 @@ in the case of three spatial dimensions.
 - A. The canonical momentum
   - A.1. The canonical momentum in terms of the kinetic term
   - A.2. The canonical momentum in terms of the field strength tensor
+  - A.3. The canonical momentum in terms of the electric field
 - B. The Hamiltonian
-  - B.1. The hamiltonian in terms of the electric and magnetic fields
+  - B.1. The hamiltonian in terms of the vector potential
+  - B.2. The hamiltonian in terms of the electric and magnetic fields
 
 ## iv. References
 
@@ -185,9 +187,10 @@ lemma canonicalMomentum_eq_electricField {d} {𝓕 : FreeSpace} (A : Electromagn
   match μ with
   | Sum.inl 0 => simp
   | Sum.inr i =>
-  simp
+  simp only [one_div, inr_i_inr_i, Fin.isValue, smul_eq_mul, neg_mul, one_mul, mul_neg, mul_inv_rev,
+    neg_inj]
   rw [electricField_eq_fieldStrengthMatrix]
-  simp
+  simp only [Fin.isValue, toTimeAndSpace_symm_apply_time_space, neg_mul, mul_neg]
   field_simp
   exact fieldStrengthMatrix_antisymm A x (Sum.inr i) (Sum.inl 0)
   exact hA.differentiable (by simp)
@@ -258,14 +261,12 @@ lemma hamiltonian_eq_electricField_scalarPotential {d} {𝓕 : FreeSpace}
   · simp
   congr
   funext i
-  simp
+  simp only [RCLike.inner_apply, conj_trivial]
   ring
 
 /-!
 
-### B.1. The hamiltonian in terms of the electric and magnetic fields
-
-This only holds in three spatial dimensions.
+### B.2. The hamiltonian in terms of the electric and magnetic fields
 
 -/
 

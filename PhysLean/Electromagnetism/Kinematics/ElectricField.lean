@@ -33,6 +33,7 @@ In this module we define the electric field, and prove lemmas about it.
 - C. Smoothness of the electric field
 - D. Differentiability of the electric field
 - E. Time derivative of the vector potential in terms of the electric field
+- F. Derivatives of the electric field in terms of field strength tensor
 
 ## iv. References
 
@@ -143,7 +144,8 @@ lemma fieldStrengthMatrix_inr_inl_eq_electricField {c : SpeedOfLight}
     A.fieldStrengthMatrix x (Sum.inr i, Sum.inl 0) =
     (1 /c) * A.electricField c (x.time c) x.space i := by
   rw [electricField_eq_fieldStrengthMatrix A (x.time c) x.space i hA]
-  simp
+  simp only [Fin.isValue, one_div, toTimeAndSpace_symm_apply_time_space, neg_mul, mul_neg, ne_eq,
+    SpeedOfLight.val_ne_zero, not_false_eq_true, inv_mul_cancel_left₀]
   rw [fieldStrengthMatrix_antisymm A x (Sum.inr i) (Sum.inl 0)]
 /-!
 
@@ -281,7 +283,7 @@ lemma time_deriv_electricField_eq_fieldStrengthMatrix {d} {A : ElectromagneticPo
     - c ^ 2 * ∂_ (Sum.inl 0) (fun x => (A.fieldStrengthMatrix x) (Sum.inl 0, Sum.inr i))
     ((toTimeAndSpace c).symm (t, x)) := by
   rw [SpaceTime.deriv_sum_inl c]
-  simp
+  simp only [one_div, ContinuousLinearEquiv.apply_symm_apply, Fin.isValue, smul_eq_mul, neg_mul]
   rw [← Time.deriv_euclid]
   conv_lhs =>
     enter [1, t]

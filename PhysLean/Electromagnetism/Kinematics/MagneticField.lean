@@ -44,6 +44,7 @@ field strength matrix. This is an antisymmetric matrix.
   - C.5. Differentiablity of the magnetic field matrix
   - C.6. Spatial derivative of the magnetic field matrix
   - C.7. Temporal derivative of the magnetic field matrix
+  - C.8. `curl` of the magnetic field matrix
 
 ## iv. References
 
@@ -563,7 +564,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix {d : ℕ} {c : SpeedOfLight}
 
 /-!
 
-### C.8. `curl` of the magnetic field matrix
+### C.8. `curl` of the magnetic field matrix
 
 -/
 

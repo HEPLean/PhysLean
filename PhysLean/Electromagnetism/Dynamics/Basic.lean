@@ -6,14 +6,40 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Electromagnetism.Basic
 /-!
 
-# Maxwell's equations
+# Free space
 
-Note that currently the equations are defined for isotropic and homogeneous domains.
+## i. Overview
 
-This module is old, and will soon be replaced.
+In this module we define a type `FreeSpace` which encapsulates the
+electric permittivity and magnetic permeability of free space, that is
+the physical constants which make it up.
+
+We prove basic properties from this definition, and define the speed of light
+in free space in terms of these constants.
+
+## ii. Key results
+
+- `FreeSpace` : The structure encapsulating the electric permittivity
+  and magnetic permeability of free space.
+- `FreeSpace.c` : The speed of light in free space.
+
+## iii. Table of contents
+
+- A. The definition of the free space type
+- B. Positivity properties
+- C. The speed of light
+
+## iv. References
+
 -/
 
 namespace Electromagnetism
+
+/-!
+
+## A. The definition of the free space type
+
+-/
 
 /-- Free space consists of the specification of the
   electric permittivity and the magnetic permeability. -/
@@ -29,6 +55,12 @@ namespace FreeSpace
 
 variable (𝓕 : FreeSpace)
 
+/-!
+
+## B. Positivity properties
+
+-/
+
 @[simp]
 lemma ε₀_nonneg : 0 ≤ 𝓕.ε₀ := le_of_lt 𝓕.ε₀_pos
 
@@ -40,6 +72,12 @@ lemma ε₀_ne_zero : 𝓕.ε₀ ≠ 0 := ne_of_gt 𝓕.ε₀_pos
 
 @[simp]
 lemma μ₀_ne_zero : 𝓕.μ₀ ≠ 0 := ne_of_gt 𝓕.μ₀_pos
+
+/-!
+
+## C. The speed of light
+
+-/
 
 /-- The speed of light in free space. -/
 noncomputable def c : SpeedOfLight :=

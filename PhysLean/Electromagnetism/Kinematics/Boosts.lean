@@ -11,17 +11,29 @@ import PhysLean.SpaceAndTime.SpaceTime.Boosts
 
 ## i. Overview
 
-We find the transformations of the electric and magnetic fields under a Lorentz boost
-in the `x` direction.
-We do this in general spatial dimensions `d`, and therefore
-we use the magnetic field matrix rather than the magnetic field vector.
+We find the transformations of the electric and magnetic field matrix under
+boosts in the 'x' direction. We do this in full-generality for `d+1` space dimensions.
+
 
 ## ii. Key results
+
+- `electricField_apply_x_boost_zero` : The transformation of the x-component of the electric
+  field under a boost in the 'x' direction.
+- `electricField_apply_x_boost_succ` : The transformation of the other components of the electric
+  field under a boost in the 'x' direction.
+- `magneticFieldMatrix_apply_x_boost_zero_succ` : The transformation of the 'x-components' of the
+  magnetic field matrix under a boost in the 'x' direction
+- `magneticFieldMatrix_apply_x_boost_succ_succ` : The transformation of the other components of the
+  magnetic field matrix under a boost in the 'x' direction.
 
 ## iii. Table of contents
 
 - A. Boost of the electric field
+  - A.1. Boost of the x-component of the electric field
+  - A.2. Boost of other components of the electric field
 - B. Boost of the magnetic field
+  - B.1. Boost of the 'x-components' of the magnetic field matrix
+  - B.2. Boost of the other components of the magnetic field matrix
 
 ## iv. References
 
@@ -39,18 +51,14 @@ open LorentzGroup
 
 ## A. Boost of the electric field
 
-The electric field `E` in a frame `F` following a boost in the `x` direction with speed `β`
-with `|β| < 1` compared to a frame `F'` at a point `x := (t, x, y, z)` is related to the
-electric `E'` and magnetic fields `B'` in `F'` at the point
-`x' := (γ (t + β x), γ (x + β t), y, z)`
-(corresponding to the same space-time point) by:
-
-- `E_x x = E'_x x'`,
-- `E_y x = γ (E'_y x' - β B_z x')`,
-- `E_z x = γ (E'_z x' + β B_y x')`.
 
 -/
 
+/-!
+
+### A.1. Boost of the x-component of the electric field
+
+-/
 lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (hβ : |β| < 1)
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
@@ -64,9 +72,11 @@ lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
   rw [electricField_eq_fieldStrengthMatrix, fieldStrengthMatrix_equivariant]
   simp [Fintype.sum_sum_type]
   rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ]
-  simp
+  simp only [boost_inr_self_inr_self, Fin.isValue, boost_zero_inr_0_inr_succ, mul_zero, zero_mul,
+    Finset.sum_const_zero, add_zero, boost_inl_0_inr_self, neg_mul, neg_neg,
+    fieldStrengthMatrix_diag_eq_zero, boost_zero_inl_0_inr_succ, neg_zero]
   rw [electricField_eq_fieldStrengthMatrix]
-  simp
+  simp only [Fin.isValue, neg_mul, neg_inj, mul_eq_mul_left_iff, SpeedOfLight.val_ne_zero, or_false]
   conv_lhs =>
     enter [2]
     rw [fieldStrengthMatrix_antisymm]
@@ -89,6 +99,12 @@ lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
       · exact hA
       · exact ContinuousLinearMap.differentiable (Lorentz.Vector.actionCLM (boost 0 β hβ)⁻¹)
 
+/-!
+
+### A.2. Boost of other components of the electric field
+
+-/
+
 lemma electricField_apply_x_boost_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (hβ : |β| < 1)
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ)
     (i : Fin d) :
@@ -108,7 +124,8 @@ lemma electricField_apply_x_boost_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
   rw [fieldStrengthMatrix_inl_inr_eq_electricField (c := c)]
   rw [fieldStrengthMatrix_inr_inr_eq_magneticFieldMatrix (c := c)]
   rw [SpaceTime.boost_zero_apply_time_space]
-  simp
+  simp only [one_div, Nat.succ_eq_add_one, SpaceTime.time_toTimeAndSpace_symm,
+    SpaceTime.space_toTimeAndSpace_symm, neg_mul, mul_neg]
   field_simp
   ring_nf
   field_simp
@@ -120,6 +137,19 @@ lemma electricField_apply_x_boost_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
     · apply Differentiable.comp
       · exact hA
       · exact ContinuousLinearMap.differentiable (Lorentz.Vector.actionCLM (boost 0 β hβ)⁻¹)
+
+/-!
+
+## B. Boost of the magnetic field
+
+-/
+
+
+/-!
+
+### B.1. Boost of the 'x-components' of the magnetic field matrix
+
+-/
 
 lemma magneticFieldMatrix_apply_x_boost_zero_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (hβ : |β| < 1)
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ)
@@ -133,20 +163,27 @@ lemma magneticFieldMatrix_apply_x_boost_zero_succ {d : ℕ} {c : SpeedOfLight} (
     γ β * (A.magneticFieldMatrix c t' x' (0, i.succ) + β / c * A.electricField c t' x' i.succ) := by
   dsimp
   rw [magneticFieldMatrix_eq]
-  simp
+  simp only
   rw [fieldStrengthMatrix_equivariant _ _ hA]
   simp [Fintype.sum_sum_type]
   rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ]
   simp [boost_zero_inr_succ_inr_succ]
   rw [fieldStrengthMatrix_inl_inr_eq_electricField (c := c)]
   rw [fieldStrengthMatrix_inr_inr_eq_magneticFieldMatrix (c := c)]
-  simp
+  simp only [one_div, neg_mul, mul_neg, neg_neg]
   rw [SpaceTime.boost_zero_apply_time_space]
-  simp
+  simp only [Nat.succ_eq_add_one, SpaceTime.time_toTimeAndSpace_symm,
+    SpaceTime.space_toTimeAndSpace_symm]
   field_simp
   ring_nf
   rfl
   exact hA
+
+/-!
+
+### B.2. Boost of the other components of the magnetic field matrix
+
+-/
 
 lemma magneticFieldMatrix_apply_x_boost_succ_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (hβ : |β| < 1)
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ)
@@ -160,7 +197,7 @@ lemma magneticFieldMatrix_apply_x_boost_succ_succ {d : ℕ} {c : SpeedOfLight} (
     A.magneticFieldMatrix c t' x' (i.succ, j.succ) := by
   dsimp
   rw [magneticFieldMatrix_eq]
-  simp
+  simp only
   rw [fieldStrengthMatrix_equivariant _ _ hA]
   simp [Fintype.sum_sum_type, boost_zero_inr_succ_inr_succ, Fin.sum_univ_succ]
   rw [SpaceTime.boost_zero_apply_time_space]

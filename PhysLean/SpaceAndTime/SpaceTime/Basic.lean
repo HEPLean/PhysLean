@@ -288,7 +288,7 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} {c : SpeedOfLight} :
 lemma toTimeAndSpace_basis_inl' {d : ℕ} {c : SpeedOfLight} :
     toTimeAndSpace (d := d) c (Lorentz.Vector.basis (Sum.inl 0)) = (1/c.val) • (1, 0) := by
   rw [toTimeAndSpace_basis_inl]
-  simp
+  simp only [one_div, Prod.smul_mk, smul_zero, Prod.mk.injEq, and_true]
   congr
   simp
 
