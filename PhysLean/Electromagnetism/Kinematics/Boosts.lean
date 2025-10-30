@@ -75,7 +75,8 @@ lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
     rw [fieldStrengthMatrix_antisymm]
   trans  γ β ^ 2 * (1 - β ^ 2) *
       (A.fieldStrengthMatrix
-      ((boost (d := d.succ) 0 β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x))) (Sum.inl 0, Sum.inr 0)
+      ((boost (d := d.succ) 0 β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x)))
+      (Sum.inl 0, Sum.inr 0)
   · ring
   rw [γ_sq β hβ]
   field_simp

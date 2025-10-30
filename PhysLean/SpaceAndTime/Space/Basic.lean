@@ -183,6 +183,12 @@ lemma deriv_eq_fderiv_basis [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
   congr 1
   exact Lean.Grind.eq_congr' rfl rfl
 
+@[simp]
+lemma deriv_const [NormedAddCommGroup M] [NormedSpace ℝ M] (m : M) (μ : Fin d) :
+    deriv μ  (fun _ => m) t = 0 := by
+  rw [deriv]
+  simp
+
 /-!
 
 ## Gradient

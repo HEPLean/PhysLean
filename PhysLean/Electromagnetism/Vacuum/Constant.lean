@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Electromagnetism.Dynamics.KineticTerm
+import PhysLean.Electromagnetism.Dynamics.IsExtrema
 import PhysLean.ClassicalMechanics.VectorFields
 /-!
 
@@ -12,7 +12,7 @@ import PhysLean.ClassicalMechanics.VectorFields
 ## i. Overview
 
 In this module we define the electromagnetic potential which gives rise to a
-given constant electric and magnetic field in 3d.
+given constant electric and magnetic field matrix.
 
 We show that the kinetic term for this potential has a variational gradient equal to
 zero, i.e. it satisfies the source-free Maxwell equations.
@@ -67,13 +67,16 @@ where `x` is the spatial position vector.
 
 -/
 open Matrix
-
+set_option linter.unusedVariables false
 /-- An electric potential in 3d which gives a given constant E-field and B-field. -/
-noncomputable def constantEB (E₀ B₀ : EuclideanSpace ℝ (Fin 3)) : ElectromagneticPotential 3 :=
+@[nolint unusedArguments]
+noncomputable def constantEB {d : ℕ} (c : SpeedOfLight)
+    (E₀ : EuclideanSpace ℝ (Fin d)) (B₀ : Fin d × Fin d → ℝ)
+    (B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)) : ElectromagneticPotential d :=
   fun x μ =>
   match μ with
-  | Sum.inl _ => -⟪E₀, x.space⟫_ℝ
-  | Sum.inr i => (1/2) * (B₀ ⨯ₑ₃ x.space) i
+  | Sum.inl _ => - (1/c) * ⟪E₀, x.space⟫_ℝ
+  | Sum.inr i => (1/2) * ∑ j, B₀ (i, j) * x.space j
 
 /-!
 
@@ -83,27 +86,31 @@ The potential `constantEB E₀ B₀` is smooth.
 
 -/
 
-lemma constantEB_smooth {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
-    ContDiff ℝ ∞ (constantEB E₀ B₀) := by
+lemma constantEB_smooth {c : SpeedOfLight}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
+    ContDiff ℝ ∞ (constantEB c E₀ B₀ B₀_antisymm) := by
   rw [contDiff_euclidean]
   intro μ
   match μ with
   | Sum.inl _ =>
       simp [constantEB]
       apply ContDiff.neg
+      apply ContDiff.mul
+      · fun_prop
       apply ContDiff.inner
       · fun_prop
       · change ContDiff ℝ ∞ SpaceTime.space
         fun_prop
   | Sum.inr i =>
-      fin_cases i
-      all_goals
-        simp [constantEB, cross_apply]
+      simp [constantEB]
+      apply ContDiff.mul
+      · fun_prop
+      · apply ContDiff.sum
+        intro j _
         apply ContDiff.mul
         · fun_prop
-        apply ContDiff.sub
-        · fun_prop
-        · fun_prop
+        fun_prop
 
 /-!
 
@@ -113,12 +120,14 @@ The scalar potential for `constantEB E₀ B₀` is given by `-⟪E₀, x⟫`.
 
 -/
 
-lemma constantEB_scalarPotential {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
-    (constantEB E₀ B₀).scalarPotential = fun _ x => -⟪E₀, x⟫_ℝ := by
+lemma constantEB_scalarPotential {c : SpeedOfLight}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
+    (constantEB c E₀ B₀ B₀_antisymm).scalarPotential c = fun _ x => -⟪E₀, x⟫_ℝ := by
   ext t x
-  simp only [scalarPotential, timeSlice, constantEB, space_toCoord_symm, Equiv.coe_fn_mk,
+  simp [scalarPotential, timeSlice, constantEB, space_toCoord_symm, Equiv.coe_fn_mk,
     Function.curry_apply, Function.comp_apply]
-  rfl
+
 
 /-!
 
@@ -128,12 +137,59 @@ The vector potential for `constantEB E₀ B₀` is given by `(1/2) B₀ × x`.
 
 -/
 
-lemma constantEB_vectorPotential {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
-    (constantEB E₀ B₀).vectorPotential = fun _ x => (1/2 : ℝ) • B₀ ⨯ₑ₃ x := by
+lemma constantEB_vectorPotential {c : SpeedOfLight}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
+    (constantEB c E₀ B₀ B₀_antisymm).vectorPotential c = fun _ x i =>
+      (1 / 2) * ∑ j, B₀ (i, j) * x j := by
   ext t x i
   simp [vectorPotential, timeSlice, constantEB, space_toCoord_symm, Equiv.coe_fn_mk,
     Function.curry_apply, Function.comp_apply]
-  rfl
+
+/-!
+
+### D.1. Time derivative of the vector potential
+
+-/
+open Time
+
+@[simp]
+lemma constantEB_vectorPotential_time_deriv {c : SpeedOfLight}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} (t : Time) (x : Space d) :
+    ∂ₜ ((constantEB c E₀ B₀ B₀_antisymm).vectorPotential c ·  x) t = 0 := by
+  rw [constantEB_vectorPotential]
+  simp
+  rw [Time.deriv_eq, fderiv_fun_const]
+  simp
+
+/-!
+
+### D.2. Space derivative of the vector potential
+
+-/
+
+lemma constantEB_vectorPotential_space_deriv {c : SpeedOfLight}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} (t : Time) (x : Space d) (i j : Fin d):
+    Space.deriv i ((constantEB c E₀ B₀ B₀_antisymm).vectorPotential c t · j) x =
+       (1 / 2) *  B₀ (j, i) := by
+  rw [constantEB_vectorPotential]
+  rw [Space.deriv_eq]
+  rw [fderiv_const_mul (by fun_prop)]
+  rw [fderiv_fun_sum (by fun_prop)]
+  simp
+  rw [Finset.sum_eq_single i]
+  · rw [fderiv_const_mul (by fun_prop)]
+    simp [← Space.deriv_eq]
+  · intro k _ hk
+    rw [fderiv_const_mul (by fun_prop)]
+    simp [← Space.deriv_eq]
+    rw [Space.deriv_component_diff]
+    simp
+    exact id (Ne.symm hk)
+  · simp
+
 
 /-!
 
@@ -144,18 +200,13 @@ The electric field for `constantEB E₀ B₀` is given by `E₀`.
 -/
 
 @[simp]
-lemma constantEB_electricField {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
-    (constantEB E₀ B₀).electricField = fun _ _ => E₀ := by
+lemma constantEB_electricField  {c : SpeedOfLight}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
+    (constantEB c E₀ B₀ B₀_antisymm).electricField c = fun _ _ => E₀ := by
   funext t x
   rw [electricField_eq]
-  simp only
-  rw [constantEB_vectorPotential]
-  simp only [one_div, WithLp.equiv_apply, WithLp.ofLp_smul, map_smul, LinearMap.smul_apply,
-    WithLp.equiv_symm_apply, WithLp.toLp_smul]
-  rw [Time.deriv_eq, fderiv_fun_const]
-  simp only [Pi.zero_apply, ContinuousLinearMap.zero_apply, sub_zero]
-  rw [constantEB_scalarPotential]
-  simp only
+  simp [constantEB_scalarPotential]
   erw [Space.grad_neg]
   rw [Space.grad_inner_right]
   simp
@@ -169,72 +220,37 @@ The magnetic field for `constantEB E₀ B₀` is given by `B₀`.
 -/
 
 @[simp]
-lemma constantEB_magneticField {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
-    (constantEB E₀ B₀).magneticField = fun _ _ => B₀ := by
+lemma constantEB_magneticFieldMatrix {c : SpeedOfLight}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
+    (constantEB c E₀ B₀ B₀_antisymm).magneticFieldMatrix c = fun _ _ => B₀ := by
   funext t x
-  rw [magneticField_eq]
-  simp only
-  rw [constantEB_vectorPotential]
-  simp only [one_div, WithLp.equiv_apply, WithLp.ofLp_smul, map_smul, LinearMap.smul_apply,
-    WithLp.equiv_symm_apply, WithLp.toLp_smul]
-  ext i
-  fin_cases i
-  all_goals
-  · simp [Space.curl, Space.coord, cross_apply]
-    rw [Space.deriv_eq, Space.deriv_eq]
-    rw [fderiv_const_mul (by fun_prop)]
-    rw [fderiv_const_mul (by fun_prop)]
-    rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
-    rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
-    rw [fderiv_const_mul (by fun_prop)]
-    rw [fderiv_const_mul (by fun_prop)]
-    rw [fderiv_const_mul (by fun_prop)]
-    rw [fderiv_const_mul (by fun_prop)]
-    simp only [Fin.isValue, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub',
-      Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
-    repeat rw [← Space.deriv_eq]
-    repeat rw [Space.deriv_component]
-    simp only [Fin.isValue, ↓reduceIte, mul_one, one_ne_zero, mul_zero, sub_zero, Fin.reduceEq,
-      zero_sub, mul_neg, sub_neg_eq_add]
-    ring
+  funext i
+  match i with
+  | (i, j) =>
+  rw [magneticFieldMatrix_eq_vectorPotential]
+  rw [constantEB_vectorPotential_space_deriv, constantEB_vectorPotential_space_deriv]
+  conv_lhs =>
+    enter [2]
+    rw [B₀_antisymm]
+  ring
+  apply constantEB_smooth.differentiable (by simp)
 
 /-!
 
-## G. The kinetic term
-
-The kinetic term for `constantEB E₀ B₀` is given by `1/2 (‖E₀‖² - ‖B₀‖²)`.
-Note this is not the same as the kinetic energy.
+## G. Is extrema
 
 -/
 
-lemma constantEB_kineticTerm {E₀ B₀ : EuclideanSpace ℝ (Fin 3)}
-    (x : SpaceTime 3) :
-    (constantEB E₀ B₀).kineticTerm x = 1/2 * (‖E₀‖ ^ 2 - ‖B₀‖ ^ 2) := by
-  obtain ⟨t, rfl⟩ := SpaceTime.toTimeAndSpace.symm.surjective x
-  rw [kineticTerm_eq_electric_magnetic]
-  simp only [one_div, constantEB_electricField, constantEB_magneticField]
-  exact constantEB_smooth.differentiable (ENat.LEInfty.out)
-
-/-!
-
-## H. The variational gradient of the kinetic term
-
-The variational gradient of the kinetic term for `constantEB E₀ B₀` is equal to zero.
-
--/
-
-lemma constantEB_gradKineticTerm {E₀ B₀ : EuclideanSpace ℝ (Fin 3)} :
-    (constantEB E₀ B₀).gradKineticTerm = 0 := by
-  funext x
-  rw [gradKineticTerm_eq_electric_magnetic]
-  rw [constantEB_electricField, constantEB_magneticField]
-  simp only [Space.div_const, Pi.zero_apply, Fin.isValue, zero_smul, Space.curl_const,
-    PiLp.zero_apply, sub_zero, zero_add]
-  apply Finset.sum_eq_zero
-  intro x _
-  rw [Time.deriv, fderiv_fun_const]
-  simp only [Pi.zero_apply, ContinuousLinearMap.zero_apply, PiLp.zero_apply, zero_smul]
-  exact constantEB_smooth
+lemma constantEB_isExtrema {𝓕 : FreeSpace}
+    {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
+    {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
+    IsExtrema 𝓕 (constantEB 𝓕.c E₀ B₀ B₀_antisymm) 0 := by
+  rw [isExtrema_iff_gauss_ampere_magneticFieldMatrix]
+  · intro t x
+    simp
+  · exact constantEB_smooth
+  · exact contDiff_zero_fun
 
 end ElectromagneticPotential
 

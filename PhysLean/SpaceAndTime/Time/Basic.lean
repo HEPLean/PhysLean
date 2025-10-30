@@ -350,6 +350,12 @@ lemma deriv_neg [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) :
   rw [deriv, fderiv_neg]
   rfl
 
+@[simp]
+lemma deriv_const [NormedAddCommGroup M] [NormedSpace ℝ M] (m : M) :
+    ∂ₜ (fun _ => m) t = 0 := by
+  rw [deriv]
+  simp
+
 @[fun_prop]
 lemma val_differentiable : Differentiable ℝ Time.val := by
   change Differentiable ℝ toRealCLM

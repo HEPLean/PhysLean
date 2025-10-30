@@ -74,6 +74,20 @@ noncomputable def chargeDensity (c : SpeedOfLight := 1)
 
 lemma chargeDensity_eq_timeSlice {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDensity d} :
     J.chargeDensity c = timeSlice c (fun x => (1 / (c : ℝ)) • J x (Sum.inl 0)) := by rfl
+
+/-!
+
+### B.1. Charge density of zero Lorentz current density
+
+-/
+
+@[simp]
+lemma chargeDensity_zero {d : ℕ} {c : SpeedOfLight}:
+    chargeDensity c (0 : LorentzCurrentDensity d) = 0 := by
+  simp [chargeDensity_eq_timeSlice, timeSlice]
+  rfl
+
+
 /-!
 
 ### B.1. Differentiability of the charge density
@@ -120,6 +134,18 @@ noncomputable def currentDensity (c : SpeedOfLight := 1) (J : LorentzCurrentDens
 
 lemma currentDensity_eq_timeSlice {d : ℕ} {J : LorentzCurrentDensity d} :
     J.currentDensity c = timeSlice c (fun x i => J x (Sum.inr i)) := by rfl
+
+/-!
+
+### C.1. current density of zero Lorentz current density
+
+-/
+
+@[simp]
+lemma currentDensity_zero {d : ℕ} {c : SpeedOfLight}:
+    currentDensity c (0 : LorentzCurrentDensity d) = 0 := by
+  simp [currentDensity_eq_timeSlice, timeSlice]
+  rfl
 /-!
 
 ### C.1. Differentiability of the current density
