@@ -1,91 +1,36 @@
+# Linting PhysLean
 
-# Scripts associated with PhysLean
+`Linting` is the process of checking changes to the project
+for certain types of stylistic errors. This process is carried out
+by automatic scripts called `linters`.
 
-## lint-style.py and lint-style.sh
+PhysLean has a number of linters which check for various different things.
+They can all be run on your local version of the project, but some of them
+are also automatically run on pull-requests to PhysLean. These latter linters
+must be passed before the pull-request can be merged with the main branch of the
+project.
 
-Taken from Mathlib's linters. These perform text-based linting of the code.
+Below we summarize the linters PhysLean has, in each bullet point the initial `code snippet`
+is how the linter can be run locally.
 
-These are to be slowly replaced with code written in Lean.
+The first two linters are the most important, but in an ideal world you would check that
+all of the following linters run correctly.
 
-## hepLean_style_lint
-
-Checks the following in PhysLean
-- There are no double empty lines.
-- There are no non-initial double spaces.
-Passing this linter is currently not required to pass CI on github.
-
-Run using
-```
-lake exe hepLean_style_lint
-```
-
-## check_file_imports.lean
-
-Checks all files are correctly imported into `PhysLean.lean`.
-
-Run using
-```
-lake exe check_file_imports
-```
-
-## type_former_lint.lean
-
-Checks whether the name of definitions which form a type or prop starts with a capital letter.
-
-Run using
-```
-lake exe type_former_lint
-```
-
-## stats.sh
-
-Outputs statistics for PhysLean.
-
-Run using
-```
-lake exe stats
-```
-
-## openAI_doc_check.lean
-
-Uses openAI's API to check for spelling mistakes etc. in doc strings.
-
-This code needs `https://github.com/jstoobysmith/Lean_llm_fork` to be installed.
-
-It also needs the environment variable `OPENAI_API_KEY` defined using e.g.
-```
-export OPENAI_API_KEY=<Your-openAI-key>
-```
-
-Run on a specific file using
-```
-lake exe openAI_doc_check <module_name>
-```
-where `<module_name>` is e.g. `PhysLean.SpaceAndTime.SpaceTime.Basic`.
-
-Run on a random file using
-```
-lake exe openAI_doc_check random
-```
-
-## lint-all.sh
-
-Performs all linting checks on PhysLean.
-
-Run using
-```
-./scripts/lint-all.sh
-```
-
-## Other useful commands
-
-- To build PhysLean use
-```
-lake exe cache get
-lake build
-```
-
-- To update PhysLean's dependencies use
-```
-lake update
-```
+- `lake exe lint_all` (**A PR must in general pass this linter**): This linter is split into seven steps, strictly speaking not all of these steps must be past for a PR to be merged, but it is best to just fix them all.
+  - step 1: This checks for basic style mistakes such as double spaces and string combinations like `):`
+  - step 2: This builds the project
+  - step 3: Checks all files are imported to `PhysLean.lean` and that they are sorted correctly.
+  - step 4: Checks that no tags on TODO items are duplicates of one another.
+  - step 5: Checks that all lemmas and definitions dependent on `sorry` or `LeanLean.ofReduceBool` are correctly attributed with `@[sorryful]` or `@[pseudo]`
+  - step 6: Checks all Lean linters run without error, this picks up things like lack of doc-strings on definitions, or incompatible `@[simp]` attributes
+  - step 7: Checks there are not transitive imports, e.g. A imports B and C, but B already
+  imports C.
+This linter may need running a number of times.
+- `./scripts/lint-style.sh` (**A PR must pass this linter**): This linter checks for some
+  style errors e.g. too long lines or wrong indentations, as well as checking if all necessary `simp` lemmas are of the form `simp only [...]`. For this linter
+  to work properly you must first commit your changes to github.
+- `lake exe style_lint` : A linter which only does step 1 of `lake exe lint_all`.
+- `lake exe runPhysLeanLinters` : A linter which only does step 6 of `lake exe lint_all`.
+- `lake exe module_doc_lint` : Checks that module documentation is laid out according to a set standard. This does not check any file in the list `./scripts/MetaPrograms/module_doc_no_lint.txt`. Slowly we will empty this list of files.
+- `lake exe spelling` : Checks the spelling of words in PhysLean against a given list
+  of correctly spelled words which can be found in `./scripts/MetaPrograms/spellingWords.txt`
