@@ -40,6 +40,7 @@ open Matrix
 /-- The speed of light in a vacuum. An element of this type should be thought of as
   the speed of light in some chosen but arbitary system of units. -/
 structure SpeedOfLight where
+  /-- The underlying value of the speed of light. -/
   val : ℝ
   pos : 0 < val
 
