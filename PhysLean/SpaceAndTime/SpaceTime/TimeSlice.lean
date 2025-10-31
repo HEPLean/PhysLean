@@ -3,7 +3,9 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.SpaceAndTime.SpaceTime.Derivatives
+import PhysLean.SpaceAndTime.Space.Distributions.Basic
+import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Mathematics.FDerivCurry
 /-!
@@ -80,6 +82,123 @@ lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Mod
     (c : SpeedOfLight) (f : Time → Space d → M) :
     (timeSliceLinearEquiv c).symm f = (timeSlice c).symm f := by
   simp [timeSliceLinearEquiv, timeSlice]
+
+/-!
+
+
+## B. Time slices of distributions
+
+-/
+open Distribution SchwartzMap
+
+/-- The time slice of a distribution on `SpaceTime d` to form a distribution
+  on `Time × Space d`. -/
+noncomputable def distTimeSlice {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (c : SpeedOfLight := 1) :
+    ((SpaceTime d) →d[ℝ] M) ≃L[ℝ] ((Time × Space d) →d[ℝ] M) where
+  toFun f :=
+    f ∘L compCLMOfContinuousLinearEquiv (F := ℝ) ℝ (SpaceTime.toTimeAndSpace c (d := d))
+  invFun f := f ∘L compCLMOfContinuousLinearEquiv
+      (F := ℝ) ℝ (SpaceTime.toTimeAndSpace c (d := d)).symm
+  left_inv f := by
+    ext κ
+    simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
+    congr
+    ext x
+    simp [compCLMOfContinuousLinearEquiv_apply]
+  right_inv f := by
+    ext κ
+    simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
+    congr
+    ext x
+    simp
+  map_add' f1 f2 := by
+    simp
+  map_smul' a f := by simp
+  continuous_toFun := ((compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c)).precomp M).continuous
+  continuous_invFun :=
+    ((compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c).symm).precomp M).continuous
+
+lemma distTimeSlice_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (c : SpeedOfLight) (f : (SpaceTime d) →d[ℝ] M)
+    (κ : 𝓢(Time × Space d, ℝ)) : distTimeSlice c f κ =
+    f (compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c) κ) := by rfl
+
+lemma distTimeSlice_symm_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (c : SpeedOfLight) (f : (Time × (Space d)) →d[ℝ] M)
+    (κ : 𝓢(SpaceTime d, ℝ)) : (distTimeSlice c).symm f κ =
+    f (compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c).symm κ):= by rfl
+
+/-!
+
+### B.1. Time slices and derivatives
+
+-/
+
+lemma distTimeSlice_distDeriv_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {c : SpeedOfLight}
+    (f : (SpaceTime d) →d[ℝ] M) :
+    distTimeSlice c (distDeriv (Sum.inl 0) f) =
+    (1/c.val) • Space.distTimeDeriv (distTimeSlice c f) := by
+  ext κ
+  rw [distTimeSlice_apply, distDeriv_apply, fderivD_apply]
+  simp
+  rw [distTimeDeriv_apply, fderivD_apply, distTimeSlice_apply]
+  simp
+  rw [← map_smul]
+  congr
+  ext x
+  change fderiv ℝ (κ ∘ toTimeAndSpace c) x (Lorentz.Vector.basis (Sum.inl 0)) =
+    c.val⁻¹ • fderiv ℝ κ (toTimeAndSpace c x) (1, 0)
+  rw [fderiv_comp]
+  simp
+  rw [toTimeAndSpace_basis_inl']
+  rw [map_smul]
+  simp
+  · apply Differentiable.differentiableAt
+    exact SchwartzMap.differentiable κ
+  · fun_prop
+
+lemma distDeriv_inl_distTimeSlice_symm {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {c : SpeedOfLight}
+    (f : (Time × Space d) →d[ℝ] M) :
+    distDeriv (Sum.inl 0) ((distTimeSlice c).symm f) =
+    (1/c.val) • (distTimeSlice c).symm (Space.distTimeDeriv f) := by
+  obtain ⟨f, rfl⟩ := (distTimeSlice c).surjective f
+  simp only [ContinuousLinearEquiv.symm_apply_apply]
+  apply (distTimeSlice c).injective
+  simp
+  rw [distTimeSlice_distDeriv_inl]
+  simp
+
+lemma distTimeSlice_distDeriv_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (i : Fin d) (f : (SpaceTime d) →d[ℝ] M) :
+    distTimeSlice 1 (distDeriv (Sum.inr i) f) =
+    Space.distSpaceDeriv i (distTimeSlice 1 f) := by
+  ext κ
+  rw [distTimeSlice_apply, distDeriv_apply, fderivD_apply]
+  rw [distSpaceDeriv_apply, fderivD_apply, distTimeSlice_apply]
+  simp
+  congr 1
+  ext x
+  change fderiv ℝ (κ ∘ toTimeAndSpace 1) x (Lorentz.Vector.basis (Sum.inr i)) =
+    fderiv ℝ κ (toTimeAndSpace 1 x) (0, Space.basis i)
+  rw [fderiv_comp]
+  simp
+  rw [toTimeAndSpace_basis_inr]
+  · apply Differentiable.differentiableAt
+    exact SchwartzMap.differentiable κ
+  · fun_prop
+
+lemma distDeriv_inr_distTimeSlice_symm {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (i : Fin d) (f : (Time × Space d) →d[ℝ] M) :
+    distDeriv (Sum.inr i) ((distTimeSlice 1).symm f) =
+    (distTimeSlice 1).symm (Space.distSpaceDeriv i f) := by
+  obtain ⟨f, rfl⟩ := (distTimeSlice 1).surjective f
+  simp only [ContinuousLinearEquiv.symm_apply_apply]
+  apply (distTimeSlice 1).injective
+  simp
+  rw [distTimeSlice_distDeriv_inr]
 
 end SpaceTime
 

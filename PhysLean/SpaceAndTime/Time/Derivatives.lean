@@ -1,0 +1,106 @@
+/-
+Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Joseph Tooby-Smith
+-/
+import PhysLean.Meta.Informal.Basic
+import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.SpaceAndTime.SpaceTime.Basic
+/-!
+
+## Time Derivatives
+
+-/
+
+
+namespace Time
+
+
+variable {M : Type} {d : ℕ} {t : Time}
+
+/-- Given a function `f : Time → M` the derivative of `f`. -/
+noncomputable def deriv [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+    (f : Time → M) : Time → M :=
+  (fun t => fderiv ℝ f t 1)
+
+@[inherit_doc deriv]
+scoped notation "∂ₜ" => deriv
+
+lemma deriv_eq [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
+    (f : Time → M) (t : Time) : Time.deriv f t = fderiv ℝ f t 1 := rfl
+
+lemma deriv_smul (f : Time → EuclideanSpace ℝ (Fin d)) (k : ℝ)
+    (hf : Differentiable ℝ f) :
+    ∂ₜ (fun t => k • f t) t = k • ∂ₜ (fun t => f t) t := by
+  rw [deriv, fderiv_fun_const_smul]
+  rfl
+  fun_prop
+
+lemma deriv_neg [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) :
+    ∂ₜ (-f) t = -∂ₜ f t := by
+  rw [deriv, fderiv_neg]
+  rfl
+
+@[simp]
+lemma deriv_const [NormedAddCommGroup M] [NormedSpace ℝ M] (m : M) :
+    ∂ₜ (fun _ => m) t = 0 := by
+  rw [deriv]
+  simp
+
+@[fun_prop]
+lemma val_differentiable : Differentiable ℝ Time.val := by
+  change Differentiable ℝ toRealCLM
+  fun_prop
+
+@[simp]
+lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
+  change (fderiv ℝ toRealCLM t 1) = 1
+  rw [ContinuousLinearMap.fderiv, toRealCLM]
+  simp
+
+open MeasureTheory ContDiff InnerProductSpace Time
+
+@[fun_prop]
+lemma deriv_differentiable_of_contDiff {M : Type}
+    [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) (hf : ContDiff ℝ ∞ f) :
+    Differentiable ℝ (∂ₜ f) := by
+  unfold deriv
+  change Differentiable ℝ ((fun x => x 1) ∘ (fun t => fderiv ℝ f t))
+  apply Differentiable.comp
+  · fun_prop
+  · rw [contDiff_infty_iff_fderiv, contDiff_infty_iff_fderiv] at hf
+    exact hf.2.1
+
+@[fun_prop]
+lemma deriv_contDiff_of_contDiff {M : Type}
+    [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) (hf : ContDiff ℝ ∞ f) :
+    ContDiff ℝ ∞ (∂ₜ f) := by
+  unfold deriv
+  change ContDiff ℝ ∞ ((fun x => x 1) ∘ (fun t => fderiv ℝ f t))
+  apply ContDiff.comp
+  · fun_prop
+  · fun_prop
+
+lemma deriv_euclid { μ} {f : Time→ EuclideanSpace ℝ (Fin n)}
+    (hf : Differentiable ℝ f) (t : Time) :
+    deriv (fun t => f t μ) t = deriv (fun t => f t) t μ := by
+  rw [deriv_eq]
+  change fderiv ℝ (EuclideanSpace.proj μ ∘ fun x => f x) t 1 = _
+  rw [fderiv_comp]
+  · simp
+    rw [← deriv_eq]
+  · fun_prop
+  · fun_prop
+
+lemma deriv_lorentzVector {d : ℕ} {f : Time → Lorentz.Vector d}
+    (hf : Differentiable ℝ f) (t : Time) (i : Fin 1 ⊕ Fin d) :
+    deriv (fun t => f t i) t = deriv (fun t => f t) t i := by
+  rw [deriv_eq]
+  change fderiv ℝ (EuclideanSpace.proj i ∘ fun x => f x) t 1 = _
+  rw [fderiv_comp]
+  · simp
+    rw [← deriv_eq]
+  · fun_prop
+  · fun_prop
+
+end Time

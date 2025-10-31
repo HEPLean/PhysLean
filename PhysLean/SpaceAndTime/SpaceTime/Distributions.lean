@@ -56,13 +56,14 @@ noncomputable def constD {M } [NormedAddCommGroup M] [NormedSpace ℝ M] (d : �
 
 /-- The time slice of a distribution on `SpaceTime d` to form a distribution
   on `Time × Space d`. -/
-noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
+noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    (c : SpeedOfLight := 1) :
     ((SpaceTime d) →d[ℝ] M) ≃L[ℝ] ((Time × Space d) →d[ℝ] M) where
   toFun f :=
-    f ∘L SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ (SpaceTime.toTimeAndSpace (d := d))
+    f ∘L SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ (SpaceTime.toTimeAndSpace c (d := d))
   invFun f :=
     f ∘L SchwartzMap.compCLMOfContinuousLinearEquiv
-      (F := ℝ) ℝ (SpaceTime.toTimeAndSpace (d := d)).symm
+      (F := ℝ) ℝ (SpaceTime.toTimeAndSpace c (d := d)).symm
   left_inv f := by
     ext κ
     simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
@@ -78,9 +79,9 @@ noncomputable def timeSliceD {M d} [NormedAddCommGroup M] [NormedSpace ℝ M] :
   map_add' f1 f2 := by
     simp
   map_smul' a f := by simp
-  continuous_toFun := ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace).precomp M).continuous
+  continuous_toFun := ((compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c)).precomp M).continuous
   continuous_invFun :=
-    ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace.symm).precomp M).continuous
+    ((compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c).symm).precomp M).continuous
 
 /-!
 
@@ -117,9 +118,10 @@ lemma derivD_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 -/
 
 lemma timeSliceD_derivD_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {c : SpeedOfLight}
     (f : (SpaceTime d) →d[ℝ] M) :
-    timeSliceD (derivD (Sum.inl 0) f) =
-    Space.timeDerivD (timeSliceD f) := by
+    timeSliceD c (derivD (Sum.inl 0) f) =
+    Space.timeDerivD (timeSliceD c f) := by
   ext ε
   simp [timeSliceD]
   rw [derivD_apply, Space.timeDerivD_apply]
@@ -128,13 +130,13 @@ lemma timeSliceD_derivD_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   congr 1
   ext x
   simp only [Fin.isValue, compCLMOfContinuousLinearEquiv_apply, Function.comp_apply]
-  change ((fderivCLM ℝ) ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace) ε))
-    x (Lorentz.Vector.basis (Sum.inl 0)) = ((fderivCLM ℝ) ε) (toTimeAndSpace 1 x) (1, 0)
-  trans SpaceTime.deriv (Sum.inl 0) ((compCLMOfContinuousLinearEquiv ℝ toTimeAndSpace) ε) x
+  change ((fderivCLM ℝ) ((compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c)) ε))
+    x (Lorentz.Vector.basis (Sum.inl 0)) = ((fderivCLM ℝ) ε) (toTimeAndSpace c x) (1, 0)
+  trans SpaceTime.deriv (Sum.inl 0) ((compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c)) ε) x
   · rfl
-  rw [SpaceTime.deriv_sum_inl 1]
+  rw [SpaceTime.deriv_sum_inl c]
   simp [Time.deriv]
-  change (fderiv ℝ (ε ∘ (fun t => (t, (toTimeAndSpace 1 x).2))) (toTimeAndSpace 1 x).1) 1 = _
+  change (fderiv ℝ (ε ∘ (fun t => (t, (toTimeAndSpace c x).2))) (toTimeAndSpace c x).1) 1 = _
   rw [fderiv_comp, DifferentiableAt.fderiv_prodMk]
   simp only [Prod.mk.eta, fderiv_id', fderiv_fun_const, Pi.zero_apply,
     ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.prod_apply,

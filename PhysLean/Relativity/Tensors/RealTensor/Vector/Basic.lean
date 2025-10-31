@@ -55,6 +55,10 @@ instance isNormedSpace (d : ℕ) :
     NormedSpace ℝ (Vector d) :=
   inferInstanceAs (NormedSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
+/-- The Euclidean inner product structure on `Vector`. -/
+instance innerProductSpace (d : ℕ) : InnerProductSpace ℝ (Vector d) :=
+  inferInstanceAs (InnerProductSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+
 /-- The instance of a `ChartedSpace` on `Vector d`. -/
 instance : ChartedSpace (Vector d) (Vector d) := chartedSpaceSelf (Vector d)
 

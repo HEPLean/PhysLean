@@ -36,21 +36,25 @@ namespace CoVector
 open TensorSpecies
 open Tensor
 
-instance {d} : AddCommMonoid (CoVector d) := inferInstanceAs (AddCommMonoid (Fin 1 ⊕ Fin d → ℝ))
+instance {d} : AddCommMonoid (CoVector d) := inferInstanceAs (AddCommMonoid (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
-instance {d} : Module ℝ (CoVector d) := inferInstanceAs (Module ℝ (Fin 1 ⊕ Fin d → ℝ))
+instance {d} : Module ℝ (CoVector d) := inferInstanceAs (Module ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
-instance {d} : AddCommGroup (CoVector d) := inferInstanceAs (AddCommGroup (Fin 1 ⊕ Fin d → ℝ))
+instance {d} : AddCommGroup (CoVector d) := inferInstanceAs (AddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
 instance {d} : FiniteDimensional ℝ (CoVector d) :=
-  inferInstanceAs (FiniteDimensional ℝ (Fin 1 ⊕ Fin d → ℝ))
+  inferInstanceAs (FiniteDimensional ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
 instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (CoVector d) :=
-    inferInstanceAs (NormedAddCommGroup (Fin 1 ⊕ Fin d → ℝ))
+    inferInstanceAs (NormedAddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
 instance isNormedSpace (d : ℕ) :
     NormedSpace ℝ (CoVector d) :=
-  inferInstanceAs (NormedSpace ℝ (Fin 1 ⊕ Fin d → ℝ))
+  inferInstanceAs (NormedSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+
+/-- The Euclidean inner product structure on `CoVector`. -/
+instance innerProductSpace (d : ℕ) : InnerProductSpace ℝ (CoVector d) :=
+  inferInstanceAs (InnerProductSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
 /-- The instance of a `ChartedSpace` on `Vector d`. -/
 instance : ChartedSpace (CoVector d) (CoVector d) := chartedSpaceSelf (CoVector d)
