@@ -5,7 +5,7 @@ Authors: Tomas Skrivan
 -/
 import Mathlib.Analysis.InnerProductSpace.Trace
 import PhysLean.Mathematics.Calculus.AdjFDeriv
-import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 /-!
 
 # Divergence

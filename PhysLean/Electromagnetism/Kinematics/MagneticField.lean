@@ -7,7 +7,7 @@ import PhysLean.Electromagnetism.Kinematics.ElectricField
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
-import PhysLean.ClassicalMechanics.VectorFields
+import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 /-!
 
 # The Magnetic Field
@@ -495,12 +495,12 @@ lemma time_deriv_magneticFieldMatrix {d : ℕ} {c : SpeedOfLight} (A : Electroma
       rfl
       all_goals
       · apply Differentiable.differentiableAt
-        apply ClassicalMechanics.space_deriv_differentiable_time
+        apply Space.space_deriv_differentiable_time
         apply vectorPotential_comp_contDiff _ hA
     _ = ∂[j] (fun x => ∂ₜ (fun t => A.vectorPotential c t x i) t) x
         - ∂[i] (fun x => ∂ₜ (fun t => A.vectorPotential c t x j) t) x := by
-      rw [ClassicalMechanics.time_deriv_comm_space_deriv _]
-      rw [ClassicalMechanics.time_deriv_comm_space_deriv _]
+      rw [Space.time_deriv_comm_space_deriv _]
+      rw [Space.time_deriv_comm_space_deriv _]
       all_goals
       · apply vectorPotential_comp_contDiff _ hA
     _ = ∂[i] (A.electricField c t · j) x - ∂[j] (A.electricField c t · i) x := by
@@ -544,8 +544,8 @@ lemma time_deriv_time_deriv_magneticFieldMatrix {d : ℕ} {c : SpeedOfLight}
     rw [time_deriv_magneticFieldMatrix A (hA.of_le (right_eq_inf.mp rfl)) t x i j]
   rw [Time.deriv, fderiv_fun_sub]
   simp [← Time.deriv_eq]
-  rw [ClassicalMechanics.time_deriv_comm_space_deriv _]
-  rw [ClassicalMechanics.time_deriv_comm_space_deriv _]
+  rw [Space.time_deriv_comm_space_deriv _]
+  rw [Space.time_deriv_comm_space_deriv _]
   congr
   · funext x
     rw [Time.deriv_euclid]
@@ -556,10 +556,10 @@ lemma time_deriv_time_deriv_magneticFieldMatrix {d : ℕ} {c : SpeedOfLight}
   · apply electricField_apply_contDiff hA
   · apply electricField_apply_contDiff hA
   · apply Differentiable.differentiableAt
-    apply ClassicalMechanics.space_deriv_differentiable_time
+    apply Space.space_deriv_differentiable_time
     apply electricField_apply_contDiff hA
   · apply Differentiable.differentiableAt
-    apply ClassicalMechanics.space_deriv_differentiable_time
+    apply Space.space_deriv_differentiable_time
     apply electricField_apply_contDiff hA
 
 /-!

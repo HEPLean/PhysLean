@@ -5,7 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Electromagnetism.Distributions.Potential
-import PhysLean.SpaceAndTime.Space.Distributions.ConstantTime
+import PhysLean.SpaceAndTime.TimeAndSpace.ConstantTimeDist
+import PhysLean.SpaceAndTime.Space.DistConst
 import PhysLean.Mathematics.Distribution.PowMul
 /-!
 
@@ -60,7 +61,7 @@ open Space StaticElectricField MeasureTheory
 noncomputable def oneDimPointParticleCurrentDensity (q : ℝ) : LorentzCurrentDensityD 1 :=
   LorentzCurrentDensityD.toComponents.symm fun μ =>
   match μ with
-  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| constantTime (q • diracDelta ℝ 0)
+  | Sum.inl 0 => SpaceTime.distTimeSlice.symm <| constantTime (q • diracDelta ℝ 0)
   | Sum.inr _ => 0
 
 /-!
@@ -80,7 +81,7 @@ noncomputable def oneDimPointParticleCurrentDensity (q : ℝ) : LorentzCurrentDe
 noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
   ElectromagneticPotentialD.toComponents.symm fun μ =>
   match μ with
-  | Sum.inl 0 => SpaceTime.timeSliceD.symm <| Space.constantTime
+  | Sum.inl 0 => SpaceTime.distTimeSlice.symm <| Space.constantTime
     (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
     (by
       apply IsDistBounded.const_smul
@@ -129,18 +130,18 @@ lemma oneDimPointParticle_scalarPotential (q : ℝ) :
 set_option maxHeartbeats 400000 in
 lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
     (oneDimPointParticle q).electricField = constantTime (q •
-    ((heavisideStep 0).smulRight (basis 0) - (1 / (2 : ℝ)) • constD 1 (basis 0))) := by
-  suffices hE : - Space.gradD (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+    ((heavisideStep 0).smulRight (basis 0) - (1 / (2 : ℝ)) • distConst 1 (basis 0))) := by
+  suffices hE : - Space.distGrad (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
       (by
         apply IsDistBounded.const_smul
         convert IsDistBounded.pow (n := 1) (by simp)
         simp)
       (by fun_prop)) = ((q) • ((heavisideStep 0).smulRight (basis 0) -
-      (1/(2 : ℝ)) • constD 1 (basis 0))) by
+      (1/(2 : ℝ)) • distConst 1 (basis 0))) by
     rw [Electromagnetism.ElectromagneticPotentialD.electricField]
     simp only [LinearMap.coe_mk, AddHom.coe_mk, oneDimPointParticle_vectorPotential, map_zero,
       sub_zero, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub]
-    rw [oneDimPointParticle_scalarPotential, constantTime_spaceGradD, ← map_neg, hE]
+    rw [oneDimPointParticle_scalarPotential, constantTime_distSpaceGrad, ← map_neg, hE]
     simp
   /- Some preamble for results which are used throughout this proof. -/
   let s : Set (EuclideanSpace ℝ (Fin 1)) :=
@@ -166,7 +167,7 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
     -/
     _ = - (∫ x, fderiv ℝ η x (basis 0) • (q/(2)) • ‖x‖) := by
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, map_neg, neg_neg, Fin.zero_eta,
-        Fin.isValue, gradD_eq_sum_basis, Finset.univ_unique, Fin.default_eq_zero, neg_smul,
+        Fin.isValue, distGrad_eq_sum_basis, Finset.univ_unique, Fin.default_eq_zero, neg_smul,
         Finset.sum_neg_distrib, Finset.sum_singleton, PiLp.neg_apply, PiLp.smul_apply, basis_self,
         mul_one, neg_inj]
       rw [ofFunction_apply]
@@ -431,7 +432,7 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
   congr 2
   rw [← mul_assoc]
   congr 1
-  simp [constD, const_apply]
+  simp [distConst, const_apply]
   rw [integral_smul_const]
   simp
 
@@ -448,21 +449,21 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
 -/
 
 lemma oneDimPointParticle_gaussLaw (q : ℝ) :
-    spaceDivD (oneDimPointParticle q).electricField = constantTime (q • diracDelta ℝ 0) := by
+    distSpaceDiv (oneDimPointParticle q).electricField = constantTime (q • diracDelta ℝ 0) := by
   ext η
   rw [oneDimPointParticle_electricField_eq_heavisideStep]
-  rw [constantTime_spaceDivD]
+  rw [constantTime_distSpaceDiv]
   congr
   ext η
-  change (divD ((q) • (ContinuousLinearMap.smulRight (heavisideStep 0) (basis 0) -
-    (1 / 2) • constD 1 (basis 0)))) η = (q • diracDelta ℝ 0) η
+  change (distDiv ((q) • (ContinuousLinearMap.smulRight (heavisideStep 0) (basis 0) -
+    (1 / 2) • distConst 1 (basis 0)))) η = (q • diracDelta ℝ 0) η
   haveI : SMulZeroClass ℝ ((Space 1)→d[ℝ] ℝ) := by infer_instance
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_sub,
-    divD_constD, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub', Pi.smul_apply,
+    distDiv_distConst, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_sub', Pi.smul_apply,
     Pi.sub_apply, ContinuousLinearMap.zero_apply, smul_eq_mul, mul_zero, sub_zero, diracDelta_apply]
   field_simp
   congr 1
-  rw [divD_apply_eq_sum_fderivD]
+  rw [distDiv_apply_eq_sum_fderivD]
   simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton]
   rw [fderivD_apply]
   simp only [Fin.isValue, ContinuousLinearMap.smulRight_apply, PiLp.neg_apply, PiLp.smul_apply,

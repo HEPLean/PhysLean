@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.Space.Distributions.Basic
+import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 /-!
 
@@ -942,12 +942,12 @@ lemma constantTime_apply {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M]
 ### E.1. Space derivatives of constant time distributions
 
 -/
-lemma constantTime_spaceDerivD {M : Type} {d : ℕ} [NormedAddCommGroup M] [NormedSpace ℝ M]
+lemma constantTime_distSpaceDeriv {M : Type} {d : ℕ} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (i : Fin d.succ) (f : (Space d.succ) →d[ℝ] M) :
-    Space.spaceDerivD i (constantTime f) = constantTime (Space.derivD i f) := by
+    Space.distSpaceDeriv i (constantTime f) = constantTime (Space.distDeriv i f) := by
   ext η
   simp [constantTime_apply]
-  rw [Space.derivD_apply, Space.spaceDerivD_apply]
+  rw [Space.distDeriv_apply, Space.distSpaceDeriv_apply]
   rw [fderivD_apply, fderivD_apply, constantTime_apply]
   congr 2
   ext x
@@ -980,13 +980,13 @@ lemma constantTime_spaceDerivD {M : Type} {d : ℕ} [NormedAddCommGroup M] [Norm
 
 -/
 
-lemma constantTime_spaceGradD {d : ℕ} (f : (Space d.succ) →d[ℝ] ℝ) :
-    Space.spaceGradD (constantTime f) = constantTime (Space.gradD f) := by
+lemma constantTime_distSpaceGrad {d : ℕ} (f : (Space d.succ) →d[ℝ] ℝ) :
+    Space.distSpaceGrad (constantTime f) = constantTime (Space.distGrad f) := by
   ext η i
   simp [constantTime_apply]
-  rw [Space.spaceGradD_apply, Space.gradD_apply]
+  rw [Space.distSpaceGrad_apply, Space.distGrad_apply]
   simp only
-  rw [constantTime_spaceDerivD, constantTime_apply]
+  rw [constantTime_distSpaceDeriv, constantTime_apply]
 
 /-!
 
@@ -994,14 +994,14 @@ lemma constantTime_spaceGradD {d : ℕ} (f : (Space d.succ) →d[ℝ] ℝ) :
 
 -/
 
-lemma constantTime_spaceDivD {d : ℕ} (f : (Space d.succ) →d[ℝ] EuclideanSpace ℝ (Fin d.succ)) :
-    Space.spaceDivD (constantTime f) = constantTime (Space.divD f) := by
+lemma constantTime_distSpaceDiv {d : ℕ} (f : (Space d.succ) →d[ℝ] EuclideanSpace ℝ (Fin d.succ)) :
+    Space.distSpaceDiv (constantTime f) = constantTime (Space.distDiv f) := by
   ext η
   simp [constantTime_apply]
-  rw [Space.spaceDivD_apply_eq_sum_spaceDerivD, Space.divD_apply_eq_sum_derivD]
+  rw [Space.distSpaceDiv_apply_eq_sum_distSpaceDeriv, Space.distDiv_apply_eq_sum_distDeriv]
   congr
   funext i
-  rw [constantTime_spaceDerivD]
+  rw [constantTime_distSpaceDeriv]
   rfl
 
 /-!
@@ -1011,12 +1011,12 @@ lemma constantTime_spaceDivD {d : ℕ} (f : (Space d.succ) →d[ℝ] EuclideanSp
 -/
 
 lemma constantTime_spaceCurlD (f : (Space 3) →d[ℝ] EuclideanSpace ℝ (Fin 3)) :
-    Space.spaceCurlD (constantTime f) = constantTime (Space.curlD f) := by
+    Space.distSpaceCurl (constantTime f) = constantTime (Space.distCurl f) := by
   ext η i
   rw [constantTime_apply]
   fin_cases i
   all_goals
-    simp [Space.spaceCurlD, Space.curlD, constantTime_spaceDerivD, constantTime_apply]
+    simp [Space.distSpaceCurl, Space.distCurl, constantTime_distSpaceDeriv, constantTime_apply]
     rfl
 
 /-!
@@ -1026,11 +1026,11 @@ lemma constantTime_spaceCurlD (f : (Space 3) →d[ℝ] EuclideanSpace ℝ (Fin 3
 -/
 
 @[simp]
-lemma constantTime_timeDerivD {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ}
+lemma constantTime_distTimeDeriv {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : ℕ}
     (f : (Space d.succ) →d[ℝ] M) :
-    Space.timeDerivD (constantTime f) = 0 := by
+    Space.distTimeDeriv (constantTime f) = 0 := by
   ext η
-  rw [Space.timeDerivD_apply]
+  rw [Space.distTimeDeriv_apply]
   rw [fderivD_apply]
   simp [constantTime_apply]
   suffices h : (timeIntegralSchwartz ((SchwartzMap.evalCLM (1, 0)) ((fderivCLM ℝ) η))) = 0 by

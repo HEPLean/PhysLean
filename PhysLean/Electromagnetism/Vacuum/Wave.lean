@@ -105,7 +105,7 @@ theorem waveEquation_electricField_of_freeMaxwellEquations
     trans - (1:ℝ) • curl (fun x => ∂ₜ (fun t => B t x) t)
     rw [← curl_smul, neg_smul, one_smul]
     rfl
-    · exact fun x ↦ fderiv_curry_differentiableAt_fst_comp_snd (hf := hB) ..
+    · fun_prop
     · exact neg_one_smul ..
   simp only [smul_eq_mul, _root_.mul_inv_rev, hcn, Pi.neg_apply, neg_neg]
   rw [← time_deriv_curl_commute]
@@ -121,7 +121,7 @@ theorem waveEquation_electricField_of_freeMaxwellEquations
     fin_cases i <;> fun_prop
   rw [hdt_smul, sub_self]
   · exact hB
-  · exact hE.uncurry ..
+  · fun_prop
   · rw [inv_nonneg]
     exact smul_nonneg (le_of_lt OM.mu_ge_zero) (le_of_lt OM.eps_ge_zero)
 
@@ -182,7 +182,7 @@ theorem waveEquation_magneticField_of_freeMaxwellEquations
       fun_prop
   rw [time_deriv_curl_commute, hcn, sub_self]
   · exact hE
-  · exact hB.uncurry (x := t)
+  · fun_prop
   · rw [inv_nonneg]
     exact smul_nonneg (le_of_lt OM.mu_ge_zero) (le_of_lt OM.eps_ge_zero)
 
@@ -386,7 +386,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
     simp_all
     · fun_prop
     · exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
-    · exact function_differentiableAt_fst (hf := by fun_prop) ..
+    · fun_prop
     · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
   have hderiv : ∀ t x, fderiv ℝ (fun t => (E t x) +
@@ -409,7 +409,7 @@ lemma electricPlaneWave_eq_cross_magneticPlaneWave_upto_space_fun
   simp only [smul_eq_mul, neg_smul, neg_add_cancel_comm_assoc]
   · intro x
     apply DifferentiableAt.add
-    · exact function_differentiableAt_fst (hf := by fun_prop) ..
+    · fun_prop
     · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hBwave
 
@@ -528,7 +528,7 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
         ((√(μ • ε)) • fderiv ℝ (fun t => (s.unit ⨯ₑ₃ (E t x))) t 1) = _
     rw [h]
     · exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
-    · exact function_differentiableAt_fst (hf := by fun_prop) ..
+    · fun_prop
     · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
   use fun x => (B 0 x) - (√(μ • ε)) • (s.unit ⨯ₑ₃ E 0 x)
@@ -540,7 +540,7 @@ lemma magneticPlaneWave_eq_cross_electricPlaneWave_upto_space_fun
   simp only [smul_eq_mul, WithLp.equiv_apply, WithLp.equiv_symm_apply, add_sub_cancel]
   · intro x
     apply DifferentiableAt.sub
-    · exact function_differentiableAt_fst (hf := by fun_prop) ..
+    · fun_prop
     · apply DifferentiableAt.fun_const_smul
       exact crossProduct_time_differentiable_of_right_eq_planewave h' hEwave
 

@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.VectorIdentities
-import PhysLean.SpaceAndTime.Time.Basic
+import PhysLean.SpaceAndTime.Time.Derivatives
 import PhysLean.Mathematics.Distribution.Function.OfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
-import PhysLean.SpaceAndTime.Space.Distributions.Basic
+import PhysLean.SpaceAndTime.Space.Derivatives.Curl
 
 namespace Space
 

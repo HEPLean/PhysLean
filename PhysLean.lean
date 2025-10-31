@@ -7,7 +7,6 @@ import PhysLean.ClassicalMechanics.Mass.MassUnit
 import PhysLean.ClassicalMechanics.RigidBody.Basic
 import PhysLean.ClassicalMechanics.RigidBody.SolidSphere
 import PhysLean.ClassicalMechanics.Scattering.RigidSphere
-import PhysLean.ClassicalMechanics.VectorFields
 import PhysLean.ClassicalMechanics.Vibrations.LinearTriatomic
 import PhysLean.ClassicalMechanics.WaveEquation.Basic
 import PhysLean.ClassicalMechanics.WaveEquation.HarmonicWave
@@ -327,15 +326,12 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.Tensorial
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.SpaceAndTime.Space.Basic
-import PhysLean.SpaceAndTime.Space.Distributions.Basic
-import PhysLean.SpaceAndTime.Space.Distributions.ConstantTime
 import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.SpaceAndTime.SpaceTime.Boosts
-import PhysLean.SpaceAndTime.SpaceTime.Distributions
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.Time.TimeMan

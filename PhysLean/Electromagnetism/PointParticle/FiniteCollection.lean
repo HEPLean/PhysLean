@@ -35,16 +35,16 @@ def electricPotential {n : ℕ} (q : Fin n → ℝ) (ε : ℝ) (r₀ : Fin n →
 def electricField {n : ℕ} (q : Fin n → ℝ) (ε : ℝ) (r₀ : Fin n → Space) : StaticElectricField 3 :=
     ∑ i, ThreeDimPointParticle.electricField (q i) ε (r₀ i)
 
-lemma electricField_eq_neg_gradD_electricPotential {n : ℕ} (q : Fin n → ℝ) (ε : ℝ)
+lemma electricField_eq_neg_distGrad_electricPotential {n : ℕ} (q : Fin n → ℝ) (ε : ℝ)
     (r₀ : Fin n → Space) :
-    electricField q ε r₀ = - Space.gradD (electricPotential q ε r₀) := by
+    electricField q ε r₀ = - Space.distGrad (electricPotential q ε r₀) := by
   simp [electricField, electricPotential,
-    ThreeDimPointParticle.electricField_eq_neg_gradD_electricPotential]
+    ThreeDimPointParticle.electricField_eq_neg_distGrad_electricPotential]
 
 lemma electricField_eq_ofPotential_electricPotential {n : ℕ} (q : Fin n → ℝ) (ε : ℝ)
     (r₀ : Fin n → Space) :
     electricField q ε r₀ = ofPotential (electricPotential q ε r₀) :=
-  electricField_eq_neg_gradD_electricPotential q ε r₀
+  electricField_eq_neg_distGrad_electricPotential q ε r₀
 
 /-- Gauss's law for a finite collection of point particles. -/
 lemma gaussLaw {n : ℕ} (q : Fin n → ℝ) (ε : ℝ)

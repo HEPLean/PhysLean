@@ -5,7 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Basic
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
-import PhysLean.SpaceAndTime.SpaceTime.Distributions
+import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
 /-!
@@ -145,8 +145,8 @@ noncomputable def toComponents {d : ℕ} :
 noncomputable def fieldStrengthMatrix {d : ℕ} :
     ElectromagneticPotentialD d →ₗ[ℝ]
     ((Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d) → (SpaceTime d) →d[ℝ] ℝ) where
-  toFun A := fun (μ, ν) => η μ μ • SpaceTime.derivD μ (A.toComponents ν) -
-    η ν ν • SpaceTime.derivD ν (A.toComponents μ)
+  toFun A := fun (μ, ν) => η μ μ • SpaceTime.distDeriv μ (A.toComponents ν) -
+    η ν ν • SpaceTime.distDeriv ν (A.toComponents μ)
   map_add' A1 A2 := by
     ext μν
     match μν with
@@ -201,7 +201,7 @@ lemma fieldStrengthMatrix_antisymm {d : ℕ} (A : ElectromagneticPotentialD d)
   distribution. -/
 noncomputable def scalarPotential {d} :
     ElectromagneticPotentialD d →ₗ[ℝ] (Time × Space d) →d[ℝ] ℝ where
-  toFun A := timeSliceD <| A.toComponents (Sum.inl 0)
+  toFun A := distTimeSlice 1 <| A.toComponents (Sum.inl 0)
   map_add' A1 A2 := by
     ext ε
     simp
@@ -220,7 +220,7 @@ noncomputable def scalarPotential {d} :
 noncomputable def vectorPotential {d}:
     ElectromagneticPotentialD d →ₗ[ℝ] (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
   toFun A := {
-    toFun := fun κ i => (timeSliceD <| A.toComponents (Sum.inr i)) κ
+    toFun := fun κ i => (distTimeSlice 1 <| A.toComponents (Sum.inr i)) κ
     map_add' := by
       intro κ1 κ2
       funext i
@@ -307,7 +307,7 @@ lemma toComponentsEuclidean_apply {d : ℕ} (E : (Time × Space d) →d[ℝ] Euc
 noncomputable def electricField {d} :
     ElectromagneticPotentialD d →ₗ[ℝ] (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
   toFun A :=
-    - Space.spaceGradD (A.scalarPotential) - Space.timeDerivD (A.vectorPotential)
+    - Space.distSpaceGrad (A.scalarPotential) - Space.distTimeDeriv (A.vectorPotential)
   map_add' A1 A2 := by
     ext κ i
     simp only [map_add, neg_add_rev, ContinuousLinearMap.coe_sub', Pi.sub_apply,
@@ -329,11 +329,11 @@ noncomputable def electricField {d} :
 
 lemma electricField_fieldStrengthMatrix {d} {A : ElectromagneticPotentialD d} (i : Fin d) :
     toComponentsEuclidean A.electricField i =
-    timeSliceD (A.fieldStrengthMatrix (Sum.inr i, Sum.inl 0)) := by
+     distTimeSlice 1 (A.fieldStrengthMatrix (Sum.inr i, Sum.inl 0)) := by
   rw [electricField]
   simp [fieldStrengthMatrix]
   ext ε
-  simp [timeSliceD_derivD_inl, timeSliceD_derivD_inr, Space.spaceGradD_apply]
+  simp [distTimeSlice_distDeriv_inl, distTimeSlice_distDeriv_inr, Space.distSpaceGrad_apply]
   ring_nf
   rfl
 
@@ -346,7 +346,7 @@ lemma electricField_fieldStrengthMatrix {d} {A : ElectromagneticPotentialD d} (i
 lemma fieldStrengthMatrix_col_eq_electricField {d} {A : ElectromagneticPotentialD d}
     (i : Fin d) :
     (A.fieldStrengthMatrix (Sum.inr i, Sum.inl 0)) =
-    timeSliceD.symm (toComponentsEuclidean A.electricField i) := by
+    (distTimeSlice 1).symm (toComponentsEuclidean A.electricField i) := by
   rw [electricField_fieldStrengthMatrix]
   simp
 
@@ -359,7 +359,7 @@ lemma fieldStrengthMatrix_col_eq_electricField {d} {A : ElectromagneticPotential
 lemma fieldStrengthMatrix_row_eq_electricField {d} {A : ElectromagneticPotentialD d}
     (i : Fin d) :
     (A.fieldStrengthMatrix (Sum.inl 0, Sum.inr i)) =
-    - timeSliceD.symm (toComponentsEuclidean A.electricField i) := by
+    - (distTimeSlice 1).symm (toComponentsEuclidean A.electricField i) := by
   rw [fieldStrengthMatrix_antisymm, electricField_fieldStrengthMatrix]
   simp
 
@@ -372,7 +372,7 @@ lemma fieldStrengthMatrix_row_eq_electricField {d} {A : ElectromagneticPotential
 /-- The magnetic field associated with a electromagnetic potential in 3 dimensions. -/
 noncomputable def magneticField :
     ElectromagneticPotentialD 3 →ₗ[ℝ] (Time × Space 3) →d[ℝ] EuclideanSpace ℝ (Fin 3) where
-  toFun A := Space.spaceCurlD A.vectorPotential
+  toFun A := Space.distSpaceCurl A.vectorPotential
   map_add' A1 A2 := by
     ext κ i
     simp
@@ -469,7 +469,7 @@ which matches the result of the calculation from the function case.
 noncomputable def gradLagrangian {d : ℕ} (A : ElectromagneticPotentialD d)
     (J : LorentzCurrentDensityD d) :
     (Fin 1 ⊕ Fin d) → (SpaceTime d) →d[ℝ] ℝ := fun ν =>
-  η ν ν • (∑ μ, SpaceTime.derivD μ (A.fieldStrengthMatrix (μ, ν)) - J.toComponents ν)
+  η ν ν • (∑ μ, SpaceTime.distDeriv μ (A.fieldStrengthMatrix (μ, ν)) - J.toComponents ν)
 
 /-!
 
@@ -483,23 +483,23 @@ lemma gradLagrangian_one_dimension_electricField (A : ElectromagneticPotentialD 
     (J : LorentzCurrentDensityD 1) :
     A.gradLagrangian J = fun μ =>
       match μ with
-      | Sum.inl 0 => SpaceTime.timeSliceD.symm
-          (Space.spaceDivD A.electricField) - J.toComponents (Sum.inl 0)
+      | Sum.inl 0 => SpaceTime.distTimeSlice.symm
+          (Space.distSpaceDiv A.electricField) - J.toComponents (Sum.inl 0)
       | Sum.inr 0 => J.toComponents (Sum.inr 0) +
-        SpaceTime.timeSliceD.symm
-        (toComponentsEuclidean (Space.timeDerivD A.electricField) 0) := by
+        SpaceTime.distTimeSlice.symm
+        (toComponentsEuclidean (Space.distTimeDeriv A.electricField) 0) := by
   funext μ
   match μ with
   | Sum.inl 0 =>
     simp [gradLagrangian]
     rw [fieldStrengthMatrix_col_eq_electricField]
-    simp [SpaceTime.timeSliceD_symm_derivD_inr]
-    have h1 : ((Space.spaceDerivD 0) (toComponentsEuclidean A.electricField 0)) =
-      Space.spaceDivD (A.electricField) := by
+    simp [SpaceTime.distDeriv_inr_distTimeSlice_symm]
+    have h1 : ((Space.distSpaceDeriv 0) (toComponentsEuclidean A.electricField 0)) =
+      Space.distSpaceDiv (A.electricField) := by
       ext ε
-      rw [Space.spaceDivD_apply_eq_sum_spaceDerivD]
+      rw [Space.distSpaceDiv_apply_eq_sum_distSpaceDeriv]
       simp only [Fin.isValue, Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton]
-      rw [Space.spaceDerivD_apply, Space.spaceDerivD_apply, Distribution.fderivD_apply,
+      rw [Space.distSpaceDeriv_apply, Space.distSpaceDeriv_apply, Distribution.fderivD_apply,
         Distribution.fderivD_apply]
       simp
     rw [h1]
@@ -507,13 +507,14 @@ lemma gradLagrangian_one_dimension_electricField (A : ElectromagneticPotentialD 
     simp [gradLagrangian]
     rw [fieldStrengthMatrix_row_eq_electricField]
     simp only [Fin.isValue, map_neg, sub_neg_eq_add, add_right_inj]
-    rw [SpaceTime.timeSliceD_symm_derivD_inl]
-    have h1 : (Space.timeDerivD (toComponentsEuclidean A.electricField 0))
-      = toComponentsEuclidean (Space.timeDerivD (A.electricField)) 0:= by
+    rw [SpaceTime.distDeriv_inl_distTimeSlice_symm]
+    have h1 : (Space.distTimeDeriv (toComponentsEuclidean A.electricField 0))
+      = toComponentsEuclidean (Space.distTimeDeriv (A.electricField)) 0:= by
       ext ε
-      simp [Space.timeDerivD_apply, Distribution.fderivD_apply,
+      simp [Space.distTimeDeriv_apply, Distribution.fderivD_apply,
         Distribution.fderivD_apply]
     rw [h1]
+    simp
 
 end ElectromagneticPotentialD
 

@@ -307,7 +307,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
       rw [fderiv_const_mul (by
         apply Differentiable.fun_sum
         intro j _
-        apply ClassicalMechanics.space_deriv_differentiable_time
+        apply Space.space_deriv_differentiable_time
         apply magneticFieldMatrix_contDiff
         apply hA.of_le (right_eq_inf.mp rfl))]
       rw [fderiv_const_mul (by
@@ -318,7 +318,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
       · apply Differentiable.const_mul
         apply Differentiable.fun_sum
         intro j _
-        apply ClassicalMechanics.space_deriv_differentiable_time
+        apply Space.space_deriv_differentiable_time
         apply magneticFieldMatrix_contDiff
         apply hA.of_le (right_eq_inf.mp rfl)
       · apply DifferentiableAt.const_mul
@@ -334,7 +334,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
       rfl
       intro i _
       apply Differentiable.differentiableAt
-      apply ClassicalMechanics.space_deriv_differentiable_time
+      apply Space.space_deriv_differentiable_time
       apply magneticFieldMatrix_contDiff
       apply hA.of_le (right_eq_inf.mp rfl)
     _ = 1 / (𝓕.μ₀ * 𝓕.ε₀) * (∑ j, ∂[j] (fun x => ∂ₜ (A.magneticFieldMatrix 𝓕.c · x (j, i)) t)) x -
@@ -343,7 +343,7 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
       simp only [Finset.sum_apply]
       congr
       funext k
-      rw [ClassicalMechanics.time_deriv_comm_space_deriv]
+      rw [Space.time_deriv_comm_space_deriv]
       apply magneticFieldMatrix_contDiff
       apply hA.of_le (right_eq_inf.mp rfl)
     _ = 1 / (𝓕.μ₀ * 𝓕.ε₀) *(∑ j, ∂[j] (fun x => ∂[j] (A.electricField 𝓕.c t · i) x -

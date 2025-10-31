@@ -170,16 +170,16 @@ are defined as distributions, and distributions are defined by how they act on S
   `∫ x, d_y η x * ‖x‖⁻¹ + η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ = 0`
   is zero.
 -/
-lemma gradD_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
+lemma distGrad_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
     (h_integral : ∀ η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ), ∀ y : EuclideanSpace ℝ (Fin 3),
     ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * ‖a‖⁻¹ +
     η a * - ⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ) = 0) :
-    - Space.gradD (electricPotential q ε 0) = electricField q ε 0 := by
+    - Space.distGrad (electricPotential q ε 0) = electricField q ε 0 := by
   rw [← sub_eq_zero]
   ext1 η
   apply ext_inner_right ℝ
   intro y
-  simp [inner_sub_left, gradD_inner_eq, fderivD_apply]
+  simp [inner_sub_left, distGrad_inner_eq, fderivD_apply]
   dsimp [electricPotential, electricField]
   rw [ofFunction_inner, ofFunction_apply]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, inv_pow]
@@ -759,10 +759,10 @@ In part D.4 we showed that this limit is zero, and therefore this integral itsel
 It follows that `E = -∇ V` for a particle at the origin.
 
 -/
-lemma electricField_eq_neg_gradD_electricPotential_origin (q ε : ℝ) :
-    electricField q ε 0 = - Space.gradD (electricPotential q ε 0) :=
+lemma electricField_eq_neg_distGrad_electricPotential_origin (q ε : ℝ) :
+    electricField q ε 0 = - Space.distGrad (electricPotential q ε 0) :=
   Eq.symm <|
-  gradD_electricPotential_eq_electricField_of_integral_eq_zero q ε <|
+  distGrad_electricPotential_eq_electricField_of_integral_eq_zero q ε <|
   fun η y => tendsto_nhds_unique
     (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral y η)
     (potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero y η)
@@ -775,16 +775,16 @@ The general case of a particle at `r₀` follows from the case of a particle at 
 by using that the gradient commutes with translation.
 
 -/
-lemma electricField_eq_neg_gradD_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
-    electricField q ε r₀ = - Space.gradD (electricPotential q ε r₀) := by
+lemma electricField_eq_neg_distGrad_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
+    electricField q ε r₀ = - Space.distGrad (electricPotential q ε r₀) := by
   rw [electricField_eq_translateD, electricPotential_eq_translateD]
-  simp only [Space.translateD_gradD]
-  rw [electricField_eq_neg_gradD_electricPotential_origin]
+  simp only [Space.translateD_distGrad]
+  rw [electricField_eq_neg_distGrad_electricPotential_origin]
   simp
 
 lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
     electricField q ε r₀ = ofPotential (electricPotential q ε r₀) :=
-  electricField_eq_neg_gradD_electricPotential q ε r₀
+  electricField_eq_neg_distGrad_electricPotential q ε r₀
 
 /-!
 
@@ -886,11 +886,11 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
   haveI : MeasureSpace s := by
     exact Measure.Subtype.measureSpace
   calc _
-    _ = (divD (electricField q ε 0)) η := by rfl
+    _ = (distDiv (electricField q ε 0)) η := by rfl
     /- Step 2: We focus on rewriting the LHS, by definition it is equal to
       `- ∫ d³r ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, (∇ η) r⟫`. -/
     _ = - ∫ r, ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, Space.grad η r⟫_ℝ := by
-      rw [electricField, Space.divD_ofFunction]
+      rw [electricField, Space.distDiv_ofFunction]
       simp
     /- Step 3: We rearrange the integral to
       `- q/(4 * π * ε) * ∫ d³r ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r), (∇ η) r⟫`. -/
@@ -1063,7 +1063,7 @@ lemma gaussLaw (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
     (electricField q ε r₀).GaussLaw ε (chargeDistribution q r₀) := by
   rw [electricField_eq_translateD, chargeDistribution_eq_translateD]
   rw [gaussLaw_iff]
-  rw [Space.divD_translateD]
+  rw [Space.distDiv_translateD]
   rw [gaussLaw_origin q ε]
   simp
 

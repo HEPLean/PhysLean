@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.Space.Distributions.Basic
+import PhysLean.SpaceAndTime.Space.Derivatives.Curl
 /-!
 
 # Translations on space
@@ -113,12 +113,12 @@ lemma translateD_apply {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
 open InnerProductSpace
 
 @[simp]
-lemma translateD_gradD {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
+lemma translateD_distGrad {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
     (T : (Space d) →d[ℝ] ℝ) :
-    gradD (translateD a T) = translateD a (gradD T) := by
-  apply gradD_eq_of_inner
+    distGrad (translateD a T) = translateD a (distGrad T) := by
+  apply distGrad_eq_of_inner
   intro η y
-  rw [translateD_apply, gradD_inner_eq]
+  rw [translateD_apply, distGrad_inner_eq]
   rw [fderivD_apply, fderivD_apply, translateD_apply]
   congr 2
   ext x
@@ -152,12 +152,12 @@ lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
   simp [f']
 
 @[simp]
-lemma divD_translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
+lemma distDiv_translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
     (T : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) :
-    divD (translateD a T) = translateD a (divD T) := by
+    distDiv (translateD a T) = translateD a (distDiv T) := by
   ext η
-  rw [divD_apply_eq_sum_fderivD]
-  rw [translateD_apply, divD_apply_eq_sum_fderivD]
+  rw [distDiv_apply_eq_sum_fderivD]
+  rw [translateD_apply, distDiv_apply_eq_sum_fderivD]
   congr
   funext i
   rw [fderivD_apply, fderivD_apply, translateD_apply]

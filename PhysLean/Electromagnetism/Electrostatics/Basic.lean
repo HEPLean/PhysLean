@@ -3,7 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.Space.Distributions.Basic
+import PhysLean.SpaceAndTime.Space.Derivatives.Curl
 /-!
 
 # Electrostatics
@@ -41,14 +41,14 @@ namespace StaticElectricField
 
 /-- The static electric field associated with a static electric potential. -/
 noncomputable def ofPotential {d : ℕ} (φ : StaticElectricPotential d) : StaticElectricField d :=
-  - Space.gradD φ
+  - Space.distGrad φ
 
 /-- Gauss's law for static electric fields. -/
 def GaussLaw {d : ℕ} (E : StaticElectricField d) (ε : ℝ) (ρ : ChargeDistribution d) :
-    Prop := Space.divD E = (1 / ε) • ρ
+    Prop := Space.distDiv E = (1 / ε) • ρ
 
 lemma gaussLaw_iff {d : ℕ} (E : StaticElectricField d) (ε : ℝ) (ρ : ChargeDistribution d) :
-    E.GaussLaw ε ρ ↔ Space.divD E = (1 / ε) • ρ := by
+    E.GaussLaw ε ρ ↔ Space.distDiv E = (1 / ε) • ρ := by
   rw [GaussLaw]
 
 TODO "IBQW4" "Generalize Faraday's law to arbitrary space dimensions.
@@ -56,7 +56,7 @@ TODO "IBQW4" "Generalize Faraday's law to arbitrary space dimensions.
 
 /-- Faraday's law in 3d for static electric fields. -/
 def FaradaysLaw (E : StaticElectricField) : Prop :=
-  Space.curlD E = 0
+  Space.distCurl E = 0
 
 /-- If the electric field is of the form `-∇φ` then Faraday's law holds. -/
 lemma ofPotential_faradaysLaw (φ : StaticElectricPotential) :

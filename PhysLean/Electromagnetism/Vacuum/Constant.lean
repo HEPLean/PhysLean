@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Dynamics.IsExtrema
-import PhysLean.ClassicalMechanics.VectorFields
+import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 /-!
 
 # The constant electric and magnetic fields

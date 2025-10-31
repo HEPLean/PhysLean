@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.Mathematics.Distribution.PowMul
+import PhysLean.SpaceAndTime.Space.DistConst
 /-!
 
 # A electrostatics in a 1d vacuum
@@ -30,7 +31,7 @@ def chargeDistribution : ChargeDistribution 1 := 0
   it is the constant electric field. -/
 @[sorryful]
 lemma gaussLaw_iff (q ε : ℝ) (E : StaticElectricField 1) :
-    E.GaussLaw ε (chargeDistribution) ↔ ∃ m, E = constD 1 m := by
+    E.GaussLaw ε (chargeDistribution) ↔ ∃ m, E = distConst 1 m := by
   sorry
 
 end
