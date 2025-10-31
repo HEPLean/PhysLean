@@ -67,9 +67,10 @@ lemma fderiv_space_eq_fderiv_curry {M} [NormedAddCommGroup M] [NormedSpace ℝ M
     fderiv ℝ (fun x' => f t x') x dx = fderiv ℝ ↿f (t, x) (0, dx) := by
   change fderiv ℝ (↿f ∘ fun x' => (t, x')) x dx = _
   rw [fderiv_comp]
-  simp
+  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
   rw [DifferentiableAt.fderiv_prodMk]
-  simp
+  simp only [fderiv_fun_const, Pi.zero_apply, fderiv_id', ContinuousLinearMap.prod_apply,
+    ContinuousLinearMap.zero_apply, ContinuousLinearMap.coe_id', id_eq]
   repeat' fun_prop
 
 lemma fderiv_time_eq_fderiv_curry {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
@@ -78,9 +79,10 @@ lemma fderiv_time_eq_fderiv_curry {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
     fderiv ℝ (fun t' => f t' x) t dt = fderiv ℝ ↿f (t, x) (dt, 0) := by
   change fderiv ℝ (↿f ∘ fun t' => (t', x)) t dt = _
   rw [fderiv_comp]
-  simp
+  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
   rw [DifferentiableAt.fderiv_prodMk]
-  simp
+  simp only [fderiv_id', fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.prod_apply,
+    ContinuousLinearMap.coe_id', id_eq, ContinuousLinearMap.zero_apply]
   repeat' fun_prop
 
 /-!
@@ -305,7 +307,7 @@ lemma distSpaceDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   ext κ
   rw [distSpaceDeriv_apply, distSpaceDeriv_apply, fderivD_apply, fderivD_apply]
   rw [distSpaceDeriv_apply, distSpaceDeriv_apply, fderivD_apply, fderivD_apply]
-  simp
+  simp only [neg_neg]
   congr 1
   ext x
   change fderiv ℝ (fun x => fderiv ℝ κ x (0, basis i)) x (0, basis j) =
@@ -317,7 +319,7 @@ lemma distSpaceDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   · apply ContDiffAt.isSymmSndFDerivAt
     apply ContDiff.contDiffAt
     exact smooth κ ⊤
-    simp
+    simp only [minSmoothness_of_isRCLikeNormedField]
     exact ENat.LEInfty.out
   · have h1 := smooth κ 2
     fun_prop
@@ -338,7 +340,7 @@ lemma distTimeDeriv_commute_distSpaceDeriv {M d} [NormedAddCommGroup M] [NormedS
   ext κ
   rw [distTimeDeriv_apply, distSpaceDeriv_apply, fderivD_apply, fderivD_apply]
   rw [distTimeDeriv_apply, distSpaceDeriv_apply, fderivD_apply, fderivD_apply]
-  simp
+  simp only [neg_neg]
   congr 1
   ext x
   change fderiv ℝ (fun x => fderiv ℝ κ x (1, 0)) x (0, basis i) =
@@ -350,7 +352,7 @@ lemma distTimeDeriv_commute_distSpaceDeriv {M d} [NormedAddCommGroup M] [NormedS
   · apply ContDiffAt.isSymmSndFDerivAt
     apply ContDiff.contDiffAt
     exact smooth κ ⊤
-    simp
+    simp only [minSmoothness_of_isRCLikeNormedField]
     exact ENat.LEInfty.out
   · have h1 := smooth κ 2
     fun_prop

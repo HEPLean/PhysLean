@@ -141,19 +141,20 @@ lemma distTimeSlice_distDeriv_inl {M d} [NormedAddCommGroup M] [NormedSpace ℝ 
     (1/c.val) • Space.distTimeDeriv (distTimeSlice c f) := by
   ext κ
   rw [distTimeSlice_apply, distDeriv_apply, fderivD_apply]
-  simp
+  simp only [Fin.isValue, one_div, ContinuousLinearMap.coe_smul', Pi.smul_apply]
   rw [distTimeDeriv_apply, fderivD_apply, distTimeSlice_apply]
-  simp
+  simp only [Fin.isValue, smul_neg, neg_inj]
   rw [← map_smul]
   congr
   ext x
   change fderiv ℝ (κ ∘ toTimeAndSpace c) x (Lorentz.Vector.basis (Sum.inl 0)) =
     c.val⁻¹ • fderiv ℝ κ (toTimeAndSpace c x) (1, 0)
   rw [fderiv_comp]
-  simp
+  simp only [toTimeAndSpace_fderiv, Fin.isValue, ContinuousLinearMap.coe_comp',
+    ContinuousLinearEquiv.coe_coe, Function.comp_apply, smul_eq_mul]
   rw [toTimeAndSpace_basis_inl']
   rw [map_smul]
-  simp
+  simp only [one_div, smul_eq_mul]
   · apply Differentiable.differentiableAt
     exact SchwartzMap.differentiable κ
   · fun_prop
@@ -166,7 +167,7 @@ lemma distDeriv_inl_distTimeSlice_symm {M d} [NormedAddCommGroup M] [NormedSpace
   obtain ⟨f, rfl⟩ := (distTimeSlice c).surjective f
   simp only [ContinuousLinearEquiv.symm_apply_apply]
   apply (distTimeSlice c).injective
-  simp
+  simp only [Fin.isValue, one_div, map_smul, ContinuousLinearEquiv.apply_symm_apply]
   rw [distTimeSlice_distDeriv_inl]
   simp
 
@@ -177,13 +178,14 @@ lemma distTimeSlice_distDeriv_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ 
   ext κ
   rw [distTimeSlice_apply, distDeriv_apply, fderivD_apply]
   rw [distSpaceDeriv_apply, fderivD_apply, distTimeSlice_apply]
-  simp
+  simp only [neg_inj]
   congr 1
   ext x
   change fderiv ℝ (κ ∘ toTimeAndSpace 1) x (Lorentz.Vector.basis (Sum.inr i)) =
     fderiv ℝ κ (toTimeAndSpace 1 x) (0, Space.basis i)
   rw [fderiv_comp]
-  simp
+  simp only [toTimeAndSpace_fderiv, ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe,
+    Function.comp_apply]
   rw [toTimeAndSpace_basis_inr]
   · apply Differentiable.differentiableAt
     exact SchwartzMap.differentiable κ
@@ -196,7 +198,7 @@ lemma distDeriv_inr_distTimeSlice_symm {M d} [NormedAddCommGroup M] [NormedSpace
   obtain ⟨f, rfl⟩ := (distTimeSlice 1).surjective f
   simp only [ContinuousLinearEquiv.symm_apply_apply]
   apply (distTimeSlice 1).injective
-  simp
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
   rw [distTimeSlice_distDeriv_inr]
 
 end SpaceTime

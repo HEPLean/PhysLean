@@ -242,7 +242,7 @@ lemma distDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   ext κ
   rw [distDeriv_apply, distDeriv_apply, fderivD_apply, fderivD_apply]
   rw [distDeriv_apply, distDeriv_apply, fderivD_apply, fderivD_apply]
-  simp
+  simp only [neg_neg]
   congr 1
   ext x
   change fderiv ℝ (fun x => fderiv ℝ κ x (Lorentz.Vector.basis μ)) x (Lorentz.Vector.basis ν) =
@@ -254,7 +254,7 @@ lemma distDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   · apply ContDiffAt.isSymmSndFDerivAt (n := ∞)
     apply ContDiff.contDiffAt
     exact smooth κ ⊤
-    simp
+    simp only [minSmoothness_of_isRCLikeNormedField]
     exact ENat.LEInfty.out
   · have h1 := smooth κ 2
     fun_prop
