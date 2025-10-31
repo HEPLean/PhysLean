@@ -24,12 +24,6 @@ allowing it to be used in tensorial expressions.
 - `SpaceTime d` : The type corresponding to `d+1` dimensional spacetime.
 - `toTimeAndSpace` : A continuous linear equivalence between `SpaceTime d`
   and `Time × Space d`.
-- `deriv` : The derivative of a function `SpaceTime d → M` along the `μ` coordinate.
-- `deriv_sum_inr` : The derivative along a spatial coordinate in terms of the
-  derivative on `Space d`.
-- `deriv_sum_inl` : The derivative along the temporal coordinate in terms of the
-  derivative on `Time`.
-- `innerProductSpace` : The Euclidean inner product structure on `SpaceTime d`.
 
 ## iii. Table of contents
 
@@ -46,20 +40,13 @@ allowing it to be used in tensorial expressions.
     - B.3.3. `toTimeAndSpace` acting on spatial basis vectors
     - B.3.4. `toTimeAndSpace` acting on the temporal basis vectors
 - C. Continuous linear map to coordinates
-- D. Derivatives of functions on `SpaceTime d`
-  - D.1. The definition of the derivative
-  - D.2. Basic equality lemmas
-  - D.3. Derivative of the zero function
-  - D.4. The derivative of a function composed with a Lorentz transformation
-  - D.5. Spacetime derivatives in terms of time and space derivatives
-- E. Measures on `SpaceTime d`
-  - E.1. Instance of a measurable space
-  - E.2. Instance of a borel space
-  - E.3. Definition of an inner product space structure on `SpaceTime d`
-  - E.4. Instance of a measure space
-  - E.5. Volume measure is positive on non-empty open sets
-  - E.6. Volume measure is a finite measure on compact sets
-  - E.7. Volume measure is an additive Haar measure
+- D. Measures on `SpaceTime d`
+  - D.1. Instance of a measurable space
+  - D.2. Instance of a borel space
+  - D.4. Instance of a measure space
+  - D.5. Volume measure is positive on non-empty open sets
+  - D.6. Volume measure is a finite measure on compact sets
+  - D.7. Volume measure is an additive Haar measure
 
 ## iv. References
 
@@ -328,14 +315,14 @@ def coordCLM (μ : Fin 1 ⊕ Fin d) : SpaceTime d →L[ℝ] ℝ where
 
 /-!
 
-## E. Measures on `SpaceTime d`
+## D. Measures on `SpaceTime d`
 
 -/
 open MeasureTheory
 
 /-!
 
-### E.1. Instance of a measurable space
+### D.1. Instance of a measurable space
 
 -/
 
@@ -343,17 +330,16 @@ instance {d : ℕ} : MeasurableSpace (SpaceTime d) := borel (SpaceTime d)
 
 /-!
 
-### E.2. Instance of a borel space
+### D.2. Instance of a borel space
 
 -/
 
 instance {d : ℕ} : BorelSpace (SpaceTime d) where
   measurable_eq := by rfl
 
-
 /-!
 
-### E.4. Instance of a measure space
+### D.4. Instance of a measure space
 
 -/
 
@@ -362,7 +348,7 @@ instance {d : ℕ} : MeasureSpace (SpaceTime d) where
 
 /-!
 
-### E.5. Volume measure is positive on non-empty open sets
+### D.5. Volume measure is positive on non-empty open sets
 
 -/
 
@@ -371,7 +357,7 @@ instance {d : ℕ} : (volume (α := SpaceTime d)).IsOpenPosMeasure :=
 
 /-!
 
-### E.6. Volume measure is a finite measure on compact sets
+### D.6. Volume measure is a finite measure on compact sets
 
 -/
 
@@ -380,7 +366,7 @@ instance {d : ℕ} : IsFiniteMeasureOnCompacts (volume (α := SpaceTime d)) :=
 
 /-!
 
-### E.7. Volume measure is an additive Haar measure
+### D.7. Volume measure is an additive Haar measure
 
 -/
 

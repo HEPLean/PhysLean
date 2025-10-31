@@ -114,7 +114,6 @@ lemma chargeDensity_differentiable_space {d : ℕ} {c : SpeedOfLight} {J : Loren
   · exact chargeDensity_differentiable hJ
   · fun_prop
 
-
 /-!
 
 ### B.3. Smoothness of the charge density

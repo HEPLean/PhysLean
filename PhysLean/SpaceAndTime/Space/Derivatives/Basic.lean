@@ -14,11 +14,40 @@ import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 
 # Derivatives on Space
 
-In this module, we define the the type `Space d` which corresponds
-to a `d`-dimensional Euclidean space and prove some properties about it.
+## i. Overview
 
-PhysLean sits downstream of Mathlib, and above we import the necessary Mathlib modules
-which contain (perhaps transitively through imports) the definitions and theorems we need.
+In this module we define derivatives of functions and distributions on space `Space d`,
+in the standard directions.
+
+## ii. Key results
+
+- `deriv` : The derivative of a function on space in a given direction.
+- `distDeriv` : The derivative of a distribution on space in a given direction.
+
+## iii. Table of contents
+
+- A. Derivatives of functions on `Space d`
+  - A.1. Basic equalities
+  - A.2. Derivative of the constant function
+  - A.3. Derivative distributes over addition
+  - A.4. Derivative distributes over scalar multiplication
+  - A.5. Two spatial derivatives commute
+  - A.6. Derivative of a component
+  - A.7. Derivative of a component squared
+  - A.8. Derivivatives of components
+  - A.9. Derivative of a norm squared
+    - A.9.1. Differentiability of the norm squared function
+    - A.9.2. Derivative of the norm squared function
+  - A.10. Derivative of the inner product
+    - A.11.1. Differentiability of the inner product function
+    - A.11.2. Derivative of the inner product function
+  - A.12. Differentiability of derivatives
+- B. Derivatives of distributions on `Space d`
+  - B.1. The definition
+  - B.2. Basic equality
+  - B.3. Commutation of derivatives
+
+## iv. References
 
 -/
 
@@ -40,7 +69,7 @@ macro "∂[" i:term "]" : term => `(deriv $i)
 
 /-!
 
-### A.1. Basic equalities
+### A.1. Basic equalities
 
 -/
 
@@ -61,7 +90,7 @@ lemma deriv_eq_fderiv_basis [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
 
 /-!
 
-### A.2. Derivative of the constant function
+### A.2. Derivative of the constant function
 
 -/
 
@@ -70,8 +99,6 @@ lemma deriv_const [NormedAddCommGroup M] [NormedSpace ℝ M] (m : M) (μ : Fin d
     deriv μ (fun _ => m) t = 0 := by
   rw [deriv]
   simp
-
-
 
 /-!
 
@@ -265,7 +292,7 @@ lemma deriv_norm_sq (x : Space d) (i : Fin d) :
 
 /-!
 
-### A.9. Derivative of the inner product
+### A.10. Derivative of the inner product
 
 -/
 
@@ -273,7 +300,7 @@ open InnerProductSpace
 
 /-!
 
-#### A.10.1. Differentiability of the inner product function
+#### A.11.1. Differentiability of the inner product function
 
 -/
 
@@ -285,7 +312,7 @@ lemma inner_differentiable {d : ℕ} :
 
 /-!
 
-#### A.10.2. Derivative of the inner product function
+#### A.11.2. Derivative of the inner product function
 
 -/
 
@@ -296,7 +323,7 @@ lemma deriv_eq_inner_self (x : Space d) (i : Fin d) :
 
 /-!
 
-### A.11. Differentiability of derivatives
+### A.12. Differentiability of derivatives
 
 -/
 
@@ -309,8 +336,6 @@ lemma deriv_differentiable {M} [NormedAddCommGroup M]
   convert h1 using 1
   funext x
   rw [deriv_eq_fderiv_basis]
-
-
 
 /-!
 
@@ -342,7 +367,6 @@ noncomputable def distDeriv {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     simp
   map_smul' a f := by simp
 
-
 /-!
 
 ### B.2. Basic equality
@@ -353,7 +377,6 @@ lemma distDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (μ : Fin d) (f : (Space d) →d[ℝ] M) (ε : 𝓢(Space d, ℝ)) :
     (distDeriv μ f) ε = fderivD ℝ f ε (basis μ) := by
   simp [distDeriv, Distribution.fderivD]
-
 
 /-!
 

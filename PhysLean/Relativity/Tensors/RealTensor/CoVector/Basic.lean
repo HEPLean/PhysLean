@@ -36,11 +36,14 @@ namespace CoVector
 open TensorSpecies
 open Tensor
 
-instance {d} : AddCommMonoid (CoVector d) := inferInstanceAs (AddCommMonoid (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+instance {d} : AddCommMonoid (CoVector d) :=
+  inferInstanceAs (AddCommMonoid (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
-instance {d} : Module ℝ (CoVector d) := inferInstanceAs (Module ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+instance {d} : Module ℝ (CoVector d) :=
+  inferInstanceAs (Module ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
-instance {d} : AddCommGroup (CoVector d) := inferInstanceAs (AddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+instance {d} : AddCommGroup (CoVector d) :=
+  inferInstanceAs (AddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
 
 instance {d} : FiniteDimensional ℝ (CoVector d) :=
   inferInstanceAs (FiniteDimensional ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))

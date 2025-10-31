@@ -3,12 +3,50 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.Time.Derivatives
 import PhysLean.Mathematics.Distribution.Function.OfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 import PhysLean.SpaceAndTime.Space.Derivatives.Curl
+/-!
 
+# Functions and distributions on Time and Space d
+
+## i. Overview
+
+In this module we define and prove basic lemmas about derivatives of functions and
+distributions on both `Time` and `Space d`.
+
+We put these results in the namespace `Space` by convention.
+
+## ii. Key results
+
+- `distTimeDeriv` : The derivative of a distribution on `Time × Space d` along the
+  temporal coordinate.
+- `distSpaceDeriv` : The derivative of a distribution on `Time × Space d` along the
+  spatial `i` coordinate.
+- `distSpaceGrad` : The spatial gradient of a distribution on `Time × Space d`.
+- `distSpaceDiv` : The spatial divergence of a distribution on `Time × Space d`.
+- `distSpaceCurl` : The spatial curl of a distribution on `Time × Space 3`.
+
+## iii. Table of contents
+
+- A. Derivatives involving time and space
+  - A.1. Space and time derivatives in terms of curried functions
+  - A.2. Commuting time and space derivatives
+  - A.3. Differentiablity conditions
+  - A.4. Time derivative commute with curl
+- B. Derivatives of distributions on Time × Space d
+  - B.1. Time derivatives
+  - B.2. Space derivatives
+    - B.2.1. Space derivatives commute
+  - B.3. Time and space derivatives commute
+  - B.4. The spatial gradient
+  - B.5. The spatial divergence
+  - B.6. The spatial curl
+
+## iv. References
+
+-/
 namespace Space
 
 /-!
@@ -26,7 +64,7 @@ namespace Space
 lemma fderiv_space_eq_fderiv_curry {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f : Time → Space d → M) (t : Time) (x dx : Space d)
     (hf : Differentiable ℝ ↿f) :
-    fderiv ℝ (fun x' => f t x') x dx = fderiv ℝ ↿f (t , x) (0, dx) := by
+    fderiv ℝ (fun x' => f t x') x dx = fderiv ℝ ↿f (t, x) (0, dx) := by
   change fderiv ℝ (↿f ∘ fun x' => (t, x')) x dx = _
   rw [fderiv_comp]
   simp
@@ -37,14 +75,13 @@ lemma fderiv_space_eq_fderiv_curry {M} [NormedAddCommGroup M] [NormedSpace ℝ M
 lemma fderiv_time_eq_fderiv_curry {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f : Time → Space d → M) (t dt : Time) (x : Space d)
     (hf : Differentiable ℝ ↿f) :
-    fderiv ℝ (fun t' => f t' x) t dt = fderiv ℝ ↿f (t , x) (dt, 0) := by
+    fderiv ℝ (fun t' => f t' x) t dt = fderiv ℝ ↿f (t, x) (dt, 0) := by
   change fderiv ℝ (↿f ∘ fun t' => (t', x)) t dt = _
   rw [fderiv_comp]
   simp
   rw [DifferentiableAt.fderiv_prodMk]
   simp
   repeat' fun_prop
-
 
 /-!
 
@@ -91,7 +128,6 @@ lemma fderiv_time_commute_fderiv_space {M} [NormedAddCommGroup M] [NormedSpace �
     simp
   repeat' fun_prop
 
-
 lemma time_deriv_comm_space_deriv {d i} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
     {f : Time → Space d → M} (hf : ContDiff ℝ 2 ↿f) (t : Time) (x : Space d) :
     Time.deriv (fun t' => Space.deriv i (f t') x) t
@@ -99,10 +135,9 @@ lemma time_deriv_comm_space_deriv {d i} {M} [NormedAddCommGroup M] [NormedSpace 
   simp only [Time.deriv_eq, Space.deriv_eq_fderiv_basis]
   exact fderiv_time_commute_fderiv_space f t 1 x (Space.basis i) hf
 
-
 /-!
 
-## A.3. Differentiablity conditions
+### A.3. Differentiablity conditions
 
 -/
 
@@ -160,11 +195,9 @@ lemma curl_differentiable_time
     simp [curl, Space.coord_apply]
     fun_prop
 
-
-
 /-!
 
-### A.3. Time derivative commute with curl
+### A.4. Time derivative commute with curl
 
 -/
 open Time
@@ -197,7 +230,6 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
     · apply Differentiable.differentiableAt
       fun_prop
   · fun_prop
-
 
 /-!
 
@@ -263,7 +295,7 @@ lemma distSpaceDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 /-!
 
-#### B.2.1 Space derivatives commute
+#### B.2.1. Space derivatives commute
 
 -/
 
@@ -296,7 +328,7 @@ lemma distSpaceDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 /-!
 
-### B.3 Time and space derivatives commute
+### B.3. Time and space derivatives commute
 
 -/
 
@@ -309,7 +341,7 @@ lemma distTimeDeriv_commute_distSpaceDeriv {M d} [NormedAddCommGroup M] [NormedS
   simp
   congr 1
   ext x
-  change fderiv ℝ (fun x => fderiv ℝ κ x (1, 0) ) x (0, basis i) =
+  change fderiv ℝ (fun x => fderiv ℝ κ x (1, 0)) x (0, basis i) =
     fderiv ℝ (fun x => fderiv ℝ κ x (0, basis i)) x (1, 0)
   rw [fderiv_clm_apply, fderiv_clm_apply]
   simp only [fderiv_fun_const, Pi.ofNat_apply, ContinuousLinearMap.comp_zero, zero_add,

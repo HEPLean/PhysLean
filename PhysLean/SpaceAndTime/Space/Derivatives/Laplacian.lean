@@ -6,8 +6,25 @@ Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 import PhysLean.SpaceAndTime.Space.Derivatives.Div
 /-!
 
-# Laplacian on Space
+# The Laplacian operator on `Space d`
 
+## i. Overview
+
+In this module we define the Laplacian operator on functions and vector-valued
+functions defined on `Space d`.
+
+## ii. Key results
+
+- `laplacian` : The Laplacian operator on scalar functions on `Space d`.
+- `laplacianVec` : The Laplacian operator on vector-valued functions on `Space d`.
+
+## iii. Table of contents
+
+- A. Laplacian on functions to ℝ
+  - A.1. Relation between laplacian and divergence of gradient
+- B. Laplacian on vector valued functions
+
+## iv. References
 
 -/
 
@@ -51,7 +68,6 @@ lemma laplacian_eq_div_of_grad (f : Space → ℝ) :
 
 -/
 
-
 /-- The vector `laplacianVec` operator. -/
 noncomputable def laplacianVec {d} (f : Space d → EuclideanSpace ℝ (Fin d)) :
     Space d → EuclideanSpace ℝ (Fin d) := fun x i =>
@@ -61,6 +77,5 @@ noncomputable def laplacianVec {d} (f : Space d → EuclideanSpace ℝ (Fin d)) 
 
 @[inherit_doc laplacianVec]
 scoped[Space] notation "Δ" => laplacianVec
-
 
 end Space

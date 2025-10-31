@@ -8,16 +8,37 @@ import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 /-!
 
-## Time Derivatives
+# Time Derivatives
+
+## i. Overview
+
+In this module we define and prove basic lemmas about derivatives of functions on `Time`.
+
+## ii. Key results
+
+- `deriv` : The derivative of a function `Time → M` at a given time.
+
+## iii. Table of contents
+
+- A. The definition of the derivative
+- B. Linearlity properties of the derivative
+- C. Derivative of constant functions
+- D. Smoothness properties of the derivative
+- E. Derivatives of components
+
+## iv. References
 
 -/
 
-
 namespace Time
-
 
 variable {M : Type} {d : ℕ} {t : Time}
 
+/-!
+
+## A. The definition of the derivative
+
+-/
 /-- Given a function `f : Time → M` the derivative of `f`. -/
 noncomputable def deriv [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (f : Time → M) : Time → M :=
@@ -28,6 +49,12 @@ scoped notation "∂ₜ" => deriv
 
 lemma deriv_eq [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (f : Time → M) (t : Time) : Time.deriv f t = fderiv ℝ f t 1 := rfl
+
+/-!
+
+## B. Linearlity properties of the derivative
+
+-/
 
 lemma deriv_smul (f : Time → EuclideanSpace ℝ (Fin d)) (k : ℝ)
     (hf : Differentiable ℝ f) :
@@ -41,22 +68,23 @@ lemma deriv_neg [NormedAddCommGroup M] [NormedSpace ℝ M] (f : Time → M) :
   rw [deriv, fderiv_neg]
   rfl
 
+/-!
+
+## C. Derivative of constant functions
+
+-/
+
 @[simp]
 lemma deriv_const [NormedAddCommGroup M] [NormedSpace ℝ M] (m : M) :
     ∂ₜ (fun _ => m) t = 0 := by
   rw [deriv]
   simp
 
-@[fun_prop]
-lemma val_differentiable : Differentiable ℝ Time.val := by
-  change Differentiable ℝ toRealCLM
-  fun_prop
+/-!
 
-@[simp]
-lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
-  change (fderiv ℝ toRealCLM t 1) = 1
-  rw [ContinuousLinearMap.fderiv, toRealCLM]
-  simp
+## D. Smoothness properties of the derivative
+
+-/
 
 open MeasureTheory ContDiff InnerProductSpace Time
 
@@ -80,6 +108,12 @@ lemma deriv_contDiff_of_contDiff {M : Type}
   apply ContDiff.comp
   · fun_prop
   · fun_prop
+
+/-!
+
+## E. Derivatives of components
+
+-/
 
 lemma deriv_euclid { μ} {f : Time→ EuclideanSpace ℝ (Fin n)}
     (hf : Differentiable ℝ f) (t : Time) :

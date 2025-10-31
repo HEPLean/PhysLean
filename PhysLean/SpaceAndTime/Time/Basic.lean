@@ -319,4 +319,15 @@ lemma val_measurableEmbedding : MeasurableEmbedding Time.val where
 lemma val_measurePreserving : MeasurePreserving Time.val volume volume :=
   LinearIsometryEquiv.measurePreserving toRealLIE
 
+@[fun_prop]
+lemma val_differentiable : Differentiable ℝ Time.val := by
+  change Differentiable ℝ toRealCLM
+  fun_prop
+
+@[simp]
+lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
+  change (fderiv ℝ toRealCLM t 1) = 1
+  rw [ContinuousLinearMap.fderiv, toRealCLM]
+  simp
+
 end Time

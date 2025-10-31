@@ -186,7 +186,6 @@ lemma constantEB_vectorPotential_space_deriv {c : SpeedOfLight}
 
 ## E. The electric field
 
-
 -/
 
 @[simp]

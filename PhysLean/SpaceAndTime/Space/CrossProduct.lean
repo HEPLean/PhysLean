@@ -8,12 +8,40 @@ import Mathlib.LinearAlgebra.CrossProduct
 import PhysLean.SpaceAndTime.Time.Derivatives
 /-!
 
-# Cross product on 3D space
+# The cross product on Euclidean vectors in three dimensions
+
+## i. Overview
+
+In this module we define the cross product on `EuclideanSpace ℝ (Fin 3)`,
+and prove various properties about it related to time derivatives and inner products.
+
+## ii. Key results
+
+- `⨯ₑ₃` : The cross product on `EuclideanSpace ℝ (Fin 3)`.
+- `time_deriv_cross_commute` : Time derivatives move out of cross products.
+- `inner_cross_self` : Inner product of a vector with the cross product of another vector
+  and itself is zero.
+- `inner_self_cross` : Inner product of a vector with the cross product of itself
+  and another vector is zero.
+
+## iii. Table of contents
+
+- A. The notation for the cross product
+- B. Time derivatives move out of cross products
+- C. Inner product of vectors with cross products involving themselves
+
+## iv. References
 
 -/
 
 namespace Space
 open Time Matrix
+
+/-!
+
+## A. The notation for the cross product
+
+-/
 
 set_option quotPrecheck false in
 /-- Cross product in `EuclideanSpace ℝ (Fin 3)`. Uses `⨯` which is typed using `\X` or
@@ -21,16 +49,21 @@ set_option quotPrecheck false in
 infixl:70 " ⨯ₑ₃ " => fun a b => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
     (WithLp.equiv 2 (Fin 3 → ℝ) a ⨯₃ WithLp.equiv 2 (Fin 3 → ℝ) b)
 
+/-!
+
+## B. Time derivatives move out of cross products
+
+-/
+
 /-- Cross product and fderiv commute. -/
-lemma fderiv_cross_commute {u : Time} {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
+lemma fderiv_cross_commute {t : Time} {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
     (hf : Differentiable ℝ f) :
-    s ⨯ₑ₃ (fderiv ℝ (fun u => f u) u) 1
-    =
-    fderiv ℝ (fun u => s ⨯ₑ₃ (f u)) u 1 := by
-  have h (i j : Fin 3) : s i * (fderiv ℝ (fun u => f u) u) 1 j -
-      s j * (fderiv ℝ (fun u => f u) u) 1 i
+    s ⨯ₑ₃ (fderiv ℝ (fun t' => f t') t) 1
+    = fderiv ℝ (fun t' => s ⨯ₑ₃ (f t')) t 1 := by
+  have h (i j : Fin 3) : s i * (fderiv ℝ (fun u => f u) t) 1 j -
+      s j * (fderiv ℝ (fun u => f u) t) 1 i
       =
-      (fderiv ℝ (fun t => s i * f t j - s j * f t i) u) 1:= by
+      (fderiv ℝ (fun t => s i * f t j - s j * f t i) t) 1:= by
     rw [fderiv_fun_sub, fderiv_const_mul, fderiv_const_mul]
     rw [fderiv_pi]
     rfl
@@ -55,12 +88,16 @@ lemma fderiv_cross_commute {u : Time} {s : Space} {f : Time → EuclideanSpace �
 /-- Cross product and time derivative commute. -/
 lemma time_deriv_cross_commute {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
     (hf : Differentiable ℝ f) :
-    s ⨯ₑ₃ (∂ₜ (fun t => f t) t)
-    =
-    ∂ₜ (fun t => s ⨯ₑ₃ (f t)) t := by
+    s ⨯ₑ₃ (∂ₜ (fun t => f t) t) = ∂ₜ (fun t => s ⨯ₑ₃ (f t)) t := by
   repeat rw [Time.deriv]
   rw [fderiv_cross_commute]
   fun_prop
+
+/-!
+
+## C. Inner product of vectors with cross products involving themselves
+
+-/
 
 lemma inner_cross_self (v w : EuclideanSpace ℝ (Fin 3)) :
     inner ℝ v (w ⨯ₑ₃ v) = 0 := by

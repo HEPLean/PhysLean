@@ -6,8 +6,45 @@ Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 import PhysLean.SpaceAndTime.Space.Derivatives.Basic
 /-!
 
-# Gradient on Space
+# Gradient of functions and distributions on `Space d`
 
+## i. Overview
+
+This module defines and proves basic properties of the gradient operator
+on functions from `Space d` to `ℝ` and on distributions from `Space d` to `ℝ`.
+
+The gradient operator returns a vector field whose components are the partial derivatives
+of the input function with respect to each spatial coordinate.
+
+## ii. Key results
+
+- `grad` : The gradient operator on functions from `Space d` to `ℝ`.
+- `distGrad` : The gradient operator on distributions from `Space d` to `ℝ`.
+
+## iii. Table of contents
+
+- A. The gradient of functions on `Space d`
+  - A.1. Gradient of the zero function
+  - A.2. Gradient distributes over addition
+  - A.3. Gradient of a constant function
+  - A.4. Gradient distributes over scalar multiplication
+  - A.5. Gradient distributes over negation
+  - A.6. Expansion in terms of basis vectors
+  - A.7. Components of the gradient
+  - A.8. Inner product with a gradient
+  - A.9. Gradient is equal to `gradient` from Mathlib
+  - A.10. Value of gradient in the direction of the position vector
+  - A.11. Gradient of the norm squared function
+  - A.12. Gradient of the inner product function
+  - A.13. Integrability with bounded functions
+- B. Gradient of distributions
+  - B.1. The definition
+  - B.2. The gradient of inner products
+  - B.3. The gradient as a sum over basis vectors
+  - B.4. The underlying function of the gradient distribution
+  - B.5. The gradient applied to a Schwartz function
+
+## iv. References
 
 -/
 
@@ -25,7 +62,6 @@ noncomputable def grad {d} (f : Space d → ℝ) :
 
 @[inherit_doc grad]
 scoped[Space] notation "∇" => grad
-
 
 /-!
 
@@ -390,8 +426,6 @@ lemma integrable_isDistBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
 
 -/
 
-
-
 /-- The gradient of a distribution `(Space d) →d[ℝ] ℝ` as a distribution
   `(Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d))`. -/
 noncomputable def distGrad {d} :
@@ -418,7 +452,8 @@ lemma distGrad_inner_eq {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, �
     ContinuousLinearMap.coe_comp', LinearMap.coe_toContinuousLinearMap', LinearEquiv.coe_coe,
     LinearIsometryEquiv.coe_symm_toLinearEquiv, Function.comp_apply, toDual_symm_apply]
 
-lemma distGrad_eq_of_inner {d} (f : (Space d) →d[ℝ] ℝ) (g : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d))
+lemma distGrad_eq_of_inner {d} (f : (Space d) →d[ℝ] ℝ)
+    (g : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d))
     (h : ∀ η y, fderivD ℝ f η y = ⟪g η, y⟫_ℝ) :
     distGrad f = g := by
   ext1 η
@@ -431,7 +466,6 @@ lemma distGrad_eq_of_inner {d} (f : (Space d) →d[ℝ] ℝ) (g : (Space d) →d
 ### B.3. The gradient as a sum over basis vectors
 
 -/
-
 
 lemma distGrad_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, ℝ)) :
     distGrad f η = ∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • basis i := by
@@ -471,7 +505,6 @@ lemma distGrad_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d
 
 -/
 
-
 lemma distGrad_toFun_eq_distDeriv {d} (f : (Space d) →d[ℝ] ℝ) :
     (distGrad f).toFun = fun ε i => distDeriv i f ε := by
   ext ε i
@@ -487,7 +520,6 @@ lemma distGrad_toFun_eq_distDeriv {d} (f : (Space d) →d[ℝ] ℝ) :
     right
     simpa [basis_apply] using h
   · simp
-
 
 /-!
 

@@ -8,6 +8,31 @@ import PhysLean.SpaceAndTime.Space.Derivatives.Grad
 
 # Divergence on Space
 
+## i. Overview
+
+In this module we define the divergence operator on functions and
+distributions from `Space d` to `EuclideanSpace ℝ (Fin d)`, and prove various basic
+properties about it.
+
+## ii. Key results
+
+- `div` : The divergence operator on functions from `Space d` to `EuclideanSpace ℝ (Fin d)`.
+- `distDiv` : The divergence operator on distributions from `Space d` to `EuclideanSpace ℝ (Fin d)`.
+- `distDiv_ofFunction` : The divergence of a distribution from a bounded function.
+
+## iii. Table of contents
+
+- A. The divergence on functions
+  - A.1. The divergence on the zero function
+  - A.2. The divergence on a constant function
+  - A.3. The divergence distributes over addition
+  - A.4. The divergence distributes over scalar multiplication
+  - A.5. The divergence of a linear map is a linear map
+- B. Divergence of distributions
+  - B.1. Basic equalities
+  - B.2. Divergence on distributions from bounded functions
+
+## iv. References
 
 -/
 
@@ -33,7 +58,6 @@ noncomputable def div {d} (f : Space d → EuclideanSpace ℝ (Fin d)) :
 
 @[inherit_doc div]
 macro (name := divNotation) "∇" "⬝" f:term:100 : term => `(div $f)
-
 
 /-!
 
@@ -158,7 +182,7 @@ noncomputable def distDiv {d} :
 
 /-!
 
-### B.1. Basic equalities
+### B.1. Basic equalities
 
 -/
 
@@ -175,7 +199,7 @@ lemma distDiv_apply_eq_sum_distDeriv {d}
 
 /-!
 
-### B.2. Divergence on distributions from bounded functions
+### B.2. Divergence on distributions from bounded functions
 
 -/
 
@@ -221,6 +245,5 @@ lemma distDiv_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ 
     left
     rw [deriv_eq_fderiv_basis]
     rfl
-
 
 end Space

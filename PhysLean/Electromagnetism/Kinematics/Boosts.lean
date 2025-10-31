@@ -14,7 +14,6 @@ import PhysLean.SpaceAndTime.SpaceTime.Boosts
 We find the transformations of the electric and magnetic field matrix under
 boosts in the 'x' direction. We do this in full-generality for `d+1` space dimensions.
 
-
 ## ii. Key results
 
 - `electricField_apply_x_boost_zero` : The transformation of the x-component of the electric
@@ -50,7 +49,6 @@ open LorentzGroup
 /-!
 
 ## A. Boost of the electric field
-
 
 -/
 
@@ -143,7 +141,6 @@ lemma electricField_apply_x_boost_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
 ## B. Boost of the magnetic field
 
 -/
-
 
 /-!
 

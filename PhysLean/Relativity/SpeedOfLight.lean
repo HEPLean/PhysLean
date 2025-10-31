@@ -68,7 +68,6 @@ instance : One SpeedOfLight := ⟨1, by grind⟩
 @[simp]
 lemma val_one : (1 : SpeedOfLight).val = 1 := rfl
 
-
 /-!
 
 ## D. Positivity properties

@@ -329,7 +329,7 @@ noncomputable def electricField {d} :
 
 lemma electricField_fieldStrengthMatrix {d} {A : ElectromagneticPotentialD d} (i : Fin d) :
     toComponentsEuclidean A.electricField i =
-     distTimeSlice 1 (A.fieldStrengthMatrix (Sum.inr i, Sum.inl 0)) := by
+    distTimeSlice 1 (A.fieldStrengthMatrix (Sum.inr i, Sum.inl 0)) := by
   rw [electricField]
   simp [fieldStrengthMatrix]
   ext ε

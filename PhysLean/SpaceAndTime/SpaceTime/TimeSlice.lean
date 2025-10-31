@@ -85,7 +85,6 @@ lemma timeSliceLinearEquiv_symm_apply {d : ℕ} {M : Type} [AddCommGroup M] [Mod
 
 /-!
 
-
 ## B. Time slices of distributions
 
 -/
@@ -127,7 +126,7 @@ lemma distTimeSlice_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 lemma distTimeSlice_symm_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (c : SpeedOfLight) (f : (Time × (Space d)) →d[ℝ] M)
     (κ : 𝓢(SpaceTime d, ℝ)) : (distTimeSlice c).symm f κ =
-    f (compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c).symm κ):= by rfl
+    f (compCLMOfContinuousLinearEquiv ℝ (toTimeAndSpace c).symm κ) := by rfl
 
 /-!
 

@@ -8,6 +8,37 @@ import PhysLean.SpaceAndTime.Space.Derivatives.Laplacian
 
 # Curl on Space
 
+## i. Overview
+
+In this module we define the curl of functions and distributions on 3-dimensional
+space `Space 3`.
+
+We also prove some basic vector-identities involving of the curl operator.
+
+## ii. Key results
+
+- `curl` : The curl operator on functions from `Space 3` to `EuclideanSpace ℝ (Fin 3)`.
+- `distCurl` : The curl operator on distributions from `Space 3` to `EuclideanSpace ℝ (Fin 3)`.
+- `div_of_curl_eq_zero` : The divergence of the curl of a function is zero.
+- `distCurl_distGrad_eq_zero` : The curl of the gradient of a distribution is zero.
+
+## iii. Table of contents
+
+- A. The curl on functions
+  - A.1. The curl on the zero function
+  - A.2. The curl on a constant function
+  - A.3. The curl distributes over addition
+  - A.4. The curl distributes over scalar multiplication
+  - A.5. The curl of a linear map is a linear map
+  - A.6. Preliminary lemmas about second derivatives
+  - A.7. The div of a curl is zero
+  - A.8. The curl of a curl
+- B. The curl on distributions
+  - B.1. The components of the curl
+  - B.2. Basic equalities
+  - B.3. The curl of a grad is zero
+
+## iv. References
 
 -/
 
@@ -35,7 +66,6 @@ noncomputable def curl (f : Space → EuclideanSpace ℝ (Fin 3)) :
 
 @[inherit_doc curl]
 macro (name := curlNotation) "∇" "×" f:term:100 : term => `(curl $f)
-
 
 /-!
 

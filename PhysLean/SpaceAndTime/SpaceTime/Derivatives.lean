@@ -5,6 +5,39 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.Derivatives.Basic
 import PhysLean.SpaceAndTime.Time.Derivatives
+/-!
+
+# Derivatives on SpaceTime
+
+## i. Overview
+
+In this module we define and prove basic lemmas about derivatives of functions and
+distributions on `SpaceTime d`.
+
+## ii. Key results
+
+- `deriv` : The derivative of a function `SpaceTime d → M` along the `μ` coordinate.
+- `deriv_sum_inr` : The derivative along a spatial coordinate in terms of the
+  derivative on `Space d`.
+- `deriv_sum_inl` : The derivative along the temporal coordinate in terms of the
+  derivative on `Time`.
+- `distDeriv` : The derivative of a distribution on `SpaceTime d` along the `μ` coordinate.
+- `distDeriv_commute` : Derivatives of distributions on `SpaceTime d` commute.
+
+## iii. Table of contents
+
+- A. Derivatives of functions on `SpaceTime d`
+  - A.1. The definition of the derivative
+  - A.2. Basic equality lemmas
+  - A.3. Derivative of the zero function
+  - A.4. The derivative of a function composed with a Lorentz transformation
+  - A.5. Spacetime derivatives in terms of time and space derivatives
+- B. Derivatives of distributions
+  - B.1. Commutation of derivatives of distributions
+
+## iv. References
+
+-/
 noncomputable section
 
 namespace SpaceTime
@@ -17,13 +50,13 @@ open TensorSpecies
 
 /-!
 
-## D. Derivatives of functions on `SpaceTime d`
+## A. Derivatives of functions on `SpaceTime d`
 
 -/
 
 /-!
 
-### D.1. The definition of the derivative
+### A.1. The definition of the derivative
 
 -/
 
@@ -37,7 +70,7 @@ scoped notation "∂_" => deriv
 
 /-!
 
-### D.2. Basic equality lemmas
+### A.2. Basic equality lemmas
 
 -/
 
@@ -70,7 +103,7 @@ lemma deriv_coord {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) :
 
 /-!
 
-### D.3. Derivative of the zero function
+### A.3. Derivative of the zero function
 
 -/
 
@@ -84,7 +117,7 @@ attribute [-simp] Fintype.sum_sum_type
 
 /-!
 
-### D.4. The derivative of a function composed with a Lorentz transformation
+### A.4. The derivative of a function composed with a Lorentz transformation
 
 -/
 
@@ -106,7 +139,7 @@ lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace �
 
 /-!
 
-### D.5. Spacetime derivatives in terms of time and space derivatives
+### A.5. Spacetime derivatives in terms of time and space derivatives
 
 -/
 
@@ -195,6 +228,12 @@ lemma distDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (μ : Fin 1 ⊕ Fin d) (f : (SpaceTime d) →d[ℝ] M) (ε : 𝓢(SpaceTime d, ℝ)) :
     distDeriv μ f ε = fderivD ℝ f ε (Lorentz.Vector.basis μ) := by
   simp [distDeriv, Distribution.fderivD]
+
+/-!
+
+### B.1. Commutation of derivatives of distributions
+
+-/
 
 open ContDiff
 lemma distDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]

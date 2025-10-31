@@ -6,7 +6,6 @@ Authors: Afiq Hatta
 import PhysLean.QuantumMechanics.OneDimension.Operators.Parity
 import PhysLean.QuantumMechanics.OneDimension.Operators.Momentum
 import PhysLean.QuantumMechanics.OneDimension.Operators.Position
-import PhysLean.SpaceAndTime.Space.VectorIdentities
 import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.Mathematics.Trigonometry.Tanh
 /-!
