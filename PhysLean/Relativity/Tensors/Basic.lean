@@ -10,7 +10,7 @@ import Mathlib.Topology.Algebra.Module.ModuleTopology
 import Mathlib.Analysis.RCLike.Basic
 /-!
 
-# Products of tensors.
+# Tensors
 
 -/
 
@@ -411,7 +411,6 @@ lemma finrank_tensor_eq {n : ℕ} [StrongRankCondition k] (c : Fin n → C) :
   rw [(Finsupp.linearEquivFunOnFinite _ _ _).finrank_eq]
   rw [Module.finrank_pi]
   simp
-
 
 instance {k : Type} [Field k] {C G : Type} [Group G] (S : TensorSpecies k C G)
     {c : Fin n → C} : FiniteDimensional k (S.Tensor c) :=

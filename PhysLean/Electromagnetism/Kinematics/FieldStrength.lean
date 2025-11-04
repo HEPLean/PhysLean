@@ -336,8 +336,7 @@ lemma toFieldStrength_equivariant {d} (A : ElectromagneticPotential d) (Λ : Lor
       Λ • toFieldStrength A (Λ⁻¹ • x) := by
   rw [toFieldStrength, deriv_equivariant A Λ hf, ← actionT_contrMetric Λ, toFieldStrength]
   simp only [Tensorial.toTensor_smul, prodT_equivariant, contrT_equivariant, map_neg,
-    permT_equivariant, map_add, ← Tensorial.smul_toTensor_symm, Tensorial.smul_add,
-    Tensorial.smul_neg]
+    permT_equivariant, map_add, ← Tensorial.smul_toTensor_symm, smul_add, smul_neg]
 
 lemma fieldStrengthMatrix_equivariant {d} (A : ElectromagneticPotential d)
     (Λ : LorentzGroup d) (hf : Differentiable ℝ A) (x : SpaceTime d)

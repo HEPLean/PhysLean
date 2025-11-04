@@ -274,15 +274,15 @@ We now show how the Lorentz group action on distributions interacts with derivat
 
 variable
     {c : Fin n → realLorentzTensor.Color} {M : Type} [NormedAddCommGroup M]
-      [NormedSpace ℝ M]  [Tensorial (realLorentzTensor d) c M] [T2Space M]
+      [NormedSpace ℝ M] [Tensorial (realLorentzTensor d) c M] [T2Space M]
 
 lemma _root_.SchwartzMap.sum_apply {α : Type} [NormedAddCommGroup α]
-   [NormedSpace ℝ α]
+    [NormedSpace ℝ α]
     {ι : Type} [Fintype ι]
     (f : ι → 𝓢(α, ℝ)) (x : α) :
     (∑ i, f i) x = ∑ i, f i x := by
   let P (ι : Type) [Fintype ι] := ∀ (f : ι → 𝓢(α, ℝ)),
-     (∑ i, f i) x = ∑ i, f i x
+    (∑ i, f i) x = ∑ i, f i x
   revert f
   change P ι
   apply Fintype.induction_empty_option
@@ -297,11 +297,11 @@ lemma distDeriv_comp_lorentz_action {μ : Fin 1 ⊕ Fin d} (Λ : LorentzGroup d)
     (f : (SpaceTime d) →d[ℝ] M) :
     distDeriv μ (Λ • f) = ∑ ν, Λ⁻¹.1 ν μ • (Λ • distDeriv ν f) := by
   symm
-  trans (∑ ν,  Λ • Λ⁻¹.1 ν μ • (distDeriv ν) f)
+  trans (∑ ν, Λ • Λ⁻¹.1 ν μ • (distDeriv ν) f)
   · congr
     funext i
     rw [SMulCommClass.smul_comm]
-  trans Λ • (∑ ν,  Λ⁻¹.1 ν μ • (distDeriv ν) f)
+  trans Λ • (∑ ν, Λ⁻¹.1 ν μ • (distDeriv ν) f)
   · exact Eq.symm Finset.smul_sum
   ext η
   rw [lorentzGroup_smul_dist_apply, distDeriv_apply, fderivD_apply,
@@ -309,11 +309,11 @@ lemma distDeriv_comp_lorentz_action {μ : Fin 1 ⊕ Fin d} (Λ : LorentzGroup d)
   rw [← smul_neg]
   congr
   rw [ContinuousLinearMap.sum_apply]
-  simp
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply]
   conv_lhs =>
     enter [2, x]
     rw [distDeriv_apply, fderivD_apply]
-    simp
+    simp only [smul_neg]
     rw [← map_smul]
   rw [Finset.sum_neg_distrib]
   congr
@@ -324,14 +324,14 @@ lemma distDeriv_comp_lorentz_action {μ : Fin 1 ⊕ Fin d} (Λ : LorentzGroup d)
   rw [SchwartzMap.sum_apply]
   symm
   simp [schwartzAction_apply]
-  change ∂_ μ η (Λ • x)  = ∑ ν, Λ⁻¹.1 ν μ • ∂_ ν (schwartzAction Λ⁻¹ η) (x)
+  change ∂_ μ η (Λ • x) = ∑ ν, Λ⁻¹.1 ν μ • ∂_ ν (schwartzAction Λ⁻¹ η) (x)
   obtain ⟨η, rfl⟩ := schwartzAction_surjective Λ η
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul]
   rw [schwartzAction_mul_apply]
-  simp
+  simp only [inv_mul_cancel, map_one, ContinuousLinearMap.one_apply]
   change ∂_ μ (fun x => η (Λ⁻¹ • x)) (Λ • x) = _
   rw [deriv_comp_lorentz_action]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, inv_smul_smul, smul_eq_mul]
   exact SchwartzMap.differentiable η
 
 end SpaceTime

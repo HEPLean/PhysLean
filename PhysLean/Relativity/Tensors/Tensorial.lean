@@ -106,7 +106,6 @@ lemma self_toTensor_apply {n : ℕ} (S : TensorSpecies k C G) (c : Fin n → C) 
 def numIndices (t : M) [Tensorial S c M] : ℕ :=
   TensorSpecies.numIndices (toTensor t)
 
-
 /-!
 
 ## B. The action of the group on a module with a tensorial instance
@@ -164,7 +163,6 @@ noncomputable instance (priority := high) distribMulAction [Tensorial S c M] :
     apply toTensor.injective
     simp only [toTensor_smul, map_zero, Tensor.actionT_zero]
 
-
 /-!
 
 ### B.3. The action as a linear map
@@ -190,7 +188,7 @@ lemma smulLinearMap_apply {g : G} [Tensorial S c M] (m : M) :
 
 -/
 
-instance  [Tensorial S c M] : SMulCommClass k G M where
+instance [Tensorial S c M] : SMulCommClass k G M where
   smul_comm c g m := by
     apply toTensor.injective
     simp [toTensor_smul]
@@ -242,7 +240,7 @@ lemma smul_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
     [Tensorial S c2 M₂] (g : G) (m : M) (m2 : M₂) :
     g • (m ⊗ₜ[k] m2) = (g • m) ⊗ₜ[k] (g • m2) := by
   apply toTensor.injective
-  simp  [toTensor_smul]
+  simp [toTensor_smul]
   rw [toTensor_tprod, toTensor_tprod]
   rw [← Tensor.prodT_equivariant, toTensor_smul, toTensor_smul]
 
@@ -270,8 +268,6 @@ lemma basis_map_prod {n2 : ℕ} {c2 : Fin n2 → C} {M₂ : Type}
   simp only [LinearEquiv.apply_symm_apply]
   rfl
 
-
-
 /-!
 
 ## E. Continuous properties
@@ -284,9 +280,22 @@ variable {k : Type} [RCLike k] {C G : Type} [Group G] (S : TensorSpecies k C G)
     {c : Fin n → C} {M : Type} [AddCommGroup M] [Module k M]
     [TopologicalSpace M]
 
+/-!
+
+### E.1. Finite dimensionality
+
+-/
 instance [Tensorial S c M] : FiniteDimensional k M := LinearEquiv.finiteDimensional
   (Tensorial.toTensor (M := M)).symm
 
+/-!
+
+### E.2. The map to tensors as a continuous linear equivalence
+
+-/
+
+/-- The map from a type carrying an Tensorial instance to tensors, as a
+  continuous linear map. -/
 def toTensorCLM [IsTopologicalAddGroup M]
     [ContinuousSMul k M] [Tensorial S c M] [T2Space M] : M ≃L[k] (S.Tensor c) where
   toLinearMap := (Tensorial.toTensor (M := M))
@@ -300,7 +309,14 @@ def toTensorCLM [IsTopologicalAddGroup M]
     exact ContinuousLinearMap.continuous e
   continuous_invFun := by apply IsModuleTopology.continuous_of_linearMap
 
+/-!
 
+### E.3. The Lorentz action as a continuous linear equivalence
+
+-/
+
+/-- The Lorentz action on types carrying a tensorial instance as a continuous linear
+  map. -/
 noncomputable def actionCLM (g : G) [IsTopologicalAddGroup M]
     [ContinuousSMul k M] [Tensorial S c M] [T2Space M] : M →L[k] M :=
   LinearMap.toContinuousLinearMap (smulLinearMap g)

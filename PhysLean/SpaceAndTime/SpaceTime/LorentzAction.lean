@@ -56,7 +56,7 @@ def schwartzAction {d} : LorentzGroup d →* 𝓢(SpaceTime d, ℝ) →L[ℝ] �
   toFun Λ := SchwartzMap.compCLM (𝕜 := ℝ)
     (Lorentz.Vector.actionCLM Λ⁻¹).hasTemperateGrowth <| by
       use 1, ‖Lorentz.Vector.actionCLM Λ‖
-      simp
+      simp only [pow_one]
       intro x
       obtain ⟨x, rfl⟩ := Lorentz.Vector.actionCLM_surjective Λ x
       apply (ContinuousLinearMap.le_opNorm (Lorentz.Vector.actionCLM Λ) x).trans
