@@ -6,6 +6,7 @@ Authors: Matteo Cipollina, Joseph Tooby-Smith
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import PhysLean.Relativity.Tensors.Elab
+import Mathlib.Analysis.Distribution.SchwartzSpace
 /-!
 
 # Lorentz Vectors
@@ -372,6 +373,17 @@ def actionCLM {d : ℕ} (Λ : LorentzGroup d) :
 
 lemma actionCLM_apply {d : ℕ} (Λ : LorentzGroup d) (p : Vector d) :
     actionCLM Λ p = Λ • p := rfl
+
+lemma actionCLM_injective {d : ℕ} (Λ : LorentzGroup d) :
+    Function.Injective (actionCLM Λ) := by
+  intro x1 x2
+  simp [actionCLM_apply]
+
+lemma actionCLM_surjective {d : ℕ} (Λ : LorentzGroup d) :
+    Function.Surjective (actionCLM Λ) := by
+  intro x1
+  use (actionCLM Λ⁻¹) x1
+  simp [actionCLM_apply]
 
 lemma smul_basis {d : ℕ} (Λ : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
     Λ • basis μ = ∑ ν, Λ.1 ν μ • basis ν := by
