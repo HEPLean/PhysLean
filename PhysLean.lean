@@ -339,6 +339,7 @@ import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.SpaceAndTime.SpaceTime.Boosts
 import PhysLean.SpaceAndTime.SpaceTime.Derivatives
+import PhysLean.SpaceAndTime.SpaceTime.LorentzAction
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.SpaceAndTime.Time.Basic
 import PhysLean.SpaceAndTime.Time.Derivatives
