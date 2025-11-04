@@ -38,6 +38,7 @@ is given by a function proportional to the absolute value of the distance from t
   - B.2. The vector potential is zero
   - B.3. The scalar potential
 - C. The electric field
+  - C.1. Time derivative of the electric field is zero
 - D. Maxwell's equations
   - D.1. Gauss' law
   - D.2. The variational gradient of the Lagrangian is zero

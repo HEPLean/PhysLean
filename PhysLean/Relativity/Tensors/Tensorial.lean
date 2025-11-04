@@ -36,11 +36,16 @@ We define the class `Tensorial` here, and provide an API around its use.
   - B.1. Relation between the action and the equivalence to tensors
   - B.2. Linear properties of the action
   - B.3. The action as a linear map
+  - B.4. The SMulCommClass property
 - C. Properties of the basis
 - D. Products of tensorial instances
   - D.1. The equivalence to tensors on products
   - D.2. The group action on products
   - D.3. The basis on products
+- E. Continuous properties
+  - E.1. Finite dimensionality
+  - E.2. The map to tensors as a continuous linear equivalence
+  - E.3. The Lorentz action as a continuous linear equivalence
 
 ## iv. References
 

@@ -35,6 +35,7 @@ distributions on `SpaceTime d`.
   - A.5. Spacetime derivatives in terms of time and space derivatives
 - B. Derivatives of distributions
   - B.1. Commutation of derivatives of distributions
+  - B.2. Lorentz group action on derivatives of distributions
 
 ## iv. References
 
@@ -266,7 +267,7 @@ lemma distDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 /-!
 
-## B.2. Lorentz group action on derivatives of distributions
+### B.2. Lorentz group action on derivatives of distributions
 
 We now show how the Lorentz group action on distributions interacts with derivatives.
 
