@@ -318,36 +318,6 @@ lemma grad_inner_left {d : ℕ} (x : Space d) :
     ∇ (fun y : Space d => ⟪y, x⟫_ℝ) = fun _ => x := by
   ext z i
   simp [Space.grad]
-  rw [deriv]
-  erw [fderiv_fun_sum]
-  · simp
-    rw [Finset.sum_eq_single i]
-    rw [fderiv_const_mul]
-    simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
-    trans x i * fderiv ℝ (Space.coordCLM i) z (EuclideanSpace.single i 1)
-    · congr
-      funext x
-      simp [Space.coordCLM, Space.coord_apply]
-    simp only [ContinuousLinearMap.fderiv]
-    simp [Space.coordCLM, Space.coord_apply]
-    · fun_prop
-    · intro b hb _
-      rw [fderiv_const_mul]
-      simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul, mul_eq_zero]
-      right
-      trans fderiv ℝ (Space.coordCLM b) z (EuclideanSpace.single i 1)
-      · congr
-        funext x
-        simp [Space.coordCLM, Space.coord_apply]
-      simp only [ContinuousLinearMap.fderiv]
-      simp [Space.coordCLM, Space.coord_apply]
-      (expose_names; exact h)
-      fun_prop
-    · simp
-  · intro i _
-    apply DifferentiableAt.inner ℝ ?_ ?_
-    fun_prop
-    fun_prop
 
 lemma grad_inner_right {d : ℕ} (x : Space d) :
     ∇ (fun y : Space d => ⟪x, y⟫_ℝ) = fun _ => x := by

@@ -235,6 +235,14 @@ lemma electricField_differentiable_space {A : ElectromagneticPotential d} {c : S
   · exact electricField_differentiable hA
   · fun_prop
 
+lemma electricField_apply_differentiable {A : ElectromagneticPotential d}
+    {c : SpeedOfLight}
+    (hA : ContDiff ℝ 2 A) :
+    Differentiable ℝ (fun (tx : Time × Space d) => A.electricField c tx.1 tx.2 i) := by
+  change Differentiable ℝ (EuclideanSpace.proj i ∘ ↿(A.electricField c))
+  refine Differentiable.comp ?_ ?_
+  · exact ContinuousLinearMap.differentiable (𝕜 := ℝ) (EuclideanSpace.proj i)
+  · exact electricField_differentiable hA
 lemma electricField_apply_differentiable_space {A : ElectromagneticPotential d}
     {c : SpeedOfLight}
     (hA : ContDiff ℝ 2 A) (t : Time) (i : Fin d) :
@@ -243,6 +251,15 @@ lemma electricField_apply_differentiable_space {A : ElectromagneticPotential d}
   refine Differentiable.comp ?_ ?_
   · exact ContinuousLinearMap.differentiable (𝕜 := ℝ) (EuclideanSpace.proj i)
   · exact electricField_differentiable_space hA t
+
+lemma electricField_apply_differentiable_time {A : ElectromagneticPotential d}
+    {c : SpeedOfLight}
+    (hA : ContDiff ℝ 2 A) (x : Space d) (i : Fin d) :
+    Differentiable ℝ (fun t => A.electricField c t x i) := by
+  change Differentiable ℝ (EuclideanSpace.proj i ∘ (A.electricField c · x))
+  refine Differentiable.comp ?_ ?_
+  · exact ContinuousLinearMap.differentiable (𝕜 := ℝ) (EuclideanSpace.proj i)
+  · exact electricField_differentiable_time hA x
 
 /-!
 

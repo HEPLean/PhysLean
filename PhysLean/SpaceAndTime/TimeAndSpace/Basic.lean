@@ -235,6 +235,105 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
 
 /-!
 
+## A.5. Constant of time deriative and space derivatives zero
+
+-/
+
+lemma space_fun_of_time_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {f : Time → Space d → M} (hf : Differentiable ℝ ↿f)
+    (h : ∀ t x, ∂ₜ (f · x) t = 0) :
+    ∃ (g : Space d → M), ∀ t x, f t x = g x := by
+  use fun x => f 0 x
+  intro t x
+  simp
+  change (fun t' => f t' x) t = (fun t' => f t' x) 0
+  apply is_const_of_fderiv_eq_zero (f := fun t' => f t' x) (𝕜 := ℝ)
+  · fun_prop
+  intro t
+  ext r
+  simp
+  trans r.val • (fderiv ℝ (fun t' => f t' x) t) 1
+  · rw [← map_smul]
+    congr
+    ext
+    simp
+  simp
+  right
+  rw [← h t x]
+  rfl
+
+lemma time_fun_of_space_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {f : Time → Space d → M} (hf : Differentiable ℝ ↿f)
+    (h : ∀ t x i, Space.deriv i (f t) x = 0) :
+    ∃ (g : Time → M), ∀ t x, f t x = g t := by
+  use fun t => f t 0
+  intro t x
+  simp
+  change (fun x' => f t x') x = (fun x' => f t x') 0
+  apply is_const_of_fderiv_eq_zero (f := fun x' => f t x') (𝕜 := ℝ)
+  · fun_prop
+  intro x
+  have h1 : (fderiv ℝ (fun x' => f t x') x).toLinearMap = 0 := by
+    apply (Space.basis (d := d)).toBasis.ext
+    intro i
+    simp
+    rw [← h t x i]
+    rw [Space.deriv_eq_fderiv_basis]
+  ext r
+  change (fderiv ℝ (fun x' => f t x') x).toLinearMap r = 0
+  rw [h1]
+  simp
+
+lemma const_of_time_deriv_space_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {f : Time → Space d → M} (hf : Differentiable ℝ ↿f)
+    (h₁ : ∀ t x, ∂ₜ (f · x) t = 0)
+    (h₂ : ∀ t x i, Space.deriv i (f t) x = 0) :
+    ∃ (c : M), ∀ t x, f t x = c := by
+  obtain ⟨g, hg⟩ := space_fun_of_time_deriv_eq_zero hf h₁
+  obtain ⟨k, hk⟩ := time_fun_of_space_deriv_eq_zero hf h₂
+  use g 0
+  intro t x
+  have h1 : ∀ t x, g x = k t := by
+    intro t x
+    rw [← hg t x]
+    rw [hk t x]
+  rw [hk]
+  rw [← h1 t 0]
+
+
+/-!
+
+## A.6. Equal up to a constant of time and space derivatives equal
+
+-/
+
+lemma equal_up_to_const_of_deriv_eq {d} {M} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {f g : Time → Space d → M} (hf : Differentiable ℝ ↿f) (hg : Differentiable ℝ ↿g)
+    (h₁ : ∀ t x, ∂ₜ (f · x) t = ∂ₜ (g · x) t)
+    (h₂ : ∀ t x i, Space.deriv i (f t) x = Space.deriv i (g t) x) :
+    ∃ (c : M), ∀ t x, f t x = g t x + c := by
+  suffices h : ∃ c', ∀ t x, f t x - g t x = c'  by
+    obtain ⟨c', hc'⟩ := h
+    use c'
+    intro t x
+    rw [← hc' t x]
+    simp
+  apply const_of_time_deriv_space_deriv_eq_zero
+  · exact Differentiable.fun_sub hf hg
+  · intro t x
+    rw [Time.deriv_eq]
+    rw [fderiv_fun_sub]
+    simp [← Time.deriv_eq, h₁]
+    · fun_prop
+    · fun_prop
+  · intro t x i
+    rw [Space.deriv_eq_fderiv_basis]
+    rw [fderiv_fun_sub]
+    simp [← Space.deriv_eq_fderiv_basis, h₂]
+    · fun_prop
+    · fun_prop
+/-!
+
 ## B. Derivatives of distributions on Time × Space d
 
 -/

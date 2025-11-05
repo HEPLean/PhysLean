@@ -38,7 +38,6 @@ import PhysLean.Electromagnetism.PointParticle.ThreeDimension
 import PhysLean.Electromagnetism.Vacuum.Constant
 import PhysLean.Electromagnetism.Vacuum.Homogeneous
 import PhysLean.Electromagnetism.Vacuum.OneDimension
-import PhysLean.Electromagnetism.Vacuum.Wave
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.Calculus.Divergence
 import PhysLean.Mathematics.DataStructures.FourTree.Basic
