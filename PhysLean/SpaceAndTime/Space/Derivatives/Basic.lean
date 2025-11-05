@@ -39,9 +39,10 @@ in the standard directions.
     - A.9.1. Differentiability of the norm squared function
     - A.9.2. Derivative of the norm squared function
   - A.10. Derivative of the inner product
-    - A.11.1. Differentiability of the inner product function
-    - A.11.2. Derivative of the inner product function
-  - A.12. Differentiability of derivatives
+    - A.10.1. Differentiability of the inner product function
+    - A.10.2. Derivative of the inner product function
+    - A.10.3. Derivative of the inner product on one side
+  - A.11. Differentiability of derivatives
 - B. Derivatives of distributions on `Space d`
   - B.1. The definition
   - B.2. Basic equality
@@ -323,7 +324,7 @@ lemma deriv_eq_inner_self (x : Space d) (i : Fin d) :
 
 /-!
 
-### A.10.3. Derivative of the inner product on one side
+#### A.10.3. Derivative of the inner product on one side
 
 -/
 

@@ -35,6 +35,8 @@ We put these results in the namespace `Space` by convention.
   - A.2. Commuting time and space derivatives
   - A.3. Differentiablity conditions
   - A.4. Time derivative commute with curl
+  - A.5. Constant of time deriative and space derivatives zero
+  - A.6. Equal up to a constant of time and space derivatives equal
 - B. Derivatives of distributions on Time × Space d
   - B.1. Time derivatives
   - B.2. Space derivatives
@@ -235,7 +237,7 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
 
 /-!
 
-## A.5. Constant of time deriative and space derivatives zero
+### A.5. Constant of time deriative and space derivatives zero
 
 -/
 
@@ -302,7 +304,7 @@ lemma const_of_time_deriv_space_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [No
 
 /-!
 
-## A.6. Equal up to a constant of time and space derivatives equal
+### A.6. Equal up to a constant of time and space derivatives equal
 
 -/
 

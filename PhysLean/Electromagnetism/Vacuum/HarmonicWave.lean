@@ -25,7 +25,26 @@ form of a matrix rather than a vector.
 - `harmonicWaveX_isPlaneWave` : The harmonic wave is a plane wave.
 - `harmonicWaveX_polarization_ellipse` : The polarization ellipse equation for the harmonic wave.
 
-## iii. Table of Contents
+## iii. Table of contents
+
+- A. The electromagnetic potential for a harmonic wave
+  - A.1. Differentiability of the electromagnetic potential
+  - A.2. Smoothness of the electromagnetic potential
+- B. The scalar potential
+- C. The vector potential
+  - C.1. Components of the vector potential
+  - C.2. Space derivatives of the vector potential
+- D. The electric field
+  - D.1. Components of the electric field
+  - D.2. Spatial derivatives of the electric field
+  - D.3. Time derivatives of the electric field
+  - D.4. Divergence of the electric field
+- E. The magnetic field matrix for a harmonic wave
+  - E.1. Components of the magnetic field matrix
+  - E.2. Space derivatives of the magnetic field matrix
+- F. Maxwell's equations for a harmonic wave
+- G. The harmonic wave is a plane wave
+- H. Polarization ellipse of the harmonic wave
 
 ## iv. References
 
@@ -307,7 +326,7 @@ lemma harmonicWaveX_electricField_succ_time_deriv {d} (𝓕 : FreeSpace) (k : �
 
 /-!
 
-### D.3. Divergence of the electric field
+### D.4. Divergence of the electric field
 
 -/
 
@@ -470,7 +489,7 @@ lemma harmonicWaveX_magneticFieldMatrix_zero_succ_space_deriv_zero {d} (𝓕 : F
 
 /-!
 
-## F. Maxwell's equations for a harmonic wave
+## F. Maxwell's equations for a harmonic wave
 
 -/
 

@@ -22,6 +22,16 @@ we define the induced action on Schwartz functions and distributions.
 
 ## iii. Table of contents
 
+- A. Lorentz group action on Schwartz functions
+  - A.1. The definition of the action
+  - A.2. Basic properties of the action
+  - A.3. Injectivity of the action
+  - A.4. Surjectivity of the action
+- B. Lorentz group action on distributions
+  - B.1. The SMul instance
+  - B.2. The DistribMulAction instance
+  - B.3. The SMulCommClass instance
+
 ## iv. References
 
 -/
@@ -124,7 +134,7 @@ section Distribution
 
 /-!
 
-## B.1. The SMul instance
+### B.1. The SMul instance
 
 -/
 variable

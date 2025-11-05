@@ -11,42 +11,41 @@ import PhysLean.Electromagnetism.Dynamics.IsExtrema
 
 ## i. Overview
 
-The first part of this module shows that the electric and magnetic fields
-of an electromagnetic field in a homogeneous isotropic medium
-satisfy the wave equation.
-
-The second part shows orthogonality properties of plane waves.
+In this module we define a proposition `IsPlaneWave` on electromagnetic potentials
+which is true if the potential corresponds to a plane wave.
+From this we derive various properties of plane waves including
+the orthogonality of the electric field, magnetic field and direction of propagation,
+in general dimensions.
 
 ## ii. Key results
 
-- `waveEquation_electricField_of_freeMaxwellEquations` : The electric field of an
-  EM field in free space satisfies the wave equation.
-- `waveEquation_magneticField_of_freeMaxwellEquations` : The magnetic field of an
-  EM field in free space satisfies the wave equation.
-- `orthonormal_triad_of_electromagneticplaneWave` : The electric field, magnetic field and
-  direction of propagation of an electromagnetic plane wave form an orthonormal triad,
-  up to constant fields.
+- `IsPlaneWave` : The proposition defining plane waves.
+- `IsPlaneWave.electricFunction` : The electric function corresponding to a plane wave.
+- `IsPlaneWave.magneticFunction` : The magnetic function corresponding to a plane wave.
+- `IsPlaneWave.magneticFieldMatrix_eq_propogator_cross_electricField` :
+    The magnetic field expressed in terms of the electric field and direction of propagation.
+- `IsPlaneWave.electricField_eq_propogator_cross_magneticFieldMatrix` :
+    The electric field expressed in terms of the magnetic field and direction of propagation.
 
 ## iii. Table of contents
 
-- A. The wave equation from Maxwell's equations
-  - A.1. The electric field of an EM field in free space satisfies the wave equation
-  - A.2. The magnetic field of an EM field in free space satisfies the wave equation
-- B. Orthogonality properties of plane waves
-  - B.1. Definition of the electric and magnetic plane waves
-  - B.2. Up to a time-dependent constant, the E field is transverse to the direction of propagation
-  - B.3. Up to a time-dependent constant, the B field is transverse to the direction of propagation
-  - B.4. E proportional to cross of direction of propagation & B, up to a constant
-    - B.4.1. Time derivative of E-field proportional to propagation cross time derivative of B-field
-    - B.4.2. Proportional up to a space-dependent constant
-    - B.4.3. Proportional up to a constant
-  - B.5. B proportional to cross of direction of propagation & B, up to a constant
-    - B.5.1. Time derivative of B-field proportional to propagation cross time derivative of E-field
-    - B.5.2. Proportional up to a space-dependent constant
-    - B.5.3. Proportional up to a constant
-  - B.6. E-field orthogonal to direction of propagation up to a constant
-  - B.7. B-field orthogonal to direction of propagation up to a constant
-  - B.8. E, B and direction of propagation form an orthonormal triad up to constants
+- A. The property of being a plane wave
+  - A.1. The electric and magnetic functions from a plane wave
+    - A.1.1. Electric function and magnetic function in terms of E and B fields
+    - A.1.2. Uniquness of the electric function
+    - A.1.3. Uniquness of the magnetic function
+  - A.2. Differentiability conditions
+  - A.3. Time derivative of electric and magnetic fields of a plane wave
+  - A.4. Space derivative of electric and magnetic fields of a plane wave
+  - A.5. Space derivative in terms of time derivative
+- B. The magnetic field in terms of the electric field
+  - B.1. Time derivative of the magnetic field in terms of electric field
+  - B.2. Space derivative of the magnetic field in terms of electric field
+  - B.3. Magnetic field equal propogator cross electric field up to constant
+- C. The electric field in terms of the magnetic field
+  - C.1. The time derivative of the electric field in terms of magnetic field
+  - C.2. The space derivative of the electric field in terms of magnetic field
+  - C.3. Electric field equal propogator cross magnetic field up to constant
 
 ## iv. References
 
@@ -73,7 +72,7 @@ def IsPlaneWave {d : ℕ} (𝓕 : FreeSpace)
   (∃ E₀, A.electricField 𝓕.c = planeWave E₀ 𝓕.c s) ∧
   (∃ (B₀ : ℝ → Fin d × Fin d → ℝ), ∀ t x, A.magneticFieldMatrix 𝓕.c t x =
     B₀ (⟪x, s.unit⟫_ℝ - 𝓕.c * t))
-
+namespace IsPlaneWave
 /-!
 
 ### A.1. The electric and magnetic functions from a plane wave
@@ -81,12 +80,12 @@ def IsPlaneWave {d : ℕ} (𝓕 : FreeSpace)
 
 /-- The corresponding electric field function from `ℝ` to `EuclideanSpace ℝ (Fin d)`
   of a plane wave. -/
-noncomputable def IsPlaneWave.electricFunction {d : ℕ} {𝓕 : FreeSpace}
+noncomputable def electricFunction {d : ℕ} {𝓕 : FreeSpace}
     {A : ElectromagneticPotential d} {s : Direction d}
     (hA : IsPlaneWave 𝓕 A s) : ℝ → EuclideanSpace ℝ (Fin d) :=
   Classical.choose hA.1
 
-lemma IsPlaneWave.electricField_eq_electricFunction {d : ℕ} {𝓕 : FreeSpace}
+lemma electricField_eq_electricFunction {d : ℕ} {𝓕 : FreeSpace}
     {A : ElectromagneticPotential d} {s : Direction d}
     (P : IsPlaneWave 𝓕 A s) (t : Time) (x : Space d) :
     A.electricField 𝓕.c t x =
@@ -96,12 +95,12 @@ lemma IsPlaneWave.electricField_eq_electricFunction {d : ℕ} {𝓕 : FreeSpace}
 
 /-- The corresponding magnetic field function from `ℝ` to
   `Fin d × Fin d → ℝ` of a plane wave. -/
-noncomputable def IsPlaneWave.magneticFunction {d : ℕ} {𝓕 : FreeSpace}
+noncomputable def magneticFunction {d : ℕ} {𝓕 : FreeSpace}
     {A : ElectromagneticPotential d} {s : Direction d}
     (hA : IsPlaneWave 𝓕 A s) : ℝ → Fin d × Fin d → ℝ :=
   Classical.choose hA.2
 
-lemma IsPlaneWave.magneticFieldMatrix_eq_magneticFunction {d : ℕ}
+lemma magneticFieldMatrix_eq_magneticFunction {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d} {s : Direction d}
     (P : IsPlaneWave 𝓕 A s) (t : Time) (x : Space d) :
     A.magneticFieldMatrix 𝓕.c t x =
@@ -111,11 +110,11 @@ lemma IsPlaneWave.magneticFieldMatrix_eq_magneticFunction {d : ℕ}
 
 /-!
 
-#### A.1.2. Electric function and magnetic function in terms of E and B fields
+#### A.1.1. Electric function and magnetic function in terms of E and B fields
 
 -/
 
-lemma IsPlaneWave.electricFunction_eq_electricField {d : ℕ}
+lemma electricFunction_eq_electricField {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) :
     P.electricFunction = fun u =>
@@ -126,7 +125,7 @@ lemma IsPlaneWave.electricFunction_eq_electricField {d : ℕ}
   simp only [inner_zero_left, zero_sub]
   field_simp
 
-lemma IsPlaneWave.magneticFunction_eq_magneticFieldMatrix {d : ℕ}
+lemma magneticFunction_eq_magneticFieldMatrix {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) :
     P.magneticFunction = fun u =>
@@ -139,11 +138,11 @@ lemma IsPlaneWave.magneticFunction_eq_magneticFieldMatrix {d : ℕ}
 
 /-!
 
-#### A.1.1. Uniquness of the electric function
+#### A.1.2. Uniquness of the electric function
 
 -/
 
-lemma IsPlaneWave.electricFunction_unique {d : ℕ} {𝓕 : FreeSpace}
+lemma electricFunction_unique {d : ℕ} {𝓕 : FreeSpace}
     {A : ElectromagneticPotential d} {s : Direction d}
     (P : IsPlaneWave 𝓕 A s) (E1 : ℝ → EuclideanSpace ℝ (Fin d))
     (hE₁ : A.electricField 𝓕.c = planeWave E1 𝓕.c s) :
@@ -157,11 +156,11 @@ lemma IsPlaneWave.electricFunction_unique {d : ℕ} {𝓕 : FreeSpace}
 
 /-!
 
-#### A.1.2. Uniquness of the magnetic function
+#### A.1.3. Uniquness of the magnetic function
 
 -/
 
-lemma IsPlaneWave.magneticFunction_unique {d : ℕ} {𝓕 : FreeSpace}
+lemma magneticFunction_unique {d : ℕ} {𝓕 : FreeSpace}
     {A : ElectromagneticPotential d} {s : Direction d}
     (P : IsPlaneWave 𝓕 A s)
     (B1 : ℝ → Fin d × Fin d → ℝ)
@@ -180,7 +179,7 @@ lemma IsPlaneWave.magneticFunction_unique {d : ℕ} {𝓕 : FreeSpace}
 
 -/
 
-lemma IsPlaneWave.electricFunction_differentiable {d : ℕ}
+lemma electricFunction_differentiable {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) :
     Differentiable ℝ P.electricFunction := by
@@ -195,7 +194,7 @@ lemma IsPlaneWave.electricFunction_differentiable {d : ℕ}
       · fun_prop
     · fun_prop
 
-lemma IsPlaneWave.magneticFunction_differentiable {d : ℕ}
+lemma magneticFunction_differentiable {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A)
     (ij : Fin d × Fin d) :
@@ -219,7 +218,7 @@ lemma IsPlaneWave.magneticFunction_differentiable {d : ℕ}
 
 -/
 
-lemma IsPlaneWave.electricField_time_deriv {d : ℕ}
+lemma electricField_time_deriv {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (t : Time)
     (x : Space d) :
@@ -244,7 +243,7 @@ lemma IsPlaneWave.electricField_time_deriv {d : ℕ}
     exact IsPlaneWave.electricFunction_differentiable P hA
   · fun_prop
 
-lemma IsPlaneWave.magneticFieldMatrix_time_deriv {d : ℕ}
+lemma magneticFieldMatrix_time_deriv {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (t : Time)
     (x : Space d) (i j : Fin d) :
@@ -278,7 +277,7 @@ lemma IsPlaneWave.magneticFieldMatrix_time_deriv {d : ℕ}
 
 -/
 
-lemma IsPlaneWave.electricField_space_deriv {d : ℕ}
+lemma electricField_space_deriv {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (t : Time)
     (x : Space d) (i : Fin d) :
@@ -300,7 +299,7 @@ lemma IsPlaneWave.electricField_space_deriv {d : ℕ}
     exact IsPlaneWave.electricFunction_differentiable P hA
   · fun_prop
 
-lemma IsPlaneWave.magneticFieldMatrix_space_deriv {d : ℕ}
+lemma magneticFieldMatrix_space_deriv {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (t : Time)
     (x : Space d) (i j : Fin d) (k : Fin d) :
@@ -331,7 +330,7 @@ lemma IsPlaneWave.magneticFieldMatrix_space_deriv {d : ℕ}
 ### A.5. Space derivative in terms of time derivative
 -/
 
-lemma IsPlaneWave.electricField_space_deriv_eq_time_deriv {d : ℕ} {𝓕 : FreeSpace}
+lemma electricField_space_deriv_eq_time_deriv {d : ℕ} {𝓕 : FreeSpace}
     {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (t : Time)
     (x : Space d) (i : Fin d) (k : Fin d) :
@@ -347,7 +346,7 @@ lemma IsPlaneWave.electricField_space_deriv_eq_time_deriv {d : ℕ} {𝓕 : Free
   · exact electricField_differentiable_time hA x
   · exact electricField_differentiable_space hA t
 
-lemma IsPlaneWave.magneticFieldMatrix_space_deriv_eq_time_deriv {d : ℕ}
+lemma magneticFieldMatrix_space_deriv_eq_time_deriv {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (t : Time)
     (x : Space d) (i j : Fin d) (k : Fin d) :
@@ -371,7 +370,7 @@ lemma IsPlaneWave.magneticFieldMatrix_space_deriv_eq_time_deriv {d : ℕ}
 -/
 open ContDiff
 
-lemma IsPlaneWave.time_deriv_magneticFieldMatrix_eq_electricField_mul_propogator {d : ℕ}
+lemma time_deriv_magneticFieldMatrix_eq_electricField_mul_propogator {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A)
     (t : Time) (x : Space d) (i j : Fin d) :
@@ -408,7 +407,7 @@ lemma IsPlaneWave.time_deriv_magneticFieldMatrix_eq_electricField_mul_propogator
 
 -/
 
-lemma IsPlaneWave.space_deriv_magneticFieldMatrix_eq_electricField_mul_propogator {d : ℕ}
+lemma space_deriv_magneticFieldMatrix_eq_electricField_mul_propogator {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A)
     (t : Time) (x : Space d) (i j k : Fin d) :
@@ -441,7 +440,7 @@ lemma IsPlaneWave.space_deriv_magneticFieldMatrix_eq_electricField_mul_propogato
 
 -/
 
-lemma IsPlaneWave.magneticFieldMatrix_eq_propogator_cross_electricField {d : ℕ}
+lemma magneticFieldMatrix_eq_propogator_cross_electricField {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (i j : Fin d) :
     ∃ C, ∀ t x, A.magneticFieldMatrix 𝓕.c t x (i, j) =
@@ -477,7 +476,7 @@ lemma IsPlaneWave.magneticFieldMatrix_eq_propogator_cross_electricField {d : ℕ
 
 -/
 
-lemma IsPlaneWave.time_deriv_electricField_eq_magneticFieldMatrix {d : ℕ}
+lemma time_deriv_electricField_eq_magneticFieldMatrix {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ ∞ A)
     (h : IsExtrema 𝓕 A 0)
@@ -543,7 +542,7 @@ lemma IsPlaneWave.time_deriv_electricField_eq_magneticFieldMatrix {d : ℕ}
 
 -/
 
-lemma IsPlaneWave.space_deriv_electricField_eq_magneticFieldMatrix {d : ℕ}
+lemma space_deriv_electricField_eq_magneticFieldMatrix {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ ∞ A)
     (h : IsExtrema 𝓕 A 0)
@@ -589,11 +588,11 @@ lemma IsPlaneWave.space_deriv_electricField_eq_magneticFieldMatrix {d : ℕ}
 
 /-!
 
-## C.3. Electric field equal propogator cross magnetic field up to constant
+### C.3. Electric field equal propogator cross magnetic field up to constant
 
 -/
 
-lemma IsPlaneWave.electricField_eq_propogator_cross_magneticFieldMatrix {d : ℕ}
+lemma electricField_eq_propogator_cross_magneticFieldMatrix {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ ∞ A)
     (h : IsExtrema 𝓕 A 0) (i : Fin d) :
@@ -613,6 +612,8 @@ lemma IsPlaneWave.electricField_eq_propogator_cross_magneticFieldMatrix {d : ℕ
   · intro t x i
     rw [P.space_deriv_electricField_eq_magneticFieldMatrix hA]
     congr
+
+end IsPlaneWave
 
 end ElectromagneticPotential
 
