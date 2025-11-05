@@ -24,7 +24,6 @@ we define the induced action on Schwartz functions and distributions.
 
 ## iv. References
 
-
 -/
 noncomputable section
 
@@ -52,7 +51,7 @@ attribute [-simp] Fintype.sum_sum_type
 
 /-- The Lorentz group action on Schwartz functions taking the Lorentz group to
   continous linear maps. -/
-def schwartzAction {d} : LorentzGroup d →* 𝓢(SpaceTime d, ℝ) →L[ℝ] 𝓢(SpaceTime d, ℝ)  where
+def schwartzAction {d} : LorentzGroup d →* 𝓢(SpaceTime d, ℝ) →L[ℝ] 𝓢(SpaceTime d, ℝ) where
   toFun Λ := SchwartzMap.compCLM (𝕜 := ℝ)
     (Lorentz.Vector.actionCLM Λ⁻¹).hasTemperateGrowth <| by
       use 1, ‖Lorentz.Vector.actionCLM Λ‖
@@ -67,7 +66,7 @@ def schwartzAction {d} : LorentzGroup d →* 𝓢(SpaceTime d, ℝ) →L[ℝ] �
   map_mul' Λ₁ Λ₂ := by
     ext η x
     simp only [_root_.mul_inv_rev, compCLM_apply, Function.comp_apply,
-      Lorentz.Vector.actionCLM_apply,  ContinuousLinearMap.coe_mul]
+      Lorentz.Vector.actionCLM_apply, ContinuousLinearMap.coe_mul]
     rw [MulAction.mul_smul]
 
 /-!
@@ -78,8 +77,8 @@ def schwartzAction {d} : LorentzGroup d →* 𝓢(SpaceTime d, ℝ) →L[ℝ] �
 
 lemma schwartzAction_mul_apply {d} (Λ₁ Λ₂ : LorentzGroup d)
     (η : 𝓢(SpaceTime d, ℝ)) :
-   schwartzAction Λ₂ (schwartzAction (Λ₁) η)  =
-   schwartzAction (Λ₂ * Λ₁) η := by
+    schwartzAction Λ₂ (schwartzAction (Λ₁) η) =
+    schwartzAction (Λ₂ * Λ₁) η := by
   simp
 
 lemma schwartzAction_apply {d} (Λ : LorentzGroup d)
@@ -123,23 +122,21 @@ lemma schwartzAction_surjective {d} (Λ : LorentzGroup d) :
 -/
 section Distribution
 
-
 /-!
 
 ## B.1. The SMul instance
 
-
 -/
 variable
     {c : Fin n → realLorentzTensor.Color} {M : Type} [NormedAddCommGroup M]
-      [NormedSpace ℝ M]  [Tensorial (realLorentzTensor d) c M] [T2Space M]
+      [NormedSpace ℝ M] [Tensorial (realLorentzTensor d) c M] [T2Space M]
 
 open Distribution
-instance  :  SMul (LorentzGroup d) ((SpaceTime d) →d[ℝ] M) where
-  smul Λ f :=  (Tensorial.actionCLM (realLorentzTensor d)  Λ) ∘L f ∘L (schwartzAction Λ⁻¹)
+instance : SMul (LorentzGroup d) ((SpaceTime d) →d[ℝ] M) where
+  smul Λ f := (Tensorial.actionCLM (realLorentzTensor d) Λ) ∘L f ∘L (schwartzAction Λ⁻¹)
 
 lemma lorentzGroup_smul_dist_apply (Λ : LorentzGroup d) (f : (SpaceTime d) →d[ℝ] M)
-    (η : 𝓢(SpaceTime d, ℝ)) : (Λ • f) η =  Λ • (f (schwartzAction Λ⁻¹ η)) := rfl
+    (η : 𝓢(SpaceTime d, ℝ)) : (Λ • f) η = Λ • (f (schwartzAction Λ⁻¹ η)) := rfl
 
 /-!
 
@@ -168,12 +165,11 @@ instance : DistribMulAction (LorentzGroup d) ((SpaceTime d) →d[ℝ] M) where
 
 -/
 
-instance : SMulCommClass ℝ (LorentzGroup d)  ((SpaceTime d) →d[ℝ] M) where
+instance : SMulCommClass ℝ (LorentzGroup d) ((SpaceTime d) →d[ℝ] M) where
   smul_comm a Λ f := by
     ext η
     simp [lorentzGroup_smul_dist_apply]
     rw [SMulCommClass.smul_comm]
-
 
 end Distribution
 end SpaceTime

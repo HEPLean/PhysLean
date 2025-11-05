@@ -245,19 +245,19 @@ lemma space_fun_of_time_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [NormedSpac
     ∃ (g : Space d → M), ∀ t x, f t x = g x := by
   use fun x => f 0 x
   intro t x
-  simp
+  simp only
   change (fun t' => f t' x) t = (fun t' => f t' x) 0
   apply is_const_of_fderiv_eq_zero (f := fun t' => f t' x) (𝕜 := ℝ)
   · fun_prop
   intro t
   ext r
-  simp
+  simp only [ContinuousLinearMap.zero_apply]
   trans r.val • (fderiv ℝ (fun t' => f t' x) t) 1
   · rw [← map_smul]
     congr
     ext
     simp
-  simp
+  simp only [smul_eq_zero]
   right
   rw [← h t x]
   rfl
@@ -268,7 +268,7 @@ lemma time_fun_of_space_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [NormedSpac
     ∃ (g : Time → M), ∀ t x, f t x = g t := by
   use fun t => f t 0
   intro t x
-  simp
+  simp only
   change (fun x' => f t x') x = (fun x' => f t x') 0
   apply is_const_of_fderiv_eq_zero (f := fun x' => f t x') (𝕜 := ℝ)
   · fun_prop
@@ -276,7 +276,7 @@ lemma time_fun_of_space_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [NormedSpac
   have h1 : (fderiv ℝ (fun x' => f t x') x).toLinearMap = 0 := by
     apply (Space.basis (d := d)).toBasis.ext
     intro i
-    simp
+    simp only [OrthonormalBasis.coe_toBasis, ContinuousLinearMap.coe_coe, LinearMap.zero_apply]
     rw [← h t x i]
     rw [Space.deriv_eq_fderiv_basis]
   ext r
@@ -300,7 +300,6 @@ lemma const_of_time_deriv_space_deriv_eq_zero {d} {M} [NormedAddCommGroup M] [No
   rw [hk]
   rw [← h1 t 0]
 
-
 /-!
 
 ## A.6. Equal up to a constant of time and space derivatives equal
@@ -312,7 +311,7 @@ lemma equal_up_to_const_of_deriv_eq {d} {M} [NormedAddCommGroup M] [NormedSpace 
     (h₁ : ∀ t x, ∂ₜ (f · x) t = ∂ₜ (g · x) t)
     (h₂ : ∀ t x i, Space.deriv i (f t) x = Space.deriv i (g t) x) :
     ∃ (c : M), ∀ t x, f t x = g t x + c := by
-  suffices h : ∃ c', ∀ t x, f t x - g t x = c'  by
+  suffices h : ∃ c', ∀ t x, f t x - g t x = c' by
     obtain ⟨c', hc'⟩ := h
     use c'
     intro t x

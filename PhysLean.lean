@@ -35,6 +35,8 @@ import PhysLean.Electromagnetism.PointParticle.FiniteCollection
 import PhysLean.Electromagnetism.PointParticle.OneDimension
 import PhysLean.Electromagnetism.PointParticle.ThreeDimension
 import PhysLean.Electromagnetism.Vacuum.Constant
+import PhysLean.Electromagnetism.Vacuum.HarmonicWave
+import PhysLean.Electromagnetism.Vacuum.IsPlaneWave
 import PhysLean.Electromagnetism.Vacuum.OneDimension
 import PhysLean.Mathematics.Calculus.AdjFDeriv
 import PhysLean.Mathematics.Calculus.Divergence
