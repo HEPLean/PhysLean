@@ -239,8 +239,8 @@ instance : MeasurableSpace Time := borel Time
 instance : BorelSpace Time where
   measurable_eq := by rfl
 
-instance : FiniteDimensional ℝ Time := by
-  refine Module.finite_of_rank_eq_one ?_
+@[simp]
+lemma rank_eq_one : Module.rank ℝ Time = 1 := by
   rw [@rank_eq_one_iff]
   use 1
   constructor
@@ -249,6 +249,21 @@ instance : FiniteDimensional ℝ Time := by
     use v.val
     ext
     simp [one_val]
+
+@[simp]
+lemma finRank_eq_one : Module.finrank ℝ Time = 1 := by
+  rw [@finrank_eq_one_iff']
+  use 1
+  constructor
+  · simp
+  · intro v
+    use v.val
+    ext
+    simp [one_val]
+
+instance : FiniteDimensional ℝ Time := by
+  refine Module.finite_of_rank_eq_one ?_
+  simp
 
 noncomputable instance : InnerProductSpace ℝ Time where
   norm_sq_eq_re_inner := by intros; simp [norm]; ring
@@ -329,5 +344,48 @@ lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
   change (fderiv ℝ toRealCLM t 1) = 1
   rw [ContinuousLinearMap.fderiv, toRealCLM]
   simp
+
+
+noncomputable def basis : OrthonormalBasis (Fin 1) ℝ Time where
+  repr := {
+    toFun := fun x => fun _ => x
+    invFun := fun f => ⟨f 0⟩
+    left_inv := by
+      intro x
+      rfl
+    right_inv := by
+      intro f
+      ext i
+      fin_cases i
+      rfl
+    map_add' := by
+      intro f g
+      ext i
+      fin_cases i
+      rfl
+    map_smul' := by
+      intro c f
+      ext i
+      fin_cases i
+      rfl
+    norm_map' := by
+      intro x
+      simp
+      rw [@PiLp.norm_eq_of_L2]
+      simp
+      rw [Real.sqrt_sq_eq_abs]
+      rfl
+  }
+
+@[simp]
+lemma basis_apply_eq_one (i : Fin 1) :
+    basis i = 1 := by
+  fin_cases i
+  simp [basis]
+  rfl
+
+lemma volume_eq_basis_addHaar :
+    (volume (α := Time)) = basis.toBasis.addHaar := by
+  exact (OrthonormalBasis.addHaar_eq_volume _).symm
 
 end Time

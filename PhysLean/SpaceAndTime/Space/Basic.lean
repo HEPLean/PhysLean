@@ -258,4 +258,7 @@ lemma oneEquiv_measurePreserving : MeasurePreserving oneEquiv volume volume :=
 lemma oneEquiv_symm_measurePreserving : MeasurePreserving oneEquiv.symm volume volume := by
   exact LinearIsometryEquiv.measurePreserving oneEquiv.symm
 
+lemma volume_eq_addHaar {d} : (volume (α := Space d)) = Space.basis.toBasis.addHaar := by
+  exact (OrthonormalBasis.addHaar_eq_volume _).symm
+
 end Space
