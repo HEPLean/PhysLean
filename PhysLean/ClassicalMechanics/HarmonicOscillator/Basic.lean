@@ -379,7 +379,7 @@ lemma gradient_lagrangian_position_eq (t : Time) (x : Space 1) (v : EuclideanSpa
     neg_smul, neg_inj]
   rw [fderiv_const_mul (by fun_prop)]
   simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
-  have hx : x = x 0 • basis 0 := by
+  have hx : x = x 0 • Space.basis 0 := by
     ext i
     fin_cases i
     simp
@@ -397,7 +397,7 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpa
   simp only [fderiv_fun_const, Pi.zero_apply, sub_zero, Fin.isValue]
   rw [fderiv_const_mul (by fun_prop)]
   simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
-  have hx : v = v 0 • basis 0 := by
+  have hx : v = v 0 • Space.basis 0 := by
     ext i
     fin_cases i
     simp
@@ -530,7 +530,7 @@ lemma gradLagrangian_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x
       ContinuousLinearMap.neg_apply, neg_smul]
     rw [fderiv_const_mul (by fun_prop)]
     simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self, force_eq_linear]
-    have hx : xₜ t = xₜ t 0 • basis 0 := by
+    have hx : xₜ t = xₜ t 0 • Space.basis 0 := by
       ext i
       fin_cases i
       simp
@@ -721,7 +721,7 @@ lemma gradient_hamiltonian_position_eq (t : Time) (x : Space 1) (p : EuclideanSp
   simp [Space.deriv_eq_fderiv_basis]
   rw [fderiv_const_mul (by fun_prop)]
   simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
-  have hx : x = x 0 • basis 0 := by
+  have hx : x = x 0 • Space.basis 0 := by
     ext i
     fin_cases i
     simp
@@ -737,7 +737,7 @@ lemma gradient_hamiltonian_momentum_eq (t : Time) (x : Space 1) (p : EuclideanSp
   simp [Space.deriv_eq_fderiv_basis]
   rw [fderiv_const_mul (by fun_prop)]
   simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
-  have hx : p = p 0 • basis 0 := by
+  have hx : p = p 0 • Space.basis 0 := by
     ext i
     fin_cases i
     simp
