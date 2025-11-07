@@ -345,7 +345,7 @@ lemma fderiv_val (t : Time) : fderiv ℝ Time.val t 1 = 1 := by
   rw [ContinuousLinearMap.fderiv, toRealCLM]
   simp
 
-
+/-- The orthonomral basis on `Time` defined by `1`. -/
 noncomputable def basis : OrthonormalBasis (Fin 1) ℝ Time where
   repr := {
     toFun := fun x => fun _ => x
@@ -370,9 +370,10 @@ noncomputable def basis : OrthonormalBasis (Fin 1) ℝ Time where
       rfl
     norm_map' := by
       intro x
-      simp
+      simp only [Fin.isValue, LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk]
       rw [@PiLp.norm_eq_of_L2]
-      simp
+      simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Real.norm_eq_abs, sq_abs,
+        Finset.sum_const, Finset.card_singleton, one_smul]
       rw [Real.sqrt_sq_eq_abs]
       rfl
   }
