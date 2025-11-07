@@ -519,10 +519,10 @@ lemma timeSpaceBasis_addHaar {d : ℕ} (c : SpeedOfLight := 1) :
   simp
 
 /-!
+
 ### B.4. Integrals over `SpaceTime d`
 
 -/
-
 
 open MeasureTheory
 lemma toTimeAndSpace_symm_measurePreserving {d : ℕ} (c : SpeedOfLight) :

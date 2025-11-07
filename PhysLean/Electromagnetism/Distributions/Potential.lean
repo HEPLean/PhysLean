@@ -135,6 +135,10 @@ noncomputable def toComponents {d : ℕ} :
     ext μ ε
     simp
 
+open SchwartzMap
+lemma toComponents_symm_apply {d : ℕ} (A : (Fin 1 ⊕ Fin d) → (SpaceTime d) →d[ℝ] ℝ)
+    (μ : Fin 1 ⊕ Fin d) (ε : 𝓢(SpaceTime d, ℝ)) :
+    (toComponents.symm A) ε μ = A μ ε  := by rfl
 /-!
 
 ## B. The field strength tensor matrix

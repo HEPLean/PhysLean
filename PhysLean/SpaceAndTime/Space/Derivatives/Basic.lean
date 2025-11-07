@@ -376,6 +376,7 @@ open Distribution SchwartzMap
 ### B.1. The definition
 
 -/
+
 /-- Given a distribution (function) `f : Space d →d[ℝ] M` the derivative
   of `f` in direction `μ`. -/
 noncomputable def distDeriv {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]

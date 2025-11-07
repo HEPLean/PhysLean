@@ -5,6 +5,8 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
+import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
 /-!
 
 # Distributions which are constant in time
@@ -484,7 +486,7 @@ lemma time_integral_contDiff {d : ℕ} (n : ℕ) (η : 𝓢(Time × Space d.succ
 -/
 
 @[fun_prop]
-lemma integrable_time_integral {d : ℕ} (η : 𝓢(Time × Space d.succ, ℝ)) (x : Space d.succ) :
+lemma integrable_time_integral {d : ℕ} (η : 𝓢(Time × Space d, ℝ)) (x : Space d) :
     Integrable (fun t => η (t, x)) volume := by
   haveI : Measure.HasTemperateGrowth ((Measure.map (fun t => (t, x)) (volume (α := Time)))) := by
       refine { exists_integrable := ?_ }
@@ -913,6 +915,39 @@ def timeIntegralSchwartz {d : ℕ} :
 
 lemma timeIntegralSchwartz_apply {d : ℕ} (η : 𝓢(Time × Space d.succ, ℝ)) (x : Space d.succ) :
     timeIntegralSchwartz η x = ∫ (t : Time), η (t, x) := by rfl
+
+/-!
+
+### D.1. timeIntegralSchwartz is surjective
+
+-/
+
+lemma timeIntegralSchwartz_surjective {d : ℕ} :
+    Function.Surjective (timeIntegralSchwartz (d := d)) := by
+  intro η
+  haveI : HasContDiffBump Time := hasContDiffBump_of_innerProductSpace Time
+  let φ : ContDiffBump (0 : Time) := {
+    rIn := 1,
+    rOut := 2,
+    rIn_pos := by positivity,
+    rIn_lt_rOut := by simp}
+  let η' : Time × Space d.succ → ℝ := fun x => φ.normed volume x.1 * η x.2
+  refine ⟨⟨η', ?_, ?_⟩, ?_⟩
+  · simp [η']
+    apply ContDiff.mul
+    · refine contDiff_infty.mpr ?_
+      intro n
+      have h1 := φ.contDiff_normed (n := n) (μ := volume)
+      exact ContDiff.fst' h1
+    · exact ContDiff.snd' η.smooth'
+  · sorry
+  · ext x
+    rw [timeIntegralSchwartz_apply]
+    change ∫ (t : Time), φ.normed volume t * η x = _
+    rw [MeasureTheory.integral_mul_const]
+    rw [ ContDiffBump.integral_normed]
+    simp
+
 
 /-!
 
