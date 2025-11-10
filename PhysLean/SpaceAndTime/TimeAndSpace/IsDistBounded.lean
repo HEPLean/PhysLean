@@ -46,6 +46,9 @@ structure IsDistBounded {d : ℕ} (f : Space d → F) : Prop where
   integrable_space' : ∀ (η : 𝓢(Space d, ℝ)), Integrable (fun x => η x • f x)
   integrable_time_space' : ∀ (η : 𝓢(Time × Space d, ℝ)), Integrable (fun x => η x • f x.2)
   aeStronglyMeasurable' : AEStronglyMeasurable f volume
+  bounded' : ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 ≤ C ∧
+    ∀ (η : 𝓢(Space d, ℝ)), ‖∫ (x : Space d), η x • f x‖ ≤
+      C * (s.sup (schwartzSeminormFamily ℝ (Space d) ℝ)) η
 
 namespace IsDistBounded
 
@@ -125,7 +128,7 @@ instance {D1 : Type} [NormedAddCommGroup D1] [MeasurableSpace D1]
 
 lemma zpow {d : ℕ} (p : ℤ) (hp : - (d - 1 : ℕ) ≤ p) :
     IsDistBounded (fun (x : Space d) => ‖x‖ ^ p) := by
-  have h1 :  AEStronglyMeasurable (fun (x : Space d) => ‖x‖ ^ p) volume :=
+  have h1 : AEStronglyMeasurable (fun (x : Space d) => ‖x‖ ^ p) volume :=
     AEMeasurable.aestronglyMeasurable <| by fun_prop
   constructor
   · /- Integrability for Schwartz maps on space. -/
@@ -225,6 +228,7 @@ lemma zpow {d : ℕ} (p : ℤ) (hp : - (d - 1 : ℕ) ≤ p) :
     rcases x
     simp
   · fun_prop
+  · sorry
 
 /-!
 
@@ -377,6 +381,7 @@ lemma inner_left {d n} {f : Space d → EuclideanSpace ℝ (Fin n) }
   aeStronglyMeasurable' := by
     apply MeasureTheory.AEStronglyMeasurable.inner_const
     fun_prop
+
 
 @[fun_prop]
 lemma zero {d}  : IsDistBounded (0 : Space d → F) where

@@ -18,6 +18,15 @@ where `dΩ` is the angular measure on the unit sphere. The radial angular measur
 is the measure `dr dΩ`, cancelling the radius contribution from the measure in spherical
 coordinates.
 
+This file is equivalent to `invPowMeasure`, which will slowly be deprecated.
+
+## ii. Key results
+
+- `radialAngularMeasure`: The radial angular measure on `Space d`.
+
+## iii. Table of contents
+
+## iv. References
 
 -/
 open SchwartzMap NNReal
@@ -69,6 +78,7 @@ lemma integrable_radialAngularMeasure_iff {d : ℕ} {f : Space d → F} :
   rw [Real.toNNReal_of_nonneg, NNReal.smul_def]
   simp
   positivity
+
 /-!
 
 ## B. Integrals with respect to radialAngularMeasure
@@ -302,7 +312,6 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
     exact compl_compl _
   · symm
     simp
-
 
 /-!
 
