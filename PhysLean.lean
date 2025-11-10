@@ -333,6 +333,7 @@ import PhysLean.SpaceAndTime.Space.Derivatives.Grad
 import PhysLean.SpaceAndTime.Space.Derivatives.Laplacian
 import PhysLean.SpaceAndTime.Space.DistConst
 import PhysLean.SpaceAndTime.Space.LengthUnit
+import PhysLean.SpaceAndTime.Space.RadialAngularMeasure
 import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.SpaceTime.Basic
