@@ -38,9 +38,9 @@ open MeasureTheory
 
 -/
 
-/-- The measure on `Space d.succ` weighted by `1 / ‖x‖ ^ d`. -/
-def radialAngularMeasure {d : ℕ} : Measure (Space d.succ) :=
-  volume.withDensity (fun x : Space d.succ => ENNReal.ofReal (1 / ‖x‖ ^ d))
+/-- The measure on `Space d` weighted by `1 / ‖x‖ ^ (d - 1)`. -/
+def radialAngularMeasure {d : ℕ} : Measure (Space d) :=
+  volume.withDensity (fun x : Space d => ENNReal.ofReal (1 / ‖x‖ ^ (d - 1)))
 
 
 /-!
@@ -50,17 +50,33 @@ def radialAngularMeasure {d : ℕ} : Measure (Space d.succ) :=
 -/
 
 lemma radialAngularMeasure_eq_volume_withDensity {d : ℕ} : radialAngularMeasure =
-    volume.withDensity (fun x : Space d.succ => ENNReal.ofReal (1 / ‖x‖ ^ d)) := by
+    volume.withDensity (fun x : Space d => ENNReal.ofReal (1 / ‖x‖ ^ (d - 1))) := by
   rfl
 
+@[simp]
+lemma radialAngularMeasure_zero_eq_volume :
+    radialAngularMeasure (d := 0) = volume := by
+  simp [radialAngularMeasure]
+
+lemma integrable_radialAngularMeasure_iff {d : ℕ} {f : Space d → F} :
+    Integrable f (radialAngularMeasure (d := d)) ↔
+      Integrable (fun x => (1 / ‖x‖ ^ (d - 1)) • f x) volume := by
+  dsimp [radialAngularMeasure]
+  erw [integrable_withDensity_iff_integrable_smul₀ (by fun_prop)]
+  simp
+  refine integrable_congr ?_
+  filter_upwards with x
+  rw [Real.toNNReal_of_nonneg, NNReal.smul_def]
+  simp
+  positivity
 /-!
 
 ## B. Integrals with respect to radialAngularMeasure
 
 -/
 
-lemma integral_radialAngularMeasure {dm1 : ℕ} (f : EuclideanSpace ℝ (Fin dm1.succ) → F) :
-    ∫ x, f x ∂radialAngularMeasure = ∫ x, (1 / ‖x‖ ^ dm1) • f x := by
+lemma integral_radialAngularMeasure {d : ℕ} (f : Space d → F) :
+    ∫ x, f x ∂radialAngularMeasure = ∫ x, (1 / ‖x‖ ^ (d - 1)) • f x := by
   dsimp [radialAngularMeasure]
   erw [integral_withDensity_eq_integral_smul (by fun_prop)]
   congr
@@ -139,7 +155,6 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
       simp only [Nat.cast_add, Nat.cast_ofNat, neg_add_rev]
       positivity
       positivity
-
     rw [integral_Ioi_rpow_of_lt]
     field_simp
     have h0 : (-2 + -(n : ℝ) + 1) ≠ 0 := by
@@ -158,9 +173,15 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
   · simp
   · simp
 
-lemma radialAngularMeasure_integrable_pow_neg_two {dm1 : ℕ} :
-    Integrable (fun x : EuclideanSpace ℝ (Fin dm1.succ) => (1 + ‖x‖) ^ (- (dm1 + 2) : ℝ))
+lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
+    Integrable (fun x : Space d => (1 + ‖x‖) ^ (- (d + 1) : ℝ))
       radialAngularMeasure := by
+  match d with
+  | 0 => simp
+  | dm1 + 1 =>
+  suffices h1 :  Integrable (fun x => (1 + ‖x‖) ^ (-(dm1 + 2) : ℝ)) radialAngularMeasure by
+    convert h1 using 3
+    grind
   simp [radialAngularMeasure]
   rw [MeasureTheory.integrable_withDensity_iff]
   swap
@@ -289,9 +310,9 @@ lemma radialAngularMeasure_integrable_pow_neg_two {dm1 : ℕ} :
 
 -/
 
-instance (dm1 : ℕ) : Measure.HasTemperateGrowth (radialAngularMeasure (d := dm1)) where
+instance (d : ℕ) : Measure.HasTemperateGrowth (radialAngularMeasure (d := d)) where
   exists_integrable := by
-    use dm1 + 2
-    simpa using radialAngularMeasure_integrable_pow_neg_two (dm1 := dm1)
+    use d + 1
+    simpa using radialAngularMeasure_integrable_pow_neg_two (d := d)
 
 end Space
