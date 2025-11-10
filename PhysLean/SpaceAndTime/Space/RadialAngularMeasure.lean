@@ -26,7 +26,14 @@ This file is equivalent to `invPowMeasure`, which will slowly be deprecated.
 
 ## iii. Table of contents
 
-## iv. References
+- A. The definition of the radial angular measure
+  - A.1. Basic equalities
+- B. Integrals with respect to radialAngularMeasure
+- C. HasTemperateGrowth of measures
+  - C.1. Integrability of powers
+  - C.2. radialAngularMeasure has temperate growth
+
+## iv. References
 
 -/
 open SchwartzMap NNReal
@@ -51,7 +58,6 @@ open MeasureTheory
 def radialAngularMeasure {d : ℕ} : Measure (Space d) :=
   volume.withDensity (fun x : Space d => ENNReal.ofReal (1 / ‖x‖ ^ (d - 1)))
 
-
 /-!
 
 ### A.1. Basic equalities
@@ -72,11 +78,11 @@ lemma integrable_radialAngularMeasure_iff {d : ℕ} {f : Space d → F} :
       Integrable (fun x => (1 / ‖x‖ ^ (d - 1)) • f x) volume := by
   dsimp [radialAngularMeasure]
   erw [integrable_withDensity_iff_integrable_smul₀ (by fun_prop)]
-  simp
+  simp only [one_div]
   refine integrable_congr ?_
   filter_upwards with x
   rw [Real.toNNReal_of_nonneg, NNReal.smul_def]
-  simp
+  simp only [inv_nonneg, norm_nonneg, pow_nonneg, coe_mk]
   positivity
 
 /-!
@@ -189,7 +195,7 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
   match d with
   | 0 => simp
   | dm1 + 1 =>
-  suffices h1 :  Integrable (fun x => (1 + ‖x‖) ^ (-(dm1 + 2) : ℝ)) radialAngularMeasure by
+  suffices h1 : Integrable (fun x => (1 + ‖x‖) ^ (-(dm1 + 2) : ℝ)) radialAngularMeasure by
     convert h1 using 3
     grind
   simp [radialAngularMeasure]
