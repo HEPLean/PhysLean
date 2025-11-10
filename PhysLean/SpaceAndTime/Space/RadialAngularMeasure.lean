@@ -303,7 +303,7 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
       simpa using h1
       exact measurableSet_Ioi
   rw [← MeasureTheory.integrableOn_univ]
-  simp at h2
+  simp only [Nat.succ_eq_add_one, neg_add_rev] at h2
   apply MeasureTheory.IntegrableOn.congr_set_ae h2
   rw [← MeasureTheory.ae_eq_set_compl]
   trans (∅ : Set (EuclideanSpace ℝ (Fin dm1.succ)))
