@@ -431,7 +431,7 @@ lemma integrable_mul_inv_pow {d : ℕ}
     apply (h0 (p + d).toNat c).mono
     · fun_prop
     · filter_upwards with x
-      simp only [norm_inv, norm_pow, Real.norm_eq_abs, norm_mul, abs_abs, norm_zpow, norm_norm,
+      simp only [norm_inv, norm_pow, Real.norm_eq_abs, norm_mul, abs_abs, norm_zpow,
         Int.ofNat_toNat]
       rw [mul_comm]
       refine mul_le_mul ?_ ?_ (by positivity) (by positivity)
