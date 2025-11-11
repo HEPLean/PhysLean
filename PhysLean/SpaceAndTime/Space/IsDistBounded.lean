@@ -572,6 +572,13 @@ section constructors
 variable (𝕜 : Type) {E F F' : Type} [RCLike 𝕜] [NormedAddCommGroup E] [NormedAddCommGroup F]
   [NormedAddCommGroup F'] [NormedSpace ℝ F']
 
+@[fun_prop]
+lemma zero {d}  : IsDistBounded (0 : Space d → F)  := by
+  apply And.intro
+  · fun_prop
+  use 1, fun _ => 0 , fun _ => 0, fun _ => 0
+  simp
+
 /-!
 
 ### D.1. Addition
@@ -610,9 +617,38 @@ lemma add {d : ℕ} {f g : Space d → F}
     rw [← finSumFinEquiv.sum_comp]
     simp
 
+@[fun_prop]
+lemma fun_add {d : ℕ} {f g : Space d → F}
+    (hf : IsDistBounded f) (hg : IsDistBounded g) : IsDistBounded (fun x => f x + g x) := by
+  exact hf.add hg
+
 /-!
 
-### D.2. Scalar multiplication
+### D.2. Finite sums
+
+-/
+
+lemma sum {ι : Type*} {s : Finset ι} {d : ℕ} {f : ι → Space d → F}
+    (hf : ∀ i ∈ s, IsDistBounded (f i)) : IsDistBounded (∑ i ∈ s, f i) := by
+  classical
+  induction' s using Finset.induction with i s hi ih
+  · simp
+    fun_prop
+  rw [Finset.sum_insert]
+  apply IsDistBounded.add
+  · exact hf i (s.mem_insert_self i)
+  · exact ih (fun j hj => hf j (s.mem_insert_of_mem hj))
+  exact hi
+
+lemma sum_fun {ι : Type*} {s : Finset ι} {d : ℕ} {f : ι → Space d → F}
+    (hf : ∀ i ∈ s, IsDistBounded (f i)) : IsDistBounded (fun x => ∑ i ∈ s, f i x) := by
+  convert sum hf using 1
+  funext x
+  simp
+
+/-!
+
+### D.3. Scalar multiplication
 
 -/
 
@@ -646,9 +682,17 @@ lemma const_mul_fun {d : ℕ}
     (hf : IsDistBounded f) (c : ℝ) : IsDistBounded (fun x => c * f x) := by
   convert hf.const_smul c using 1
 
+@[fun_prop]
+lemma mul_const_fun {d : ℕ}
+    {f : Space d → ℝ}
+    (hf : IsDistBounded f) (c : ℝ) : IsDistBounded (fun x => f x * c) := by
+  convert hf.const_smul c using 2
+  simp
+  ring
+
 /-!
 
-### D.3. Components of euclidean-valued functions
+### D.4. Components of euclidean-valued functions
 
 -/
 
@@ -672,7 +716,7 @@ lemma pi_comp {d n : ℕ}
 
 /-!
 
-### D.4. Compositions with additions and subtractions
+### D.5. Compositions with additions and subtractions
 
 -/
 
@@ -702,7 +746,7 @@ lemma comp_sub_right {d : ℕ} {f : Space d → F}
 
 /-!
 
-### D.5. Congruence with respect to the norm
+### D.6. Congruence with respect to the norm
 
 -/
 
@@ -721,7 +765,7 @@ lemma congr {d : ℕ} {f : Space d → F}
 
 /-!
 
-### D.6. Monotonicity with respect to the norm
+### D.7. Monotonicity with respect to the norm
 
 -/
 
@@ -739,7 +783,7 @@ lemma mono {d : ℕ} {f : Space d → F}
 
 /-!
 
-### D.7. Inner products
+### D.8. Inner products
 
 -/
 
@@ -765,6 +809,8 @@ lemma inner_left {d n : ℕ}
     refine mul_le_mul (by rfl) (bound1 x) ?_ ?_
     · exact norm_nonneg (f x)
     · exact norm_nonneg y
+
+
 /-!
 
 ## E. Specific functions that are `IsDistBounded`
@@ -825,6 +871,33 @@ lemma nat_pow {d : ℕ} (n : ℕ) :
   exact IsDistBounded.pow (d := d) (n : ℤ) (by omega)
 
 @[fun_prop]
+lemma norm_add_nat_pow {d : ℕ} (n : ℕ) (a : ℝ) :
+    IsDistBounded (d := d) (fun x => (‖x‖ + a) ^ n) := by
+  conv =>
+    enter [1, x]
+    rw [add_pow]
+  apply IsDistBounded.sum_fun
+  intro i _
+  fun_prop
+
+@[fun_prop]
+lemma norm_add_pos_nat_zpow {d : ℕ} (n : ℤ) (a : ℝ) (ha : 0 < a) :
+    IsDistBounded (d := d) (fun x => (‖x‖ + a) ^ n) := by
+  match n with
+  | Int.ofNat n => fun_prop
+  | Int.negSucc n =>
+    apply IsDistBounded.mono (f := fun x => (a ^ ((n + 1) ))⁻¹)
+    · fun_prop
+    · apply AEMeasurable.aestronglyMeasurable
+      fun_prop
+    · intro x
+      simp
+      refine inv_anti₀ (by positivity) ?_
+      refine (pow_le_pow_iff_left₀ (by positivity) (by positivity) (by simp)).mpr ?_
+      rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
+      simp
+
+@[fun_prop]
 lemma nat_pow_shift {d : ℕ} (n : ℕ)
     (g : Space d) :
     IsDistBounded (d := d) (fun x => ‖x - g‖ ^ n) := by
@@ -836,6 +909,188 @@ lemma inv {n : ℕ} :
   convert IsDistBounded.pow (d := n.succ.succ) (-1) (by simp) using 1
   ext1 x
   simp
+
+@[fun_prop]
+lemma norm {d : ℕ} : IsDistBounded (d := d) (fun x => ‖x‖) := by
+  convert IsDistBounded.nat_pow (d := d) 1 using 1
+  ext1 x
+  simp
+
+@[fun_prop]
+lemma log_norm {d : ℕ} :
+    IsDistBounded (d := d.succ.succ) (fun x => Real.log ‖x‖) := by
+  apply IsDistBounded.mono (f := fun x => ‖x‖⁻¹ + ‖x‖)
+  · fun_prop
+  · apply AEMeasurable.aestronglyMeasurable
+    fun_prop
+  · intro x
+    simp
+    conv_rhs => rw [abs_of_nonneg (by positivity)]
+    have h1 := Real.neg_inv_le_log (x := ‖x‖) (by positivity)
+    have h2 := Real.log_le_rpow_div (x := ‖x‖) (by positivity) (ε := 1) (by positivity)
+    simp_all
+    rw [abs_le']
+    generalize  Real.log ‖x‖ = r at *
+    apply And.intro
+    · apply h2.trans
+      simp
+    · rw [neg_le]
+      apply le_trans _ h1
+      simp
+
+
+/-!
+
+### F. Multiplications
+
+-/
+
+
+lemma norm_smul_nat_pow {d} (p : ℕ) (c : Space d) :
+    IsDistBounded (fun x => ‖x‖ * ‖x + c‖ ^ p) := by
+  apply IsDistBounded.mono (f := fun x => ‖x‖ * (‖x‖ + ‖c‖) ^ p )
+  · conv =>
+      enter [1, x]
+      rw [add_pow]
+      rw [Finset.mul_sum]
+    apply IsDistBounded.sum_fun
+    intro i _
+    conv =>
+      enter [1, x]
+      rw [← mul_assoc, ← mul_assoc]
+    apply IsDistBounded.mul_const_fun
+    apply IsDistBounded.mul_const_fun
+    convert IsDistBounded.nat_pow (n := i + 1) using 1
+    funext x
+    ring
+  · apply AEMeasurable.aestronglyMeasurable
+    fun_prop
+  · intro x
+    simp
+    rw [abs_of_nonneg (by positivity)]
+    have h1 : ‖x + c‖ ≤ ‖x‖ + ‖c‖ := norm_add_le x c
+    have h2 : ‖x + c‖ ^ p ≤ (‖x‖ + ‖c‖) ^ p := by
+      refine pow_le_pow_left₀ (by positivity) h1 p
+    apply (mul_le_mul (by rfl) h2 (by positivity) (by positivity)).trans
+    rfl
+
+lemma norm_smul_zpow {d} (p : ℤ) (c : Space d) (hn : - (d - 1 : ℕ) ≤ p)  :
+    IsDistBounded (fun x => ‖x‖ * ‖x + c‖ ^ p) := by
+  match p with
+  | Int.ofNat p => exact norm_smul_nat_pow p c
+  | Int.negSucc p =>
+    suffices h0 : IsDistBounded (fun x => ‖x - c‖ * (‖x‖ ^ (p + 1))⁻¹) by
+      convert h0.comp_sub_right (- c) using 1
+      funext x
+      simp
+    suffices h0 : IsDistBounded (fun x => (‖x‖ + ‖c‖) * (‖x‖ ^ (p + 1))⁻¹) by
+      apply h0.mono
+      · fun_prop
+      · intro x
+        simp
+        rw [abs_of_nonneg (by positivity)]
+        apply mul_le_mul (norm_sub_le x c) (by rfl) (by positivity) (by positivity)
+    suffices h0 : IsDistBounded (fun x => ‖x‖ * (‖x‖ ^ (p + 1))⁻¹ + ‖c‖ * (‖x‖ ^ (p + 1))⁻¹) by
+      convert h0 using 1
+      funext x
+      ring
+    suffices h0 : IsDistBounded (fun x => ‖x‖ * (‖x‖ ^ (p + 1))⁻¹) by
+      apply h0.add
+      · apply IsDistBounded.const_mul_fun
+        exact IsDistBounded.pow (d := d) (n := -(p + 1)) (by grind)
+    by_cases hp : p = 0
+    · subst hp
+      simp
+      apply IsDistBounded.mono (f := fun x => (1 : ℝ))
+      · fun_prop
+      · apply AEMeasurable.aestronglyMeasurable
+        fun_prop
+      · intro x
+        simp
+        by_cases hx : ‖x‖ ≠ 0
+        · rw [mul_inv_cancel₀ (by positivity)]
+        · simp at hx
+          subst hx
+          simp
+    convert IsDistBounded.pow (d := d) (n := - p) (by grind) using 1
+    funext x
+    trans (‖x‖ ^ p)⁻¹; swap
+    · rw [@zpow_neg]
+      simp
+    by_cases hx : ‖x‖ ≠ 0
+    field_simp
+    ring
+    simp at hx
+    subst hx
+    simp
+    rw [@zero_pow_eq]
+    simp [hp]
+
+
+@[fun_prop]
+lemma norm_smul_isDistBounded {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
+    (hf : IsDistBounded f)  :
+    IsDistBounded (fun x => ‖x‖ • f x) := by
+  obtain ⟨hae, ⟨n, c, g, p, c_nonneg, p_bound, bound⟩⟩ := hf
+  apply IsDistBounded.mono (f := fun x => ‖x‖ * ∑ i, (c i * ‖x + g i‖ ^ (p i)))
+  · apply IsDistBounded.congr (f := fun x =>  ∑ i, (c i * (‖x‖ * ‖x + g i‖ ^ (p i))))
+    · apply IsDistBounded.sum_fun
+      intro i _
+      apply IsDistBounded.const_mul_fun
+      exact norm_smul_zpow (p i) (g i) (p_bound i)
+    · fun_prop
+    · intro x
+      congr
+      rw [Finset.mul_sum]
+      congr
+      funext i
+      ring
+  · fun_prop
+  · intro x
+    simp [_root_.norm_smul]
+    apply (mul_le_mul (by rfl) (bound x) (by positivity) (by positivity)).trans
+    rw [abs_of_nonneg ]
+    apply Finset.sum_nonneg
+    intro i _
+    apply mul_nonneg
+    · exact c_nonneg i
+    · positivity
+
+@[fun_prop]
+lemma norm_mul_isDistBounded {d : ℕ} {f : Space d → ℝ}
+    (hf : IsDistBounded f)  :
+    IsDistBounded (fun x => ‖x‖ * f x) := by
+  convert hf.norm_smul_isDistBounded using 1
+
+@[fun_prop]
+lemma component_smul_isDistBounded {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
+    (hf : IsDistBounded f) (i : Fin d)  :
+    IsDistBounded (fun x => x i • f x) := by
+  apply IsDistBounded.mono (f := fun x => ‖x‖ • f x)
+  · fun_prop
+  · apply  AEStronglyMeasurable.smul
+    · have h1 :  AEStronglyMeasurable (fun x => Space.coordCLM i x) := by
+        fun_prop
+      convert h1 using 1
+      funext i
+      simp [coordCLM_apply, coord_apply]
+    · fun_prop
+  · intro x
+    simp [norm_smul]
+    apply mul_le_mul ?_ (by rfl) (by positivity) (by positivity)
+    rw [@PiLp.norm_eq_of_L2]
+    refine Real.abs_le_sqrt ?_
+    apply le_trans _ (Finset.sum_le_univ_sum_of_nonneg  (s := {i}) _)
+    · simp
+    · intro i
+      positivity
+
+@[fun_prop]
+lemma component_mul_isDistBounded {d : ℕ} {f : Space d → ℝ}
+    (hf : IsDistBounded f) (i : Fin d)  :
+    IsDistBounded (fun x => x i * f x) := by
+  convert hf.component_smul_isDistBounded i using 2
+
 
 end constructors
 end IsDistBounded
