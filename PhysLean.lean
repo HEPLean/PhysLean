@@ -332,6 +332,7 @@ import PhysLean.SpaceAndTime.Space.DistConst
 import PhysLean.SpaceAndTime.Space.DistOfFunction
 import PhysLean.SpaceAndTime.Space.IsDistBounded
 import PhysLean.SpaceAndTime.Space.LengthUnit
+import PhysLean.SpaceAndTime.Space.Norm
 import PhysLean.SpaceAndTime.Space.RadialAngularMeasure
 import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations

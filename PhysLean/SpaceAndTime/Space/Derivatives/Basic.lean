@@ -97,7 +97,6 @@ lemma fderiv_eq_sum_deriv {M d} [AddCommGroup M] [Module ℝ M] [TopologicalSpac
   conv_lhs => rw [h1]
   simp [deriv_eq_fderiv_basis]
 
-
 /-!
 
 ### A.2. Derivative of the constant function

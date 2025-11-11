@@ -10,26 +10,30 @@ import Mathlib.Analysis.InnerProductSpace.NormPow
 import Mathlib.Analysis.Calculus.FDeriv.Norm
 /-!
 
-# Distributions from functions on space
+# The norm on space
 
 ## i. Overview
 
-In this module we define distributions on space constructed from functions
-`f : Space d → F` satisfying the condition `IsDistBounded f`.
-
-This gives a convenient way to construct distributions from functions, without needing
-to reference the underlying Schwartz maps.
+The main content of this file is defining `Space.normPowerSeries`, a power series which is
+differentiable everywhere, and which tends to the norm in the limit as `n → ∞`.
 
 ## ii. Key results
 
-- `distOfFunction f hf` : The distribution on space constructed from the function
-  `f : Space d → F` satisfying the `IsDistBounded f` condition.
+- `normPowerSeries` : A power series which is differentiable everywhere, and in the limit
+  as `n → ∞` tends to `‖x‖`.
+- `normPowerSeries_differentiable` : The power series is differentiable everywhere.
+- `normPowerSeries_tendsto` : The power series tends to the norm in the limit as `n → ∞`.
 
 ## iii. Table of contents
 
-- A. Definition of a distribution from a function
-- B. Linarity properties of getting distributions from functions
-- C. Properties related to inner products
+- A. The norm as a power series
+  - A.1. Differentiability of the norm power series
+  - A.2. The limit of the norm power series
+  - A.3. The derivative of the norm power series
+  - A.4. Limits of the derivative of the power series
+  - A.5. The power series is AEStronglyMeasurable
+  - A.6. Bounds on the norm power series
+  - A.7. The `IsDistBounded` property of the norm power series
 
 ## iv. References
 
@@ -51,7 +55,7 @@ open MeasureTheory
 
 /-- A power series which is differentiable everywhere, and in the limit
   as `n → ∞` tends to `‖x‖`. -/
-def normPowerSeries {d}  : ℕ → Space d → ℝ := fun n x =>
+def normPowerSeries {d} : ℕ → Space d → ℝ := fun n x =>
   √(‖x‖ ^ 2 + 1/(n + 1))
 
 lemma normPowerSeries_eq (n : ℕ) :
@@ -65,7 +69,7 @@ lemma normPowerSeries_eq_rpow {d} (n : ℕ) :
 
 /-!
 
-## A.1. Differentiability of the norm power series
+### A.1. Differentiability of the norm power series
 
 -/
 
@@ -84,7 +88,7 @@ lemma normPowerSeries_differentiable {d} (n : ℕ) :
 
 /-!
 
-## A.2. The limit of the norm power series
+### A.2. The limit of the norm power series
 
 -/
 open InnerProductSpace
@@ -115,17 +119,18 @@ lemma normPowerSeries_inv_tendsto {d} (x : Space d) (hx : x ≠ 0) :
 
 /-!
 
-## A.3. The derivative of the norm power series
+### A.3. The derivative of the norm power series
 
 -/
 open Space
 
-lemma deriv_normPowerSeries {d} (n : ℕ) (x : Space d) (i : Fin d)  :
+lemma deriv_normPowerSeries {d} (n : ℕ) (x : Space d) (i : Fin d) :
     ∂[i] (normPowerSeries n) x = x i * (normPowerSeries n x)⁻¹ := by
   rw [deriv_eq_fderiv_basis]
   rw [normPowerSeries_eq]
   rw [fderiv_sqrt]
-  simp
+  simp only [one_div, mul_inv_rev, fderiv_add_const, ContinuousLinearMap.coe_smul', Pi.smul_apply,
+    smul_eq_mul]
   rw [← deriv_eq_fderiv_basis]
   rw [deriv_norm_sq]
   ring
@@ -136,7 +141,7 @@ lemma deriv_normPowerSeries {d} (n : ℕ) (x : Space d) (i : Fin d)  :
 
 lemma fderiv_normPowerSeries {d} (n : ℕ) (x y : Space d) :
     fderiv ℝ (fun (x : Space d) => normPowerSeries n x) x y =
-      ⟪y, x⟫_ℝ * (normPowerSeries n x)⁻¹  := by
+      ⟪y, x⟫_ℝ * (normPowerSeries n x)⁻¹ := by
   rw [fderiv_eq_sum_deriv, inner_eq_sum, Finset.sum_mul]
   congr
   funext i
@@ -145,7 +150,7 @@ lemma fderiv_normPowerSeries {d} (n : ℕ) (x y : Space d) :
 
 /-!
 
-## A.4. Limits of the derivative of the power series
+### A.4. Limits of the derivative of the power series
 
 -/
 
@@ -166,7 +171,7 @@ lemma fderiv_normPowerSeries_tendsto {d} (x y : Space d) (hx : x ≠ 0) :
 
 /-!
 
-## A.5. The power series is AEStronglyMeasurable
+### A.5. The power series is AEStronglyMeasurable
 
 -/
 
@@ -180,7 +185,7 @@ lemma normPowerSeries_aestronglyMeasurable {d} (n : ℕ) :
 
 /-!
 
-## A.6. Bounds on the norm power series
+### A.6. Bounds on the norm power series
 
 -/
 
@@ -195,7 +200,7 @@ lemma normPowerSeries_le_norm_sq_add_one {d} (n : ℕ) (x : Space d) :
   trans √(‖x‖ ^ 2 + 1)
   · rw [normPowerSeries_eq]
     apply Real.sqrt_le_sqrt
-    simp
+    simp only [one_div, add_le_add_iff_left]
     refine inv_le_one_iff₀.mpr ?_
     right
     simp
@@ -206,7 +211,7 @@ lemma normPowerSeries_le_norm_sq_add_one {d} (n : ℕ) (x : Space d) :
       rfl
 /-!
 
-## A.7. The `IsDistBounded` property of the norm power series
+### A.7. The `IsDistBounded` property of the norm power series
 
 -/
 
@@ -215,17 +220,17 @@ lemma IsDistBounded.normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) :
     IsDistBounded (d := d) (fun x => (normPowerSeries n x) ^ m) := by
   match m with
   | .ofNat m =>
-    simp
+    simp only [Int.ofNat_eq_coe, zpow_natCast]
     apply IsDistBounded.mono (f := fun (x : Space d) => (‖x‖ + 1) ^ m)
     · fun_prop
     · fun_prop
     intro x
-    simp
+    simp only [norm_pow, Real.norm_eq_abs]
     refine pow_le_pow_left₀ (by positivity) ?_ m
     rw [abs_of_nonneg (by simp),abs_of_nonneg (by positivity)]
     exact normPowerSeries_le_norm_sq_add_one n x
   | .negSucc m =>
-    simp
+    simp only [zpow_negSucc]
     apply IsDistBounded.mono (f := fun (x : Space d) => ((√(1/(n + 1)) : ℝ) ^ (m + 1))⁻¹)
     · fun_prop
     · rw [normPowerSeries_eq_rpow]
@@ -238,7 +243,7 @@ lemma IsDistBounded.normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) :
       refine (pow_le_pow_iff_left₀ (by positivity) (by positivity) (by simp)).mpr ?_
       rw [abs_of_nonneg (by positivity), abs_of_nonneg (by simp)]
       rw [normPowerSeries_eq]
-      simp
+      simp only [Real.sqrt_inv, one_div]
       rw [← Real.sqrt_inv]
       apply Real.sqrt_le_sqrt
       simp
@@ -250,7 +255,7 @@ lemma IsDistBounded.normPowerSeries_inv {d : ℕ} {n : ℕ} :
   simp
 
 @[fun_prop]
-lemma IsDistBounded.normPowerSeries_deriv {d : ℕ} (n : ℕ) (i : Fin d):
+lemma IsDistBounded.normPowerSeries_deriv {d : ℕ} (n : ℕ) (i : Fin d) :
     IsDistBounded (d := d) (fun x => ∂[i] (normPowerSeries n) x) := by
   conv =>
     enter [1, x];
