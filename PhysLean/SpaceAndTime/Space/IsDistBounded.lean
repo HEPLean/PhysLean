@@ -147,7 +147,7 @@ lemma integrable_space {d : ℕ} {f : Space d → F} (hf : IsDistBounded f)
       rw [norm_smul]
       apply le_trans (mul_le_mul_of_nonneg_left (bound x) (norm_nonneg (η x)))
       apply le_of_eq
-      simp
+      simp only [Real.norm_eq_abs]
       rw [Finset.abs_sum_of_nonneg (fun i _ => mul_nonneg (c_nonneg i) (by positivity)),
         Finset.mul_sum]
       ring_nf
@@ -197,7 +197,7 @@ lemma integrable_space {d : ℕ} {f : Space d → F} (hf : IsDistBounded f)
     funext x
     have hx : 0 ≤ ‖x‖ := norm_nonneg x
     generalize ‖x‖ = r at *
-    simp
+    simp only [Real.norm_eq_abs, add_tsub_cancel_right, one_div, smul_eq_mul]
     trans |η x| * ((r ^ d)⁻¹ *r ^ (p + d)); swap
     · ring
     congr
@@ -256,13 +256,14 @@ instance {D1 : Type} [NormedAddCommGroup D1] [MeasurableSpace D1]
     · apply AEMeasurable.aestronglyMeasurable
       fun_prop
     filter_upwards with x
-    simp
+    simp only [Nat.cast_add, neg_add_rev, Real.norm_eq_abs, Real.rpow_neg_natCast, zpow_neg,
+      zpow_natCast]
     calc _
       _ = |(1 + ‖x‖) ^ (-(rt1 : ℝ)) * (1 + ‖x‖) ^ (-(rt2 : ℝ))| := by
         rw [Real.rpow_add (by positivity), mul_comm]
       _ = (1 + ‖x‖) ^ (-(rt1 : ℝ)) * (1 + ‖x‖) ^ (-(rt2 : ℝ)) := by
         rw [abs_of_nonneg (by positivity)]
-    simp
+    simp only [Real.rpow_neg_natCast, zpow_neg, zpow_natCast]
     apply mul_le_mul _ _ (by positivity) (by positivity)
     · refine inv_anti₀ (by positivity) (pow_le_pow_left₀ (by positivity) ?_ rt1)
       rcases x
@@ -285,7 +286,7 @@ lemma integrable_time_space {d : ℕ} {f : Space d → F} (hf : IsDistBounded f)
       rw [norm_smul]
       apply le_trans (mul_le_mul_of_nonneg_left (bound x.2) (norm_nonneg (η x)))
       apply le_of_eq
-      simp
+      simp only [Real.norm_eq_abs]
       rw [Finset.abs_sum_of_nonneg (fun i _ => mul_nonneg (c_nonneg i) (by positivity)),
         Finset.mul_sum]
       ring_nf
@@ -408,7 +409,7 @@ lemma integrable_mul_inv_pow {d : ℕ}
       rw [norm_smul]
       apply le_trans (mul_le_mul_of_nonneg_left (bound x) (by positivity))
       apply le_of_eq
-      simp
+      simp only [norm_inv, norm_pow, Real.norm_eq_abs, abs_abs]
       rw [Finset.abs_sum_of_nonneg (fun i _ => mul_nonneg (c_nonneg i) (by positivity)),
         Finset.mul_sum]
       ring_nf
@@ -430,7 +431,8 @@ lemma integrable_mul_inv_pow {d : ℕ}
     apply (h0 (p + d).toNat c).mono
     · fun_prop
     · filter_upwards with x
-      simp
+      simp only [norm_inv, norm_pow, Real.norm_eq_abs, norm_mul, abs_abs, norm_zpow, norm_norm,
+        Int.ofNat_toNat]
       rw [mul_comm]
       refine mul_le_mul ?_ ?_ (by positivity) (by positivity)
       · rw [max_eq_left (by omega)]
