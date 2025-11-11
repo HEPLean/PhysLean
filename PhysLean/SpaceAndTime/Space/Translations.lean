@@ -130,18 +130,12 @@ lemma translateD_distGrad {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
 
 open MeasureTheory
 lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
-    (f : Space d.succ → X) (hf : IsDistBounded f)
-    (hae: AEStronglyMeasurable f volume) :
-    translateD a (ofFunction f hf hae) =
-    ofFunction (fun x => f (x - a)) (IsDistBounded.comp_add_right hf fun i => -a i)
-    (by
-      change AEStronglyMeasurable (f ∘ fun x => x - a) volume
-      rw [MeasureTheory.MeasurePreserving.aestronglyMeasurable_comp_iff (μb := volume)]
-      · fun_prop
-      · exact measurePreserving_sub_right volume a
-      · exact measurableEmbedding_subRight a) := by
+    (f : Space d.succ → X) (hf : IsDistBounded f) :
+    translateD a (distOfFunction f hf) =
+    distOfFunction (fun x => f (x - a))
+    (IsDistBounded.comp_add_right hf fun i => -a i) := by
   ext η
-  rw [translateD_apply, ofFunction_apply, ofFunction_apply]
+  rw [translateD_apply, distOfFunction_apply, distOfFunction_apply]
   trans ∫ (x : EuclideanSpace ℝ (Fin d.succ)), η ((x - a) + a) • f (x - a); swap
   · simp
   let f' := fun x : EuclideanSpace ℝ (Fin d.succ) => η (x + a) • f (x)

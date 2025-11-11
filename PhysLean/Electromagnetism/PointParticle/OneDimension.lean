@@ -88,12 +88,11 @@ noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
   ElectromagneticPotentialD.toComponents.symm fun μ =>
   match μ with
   | Sum.inl 0 => SpaceTime.distTimeSlice.symm <| Space.constantTime
-    (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+    (- distOfFunction (fun x => (q/(2)) • ‖x‖)
     (by
       apply IsDistBounded.const_smul
       convert IsDistBounded.pow (n := 1) (by simp)
-      simp)
-    (by fun_prop))
+      simp))
   | Sum.inr i => 0
 
 /-!
@@ -117,12 +116,11 @@ lemma oneDimPointParticle_vectorPotential (q : ℝ) :
 
 lemma oneDimPointParticle_scalarPotential (q : ℝ) :
     (oneDimPointParticle q).scalarPotential =
-    Space.constantTime (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+    Space.constantTime (- distOfFunction (fun x => (q/(2)) • ‖x‖)
     (by
       apply IsDistBounded.const_smul
       convert IsDistBounded.pow (n := 1) (by simp)
-      simp)
-    (by fun_prop)) := by
+      simp)) := by
   rw [Electromagnetism.ElectromagneticPotentialD.scalarPotential]
   ext x
   simp [oneDimPointParticle]
@@ -137,12 +135,11 @@ set_option maxHeartbeats 400000 in
 lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
     (oneDimPointParticle q).electricField = constantTime (q •
     ((heavisideStep 0).smulRight (basis 0) - (1 / (2 : ℝ)) • distConst 1 (basis 0))) := by
-  suffices hE : - Space.distGrad (- Distribution.ofFunction (fun x => (q/(2)) • ‖x‖)
+  suffices hE : - Space.distGrad (- distOfFunction (fun x => (q/(2)) • ‖x‖)
       (by
         apply IsDistBounded.const_smul
         convert IsDistBounded.pow (n := 1) (by simp)
-        simp)
-      (by fun_prop)) = ((q) • ((heavisideStep 0).smulRight (basis 0) -
+        simp)) = ((q) • ((heavisideStep 0).smulRight (basis 0) -
       (1/(2 : ℝ)) • distConst 1 (basis 0))) by
     rw [Electromagnetism.ElectromagneticPotentialD.electricField]
     simp only [LinearMap.coe_mk, AddHom.coe_mk, oneDimPointParticle_vectorPotential, map_zero,
@@ -176,7 +173,7 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
         Fin.isValue, distGrad_eq_sum_basis, Finset.univ_unique, Fin.default_eq_zero, neg_smul,
         Finset.sum_neg_distrib, Finset.sum_singleton, PiLp.neg_apply, PiLp.smul_apply, basis_self,
         mul_one, neg_inj]
-      rw [ofFunction_apply]
+      rw [distOfFunction_apply]
       rfl
     /- Pulling out the scalar `q/(2 * ε)` gives
       `- ∫ x, dη/dx • (q/(2 * ε) |x|) = - q/(2 * ε) ∫ x, dη/dx • |x|`.
@@ -200,10 +197,9 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
       · ring
       change Integrable (fun x : EuclideanSpace ℝ (Fin 1) =>
         ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0)) ((fderivCLM ℝ) η)) x • ‖x‖)
-      apply IsDistBounded.schwartzMap_smul_integrable
-      · convert IsDistBounded.pow (n := 1) (by simp)
-        simp
-      · fun_prop
+      apply IsDistBounded.integrable_space
+      convert IsDistBounded.pow (n := 1) (by simp)
+      simp
     /- In the first of these integrals `|x|=x` whilst in the second `|x| = -x` giving
       us
       `- q/(2 * ε) ∫_0^(∞) x, dη/dx • x - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • (-x)` -/

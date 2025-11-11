@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Time.Derivatives
-import PhysLean.Mathematics.Distribution.Function.OfFunction
+import PhysLean.SpaceAndTime.Space.DistOfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 import PhysLean.SpaceAndTime.Space.Derivatives.Curl
 /-!

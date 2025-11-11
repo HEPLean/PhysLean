@@ -60,33 +60,25 @@ def chargeDistribution (q : ℝ) (r₀ : Space) : ChargeDistribution 3 := q • 
   In physics notation this corresponds to the 'function' `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹`.
   Here it is defined as the distribution corresponding to that function. -/
 def electricPotential (q ε : ℝ) (r₀ : Space) : StaticElectricPotential 3 :=
-  Distribution.ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹)
-  (by
-    apply IsDistBounded.const_smul
-    apply IsDistBounded.congr (f := fun r => ‖r - r₀‖ ^ (-1 : ℤ))
-      (IsDistBounded.pow_shift (-1) r₀ (by simp))
-    simp) (by
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd];
-    refine AEStronglyMeasurable.const_mul ?_ (q / (4 * π * ε))
-    refine StronglyMeasurable.aestronglyMeasurable ?_
-    refine stronglyMeasurable_iff_measurable.mpr ?_
-    fun_prop)
+  distOfFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹)
+  ((IsDistBounded.inv.comp_sub_right (f := fun r => ‖r‖⁻¹) (c := r₀)).const_smul _)
 
 /-- The electric field of a point particle of charge `q` in 3d space sitting at `r₀`.
   In physics notation this corresponds to the 'function'
   `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀)`.
   Here it is defined as the distribution corresponding to that function. -/
 def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
-  ofFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀))
+  distOfFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀))
   (by
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r - r₀‖ ^ (-2 : ℤ))
       (IsDistBounded.pow_shift _ r₀ (by simp))
+    · fun_prop
     simp [norm_smul]
     intro x
     by_cases hx : ‖x - r₀‖ = 0
     · simp [hx, zpow_two]
-    · field_simp [zpow_two]) (by fun_prop)
+    · field_simp [zpow_two])
 
 /-!
 
@@ -181,8 +173,8 @@ lemma distGrad_electricPotential_eq_electricField_of_integral_eq_zero (q ε : �
   intro y
   simp [inner_sub_left, distGrad_inner_eq, fderivD_apply]
   dsimp [electricPotential, electricField]
-  rw [ofFunction_inner, ofFunction_apply]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, smul_eq_mul, inv_pow]
+  rw [distOfFunction_inner, distOfFunction_apply]
+  simp only [smul_eq_mul, inv_pow]
   rw [← integral_sub]
   simp only [sub_zero]
   change ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * (q / (4 * π * ε) * ‖a‖⁻¹)) -
@@ -195,26 +187,21 @@ lemma distGrad_electricPotential_eq_electricField_of_integral_eq_zero (q ε : �
     simp only [fderivCLM_apply, map_div₀, conj_trivial]
     ring
   rw [integral_const_mul, h_integral, mul_zero]
-  apply IsDistBounded.schwartzMap_mul_integrable
-  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, sub_zero]
+  apply IsDistBounded.integrable_space
+  · simp only [sub_zero]
     change IsDistBounded fun x => (q / (4 * π * ε)) • ‖x‖⁻¹
     apply IsDistBounded.const_smul
     fun_prop
-  · simp only [Nat.succ_eq_add_one, Nat.reduceAdd];
-    refine AEStronglyMeasurable.const_mul ?_ (q / (4 * π * ε))
-    refine StronglyMeasurable.aestronglyMeasurable ?_
-    refine stronglyMeasurable_iff_measurable.mpr ?_
-    fun_prop
-  apply IsDistBounded.schwartzMap_mul_integrable
+  apply IsDistBounded.integrable_space
   · apply IsDistBounded.inner_left
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
+    · fun_prop
     simp [norm_smul]
     intro x
     by_cases hx : ‖x‖ = 0
     · simp [hx, zpow_two]
     · field_simp [zpow_two]
-  · fun_prop
 
 /-!
 
@@ -487,16 +474,18 @@ lemma potentialLimitSeries_bounded (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) :
   · apply (potentialLimitSeries_bounded_neq_zero n x hx).trans
     simp
 
+@[fun_prop]
 lemma potentialLimitSeries_isDistBounded (n : ℕ) :
     IsDistBounded (potentialLimitSeries n) := by
   apply IsDistBounded.mono (f := fun x => ‖x‖⁻¹ + √(n + 1))
   · apply IsDistBounded.add
     · apply IsDistBounded.inv
     · apply IsDistBounded.const
+  · fun_prop
   · intro x
     apply (potentialLimitSeries_bounded n x).trans
     apply le_of_eq
-    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, norm_eq_abs]
+    simp only [norm_eq_abs]
     rw [abs_of_nonneg]
     positivity
 
@@ -536,15 +525,17 @@ lemma potentialLimitSeries_fderiv_bounded (n : ℕ)
   have hx : 0 < ‖x‖ := by positivity
   field_simp
 
+@[fun_prop]
 lemma potentialLimitSeries_fderiv_isDistBounded (n : ℕ) (y : EuclideanSpace ℝ (Fin 3)) :
     IsDistBounded (fun x => fderiv ℝ (potentialLimitSeries n) x y) := by
   apply IsDistBounded.mono (f := fun x => (‖x‖⁻¹) ^ 2 * ‖y‖)
   · conv => enter [1, x]; rw [mul_comm]
     apply IsDistBounded.const_mul_fun
-    convert IsDistBounded.pow (dm1 := 2) (-2) (by simp) using 1
+    convert IsDistBounded.pow (d := 3) (-2) (by simp) using 1
     funext x
     simp
     rfl
+  · fun_prop
   · intro x
     apply (potentialLimitSeries_fderiv_bounded n x y).trans
     simp
@@ -647,22 +638,15 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral
     (potentialLimitSeriesFDerivSchwartz_tendsto y η)
   · apply Integrable.add
     · refine Integrable.norm ?_
-      apply IsDistBounded.integrable_fderviv_schwartzMap_mul
-      · fun_prop
-      · refine StronglyMeasurable.aestronglyMeasurable ?_
-        refine stronglyMeasurable_iff_measurable.mpr ?_
-        fun_prop
+      fun_prop
     · refine Integrable.norm ?_
-      apply IsDistBounded.schwartzMap_mul_integrable
+      apply IsDistBounded.integrable_space
       · conv => enter [1, x]; rw [mul_comm]
         refine IsDistBounded.const_mul_fun ?_ ‖y‖
-        convert IsDistBounded.pow (dm1 := 2) (-2) (by simp) using 1
+        convert IsDistBounded.pow (d := 3) (-2) (by simp) using 1
         funext x
         simp
         rfl
-      · refine StronglyMeasurable.aestronglyMeasurable ?_
-        refine stronglyMeasurable_iff_measurable.mpr ?_
-        fun_prop
   · intro n
     rw [Filter.eventually_iff_exists_mem]
     use {0}ᶜ
@@ -710,25 +694,10 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_eq_zero
     (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
     ∫ (x : EuclideanSpace ℝ (Fin 3)), potentialLimitSeriesFDerivSchwartz y η n x = 0 := by
   conv_lhs => enter [2, x]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
-  rw [integral_add, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
+  rw [integral_add (by fun_prop) (by fun_prop),
+    integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (by fun_prop)
+      (by fun_prop) (by fun_prop) η.differentiable (potentialLimitSeries_differentiable n)]
   simp only [add_neg_cancel]
-  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
-    · exact potentialLimitSeries_isDistBounded n
-    · exact potentialLimitSeries_aeStronglyMeasurable n
-  · apply IsDistBounded.schwartzMap_mul_integrable
-    · exact potentialLimitSeries_fderiv_isDistBounded n y
-    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
-  · apply IsDistBounded.schwartzMap_mul_integrable
-    · exact potentialLimitSeries_isDistBounded n
-    · exact potentialLimitSeries_aeStronglyMeasurable n
-  · exact SchwartzMap.differentiable η
-  · exact potentialLimitSeries_differentiable n
-  · apply IsDistBounded.integrable_fderviv_schwartzMap_mul
-    · exact potentialLimitSeries_isDistBounded n
-    · exact potentialLimitSeries_aeStronglyMeasurable n
-  · apply IsDistBounded.schwartzMap_mul_integrable
-    · exact potentialLimitSeries_fderiv_isDistBounded n y
-    · exact potentialLimitSeries_fderiv_aeStronglyMeasurable n y
 
 /-!
 #### Part D.4.II.
@@ -948,15 +917,17 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       congr 1
       rw [MeasureTheory.integral_prod]
       /- Integrable condition. -/
+
       convert integrable_isDistBounded_inner_grad_schwartzMap_spherical
           (f := fun r => ‖r‖⁻¹ ^ 3 • r)
         (by
         apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
+        · fun_prop
         simp [norm_smul]
         intro x
         by_cases hx : ‖x‖ = 0
         · simp [hx, zpow_two]
-        · field_simp [zpow_two]) (by fun_prop) η
+        · field_simp [zpow_two]) η
       rename_i r
       simp only [norm_eq_abs, inv_pow, sq_abs, Nat.succ_eq_add_one, Nat.reduceAdd,
         Function.comp_apply, homeomorphUnitSphereProd_symm_apply_coe]

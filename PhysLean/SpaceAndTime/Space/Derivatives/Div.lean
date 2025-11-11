@@ -205,9 +205,8 @@ lemma distDiv_apply_eq_sum_distDeriv {d}
 
 /-- The divergence of a distribution from a bounded function. -/
 lemma distDiv_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
-    {hf : IsDistBounded f}
-    {hae: AEStronglyMeasurable (fun x => f x) volume} (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
-    distDiv (Distribution.ofFunction f hf hae) η =
+    {hf : IsDistBounded f} (η : 𝓢(Space dm1.succ, ℝ)) :
+    distDiv (distOfFunction f hf) η =
     - ∫ x : Space dm1.succ, ⟪f x, Space.grad η x⟫_ℝ := by
   rw [distDiv_apply_eq_sum_fderivD]
   conv_rhs =>
@@ -215,15 +214,13 @@ lemma distDiv_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ 
     rw [grad_eq_sum, inner_sum]
   conv_lhs =>
     enter [2, i]
-    rw [fderivD_apply, ofFunction_apply]
+    rw [fderivD_apply, distOfFunction_apply]
   /- The following lemma could probably be moved out of this result. -/
   have integrable_lemma (i j : Fin (dm1 + 1)) :
       Integrable (fun x =>
         (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
     simp only [PiLp.smul_apply]
-    apply IsDistBounded.schwartzMap_smul_integrable
-    · exact IsDistBounded.pi_comp hf j
-    · fun_prop
+    exact (hf.pi_comp j).integrable_space _
   rw [MeasureTheory.integral_finset_sum]
   · simp
     congr

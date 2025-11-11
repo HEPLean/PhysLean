@@ -338,8 +338,7 @@ open InnerProductSpace Distribution SchwartzMap MeasureTheory
   and `η` a Schwartz map. -/
 lemma integrable_isDistBounded_inner_grad_schwartzMap {dm1 : ℕ}
     {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
-    (hf : IsDistBounded f)
-    (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
+    (hf : IsDistBounded f) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     Integrable (fun x => ⟪f x, Space.grad η x⟫_ℝ) volume := by
   conv =>
     enter [1, x]
@@ -351,9 +350,7 @@ lemma integrable_isDistBounded_inner_grad_schwartzMap {dm1 : ℕ}
       Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j)
         volume := by
     simp only [PiLp.smul_apply]
-    apply IsDistBounded.schwartzMap_smul_integrable
-    · exact IsDistBounded.pi_comp hf j
-    · fun_prop
+    exact (hf.pi_comp j).integrable_space _
   convert integrable_lemma i i
   rename_i x
   simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, mul_eq_mul_right_iff]
@@ -363,8 +360,7 @@ lemma integrable_isDistBounded_inner_grad_schwartzMap {dm1 : ℕ}
 
 lemma integrable_isDistBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
     {f : Space dm1.succ → EuclideanSpace ℝ (Fin dm1.succ)}
-    (hf : IsDistBounded f)
-    (hae: AEStronglyMeasurable (fun x => f x) volume) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
+    (hf : IsDistBounded f) (η : 𝓢(EuclideanSpace ℝ (Fin dm1.succ), ℝ)) :
     Integrable ((fun x => ⟪f x.1, Space.grad η x.1⟫_ℝ)
       ∘ (homeomorphUnitSphereProd (Space dm1.succ)).symm)
       ((volume (α := Space dm1.succ)).toSphere.prod
@@ -375,7 +371,7 @@ lemma integrable_isDistBounded_inner_grad_schwartzMap_spherical{dm1 : ℕ}
       (.comap (Subtype.val (p := fun x => x ∈ ({0}ᶜ : Set _))) volume)
     rw [← MeasureTheory.integrableOn_iff_comap_subtypeVal]
     apply Integrable.integrableOn
-    exact integrable_isDistBounded_inner_grad_schwartzMap hf hae η
+    exact integrable_isDistBounded_inner_grad_schwartzMap hf η
     simp
   have he := (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
     (volume (α := EuclideanSpace ℝ (Fin dm1.succ))))

@@ -8,7 +8,7 @@ import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Analysis.Calculus.Gradient.Basic
-import PhysLean.Mathematics.Distribution.Function.OfFunction
+import PhysLean.SpaceAndTime.Space.DistOfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 

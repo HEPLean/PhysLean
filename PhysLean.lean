@@ -44,9 +44,6 @@ import PhysLean.Mathematics.DataStructures.FourTree.Basic
 import PhysLean.Mathematics.DataStructures.FourTree.UniqueMap
 import PhysLean.Mathematics.DataStructures.Matrix.LieTrace
 import PhysLean.Mathematics.Distribution.Basic
-import PhysLean.Mathematics.Distribution.Function.InvPowMeasure
-import PhysLean.Mathematics.Distribution.Function.IsDistBounded
-import PhysLean.Mathematics.Distribution.Function.OfFunction
 import PhysLean.Mathematics.Distribution.PowMul
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin
@@ -332,6 +329,8 @@ import PhysLean.SpaceAndTime.Space.Derivatives.Div
 import PhysLean.SpaceAndTime.Space.Derivatives.Grad
 import PhysLean.SpaceAndTime.Space.Derivatives.Laplacian
 import PhysLean.SpaceAndTime.Space.DistConst
+import PhysLean.SpaceAndTime.Space.DistOfFunction
+import PhysLean.SpaceAndTime.Space.IsDistBounded
 import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.SpaceAndTime.Space.RadialAngularMeasure
 import PhysLean.SpaceAndTime.Space.SpaceStruct
