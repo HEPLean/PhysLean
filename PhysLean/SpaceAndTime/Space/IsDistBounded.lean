@@ -112,6 +112,12 @@ lemma aeStronglyMeasurable_schwartzMap_smul {d : ℕ} {f : Space d → F}
   fun_prop
 
 @[fun_prop]
+lemma aeStronglyMeasurable_fderiv_schwartzMap_smul {d : ℕ} {f : Space d → F}
+    (hf : IsDistBounded f) (η : 𝓢(Space d, ℝ)) (y : Space d) :
+    AEStronglyMeasurable (fun x => fderiv ℝ η x y • f x) := by
+  fun_prop
+
+@[fun_prop]
 lemma aeStronglyMeasurable_inv_pow {d r : ℕ} {f : Space d → F}
     (hf : IsDistBounded f) :
     AEStronglyMeasurable (fun x => ‖((1 + ‖x‖) ^ r)⁻¹‖ • f x) := by
@@ -851,6 +857,7 @@ lemma pow {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) ≤ n) :
   · intro x
     simp
 
+
 @[fun_prop]
 lemma pow_shift {d : ℕ} (n : ℤ)
     (g : Space d) (hn : - (d - 1 : ℕ) ≤ n) :
@@ -939,6 +946,40 @@ lemma log_norm {d : ℕ} :
       apply le_trans _ h1
       simp
 
+
+lemma zpow_smul_self {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n) :
+    IsDistBounded (d := d) (fun x => ‖x‖ ^ n • x) := by
+  by_cases hzero : n = -1
+  · apply IsDistBounded.mono (f := fun x => (1 : ℝ))
+    · fun_prop
+    · apply AEMeasurable.aestronglyMeasurable
+      fun_prop
+    · intro x
+      simp [norm_smul]
+      subst hzero
+      simp
+      by_cases hx : x = 0
+      · subst hx
+        simp
+      rw [inv_mul_cancel₀]
+      simpa using hx
+  apply IsDistBounded.congr (f := fun x => ‖x‖ ^ (n + 1))
+  · apply pow
+    omega
+  · apply AEMeasurable.aestronglyMeasurable
+    fun_prop
+  · intro x
+    by_cases hx : x = 0
+    · subst hx
+      simp
+      rw [@zero_zpow_eq]
+      rw [if_neg]
+      omega
+    · simp [norm_smul]
+      rw [zpow_add₀]
+      simp
+      ring_nf
+      simpa using hx
 /-!
 
 ## F. Multiplication by norms and components
@@ -965,7 +1006,7 @@ lemma norm_smul_nat_pow {d} (p : ℕ) (c : Space d) :
   · apply AEMeasurable.aestronglyMeasurable
     fun_prop
   · intro x
-    simp [norm_mul, norm_norm, norm_pow, Real.norm_eq_abs]
+    simp [norm_mul, norm_pow, Real.norm_eq_abs]
     rw [abs_of_nonneg (by positivity)]
     have h1 : ‖x + c‖ ≤ ‖x‖ + ‖c‖ := norm_add_le x c
     have h2 : ‖x + c‖ ^ p ≤ (‖x‖ + ‖c‖) ^ p := by
@@ -1089,6 +1130,44 @@ lemma component_mul_isDistBounded {d : ℕ} {f : Space d → ℝ}
     (hf : IsDistBounded f) (i : Fin d) :
     IsDistBounded (fun x => x i * f x) := by
   convert hf.component_smul_isDistBounded i using 2
+
+@[fun_prop]
+lemma isDistBounded_smul_self {d : ℕ} {f : Space d → ℝ}
+    (hf : IsDistBounded f)  : IsDistBounded (fun x => f x • x) := by
+  apply IsDistBounded.congr (f := fun x => ‖x‖ * f x)
+  · fun_prop
+  · apply AEStronglyMeasurable.smul
+    · fun_prop
+    · fun_prop
+  · intro x
+    simp [norm_smul]
+    ring
+
+@[fun_prop]
+lemma isDistBounded_smul_inner {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
+    (hf : IsDistBounded f)  (y : Space d): IsDistBounded (fun x => ⟪y, x⟫_ℝ • f x) := by
+  have h1 (x : Space d): ⟪y, x⟫_ℝ • f x = ∑ i, (y i * x i) • f x := by
+    rw [inner_eq_sum, ← Finset.sum_smul]
+  conv =>
+    enter [1, x]
+    rw [h1 x]
+  apply IsDistBounded.sum_fun
+  intro i _
+  simp [← smul_smul]
+  refine const_fun_smul ?_ (y i)
+  fun_prop
+
+@[fun_prop]
+lemma isDistBounded_mul_inner {d : ℕ} {f : Space d → ℝ}
+    (hf : IsDistBounded f)  (y : Space d): IsDistBounded (fun x => ⟪y, x⟫_ℝ * f x) := by
+  convert hf.isDistBounded_smul_inner y using 2
+
+lemma isDistBounded_mul_inner' {d : ℕ} {f : Space d → ℝ}
+    (hf : IsDistBounded f)  (y : Space d): IsDistBounded (fun x => ⟪x, y⟫_ℝ * f x) := by
+  convert hf.isDistBounded_smul_inner y using 2
+  rw [real_inner_comm]
+  simp
+
 
 end constructors
 end IsDistBounded
