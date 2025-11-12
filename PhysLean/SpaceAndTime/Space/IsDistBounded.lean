@@ -857,7 +857,6 @@ lemma pow {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) ≤ n) :
   · intro x
     simp
 
-
 @[fun_prop]
 lemma pow_shift {d : ℕ} (n : ℤ)
     (g : Space d) (hn : - (d - 1 : ℕ) ≤ n) :
@@ -946,7 +945,6 @@ lemma log_norm {d : ℕ} :
       apply le_trans _ h1
       simp
 
-
 lemma zpow_smul_self {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n) :
     IsDistBounded (d := d) (fun x => ‖x‖ ^ n • x) := by
   by_cases hzero : n = -1
@@ -957,7 +955,7 @@ lemma zpow_smul_self {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n) :
     · intro x
       simp [norm_smul]
       subst hzero
-      simp
+      simp only [Int.reduceNeg, zpow_neg, zpow_one]
       by_cases hx : x = 0
       · subst hx
         simp
@@ -971,13 +969,13 @@ lemma zpow_smul_self {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n) :
   · intro x
     by_cases hx : x = 0
     · subst hx
-      simp
+      simp only [norm_zero, smul_zero, norm_zpow]
       rw [@zero_zpow_eq]
       rw [if_neg]
       omega
     · simp [norm_smul]
       rw [zpow_add₀]
-      simp
+      simp only [zpow_one]
       ring_nf
       simpa using hx
 /-!
@@ -1133,7 +1131,7 @@ lemma component_mul_isDistBounded {d : ℕ} {f : Space d → ℝ}
 
 @[fun_prop]
 lemma isDistBounded_smul_self {d : ℕ} {f : Space d → ℝ}
-    (hf : IsDistBounded f)  : IsDistBounded (fun x => f x • x) := by
+    (hf : IsDistBounded f) : IsDistBounded (fun x => f x • x) := by
   apply IsDistBounded.congr (f := fun x => ‖x‖ * f x)
   · fun_prop
   · apply AEStronglyMeasurable.smul
@@ -1145,8 +1143,8 @@ lemma isDistBounded_smul_self {d : ℕ} {f : Space d → ℝ}
 
 @[fun_prop]
 lemma isDistBounded_smul_inner {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
-    (hf : IsDistBounded f)  (y : Space d): IsDistBounded (fun x => ⟪y, x⟫_ℝ • f x) := by
-  have h1 (x : Space d): ⟪y, x⟫_ℝ • f x = ∑ i, (y i * x i) • f x := by
+    (hf : IsDistBounded f) (y : Space d) : IsDistBounded (fun x => ⟪y, x⟫_ℝ • f x) := by
+  have h1 (x : Space d) : ⟪y, x⟫_ℝ • f x = ∑ i, (y i * x i) • f x := by
     rw [inner_eq_sum, ← Finset.sum_smul]
   conv =>
     enter [1, x]
@@ -1159,15 +1157,14 @@ lemma isDistBounded_smul_inner {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
 
 @[fun_prop]
 lemma isDistBounded_mul_inner {d : ℕ} {f : Space d → ℝ}
-    (hf : IsDistBounded f)  (y : Space d): IsDistBounded (fun x => ⟪y, x⟫_ℝ * f x) := by
+    (hf : IsDistBounded f) (y : Space d) : IsDistBounded (fun x => ⟪y, x⟫_ℝ * f x) := by
   convert hf.isDistBounded_smul_inner y using 2
 
 lemma isDistBounded_mul_inner' {d : ℕ} {f : Space d → ℝ}
-    (hf : IsDistBounded f)  (y : Space d): IsDistBounded (fun x => ⟪x, y⟫_ℝ * f x) := by
+    (hf : IsDistBounded f) (y : Space d) : IsDistBounded (fun x => ⟪x, y⟫_ℝ * f x) := by
   convert hf.isDistBounded_smul_inner y using 2
   rw [real_inner_comm]
   simp
-
 
 end constructors
 end IsDistBounded

@@ -34,6 +34,10 @@ differentiable everywhere, and which tends to the norm in the limit as `n → �
   - A.5. The power series is AEStronglyMeasurable
   - A.6. Bounds on the norm power series
   - A.7. The `IsDistBounded` property of the norm power series
+  - A.8. Differentiability of functions
+  - A.9. Derivatives of functions
+  - A.10. Gradients of distributions
+- B. Distributions involving norms
 
 ## iv. References
 
@@ -199,14 +203,14 @@ lemma normPowerSeries_nonneg {d} (n : ℕ) (x : Space d) :
 lemma normPowerSeries_pos {d} (n : ℕ) (x : Space d) :
     0 < normPowerSeries n x := by
   rw [normPowerSeries_eq]
-  simp
+  simp only [one_div, Real.sqrt_pos]
   positivity
 
 @[simp]
 lemma normPowerSeries_ne_zero {d} (n : ℕ) (x : Space d) :
     normPowerSeries n x ≠ 0 := by
   rw [normPowerSeries_eq]
-  simp
+  simp only [one_div, ne_eq]
   positivity
 
 lemma normPowerSeries_le_norm_sq_add_one {d} (n : ℕ) (x : Space d) :
@@ -224,24 +228,23 @@ lemma normPowerSeries_le_norm_sq_add_one {d} (n : ℕ) (x : Space d) :
     · ring_nf
       rfl
 
-
 @[simp]
 lemma norm_lt_normPowerSeries {d} (n : ℕ) (x : Space d) :
     ‖x‖ < normPowerSeries n x := by
   rw [normPowerSeries_eq]
   apply Real.lt_sqrt_of_sq_lt
-  simp
+  simp only [one_div, lt_add_iff_pos_right, inv_pos]
   positivity
 
 lemma norm_le_normPowerSeries {d} (n : ℕ) (x : Space d) :
     ‖x‖ ≤ normPowerSeries n x := by
   rw [normPowerSeries_eq]
   apply Real.le_sqrt_of_sq_le
-  simp
+  simp only [one_div, le_add_iff_nonneg_right, inv_nonneg]
   positivity
 
 lemma normPowerSeries_zpow_le_norm_sq_add_one {d} (n : ℕ) (m : ℤ) (x : Space d)
-  (hx : x ≠ 0) :
+    (hx : x ≠ 0) :
     (normPowerSeries n x) ^ m ≤ (‖x‖ + 1) ^ m + ‖x‖ ^ m := by
   match m with
   | .ofNat m =>
@@ -254,7 +257,7 @@ lemma normPowerSeries_zpow_le_norm_sq_add_one {d} (n : ℕ) (m : ℤ) (x : Space
     trans (‖x‖ ^ (m + 1))⁻¹; swap
     · simp
       positivity
-    simp
+    simp only [zpow_negSucc]
     refine inv_anti₀ ?_ ?_
     · positivity
     refine pow_le_pow_left₀ (by simp) ?_ (m + 1)
@@ -301,7 +304,7 @@ lemma IsDistBounded.normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) :
 
 @[fun_prop]
 lemma IsDistBounded.normPowerSeries_single {d : ℕ} {n : ℕ} :
-    IsDistBounded (d := d) (fun x => (normPowerSeries n x) ) := by
+    IsDistBounded (d := d) (fun x => (normPowerSeries n x)) := by
   convert IsDistBounded.normPowerSeries_zpow (n := n) (m := 1) using 1
   simp
 
@@ -396,13 +399,13 @@ lemma deriv_normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) (x : Space d) (i 
   simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv, deriv_zpow',
     smul_eq_mul]
   rw [fderiv_normPowerSeries]
-  simp
+  simp only [basis_inner]
   field_simp
   ring_nf
   have h1 : normPowerSeries n x ^ (-1 + m) = normPowerSeries n x ^ ((-2 + m) + 1) := by
     ring_nf
   rw [h1, zpow_add₀]
-  simp
+  simp only [Int.reduceNeg, zpow_one]
   ring
   · simp
   · refine DifferentiableAt.zpow ?_ ?_
@@ -426,9 +429,10 @@ lemma deriv_log_normPowerSeries {d : ℕ} {n : ℕ} (x : Space d) (i : Fin d) :
   rw [deriv_eq_fderiv_basis]
   change (fderiv ℝ (Real.log ∘ normPowerSeries n) x) (basis i) = _
   rw [fderiv_comp,]
-  simp
+  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv,
+    Real.deriv_log', smul_eq_mul, Int.reduceNeg, zpow_neg]
   rw [fderiv_normPowerSeries]
-  simp  [zpow_ofNat, sq]
+  simp [zpow_ofNat, sq]
   ring
   · apply DifferentiableAt.log ?_ ?_
     · fun_prop
@@ -460,7 +464,7 @@ lemma gradient_dist_normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) :
   simp [distGrad_inner_eq]
   rw [Distribution.fderivD_apply, distOfFunction_apply, distOfFunction_inner]
   calc _
-    _ =  - ∫ (x : Space d), fderiv ℝ η x y * normPowerSeries n x ^ m := by
+    _ = - ∫ (x : Space d), fderiv ℝ η x y * normPowerSeries n x ^ m := by
       rfl
     _ = ∫ (x : Space d), η x * fderiv ℝ (normPowerSeries n · ^ m) x y := by
       rw [integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
@@ -493,7 +497,7 @@ lemma gradient_dist_normPowerSeries_log {d : ℕ} {n : ℕ} :
   simp [distGrad_inner_eq]
   rw [Distribution.fderivD_apply, distOfFunction_apply, distOfFunction_inner]
   calc _
-    _ =  - ∫ (x : Space d), fderiv ℝ η x y * Real.log (normPowerSeries n x) := by
+    _ = - ∫ (x : Space d), fderiv ℝ η x y * Real.log (normPowerSeries n x) := by
       rfl
     _ = ∫ (x : Space d), η x * fderiv ℝ (fun x => Real.log (normPowerSeries n x)) x y := by
       rw [integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
@@ -515,22 +519,25 @@ lemma gradient_dist_normPowerSeries_log {d : ℕ} {n : ℕ} :
   rw [real_inner_comm]
   ring
 
-lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) ≤ m) (η : 𝓢(Space d.succ, ℝ))
+lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : ℤ)
+    (hm : - (d.succ - 1 : ℕ) ≤ m) (η : 𝓢(Space d.succ, ℝ))
     (y : EuclideanSpace ℝ (Fin d.succ)) :
     Filter.Tendsto (fun n =>
-    ⟪(distGrad (distOfFunction (fun x : Space d.succ => (normPowerSeries n x) ^ m) (by fun_prop))) η, y⟫_ℝ)
+    ⟪(distGrad (distOfFunction
+    (fun x : Space d.succ => (normPowerSeries n x) ^ m) (by fun_prop))) η, y⟫_ℝ)
     Filter.atTop
-    (𝓝 (⟪distGrad (distOfFunction (fun x : Space d.succ => ‖x‖ ^ m) (IsDistBounded.pow m hm)) η, y⟫_ℝ)) := by
+    (𝓝 (⟪distGrad (distOfFunction (fun x : Space d.succ => ‖x‖ ^ m)
+    (IsDistBounded.pow m hm)) η, y⟫_ℝ)) := by
   simp [distGrad_inner_eq, Distribution.fderivD_apply, distOfFunction_apply]
   change Filter.Tendsto (fun n => - ∫ (x : Space d.succ), fderiv ℝ η x y * normPowerSeries n x ^ m)
     Filter.atTop (𝓝 (- ∫ (x : Space d.succ), fderiv ℝ η x y * ‖x‖ ^ m))
   apply Filter.Tendsto.neg
   apply MeasureTheory.tendsto_integral_of_dominated_convergence
-    (bound := fun x => |fderiv ℝ η x y| * ((‖x‖ + 1) ^ m + ‖x‖ ^ m ))
+    (bound := fun x => |fderiv ℝ η x y| * ((‖x‖ + 1) ^ m + ‖x‖ ^ m))
   · intro n
     apply IsDistBounded.aeStronglyMeasurable_fderiv_schwartzMap_smul (F := ℝ) ?_
     fun_prop
-  · have h1 :  Integrable (fun x => (fderiv ℝ (⇑η) x) y * ((‖x‖ + 1) ^ m + ‖x‖ ^ m )) volume := by
+  · have h1 : Integrable (fun x => (fderiv ℝ (⇑η) x) y * ((‖x‖ + 1) ^ m + ‖x‖ ^ m)) volume := by
       apply IsDistBounded.integrable_space_fderiv ?_
       apply IsDistBounded.add
       · refine IsDistBounded.norm_add_pos_nat_zpow m 1 ?_
@@ -539,7 +546,7 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
     rw [← integrable_norm_iff] at h1
     convert h1 using 1
     funext x
-    simp
+    simp only [Nat.succ_eq_add_one, norm_mul, Real.norm_eq_abs, mul_eq_mul_left_iff, abs_eq_zero]
     left
     rw [abs_of_nonneg (by positivity)]
     fun_prop
@@ -570,23 +577,24 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
         simpa using hx
     simpa using h1
 
- lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) + 2 ≤ m) (η : 𝓢(Space d.succ, ℝ))
-    (y : EuclideanSpace ℝ (Fin d.succ)) :
+lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) + 2 ≤ m)
+    (η : 𝓢(Space d.succ, ℝ)) (y : EuclideanSpace ℝ (Fin d.succ)) :
     Filter.Tendsto (fun n =>
-    ⟪(distGrad (distOfFunction (fun x : Space d.succ => (normPowerSeries n x) ^ m) (by fun_prop))) η, y⟫_ℝ)
+    ⟪(distGrad (distOfFunction (fun x : Space d.succ => (normPowerSeries n x) ^ m)
+    (by fun_prop))) η, y⟫_ℝ)
     Filter.atTop
     (𝓝 (⟪distOfFunction (fun x : Space d.succ => (m * ‖x‖ ^ (m - 2)) • x) (by
     simp [← smul_smul]
     refine IsDistBounded.const_fun_smul ?_ ↑m
     apply IsDistBounded.zpow_smul_self
     simp_all
-    grind)  η,  y⟫_ℝ)) := by
+    grind) η, y⟫_ℝ)) := by
   conv =>
     enter [1, n];
     rw [gradient_dist_normPowerSeries_zpow]
-  simp [ distOfFunction_inner]
+  simp [distOfFunction_inner]
   have h1 (n : ℕ) (x : Space d.succ) :
-     η x * ⟪(↑m * normPowerSeries n x ^ (m - 2)) • x, y⟫_ℝ =
+    η x * ⟪(↑m * normPowerSeries n x ^ (m - 2)) • x, y⟫_ℝ =
     η x * (m * (⟪x, y⟫_ℝ * (normPowerSeries n x) ^ (m - 2))) := by
     simp [inner_smul_left]
     ring_nf
@@ -596,13 +604,14 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
     enter [1, n, 2, x];
     rw [h1 n x]
   apply MeasureTheory.tendsto_integral_of_dominated_convergence
-    (bound := fun x => |η x| * |m| * |⟪x, y⟫_ℝ| * ((‖x‖ + 1) ^ (m - 2) + ‖x‖ ^ (m - 2) ))
+    (bound := fun x => |η x| * |m| * |⟪x, y⟫_ℝ| * ((‖x‖ + 1) ^ (m - 2) + ‖x‖ ^ (m - 2)))
   · intro n
     apply IsDistBounded.aeStronglyMeasurable_schwartzMap_smul (F := ℝ) ?_ η
     apply IsDistBounded.const_mul_fun
     apply IsDistBounded.isDistBounded_mul_inner'
     fun_prop
-  · have h1 : Integrable (fun x => η x * (m * (⟪x, y⟫_ℝ * ((‖x‖ + 1) ^ (m - 2) + ‖x‖ ^ (m - 2))) )) volume := by
+  · have h1 : Integrable (fun x =>
+        η x * (m * (⟪x, y⟫_ℝ * ((‖x‖ + 1) ^ (m - 2) + ‖x‖ ^ (m - 2))))) volume := by
       apply IsDistBounded.integrable_space_mul ?_ η
       apply IsDistBounded.const_mul_fun
       apply IsDistBounded.isDistBounded_mul_inner'
@@ -617,7 +626,7 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
     funext x
     simp [mul_assoc]
     rw [abs_of_nonneg (by positivity)]
-    simp
+    simp only [true_or]
     fun_prop
   · intro n
     rw [Filter.eventually_iff_exists_mem]
@@ -654,12 +663,28 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
         simpa using hx
     simp [-Int.cast_sub, Real.rpow_intCast] at h1
     convert h1 using 3
-    ring
-    ring
+    · ring
+    · ring
+/-!
 
+## B. Distributions involving norms
 
+-/
 
-
-
+lemma distGrad_distOfFunction_norm_zpow {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) + 2 ≤ m) :
+    distGrad (distOfFunction (fun x : Space d.succ => ‖x‖ ^ m)
+      (IsDistBounded.pow m (by simp_all; omega)))
+    = distOfFunction (fun x : Space d.succ => (m * ‖x‖ ^ (m - 2)) • x) (by
+      simp [← smul_smul]
+      refine IsDistBounded.const_fun_smul ?_ ↑m
+      apply IsDistBounded.zpow_smul_self
+      simp_all
+      omega) := by
+  ext1 η
+  apply ext_inner_right ℝ
+  intro y
+  apply tendsto_nhds_unique
+    (gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm m (by simp_all; omega) η y)
+    (gradient_dist_normPowerSeries_zpow_tendsTo m hm η y)
 
 end Space
