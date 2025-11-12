@@ -59,20 +59,20 @@ lemma solidSphere_mass {d : ℕ} (m R : ℝ≥0) (hr : R ≠ 0) : (solidSphere d
   field_simp
 
 /-- The center of mass of a solid sphere located at the origin is `0`. -/
-lemma solidSphere_centerOfMass {d : ℕ} (m R : ℝ≥0) : (solidSphere d m R).centerOfMass = 0 := by
+lemma solidSphere_centerOfMass {d : ℕ} (m R : ℝ≥0) : (solidSphere d.succ m R).centerOfMass = 0 := by
   ext i
   simp only [centerOfMass, solidSphere, one_div, LinearMap.coe_mk, AddHom.coe_mk,
     ContMDiffMap.coeFn_mk, smul_eq_mul, PiLp.zero_apply, mul_eq_zero, inv_eq_zero, div_eq_zero_iff,
     coe_eq_zero]
   right
   right
-  suffices ∫ x in Metric.closedBall (0 : Space d) R, x i ∂MeasureSpace.volume
-    = -∫ x in Metric.closedBall (0 : Space d) R, x i ∂MeasureSpace.volume by linarith
+  suffices ∫ x in Metric.closedBall (0 : Space d.succ) R, x i ∂MeasureSpace.volume
+    = -∫ x in Metric.closedBall (0 : Space d.succ) R, x i ∂MeasureSpace.volume by linarith
   rw [← integral_neg]
   simp only [← integral_indicator measurableSet_closedBall, Set.indicator, Metric.mem_closedBall,
     dist_zero_right]
   rw [← integral_neg_eq_self]
-  simp only [norm_neg, PiLp.neg_apply]
+  norm_num
 
 /-- The moment of inertia tensor of a solid sphere through its center of mass is
   `2/5 m R^2 * I`. -/
