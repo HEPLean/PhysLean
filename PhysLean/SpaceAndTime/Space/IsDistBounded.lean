@@ -112,6 +112,12 @@ lemma aeStronglyMeasurable_schwartzMap_smul {d : ℕ} {f : Space d → F}
   fun_prop
 
 @[fun_prop]
+lemma aeStronglyMeasurable_fderiv_schwartzMap_smul {d : ℕ} {f : Space d → F}
+    (hf : IsDistBounded f) (η : 𝓢(Space d, ℝ)) (y : Space d) :
+    AEStronglyMeasurable (fun x => fderiv ℝ η x y • f x) := by
+  fun_prop
+
+@[fun_prop]
 lemma aeStronglyMeasurable_inv_pow {d r : ℕ} {f : Space d → F}
     (hf : IsDistBounded f) :
     AEStronglyMeasurable (fun x => ‖((1 + ‖x‖) ^ r)⁻¹‖ • f x) := by

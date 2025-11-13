@@ -214,6 +214,20 @@ lemma normPowerSeries_nonneg {d} (n : ℕ) (x : Space d) :
   rw [normPowerSeries_eq]
   simp
 
+@[simp]
+lemma normPowerSeries_pos {d} (n : ℕ) (x : Space d) :
+    0 < normPowerSeries n x := by
+  rw [normPowerSeries_eq]
+  simp only [one_div, Real.sqrt_pos]
+  positivity
+
+@[simp]
+lemma normPowerSeries_ne_zero {d} (n : ℕ) (x : Space d) :
+    normPowerSeries n x ≠ 0 := by
+  rw [normPowerSeries_eq]
+  simp only [one_div, ne_eq]
+  positivity
+
 lemma normPowerSeries_le_norm_sq_add_one {d} (n : ℕ) (x : Space d) :
     normPowerSeries n x ≤ ‖x‖ + 1 := by
   trans √(‖x‖ ^ 2 + 1)
@@ -330,6 +344,12 @@ lemma IsDistBounded.normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) :
       rw [← Real.sqrt_inv]
       apply Real.sqrt_le_sqrt
       simp
+
+@[fun_prop]
+lemma IsDistBounded.normPowerSeries_single {d : ℕ} {n : ℕ} :
+    IsDistBounded (d := d) (fun x => (normPowerSeries n x)) := by
+  convert IsDistBounded.normPowerSeries_zpow (n := n) (m := 1) using 1
+  simp
 
 @[fun_prop]
 lemma IsDistBounded.normPowerSeries_inv {d : ℕ} {n : ℕ} :
