@@ -31,14 +31,17 @@ noncomputable def Q : HarmonicOscillator :=
     hm := by norm_num }
 
 -- Ground-state wavefunction and energy
-#check Q.eigenfunction 0
-#check Q.eigenValue 0
+-- Commenting out the checks to reduce noise in the output
+-- #check Q.eigenfunction 0
+-- #check Q.eigenValue 0
 
 -- Schrödinger operator acting on the ground state
-#check Q.schrodingerOperator (Q.eigenfunction 0)
+-- Commenting out the checks to reduce noise in the output
+-- #check Q.schrodingerOperator (Q.eigenfunction 0)
 
 -- The time-independent Schrödinger equation for n = 0
-#check Q.schrodingerOperator_eigenfunction 0
+-- Commenting out the checks to reduce noise in the output
+-- #check Q.schrodingerOperator_eigenfunction 0
 
 /-- The explicit pointwise form of the time-independent Schrödinger equation
 for the ground state `n = 0`. -/
@@ -48,4 +51,3 @@ example :
   Q.schrodingerOperator_eigenfunction 0
 
 end HarmonicOscillatorExamples
-
