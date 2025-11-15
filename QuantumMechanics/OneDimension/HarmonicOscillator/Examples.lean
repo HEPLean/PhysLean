@@ -40,5 +40,12 @@ noncomputable def Q : HarmonicOscillator :=
 -- The time-independent Schrödinger equation for n = 0
 #check Q.schrodingerOperator_eigenfunction 0
 
+/-- The explicit pointwise form of the time-independent Schrödinger equation
+for the ground state `n = 0`. -/
+example :
+    ∀ x, Q.schrodingerOperator (Q.eigenfunction 0) x =
+      (Q.eigenValue 0) * Q.eigenfunction 0 x :=
+  Q.schrodingerOperator_eigenfunction 0
+
 end HarmonicOscillatorExamples
 
