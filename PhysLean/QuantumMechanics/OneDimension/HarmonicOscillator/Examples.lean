@@ -60,5 +60,4 @@ example :
     simpa using
       (QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_zero (Q := Q))
 
-
 end HarmonicOscillatorExamples
