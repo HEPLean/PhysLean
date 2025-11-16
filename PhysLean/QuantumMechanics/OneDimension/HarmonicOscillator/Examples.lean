@@ -31,11 +31,6 @@ noncomputable def Q : HarmonicOscillator where
   hω := by norm_num
   hm := by norm_num
 
--- Ground-state wavefunction and energy
--- Commenting out the checks to reduce noise in the output
--- #check Q.eigenfunction 0
--- #check Q.eigenValue 0
-
 -- Schrödinger operator acting on the ground state
 -- Commenting out the checks to reduce noise in the output
 -- #check Q.schrodingerOperator (Q.eigenfunction 0)
