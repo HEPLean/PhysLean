@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2025.
+Copyright (c) 2025 Nicola Bernini. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Nicola Bernini
 -/
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
 
@@ -24,11 +25,11 @@ namespace HarmonicOscillatorExamples
 open QuantumMechanics OneDimension HarmonicOscillator
 
 /-- A concrete harmonic oscillator with `m = 1`, `ω = 1`. -/
-noncomputable def Q : HarmonicOscillator :=
-  { m := 1
-    ω := 1
-    hω := by norm_num
-    hm := by norm_num }
+noncomputable def Q : HarmonicOscillator where
+  m := 1
+  ω := 1
+  hω := by norm_num
+  hm := by norm_num
 
 -- Ground-state wavefunction and energy
 -- Commenting out the checks to reduce noise in the output
