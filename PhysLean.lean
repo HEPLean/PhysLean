@@ -227,8 +227,8 @@ import PhysLean.QuantumMechanics.OneDimension.GeneralPotential.Basic
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Completeness
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Eigenfunction
-import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Examples
+import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Basic
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Gaussians
 import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.PlaneWaves
