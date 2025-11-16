@@ -20,7 +20,10 @@ lake env lean PhysLean/QuantumMechanics/OneDimension/HarmonicOscillator/Examples
 ```
 -/
 
-namespace HarmonicOscillatorExamples
+namespace QuantumMechanics
+namespace OneDimension
+namespace HarmonicOscillator
+namespace Examples
 
 open QuantumMechanics OneDimension HarmonicOscillator Constants
 
@@ -60,4 +63,7 @@ example :
     simpa using
       (QuantumMechanics.OneDimension.HarmonicOscillator.eigenfunction_zero (Q := Q))
 
-end HarmonicOscillatorExamples
+end Examples
+end HarmonicOscillator
+end OneDimension
+end QuantumMechanics
