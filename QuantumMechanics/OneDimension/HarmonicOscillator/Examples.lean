@@ -22,7 +22,7 @@ lake env lean PhysLean/QuantumMechanics/OneDimension/HarmonicOscillator/Examples
 
 namespace HarmonicOscillatorExamples
 
-open QuantumMechanics OneDimension HarmonicOscillator
+open QuantumMechanics OneDimension HarmonicOscillator Constants
 
 /-- A concrete harmonic oscillator with `m = 1`, `ω = 1`. -/
 noncomputable def Q : HarmonicOscillator where
@@ -50,5 +50,10 @@ example :
     ∀ x, Q.schrodingerOperator (Q.eigenfunction 0) x =
       (Q.eigenValue 0) * Q.eigenfunction 0 x :=
   Q.schrodingerOperator_eigenfunction 0
+
+/-- The explicit formula for the ground-state energy for `Q`. -/
+example :
+    Q.eigenValue 0 = ((0 : ℝ) + 1 / 2) * ℏ * Q.ω := by
+  simp [QuantumMechanics.OneDimension.HarmonicOscillator.eigenValue]
 
 end HarmonicOscillatorExamples
