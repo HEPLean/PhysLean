@@ -967,7 +967,9 @@ lemma constantTime_distSpaceDeriv {M : Type} {d : ℕ} [NormedAddCommGroup M] [N
   funext t
   change (fderiv ℝ (η ∘ fun x => (t, x)) x) (basis i) = _
   rw [fderiv_comp, DifferentiableAt.fderiv_prodMk]
-  simp
+  simp only [fderiv_fun_const, Pi.zero_apply, fderiv_id', ContinuousLinearMap.coe_comp',
+    Function.comp_apply, ContinuousLinearMap.prod_apply, ContinuousLinearMap.zero_apply,
+    ContinuousLinearMap.coe_id', id_eq]
   rfl
   · fun_prop
   · fun_prop
@@ -1031,9 +1033,7 @@ lemma constantTime_distTimeDeriv {M : Type} [NormedAddCommGroup M] [NormedSpace 
     (f : (Space d) →d[ℝ] M) :
     Space.distTimeDeriv (constantTime f) = 0 := by
   ext η
-  rw [Space.distTimeDeriv_apply]
-  rw [fderivD_apply]
-  simp [constantTime_apply]
+  simp [Space.distTimeDeriv_apply, fderivD_apply, constantTime_apply]
   suffices h : (timeIntegralSchwartz ((SchwartzMap.evalCLM (1, 0)) ((fderivCLM ℝ) η))) = 0 by
     rw [h]
     simp
