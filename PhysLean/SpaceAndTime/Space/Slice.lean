@@ -5,7 +5,34 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 import PhysLean.SpaceAndTime.Space.Derivatives.Basic
+/-!
 
+# Slices of space
+
+## i. Overview
+
+In this module we will define the equivalence between `Space d.succ` and `ℝ × Space d` which
+extracts the `i`th coordinate on `Space d.succ`.
+
+## ii. Key results
+
+- `slice` : The continous linear equivalence between `Space d.succ` and `ℝ × Space d` extracting
+  the `i`th coordinate.
+
+## iii. Table of contents
+
+- A. Slicing spaces
+  - A.1. Basic applications of the slicing map
+  - A.2. Slice as a measurable embedding
+  - A.3. The norm of the slice map
+  - A.4. Derivative of the slice map
+  - A.5. Basis in terms of slices
+
+## iv. References
+
+- https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/API.20around.20.60Space.20.28d1.20.2B.20d2.29.60.20to.20.60Space.20d1.20x.20Space.20d2.60/with/556754634
+
+-/
 open SchwartzMap NNReal
 noncomputable section
 

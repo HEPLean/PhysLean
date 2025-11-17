@@ -4,7 +4,45 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.Slice
+/-!
 
+# Constant slice distributions
+
+## i. Overview
+
+In this moudule we define the lift of distributions on `Space d` to distributions
+on `Space d.succ` which are constant between slices in the `i`th direction.
+
+This is used, for example, to define distributions which are translationally invariant
+in the `i`th direction.
+
+Examples of distributions which can be constructed in this way include the dirac deltas for
+lines and planes, rather then points.
+
+## ii. Key results
+
+- `sliceSchwartz` : The continuous linear map which takes a Schwartz map on
+ `Space d.succ` and gives a Schwartz map on `Space d` by integrating over the `i`th direction.
+- `constantSliceDist` : The distribution on `Space d.succ` formed by a distribution on `Space d`
+  which is translationally invariant in the `i`th direction.
+
+## iii. Table of contents
+
+- A. Schwartz maps
+  - A.1. Bounded condition for derivatives of Schwartz maps on slices
+  - A.2. Integrability for of Schwartz maps on slices
+  - A.3. Continiuity of integrations of slices of Schwartz maps
+  - A.4. Derivative of integrations of slices of Schwartz maps
+  - A.5. Differentiability as a slices of Schwartz maps
+  - A.6. Smoothness as slices of Schwartz maps
+  - A.7. Iterated derivatives of integrations of slices of Schwartz maps
+  - A.8. The map integrating over one component of a Schwartz map
+- B. Constant slice distribution
+  - B.1. Derivative of constant slice distributions
+
+## iv. References
+
+-/
 open SchwartzMap NNReal
 noncomputable section
 
@@ -17,13 +55,13 @@ open MeasureTheory Real
 
 /-!
 
-## B. Schwartz maps
+## A. Schwartz maps
 
 -/
 
 /-!
 
-### B.1. Bounded condition for derivatives of Schwartz maps on slices
+### A.1. Bounded condition for derivatives of Schwartz maps on slices
 
 -/
 
@@ -63,7 +101,7 @@ lemma schwartzMap_slice_bound {n m} {d : ℕ} (i : Fin d.succ) :
     refine pow_le_pow_left₀ (by positivity) ?_ rt
     rw [abs_of_nonneg (by positivity)]
     conv_rhs => rw [abs_of_nonneg (by positivity)]
-    simp
+    simp only [add_le_add_iff_left]
     exact abs_right_le_norm_slice_symm i r x
   refine (le_mul_inv_iff₀ ?_).mpr (le_trans ?_ (h0 ((slice i).symm (r, x))))
   · simp
@@ -89,7 +127,7 @@ lemma schwartzMap_slice_bound {n m} {d : ℕ} (i : Fin d.succ) :
 
 /-!
 
-### B.2. Integrability for of Schwartz maps on slices
+### A.2. Integrability for of Schwartz maps on slices
 
 -/
 
@@ -142,7 +180,6 @@ lemma schwartzMap_fderiv_integrable_slice_symm {d : ℕ} (η : 𝓢(Space d.succ
     · exact (η.smooth'.of_le (by simp)).comp ((slice i).symm.contDiff)
     · fun_prop
   · filter_upwards with r
-    simp
     calc _
         _ ≤ ‖(fderiv ℝ ⇑η (((slice i).symm (r, x))))‖ *
           ‖fderiv ℝ (fun x => (slice i).symm (r, x)) x‖ := by
@@ -164,7 +201,8 @@ lemma schwartzMap_fderiv_integrable_slice_symm {d : ℕ} (η : 𝓢(Space d.succ
             apply le_of_eq
             congr
             rw [fderiv_comp', DifferentiableAt.fderiv_prodMk (by fun_prop) (by fun_prop)]
-            simp
+            simp only [Nat.succ_eq_add_one, fderiv_slice_symm, fderiv_fun_const, Pi.zero_apply,
+              fderiv_id']
             fun_prop
             fun_prop
 
@@ -209,7 +247,7 @@ lemma schwartzMap_iteratedFDeriv_slice_symm_integrable {n} {d : ℕ} (η : 𝓢(
 
 /-!
 
-### B.2. Continiuity of integrations of slices of Schwartz maps
+### A.3. Continiuity of integrations of slices of Schwartz maps
 -/
 
 lemma continuous_schwartzMap_slice_integral {d} (i : Fin d.succ) (η : 𝓢(Space d.succ, ℝ)) :
@@ -231,7 +269,7 @@ lemma continuous_schwartzMap_slice_integral {d} (i : Fin d.succ) (η : 𝓢(Spac
 
 /-!
 
-### B.3. Derivative of integrations of slices of Schwartz maps
+### A.4. Derivative of integrations of slices of Schwartz maps
 
 -/
 
@@ -299,11 +337,12 @@ lemma schwartzMap_slice_integral_hasFDerivAt {d : ℕ} (η : 𝓢(Space d.succ, 
           apply le_of_eq
           congr 1
           rw [fderiv_comp', DifferentiableAt.fderiv_prodMk (by fun_prop) (by fun_prop)]
-          simp
+          simp only [Nat.succ_eq_add_one, fderiv_slice_symm, fderiv_fun_const, Pi.zero_apply,
+            fderiv_id']
           fun_prop
           fun_prop
     apply le_of_eq
-    simp
+    simp only [norm_eq_abs, Nat.succ_eq_add_one, norm_pow]
     ring
   · apply Integrable.const_mul
     convert hrt using 1
@@ -315,7 +354,7 @@ lemma schwartzMap_slice_integral_hasFDerivAt {d : ℕ} (η : 𝓢(Space d.succ, 
 
 /-!
 
-### B.4. Differentiability as a slices of Schwartz maps
+### A.5. Differentiability as a slices of Schwartz maps
 
 -/
 
@@ -326,7 +365,7 @@ lemma schwartzMap_slice_integral_differentiable {d : ℕ} (η : 𝓢(Space d.suc
 
 /-!
 
-### B.5. Smoothness as slices of Schwartz maps
+### A.6. Smoothness as slices of Schwartz maps
 
 -/
 
@@ -362,7 +401,8 @@ lemma schwartzMap_slice_integral_contDiff {d : ℕ} (n : ℕ) (η : 𝓢(Space d
         funext t
         simp only [Nat.succ_eq_add_one, pderivCLM_apply]
         rw [fderiv_comp']
-        simp
+        simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+          fderiv_slice_symm_right_apply, Nat.succ_eq_add_one]
         · apply Differentiable.differentiableAt
           exact η.smooth'.differentiable (by simp)
         fun_prop
@@ -371,7 +411,7 @@ lemma schwartzMap_slice_integral_contDiff {d : ℕ} (n : ℕ) (η : 𝓢(Space d
     · exact fun x => schwartzMap_slice_integral_hasFDerivAt η i x
 /-!
 
-## B.6. Iterated derivatives of integrations of slices of Schwartz maps
+### A.7. Iterated derivatives of integrations of slices of Schwartz maps
 
 -/
 
@@ -421,7 +461,7 @@ lemma schwartzMap_slice_integral_iteratedFDeriv_apply {d : ℕ} (n : ℕ) (η : 
           funext x
           rw [iteratedPDeriv_eq_iteratedFDeriv]
     rw [iteratedFDeriv_succ_apply_left]
-    simp
+    simp only [Nat.succ_eq_add_one]
     rw [← fderiv_continuousMultilinear_apply_const_apply]
     rw [← fderiv_fun_slice_symm_right_apply]
     rfl
@@ -536,7 +576,7 @@ lemma schwartzMap_mul_pow_slice_integral_iteratedFDeriv_norm_le {d : ℕ} (n m :
 
 /-!
 
-### B.7. The map integrating over one component of a Schwartz map
+### A.8. The map integrating over one component of a Schwartz map
 
 -/
 
@@ -581,7 +621,7 @@ lemma sliceSchwartz_apply {d : ℕ} (i : Fin d.succ) (η : 𝓢(Space d.succ, �
   rfl
 /-!
 
-## C. Constant slice distribution
+## B. Constant slice distribution
 -/
 
 /-- Distributions on `Space d.succ` from distributions on `Space d` given a
@@ -604,7 +644,7 @@ lemma constantSliceDist_apply {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
 
 /-!
 
-## C.1. Derivative of constant slice distributions
+### B.1. Derivative of constant slice distributions
 
 -/
 
