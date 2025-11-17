@@ -22,7 +22,7 @@ lines and planes, rather then points.
 ## ii. Key results
 
 - `sliceSchwartz` : The continuous linear map which takes a Schwartz map on
- `Space d.succ` and gives a Schwartz map on `Space d` by integrating over the `i`th direction.
+  `Space d.succ` and gives a Schwartz map on `Space d` by integrating over the `i`th direction.
 - `constantSliceDist` : The distribution on `Space d.succ` formed by a distribution on `Space d`
   which is translationally invariant in the `i`th direction.
 
