@@ -322,6 +322,7 @@ import PhysLean.Relativity.Tensors.TensorSpecies.Basic
 import PhysLean.Relativity.Tensors.Tensorial
 import PhysLean.Relativity.Tensors.UnitTensor
 import PhysLean.SpaceAndTime.Space.Basic
+import PhysLean.SpaceAndTime.Space.ConstantSliceDist
 import PhysLean.SpaceAndTime.Space.CrossProduct
 import PhysLean.SpaceAndTime.Space.Derivatives.Basic
 import PhysLean.SpaceAndTime.Space.Derivatives.Curl
@@ -334,6 +335,7 @@ import PhysLean.SpaceAndTime.Space.IsDistBounded
 import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.SpaceAndTime.Space.Norm
 import PhysLean.SpaceAndTime.Space.RadialAngularMeasure
+import PhysLean.SpaceAndTime.Space.Slice
 import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.SpaceTime.Basic
