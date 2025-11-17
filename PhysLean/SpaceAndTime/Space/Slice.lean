@@ -1,0 +1,224 @@
+/-
+Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Joseph Tooby-Smith
+-/
+import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
+import PhysLean.SpaceAndTime.Space.Derivatives.Basic
+/-!
+
+# Slices of space
+
+## i. Overview
+
+In this module we will define the equivalence between `Space d.succ` and `ℝ × Space d` which
+extracts the `i`th coordinate on `Space d.succ`.
+
+## ii. Key results
+
+- `slice` : The continous linear equivalence between `Space d.succ` and `ℝ × Space d` extracting
+  the `i`th coordinate.
+
+## iii. Table of contents
+
+- A. Slicing spaces
+  - A.1. Basic applications of the slicing map
+  - A.2. Slice as a measurable embedding
+  - A.3. The norm of the slice map
+  - A.4. Derivative of the slice map
+  - A.5. Basis in terms of slices
+
+## iv. References
+
+- https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/API.20around.20.60Space.20.28d1.20.2B.20d2.29.60.20to.20.60Space.20d1.20x.20Space.20d2.60/with/556754634
+
+-/
+open SchwartzMap NNReal
+noncomputable section
+
+variable (𝕜 : Type) {E F F' : Type} [RCLike 𝕜] [NormedAddCommGroup E] [NormedAddCommGroup F]
+  [NormedAddCommGroup F'] [NormedSpace ℝ E] [NormedSpace ℝ F]
+
+namespace Space
+
+open MeasureTheory Real
+
+/-!
+
+## A. Slicing spaces
+
+-/
+
+/-- The linear equivalence between `Space d.succ` and `ℝ × Space d`
+  extracting the `i`th coordinate. -/
+def slice {d} (i : Fin d.succ) : Space d.succ ≃L[ℝ] ℝ × Space d where
+  toFun x := ⟨x i, fun j => x (Fin.succAbove i j)⟩
+  invFun p := fun j => Fin.insertNthEquiv (fun _ => ℝ) i (p.fst, p.snd) j
+  map_add' x y := by
+    simp only [Nat.succ_eq_add_one, PiLp.add_apply, Prod.mk_add_mk, Prod.mk.injEq]
+    apply And.intro
+    · simp
+    · funext j
+      simp
+  map_smul' c x := by
+    simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, RingHom.id_apply, Prod.smul_mk,
+      Prod.mk.injEq]
+    apply And.intro
+    · simp
+    · funext j
+      simp
+  left_inv p := by
+    simp only [Nat.succ_eq_add_one, Fin.insertNthEquiv_apply]
+    funext j
+    rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
+    · simp
+    · simp only [Fin.insertNth_apply_succAbove]
+  right_inv p := by
+    match p with
+    | (p1, p2) =>
+    simp
+  continuous_toFun := by fun_prop
+  continuous_invFun := by
+    apply continuous_pi
+    intro j
+    rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
+    · simp
+      fun_prop
+    · simp
+      fun_prop
+
+/-!
+
+### A.1. Basic applications of the slicing map
+
+-/
+
+lemma slice_symm_apply {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
+    (slice i).symm (r, x) = fun j =>
+      Fin.insertNthEquiv (fun _ => ℝ) i (r, x) j := by rfl
+
+@[simp]
+lemma slice_symm_apply_self {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
+    (slice i).symm (r, x) i = r := by
+  simp [slice_symm_apply]
+
+@[simp]
+lemma slice_symm_apply_succAbove {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) (j : Fin d) :
+    (slice i).symm (r, x) (Fin.succAbove i j) = x j := by
+  simp [slice_symm_apply]
+
+/-!
+
+### A.2. Slice as a measurable embedding
+
+-/
+
+lemma slice_symm_measurableEmbedding {d : ℕ} (i : Fin d.succ) :
+    MeasurableEmbedding (slice i).symm := by
+  change MeasurableEmbedding (fun (p : ℝ × Space d) j =>
+    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm (p.fst, p.snd) j)
+  apply MeasurableEmbedding.comp
+  · exact MeasurableEquiv.measurableEmbedding (MeasurableEquiv.piFinSuccAbove (fun x => ℝ) i).symm
+  · exact Measurable.measurableEmbedding (fun ⦃t⦄ a => a) fun ⦃a₁ a₂⦄ a => a
+
+/-!
+
+### A.3. The norm of the slice map
+
+-/
+
+lemma norm_slice_symm_eq {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
+    ‖(slice i).symm (r, x)‖ = √(‖r‖ ^ 2 + ‖x‖ ^ 2) := by
+  simp [Nat.succ_eq_add_one, PiLp.norm_eq_of_L2]
+  congr
+  rw [Fin.sum_univ_succAbove _ i]
+  congr
+  · simp
+  · simp [slice_symm_apply_succAbove]
+    refine Eq.symm (Real.sq_sqrt ?_)
+    positivity
+
+lemma abs_right_le_norm_slice_symm {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
+    |r| ≤ ‖(slice i).symm (r, x)‖ := by
+  rw [norm_slice_symm_eq]
+  refine (le_sqrt (by positivity) (by positivity)).mpr ?_
+  simp
+
+@[simp]
+lemma norm_left_le_norm_slice_symm {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
+    ‖x‖ ≤ ‖(slice i).symm (r, x)‖ := by
+  rw [norm_slice_symm_eq]
+  refine (le_sqrt (by positivity) (by positivity)).mpr ?_
+  simp only [norm_eq_abs, sq_abs, le_add_iff_nonneg_left]
+  positivity
+
+/-!
+
+### A.4. Derivative of the slice map
+
+-/
+
+@[simp]
+lemma fderiv_slice_symm {d : ℕ} (i : Fin d.succ) (p1 : ℝ × Space d) :
+    fderiv ℝ (slice i).symm p1 = (slice i).symm := by
+  rw [ContinuousLinearEquiv.fderiv]
+
+lemma fderiv_slice_symm_left_apply {d : ℕ} (i : Fin d.succ) (x : Space d) (r1 r2 : ℝ) :
+    (fderiv ℝ (fun r => (slice i).symm (r, x))) r1 r2 = (slice i).symm (r2, 0) := by
+  rw [fderiv_comp', DifferentiableAt.fderiv_prodMk (by fun_prop)]
+  simp only [Nat.succ_eq_add_one, fderiv_slice_symm, fderiv_id', fderiv_fun_const, Pi.zero_apply,
+    ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply,
+    ContinuousLinearMap.prod_apply, ContinuousLinearMap.coe_id', id_eq,
+    ContinuousLinearMap.zero_apply]
+  repeat' fun_prop
+
+@[simp]
+lemma fderiv_slice_symm_right_apply {d : ℕ} (i : Fin d.succ) (r : ℝ)
+    (x1 x2 : Space d) :
+    (fderiv ℝ (fun x => (slice i).symm (r, x))) x1 x2 = (slice i).symm (0, x2) := by
+  rw [fderiv_comp', DifferentiableAt.fderiv_prodMk (by fun_prop)]
+  simp only [Nat.succ_eq_add_one, fderiv_slice_symm, fderiv_fun_const, Pi.zero_apply, fderiv_id',
+    ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply,
+    ContinuousLinearMap.prod_apply, ContinuousLinearMap.zero_apply, ContinuousLinearMap.coe_id',
+    id_eq]
+  repeat' fun_prop
+
+lemma fderiv_fun_slice_symm_right_apply {d : ℕ} (i : Fin d.succ) (r : ℝ)
+    (x1 x2 : Space d) (f : Space d.succ → F) (hf : DifferentiableAt ℝ f ((slice i).symm (r, x1))) :
+    (fderiv ℝ (fun x => f ((slice i).symm (r, x)))) x1 x2 =
+    fderiv ℝ f ((slice i).symm (r, x1)) ((slice i).symm (0, x2)) := by
+  rw [fderiv_comp' _ _ (by fun_prop)]
+  simp only [Nat.succ_eq_add_one, ContinuousLinearMap.coe_comp', Function.comp_apply,
+    fderiv_slice_symm_right_apply]
+  fun_prop
+
+lemma fderiv_fun_slice_symm_left_apply {d : ℕ} (i : Fin d.succ) (r1 r2 : ℝ)
+    (x : Space d) (f : Space d.succ → F) (hf : DifferentiableAt ℝ f ((slice i).symm (r1, x))) :
+    (fderiv ℝ (fun r => f ((slice i).symm (r, x)))) r1 r2 =
+    fderiv ℝ f ((slice i).symm (r1, x)) ((slice i).symm (r2, 0)) := by
+  rw [fderiv_comp' _ _ (by fun_prop)]
+  simp only [Nat.succ_eq_add_one, ContinuousLinearMap.coe_comp', Function.comp_apply,
+    fderiv_slice_symm_left_apply]
+  fun_prop
+
+/-!
+
+### A.5. Basis in terms of slices
+
+-/
+
+lemma basis_self_eq_slice {d : ℕ} (i : Fin d.succ) :
+    basis i = (slice i).symm (1, 0) := by
+  ext j
+  rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
+  · simp [slice_symm_apply_self]
+  · simp [basis]
+
+lemma basis_succAbove_eq_slice {d : ℕ} (i : Fin d.succ) (j : Fin d) :
+    basis (Fin.succAbove i j) = (slice i).symm (0, basis j) := by
+  ext k
+  rcases Fin.eq_self_or_eq_succAbove i k with rfl | ⟨l, rfl⟩
+  · simp [basis, slice_symm_apply_self]
+  · simp [basis, slice_symm_apply_succAbove]
+
+end Space
