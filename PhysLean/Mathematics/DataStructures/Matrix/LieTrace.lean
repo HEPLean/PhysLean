@@ -169,7 +169,7 @@ lemma trace_unitary_conj (A : Matrix m m 𝕂) (U : unitaryGroup m 𝕂) :
 lemma det_unitary_conj (A : Matrix m m 𝕂) (U : unitaryGroup m 𝕂) :
     det ((U : Matrix m m 𝕂) * A * star (U : Matrix m m 𝕂)) = det A := by
   rw [det_mul_right_comm]
-  simp_all only [SetLike.coe_mem, unitary.mul_star_self_of_mem, one_mul]
+  simp_all only [SetLike.coe_mem, Unitary.mul_star_self_of_mem, one_mul]
 
 /-- The exponential of a matrix commutes with unitary conjugation. -/
 lemma exp_unitary_conj (A : Matrix m m 𝕂) (U : unitaryGroup m 𝕂) :

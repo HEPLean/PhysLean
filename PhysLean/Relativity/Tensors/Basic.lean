@@ -414,7 +414,7 @@ lemma finrank_tensor_eq {n : ℕ} [StrongRankCondition k] (c : Fin n → C) :
 
 instance {k : Type} [Field k] {C G : Type} [Group G] (S : TensorSpecies k C G)
     {c : Fin n → C} : FiniteDimensional k (S.Tensor c) :=
-  FiniteDimensional.of_fintype_basis (Tensor.basis c)
+  Module.Basis.finiteDimensional_of_finite (Tensor.basis c)
 
 instance {k : Type} [RCLike k] {C G : Type} [Group G] (S : TensorSpecies k C G)
     {c : Fin n → C} : TopologicalSpace (S.Tensor c) :=
