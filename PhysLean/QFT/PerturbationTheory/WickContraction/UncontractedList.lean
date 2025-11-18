@@ -47,18 +47,18 @@ lemma fin_list_sorted_succAboveEmb_sorted (l: List (Fin n)) (hl : l.Sorted (· �
   exact Fin.strictMono_succAbove i
 
 lemma fin_finset_sort_map_monotone {n m : ℕ} (a : Finset (Fin n)) (f : Fin n ↪ Fin m)
-    (hf : StrictMono f) : (Finset.sort (· ≤ ·) a).map f =
-    (Finset.sort (· ≤ ·) (a.map f)) := by
-  have h1 : ((Finset.sort (· ≤ ·) a).map f).Sorted (· ≤ ·) := by
+    (hf : StrictMono f) : (a.sort (· ≤ ·)).map f =
+    ((a.map f).sort (· ≤ ·)) := by
+  have h1 : ((a.sort (· ≤ ·)).map f).Sorted (· ≤ ·) := by
     apply fin_list_sorted_monotone_sorted
-    exact Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) a
+    exact a.sort_sorted (fun x1 x2 => x1 ≤ x2)
     exact hf
-  have h2 : ((Finset.sort (· ≤ ·) a).map f).Nodup := by
+  have h2 : ((a.sort (· ≤ ·)).map f).Nodup := by
     refine (List.nodup_map_iff_inj_on ?_).mpr ?_
-    exact Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) a
+    exact a.sort_nodup (fun x1 x2 => x1 ≤ x2)
     intro a ha b hb hf
     exact f.2 hf
-  have h3 : ((Finset.sort (· ≤ ·) a).map f).toFinset = (a.map f) := by
+  have h3 : ((a.sort (· ≤ ·)).map f).toFinset = (a.map f) := by
     ext a
     simp
   rw [← h3]

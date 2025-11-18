@@ -139,7 +139,7 @@ as `(√a, 0)`. This has the property that it's norm is equal to `a`.
 /-- Generating a Higgs vector from a real number, such that the norm-squared of that Higgs vector
   is the given real number. -/
 def ofReal (a : ℝ) : HiggsVec :=
-  ![Real.sqrt a, 0]
+  !₂[Real.sqrt a, 0]
 
 @[simp]
 lemma ofReal_normSq {a : ℝ} (ha : 0 ≤ a) : ‖ofReal a‖ ^ 2 = a := by

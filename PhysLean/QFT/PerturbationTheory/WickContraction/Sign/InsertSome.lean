@@ -135,7 +135,7 @@ lemma signFinset_insertAndContract_some (φ : 𝓕.FieldOp) (φs : List 𝓕.Fie
         intro h1 h2
         apply Or.inl
         have hj:= j.2
-        simpa [uncontracted, -Finset.coe_mem] using hj
+        simpa [uncontracted, -SetLike.coe_mem] using hj
       · rename_i h
         simp only [not_and, not_lt] at h
         rw [Fin.succAbove_lt_succAbove_iff, Fin.succAbove_lt_succAbove_iff]
@@ -276,7 +276,7 @@ lemma sign_insert_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) (φsΛ : Wi
         simp_all only [Nat.succ_eq_add_one, and_true, false_and, not_false_eq_true, not_lt,
           true_and]
         apply Or.inl
-        simpa [uncontracted, -Finset.coe_mem] using j.2
+        simpa [uncontracted, -SetLike.coe_mem] using j.2
       · simp_all
     · rename_i h1
       rw [if_neg]

@@ -88,6 +88,7 @@ lemma boost_zero_apply_time_space {d : ℕ} {β : ℝ} (hβ : |β| < 1) (c : Spe
     ((boost (0 : Fin d.succ) β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x)) =
     (SpaceTime.toTimeAndSpace c).symm
     (γ β * (t.val + β /c * x 0),
+    WithLp.toLp 2
     fun | (0 : Fin d.succ) => γ β * (x 0 + c * β * t.val)
         | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩) := by
   funext μ

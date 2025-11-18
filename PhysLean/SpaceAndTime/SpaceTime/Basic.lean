@@ -284,11 +284,11 @@ def toTimeAndSpace {d : ℕ} (c : SpeedOfLight := 1) : SpaceTime d ≃L[ℝ] Tim
         ne_eq, SpeedOfLight.val_ne_zero, not_false_eq_true, mul_div_cancel_left₀, space,
         ContinuousLinearMap.coe_mk']
     map_add' x y := by
-      simp only [space_toCoord_symm, Lorentz.Vector.apply_add, Prod.mk_add_mk, Prod.mk.injEq]
+      simp only [Prod.mk_add_mk, Prod.mk.injEq]
       constructor
       · ext
         simp
-      funext i
+      ext i
       simp
     map_smul' := by
       simp
@@ -303,7 +303,7 @@ lemma toTimeAndSpace_symm_apply_time_space {d : ℕ} {c : SpeedOfLight} (x : Spa
 lemma space_toTimeAndSpace_symm {d : ℕ} {c : SpeedOfLight} (t : Time) (s : Space d) :
     ((toTimeAndSpace c).symm (t, s)).space = s := by
   simp only [space, toTimeAndSpace]
-  funext i
+  ext i
   simp
 
 @[simp]
@@ -356,7 +356,7 @@ lemma toTimeAndSpace_basis_inr {d : ℕ} {c : SpeedOfLight} (i : Fin d) :
   rw [Lorentz.Vector.timeComponent_basis_sum_inr]
   constructor
   · simp
-  funext j
+  ext j
   simp [Space.basis_apply, space]
 
 /-!
@@ -372,7 +372,7 @@ lemma toTimeAndSpace_basis_inl {d : ℕ} {c : SpeedOfLight} :
   rw [Lorentz.Vector.timeComponent_basis_sum_inl]
   constructor
   · simp
-  funext j
+  ext j
   simp [space]
 
 lemma toTimeAndSpace_basis_inl' {d : ℕ} {c : SpeedOfLight} :
@@ -470,7 +470,7 @@ def timeSpaceBasisEquiv {d : ℕ} (c : SpeedOfLight) :
       simp
   continuous_invFun := by
     simp only [one_div, Fin.isValue]
-    apply continuous_pi
+    apply Lorentz.Vector.continuous_of_apply
     intro μ
     match μ with
     | Sum.inl 0 =>
@@ -480,7 +480,7 @@ def timeSpaceBasisEquiv {d : ℕ} (c : SpeedOfLight) :
       simp only
       fun_prop
   continuous_toFun := by
-    apply continuous_pi
+    apply Lorentz.Vector.continuous_of_apply
     intro μ
     match μ with
     | Sum.inl 0 =>
@@ -511,7 +511,7 @@ lemma det_timeSpaceBasisEquiv {d : ℕ} (c : SpeedOfLight) :
     apply And.intro
     · ext
       simp
-    · funext i
+    · ext i
       simp [space]
   rw [h1]
   rw [LinearMap.det_prodMap]

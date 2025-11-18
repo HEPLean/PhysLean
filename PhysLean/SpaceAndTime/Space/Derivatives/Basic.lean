@@ -84,7 +84,7 @@ lemma deriv_eq_fderiv_basis [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     deriv μ f x = fderiv ℝ f x (basis μ) := by
   rw [deriv_eq]
   congr 1
-  funext i
+  ext i
   simp only [EuclideanSpace.single_apply, basis_apply]
   congr 1
   exact Lean.Grind.eq_congr' rfl rfl

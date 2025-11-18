@@ -7,6 +7,7 @@ import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import PhysLean.Relativity.Tensors.Elab
 import Mathlib.Analysis.Distribution.SchwartzSpace
+import Mathlib.Analysis.Calculus.ContDiff.WithLp
 /-!
 
 # Lorentz Vectors
@@ -150,6 +151,32 @@ def coordCLM {d : ℕ} (i : Fin 1 ⊕ Fin d) : Vector d →L[ℝ] ℝ := LinearM
  {toFun v := v i
   map_add' := by simp
   map_smul' := by simp}
+
+@[fun_prop]
+lemma coord_continuous {d : ℕ} (i : Fin 1 ⊕ Fin d) :
+    Continuous (fun v : Vector d => v i) :=
+  (coordCLM i).continuous
+
+def euclidCLE (d : ℕ) : Vector d ≃L[ℝ] EuclideanSpace ℝ (Fin 1 ⊕ Fin d) :=
+  LinearEquiv.toContinuousLinearEquiv (equivEuclid d)
+
+def equivPi (d : ℕ) :
+    Vector d ≃L[ℝ] Π (_ : Fin 1 ⊕ Fin d), ℝ :=
+  LinearEquiv.toContinuousLinearEquiv (LinearEquiv.refl _ _)
+
+@[simp]
+lemma equivPi_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
+    equivPi d v i = v i := rfl
+
+lemma continuous_of_apply {d : ℕ} {α : Type*} [TopologicalSpace α]
+    (f : α → Vector d)
+    (h : ∀ i : Fin 1 ⊕ Fin d, Continuous (fun x => f x i)) :
+    Continuous f := by
+  rw [← (equivPi d).comp_continuous_iff]
+  apply continuous_pi
+  intro i
+  simp
+  fun_prop
 
 lemma coordCLM_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
     coordCLM i v = v i := rfl

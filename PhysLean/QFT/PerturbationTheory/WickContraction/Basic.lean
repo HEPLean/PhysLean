@@ -275,7 +275,7 @@ lemma getDual?_getDual?_get_not_none (i : Fin n) (h : (c.getDual? i).isSome) :
 /-- The smallest of the two positions in a contracted pair given a Wick contraction. -/
 def fstFieldOfContract (c : WickContraction n) (a : c.1) : Fin n :=
   (a.1.sort (· ≤ ·)).head (by
-    have hx : (Finset.sort (fun x1 x2 => x1 ≤ x2) a.1).length = a.1.card := Finset.length_sort ..
+    have hx : (a.1.sort (fun x1 x2 => x1 ≤ x2)).length = a.1.card := Finset.length_sort ..
     by_contra hn
     simp only [hn, List.length_nil, c.2.1 a.1 a.2, OfNat.zero_ne_ofNat] at hx)
 
@@ -288,7 +288,7 @@ lemma fstFieldOfContract_congr {n m : ℕ} (h : n = m) (c : WickContraction n) (
 /-- The largest of the two positions in a contracted pair given a Wick contraction. -/
 def sndFieldOfContract (c : WickContraction n) (a : c.1) : Fin n :=
   (a.1.sort (· ≤ ·)).tail.head (by
-    have hx : (Finset.sort (fun x1 x2 => x1 ≤ x2) a.1).length = a.1.card := Finset.length_sort ..
+    have hx : (a.1.sort (fun x1 x2 => x1 ≤ x2)).length = a.1.card := Finset.length_sort ..
     by_contra hn
     have hn := congrArg List.length hn
     simp [c.2.1] at hn)
@@ -308,7 +308,7 @@ lemma finset_eq_fstFieldOfContract_sndFieldOfContract (c : WickContraction n) (a
   by_cases hxyle : x ≤ y
   · have ha : a.1.sort (· ≤ ·) = [x, y] := by
       rw [ha]
-      trans Finset.sort (· ≤ ·) (Finset.cons x {y} (by simp [hxy]))
+      trans Finset.sort (Finset.cons x {y} (by simp [hxy])) (· ≤ ·)
       · congr
         simp
       rw [Finset.sort_cons]
@@ -320,7 +320,7 @@ lemma finset_eq_fstFieldOfContract_sndFieldOfContract (c : WickContraction n) (a
     simp [fstFieldOfContract, ha, sndFieldOfContract]
   · have ha : a.1.sort (· ≤ ·) = [y, x] := by
       rw [ha]
-      trans Finset.sort (· ≤ ·) (Finset.cons y {x} (by simp only [Finset.mem_singleton]; omega))
+      trans Finset.sort (Finset.cons y {x} (by simp only [Finset.mem_singleton]; omega))  (· ≤ ·)
       · congr
         simp only [Finset.cons_eq_insert]
         rw [@Finset.pair_comm]
