@@ -545,7 +545,7 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset �
   case μ =>
     simp_all [allowsTermForm]
   case β =>
-    use a, {a}
+    use {a}
     simp_all [allowsTermForm]
   case Λ =>
     use {a, b}, {- a - b}
@@ -558,28 +558,28 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset �
     · exact h
   case W2 =>
     apply And.intro
-    · use (- a - b - c), {a, b, c}
+    · use {a, b, c}
       simp_all [allowsTermForm]
       abel
     · exact h
   case W3 =>
-    use (-a), {b, - b - 2 • a}
+    use  {b, - b - 2 • a}
     simp_all [allowsTermForm]
     abel
   case W4 =>
-    use (- c - 2 • b), (-b), {c}
+    use {c}
     simp_all [allowsTermForm]
   case K1 =>
     use {-a}, {b, - a - b}
     simp_all [allowsTermForm]
   case K2 =>
-    use a, b, {- a - b}
+    use {- a - b}
     simp_all [allowsTermForm]
   case topYukawa =>
-    use (-a), {b, - a - b}
+    use {b, - a - b}
     simp_all [allowsTermForm]
   case bottomYukawa =>
-    use a, {b}, {- a - b}
+    use {b}, {- a - b}
     simp_all [allowsTermForm]
 
 /-!

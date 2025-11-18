@@ -38,27 +38,66 @@ open TensorSpecies
 open Tensor
 
 instance {d} : AddCommMonoid (Vector d) :=
-  inferInstanceAs (AddCommMonoid (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+  inferInstanceAs (AddCommMonoid (Fin 1 ⊕ Fin d → ℝ))
 
 instance {d} : Module ℝ (Vector d) :=
-  inferInstanceAs (Module ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+  inferInstanceAs (Module ℝ (Fin 1 ⊕ Fin d → ℝ))
 
 instance {d} : AddCommGroup (Vector d) :=
-  inferInstanceAs (AddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+  inferInstanceAs (AddCommGroup (Fin 1 ⊕ Fin d → ℝ))
 
 instance {d} : FiniteDimensional ℝ (Vector d) :=
   inferInstanceAs (FiniteDimensional ℝ (Fin 1 ⊕ Fin d → ℝ))
 
-instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (Vector d) :=
-    inferInstanceAs (NormedAddCommGroup (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+/-- The equivalence between `Vector d` and `EuclideanSpace ℝ (Fin 1 ⊕ Fin d)`. -/
+def equivEuclid (d : ℕ) :
+    Vector d ≃ₗ[ℝ] EuclideanSpace ℝ (Fin 1 ⊕ Fin d) :=
+  (WithLp.linearEquiv _ _ _).symm
 
-instance isNormedSpace (d : ℕ) :
-    NormedSpace ℝ (Vector d) :=
-  inferInstanceAs (NormedSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+instance (d : ℕ) : Norm (Vector d) where
+  norm := fun v => ‖equivEuclid d v‖
 
-/-- The Euclidean inner product structure on `Vector`. -/
-instance innerProductSpace (d : ℕ) : InnerProductSpace ℝ (Vector d) :=
-  inferInstanceAs (InnerProductSpace ℝ (EuclideanSpace ℝ (Fin 1 ⊕ Fin d)))
+lemma norm_eq_equivEuclid (d : ℕ) (v : Vector d) :
+    ‖v‖ = ‖equivEuclid d v‖ := rfl
+
+instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (Vector d) where
+  dist_self x := by simp [norm_eq_equivEuclid]
+  dist_comm x y := by
+    simpa [norm_eq_equivEuclid] using dist_comm ((equivEuclid d) x) _
+  dist_triangle x y z := by
+    simpa [norm_eq_equivEuclid] using dist_triangle ((equivEuclid d) x) ((equivEuclid d) y) ((equivEuclid d) z)
+  eq_of_dist_eq_zero {x y} := by
+    simp only [norm_eq_equivEuclid, map_sub]
+    intro h
+    apply (equivEuclid d).injective
+    exact (eq_of_dist_eq_zero h)
+
+instance isNormedSpace (d : ℕ) : NormedSpace ℝ (Vector d) where
+  norm_smul_le c v := by
+    simp only [norm_eq_equivEuclid, map_smul]
+    exact norm_smul_le c (equivEuclid d v)
+open InnerProductSpace
+
+instance (d : ℕ) : Inner ℝ (Vector d) where
+  inner := fun v w => ⟪equivEuclid d v, equivEuclid d w⟫_ℝ
+
+lemma inner_eq_equivEuclid (d : ℕ) (v w : Vector d) :
+    ⟪v, w⟫_ℝ = ⟪equivEuclid d v, equivEuclid d w⟫_ℝ := rfl
+
+/-- The Euclidean inner product structure on `CoVector`. -/
+instance innerProductSpace (d : ℕ) : InnerProductSpace ℝ (Vector d) where
+  norm_sq_eq_re_inner v := by
+    simp only [inner_eq_equivEuclid, norm_eq_equivEuclid]
+    exact InnerProductSpace.norm_sq_eq_re_inner (equivEuclid d v)
+  conj_inner_symm x y := by
+    simp only [inner_eq_equivEuclid]
+    exact InnerProductSpace.conj_inner_symm (equivEuclid d x) (equivEuclid d y)
+  add_left x y z := by
+    simp only [inner_eq_equivEuclid, map_add]
+    exact InnerProductSpace.add_left (equivEuclid d x) (equivEuclid d y) (equivEuclid d z)
+  smul_left x y r := by
+    simp only [inner_eq_equivEuclid, map_smul]
+    exact InnerProductSpace.smul_left (equivEuclid d x) (equivEuclid d y) r
 
 /-- The instance of a `ChartedSpace` on `Vector d`. -/
 instance : ChartedSpace (Vector d) (Vector d) := chartedSpaceSelf (Vector d)
@@ -105,12 +144,12 @@ lemma neg_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
 lemma zero_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) :
     (0 : Vector d) i = 0 := rfl
 
+
 /-- The continuous linear map from a Lorentz vector to one of its coordinates. -/
-def coordCLM {d : ℕ} (i : Fin 1 ⊕ Fin d) : Vector d →L[ℝ] ℝ where
-  toFun v := v i
+def coordCLM {d : ℕ} (i : Fin 1 ⊕ Fin d) : Vector d →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+ {toFun v := v i
   map_add' := by simp
-  map_smul' := by simp
-  cont := by fun_prop
+  map_smul' := by simp}
 
 lemma coordCLM_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
     coordCLM i v = v i := rfl
@@ -404,7 +443,7 @@ lemma smul_basis {d : ℕ} (Λ : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
 /-- Extract spatial components from a Lorentz vector,
     returning them as a vector in Euclidean space. -/
 abbrev spatialPart {d : ℕ} (v : Vector d) : EuclideanSpace ℝ (Fin d) :=
-  fun i => v (Sum.inr i)
+  WithLp.toLp 2 fun i => v (Sum.inr i)
 
 lemma spatialPart_apply_eq_toCoord {d : ℕ} (v : Vector d) (i : Fin d) :
     spatialPart v i = v (Sum.inr i) := rfl
@@ -412,7 +451,7 @@ lemma spatialPart_apply_eq_toCoord {d : ℕ} (v : Vector d) (i : Fin d) :
 lemma spatialPart_basis_sum_inr {d : ℕ} (i : Fin d) (j : Fin d) :
     spatialPart (basis (Sum.inr i)) j =
       (Finsupp.single (Sum.inr i : Fin 1 ⊕ Fin d) 1) (Sum.inr j) := by
-  simp [spatialPart, basis_apply]
+  simp [basis_apply]
   rw [Finsupp.single_apply]
   simp
 

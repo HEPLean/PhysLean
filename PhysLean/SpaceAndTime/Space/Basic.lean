@@ -73,7 +73,10 @@ lemma inner_eq_sum {d} (p q : Space d) :
 @[simp]
 lemma sum_apply {ι : Type} [Fintype ι] (f : ι → Space d) (i : Fin d) :
     (∑ x, f x) i = ∑ x, f x i := by
-  erw [Finset.sum_apply]
+  change (WithLp.linearEquiv 2 ℝ _ (∑ x, f x)) i = _
+  simp [-WithLp.linearEquiv_apply]
+  rfl
+
 /-!
 
 ## Basis
@@ -186,8 +189,9 @@ lemma direction_unit_sq_sum {d} (s : Direction d) :
 /-- The linear isometric equivalence between `Space 1` and `ℝ`. -/
 noncomputable def oneEquiv : Space 1 ≃ₗᵢ[ℝ] ℝ where
   toFun x := x 0
-  invFun x := fun _ => x
-  left_inv x := by funext i; fin_cases i; simp
+  invFun x := WithLp.toLp 2 fun _ => x
+  left_inv x := by
+    ext i; fin_cases i; simp
   right_inv x := by simp
   map_add' x y := by rfl
   map_smul' c x := by rfl
@@ -203,7 +207,7 @@ lemma oneEquiv_coe :
   rfl
 
 lemma oneEquiv_symm_coe :
-    (oneEquiv.symm : ℝ → Space 1) = fun x => fun _ => x := by
+    (oneEquiv.symm : ℝ → Space 1) = (fun x => WithLp.toLp 2  fun _ => x) := by
   rfl
 
 lemma oneEquiv_symm_apply (x : ℝ) (i : Fin 1) :
@@ -240,7 +244,7 @@ lemma oneEquiv_measurableEmbedding : MeasurableEmbedding oneEquiv where
   measurableSet_image' := by
     intro s hs
     change MeasurableSet (⇑oneEquivCLE '' s)
-    rw [ContinuousLinearEquiv.image_eq_preimage]
+    rw [ContinuousLinearEquiv.image_eq_preimage_symm]
     exact oneEquiv.symm.continuous.measurable hs
 
 lemma oneEquiv_symm_measurableEmbedding : MeasurableEmbedding oneEquiv.symm where
@@ -249,7 +253,7 @@ lemma oneEquiv_symm_measurableEmbedding : MeasurableEmbedding oneEquiv.symm wher
   measurableSet_image' := by
     intro s hs
     change MeasurableSet (⇑oneEquivCLE.symm '' s)
-    rw [ContinuousLinearEquiv.image_eq_preimage]
+    rw [ContinuousLinearEquiv.image_eq_preimage_symm]
     exact oneEquiv.continuous.measurable hs
 
 lemma oneEquiv_measurePreserving : MeasurePreserving oneEquiv volume volume :=

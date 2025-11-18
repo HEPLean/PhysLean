@@ -698,7 +698,7 @@ lemma decompose_toCharges_dedup [DecidableEq 𝓩] (x : FiveQuanta 𝓩)
     x.decompose.toCharges.dedup = x.toCharges.dedup := by
   refine Multiset.dedup_ext.mpr ?_
   intro q
-  simp [decompose, toCharges]
+  simp [decompose, toCharges, -existsAndEq]
   constructor
   · rintro ⟨a, b, c, h1, h2, rfl⟩
     exact ⟨c, h1⟩

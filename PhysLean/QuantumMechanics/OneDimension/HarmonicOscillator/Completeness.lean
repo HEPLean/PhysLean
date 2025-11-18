@@ -105,7 +105,7 @@ lemma mul_polynomial_integrable (f : ℝ → ℂ) (hf : MemHS f) (P : Polynomial
     simp only [Complex.ofReal_exp, Complex.ofReal_div, Complex.ofReal_neg, Complex.ofReal_pow,
       Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.real_smul]
   rw [hf']
-  apply MeasureTheory.Integrable.smul
+  apply MeasureTheory.Integrable.fun_smul
   exact Q.mul_physHermite_integrable f hf i
 
 lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :

@@ -403,8 +403,9 @@ lemma fromPairTContr_tmul_tmul {c c1 c2 : C}
     change x1 ⊗ₜ[k] ((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) ⊗ₜ[k] y2)
   conv_lhs =>
     enter [2]
-    change x1 ⊗ₜ[k] ((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) • y2)
-  simp [tmul_smul]
+    change x1 ⊗ₜ[k] (((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) :k) • y2)
+    rw [tmul_smul (R := k) (R' := k)]
+  simp
 
 set_option maxHeartbeats 400000 in
 lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : C)

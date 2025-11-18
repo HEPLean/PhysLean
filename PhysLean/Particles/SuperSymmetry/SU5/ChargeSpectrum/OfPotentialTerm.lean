@@ -305,7 +305,7 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : Pot
   simp [ofPotentialTerm] at h
   cases T
   all_goals
-    simp [PotentialTerm.toFieldLabel] at h
+    simp [PotentialTerm.toFieldLabel, -existsAndEq] at h
     obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩, rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
   case' μ | β => obtain ⟨rfl⟩ := h3
   case' Λ | W1 | W2 | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>
@@ -317,9 +317,9 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : Pot
       ofPotentialTerm'_β_finset, ofPotentialTerm'_μ_finset,
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset]
-    try simp [ofPotentialTerm']
+    try simp [ofPotentialTerm', -existsAndEq]
     simp only [SProd.sprod, Multiset.mem_product]
-    simp_all [ofFieldLabel]
+    simp_all [ofFieldLabel, -existsAndEq]
   case' W1 => use f2, f4, f6, f8
   case' W2 => use f2, f4, f6, f8
   case' W3 => use (-f2), f6, f8
@@ -354,7 +354,7 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩]
       ofPotentialTerm'_β_finset, ofPotentialTerm'_μ_finset,
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset] at h
-    try simp [ofPotentialTerm'] at h
+    try simp [ofPotentialTerm', -existsAndEq] at h
     simp only [SProd.sprod, Multiset.mem_product] at h
   case' μ | β =>
     obtain ⟨q1, q2, ⟨q1_mem, q2_mem⟩, q_sum⟩ := h
@@ -385,62 +385,19 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩]
   case' μSub | βSub | ΛSub | W1Sub | W2Sub | W3Sub | W4Sub | K1Sub | K2Sub |
       topYukawaSub | bottomYukawaSub =>
     rw [subset_def]
-    simp_all [Finset.insert_subset]
+    simp_all [Finset.insert_subset, -existsAndEq]
   all_goals
     simp [ofPotentialTerm, PotentialTerm.toFieldLabel, ofFieldLabel]
-  case' ΛP =>
-    use - q3 + n
-    simp only [neg_add_cancel_comm, and_true]
-    use - q1 - q3 + n, q1
-    apply And.intro ?_ (by abel)
-    simp only [true_or, and_true]
-    use 0
-    simp only [true_and, zero_add, exists_eq_right]
-    right
-    rw [← q_sum]
+  case ΛP =>
+    use q1, q2
+    simp [← q_sum]
+  case W3P | K1P | topYukawaP =>
+    use q2, q3
+    simp [← q_sum]
     abel
-  case' W3P =>
-    use 2 • q1 + n
-    apply And.intro ?_ (by abel)
-    use - q2 + 2 • q1 + n, q2
-    apply And.intro ?_ (by abel)
-    simp only [true_or, and_true]
-    use 0, q3
-    simp only [or_true, and_self, zero_add, true_and]
-    rw [← q_sum]
-    abel
-  case' K1P =>
-    use q1 + n
-    apply And.intro ?_ (by abel)
-    use q1 - q2 + n, q2
-    apply And.intro ?_ (by abel)
-    simp only [true_or, and_true]
-    use 0, q3
-    simp only [or_true, and_self, zero_add, true_and]
-    rw [← q_sum]
-    abel
-  case' topYukawaP =>
-    use q1 + n
-    apply And.intro ?_ (by abel)
-    use q1 - q2 + n, q2
-    apply And.intro ?_ (by abel)
-    simp only [true_or, and_true]
-    use 0, q3
-    simp only [or_true, and_self, zero_add, true_and]
-    rw [← q_sum]
-    abel
-  case' W1P | W2P =>
-    use - q1 + n
-    apply And.intro ?_ (by abel)
-    use - q1 - q2 + n, q2
-    apply And.intro ?_ (by abel)
-    simp only [true_or, and_true]
-    use -q1 - q2 - q3 + n, q3
-    apply And.intro ?_ (by abel)
-    simp only [true_or, or_true, and_true]
-    use 0, q4
-    simp only [or_true, and_self, zero_add, true_and]
-    rw [← q_sum]
+  case W1P | W2P =>
+    use q2, q3, q4
+    simp [← q_sum]
     abel
   all_goals
     rw [← q_sum]

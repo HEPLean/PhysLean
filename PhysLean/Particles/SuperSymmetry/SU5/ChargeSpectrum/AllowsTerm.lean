@@ -175,56 +175,26 @@ lemma allowsTermForm_allowsTerm {a b c : 𝓩} {T : PotentialTerm} :
   all_goals
     simp [PotentialTerm.toFieldLabel, ofFieldLabel]
   case Λ =>
-    use a + b
-    simp only [add_add_sub_cancel, add_neg_cancel, and_true]
     use a, b
-    simp only [or_true, and_true]
-    use 0, a
     simp
   case W3 =>
-    use - 2 • a
-    apply And.intro ?_ (by abel)
     use b, -b - 2 • a
-    apply And.intro ?_ (by abel)
-    simp only [or_true, and_true]
-    use 0, b
-    simp
+    simp only [true_or, or_true, and_self, true_and]
+    abel
   case K1 =>
-    use - a
-    apply And.intro ?_ (by abel)
     use b, - a - b
-    apply And.intro ?_ (by abel)
-    simp only [or_true, and_true]
-    use 0, b
     simp
   case topYukawa =>
-    use - a
-    apply And.intro ?_ (by abel)
     use b, - a - b
-    apply And.intro ?_ (by abel)
-    simp only [or_true, and_true]
-    use 0, b
     simp
   case W1 =>
-    use a + b + c
-    apply And.intro ?_ (by abel)
-    use a + b, c
-    apply And.intro ?_ (by abel)
-    simp only [or_true, and_true]
-    use a, b
-    simp only [true_or, or_true, and_true]
-    use 0, a
+    use a, b, c
     simp
+    abel
   case W2 =>
-    use a + b + c
-    apply And.intro ?_ (by abel)
-    use a + b, c
-    apply And.intro ?_ (by abel)
-    simp only [or_true, and_true]
-    use a, b
-    simp only [true_or, or_true, and_true]
-    use 0, a
+    use a, b, c
     simp
+    abel
   all_goals abel
 
 lemma allowsTerm_of_eq_allowsTermForm {T : PotentialTerm}
@@ -330,7 +300,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
   simp [AllowsTerm, ofPotentialTerm] at h
   cases T
   all_goals
-    simp [PotentialTerm.toFieldLabel] at h
+    simp [PotentialTerm.toFieldLabel, -existsAndEq] at h
     obtain ⟨f1, f2, ⟨⟨f3, f4, ⟨h3, f4_mem⟩, rfl⟩, f2_mem⟩, f1_add_f2_eq_zero⟩ := h
   case' μ | β => obtain ⟨rfl⟩ := h3
   case' Λ | W1 | W2 | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>
@@ -394,35 +364,19 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     simp_all
   -- AllowsTerm
   case W3 =>
-    use (- f6 -2 • f4) + f6
-    apply And.intro ?_ (by abel)
-    try simp
-    use (- f6 -2 • f4), f6
-    simp only [true_or, and_true]
-    use 0, (- f6 -2 • f4)
-    simp
+    use (- f6 - 2 • f4), f6
+    simpa using f1_add_f2_eq_zero
   case W1 | W2 =>
-    use f8 + f6 + f4
-    apply And.intro ?_ (by abel)
-    use f8 + f6, f4
-    apply And.intro ?_ (by abel)
-    try simp
-    use f8, f6
-    simp only [true_or, or_true, and_true]
-    use 0, f8
+    use f4, f6, f8
     simp
+    abel
   case K1 =>
     have hf6 : f6 = - f2 - f4 := by
       rw [← sub_zero f2, ← f1_add_f2_eq_zero]
       abel
     subst hf6
     simp_all
-    use (-f2 - f4) + f4
-    apply And.intro ?_ (by abel)
     use (-f2 - f4), f4
-    apply And.intro ?_ (by abel)
-    simp only [true_or, and_true]
-    use 0, (-f2 - f4)
     simp
   case' topYukawa =>
     have hf2 : f2 = - f4 - f6 := by
@@ -431,13 +385,9 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     subst hf2
     simp_all
   case topYukawa | Λ =>
-    use f6 + f4
-    apply And.intro ?_ (by omega)
     use f6, f4
-    apply And.intro ?_ (by abel)
-    simp only [true_or, and_true]
-    use 0, f6
     simp
+    abel
   case W4 =>
     apply And.intro
     · rw [← sub_zero f8, ← f1_add_f2_eq_zero]
