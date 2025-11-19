@@ -53,6 +53,7 @@ unsafe def runLinterOnModule  (module : Name): IO Unit := do
       IO.Process.exit 1
     else
       IO.println s!"-- Linting passed for {module}."
+      IO.Process.exit 0
 
 unsafe def main (_ : List String) : IO Unit := do
   let modulesToLint := #[`PhysLean]
