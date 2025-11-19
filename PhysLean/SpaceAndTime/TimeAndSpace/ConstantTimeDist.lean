@@ -650,7 +650,7 @@ lemma iteratedFDeriv_integrable {n} {d : ℕ} (η : 𝓢(Time × Space d, ℝ)) 
   rw [← MeasureTheory.integrable_norm_iff]
   apply iteratedFDeriv_norm_integrable η x
   haveI : SecondCountableTopologyEither Time
-    (ContinuousMultilinearMap ℝ (fun i : Fin n => Time × Space d.succ) ℝ) := {
+    (ContinuousMultilinearMap ℝ (fun i : Fin n => Time × Space d) ℝ) := {
       out := by
         left
         infer_instance
