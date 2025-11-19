@@ -320,7 +320,7 @@ lemma finset_eq_fstFieldOfContract_sndFieldOfContract (c : WickContraction n) (a
     simp [fstFieldOfContract, ha, sndFieldOfContract]
   · have ha : a.1.sort (· ≤ ·) = [y, x] := by
       rw [ha]
-      trans Finset.sort (Finset.cons y {x} (by simp only [Finset.mem_singleton]; omega))  (· ≤ ·)
+      trans Finset.sort (Finset.cons y {x} (by simp only [Finset.mem_singleton]; omega)) (· ≤ ·)
       · congr
         simp only [Finset.cons_eq_insert]
         rw [@Finset.pair_comm]

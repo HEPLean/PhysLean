@@ -118,7 +118,7 @@ lemma slice_symm_apply_succAbove {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space
 lemma slice_symm_measurableEmbedding {d : ℕ} (i : Fin d.succ) :
     MeasurableEmbedding (slice i).symm := by
   change MeasurableEmbedding (fun (p : ℝ × Space d) => WithLp.toLp 2 fun j =>
-    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm (p.fst,  p.snd) j)
+    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm (p.fst, p.snd) j)
   apply MeasurableEmbedding.comp
   · exact MeasurableEquiv.measurableEmbedding (MeasurableEquiv.toLp 2 (Fin (d + 1) → ℝ))
   apply MeasurableEmbedding.comp

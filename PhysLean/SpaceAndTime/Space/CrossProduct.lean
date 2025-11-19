@@ -72,7 +72,7 @@ lemma fderiv_cross_commute {t : Time} {s : Space} {f : Time → EuclideanSpace �
   ext i
   fin_cases i <;>
   · simp [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, WithLp.equiv_apply,
-      LinearMap.mk₂_apply,  Fin.reduceFinMk, WithLp.equiv_symm_apply,
+      LinearMap.mk₂_apply, Fin.reduceFinMk, WithLp.equiv_symm_apply,
       PiLp.toLp_apply, cons_val]
     rw [h]
     simp only [Fin.isValue]

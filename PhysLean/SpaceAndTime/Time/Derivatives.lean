@@ -117,7 +117,7 @@ lemma deriv_contDiff_of_contDiff {M : Type}
 -/
 
 lemma differentiable_euclid {f : Time → EuclideanSpace ℝ (Fin n)}
-    (hf : ∀ i, Differentiable ℝ (fun t => f t i))  :
+    (hf : ∀ i, Differentiable ℝ (fun t => f t i)) :
     Differentiable ℝ f := by
   rw [differentiable_euclidean]
   fun_prop

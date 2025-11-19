@@ -563,7 +563,7 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset �
       abel
     · exact h
   case W3 =>
-    use  {b, - b - 2 • a}
+    use {b, - b - 2 • a}
     simp_all [allowsTermForm]
     abel
   case W4 =>

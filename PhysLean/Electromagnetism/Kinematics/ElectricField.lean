@@ -114,7 +114,7 @@ lemma electricField_eq_fieldStrengthMatrix {c : SpeedOfLight}
     simp [timeSlice]
     rw [Lorentz.Vector.fderiv_apply]
     change ((fderiv ℝ (fun t => WithLp.toLp 2 fun i =>
-       A ((toTimeAndSpace c).symm (t, x)) (Sum.inr i)) t) 1).ofLp i = _
+        A ((toTimeAndSpace c).symm (t, x)) (Sum.inr i)) t) 1).ofLp i = _
     rw [← Time.fderiv_euclid]
     · apply Time.differentiable_euclid
       intro i

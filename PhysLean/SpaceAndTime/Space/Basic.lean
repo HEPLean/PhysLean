@@ -211,7 +211,7 @@ lemma oneEquiv_coe :
   rfl
 
 lemma oneEquiv_symm_coe :
-    (oneEquiv.symm : ℝ → Space 1) = (fun x => WithLp.toLp 2  fun _ => x) := by
+    (oneEquiv.symm : ℝ → Space 1) = (fun x => WithLp.toLp 2 fun _ => x) := by
   rfl
 
 lemma oneEquiv_symm_apply (x : ℝ) (i : Fin 1) :

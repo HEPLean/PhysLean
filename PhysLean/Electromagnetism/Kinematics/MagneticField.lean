@@ -130,7 +130,6 @@ lemma magneticField_snd_eq_fieldStrengthMatrix {c : SpeedOfLight}
       · exact ContinuousLinearEquiv.differentiable (toTimeAndSpace c).symm
       · fun_prop
 
-
 lemma magneticField_thd_eq_fieldStrengthMatrix {c : SpeedOfLight} (A : ElectromagneticPotential)
     (t : Time) (x : Space) (hA : Differentiable ℝ A) :
     A.magneticField c t x 2 =

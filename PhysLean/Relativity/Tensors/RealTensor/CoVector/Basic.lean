@@ -64,7 +64,8 @@ instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (CoVector d) where
   dist_comm x y := by
     simpa [norm_eq_equivEuclid] using dist_comm ((equivEuclid d) x) _
   dist_triangle x y z := by
-    simpa [norm_eq_equivEuclid] using dist_triangle ((equivEuclid d) x) ((equivEuclid d) y) ((equivEuclid d) z)
+    simpa [norm_eq_equivEuclid] using dist_triangle
+      ((equivEuclid d) x) ((equivEuclid d) y) ((equivEuclid d) z)
   eq_of_dist_eq_zero {x y} := by
     simp only [norm_eq_equivEuclid, map_sub]
     intro h
@@ -96,7 +97,6 @@ instance innerProductSpace (d : ℕ) : InnerProductSpace ℝ (CoVector d) where
   smul_left x y r := by
     simp only [inner_eq_equivEuclid, map_smul]
     exact InnerProductSpace.smul_left (equivEuclid d x) (equivEuclid d y) r
-
 
 /-- The instance of a `ChartedSpace` on `Vector d`. -/
 instance : ChartedSpace (CoVector d) (CoVector d) := chartedSpaceSelf (CoVector d)

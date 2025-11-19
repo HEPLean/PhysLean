@@ -82,7 +82,7 @@ lemma toVector_eq_basis_iff_timeComponent_eq_one {d : ℕ} (Λ : LorentzGroup d)
       trans (toVector Λ).spatialPart j
       · simp
       simp only [toVector_apply, Fin.isValue]
-      change  (fun i => Λ.1 (Sum.inr i) (Sum.inl 0)) j = _
+      change (fun i => Λ.1 (Sum.inr i) (Sum.inl 0)) j = _
       rw [h1]
       simp
 

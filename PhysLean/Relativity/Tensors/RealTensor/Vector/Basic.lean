@@ -70,7 +70,8 @@ instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (Vector d) where
   dist_comm x y := by
     simpa [norm_eq_equivEuclid] using dist_comm ((equivEuclid d) x) _
   dist_triangle x y z := by
-    simpa [norm_eq_equivEuclid] using dist_triangle ((equivEuclid d) x) ((equivEuclid d) y) ((equivEuclid d) z)
+    simpa [norm_eq_equivEuclid] using dist_triangle
+      ((equivEuclid d) x) ((equivEuclid d) y) ((equivEuclid d) z)
   eq_of_dist_eq_zero {x y} := by
     simp only [norm_eq_equivEuclid, map_sub]
     intro h
@@ -149,10 +150,9 @@ lemma neg_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
 lemma zero_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) :
     (0 : Vector d) i = 0 := rfl
 
-
 /-- The continuous linear map from a Lorentz vector to one of its coordinates. -/
-def coordCLM {d : ℕ} (i : Fin 1 ⊕ Fin d) : Vector d →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
- {toFun v := v i
+def coordCLM {d : ℕ} (i : Fin 1 ⊕ Fin d) : Vector d →L[ℝ] ℝ := LinearMap.toContinuousLinearMap {
+  toFun v := v i
   map_add' := by simp
   map_smul' := by simp}
 
@@ -179,9 +179,11 @@ lemma coord_differentiableAt {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
     DifferentiableAt ℝ (fun v : Vector d => v i) v :=
   (coordCLM i).differentiableAt
 
+/-- The continous linear equivalence between `Vector d` and Euclidean space. -/
 def euclidCLE (d : ℕ) : Vector d ≃L[ℝ] EuclideanSpace ℝ (Fin 1 ⊕ Fin d) :=
   LinearEquiv.toContinuousLinearEquiv (equivEuclid d)
 
+/-- The continous linear equivalence between `Vector d` and the corresponding `Pi` type. -/
 def equivPi (d : ℕ) :
     Vector d ≃L[ℝ] Π (_ : Fin 1 ⊕ Fin d), ℝ :=
   LinearEquiv.toContinuousLinearEquiv (LinearEquiv.refl _ _)
@@ -201,8 +203,8 @@ lemma continuous_of_apply {d : ℕ} {α : Type*} [TopologicalSpace α]
   simp
   fun_prop
 
-lemma differentiable_apply {d : ℕ} {α : Type*}  [NormedAddCommGroup α] [NormedSpace ℝ α]
-    (f : α → Vector d):
+lemma differentiable_apply {d : ℕ} {α : Type*} [NormedAddCommGroup α] [NormedSpace ℝ α]
+    (f : α → Vector d) :
     (∀ i : Fin 1 ⊕ Fin d, Differentiable ℝ (fun x => f x i)) ↔ Differentiable ℝ f := by
   apply Iff.intro
   · intro h

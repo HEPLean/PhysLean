@@ -134,11 +134,12 @@ scoped instance toNormedAddCommGroupWitL2 : NormedAddCommGroup (WithLp 2 E) :=
   {
   dist_self x := core.toNormedAddCommGroup.dist_self (WithLp.equiv 2 E x)
   dist_comm x y := core.toNormedAddCommGroup.dist_comm (WithLp.equiv 2 E x) (WithLp.equiv 2 E y)
-  dist_triangle x y z := core.toNormedAddCommGroup.dist_triangle  (WithLp.equiv 2 E x) (WithLp.equiv 2 E y)
-    (WithLp.ofLp z)
+  dist_triangle x y z := core.toNormedAddCommGroup.dist_triangle (WithLp.equiv 2 E x)
+    (WithLp.equiv 2 E y) (WithLp.ofLp z)
   eq_of_dist_eq_zero {x y} := by
     intro h
-    simpa [-WithLp.equiv_apply] using  core.toNormedAddCommGroup.eq_of_dist_eq_zero (x:= WithLp.equiv 2 E x) (y:= WithLp.equiv 2 E y) h
+    simpa [-WithLp.equiv_apply] using core.toNormedAddCommGroup.eq_of_dist_eq_zero
+      (x:= WithLp.equiv 2 E x) (y:= WithLp.equiv 2 E y) h
   }
 
 lemma norm_withLp2_eq_norm2 (x : WithLp 2 E) :
@@ -260,12 +261,12 @@ variable (𝕜) in
 
 lemma ext_inner_left' {x y : E} (h : ∀ v, ⟪v, x⟫ = ⟪v, y⟫) : x = y :=
   (WithLp.equiv 2 E).symm.injective <| ext_inner_left (E := WithLp 2 E) 𝕜 <| by
-  simpa [← ofLp_inner_left] using fun v =>  h (WithLp.ofLp v)
+  simpa [← ofLp_inner_left] using fun v => h (WithLp.ofLp v)
 
 variable (𝕜) in
 lemma ext_inner_right' {x y : E} (h : ∀ v, ⟪x, v⟫ = ⟪y, v⟫) : x = y :=
   (WithLp.equiv 2 E).symm.injective <| ext_inner_right (E := WithLp 2 E) 𝕜 <| by
-  simpa [← ofLp_inner_left] using fun v =>  h (WithLp.ofLp v)
+  simpa [← ofLp_inner_left] using fun v => h (WithLp.ofLp v)
 
 @[simp]
 lemma inner_conj_symm' (x y : E) : ⟪y, x⟫† = ⟪x, y⟫ :=
@@ -316,12 +317,11 @@ lemma inner_sum'{ι : Type*} [Fintype ι] (x : E) (g : ι → E) :
   have h1 := inner_sum (𝕜 := 𝕜) (E:=WithLp 2 E) (x := WithLp.toLp 2 x)
     (f := fun i => WithLp.toLp 2 (g i))
   convert h1 (Finset.univ)
-  rw [← ofLp_inner_left ]
+  rw [← ofLp_inner_left]
   simp only
   congr
   change _ = (WithLp.linearEquiv 2 𝕜 E) _
   simp
-
 
 @[fun_prop]
 lemma Continuous.inner' {α} [TopologicalSpace α] (f g : α → E)
@@ -387,23 +387,23 @@ open InnerProductSpace' in
 noncomputable
 instance : InnerProductSpace' 𝕜 (E × F) where
   norm₂ x := (WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)).toNorm.norm
-    (WithLp.toLp 2  (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
+    (WithLp.toLp 2 (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
   core :=
     let _ := WithLp.instProdNormedAddCommGroup 2 (WithLp 2 E) (WithLp 2 F)
     let inst := (WithLp.instProdInnerProductSpace (𝕜:=𝕜) (E := WithLp 2 E) (F := WithLp 2 F)).toCore
   {
-    inner x y := inst.inner (WithLp.toLp 2  (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
-        (WithLp.toLp 2  (WithLp.toLp 2 y.1, WithLp.toLp 2 y.2))
+    inner x y := inst.inner (WithLp.toLp 2 (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
+        (WithLp.toLp 2 (WithLp.toLp 2 y.1, WithLp.toLp 2 y.2))
     conj_inner_symm x y := inst.conj_inner_symm _ _
     re_inner_nonneg x := inst.re_inner_nonneg _
-    add_left x y z := inst.add_left  (WithLp.toLp 2  (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
-       (WithLp.toLp 2  (WithLp.toLp 2 y.1, WithLp.toLp 2 y.2))
-        (WithLp.toLp 2  (WithLp.toLp 2 z.1, WithLp.toLp 2 z.2))
-    smul_left x y r := inst.smul_left (WithLp.toLp 2  (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
-       (WithLp.toLp 2  (WithLp.toLp 2 y.1, WithLp.toLp 2 y.2)) r
-    definite x :=  by
+    add_left x y z := inst.add_left (WithLp.toLp 2 (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
+        (WithLp.toLp 2 (WithLp.toLp 2 y.1, WithLp.toLp 2 y.2))
+        (WithLp.toLp 2 (WithLp.toLp 2 z.1, WithLp.toLp 2 z.2))
+    smul_left x y r := inst.smul_left (WithLp.toLp 2 (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2))
+        (WithLp.toLp 2 (WithLp.toLp 2 y.1, WithLp.toLp 2 y.2)) r
+    definite x := by
       intro h
-      have h1 := inst.definite (WithLp.toLp 2  (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2)) h
+      have h1 := inst.definite (WithLp.toLp 2 (WithLp.toLp 2 x.1, WithLp.toLp 2 x.2)) h
       simp at h1
       exact Prod.ext_iff.mpr h1
   }
@@ -474,7 +474,7 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
     smul_left x y r := inst.smul_left
       (WithLp.toLp 2 (fun i => WithLp.toLp 2 (x i)))
       (WithLp.toLp 2 (fun i => WithLp.toLp 2 (y i))) r
-    definite x :=  by
+    definite x := by
       intro h
       have h1 := inst.toCore.definite (WithLp.toLp 2 (fun i => WithLp.toLp 2 (x i))) h
       simp at h1
@@ -519,7 +519,8 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
       constructor
       · apply le_trans (h (x i)).1
         have h1 := Finset.sum_le_univ_sum_of_nonneg
-          (f := fun i => re (@inner 𝕜 (WithLp 2 E) toInnerProductSpaceWithL2.2 (WithLp.toLp 2 (x i)) (WithLp.toLp 2 (x i))))
+          (f := fun i => re (@inner 𝕜 (WithLp 2 E) toInnerProductSpaceWithL2.2
+            (WithLp.toLp 2 (x i)) (WithLp.toLp 2 (x i))))
           (s := {i}) (by
             intro i
             simp only

@@ -347,7 +347,7 @@ lemma stat_ofFinset_of_insertAndContractLiftFinset (φ : 𝓕.FieldOp) (φs : Li
     refine
       fin_list_sorted_monotone_sorted (a.sort (fun x1 x2 => x1 ≤ x2)) ?hl
         (⇑(finCongr (Eq.symm (insertIdx_length_fin φ φs i))) ∘ i.succAbove) ?hf
-    exact  a.sort_sorted (fun x1 x2 => x1 ≤ x2)
+    exact a.sort_sorted (fun x1 x2 => x1 ≤ x2)
     refine StrictMono.comp (fun ⦃a b⦄ a => a) ?hf.hf
     exact Fin.strictMono_succAbove i
   have h2 : (List.map (⇑(finCongr (insertIdx_length_fin φ φs i).symm))

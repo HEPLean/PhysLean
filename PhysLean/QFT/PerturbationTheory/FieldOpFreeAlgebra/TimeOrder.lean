@@ -371,7 +371,7 @@ lemma timeOrderF_eq_maxTimeField_mul_finset (φ : 𝓕.FieldOp) (φs : List 𝓕
       exact Fin.cast_injective (eraseIdx_length (φ :: φs) (insertionSortMinPos timeOrderRel φ φs))
     · exact Finset.sort_nodup
         (Finset.filter (fun x => (maxTimeFieldPosFin φ φs).succAbove x < maxTimeFieldPosFin φ φs)
-          Finset.univ)  (fun x1 x2 => x1 ≤ x2)
+          Finset.univ) (fun x1 x2 => x1 ≤ x2)
 
 end
 

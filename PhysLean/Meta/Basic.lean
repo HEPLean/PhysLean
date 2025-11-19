@@ -137,7 +137,8 @@ def getDeclString (name : Name) : CoreM String := do
     | some fileName =>
       let fileContent ← IO.FS.readFile fileName.toRelativeFilePath
       let fileMap := fileContent.toFileMap
-      return (String.Pos.Raw.extract fileMap.source) (fileMap.ofPosition pos) (fileMap.ofPosition endPos)
+      return (String.Pos.Raw.extract fileMap.source)
+        (fileMap.ofPosition pos) (fileMap.ofPosition endPos)
     | none => return ""
   | none => return ""
 

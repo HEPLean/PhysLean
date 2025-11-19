@@ -1,4 +1,3 @@
-import Lean.Util.SearchPath
 import Batteries.Tactic.Lint
 import Batteries.Data.Array.Basic
 import Lake.CLI.Main

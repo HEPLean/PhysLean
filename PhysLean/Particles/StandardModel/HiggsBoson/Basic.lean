@@ -482,7 +482,6 @@ lemma contDiff (φ : HiggsField) :
     ContDiff ℝ ⊤ φ := by
   simpa [contMDiff_iff_contDiff] using φ.toHiggsVec_smooth
 
-
 lemma toVec_smooth (φ : HiggsField) :
     ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, EuclideanSpace ℂ (Fin 2)) ⊤ φ :=
   φ.toHiggsVec_smooth
@@ -495,7 +494,6 @@ lemma apply_smooth (φ : HiggsField) :
   simp only
   rw [contDiff_piLp] at h1
   exact h1 i
-
 
 lemma apply_re_smooth (φ : HiggsField) (i : Fin 2) :
     ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) ⊤ (reCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=
