@@ -200,7 +200,7 @@ lemma continuous_of_apply {d : ℕ} {α : Type*} [TopologicalSpace α]
   rw [← (equivPi d).comp_continuous_iff]
   apply continuous_pi
   intro i
-  simp
+  simp only [Function.comp_apply, equivPi_apply]
   fun_prop
 
 lemma differentiable_apply {d : ℕ} {α : Type*} [NormedAddCommGroup α] [NormedSpace ℝ α]

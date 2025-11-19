@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.SpaceTime.Derivatives
-import PhysLean.SpaceAndTime.Space.Derivatives.Curl
 import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Mathematics.FDerivCurry

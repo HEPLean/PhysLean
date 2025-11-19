@@ -189,11 +189,11 @@ lemma allowsTermForm_allowsTerm {a b c : 𝓩} {T : PotentialTerm} :
     simp
   case W1 =>
     use a, b, c
-    simp
+    simp only [true_or, or_true, and_self, true_and]
     abel
   case W2 =>
     use a, b, c
-    simp
+    simp only [true_or, or_true, and_self, true_and]
     abel
   all_goals abel
 
@@ -368,7 +368,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     simpa using f1_add_f2_eq_zero
   case W1 | W2 =>
     use f4, f6, f8
-    simp
+    simp only [true_or, or_true, and_self, true_and]
     abel
   case K1 =>
     have hf6 : f6 = - f2 - f4 := by
@@ -386,7 +386,7 @@ lemma allowsTermForm_subset_allowsTerm_of_allowsTerm {T : PotentialTerm} {x : Ch
     simp_all
   case topYukawa | Λ =>
     use f6, f4
-    simp
+    simp only [or_true, true_or, and_self, true_and]
     abel
   case W4 =>
     apply And.intro

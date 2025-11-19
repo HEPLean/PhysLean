@@ -3,7 +3,6 @@ Copyright (c) 2025 Zhi Kai Pong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong
 -/
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import PhysLean.SpaceAndTime.Space.CrossProduct
 import PhysLean.SpaceAndTime.TimeAndSpace.Basic
 /-!

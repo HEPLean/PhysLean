@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Vector.MinkowskiProduct
 import PhysLean.Relativity.SpeedOfLight
-import PhysLean.SpaceAndTime.Space.Basic
 import PhysLean.SpaceAndTime.Time.Basic
 /-!
 # Spacetime

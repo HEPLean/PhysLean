@@ -3,7 +3,6 @@ Copyright (c) 2025 Zhi Kai Pong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith
 -/
-import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.LinearAlgebra.CrossProduct
 import PhysLean.SpaceAndTime.Time.Derivatives
 /-!
@@ -64,7 +63,8 @@ lemma fderiv_cross_commute {t : Time} {s : Space} {f : Time → EuclideanSpace �
       s j * (fderiv ℝ (fun u => f u) t) 1 i
       = (fderiv ℝ (fun t => s i * f t j - s j * f t i) t) 1:= by
     rw [fderiv_fun_sub, fderiv_const_mul, fderiv_const_mul]
-    simp
+    simp only [ContinuousLinearMap.coe_sub', ContinuousLinearMap.coe_smul', Pi.sub_apply,
+      Pi.smul_apply, smul_eq_mul]
     rw [Time.fderiv_euclid, Time.fderiv_euclid]
     intro i
     repeat fun_prop
@@ -77,12 +77,12 @@ lemma fderiv_cross_commute {t : Time} {s : Space} {f : Time → EuclideanSpace �
     rw [h]
     simp only [Fin.isValue]
     rw [← Time.fderiv_euclid]
-    simp
+    simp [Fin.isValue, cons_val_zero]
     apply Time.differentiable_euclid
     intro i
     fin_cases i
     all_goals
-      simp
+      simp [Fin.zero_eta, Fin.isValue]
       fun_prop
 
 /-- Cross product and time derivative commute. -/

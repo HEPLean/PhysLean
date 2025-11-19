@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Dynamics.CurrentDensity
 import PhysLean.Electromagnetism.Dynamics.KineticTerm
-import PhysLean.Electromagnetism.Kinematics.MagneticField
 /-!
 
 # The Lagrangian in electromagnetism

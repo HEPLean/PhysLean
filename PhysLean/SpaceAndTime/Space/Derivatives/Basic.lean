@@ -3,10 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 -/
-import PhysLean.SpaceAndTime.SpaceTime.Basic
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Analysis.Calculus.Gradient.Basic
 import PhysLean.SpaceAndTime.Space.DistOfFunction
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp

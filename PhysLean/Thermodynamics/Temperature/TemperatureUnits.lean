@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Geometry.Manifold.Diffeomorph
 import PhysLean.SpaceAndTime.Time.Basic
-import PhysLean.Meta.TODO.Basic
 /-!
 
 # Units on Temperature

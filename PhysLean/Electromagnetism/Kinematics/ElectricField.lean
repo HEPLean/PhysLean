@@ -6,9 +6,6 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Electromagnetism.Kinematics.VectorPotential
 import PhysLean.Electromagnetism.Kinematics.ScalarPotential
 import PhysLean.Electromagnetism.Kinematics.FieldStrength
-import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
-import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
-import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
 /-!
 
 # The Electric Field
@@ -118,7 +115,7 @@ lemma electricField_eq_fieldStrengthMatrix {c : SpeedOfLight}
     rw [← Time.fderiv_euclid]
     · apply Time.differentiable_euclid
       intro i
-      simp
+      simp only
       generalize (Sum.inr i) = j
       revert j
       rw [Lorentz.Vector.differentiable_apply]

@@ -3,11 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith, Lode Vermeulen
 -/
-import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-import Mathlib.Analysis.SpecialFunctions.PolarCoord
-import Mathlib.Data.Real.StarOrdered
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.Units.Basic
 /-!

@@ -545,7 +545,7 @@ instance {ι : Type*} [Fintype ι] : InnerProductSpace' 𝕜 (ι → E) where
           simp only [norm, OfNat.ofNat_ne_zero, ↓reduceIte, ENNReal.ofNat_ne_top,
             WithLp.equiv_apply, ENNReal.toReal_ofNat, Real.rpow_ofNat, one_div]
           rw [← Real.rpow_ofNat, ← Real.rpow_mul]
-          simp
+          simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, inv_mul_cancel₀, Real.rpow_one]
           congr
           funext j
           refine Real.sq_sqrt ?_

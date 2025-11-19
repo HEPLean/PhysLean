@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Nicola Bernini
 -/
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.TISE
-
 /-!
 # Examples: 1d Quantum Harmonic Oscillator
 

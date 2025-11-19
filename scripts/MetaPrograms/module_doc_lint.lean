@@ -225,7 +225,7 @@ def main (_ : List String) : IO UInt32 := do
     if imp.module == `Init then
       none
     else
-      some ((mkFilePath (imp.module.toString.split (· == '.'))).addExtension "lean"))
+      some ((mkFilePath (imp.module.toString.splitToList (· == '.'))).addExtension "lean"))
   let noLint ← noLintArray
   let modulesToCheck := filePaths.filter (fun p ↦ !noLint.contains p)
   let errors := (← modulesToCheck.mapM checkHeadings).toList.flatten

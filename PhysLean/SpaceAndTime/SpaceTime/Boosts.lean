@@ -3,7 +3,6 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.Relativity.LorentzGroup.Boosts.Basic
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.Mathematics.FDerivCurry

@@ -467,7 +467,7 @@ lemma const_toHiggsVec_apply (φ : HiggsField) (x : SpaceTime) :
     const (φ.toHiggsVec x) x = φ x := rfl
 
 lemma toFin2ℂ_comp_toHiggsVec (φ : HiggsField) :
-  φ.toHiggsVec = φ := rfl
+    φ.toHiggsVec = φ := rfl
 
 /-!
 

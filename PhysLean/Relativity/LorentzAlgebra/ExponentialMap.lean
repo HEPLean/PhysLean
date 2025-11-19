@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
 import Mathlib.Analysis.Normed.Field.Instances
-import Mathlib.Topology.Metrizable.CompletelyMetrizable
 import PhysLean.Mathematics.DataStructures.Matrix.LieTrace
 import PhysLean.Relativity.LorentzAlgebra.Basic
 import PhysLean.Relativity.LorentzGroup.Restricted.Basic
