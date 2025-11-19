@@ -125,7 +125,7 @@ lemma normPowerSeries_tendsto {d} (x : Space d) (hx : x ≠ 0) :
   refine Filter.Tendsto.rpow ?_ ?_ ?_
   · apply Filter.Tendsto.add
     · exact tendsto_const_nhds
-    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat
+    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
   · simp
   · left
     simpa using hx
@@ -1025,9 +1025,10 @@ lemma distDiv_inv_pow_eq_dim {d : ℕ} :
               intro x
               simp only [Real.norm_eq_abs, pow_zero, mul_one, norm_le_zero_iff]
               rw [iteratedFDeriv_succ_eq_comp_right]
-              simp [fderiv_smul_const]
+              conv_lhs =>
+                enter [2, 3, y]
+                simp [fderiv_smul_const]
               rw [iteratedFDeriv_succ_const]
-              simp
               rfl) (by use 1, 1; simp [norm_smul]) η
         rw [MeasureTheory.integral_subtype_comap (by simp)]
         rw [MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto (f := fun a => η (a • n)) (m := 0)]

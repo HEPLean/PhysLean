@@ -55,6 +55,10 @@ def equivEuclid (d : ℕ) :
     Vector d ≃ₗ[ℝ] EuclideanSpace ℝ (Fin 1 ⊕ Fin d) :=
   (WithLp.linearEquiv _ _ _).symm
 
+@[simp]
+lemma equivEuclid_apply (d : ℕ) (v : Vector d) (i : Fin 1 ⊕ Fin d) :
+    equivEuclid d v i = v i := rfl
+
 instance (d : ℕ) : Norm (Vector d) where
   norm := fun v => ‖equivEuclid d v‖
 
@@ -152,10 +156,28 @@ def coordCLM {d : ℕ} (i : Fin 1 ⊕ Fin d) : Vector d →L[ℝ] ℝ := LinearM
   map_add' := by simp
   map_smul' := by simp}
 
+lemma coordCLM_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
+    coordCLM i v = v i := rfl
+
 @[fun_prop]
 lemma coord_continuous {d : ℕ} (i : Fin 1 ⊕ Fin d) :
     Continuous (fun v : Vector d => v i) :=
   (coordCLM i).continuous
+
+@[fun_prop]
+lemma coord_contDiff {n} {d : ℕ} (i : Fin 1 ⊕ Fin d) :
+    ContDiff ℝ n (fun v : Vector d => v i) :=
+  (coordCLM i).contDiff
+
+@[fun_prop]
+lemma coord_differentiable {d : ℕ} (i : Fin 1 ⊕ Fin d) :
+    Differentiable ℝ (fun v : Vector d => v i) :=
+  (coordCLM i).differentiable
+
+@[fun_prop]
+lemma coord_differentiableAt {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
+    DifferentiableAt ℝ (fun v : Vector d => v i) v :=
+  (coordCLM i).differentiableAt
 
 def euclidCLE (d : ℕ) : Vector d ≃L[ℝ] EuclideanSpace ℝ (Fin 1 ⊕ Fin d) :=
   LinearEquiv.toContinuousLinearEquiv (equivEuclid d)
@@ -168,6 +190,7 @@ def equivPi (d : ℕ) :
 lemma equivPi_apply {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
     equivPi d v i = v i := rfl
 
+@[fun_prop]
 lemma continuous_of_apply {d : ℕ} {α : Type*} [TopologicalSpace α]
     (f : α → Vector d)
     (h : ∀ i : Fin 1 ⊕ Fin d, Continuous (fun x => f x i)) :
@@ -178,11 +201,47 @@ lemma continuous_of_apply {d : ℕ} {α : Type*} [TopologicalSpace α]
   simp
   fun_prop
 
-lemma coordCLM_apply {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
-    coordCLM i v = v i := rfl
+lemma differentiable_apply {d : ℕ} {α : Type*}  [NormedAddCommGroup α] [NormedSpace ℝ α]
+    (f : α → Vector d):
+    (∀ i : Fin 1 ⊕ Fin d, Differentiable ℝ (fun x => f x i)) ↔ Differentiable ℝ f := by
+  apply Iff.intro
+  · intro h
+    rw [← (Lorentz.Vector.equivPi d).comp_differentiable_iff]
+    exact differentiable_pi'' h
+  · intro h ν
+    change Differentiable ℝ (Lorentz.Vector.coordCLM ν ∘ f)
+    apply Differentiable.comp
+    · fun_prop
+    · exact h
+
+lemma contDiff_apply {n : WithTop ℕ∞} {d : ℕ} {α : Type*}
+    [NormedAddCommGroup α] [NormedSpace ℝ α]
+    (f : α → Vector d) :
+    (∀ i : Fin 1 ⊕ Fin d, ContDiff ℝ n (fun x => f x i)) ↔ ContDiff ℝ n f := by
+  apply Iff.intro
+  · intro h
+    rw [← (Lorentz.Vector.equivPi d).comp_contDiff_iff]
+    apply contDiff_pi'
+    intro ν
+    exact h ν
+  · intro h ν
+    change ContDiff ℝ n (Lorentz.Vector.coordCLM ν ∘ f)
+    apply ContDiff.comp
+    · fun_prop
+    · exact h
+
+lemma fderiv_apply {d : ℕ} {α : Type*}
+    [NormedAddCommGroup α] [NormedSpace ℝ α]
+    (f : α → Vector d) (h : Differentiable ℝ f)
+    (x : α) (dt : α) (ν : Fin 1 ⊕ Fin d) :
+    fderiv ℝ f x dt ν = fderiv ℝ (fun y => f y ν) x dt := by
+  change _ = (fderiv ℝ (Lorentz.Vector.coordCLM ν ∘ f) x) dt
+  rw [fderiv_comp _ (by fun_prop) (by fun_prop)]
+  simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply]
+  rfl
 
 @[simp]
-lemma fderiv_apply {d : ℕ} (μ : Fin 1 ⊕ Fin d) (x : Vector d) :
+lemma fderiv_coord {d : ℕ} (μ : Fin 1 ⊕ Fin d) (x : Vector d) :
     fderiv ℝ (fun v : Vector d => v μ) x = coordCLM μ := by
   change fderiv ℝ (coordCLM μ) x = coordCLM μ
   simp
@@ -509,6 +568,25 @@ lemma timeComponent_basis_sum_inl {d : ℕ} :
 open Manifold in
 /-- The structure of a smooth manifold on Vector . -/
 def asSmoothManifold (d : ℕ) : ModelWithCorners ℝ (Vector d) (Vector d) := 𝓘(ℝ, Vector d)
+
+/-!
+
+## Properties of the inner product (note not the Minkowski product)
+
+-/
+open InnerProductSpace
+
+lemma basis_inner {d : ℕ} (μ : Fin 1 ⊕ Fin d) (p : Lorentz.Vector d) :
+    ⟪Lorentz.Vector.basis μ, p⟫_ℝ = p μ := by
+  simp [inner_eq_equivEuclid]
+  rw [PiLp.inner_apply]
+  simp
+
+lemma inner_basis {d : ℕ} (p : Lorentz.Vector d) (μ : Fin 1 ⊕ Fin d) :
+    ⟪p, Lorentz.Vector.basis μ⟫_ℝ = p μ := by
+  simp [inner_eq_equivEuclid]
+  rw [PiLp.inner_apply]
+  simp
 
 end Vector
 

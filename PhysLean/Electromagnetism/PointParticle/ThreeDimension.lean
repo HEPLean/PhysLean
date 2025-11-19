@@ -258,7 +258,7 @@ lemma potentialLimitSeries_tendsto (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 
   refine Filter.Tendsto.rpow ?_ tendsto_const_nhds ?_
   · apply Filter.Tendsto.add
     · exact tendsto_const_nhds
-    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat
+    · simpa using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
   left
   simpa using hx
 
@@ -822,6 +822,7 @@ in-line within the proof) :
 
 -/
 
+set_option maxHeartbeats 400000 in
 /-- Gauss' law for a point particle in 3-dimensions at the origin, that is this theorem states that
   the divergence of `(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r` is equal to `q • δ(r)`. -/
 lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeDistribution q 0) := by

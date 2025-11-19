@@ -52,24 +52,24 @@ open MeasureTheory Real
 /-- The linear equivalence between `Space d.succ` and `ℝ × Space d`
   extracting the `i`th coordinate. -/
 def slice {d} (i : Fin d.succ) : Space d.succ ≃L[ℝ] ℝ × Space d where
-  toFun x := ⟨x i, fun j => x (Fin.succAbove i j)⟩
-  invFun p := fun j => Fin.insertNthEquiv (fun _ => ℝ) i (p.fst, p.snd) j
+  toFun x := ⟨x i, WithLp.toLp 2 fun j => x (Fin.succAbove i j)⟩
+  invFun p := WithLp.toLp 2 fun j => Fin.insertNthEquiv (fun _ => ℝ) i (p.fst, p.snd) j
   map_add' x y := by
     simp only [Nat.succ_eq_add_one, PiLp.add_apply, Prod.mk_add_mk, Prod.mk.injEq]
     apply And.intro
     · simp
-    · funext j
+    · ext j
       simp
   map_smul' c x := by
     simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, RingHom.id_apply, Prod.smul_mk,
       Prod.mk.injEq]
     apply And.intro
     · simp
-    · funext j
+    · ext j
       simp
   left_inv p := by
     simp only [Nat.succ_eq_add_one, Fin.insertNthEquiv_apply]
-    funext j
+    ext j
     rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
     · simp
     · simp only [Fin.insertNth_apply_succAbove]
@@ -79,6 +79,8 @@ def slice {d} (i : Fin d.succ) : Space d.succ ≃L[ℝ] ℝ × Space d where
     simp
   continuous_toFun := by fun_prop
   continuous_invFun := by
+    apply Continuous.comp
+    · fun_prop
     apply continuous_pi
     intro j
     rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
@@ -115,11 +117,19 @@ lemma slice_symm_apply_succAbove {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space
 
 lemma slice_symm_measurableEmbedding {d : ℕ} (i : Fin d.succ) :
     MeasurableEmbedding (slice i).symm := by
-  change MeasurableEmbedding (fun (p : ℝ × Space d) j =>
-    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm (p.fst, p.snd) j)
+  change MeasurableEmbedding (fun (p : ℝ × Space d) => WithLp.toLp 2 fun j =>
+    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm (p.fst,  p.snd) j)
+  apply MeasurableEmbedding.comp
+  · exact MeasurableEquiv.measurableEmbedding (MeasurableEquiv.toLp 2 (Fin (d + 1) → ℝ))
   apply MeasurableEmbedding.comp
   · exact MeasurableEquiv.measurableEmbedding (MeasurableEquiv.piFinSuccAbove (fun x => ℝ) i).symm
-  · exact Measurable.measurableEmbedding (fun ⦃t⦄ a => a) fun ⦃a₁ a₂⦄ a => a
+  · apply Measurable.measurableEmbedding
+    · fun_prop
+    · intro a b h
+      match a, b with
+      | (r1, x1), (r2, x2) =>
+      simp_all
+      exact (WithLp.equiv 2 _).injective h.2
 
 /-!
 
@@ -132,11 +142,9 @@ lemma norm_slice_symm_eq {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
   simp [Nat.succ_eq_add_one, PiLp.norm_eq_of_L2]
   congr
   rw [Fin.sum_univ_succAbove _ i]
-  congr
-  · simp
-  · simp [slice_symm_apply_succAbove]
-    refine Eq.symm (Real.sq_sqrt ?_)
-    positivity
+  simp [slice_symm_apply_succAbove]
+  refine Eq.symm (Real.sq_sqrt ?_)
+  positivity
 
 lemma abs_right_le_norm_slice_symm {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
     |r| ≤ ‖(slice i).symm (r, x)‖ := by

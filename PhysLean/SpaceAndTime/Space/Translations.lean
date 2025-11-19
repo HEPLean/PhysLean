@@ -133,7 +133,7 @@ lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
     (f : Space d.succ → X) (hf : IsDistBounded f) :
     translateD a (distOfFunction f hf) =
     distOfFunction (fun x => f (x - a))
-    (IsDistBounded.comp_add_right hf fun i => -a i) := by
+    (IsDistBounded.comp_add_right hf (WithLp.toLp 2 fun i => -a i)) := by
   ext η
   rw [translateD_apply, distOfFunction_apply, distOfFunction_apply]
   trans ∫ (x : EuclideanSpace ℝ (Fin d.succ)), η ((x - a) + a) • f (x - a); swap

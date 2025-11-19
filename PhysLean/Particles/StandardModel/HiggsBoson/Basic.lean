@@ -165,13 +165,13 @@ The gauge group of the Standard Model acts on `HiggsVec` by matrix multiplicatio
 -/
 
 instance : SMul StandardModel.GaugeGroupI HiggsVec where
-  smul g φ := g.toU1 ^ 3 • (g.toSU2.1 *ᵥ φ)
+  smul g φ := WithLp.toLp 2 <| g.toU1 ^ 3 • (g.toSU2.1 *ᵥ φ.ofLp)
 
 lemma gaugeGroupI_smul_eq (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
-    g • φ = g.toU1 ^ 3 • (g.toSU2.1 *ᵥ φ) := rfl
+    g • φ = (WithLp.toLp 2 <| g.toU1 ^ 3 • (g.toSU2.1 *ᵥ φ.ofLp)) := rfl
 
 lemma gaugeGroupI_smul_eq_U1_mul_SU2 (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
-    g • φ = g.toSU2.1 *ᵥ (g.toU1 ^ 3 • φ) := by
+    g • φ = (WithLp.toLp 2 <| g.toSU2.1 *ᵥ (g.toU1 ^ 3 • φ.ofLp)) := by
   rw [gaugeGroupI_smul_eq, ← mulVec_smul]
 
 instance : MulAction StandardModel.GaugeGroupI HiggsVec where
@@ -197,7 +197,6 @@ lemma gaugeGroupI_smul_inner (g : StandardModel.GaugeGroupI) (φ ψ : HiggsVec) 
   calc ⟪g • φ, g • ψ⟫_ℂ
     _ = WithLp.ofLp (g • ψ) ⬝ᵥ star (WithLp.ofLp (g • φ)) := by
       rw [EuclideanSpace.inner_eq_star_dotProduct]
-    _ = (g • ψ) ⬝ᵥ star (g • φ) := by rfl
     _ = (g.toSU2.1 *ᵥ (g.toU1 ^ 3 • ψ)) ⬝ᵥ star (g.toSU2.1 *ᵥ (g.toU1 ^ 3 • φ)) := by
       rw [gaugeGroupI_smul_eq_U1_mul_SU2, gaugeGroupI_smul_eq_U1_mul_SU2]
     _ = (g.toSU2.1 *ᵥ (g.toU1 ^ 3 • ψ)) ⬝ᵥ (star ((g.toU1 ^ 3 • φ)) ᵥ* star (g.toSU2.1)) := by
@@ -205,6 +204,7 @@ lemma gaugeGroupI_smul_inner (g : StandardModel.GaugeGroupI) (φ ψ : HiggsVec) 
       rfl
     _ = ((star (g.toSU2.1) * g.toSU2.1) *ᵥ (g.toU1 ^ 3 • ψ)) ⬝ᵥ star ((g.toU1 ^ 3 • φ)) := by
       rw [dotProduct_comm, ← Matrix.dotProduct_mulVec, dotProduct_comm, mulVec_mulVec]
+      rfl
     _ = ((g.toU1 ^ 3 • ψ)) ⬝ᵥ star ((g.toU1 ^ 3 • φ)) := by
       rw [mem_unitaryGroup_iff'.mp (GaugeGroupI.toSU2 g).2.1]
       simp
@@ -216,14 +216,14 @@ lemma gaugeGroupI_smul_inner (g : StandardModel.GaugeGroupI) (φ ψ : HiggsVec) 
       simp
       rfl
     _ = (ψ ⬝ᵥ star (φ.toFin2ℂ)) := by
-      rw [dotProduct_smul, smul_dotProduct, smul_smul, unitary.star_mul_self]
+      erw [dotProduct_smul, smul_dotProduct, smul_smul, Unitary.star_mul_self]
       simp
 
 @[simp]
 lemma gaugeGroupI_smul_norm (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
     ‖g • φ‖ = ‖φ‖ := by
   rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), norm_eq_sqrt_re_inner (𝕜 := ℂ)]
-  simp
+  rw [gaugeGroupI_smul_inner]
 
 /-!
 
@@ -467,7 +467,7 @@ lemma const_toHiggsVec_apply (φ : HiggsField) (x : SpaceTime) :
     const (φ.toHiggsVec x) x = φ x := rfl
 
 lemma toFin2ℂ_comp_toHiggsVec (φ : HiggsField) :
-    toFin2ℂ ∘ φ.toHiggsVec = φ := rfl
+  φ.toHiggsVec = φ := rfl
 
 /-!
 
@@ -477,12 +477,25 @@ We prove some smoothness properties of the components of a Higgs field.
 
 -/
 
-lemma toVec_smooth (φ : HiggsField) : ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, Fin 2 → ℂ) ⊤ φ :=
-  smooth_toFin2ℂ.comp φ.toHiggsVec_smooth
+@[fun_prop]
+lemma contDiff (φ : HiggsField) :
+    ContDiff ℝ ⊤ φ := by
+  simpa [contMDiff_iff_contDiff] using φ.toHiggsVec_smooth
+
+
+lemma toVec_smooth (φ : HiggsField) :
+    ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, EuclideanSpace ℂ (Fin 2)) ⊤ φ :=
+  φ.toHiggsVec_smooth
 
 lemma apply_smooth (φ : HiggsField) :
-    ∀ i, ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℂ) ⊤ (fun (x : SpaceTime) => (φ x i)) :=
-  (contMDiff_pi_space).mp (φ.toVec_smooth)
+    ∀ i, ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℂ) ⊤ (fun (x : SpaceTime) => (φ x i)) := by
+  have h1 := φ.contDiff
+  intro i
+  refine ContDiff.contMDiff ?_
+  simp only
+  rw [contDiff_piLp] at h1
+  exact h1 i
+
 
 lemma apply_re_smooth (φ : HiggsField) (i : Fin 2) :
     ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, ℝ) ⊤ (reCLM ∘ (fun (x : SpaceTime) => (φ x i))) :=

@@ -446,6 +446,7 @@ lemma kineticTerm_add_time_mul_const {d} {𝓕 : FreeSpace} (A : Electromagnetic
       ∂_ (Sum.inl 0) A + (fun x => c) := by
     funext x ν
     rw [SpaceTime.deriv_eq]
+
     rw [fderiv_fun_add _ (by fun_prop)]
     simp only [Fin.isValue, ContinuousLinearMap.add_apply, Lorentz.Vector.apply_add, Pi.add_apply]
     congr
@@ -459,7 +460,7 @@ lemma kineticTerm_add_time_mul_const {d} {𝓕 : FreeSpace} (A : Electromagnetic
     rw [fderiv_fun_add _ (by fun_prop)]
     simp only [Fin.isValue, ContinuousLinearMap.add_apply, Lorentz.Vector.apply_add]
     rw [fderiv_smul_const (by fun_prop)]
-    simp only [Fin.isValue, Lorentz.Vector.fderiv_apply, ContinuousLinearMap.smulRight_apply,
+    simp only [Fin.isValue, ContinuousLinearMap.smulRight_apply,
       Lorentz.Vector.apply_smul]
     rw [← SpaceTime.deriv_eq]
     simp [Lorentz.Vector.coordCLM]
@@ -662,7 +663,7 @@ lemma gradKineticTerm_eq_sum_sum {d} {𝓕 : FreeSpace}
         ∂_ μ (fun x' => ∂_ ν A x' μ) x)) • Lorentz.Vector.basis ν:= by
   have diff_partial (μ) :
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
-    rw [← differentiable_pi]
+    rw [Lorentz.Vector.differentiable_apply]
     refine Differentiable.clm_apply ?_ ?_
     · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
         (Preorder.le_refl 1)
@@ -753,7 +754,7 @@ lemma gradKineticTerm_eq_fieldStrength {d} {𝓕 : FreeSpace} (A : Electromagnet
     • Lorentz.Vector.basis ν := by
   have diff_partial (μ) :
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
-    rw [← differentiable_pi]
+    rw [Lorentz.Vector.differentiable_apply]
     refine Differentiable.clm_apply ?_ ?_
     · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
         (Preorder.le_refl 1)
@@ -839,7 +840,7 @@ lemma gradKineticTerm_eq_electric_magnetic {𝓕 : FreeSpace} (A : Electromagnet
       Lorentz.Vector.basis (Sum.inr i) := by
   have diff_partial (μ) :
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
-    rw [← differentiable_pi]
+    rw [Lorentz.Vector.differentiable_apply]
     refine Differentiable.clm_apply ?_ ?_
     · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
         (Preorder.le_refl 1)

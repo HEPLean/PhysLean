@@ -113,6 +113,10 @@ lemma basis_inner {d} (i : Fin d) (p : Space d) :
     inner ℝ (basis i) p = p i := by
   simp [inner_eq_sum, basis_apply]
 
+lemma basis_eq_single {d} (i : Fin d) :
+    basis i = EuclideanSpace.single i 1 := by
+  simp [basis]
+
 /-!
 
 ## Coordinates

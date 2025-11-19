@@ -259,7 +259,7 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
         simp only [Fin.isValue, ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe,
           Function.comp_apply]
         congr 1
-        funext i
+        ext i
         fin_cases i
         simp only [Fin.isValue, Fin.zero_eta, basis_self, oneEquivCLE]
         rfl
@@ -275,10 +275,11 @@ lemma oneDimPointParticle_electricField_eq_heavisideStep (q : ℝ) :
         simp only [Fin.isValue, ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe,
           Function.comp_apply]
         congr 2
-        funext i
+        ext i
         fin_cases i
         simp only [Fin.isValue, Fin.zero_eta, basis_self, oneEquivCLE]
         rfl
+        exact 2
     /- We use the fact that e.g. `(d(η • x)/dx - η x) = d η/dx • x` to rewrite
     `- q/(2 * ε) ∫_0^(∞) x, dη/dx • x - q/(2 * ε) ∫_(-∞)^0 x, dη/dx • (-x)`
     as
@@ -504,7 +505,7 @@ lemma oneDimPointParticle_gaussLaw (q : ℝ) :
         change fderiv ℝ η (oneEquivCLE.symm x) (basis 0) = _
         trans fderiv ℝ η (oneEquivCLE.symm x) (oneEquivCLE.symm 1)
         · congr 1
-          funext i
+          ext i
           fin_cases i
           simp
           rfl

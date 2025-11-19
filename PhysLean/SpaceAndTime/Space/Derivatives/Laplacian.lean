@@ -70,7 +70,7 @@ lemma laplacian_eq_div_of_grad (f : Space → ℝ) :
 
 /-- The vector `laplacianVec` operator. -/
 noncomputable def laplacianVec {d} (f : Space d → EuclideanSpace ℝ (Fin d)) :
-    Space d → EuclideanSpace ℝ (Fin d) := fun x i =>
+    Space d → EuclideanSpace ℝ (Fin d) := fun x => WithLp.toLp 2 fun i =>
   -- get i-th component of `f`
   let fi i x := coord i (f x)
   Δ (fi i) x

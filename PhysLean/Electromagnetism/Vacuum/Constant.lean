@@ -84,7 +84,7 @@ lemma constantEB_smooth {c : SpeedOfLight}
     {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
     {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
     ContDiff ℝ ∞ (constantEB c E₀ B₀ B₀_antisymm) := by
-  rw [contDiff_euclidean]
+  rw [← Lorentz.Vector.contDiff_apply]
   intro μ
   match μ with
   | Sum.inl _ =>
@@ -119,7 +119,7 @@ lemma constantEB_scalarPotential {c : SpeedOfLight}
     {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
     (constantEB c E₀ B₀ B₀_antisymm).scalarPotential c = fun _ x => -⟪E₀, x⟫_ℝ := by
   ext t x
-  simp [scalarPotential, timeSlice, constantEB, space_toCoord_symm, Equiv.coe_fn_mk,
+  simp [scalarPotential, timeSlice, constantEB, Equiv.coe_fn_mk,
     Function.curry_apply, Function.comp_apply]
 
 /-!
@@ -133,7 +133,7 @@ The vector potential of the electromagnetic potential is `(1 / 2) * ∑ j, B₀ 
 lemma constantEB_vectorPotential {c : SpeedOfLight}
     {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
     {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
-    (constantEB c E₀ B₀ B₀_antisymm).vectorPotential c = fun _ x i =>
+    (constantEB c E₀ B₀ B₀_antisymm).vectorPotential c = fun _ x => WithLp.toLp 2 fun i =>
       (1 / 2) * ∑ j, B₀ (i, j) * x j := by
   ext t x i
   simp [vectorPotential, timeSlice, constantEB, space_toCoord_symm, Equiv.coe_fn_mk,

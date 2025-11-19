@@ -86,7 +86,7 @@ noncomputable def harmonicWaveX (𝓕 : FreeSpace) (k : ℝ) (E₀ : Fin d → �
 lemma harmonicWaveX_differentiable {d} (𝓕 : FreeSpace) (k : ℝ)
     (E₀ : Fin d → ℝ) (φ : Fin d → ℝ) :
     Differentiable ℝ (harmonicWaveX 𝓕 k E₀ φ) := by
-  rw [differentiable_pi]
+  rw [← Lorentz.Vector.differentiable_apply]
   intro μ
   match μ with
   | Sum.inl 0 => simp [harmonicWaveX]
@@ -105,7 +105,7 @@ lemma harmonicWaveX_differentiable {d} (𝓕 : FreeSpace) (k : ℝ)
 lemma harmonicWaveX_contDiff {d} (n : WithTop ℕ∞) (𝓕 : FreeSpace) (k : ℝ)
     (E₀ : Fin d → ℝ) (φ : Fin d → ℝ) :
     ContDiff ℝ n (harmonicWaveX 𝓕 k E₀ φ) := by
-  rw [contDiff_euclidean]
+  rw [← Lorentz.Vector.contDiff_apply]
   intro μ
   match μ with
   | Sum.inl 0 => simp [harmonicWaveX]; fun_prop
@@ -543,7 +543,7 @@ lemma harmonicWaveX_isPlaneWave {d} (𝓕 : FreeSpace) (k : ℝ) (hk : k ≠ 0)
     (E₀ : Fin d → ℝ) (φ : Fin d → ℝ) :
     IsPlaneWave 𝓕 (harmonicWaveX 𝓕 k E₀ φ) ⟨Space.basis 0, by simp⟩ := by
   apply And.intro
-  · use fun u i =>
+  · use fun u => WithLp.toLp 2 fun i =>
       match i with
       | 0 => 0
       | ⟨Nat.succ i, h⟩ => E₀ ⟨i, by grind⟩ * cos (-k * u + φ ⟨i, by grind⟩)

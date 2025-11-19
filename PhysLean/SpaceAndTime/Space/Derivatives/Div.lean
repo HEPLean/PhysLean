@@ -236,7 +236,7 @@ lemma distDiv_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ 
       exact integrable_lemma i j
   · intro i hi
     simp only [Nat.succ_eq_add_one, inner_smul_right, inner_basis]
-    convert integrable_lemma i i
+    convert integrable_lemma i i using 2
     rename_i x
     simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, mul_eq_mul_right_iff]
     left

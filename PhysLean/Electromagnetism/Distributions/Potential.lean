@@ -117,7 +117,9 @@ noncomputable def toComponents {d : ℕ} :
       intro c ε
       funext μ
       simp
-    cont := by fun_prop}
+    cont := by
+      apply Lorentz.Vector.continuous_of_apply
+      fun_prop}
   left_inv := by
     intro A
     ext ε
@@ -220,14 +222,14 @@ noncomputable def scalarPotential {d} :
 noncomputable def vectorPotential {d}:
     ElectromagneticPotentialD d →ₗ[ℝ] (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
   toFun A := {
-    toFun := fun κ i => (distTimeSlice 1 <| A.toComponents (Sum.inr i)) κ
+    toFun := fun κ => WithLp.toLp 2 fun i => (distTimeSlice 1 <| A.toComponents (Sum.inr i)) κ
     map_add' := by
       intro κ1 κ2
-      funext i
+      ext i
       simp
     map_smul' := by
       intro c κ
-      funext i
+      ext i
       simp
     cont := by fun_prop
     }
@@ -264,14 +266,14 @@ noncomputable def toComponentsEuclidean {d : ℕ} :
       simp
     cont := by fun_prop}
   invFun J := {
-    toFun := fun ε μ => J μ ε
+    toFun := fun ε => WithLp.toLp 2 fun μ => J μ ε
     map_add' := by
       intro ε1 ε2
-      funext μ
+      ext μ
       simp
     map_smul' := by
       intro c ε
-      funext μ
+      ext μ
       simp
     cont := by fun_prop}
   left_inv := by
@@ -422,7 +424,9 @@ noncomputable def toComponents {d : ℕ} :
       intro c ε
       funext μ
       simp
-    cont := by fun_prop}
+    cont := by
+      apply Lorentz.Vector.continuous_of_apply
+      fun_prop}
   left_inv := by
     intro J
     ext ε

@@ -61,7 +61,7 @@ lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := fun
+    let x' : Space d.succ := WithLp.toLp 2 fun
       | 0 => γ β * (x 0 + c * β * t.val)
       | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
     electricField c (fun x => Λ • A (Λ⁻¹ • x)) t x 0 =
@@ -108,7 +108,7 @@ lemma electricField_apply_x_boost_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
     (i : Fin d) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := fun
+    let x' : Space d.succ := WithLp.toLp 2 fun
       | 0 => γ β * (x 0 + c * β * t.val)
       | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
     electricField c (fun x => Λ • A (Λ⁻¹ • x)) t x i.succ =
@@ -153,7 +153,7 @@ lemma magneticFieldMatrix_apply_x_boost_zero_succ {d : ℕ} {c : SpeedOfLight} (
     (i : Fin d) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := fun
+    let x' : Space d.succ := WithLp.toLp 2 fun
       | 0 => γ β * (x 0 + c * β * t.val)
       | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
     magneticFieldMatrix c (fun x => Λ • A (Λ⁻¹ • x)) t x (0, i.succ) =
@@ -187,7 +187,7 @@ lemma magneticFieldMatrix_apply_x_boost_succ_succ {d : ℕ} {c : SpeedOfLight} (
     (i j : Fin d) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := fun
+    let x' : Space d.succ := WithLp.toLp 2 fun
       | 0 => γ β * (x 0 + c * β * t.val)
       | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
     magneticFieldMatrix c (fun x => Λ • A (Λ⁻¹ • x)) t x (i.succ, j.succ) =

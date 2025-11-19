@@ -149,7 +149,7 @@ lemma schwartzMap_mul_iteratedFDeriv_integrable_slice_symm {d : ℕ} (n m : ℕ)
     apply Continuous.norm
     apply Continuous.comp'
     apply ContDiff.continuous_iteratedFDeriv (n := (n + 1 : ℕ))
-    refine GCongr.natCast_le_natCast (by omega)
+    exact Nat.cast_le.mpr (by omega)
     have hη := η.smooth'
     apply hη.of_le (ENat.LEInfty.out)
     fun_prop
@@ -240,7 +240,7 @@ lemma schwartzMap_iteratedFDeriv_slice_symm_integrable {n} {d : ℕ} (η : 𝓢(
   · apply Continuous.aestronglyMeasurable
     apply Continuous.comp'
     apply ContDiff.continuous_iteratedFDeriv (n := (n + 1 : ℕ))
-    refine GCongr.natCast_le_natCast (by omega)
+    exact Nat.cast_le.mpr (by omega)
     have hη := η.smooth'
     apply hη.of_le (ENat.LEInfty.out)
     fun_prop

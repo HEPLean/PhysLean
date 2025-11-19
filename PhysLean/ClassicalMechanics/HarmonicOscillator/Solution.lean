@@ -318,7 +318,7 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]
   simp [trajectory_eq]
-  funext i
+  ext i
   simp only [PiLp.sub_apply, PiLp.add_apply, PiLp.neg_apply, PiLp.smul_apply, smul_eq_mul,
     PiLp.zero_apply]
   rw [ω_sq]
@@ -362,7 +362,7 @@ lemma trajectory_energy (IC : InitialConditions) : S.energy (IC.trajectory S) =
     fun _ => 1/2 * (S.m * ‖IC.v₀‖ ^2 + S.k * ‖IC.x₀‖ ^ 2) := by
   funext t
   rw [energy_conservation_of_equationOfMotion' _ _ (by fun_prop) (trajectory_equationOfMotion S IC)]
-  simp [energy, kineticEnergy, potentialEnergy, real_inner_self_eq_norm_sq]
+  simp [energy, kineticEnergy, potentialEnergy]
   ring
 
 /-!
@@ -395,7 +395,7 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   have h1' : IC.x₀ 0 ≠ 0 := by
     intro hn
     apply h1
-    funext i
+    ext i
     fin_cases i
     simp [hn]
   have hcos : cos (S.ω * t.val) ≠ 0 := by
@@ -437,7 +437,7 @@ lemma trajectory_velocity_eq_zero_at_arctan (IC : InitialConditions) (hx : IC.x�
   have hx' : S.ω ≠ 0 := by exact ω_neq_zero S
   field_simp
   rw [Real.sin_arctan, Real.cos_arctan]
-  funext i
+  ext i
   fin_cases i
   simp only [Fin.isValue, one_div, Fin.zero_eta, PiLp.add_apply, PiLp.neg_apply, PiLp.smul_apply,
     smul_eq_mul, PiLp.zero_apply]
@@ -450,7 +450,7 @@ lemma trajectory_velocity_eq_zero_at_arctan (IC : InitialConditions) (hx : IC.x�
   have hx : IC.x₀ 0 ≠ 0 := by
     intro hn
     apply hx
-    funext i
+    ext i
     fin_cases i
     simp [hn]
   field_simp
@@ -470,7 +470,7 @@ lemma trajectory_velocity_eq_zero_iff (IC : InitialConditions) (t : Time) :
     ‖(IC.trajectory S) t‖ = √(‖IC.x₀‖^2 + (‖IC.v₀‖/S.ω)^2) := by
   have := by exact energy_eq S (trajectory S IC)
   have h_energy_t := congrFun this t
-  simp [kineticEnergy_eq, potentialEnergy_eq] at h_energy_t
+  simp only [kineticEnergy_eq, one_div, potentialEnergy_eq, smul_eq_mul] at h_energy_t
   rw [real_inner_self_eq_norm_sq (trajectory S IC t)] at h_energy_t
   have := by exact trajectory_energy S IC
   have h_init := congrFun this t

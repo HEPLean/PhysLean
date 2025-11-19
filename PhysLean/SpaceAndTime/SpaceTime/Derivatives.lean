@@ -82,14 +82,49 @@ lemma deriv_eq {d : ℕ} (μ : Fin 1 ⊕ Fin d) (f : SpaceTime d → M) (y : Spa
     fderiv ℝ f y (Lorentz.Vector.basis μ) := by
   rfl
 
+lemma differentiable_vector {d : ℕ} (f : SpaceTime d → Lorentz.Vector d) :
+    (∀ ν, Differentiable ℝ (fun x => f x ν)) ↔ Differentiable ℝ f := by
+  apply Iff.intro
+  · intro h
+    rw [← (Lorentz.Vector.equivPi d).comp_differentiable_iff]
+    exact differentiable_pi'' h
+  · intro h ν
+    change Differentiable ℝ (Lorentz.Vector.coordCLM ν ∘ f)
+    apply Differentiable.comp
+    · fun_prop
+    · exact h
+
+lemma contDiff_vector {d : ℕ} (f : SpaceTime d → Lorentz.Vector d) :
+    (∀ ν, ContDiff ℝ n (fun x => f x ν)) ↔ ContDiff ℝ n f := by
+  apply Iff.intro
+  · intro h
+    rw [← (Lorentz.Vector.equivPi d).comp_contDiff_iff]
+    apply contDiff_pi'
+    intro ν
+    exact h ν
+  · intro h ν
+    change ContDiff ℝ n (Lorentz.Vector.coordCLM ν ∘ f)
+    apply ContDiff.comp
+    · fun_prop
+    · exact h
+
 lemma deriv_apply_eq {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) (f : SpaceTime d → Lorentz.Vector d)
     (hf : Differentiable ℝ f)
     (y : SpaceTime d) :
     ∂_ μ f y ν = fderiv ℝ (fun x => f x ν) y (Lorentz.Vector.basis μ) := by
   rw [deriv_eq]
-  rw [fderiv_pi]
+  change _ = (fderiv ℝ (Lorentz.Vector.coordCLM ν ∘ f) y) (Lorentz.Vector.basis μ)
+  rw [fderiv_comp _ (by fun_prop) (by fun_prop)]
+  simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply]
   rfl
-  fun_prop
+
+lemma fderiv_vector {d : ℕ} (f : SpaceTime d → Lorentz.Vector d)
+    (hf : Differentiable ℝ f) (y dt : SpaceTime d) (ν : Fin 1 ⊕ Fin d) :
+    fderiv ℝ f y dt ν = fderiv ℝ (fun x => f x ν) y dt := by
+  change _ = (fderiv ℝ (Lorentz.Vector.coordCLM ν ∘ f) y) dt
+  rw [fderiv_comp _ (by fun_prop) (by fun_prop)]
+  simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply]
+  rfl
 
 @[simp]
 lemma deriv_coord {d : ℕ} (μ ν : Fin 1 ⊕ Fin d) :

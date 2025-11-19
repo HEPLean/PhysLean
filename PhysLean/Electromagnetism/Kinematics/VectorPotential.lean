@@ -62,7 +62,7 @@ attribute [-simp] Nat.succ_eq_add_one
 /-- The vector potential from the electromagnetic potential. -/
 noncomputable def vectorPotential {d} (c : SpeedOfLight := 1) (A : ElectromagneticPotential d) :
     Time → Space d → EuclideanSpace ℝ (Fin d) := timeSlice c <|
-  fun x i => A x (Sum.inr i)
+  fun x => WithLp.toLp 2 fun i => A x (Sum.inr i)
 
 /-!
 
@@ -79,7 +79,7 @@ lemma vectorPotential_contDiff {n} {d} {c : SpeedOfLight} (A : ElectromagneticPo
   apply timeSlice_contDiff
   refine contDiff_euclidean.mpr ?_
   have h1 : ∀ i, ContDiff ℝ n (fun x => A x i) := by
-    rw [← contDiff_euclidean]
+    rw [SpaceTime.contDiff_vector]
     exact hA
   exact fun i => h1 (Sum.inr i)
 
@@ -135,7 +135,7 @@ lemma vectorPotential_differentiable {d} {c : SpeedOfLight} (A : Electromagnetic
   apply timeSlice_differentiable
   refine differentiable_euclidean.mpr ?_
   have h1 : ∀ i, Differentiable ℝ (fun x => A x i) := by
-    rw [← differentiable_euclidean]
+    rw [SpaceTime.differentiable_vector]
     exact hA
   exact fun i => h1 (Sum.inr i)
 

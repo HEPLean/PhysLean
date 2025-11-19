@@ -88,20 +88,19 @@ lemma spaceTime_deriv_action_eq_sum {d} {μ ν : Fin 1 ⊕ Fin d} {x : SpaceTime
   calc _
     _ = ((Λ • (∂_ μ (fun x => A (Λ⁻¹ • x)) x)) ν) := by
       have hdif : ∀ i, DifferentiableAt ℝ (fun x => A (Λ⁻¹ • x) i) x := by
-          rw [← differentiableAt_pi]
+          intro i
+          apply Differentiable.differentiableAt
+          revert i
+          rw [SpaceTime.differentiable_vector]
           conv =>
             enter [2, x]; rw [← Lorentz.Vector.actionCLM_apply]
-          apply Differentiable.differentiableAt
-          apply Differentiable.comp hA
+          apply Differentiable.fun_comp hA
           exact ContinuousLinearMap.differentiable (Lorentz.Vector.actionCLM Λ⁻¹)
       trans ∂_ μ (fun x => (Λ • A (Λ⁻¹ • x)) ν) x
-      · rw [SpaceTime.deriv_eq, SpaceTime.deriv_eq]
-        rw [fderiv_pi]
-        rfl
-        rw [← differentiableAt_pi]
+      · rw [SpaceTime.deriv_eq, SpaceTime.deriv_eq, SpaceTime.fderiv_vector]
+        intro ν
         conv =>
           enter [2, x]; rw [← Lorentz.Vector.actionCLM_apply, ← Lorentz.Vector.actionCLM_apply]
-        apply Differentiable.differentiableAt
         apply Differentiable.comp
         · exact ContinuousLinearMap.differentiable (Lorentz.Vector.actionCLM Λ)
         · apply Differentiable.comp
@@ -121,9 +120,8 @@ lemma spaceTime_deriv_action_eq_sum {d} {μ ν : Fin 1 ⊕ Fin d} {x : SpaceTime
       congr
       funext κ
       congr
-      rw [SpaceTime.deriv_eq, fderiv_pi]
-      rfl
-      · exact fun i => hdif i
+      rw [SpaceTime.deriv_eq, SpaceTime.fderiv_vector]
+      · exact hA.comp (Lorentz.Vector.actionCLM Λ⁻¹).differentiable
       · intro i _
         apply DifferentiableAt.const_mul
         exact hdif i
@@ -154,7 +152,7 @@ lemma differentiable_component {d : ℕ}
     (A : ElectromagneticPotential d) (hA : Differentiable ℝ A) (μ : Fin 1 ⊕ Fin d) :
     Differentiable ℝ (fun x => A x μ) := by
   revert μ
-  rw [← differentiable_pi]
+  rw [SpaceTime.differentiable_vector]
   exact hA
 
 /-!
@@ -185,11 +183,8 @@ lemma hasVarAdjDerivAt_component {d : ℕ} (μ : Fin 1 ⊕ Fin d) (A : SpaceTime
   refine { adjoint_inner_left := ?_ }
   intro u v
   simp [f,f']
-  rw [PiLp.inner_apply]
-  simp only [Lorentz.Vector.apply_smul, Lorentz.Vector.basis_apply, mul_ite, mul_one, mul_zero,
-    RCLike.inner_apply, conj_trivial, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte,
-    mul_eq_mul_right_iff]
-  left
+  simp [inner_smul_left, Lorentz.Vector.basis_inner]
+  ring_nf
   rfl
 
 /-!

@@ -58,7 +58,7 @@ noncomputable def curl (f : Space → EuclideanSpace ℝ (Fin 3)) :
   -- derivative of i-th component in j-th coordinate
   -- ∂fᵢ/∂xⱼ
   let df i j x := ∂[j] (fi i) x
-  fun i =>
+  WithLp.toLp 2 fun i =>
     match i with
     | 0 => df 2 1 x - df 1 2 x
     | 1 => df 0 2 x - df 2 0 x
@@ -228,10 +228,12 @@ lemma curl_of_curl (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ
   ext x i
   fin_cases i <;>
   · simp only [Fin.isValue, Fin.reduceFinMk, Pi.sub_apply]
-    rw [deriv_coord_2nd_sub, deriv_coord_2nd_sub, deriv_coord_2nd_add]
+    rw [deriv_coord_2nd_sub, deriv_coord_2nd_sub]
+    simp only [Fin.isValue, Pi.sub_apply, PiLp.sub_apply]
+    rw [deriv_coord_2nd_add]
     rw [deriv_commute fun x => f x 0, deriv_commute fun x => f x 1,
       deriv_commute fun x => f x 2]
-    simp only [Fin.isValue, Pi.sub_apply, Pi.add_apply]
+    simp only [Fin.isValue, Pi.add_apply]
     ring
     repeat
       try apply contDiff_euclidean.mp
@@ -251,7 +253,7 @@ noncomputable def distCurl : (Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) →�
     (Space) →d[ℝ] (EuclideanSpace ℝ (Fin 3)) where
   toFun f :=
     let curl : (Space →L[ℝ] (EuclideanSpace ℝ (Fin 3))) →L[ℝ] (EuclideanSpace ℝ (Fin 3)) := {
-      toFun dfdx:= fun i =>
+      toFun dfdx:= WithLp.toLp 2 fun i =>
         match i with
         | 0 => dfdx (basis 2) 1 - dfdx (basis 1) 2
         | 1 => dfdx (basis 0) 2 - dfdx (basis 2) 0
@@ -270,6 +272,8 @@ noncomputable def distCurl : (Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) →�
             smul_eq_mul, RingHom.id_apply, Fin.reduceFinMk]
           ring
       cont := by
+        apply Continuous.comp
+        · fun_prop
         rw [continuous_pi_iff]
         intro i
         fin_cases i
@@ -318,14 +322,14 @@ lemma distCurl_apply_two (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η 
 -/
 
 lemma distCurl_apply (f : Space →d[ℝ] (EuclideanSpace ℝ (Fin 3))) (η : 𝓢(Space, ℝ)) :
-    distCurl f η = fun
+    distCurl f η = WithLp.toLp 2 fun
     | 0 => - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 2) (fderivCLM ℝ η)) 1
       + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 1) (fderivCLM ℝ η)) 2
     | 1 => - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0) (fderivCLM ℝ η)) 2
       + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 2) (fderivCLM ℝ η)) 0
     | 2 => - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 1) (fderivCLM ℝ η)) 0
       + f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis 0) (fderivCLM ℝ η)) 1 := by
-  funext i
+  ext i
   fin_cases i
   · simp [distCurl_apply_zero]
   · simp [distCurl_apply_one]

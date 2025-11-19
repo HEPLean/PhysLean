@@ -101,7 +101,7 @@ lemma chargeDensity_differentiable {d : ℕ} {c : SpeedOfLight} {J : LorentzCurr
   rw [chargeDensity_eq_timeSlice]
   apply timeSlice_differentiable
   have h1 : ∀ i, Differentiable ℝ (fun x => J x i) := by
-    rw [← differentiable_euclidean]
+    rw [SpaceTime.differentiable_vector]
     exact hJ
   apply Differentiable.fun_const_smul
   exact h1 (Sum.inl 0)
@@ -125,7 +125,7 @@ lemma chargeDensity_contDiff {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDen
   rw [chargeDensity_eq_timeSlice]
   apply timeSlice_contDiff
   have h1 : ∀ i, ContDiff ℝ n (fun x => J x i) := by
-    rw [← contDiff_euclidean]
+    rw [SpaceTime.contDiff_vector]
     exact hJ
   apply ContDiff.const_smul
   exact h1 (Sum.inl 0)
@@ -139,10 +139,11 @@ lemma chargeDensity_contDiff {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDen
 /-- The underlying (non-Lorentz) current density associated with a Lorentz current density. -/
 noncomputable def currentDensity (c : SpeedOfLight := 1) (J : LorentzCurrentDensity d) :
     Time → Space d → EuclideanSpace ℝ (Fin d) :=
-  fun t x i => J ((toTimeAndSpace c).symm (t, x)) (Sum.inr i)
+  fun t x => WithLp.toLp 2 fun i => J ((toTimeAndSpace c).symm (t, x)) (Sum.inr i)
 
 lemma currentDensity_eq_timeSlice {d : ℕ} {J : LorentzCurrentDensity d} :
-    J.currentDensity c = timeSlice c (fun x i => J x (Sum.inr i)) := by rfl
+    J.currentDensity c = timeSlice c (fun x => WithLp.toLp 2
+      fun i => J x (Sum.inr i)) := by rfl
 
 /-!
 
@@ -166,7 +167,7 @@ lemma currentDensity_differentiable {d : ℕ} {c : SpeedOfLight} {J : LorentzCur
   rw [currentDensity_eq_timeSlice]
   apply timeSlice_differentiable
   have h1 : ∀ i, Differentiable ℝ (fun x => J x i) := by
-    rw [← differentiable_euclidean]
+    rw [SpaceTime.differentiable_vector]
     exact hJ
   exact differentiable_euclidean.mpr fun i => h1 (Sum.inr i)
 
@@ -227,7 +228,7 @@ lemma currentDensity_ContDiff {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDe
   rw [currentDensity_eq_timeSlice]
   apply timeSlice_contDiff
   have h1 : ∀ i, ContDiff ℝ n (fun x => J x i) := by
-    rw [← contDiff_euclidean]
+    rw [SpaceTime.contDiff_vector]
     exact hJ
   exact contDiff_euclidean.mpr fun i => h1 (Sum.inr i)
 

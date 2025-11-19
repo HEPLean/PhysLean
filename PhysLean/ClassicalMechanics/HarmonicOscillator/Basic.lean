@@ -221,7 +221,7 @@ lemma kineticEnergy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ 
 @[fun_prop]
 lemma potentialEnergy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
     Differentiable ℝ (fun t => potentialEnergy S (xₜ t)) := by
-  simp [potentialEnergy_eq]
+  simp only [potentialEnergy_eq, one_div, smul_eq_mul]
   change Differentiable ℝ ((fun x => 2⁻¹ * (S.k * ⟪x, x⟫_ℝ)) ∘ xₜ)
   apply Differentiable.comp
   · fun_prop
@@ -247,7 +247,7 @@ lemma kineticEnergy_deriv (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ)
     ∂ₜ (kineticEnergy S xₜ) = fun t => ⟪∂ₜ xₜ t, S.m • ∂ₜ (∂ₜ xₜ) t⟫_ℝ := by
   funext t
   unfold kineticEnergy
-  conv_lhs => simp [Time.deriv]
+  conv_lhs => simp only [Time.deriv, one_div, ringHom_apply]
   change (fderiv ℝ ((fun x => 2⁻¹ * S.m * ⟪x, x⟫_ℝ) ∘ (fun t => ∂ₜ xₜ t)) t) 1 = _
   rw [fderiv_comp]
   rw [fderiv_const_mul (by fun_prop)]
@@ -265,7 +265,7 @@ lemma potentialEnergy_deriv (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x�
     ∂ₜ (fun t => potentialEnergy S (xₜ t)) = fun t => ⟪∂ₜ xₜ t, S.k • xₜ t⟫_ℝ := by
   funext t
   unfold potentialEnergy
-  conv_lhs => simp [Time.deriv]
+  conv_lhs => simp only [Time.deriv, one_div, smul_eq_mul]
   change (fderiv ℝ ((fun x => 2⁻¹ * (S.k * ⟪x, x⟫_ℝ)) ∘ (fun t => xₜ t)) t) 1 = _
   rw [fderiv_comp]
   rw [fderiv_const_mul (by fun_prop), fderiv_const_mul (by fun_prop)]
@@ -371,14 +371,16 @@ position and velocity.
 
 lemma gradient_lagrangian_position_eq (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
     gradient (fun x => lagrangian S t x v) x = - S.k • x := by
-  simp [lagrangian_eq]
+  simp only [lagrangian_eq, one_div, neg_smul]
   rw [← grad_eq_gradiant, grad_eq_sum]
-  simp [Space.deriv_eq_fderiv_basis]
+  simp [Space.deriv_eq_fderiv_basis, -inner_self_eq_norm_sq_to_K]
   rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
   simp only [fderiv_fun_const, Pi.zero_apply, zero_sub, Fin.isValue, ContinuousLinearMap.neg_apply,
     neg_smul, neg_inj]
   rw [fderiv_const_mul (by fun_prop)]
-  simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
+  simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
+    ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
+    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
   have hx : x = x 0 • Space.basis 0 := by
     ext i
     fin_cases i
@@ -390,13 +392,15 @@ lemma gradient_lagrangian_position_eq (t : Time) (x : Space 1) (v : EuclideanSpa
 
 lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
     gradient (lagrangian S t x) v = S.m • v := by
-  simp [lagrangian_eq]
+  simp [lagrangian_eq, -inner_self_eq_norm_sq_to_K]
   rw [← grad_eq_gradiant, grad_eq_sum]
-  simp [Space.deriv_eq_fderiv_basis]
+  simp [Space.deriv_eq_fderiv_basis, -inner_self_eq_norm_sq_to_K]
   rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
   simp only [fderiv_fun_const, Pi.zero_apply, sub_zero, Fin.isValue]
   rw [fderiv_const_mul (by fun_prop)]
-  simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
+  simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
+    ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
+    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
   have hx : v = v 0 • Space.basis 0 := by
     ext i
     fin_cases i
@@ -522,14 +526,14 @@ lemma gradLagrangian_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x
   rw [gradLagrangian_eq_eulerLagrangeOp S xₜ hx, eulerLagrangeOp]
   simp only
   congr
-  · simp [lagrangian_eq]
+  · simp [lagrangian_eq, -inner_self_eq_norm_sq_to_K]
     rw [← grad_eq_gradiant, grad_eq_sum]
-    simp [Space.deriv_eq_fderiv_basis]
+    simp [Space.deriv_eq_fderiv_basis, -inner_self_eq_norm_sq_to_K]
     rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
     simp only [fderiv_fun_const, Pi.zero_apply, zero_sub, Fin.isValue,
       ContinuousLinearMap.neg_apply, neg_smul]
     rw [fderiv_const_mul (by fun_prop)]
-    simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self, force_eq_linear]
+    simp [force_eq_linear]
     have hx : xₜ t = xₜ t 0 • Space.basis 0 := by
       ext i
       fin_cases i
@@ -687,7 +691,8 @@ lemma hamiltonian_eq :
     hamiltonian S = fun _ p x => (1 / (2 : ℝ)) * (1 / S.m) * ⟪p, p⟫_ℝ +
       (1 / (2 : ℝ)) * S.k * ⟪x, x⟫_ℝ := by
   funext t x p
-  simp [hamiltonian, lagrangian_eq, toCanonicalMomentum, inner_smul_right, inner_smul_left]
+  simp only [hamiltonian, toCanonicalMomentum, lagrangian_eq, one_div, LinearEquiv.coe_symm_mk',
+    inner_smul_right, inner_smul_left, map_inv₀, ringHom_apply]
   have hm : S.m ≠ 0 := by exact m_neq_zero S
   field_simp
   ring
@@ -718,9 +723,12 @@ lemma gradient_hamiltonian_position_eq (t : Time) (x : Space 1) (p : EuclideanSp
   rw [hamiltonian_eq]
   simp only [one_div]
   rw [← grad_eq_gradiant, grad_eq_sum]
-  simp [Space.deriv_eq_fderiv_basis]
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, deriv_eq_fderiv_basis,
+    fderiv_const_add, Finset.sum_singleton]
   rw [fderiv_const_mul (by fun_prop)]
-  simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
+  simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
+    ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
+    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
   have hx : x = x 0 • Space.basis 0 := by
     ext i
     fin_cases i
@@ -734,9 +742,12 @@ lemma gradient_hamiltonian_momentum_eq (t : Time) (x : Space 1) (p : EuclideanSp
   rw [hamiltonian_eq]
   simp only [one_div]
   rw [← grad_eq_gradiant, grad_eq_sum]
-  simp [Space.deriv_eq_fderiv_basis]
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, deriv_eq_fderiv_basis,
+    fderiv_add_const, Finset.sum_singleton]
   rw [fderiv_const_mul (by fun_prop)]
-  simp [← Space.deriv_eq_fderiv_basis, deriv_eq_inner_self]
+  simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
+    ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
+    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
   have hx : p = p 0 • Space.basis 0 := by
     ext i
     fin_cases i

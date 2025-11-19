@@ -222,7 +222,7 @@ lemma fieldStrengthMatrix_differentiable {d} {A : ElectromagneticPotential d}
     Differentiable ℝ (A.fieldStrengthMatrix · μν) := by
   have diff_partial (μ) :
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
-    rw [← differentiable_pi]
+    rw [SpaceTime.differentiable_vector]
     refine Differentiable.clm_apply ?_ ?_
     · exact ((contDiff_succ_iff_fderiv (n := 1)).mp hA).2.2.differentiable
         (Preorder.le_refl 1)
@@ -263,7 +263,7 @@ lemma fieldStrengthMatrix_contDiff {d} {n : WithTop ℕ∞} {A : Electromagnetic
     | (μ, ν) =>
     simp only
     revert ν
-    rw [← contDiff_euclidean]
+    rw [SpaceTime.contDiff_vector]
     apply ContDiff.clm_apply
     · exact ContDiff.fderiv_right (m := n) hA (by rfl)
     · fun_prop
@@ -273,7 +273,7 @@ lemma fieldStrengthMatrix_contDiff {d} {n : WithTop ℕ∞} {A : Electromagnetic
     | (μ, ν) =>
     simp only
     revert μ
-    rw [← contDiff_euclidean]
+    rw [SpaceTime.contDiff_vector]
     apply ContDiff.clm_apply
     · exact ContDiff.fderiv_right (m := n) hA (by rfl)
     · fun_prop

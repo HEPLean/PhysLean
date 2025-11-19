@@ -616,7 +616,7 @@ lemma iteratedFDeriv_norm_mul_pow_integrable {d : ℕ} (n m : ℕ) (η : 𝓢(Ti
     apply Continuous.norm
     apply Continuous.comp'
     apply ContDiff.continuous_iteratedFDeriv (n := (n + 1 : ℕ))
-    refine GCongr.natCast_le_natCast (by omega)
+    refine Nat.cast_le.mpr (by omega)
     have hη := η.smooth'
     apply hη.of_le (ENat.LEInfty.out)
     fun_prop
@@ -646,10 +646,16 @@ lemma iteratedFDeriv_integrable {n} {d : ℕ} (η : 𝓢(Time × Space d.succ, �
     Integrable (fun t => iteratedFDeriv ℝ n ⇑η (t, x)) volume := by
   rw [← MeasureTheory.integrable_norm_iff]
   apply iteratedFDeriv_norm_integrable η x
-  apply Continuous.aestronglyMeasurable
+  haveI : SecondCountableTopologyEither Time
+    (ContinuousMultilinearMap ℝ (fun i : Fin n => Time × Space d.succ) ℝ) := {
+      out := by
+        left
+        infer_instance
+    }
+  apply Continuous.aestronglyMeasurable (α := Time)
   apply Continuous.comp'
   apply ContDiff.continuous_iteratedFDeriv (n := (n + 1 : ℕ))
-  refine GCongr.natCast_le_natCast (by omega)
+  refine Nat.cast_le.mpr (by omega)
   have hη := η.smooth'
   apply hη.of_le (ENat.LEInfty.out)
   fun_prop

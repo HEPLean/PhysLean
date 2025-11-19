@@ -163,8 +163,9 @@ lemma canonicalMomentum_eq {d} {𝓕 : FreeSpace} (A : ElectromagneticPotential 
   rw [← Finset.sum_sub_distrib]
   rw [Finset.mul_sum]
   congr
-  funext μ
+  ext μ
   simp only [Fin.isValue, RCLike.inner_apply, conj_trivial]
+  simp only [Fin.isValue, equivEuclid_apply]
   rw [fieldStrengthMatrix, toFieldStrength_basis_repr_apply_eq_single]
   simp only [Fin.isValue, inl_0_inl_0, one_mul]
   ring_nf

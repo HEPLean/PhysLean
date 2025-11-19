@@ -210,7 +210,7 @@ open Time
 lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin 3))
     (t : Time) (x : Space) (hf : ContDiff ℝ 2 ↿fₜ) :
     ∂ₜ (fun t => (∇ × fₜ t) x) t = (∇ × fun x => (∂ₜ (fun t => fₜ t x) t)) x:= by
-  funext i
+  ext i
   rw [← Time.deriv_euclid]
   · fin_cases i
     all_goals
@@ -471,9 +471,9 @@ lemma distTimeDeriv_commute_distSpaceDeriv {M d} [NormedAddCommGroup M] [NormedS
 noncomputable def distSpaceGrad {d} :
     ((Time × Space d) →d[ℝ] ℝ) →ₗ[ℝ] (Time × Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d)) where
   toFun f := {
-      toFun := fun ε i => distSpaceDeriv i f ε
-      map_add' ε1 ε2 := by funext i; simp
-      map_smul' a ε := by funext i; simp
+      toFun := fun ε => WithLp.toLp 2 fun i => distSpaceDeriv i f ε
+      map_add' ε1 ε2 := by ext i; simp
+      map_smul' a ε := by ext i; simp
       cont := by fun_prop}
   map_add' f1 f2 := by
     ext x
@@ -521,25 +521,27 @@ lemma distSpaceDiv_apply_eq_sum_distSpaceDeriv {d}
 noncomputable def distSpaceCurl : ((Time × Space 3) →d[ℝ] (EuclideanSpace ℝ (Fin 3))) →ₗ[ℝ]
     (Time × Space 3) →d[ℝ] (EuclideanSpace ℝ (Fin 3)) where
   toFun f :={
-    toFun ε := fun i =>
+    toFun ε := WithLp.toLp 2 fun i =>
       match i with
       | 0 => distSpaceDeriv 2 f ε 1 - distSpaceDeriv 1 f ε 2
       | 1 => distSpaceDeriv 0 f ε 2 - distSpaceDeriv 2 f ε 0
       | 2 => distSpaceDeriv 1 f ε 0 - distSpaceDeriv 0 f ε 1
     map_add' ε1 ε2 := by
-      funext i
+      ext i
       fin_cases i
       all_goals
         simp only [Fin.isValue, map_add, PiLp.add_apply, Fin.reduceFinMk]
         ring
     map_smul' a ε := by
-      funext i
+      ext i
       fin_cases i
       all_goals
         simp only [Fin.isValue, map_smul, PiLp.smul_apply, smul_eq_mul, RingHom.id_apply,
           Fin.zero_eta]
         ring
     cont := by
+      apply Continuous.comp
+      · fun_prop
       rw [continuous_pi_iff]
       intro i
       fin_cases i <;> fun_prop

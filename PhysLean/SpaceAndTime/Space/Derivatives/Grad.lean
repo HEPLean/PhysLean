@@ -58,7 +58,7 @@ namespace Space
 
 /-- The vector calculus operator `grad`. -/
 noncomputable def grad {d} (f : Space d → ℝ) :
-  Space d → EuclideanSpace ℝ (Fin d) := fun x i => ∂[i] f x
+  Space d → EuclideanSpace ℝ (Fin d) := fun x => WithLp.toLp 2 fun i => ∂[i] f x
 
 @[inherit_doc grad]
 scoped[Space] notation "∇" => grad
@@ -115,7 +115,7 @@ lemma grad_smul (f : Space d → ℝ) (k : ℝ)
     ∇ (k • f) = k • ∇ f := by
   unfold grad
   ext x i
-  simp only [Pi.smul_apply, smul_eq_mul]
+  simp only [Pi.smul_apply]
   rw [deriv_smul]
   rfl
   exact hf
@@ -142,14 +142,10 @@ lemma grad_neg (f : Space d → ℝ) :
 
 lemma grad_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
     ∇ f x = ∑ i, deriv i f x • basis i := by
-  funext i
-  rw [grad, deriv_eq]
-  simp only
-  rw [Fintype.sum_apply]
-  simp only [PiLp.smul_apply, smul_eq_mul]
+  ext i
+  simp [grad, deriv_eq]
   rw [Finset.sum_eq_single i]
   · simp [basis]
-    rfl
   · intro j hj
     simp [basis]
     exact fun a a_1 => False.elim (a (id (Eq.symm a_1)))
@@ -184,7 +180,7 @@ lemma grad_inner_eq {d} (f : Space d → ℝ) (x : Space d) (y : Space d) :
   simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, map_sum, map_smul, smul_eq_mul]
   conv_lhs =>
     enter [2, x]
-    rw [Fintype.sum_apply, Fintype.sum_apply]
+    simp [Fintype.sum_apply, Fintype.sum_apply]
   simp [basis_apply]
   congr
   funext x
@@ -261,7 +257,7 @@ lemma grad_inner_space {d} (x : Space d) (f : Space d → ℝ) (hd : Differentia
 
 lemma grad_norm_sq (x : Space d) :
     ∇ (fun x => ‖x‖ ^ 2) x = (2 : ℝ) • x := by
-  funext i
+  ext i
   rw [grad_eq_sum]
   simp [deriv_norm_sq, basis_apply]
 
@@ -277,42 +273,10 @@ lemma grad_inner {d : ℕ} :
   ext z i
   simp [Space.grad]
   rw [deriv]
-  erw [fderiv_fun_sum]
-  · simp
-    rw [Finset.sum_eq_single i]
-    · trans (fderiv ℝ (fun y => y i ^ 2) z) (EuclideanSpace.single i 1)
-      · congr
-        funext y
-        ring
-      trans deriv i ((fun x => x^ 2) ∘ fun y => y i) z
-      · rfl
-      rw [deriv, fderiv_comp]
-      · simp
-        rw [← deriv_eq]
-        simp
-      · fun_prop
-      · fun_prop
-    · intro b _ hb
-      trans (fderiv ℝ (fun y => y b ^ 2) z) (EuclideanSpace.single i 1)
-      · congr
-        funext y
-        ring
-      trans deriv i ((fun x => x^ 2) ∘ fun y => y b) z
-      · rfl
-      rw [deriv, fderiv_comp]
-      simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, fderiv_eq_smul_deriv,
-        smul_eq_mul, mul_eq_zero]
-      · left
-        rw [← deriv_eq]
-        rw [deriv_component_diff]
-        omega
-      · fun_prop
-      · fun_prop
-    · simp
-  · intro i _
-    refine DifferentiableAt.inner ℝ ?_ ?_
-    · fun_prop
-    · fun_prop
+  simp only [fderiv_norm_sq_apply, ContinuousLinearMap.coe_smul', coe_innerSL_apply, Pi.smul_apply,
+    nsmul_eq_mul, Nat.cast_ofNat, mul_eq_mul_left_iff, OfNat.ofNat_ne_zero, or_false]
+  rw [← basis_eq_single]
+  simp
 
 lemma grad_inner_left {d : ℕ} (x : Space d) :
     ∇ (fun y : Space d => ⟪y, x⟫_ℝ) = fun _ => x := by
@@ -351,7 +315,7 @@ lemma integrable_isDistBounded_inner_grad_schwartzMap {dm1 : ℕ}
         volume := by
     simp only [PiLp.smul_apply]
     exact (hf.pi_comp j).integrable_space _
-  convert integrable_lemma i i
+  convert integrable_lemma i i using 2
   rename_i x
   simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, mul_eq_mul_right_iff]
   left
@@ -445,9 +409,9 @@ lemma distGrad_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d
     simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, map_sum, map_smul, smul_eq_mul]
     conv_lhs =>
       enter [2, x]
-      rw [Fintype.sum_apply, Fintype.sum_apply]
-    simp only [PiLp.smul_apply, basis_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, mul_neg]
+      simp [Fintype.sum_apply, Fintype.sum_apply]
+    simp only [basis_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
+      ↓reduceIte]
     congr
     ext i
     rw [fderivD_apply]
@@ -472,7 +436,7 @@ lemma distGrad_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d
 -/
 
 lemma distGrad_toFun_eq_distDeriv {d} (f : (Space d) →d[ℝ] ℝ) :
-    (distGrad f).toFun = fun ε i => distDeriv i f ε := by
+    (distGrad f).toFun = fun ε => WithLp.toLp 2 fun i => distDeriv i f ε := by
   ext ε i
   simp only [AddHom.toFun_eq_coe, LinearMap.coe_toAddHom, ContinuousLinearMap.coe_coe]
   rw [distGrad_eq_sum_basis]

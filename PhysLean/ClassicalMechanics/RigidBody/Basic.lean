@@ -38,7 +38,7 @@ namespace RigidBody
 def mass {d : ℕ} (R : RigidBody d) : ℝ := R.ρ ⟨fun _ => 1, contMDiff_const⟩
 
 /-- The center of mass of the rigid body. -/
-noncomputable def centerOfMass {d : ℕ} (R : RigidBody d) : Space d := fun i =>
+noncomputable def centerOfMass {d : ℕ} (R : RigidBody d) : Space d := WithLp.toLp 2 fun i =>
   (1 / R.mass) • R.ρ ⟨fun x => x i, ContDiff.contMDiff <| by fun_prop⟩
 
 /-- The inertia tensor of the rigid body. -/
