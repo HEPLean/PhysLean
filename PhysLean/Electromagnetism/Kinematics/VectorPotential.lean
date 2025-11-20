@@ -23,12 +23,15 @@ the vector potential is non-relativistic and is therefore a function of `Time` a
 
 - `ElectromagneticPotential.vectorPotential` : The vector potential from an
   electromagnetic potential.
+- `DistElectromagneticPotential.vectorPotential` : The vector potential from an
+  electromagnetic potential which is a distribution.
 
 ## iii. Table of contents
 
 - A. Definition of the Vector Potential
 - B. Smoothness of the vector potential
 - C. Differentiablity of the vector potential
+- D. Vector potential for distributions
 
 ## iv. References
 
@@ -145,7 +148,6 @@ lemma vectorPotential_differentiable_time {d} {c : SpeedOfLight} (A : Electromag
 
 end ElectromagneticPotential
 
-
 /-!
 
 ## D. Vector potential for distributions
@@ -162,7 +164,7 @@ attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
 /-- The vector potential of an electromagnetic potential which is a distribution. -/
-noncomputable def vectorPotential {d} (c : SpeedOfLight)  :
+noncomputable def vectorPotential {d} (c : SpeedOfLight) :
     DistElectromagneticPotential d →ₗ[ℝ]
     (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
   toFun A := {

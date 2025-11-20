@@ -23,8 +23,9 @@ spacetime to contravariant Lorentz vectors.
 
 ## ii. Key results
 
-- `ElectromagneticPotential`: is the type of electromagnetic potentials.
-- `ElectromagneticPotential.deriv`: the derivative tensor `∂_μ A^ν`.
+- `ElectromagneticPotential` : is the type of electromagnetic potentials.
+- `ElectromagneticPotential.deriv` : the derivative tensor `∂_μ A^ν`.
+- `DistElectromagneticPotential` : the type of electromagnetic potentials as distributions.
 
 ## iii. Table of contents
 
@@ -36,6 +37,10 @@ spacetime to contravariant Lorentz vectors.
 - B. The derivative tensor of the electromagnetic potential
   - B.1. Equivariance of the derivative tensor
   - B.2. The elements of the derivative tensor in terms of the basis
+- C. The electromagnetic potential as a distribution
+  - C.1. The derivative of the electromagnetic potential as a distribution
+  - C.2. The derivative in terms of the basis
+  - C.3. Equivariance of the derivative distribution
 
 ## iv. References
 
@@ -350,7 +355,6 @@ lemma toTensor_deriv_basis_repr_apply {d} (A : ElectromagneticPotential d)
 
 end ElectromagneticPotential
 
-
 /-!
 
 ## C. The electromagnetic potential as a distribution
@@ -360,7 +364,6 @@ end ElectromagneticPotential
 /-- The electromagnetic potential as a distribution and as a tensor `A^μ`. -/
 noncomputable abbrev DistElectromagneticPotential (d : ℕ := 3) :=
   (SpaceTime d) →d[ℝ] Lorentz.Vector d
-
 
 namespace DistElectromagneticPotential
 open TensorSpecies
@@ -377,11 +380,11 @@ attribute [-simp] Nat.succ_eq_add_one
 
 -/
 
-/-- The derivative of a electromagnetic potential, which is a distribution.  -/
-noncomputable def deriv  {d} : DistElectromagneticPotential d →ₗ[ℝ]
+/-- The derivative of a electromagnetic potential, which is a distribution. -/
+noncomputable def deriv {d} : DistElectromagneticPotential d →ₗ[ℝ]
     (SpaceTime d) →d[ℝ] Lorentz.CoVector d ⊗[ℝ] Lorentz.Vector d where
   toFun A := {
-    toFun ε :=  ∑ μ, ∑ ν, (SpaceTime.distDeriv μ A ε ν) •
+    toFun ε := ∑ μ, ∑ ν, (SpaceTime.distDeriv μ A ε ν) •
       Lorentz.CoVector.basis μ ⊗ₜ[ℝ] Lorentz.Vector.basis ν
     map_add' ε₁ ε₂ := by simp [add_smul, ← Finset.sum_add_distrib]
     map_smul' r ε := by simp [Finset.smul_sum, smul_smul]
@@ -398,7 +401,7 @@ noncomputable def deriv  {d} : DistElectromagneticPotential d →ₗ[ℝ]
 
 /-!
 
-## C.2. The derivative in terms of the basis
+### C.2. The derivative in terms of the basis
 
 -/
 

@@ -19,6 +19,8 @@ We define a tensor version and a matrix version and prover various properties of
 - `toFieldStrength` : The field strength tensor from an electromagnetic potential.
 - `fieldStrengthMatrix` : The field strength matrix from an electromagnetic potential
   (matrix representation of the field strength tensor in the standard basis).
+- `DistElectromagneticPotential.fieldStrength` : The field strength for
+  electromagnetic potentials which are distributions.
 
 ## iii. Table of contents
 
@@ -30,6 +32,10 @@ We define a tensor version and a matrix version and prover various properties of
   - A.4. The antisymmetry of the field strength tensor
   - A.5. Equivariance of the field strength tensor
   - A.6. Linearity of the field strength tensor
+- B. Field strength for distributions
+  - B.1. Auxiliary definition of field strength for distributions, with no linearity
+  - B.2. The definition of the field strength
+  - B.3. Field strength written in terms of a basis
 
 ## iv. References
 
@@ -427,7 +433,6 @@ lemma fieldStrengthMatrix_smul {d} (c : ℝ) (A : ElectromagneticPotential d)
 
 end ElectromagneticPotential
 
-
 /-!
 
 ## B. Field strength for distributions
@@ -445,12 +450,15 @@ attribute [-simp] Nat.succ_eq_add_one
 
 /-!
 
-## B.1. Auxiliary definition of field strength for distributions, with no linearity
+### B.1. Auxiliary definition of field strength for distributions, with no linearity
 
 -/
 
+/-- An auxillary definition for the field strength of an electromagnetic potential
+  based on a distribution. On Schwartz maps this has the same value as the field strength
+  tensor, but no linearity or continous properties built in. -/
 noncomputable def fieldStrengthAux {d} (A : DistElectromagneticPotential d)
-    (ε : 𝓢(SpaceTime d, ℝ)) :  Lorentz.Vector d ⊗[ℝ] Lorentz.Vector d  :=
+    (ε : 𝓢(SpaceTime d, ℝ)) : Lorentz.Vector d ⊗[ℝ] Lorentz.Vector d :=
   Tensorial.toTensor.symm
       (permT id (PermCond.auto) {(η d | μ μ' ⊗ A.deriv ε | μ' ν) + -
       (η d | ν ν' ⊗ A.deriv ε | ν' μ)}ᵀ)
@@ -475,7 +483,6 @@ lemma toTensor_fieldStrengthAux {d} (A : DistElectromagneticPotential d)
     - (permT ![1, 0] (PermCond.auto) {(η d | μ μ' ⊗ A.deriv ε | μ' ν)}ᵀ) := by
   rw [fieldStrengthAux_eq_add]
   simp
-
 
 lemma toTensor_fieldStrengthAux_basis_repr {d} (A : DistElectromagneticPotential d)
     (ε : 𝓢(SpaceTime d, ℝ))
@@ -509,7 +516,6 @@ lemma toTensor_fieldStrengthAux_basis_repr {d} (A : DistElectromagneticPotential
   rw [← Finset.sum_sub_distrib]
   rw [← finSumFinEquiv.sum_comp]
   simp only [Fin.isValue, Equiv.symm_apply_apply]
-
 
 lemma fieldStrengthAux_tensor_basis_eq_basis {d} (A : DistElectromagneticPotential d)
     (ε : 𝓢(SpaceTime d, ℝ))
@@ -571,26 +577,26 @@ lemma fieldStrengthAux_eq_basis {d} (A : DistElectromagneticPotential d)
     (ε : 𝓢(SpaceTime d, ℝ)) :
     (A.fieldStrengthAux ε) = ∑ μ, ∑ ν,
       ((η μ μ * distDeriv μ A ε ν) - η ν ν * distDeriv ν A ε μ)
-      • Lorentz.Vector.basis μ ⊗ₜ[ℝ]  Lorentz.Vector.basis ν  := by
+      • Lorentz.Vector.basis μ ⊗ₜ[ℝ] Lorentz.Vector.basis ν := by
   apply (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr.injective
   ext b
   match b with
   | (μ, ν) =>
-  simp  [map_sum, map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul, Finset.sum_apply,
+  simp [map_sum, map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul, Finset.sum_apply,
     Pi.smul_apply, Basis.tensorProduct_repr_tmul_apply, Basis.repr_self, smul_eq_mul]
   simp [Finsupp.single_apply]
   rw [fieldStrengthAux_basis_repr_apply_eq_single]
 
 /-!
 
-## B.2. The definition of the field strength
+### B.2. The definition of the field strength
 
 -/
 
 /-- The field strength of an electromagnetic potential which is a distribution. -/
 noncomputable def fieldStrength {d} :
     DistElectromagneticPotential d →ₗ[ℝ]
-    (SpaceTime d) →d[ℝ] Lorentz.Vector d ⊗[ℝ] Lorentz.Vector d  where
+    (SpaceTime d) →d[ℝ] Lorentz.Vector d ⊗[ℝ] Lorentz.Vector d where
   toFun A := {
     toFun ε := A.fieldStrengthAux ε
     map_add' ε1 ε2 := by
@@ -622,6 +628,20 @@ noncomputable def fieldStrength {d} :
       fieldStrengthAux_basis_repr_apply_eq_single, map_smul, ContinuousLinearMap.coe_smul',
       Pi.smul_apply, Lorentz.Vector.apply_smul, Real.ringHom_apply, Finsupp.coe_smul, smul_eq_mul]
     ring
+
+/-!
+
+### B.3. Field strength written in terms of a basis
+
+-/
+
+lemma fieldStrength_eq_basis {d} (A : DistElectromagneticPotential d)
+    (ε : 𝓢(SpaceTime d, ℝ)) :
+    A.fieldStrength ε = ∑ μ, ∑ ν,
+      ((η μ μ * distDeriv μ A ε ν) - η ν ν * distDeriv ν A ε μ)
+      • Lorentz.Vector.basis μ ⊗ₜ[ℝ] Lorentz.Vector.basis ν := by
+  rw [fieldStrength]
+  exact fieldStrengthAux_eq_basis A ε
 
 end DistElectromagneticPotential
 

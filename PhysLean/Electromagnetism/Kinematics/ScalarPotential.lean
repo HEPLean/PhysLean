@@ -23,12 +23,15 @@ the scalar potential is non-relativistic and is therefore a function of `Time` a
 
 - `ElectromagneticPotential.scalarPotential` : The scalar potential from an
   electromagnetic potential.
+- `DistElectromagneticPotential.scalarPotential` : The scalar potential from an
+  electromagnetic potential which is a distribution.
 
 ## iii. Table of contents
 
 - A. Definition of the Scalar Potential
 - B. Smoothness of the Scalar Potential
 - C. Differentiability of the Scalar Potential
+- D. Scalar potential for distributions
 
 ## iv. References
 
@@ -145,7 +148,7 @@ attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
 /-- The scalar potential of an electromagnetic potential which is a distribution. -/
-noncomputable def scalarPotential {d} (c : SpeedOfLight)  :
+noncomputable def scalarPotential {d} (c : SpeedOfLight) :
     DistElectromagneticPotential d →ₗ[ℝ]
     (Time × Space d) →d[ℝ] ℝ where
   toFun A := {

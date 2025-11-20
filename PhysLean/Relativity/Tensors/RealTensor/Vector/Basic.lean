@@ -552,6 +552,25 @@ def spatialCLM (d : ℕ) : Vector d →L[ℝ] EuclideanSpace ℝ (Fin d) where
   map_add' v1 v2 := by rfl
   map_smul' c v := by rfl
   cont := by fun_prop
+
+lemma spatialCLM_apply_eq_spatialPart {d : ℕ} (v : Vector d) (i : Fin d) :
+    spatialCLM d v i = spatialPart v i := rfl
+
+@[simp]
+lemma spatialCLM_basis_sum_inl {d : ℕ} :
+    spatialCLM d (basis (Sum.inl 0)) = 0 := by
+  ext i
+  exact spatialPart_basis_sum_inl i
+
+@[simp]
+lemma spatialCLM_basis_sum_inr {d : ℕ} (i : Fin d) :
+    spatialCLM d (basis (Sum.inr i)) = EuclideanSpace.basisFun (Fin d) ℝ i := by
+  ext j
+  rw [spatialCLM_apply_eq_spatialPart, spatialPart_basis_sum_inr i j]
+  simp [Finsupp.single_apply]
+  congr 1
+  exact Eq.propIntro (fun a => id (Eq.symm a)) fun a => id (Eq.symm a)
+
 /-!
 
 ## The time component

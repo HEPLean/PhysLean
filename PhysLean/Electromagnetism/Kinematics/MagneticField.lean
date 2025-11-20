@@ -41,6 +41,8 @@ field strength matrix. This is an antisymmetric matrix.
   - C.6. Spatial derivative of the magnetic field matrix
   - C.7. Temporal derivative of the magnetic field matrix
   - C.8. `curl` of the magnetic field matrix
+- D. Magnetic field matrix for distributions
+  - D.1. Magnetic field matrix in terms of vector potentials
 
 ## iv. References
 
@@ -591,12 +593,12 @@ open TensorSpecies
 open Tensor
 open SpaceTime
 open TensorProduct
-open minkowskiMatrix
+open minkowskiMatrix SchwartzMap
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
 /-- The magnetic field matrix of an electromagnetic potential which is a distribution. -/
-noncomputable def magneticFieldMatrix {d} (c : SpeedOfLight)  :
+noncomputable def magneticFieldMatrix {d} (c : SpeedOfLight) :
     DistElectromagneticPotential d →ₗ[ℝ]
     (Time × Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d) ⊗[ℝ] EuclideanSpace ℝ (Fin d)) where
   toFun A := {
@@ -613,6 +615,24 @@ noncomputable def magneticFieldMatrix {d} (c : SpeedOfLight)  :
   map_smul' r A := by
     ext ε
     simp
+
+/-!
+
+### D.1. Magnetic field matrix in terms of vector potentials
+(Space.deriv j (A.vectorPotential c t · i) x -
+    Space.deriv i (A.vectorPotential c t · j) x) \
+
+-/
+
+@[sorryful]
+lemma magneticFieldMatrix_eq_vectorPotential {c : SpeedOfLight}
+    (A : DistElectromagneticPotential d)
+    (𝓔 : 𝓢(Time × Space d, ℝ)) :
+    A.magneticFieldMatrix c ε = ∑ i, ∑ j,
+    (Space.distSpaceDeriv j (A.vectorPotential c) ε i -
+      Space.distSpaceDeriv i (A.vectorPotential c) ε j) •
+    EuclideanSpace.basisFun (Fin d) ℝ i ⊗ₜ[ℝ] EuclideanSpace.basisFun (Fin d) ℝ j := by
+  sorry
 
 end DistElectromagneticPotential
 end Electromagnetism

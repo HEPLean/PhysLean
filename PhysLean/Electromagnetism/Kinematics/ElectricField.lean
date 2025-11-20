@@ -22,6 +22,8 @@ In this module we define the electric field, and prove lemmas about it.
 - `electricField` : The electric field from the electromagnetic potential.
 - `electricField_eq_fieldStrengthMatrix` : The electric field expressed in terms of the
   field strength tensor.
+- `DistElectromagneticPotential.electricField` : The electric field for
+  electromagnetic potentials which are distributions.
 
 ## iii. Table of contents
 
@@ -31,6 +33,7 @@ In this module we define the electric field, and prove lemmas about it.
 - D. Differentiability of the electric field
 - E. Time derivative of the vector potential in terms of the electric field
 - F. Derivatives of the electric field in terms of field strength tensor
+- G. Electric field for distributions
 
 ## iv. References
 
@@ -346,7 +349,6 @@ lemma div_electricField_eq_fieldStrengthMatrix{d} {A : ElectromagneticPotential 
   apply fieldStrengthMatrix_differentiable_space hA
 end ElectromagneticPotential
 
-
 /-!
 
 ## G. Electric field for distributions
@@ -363,10 +365,10 @@ attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
 /-- The electric field of an electromagnetic potential which is a distribution. -/
-noncomputable def electricField {d} (c : SpeedOfLight)  :
+noncomputable def electricField {d} (c : SpeedOfLight) :
     DistElectromagneticPotential d →ₗ[ℝ]
     (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
-  toFun A := - Space.distSpaceGrad (A.scalarPotential c)  -
+  toFun A := - Space.distSpaceGrad (A.scalarPotential c) -
     Space.distTimeDeriv (A.vectorPotential c)
   map_add' A1 A2 := by
     ext ε i
@@ -377,8 +379,6 @@ noncomputable def electricField {d} (c : SpeedOfLight)  :
     simp
     ring
 
-
 end DistElectromagneticPotential
-
 
 end Electromagnetism
