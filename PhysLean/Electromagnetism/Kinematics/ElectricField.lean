@@ -372,11 +372,15 @@ noncomputable def electricField {d} (c : SpeedOfLight) :
     Space.distTimeDeriv (A.vectorPotential c)
   map_add' A1 A2 := by
     ext ε i
-    simp
+    simp only [map_add, neg_add_rev, ContinuousLinearMap.coe_sub', Pi.sub_apply,
+      ContinuousLinearMap.add_apply, ContinuousLinearMap.neg_apply, PiLp.sub_apply, PiLp.add_apply,
+      PiLp.neg_apply]
     ring
   map_smul' r A := by
     ext ε i
-    simp
+    simp only [map_smul, ContinuousLinearMap.coe_sub', ContinuousLinearMap.coe_smul', Pi.sub_apply,
+      ContinuousLinearMap.neg_apply, Pi.smul_apply, PiLp.sub_apply, PiLp.neg_apply, PiLp.smul_apply,
+      smul_eq_mul, Real.ringHom_apply]
     ring
 
 end DistElectromagneticPotential
