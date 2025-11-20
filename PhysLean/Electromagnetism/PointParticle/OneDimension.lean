@@ -95,7 +95,7 @@ noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
       simp))
   | Sum.inr i => 0
 
-/-!
+/-
 
 ### B.2. The vector potential is zero
 

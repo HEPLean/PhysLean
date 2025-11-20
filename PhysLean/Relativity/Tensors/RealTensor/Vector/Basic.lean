@@ -546,6 +546,12 @@ lemma spatialPart_basis_sum_inr {d : ℕ} (i : Fin d) (j : Fin d) :
 lemma spatialPart_basis_sum_inl {d : ℕ} (i : Fin d) :
     spatialPart (basis (Sum.inl 0)) i = 0 := by simp
 
+/-- The spatial part of a Lorentz vector as a continous linear map. -/
+def spatialCLM (d : ℕ) : Vector d →L[ℝ] EuclideanSpace ℝ (Fin d) where
+  toFun v := WithLp.toLp 2 fun i => v (Sum.inr i)
+  map_add' v1 v2 := by rfl
+  map_smul' c v := by rfl
+  cont := by fun_prop
 /-!
 
 ## The time component

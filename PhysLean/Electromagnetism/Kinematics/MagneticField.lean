@@ -580,4 +580,39 @@ lemma curl_magneticFieldMatrix_eq_electricField_fieldStrengthMatrix {d : ℕ} {c
 
 end ElectromagneticPotential
 
+/-!
+
+## D. Magnetic field matrix for distributions
+
+-/
+
+namespace DistElectromagneticPotential
+open TensorSpecies
+open Tensor
+open SpaceTime
+open TensorProduct
+open minkowskiMatrix
+attribute [-simp] Fintype.sum_sum_type
+attribute [-simp] Nat.succ_eq_add_one
+
+/-- The magnetic field matrix of an electromagnetic potential which is a distribution. -/
+noncomputable def magneticFieldMatrix {d} (c : SpeedOfLight)  :
+    DistElectromagneticPotential d →ₗ[ℝ]
+    (Time × Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d) ⊗[ℝ] EuclideanSpace ℝ (Fin d)) where
+  toFun A := {
+    toFun ε := TensorProduct.map (Lorentz.Vector.spatialCLM d).toLinearMap
+      (Lorentz.Vector.spatialCLM d) <|
+      (distTimeSlice c A.fieldStrength ε)
+    map_add' ε1 ε2 := by simp
+    map_smul' r ε := by simp
+    cont := by fun_prop
+  }
+  map_add' A1 A2 := by
+    ext ε
+    simp
+  map_smul' r A := by
+    ext ε
+    simp
+
+end DistElectromagneticPotential
 end Electromagnetism

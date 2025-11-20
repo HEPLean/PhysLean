@@ -346,4 +346,39 @@ lemma div_electricField_eq_fieldStrengthMatrix{d} {A : ElectromagneticPotential 
   apply fieldStrengthMatrix_differentiable_space hA
 end ElectromagneticPotential
 
+
+/-!
+
+## G. Electric field for distributions
+
+-/
+
+namespace DistElectromagneticPotential
+open TensorSpecies
+open Tensor
+open SpaceTime
+open TensorProduct
+open minkowskiMatrix
+attribute [-simp] Fintype.sum_sum_type
+attribute [-simp] Nat.succ_eq_add_one
+
+/-- The electric field of an electromagnetic potential which is a distribution. -/
+noncomputable def electricField {d} (c : SpeedOfLight)  :
+    DistElectromagneticPotential d →ₗ[ℝ]
+    (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
+  toFun A := - Space.distSpaceGrad (A.scalarPotential c)  -
+    Space.distTimeDeriv (A.vectorPotential c)
+  map_add' A1 A2 := by
+    ext ε i
+    simp
+    ring
+  map_smul' r A := by
+    ext ε i
+    simp
+    ring
+
+
+end DistElectromagneticPotential
+
+
 end Electromagnetism

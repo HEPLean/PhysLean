@@ -129,4 +129,40 @@ lemma scalarPotential_differentiable_time {d} (c : SpeedOfLight) (A : Electromag
 
 end ElectromagneticPotential
 
+/-!
+
+## D. Scalar potential for distributions
+
+-/
+
+namespace DistElectromagneticPotential
+open TensorSpecies
+open Tensor
+open SpaceTime
+open TensorProduct
+open minkowskiMatrix
+attribute [-simp] Fintype.sum_sum_type
+attribute [-simp] Nat.succ_eq_add_one
+
+/-- The scalar potential of an electromagnetic potential which is a distribution. -/
+noncomputable def scalarPotential {d} (c : SpeedOfLight)  :
+    DistElectromagneticPotential d →ₗ[ℝ]
+    (Time × Space d) →d[ℝ] ℝ where
+  toFun A := {
+    toFun ε := distTimeSlice c (c.val • A) ε (Sum.inl 0)
+    map_add' ε₁ ε₂ := by simp [distTimeSlice, ContinuousLinearMap.map_add]
+    map_smul' r ε := by simp
+    cont := by fun_prop}
+  map_add' A₁ A₂ := by
+    ext ε
+    simp [distTimeSlice]
+  map_smul' r A := by
+    ext ε
+    simp only [distTimeSlice, map_smul, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk,
+      LinearMap.coe_mk, AddHom.coe_mk, Fin.isValue, ContinuousLinearMap.coe_smul',
+      ContinuousLinearMap.coe_comp', Pi.smul_apply, Function.comp_apply, Lorentz.Vector.apply_smul,
+      ContinuousLinearMap.coe_mk', Real.ringHom_apply, smul_eq_mul]
+    ring
+
+end DistElectromagneticPotential
 end Electromagnetism
