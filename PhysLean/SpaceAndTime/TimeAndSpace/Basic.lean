@@ -365,6 +365,20 @@ lemma distTimeDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (distTimeDeriv f) ε = fderivD ℝ f ε (1, 0) := by
   simp [distTimeDeriv]
 
+
+/-!
+
+#### B.1.1. Composition with a CLM
+
+-/
+
+lemma distTimeDeriv_apply_CLM {M M2 d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [NormedAddCommGroup M2] [NormedSpace ℝ M2] (f : (Time × Space d) →d[ℝ] M)
+    (c : M →L[ℝ] M2) : distTimeDeriv (c ∘L f) = c ∘L (distTimeDeriv f) := by
+  ext ε
+  simp [distTimeDeriv_apply, fderivD_apply]
+
+
 /-!
 
 ### B.2. Space derivatives
@@ -424,6 +438,19 @@ lemma distSpaceDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
   · have h1 := smooth κ 2
     fun_prop
   · fun_prop
+
+/-!
+
+#### B.2.2. Composition with a CLM
+
+-/
+
+lemma distSpaceDeriv_apply_CLM {M M2 d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [NormedAddCommGroup M2] [NormedSpace ℝ M2]
+    (i : Fin d) (f : (Time × Space d) →d[ℝ] M)
+    (c : M →L[ℝ] M2) : distSpaceDeriv i (c ∘L f) = c ∘L (distSpaceDeriv i f) := by
+  ext ε
+  simp [distSpaceDeriv_apply, fderivD_apply]
 
 /-!
 

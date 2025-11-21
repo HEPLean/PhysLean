@@ -171,17 +171,18 @@ lemma distDeriv_inl_distTimeSlice_symm {M d} [NormedAddCommGroup M] [NormedSpace
   simp
 
 lemma distTimeSlice_distDeriv_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {c : SpeedOfLight}
     (i : Fin d) (f : (SpaceTime d) →d[ℝ] M) :
-    distTimeSlice 1 (distDeriv (Sum.inr i) f) =
-    Space.distSpaceDeriv i (distTimeSlice 1 f) := by
+    distTimeSlice c (distDeriv (Sum.inr i) f) =
+    Space.distSpaceDeriv i (distTimeSlice c f) := by
   ext κ
   rw [distTimeSlice_apply, distDeriv_apply, fderivD_apply]
   rw [distSpaceDeriv_apply, fderivD_apply, distTimeSlice_apply]
   simp only [neg_inj]
   congr 1
   ext x
-  change fderiv ℝ (κ ∘ toTimeAndSpace 1) x (Lorentz.Vector.basis (Sum.inr i)) =
-    fderiv ℝ κ (toTimeAndSpace 1 x) (0, Space.basis i)
+  change fderiv ℝ (κ ∘ toTimeAndSpace c) x (Lorentz.Vector.basis (Sum.inr i)) =
+    fderiv ℝ κ (toTimeAndSpace c x) (0, Space.basis i)
   rw [fderiv_comp]
   simp only [toTimeAndSpace_fderiv, ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe,
     Function.comp_apply]
@@ -191,12 +192,13 @@ lemma distTimeSlice_distDeriv_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ 
   · fun_prop
 
 lemma distDeriv_inr_distTimeSlice_symm {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {c : SpeedOfLight}
     (i : Fin d) (f : (Time × Space d) →d[ℝ] M) :
-    distDeriv (Sum.inr i) ((distTimeSlice 1).symm f) =
-    (distTimeSlice 1).symm (Space.distSpaceDeriv i f) := by
-  obtain ⟨f, rfl⟩ := (distTimeSlice 1).surjective f
+    distDeriv (Sum.inr i) ((distTimeSlice c).symm f) =
+    (distTimeSlice c).symm (Space.distSpaceDeriv i f) := by
+  obtain ⟨f, rfl⟩ := (distTimeSlice c).surjective f
   simp only [ContinuousLinearEquiv.symm_apply_apply]
-  apply (distTimeSlice 1).injective
+  apply (distTimeSlice c).injective
   simp only [ContinuousLinearEquiv.apply_symm_apply]
   rw [distTimeSlice_distDeriv_inr]
 
