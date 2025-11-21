@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.IsDistBounded
+import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 
 # Distributions from functions on space
@@ -104,6 +105,18 @@ lemma distOfFunction_smul_fun {d : ℕ} (f : Space d → F)
   funext x
   rw [smul_comm]
 
+lemma distOfFunction_mul_fun {d : ℕ} (f : Space d → ℝ)
+    (hf : IsDistBounded f) (c : ℝ) :
+    distOfFunction (fun x => c * f x) (by fun_prop) = c • distOfFunction f hf := by
+  exact distOfFunction_smul_fun f hf c
+
+lemma distOfFunction_neg {d : ℕ} (f : Space d → F)
+    (hf : IsDistBounded (fun x => - f x)) :
+    distOfFunction (fun x => - f x) hf = - distOfFunction f (by simpa using hf.neg) := by
+  convert distOfFunction_smul_fun f (by simpa using hf.neg) (-1) using 1
+  · simp
+  · simp
+
 /-!
 
 ## C. Properties related to inner products
@@ -127,4 +140,31 @@ lemma distOfFunction_inner {d n : ℕ} (f : Space d → EuclideanSpace ℝ (Fin 
 
 TODO "LV5RM" "Add a general lemma specifying the derivative of
   functions from distributions."
+
+/-!
+
+## D. Components
+
+-/
+
+lemma distOfFunction_eculid_eval {d n : ℕ} (f : Space d → EuclideanSpace ℝ (Fin n))
+    (hf : IsDistBounded f)  (η : 𝓢(Space d, ℝ))  (i : Fin n) :
+    distOfFunction f hf η i = distOfFunction (fun x => f x i) (hf.pi_comp i) η := by
+  simp [distOfFunction_apply]
+  rw [MeasureTheory.eval_integral_piLp]
+  simp only [PiLp.smul_apply, smul_eq_mul]
+  intro i
+  simp only [PiLp.smul_apply, smul_eq_mul]
+  fun_prop
+
+lemma distOfFunction_vector_eval {d : ℕ} (f : Space d → Lorentz.Vector d)
+    (hf : IsDistBounded f)  (η : 𝓢(Space d, ℝ))  (i : Fin 1 ⊕ Fin d) :
+    distOfFunction f hf η i = distOfFunction (fun x => f x i) (hf.vector_component i) η := by
+  simp [distOfFunction_apply]
+  trans ⟪Lorentz.Vector.basis i, ∫ x, η x • f x⟫_ℝ
+  · rw [Lorentz.Vector.basis_inner]
+  rw [← integral_inner]
+  simp [Lorentz.Vector.basis_inner]
+  fun_prop
+
 end Space

@@ -680,6 +680,13 @@ lemma const_smul {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
     · exact abs_nonneg c
 
 @[fun_prop]
+lemma neg {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
+    (hf : IsDistBounded f) : IsDistBounded (fun x => - f x) := by
+  convert hf.const_smul (-1) using 1
+  funext x
+  simp
+
+@[fun_prop]
 lemma const_fun_smul {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
     (hf : IsDistBounded f) (c : ℝ) : IsDistBounded (fun x => c • f x) := by
   convert hf.const_smul c using 1
@@ -700,10 +707,11 @@ lemma mul_const_fun {d : ℕ}
 
 /-!
 
-### D.4. Components of euclidean-valued functions
+### D.4. Components of functions
 
 -/
 
+@[fun_prop]
 lemma pi_comp {d n : ℕ}
     {f : Space d → EuclideanSpace ℝ (Fin n)}
     (hf : IsDistBounded f) (j : Fin n) : IsDistBounded (fun x => f x j) := by
@@ -721,6 +729,17 @@ lemma pi_comp {d n : ℕ}
   apply Finset.sum_le_univ_sum_of_nonneg
   intro y
   exact sq_nonneg ‖f x y‖
+
+lemma vector_component {d: ℕ} {f : Space d → Lorentz.Vector d}
+    (hf : IsDistBounded f) (j : Fin 1 ⊕ Fin d) : IsDistBounded (fun x => f x j) := by
+  rcases hf with ⟨hae1, ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, bound1⟩⟩
+  apply And.intro
+  · fun_prop
+  refine ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, ?_⟩
+  intro x
+  apply le_trans ?_ (bound1 x)
+  simp [Real.norm_eq_abs]
+
 
 /-!
 
@@ -818,6 +837,19 @@ lemma inner_left {d n : ℕ}
     · exact norm_nonneg (f x)
     · exact norm_nonneg y
 
+/-!
+
+### D.9. Scalar multiplication with constant
+-/
+
+@[fun_prop]
+lemma smul_const {d : ℕ} [NormedSpace ℝ F] {c : Space d → ℝ}
+    (hc : IsDistBounded c) (f : F) : IsDistBounded (fun x => c x • f) := by
+  apply IsDistBounded.congr (f := fun x => (c x) * ‖f‖)
+  · fun_prop
+  · fun_prop
+  · intro x
+    simp [norm_smul]
 /-!
 
 ## E. Specific functions that are `IsDistBounded`
@@ -984,6 +1016,7 @@ lemma inv_pow_smul_self {d : ℕ} (n : ℕ) (hn : - (d - 1 : ℕ) - 1 ≤ (- n :
   convert zpow_smul_self (n := - (n : ℤ)) (by omega) using 1
   funext x
   simp
+
 /-!
 
 ## F. Multiplication by norms and components
@@ -1161,6 +1194,25 @@ lemma isDistBounded_smul_inner {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
   refine const_fun_smul ?_ (y i)
   fun_prop
 
+lemma isDistBounded_smul_inner_of_smul_norm {d : ℕ} [NormedSpace ℝ F] {f : Space d → F}
+    (hf : IsDistBounded (fun x => ‖x‖ • f x)) (hae : AEStronglyMeasurable f) (y : Space d) :
+    IsDistBounded (fun x => ⟪y, x⟫_ℝ • f x) := by
+  have h1 (x : Space d) : ⟪y, x⟫_ℝ • f x = ∑ i, (y i * x i) • f x := by
+    rw [inner_eq_sum, ← Finset.sum_smul]
+  conv =>
+    enter [1, x]
+    rw [h1 x]
+  apply IsDistBounded.sum_fun
+  intro i _
+  simp [← smul_smul]
+  refine const_fun_smul ?_ (y i)
+  apply hf.mono
+  · fun_prop
+  · intro x
+    simp [norm_smul]
+    refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+    exact abs_eval_le_norm x i
+
 @[fun_prop]
 lemma isDistBounded_mul_inner {d : ℕ} {f : Space d → ℝ}
     (hf : IsDistBounded f) (y : Space d) : IsDistBounded (fun x => ⟪y, x⟫_ℝ * f x) := by
@@ -1171,6 +1223,11 @@ lemma isDistBounded_mul_inner' {d : ℕ} {f : Space d → ℝ}
   convert hf.isDistBounded_smul_inner y using 2
   rw [real_inner_comm]
   simp
+
+lemma isDistBounded_mul_inner_of_smul_norm {d : ℕ} {f : Space d → ℝ}
+    (hf : IsDistBounded (fun x => ‖x‖ * f x)) (hae : AEStronglyMeasurable f) (y : Space d) :
+    IsDistBounded (fun x => ⟪y, x⟫_ℝ * f x) := by
+  convert hf.isDistBounded_smul_inner_of_smul_norm hae y using 2
 
 @[fun_prop]
 lemma mul_inner_pow_neg_two {d : ℕ}

@@ -56,7 +56,20 @@ TODO "HB6YZ" "In the above documentation describe what an instance is, and why
 
 TODO "HB6WN" "After TODO 'HB6VC', give `Space d` the necessary instances
   using `inferInstanceAs`."
+/-!
 
+## The norm on `Space`
+
+-/
+
+@[simp]
+lemma abs_eval_le_norm {d} (p : Space d) (i : Fin d) :
+    |p i| ≤ ‖p‖ := by
+  simp [PiLp.norm_eq_of_L2, -Fintype.sum_sum_type]
+  refine Real.abs_le_sqrt ?_
+  trans ∑ j ∈ {i}, (p j) ^ 2
+  · simp
+  refine Finset.sum_le_univ_sum_of_nonneg (fun i => by positivity)
 /-!
 
 ## Inner product

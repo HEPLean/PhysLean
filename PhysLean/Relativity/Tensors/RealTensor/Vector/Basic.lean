@@ -65,6 +65,15 @@ instance (d : ℕ) : Norm (Vector d) where
 lemma norm_eq_equivEuclid (d : ℕ) (v : Vector d) :
     ‖v‖ = ‖equivEuclid d v‖ := rfl
 
+@[simp]
+lemma abs_component_le_norm {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
+    |v i| ≤ ‖v‖ := by
+  simp  [norm_eq_equivEuclid, PiLp.norm_eq_of_L2, -Fintype.sum_sum_type]
+  refine Real.abs_le_sqrt ?_
+  trans ∑ j ∈ {i}, (v j) ^ 2
+  · simp
+  refine Finset.sum_le_univ_sum_of_nonneg (fun i => by positivity)
+
 instance isNormedAddCommGroup (d : ℕ) : NormedAddCommGroup (Vector d) where
   dist_self x := by simp [norm_eq_equivEuclid]
   dist_comm x y := by

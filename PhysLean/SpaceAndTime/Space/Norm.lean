@@ -64,6 +64,7 @@ variable (𝕜 : Type) {E F F' : Type} [RCLike 𝕜] [NormedAddCommGroup E] [Nor
 namespace Space
 
 open MeasureTheory
+
 /-!
 
 ## A. The norm as a power series
@@ -582,7 +583,7 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
         simpa using hx
     simpa using h1
 
-lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) + 2 ≤ m)
+lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) + 1 ≤ m)
     (η : 𝓢(Space d.succ, ℝ)) (y : EuclideanSpace ℝ (Fin d.succ)) :
     Filter.Tendsto (fun n =>
     ⟪(distGrad (distOfFunction (fun x : Space d.succ => (normPowerSeries n x) ^ m)
@@ -619,13 +620,39 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.
         η x * (m * (⟪x, y⟫_ℝ * ((‖x‖ + 1) ^ (m - 2) + ‖x‖ ^ (m - 2))))) volume := by
       apply IsDistBounded.integrable_space_mul ?_ η
       apply IsDistBounded.const_mul_fun
-      apply IsDistBounded.isDistBounded_mul_inner'
+      simp [mul_add]
       apply IsDistBounded.add
-      · refine IsDistBounded.norm_add_pos_nat_zpow (m - 2) 1 ?_
+      · apply IsDistBounded.isDistBounded_mul_inner'
+        refine IsDistBounded.norm_add_pos_nat_zpow (m - 2) 1 ?_
         simp
-      · apply IsDistBounded.pow (m - 2)
-        simp_all
-        grind
+      · simp [real_inner_comm]
+        apply  IsDistBounded.isDistBounded_mul_inner_of_smul_norm
+        · apply IsDistBounded.mono (f := fun x => ‖x‖ ^ (m - 1) + 1)
+          · apply IsDistBounded.add
+            · apply IsDistBounded.pow (m - 1)
+              simp_all
+              grind
+            · fun_prop
+          · apply AEMeasurable.aestronglyMeasurable
+            fun_prop
+          · intro x
+            simp
+            rw [abs_of_nonneg (by positivity)]
+            by_cases hx : x = 0
+            · subst hx
+              simp  [zero_zpow_eq]
+              split_ifs <;> grind
+            · trans  ‖x‖ ^ (m - 1); swap
+              · simp
+              apply le_of_eq
+              trans ‖x‖ ^ (m - 2 + 1)
+              rw [zpow_add₀]
+              simp
+              ring
+              simpa using hx
+              ring_nf
+        · apply AEMeasurable.aestronglyMeasurable
+          fun_prop
     rw [← integrable_norm_iff] at h1
     convert h1 using 1
     funext x
@@ -857,7 +884,7 @@ lemma gradient_dist_normPowerSeries_log_tendsTo {d : ℕ}
 
 -/
 
-lemma distGrad_distOfFunction_norm_zpow {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) + 2 ≤ m) :
+lemma distGrad_distOfFunction_norm_zpow {d : ℕ} (m : ℤ) (hm : - (d.succ - 1 : ℕ) + 1 ≤ m) :
     distGrad (distOfFunction (fun x : Space d.succ => ‖x‖ ^ m)
       (IsDistBounded.pow m (by simp_all; omega)))
     = distOfFunction (fun x : Space d.succ => (m * ‖x‖ ^ (m - 2)) • x) (by
