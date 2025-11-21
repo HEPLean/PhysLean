@@ -6,7 +6,6 @@ Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.Gradient.Basic
 import PhysLean.SpaceAndTime.Space.DistOfFunction
-import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 
 # Derivatives on Space

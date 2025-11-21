@@ -45,11 +45,12 @@ of the space.
   - D.1. Addition
   - D.2. Finite sums
   - D.3. Scalar multiplication
-  - D.4. Components of euclidean-valued functions
+  - D.4. Components of functions
   - D.5. Compositions with additions and subtractions
   - D.6. Congruence with respect to the norm
   - D.7. Monotonicity with respect to the norm
   - D.8. Inner products
+  - D.9. Scalar multiplication with constant
 - E. Specific functions that are `IsDistBounded`
   - E.1. Constant functions
   - E.2. Powers of norms

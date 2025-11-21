@@ -36,8 +36,10 @@ We put these results in the namespace `Space` by convention.
   - A.6. Equal up to a constant of time and space derivatives equal
 - B. Derivatives of distributions on Time × Space d
   - B.1. Time derivatives
+    - B.1.1. Composition with a CLM
   - B.2. Space derivatives
     - B.2.1. Space derivatives commute
+    - B.2.2. Composition with a CLM
   - B.3. Time and space derivatives commute
   - B.4. The spatial gradient
   - B.5. The spatial divergence

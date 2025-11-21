@@ -101,6 +101,8 @@ noncomputable def oneDimPointParticle (q : ℝ) : ElectromagneticPotentialD 1 :=
       simp))
   | Sum.inr i => 0
 
+/-- The electromagnetic potential of a point particle stationary at the origin
+  of 1d space. -/
 noncomputable def DistElectromagneticPotential.oneDimPointParticle (q : ℝ) :
     DistElectromagneticPotential 1 := SpaceTime.distTimeSlice.symm <| Space.constantTime <|
   distOfFunction (fun x => ((- q/(2)) * ‖x‖) • Lorentz.Vector.basis (Sum.inl 0)) (by fun_prop)

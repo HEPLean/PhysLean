@@ -27,6 +27,7 @@ to reference the underlying Schwartz maps.
 - A. Definition of a distribution from a function
 - B. Linarity properties of getting distributions from functions
 - C. Properties related to inner products
+- D. Components
 
 ## iv. References
 
