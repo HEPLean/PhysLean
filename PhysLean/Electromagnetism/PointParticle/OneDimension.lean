@@ -123,7 +123,7 @@ lemma DistElectromagneticPotential.oneDimPointParticle_vectorPotential(q : ℝ) 
     (DistElectromagneticPotential.oneDimPointParticle q).vectorPotential 1 = 0 := by
   ext ε i
   simp [vectorPotential, Lorentz.Vector.spatialCLM,
-   oneDimPointParticle, constantTime_apply, distOfFunction_vector_eval]
+    oneDimPointParticle, constantTime_apply, distOfFunction_vector_eval]
 
 /-!
 
@@ -155,7 +155,6 @@ lemma DistElectromagneticPotential.oneDimPointParticle_scalarPotential (q : ℝ)
   congr
   funext x
   ring
-
 
 /-!
 

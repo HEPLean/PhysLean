@@ -626,7 +626,7 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.
         refine IsDistBounded.norm_add_pos_nat_zpow (m - 2) 1 ?_
         simp
       · simp [real_inner_comm]
-        apply  IsDistBounded.isDistBounded_mul_inner_of_smul_norm
+        apply IsDistBounded.isDistBounded_mul_inner_of_smul_norm
         · apply IsDistBounded.mono (f := fun x => ‖x‖ ^ (m - 1) + 1)
           · apply IsDistBounded.add
             · apply IsDistBounded.pow (m - 1)
@@ -636,18 +636,17 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.
           · apply AEMeasurable.aestronglyMeasurable
             fun_prop
           · intro x
-            simp
+            simp only [norm_mul, Real.norm_eq_abs, abs_norm, norm_zpow]
             rw [abs_of_nonneg (by positivity)]
             by_cases hx : x = 0
             · subst hx
-              simp  [zero_zpow_eq]
+              simp [zero_zpow_eq]
               split_ifs <;> grind
-            · trans  ‖x‖ ^ (m - 1); swap
+            · trans ‖x‖ ^ (m - 1); swap
               · simp
               apply le_of_eq
               trans ‖x‖ ^ (m - 2 + 1)
-              rw [zpow_add₀]
-              simp
+              rw [zpow_add₀, zpow_one]
               ring
               simpa using hx
               ring_nf

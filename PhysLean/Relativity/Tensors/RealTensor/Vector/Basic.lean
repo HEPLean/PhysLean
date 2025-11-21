@@ -68,7 +68,7 @@ lemma norm_eq_equivEuclid (d : ℕ) (v : Vector d) :
 @[simp]
 lemma abs_component_le_norm {d : ℕ} (v : Vector d) (i : Fin 1 ⊕ Fin d) :
     |v i| ≤ ‖v‖ := by
-  simp  [norm_eq_equivEuclid, PiLp.norm_eq_of_L2, -Fintype.sum_sum_type]
+  simp [norm_eq_equivEuclid, PiLp.norm_eq_of_L2, -Fintype.sum_sum_type]
   refine Real.abs_le_sqrt ?_
   trans ∑ j ∈ {i}, (v j) ^ 2
   · simp

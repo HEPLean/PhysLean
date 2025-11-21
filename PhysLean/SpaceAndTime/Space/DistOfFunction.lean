@@ -148,7 +148,7 @@ TODO "LV5RM" "Add a general lemma specifying the derivative of
 -/
 
 lemma distOfFunction_eculid_eval {d n : ℕ} (f : Space d → EuclideanSpace ℝ (Fin n))
-    (hf : IsDistBounded f)  (η : 𝓢(Space d, ℝ))  (i : Fin n) :
+    (hf : IsDistBounded f) (η : 𝓢(Space d, ℝ)) (i : Fin n) :
     distOfFunction f hf η i = distOfFunction (fun x => f x i) (hf.pi_comp i) η := by
   simp [distOfFunction_apply]
   rw [MeasureTheory.eval_integral_piLp]
@@ -158,7 +158,7 @@ lemma distOfFunction_eculid_eval {d n : ℕ} (f : Space d → EuclideanSpace ℝ
   fun_prop
 
 lemma distOfFunction_vector_eval {d : ℕ} (f : Space d → Lorentz.Vector d)
-    (hf : IsDistBounded f)  (η : 𝓢(Space d, ℝ))  (i : Fin 1 ⊕ Fin d) :
+    (hf : IsDistBounded f) (η : 𝓢(Space d, ℝ)) (i : Fin 1 ⊕ Fin d) :
     distOfFunction f hf η i = distOfFunction (fun x => f x i) (hf.vector_component i) η := by
   simp [distOfFunction_apply]
   trans ⟪Lorentz.Vector.basis i, ∫ x, η x • f x⟫_ℝ

@@ -740,7 +740,6 @@ lemma vector_component {d: ℕ} {f : Space d → Lorentz.Vector d}
   apply le_trans ?_ (bound1 x)
   simp [Real.norm_eq_abs]
 
-
 /-!
 
 ### D.5. Compositions with additions and subtractions
