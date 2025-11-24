@@ -4,6 +4,9 @@ import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Mass.MassUnit
+import PhysLean.ClassicalMechanics.Pendulum.Coplanar_Double_Pendulum
+import PhysLean.ClassicalMechanics.Pendulum.Miscellaneous_Pendulum_Pivot_motions
+import PhysLean.ClassicalMechanics.Pendulum.Sliding_Pendulum
 import PhysLean.ClassicalMechanics.RigidBody.Basic
 import PhysLean.ClassicalMechanics.RigidBody.SolidSphere
 import PhysLean.ClassicalMechanics.Scattering.RigidSphere
