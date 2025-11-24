@@ -21,10 +21,9 @@ The Lagrangian is obtained as:
 L = T1 + T2 - V1 - V2 where
 T1 = 1/2 m1 x1_dot^2  (Kinetic energy of m1)
 V1 = 0
-T2 = 1/2 m2 (x2_dot^2 + y2_dot^2) = 1/2 m2 [l^2 φ_dot^2 + x1_dot^2 + 2 l φ_dot x1_dot cos(φ)] 
+T2 = 1/2 m2 (x2_dot^2 + y2_dot^2) = 1/2 m2 [l^2 φ_dot^2 + x1_dot^2 + 2 l φ_dot x1_dot cos(φ)]
 (Kinetic energy of m2)
 V2 = m2 g y2 = - m2 g l cos(φ)                     (Potential energy of m2)
-
 So that
 L = 1/2 (m1 + m2) x1_dot^2 + 1/2 m2 (l^2 φ_dot^2 + 2 l φ_dot x1_dot cos(φ)) + m2 g l cos(φ)
 
