@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2025 Shlok Vaibhav Singh. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Shlok Vaibhav Singh
+-/
 /-   {LnL_1.5.1}
 Source:
 Textbook: Landau and Lifshitz, Mechanics, 3rd Edition
