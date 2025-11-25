@@ -55,7 +55,7 @@ infixl:70 " ⨯ₑ₃ " => fun a b => (WithLp.equiv 2 (Fin 3 → ℝ)).symm
 -/
 
 /-- Cross product and fderiv commute. -/
-lemma fderiv_cross_commute {t : Time} {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
+lemma fderiv_cross_commute {t : Time} {s : EuclideanSpace ℝ (Fin 3)} {f : Time → EuclideanSpace ℝ (Fin 3)}
     (hf : Differentiable ℝ f) :
     s ⨯ₑ₃ (fderiv ℝ (fun t' => f t') t) 1
     = fderiv ℝ (fun t' => s ⨯ₑ₃ (f t')) t 1 := by
@@ -86,7 +86,7 @@ lemma fderiv_cross_commute {t : Time} {s : Space} {f : Time → EuclideanSpace �
       fun_prop
 
 /-- Cross product and time derivative commute. -/
-lemma time_deriv_cross_commute {s : Space} {f : Time → EuclideanSpace ℝ (Fin 3)}
+lemma time_deriv_cross_commute {s : EuclideanSpace ℝ (Fin 3)} {f : Time → EuclideanSpace ℝ (Fin 3)}
     (hf : Differentiable ℝ f) :
     s ⨯ₑ₃ (∂ₜ (fun t => f t) t) = ∂ₜ (fun t => s ⨯ₑ₃ (f t)) t := by
   repeat rw [Time.deriv]

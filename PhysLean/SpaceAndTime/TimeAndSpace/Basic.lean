@@ -195,7 +195,7 @@ lemma curl_differentiable_time
   intro i
   fin_cases i
   all_goals
-    simp [curl, Space.coord_apply]
+    simp only [Fin.zero_eta, Fin.isValue, curl]
     fun_prop
 
 /-!
@@ -213,7 +213,7 @@ lemma time_deriv_curl_commute (fₜ : Time → Space → EuclideanSpace ℝ (Fin
   rw [← Time.deriv_euclid]
   · fin_cases i
     all_goals
-    simp [curl, Space.coord_apply]
+    simp [curl]
     rw [Time.deriv_eq]
     rw [fderiv_fun_sub]
     simp [← Time.deriv_eq]

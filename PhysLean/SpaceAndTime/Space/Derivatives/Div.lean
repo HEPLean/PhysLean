@@ -50,7 +50,7 @@ variable {W} [NormedAddCommGroup W] [NormedSpace ℝ W]
 noncomputable def div {d} (f : Space d → EuclideanSpace ℝ (Fin d)) :
     Space d → ℝ := fun x =>
   -- get i-th component of `f`
-  let fi i x := coord i (f x)
+  let fi i x := (f x) i
   -- derivative of i-th component in i-th coordinate
   -- ∂fᵢ/∂xⱼ
   let df i x := ∂[i] (fi i) x
@@ -101,7 +101,7 @@ lemma div_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
   rw [← Finset.sum_add_distrib]
   congr
   funext i
-  simp [coord_apply, Space.deriv]
+  simp [Space.deriv]
   rw [fderiv_fun_add]
   simp only [ContinuousLinearMap.add_apply]
   · fun_prop
@@ -123,7 +123,6 @@ lemma div_smul (f : Space d → EuclideanSpace ℝ (Fin d)) (k : ℝ)
   rw [Finset.mul_sum]
   congr
   funext i
-  simp [coord_apply]
   simp [Space.deriv]
   rw [fderiv_const_mul]
   simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
@@ -163,13 +162,14 @@ noncomputable def distDiv {d} :
     ((Space d) →d[ℝ] (EuclideanSpace ℝ (Fin d))) →ₗ[ℝ] (Space d) →d[ℝ] ℝ where
   toFun f :=
     let trace : (Space d →L[ℝ] (EuclideanSpace ℝ (Fin d))) →L[ℝ] ℝ := {
-      toFun v := ∑ i, ⟪v (basis i), basis i⟫_ℝ
+      toFun v := ∑ i, ⟪v (basis i), EuclideanSpace.single i 1⟫_ℝ
       map_add' v1 v2 := by
-        simp only [ContinuousLinearMap.add_apply, inner_basis, PiLp.add_apply]
+        simp only [ContinuousLinearMap.add_apply, EuclideanSpace.inner_single_right, PiLp.add_apply,
+          conj_trivial, one_mul]
         rw [Finset.sum_add_distrib]
       map_smul' a v := by
-        simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, inner_basis, PiLp.smul_apply,
-          smul_eq_mul, RingHom.id_apply]
+        simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, EuclideanSpace.inner_single_right,
+          PiLp.smul_apply, smul_eq_mul, conj_trivial, one_mul, RingHom.id_apply]
         rw [Finset.mul_sum]
       cont := by fun_prop}
     trace.comp (Distribution.fderivD ℝ f)
@@ -189,7 +189,7 @@ noncomputable def distDiv {d} :
 lemma distDiv_apply_eq_sum_fderivD {d}
     (f : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Space d, ℝ)) :
     distDiv f η = ∑ i, fderivD ℝ f η (basis i) i := by
-  simp [distDiv]
+  simp [distDiv, EuclideanSpace.inner_single_right]
 
 lemma distDiv_apply_eq_sum_distDeriv {d}
     (f : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) (η : 𝓢(Space d, ℝ)) :
@@ -228,17 +228,18 @@ lemma distDiv_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ 
     rw [MeasureTheory.eval_integral_piLp]
     · congr
       funext x
-      simp [inner_smul_right]
+      simp [inner_smul_right, EuclideanSpace.inner_single_right]
       left
       rw [deriv_eq_fderiv_basis]
       rfl
     · intro j
       exact integrable_lemma i j
   · intro i hi
-    simp only [Nat.succ_eq_add_one, inner_smul_right, inner_basis]
+    simp only [Nat.succ_eq_add_one, inner_smul_right, EuclideanSpace.inner_single_right]
     convert integrable_lemma i i using 2
     rename_i x
-    simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, mul_eq_mul_right_iff]
+    simp only [conj_trivial, one_mul, Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul,
+      mul_eq_mul_right_iff]
     left
     rw [deriv_eq_fderiv_basis]
     rfl

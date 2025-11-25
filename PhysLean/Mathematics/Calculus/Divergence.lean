@@ -60,14 +60,12 @@ lemma divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E �
   simp [b']
 
 lemma divergence_eq_space_div {d} (f : Space d → Space d)
-    (h : Differentiable ℝ f) : divergence ℝ f = Space.div f := by
+    (h : Differentiable ℝ f) : divergence ℝ f = Space.div (Space.basis.repr ∘ f) := by
   let b := (Space.basis (d:=d)).toBasis
   rw[divergence_eq_sum_fderiv' b]
   funext x
-  simp +zetaDelta only [Space.basis, OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
-    OrthonormalBasis.coe_toBasis_repr_apply, EuclideanSpace.basisFun_repr, Space.div, Space.deriv,
-    Space.coord, PiLp.inner_apply, EuclideanSpace.single_apply, RCLike.inner_apply, conj_trivial,
-    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
+  simp +zetaDelta only [OrthonormalBasis.coe_toBasis, OrthonormalBasis.coe_toBasis_repr_apply,
+    Space.basis_repr_apply, Space.div, Space.deriv, Function.comp_apply]
   congr
   funext i
   have h1 : (fderiv ℝ (fun x => f x i) x)

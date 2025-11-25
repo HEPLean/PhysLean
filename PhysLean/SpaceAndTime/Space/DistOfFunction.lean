@@ -55,14 +55,14 @@ def distOfFunction {d : ℕ} (f : Space d → F) (hf : IsDistBounded f) :
   refine mkCLMtoNormedSpace (fun η => ∫ x, η x • f x) ?_ ?_ hf.integral_mul_schwartzMap_bounded
   · /- Addition -/
     intro η κ
-    simp only [add_apply]
+    simp only [SchwartzMap.add_apply]
     conv_lhs =>
       enter [2, a]
       rw [add_smul]
     rw [integral_add (by fun_prop) (by fun_prop)]
   · /- SMul-/
     intro a η
-    simp only [smul_apply, smul_eq_mul, RingHom.id_apply]
+    simp only [SchwartzMap.smul_apply, smul_eq_mul, RingHom.id_apply]
     conv_lhs =>
       enter [2, a]
       rw [← smul_smul]

@@ -59,7 +59,7 @@ namespace Space
 /-- Given a function `f : Space d → M` the derivative of `f` in direction `μ`. -/
 noncomputable def deriv {M d} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (μ : Fin d) (f : Space d → M) : Space d → M :=
-  (fun x => fderiv ℝ f x (EuclideanSpace.single μ (1:ℝ)))
+  (fun x => fderiv ℝ f x (basis μ))
 
 @[inherit_doc deriv]
 macro "∂[" i:term "]" : term => `(deriv $i)
@@ -72,18 +72,11 @@ macro "∂[" i:term "]" : term => `(deriv $i)
 
 lemma deriv_eq [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (μ : Fin d) (f : Space d → M) (x : Space d) :
-    deriv μ f x = fderiv ℝ f x (EuclideanSpace.single μ (1:ℝ)) := by
-  rfl
+    deriv μ f x = fderiv ℝ f x (basis μ) := by rfl
 
 lemma deriv_eq_fderiv_basis [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (μ : Fin d) (f : Space d → M) (x : Space d) :
-    deriv μ f x = fderiv ℝ f x (basis μ) := by
-  rw [deriv_eq]
-  congr 1
-  ext i
-  simp only [EuclideanSpace.single_apply, basis_apply]
-  congr 1
-  exact Lean.Grind.eq_congr' rfl rfl
+    deriv μ f x = fderiv ℝ f x (basis μ) := by rfl
 
 lemma fderiv_eq_sum_deriv {M d} [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (f : Space d → M) (x y : Space d) :
@@ -116,7 +109,6 @@ lemma deriv_add [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f1 f2 : Space d → M) (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
     ∂[u] (f1 + f2) = ∂[u] f1 + ∂[u] f2 := by
   unfold deriv
-  simp only
   ext x
   rw [fderiv_add]
   rfl
@@ -201,8 +193,8 @@ lemma deriv_component_diff (μ ν : Fin d) (x : Space d) (h : μ ≠ ν) :
     enter [2, x]
     rw [← Space.coord_apply _ x]
   change deriv μ (Space.coordCLM ν) x = 0
-  simp only [deriv_eq, ContinuousLinearMap.fderiv]
-  simpa [Space.coordCLM, Space.coord] using h.symm
+  simp  [deriv_eq, ContinuousLinearMap.fderiv]
+  simpa [Space.coordCLM, Space.coord, basis_apply] using h
 
 lemma deriv_component (μ ν : Fin d) (x : Space d) :
     (deriv ν (fun x => x μ) x) = if ν = μ then 1 else 0 := by
@@ -272,7 +264,7 @@ lemma deriv_lorentz_vector {d ν μ} {f : Space d → Lorentz.Vector d}
 -/
 @[fun_prop]
 lemma norm_sq_differentiable : Differentiable ℝ (fun x : Space d => ‖x‖ ^ 2) := by
-  simp [@PiLp.norm_sq_eq_of_L2]
+  simp [Space.norm_sq_eq]
   fun_prop
 
 /-!
@@ -283,7 +275,7 @@ lemma norm_sq_differentiable : Differentiable ℝ (fun x : Space d => ‖x‖ ^ 
 
 lemma deriv_norm_sq (x : Space d) (i : Fin d) :
     deriv i (fun x => ‖x‖ ^ 2) x = 2 * x i := by
-  simp [@PiLp.norm_sq_eq_of_L2]
+  simp [Space.norm_sq_eq]
   rw [deriv_eq_fderiv_basis]
   rw [fderiv_fun_sum]
   simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply]
@@ -310,11 +302,33 @@ open InnerProductSpace
 -/
 
 /-- The inner product is differentiable. -/
+@[fun_prop]
 lemma inner_differentiable {d : ℕ} :
     Differentiable ℝ (fun y : Space d => ⟪y, y⟫_ℝ) := by
-  simp only [PiLp.inner_apply, RCLike.inner_apply, conj_trivial]
+  simp only [inner_self_eq_norm_sq_to_K, RCLike.ofReal_real_eq_id, id_eq]
   fun_prop
 
+@[fun_prop]
+lemma inner_differentiableAt {d : ℕ}  (x : Space d):
+    DifferentiableAt ℝ (fun y : Space d => ⟪y, y⟫_ℝ) x := by
+  apply inner_differentiable.differentiableAt
+
+@[fun_prop]
+lemma inner_contDiff {n :  WithTop ℕ∞} {d : ℕ} :
+    ContDiff ℝ n (fun y : Space d => ⟪y, y⟫_ℝ) := by
+  apply ContDiff.inner
+  · fun_prop
+  · fun_prop
+
+@[fun_prop]
+lemma inner_apply_contDiff {n :  WithTop ℕ∞} {d : ℕ}  [NormedAddCommGroup M]
+    [NormedSpace ℝ M]
+    {f : M → Space d} {g : M → Space d}
+    (hf : ContDiff ℝ n f) (hg : ContDiff ℝ n g) :
+    ContDiff ℝ n (fun y : M => ⟪f y, g y⟫_ℝ) := by
+  apply ContDiff.inner
+  · fun_prop
+  · fun_prop
 /-!
 
 #### A.10.2. Derivative of the inner product function
@@ -361,11 +375,8 @@ lemma deriv_differentiable {M} [NormedAddCommGroup M]
     [NormedSpace ℝ M] {d : ℕ} {f : Space d → M}
     (hf : ContDiff ℝ 2 f) (i : Fin d) :
     Differentiable ℝ (deriv i f) := by
-  have h1 : Differentiable ℝ (fun x => fderiv ℝ f x (basis i)) := by
-    fun_prop
-  convert h1 using 1
-  funext x
-  rw [deriv_eq_fderiv_basis]
+  suffices h1 : Differentiable ℝ (fun x => fderiv ℝ f x (basis i)) by exact h1
+  fun_prop
 
 /-!
 

@@ -55,12 +55,9 @@ scoped[Space] notation "Δ" => laplacian
 
 lemma laplacian_eq_div_of_grad (f : Space → ℝ) :
     Δ f = ∇ ⬝ ∇ f := by
-  unfold laplacian div grad Finset.sum coord basis
+  unfold laplacian div grad Finset.sum
   simp only [Fin.univ_val_map, List.ofFn_succ, Fin.isValue, Fin.succ_zero_eq_one,
-    Fin.succ_one_eq_two, List.ofFn_zero, Multiset.sum_coe, List.sum_cons, List.sum_nil, add_zero,
-    EuclideanSpace.basisFun_apply, PiLp.inner_apply, EuclideanSpace.single_apply,
-    RCLike.inner_apply, conj_trivial, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, ↓reduceIte]
+    Fin.succ_one_eq_two, List.ofFn_zero, Multiset.sum_coe, List.sum_cons, List.sum_nil, add_zero]
 
 /-!
 
@@ -72,7 +69,7 @@ lemma laplacian_eq_div_of_grad (f : Space → ℝ) :
 noncomputable def laplacianVec {d} (f : Space d → EuclideanSpace ℝ (Fin d)) :
     Space d → EuclideanSpace ℝ (Fin d) := fun x => WithLp.toLp 2 fun i =>
   -- get i-th component of `f`
-  let fi i x := coord i (f x)
+  let fi i x := (f x) i
   Δ (fi i) x
 
 @[inherit_doc laplacianVec]

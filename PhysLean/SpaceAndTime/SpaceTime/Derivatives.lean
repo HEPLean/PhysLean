@@ -193,16 +193,14 @@ lemma deriv_sum_inr {d : ℕ} {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ
   simp only [Prod.mk.eta, toTimeAndSpace_symm_fderiv, ContinuousLinearMap.coe_comp',
     ContinuousLinearEquiv.coe_coe, Function.comp_apply]
   change _ = (toTimeAndSpace c).symm ((fderiv ℝ ((toTimeAndSpace c x).1, ·) (toTimeAndSpace c x).2)
-    (EuclideanSpace.single i 1))
+    (Space.basis i))
   rw [DifferentiableAt.fderiv_prodMk]
   simp only [fderiv_fun_const, Pi.zero_apply, fderiv_id', ContinuousLinearMap.prod_apply,
     ContinuousLinearMap.zero_apply, ContinuousLinearMap.coe_id', id_eq]
   trans (toTimeAndSpace c).symm (0, Space.basis i)
   · rw [← toTimeAndSpace_basis_inr (c := c)]
     simp
-  · congr
-    rw [Space.basis]
-    simp
+  · rfl
   repeat' fun_prop
 
 lemma deriv_sum_inl {d : ℕ} {M : Type} [NormedAddCommGroup M]

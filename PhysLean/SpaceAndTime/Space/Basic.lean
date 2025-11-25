@@ -9,6 +9,8 @@ import PhysLean.Meta.Linters.Sorry
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.Analysis.InnerProductSpace.Calculus
 /-!
 
 # Space
@@ -45,6 +47,13 @@ lemma eq_of_val {d} {p q : Space d} (h : p.val = q.val ) :
   cases q
   congr
 
+@[simp]
+lemma val_eq_iff {d} {p q : Space d} :
+    p.val = q.val ↔ p = q := by
+  apply Iff.intro
+  · exact eq_of_val
+  · intro h
+    rw [h]
 
 /-!
 
@@ -448,6 +457,16 @@ lemma apply_eq_basis_repr_apply {d} (p : Space d) (i : Fin d) :
     p i = basis.repr p i := by
   simp [basis]
 
+
+@[simp]
+lemma basis_repr_apply {d} (p : Space d) (i : Fin d) :
+    basis.repr p i = p i := by
+  simp [apply_eq_basis_repr_apply]
+
+@[simp]
+lemma basis_repr_symm_apply {d} (v : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    basis.repr.symm v i = v i := by rfl
+
 lemma basis_apply {d} (i j : Fin d) :
     basis i j = if i = j then 1 else 0 := by
   simp [apply_eq_basis_repr_apply]
@@ -469,6 +488,12 @@ lemma basis_inner {d} (i : Fin d) (p : Space d) :
     inner ℝ (basis i) p = p i := by
   simp [inner_eq_sum, basis_apply]
 
+open InnerProductSpace
+
+lemma basis_repr_inner_eq {d} (p : Space d) (v : EuclideanSpace ℝ (Fin d)) :
+    ⟪basis.repr p, v⟫_ℝ =  ⟪p, basis.repr.symm v⟫_ℝ  := by
+  exact LinearIsometryEquiv.inner_map_eq_flip basis.repr p v
+
 instance {d : ℕ} : FiniteDimensional ℝ (Space d) :=
   Module.Basis.finiteDimensional_of_finite (h := basis.toBasis)
 
@@ -479,6 +504,19 @@ lemma finrank_eq_dim {d : ℕ} : Module.finrank ℝ (Space d) = d := by
 @[simp]
 lemma rank_eq_dim {d : ℕ} : Module.rank ℝ (Space d) = d := by
   simp [rank_eq_card_basis (basis.toBasis)]
+
+
+@[simp]
+lemma fderiv_basis_repr {d} (p : Space d) :
+    fderiv ℝ basis.repr p = basis.repr.toContinuousLinearMap := by
+  change fderiv ℝ basis.repr.toContinuousLinearMap p = _
+  rw [ContinuousLinearMap.fderiv]
+
+@[simp]
+lemma fderiv_basis_repr_symm {d} (v : EuclideanSpace ℝ (Fin d)) :
+    fderiv ℝ basis.repr.symm v = basis.repr.symm.toContinuousLinearMap := by
+  change fderiv ℝ basis.repr.symm.toContinuousLinearMap v = _
+  rw [ContinuousLinearMap.fderiv]
 
 /-!
 
@@ -562,6 +600,19 @@ lemma mk_differentiable {d : ℕ} :
 @[fun_prop]
 lemma mk_contDiff {d n : ℕ} :
     ContDiff ℝ n (fun (f : Fin d → ℝ) => (⟨f⟩ : Space d)) := (equivPi d).symm.contDiff
+
+@[simp]
+lemma fderiv_mk {d : ℕ}  (f : Fin d → ℝ) :
+    fderiv ℝ Space.mk f = (equivPi d).symm := by
+  change fderiv ℝ (equivPi d).symm f = _
+  rw [@ContinuousLinearEquiv.fderiv]
+
+@[simp]
+lemma fderiv_val {d : ℕ} (p : Space d) :
+    fderiv ℝ Space.val  p = (equivPi d) := by
+  change fderiv ℝ (equivPi d) p = _
+  rw [@ContinuousLinearEquiv.fderiv]
+
 /-!
 
 ## Directions
@@ -671,10 +722,60 @@ lemma oneEquiv_symm_measurePreserving : MeasurePreserving oneEquiv.symm volume v
 lemma volume_eq_addHaar {d} : (volume (α := Space d)) = Space.basis.toBasis.addHaar := by
   exact (OrthonormalBasis.addHaar_eq_volume _).symm
 
+@[simp]
+lemma volume_metricBall_three :
+    volume (Metric.ball (0 : Space 3) 1) = ENNReal.ofReal (4 / 3 * Real.pi) := by
+  rw [InnerProductSpace.volume_ball_of_dim_odd (k := 1)]
+  simp
+  ring_nf
+  simp
+
+
+instance {d : ℕ} : Nontrivial (Space d.succ) := by
+  refine { exists_pair_ne := ?_ }
+  use 0, basis 0
+  simp
+  by_contra hn
+  have h0 : (basis 0 : Space d.succ)  0 = 1 := by simp
+  rw [← hn] at h0
+  simp at h0
+
 instance : Subsingleton (Space 0) := by
   apply Subsingleton.intro
   intro x y
   ext i
   fin_cases i
+
+lemma volume_closedBall_neq_zero {d : ℕ}  (x : Space d.succ) (r : ℝ) (hr : 0 < r) :
+    volume (Metric.closedBall x r) ≠ 0 := by
+  obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
+  rcases hk with hk | hk
+  · rw [InnerProductSpace.volume_closedBall_of_dim_even (k := k)]
+    simp
+    apply And.intro
+    · simp_all
+    · positivity
+    · simpa using hk
+  · rw [InnerProductSpace.volume_closedBall_of_dim_odd (k := k)]
+    simp
+    apply And.intro
+    · simp_all
+    · positivity
+    · simpa using hk
+
+lemma volume_closedBall_neq_top {d : ℕ}  (x : Space d.succ) (r : ℝ) :
+    volume (Metric.closedBall x r) ≠ ⊤ := by
+  obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
+  rcases hk with hk | hk
+  · rw [InnerProductSpace.volume_closedBall_of_dim_even (k := k)]
+    simp
+    apply not_eq_of_beq_eq_false
+    rfl
+    simpa using hk
+  · rw [InnerProductSpace.volume_closedBall_of_dim_odd (k := k)]
+    simp
+    apply not_eq_of_beq_eq_false
+    rfl
+    simpa using hk
 
 end Space

@@ -49,6 +49,8 @@ scoped notation "∂ₜ" => deriv
 lemma deriv_eq [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (f : Time → M) (t : Time) : Time.deriv f t = fderiv ℝ f t 1 := rfl
 
+
+
 /-!
 
 ## B. Linearlity properties of the derivative
