@@ -259,7 +259,7 @@ lemma harmonicWaveX_electricField_succ {d} (𝓕 : FreeSpace) (k : ℝ) (hk : k 
   simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
   rw [fderiv_sub_const]
   rw [fderiv_mul_const (by fun_prop)]
-  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, fderiv_val, smul_eq_mul, mul_one]
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, Time.fderiv_val, smul_eq_mul, mul_one]
   field_simp
   · fun_prop
   · refine vectorPotential_differentiable_time (harmonicWaveX 𝓕 k E₀ φ) ?_ x
@@ -321,7 +321,7 @@ lemma harmonicWaveX_electricField_succ_time_deriv {d} (𝓕 : FreeSpace) (k : �
     ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul, mul_neg, neg_inj]
   rw [fderiv_sub_const]
   rw [fderiv_const_mul (by fun_prop)]
-  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, fderiv_val, smul_eq_mul, mul_one]
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, Time.fderiv_val, smul_eq_mul, mul_one]
   ring
 
 /-!
@@ -334,7 +334,7 @@ lemma harmonicWaveX_electricField_succ_time_deriv {d} (𝓕 : FreeSpace) (k : �
 lemma harmonicWaveX_div_electricField_eq_zero {d} (𝓕 : FreeSpace) (k : ℝ) (hk : k ≠ 0)
     (E₀ : Fin d → ℝ) (φ : Fin d → ℝ) (t : Time) (x : Space d.succ) :
     Space.div (fun x => electricField 𝓕.c (harmonicWaveX 𝓕 k E₀ φ) t x) x = 0 := by
-  simp [Space.div, Space.coord]
+  simp [Space.div]
   apply Finset.sum_eq_zero
   intro i _
   exact harmonicWaveX_electricField_space_deriv_same 𝓕 k hk E₀ φ t x i

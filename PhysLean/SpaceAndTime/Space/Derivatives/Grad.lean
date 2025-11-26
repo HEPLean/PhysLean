@@ -244,6 +244,19 @@ lemma gradient_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
     gradient f x = ∑ i, deriv i f x • basis i := by
   simp [gradient_eq_grad, grad_eq_sum f x]
 
+lemma euclid_gradient_eq_sum {d} (f : EuclideanSpace ℝ (Fin d) → ℝ) (x : EuclideanSpace ℝ (Fin d)) :
+    gradient f x = ∑ i, fderiv ℝ  f x (EuclideanSpace.single i 1) • EuclideanSpace.single i 1 := by
+  apply ext_inner_right (𝕜 := ℝ) fun y => ?_
+  simp [gradient]
+  have hy : y = ∑ i, y i • EuclideanSpace.single i 1 := by
+    conv_lhs => rw [← OrthonormalBasis.sum_repr (EuclideanSpace.basisFun (Fin d) ℝ) y]
+    simp
+  conv_lhs => rw [hy]
+  simp [sum_inner, inner_smul_left, EuclideanSpace.inner_single_left]
+  congr
+  funext i
+  ring
+
 /-!
 
 ### A.10. Value of gradient in the direction of the position vector

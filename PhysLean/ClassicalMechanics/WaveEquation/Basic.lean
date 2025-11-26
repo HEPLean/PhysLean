@@ -185,9 +185,6 @@ lemma planeWave_space_deriv {d f₀ c} {s : Direction d}
   left
   simp [planeWave_eq]
   repeat fun_prop
-  · apply DifferentiableAt.sub
-    apply DifferentiableAt.inner
-    repeat fun_prop
 
 lemma planeWave_apply_space_deriv {d f₀ c} {s : Direction d}
     (h' : Differentiable ℝ f₀) (i j : Fin d) :
@@ -323,8 +320,6 @@ lemma wave_dx2 {u v : Fin d} {s : Direction d}
     change s.unit u • s.unit u • (f₀'' (inner ℝ x s.unit - c * t) 1) = _
     rw [← smul_assoc, smul_eq_mul]
     repeat fun_prop
-    apply DifferentiableAt.inner
-    repeat fun_prop
     · conv_lhs =>
         enter [x]
         rw [← mul_one (s.unit u), ← smul_eq_mul, ContinuousLinearMap.map_smul]
@@ -430,12 +425,6 @@ lemma wave_fderiv_inner_eq_inner_fderiv_proj {f₀ : ℝ → EuclideanSpace ℝ 
   rw [← mul_one (s.unit i), ← smul_eq_mul (s.unit i)]
   rw [← mul_one (inner ℝ y s.unit), ← smul_eq_mul (inner ℝ y s.unit)]
   simp only [smul_eq_mul, mul_comm, one_mul, ← mul_assoc]
-  apply DifferentiableAt.inner
   repeat fun_prop
-  · exact wave_differentiable
-  · fun_prop
-  · apply DifferentiableAt.comp
-    · fun_prop
-    · exact wave_differentiable
 
 end ClassicalMechanics

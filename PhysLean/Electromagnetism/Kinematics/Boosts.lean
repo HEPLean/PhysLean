@@ -61,9 +61,9 @@ lemma electricField_apply_x_boost_zero {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
     (A : ElectromagneticPotential d.succ) (hA : Differentiable ℝ A) (t : Time) (x : Space d.succ) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := WithLp.toLp 2 fun
+    let x' : Space d.succ := ⟨fun
       | 0 => γ β * (x 0 + c * β * t.val)
-      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
+      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩⟩
     electricField c (fun x => Λ • A (Λ⁻¹ • x)) t x 0 =
     A.electricField c t' x' 0 := by
   dsimp
@@ -108,9 +108,9 @@ lemma electricField_apply_x_boost_succ {d : ℕ} {c : SpeedOfLight} (β : ℝ) (
     (i : Fin d) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := WithLp.toLp 2 fun
+    let x' : Space d.succ := ⟨fun
       | 0 => γ β * (x 0 + c * β * t.val)
-      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
+      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩⟩
     electricField c (fun x => Λ • A (Λ⁻¹ • x)) t x i.succ =
     γ β * (A.electricField c t' x' i.succ + c * β * A.magneticFieldMatrix c t' x' (0, i.succ)) := by
   dsimp
@@ -153,9 +153,9 @@ lemma magneticFieldMatrix_apply_x_boost_zero_succ {d : ℕ} {c : SpeedOfLight} (
     (i : Fin d) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := WithLp.toLp 2 fun
+    let x' : Space d.succ := ⟨fun
       | 0 => γ β * (x 0 + c * β * t.val)
-      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
+      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩⟩
     magneticFieldMatrix c (fun x => Λ • A (Λ⁻¹ • x)) t x (0, i.succ) =
     γ β * (A.magneticFieldMatrix c t' x' (0, i.succ) + β / c * A.electricField c t' x' i.succ) := by
   dsimp
@@ -187,9 +187,9 @@ lemma magneticFieldMatrix_apply_x_boost_succ_succ {d : ℕ} {c : SpeedOfLight} (
     (i j : Fin d) :
     let Λ := LorentzGroup.boost (d := d.succ) 0 β hβ
     let t' : Time := γ β * (t.val + β /c * x 0)
-    let x' : Space d.succ := WithLp.toLp 2 fun
+    let x' : Space d.succ := ⟨fun
       | 0 => γ β * (x 0 + c * β * t.val)
-      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩
+      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩⟩
     magneticFieldMatrix c (fun x => Λ • A (Λ⁻¹ • x)) t x (i.succ, j.succ) =
     A.magneticFieldMatrix c t' x' (i.succ, j.succ) := by
   dsimp
