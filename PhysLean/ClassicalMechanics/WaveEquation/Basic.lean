@@ -181,7 +181,8 @@ lemma planeWave_space_deriv {d f₀ c} {s : Direction d}
     PiLp.smul_apply, smul_eq_mul, one_smul, Pi.smul_apply]
   rw [fderiv_sub_const]
   rw [fderiv_inner_apply]
-  simp
+  simp only [fderiv_fun_const, Pi.zero_apply, ContinuousLinearMap.zero_apply, inner_zero_right,
+    fderiv_id', ContinuousLinearMap.coe_id', id_eq, basis_inner, zero_add, mul_eq_mul_left_iff]
   left
   simp [planeWave_eq]
   repeat fun_prop

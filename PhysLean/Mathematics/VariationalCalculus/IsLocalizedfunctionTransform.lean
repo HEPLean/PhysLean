@@ -137,7 +137,8 @@ lemma smul_left [NormedAddCommGroup V] [NormedSpace ℝ V] {F : (X → U) → (X
   · simp_all
   · simp_all
 
-lemma div {d} : IsLocalizedFunctionTransform fun (φ : Space d → EuclideanSpace ℝ (Fin d)) x => Space.div φ x := by
+lemma div {d} : IsLocalizedFunctionTransform fun (φ : Space d → EuclideanSpace ℝ (Fin d)) x =>
+    Space.div φ x := by
   intro K cK
   use (Metric.cthickening 1 K)
   constructor
@@ -164,7 +165,8 @@ lemma div {d} : IsLocalizedFunctionTransform fun (φ : Space d → EuclideanSpac
     congr; funext i; congr 1
     exact Filter.EventuallyEq.fderiv_eq (h _ _ hx)
 
-lemma div_comp_repr {d} : IsLocalizedFunctionTransform fun (φ : Space d → Space d) x => Space.div (Space.basis.repr ∘ φ) x := by
+lemma div_comp_repr {d} : IsLocalizedFunctionTransform fun (φ : Space d → Space d) x =>
+    Space.div (Space.basis.repr ∘ φ) x := by
   intro K cK
   use (Metric.cthickening 1 K)
   constructor

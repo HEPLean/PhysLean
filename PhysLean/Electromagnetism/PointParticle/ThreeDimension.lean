@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.Mathematics.Distribution.PowMul
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Analysis.InnerProductSpace.NormPow
 import Mathlib.Analysis.Calculus.FDeriv.Norm
 /-!
@@ -79,7 +78,7 @@ def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
     intro x
     by_cases hx : ‖x - r₀‖ = 0
     · simp [hx, zpow_two]
-    · have h1 :  ‖basis.repr x - basis.repr r₀‖ = ‖x - r₀‖ := by
+    · have h1 : ‖basis.repr x - basis.repr r₀‖ = ‖x - r₀‖ := by
         simp [← map_sub]
       field_simp [zpow_two]
       exact h1)
@@ -372,7 +371,8 @@ lemma potentialLimitSeries_fderiv (x : Space 3) (y : EuclideanSpace ℝ (Fin 3))
 lemma potentialLimitSeries_fderiv_eq_potentialLimitseries_mul
     (x : Space 3)
     (y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
-    fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y) = - (potentialLimitSeries n x) ^ 3 * ⟪basis.repr x, y⟫_ℝ := by
+    fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y) =
+      - (potentialLimitSeries n x) ^ 3 * ⟪basis.repr x, y⟫_ℝ := by
   rw [potentialLimitSeries_fderiv]
   congr
   simp only [one_div, inv_inj]
@@ -579,7 +579,8 @@ lemma potentialLimitSeriesFDerivSchwartz_eq
     (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) (n : ℕ)
     (x : Space 3) :
     potentialLimitSeriesFDerivSchwartz y η n x=
-      fderiv ℝ η x (basis.repr.symm y) * potentialLimitSeries n x + η x * fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y):= by
+      fderiv ℝ η x (basis.repr.symm y) * potentialLimitSeries n x + η x *
+        fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y) := by
   simp [potentialLimitSeriesFDerivSchwartz]
   rw [fderiv_fun_mul]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_smul', Pi.smul_apply,
@@ -600,7 +601,8 @@ lemma potentialLimitSeriesFDerivSchwartz_tendsto
     (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) :
     ∀ᵐ (a : Space 3) ∂(volume),
     Filter.Tendsto (fun n => potentialLimitSeriesFDerivSchwartz y η n a)
-      Filter.atTop (𝓝 (fderiv ℝ η a (basis.repr.symm y) * ‖a‖⁻¹ + η a * -⟪(‖a‖ ^ 3)⁻¹ • basis.repr a, y⟫_ℝ)) := by
+      Filter.atTop (𝓝 (fderiv ℝ η a (basis.repr.symm y) * ‖a‖⁻¹ + η a *
+        -⟪(‖a‖ ^ 3)⁻¹ • basis.repr a, y⟫_ℝ)) := by
   rw [Filter.eventually_iff_exists_mem]
   use {0}ᶜ
   constructor
@@ -874,7 +876,8 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       simp
     /- Step 3: We rearrange the integral to
       `- q/(4 * π * ε) * ∫ d³r ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r), (∇ η) r⟫`. -/
-    _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • basis.repr r, Space.grad η r⟫_ℝ := by
+    _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 *
+        ⟪‖r‖⁻¹ • basis.repr r, Space.grad η r⟫_ℝ := by
       simp [inner_smul_left, integral_const_mul]
       left
       congr

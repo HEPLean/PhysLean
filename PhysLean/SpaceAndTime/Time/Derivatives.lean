@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.SpaceTime.Basic
-import Mathlib.Analysis.InnerProductSpace.Calculus
 /-!
 
 # Time Derivatives
@@ -48,7 +47,6 @@ scoped notation "∂ₜ" => deriv
 
 lemma deriv_eq [AddCommGroup M] [Module ℝ M] [TopologicalSpace M]
     (f : Time → M) (t : Time) : Time.deriv f t = fderiv ℝ f t 1 := rfl
-
 
 /-!
 

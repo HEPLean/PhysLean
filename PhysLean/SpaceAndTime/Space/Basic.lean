@@ -8,7 +8,6 @@ import PhysLean.Meta.TODO.Basic
 import PhysLean.Meta.Linters.Sorry
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import Mathlib.Geometry.Manifold.IsManifold.Basic
-import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Analysis.InnerProductSpace.Calculus
 /-!
@@ -37,11 +36,12 @@ TODO "HB6VC" "Convert `Space` from an `abbrev` to a `def`."
 /-- The type `Space d` represents `d` dimensional Euclidean space.
   The default value of `d` is `3`. Thus `Space = Space 3`. -/
 structure Space (d : ℕ := 3) where
+  /-- The underlying map `Fin d → ℝ` associated with a point in `Space`. -/
   val : Fin d → ℝ
 
 namespace Space
 
-lemma eq_of_val {d} {p q : Space d} (h : p.val = q.val ) :
+lemma eq_of_val {d} {p q : Space d} (h : p.val = q.val) :
     p = q := by
   cases p
   cases q
@@ -70,14 +70,12 @@ lemma val_eq_iff {d} {p q : Space d} :
 instance {d} : CoeFun (Space d) (fun _ => Fin d → ℝ) where
   coe p := p.val
 
-
 @[ext]
 lemma eq_of_apply {d} {p q : Space d}
     (h : ∀ i : Fin d, p i = q i) : p = q := by
   apply eq_of_val
   funext i
   exact h i
-
 
 /-!
 
@@ -129,7 +127,7 @@ instance {d} : AddCommMonoid (Space d) where
 
 @[simp]
 lemma nsmul_val {d : ℕ} (n : ℕ) (a : Space d) :
-   (n • a).val = fun i => n • a.val i := rfl
+    (n • a).val = fun i => n • a.val i := rfl
 
 @[simp]
 lemma nsmul_apply {d : ℕ} (n : ℕ) (a : Space d) (i : Fin d) :
@@ -158,18 +156,18 @@ instance {d} : Module ℝ (Space d) where
     simp
   mul_smul a b x := by
     ext i
-    simp
+    simp only [smul_apply]
     ring
   smul_add a x y := by
     ext i
-    simp
+    simp only [smul_apply, add_apply]
     ring
   smul_zero a := by
     ext i
     simp
   add_smul a b x := by
     ext i
-    simp
+    simp only [smul_apply, add_apply]
     ring
   zero_smul x := by
     ext i
@@ -217,12 +215,12 @@ noncomputable instance : AddAction (EuclideanSpace ℝ (Fin d)) (Space d) where
     simp
   add_vadd v1 v2 s := by
     ext i
-    simp
+    simp only [vadd_apply, PiLp.add_apply]
     ring
 
 @[simp]
 lemma add_vadd_zero {d} (v1 v2 : EuclideanSpace ℝ (Fin d)) :
-    (v1 +ᵥ (0 : Space d)) + (v2 +ᵥ (0 : Space d))= (v1 + v2) +ᵥ (0 : Space d)  := by
+    (v1 +ᵥ (0 : Space d)) + (v2 +ᵥ (0 : Space d)) = (v1 + v2) +ᵥ (0 : Space d) := by
   ext i
   simp
 
@@ -237,7 +235,6 @@ noncomputable instance {d} : Norm (Space d) where
 
 lemma norm_eq {d} (p : Space d) : ‖p‖ = √ (∑ i, (p i) ^ 2) := by
   rfl
-
 
 @[simp]
 lemma abs_eval_le_norm {d} (p : Space d) (i : Fin d) :
@@ -255,10 +252,9 @@ lemma norm_sq_eq {d} (p : Space d) :
   positivity
 
 @[simp]
-lemma norm_vadd_zero {d} (v : EuclideanSpace ℝ (Fin d))  :
+lemma norm_vadd_zero {d} (v : EuclideanSpace ℝ (Fin d)) :
     ‖v +ᵥ (0 : Space d)‖ = ‖v‖ := by
   simp [norm_eq, PiLp.norm_eq_of_L2]
-
 
 instance : Neg (Space d) where
   neg p := ⟨fun i => - (p.val i)⟩
@@ -271,7 +267,6 @@ lemma neg_val {d : ℕ} (p : Space d) :
 lemma neg_apply {d : ℕ} (p : Space d) (i : Fin d) :
     (-p) i = - (p i) := by rfl
 
-
 noncomputable instance {d} : AddCommGroup (Space d) where
   zsmul z p := ⟨fun i => z * p.val i⟩
   neg_add_cancel p := by
@@ -282,11 +277,13 @@ noncomputable instance {d} : AddCommGroup (Space d) where
     simp
   zsmul_succ' n p := by
     ext i
-    simp
+    simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, Int.cast_add, Int.cast_natCast,
+      Int.cast_one, add_apply]
     ring
   zsmul_neg' n p := by
     ext i
-    simp
+    simp only [Int.cast_negSucc, Nat.cast_add, Nat.cast_one, neg_add_rev, Nat.succ_eq_add_one,
+      Int.cast_add, Int.cast_natCast, Int.cast_one, neg_apply]
     ring
 
 @[simp]
@@ -349,11 +346,10 @@ lemma inner_vadd_zero {d} (v1 v2 : EuclideanSpace ℝ (Fin d)) :
 lemma inner_apply {d} (p q : Space d) :
     inner ℝ p q = ∑ i, p i * q i := by rfl
 
-
 instance {d} : InnerProductSpace ℝ (Space d) where
   norm_smul_le a x := by
     obtain ⟨v, rfl⟩ := eq_vadd_zero x
-    simp
+    simp only [smul_vadd_zero, norm_vadd_zero, Real.norm_eq_abs]
     exact norm_smul_le a v
   norm_sq_eq_re_inner x := by
     obtain ⟨v, rfl⟩ := eq_vadd_zero x
@@ -367,12 +363,12 @@ instance {d} : InnerProductSpace ℝ (Space d) where
     obtain ⟨v1, rfl⟩ := eq_vadd_zero x
     obtain ⟨v2, rfl⟩ := eq_vadd_zero y
     obtain ⟨v3, rfl⟩ := eq_vadd_zero z
-    simp
+    simp only [add_vadd_zero, inner_vadd_zero]
     exact InnerProductSpace.add_left v1 v2 v3
   smul_left x y a := by
     obtain ⟨v1, rfl⟩ := eq_vadd_zero x
     obtain ⟨v2, rfl⟩ := eq_vadd_zero y
-    simp
+    simp only [smul_vadd_zero, inner_vadd_zero, conj_trivial]
     exact InnerProductSpace.smul_left v1 v2 a
 
 /-!
@@ -381,12 +377,10 @@ instance {d} : InnerProductSpace ℝ (Space d) where
 
 -/
 
-
-instance  {d : ℕ} : MeasurableSpace (Space d) := borel (Space d)
+instance {d : ℕ} : MeasurableSpace (Space d) := borel (Space d)
 
 instance {d : ℕ} : BorelSpace (Space d) where
   measurable_eq := by rfl
-
 
 TODO "HB6YZ" "In the above documentation describe what an instance is, and why
   it is useful to have instances for `Space d`."
@@ -412,14 +406,14 @@ lemma inner_eq_sum {d} (p q : Space d) :
 @[simp]
 lemma sum_apply {ι : Type} [Fintype ι] (f : ι → Space d) (i : Fin d) :
     (∑ x, f x) i = ∑ x, f x i := by
-  let P (ι : Type) [Fintype ι]  : Prop := ∀ (f : ι → Space d) (i : Fin d), (∑ x, f x) i = ∑ x, f x i
+  let P (ι : Type) [Fintype ι] : Prop := ∀ (f : ι → Space d) (i : Fin d), (∑ x, f x) i = ∑ x, f x i
   have h1 : P ι := by
-    apply  Fintype.induction_empty_option
-    · intro α β h e h  f i
+    apply Fintype.induction_empty_option
+    · intro α β h e h f i
       rw [← @e.sum_comp _, h, ← @e.sum_comp _]
     · simp [P]
     · intro α _ h f i
-      simp
+      simp only [Fintype.sum_option, add_apply, add_right_inj]
       rw [h]
   exact h1 f i
 
@@ -451,12 +445,11 @@ noncomputable def basis {d} : OrthonormalBasis (Fin d) ℝ (Space d) where
       rfl
     norm_map' := by
       intro x
-      simp [norm_eq, PiLp.norm_eq_of_L2]  }
+      simp [norm_eq, PiLp.norm_eq_of_L2]}
 
 lemma apply_eq_basis_repr_apply {d} (p : Space d) (i : Fin d) :
     p i = basis.repr p i := by
   simp [basis]
-
 
 @[simp]
 lemma basis_repr_apply {d} (p : Space d) (i : Fin d) :
@@ -477,7 +470,6 @@ lemma basis_apply {d} (i j : Fin d) :
 lemma basis_self {d} (i : Fin d) : basis i i = 1 := by
   simp [basis_apply]
 
-
 @[simp high]
 lemma inner_basis {d} (p : Space d) (i : Fin d) :
     inner ℝ p (basis i) = p i := by
@@ -491,7 +483,7 @@ lemma basis_inner {d} (i : Fin d) (p : Space d) :
 open InnerProductSpace
 
 lemma basis_repr_inner_eq {d} (p : Space d) (v : EuclideanSpace ℝ (Fin d)) :
-    ⟪basis.repr p, v⟫_ℝ =  ⟪p, basis.repr.symm v⟫_ℝ  := by
+    ⟪basis.repr p, v⟫_ℝ = ⟪p, basis.repr.symm v⟫_ℝ := by
   exact LinearIsometryEquiv.inner_map_eq_flip basis.repr p v
 
 instance {d : ℕ} : FiniteDimensional ℝ (Space d) :=
@@ -504,7 +496,6 @@ lemma finrank_eq_dim {d : ℕ} : Module.finrank ℝ (Space d) = d := by
 @[simp]
 lemma rank_eq_dim {d : ℕ} : Module.rank ℝ (Space d) = d := by
   simp [rank_eq_card_basis (basis.toBasis)]
-
 
 @[simp]
 lemma fderiv_basis_repr {d} (p : Space d) :
@@ -577,7 +568,6 @@ lemma eval_contDiff {d n} (i : Fin d) :
   convert (coordCLM i).contDiff
   simp [coordCLM_apply, coord]
 
-
 /-- The continous linear equivalence between `Space d` and the corresponding `Pi` type. -/
 def equivPi (d : ℕ) :
     Space d ≃L[ℝ] Π (_ : Fin d), ℝ := LinearEquiv.toContinuousLinearEquiv <|
@@ -587,7 +577,6 @@ def equivPi (d : ℕ) :
     map_smul' p r := by funext i; simp
     invFun := fun f => ⟨f⟩
   }
-
 
 @[fun_prop]
 lemma mk_continuous {d : ℕ} :
@@ -602,14 +591,14 @@ lemma mk_contDiff {d n : ℕ} :
     ContDiff ℝ n (fun (f : Fin d → ℝ) => (⟨f⟩ : Space d)) := (equivPi d).symm.contDiff
 
 @[simp]
-lemma fderiv_mk {d : ℕ}  (f : Fin d → ℝ) :
+lemma fderiv_mk {d : ℕ} (f : Fin d → ℝ) :
     fderiv ℝ Space.mk f = (equivPi d).symm := by
   change fderiv ℝ (equivPi d).symm f = _
   rw [@ContinuousLinearEquiv.fderiv]
 
 @[simp]
 lemma fderiv_val {d : ℕ} (p : Space d) :
-    fderiv ℝ Space.val  p = (equivPi d) := by
+    fderiv ℝ Space.val p = (equivPi d) := by
   change fderiv ℝ (equivPi d) p = _
   rw [@ContinuousLinearEquiv.fderiv]
 
@@ -726,17 +715,17 @@ lemma volume_eq_addHaar {d} : (volume (α := Space d)) = Space.basis.toBasis.add
 lemma volume_metricBall_three :
     volume (Metric.ball (0 : Space 3) 1) = ENNReal.ofReal (4 / 3 * Real.pi) := by
   rw [InnerProductSpace.volume_ball_of_dim_odd (k := 1)]
-  simp
+  simp only [ENNReal.ofReal_one, finrank_eq_dim, one_pow, pow_one, Nat.reduceAdd,
+    Nat.doubleFactorial.eq_3, Nat.doubleFactorial, mul_one, Nat.cast_ofNat, one_mul]
   ring_nf
   simp
-
 
 instance {d : ℕ} : Nontrivial (Space d.succ) := by
   refine { exists_pair_ne := ?_ }
   use 0, basis 0
-  simp
+  simp only [Nat.succ_eq_add_one, ne_eq]
   by_contra hn
-  have h0 : (basis 0 : Space d.succ)  0 = 1 := by simp
+  have h0 : (basis 0 : Space d.succ) 0 = 1 := by simp
   rw [← hn] at h0
   simp at h0
 
@@ -746,34 +735,38 @@ instance : Subsingleton (Space 0) := by
   ext i
   fin_cases i
 
-lemma volume_closedBall_neq_zero {d : ℕ}  (x : Space d.succ) (r : ℝ) (hr : 0 < r) :
+lemma volume_closedBall_neq_zero {d : ℕ} (x : Space d.succ) (r : ℝ) (hr : 0 < r) :
     volume (Metric.closedBall x r) ≠ 0 := by
   obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
   rcases hk with hk | hk
   · rw [InnerProductSpace.volume_closedBall_of_dim_even (k := k)]
-    simp
+    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero,
+      one_ne_zero, and_false, not_false_eq_true, pow_eq_zero_iff, ENNReal.ofReal_eq_zero, not_or,
+      not_le]
     apply And.intro
     · simp_all
     · positivity
     · simpa using hk
   · rw [InnerProductSpace.volume_closedBall_of_dim_odd (k := k)]
-    simp
+    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero,
+      one_ne_zero, and_false, not_false_eq_true, pow_eq_zero_iff, ENNReal.ofReal_eq_zero, not_or,
+      not_le]
     apply And.intro
     · simp_all
     · positivity
     · simpa using hk
 
-lemma volume_closedBall_neq_top {d : ℕ}  (x : Space d.succ) (r : ℝ) :
+lemma volume_closedBall_neq_top {d : ℕ} (x : Space d.succ) (r : ℝ) :
     volume (Metric.closedBall x r) ≠ ⊤ := by
   obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
   rcases hk with hk | hk
   · rw [InnerProductSpace.volume_closedBall_of_dim_even (k := k)]
-    simp
+    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq]
     apply not_eq_of_beq_eq_false
     rfl
     simpa using hk
   · rw [InnerProductSpace.volume_closedBall_of_dim_odd (k := k)]
-    simp
+    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq]
     apply not_eq_of_beq_eq_false
     rfl
     simpa using hk

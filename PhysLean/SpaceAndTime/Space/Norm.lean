@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.Derivatives.Div
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Analysis.InnerProductSpace.NormPow
 import Mathlib.Analysis.Calculus.FDeriv.Norm
 /-!
@@ -508,7 +507,8 @@ lemma gradient_dist_normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) :
       · fun_prop
       · exact η.differentiable
       · fun_prop
-    _ = ∫ (x : Space d), η x * (m * ⟪(basis.repr.symm y), x⟫_ℝ * (normPowerSeries n x) ^ (m - 2)) := by
+    _ = ∫ (x : Space d), η x *
+        (m * ⟪(basis.repr.symm y), x⟫_ℝ * (normPowerSeries n x) ^ (m - 2)) := by
       congr
       funext x
       rw [fderiv_normPowerSeries_zpow]
@@ -535,7 +535,8 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
     (𝓝 (⟪distGrad (distOfFunction (fun x : Space d.succ => ‖x‖ ^ m)
     (IsDistBounded.pow m hm)) η, y⟫_ℝ)) := by
   simp [distGrad_inner_eq, Distribution.fderivD_apply, distOfFunction_apply]
-  change Filter.Tendsto (fun n => - ∫ (x : Space d.succ), fderiv ℝ η x (basis.repr.symm y) * normPowerSeries n x ^ m)
+  change Filter.Tendsto (fun n => - ∫ (x : Space d.succ),
+      fderiv ℝ η x (basis.repr.symm y) * normPowerSeries n x ^ m)
     Filter.atTop (𝓝 (- ∫ (x : Space d.succ), fderiv ℝ η x (basis.repr.symm y) * ‖x‖ ^ m))
   apply Filter.Tendsto.neg
   apply MeasureTheory.tendsto_integral_of_dominated_convergence
@@ -543,7 +544,8 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
   · intro n
     apply IsDistBounded.aeStronglyMeasurable_fderiv_schwartzMap_smul (F := ℝ) ?_
     fun_prop
-  · have h1 : Integrable (fun x => (fderiv ℝ (⇑η) x) (basis.repr.symm y) * ((‖x‖ + 1) ^ m + ‖x‖ ^ m)) volume := by
+  · have h1 : Integrable (fun x =>
+        (fderiv ℝ (⇑η) x) (basis.repr.symm y) * ((‖x‖ + 1) ^ m + ‖x‖ ^ m)) volume := by
       apply IsDistBounded.integrable_space_fderiv ?_
       apply IsDistBounded.add
       · refine IsDistBounded.norm_add_pos_nat_zpow m 1 ?_
@@ -600,7 +602,7 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.
     rw [gradient_dist_normPowerSeries_zpow]
   simp [distOfFunction_inner]
   have h1 (n : ℕ) (x : Space d.succ) :
-    η x * ⟪(↑m * normPowerSeries n x ^ (m - 2)) • basis.repr x, ( y)⟫_ℝ =
+    η x * ⟪(↑m * normPowerSeries n x ^ (m - 2)) • basis.repr x, (y)⟫_ℝ =
     η x * (m * (⟪basis.repr x, y⟫_ℝ * (normPowerSeries n x) ^ (m - 2))) := by
     simp [inner_smul_left]
     ring_nf
@@ -721,7 +723,8 @@ lemma gradient_dist_normPowerSeries_log {d : ℕ} {n : ℕ} :
   calc _
     _ = - ∫ (x : Space d), fderiv ℝ η x (basis.repr.symm y) * Real.log (normPowerSeries n x) := by
       rfl
-    _ = ∫ (x : Space d), η x * fderiv ℝ (fun x => Real.log (normPowerSeries n x)) x (basis.repr.symm y) := by
+    _ = ∫ (x : Space d), η x *
+        fderiv ℝ (fun x => Real.log (normPowerSeries n x)) x (basis.repr.symm y) := by
       rw [integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable]
       · fun_prop
       · refine IsDistBounded.integrable_space_mul ?_ η
@@ -755,7 +758,7 @@ lemma gradient_dist_normPowerSeries_log_tendsTo_distGrad_norm {d : ℕ}
     (fun x : Space d.succ.succ => Real.log (normPowerSeries n x)) (by fun_prop))) η, y⟫_ℝ)
     Filter.atTop
     (𝓝 (⟪distGrad (distOfFunction (fun x : Space d.succ.succ => Real.log ‖x‖)
-    (IsDistBounded.log_norm)) η,  y⟫_ℝ)) := by
+    (IsDistBounded.log_norm)) η, y⟫_ℝ)) := by
   simp [distGrad_inner_eq, Distribution.fderivD_apply, distOfFunction_apply]
   change Filter.Tendsto (fun n => -
     ∫ (x : Space d.succ.succ), fderiv ℝ η x (basis.repr.symm y) * Real.log (normPowerSeries n x))
@@ -766,7 +769,8 @@ lemma gradient_dist_normPowerSeries_log_tendsTo_distGrad_norm {d : ℕ}
   · intro n
     apply IsDistBounded.aeStronglyMeasurable_fderiv_schwartzMap_smul (F := ℝ) ?_
     fun_prop
-  · have h1 : Integrable (fun x => (fderiv ℝ (⇑η) x) (basis.repr.symm y) * (‖x‖⁻¹ + (‖x‖ + 1))) volume := by
+  · have h1 : Integrable (fun x => (fderiv ℝ (⇑η) x) (basis.repr.symm y) *
+        (‖x‖⁻¹ + (‖x‖ + 1))) volume := by
       apply IsDistBounded.integrable_space_fderiv ?_
       apply IsDistBounded.add
       · exact IsDistBounded.inv

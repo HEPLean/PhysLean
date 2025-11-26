@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.SpaceAndTime.Space.Basic
-import Mathlib.MeasureTheory.Constructions.HaarToSphere
 /-!
 
 # The radial angular measure on Space

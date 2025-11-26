@@ -193,7 +193,7 @@ lemma deriv_component_diff (μ ν : Fin d) (x : Space d) (h : μ ≠ ν) :
     enter [2, x]
     rw [← Space.coord_apply _ x]
   change deriv μ (Space.coordCLM ν) x = 0
-  simp  [deriv_eq, ContinuousLinearMap.fderiv]
+  simp [deriv_eq, ContinuousLinearMap.fderiv]
   simpa [Space.coordCLM, Space.coord, basis_apply] using h
 
 lemma deriv_component (μ ν : Fin d) (x : Space d) :
@@ -309,12 +309,12 @@ lemma inner_differentiable {d : ℕ} :
   fun_prop
 
 @[fun_prop]
-lemma inner_differentiableAt {d : ℕ}  (x : Space d):
+lemma inner_differentiableAt {d : ℕ} (x : Space d) :
     DifferentiableAt ℝ (fun y : Space d => ⟪y, y⟫_ℝ) x := by
   apply inner_differentiable.differentiableAt
 
 @[fun_prop]
-lemma inner_apply_differentiableAt {d : ℕ}  [NormedAddCommGroup M]
+lemma inner_apply_differentiableAt {d : ℕ} [NormedAddCommGroup M]
     [NormedSpace ℝ M]
     {f : M → Space d} {g : M → Space d} (x : M)
     (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
@@ -324,7 +324,7 @@ lemma inner_apply_differentiableAt {d : ℕ}  [NormedAddCommGroup M]
   · fun_prop
 
 @[fun_prop]
-lemma inner_apply_differentiable {d : ℕ}  [NormedAddCommGroup M]
+lemma inner_apply_differentiable {d : ℕ} [NormedAddCommGroup M]
     [NormedSpace ℝ M]
     {f : M → Space d} {g : M → Space d}
     (hf : Differentiable ℝ f) (hg : Differentiable ℝ g) :
@@ -333,14 +333,14 @@ lemma inner_apply_differentiable {d : ℕ}  [NormedAddCommGroup M]
   · fun_prop
   · fun_prop
 @[fun_prop]
-lemma inner_contDiff {n :  WithTop ℕ∞} {d : ℕ} :
+lemma inner_contDiff {n : WithTop ℕ∞} {d : ℕ} :
     ContDiff ℝ n (fun y : Space d => ⟪y, y⟫_ℝ) := by
   apply ContDiff.inner
   · fun_prop
   · fun_prop
 
 @[fun_prop]
-lemma inner_apply_contDiff {n :  WithTop ℕ∞} {d : ℕ}  [NormedAddCommGroup M]
+lemma inner_apply_contDiff {n : WithTop ℕ∞} {d : ℕ} [NormedAddCommGroup M]
     [NormedSpace ℝ M]
     {f : M → Space d} {g : M → Space d}
     (hf : ContDiff ℝ n f) (hg : ContDiff ℝ n g) :

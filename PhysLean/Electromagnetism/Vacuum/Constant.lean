@@ -115,7 +115,8 @@ The scalar potential of the electromagnetic potential is given by `-⟪E₀, x�
 lemma constantEB_scalarPotential {c : SpeedOfLight}
     {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
     {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
-    (constantEB c E₀ B₀ B₀_antisymm).scalarPotential c = fun _ x => -⟪E₀, Space.basis.repr x⟫_ℝ := by
+    (constantEB c E₀ B₀ B₀_antisymm).scalarPotential c = fun _ x =>
+      -⟪E₀, Space.basis.repr x⟫_ℝ := by
   ext t x
   simp [scalarPotential, timeSlice, constantEB, Equiv.coe_fn_mk,
     Function.curry_apply, Function.comp_apply]

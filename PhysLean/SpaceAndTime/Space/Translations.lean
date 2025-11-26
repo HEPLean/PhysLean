@@ -24,8 +24,6 @@ variable
 
 namespace Space
 
-
-
 /-!
 
 ## Translations of distributions
@@ -43,7 +41,7 @@ noncomputable def translateSchwartz {d : ℕ} (a : EuclideanSpace ℝ (Fin d)) :
       (by
         apply Function.HasTemperateGrowth.of_fderiv (k := 1) (C := 1 + ‖a‖)
         · have hx : (fderiv ℝ (fun (x : Space d) => (x - basis.repr.symm a: Space d))) =
-              fun _ => ContinuousLinearMap.id ℝ (Space  d) := by
+              fun _ => ContinuousLinearMap.id ℝ (Space d) := by
             funext x
             simp only
             erw [fderiv_sub]
@@ -132,7 +130,8 @@ lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
     (IsDistBounded.comp_add_right hf (- basis.repr.symm a)) := by
   ext η
   rw [translateD_apply, distOfFunction_apply, distOfFunction_apply]
-  trans ∫ (x : Space d.succ), η ((x -  basis.repr.symm a) + basis.repr.symm a) • f (x - basis.repr.symm a); swap
+  trans ∫ (x : Space d.succ), η ((x - basis.repr.symm a) + basis.repr.symm a) •
+    f (x - basis.repr.symm a); swap
   · simp
   let f' := fun x : Space d.succ => η (x + basis.repr.symm a) • f (x)
   change _ = ∫ (x : Space d.succ), f' (x - basis.repr.symm a)

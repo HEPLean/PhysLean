@@ -218,7 +218,6 @@ lemma magneticFunction_differentiable {d : ℕ}
 
 -/
 
-
 lemma electricField_time_deriv {d : ℕ}
     {𝓕 : FreeSpace} {A : ElectromagneticPotential d}
     {s : Direction d} (P : IsPlaneWave 𝓕 A s) (hA : ContDiff ℝ 2 A) (t : Time)

@@ -35,16 +35,12 @@ replaced.
 
 ## iii. Table of contents
 
-- A. The electromagnetic potential
-- B. The Potentials
-  - B.1. The electromagnetic potential
-  - B.2. The vector potential is zero
-  - B.3. The scalar potential
-- C. The electric field
-  - C.1. Time derivative of the electric field is zero
+- A. The Potentials
+  - A.1. The electromagnetic potential
+  - A.2. The vector potential is zero
+  - A.3. The scalar potential
+- B. The electric field
 - D. Maxwell's equations
-  - D.1. Gauss' law
-  - D.2. The variational gradient of the Lagrangian is zero
 
 ## iv. References
 
@@ -65,7 +61,6 @@ open Space StaticElectricField MeasureTheory
 ### A.1. The electromagnetic potential
 
 -/
-
 
 /-- The electromagnetic potential of a point particle stationary at the origin
   of 1d space. -/
@@ -146,6 +141,5 @@ lemma DistElectromagneticPotential.oneDimPointParticle_gaussLaw (q : ℝ) :
   rw [InnerProductSpace.volume_ball_of_dim_odd (k := 0)]
   · simp
   · simp
-
 
 end Electromagnetism

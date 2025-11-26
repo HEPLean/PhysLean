@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Joseph Tooby-Smith, Lode Vermeulen
 -/
 import PhysLean.SpaceAndTime.Space.Derivatives.Basic
-import Mathlib.Analysis.Normed.Lp.WithLp
 /-!
 
 # Gradient of functions and distributions on `Space d`
@@ -143,7 +142,7 @@ lemma grad_neg (f : Space d → ℝ) :
 
 /-- A lemma from Mathlib, which will be removed once in latest version of Mathlib. -/
 @[simp]
-lemma _root_.WithLp.ofLp_sum  (p : ENNReal) (V : Type) [AddCommGroup V] [Module ℝ V] {ι : Type}
+lemma _root_.WithLp.ofLp_sum (p : ENNReal) (V : Type) [AddCommGroup V] [Module ℝ V] {ι : Type}
     (s : Finset ι) (f : ι → WithLp p V) : (∑ i ∈ s, f i).ofLp = ∑ i ∈ s, (f i).ofLp := by
   change WithLp.linearEquiv p ℝ V (∑ i ∈ s, f i) = ∑ i ∈ s, WithLp.equiv p V (f i)
   simp
@@ -152,7 +151,8 @@ lemma grad_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
   ext i
   simp [grad, deriv_eq, - WithLp.ofLp_sum]
   trans ∑ x_1, (fderiv ℝ f x) (basis x_1) • (EuclideanSpace.single x_1 1).ofLp i; swap
-  · change _ = WithLp.linearEquiv 2 ℝ (V := Fin d → ℝ) (∑ x_1, (fderiv ℝ f x) (basis x_1) • EuclideanSpace.single x_1 1) i
+  · change _ = WithLp.linearEquiv 2 ℝ (V := Fin d → ℝ) (∑ x_1, (fderiv ℝ f x) (basis x_1) •
+      EuclideanSpace.single x_1 1) i
     rw [map_sum, Finset.sum_apply]
     rfl
   rw [Finset.sum_eq_single i]
@@ -171,7 +171,8 @@ lemma grad_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
 lemma grad_apply {d} (f : Space d → ℝ) (x : Space d) (i : Fin d) :
     (∇ f x) i = deriv i f x := by
   rw [grad_eq_sum]
-  change WithLp.linearEquiv 2 ℝ (Fin d → ℝ) (∑ x_1, (fderiv ℝ f x) (basis x_1) • EuclideanSpace.single x_1 1) i = _
+  change WithLp.linearEquiv 2 ℝ (Fin d → ℝ) (∑ x_1, (fderiv ℝ f x) (basis x_1) •
+    EuclideanSpace.single x_1 1) i = _
   rw [map_sum, Finset.sum_apply]
   simp [Pi.single_apply]
   rfl
@@ -220,7 +221,7 @@ lemma repr_grad_inner_eq {d} (f : Space d → ℝ) (x y : Space d) :
 -/
 
 lemma grad_eq_gradiant {d} (f : Space d → ℝ) :
-    ∇ f =  basis.repr ∘ gradient f := by
+    ∇ f = basis.repr ∘ gradient f := by
   funext x
   have hx (y : EuclideanSpace ℝ (Fin d)) : ⟪(Space.basis).repr (gradient f x), y⟫_ℝ =
       ⟪∇ f x, y⟫_ℝ := by
@@ -245,7 +246,7 @@ lemma gradient_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
   simp [gradient_eq_grad, grad_eq_sum f x]
 
 lemma euclid_gradient_eq_sum {d} (f : EuclideanSpace ℝ (Fin d) → ℝ) (x : EuclideanSpace ℝ (Fin d)) :
-    gradient f x = ∑ i, fderiv ℝ  f x (EuclideanSpace.single i 1) • EuclideanSpace.single i 1 := by
+    gradient f x = ∑ i, fderiv ℝ f x (EuclideanSpace.single i 1) • EuclideanSpace.single i 1 := by
   apply ext_inner_right (𝕜 := ℝ) fun y => ?_
   simp [gradient]
   have hy : y = ∑ i, y i • EuclideanSpace.single i 1 := by
@@ -280,7 +281,7 @@ lemma grad_inner_space_unit_vector {d} (x : Space d) (f : Space d → ℝ) (hd :
       rw [smul_smul]
       field_simp
       simp
-  rw [grad_inner_eq f x (‖x‖⁻¹ •  basis.repr x)]
+  rw [grad_inner_eq f x (‖x‖⁻¹ • basis.repr x)]
   rw [deriv_smul_const (by fun_prop)]
   simp only [deriv_id'', one_smul, map_smul, fderiv_eq_sum_deriv, smul_eq_mul, Finset.mul_sum,
     PiLp.smul_apply, basis_repr_apply]
@@ -437,7 +438,7 @@ lemma distGrad_eq_of_inner {d} (f : (Space d) →d[ℝ] ℝ)
     (h : ∀ η y, fderivD ℝ f η y = ⟪g η, basis.repr y⟫_ℝ) :
     distGrad f = g := by
   ext1 η
-  apply ext_inner_right (𝕜 := ℝ) fun  v => ?_
+  apply ext_inner_right (𝕜 := ℝ) fun v => ?_
   simp [distGrad_inner_eq, h]
 
 /-!
@@ -450,19 +451,22 @@ lemma distGrad_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d
     distGrad f η = ∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
       EuclideanSpace.single i 1 := by
   have h1 (y : EuclideanSpace ℝ (Fin d)) :
-      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • EuclideanSpace.single i 1, y⟫_ℝ =
+      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
+        EuclideanSpace.single i 1, y⟫_ℝ =
       fderivD ℝ f η (basis.repr.symm y) := by
     have hy : y = ∑ i, y i • EuclideanSpace.single i 1 := by
       conv_lhs => rw [← OrthonormalBasis.sum_repr (EuclideanSpace.basisFun (Fin d) ℝ) y]
       simp
     rw [hy]
-    simp  [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, map_sum, map_smul, smul_eq_mul,
+    simp [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, map_sum, map_smul, smul_eq_mul,
       Pi.single_apply, fderivD_apply]
   have hx (y : EuclideanSpace ℝ (Fin d)) : ⟪distGrad f η, y⟫_ℝ =
-      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •EuclideanSpace.single i 1, y⟫_ℝ := by
+      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
+        EuclideanSpace.single i 1, y⟫_ℝ := by
     rw [distGrad_inner_eq, h1]
   have h1 : ∀ y, ⟪distGrad f η -
-    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • EuclideanSpace.single i 1), y⟫_ℝ = 0 := by
+    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
+      EuclideanSpace.single i 1), y⟫_ℝ = 0 := by
     intro y
     rw [inner_sub_left, hx y]
     simp

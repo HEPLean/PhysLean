@@ -87,9 +87,9 @@ lemma boost_zero_apply_time_space {d : ℕ} {β : ℝ} (hβ : |β| < 1) (c : Spe
     ((boost (0 : Fin d.succ) β hβ)⁻¹ • (SpaceTime.toTimeAndSpace c).symm (t, x)) =
     (SpaceTime.toTimeAndSpace c).symm
     (γ β * (t.val + β /c * x 0),
-
-    ⟨fun | (0 : Fin d.succ) => γ β * (x 0 + c * β * t.val)
-         | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩⟩) := by
+    ⟨fun
+      | (0 : Fin d.succ) => γ β * (x 0 + c * β * t.val)
+      | ⟨Nat.succ n, ih⟩ => x ⟨Nat.succ n, ih⟩⟩) := by
   funext μ
   rw [boost_inverse, Lorentz.Vector.smul_eq_sum]
   simp only [Nat.succ_eq_add_one, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,

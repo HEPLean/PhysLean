@@ -842,7 +842,6 @@ protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
   · exact hu
   · exact HasVarAdjoint.gradient
 
-
 protected lemma grad {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt
       (fun (φ : Space d → ℝ) x => Space.grad φ x)
@@ -920,7 +919,7 @@ lemma div {d} (u : Space d → EuclideanSpace ℝ (Fin d)) (hu : ContDiff ℝ �
     simp only [fderiv_eq_smul_deriv, smul_eq_mul, one_mul]
     congr
     funext y
-    trans deriv ( EuclideanSpace.proj i ∘ fun x' => (φ x' y)) 0
+    trans deriv (EuclideanSpace.proj i ∘ fun x' => (φ x' y)) 0
     rfl
     rw [← fderiv_deriv, fderiv_comp]
     simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply,

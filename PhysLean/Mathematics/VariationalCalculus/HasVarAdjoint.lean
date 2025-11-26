@@ -698,7 +698,8 @@ protected lemma gradient {d} :
 
 lemma grad {d} : HasVarAdjoint (fun (φ : Space d → ℝ) x => Space.grad φ x)
     (fun ψ x => - Space.div ψ x) := by
-  let f : Space d → Space d →L[ℝ] EuclideanSpace ℝ (Fin d) := fun x => Space.basis.repr.toContinuousLinearMap
+  let f : Space d → Space d →L[ℝ] EuclideanSpace ℝ (Fin d) := fun x =>
+    Space.basis.repr.toContinuousLinearMap
   have h1 := clm_apply f (by fun_prop)
   simp [f] at h1
   have hx : (_root_.adjoint ℝ (⇑Space.basis.repr)) = (Space.basis (d := d)).repr.symm := by
