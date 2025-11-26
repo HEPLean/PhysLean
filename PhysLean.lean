@@ -337,7 +337,6 @@ import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.SpaceAndTime.Space.Norm
 import PhysLean.SpaceAndTime.Space.RadialAngularMeasure
 import PhysLean.SpaceAndTime.Space.Slice
-import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.SpaceAndTime.SpaceTime.Boosts
