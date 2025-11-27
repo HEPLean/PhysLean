@@ -3,7 +3,7 @@ Copyright (c) 2025 Shlok Vaibhav Singh. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Shlok Vaibhav Singh
 -/
-/- {LnL_1.5.3}
+/-! {LnL_1.5.3}
 Source:
 Textbook: Landau and Lifshitz, Mechanics, 3rd Edition
 Chapter 1 The Equations of motion
@@ -76,3 +76,4 @@ L = 1/2 m l^2 φ_dot^2 + m g l cos(φ) - m a l γ^2 cos(φ) cos(γ t) + m a l γ
 Ignoring the total time derivate term, the final lagrangian becomes:
 L = 1/2 m l^2 φ_dot^2 + m g l cos(φ) - m a l γ^2 cos(φ) cos(γ t)
 -/
+import PhysLean.Meta.Informal.SemiFormal
