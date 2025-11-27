@@ -1,19 +1,32 @@
 /-
-Here is a tentative proof of a bunch of
-properties of the ideal gas
-Logic. The ideal gas is defined by
-S(U,V,N)=N*s0 + N*R*log((U/U0)^c(V/V0)*(N/N0)^(-(c+1))
-pV=NRT
-U=cNRT
-We want to prove the following equivalent properties of adiabatic transformations
-1) c*log(UA/UB) + log(VA/VB)= 0
-2) (UA/UB)^c*(VA/VB)=1
-3) UA^c*VA = UB^c*VB
+Copyright (c) 2025 Fabio Anza. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Mitch Scheffer, Fabio Anza
 -/
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic -- for `field_simp
-import Mathlib.Analysis.SpecialFunctions.Pow.Real -- for `Real.rpow_def_of_pos`
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Analysis.SpecialFunctions.Pow.Real -- for Real.rpow_def_of_pos
+
+/-!
+# Ideal gas: basic entropy and adiabatic relations
+
+In this module we formalize a simple thermodynamic model of a monophase
+ideal gas. We:
+
+* Define the entropy
+    S(U,V,N) = N s₀ + N R \big( c \log(U/U₀) + \log(V/V₀)
+      - (c+1)\log(N/N₀) \big),
+
+* Define the internal energy U = c N R T,
+* Define the mechanical equation of state p V = N R T,
+* Prove equivalent formulations of the adiabatic relation for two states
+  (U_a, V_a) and (U_b, V_b) at fixed N:
+
+  1. c \log(U_a/U_b) + \log(V_a/V_b) = 0,
+  2. (U_a/U_b)^c (V_a/V_b) = 1,
+  3. U_a^c V_a = U_b^c V_b (the latter follows from (2)).
+-/
 
 open Real
 
@@ -52,8 +65,7 @@ theorem adiabatic_relation_log
     (hS :
       entropy c R s0 U0 V0 N0 Ua Va N =
       entropy c R s0 U0 V0 N0 Ub Vb N) :
-    c * log (Ua / Ub) + log (Va / Vb) = 0 :=
-by
+    c * log (Ua / Ub) + log (Va / Vb) = 0 := by
   -- Step 1: cancel `N * s0` and isolate the `N * R * (...)` pieces.
   have h1 :
       N * R *
