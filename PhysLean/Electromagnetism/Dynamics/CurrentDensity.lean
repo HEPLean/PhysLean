@@ -232,5 +232,48 @@ lemma currentDensity_ContDiff {d : ℕ} {c : SpeedOfLight} {J : LorentzCurrentDe
   exact contDiff_euclidean.mpr fun i => h1 (Sum.inr i)
 
 end LorentzCurrentDensity
+/-!
 
+## D. The Lorentz current density as a distribution
+
+-/
+/-- The Lorentz current density, also called four-current as a distribution. -/
+abbrev DistLorentzCurrentDensity (d : ℕ := 3) := (SpaceTime d) →d[ℝ] Lorentz.Vector d
+
+namespace DistLorentzCurrentDensity
+
+/-!
+
+### D.1. The underlying charge density
+
+-/
+
+/-- The charge desnity underlying a Lorentz current density which is a distribution. -/
+noncomputable def chargeDensity {d : ℕ} (c : SpeedOfLight) :
+    (DistLorentzCurrentDensity d) →ₗ[ℝ] (Time × Space d) →d[ℝ] ℝ where
+  toFun J := (1 / (c : ℝ)) • (Lorentz.Vector.temporalCLM d ∘L distTimeSlice c J)
+  map_add' J1 J2 := by
+    simp
+  map_smul' r J := by
+    simp only [one_div, map_smul, ContinuousLinearMap.comp_smulₛₗ, RingHom.id_apply]
+    rw [smul_comm]
+
+
+/-!
+
+### D.2. The underlying current density
+
+-/
+
+
+/-- The underlying (non-Lorentz) current density associated with a distributive Lorentz current density. -/
+noncomputable def currentDensity (c : SpeedOfLight) :
+    DistLorentzCurrentDensity d →ₗ[ℝ] (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
+  toFun J := Lorentz.Vector.spatialCLM d ∘L distTimeSlice c J
+  map_add' J1 J2 := by
+    simp
+  map_smul' r J := by
+    simp
+
+end DistLorentzCurrentDensity
 end Electromagnetism

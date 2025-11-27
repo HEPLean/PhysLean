@@ -360,7 +360,7 @@ open TensorSpecies
 open Tensor
 open SpaceTime
 open TensorProduct
-open minkowskiMatrix
+open minkowskiMatrix SchwartzMap Lorentz
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
 
@@ -382,6 +382,24 @@ noncomputable def electricField {d} (c : SpeedOfLight) :
       ContinuousLinearMap.neg_apply, Pi.smul_apply, PiLp.sub_apply, PiLp.neg_apply, PiLp.smul_apply,
       smul_eq_mul, Real.ringHom_apply]
     ring
+
+lemma electricField_eq_fieldStrength {d} {c : SpeedOfLight}
+    (A : DistElectromagneticPotential d) (ε : 𝓢(Time × Space d, ℝ))
+    (i : Fin d) : A.electricField c ε i = - c * (Vector.basis.tensorProduct Vector.basis).repr
+      (distTimeSlice c (A.fieldStrength) ε) (Sum.inl 0, Sum.inr i) := by
+  simp only [distTimeSlice_apply, Fin.isValue, fieldStrength_basis_repr_eq_single, inl_0_inl_0,
+    one_mul, inr_i_inr_i, neg_mul, sub_neg_eq_add]
+  simp only [electricField, scalarPotential, Vector.temporalCLM, Fin.isValue, map_smul,
+    ContinuousLinearMap.comp_smulₛₗ, Real.ringHom_apply, LinearMap.coe_mk, AddHom.coe_mk,
+    vectorPotential, Vector.spatialCLM, Space.distTimeDeriv_apply_CLM, ContinuousLinearMap.coe_sub',
+    ContinuousLinearMap.coe_comp', ContinuousLinearMap.coe_mk', Pi.sub_apply,
+    ContinuousLinearMap.neg_apply, ContinuousLinearMap.coe_smul', Pi.smul_apply,
+    Function.comp_apply, PiLp.sub_apply, PiLp.neg_apply, PiLp.smul_apply, Space.distSpaceGrad_apply,
+    Space.distSpaceDeriv_apply_CLM, LinearMap.coe_toContinuousLinearMap', smul_eq_mul,
+    ← distTimeSlice_apply, distTimeSlice_distDeriv_inl, one_div, Vector.apply_smul,
+    distTimeSlice_distDeriv_inr]
+  field_simp
+  ring
 
 end DistElectromagneticPotential
 

@@ -660,7 +660,7 @@ lemma gradKineticTerm_eq_sum_sum {d} {𝓕 : FreeSpace}
     (A : ElectromagneticPotential d) (x : SpaceTime d) (ha : ContDiff ℝ ∞ A) :
     A.gradKineticTerm 𝓕 x = ∑ (ν : (Fin 1 ⊕ Fin d)), ∑ (μ : (Fin 1 ⊕ Fin d)),
         (1 / (𝓕.μ₀) * (η μ μ * η ν ν * ∂_ μ (fun x' => ∂_ μ A x' ν) x -
-        ∂_ μ (fun x' => ∂_ ν A x' μ) x)) • Lorentz.Vector.basis ν:= by
+        ∂_ μ (fun x' => ∂_ ν A x' μ) x)) • Lorentz.Vector.basis ν := by
   have diff_partial (μ) :
       ∀ ν, Differentiable ℝ fun x => (fderiv ℝ A x) (Lorentz.Vector.basis μ) ν := by
     rw [Lorentz.Vector.differentiable_apply]
@@ -1001,4 +1001,135 @@ lemma kineticTerm_hasVarGradientAt {d} {𝓕 : FreeSpace} (A : ElectromagneticPo
 
 end ElectromagneticPotential
 
+/-!
+
+## C. The gradient of the kinetic term for distributions
+
+For distributions we define the gradient of the kinetic term directly
+using `ElectromagneticPotential.gradKineticTerm_eq_sum_sum` as the defining formula.
+
+ ∑ (ν : (Fin 1 ⊕ Fin d)), ∑ (μ : (Fin 1 ⊕ Fin d)),
+      (1 / (𝓕.μ₀) * (η μ μ * η ν ν * ∂_ μ (fun x' => ∂_ μ A x' ν) x -
+      ∂_ μ (fun x' => ∂_ ν A x' μ) x)) • Lorentz.Vector.basis ν
+
+-/
+
+namespace DistElectromagneticPotential
+open minkowskiMatrix SpaceTime SchwartzMap Lorentz
+attribute [-simp] Fintype.sum_sum_type
+attribute [-simp] Nat.succ_eq_add_one
+
+/-- The gradient of the kinetic term for an Electromagnetic potential which
+  is a distribution. -/
+noncomputable def gradKineticTerm {d} (𝓕 : FreeSpace) :
+    DistElectromagneticPotential d →ₗ[ℝ] (SpaceTime d) →d[ℝ] Lorentz.Vector d where
+  toFun A := {
+    toFun ε := ∑ ν, ∑ μ,
+      (1 / (𝓕.μ₀) * (η μ μ * η ν ν * distDeriv μ (distDeriv μ A) ε ν -
+      distDeriv μ (distDeriv ν A) ε μ)) • Lorentz.Vector.basis ν
+    map_add' ε1 ε2 := by
+      rw [← Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl (fun ν _ => ?_)
+      rw [← Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl (fun μ _ => ?_)
+      simp only [one_div, map_add, Lorentz.Vector.apply_add, ← add_smul]
+      ring_nf
+    map_smul' r ε := by
+      simp [Finset.smul_sum, smul_smul]
+      apply Finset.sum_congr rfl (fun ν _ => ?_)
+      apply Finset.sum_congr rfl (fun μ _ => ?_)
+      ring_nf
+    cont := by fun_prop}
+  map_add' A1 A2 := by
+    ext ε
+    simp only [one_div, map_add, ContinuousLinearMap.add_apply, Lorentz.Vector.apply_add,
+      ContinuousLinearMap.coe_mk', LinearMap.coe_mk, AddHom.coe_mk]
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl (fun ν _ => ?_)
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl (fun μ _ => ?_)
+    simp only [← add_smul]
+    ring_nf
+  map_smul' r A := by
+    ext ε
+    simp only [one_div, map_smul, ContinuousLinearMap.smul_apply, Lorentz.Vector.apply_smul,
+      ContinuousLinearMap.coe_mk', LinearMap.coe_mk, AddHom.coe_mk]
+    simp [Finset.smul_sum, smul_smul]
+    apply Finset.sum_congr rfl (fun ν _ => ?_)
+    apply Finset.sum_congr rfl (fun μ _ => ?_)
+    ring_nf
+
+lemma gradKineticTerm_eq_sum_sum {d} {𝓕 : FreeSpace}
+    (A :  DistElectromagneticPotential d) (ε : 𝓢(SpaceTime d, ℝ)) :
+    A.gradKineticTerm 𝓕 ε = ∑ ν, ∑ μ,
+        (1 / (𝓕.μ₀) * (η μ μ * η ν ν * distDeriv μ (distDeriv μ A) ε ν -
+        distDeriv μ (distDeriv ν A) ε μ)) • Lorentz.Vector.basis ν := rfl
+
+lemma gradKineticTerm_eq_fieldStrength {d} {𝓕 : FreeSpace} (A :  DistElectromagneticPotential d)
+    (ε : 𝓢(SpaceTime d, ℝ)) :
+    A.gradKineticTerm 𝓕 ε = ∑ ν, (1/𝓕.μ₀ * η ν ν) •
+    (∑ μ, ((Vector.basis.tensorProduct Vector.basis).repr
+      (distDeriv μ (A.fieldStrength) ε) (μ , ν))) • Lorentz.Vector.basis ν := by
+  rw [gradKineticTerm_eq_sum_sum A]
+  apply Finset.sum_congr rfl (fun ν _ => ?_)
+  rw [smul_smul, ← Finset.sum_smul, ← Finset.mul_sum, mul_assoc]
+  congr 2
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl (fun μ _ => ?_)
+  conv_rhs =>
+    rw [distDeriv_apply, Distribution.fderivD_apply, map_neg]
+    simp only [Finsupp.coe_neg, Pi.neg_apply, mul_neg]
+    rw [fieldStrength_basis_repr_eq_single]
+    simp
+    rw [SpaceTime.apply_fderiv_eq_distDeriv, SpaceTime.apply_fderiv_eq_distDeriv]
+    simp
+  ring_nf
+  simp
+
+lemma gradKineticTerm_sum_inl_eq  {d} {𝓕 : FreeSpace}
+    (A :  DistElectromagneticPotential d) (ε : 𝓢(SpaceTime d, ℝ)) :
+    A.gradKineticTerm 𝓕 ε (Sum.inl 0) =
+    (1/(𝓕.μ₀ * 𝓕.c) * (distTimeSlice 𝓕.c).symm (Space.distSpaceDiv (A.electricField 𝓕.c)) ε) := by
+  rw [gradKineticTerm_eq_fieldStrength A ε, Lorentz.Vector.apply_sum, distTimeSlice_symm_apply,
+    Space.distSpaceDiv_apply_eq_sum_distSpaceDeriv, Finset.mul_sum]
+  simp [Fintype.sum_sum_type, Finset.mul_sum]
+  apply Finset.sum_congr rfl (fun ν _ => ?_)
+  rw [← distTimeSlice_symm_apply]
+  conv_rhs =>
+    enter [2]
+    rw [distTimeSlice_symm_apply, Space.distSpaceDeriv_apply']
+    simp
+    rw [electricField_eq_fieldStrength, distTimeSlice_apply]
+    simp
+    rw [fieldStrength_antisymmetric_basis]
+    rw [← distTimeSlice_apply, Space.apply_fderiv_eq_distSpaceDeriv, ← distTimeSlice_symm_apply,
+      ← distTimeSlice_distDeriv_inr]
+    simp
+  field_simp
+
+lemma gradKineticTerm_sum_inr_eq {d} {𝓕 : FreeSpace}
+    (A :  DistElectromagneticPotential d) (ε : 𝓢(SpaceTime d, ℝ)) (i : Fin d) :
+    A.gradKineticTerm 𝓕 ε (Sum.inr i) =
+    (𝓕.μ₀⁻¹ * (1 / 𝓕.c ^ 2 * (distTimeSlice 𝓕.c).symm (Space.distTimeDeriv (A.electricField 𝓕.c)) ε i-
+      ∑ j, ((PiLp.basisFun 2 ℝ (Fin d)).tensorProduct (PiLp.basisFun 2 ℝ (Fin d))).repr
+        ((distTimeSlice 𝓕.c).symm (Space.distSpaceDeriv j (A.magneticFieldMatrix 𝓕.c)) ε) (j, i))) := by
+  simp [gradKineticTerm_eq_fieldStrength A ε, Lorentz.Vector.apply_sum,
+    Fintype.sum_sum_type, mul_add, sub_eq_add_neg]
+  congr
+  · conv_rhs =>
+      enter [2, 2]
+      rw [distTimeSlice_symm_apply, Space.distTimeDeriv_apply']
+      simp
+      rw [electricField_eq_fieldStrength, Space.apply_fderiv_eq_distTimeDeriv, ← distTimeSlice_symm_apply]
+      simp [distTimeSlice_symm_distTimeDeriv_eq]
+    field_simp
+  · ext k
+    conv_rhs =>
+      rw [distTimeSlice_symm_apply, Space.distSpaceDeriv_apply']
+      simp
+      rw [magneticFieldMatrix_basis_repr_eq_fieldStrength, Space.apply_fderiv_eq_distSpaceDeriv,
+        ← distTimeSlice_symm_apply]
+    simp [← distTimeSlice_distDeriv_inr]
+
+end DistElectromagneticPotential
 end Electromagnetism

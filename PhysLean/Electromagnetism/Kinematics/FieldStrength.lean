@@ -443,7 +443,7 @@ namespace DistElectromagneticPotential
 open TensorSpecies
 open Tensor
 open SpaceTime
-open TensorProduct
+open TensorProduct Lorentz
 open minkowskiMatrix SchwartzMap
 attribute [-simp] Fintype.sum_sum_type
 attribute [-simp] Nat.succ_eq_add_one
@@ -642,6 +642,36 @@ lemma fieldStrength_eq_basis {d} (A : DistElectromagneticPotential d)
       • Lorentz.Vector.basis μ ⊗ₜ[ℝ] Lorentz.Vector.basis ν := by
   rw [fieldStrength]
   exact fieldStrengthAux_eq_basis A ε
+
+lemma fieldStrength_basis_repr_eq_single {d} {μν : (Fin 1 ⊕ Fin d) × (Fin 1 ⊕ Fin d)}
+    (A : DistElectromagneticPotential d) (ε : 𝓢(SpaceTime d, ℝ)) :
+    (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr (A.fieldStrength ε) μν =
+    ((η μν.1 μν.1 * distDeriv μν.1 A ε μν.2) - η μν.2 μν.2 * distDeriv μν.2 A ε μν.1) := by
+  rw [fieldStrength]
+  exact fieldStrengthAux_basis_repr_apply_eq_single A ε
+
+@[simp]
+lemma fieldStrength_diag_zero {d} (A : DistElectromagneticPotential d)
+    (ε : 𝓢(SpaceTime d, ℝ)) (μ : Fin 1 ⊕ Fin d) :
+    (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr (A.fieldStrength ε) (μ, μ) = 0 := by
+  rw [fieldStrength_basis_repr_eq_single]
+  simp
+
+@[simp]
+lemma distDeriv_fieldStrength_diag_zero {d} (A : DistElectromagneticPotential d)
+    (ε : 𝓢(SpaceTime d, ℝ)) (μ ν : Fin 1 ⊕ Fin d) :
+    (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr
+    (distDeriv ν A.fieldStrength ε) (μ, μ) = 0 := by
+  rw [SpaceTime.distDeriv_apply']
+  simp
+
+lemma fieldStrength_antisymmetric_basis {d} (A : DistElectromagneticPotential d)
+    (ε : 𝓢(SpaceTime d, ℝ)) (μ ν : Fin 1 ⊕ Fin d):
+    (Vector.basis.tensorProduct Vector.basis).repr
+    (A.fieldStrength ε) (μ, ν) = - (Vector.basis.tensorProduct Vector.basis).repr
+    (A.fieldStrength ε) (ν, μ) := by
+  rw [fieldStrength_basis_repr_eq_single, fieldStrength_basis_repr_eq_single]
+  ring
 
 end DistElectromagneticPotential
 

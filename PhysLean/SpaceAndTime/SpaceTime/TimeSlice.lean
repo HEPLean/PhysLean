@@ -170,6 +170,15 @@ lemma distDeriv_inl_distTimeSlice_symm {M d} [NormedAddCommGroup M] [NormedSpace
   rw [distTimeSlice_distDeriv_inl]
   simp
 
+lemma distTimeSlice_symm_distTimeDeriv_eq {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    {c : SpeedOfLight}
+    (f : (Time × Space d) →d[ℝ] M) :
+    (distTimeSlice c).symm (Space.distTimeDeriv f) =
+    c.val • distDeriv (Sum.inl 0) ((distTimeSlice c).symm f) := by
+  rw [distDeriv_inl_distTimeSlice_symm]
+  simp
+
+
 lemma distTimeSlice_distDeriv_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     {c : SpeedOfLight}
     (i : Fin d) (f : (SpaceTime d) →d[ℝ] M) :

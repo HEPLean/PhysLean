@@ -432,4 +432,39 @@ lemma time_deriv_time_deriv_electricField_of_isExtrema {A : ElectromagneticPoten
 
 end ElectromagneticPotential
 
+/-!
+
+## E. Is Extema condition in the distributional case
+
+-/
+
+namespace DistElectromagneticPotential
+
+def IsExtrema {d} (𝓕 : FreeSpace)
+    (A : DistElectromagneticPotential d)
+    (J : DistLorentzCurrentDensity d) : Prop := A.gradLagrangian 𝓕 J = 0
+
+lemma isExtrema_iff_gradLagrangian {𝓕 : FreeSpace}
+    (A : DistElectromagneticPotential d)
+    (J : DistLorentzCurrentDensity d) :
+    IsExtrema 𝓕 A J ↔ A.gradLagrangian 𝓕 J = 0 := by rfl
+
+lemma isExtrema_iff_components {𝓕 : FreeSpace}
+    (A : DistElectromagneticPotential d)
+    (J : DistLorentzCurrentDensity d) :
+    IsExtrema 𝓕 A J ↔ (∀ ε, A.gradLagrangian 𝓕 J ε (Sum.inl 0) = 0)
+    ∧ (∀ ε i, A.gradLagrangian 𝓕 J ε (Sum.inr i) = 0) := by
+  apply Iff.intro
+  · intro h
+    rw [isExtrema_iff_gradLagrangian] at h
+    simp [h]
+  · intro h
+    rw [isExtrema_iff_gradLagrangian]
+    ext ε
+    funext i
+    match i with
+    | Sum.inl 0 => exact h.1 ε
+    | Sum.inr j => exact h.2 ε j
+
+end DistElectromagneticPotential
 end Electromagnetism
