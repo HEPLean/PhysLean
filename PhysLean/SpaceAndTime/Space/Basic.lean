@@ -252,6 +252,11 @@ lemma norm_sq_eq {d} (p : Space d) :
   positivity
 
 @[simp]
+lemma point_dim_zero_eq (p : Space 0) : p = 0 := by
+  ext i
+  fin_cases i
+
+@[simp]
 lemma norm_vadd_zero {d} (v : EuclideanSpace ℝ (Fin d)) :
     ‖v +ᵥ (0 : Space d)‖ = ‖v‖ := by
   simp [norm_eq, PiLp.norm_eq_of_L2]
