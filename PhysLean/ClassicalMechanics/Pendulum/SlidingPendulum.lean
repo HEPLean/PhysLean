@@ -3,7 +3,7 @@ Copyright (c) 2025 Shlok Vaibhav Singh. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Shlok Vaibhav Singh
 -/
-/-   {LnL_1.5.2}
+/- {LnL_1.5.2}
 Source:
 Textbook: Landau and Lifshitz, Mechanics, 3rd Edition
 Chapter 1 The Equations of motion
@@ -24,11 +24,11 @@ being the angle the string makes with vertical.
 
 The Lagrangian is obtained as:
 L = T1 + T2 - V1 - V2 where
-T1 = 1/2 m1 x1_dot^2  (Kinetic energy of m1)
+T1 = 1/2 m1 x1_dot^2 (Kinetic energy of m1)
 V1 = 0
 T2 = 1/2 m2 (x2_dot^2 + y2_dot^2) = 1/2 m2 [l^2 φ_dot^2 + x1_dot^2 + 2 l φ_dot x1_dot cos(φ)]
 (Kinetic energy of m2)
-V2 = m2 g y2 = - m2 g l cos(φ)                     (Potential energy of m2)
+V2 = m2 g y2 = - m2 g l cos(φ) (Potential energy of m2)
 So that
 L = 1/2 (m1 + m2) x1_dot^2 + 1/2 m2 (l^2 φ_dot^2 + 2 l φ_dot x1_dot cos(φ)) + m2 g l cos(φ)
 
