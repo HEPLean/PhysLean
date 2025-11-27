@@ -76,3 +76,5 @@ L = 1/2 m l^2 φ_dot^2 + m g l cos(φ) - m a l γ^2 cos(φ) cos(γ t) + m a l γ
 Ignoring the total time derivate term, the final lagrangian becomes:
 L = 1/2 m l^2 φ_dot^2 + m g l cos(φ) - m a l γ^2 cos(φ) cos(γ t)
 -/
+
+import PhysLean.Meta.Informal.SemiFormal

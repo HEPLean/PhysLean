@@ -33,3 +33,5 @@ So that
 L = 1/2 (m1 + m2) x1_dot^2 + 1/2 m2 (l^2 φ_dot^2 + 2 l φ_dot x1_dot cos(φ)) + m2 g l cos(φ)
 
 -/
+
+import PhysLean.Meta.Informal.SemiFormal
