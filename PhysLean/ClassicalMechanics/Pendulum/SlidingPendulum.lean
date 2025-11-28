@@ -3,7 +3,8 @@ Copyright (c) 2025 Shlok Vaibhav Singh. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Shlok Vaibhav Singh
 -/
-/- {LnL_1.5.2}
+
+/-! {LnL_1.5.2}
 Source:
 Textbook: Landau and Lifshitz, Mechanics, 3rd Edition
 Chapter 1 The Equations of motion
@@ -33,3 +34,6 @@ So that
 L = 1/2 (m1 + m2) x1_dot^2 + 1/2 m2 (l^2 φ_dot^2 + 2 l φ_dot x1_dot cos(φ)) + m2 g l cos(φ)
 
 -/
+namespace ClassicalMechanics
+
+end ClassicalMechanics

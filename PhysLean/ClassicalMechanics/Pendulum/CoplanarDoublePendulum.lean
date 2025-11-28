@@ -3,7 +3,7 @@ Copyright (c) 2025 Shlok Vaibhav Singh. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Shlok Vaibhav Singh
 -/
-/- {LnL_1.5.1}
+/-! {LnL_1.5.1}
 Source:
 Textbook: Landau and Lifshitz, Mechanics, 3rd Edition
 Chapter 1 The Equations of motion
@@ -43,3 +43,6 @@ so that the Lagrangian becomes:
 L = 1/2 (m1 + m2) l1^2 φ1_dot^2 + 1/2 m2 l2^2 φ2_dot^2 + m2 l1 l2 φ1_dot φ2_dot cos(φ1 - φ2)
     + (m1 + m2) g l1 cos(φ1) + m2 g l2 cos(φ2)
 -/
+namespace ClassicalMechanics
+
+end ClassicalMechanics
