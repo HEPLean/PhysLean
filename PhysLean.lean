@@ -372,6 +372,7 @@ import PhysLean.StringTheory.FTheory.SU5.Quanta.FiveQuanta
 import PhysLean.StringTheory.FTheory.SU5.Quanta.IsViable
 import PhysLean.StringTheory.FTheory.SU5.Quanta.TenQuanta
 import PhysLean.Thermodynamics.Basic
+import PhysLean.Thermodynamics.IdealGas.Basic
 import PhysLean.Thermodynamics.Temperature.Basic
 import PhysLean.Thermodynamics.Temperature.TemperatureUnits
 import PhysLean.Units.Basic

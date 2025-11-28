@@ -3,9 +3,6 @@ Copyright (c) 2025 Fabio Anza. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mitch Scheffer, Fabio Anza
 -/
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Data.Real.Basic
-import Mathlib.Tactic.FieldSimp
 import Mathlib.Analysis.SpecialFunctions.Pow.Real -- for Real.rpow_def_of_pos
 
 /-!
@@ -15,8 +12,7 @@ In this module we formalize a simple thermodynamic model of a monophase
 ideal gas. We:
 
 * Define the entropy
-    S(U,V,N) = N s₀ + N R \big( c \log(U/U₀) + \log(V/V₀)
-      - (c+1)\log(N/N₀) \big),
+    S(U,V,N) = N s₀ + N R (c \log(U/U₀) + \log(V/V₀) - (c+1)\log(N/N₀)),
 
 * Define the internal energy U = c N R T,
 * Define the mechanical equation of state p V = N R T,
@@ -41,14 +37,6 @@ def entropy
       (c * log (U / U0) +
         log (V / V0) -
         (c + 1) * log (N / N0))
-
-def internal_energy
-    (c N R T : ℝ) : ℝ :=
-    c * N * R * T
-
-def mechanical_eos_pressure
-    (N R T V : ℝ) : ℝ :=
-    N * R * T / V
 
 /-- Adiabatic relation in logarithmic form:
     If S(Ua,Va,N) = S(Ub,Vb,N) with N fixed,
