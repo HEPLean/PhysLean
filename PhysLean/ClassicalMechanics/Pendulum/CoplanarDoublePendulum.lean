@@ -43,3 +43,6 @@ so that the Lagrangian becomes:
 L = 1/2 (m1 + m2) l1^2 φ1_dot^2 + 1/2 m2 l2^2 φ2_dot^2 + m2 l1 l2 φ1_dot φ2_dot cos(φ1 - φ2)
     + (m1 + m2) g l1 cos(φ1) + m2 g l2 cos(φ2)
 -/
+namespace ClassicalMechanics
+
+end ClassicalMechanics
