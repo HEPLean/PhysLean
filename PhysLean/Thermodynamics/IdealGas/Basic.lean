@@ -13,9 +13,6 @@ ideal gas. We:
 
 * Define the entropy
     S(U,V,N) = N s₀ + N R (c \log(U/U₀) + \log(V/V₀) - (c+1)\log(N/N₀)),
-
-* Define the internal energy U = c N R T,
-* Define the mechanical equation of state p V = N R T,
 * Prove equivalent formulations of the adiabatic relation for two states
   (U_a, V_a) and (U_b, V_b) at fixed N:
 
