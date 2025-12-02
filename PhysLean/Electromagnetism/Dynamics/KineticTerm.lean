@@ -28,6 +28,8 @@ In this implementation we have set `μ₀ = 1`. It is a TODO to introduce this c
 - `ElectromagneticPotential.gradKineticTerm` is the variational gradient of the kinetic term.
 - `ElectromagneticPotential.gradKineticTerm_eq_electric_magnetic` gives a first expression for the
   variational gradient in terms of the electric and magnetic fields.
+- `DistElectromagneticPotential.gradKineticTerm` is the variational gradient of the kinetic term
+  for distributional electromagnetic potentials.
 
 ## iii. Table of contents
 
@@ -46,6 +48,7 @@ In this implementation we have set `μ₀ = 1`. It is a TODO to introduce this c
   - B.4. Variational gradient in terms of the Gauss's and Ampère laws
   - B.5. Linearity properties of the variational gradient
   - B.6. HasVarGradientAt for the variational gradient
+- C. The gradient of the kinetic term for distributions
 
 ## iv. References
 
@@ -1076,7 +1079,7 @@ lemma gradKineticTerm_eq_fieldStrength {d} {𝓕 : FreeSpace} (A : DistElectroma
     rw [distDeriv_apply, Distribution.fderivD_apply, map_neg]
     simp only [Finsupp.coe_neg, Pi.neg_apply, mul_neg]
     rw [fieldStrength_basis_repr_eq_single]
-    simp
+    simp only
     rw [SpaceTime.apply_fderiv_eq_distDeriv, SpaceTime.apply_fderiv_eq_distDeriv]
     simp
   ring_nf
@@ -1094,9 +1097,9 @@ lemma gradKineticTerm_sum_inl_eq {d} {𝓕 : FreeSpace}
   conv_rhs =>
     enter [2]
     rw [distTimeSlice_symm_apply, Space.distSpaceDeriv_apply']
-    simp
+    simp only [PiLp.neg_apply]
     rw [electricField_eq_fieldStrength, distTimeSlice_apply]
-    simp
+    simp only [Fin.isValue, neg_mul, neg_neg]
     rw [fieldStrength_antisymmetric_basis]
     rw [← distTimeSlice_apply, Space.apply_fderiv_eq_distSpaceDeriv, ← distTimeSlice_symm_apply,
       ← distTimeSlice_distDeriv_inr]
@@ -1117,7 +1120,7 @@ lemma gradKineticTerm_sum_inr_eq {d} {𝓕 : FreeSpace}
   · conv_rhs =>
       enter [2, 2]
       rw [distTimeSlice_symm_apply, Space.distTimeDeriv_apply']
-      simp
+      simp only [PiLp.neg_apply]
       rw [electricField_eq_fieldStrength, Space.apply_fderiv_eq_distTimeDeriv,
         ← distTimeSlice_symm_apply]
       simp [distTimeSlice_symm_distTimeDeriv_eq]
@@ -1125,7 +1128,7 @@ lemma gradKineticTerm_sum_inr_eq {d} {𝓕 : FreeSpace}
   · ext k
     conv_rhs =>
       rw [distTimeSlice_symm_apply, Space.distSpaceDeriv_apply']
-      simp
+      simp only [map_neg, Finsupp.coe_neg, Pi.neg_apply]
       rw [magneticFieldMatrix_basis_repr_eq_fieldStrength, Space.apply_fderiv_eq_distSpaceDeriv,
         ← distTimeSlice_symm_apply]
     simp [← distTimeSlice_distDeriv_inr]

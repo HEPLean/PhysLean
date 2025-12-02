@@ -11,6 +11,32 @@ import PhysLean.SpaceAndTime.TimeAndSpace.ConstantTimeDist
 /-!
 
 # The magnetic field around a infinite wire
+
+## i. Overview
+
+In this module we verify the electromagnetic properties of an infinite wire
+carrying a steady current along the x-axis.
+
+## ii. Key results
+
+- `wireCurrentDensity` : The current density associated with an infinite wire
+  carrying a current `I` along the `x`-axis.
+- `infiniteWire` : The electromagnetic potential associated with an infinite wire
+  carrying a current `I` along the `x`-axis.
+- `infiniteWire_isExterma` : The electromagnetic potential of an infinite wire
+  carrying a current `I` along the `x`-axis satisfies Maxwell's equations.
+
+## iii. Table of contents
+
+- A. The current density
+- B. The electromagnetic potential
+  - B.1. The scalar potential
+  - B.2. The vector potential
+- C. The electric field
+- D. Maxwell's equations
+
+## iv. References
+
 -/
 
 namespace Electromagnetism
@@ -21,6 +47,9 @@ namespace DistElectromagneticPotential
 /-!
 
 ## A. The current density
+
+The current density of an infinite wire carrying a current `I` along the `x`-axis is given
+by a delta distribution in the `y` and `z` directions.
 
 -/
 
@@ -65,6 +94,12 @@ lemma wireCurrentDensity_currentDensity_thrd (c : SpeedOfLight) (I : ℝ)
   simp [wireCurrentDensity, DistLorentzCurrentDensity.currentDensity,
     constantTime_apply, constantSliceDist_apply, diracDelta'_apply]
 
+/-!
+
+## B. The electromagnetic potential
+
+-/
+
 /-- The electromagnetic potential of an infinite wire along the x-axis carrying a current `I`. -/
 noncomputable def infiniteWire (𝓕 : FreeSpace) (I : ℝ) :
     DistElectromagneticPotential 3 :=
@@ -75,12 +110,24 @@ noncomputable def infiniteWire (𝓕 : FreeSpace) (I : ℝ) :
     Real.log ‖x‖ • Lorentz.Vector.basis (Sum.inr 0))
   (IsDistBounded.log_norm.smul_const _))
 
+/-!
+
+### B.1. The scalar potential
+
+-/
+
 @[simp]
 lemma infiniteWire_scalarPotential (𝓕 : FreeSpace) (I : ℝ) :
     (infiniteWire 𝓕 I).scalarPotential 𝓕.c = 0 := by
   ext η
   simp [scalarPotential, Lorentz.Vector.temporalCLM,
   infiniteWire, constantTime_apply, constantSliceDist_apply, distOfFunction_vector_eval]
+
+/-!
+
+### B.2. The vector potential
+
+-/
 
 lemma infiniteWire_vectorPotential (𝓕 : FreeSpace) (I : ℝ) :
     (infiniteWire 𝓕 I).vectorPotential 𝓕.c =
@@ -136,12 +183,24 @@ lemma infiniteWire_vectorPotential_distSpaceDeriv_0 (𝓕 : FreeSpace) (I : ℝ)
   rw [constantTime_distSpaceDeriv, distDeriv_constantSliceDist_same]
   simp
 
+/-!
+
+## C. The electric field
+
+-/
+
 @[simp]
 lemma infiniteWire_electricField (𝓕 : FreeSpace) (I : ℝ) :
     (infiniteWire 𝓕 I).electricField 𝓕.c = 0 := by
   ext1 η
   ext i
   simp [electricField]
+
+/-!
+
+## D. Maxwell's equations
+
+-/
 
 lemma infiniteWire_isExterma {𝓕 : FreeSpace} {I : ℝ} :
     IsExtrema 𝓕 (infiniteWire 𝓕 I) (wireCurrentDensity 𝓕.c I) := by
@@ -151,7 +210,7 @@ lemma infiniteWire_isExterma {𝓕 : FreeSpace} {I : ℝ} :
   simp [SpaceTime.distTimeSlice_symm_apply]
   generalize ((compCLMOfContinuousLinearEquiv ℝ (SpaceTime.toTimeAndSpace 𝓕.c).symm) η) = ε at *
   field_simp
-  simp
+  simp only [mul_zero]
   have h1 (a b : ℝ) : -a + b = 0 ↔ a = b := by grind
   rw [h1]
   trans ∑ x, -(distSpaceDeriv x (distSpaceDeriv x ((infiniteWire 𝓕 I).vectorPotential 𝓕.c)) ε i

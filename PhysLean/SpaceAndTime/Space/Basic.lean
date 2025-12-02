@@ -788,7 +788,7 @@ lemma volume_metricBall_two_real :
   trans (volume (Metric.ball (0 : Space 2) 1)).toReal
   · rfl
   rw [volume_metricBall_two]
-  simp
+  simp only [ENNReal.toReal_ofReal_eq_iff]
   exact Real.pi_nonneg
 
 end Space

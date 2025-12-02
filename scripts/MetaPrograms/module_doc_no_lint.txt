@@ -318,3 +318,4 @@ PhysLean/Electromagnetism/PointParticle/ThreeDimension.lean
 PhysLean/Electromagnetism/Vacuum/Homogeneous.lean
 PhysLean/Electromagnetism/Vacuum/OneDimension.lean
 PhysLean/Particles/NeutrinoPhysics/Basic.lean
+PhysLean/QuantumMechanics/OneDimension/HarmonicOscillator/Examples.lean

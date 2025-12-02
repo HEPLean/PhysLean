@@ -36,6 +36,7 @@ Maxwell's equations with sources, i.e. Gauss's law and Ampère's law.
 - D. Second time derivatives from the extrema condition
   - D.1. Second time derivatives of the magnetic field from the extrema condition
   - D.2. Second time derivatives of the electric field from the extrema condition
+- E. Is Extema condition in the distributional case
 
 ## iv. References
 

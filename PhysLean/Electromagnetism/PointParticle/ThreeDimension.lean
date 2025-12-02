@@ -152,7 +152,8 @@ lemma threeDimPointParticle_scalarPotential (𝓕 : FreeSpace) (q : ℝ) (r₀ :
     Lorentz.Vector.basis_apply, ↓reduceIte, mul_one, smul_eq_mul]
   rw [distOfFunction_mul_fun _ (IsDistBounded.inv_shift _),
     distOfFunction_mul_fun _ (IsDistBounded.inv_shift _)]
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, ContinuousLinearMap.coe_smul', Pi.smul_apply,
+    smul_eq_mul]
   ring_nf
   simp only [𝓕.c_sq, one_div, mul_inv_rev, mul_eq_mul_right_iff, inv_eq_zero, OfNat.ofNat_ne_zero,
     or_false]
@@ -225,7 +226,7 @@ lemma threeDimPointParticle_div_electricField {𝓕} (q : ℝ) (r₀ : Space 3) 
       (IsDistBounded.zpow_smul_repr_self (- 3 : ℤ) (by omega))))
   · ext η
     simp [distTranslate_ofFunction]
-  simp
+  simp only [Int.reduceNeg, zpow_neg, one_div]
   rw [constantTime_distSpaceDiv, distDiv_distTranslate, h1]
   simp only [map_smul]
   suffices h : volume.real (Metric.ball (0 : Space 3) 1) = (4/3 * Real.pi) by
@@ -245,9 +246,10 @@ lemma threeDimPointParticle_isExterma (𝓕 : FreeSpace) (q : ℝ) (r₀ : Space
   apply And.intro
   · intro ε
     rw [gradLagrangian_sum_inl_0]
-    simp
+    simp only [one_div, mul_inv_rev, threeDimPointParticleCurrentDensity_chargeDensity, map_smul,
+      ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
     rw [threeDimPointParticle_div_electricField]
-    simp
+    simp only [one_div, map_smul, ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
     field_simp
     simp [𝓕.c_sq]
     right

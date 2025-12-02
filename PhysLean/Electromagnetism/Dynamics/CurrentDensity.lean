@@ -24,6 +24,8 @@ The current density is given in terms of the charge density `ρ` and the current
   Lorentz current density.
 - `LorentzCurrentDensity.currentDensity` : The current density associated with a
   Lorentz current density.
+- `DistLorentzCurrentDensity` : The type of Lorentz current densities
+  as distributions.
 
 ## iii. Table of contents
 
@@ -36,6 +38,9 @@ The current density is given in terms of the charge density `ρ` and the current
   - C.1. current density of zero Lorentz current density
   - C.2. Differentiability of the current density
   - C.3. Smoothness of the current density
+- D. The Lorentz current density as a distribution
+  - D.1. The underlying charge density
+  - D.2. The underlying current density
 
 ## iv. References
 

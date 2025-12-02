@@ -28,12 +28,15 @@ is given by a function proportional to the absolute value of the distance from t
 
 ## iii. Table of contents
 
-- A. The Potentials
-  - A.1. The electromagnetic potential
-  - A.2. The vector potential is zero
-  - A.3. The scalar potential
-- B. The electric field
-- D. Maxwell's equations
+- A. The current density
+- B. The Potentials
+  - B.1. The electromagnetic potential
+  - B.2. The vector potential is zero
+  - B.3. The scalar potential
+- C. The electric field
+  - C.1. the time derivative of the electric field
+- D. The magnetic field
+- E. Maxwell's equations
 
 ## iv. References
 
@@ -88,13 +91,13 @@ lemma oneDimPointParticleCurrentDensity_chargeDensity (c : SpeedOfLight) (q : �
 
 /-!
 
-## A. The Potentials
+## B. The Potentials
 
 -/
 
 /-!
 
-### A.1. The electromagnetic potential
+### B.1. The electromagnetic potential
 
 -/
 
@@ -118,7 +121,7 @@ lemma oneDimPointParticle_eq_distTranslate (𝓕 : FreeSpace) (q : ℝ) (r₀ : 
 
 /-
 
-### A.2. The vector potential is zero
+### B.2. The vector potential is zero
 
 -/
 
@@ -131,7 +134,7 @@ lemma oneDimPointParticle_vectorPotential (𝓕 : FreeSpace) (q : ℝ) (r₀ : S
 
 /-!
 
-### A.3. The scalar potential
+### B.3. The scalar potential
 
 -/
 
@@ -148,12 +151,13 @@ lemma oneDimPointParticle_scalarPotential (𝓕 : FreeSpace) (q : ℝ) (r₀ : S
     Lorentz.Vector.basis_apply, ↓reduceIte, mul_one, smul_eq_mul, neg_mul]
   rw [distOfFunction_mul_fun _ (by fun_prop), distOfFunction_neg,
     distOfFunction_mul_fun _ (by fun_prop)]
-  simp
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul,
+    ContinuousLinearMap.neg_apply]
   ring
 
 /-!
 
-## B. The electric field
+## C. The electric field
 
 -/
 
@@ -178,7 +182,7 @@ lemma oneDimPointParticle_electricField (𝓕 : FreeSpace) (q : ℝ) (r₀ : Spa
 
 /-!
 
-### B.1. the time derivative of the electric field
+### C.1. the time derivative of the electric field
 
 -/
 
@@ -190,7 +194,7 @@ lemma oneDimPointParticle_electricField_timeDeriv (𝓕 : FreeSpace) (q : ℝ) (
 
 /-!
 
-## C. The magnetic field
+## D. The magnetic field
 
 -/
 
@@ -200,7 +204,7 @@ lemma oneDimPointParticle_magneticFieldMatrix (q : ℝ) (r₀ : Space 1) :
 
 /-!
 
-## D. Maxwell's equations
+## E. Maxwell's equations
 
 -/
 
@@ -218,7 +222,7 @@ lemma oneDimPointParticle_div_electricField {𝓕} (q : ℝ) (r₀ : Space 1) :
       (IsDistBounded.zpow_smul_repr_self (- 1 : ℤ) (by omega))))
   · ext η
     simp [distTranslate_ofFunction]
-  simp
+  simp only [Int.reduceNeg, zpow_neg, zpow_one]
   rw [constantTime_distSpaceDiv, distDiv_distTranslate, h1]
   simp only [map_smul]
   suffices h : volume.real (Metric.ball (0 : Space 1) 1) = 2 by
@@ -239,9 +243,10 @@ lemma oneDimPointParticle_isExterma (𝓕 : FreeSpace) (q : ℝ) (r₀ : Space 1
   apply And.intro
   · intro ε
     rw [gradLagrangian_sum_inl_0]
-    simp
+    simp only [one_div, mul_inv_rev, oneDimPointParticleCurrentDensity_chargeDensity, map_smul,
+      ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
     rw [oneDimPointParticle_div_electricField]
-    simp
+    simp only [map_smul, ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
     field_simp
     ring
   · intro ε i
