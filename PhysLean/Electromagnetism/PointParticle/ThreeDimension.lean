@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Electromagnetism.Electrostatics.Basic
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.Mathematics.Distribution.PowMul
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Analysis.InnerProductSpace.NormPow
 import Mathlib.Analysis.Calculus.FDeriv.Norm
 /-!
@@ -68,17 +67,21 @@ def electricPotential (q ε : ℝ) (r₀ : Space) : StaticElectricPotential 3 :=
   `(q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀)`.
   Here it is defined as the distribution corresponding to that function. -/
 def electricField (q ε : ℝ) (r₀ : Space) : StaticElectricField 3 :=
-  distOfFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • (r - r₀))
+  distOfFunction (fun r => (q/(4 * π * ε)) • ‖r - r₀‖⁻¹ ^ 3 • basis.repr (r - r₀))
   (by
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r - r₀‖ ^ (-2 : ℤ))
       (IsDistBounded.pow_shift _ r₀ (by simp))
-    · fun_prop
+    · apply AEMeasurable.aestronglyMeasurable
+      fun_prop
     simp [norm_smul]
     intro x
     by_cases hx : ‖x - r₀‖ = 0
     · simp [hx, zpow_two]
-    · field_simp [zpow_two])
+    · have h1 : ‖basis.repr x - basis.repr r₀‖ = ‖x - r₀‖ := by
+        simp [← map_sub]
+      field_simp [zpow_two]
+      exact h1)
 
 /-!
 
@@ -109,22 +112,24 @@ electric potential and electric field for the point particle located at `0`.
 -/
 
 lemma chargeDistribution_eq_translateD (q : ℝ) (r₀ : Space) :
-    chargeDistribution q r₀ = Space.translateD r₀
+    chargeDistribution q r₀ = Space.translateD (basis.repr r₀)
       (chargeDistribution q 0) := by
   ext η
   simp [chargeDistribution, Space.translateD_apply]
 
 lemma electricPotential_eq_translateD (q ε : ℝ) (r₀ : Space) :
-    electricPotential q ε r₀ = Space.translateD r₀ (electricPotential q ε 0) := by
+    electricPotential q ε r₀ = Space.translateD (basis.repr r₀) (electricPotential q ε 0) := by
   ext η
   simp [electricPotential]
   rw [Space.translateD_ofFunction]
+  simp
 
 lemma electricField_eq_translateD (q ε : ℝ) (r₀ : Space) :
-    electricField q ε r₀ = Space.translateD r₀ (electricField q ε 0) := by
+    electricField q ε r₀ = Space.translateD (basis.repr r₀) (electricField q ε 0) := by
   ext η
   simp [electricField]
   rw [Space.translateD_ofFunction]
+  simp
 
 open InnerProductSpace
 
@@ -163,9 +168,9 @@ are defined as distributions, and distributions are defined by how they act on S
   is zero.
 -/
 lemma distGrad_electricPotential_eq_electricField_of_integral_eq_zero (q ε : ℝ)
-    (h_integral : ∀ η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ), ∀ y : EuclideanSpace ℝ (Fin 3),
-    ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * ‖a‖⁻¹ +
-    η a * - ⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ) = 0) :
+    (h_integral : ∀ η : 𝓢(Space 3, ℝ), ∀ y : EuclideanSpace ℝ (Fin 3),
+    ∫ (a : Space 3), (fderivCLM ℝ η a (basis.repr.symm y) * ‖a‖⁻¹ +
+    η a * - ⟪(‖a‖ ^ 3)⁻¹ • basis.repr a, y⟫_ℝ) = 0) :
     - Space.distGrad (electricPotential q ε 0) = electricField q ε 0 := by
   rw [← sub_eq_zero]
   ext1 η
@@ -177,10 +182,10 @@ lemma distGrad_electricPotential_eq_electricField_of_integral_eq_zero (q ε : �
   simp only [smul_eq_mul, inv_pow]
   rw [← integral_sub]
   simp only [sub_zero]
-  change ∫ (a : EuclideanSpace ℝ (Fin 3)), (fderivCLM ℝ η a y * (q / (4 * π * ε) * ‖a‖⁻¹)) -
-    η a * ⟪(q / (4 * π * ε)) • (‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ = _
-  trans ∫ (a : EuclideanSpace ℝ (Fin 3)), (q / (4 * π * ε)) * (fderivCLM ℝ η a y * ‖a‖⁻¹ +
-    η a * -⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ)
+  change ∫ (a : Space 3), (fderivCLM ℝ η a (basis.repr.symm y) * (q / (4 * π * ε) * ‖a‖⁻¹)) -
+    η a * ⟪(q / (4 * π * ε)) • (‖a‖ ^ 3)⁻¹ • basis.repr a, y⟫_ℝ = _
+  trans ∫ (a : Space 3), (q / (4 * π * ε)) * (fderivCLM ℝ η a (basis.repr.symm y) * ‖a‖⁻¹ +
+    η a * -⟪(‖a‖ ^ 3)⁻¹ • basis.repr a, y⟫_ℝ)
   · congr
     funext a
     rw [inner_smul_left]
@@ -196,7 +201,8 @@ lemma distGrad_electricPotential_eq_electricField_of_integral_eq_zero (q ε : �
   · apply IsDistBounded.inner_left
     apply IsDistBounded.const_smul
     apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
-    · fun_prop
+    · apply AEMeasurable.aestronglyMeasurable
+      fun_prop
     simp [norm_smul]
     intro x
     by_cases hx : ‖x‖ = 0
@@ -226,7 +232,7 @@ are integrals of total derivatives of differentiable functions.
 
 /-- A series of functions whose limit is the `‖x‖⁻¹` and for which each function is
   differentiable everywhere. -/
-def potentialLimitSeries : ℕ → EuclideanSpace ℝ (Fin 3) → ℝ := fun n x =>
+def potentialLimitSeries : ℕ → Space 3 → ℝ := fun n x =>
   (‖x‖ ^ 2 + 1/(n + 1))^ (-1/2 : ℝ)
 
 lemma potentialLimitSeries_eq (n : ℕ) :
@@ -240,7 +246,7 @@ The most important property of `potentialLimitSeries` is that it converges to `�
 
 -/
 
-lemma potentialLimitSeries_tendsto (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
+lemma potentialLimitSeries_tendsto (x : Space 3) (hx : x ≠ 0) :
     Filter.Tendsto (fun n => potentialLimitSeries n x) Filter.atTop (𝓝 (‖x‖⁻¹)) := by
   conv => enter [1, n]; rw [potentialLimitSeries_eq]
   simp only [one_div]
@@ -297,10 +303,10 @@ lemma potentialLimitSeries_differentiable (n : ℕ) :
 
 -/
 
-lemma potentialLimitSeries_fderiv (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
-    fderiv ℝ (potentialLimitSeries n) x y =
-    - ((‖x‖ ^ 2 + (1 + (n : ℝ))⁻¹) ^ (- 1 /2 : ℝ)) ^ 3 * ⟪x, y⟫_ℝ := by
-    have h0 (x : EuclideanSpace ℝ (Fin 3)) : (‖x‖ ^ 2 + ((n : ℝ) + 1)⁻¹) ^ (-1 / 2 : ℝ) =
+lemma potentialLimitSeries_fderiv (x : Space 3) (y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
+    fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y) =
+    - ((‖x‖ ^ 2 + (1 + (n : ℝ))⁻¹) ^ (- 1 /2 : ℝ)) ^ 3 * ⟪basis.repr x, y⟫_ℝ := by
+    have h0 (x : Space 3) : (‖x‖ ^ 2 + ((n : ℝ) + 1)⁻¹) ^ (-1 / 2 : ℝ) =
         (√(‖x‖ ^ 2 + ((n : ℝ) + 1)⁻¹))⁻¹ := by
       rw [sqrt_eq_rpow]
       nth_rewrite 2 [← Real.rpow_neg_one]
@@ -308,7 +314,7 @@ lemma potentialLimitSeries_fderiv (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
       congr
       ring
       positivity
-    trans fderiv ℝ (fun x => (√(‖x‖ ^2 + 1/(n + 1)))⁻¹) x y
+    trans fderiv ℝ (fun x => (√(‖x‖ ^2 + 1/(n + 1)))⁻¹) x (basis.repr.symm y)
     · congr
       funext x
       simp only [one_div]
@@ -321,7 +327,7 @@ lemma potentialLimitSeries_fderiv (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
     rw [fderiv_sqrt]
     simp only [one_div, mul_inv_rev, fderiv_add_const, ContinuousLinearMap.coe_smul', Pi.smul_apply,
       smul_eq_mul]
-    rw [← @grad_inner_eq]
+    rw [← @grad_inner_repr_eq]
     rw [grad_norm_sq]
     simp [inner_smul_left]
     ring_nf
@@ -363,8 +369,10 @@ lemma potentialLimitSeries_fderiv (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
       simp at h1
 
 lemma potentialLimitSeries_fderiv_eq_potentialLimitseries_mul
-    (x y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
-    fderiv ℝ (potentialLimitSeries n) x y = - (potentialLimitSeries n x) ^ 3 * ⟪x, y⟫_ℝ := by
+    (x : Space 3)
+    (y : EuclideanSpace ℝ (Fin 3)) (n : ℕ) :
+    fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y) =
+      - (potentialLimitSeries n x) ^ 3 * ⟪basis.repr x, y⟫_ℝ := by
   rw [potentialLimitSeries_fderiv]
   congr
   simp only [one_div, inv_inj]
@@ -379,9 +387,10 @@ lemma potentialLimitSeries_fderiv_eq_potentialLimitseries_mul
 
 -/
 
-lemma potentialLimitSeries_fderiv_tendsto (x y : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
-    Filter.Tendsto (fun n => fderiv ℝ (potentialLimitSeries n) x y) Filter.atTop
-      (𝓝 (-⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ)) := by
+lemma potentialLimitSeries_fderiv_tendsto (x : Space 3)
+    (y : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
+    Filter.Tendsto (fun n => fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y)) Filter.atTop
+      (𝓝 (-⟪(‖x‖ ^ 3)⁻¹ • basis.repr x, y⟫_ℝ)) := by
   conv => enter [1, n]; rw [potentialLimitSeries_fderiv, neg_mul]
   apply Filter.Tendsto.neg
   rw [inner_smul_left]
@@ -416,7 +425,7 @@ lemma potentialLimitSeries_aeStronglyMeasurable (n : ℕ) :
 
 @[fun_prop]
 lemma potentialLimitSeries_fderiv_aeStronglyMeasurable (n : ℕ) (y : EuclideanSpace ℝ (Fin 3)) :
-    AEStronglyMeasurable (fun x => fderiv ℝ (potentialLimitSeries n) x y) := by
+    AEStronglyMeasurable (fun x => fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y)) := by
   refine StronglyMeasurable.aestronglyMeasurable ?_
   refine stronglyMeasurable_iff_measurable.mpr ?_
   fun_prop
@@ -446,12 +455,12 @@ lemma potentialLimitSeries_eq_sqrt_inv (n : ℕ) :
   ring
   positivity
 
-lemma potentialLimitSeries_nonneg (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) :
+lemma potentialLimitSeries_nonneg (n : ℕ) (x : Space 3) :
     0 ≤ potentialLimitSeries n x := by
   rw [potentialLimitSeries_eq_sqrt_inv]
   simp
 
-lemma potentialLimitSeries_bounded_neq_zero (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) (hx : x ≠ 0) :
+lemma potentialLimitSeries_bounded_neq_zero (n : ℕ) (x : Space 3) (hx : x ≠ 0) :
     ‖potentialLimitSeries n x‖ ≤ ‖x‖⁻¹ := by
   simp only [norm_eq_abs]
   rw [abs_of_nonneg (potentialLimitSeries_nonneg _ _)]
@@ -464,7 +473,7 @@ lemma potentialLimitSeries_bounded_neq_zero (n : ℕ) (x : EuclideanSpace ℝ (F
   simp only [le_add_iff_nonneg_right, inv_nonneg]
   linarith
 
-lemma potentialLimitSeries_bounded (n : ℕ) (x : EuclideanSpace ℝ (Fin 3)) :
+lemma potentialLimitSeries_bounded (n : ℕ) (x : Space 3) :
     ‖potentialLimitSeries n x‖ ≤ ‖x‖⁻¹ + √(n + 1) := by
   by_cases hx : x = 0
   · subst hx
@@ -498,9 +507,9 @@ we now show that the derivative of `potentialLimitSeries` satisfies the conditio
 
 -/
 
-lemma potentialLimitSeries_fderiv_bounded (n : ℕ)
-    (x y : EuclideanSpace ℝ (Fin 3)) :
-    ‖fderiv ℝ (potentialLimitSeries n) x y‖ ≤ (‖x‖⁻¹) ^ 2 * ‖y‖ := by
+lemma potentialLimitSeries_fderiv_bounded (n : ℕ) (x : Space 3)
+    (y : EuclideanSpace ℝ (Fin 3)) :
+    ‖fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y)‖ ≤ (‖x‖⁻¹) ^ 2 * ‖y‖ := by
   by_cases hx : x = 0
   · subst hx
     rw [potentialLimitSeries_fderiv]
@@ -518,7 +527,8 @@ lemma potentialLimitSeries_fderiv_bounded (n : ℕ)
       · exact potentialLimitSeries_bounded_neq_zero n x hx
     · apply le_of_eq
       exact inv_pow ‖x‖ 3
-  · exact abs_real_inner_le_norm x y
+  · apply (abs_real_inner_le_norm (basis.repr x) y).trans
+    simp
   · positivity
   · positivity
   apply le_of_eq
@@ -527,7 +537,7 @@ lemma potentialLimitSeries_fderiv_bounded (n : ℕ)
 
 @[fun_prop]
 lemma potentialLimitSeries_fderiv_isDistBounded (n : ℕ) (y : EuclideanSpace ℝ (Fin 3)) :
-    IsDistBounded (fun x => fderiv ℝ (potentialLimitSeries n) x y) := by
+    IsDistBounded (fun x => fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y)) := by
   apply IsDistBounded.mono (f := fun x => (‖x‖⁻¹) ^ 2 * ‖y‖)
   · conv => enter [1, x]; rw [mul_comm]
     apply IsDistBounded.const_mul_fun
@@ -561,15 +571,16 @@ These functions are `potentialLimitSeriesFDerivSchwartz y η n r`.
 
 /-- A series of functions of the form `fderiv ℝ (fun x => η x * potentialLimitSeries n x) x y`. -/
 def potentialLimitSeriesFDerivSchwartz
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ)
-    (x : EuclideanSpace ℝ (Fin 3)) : ℝ :=
-  fderiv ℝ (fun x => η x * potentialLimitSeries n x) x y
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) (n : ℕ)
+    (x : Space 3) : ℝ :=
+  fderiv ℝ (fun x => η x * potentialLimitSeries n x) x (basis.repr.symm y)
 
 lemma potentialLimitSeriesFDerivSchwartz_eq
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ)
-    (x : EuclideanSpace ℝ (Fin 3)) :
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) (n : ℕ)
+    (x : Space 3) :
     potentialLimitSeriesFDerivSchwartz y η n x=
-      fderiv ℝ η x y * potentialLimitSeries n x + η x * fderiv ℝ (potentialLimitSeries n) x y := by
+      fderiv ℝ η x (basis.repr.symm y) * potentialLimitSeries n x + η x *
+        fderiv ℝ (potentialLimitSeries n) x (basis.repr.symm y) := by
   simp [potentialLimitSeriesFDerivSchwartz]
   rw [fderiv_fun_mul]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_smul', Pi.smul_apply,
@@ -587,10 +598,11 @@ We show that these integrands converge to the integrand of
 
 -/
 lemma potentialLimitSeriesFDerivSchwartz_tendsto
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
-    ∀ᵐ (a : EuclideanSpace ℝ (Fin 3)) ∂(volume),
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) :
+    ∀ᵐ (a : Space 3) ∂(volume),
     Filter.Tendsto (fun n => potentialLimitSeriesFDerivSchwartz y η n a)
-      Filter.atTop (𝓝 (fderiv ℝ η a y * ‖a‖⁻¹ + η a * -⟪(‖a‖ ^ 3)⁻¹ • a, y⟫_ℝ)) := by
+      Filter.atTop (𝓝 (fderiv ℝ η a (basis.repr.symm y) * ‖a‖⁻¹ + η a *
+        -⟪(‖a‖ ^ 3)⁻¹ • basis.repr a, y⟫_ℝ)) := by
   rw [Filter.eventually_iff_exists_mem]
   use {0}ᶜ
   constructor
@@ -620,19 +632,19 @@ its derivative shown above.
 -/
 
 lemma potentialLimitSeriesFDerivSchwartz_aeStronglyMeasurable
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) (n : ℕ) :
     AEStronglyMeasurable (fun x => potentialLimitSeriesFDerivSchwartz y η n x) := by
   conv => enter [1, x]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
   fun_prop
 
 lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
-    Filter.Tendsto (fun n => ∫ (x : EuclideanSpace ℝ (Fin 3)),
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) :
+    Filter.Tendsto (fun n => ∫ (x : Space 3),
       potentialLimitSeriesFDerivSchwartz y η n x) Filter.atTop
-      (𝓝 (∫ (x : EuclideanSpace ℝ (Fin 3)), fderiv ℝ η x y * ‖x‖⁻¹ +
-        η x * -⟪(‖x‖ ^ 3)⁻¹ • x, y⟫_ℝ)) := by
+      (𝓝 (∫ (x : Space 3), fderiv ℝ η x (basis.repr.symm y) * ‖x‖⁻¹ +
+        η x * -⟪(‖x‖ ^ 3)⁻¹ • basis.repr x, y⟫_ℝ)) := by
   refine MeasureTheory.tendsto_integral_of_dominated_convergence
-    (fun x => ‖fderiv ℝ η x y * ‖x‖⁻¹‖+ ‖η x * (‖x‖⁻¹ ^ 2 * ‖y‖)‖)
+    (fun x => ‖fderiv ℝ η x (basis.repr.symm y) * ‖x‖⁻¹‖+ ‖η x * (‖x‖⁻¹ ^ 2 * ‖y‖)‖)
     (potentialLimitSeriesFDerivSchwartz_aeStronglyMeasurable y η)
     ?_ ?_
     (potentialLimitSeriesFDerivSchwartz_tendsto y η)
@@ -661,7 +673,7 @@ lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_integral
       refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
       · rfl
       · exact potentialLimitSeries_bounded_neq_zero n x hx
-      · exact abs_nonneg (fderiv ℝ η x y)
+      · exact abs_nonneg (fderiv ℝ η x (basis.repr.symm y))
       · positivity
     · simp [abs_mul]
       refine mul_le_mul_of_nonneg ?_ ?_ ?_ ?_
@@ -691,8 +703,8 @@ This follows because this integrand is the total derivative of a differentiable 
 -/
 
 lemma potentialLimitSeriesFDerivSchwartz_integral_eq_zero
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) (n : ℕ) :
-    ∫ (x : EuclideanSpace ℝ (Fin 3)), potentialLimitSeriesFDerivSchwartz y η n x = 0 := by
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) (n : ℕ) :
+    ∫ (x : Space 3), potentialLimitSeriesFDerivSchwartz y η n x = 0 := by
   conv_lhs => enter [2, x]; rw [potentialLimitSeriesFDerivSchwartz_eq y η n x]
   rw [integral_add (by fun_prop) (by fun_prop),
     integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (by fun_prop)
@@ -708,8 +720,8 @@ individual integral is zero.
 
 -/
 lemma potentialLimitSeriesFDerivSchwartz_integral_tendsto_eq_zero
-    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(EuclideanSpace ℝ (Fin 3), ℝ)) :
-    Filter.Tendsto (fun n => ∫ (x : EuclideanSpace ℝ (Fin 3)),
+    (y : EuclideanSpace ℝ (Fin 3)) (η : 𝓢(Space 3, ℝ)) :
+    Filter.Tendsto (fun n => ∫ (x : Space 3),
       potentialLimitSeriesFDerivSchwartz y η n x) Filter.atTop (𝓝 (0)) := by
   conv => enter [1, n]; rw [potentialLimitSeriesFDerivSchwartz_integral_eq_zero y η n]
   simp
@@ -744,14 +756,14 @@ The general case of a particle at `r₀` follows from the case of a particle at 
 by using that the gradient commutes with translation.
 
 -/
-lemma electricField_eq_neg_distGrad_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
+lemma electricField_eq_neg_distGrad_electricPotential (q ε : ℝ) (r₀ : Space 3) :
     electricField q ε r₀ = - Space.distGrad (electricPotential q ε r₀) := by
   rw [electricField_eq_translateD, electricPotential_eq_translateD]
   simp only [Space.translateD_distGrad]
   rw [electricField_eq_neg_distGrad_electricPotential_origin]
   simp
 
-lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
+lemma electricField_eq_ofPotential_electricPotential (q ε : ℝ) (r₀ : Space 3) :
     electricField q ε r₀ = ofPotential (electricPotential q ε r₀) :=
   electricField_eq_neg_distGrad_electricPotential q ε r₀
 
@@ -859,12 +871,13 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
     _ = (distDiv (electricField q ε 0)) η := by rfl
     /- Step 2: We focus on rewriting the LHS, by definition it is equal to
       `- ∫ d³r ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, (∇ η) r⟫`. -/
-    _ = - ∫ r, ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • r, Space.grad η r⟫_ℝ := by
+    _ = - ∫ r, ⟪(q/(4 * π * ε)) • ‖r‖⁻¹ ^ 3 • basis.repr r, Space.grad η r⟫_ℝ := by
       rw [electricField, Space.distDiv_ofFunction]
       simp
     /- Step 3: We rearrange the integral to
       `- q/(4 * π * ε) * ∫ d³r ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r), (∇ η) r⟫`. -/
-    _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 * ⟪‖r‖⁻¹ • r, Space.grad η r⟫_ℝ := by
+    _ = - (q/(4 * π * ε)) * ∫ r : Space 3, ‖r‖⁻¹ ^ 2 *
+        ⟪‖r‖⁻¹ • basis.repr r, Space.grad η r⟫_ℝ := by
       simp [inner_smul_left, integral_const_mul]
       left
       congr
@@ -885,12 +898,12 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       `- q/(4 * π * ε) * ∫ dr² dr dn r⁻¹ ^ 2 * (d(η (a • n))/d a)_r` -/
     _ = - (q/(4 * π * ε)) * ∫ r, ‖r.2.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • r.1)) ‖r.2.1‖)
-        ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere.prod
-        (Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))) := by
+        ∂(volume (α := Space 3).toSphere.prod
+        (Measure.volumeIoiPow (Module.finrank ℝ (Space 3) - 1))) := by
       rw [← MeasureTheory.MeasurePreserving.integral_comp (f := homeomorphUnitSphereProd _)
         (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
-        (volume (α := EuclideanSpace ℝ (Fin 3))))
-          (Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))))]
+        (volume (α := Space 3)))
+          (Homeomorph.measurableEmbedding (homeomorphUnitSphereProd (Space 3)))]
       congr 1
       simp only [inv_pow, homeomorphUnitSphereProd_apply_snd_coe, norm_norm,
         homeomorphUnitSphereProd_apply_fst_coe]
@@ -903,7 +916,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       change ∫ x in Set.univ, f x = ∫ (x : Space) in _, f x
       refine (setIntegral_congr_set ?_)
       rw [← MeasureTheory.ae_eq_set_compl]
-      trans (∅ : Set (EuclideanSpace ℝ (Fin 3)))
+      trans (∅ : Set (Space 3))
       · apply Filter.EventuallyEq.of_eq
         rw [← Set.compl_empty]
         exact compl_compl _
@@ -913,17 +926,18 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       `- q/(4 * π * ε) * ∫ dn (∫_0^∞ r² dr r⁻¹ ^ 2 * (d(η (a • n))/d a)_r)` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (∫ r, ‖r.1‖⁻¹ ^ 2 *
         (_root_.deriv (fun a => η (a • n)) ‖r.1‖)
-        ∂((Measure.volumeIoiPow (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) - 1))))
-        ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
+        ∂((Measure.volumeIoiPow (Module.finrank ℝ (Space 3) - 1))))
+        ∂(volume (α := Space 3).toSphere) := by
       congr 1
       rw [MeasureTheory.integral_prod]
       /- Integrable condition. -/
 
       convert integrable_isDistBounded_inner_grad_schwartzMap_spherical
-          (f := fun r => ‖r‖⁻¹ ^ 3 • r)
+          (f := fun r => ‖r‖⁻¹ ^ 3 • basis.repr r)
         (by
         apply IsDistBounded.congr (f := fun r => ‖r‖ ^ (-2 : ℤ)) (IsDistBounded.pow _ (by simp))
-        · fun_prop
+        · apply AEMeasurable.aestronglyMeasurable
+          fun_prop
         simp [norm_smul]
         intro x
         by_cases hx : ‖x‖ = 0
@@ -955,7 +969,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       `- q/(4 * π * ε) * ∫ dn (∫_0^∞ dr (d(η (a • n))/d a)_r)` -/
     _ = - (q/(4 * π * ε)) * ∫ n, (∫ (r : Set.Ioi (0 : ℝ)),
         (_root_.deriv (fun a => η (a • n)) r.1) ∂(.comap Subtype.val volume))
-        ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
+        ∂(volume (α := Space 3).toSphere) := by
       congr
       funext n
       simp [Measure.volumeIoiPow]
@@ -981,7 +995,7 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       a total derivative of a function which tends to zero at infinity,
       and so is equal to `-η 0`. Thus the integral is equal to
       `- q/(4 * π * ε) * ∫ dn (-η 0) ` -/
-    _ = - (q/(4 * π * ε)) * ∫ n, (-η 0) ∂(volume (α := EuclideanSpace ℝ (Fin 3)).toSphere) := by
+    _ = - (q/(4 * π * ε)) * ∫ n, (-η 0) ∂(volume (α := Space 3).toSphere) := by
       congr
       funext n
       rw [MeasureTheory.integral_subtype_comap (by simp)]
@@ -1002,12 +1016,12 @@ lemma gaussLaw_origin (q ε : ℝ) : (electricField q ε 0).GaussLaw ε (chargeD
       /- Step 9: The integral `∫ dn` is equal to the surface area of the unit sphere, which is
       `4 * π`. And thus we get after some simplification
       `(q/ε) * η 0` -/
-    _ = (q/(4 * π * ε)) * η 0 * (3 * (volume (α := EuclideanSpace ℝ (Fin 3))).real
+    _ = (q/(4 * π * ε)) * η 0 * (3 * (volume (α := Space 3)).real
         (Metric.ball 0 1)) := by
-      simp only [integral_const, Measure.toSphere_real_apply_univ, finrank_euclideanSpace,
-        Fintype.card_fin, Nat.cast_ofNat, smul_eq_mul, mul_neg, neg_mul, neg_neg]
+      simp only [integral_const, Measure.toSphere_real_apply_univ, finrank_eq_dim, Nat.cast_ofNat,
+        smul_eq_mul, mul_neg, neg_mul, neg_neg]
       ring
-    _ = (q/(4 * π * ε)) * η 0 * (3 * (π * 4/3)) := by
+    _ = (q/(4 * π * ε)) * η 0 * (3 * (4/3 * π)) := by
       congr
       simp [Measure.real]
       positivity
@@ -1031,7 +1045,7 @@ by using that the divergence commutes with translation.
 
 -/
 
-lemma gaussLaw (q ε : ℝ) (r₀ : EuclideanSpace ℝ (Fin 3)) :
+lemma gaussLaw (q ε : ℝ) (r₀ : Space 3) :
     (electricField q ε r₀).GaussLaw ε (chargeDistribution q r₀) := by
   rw [electricField_eq_translateD, chargeDistribution_eq_translateD]
   rw [gaussLaw_iff]

@@ -52,16 +52,16 @@ open MeasureTheory Real
 /-- The linear equivalence between `Space d.succ` and `ℝ × Space d`
   extracting the `i`th coordinate. -/
 def slice {d} (i : Fin d.succ) : Space d.succ ≃L[ℝ] ℝ × Space d where
-  toFun x := ⟨x i, WithLp.toLp 2 fun j => x (Fin.succAbove i j)⟩
-  invFun p := WithLp.toLp 2 fun j => Fin.insertNthEquiv (fun _ => ℝ) i (p.fst, p.snd) j
+  toFun x := ⟨x i, ⟨fun j => x (Fin.succAbove i j)⟩⟩
+  invFun p := ⟨fun j => Fin.insertNthEquiv (fun _ => ℝ) i (p.fst, p.snd) j⟩
   map_add' x y := by
-    simp only [Nat.succ_eq_add_one, PiLp.add_apply, Prod.mk_add_mk, Prod.mk.injEq]
+    simp only [Nat.succ_eq_add_one, Prod.mk_add_mk, Prod.mk.injEq]
     apply And.intro
     · simp
     · ext j
       simp
   map_smul' c x := by
-    simp only [Nat.succ_eq_add_one, PiLp.smul_apply, smul_eq_mul, RingHom.id_apply, Prod.smul_mk,
+    simp only [Nat.succ_eq_add_one, smul_eq_mul, RingHom.id_apply, Prod.smul_mk,
       Prod.mk.injEq]
     apply And.intro
     · simp
@@ -117,10 +117,12 @@ lemma slice_symm_apply_succAbove {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space
 
 lemma slice_symm_measurableEmbedding {d : ℕ} (i : Fin d.succ) :
     MeasurableEmbedding (slice i).symm := by
-  change MeasurableEmbedding (fun (p : ℝ × Space d) => WithLp.toLp 2 fun j =>
-    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm (p.fst, p.snd) j)
+  change MeasurableEmbedding (fun (p : ℝ × Space d) => (Space.equivPi d.succ).symm
+    ((MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm (p.fst, p.snd)))
   apply MeasurableEmbedding.comp
-  · exact MeasurableEquiv.measurableEmbedding (MeasurableEquiv.toLp 2 (Fin (d + 1) → ℝ))
+  · apply Measurable.measurableEmbedding
+    · fun_prop
+    · exact ContinuousLinearEquiv.injective (equivPi d.succ).symm
   apply MeasurableEmbedding.comp
   · exact MeasurableEquiv.measurableEmbedding (MeasurableEquiv.piFinSuccAbove (fun x => ℝ) i).symm
   · apply Measurable.measurableEmbedding
@@ -129,8 +131,6 @@ lemma slice_symm_measurableEmbedding {d : ℕ} (i : Fin d.succ) :
       match a, b with
       | (r1, x1), (r2, x2) =>
       simp_all
-      exact (WithLp.equiv 2 _).injective h.2
-
 /-!
 
 ### A.3. The norm of the slice map
@@ -139,7 +139,7 @@ lemma slice_symm_measurableEmbedding {d : ℕ} (i : Fin d.succ) :
 
 lemma norm_slice_symm_eq {d : ℕ} (i : Fin d.succ) (r : ℝ) (x : Space d) :
     ‖(slice i).symm (r, x)‖ = √(‖r‖ ^ 2 + ‖x‖ ^ 2) := by
-  simp [Nat.succ_eq_add_one, PiLp.norm_eq_of_L2]
+  simp [Nat.succ_eq_add_one, norm_eq]
   congr
   rw [Fin.sum_univ_succAbove _ i]
   simp [slice_symm_apply_succAbove]
@@ -220,13 +220,13 @@ lemma basis_self_eq_slice {d : ℕ} (i : Fin d.succ) :
   ext j
   rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
   · simp [slice_symm_apply_self]
-  · simp [basis]
+  · simp [basis_apply]
 
 lemma basis_succAbove_eq_slice {d : ℕ} (i : Fin d.succ) (j : Fin d) :
     basis (Fin.succAbove i j) = (slice i).symm (0, basis j) := by
   ext k
   rcases Fin.eq_self_or_eq_succAbove i k with rfl | ⟨l, rfl⟩
-  · simp [basis, slice_symm_apply_self]
-  · simp [basis, slice_symm_apply_succAbove]
+  · simp [basis_apply, slice_symm_apply_self]
+  · simp [basis_apply, slice_symm_apply_succAbove]
 
 end Space

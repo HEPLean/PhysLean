@@ -340,7 +340,6 @@ import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.SpaceAndTime.Space.Norm
 import PhysLean.SpaceAndTime.Space.RadialAngularMeasure
 import PhysLean.SpaceAndTime.Space.Slice
-import PhysLean.SpaceAndTime.Space.SpaceStruct
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.SpaceTime.Basic
 import PhysLean.SpaceAndTime.SpaceTime.Boosts
@@ -373,6 +372,7 @@ import PhysLean.StringTheory.FTheory.SU5.Quanta.FiveQuanta
 import PhysLean.StringTheory.FTheory.SU5.Quanta.IsViable
 import PhysLean.StringTheory.FTheory.SU5.Quanta.TenQuanta
 import PhysLean.Thermodynamics.Basic
+import PhysLean.Thermodynamics.IdealGas.Basic
 import PhysLean.Thermodynamics.Temperature.Basic
 import PhysLean.Thermodynamics.Temperature.TemperatureUnits
 import PhysLean.Units.Basic

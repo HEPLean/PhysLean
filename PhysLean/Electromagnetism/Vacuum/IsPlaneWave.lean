@@ -235,7 +235,7 @@ lemma electricField_time_deriv {d : ℕ}
   simp only [fderiv_fun_const, Pi.zero_apply, zero_sub, ContinuousLinearMap.neg_apply, neg_smul,
     neg_inj]
   rw [fderiv_const_mul]
-  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, fderiv_val, smul_eq_mul, mul_one]
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, Time.fderiv_val, smul_eq_mul, mul_one]
   · fun_prop
   · fun_prop
   · fun_prop
@@ -262,7 +262,7 @@ lemma magneticFieldMatrix_time_deriv {d : ℕ}
   simp only [fderiv_fun_const, Pi.zero_apply, zero_sub, ContinuousLinearMap.neg_apply, neg_mul,
     neg_inj, mul_eq_mul_right_iff]
   rw [fderiv_const_mul]
-  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, fderiv_val, smul_eq_mul, mul_one,
+  simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, Time.fderiv_val, smul_eq_mul, mul_one,
     true_or]
   · fun_prop
   · fun_prop

@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Mathematics.Distribution.Basic
 import PhysLean.SpaceAndTime.Space.Basic
-import Mathlib.MeasureTheory.Constructions.HaarToSphere
 /-!
 
 # The radial angular measure on Space
@@ -208,27 +207,27 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
     enter [1, i]
     rw [ENNReal.toReal_ofReal (by positivity)]
   have h1 := (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
-    (volume (α := EuclideanSpace ℝ (Fin dm1.succ))))
-  have h2 : IntegrableOn (fun x : EuclideanSpace ℝ (Fin dm1.succ) =>
+    (volume (α := Space dm1.succ)))
+  have h2 : IntegrableOn (fun x : Space dm1.succ =>
       ((1 + ‖x‖) ^ (- (dm1 + 2) : ℝ)) * (‖x‖ ^ dm1)⁻¹) {0}ᶜ := by
     rw [MeasureTheory.integrableOn_iff_comap_subtypeVal]
     swap
     · refine MeasurableSet.compl_iff.mpr ?_
       simp
-    let f := (fun x : EuclideanSpace ℝ (Fin dm1.succ) =>
+    let f := (fun x :Space dm1.succ =>
         ((1 + ‖x‖) ^ (- (dm1 + 2) : ℝ)) * (‖x‖ ^ dm1)⁻¹)
-      ∘ @Subtype.val (EuclideanSpace ℝ (Fin dm1.succ)) fun x =>
-        (@Membership.mem (EuclideanSpace ℝ (Fin dm1.succ))
-          (Set (EuclideanSpace ℝ (Fin dm1.succ))) Set.instMembership {0}ᶜ x)
-    have hf : (f ∘ (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ))).symm)∘
-      (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ))) = f := by
+      ∘ @Subtype.val (Space dm1.succ) fun x =>
+        (@Membership.mem (Space dm1.succ)
+          (Set (Space dm1.succ)) Set.instMembership {0}ᶜ x)
+    have hf : (f ∘ (homeomorphUnitSphereProd (Space dm1.succ)).symm)∘
+      (homeomorphUnitSphereProd (Space dm1.succ)) = f := by
       funext x
       simp
     change Integrable f _
     rw [← hf]
     refine (h1.integrable_comp_emb ?_).mpr ?_
     · exact Homeomorph.measurableEmbedding
-        (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ)))
+        (homeomorphUnitSphereProd (Space dm1.succ))
     haveI sfinite : SFinite (@Measure.comap ↑(Set.Ioi 0) ℝ Subtype.instMeasurableSpace
         Real.measureSpace.toMeasurableSpace Subtype.val volume) := by
       refine { out' := ?_ }
@@ -255,7 +254,7 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
         refine MeasurableSet.subtype_image measurableSet_Ioi hs
         exact hs
         exact MeasurableEmbedding.subtype_coe measurableSet_Ioi
-    have hf' : (f ∘ (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin dm1.succ))).symm) =
+    have hf' : (f ∘ (homeomorphUnitSphereProd (Space dm1.succ)).symm) =
       fun x =>((1 + x.2.val) ^ (- (dm1 + 2) : ℝ)) * (x.2.val ^ dm1)⁻¹ := by
       funext x
       simp only [Function.comp_apply, homeomorphUnitSphereProd_symm_apply_coe, f]
@@ -278,7 +277,7 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
     · apply Filter.Eventually.of_forall
       intro x
       exact ENNReal.ofReal_lt_top
-    have hf'' : (fun (x : ↑(Metric.sphere (α := (EuclideanSpace ℝ (Fin dm1.succ))) 0 1) ×
+    have hf'' : (fun (x : ↑(Metric.sphere (α := (Space dm1.succ)) 0 1) ×
         ↑(Set.Ioi (α := ℝ) 0)) =>
         (((1 + x.2.val) ^ (- (dm1 + 2) : ℝ)) * (x.2.val ^ dm1)⁻¹ *
           (ENNReal.ofReal (↑x.2.val ^ dm1)).toReal))
@@ -311,7 +310,7 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
   simp only [Nat.succ_eq_add_one, neg_add_rev] at h2
   apply MeasureTheory.IntegrableOn.congr_set_ae h2
   rw [← MeasureTheory.ae_eq_set_compl]
-  trans (∅ : Set (EuclideanSpace ℝ (Fin dm1.succ)))
+  trans (∅ : Set (Space dm1.succ))
   · apply Filter.EventuallyEq.of_eq
     rw [← Set.compl_empty]
     exact compl_compl _

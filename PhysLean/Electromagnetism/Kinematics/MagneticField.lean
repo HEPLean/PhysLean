@@ -94,7 +94,7 @@ lemma magneticField_fst_eq_fieldStrengthMatrix {c : SpeedOfLight}
   rw [toFieldStrength_basis_repr_apply_eq_single]
   simp only [Fin.isValue, inr_i_inr_i, neg_mul, one_mul, sub_neg_eq_add, neg_add_rev, neg_neg]
   rw [magneticField]
-  simp [Space.curl, Space.coord]
+  simp only [curl, Fin.isValue]
   rw [neg_add_eq_sub]
   congr
   all_goals
@@ -115,7 +115,7 @@ lemma magneticField_snd_eq_fieldStrengthMatrix {c : SpeedOfLight}
   rw [toFieldStrength_basis_repr_apply_eq_single]
   simp only [Fin.isValue, inr_i_inr_i, neg_mul, one_mul, sub_neg_eq_add]
   rw [magneticField]
-  simp [Space.curl, Space.coord]
+  simp only [curl, Fin.isValue]
   rw [neg_add_eq_sub]
   congr
   all_goals
@@ -135,7 +135,7 @@ lemma magneticField_thd_eq_fieldStrengthMatrix {c : SpeedOfLight} (A : Electroma
   rw [toFieldStrength_basis_repr_apply_eq_single]
   simp only [Fin.isValue, inr_i_inr_i, neg_mul, one_mul, sub_neg_eq_add, neg_add_rev, neg_neg]
   rw [magneticField]
-  simp [Space.curl, Space.coord]
+  simp only [curl, Fin.isValue]
   rw [neg_add_eq_sub]
   congr
   all_goals
@@ -307,7 +307,7 @@ lemma magneticField_curl_eq_magneticFieldMatrix{c : SpeedOfLight} (A : Electroma
     (hA : ContDiff ℝ 2 A) (t : Time) :
     (∇ × A.magneticField c t) x i = ∑ j, Space.deriv j (A.magneticFieldMatrix c t · (j, i)) x:= by
   rw [magneticField_eq_magneticFieldMatrix A (hA.differentiable (by simp))]
-  simp [Space.curl, Space.coord]
+  simp only [curl, Fin.isValue]
   fin_cases i
   · simp only [Fin.isValue, deriv_eq_fderiv_basis, fderiv_fun_neg, ContinuousLinearMap.neg_apply,
     Fin.zero_eta, Fin.sum_univ_three, magneticFieldMatrix_diag_eq_zero, fderiv_fun_const,

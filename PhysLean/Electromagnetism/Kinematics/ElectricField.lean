@@ -337,7 +337,7 @@ lemma div_electricField_eq_fieldStrengthMatrix{d} {A : ElectromagneticPotential 
   rw [Space.div]
   congr
   funext i
-  simp [Space.coord]
+  simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.isValue]
   conv_lhs =>
     enter [2, y]
     rw [electricField_eq_fieldStrengthMatrix (c := c) A t y i (hA.differentiable (by simp))]

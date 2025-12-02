@@ -177,15 +177,15 @@ of the harmonic oscillator, through the lagrangian.
 -/
 
 /-- The kinetic energy of the harmonic oscillator is $\frac{1}{2} m ‖\dot x‖^2$. -/
-noncomputable def kineticEnergy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
+noncomputable def kineticEnergy (xₜ : Time → EuclideanSpace ℝ (Fin 1)) : Time → ℝ := fun t =>
   (1 / (2 : ℝ)) * S.m * ⟪∂ₜ xₜ t, ∂ₜ xₜ t⟫_ℝ
 
 /-- The potential energy of the harmonic oscillator is `1/2 k x ^ 2` -/
-noncomputable def potentialEnergy (x : Space 1) : ℝ :=
+noncomputable def potentialEnergy (x : EuclideanSpace ℝ (Fin 1)) : ℝ :=
   (1 / (2 : ℝ)) • S.k • ⟪x, x⟫_ℝ
 
 /-- The energy of the harmonic oscillator is the kinetic energy plus the potential energy. -/
-noncomputable def energy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
+noncomputable def energy (xₜ : Time → EuclideanSpace ℝ (Fin 1)) : Time → ℝ := fun t =>
   kineticEnergy S xₜ t + potentialEnergy S (xₜ t)
 
 /-!
@@ -194,13 +194,13 @@ noncomputable def energy (xₜ : Time → Space 1) : Time → ℝ := fun t =>
 
 -/
 
-lemma kineticEnergy_eq (xₜ : Time → Space 1) :
+lemma kineticEnergy_eq (xₜ : Time → EuclideanSpace ℝ (Fin 1)) :
     kineticEnergy S xₜ = fun t => (1 / (2 : ℝ)) * S.m * ⟪∂ₜ xₜ t, ∂ₜ xₜ t⟫_ℝ:= by rfl
 
-lemma potentialEnergy_eq (x : Space 1) :
+lemma potentialEnergy_eq (x : EuclideanSpace ℝ (Fin 1)) :
     potentialEnergy S x = (1 / (2 : ℝ)) • S.k • ⟪x, x⟫_ℝ:= by rfl
 
-lemma energy_eq (xₜ : Time → Space 1) :
+lemma energy_eq (xₜ : Time → EuclideanSpace ℝ (Fin 1)) :
     energy S xₜ = fun t => kineticEnergy S xₜ t + potentialEnergy S (xₜ t) := by rfl
 /-!
 
@@ -210,7 +210,7 @@ On smooth trajectories the energies are differentiable.
 
 -/
 @[fun_prop]
-lemma kineticEnergy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma kineticEnergy_differentiable (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     Differentiable ℝ (kineticEnergy S xₜ) := by
   rw [kineticEnergy_eq]
   change Differentiable ℝ ((fun x => (1 / (2 : ℝ)) * S.m * ⟪x, x⟫_ℝ) ∘ (fun t => ∂ₜ xₜ t))
@@ -219,7 +219,7 @@ lemma kineticEnergy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ 
   · exact deriv_differentiable_of_contDiff xₜ hx
 
 @[fun_prop]
-lemma potentialEnergy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma potentialEnergy_differentiable (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     Differentiable ℝ (fun t => potentialEnergy S (xₜ t)) := by
   simp only [potentialEnergy_eq, one_div, smul_eq_mul]
   change Differentiable ℝ ((fun x => 2⁻¹ * (S.k * ⟪x, x⟫_ℝ)) ∘ xₜ)
@@ -229,7 +229,7 @@ lemma potentialEnergy_differentiable (xₜ : Time → Space 1) (hx : ContDiff �
     exact hx.1
 
 @[fun_prop]
-lemma energy_differentiable (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma energy_differentiable (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     Differentiable ℝ (energy S xₜ) := by
   rw [energy_eq]
   fun_prop
@@ -243,7 +243,7 @@ the time derivatives of the energies.
 
 -/
 
-lemma kineticEnergy_deriv (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma kineticEnergy_deriv (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     ∂ₜ (kineticEnergy S xₜ) = fun t => ⟪∂ₜ xₜ t, S.m • ∂ₜ (∂ₜ xₜ) t⟫_ℝ := by
   funext t
   unfold kineticEnergy
@@ -261,7 +261,7 @@ lemma kineticEnergy_deriv (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ)
   module
   repeat fun_prop
 
-lemma potentialEnergy_deriv (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma potentialEnergy_deriv (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     ∂ₜ (fun t => potentialEnergy S (xₜ t)) = fun t => ⟪∂ₜ xₜ t, S.k • xₜ t⟫_ℝ := by
   funext t
   unfold potentialEnergy
@@ -284,7 +284,7 @@ lemma potentialEnergy_deriv (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ x�
   rw [contDiff_infty_iff_fderiv] at hx
   exact hx.1
 
-lemma energy_deriv (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma energy_deriv (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     ∂ₜ (energy S xₜ) = fun t => ⟪∂ₜ xₜ t, S.m • ∂ₜ (∂ₜ xₜ) t + S.k • xₜ t⟫_ℝ := by
   unfold energy
   funext t
@@ -321,8 +321,9 @@ to make the lagrangian a function on phase-space we reserve this result for a le
 set_option linter.unusedVariables false in
 /-- The lagrangian of the harmonic oscillator is the kinetic energy minus the potential energy. -/
 @[nolint unusedArguments]
-noncomputable def lagrangian (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
-    ℝ := 1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ - S.potentialEnergy x
+noncomputable def lagrangian (t : Time) (x : EuclideanSpace ℝ (Fin 1))
+    (v : EuclideanSpace ℝ (Fin 1)) : ℝ :=
+  1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ - S.potentialEnergy x
 
 /-!
 
@@ -341,7 +342,8 @@ lemma lagrangian_eq : lagrangian S = fun t x v =>
   simp [lagrangian, potentialEnergy]
   ring
 
-lemma lagrangian_eq_kineticEnergy_sub_potentialEnergy (t : Time) (xₜ : Time → Space 1) :
+lemma lagrangian_eq_kineticEnergy_sub_potentialEnergy (t : Time)
+    (xₜ : Time → EuclideanSpace ℝ (Fin 1)) :
     lagrangian S t (xₜ t) (∂ₜ xₜ t) = kineticEnergy S xₜ t - potentialEnergy S (xₜ t) := by
   rw [lagrangian_eq, kineticEnergy, potentialEnergy]
   simp only [one_div, smul_eq_mul, sub_right_inj]
@@ -369,19 +371,20 @@ position and velocity.
 
 -/
 
-lemma gradient_lagrangian_position_eq (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
+lemma gradient_lagrangian_position_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1))
+    (v : EuclideanSpace ℝ (Fin 1)) :
     gradient (fun x => lagrangian S t x v) x = - S.k • x := by
   simp only [lagrangian_eq, one_div, neg_smul]
-  rw [← grad_eq_gradiant, grad_eq_sum]
-  simp [Space.deriv_eq_fderiv_basis, -inner_self_eq_norm_sq_to_K]
+  rw [Space.euclid_gradient_eq_sum]
+  simp [-inner_self_eq_norm_sq_to_K]
   rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
   simp only [fderiv_fun_const, Pi.zero_apply, zero_sub, Fin.isValue, ContinuousLinearMap.neg_apply,
     neg_smul, neg_inj]
   rw [fderiv_const_mul (by fun_prop)]
   simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
     ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
-    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
-  have hx : x = x 0 • Space.basis 0 := by
+    Pi.mul_apply, Pi.ofNat_apply, EuclideanSpace.inner_single_right, smul_eq_mul]
+  have hx : x = x 0 • EuclideanSpace.single 0 1 := by
     ext i
     fin_cases i
     simp
@@ -390,18 +393,19 @@ lemma gradient_lagrangian_position_eq (t : Time) (x : Space 1) (v : EuclideanSpa
   congr 1
   field_simp
 
-lemma gradient_lagrangian_velocity_eq (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
+lemma gradient_lagrangian_velocity_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1))
+    (v : EuclideanSpace ℝ (Fin 1)) :
     gradient (lagrangian S t x) v = S.m • v := by
   simp [lagrangian_eq, -inner_self_eq_norm_sq_to_K]
-  rw [← grad_eq_gradiant, grad_eq_sum]
-  simp [Space.deriv_eq_fderiv_basis, -inner_self_eq_norm_sq_to_K]
+  rw [Space.euclid_gradient_eq_sum]
+  simp [-inner_self_eq_norm_sq_to_K]
   rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
   simp only [fderiv_fun_const, Pi.zero_apply, sub_zero, Fin.isValue]
   rw [fderiv_const_mul (by fun_prop)]
   simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
     ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
-    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
-  have hx : v = v 0 • Space.basis 0 := by
+    Pi.mul_apply, Pi.ofNat_apply, EuclideanSpace.inner_single_right, smul_eq_mul]
+  have hx : v = v 0 • EuclideanSpace.single 0 1 := by
     ext i
     fin_cases i
     simp
@@ -426,7 +430,8 @@ equation of motion.
 -/
 
 /-- The Euler-Lagrange operator for the classical harmonic oscillator. -/
-noncomputable def gradLagrangian (xₜ : Time → Space 1) : Time → Space 1 :=
+noncomputable def gradLagrangian (xₜ : Time → EuclideanSpace ℝ (Fin 1)) :
+    Time → EuclideanSpace ℝ (Fin 1) :=
   (δ (q':=xₜ), ∫ t, lagrangian S t (q' t) (fderiv ℝ q' t 1))
 
 /-!
@@ -437,7 +442,8 @@ Basic equalities for the variational derivative of the action.
 
 -/
 
-lemma gradLagrangian_eq_eulerLagrangeOp (xₜ : Time → Space 1) (hq : ContDiff ℝ ∞ xₜ) :
+lemma gradLagrangian_eq_eulerLagrangeOp (xₜ : Time → EuclideanSpace ℝ (Fin 1))
+    (hq : ContDiff ℝ ∞ xₜ) :
     gradLagrangian S xₜ = eulerLagrangeOp S.lagrangian xₜ := by
   rw [gradLagrangian,
     ClassicalMechanics.euler_lagrange_varGradient _ _ hq (S.contDiff_lagrangian _)]
@@ -452,7 +458,7 @@ variational derivative of the action equal to zero.
 -/
 
 /-- The equation of motion for the Harmonic oscillator. -/
-def EquationOfMotion (xₜ : Time → Space 1) : Prop :=
+def EquationOfMotion (xₜ : Time → EuclideanSpace ℝ (Fin 1)) : Prop :=
   S.gradLagrangian xₜ = 0
 
 /-!
@@ -463,7 +469,7 @@ We write a simple iff statement for the definition of the equation of motions.
 
 -/
 
-lemma equationOfMotion_iff_gradLagrangian_zero (xₜ : Time → Space 1) :
+lemma equationOfMotion_iff_gradLagrangian_zero (xₜ : Time → EuclideanSpace ℝ (Fin 1)) :
     S.EquationOfMotion xₜ ↔ S.gradLagrangian xₜ = 0 := by rfl
 
 /-!
@@ -486,8 +492,9 @@ and show that this is equal to `- k x`.
 
 /-- The force of the classical harmonic oscillator defined as `- dU(x)/dx` where `U(x)`
   is the potential energy. -/
-noncomputable def force (S : HarmonicOscillator) (x : Space 1) : EuclideanSpace ℝ (Fin 1) :=
-  - ∇ (potentialEnergy S) x
+noncomputable def force (S : HarmonicOscillator) (x : EuclideanSpace ℝ (Fin 1)) :
+    EuclideanSpace ℝ (Fin 1) :=
+  - gradient (potentialEnergy S) x
 
 /-!
 
@@ -498,17 +505,14 @@ We now show that the force is equal to `- k x`.
 -/
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
-lemma force_eq_linear (x : Space 1) : force S x = - S.k • x := by
-  unfold force potentialEnergy
-  change -∇ ((1 / (2 : ℝ)) • S.k • (fun (x : Space 1) => ⟪x, x⟫_ℝ)) x = -S.k • x
-  rw [grad_smul, grad_smul]
-  · rw [grad_inner]
-    simp only [Pi.smul_apply, neg_smul, neg_inj, smul_smul]
-    simp only [mul_smul]
-    rw [smul_comm]
-    simp only [one_div, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, inv_smul_smul₀]
-  · simp only [inner_differentiable]
-  · simp only [Differentiable.const_smul, inner_differentiable]
+lemma force_eq_linear (x : EuclideanSpace ℝ (Fin 1)) : force S x = - S.k • x := by
+  simp [force]
+  refine ext_inner_right (𝕜 := ℝ) fun y => ?_
+  simp [gradient]
+  change fderiv ℝ ((1 / (2 : ℝ)) • S.k • (fun (x : EuclideanSpace ℝ (Fin 1)) => ⟪x, x⟫_ℝ)) x y = _
+  rw [fderiv_const_smul (by fun_prop), fderiv_const_smul (by fun_prop)]
+  simp [inner_smul_left]
+  ring
 
 /-!
 
@@ -520,26 +524,26 @@ to Newton's second law.
 -/
 
 /-- The Euler lagrange operator corresponds to Newton's second law. -/
-lemma gradLagrangian_eq_force (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma gradLagrangian_eq_force (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     S.gradLagrangian xₜ = fun t => force S (xₜ t) - S.m • ∂ₜ (∂ₜ xₜ) t := by
   funext t
   rw [gradLagrangian_eq_eulerLagrangeOp S xₜ hx, eulerLagrangeOp]
   simp only
   congr
   · simp [lagrangian_eq, -inner_self_eq_norm_sq_to_K]
-    rw [← grad_eq_gradiant, grad_eq_sum]
-    simp [Space.deriv_eq_fderiv_basis, -inner_self_eq_norm_sq_to_K]
+    rw [Space.euclid_gradient_eq_sum]
+    simp [-inner_self_eq_norm_sq_to_K]
     rw [fderiv_fun_sub (by fun_prop) (by fun_prop)]
     simp only [fderiv_fun_const, Pi.zero_apply, zero_sub, Fin.isValue,
       ContinuousLinearMap.neg_apply, neg_smul]
     rw [fderiv_const_mul (by fun_prop)]
     simp [force_eq_linear]
-    have hx : xₜ t = xₜ t 0 • Space.basis 0 := by
+    have hx : xₜ t = xₜ t 0 • EuclideanSpace.single 0 1 := by
       ext i
       fin_cases i
       simp
     rw [hx]
-    simp [smul_smul]
+    simp [smul_smul, inner_smul_left]
     congr 1
     field_simp
   · rw [← Time.deriv_smul _ _ (by fun_prop)]
@@ -555,7 +559,8 @@ We show that the equation of motion is equivalent to Newton's second law.
 
 -/
 
-lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → EuclideanSpace ℝ (Fin 1))
+    (hx : ContDiff ℝ ∞ xₜ) :
     S.EquationOfMotion xₜ ↔
     (∀ t, S.m • ∂ₜ (∂ₜ xₜ) t = force S (xₜ t)) := by
   rw [EquationOfMotion, gradLagrangian_eq_force S xₜ hx, funext_iff]
@@ -584,7 +589,8 @@ the equation of motion.
 
 -/
 
-lemma energy_conservation_of_equationOfMotion (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ)
+lemma energy_conservation_of_equationOfMotion (xₜ : Time → EuclideanSpace ℝ (Fin 1))
+    (hx : ContDiff ℝ ∞ xₜ)
     (h : S.EquationOfMotion xₜ) : ∂ₜ (S.energy xₜ) = 0 := by
   rw [energy_deriv _ _ hx]
   rw [equationOfMotion_iff_newtons_2nd_law _ _ hx] at h
@@ -601,7 +607,8 @@ We prove that the energy is constant for any trajectory satisfying the equation 
 
 -/
 
-lemma energy_conservation_of_equationOfMotion' (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ)
+lemma energy_conservation_of_equationOfMotion' (xₜ : Time → EuclideanSpace ℝ (Fin 1))
+    (hx : ContDiff ℝ ∞ xₜ)
     (h : S.EquationOfMotion xₜ) (t : Time) : S.energy xₜ t = S.energy xₜ 0 := by
   have h1 := S.energy_conservation_of_equationOfMotion xₜ hx h
   unfold Time.deriv at h1
@@ -637,7 +644,7 @@ the velocity.
 -/
 
 /-- The equivalence between velocity and canonical momentum. -/
-noncomputable def toCanonicalMomentum (t : Time) (x : Space 1) :
+noncomputable def toCanonicalMomentum (t : Time) (x : EuclideanSpace ℝ (Fin 1)) :
     EuclideanSpace ℝ (Fin 1) ≃ₗ[ℝ] EuclideanSpace ℝ (Fin 1) where
   toFun v := gradient (S.lagrangian t x ·) v
   invFun p := (1 / S.m) • p
@@ -659,7 +666,8 @@ An simple equality for the canonical momentum.
 
 -/
 
-lemma toCanonicalMomentum_eq (t : Time) (x : Space 1) (v : EuclideanSpace ℝ (Fin 1)) :
+lemma toCanonicalMomentum_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1))
+    (v : EuclideanSpace ℝ (Fin 1)) :
     toCanonicalMomentum S t x v = S.m • v := by
   simp [toCanonicalMomentum, gradient_lagrangian_velocity_eq]
 
@@ -676,7 +684,8 @@ where `v` is a function of `p` and `x` through the canonical momentum.
 -/
 
 /-- The hamiltonian as a function of time, momentum and position. -/
-noncomputable def hamiltonian (t : Time) (p : EuclideanSpace ℝ (Fin 1)) (x : Space 1) : ℝ :=
+noncomputable def hamiltonian (t : Time) (p : EuclideanSpace ℝ (Fin 1))
+    (x : EuclideanSpace ℝ (Fin 1)) : ℝ :=
   ⟪p, (toCanonicalMomentum S t x).symm p⟫_ℝ - S.lagrangian t x ((toCanonicalMomentum S t x).symm p)
 
 /-!
@@ -718,42 +727,46 @@ We now write down the gradients of the Hamiltonian with respect to the momentum 
 
 -/
 
-lemma gradient_hamiltonian_position_eq (t : Time) (x : Space 1) (p : EuclideanSpace ℝ (Fin 1)) :
+lemma gradient_hamiltonian_position_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1))
+    (p : EuclideanSpace ℝ (Fin 1)) :
     gradient (hamiltonian S t p) x = S.k • x := by
   rw [hamiltonian_eq]
   simp only [one_div]
-  rw [← grad_eq_gradiant, grad_eq_sum]
-  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, deriv_eq_fderiv_basis,
-    fderiv_const_add, Finset.sum_singleton]
+  rw [Space.euclid_gradient_eq_sum]
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, fderiv_const_add,
+    Finset.sum_singleton]
   rw [fderiv_const_mul (by fun_prop)]
   simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
     ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
-    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
-  have hx : x = x 0 • Space.basis 0 := by
+    Pi.mul_apply, Pi.ofNat_apply, EuclideanSpace.inner_single_right, smul_eq_mul]
+  have hx : x = x 0 • EuclideanSpace.single 0 1 := by
     ext i
     fin_cases i
     simp
   rw [hx]
-  simp only [Fin.isValue, PiLp.smul_apply, basis_self, smul_eq_mul, mul_one]
+  simp only [Fin.isValue, PiLp.smul_apply, EuclideanSpace.single_apply, ↓reduceIte, smul_eq_mul,
+    mul_one, one_mul]
   module
 
-lemma gradient_hamiltonian_momentum_eq (t : Time) (x : Space 1) (p : EuclideanSpace ℝ (Fin 1)) :
+lemma gradient_hamiltonian_momentum_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1))
+    (p : EuclideanSpace ℝ (Fin 1)) :
     gradient (hamiltonian S t · x) p = (1 / S.m) • p := by
   rw [hamiltonian_eq]
   simp only [one_div]
-  rw [← grad_eq_gradiant, grad_eq_sum]
-  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, deriv_eq_fderiv_basis,
-    fderiv_add_const, Finset.sum_singleton]
+  rw [Space.euclid_gradient_eq_sum]
+  simp only [Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, fderiv_add_const,
+    Finset.sum_singleton]
   rw [fderiv_const_mul (by fun_prop)]
   simp only [inner_self_eq_norm_sq_to_K, ringHom_apply, fderiv_norm_sq_apply, Fin.isValue,
     ContinuousLinearMap.coe_smul', coe_innerSL_apply, nsmul_eq_mul, Nat.cast_ofNat, Pi.smul_apply,
-    Pi.mul_apply, Pi.ofNat_apply, inner_basis, smul_eq_mul]
-  have hx : p = p 0 • Space.basis 0 := by
+    Pi.mul_apply, Pi.ofNat_apply, EuclideanSpace.inner_single_right, smul_eq_mul]
+  have hx : p = p 0 • EuclideanSpace.single 0 1 := by
     ext i
     fin_cases i
     simp
   rw [hx]
-  simp only [Fin.isValue, PiLp.smul_apply, basis_self, smul_eq_mul, mul_one]
+  simp only [Fin.isValue, PiLp.smul_apply, EuclideanSpace.single_apply, ↓reduceIte, smul_eq_mul,
+    mul_one, one_mul]
   module
 
 /-!
@@ -765,7 +778,7 @@ This is independent of whether the trajectory satisfies the equations of motion 
 
 -/
 
-lemma hamiltonian_eq_energy (xₜ : Time → Space 1) :
+lemma hamiltonian_eq_energy (xₜ : Time → EuclideanSpace ℝ (Fin 1)) :
     (fun t => hamiltonian S t (toCanonicalMomentum S t (xₜ t) (∂ₜ xₜ t)) (xₜ t)) = energy S xₜ := by
   funext t
   rw [hamiltonian]
@@ -784,7 +797,8 @@ to Hamilton's equations.
 
 /-- The operator on the momentum-position phase-space whose vanishing is equivalent to the
   hamilton's equations between the momentum and position. -/
-noncomputable def hamiltonEqOp (p : Time → EuclideanSpace ℝ (Fin 1)) (q : Time → Space 1) :=
+noncomputable def hamiltonEqOp (p : Time → EuclideanSpace ℝ (Fin 1))
+    (q : Time → EuclideanSpace ℝ (Fin 1)) :=
   ClassicalMechanics.hamiltonEqOp (hamiltonian S) p q
 
 /-!
@@ -796,8 +810,8 @@ to the vanishing of the Hamilton equation operator.
 
 -/
 
-lemma equationOfMotion_iff_hamiltonEqOp_eq_zero (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
-    S.EquationOfMotion xₜ ↔
+lemma equationOfMotion_iff_hamiltonEqOp_eq_zero (xₜ : Time → EuclideanSpace ℝ (Fin 1))
+    (hx : ContDiff ℝ ∞ xₜ) : S.EquationOfMotion xₜ ↔
     hamiltonEqOp S (fun t => S.toCanonicalMomentum t (xₜ t) (∂ₜ xₜ t)) xₜ = 0 := by
   rw [hamiltonEqOp, hamiltonEqOp_eq_zero_iff_hamiltons_equations]
   simp [toCanonicalMomentum_eq, gradient_hamiltonian_momentum_eq, gradient_hamiltonian_position_eq]
@@ -818,7 +832,7 @@ We show that the following are equivalent statements for a smooth trajectory `x�
 
 -/
 
-lemma equationOfMotion_tfae (xₜ : Time → Space 1) (hx : ContDiff ℝ ∞ xₜ) :
+lemma equationOfMotion_tfae (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx : ContDiff ℝ ∞ xₜ) :
     List.TFAE [S.EquationOfMotion xₜ,
       (∀ t, S.m • ∂ₜ (∂ₜ xₜ) t = force S (xₜ t)),
       hamiltonEqOp S (fun t => S.toCanonicalMomentum t (xₜ t) (∂ₜ xₜ t)) xₜ = 0,

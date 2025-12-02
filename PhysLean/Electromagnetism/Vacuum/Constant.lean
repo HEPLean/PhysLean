@@ -68,7 +68,7 @@ noncomputable def constantEB {d : ℕ} (c : SpeedOfLight)
     (B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)) : ElectromagneticPotential d :=
   fun x μ =>
   match μ with
-  | Sum.inl _ => - (1/c) * ⟪E₀, x.space⟫_ℝ
+  | Sum.inl _ => - (1/c) * ⟪E₀, Space.basis.repr x.space⟫_ℝ
   | Sum.inr i => (1/2) * ∑ j, B₀ (i, j) * x.space j
 
 /-!
@@ -93,8 +93,7 @@ lemma constantEB_smooth {c : SpeedOfLight}
       · fun_prop
       apply ContDiff.inner
       · fun_prop
-      · change ContDiff ℝ ∞ SpaceTime.space
-        fun_prop
+      · fun_prop
   | Sum.inr i =>
       simp [constantEB]
       apply ContDiff.mul
@@ -116,7 +115,8 @@ The scalar potential of the electromagnetic potential is given by `-⟪E₀, x�
 lemma constantEB_scalarPotential {c : SpeedOfLight}
     {E₀ : EuclideanSpace ℝ (Fin d)} {B₀ : Fin d × Fin d → ℝ}
     {B₀_antisymm : ∀ i j, B₀ (i, j) = - B₀ (j, i)} :
-    (constantEB c E₀ B₀ B₀_antisymm).scalarPotential c = fun _ x => -⟪E₀, x⟫_ℝ := by
+    (constantEB c E₀ B₀ B₀_antisymm).scalarPotential c = fun _ x =>
+      -⟪E₀, Space.basis.repr x⟫_ℝ := by
   ext t x
   simp [scalarPotential, timeSlice, constantEB, Equiv.coe_fn_mk,
     Function.curry_apply, Function.comp_apply]
@@ -196,6 +196,9 @@ lemma constantEB_electricField {c : SpeedOfLight}
   rw [electricField_eq]
   simp [constantEB_scalarPotential]
   erw [Space.grad_neg]
+  conv_lhs =>
+    enter [1, 1,1, x]
+    rw [real_inner_comm, Space.basis_repr_inner_eq, real_inner_comm]
   rw [Space.grad_inner_right]
   simp
 

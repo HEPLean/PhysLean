@@ -285,7 +285,6 @@ PhysLean/Relativity/Tensors/UnitTensor.lean
 PhysLean/SpaceAndTime/Space/Basic.lean
 PhysLean/SpaceAndTime/Space/Distributions/Basic.lean
 PhysLean/SpaceAndTime/Space/LengthUnit.lean
-PhysLean/SpaceAndTime/Space/SpaceStruct.lean
 PhysLean/SpaceAndTime/Space/Translations.lean
 PhysLean/SpaceAndTime/SpaceTime/TimeSlice.lean
 PhysLean/SpaceAndTime/Time/TimeMan.lean

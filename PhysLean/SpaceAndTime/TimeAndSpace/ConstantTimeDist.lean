@@ -137,6 +137,8 @@ lemma continuous_time_integral {d} (η : 𝓢(Time × Space d, ℝ)) :
 
 -/
 
+set_option maxSynthPendingDepth 10000 in
+
 lemma time_integral_hasFDerivAt {d : ℕ} (η : 𝓢(Time × Space d, ℝ)) (x₀ : Space d) :
     HasFDerivAt (fun x => ∫ (t : Time), η (t, x))
       (∫ (t : Time), fderiv ℝ (fun x : Space d => η (t, x)) x₀) x₀ := by
@@ -305,6 +307,7 @@ lemma time_integral_differentiable {d : ℕ} (η : 𝓢(Time × Space d.succ, �
 
 -/
 
+set_option maxSynthPendingDepth 10000 in
 @[fun_prop]
 lemma integrable_fderiv_space {d : ℕ} (η : 𝓢(Time × Space d, ℝ)) (x : Space d) :
     Integrable (fun t => fderiv ℝ (fun x => η (t, x)) x) volume := by
@@ -891,12 +894,12 @@ def timeIntegralSchwartz {d : ℕ} :
     𝓢(Time × Space d, ℝ) →L[ℝ] 𝓢(Space d, ℝ) := by
   refine SchwartzMap.mkCLM (fun η x => ∫ (t : Time), η (t, x)) ?_ ?_ ?_ ?_
   · intro η1 η2 x
-    simp only [add_apply]
+    simp only [SchwartzMap.add_apply]
     rw [integral_add]
     · exact integrable_time_integral η1 x
     · exact integrable_time_integral η2 x
   · intro a η x
-    simp only [smul_apply, smul_eq_mul, RingHom.id_apply]
+    simp only [SchwartzMap.smul_apply, smul_eq_mul, RingHom.id_apply]
     rw [integral_const_mul]
   · intro η
     refine contDiff_infty.mpr ?_

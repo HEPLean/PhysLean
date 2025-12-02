@@ -790,10 +790,10 @@ protected lemma fderiv' (F : (X → U) → (X → V)) (F') (u) (dx : X)
 protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt
       (fun (φ : Space d → ℝ) x => gradient φ x)
-      (fun ψ x => - Space.div ψ x) u := by
+      (fun ψ x => - Space.div (Space.basis.repr ∘ ψ) x) u := by
   apply hasVarAdjDerivAt_of_hasVarAdjoint_of_linear
   · intro φ hφ
-    simp [← Space.grad_eq_gradiant, Space.grad_eq_sum]
+    simp [Space.gradient_eq_sum]
     apply ContDiff.sum
     intro i _
     apply ContDiff.smul
@@ -801,17 +801,21 @@ protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     fun_prop
     fun_prop
   · intro φ1 φ2 h1 h2
-    rw [← Space.grad_eq_gradiant]
+    rw [Space.gradient_eq_grad]
     rw [Space.grad_add, Space.grad_eq_gradiant, Space.grad_eq_gradiant]
+    simp
+    rfl
     · exact h1.differentiable (by simp)
     · exact h2.differentiable (by simp)
   · intro c φ hφ
-    rw [← Space.grad_eq_gradiant]
+    rw [Space.gradient_eq_grad]
     rw [Space.grad_smul, Space.grad_eq_gradiant]
+    simp
+    rfl
     exact hφ.differentiable (by simp)
   · intro φ hφ x
-    rw [← Space.grad_eq_gradiant, Space.grad_eq_sum]
-    conv_lhs => enter [1, x]; rw [← Space.grad_eq_gradiant, Space.grad_eq_sum]
+    rw [Space.gradient_eq_sum]
+    conv_lhs => enter [1, x]; rw [Space.gradient_eq_sum]
     rw [deriv_fun_sum]
     congr
     funext i
@@ -838,10 +842,58 @@ protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
   · exact hu
   · exact HasVarAdjoint.gradient
 
-lemma div {d} (u : Space d → Space d) (hu : ContDiff ℝ ∞ u) :
+protected lemma grad {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     HasVarAdjDerivAt
-      (fun (φ : Space d → Space d) x => Space.div φ x)
-      (fun ψ x => - gradient ψ x) u := by
+      (fun (φ : Space d → ℝ) x => Space.grad φ x)
+      (fun ψ x => - Space.div ψ x) u := by
+  apply hasVarAdjDerivAt_of_hasVarAdjoint_of_linear
+  · intro φ hφ
+    simp [Space.grad_eq_sum]
+    apply ContDiff.sum
+    intro i _
+    apply ContDiff.smul
+    simp [Space.deriv]
+    fun_prop
+    fun_prop
+  · intro φ1 φ2 h1 h2
+    rw [Space.grad_add]
+    · exact h1.differentiable (by simp)
+    · exact h2.differentiable (by simp)
+  · intro c φ hφ
+    rw [Space.grad_smul]
+    exact hφ.differentiable (by simp)
+  · intro φ hφ x
+    rw [Space.grad_eq_sum]
+    conv_lhs => enter [1, x]; rw [Space.grad_eq_sum]
+    rw [deriv_fun_sum]
+    congr
+    funext i
+    rw [deriv_smul_const]
+    congr
+    simp [Space.deriv]
+    rw [← fderiv_deriv]
+    rw [fderiv_swap]
+    simp only [fderiv_eq_smul_deriv, smul_eq_mul, one_mul]
+    · apply ContDiff.of_le hφ
+      exact ENat.LEInfty.out
+    · simp [Space.deriv]
+      apply Differentiable.differentiableAt
+      apply fderiv_uncurry_differentiable_snd_comp_fst_apply
+      apply ContDiff.of_le hφ
+      exact ENat.LEInfty.out
+    · intro i _
+      apply Differentiable.differentiableAt
+      apply Differentiable.smul_const
+      simp [Space.deriv]
+      apply fderiv_uncurry_differentiable_snd_comp_fst_apply
+      apply ContDiff.of_le hφ
+      exact ENat.LEInfty.out
+  · exact hu
+  · exact HasVarAdjoint.grad
+lemma div {d} (u : Space d → EuclideanSpace ℝ (Fin d)) (hu : ContDiff ℝ ∞ u) :
+    HasVarAdjDerivAt
+      (fun (φ : Space d → EuclideanSpace ℝ (Fin d)) x => Space.div φ x)
+      (fun ψ x => - Space.grad ψ x) u := by
   apply hasVarAdjDerivAt_of_hasVarAdjoint_of_linear
   · intro φ hφ
     simp [Space.div]
@@ -867,24 +919,26 @@ lemma div {d} (u : Space d → Space d) (hu : ContDiff ℝ ∞ u) :
     simp only [fderiv_eq_smul_deriv, smul_eq_mul, one_mul]
     congr
     funext y
-    trans deriv (fun x' => Space.coordCLM i (φ x' y)) 0
-    simp [Space.coordCLM_apply]
-    rw [← fderiv_deriv, fderiv_comp']
-    simp [Space.coordCLM_apply]
+    trans deriv (EuclideanSpace.proj i ∘ fun x' => (φ x' y)) 0
+    rfl
+    rw [← fderiv_deriv, fderiv_comp]
+    simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp', Function.comp_apply,
+      PiLp.proj_apply]
+    rfl
     · fun_prop
     · apply function_differentiableAt_fst
       exact hφ.differentiable (by simp)
-    · apply ContDiff.comp (g := Space.coord i)
-      · change ContDiff ℝ 2 (Space.coordCLM i)
+    · apply ContDiff.comp (g := EuclideanSpace.proj i)
+      · change ContDiff ℝ 2 (EuclideanSpace.proj i)
         fun_prop
       · apply ContDiff.of_le hφ
         exact ENat.LEInfty.out
     · intro i _
       apply Differentiable.differentiableAt
       simp [Space.deriv]
-      have h1 (s' : ℝ) : (fderiv ℝ (fun x => Space.coord i (φ s' x)) x) =
-          Space.coordCLM i ∘L (fderiv ℝ (fun x' => φ s' x') x) := by
-        trans (fderiv ℝ (fun x => Space.coordCLM i (φ s' x)) x)
+      have h1 (s' : ℝ) : (fderiv ℝ (fun x => EuclideanSpace.proj i (φ s' x)) x) =
+          EuclideanSpace.proj i ∘L (fderiv ℝ (fun x' => φ s' x') x) := by
+        trans (fderiv ℝ (fun x => EuclideanSpace.proj i (φ s' x)) x)
         rfl
         rw [fderiv_comp']
         simp only [ContinuousLinearMap.fderiv]
@@ -893,7 +947,7 @@ lemma div {d} (u : Space d → Space d) (hu : ContDiff ℝ ∞ u) :
         exact hφ.differentiable (by simp)
       conv =>
         enter [2, s]
-        rw [h1]
+        erw [h1]
       simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
       apply Differentiable.comp
       · fun_prop

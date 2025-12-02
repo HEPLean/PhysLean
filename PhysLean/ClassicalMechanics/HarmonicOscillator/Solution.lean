@@ -81,9 +81,9 @@ We start by defining the type of initial conditions for the harmonic oscillator.
   and an initial velocity. -/
 structure InitialConditions where
   /-- The initial position of the harmonic oscillator. -/
-  x₀ : Space 1
+  x₀ : EuclideanSpace ℝ (Fin 1)
   /-- The initial velocity of the harmonic oscillator. -/
-  v₀ : Space 1
+  v₀ : EuclideanSpace ℝ (Fin 1)
 
 /-!
 
@@ -173,7 +173,7 @@ namespace InitialConditions
 -/
 
 /-- Given initial conditions, the solution to the classical harmonic oscillator. -/
-noncomputable def trajectory (IC : InitialConditions) : Time → Space 1 := fun t =>
+noncomputable def trajectory (IC : InitialConditions) : Time → EuclideanSpace ℝ (Fin 1) := fun t =>
   cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀
 
 /-!
@@ -235,7 +235,6 @@ lemma trajectory_velocity (IC : InitialConditions) : ∂ₜ (IC.trajectory S) =
     fun t : Time => - S.ω • sin (S.ω * t.val) • IC.x₀ + cos (S.ω * t.val) • IC.v₀ := by
   funext t
   rw [trajectory_eq, Time.deriv, fderiv_fun_add (by fun_prop) (by fun_prop)]
-  simp only
   rw [fderiv_smul_const (by fun_prop), fderiv_smul_const (by fun_prop)]
   have h1 : (fderiv ℝ (fun t => sin (S.ω * t.val) / S.ω) t) =
     (1/ S.ω) • (fderiv ℝ (fun t => sin (S.ω * t.val)) t) := by
@@ -267,16 +266,15 @@ lemma trajectory_acceleration (IC : InitialConditions) : ∂ₜ (∂ₜ (IC.traj
     fun t : Time => - S.ω^2 • cos (S.ω * t.val) • IC.x₀ - S.ω • sin (S.ω * t.val) • IC.v₀ := by
   funext t
   rw [trajectory_velocity, Time.deriv, fderiv_fun_add (by fun_prop) (by fun_prop)]
-  simp only
   rw [fderiv_smul_const (by fun_prop), fderiv_fun_const_smul (by fun_prop),
     fderiv_smul_const (by fun_prop)]
-  simp only [neg_smul, ContinuousLinearMap.add_apply, ContinuousLinearMap.neg_apply,
-    ContinuousLinearMap.coe_smul', Pi.smul_apply, ContinuousLinearMap.smulRight_apply]
+  simp only [neg_smul, ContinuousLinearMap.add_apply, ContinuousLinearMap.smulRight_apply]
   rw [fderiv_cos (by fun_prop), fderiv_sin (by fun_prop),
     fderiv_fun_mul (by fun_prop) (by fun_prop)]
   field_simp [smul_smul]
-  simp only [fderiv_fun_const, Pi.zero_apply, smul_zero, add_zero, ContinuousLinearMap.coe_smul',
-    Pi.smul_apply, fderiv_val, smul_eq_mul, mul_one, neg_smul, ContinuousLinearMap.neg_apply]
+  simp only [fderiv_fun_const, Pi.ofNat_apply, smul_zero, add_zero, ContinuousLinearMap.neg_apply,
+    ContinuousLinearMap.coe_smul', Pi.smul_apply, ContinuousLinearMap.smulRight_apply, fderiv_val,
+    smul_eq_mul, mul_one, neg_smul]
   ring_nf
   module
 
@@ -341,7 +339,7 @@ for the given initial conditions. This is currently a TODO.
   - One may needed the added condition of smoothness on `x` here.
   - `EquationOfMotion` needs defining before this can be proved. -/
 @[sorryful]
-lemma trajectories_unique (IC : InitialConditions) (x : Time → Space 1) :
+lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace ℝ (Fin 1)) :
     S.EquationOfMotion x ∧ x 0 = IC.x₀ ∧ ∂ₜ x 0 = IC.v₀ →
     x = IC.trajectory S := by sorry
 

@@ -191,13 +191,13 @@ instance {d : ℕ} : Measure.IsAddHaarMeasure (volume (α := SpaceTime d)) :=
 
 /-- The space part of spacetime. -/
 def space {d : ℕ} : SpaceTime d →L[ℝ] Space d where
-  toFun x := Lorentz.Vector.spatialPart x
+  toFun x := ⟨Lorentz.Vector.spatialPart x⟩
   map_add' x1 x2 := by
     ext i
-    simp [Lorentz.Vector.spatialPart]
+    simp
   map_smul' c x := by
     ext i
-    simp [Lorentz.Vector.spatialPart]
+    simp
   cont := by
     fun_prop
 
@@ -210,7 +210,7 @@ def space {d : ℕ} : SpaceTime d →L[ℝ] Space d where
 lemma space_toCoord_symm {d : ℕ} (f : Fin 1 ⊕ Fin d → ℝ) :
     space f = fun i => f (Sum.inr i) := by
   funext i
-  simp [space, Lorentz.Vector.spatialPart]
+  simp [space]
 
 /-!
 
@@ -277,7 +277,7 @@ def toTimeAndSpace {d : ℕ} (c : SpeedOfLight := 1) : SpaceTime d ≃L[ℝ] Tim
       | Sum.inl 0 =>
         simp [Lorentz.Vector.timeComponent]
         field_simp
-      | Sum.inr i => simp [Lorentz.Vector.spatialPart]
+      | Sum.inr i => simp
     right_inv tx := by
       simp only [time, Lorentz.Vector.timeComponent, Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk,
         ne_eq, SpeedOfLight.val_ne_zero, not_false_eq_true, mul_div_cancel_left₀, space,

@@ -166,7 +166,7 @@ lemma schwartzMap_integrable_slice_symm {d : ℕ} (i : Fin d.succ) (η : 𝓢(Sp
   · fun_prop
   · simp
 
-@[fun_prop]
+set_option maxSynthPendingDepth 10000 in
 lemma schwartzMap_fderiv_integrable_slice_symm {d : ℕ} (η : 𝓢(Space d.succ, ℝ)) (x : Space d)
     (i : Fin d.succ) :
     Integrable (fun r => fderiv ℝ (fun x => η (((slice i).symm (r, x)))) x) volume := by
@@ -391,7 +391,7 @@ lemma schwartzMap_slice_integral_contDiff {d : ℕ} (n : ℕ) (η : 𝓢(Space d
         funext x
         simp only [Nat.succ_eq_add_one]
         rw [ContinuousLinearMap.integral_apply]
-        fun_prop
+        exact schwartzMap_fderiv_integrable_slice_symm η x i
       rw [hl]
       have hl2 : (fun x => ∫ (r : ℝ), (fderiv ℝ (fun x => η (((slice i).symm (r, x)))) x) y)=
           fun x => ∫ (r : ℝ), SchwartzMap.pderivCLM ℝ ((slice i).symm (0, y)) η
@@ -451,7 +451,9 @@ lemma schwartzMap_slice_integral_iteratedFDeriv_apply {d : ℕ} (n : ℕ) (η : 
           ((slice i).symm (r, x))) x) (y 0) := by
         rw [(schwartzMap_slice_integral_hasFDerivAt _ i x).fderiv]
         rw [ContinuousLinearMap.integral_apply]
-        fun_prop
+        exact
+          schwartzMap_fderiv_integrable_slice_symm
+            ((iteratedPDeriv ℝ fun j => (slice i).symm (0, Fin.tail y j)) η) x i
     congr
     funext r
     calc _
@@ -586,12 +588,12 @@ def sliceSchwartz {d : ℕ} (i : Fin d.succ) :
     𝓢(Space d.succ, ℝ) →L[ℝ] 𝓢(Space d, ℝ) := by
   refine SchwartzMap.mkCLM (fun η x => ∫ (r : ℝ), η ((slice i).symm (r, x))) ?_ ?_ ?_ ?_
   · intro η1 η2 x
-    simp only [Nat.succ_eq_add_one, add_apply]
+    simp only [Nat.succ_eq_add_one, SchwartzMap.add_apply]
     rw [integral_add]
     · exact schwartzMap_integrable_slice_symm i η1 x
     · exact schwartzMap_integrable_slice_symm i η2 x
   · intro a η x
-    simp only [Nat.succ_eq_add_one, smul_apply, smul_eq_mul, RingHom.id_apply]
+    simp only [Nat.succ_eq_add_one, SchwartzMap.smul_apply, smul_eq_mul, RingHom.id_apply]
     rw [integral_const_mul]
   · intro η
     simp only [Nat.succ_eq_add_one]
@@ -699,6 +701,6 @@ lemma distDeriv_constantSliceDist_succAbove {M : Type} [NormedAddCommGroup M] [N
   rw [fderiv_fun_slice_symm_right_apply]
   · apply Differentiable.differentiableAt
     exact η.differentiable
-  · fun_prop
+  · exact schwartzMap_fderiv_integrable_slice_symm η x i
 
 end Space

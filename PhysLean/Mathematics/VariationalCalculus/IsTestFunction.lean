@@ -310,7 +310,7 @@ lemma IsTestFunction.gradient {d : ℕ} (φ : Space d → ℝ)
   fun_prop
 
 @[fun_prop]
-lemma IsTestFunction.of_div {d : ℕ} (φ : Space d → Space d)
+lemma IsTestFunction.of_div {d : ℕ} (φ : Space d → EuclideanSpace ℝ (Fin d))
     (hφ : IsTestFunction φ) :
     IsTestFunction (Space.div φ) := by
   unfold Space.div Space.deriv; dsimp; fun_prop (disch:=simp)

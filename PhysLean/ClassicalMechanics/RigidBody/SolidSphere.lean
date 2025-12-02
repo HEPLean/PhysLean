@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.ClassicalMechanics.RigidBody.Basic
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 /-!
 
 # The solid sphere as a rigid body
@@ -45,25 +44,19 @@ lemma solidSphere_mass {d : ℕ} (m R : ℝ≥0) (hr : R ≠ 0) : (solidSphere d
   have h1 : (@volume (Space d.succ) measureSpaceOfInnerProductSpace).real
       (Metric.closedBall 0 R) ≠ 0 := by
     refine (measureReal_ne_zero_iff ?_).mpr ?_
-    · rw [EuclideanSpace.volume_closedBall]
-      simp
-      exact not_eq_of_beq_eq_false rfl
-    · rw [EuclideanSpace.volume_closedBall]
-      simp only [ENNReal.ofReal_coe_nnreal, Nat.succ_eq_add_one, Fintype.card_fin, Nat.cast_add,
-        Nat.cast_one, ne_eq, mul_eq_zero, Nat.add_eq_zero, one_ne_zero, and_false,
-        not_false_eq_true, pow_eq_zero_iff, ENNReal.coe_eq_zero, ENNReal.ofReal_eq_zero, not_or,
-        not_le]
-      apply And.intro
-      · exact hr
-      · positivity
+    · apply Space.volume_closedBall_neq_top
+    · apply Space.volume_closedBall_neq_zero
+      have hr' := R.2
+      have hx : R.1 ≠ 0 := by simpa using hr
+      apply lt_of_le_of_ne hr' (Ne.symm hx)
   field_simp
 
 /-- The center of mass of a solid sphere located at the origin is `0`. -/
 lemma solidSphere_centerOfMass {d : ℕ} (m R : ℝ≥0) : (solidSphere d.succ m R).centerOfMass = 0 := by
   ext i
-  simp only [centerOfMass, solidSphere, one_div, LinearMap.coe_mk, AddHom.coe_mk,
-    ContMDiffMap.coeFn_mk, smul_eq_mul, PiLp.zero_apply, mul_eq_zero, inv_eq_zero, div_eq_zero_iff,
-    coe_eq_zero]
+  simp only [Nat.succ_eq_add_one, centerOfMass, solidSphere, one_div, LinearMap.coe_mk,
+    AddHom.coe_mk, ContMDiffMap.coeFn_mk, smul_eq_mul, Space.zero_apply, mul_eq_zero, inv_eq_zero,
+    div_eq_zero_iff, coe_eq_zero]
   right
   right
   suffices ∫ x in Metric.closedBall (0 : Space d.succ) R, x i ∂MeasureSpace.volume

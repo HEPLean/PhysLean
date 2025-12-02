@@ -1011,9 +1011,25 @@ lemma zpow_smul_self {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n) :
       ring_nf
       simpa using hx
 
+lemma zpow_smul_repr_self {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n) :
+    IsDistBounded (d := d) (fun x => ‖x‖ ^ n • basis.repr x) := by
+  apply IsDistBounded.congr (f := fun x => ‖x‖ ^ n • x)
+  · apply zpow_smul_self
+    exact hn
+  · apply AEMeasurable.aestronglyMeasurable
+    fun_prop
+  · intro x
+    simp [norm_smul]
+
 lemma inv_pow_smul_self {d : ℕ} (n : ℕ) (hn : - (d - 1 : ℕ) - 1 ≤ (- n : ℤ)) :
     IsDistBounded (d := d) (fun x => ‖x‖⁻¹ ^ n • x) := by
   convert zpow_smul_self (n := - (n : ℤ)) (by omega) using 1
+  funext x
+  simp
+
+lemma inv_pow_smul_repr_self {d : ℕ} (n : ℕ) (hn : - (d - 1 : ℕ) - 1 ≤ (- n : ℤ)) :
+    IsDistBounded (d := d) (fun x => ‖x‖⁻¹ ^ n • basis.repr x) := by
+  convert zpow_smul_repr_self (n := - (n : ℤ)) (by omega) using 1
   funext x
   simp
 
@@ -1155,12 +1171,7 @@ lemma component_smul_isDistBounded {d : ℕ} [NormedSpace ℝ F] {f : Space d �
   · intro x
     simp [norm_smul]
     apply mul_le_mul ?_ (by rfl) (by positivity) (by positivity)
-    rw [@PiLp.norm_eq_of_L2]
-    refine Real.abs_le_sqrt ?_
-    apply le_trans _ (Finset.sum_le_univ_sum_of_nonneg (s := {i}) _)
-    · simp
-    · intro i
-      positivity
+    exact abs_eval_le_norm x i
 
 @[fun_prop]
 lemma component_mul_isDistBounded {d : ℕ} {f : Space d → ℝ}
@@ -1171,6 +1182,18 @@ lemma component_mul_isDistBounded {d : ℕ} {f : Space d → ℝ}
 @[fun_prop]
 lemma isDistBounded_smul_self {d : ℕ} {f : Space d → ℝ}
     (hf : IsDistBounded f) : IsDistBounded (fun x => f x • x) := by
+  apply IsDistBounded.congr (f := fun x => ‖x‖ * f x)
+  · fun_prop
+  · apply AEStronglyMeasurable.smul
+    · fun_prop
+    · fun_prop
+  · intro x
+    simp [norm_smul]
+    ring
+
+@[fun_prop]
+lemma isDistBounded_smul_self_repr {d : ℕ} {f : Space d → ℝ}
+    (hf : IsDistBounded f) : IsDistBounded (fun x => f x • basis.repr x) := by
   apply IsDistBounded.congr (f := fun x => ‖x‖ * f x)
   · fun_prop
   · apply AEStronglyMeasurable.smul
