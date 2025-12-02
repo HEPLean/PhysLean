@@ -4,6 +4,9 @@ import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Mass.MassUnit
+import PhysLean.ClassicalMechanics.Pendulum.CoplanarDoublePendulum
+import PhysLean.ClassicalMechanics.Pendulum.MiscellaneousPendulumPivotMotions
+import PhysLean.ClassicalMechanics.Pendulum.SlidingPendulum
 import PhysLean.ClassicalMechanics.RigidBody.Basic
 import PhysLean.ClassicalMechanics.RigidBody.SolidSphere
 import PhysLean.ClassicalMechanics.Scattering.RigidSphere
@@ -366,6 +369,7 @@ import PhysLean.StringTheory.FTheory.SU5.Quanta.FiveQuanta
 import PhysLean.StringTheory.FTheory.SU5.Quanta.IsViable
 import PhysLean.StringTheory.FTheory.SU5.Quanta.TenQuanta
 import PhysLean.Thermodynamics.Basic
+import PhysLean.Thermodynamics.IdealGas.Basic
 import PhysLean.Thermodynamics.Temperature.Basic
 import PhysLean.Thermodynamics.Temperature.TemperatureUnits
 import PhysLean.Units.Basic

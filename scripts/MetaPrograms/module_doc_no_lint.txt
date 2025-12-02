@@ -286,7 +286,6 @@ PhysLean/SpaceAndTime/Space/Distributions/Basic.lean
 PhysLean/SpaceAndTime/Space/LengthUnit.lean
 PhysLean/SpaceAndTime/Space/Translations.lean
 PhysLean/SpaceAndTime/SpaceTime/TimeSlice.lean
-PhysLean/SpaceAndTime/Time/Basic.lean
 PhysLean/SpaceAndTime/Time/TimeMan.lean
 PhysLean/SpaceAndTime/Time/TimeTransMan.lean
 PhysLean/SpaceAndTime/Time/TimeUnit.lean
