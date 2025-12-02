@@ -91,7 +91,7 @@ lemma translateSchwartz_coe_eq {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
   simp
 
 /-- The continuous linear map translating distributions. -/
-noncomputable def translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d)) :
+noncomputable def distTranslate {d : ℕ} (a : EuclideanSpace ℝ (Fin d)) :
     ((Space d) →d[ℝ] X) →ₗ[ℝ] ((Space d) →d[ℝ] X) where
   toFun T := T.comp (translateSchwartz (-a))
   map_add' T1 T2 := by
@@ -100,20 +100,20 @@ noncomputable def translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d)) :
   map_smul' c T := by
     simp
 
-lemma translateD_apply {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
+lemma distTranslate_apply {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
     (T : (Space d) →d[ℝ] X) (η : 𝓢(Space d, ℝ)) :
-    translateD a T η = T (translateSchwartz (-a) η) := rfl
+    distTranslate a T η = T (translateSchwartz (-a) η) := rfl
 
 open InnerProductSpace
 
 @[simp]
-lemma translateD_distGrad {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
+lemma distTranslate_distGrad {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
     (T : (Space d) →d[ℝ] ℝ) :
-    distGrad (translateD a T) = translateD a (distGrad T) := by
+    distGrad (distTranslate a T) = distTranslate a (distGrad T) := by
   apply distGrad_eq_of_inner
   intro η y
-  rw [translateD_apply, distGrad_inner_eq]
-  rw [fderivD_apply, fderivD_apply, translateD_apply]
+  rw [distTranslate_apply, distGrad_inner_eq]
+  rw [fderivD_apply, fderivD_apply, distTranslate_apply]
   congr 2
   ext x
   simp only [translateSchwartz_apply, map_neg, sub_neg_eq_add, LinearIsometryEquiv.symm_apply_apply]
@@ -123,13 +123,13 @@ lemma translateD_distGrad {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
   rw [fderiv_comp_add_right]
 
 open MeasureTheory
-lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
+lemma distTranslate_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
     (f : Space d.succ → X) (hf : IsDistBounded f) :
-    translateD a (distOfFunction f hf) =
+    distTranslate a (distOfFunction f hf) =
     distOfFunction (fun x => f (x - basis.repr.symm a))
     (IsDistBounded.comp_add_right hf (- basis.repr.symm a)) := by
   ext η
-  rw [translateD_apply, distOfFunction_apply, distOfFunction_apply]
+  rw [distTranslate_apply, distOfFunction_apply, distOfFunction_apply]
   trans ∫ (x : Space d.succ), η ((x - basis.repr.symm a) + basis.repr.symm a) •
     f (x - basis.repr.symm a); swap
   · simp
@@ -141,15 +141,15 @@ lemma translateD_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d.succ))
   simp [f']
 
 @[simp]
-lemma distDiv_translateD {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
+lemma distDiv_distTranslate {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
     (T : (Space d) →d[ℝ] EuclideanSpace ℝ (Fin d)) :
-    distDiv (translateD a T) = translateD a (distDiv T) := by
+    distDiv (distTranslate a T) = distTranslate a (distDiv T) := by
   ext η
   rw [distDiv_apply_eq_sum_fderivD]
-  rw [translateD_apply, distDiv_apply_eq_sum_fderivD]
+  rw [distTranslate_apply, distDiv_apply_eq_sum_fderivD]
   congr
   funext i
-  rw [fderivD_apply, fderivD_apply, translateD_apply]
+  rw [fderivD_apply, fderivD_apply, distTranslate_apply]
   simp only [PiLp.neg_apply, neg_inj]
   have h1 : ((translateSchwartz (-a)) ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)))
       = ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i))

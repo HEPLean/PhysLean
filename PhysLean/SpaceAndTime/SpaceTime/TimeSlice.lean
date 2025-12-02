@@ -178,7 +178,6 @@ lemma distTimeSlice_symm_distTimeDeriv_eq {M d} [NormedAddCommGroup M] [NormedSp
   rw [distDeriv_inl_distTimeSlice_symm]
   simp
 
-
 lemma distTimeSlice_distDeriv_inr {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     {c : SpeedOfLight}
     (i : Fin d) (f : (SpaceTime d) →d[ℝ] M) :

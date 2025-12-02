@@ -258,15 +258,14 @@ noncomputable def chargeDensity {d : ℕ} (c : SpeedOfLight) :
     simp only [one_div, map_smul, ContinuousLinearMap.comp_smulₛₗ, RingHom.id_apply]
     rw [smul_comm]
 
-
 /-!
 
 ### D.2. The underlying current density
 
 -/
 
-
-/-- The underlying (non-Lorentz) current density associated with a distributive Lorentz current density. -/
+/-- The underlying (non-Lorentz) current density associated with a distributive
+  Lorentz current density. -/
 noncomputable def currentDensity (c : SpeedOfLight) :
     DistLorentzCurrentDensity d →ₗ[ℝ] (Time × Space d) →d[ℝ] EuclideanSpace ℝ (Fin d) where
   toFun J := Lorentz.Vector.spatialCLM d ∘L distTimeSlice c J

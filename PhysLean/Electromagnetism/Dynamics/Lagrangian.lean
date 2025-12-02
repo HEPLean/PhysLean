@@ -280,7 +280,8 @@ lemma gradLagrangian_eq_kineticTerm_sub {𝓕 : FreeSpace} (A : ElectromagneticP
 ### C.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
 
 -/
-lemma lagrangian_hasVarGradientAt_gradLagrangian {𝓕 : FreeSpace} (A : ElectromagneticPotential d)
+lemma lagrangian_hasVarGradientAt_gradLagrangian {𝓕 : FreeSpace}
+    (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d) (hJ : ContDiff ℝ ∞ J) :
     HasVarGradientAt (fun A => lagrangian 𝓕 A J) (A.gradLagrangian 𝓕 J) A := by
   rw [gradLagrangian_eq_kineticTerm_sub A hA J hJ]
@@ -315,7 +316,8 @@ lemma gradLagrangian_eq_sum_fieldStrengthMatrix {𝓕 : FreeSpace} (A : Electrom
 -/
 
 open Time LorentzCurrentDensity
-lemma gradLagrangian_eq_electricField_magneticField {𝓕 : FreeSpace} (A : ElectromagneticPotential d)
+lemma gradLagrangian_eq_electricField_magneticField {𝓕 : FreeSpace}
+    (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
     (hJ : ContDiff ℝ ∞ J) (x : SpaceTime d) :
     A.gradLagrangian 𝓕 J x = (1 / (𝓕.μ₀ * 𝓕.c.val) *
@@ -438,20 +440,20 @@ noncomputable def gradLagrangian {d} (𝓕 : FreeSpace) (A : DistElectromagnetic
     (J : DistLorentzCurrentDensity d) : ((SpaceTime d) →d[ℝ] Lorentz.Vector d) :=
   A.gradKineticTerm 𝓕 - gradFreeCurrentPotential J
 
-
 lemma gradLagrangian_sum_inl_0 {𝓕 : FreeSpace}
     (A : DistElectromagneticPotential d) (J : DistLorentzCurrentDensity d)
     (ε : 𝓢(SpaceTime d, ℝ)) :
     A.gradLagrangian 𝓕 J ε (Sum.inl 0) =
     (1/(𝓕.μ₀ * 𝓕.c) * (distTimeSlice 𝓕.c).symm (Space.distSpaceDiv (A.electricField 𝓕.c)) ε)
-    -  𝓕.c * (distTimeSlice 𝓕.c).symm (J.chargeDensity 𝓕.c) ε := by
+    - 𝓕.c * (distTimeSlice 𝓕.c).symm (J.chargeDensity 𝓕.c) ε := by
   simp [gradLagrangian, gradKineticTerm_sum_inl_eq, gradFreeCurrentPotential_sum_inl_0 𝓕]
 
 lemma gradLagrangian_sum_inr_i {𝓕 : FreeSpace}
     (A : DistElectromagneticPotential d) (J : DistLorentzCurrentDensity d)
     (ε : 𝓢(SpaceTime d, ℝ)) (i : Fin d) :
     A.gradLagrangian 𝓕 J ε (Sum.inr i) =
-    𝓕.μ₀⁻¹ * (1 / 𝓕.c ^ 2 * (distTimeSlice 𝓕.c).symm (Space.distTimeDeriv (A.electricField 𝓕.c)) ε i-
+    𝓕.μ₀⁻¹ * (1 / 𝓕.c ^ 2 *
+      (distTimeSlice 𝓕.c).symm (Space.distTimeDeriv (A.electricField 𝓕.c)) ε i -
       ∑ j, ((PiLp.basisFun 2 ℝ (Fin d)).tensorProduct (PiLp.basisFun 2 ℝ (Fin d))).repr
         ((distTimeSlice 𝓕.c).symm (Space.distSpaceDeriv j (A.magneticFieldMatrix 𝓕.c)) ε) (j, i)) +
     (distTimeSlice 𝓕.c).symm (J.currentDensity 𝓕.c) ε i := by

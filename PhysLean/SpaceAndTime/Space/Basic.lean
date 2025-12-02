@@ -251,7 +251,6 @@ lemma norm_sq_eq {d} (p : Space d) :
   refine Real.sq_sqrt ?_
   positivity
 
-@[simp]
 lemma point_dim_zero_eq (p : Space 0) : p = 0 := by
   ext i
   fin_cases i
@@ -716,15 +715,6 @@ lemma oneEquiv_symm_measurePreserving : MeasurePreserving oneEquiv.symm volume v
 lemma volume_eq_addHaar {d} : (volume (α := Space d)) = Space.basis.toBasis.addHaar := by
   exact (OrthonormalBasis.addHaar_eq_volume _).symm
 
-@[simp]
-lemma volume_metricBall_three :
-    volume (Metric.ball (0 : Space 3) 1) = ENNReal.ofReal (4 / 3 * Real.pi) := by
-  rw [InnerProductSpace.volume_ball_of_dim_odd (k := 1)]
-  simp only [ENNReal.ofReal_one, finrank_eq_dim, one_pow, pow_one, Nat.reduceAdd,
-    Nat.doubleFactorial.eq_3, Nat.doubleFactorial, mul_one, Nat.cast_ofNat, one_mul]
-  ring_nf
-  simp
-
 instance {d : ℕ} : Nontrivial (Space d.succ) := by
   refine { exists_pair_ne := ?_ }
   use 0, basis 0
@@ -775,5 +765,30 @@ lemma volume_closedBall_neq_top {d : ℕ} (x : Space d.succ) (r : ℝ) :
     apply not_eq_of_beq_eq_false
     rfl
     simpa using hk
+
+@[simp]
+lemma volume_metricBall_three :
+    volume (Metric.ball (0 : Space 3) 1) = ENNReal.ofReal (4 / 3 * Real.pi) := by
+  rw [InnerProductSpace.volume_ball_of_dim_odd (k := 1)]
+  simp only [ENNReal.ofReal_one, finrank_eq_dim, one_pow, pow_one, Nat.reduceAdd,
+    Nat.doubleFactorial.eq_3, Nat.doubleFactorial, mul_one, Nat.cast_ofNat, one_mul]
+  ring_nf
+  simp
+
+@[simp]
+lemma volume_metricBall_two :
+    volume (Metric.ball (0 : Space 2) 1) = ENNReal.ofReal Real.pi := by
+  rw [InnerProductSpace.volume_ball_of_dim_even (k := 1)]
+  simp [finrank_eq_dim]
+  simp [finrank_eq_dim]
+
+@[simp]
+lemma volume_metricBall_two_real :
+    (volume.real (Metric.ball (0 : Space 2) 1)) = Real.pi := by
+  trans (volume (Metric.ball (0 : Space 2) 1)).toReal
+  · rfl
+  rw [volume_metricBall_two]
+  simp
+  exact Real.pi_nonneg
 
 end Space

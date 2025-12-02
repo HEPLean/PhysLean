@@ -440,6 +440,8 @@ end ElectromagneticPotential
 
 namespace DistElectromagneticPotential
 
+/-- The proposition on an electromagnetic potential, corresponding to the statement that
+  it is an extrema of the lagrangian. -/
 def IsExtrema {d} (𝓕 : FreeSpace)
     (A : DistElectromagneticPotential d)
     (J : DistLorentzCurrentDensity d) : Prop := A.gradLagrangian 𝓕 J = 0

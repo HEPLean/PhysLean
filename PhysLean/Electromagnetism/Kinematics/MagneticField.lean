@@ -635,19 +635,39 @@ lemma magneticFieldMatrix_eq_vectorPotential {c : SpeedOfLight}
   simp [← distTimeSlice_apply, distTimeSlice_distDeriv_inr, vectorPotential,
   Space.distSpaceDeriv_apply_CLM, Lorentz.Vector.spatialCLM, neg_add_eq_sub]
 
+lemma magneticFieldMatrix_basis_repr_eq_vector_potential {c : SpeedOfLight}
+    (A : DistElectromagneticPotential d)
+    (ε : 𝓢(Time × Space d, ℝ)) (i j : Fin d) :
+    ((PiLp.basisFun 2 ℝ (Fin d)).tensorProduct (PiLp.basisFun 2 ℝ (Fin d))).repr
+        (A.magneticFieldMatrix c ε) (i, j) =
+      Space.distSpaceDeriv j (A.vectorPotential c) ε i -
+      Space.distSpaceDeriv i (A.vectorPotential c) ε j := by
+  rw [magneticFieldMatrix_eq_vectorPotential]
+  simp
+
+lemma magneticFieldMatrix_distSpaceDeriv_basis_repr_eq_vector_potential {c : SpeedOfLight}
+    (A : DistElectromagneticPotential d)
+    (ε : 𝓢(Time × Space d, ℝ)) (i j k : Fin d) :
+    ((PiLp.basisFun 2 ℝ (Fin d)).tensorProduct (PiLp.basisFun 2 ℝ (Fin d))).repr
+    (Space.distSpaceDeriv k (A.magneticFieldMatrix c) ε) (i, j) =
+    Space.distSpaceDeriv k (Space.distSpaceDeriv j (A.vectorPotential c)) ε i -
+    Space.distSpaceDeriv k (Space.distSpaceDeriv i (A.vectorPotential c)) ε j := by
+  simp [Space.distSpaceDeriv_apply', magneticFieldMatrix_basis_repr_eq_vector_potential]
+  ring
+
 /-!
 
 ### D.2. The magnetic field matrix in terms of the field strength
 
 -/
 
-lemma magneticFieldMatrix_basis_repr_eq_fieldStrength  {c : SpeedOfLight}
+lemma magneticFieldMatrix_basis_repr_eq_fieldStrength {c : SpeedOfLight}
     (A : DistElectromagneticPotential d)
     (ε : 𝓢(Time × Space d, ℝ)) (i j : Fin d) :
     ((PiLp.basisFun 2 ℝ (Fin d)).tensorProduct (PiLp.basisFun 2 ℝ (Fin d))).repr
         (A.magneticFieldMatrix c ε) (i, j) =
-      (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr (
-        distTimeSlice c A.fieldStrength ε) (Sum.inr i, Sum.inr j) := by
+      (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr
+        (distTimeSlice c A.fieldStrength ε) (Sum.inr i, Sum.inr j) := by
   simp only [magneticFieldMatrix_eq_vectorPotential, EuclideanSpace.basisFun_apply, map_sum,
     map_smul, Finsupp.coe_finset_sum, Finsupp.coe_smul, Finset.sum_apply, Pi.smul_apply,
     Basis.tensorProduct_repr_tmul_apply, PiLp.basisFun_repr, EuclideanSpace.single_apply,

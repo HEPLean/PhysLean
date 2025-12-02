@@ -265,7 +265,7 @@ lemma distDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 lemma distDeriv_apply' {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (μ : Fin 1 ⊕ Fin d) (f : (SpaceTime d) →d[ℝ] M) (ε : 𝓢(SpaceTime d, ℝ)) :
     distDeriv μ f ε =
-    - f ((SchwartzMap.evalCLM (𝕜 := ℝ) (Lorentz.Vector.basis μ)) ((fderivCLM ℝ) ε))  := by
+    - f ((SchwartzMap.evalCLM (𝕜 := ℝ) (Lorentz.Vector.basis μ)) ((fderivCLM ℝ) ε)) := by
   simp [distDeriv_apply, Distribution.fderivD]
 
 lemma apply_fderiv_eq_distDeriv {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
@@ -274,7 +274,6 @@ lemma apply_fderiv_eq_distDeriv {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     - distDeriv μ f ε := by
   rw [distDeriv_apply']
   simp
-
 
 /-!
 

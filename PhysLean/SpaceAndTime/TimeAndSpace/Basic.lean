@@ -369,7 +369,7 @@ lemma distTimeDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 lemma distTimeDeriv_apply' {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (f : (Time × Space d) →d[ℝ] M) (ε : 𝓢(Time × Space d, ℝ)) :
-    (distTimeDeriv f) ε =  -f (SchwartzMap.evalCLM (𝕜 := ℝ) (1, 0) ((fderivCLM ℝ) ε)) := by
+    (distTimeDeriv f) ε = -f (SchwartzMap.evalCLM (𝕜 := ℝ) (1, 0) ((fderivCLM ℝ) ε)) := by
   rw [distTimeDeriv_apply, fderivD_apply]
 
 lemma apply_fderiv_eq_distTimeDeriv {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
@@ -418,12 +418,14 @@ lemma distSpaceDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 lemma distSpaceDeriv_apply' {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (i : Fin d) (f : (Time × Space d) →d[ℝ] M) (ε : 𝓢(Time × Space d, ℝ)) :
-    (distSpaceDeriv i f) ε =  -f ((SchwartzMap.evalCLM (𝕜 := ℝ) (0, basis i)) ((fderivCLM ℝ) ε)) := by
+    (distSpaceDeriv i f) ε =
+    - f ((SchwartzMap.evalCLM (𝕜 := ℝ) (0, basis i)) ((fderivCLM ℝ) ε)) := by
   rw [distSpaceDeriv_apply, fderivD_apply]
 
 lemma apply_fderiv_eq_distSpaceDeriv {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (i : Fin d) (f : (Time × Space d) →d[ℝ] M) (ε : 𝓢(Time × Space d, ℝ)) :
-    f ((SchwartzMap.evalCLM (𝕜 := ℝ) (0, basis i)) ((fderivCLM ℝ) ε)) = - (distSpaceDeriv i f) ε := by
+    f ((SchwartzMap.evalCLM (𝕜 := ℝ) (0, basis i)) ((fderivCLM ℝ) ε)) =
+    - (distSpaceDeriv i f) ε := by
   simp [distSpaceDeriv_apply']
 
 /-!

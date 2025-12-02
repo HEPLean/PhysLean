@@ -731,8 +731,8 @@ lemma pi_comp {d n : ℕ}
   intro y
   exact sq_nonneg ‖f x y‖
 
-lemma vector_component {d: ℕ} {f : Space d → Lorentz.Vector d}
-    (hf : IsDistBounded f) (j : Fin 1 ⊕ Fin d) : IsDistBounded (fun x => f x j) := by
+lemma vector_component {d n : ℕ} {f : Space d → Lorentz.Vector n}
+    (hf : IsDistBounded f) (j : Fin 1 ⊕ Fin n) : IsDistBounded (fun x => f x j) := by
   rcases hf with ⟨hae1, ⟨n1, c1, g1, p1, c1_nonneg, p1_bound, bound1⟩⟩
   apply And.intro
   · fun_prop
@@ -905,6 +905,13 @@ lemma pow_shift {d : ℕ} (n : ℤ)
     rfl
 
 @[fun_prop]
+lemma inv_shift {d : ℕ}
+    (g : Space d.succ.succ) :
+    IsDistBounded (d := d.succ.succ) (fun x => ‖x - g‖⁻¹) := by
+  convert IsDistBounded.pow_shift (d := d.succ.succ) (-1) g (by simp) using 1
+  ext1 x
+  simp
+@[fun_prop]
 lemma nat_pow {d : ℕ} (n : ℕ) :
     IsDistBounded (d := d) (fun x => ‖x‖ ^ n) := by
   exact IsDistBounded.pow (d := d) (n : ℤ) (by omega)
@@ -941,6 +948,20 @@ lemma nat_pow_shift {d : ℕ} (n : ℕ)
     (g : Space d) :
     IsDistBounded (d := d) (fun x => ‖x - g‖ ^ n) := by
   exact IsDistBounded.pow_shift (d := d) (n : ℤ) g (by omega)
+
+@[fun_prop]
+lemma norm_sub {d : ℕ} (g : Space d) :
+    IsDistBounded (d := d) (fun x => ‖x - g‖) := by
+  convert IsDistBounded.nat_pow_shift (d := d) 1 g using 1
+  ext1 x
+  simp
+
+@[fun_prop]
+lemma norm_add {d : ℕ} (g : Space d) :
+    IsDistBounded (d := d) (fun x => ‖x + g‖) := by
+  convert IsDistBounded.nat_pow_shift (d := d) 1 (- g) using 1
+  ext1 x
+  simp
 
 @[fun_prop]
 lemma inv {n : ℕ} :
@@ -1020,6 +1041,11 @@ lemma zpow_smul_repr_self {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n) :
     fun_prop
   · intro x
     simp [norm_smul]
+
+lemma zpow_smul_repr_self_sub {d : ℕ} (n : ℤ) (hn : - (d - 1 : ℕ) - 1 ≤ n)
+    (y : Space d) :
+    IsDistBounded (d := d) (fun x => ‖x - y‖ ^ n • basis.repr (x - y)) := by
+  apply (zpow_smul_repr_self n hn).comp_sub_right y
 
 lemma inv_pow_smul_self {d : ℕ} (n : ℕ) (hn : - (d - 1 : ℕ) - 1 ≤ (- n : ℤ)) :
     IsDistBounded (d := d) (fun x => ‖x‖⁻¹ ^ n • x) := by

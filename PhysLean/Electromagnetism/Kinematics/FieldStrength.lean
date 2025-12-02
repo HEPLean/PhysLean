@@ -653,7 +653,8 @@ lemma fieldStrength_basis_repr_eq_single {d} {μν : (Fin 1 ⊕ Fin d) × (Fin 1
 @[simp]
 lemma fieldStrength_diag_zero {d} (A : DistElectromagneticPotential d)
     (ε : 𝓢(SpaceTime d, ℝ)) (μ : Fin 1 ⊕ Fin d) :
-    (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr (A.fieldStrength ε) (μ, μ) = 0 := by
+    (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr
+    (A.fieldStrength ε) (μ, μ) = 0 := by
   rw [fieldStrength_basis_repr_eq_single]
   simp
 
@@ -666,7 +667,7 @@ lemma distDeriv_fieldStrength_diag_zero {d} (A : DistElectromagneticPotential d)
   simp
 
 lemma fieldStrength_antisymmetric_basis {d} (A : DistElectromagneticPotential d)
-    (ε : 𝓢(SpaceTime d, ℝ)) (μ ν : Fin 1 ⊕ Fin d):
+    (ε : 𝓢(SpaceTime d, ℝ)) (μ ν : Fin 1 ⊕ Fin d) :
     (Vector.basis.tensorProduct Vector.basis).repr
     (A.fieldStrength ε) (μ, ν) = - (Vector.basis.tensorProduct Vector.basis).repr
     (A.fieldStrength ε) (ν, μ) := by
