@@ -48,8 +48,10 @@ namespace DistElectromagneticPotential
 
 ## A. The current density
 
-The current density of an infinite wire carrying a current `I` along the `x`-axis is given
-by a delta distribution in the `y` and `z` directions.
+The 4-current density of an infinite wire carrying a current `I` along the `x`-axis is given
+by
+
+$$J(t, x, y, z) = (0, I δ((y, z)), 0, 0).$$
 
 -/
 
@@ -98,6 +100,10 @@ lemma wireCurrentDensity_currentDensity_thrd (c : SpeedOfLight) (I : ℝ)
 
 ## B. The electromagnetic potential
 
+The electromagnetic potential of an infinite wire carrying a current `I` along the `x`-axis is
+given by
+
+$$A(t, x, y, z) = \left(0, -\frac{μ_0 I}{2\pi} \log (\sqrt{y^2 + z^2}), 0, 0\right).$$
 -/
 
 /-- The electromagnetic potential of an infinite wire along the x-axis carrying a current `I`. -/
@@ -114,6 +120,10 @@ noncomputable def infiniteWire (𝓕 : FreeSpace) (I : ℝ) :
 
 ### B.1. The scalar potential
 
+THe scalar potential of an infinite wire carrying a current `I` along the `x`-axis is zero:
+
+$$V(t, x, y, z) = 0.$$
+
 -/
 
 @[simp]
@@ -126,6 +136,13 @@ lemma infiniteWire_scalarPotential (𝓕 : FreeSpace) (I : ℝ) :
 /-!
 
 ### B.2. The vector potential
+
+The vector potential of an infinite wire carrying a current `I` along the `x`-axis is given by
+$$\vec A(t, x, y, z) = \left(-\frac{μ_0 I}{2\pi} \log (\sqrt{y^2 + z^2}), 0, 0\right).$$
+
+The time derivative $\partial_t \vec A$ is zero, as expected for a steady current,
+and the spatial derivative $\partial_x \vec A$ is also zero, as expected for
+a system with translational symmetry along the x-axis.
 
 -/
 
@@ -186,6 +203,9 @@ lemma infiniteWire_vectorPotential_distSpaceDeriv_0 (𝓕 : FreeSpace) (I : ℝ)
 /-!
 
 ## C. The electric field
+
+The electric field of an infinite wire carrying a current `I` along the `x`-axis is zero:
+$$\vec E(t, x, y, z) = 0.$$
 
 -/
 

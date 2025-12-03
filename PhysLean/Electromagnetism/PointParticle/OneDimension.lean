@@ -31,7 +31,7 @@ sitting at the origin in 1d space.
   - B.2. The vector potential is zero
   - B.3. The scalar potential
 - C. The electric field
-  - C.1. the time derivative of the electric field
+  - C.1. The time derivative of the electric field
 - D. The magnetic field
 - E. Maxwell's equations
 
@@ -179,7 +179,7 @@ lemma oneDimPointParticle_electricField (𝓕 : FreeSpace) (q : ℝ) (r₀ : Spa
 
 /-!
 
-### C.1. the time derivative of the electric field
+### C.1. The time derivative of the electric field
 
 -/
 
