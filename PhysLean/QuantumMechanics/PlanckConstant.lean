@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.NNReal.Defs
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # Planck's constant
@@ -12,6 +13,13 @@ In this module we define the Planck's constant `ℏ` as a positive real number.
 This is introduced as an axiom.
 
 -/
+
+TODO "DOC13" "Add documentation explaining the physical significance of Planck's constant
+  and its role in quantum mechanics, including references to the uncertainty principle."
+
+TODO "DOC14" "Document the choice of using an axiom for ℏ and discuss how this relates
+  to the unit system choices in PhysLean."
+
 open NNReal
 
 namespace Constants

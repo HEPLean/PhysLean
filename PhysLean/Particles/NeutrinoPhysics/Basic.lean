@@ -6,6 +6,7 @@ Authors: Prabhoda Chandra Sarjapur
 import Mathlib.LinearAlgebra.UnitaryGroup
 import Mathlib.Analysis.Complex.Trigonometric
 import Mathlib.Tactic.Polyrith
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # The PMNS matrix
@@ -13,6 +14,16 @@ import Mathlib.Tactic.Polyrith
 The definition the PMNS matrix, which describes neutrino oscillations as part of U(3).
 
 -/
+
+TODO "DOC21" "Expand the module docstring to explain the physical significance of the PMNS matrix
+  in neutrino physics, including the relationship to neutrino masses and mixing angles."
+
+TODO "DOC22" "Add documentation explaining the difference between Dirac and Majorana neutrinos
+  and how this affects the PMNS matrix parametrization."
+
+TODO "DOC23" "Document the standard parametrization of the PMNS matrix in terms of
+  three mixing angles θ₁₂, θ₂₃, θ₁₃ and one CP-violating phase δ."
+
 open Matrix Complex
 
 noncomputable section

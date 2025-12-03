@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Data.NNReal.Defs
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # Boltzmann constant
@@ -15,6 +16,13 @@ In this module we axiomise the existence of the Boltzmann constant in a given (b
 set of units.
 
 -/
+
+TODO "DOC15" "Add documentation explaining the physical significance of the Boltzmann constant
+  in statistical mechanics, including its relationship to entropy S = kB ln(W)."
+
+TODO "DOC16" "Document the connection between the Boltzmann constant and the ideal gas constant R,
+  explaining that R = NA * kB where NA is Avogadro's number."
+
 open NNReal
 
 namespace Constants

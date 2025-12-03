@@ -17,6 +17,12 @@ quadratic and cubic equations.
 -/
 TODO "6VZLZ" "Replace the definitions in this file with Mathlib definitions."
 
+TODO "DOC19" "Add documentation explaining the physical applications of homogeneous quadratic
+  and cubic equations, particularly in anomaly cancellation conditions."
+
+TODO "DOC20" "Document the relationship between these symmetric multilinear forms
+  and physics applications like Yukawa couplings and gauge invariance conditions."
+
 /-- The structure defining a homogeneous quadratic equation. -/
 @[simp]
 def HomogeneousQuadratic (V : Type) [AddCommMonoid V] [Module ℚ V] : Type :=

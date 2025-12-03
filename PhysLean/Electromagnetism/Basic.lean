@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.SpaceTime.Basic
+import PhysLean.Meta.TODO.Basic
 /-!
 
 # Electromagnetism
@@ -13,6 +14,13 @@ In this file we define the electric field, the magnetic field, and the field str
 This module is old and parts of it will soon be replaced.
 
 -/
+
+TODO "DOC11" "Expand the module docstring to include an overview of the electromagnetism
+  module structure, including references to Maxwell's equations and the electromagnetic
+  potential formalism."
+
+TODO "DOC12" "Add documentation explaining the choice of using `d+1` dimensional spacetime
+  for the electric and magnetic fields, and how this generalizes the 3+1 case."
 
 namespace Electromagnetism
 
