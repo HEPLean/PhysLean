@@ -48,8 +48,7 @@ namespace DistElectromagneticPotential
 
 ## A. The current density
 
-The 4-current density of an infinite wire carrying a current `I` along the `x`-axis is given
-by
+The 4-current density of an infinite wire carrying a current `I` along the `x`-axis is given by
 
 $$J(t, x, y, z) = (0, I δ((y, z)), 0, 0).$$
 
@@ -224,21 +223,12 @@ lemma infiniteWire_electricField (𝓕 : FreeSpace) (I : ℝ) :
 
 lemma infiniteWire_isExterma {𝓕 : FreeSpace} {I : ℝ} :
     IsExtrema 𝓕 (infiniteWire 𝓕 I) (wireCurrentDensity 𝓕.c I) := by
-  simp [isExtrema_iff_components, gradLagrangian_sum_inl_0]
-  intro η i
-  rw [gradLagrangian_sum_inr_i]
-  simp [SpaceTime.distTimeSlice_symm_apply]
-  generalize ((compCLMOfContinuousLinearEquiv ℝ (SpaceTime.toTimeAndSpace 𝓕.c).symm) η) = ε at *
+  simp only [isExtrema_iff_vectorPotential, infiniteWire_electricField, map_zero,
+    ContinuousLinearMap.zero_apply, one_div, wireCurrentDensity_chargeDesnity, mul_zero,
+    implies_true, PiLp.zero_apply, zero_sub, true_and]
+  intro ε i
   field_simp
-  simp only [mul_zero]
-  have h1 (a b : ℝ) : -a + b = 0 ↔ a = b := by grind
-  rw [h1]
-  trans ∑ x, -(distSpaceDeriv x (distSpaceDeriv x ((infiniteWire 𝓕 I).vectorPotential 𝓕.c)) ε i
-    - distSpaceDeriv x (distSpaceDeriv i ((infiniteWire 𝓕 I).vectorPotential 𝓕.c)) ε x)
-  · congr
-    funext j
-    rw [magneticFieldMatrix_distSpaceDeriv_basis_repr_eq_vector_potential]
-    ring
+  rw [neg_add_eq_zero]
   fin_cases i
   · simp [Fin.sum_univ_three]
     simp [distSpaceDeriv_apply', infiniteWire_vectorPotential_fst]

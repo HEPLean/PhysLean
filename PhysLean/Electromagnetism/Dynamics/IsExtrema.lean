@@ -37,6 +37,8 @@ Maxwell's equations with sources, i.e. Gauss's law and Ampère's law.
   - D.1. Second time derivatives of the magnetic field from the extrema condition
   - D.2. Second time derivatives of the electric field from the extrema condition
 - E. Is Extema condition in the distributional case
+  - E.1. IsExtrema and Gauss's law and Ampère's law
+  - E.2. IsExtrema in terms of Vector Potentials
 
 ## iv. References
 
@@ -468,6 +470,113 @@ lemma isExtrema_iff_components {𝓕 : FreeSpace}
     match i with
     | Sum.inl 0 => exact h.1 ε
     | Sum.inr j => exact h.2 ε j
+/-!
+
+### E.1. IsExtrema and Gauss's law and Ampère's law
+
+We show that `A` is an extrema of the lagrangian if and only if Gauss's law and Ampère's law hold.
+In other words,
+
+$$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$$
+and
+$$\mu_0 \varepsilon_0 \frac{\partial \mathbf{E}_i}{\partial t} -
+  ∑ j, \partial_j \mathbf{B}_{j i} + \mu_0 \mathbf{J}_i = 0.$$
+Here $\mathbf{B}$ is the magnetic field matrix.
+
+-/
+open Space
+lemma isExtrema_iff_space_time {𝓕 : FreeSpace}
+    (A : DistElectromagneticPotential d)
+    (J : DistLorentzCurrentDensity d) :
+    IsExtrema 𝓕 A J ↔
+      (∀ ε, distSpaceDiv (A.electricField 𝓕.c) ε = (1/𝓕.ε₀) * (J.chargeDensity 𝓕.c) ε) ∧
+      (∀ ε i, 𝓕.μ₀ * 𝓕.ε₀ * (Space.distTimeDeriv (A.electricField 𝓕.c)) ε i -
+      ∑ j, ((PiLp.basisFun 2 ℝ (Fin d)).tensorProduct (PiLp.basisFun 2 ℝ (Fin d))).repr
+        ((Space.distSpaceDeriv j (A.magneticFieldMatrix 𝓕.c)) ε) (j, i) +
+      𝓕.μ₀ * J.currentDensity 𝓕.c ε i = 0) := by
+  rw [isExtrema_iff_components]
+  refine and_congr ?_ ?_
+  · simp [gradLagrangian_sum_inl_0]
+    field_simp
+    simp [𝓕.c_sq]
+    field_simp
+    simp [sub_eq_zero]
+    apply Iff.intro
+    · intro h ε
+      convert h (SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ
+        (SpaceTime.toTimeAndSpace 𝓕.c (d := d)) ε) using 1
+      · simp [SpaceTime.distTimeSlice_symm_apply]
+        ring_nf
+        congr
+        ext x
+        simp
+      · simp [SpaceTime.distTimeSlice_symm_apply]
+        congr
+        ext x
+        simp
+    · intro h ε
+      convert h (SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ
+        (SpaceTime.toTimeAndSpace 𝓕.c (d := d)).symm ε) using 1
+      · simp [SpaceTime.distTimeSlice_symm_apply]
+        ring_nf
+  · apply Iff.intro
+    · intro h ε i
+      specialize h (SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ
+        (SpaceTime.toTimeAndSpace 𝓕.c (d := d)) ε) i
+      linear_combination (norm := field_simp) (𝓕.μ₀) * h
+      simp [gradLagrangian_sum_inr_i, SpaceTime.distTimeSlice_symm_apply]
+      have hx : (SchwartzMap.compCLMOfContinuousLinearEquiv ℝ (SpaceTime.toTimeAndSpace 𝓕.c).symm)
+          ((SchwartzMap.compCLMOfContinuousLinearEquiv ℝ (SpaceTime.toTimeAndSpace 𝓕.c)) ε)
+          = ε := by
+        ext i
+        simp
+      simp [hx, 𝓕.c_sq]
+      field_simp
+      ring
+    · intro h ε i
+      specialize h (SchwartzMap.compCLMOfContinuousLinearEquiv (F := ℝ) ℝ
+        (SpaceTime.toTimeAndSpace 𝓕.c (d := d)).symm ε) i
+      linear_combination (norm := field_simp) (𝓕.μ₀⁻¹) * h
+      simp [gradLagrangian_sum_inr_i, SpaceTime.distTimeSlice_symm_apply, 𝓕.c_sq]
+      field_simp
+      ring
+
+/-!
+
+### E.2. IsExtrema in terms of Vector Potentials
+
+We show that `A` is an extrema of the lagrangian if and only if Gauss's law and Ampère's law hold.
+In other words,
+
+$$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$$
+and
+$$\mu_0 \varepsilon_0 \frac{\partial \mathbf{E}_i}{\partial t} -
+  ∑ j, -(\partial_j \partial_j \vec A_i - \partial_j \partial_i \vec A_j)
+  + \mu_0 \mathbf{J}_i = 0.$$
+
+-/
+
+lemma isExtrema_iff_vectorPotential {𝓕 : FreeSpace}
+    (A : DistElectromagneticPotential d)
+    (J : DistLorentzCurrentDensity d) :
+    IsExtrema 𝓕 A J ↔
+      (∀ ε, distSpaceDiv (A.electricField 𝓕.c) ε = (1/𝓕.ε₀) * (J.chargeDensity 𝓕.c) ε) ∧
+      (∀ ε i, 𝓕.μ₀ * 𝓕.ε₀ * distTimeDeriv (A.electricField 𝓕.c) ε i -
+      (∑ x, -(distSpaceDeriv x (distSpaceDeriv x (A.vectorPotential 𝓕.c)) ε i
+        - distSpaceDeriv x (distSpaceDeriv i (A.vectorPotential 𝓕.c)) ε x)) +
+      𝓕.μ₀ * J.currentDensity 𝓕.c ε i = 0) := by
+  rw [isExtrema_iff_space_time]
+  refine and_congr (by rfl) ?_
+  suffices ∀ ε i, ∑ x, -(distSpaceDeriv x (distSpaceDeriv x (A.vectorPotential 𝓕.c)) ε i
+        - distSpaceDeriv x (distSpaceDeriv i (A.vectorPotential 𝓕.c)) ε x) =
+        ∑ j, ((PiLp.basisFun 2 ℝ (Fin d)).tensorProduct (PiLp.basisFun 2 ℝ (Fin d))).repr
+          ((Space.distSpaceDeriv j (A.magneticFieldMatrix 𝓕.c)) ε) (j, i) by
+    conv_lhs => enter [2, 2]; rw [← this]
+  intro ε i
+  congr
+  funext j
+  rw [magneticFieldMatrix_distSpaceDeriv_basis_repr_eq_vector_potential]
+  ring
 
 end DistElectromagneticPotential
 end Electromagnetism
