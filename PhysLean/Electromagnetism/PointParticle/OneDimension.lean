@@ -16,9 +16,6 @@ import PhysLean.SpaceAndTime.TimeAndSpace.ConstantTimeDist
 In this module we give the electromagnetic properties of a point particle
 sitting at the origin in 1d space.
 
-The electric field is given by the Heaviside step function, and the scalar potential
-is given by a function proportional to the absolute value of the distance from the particle.
-
 ## ii. Key results
 
 - `oneDimPointParticle` : The electromagnetic potential of a point particle

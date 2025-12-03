@@ -9,15 +9,12 @@ import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.TimeAndSpace.ConstantTimeDist
 /-!
 
-# The electrostatics of a stationary point particle in 3d
+# Electrostatics of a stationary point particle in 3d
 
 ## i. Overview
 
 In this module we give the electromagnetic properties of a point particle
 sitting at the origin in 3d space.
-
-The electric field is given by the Heaviside step function, and the scalar potential
-is given by a function proportional to the absolute value of the distance from the particle.
 
 ## ii. Key results
 
@@ -28,12 +25,17 @@ is given by a function proportional to the absolute value of the distance from t
 
 ## iii. Table of contents
 
-- A. The Potentials
-  - A.1. The electromagnetic potential
-  - A.2. The vector potential is zero
-  - A.3. The scalar potential
-- B. The electric field
-- D. Maxwell's equations
+- A. The current density
+  - A.1. The charge density
+  - A.2. The 3-current density
+- B. The Potentials
+  - B.1. The electromagnetic potential
+  - B.2. The scalar potential
+  - B.3. The vector potential is zero
+- C. The electric field
+  - C.1. the time derivative of the electric field
+- D. The magnetic field
+- E. Maxwell's equations
 
 ## iv. References
 
@@ -48,9 +50,16 @@ namespace DistElectromagneticPotential
 
 ## A. The current density
 
+The current density of a point particle in 3d space is given by:
+
+$$J(r) = (c q \delta(r - r₀), 0, 0, 0) $$
+
+where $c$ is the speed light, $q$ is the charge of the particle and $r₀$ is the position of the
+particle in 3d space.
+
 -/
 
-/-- The current density of a point particle stationary at a point `r\₀`
+/-- The current density of a point particle stationary at a point `r₀`
   of 3d space. -/
 noncomputable def threeDimPointParticleCurrentDensity (c : SpeedOfLight) (q : ℝ) (r₀ : Space 3) :
     DistLorentzCurrentDensity 3 := (SpaceTime.distTimeSlice c).symm <|
@@ -67,12 +76,16 @@ lemma threeDimPointParticleCurrentDensity_eq_distTranslate (c : SpeedOfLight) (q
   ext η
   simp [distTranslate_apply]
 
-@[simp]
-lemma threeDimPointParticleCurrentDensity_currentDensity (c : SpeedOfLight) (q : ℝ) (r₀ : Space 3) :
-    (threeDimPointParticleCurrentDensity c q r₀).currentDensity c = 0 := by
-  ext ε i
-  simp [threeDimPointParticleCurrentDensity, DistLorentzCurrentDensity.currentDensity,
-    Lorentz.Vector.spatialCLM, constantTime_apply]
+/-!
+
+### A.1. The charge density
+
+The charge density of a point particle in 3d space is given by:
+$$ρ(r) = q \delta(r - r₀) $$
+
+where $q$ is the charge of the particle and $r₀$ is the position of the particle in 3d space.
+
+-/
 
 @[simp]
 lemma threeDimPointParticleCurrentDensity_chargeDensity (c : SpeedOfLight) (q : ℝ) (r₀ : Space 3) :
@@ -89,13 +102,38 @@ lemma threeDimPointParticleCurrentDensity_chargeDensity (c : SpeedOfLight) (q : 
 
 /-!
 
-## A. The Potentials
+### A.2. The 3-current density
+
+The 3-current density of a point particle in 3d space is given by:
+$$\vec J(r) = 0.$$
+
+In other words, there is no current flow for a point particle at rest.
+
+-/
+
+@[simp]
+lemma threeDimPointParticleCurrentDensity_currentDensity (c : SpeedOfLight) (q : ℝ) (r₀ : Space 3) :
+    (threeDimPointParticleCurrentDensity c q r₀).currentDensity c = 0 := by
+  ext ε i
+  simp [threeDimPointParticleCurrentDensity, DistLorentzCurrentDensity.currentDensity,
+    Lorentz.Vector.spatialCLM, constantTime_apply]
+
+/-!
+
+## B. The Potentials
 
 -/
 
 /-!
 
-### A.1. The electromagnetic potential
+### B.1. The electromagnetic potential
+
+The 4-potential of a point particle in 3d space is given by:
+
+$$A(r) = \frac{q μ₀ c}{4 π |r - r₀|} (1, 0, 0, 0) $$
+
+where $μ₀$ is the permeability of free space, $c$ is the speed of light,
+$q$ is the charge of the particle and $r₀$ is the position of the particle in 3d space.
 
 -/
 open Real
@@ -120,22 +158,14 @@ lemma threeDimPointParticle_eq_distTranslate (𝓕 : FreeSpace) (q : ℝ) (r₀ 
   ext η
   simp [distTranslate_ofFunction]
 
-/-
-
-### A.2. The vector potential is zero
-
--/
-
-@[simp]
-lemma threeDimPointParticle_vectorPotential (𝓕 : FreeSpace) (q : ℝ) (r₀ : Space 3) :
-    (threeDimPointParticle 𝓕 q r₀).vectorPotential 𝓕.c = 0 := by
-  ext ε i
-  simp [vectorPotential, Lorentz.Vector.spatialCLM,
-    threeDimPointParticle, constantTime_apply, distOfFunction_vector_eval]
-
 /-!
 
-### A.3. The scalar potential
+### B.2. The scalar potential
+
+The first component of the 4-potential is the scalar potential, once
+one has taken account of factors of the speed of light. It is given by:
+
+$$V(r) = \frac{q}{4 π \epsilon_0 |r - r_0|}.$$
 
 -/
 
@@ -161,7 +191,28 @@ lemma threeDimPointParticle_scalarPotential (𝓕 : FreeSpace) (q : ℝ) (r₀ :
 
 /-!
 
-## B. The electric field
+### B.3. The vector potential is zero
+
+The spatial components of the 4-potential give the vector potential, which is zero
+for a stationary point particle.
+
+$$\vec A(r) = 0.$$
+
+-/
+
+@[simp]
+lemma threeDimPointParticle_vectorPotential (𝓕 : FreeSpace) (q : ℝ) (r₀ : Space 3) :
+    (threeDimPointParticle 𝓕 q r₀).vectorPotential 𝓕.c = 0 := by
+  ext ε i
+  simp [vectorPotential, Lorentz.Vector.spatialCLM,
+    threeDimPointParticle, constantTime_apply, distOfFunction_vector_eval]
+
+/-!
+
+## C. The electric field
+
+The electric field of a point particle in 3d space is given by:
+$$\vec E(r) = \frac{q}{4 π \epsilon_0} \frac{\vec r - \vec r₀}{|\vec r - \vec r₀|^3}.$$
 
 -/
 
@@ -184,7 +235,7 @@ lemma threeDimPointParticle_electricField (𝓕 : FreeSpace) (q : ℝ) (r₀ : S
 
 /-!
 
-### B.1. the time derivative of the electric field
+### C.1. the time derivative of the electric field
 
 -/
 
@@ -196,7 +247,9 @@ lemma threeDimPointParticle_electricField_timeDeriv (𝓕 : FreeSpace) (q : ℝ)
 
 /-!
 
-## C. The magnetic field
+## D. The magnetic field
+
+Given that the vector potential is zero, the magnetic field is also zero.
 
 -/
 
@@ -208,7 +261,13 @@ lemma threeDimPointParticle_magneticFieldMatrix (q : ℝ) (r₀ : Space 3) :
 
 /-!
 
-## D. Maxwell's equations
+## E. Maxwell's equations
+
+The divergence of the electric field of a point particle in 3d space is given by:
+$$∇ · \vec E(r) = \frac{1}{\epsilon_0} q \delta(r - r₀).$$
+
+From this, it follows that the electromagnetic potential of a point particle in 3d space
+satisfies Maxwell's equations for a point particle at rest.
 
 -/
 

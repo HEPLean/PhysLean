@@ -313,7 +313,6 @@ PhysLean/Units/WithDim/Momentum.lean
 PhysLean/Units/WithDim/Pressure.lean
 PhysLean/Units/WithDim/Speed.lean
 PhysLean/Units/WithDim/Velocity.lean
-PhysLean/Electromagnetism/PointParticle/ThreeDimension.lean
 PhysLean/Electromagnetism/Vacuum/Homogeneous.lean
 PhysLean/Electromagnetism/Vacuum/OneDimension.lean
 PhysLean/Particles/NeutrinoPhysics/Basic.lean
