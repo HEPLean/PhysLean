@@ -19,6 +19,7 @@ import PhysLean.Cosmology.Basic
 import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
 import PhysLean.Electromagnetism.Charge.ChargeUnit
+import PhysLean.Electromagnetism.Current.CircularCoil
 import PhysLean.Electromagnetism.Current.InfiniteWire
 import PhysLean.Electromagnetism.Dynamics.Basic
 import PhysLean.Electromagnetism.Dynamics.CurrentDensity
