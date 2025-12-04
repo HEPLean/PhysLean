@@ -8,7 +8,7 @@ import PhysLean.SpaceAndTime.Space.Norm
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.Space.ConstantSliceDist
 import PhysLean.SpaceAndTime.TimeAndSpace.ConstantTimeDist
-/-
+/-!
 # The electrostatics of a circular coil
 
 ## i. Overview
