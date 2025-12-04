@@ -17,8 +17,8 @@ positive reals.
 On `LengthUnit` there is an instance of division giving a real number, corresponding to the
 ratio of the two scales of length unit.
 
-To define specific length units, we first axiomise the existence of a
-a given length unit, and then construct all other length units from it. We choose to axiomise the
+To define specific length units, we first state the existence of a
+a given length unit, and then construct all other length units from it. We choose to state the
 existence of the length unit of meters, and construct all other length units from that.
 
 -/
@@ -126,16 +126,16 @@ lemma scale_scale (x : LengthUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < r2) :
 
 ## Specific choices of Length units
 
-To define a specific length units, we must first axiomise the existence of a
-a given length unit, and then construct all other length units from it.
-We choose to axiomise the existence of the length unit of meters.
-
-We need an axiom since this relates something to something in the physical world.
+To define a specific length units.
+We first define the notion of a meter to correspond to the length unit with underlying value
+equal to `1`. This is really down to a choice in the isomorphism between the set of metrics
+on the space manifold and the positive reals.
+From this choice of meters, we can define other length units by scaling meters.
 
 -/
 
-/-- The axiom corresponding to the definition of a length unit of meters. -/
-axiom meters : LengthUnit
+/-- The definition of a length unit of meters. -/
+def meters : LengthUnit := ⟨1, by norm_num⟩
 
 /-- The length unit of femtometers (10⁻¹⁵ of a meter). -/
 noncomputable def femtometers : LengthUnit := scale ((1/10) ^ (15)) meters

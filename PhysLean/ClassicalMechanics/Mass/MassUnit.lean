@@ -18,8 +18,8 @@ positive reals.
 On `MassUnit` there is an instance of division giving a real number, corresponding to the
 ratio of the two scales of mass unit.
 
-To define specific mass units, we first axiomise the existence of a
-a given mass unit, and then construct all other mass units from it. We choose to axiomise the
+To define specific mass units, we first state the existence of a
+a given mass unit, and then construct all other mass units from it. We choose to state the
 existence of the mass unit of kilograms, and construct all other mass units from that.
 
 -/
@@ -128,16 +128,16 @@ lemma scale_scale (x : MassUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < r2) :
 
 ## Specific choices of mass units
 
-To define a specific mass units, we must first axiomise the existence of a
-a given mass unit, and then construct all other mass units from it.
-We choose to axiomise the existence of the mass unit of kilograms.
-
-We need an axiom since this relates something to something in the physical world.
+To define a specific mass units.
+We first define the notion of a kilogram to correspond to the mass unit with underlying value
+equal to `1`. This is really down to a choice in the isomorphism between the set of metrics
+on the mass manifold and the positive reals.
+From this choice of kilograms, we can define other length units by scaling kilograms.
 
 -/
 
-/-- The axiom corresponding to the definition of a mass unit of kilograms. -/
-axiom kilograms : MassUnit
+/-- The definition of a mass unit of kilograms. -/
+def kilograms : MassUnit := ⟨1, by norm_num⟩
 
 /-- The mass unit of a microgram (10^(-9) of a kilogram). -/
 noncomputable def micrograms : MassUnit := scale ((1/10) ^ 9) kilograms

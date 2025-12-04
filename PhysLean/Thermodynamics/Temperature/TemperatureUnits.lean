@@ -18,9 +18,9 @@ positive reals.
 On `TemperatureUnit` there is an instance of division giving a real number, corresponding to the
 ratio of the two scales of temperature unit.
 
-To define specific temperature units, we first axiomise the existence of a
+To define specific temperature units, we first state the existence of a
 a given temperature unit, and then construct all other temperature units from it.
-We choose to axiomise the
+We choose to state the
 existence of the temperature unit of kelvin, and construct all other temperature units from that.
 
 -/
@@ -129,16 +129,17 @@ lemma scale_scale (x : TemperatureUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < 
 
 ## Specific choices of temperature units
 
-To define a specific temperature units, we must first axiomise the existence of a
-a given temperature unit, and then construct all other temperature units from it.
-We choose to axiomise the existence of the temperature unit of kelvin.
+To define a specific temperature units.
+We first define the notion of a kelvin to correspond to the temperature unit with underlying value
+equal to `1`. This is really down to a choice in the isomorphism between the set of metrics
+on the temperature manifold and the positive reals.
 
-We need an axiom since this relates something to something in the physical world.
+Once we have defined kelvin, we can define other temperature units by scaling kelvin.
 
 -/
 
-/-- The axiom corresponding to the definition of a temperature unit of kelvin. -/
-axiom kelvin : TemperatureUnit
+/-- The definition of a temperature unit of kelvin. -/
+def kelvin : TemperatureUnit := ⟨1, by norm_num⟩
 
 /-- The temperature unit of degrees nanokelvin (10^(-9) kelvin). -/
 noncomputable def nanokelvin : TemperatureUnit := scale (1e-9) kelvin

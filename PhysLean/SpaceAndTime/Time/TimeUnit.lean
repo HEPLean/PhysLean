@@ -20,8 +20,8 @@ ratio of the two scales of time unit.
 We define `HasTimeDimension` to be a property of a function from `TimeUnit` to a type `M`
 which is a function that scales with the time unit with respect to the rational power `d`.
 
-To define specific time units, we first axiomise the existence of a
-a given time unit, and then construct all other time units from it. We choose to axiomise the
+To define specific time units, we first state the existence of a
+a given time unit, and then construct all other time units from it. We choose to state the
 existence of the time unit of seconds, and construct all other time units from that.
 
 -/
@@ -129,16 +129,16 @@ lemma scale_scale (x : TimeUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < r2) :
 
 ## Specific choices of time units
 
-To define a specific time units, we must first axiomise the existence of a
-a given time unit, and then construct all other time units from it.
-We choose to axiomise the existence of the time unit of seconds.
-
-We need an axiom since this relates something to something in the physical world.
+To define a specific time units.
+We first define the notion of a second to correspond to the length unit with underlying value
+equal to `1`. This is really down to a choice in the isomorphism between the set of metrics
+on the time manifold and the positive reals.
+From this choice of second, we can define other length units by scaling second.
 
 -/
 
-/-- The axiom corresponding to the definition of a time unit of seconds. -/
-axiom seconds : TimeUnit
+/-- The definition of a time unit of seconds. -/
+def seconds : TimeUnit := ⟨1, by norm_num⟩
 
 /-- The time unit of femtoseconds (10⁻¹⁵ of a second). -/
 noncomputable def femtoseconds : TimeUnit := scale ((1/10) ^ (15)) seconds

@@ -23,9 +23,9 @@ electron being in the negative direction.
 On `ChargeUnit` there is an instance of division giving a real number, corresponding to the
 ratio of the two scales of temperature unit.
 
-To define specific charge units, we first axiomise the existence of a
+To define specific charge units, we first state the existence of a
 a given charge unit, and then construct all other charge units from it.
-We choose to axiomise the
+We choose to state the
 existence of the charge unit of the coulomb, and construct all other charge units from that.
 
 -/
@@ -135,16 +135,15 @@ lemma scale_scale (x : ChargeUnit) (r1 r2 : ℝ) (hr1 : 0 < r1) (hr2 : 0 < r2) :
 
 ## Specific choices of charge units
 
-To define a specific charge units, we must first axiomise the existence of a
-a given charge unit, and then construct all other charge units from it.
-We choose to axiomise the existence of the charge unit of coulomb.
-
-We need an axiom since this relates something to something in the physical world.
+We define specific choices of charge units.
+We first define the notion of a columb to correspond to the charge unit with underlying value
+equal to `1`. This is really down to a choice in the isomorphism between the set of metrics
+on the charge manifold and the positive reals.
 
 -/
 
-/-- The axiom corresponding to the definition of a charge unit of coulomb. -/
-axiom coulombs : ChargeUnit
+/-- The definition of a charge unit of coulomb. -/
+def coulombs : ChargeUnit := ⟨1, by norm_num⟩
 
 /-- The charge unit of a elementryCharge (1.602176634×10−19 coulomb). -/
 noncomputable def elementaryCharge : ChargeUnit := scale (1.602176634e-19) coulombs
