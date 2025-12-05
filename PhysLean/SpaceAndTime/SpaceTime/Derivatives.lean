@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.SpaceTime.LorentzAction
+import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 /-!
 
 # Derivatives on SpaceTime
@@ -172,6 +173,30 @@ lemma deriv_comp_lorentz_action {M : Type} [NormedAddCommGroup M] [NormedSpace �
   · fun_prop
   · fun_prop
 
+variable
+    {c : Fin n → realLorentzTensor.Color} {M : Type} [NormedAddCommGroup M]
+      [NormedSpace ℝ M] [Tensorial (realLorentzTensor d) c M] [T2Space M]
+lemma deriv_equivariant  (f : SpaceTime d → M) (Λ : LorentzGroup d) (x : SpaceTime d)
+    (hf : Differentiable ℝ f) (μ : Fin 1 ⊕ Fin d) :
+     ∂_ μ (fun x => Λ • f (Λ⁻¹ • x)) x =
+     ∑ ν, Λ⁻¹.1 ν μ • Λ • ∂_ ν f (Λ⁻¹ • x) := by
+  have h1 (μ : Fin 1 ⊕ Fin d) (x : SpaceTime d) :
+       ∂_ μ (fun x => Λ • f (Λ⁻¹ • x)) x =
+      Λ • ∂_ μ (fun x => f (Λ⁻¹ • x)) x := by
+    change ∂_ μ (TensorSpecies.Tensorial.actionCLM _ Λ ∘ fun x => f (Λ⁻¹ • x)) x = _
+    rw [deriv_eq]
+    rw [fderiv_comp]
+    simp [Tensorial.actionCLM_apply, ← deriv_eq]
+    · fun_prop
+    · apply Differentiable.differentiableAt
+      have hx :  Differentiable ℝ (f ∘ (Lorentz.Vector.actionCLM Λ⁻¹)) := by fun_prop
+      exact hx
+  rw [h1 μ x, deriv_comp_lorentz_action]
+  change (TensorSpecies.Tensorial.actionCLM _ Λ) ( ∑ ν, (Λ⁻¹).1 ν μ • ∂_ ν f (Λ⁻¹ • x)) = _
+  simp
+  simp [TensorSpecies.Tensorial.actionCLM_apply]
+  · fun_prop
+
 /-!
 
 ### A.5. Spacetime derivatives in terms of time and space derivatives
@@ -317,9 +342,7 @@ We now show how the Lorentz group action on distributions interacts with derivat
 
 -/
 
-variable
-    {c : Fin n → realLorentzTensor.Color} {M : Type} [NormedAddCommGroup M]
-      [NormedSpace ℝ M] [Tensorial (realLorentzTensor d) c M] [T2Space M]
+
 
 lemma _root_.SchwartzMap.sum_apply {α : Type} [NormedAddCommGroup α]
     [NormedSpace ℝ α]
@@ -378,6 +401,72 @@ lemma distDeriv_comp_lorentz_action {μ : Fin 1 ⊕ Fin d} (Λ : LorentzGroup d)
   rw [deriv_comp_lorentz_action]
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, inv_smul_smul, smul_eq_mul]
   exact SchwartzMap.differentiable η
+
+/-!
+
+## C. Derivatives of tensors
+
+-/
+open TensorProduct
+
+def tensorDeriv (f : SpaceTime d → M) :
+    SpaceTime d → Lorentz.CoVector d ⊗[ℝ] M := fun x =>
+  ∑ μ, (Lorentz.CoVector.basis μ) ⊗ₜ (∂_ μ f x)
+
+lemma tensorDeriv_equivariant (f : SpaceTime d → M) (Λ : LorentzGroup d) (x : SpaceTime d)
+    (hf : Differentiable ℝ f) :
+    tensorDeriv (fun x => Λ • f (Λ⁻¹ • x)) x =
+    Λ • tensorDeriv f (Λ⁻¹ • x) := by
+  simp [tensorDeriv]
+  conv_lhs =>
+    enter [2, μ]
+    rw [deriv_equivariant f Λ x hf μ, tmul_sum]
+    enter [2, ν]
+    rw [← smul_tmul]
+  rw [Finset.sum_comm]
+  conv_lhs =>
+    enter [2, ν]
+    rw [← sum_tmul, ← Lorentz.CoVector.smul_basis, ← Tensorial.smul_prod]
+  change _ = (TensorSpecies.Tensorial.smulLinearMap Λ)  _
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, map_sum]
+  simp [TensorSpecies.Tensorial.smulLinearMap_apply]
+
+lemma tensorDeriv_toTensor_basis_repr
+    {f : SpaceTime d → M}
+    (hf : Differentiable ℝ f) (x : SpaceTime d)
+    (b : Tensor.ComponentIdx (Fin.append ![realLorentzTensor.Color.down] c)) :
+    (Tensor.basis _).repr (Tensorial.toTensor (tensorDeriv f x)) b =
+    ∂_ (Lorentz.CoVector.indexEquiv (Tensor.ComponentIdx.prodEquiv b).1)
+      (fun x => (Tensor.basis _).repr (Tensorial.toTensor (f x))
+        (Tensor.ComponentIdx.prodEquiv b).2) x := by
+  simp [tensorDeriv]
+  conv_lhs =>
+    enter [2, μ]
+    rw [Tensorial.toTensor_tprod, Tensor.prodT_basis_repr_apply]
+    simp [Lorentz.CoVector.toTensor_basis_eq_tensor_basis, Finsupp.single_apply]
+  rw [Finset.sum_eq_single (Lorentz.CoVector.indexEquiv  (Tensor.ComponentIdx.prodEquiv b).1 )]
+  · simp
+    generalize (Lorentz.CoVector.indexEquiv (Tensor.ComponentIdx.prodEquiv b).1) = μ at *
+    generalize (Tensor.ComponentIdx.prodEquiv b).2 = ν at *
+    have h1 (x : SpaceTime d) :
+       ((Tensor.basis c).repr (Tensorial.toTensor (f x))) ν =
+        (ContinuousLinearMap.proj ν ∘L
+          ((Tensor.basis c).map (Tensorial.toTensor).symm).equivFunL.toContinuousLinearMap) (f x)  := by
+      simp
+    conv_rhs =>
+      enter [2, x]
+      rw [h1 x]
+    conv_rhs =>
+      rw [deriv_eq]
+      rw [fderiv_comp' _ (by fun_prop) (by fun_prop)]
+    rw [ContinuousLinearMap.fderiv]
+    simp [deriv_eq]
+  · intro b' _ hb
+    simp
+    intro hx
+    grind
+  · simp
+
 
 end SpaceTime
 

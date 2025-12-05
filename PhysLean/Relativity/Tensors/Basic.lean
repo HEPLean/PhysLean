@@ -577,6 +577,19 @@ lemma PermCond.inv_perserve_color {n m : ℕ} {c : Fin n → C} {c1 : Fin m → 
   rw [h.preserve_color]
   rfl
 
+lemma PermCond.symm {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
+    {σ : Fin m → Fin n} (h : PermCond c c1 σ) :
+    PermCond c1 c (h.inv σ) := by
+  apply And.intro
+  · refine Function.bijective_iff_has_inverse.mpr ?_
+    use σ
+    apply And.intro
+    · intro x
+      simp [inv_apply_apply]
+    · intro x
+      simp [apply_inv_apply]
+  · intro x
+    rw [h.inv_perserve_color]
 /-- For a map `σ : Fin m → Fin n` satisfying `PermCond c c1 σ`,
   that map lifted to a morphism in the `OverColor C` category. -/
 def PermCond.toHom {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
@@ -779,6 +792,23 @@ lemma permT_basis_repr_symm_apply {n m : ℕ} {c : Fin n → C} {c1 : Fin m → 
     simp [h]
   · intro t1 t2 h1 h2
     simp [h1, h2]
+
+lemma permT_eq_zero_iff {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
+    {σ : Fin m → Fin n} (h : PermCond c c1 σ) (t : S.Tensor c) :
+    permT σ h t = 0 ↔ t = 0 := by
+  apply Iff.intro
+  · intro h'
+    trans permT (h.inv σ) (PermCond.symm h) ((permT σ h) t)
+    · rw [permT_permT]
+      rw [permT_congr_eq_id']
+      · funext x
+        simp [PermCond.inv_apply_apply]
+      · rfl
+    · rw [h']
+      simp
+  · intro hzero
+    rw [hzero]
+    simp
 
 /-!
 ## field

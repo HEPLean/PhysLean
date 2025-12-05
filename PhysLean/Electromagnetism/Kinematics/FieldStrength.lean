@@ -205,6 +205,10 @@ open ContDiff
 noncomputable abbrev fieldStrengthMatrix {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :=
     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x)
 
+lemma fieldStrengthMatrix_eq {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
+    A.fieldStrengthMatrix x =
+     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x):= by rfl
+
 lemma fieldStrengthMatrix_eq_tensor_basis_repr {d} (A : ElectromagneticPotential d)
     (x : SpaceTime d) (μ ν : (Fin 1 ⊕ Fin d)) :
     A.fieldStrengthMatrix x (μ, ν) =
@@ -212,6 +216,18 @@ lemma fieldStrengthMatrix_eq_tensor_basis_repr {d} (A : ElectromagneticPotential
     (fun | 0 => finSumFinEquiv μ | 1 => finSumFinEquiv ν) := by
   rw [toFieldStrength_tensor_basis_eq_basis]
   simp only [Equiv.symm_apply_apply]
+  rfl
+
+lemma toFieldStrength_eq_fieldStrengthMatrix {d} (A : ElectromagneticPotential d) :
+    toFieldStrength A = fun x => ∑ μ, ∑ ν,
+      A.fieldStrengthMatrix x (μ, ν) • (Lorentz.Vector.basis μ) ⊗ₜ (Lorentz.Vector.basis ν) := by
+  ext x
+  apply  (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr.injective
+  simp
+  ext κ
+  match κ with
+  | (μ', ν') =>
+  simp [Finsupp.single_apply]
   rfl
 
 /-!
@@ -237,6 +253,19 @@ lemma fieldStrengthMatrix_differentiable {d} {A : ElectromagneticPotential d}
   · exact diff_partial _ _
   apply Differentiable.const_mul
   · exact diff_partial _ _
+
+lemma toFieldStrength_differentiable {d} {A : ElectromagneticPotential d}
+    (hA : ContDiff ℝ 2 A) :
+    Differentiable ℝ (toFieldStrength A) := by
+  conv =>
+    enter [2]
+    rw [toFieldStrength_eq_fieldStrengthMatrix]
+  apply Differentiable.fun_sum
+  intro μ _
+  apply Differentiable.fun_sum
+  intro ν _
+  apply Differentiable.smul_const
+  exact fieldStrengthMatrix_differentiable hA
 
 lemma fieldStrengthMatrix_differentiable_space {d} {A : ElectromagneticPotential d}
     {μν} (hA : ContDiff ℝ 2 A) (t : Time) {c : SpeedOfLight} :

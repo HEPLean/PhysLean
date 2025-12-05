@@ -1002,6 +1002,74 @@ lemma kineticTerm_hasVarGradientAt {d} {𝓕 : FreeSpace} (A : ElectromagneticPo
   apply HasVarGradientAt.intro _ hF_mul
   rfl
 
+/-!
+
+### B.7. Gradient of the kinetic term in terms of the tensor derivative
+
+-/
+
+lemma gradKineticTerm_eq_tensorDeriv {d} {𝓕 : FreeSpace}
+    (A : ElectromagneticPotential d) (x : SpaceTime d)
+    (hA : ContDiff ℝ ∞ A) (ν : Fin 1 ⊕ Fin d) :
+    A.gradKineticTerm 𝓕 x ν = η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+     (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ)) ν := by
+  trans η ν ν * (Lorentz.Vector.basis.repr
+    ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+     (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ))) ν
+  swap
+  · simp [Lorentz.Vector.basis_repr_apply]
+  simp [Lorentz.Vector.basis_eq_map_tensor_basis]
+  rw [permT_basis_repr_symm_apply, contrT_basis_repr_apply_eq_fin]
+  conv_rhs =>
+    enter [2, 2, 2, μ]
+    rw [tensorDeriv_toTensor_basis_repr (by
+      apply toFieldStrength_differentiable
+      apply hA.of_le (ENat.LEInfty.out)) ]
+    enter [2, x]
+    rw [toFieldStrength_tensor_basis_eq_basis]
+    change fieldStrengthMatrix A x _
+  conv_lhs =>
+    rw [gradKineticTerm_eq_fieldStrength A x hA]
+    simp [Lorentz.Vector.apply_sum]
+  ring_nf
+  congr 1
+  rw [← finSumFinEquiv.sum_comp]
+  congr
+  funext μ
+  congr
+  · apply Lorentz.CoVector.indexEquiv.symm.injective
+    simp
+    simp [Lorentz.CoVector.indexEquiv]
+    funext j
+    fin_cases j
+    simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv , ComponentIdx.DropPairSection.ofFin]
+    intro h
+    change ¬ 0 = 0 at h
+    simp at h
+  funext x
+  congr
+  · apply finSumFinEquiv.injective
+    simp
+    simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv , ComponentIdx.DropPairSection.ofFin]
+    intro _ h
+    apply False.elim
+    apply h
+    decide
+  · apply finSumFinEquiv.injective
+    simp
+    simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv , ComponentIdx.DropPairSection.ofFin]
+    split_ifs
+    · rename_i h
+      suffices ¬ (finSumFinEquiv (Sum.inr 1) = (0 : Fin (1 + 1 + 1))) from False.elim (this h)
+      decide
+    · rename_i h h2
+      suffices ¬ (finSumFinEquiv (Sum.inr 1) = (1 : Fin (1 + 1 + 1))) from False.elim (this h2)
+      decide
+    · rfl
+
 end ElectromagneticPotential
 
 /-!

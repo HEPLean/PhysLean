@@ -182,6 +182,20 @@ lemma gradFreeCurrentPotential_eq_chargeDensity_currentDensity {d}
   · simp [LorentzCurrentDensity.chargeDensity]
   · simp [LorentzCurrentDensity.currentDensity]
 
+lemma gradFreeCurrentPotential_eq_tensor {d} (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
+    (hJ : ContDiff ℝ ∞ J) (x : SpaceTime d) (ν : Fin 1 ⊕ Fin d):
+    A.gradFreeCurrentPotential J x ν =  η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+     (permT id (PermCond.auto) {J x | ν'}ᵀ)) ν := by
+  trans η ν ν * (Lorentz.Vector.basis.repr
+    ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+     (permT id (PermCond.auto) {J x | ν'}ᵀ))) ν
+  swap
+  · simp [Lorentz.Vector.basis_repr_apply]
+  simp [Lorentz.Vector.basis_repr_apply]
+  rw [gradFreeCurrentPotential_eq_sum_basis A hA J hJ]
+  simp [Lorentz.Vector.apply_sum]
+
 /-!
 
 ## B. The Lagrangian density
@@ -354,6 +368,35 @@ lemma gradLagrangian_eq_electricField_magneticField {𝓕 : FreeSpace}
     rw [← sub_smul]
     simp [FreeSpace.c_sq]
   ring_nf
+
+/-!
+
+### C.7. The lagrangian gradient in tensor notation
+
+-/
+
+lemma gradLagrangian_eq_tensor {𝓕 : FreeSpace}
+    (A : ElectromagneticPotential d)
+    (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
+    (hJ : ContDiff ℝ ∞ J) (x : SpaceTime d) (ν : Fin 1 ⊕ Fin d):
+    A.gradLagrangian 𝓕 J x ν =
+     η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+     (permT id (PermCond.auto) {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
+     - (J x | ν')}ᵀ)) ν := by
+  rw [gradLagrangian_eq_kineticTerm_sub _ hA _ hJ]
+  simp
+  rw [gradKineticTerm_eq_tensorDeriv A x hA]
+  rw [gradFreeCurrentPotential_eq_tensor A hA J hJ x ν]
+  simp
+  ring_nf
+  congr
+  rw [permT_congr_eq_id]
+  simp
+  funext i
+  fin_cases i
+  simp
+
+
 
 end ElectromagneticPotential
 
