@@ -5,8 +5,8 @@ Authors: Shlok Vaibhav Singh
 -/
 /-!
 # Sliding Pendulum
-### Tag:  LnL_1.5.2
-##  Source:
+### Tag: LnL_1.5.2
+## Source:
 * Textbook: Landau and Lifshitz, Mechanics, 3rd Edition
 * Chapter: 1 The Equations of motion
 * Section: 5 The Lagrangian for a system of particles
@@ -34,7 +34,6 @@ y_2 - y_1 &= y_2 = -\,l\cos\phi
 $$
 with the generalized coordinate $\phi$ being the angle the string makes with the vertical.
 
-
 The Lagrangian is obtained as:
 $$\mathcal{L} = T_1 + T_2 - V_1 - V_2$$ where
 
@@ -42,8 +41,8 @@ $$
 \begin{aligned}
 T_1 &= \tfrac{1}{2} m_1 \dot{x}_1^2, & V_1 &= 0,\\[4pt]
 T_2 &= \tfrac{1}{2} m_2(\dot{x}_2^2 + \dot{y}_2^2)
-    = \tfrac{1}{2} m_2\bigl(l^2\dot{\phi}^2 + \dot{x}_1^2 + 2l\dot{\phi}\dot{x}_1\cos\phi\bigr)
-    , & V_2 &= m_2 g y_2 = -m_2 g l \cos\phi
+    = \tfrac{1}{2} m_2\bigl(l^2\dot{\phi}^2 + \dot{x}_1^2 + 2l\dot{\phi}\dot{x}_1\cos\phi\bigr),
+    & V_2 &= m_2 g y_2 = -m_2 g l \cos\phi
 \end{aligned}
 $$
 

@@ -207,7 +207,7 @@ noncomputable abbrev fieldStrengthMatrix {d} (A : ElectromagneticPotential d) (x
 
 lemma fieldStrengthMatrix_eq {d} (A : ElectromagneticPotential d) (x : SpaceTime d) :
     A.fieldStrengthMatrix x =
-     (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x):= by rfl
+    (Lorentz.CoVector.basis.tensorProduct Lorentz.Vector.basis).repr (A.toFieldStrength x) := by rfl
 
 lemma fieldStrengthMatrix_eq_tensor_basis_repr {d} (A : ElectromagneticPotential d)
     (x : SpaceTime d) (μ ν : (Fin 1 ⊕ Fin d)) :
@@ -222,8 +222,8 @@ lemma toFieldStrength_eq_fieldStrengthMatrix {d} (A : ElectromagneticPotential d
     toFieldStrength A = fun x => ∑ μ, ∑ ν,
       A.fieldStrengthMatrix x (μ, ν) • (Lorentz.Vector.basis μ) ⊗ₜ (Lorentz.Vector.basis ν) := by
   ext x
-  apply  (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr.injective
-  simp
+  apply (Lorentz.Vector.basis.tensorProduct Lorentz.Vector.basis).repr.injective
+  simp only [map_sum, map_smul]
   ext κ
   match κ with
   | (μ', ν') =>

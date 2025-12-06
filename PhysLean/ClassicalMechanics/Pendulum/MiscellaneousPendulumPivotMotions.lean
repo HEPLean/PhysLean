@@ -51,15 +51,14 @@ $$
 
 Rearraging the terms, the lagrangian can be written as:
 $$
-L = \tfrac{1}{2}m l^{2}\dot{\phi}^{2}   + m a l \gamma^{2}\sin(\phi-\gamma t)   + m g l \cos\phi-
-   m\gamma\frac{d}{dt}\bigl[al\cos(\phi-\gamma t)\bigr]
+L = \tfrac{1}{2}m l^{2}\dot{\phi}^{2} + m a l \gamma^{2}\sin(\phi-\gamma t) + m g l \cos\phi-
+  m\gamma\frac{d}{dt}\bigl[al\cos(\phi-\gamma t)\bigr]
 $$
 Since lagrangians differing by a total time derivate lead to the same equations of motion
 we can ignore the last term. So that the final lagrangian becomes:
 $$
 L = \tfrac{1}{2}m l^2\dot{\phi}^2 + m a l \gamma^2 \sin(\phi-\gamma t) + m g l \cos\phi
 $$
-
 
 ## Part b)
 Description: The point of support oscillates horizontally according to the law $x = a\cos(\gamma t)$
@@ -122,7 +121,6 @@ V &= m g y = m g\bigl(a\cos(\gamma t) - l\cos\phi\bigr)
 \end{aligned}
 $$
 
-
 We can ignore the constant term $\tfrac{1}{2}m a^2\gamma^2\sin^2(\gamma t)$ in $T$ as it does not
 lead to variation.
 Likewise, $m g a\cos(\gamma t)$ in $V$ can be ignored since its contribution to action is constant.
@@ -134,7 +132,7 @@ $$
 substituting this in the lagrangian, we get:
 $$
 L = \tfrac{1}{2} m l^2\dot{\phi}^2 + m g l \cos\phi -
-   m a l \gamma^2 \cos\phi\cos(\gamma t) +
+  m a l \gamma^2 \cos\phi\cos(\gamma t) +
   m a l \gamma\frac{d}{dt}\bigl[\cos\phi\cos(\gamma t)\bigr]
 $$
 Ignoring the total time derivate term, the final lagrangian becomes:

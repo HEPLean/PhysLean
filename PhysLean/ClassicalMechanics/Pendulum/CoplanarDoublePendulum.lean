@@ -55,7 +55,7 @@ $$
 so that the Lagrangian becomes:
     $$
 \mathcal{L} = \tfrac{1}{2}(m_1 + m_2)l_1^2\dot{\phi}_1^2 + \tfrac{1}{2}m_2 l_2^2\dot{\phi}_2^2+
-   m_2 l_1 l_2\dot{\phi}_1\dot{\phi}_2\cos(\phi_1 - \phi_2)+
+  m_2 l_1 l_2\dot{\phi}_1\dot{\phi}_2\cos(\phi_1 - \phi_2)+
   (m_1 + m_2)g l_1\cos\phi_1 + m_2 g l_2\cos\phi_2
 $$
 -/

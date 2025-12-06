@@ -130,16 +130,16 @@ lemma isExtrema_iff_tensors {𝓕 : FreeSpace}
   · intro h
     simp [IsExtrema] at h
     intro x
-    have h1 :  ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+    have h1 : ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
         (permT id (PermCond.auto) {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
-        - (J x | ν')}ᵀ))  = 0 := by
+        - (J x | ν')}ᵀ)) = 0 := by
       funext ν
-      have h2 :  gradLagrangian 𝓕 A J x ν = 0 := by simp [h]
+      have h2 : gradLagrangian 𝓕 A J x ν = 0 := by simp [h]
       rw [gradLagrangian_eq_tensor A hA J hJ] at h2
       simp at h2
       have hn : η ν ν ≠ 0 := η_diag_ne_zero
       simp_all
-    generalize  {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
+    generalize {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
         - (J x | ν')}ᵀ = V at *
     simp at h1
     rw [permT_eq_zero_iff] at h1
@@ -172,16 +172,14 @@ lemma isExtrema_lorentzGroup_apply_iff {𝓕 : FreeSpace}
   rw [isExtrema_iff_tensors]
   conv_lhs =>
     enter [x, 1, 1, 2, 2, 2]
-    change  tensorDeriv (fun x => toFieldStrength (fun x => Λ • A (Λ⁻¹ • x)) x) x
+    change tensorDeriv (fun x => toFieldStrength (fun x => Λ • A (Λ⁻¹ • x)) x) x
     enter [1,x]
     rw [toFieldStrength_equivariant _ _ (hA.differentiable (by simp))]
   conv_lhs =>
     enter [x]
     rw [tensorDeriv_equivariant _ _ _ (by
       apply toFieldStrength_differentiable
-      apply hA.of_le
-      exact ENat.LEInfty.out
-      )]
+      exact hA.of_le ENat.LEInfty.out)]
     rw [smul_comm]
     rw [Tensorial.toTensor_smul, Tensorial.toTensor_smul]
     simp only [Nat.reduceAdd, Nat.reduceSucc, Fin.isValue, one_div, map_smul, actionT_smul,
@@ -192,7 +190,8 @@ lemma isExtrema_lorentzGroup_apply_iff {𝓕 : FreeSpace}
     rw [isExtrema_iff_tensors A hA J hJ]
     intro x
     apply MulAction.injective Λ
-    simp
+    simp only [Nat.reduceAdd, Nat.reduceSucc, Fin.isValue, one_div, map_smul, map_neg,
+      _root_.smul_add, actionT_smul, _root_.smul_neg, _root_.smul_zero]
     simpa using h (Λ • x)
   · intro h x
     rw [isExtrema_iff_tensors A hA J hJ] at h
@@ -278,9 +277,7 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
       1 / (𝓕.μ₀ * 𝓕.ε₀) * ∑ j, ∂[j] (A.magneticFieldMatrix 𝓕.c t · (j, i)) x -
       (1/ 𝓕.ε₀) * J.currentDensity 𝓕.c t x i := by
   rw [isExtrema_iff_gauss_ampere_magneticFieldMatrix hA J hJ] at h
-  specialize h t x
-  have h1 := (h.2 i)
-  linear_combination (norm := simp) (𝓕.μ₀ * 𝓕.ε₀)⁻¹ * h1
+  linear_combination (norm := simp) (𝓕.μ₀ * 𝓕.ε₀)⁻¹ * ((h t x).2 i)
   field_simp
   ring
 

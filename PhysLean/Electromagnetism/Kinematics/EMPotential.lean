@@ -5,7 +5,6 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Electromagnetism.Basic
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
-import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
 import Mathlib.Analysis.InnerProductSpace.TensorProduct
 /-!

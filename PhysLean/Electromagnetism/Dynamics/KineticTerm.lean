@@ -1012,10 +1012,10 @@ lemma gradKineticTerm_eq_tensorDeriv {d} {𝓕 : FreeSpace}
     (A : ElectromagneticPotential d) (x : SpaceTime d)
     (hA : ContDiff ℝ ∞ A) (ν : Fin 1 ⊕ Fin d) :
     A.gradKineticTerm 𝓕 x ν = η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
-     (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ)) ν := by
+    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ)) ν := by
   trans η ν ν * (Lorentz.Vector.basis.repr
     ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
-     (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ))) ν
+    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ))) ν
   swap
   · simp [Lorentz.Vector.basis_repr_apply]
   simp [Lorentz.Vector.basis_eq_map_tensor_basis]
@@ -1024,7 +1024,7 @@ lemma gradKineticTerm_eq_tensorDeriv {d} {𝓕 : FreeSpace}
     enter [2, 2, 2, μ]
     rw [tensorDeriv_toTensor_basis_repr (by
       apply toFieldStrength_differentiable
-      apply hA.of_le (ENat.LEInfty.out)) ]
+      apply hA.of_le (ENat.LEInfty.out))]
     enter [2, x]
     rw [toFieldStrength_tensor_basis_eq_basis]
     change fieldStrengthMatrix A x _
@@ -1038,29 +1038,32 @@ lemma gradKineticTerm_eq_tensorDeriv {d} {𝓕 : FreeSpace}
   funext μ
   congr
   · apply Lorentz.CoVector.indexEquiv.symm.injective
-    simp
+    simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, Function.comp_apply, Fin.cast_eq_self,
+      Equiv.symm_apply_apply]
     simp [Lorentz.CoVector.indexEquiv]
     funext j
     fin_cases j
     simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
-    simp [ComponentIdx.DropPairSection.ofFinEquiv , ComponentIdx.DropPairSection.ofFin]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv, ComponentIdx.DropPairSection.ofFin]
     intro h
     change ¬ 0 = 0 at h
     simp at h
   funext x
   congr
   · apply finSumFinEquiv.injective
-    simp
+    simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, Function.comp_apply, Fin.cast_eq_self,
+      Equiv.apply_symm_apply]
     simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
-    simp [ComponentIdx.DropPairSection.ofFinEquiv , ComponentIdx.DropPairSection.ofFin]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv, ComponentIdx.DropPairSection.ofFin]
     intro _ h
     apply False.elim
     apply h
     decide
   · apply finSumFinEquiv.injective
-    simp
+    simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, Function.comp_apply, Fin.cast_eq_self,
+      Equiv.apply_symm_apply]
     simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
-    simp [ComponentIdx.DropPairSection.ofFinEquiv , ComponentIdx.DropPairSection.ofFin]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv, ComponentIdx.DropPairSection.ofFin]
     split_ifs
     · rename_i h
       suffices ¬ (finSumFinEquiv (Sum.inr 1) = (0 : Fin (1 + 1 + 1))) from False.elim (this h)

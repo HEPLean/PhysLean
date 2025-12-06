@@ -184,12 +184,11 @@ lemma gradFreeCurrentPotential_eq_chargeDensity_currentDensity {d}
 
 lemma gradFreeCurrentPotential_eq_tensor {d} (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
-    (hJ : ContDiff ℝ ∞ J) (x : SpaceTime d) (ν : Fin 1 ⊕ Fin d):
-    A.gradFreeCurrentPotential J x ν =  η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
-     (permT id (PermCond.auto) {J x | ν'}ᵀ)) ν := by
-  trans η ν ν * (Lorentz.Vector.basis.repr
-    ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
-     (permT id (PermCond.auto) {J x | ν'}ᵀ))) ν
+    (hJ : ContDiff ℝ ∞ J) (x : SpaceTime d) (ν : Fin 1 ⊕ Fin d) :
+    A.gradFreeCurrentPotential J x ν = η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+    (permT id (PermCond.auto) {J x | ν'}ᵀ)) ν := by
+  trans η ν ν * (Lorentz.Vector.basis.repr ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+    (permT id (PermCond.auto) {J x | ν'}ᵀ))) ν
   swap
   · simp [Lorentz.Vector.basis_repr_apply]
   simp [Lorentz.Vector.basis_repr_apply]
@@ -378,25 +377,25 @@ lemma gradLagrangian_eq_electricField_magneticField {𝓕 : FreeSpace}
 lemma gradLagrangian_eq_tensor {𝓕 : FreeSpace}
     (A : ElectromagneticPotential d)
     (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
-    (hJ : ContDiff ℝ ∞ J) (x : SpaceTime d) (ν : Fin 1 ⊕ Fin d):
+    (hJ : ContDiff ℝ ∞ J) (x : SpaceTime d) (ν : Fin 1 ⊕ Fin d) :
     A.gradLagrangian 𝓕 J x ν =
-     η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
-     (permT id (PermCond.auto) {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
-     - (J x | ν')}ᵀ)) ν := by
+    η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+    (permT id (PermCond.auto) {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
+    - (J x | ν')}ᵀ)) ν := by
   rw [gradLagrangian_eq_kineticTerm_sub _ hA _ hJ]
-  simp
+  simp only [Pi.sub_apply, apply_sub, Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, one_div, map_smul,
+    map_neg, map_add, permT_permT, CompTriple.comp_eq, apply_add, apply_smul, neg_apply]
   rw [gradKineticTerm_eq_tensorDeriv A x hA]
   rw [gradFreeCurrentPotential_eq_tensor A hA J hJ x ν]
-  simp
+  simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, one_div, map_smul, apply_smul,
+    permT_id_self, LinearEquiv.symm_apply_apply]
   ring_nf
   congr
   rw [permT_congr_eq_id]
-  simp
+  simp only [LinearEquiv.symm_apply_apply]
   funext i
   fin_cases i
   simp
-
-
 
 end ElectromagneticPotential
 
