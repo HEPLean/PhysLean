@@ -31,6 +31,8 @@ Maxwell's equations with sources, i.e. Gauss's law and Ampère's law.
 
 - A. The condition for an extrema of the Lagrangian density
   - A.1. Extrema condition in terms of the field strength matrix
+  - A.2. Extrema condition in terms of tensors
+  - A.3. Equivariance of the extrema condition
 - B. Gauss's law and Ampère's law and the extrema condition
 - C. Time derivatives from the extrema condition
 - D. Second time derivatives from the extrema condition

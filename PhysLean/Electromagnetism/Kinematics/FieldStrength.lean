@@ -36,6 +36,7 @@ We define a tensor version and a matrix version and prover various properties of
   - B.1. Auxiliary definition of field strength for distributions, with no linearity
   - B.2. The definition of the field strength
   - B.3. Field strength written in terms of a basis
+  - B.4. Equivariance of the field strength for distributions
 
 ## iv. References
 
@@ -718,7 +719,7 @@ lemma fieldStrength_equivariant {d} (A : DistElectromagneticPotential d)
   ext ε
   rw [fieldStrength_eq_fieldStrengthAux, lorentzGroup_smul_dist_apply]
   rw [fieldStrengthAux_eq_add, deriv_equivariant, lorentzGroup_smul_dist_apply,
-    ← actionT_contrMetric Λ, ]
+    ← actionT_contrMetric Λ]
   generalize ((schwartzAction Λ⁻¹) ε) = ε'
   rw [fieldStrength_eq_fieldStrengthAux, fieldStrengthAux_eq_add]
   simp only [Tensorial.toTensor_smul, prodT_equivariant, contrT_equivariant, permT_equivariant,

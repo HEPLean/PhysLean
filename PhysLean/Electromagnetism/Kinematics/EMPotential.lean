@@ -6,7 +6,6 @@ Authors: Joseph Tooby-Smith
 import PhysLean.Electromagnetism.Basic
 import PhysLean.SpaceAndTime.SpaceTime.TimeSlice
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
-import Mathlib.Analysis.InnerProductSpace.TensorProduct
 /-!
 
 # The Electromagnetic Potential
@@ -390,7 +389,7 @@ lemma deriv_eq_sum_sum {d} (A : DistElectromagneticPotential d)
   simp [deriv, distTensorDeriv_apply]
   congr
   funext μ
-  conv_lhs => rw [←  Lorentz.Vector.basis.sum_repr  (SpaceTime.distDeriv μ A ε)]
+  conv_lhs => rw [← Lorentz.Vector.basis.sum_repr (SpaceTime.distDeriv μ A ε)]
   rw [tmul_sum]
   congr
   funext ν

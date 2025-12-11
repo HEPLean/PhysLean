@@ -36,6 +36,8 @@ distributions on `SpaceTime d`.
 - B. Derivatives of distributions
   - B.1. Commutation of derivatives of distributions
   - B.2. Lorentz group action on derivatives of distributions
+- C. Derivatives of tensors
+  - C.1. Derivatives of tensors for distributions
 
 ## iv. References
 
@@ -472,7 +474,7 @@ lemma tensorDeriv_toTensor_basis_repr
 
 /-!
 
-### C.1. Derivatives of tensors for distributions
+### C.1. Derivatives of tensors for distributions
 
 -/
 open InnerProductSpace
@@ -514,7 +516,7 @@ lemma distTensorDeriv_apply {M d} [NormedAddCommGroup M]
   simp [distTensorDeriv]
 
 lemma distTensorDeriv_equivariant {M : Type} [NormedAddCommGroup M]
-    [InnerProductSpace ℝ M] [FiniteDimensional ℝ M]  [(realLorentzTensor d).Tensorial c M]
+    [InnerProductSpace ℝ M] [FiniteDimensional ℝ M] [(realLorentzTensor d).Tensorial c M]
     (f : (SpaceTime d) →d[ℝ] M) (Λ : LorentzGroup d) :
     distTensorDeriv (Λ • f) = Λ • distTensorDeriv f := by
   ext ε
@@ -522,7 +524,8 @@ lemma distTensorDeriv_equivariant {M : Type} [NormedAddCommGroup M]
   conv_lhs =>
     enter [2, μ]
     rw [distDeriv_comp_lorentz_action]
-    simp
+    simp only [ContinuousLinearMap.coe_sum', ContinuousLinearMap.coe_smul', Finset.sum_apply,
+      Pi.smul_apply]
     rw [tmul_sum]
     enter [2, ν]
     rw [← smul_tmul, lorentzGroup_smul_dist_apply]
@@ -531,7 +534,8 @@ lemma distTensorDeriv_equivariant {M : Type} [NormedAddCommGroup M]
     enter [2, ν]
     rw [← sum_tmul, ← Lorentz.CoVector.smul_basis, ← Tensorial.smul_prod]
   change _ = (TensorSpecies.Tensorial.smulLinearMap Λ) _
-  simp
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, ContinuousLinearMap.coe_comp, LinearMap.coe_comp,
+    ContinuousLinearMap.coe_coe, Function.comp_apply]
   rw [distTensorDeriv_apply]
   simp only [map_sum]
   simp [TensorSpecies.Tensorial.smulLinearMap_apply]

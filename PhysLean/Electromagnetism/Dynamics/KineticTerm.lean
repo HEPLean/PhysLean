@@ -48,6 +48,7 @@ In this implementation we have set `μ₀ = 1`. It is a TODO to introduce this c
   - B.4. Variational gradient in terms of the Gauss's and Ampère laws
   - B.5. Linearity properties of the variational gradient
   - B.6. HasVarGradientAt for the variational gradient
+  - B.7. Gradient of the kinetic term in terms of the tensor derivative
 - C. The gradient of the kinetic term for distributions
 
 ## iv. References

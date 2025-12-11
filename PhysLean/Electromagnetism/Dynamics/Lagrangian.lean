@@ -48,6 +48,7 @@ In this implementation we set `μ₀ = 1`. It is a TODO to introduce this consta
   - C.4. The lagrangian density has the variational gradient equal to `gradLagrangian`
   - C.5. The variational gradient in terms of the field strength tensor
   - C.6. The lagrangian gradient recovering Gauss's and Ampère laws
+  - C.7. The lagrangian gradient in tensor notation
 - D. The gradient of the lagrangian density for distributions
   - D.1. The gradient of the free current potential
   - D.2. The gradient of the lagrangian density
