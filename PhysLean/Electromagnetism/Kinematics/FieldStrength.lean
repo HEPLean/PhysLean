@@ -658,6 +658,9 @@ noncomputable def fieldStrength {d} :
       Pi.smul_apply, Lorentz.Vector.apply_smul, Real.ringHom_apply, Finsupp.coe_smul, smul_eq_mul]
     ring
 
+lemma fieldStrength_eq_fieldStrengthAux {d} (A : DistElectromagneticPotential d)
+    (ε : 𝓢(SpaceTime d, ℝ)) :
+    A.fieldStrength ε = A.fieldStrengthAux ε := by rfl
 /-!
 
 ### B.3. Field strength written in terms of a basis
@@ -702,6 +705,24 @@ lemma fieldStrength_antisymmetric_basis {d} (A : DistElectromagneticPotential d)
     (A.fieldStrength ε) (ν, μ) := by
   rw [fieldStrength_basis_repr_eq_single, fieldStrength_basis_repr_eq_single]
   ring
+
+/-!
+
+### B.4. Equivariance of the field strength for distributions
+
+-/
+
+lemma fieldStrength_equivariant {d} (A : DistElectromagneticPotential d)
+    (Λ : LorentzGroup d) :
+    (Λ • A).fieldStrength = Λ • A.fieldStrength := by
+  ext ε
+  rw [fieldStrength_eq_fieldStrengthAux, lorentzGroup_smul_dist_apply]
+  rw [fieldStrengthAux_eq_add, deriv_equivariant, lorentzGroup_smul_dist_apply,
+    ← actionT_contrMetric Λ, ]
+  generalize ((schwartzAction Λ⁻¹) ε) = ε'
+  rw [fieldStrength_eq_fieldStrengthAux, fieldStrengthAux_eq_add]
+  simp only [Tensorial.toTensor_smul, prodT_equivariant, contrT_equivariant, permT_equivariant,
+    ← Tensorial.smul_toTensor_symm, smul_sub]
 
 end DistElectromagneticPotential
 

@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.SpaceTime.LorentzAction
 import PhysLean.Relativity.Tensors.RealTensor.CoVector.Basic
+import Mathlib.Analysis.InnerProductSpace.TensorProduct
 /-!
 
 # Derivatives on SpaceTime
@@ -468,6 +469,72 @@ lemma tensorDeriv_toTensor_basis_repr
     intro hx
     grind
   · simp
+
+/-!
+
+### C.1. Derivatives of tensors for distributions
+
+-/
+open InnerProductSpace
+/-- The derivative of a tensor, as a tensor for distributions. -/
+def distTensorDeriv {M d} [NormedAddCommGroup M]
+    [InnerProductSpace ℝ M] [FiniteDimensional ℝ M] :
+    ((SpaceTime d) →d[ℝ] M) →ₗ[ℝ] ((SpaceTime d) →d[ℝ] Lorentz.CoVector d ⊗[ℝ] M) where
+  toFun f := {
+    toFun ε := ∑ μ, (Lorentz.CoVector.basis μ) ⊗ₜ distDeriv μ f ε
+    map_add' ε1 ε2 := by
+      simp [← Finset.sum_add_distrib, tmul_add]
+    map_smul' a ε := by
+      simp [← Finset.smul_sum, tmul_smul]
+    cont := by
+      refine continuous_finset_sum Finset.univ (fun μ _ => ?_)
+      refine Continuous.comp' ?_ ?_
+      · change Continuous (fun y => (Lorentz.CoVector.basis μ) ⊗ₜ y)
+        obtain ⟨w,b,hb1⟩ := exists_orthonormalBasis ℝ M
+        have h1 : ∀ (y : M), (Lorentz.CoVector.basis μ) ⊗ₜ y =
+            ∑ i, ⟪b i, y⟫_ℝ • ((Lorentz.CoVector.basis μ) ⊗ₜ[ℝ] (b i)) := by
+          intro y
+          conv_lhs => rw [← OrthonormalBasis.sum_repr' b y]
+          simp [tmul_sum]
+        conv => enter [1, y]; rw [h1]
+        fun_prop
+      · fun_prop
+  }
+  map_add' f1 f2 := by
+    ext ε
+    simp [tmul_add, Finset.sum_add_distrib]
+  map_smul' a f := by
+    ext ε
+    simp [tmul_smul, Finset.smul_sum]
+
+lemma distTensorDeriv_apply {M d} [NormedAddCommGroup M]
+    [InnerProductSpace ℝ M] [FiniteDimensional ℝ M] (f : (SpaceTime d) →d[ℝ] M)
+    (ε : 𝓢(SpaceTime d, ℝ)) :
+    distTensorDeriv f ε = ∑ μ, (Lorentz.CoVector.basis μ) ⊗ₜ distDeriv μ f ε := by
+  simp [distTensorDeriv]
+
+lemma distTensorDeriv_equivariant {M : Type} [NormedAddCommGroup M]
+    [InnerProductSpace ℝ M] [FiniteDimensional ℝ M]  [(realLorentzTensor d).Tensorial c M]
+    (f : (SpaceTime d) →d[ℝ] M) (Λ : LorentzGroup d) :
+    distTensorDeriv (Λ • f) = Λ • distTensorDeriv f := by
+  ext ε
+  rw [distTensorDeriv_apply]
+  conv_lhs =>
+    enter [2, μ]
+    rw [distDeriv_comp_lorentz_action]
+    simp
+    rw [tmul_sum]
+    enter [2, ν]
+    rw [← smul_tmul, lorentzGroup_smul_dist_apply]
+  rw [Finset.sum_comm]
+  conv_lhs =>
+    enter [2, ν]
+    rw [← sum_tmul, ← Lorentz.CoVector.smul_basis, ← Tensorial.smul_prod]
+  change _ = (TensorSpecies.Tensorial.smulLinearMap Λ) _
+  simp
+  rw [distTensorDeriv_apply]
+  simp only [map_sum]
+  simp [TensorSpecies.Tensorial.smulLinearMap_apply]
 
 end SpaceTime
 
