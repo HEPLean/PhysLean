@@ -540,6 +540,28 @@ lemma distTensorDeriv_equivariant {M : Type} [NormedAddCommGroup M]
   simp only [map_sum]
   simp [TensorSpecies.Tensorial.smulLinearMap_apply]
 
+lemma distTensorDeriv_toTensor_basis_repr {M : Type} [NormedAddCommGroup M]
+    [InnerProductSpace ℝ M] [FiniteDimensional ℝ M] [(realLorentzTensor d).Tensorial c M]
+    {f : (SpaceTime d) →d[ℝ] M}
+    (ε : 𝓢(SpaceTime d, ℝ))
+    (b : Tensor.ComponentIdx (Fin.append ![realLorentzTensor.Color.down] c)) :
+    (Tensor.basis _).repr (Tensorial.toTensor (distTensorDeriv f ε)) b =
+    (Tensor.basis _).repr (Tensorial.toTensor
+    (distDeriv (Lorentz.CoVector.indexEquiv (Tensor.ComponentIdx.prodEquiv b).1) f ε))
+    (Tensor.ComponentIdx.prodEquiv b).2 := by
+  simp [distTensorDeriv]
+  conv_lhs =>
+    enter [2, μ]
+    rw [Tensorial.toTensor_tprod, Tensor.prodT_basis_repr_apply]
+    simp [Lorentz.CoVector.toTensor_basis_eq_tensor_basis, Finsupp.single_apply]
+  rw [Finset.sum_eq_single (Lorentz.CoVector.indexEquiv (Tensor.ComponentIdx.prodEquiv b).1)]
+  · simp
+  · intro b' _ hb
+    simp only [ite_eq_right_iff]
+    intro hx
+    grind
+  · simp
+
 end SpaceTime
 
 end

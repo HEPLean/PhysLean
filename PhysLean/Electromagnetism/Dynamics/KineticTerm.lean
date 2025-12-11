@@ -1205,5 +1205,92 @@ lemma gradKineticTerm_sum_inr_eq {d} {𝓕 : FreeSpace}
         ← distTimeSlice_symm_apply]
     simp [← distTimeSlice_distDeriv_inr]
 
+/-!
+
+### C.1. The gradient of the kinetic term as a tensor
+
+-/
+
+lemma gradKineticTerm_eq_distTensorDeriv {d} {𝓕 : FreeSpace}
+    (A : DistElectromagneticPotential d) (ε : 𝓢(SpaceTime d, ℝ)) (ν : Fin 1 ⊕ Fin d) :
+    A.gradKineticTerm 𝓕 ε ν = η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • distTensorDeriv A.fieldStrength ε | κ κ ν'}ᵀ)) ν := by
+  trans η ν ν * (Lorentz.Vector.basis.repr
+    ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • distTensorDeriv A.fieldStrength ε  | κ κ ν'}ᵀ))) ν
+  swap
+  · rfl
+  simp [Lorentz.Vector.basis_eq_map_tensor_basis]
+  rw [permT_basis_repr_symm_apply, contrT_basis_repr_apply_eq_fin]
+  conv_lhs =>
+    rw [gradKineticTerm_eq_fieldStrength A ε]
+    simp [Lorentz.Vector.apply_sum]
+  ring_nf
+  congr 1
+  rw [← finSumFinEquiv.sum_comp]
+  congr
+  funext μ
+  rw [distTensorDeriv_toTensor_basis_repr]
+  conv_rhs =>
+    enter [1, 2, 2]
+  trans (Tensor.basis _).repr (Tensorial.toTensor ( distDeriv μ (A.fieldStrength) ε))
+      (fun | 0 => finSumFinEquiv μ | 1 => finSumFinEquiv ν)
+  · generalize ( distDeriv μ (A.fieldStrength) ε) = t at *
+    rw [Tensorial.basis_toTensor_apply]
+    rw [Tensorial.basis_map_prod]
+    simp only [Nat.reduceSucc, Nat.reduceAdd, Basis.repr_reindex, Finsupp.mapDomain_equiv_apply,
+      Equiv.symm_symm]
+    rw [Lorentz.Vector.tensor_basis_map_eq_basis_reindex]
+    have hb : (((Lorentz.Vector.basis (d := d)).reindex Lorentz.Vector.indexEquiv.symm).tensorProduct
+            (Lorentz.Vector.basis.reindex Lorentz.Vector.indexEquiv.symm)) =
+            ((Lorentz.Vector.basis (d := d)).tensorProduct (Lorentz.Vector.basis (d := d))).reindex
+            (Lorentz.Vector.indexEquiv.symm.prodCongr Lorentz.Vector.indexEquiv.symm) := by
+          ext b
+          match b with
+          | ⟨i, j⟩ =>
+          simp
+    rw [hb]
+    rw [Module.Basis.repr_reindex_apply]
+    congr 1
+    simp [ComponentIdx.prodEquiv,ComponentIdx.prodIndexEquiv, Vector.indexEquiv]
+    apply And.intro
+    · rw [@Equiv.eq_symm_apply]
+      rfl
+    · rw [@Equiv.eq_symm_apply]
+      rfl
+  apply congr
+  · simp
+    congr
+    apply Lorentz.CoVector.indexEquiv.symm.injective
+    simp only [Nat.reduceSucc, Fin.isValue, Equiv.symm_apply_apply]
+    simp [Lorentz.CoVector.indexEquiv]
+    funext j
+    fin_cases j
+    simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv, ComponentIdx.DropPairSection.ofFin]
+    intro h
+    change ¬ 0 = 0 at h
+    simp at h
+  funext x
+  fin_cases x
+  · simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, Function.comp_apply, Fin.cast_eq_self]
+    simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv, ComponentIdx.DropPairSection.ofFin]
+    intro _ h
+    apply False.elim
+    apply h
+    decide
+  · simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, Function.comp_apply, Fin.cast_eq_self]
+    simp [ComponentIdx.prodEquiv, ComponentIdx.prodIndexEquiv]
+    simp [ComponentIdx.DropPairSection.ofFinEquiv, ComponentIdx.DropPairSection.ofFin]
+    split_ifs
+    · rename_i h
+      suffices ¬ (finSumFinEquiv (Sum.inr 1) = (0 : Fin (1 + 1 + 1))) from False.elim (this h)
+      decide
+    · rename_i h h2
+      suffices ¬ (finSumFinEquiv (Sum.inr 1) = (1 : Fin (1 + 1 + 1))) from False.elim (this h2)
+      decide
+    · rfl
+
 end DistElectromagneticPotential
 end Electromagnetism

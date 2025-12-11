@@ -679,5 +679,17 @@ lemma isExtrema_iff_vectorPotential {𝓕 : FreeSpace}
   rw [magneticFieldMatrix_distSpaceDeriv_basis_repr_eq_vector_potential]
   ring
 
+/-!
+
+### E.3. Equivariance of the extrema condition
+
+-/
+
+lemma isExterma_invariant {𝓕 : FreeSpace}
+    (A : DistElectromagneticPotential d)
+    (J : DistLorentzCurrentDensity d)
+    (Λ : LorentzGroup d) :
+    IsExtrema 𝓕 (Λ • A) (Λ • J) ↔ IsExtrema 𝓕 A J := by
+  sorry
 end DistElectromagneticPotential
 end Electromagnetism
