@@ -41,6 +41,8 @@ Maxwell's equations with sources, i.e. Gauss's law and Ampère's law.
 - E. Is Extema condition in the distributional case
   - E.1. IsExtrema and Gauss's law and Ampère's law
   - E.2. IsExtrema in terms of Vector Potentials
+  - E.3. The exterma condition in terms of tensors
+  - E.4. The invariance of the exterma condition under Lorentz transformations
 
 ## iv. References
 
@@ -294,7 +296,6 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
 ### D.1. Second time derivatives of the magnetic field from the extrema condition
 
 We show that the magnetic field matrix $B_{ij}$ satisfies the following wave-like equation
-
 
 -/
 
@@ -708,7 +709,7 @@ lemma isExterma_iff_tensor {𝓕 : FreeSpace}
       have h2 : gradLagrangian 𝓕 A J x ν = 0 := by simp [h]
       rw [gradLagrangian_eq_tensor A J] at h2
       simp at h2
-      have hn : minkowskiMatrix  ν ν ≠ 0 := minkowskiMatrix.η_diag_ne_zero
+      have hn : minkowskiMatrix ν ν ≠ 0 := minkowskiMatrix.η_diag_ne_zero
       simp_all
     rw [EmbeddingLike.map_eq_zero_iff, permT_eq_zero_iff] at h1
     exact h1
@@ -718,7 +719,6 @@ lemma isExterma_iff_tensor {𝓕 : FreeSpace}
     funext ν
     rw [gradLagrangian_eq_tensor A J, h]
     simp
-
 
 /-!
 
@@ -750,16 +750,16 @@ lemma isExterma_equivariant {𝓕 : FreeSpace}
     rw [smul_comm, ← Tensor.actionT_neg, ← Tensor.actionT_add]
   apply Iff.intro
   · intro h
-    rw [isExterma_iff_tensor A J ]
+    rw [isExterma_iff_tensor A J]
     intro x
     apply MulAction.injective Λ
     simp only [Nat.reduceAdd, Nat.reduceSucc, Fin.isValue, one_div, map_smul, map_neg,
       _root_.smul_add, actionT_smul, _root_.smul_neg, _root_.smul_zero]
     simpa [schwartzAction_mul_apply] using h (schwartzAction Λ x)
   · intro h x
-    rw [isExterma_iff_tensor A  J ] at h
+    rw [isExterma_iff_tensor A J] at h
     specialize h (schwartzAction Λ⁻¹ x)
-    simp  at h
+    simp at h
     rw [h]
     simp
 

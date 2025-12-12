@@ -50,6 +50,7 @@ In this implementation we have set `μ₀ = 1`. It is a TODO to introduce this c
   - B.6. HasVarGradientAt for the variational gradient
   - B.7. Gradient of the kinetic term in terms of the tensor derivative
 - C. The gradient of the kinetic term for distributions
+  - C.1. The gradient of the kinetic term as a tensor
 
 ## iv. References
 
@@ -1214,10 +1215,11 @@ lemma gradKineticTerm_sum_inr_eq {d} {𝓕 : FreeSpace}
 lemma gradKineticTerm_eq_distTensorDeriv {d} {𝓕 : FreeSpace}
     (A : DistElectromagneticPotential d) (ε : 𝓢(SpaceTime d, ℝ)) (ν : Fin 1 ⊕ Fin d) :
     A.gradKineticTerm 𝓕 ε ν = η ν ν * ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
-    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • distTensorDeriv A.fieldStrength ε | κ κ ν'}ᵀ)) ν := by
+    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) •
+    distTensorDeriv A.fieldStrength ε | κ κ ν'}ᵀ)) ν := by
   trans η ν ν * (Lorentz.Vector.basis.repr
     ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
-    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • distTensorDeriv A.fieldStrength ε  | κ κ ν'}ᵀ))) ν
+    (permT id (PermCond.auto) {(1/ 𝓕.μ₀ : ℝ) • distTensorDeriv A.fieldStrength ε | κ κ ν'}ᵀ))) ν
   swap
   · rfl
   simp [Lorentz.Vector.basis_eq_map_tensor_basis]
@@ -1233,22 +1235,23 @@ lemma gradKineticTerm_eq_distTensorDeriv {d} {𝓕 : FreeSpace}
   rw [distTensorDeriv_toTensor_basis_repr]
   conv_rhs =>
     enter [1, 2, 2]
-  trans (Tensor.basis _).repr (Tensorial.toTensor ( distDeriv μ (A.fieldStrength) ε))
+  trans (Tensor.basis _).repr (Tensorial.toTensor (distDeriv μ (A.fieldStrength) ε))
       (fun | 0 => finSumFinEquiv μ | 1 => finSumFinEquiv ν)
-  · generalize ( distDeriv μ (A.fieldStrength) ε) = t at *
+  · generalize (distDeriv μ (A.fieldStrength) ε) = t at *
     rw [Tensorial.basis_toTensor_apply]
     rw [Tensorial.basis_map_prod]
     simp only [Nat.reduceSucc, Nat.reduceAdd, Basis.repr_reindex, Finsupp.mapDomain_equiv_apply,
       Equiv.symm_symm]
     rw [Lorentz.Vector.tensor_basis_map_eq_basis_reindex]
-    have hb : (((Lorentz.Vector.basis (d := d)).reindex Lorentz.Vector.indexEquiv.symm).tensorProduct
-            (Lorentz.Vector.basis.reindex Lorentz.Vector.indexEquiv.symm)) =
-            ((Lorentz.Vector.basis (d := d)).tensorProduct (Lorentz.Vector.basis (d := d))).reindex
-            (Lorentz.Vector.indexEquiv.symm.prodCongr Lorentz.Vector.indexEquiv.symm) := by
-          ext b
-          match b with
-          | ⟨i, j⟩ =>
-          simp
+    have hb : (((Lorentz.Vector.basis (d := d)).reindex
+        Lorentz.Vector.indexEquiv.symm).tensorProduct
+        (Lorentz.Vector.basis.reindex Lorentz.Vector.indexEquiv.symm)) =
+        ((Lorentz.Vector.basis (d := d)).tensorProduct (Lorentz.Vector.basis (d := d))).reindex
+        (Lorentz.Vector.indexEquiv.symm.prodCongr Lorentz.Vector.indexEquiv.symm) := by
+      ext b
+      match b with
+      | ⟨i, j⟩ =>
+      simp
     rw [hb]
     rw [Module.Basis.repr_reindex_apply]
     congr 1
