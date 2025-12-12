@@ -681,15 +681,74 @@ lemma isExtrema_iff_vectorPotential {𝓕 : FreeSpace}
 
 /-!
 
-### E.3. Equivariance of the extrema condition
+### E.3. The exterma condition in terms of tensors
+
+-/
+open SpaceTime minkowskiMatrix
+lemma isExterma_iff_tensor {𝓕 : FreeSpace}
+    (A : DistElectromagneticPotential d)
+    (J : DistLorentzCurrentDensity d) :
+    IsExtrema 𝓕 A J ↔ ∀ ε,
+    {((1/ 𝓕.μ₀ : ℝ) • distTensorDeriv A.fieldStrength ε | κ κ ν') + - (J ε | ν')}ᵀ = 0 := by
+  apply Iff.intro
+  · intro h
+    simp only [IsExtrema] at h
+    intro x
+    have h1 : ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
+        (permT id (PermCond.auto) {((1/ 𝓕.μ₀ : ℝ) • distTensorDeriv A.fieldStrength x | κ κ ν') +
+        - (J x | ν')}ᵀ)) = 0 := by
+      funext ν
+      have h2 : gradLagrangian 𝓕 A J x ν = 0 := by simp [h]
+      rw [gradLagrangian_eq_tensor A J] at h2
+      simp at h2
+      have hn : minkowskiMatrix  ν ν ≠ 0 := minkowskiMatrix.η_diag_ne_zero
+      simp_all
+    rw [EmbeddingLike.map_eq_zero_iff, permT_eq_zero_iff] at h1
+    exact h1
+  · intro h
+    simp only [IsExtrema]
+    ext x
+    funext ν
+    rw [gradLagrangian_eq_tensor A J, h]
+    simp
+
+
+/-!
+
+### E.4. The invariance of the exterma condition under Lorentz transformations
 
 -/
 
-lemma isExterma_invariant {𝓕 : FreeSpace}
+lemma isExterma_equivariant {𝓕 : FreeSpace}
     (A : DistElectromagneticPotential d)
-    (J : DistLorentzCurrentDensity d)
-    (Λ : LorentzGroup d) :
+    (J : DistLorentzCurrentDensity d) (Λ : LorentzGroup d) :
     IsExtrema 𝓕 (Λ • A) (Λ • J) ↔ IsExtrema 𝓕 A J := by
-  sorry
+  rw [isExterma_iff_tensor]
+  conv_lhs =>
+    enter [x, 1, 1, 2, 2, 2]
+    rw [fieldStrength_equivariant, distTensorDeriv_equivariant]
+    rw [lorentzGroup_smul_dist_apply]
+  conv_lhs =>
+    enter [x]
+    rw [smul_comm]
+    rw [Tensorial.toTensor_smul, lorentzGroup_smul_dist_apply, Tensorial.toTensor_smul]
+    simp only [Nat.reduceAdd, Nat.reduceSucc, Fin.isValue, one_div, map_smul, actionT_smul,
+      contrT_equivariant, map_neg, permT_equivariant]
+    rw [smul_comm, ← Tensor.actionT_neg, ← Tensor.actionT_add]
+  apply Iff.intro
+  · intro h
+    rw [isExterma_iff_tensor A J ]
+    intro x
+    apply MulAction.injective Λ
+    simp only [Nat.reduceAdd, Nat.reduceSucc, Fin.isValue, one_div, map_smul, map_neg,
+      _root_.smul_add, actionT_smul, _root_.smul_neg, _root_.smul_zero]
+    simpa [schwartzAction_mul_apply] using h (schwartzAction Λ x)
+  · intro h x
+    rw [isExterma_iff_tensor A  J ] at h
+    specialize h (schwartzAction Λ⁻¹ x)
+    simp  at h
+    rw [h]
+    simp
+
 end DistElectromagneticPotential
 end Electromagnetism
