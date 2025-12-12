@@ -78,16 +78,13 @@ We show some basic equalities for the Minkowski matrix.
 In particular, we show it can be expressed as a block matrix.
 
 -/
+lemma as_diagonal : @minkowskiMatrix d = diagonal (Sum.elim 1 (-1)) := by
+  simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
 /-- The Minkowski matrix as a block matrix. -/
-lemma as_block : @minkowskiMatrix d =
+lemma as_block : minkowskiMatrix =
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ) := by
-  rw [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, ← fromBlocks_diagonal]
-  refine fromBlocks_inj.mpr ?_
-  simp only [diagonal_one, true_and]
-  funext i j
-  rw [← diagonal_neg]
-  rfl
+  simp [as_diagonal, ← fromBlocks_diagonal, ←diagonal_one]
 
 /-!
 
@@ -117,20 +114,15 @@ lemma inl_0_inl_0 : @minkowskiMatrix d (Sum.inl 0) (Sum.inl 0) = 1 := by
 /-- The space diagonal components of the Minkowski matrix are `-1`. -/
 @[simp]
 lemma inr_i_inr_i (i : Fin d) : @minkowskiMatrix d (Sum.inr i) (Sum.inr i) = -1 := by
-  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  simp_all only [diagonal_apply_eq, Sum.elim_inr]
+  simp [as_diagonal]
 
 /-- The off diagonal elements of the Minkowski matrix are zero. -/
 @[simp]
 lemma off_diag_zero {μ ν : Fin 1 ⊕ Fin d} (h : μ ≠ ν) : η μ ν = 0 := by
-  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  exact diagonal_apply_ne _ h
+  aesop (add safe forward as_diagonal)
 
-lemma η_diag_ne_zero {μ : Fin 1 ⊕ Fin d} :
-    η μ μ ≠ 0 := by
-  match μ with
-  | Sum.inl 0 => simp
-  | Sum.inr _ => simp
+lemma η_diag_ne_zero {μ : Fin 1 ⊕ Fin d} : η μ μ ≠ 0 := by
+  aesop (add safe forward as_diagonal)
 
 /-!
 
@@ -144,37 +136,16 @@ as well as other properties related to squaring the Minkowski matrix.
 /-- The Minkowski matrix is self-inverting. -/
 @[simp]
 lemma sq : @minkowskiMatrix d * minkowskiMatrix = 1 := by
-  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_mul_diagonal]
-  ext1 i j
-  rcases i with i | i <;> rcases j with j | j
-  · simp only [diagonal, of_apply, Sum.inl.injEq, Sum.elim_inl, mul_one]
-    split
-    · rename_i h
-      subst h
-      simp_all only [one_apply_eq]
-    · simp_all only [ne_eq, Sum.inl.injEq, not_false_eq_true, one_apply_ne]
-  · rfl
-  · rfl
-  · simp only [diagonal, of_apply, Sum.inr.injEq, Sum.elim_inr, mul_neg, mul_one, neg_neg]
-    split
-    · rename_i h
-      subst h
-      simp_all only [one_apply_eq]
-    · simp_all only [ne_eq, Sum.inr.injEq, not_false_eq_true, one_apply_ne]
+  simp [as_block, fromBlocks_multiply]
 
 /-- Multiplying any element on the diagonal of the Minkowski matrix by itself gives `1`. -/
 @[simp]
 lemma η_apply_mul_η_apply_diag (μ : Fin 1 ⊕ Fin d) : η μ μ * η μ μ = 1 := by
-  match μ with
-  | Sum.inl 0 => simp
-  | Sum.inr _ => simp
+  aesop (add safe forward as_diagonal)
 
 @[simp]
-lemma η_apply_sq_eq_one (μ : Fin 1 ⊕ Fin d) :
-    η μ μ ^ 2 = 1 := by
-  trans η μ μ * η μ μ
-  · exact pow_two (η μ μ)
-  simp
+lemma η_apply_sq_eq_one (μ : Fin 1 ⊕ Fin d) : η μ μ ^ 2 = 1 := by
+  cases μ <;> simp [as_diagonal]
 
 /-!
 
@@ -187,7 +158,7 @@ The Minkowski matrix is symmetric, due to it being diagonal.
 /-- The Minkowski matrix is symmetric. -/
 @[simp]
 lemma eq_transpose : minkowskiMatrixᵀ = @minkowskiMatrix d := by
-  simp only [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, diagonal_transpose]
+  simp [as_diagonal]
 
 /-!
 
