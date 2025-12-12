@@ -293,11 +293,14 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
 
 ### D.1. Second time derivatives of the magnetic field from the extrema condition
 
+We show that the magnetic field matrix $B_{ij}$ satisfies the following wave-like equation
+
+
 -/
 
 lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : ElectromagneticPotential d}
     {𝓕 : FreeSpace}
-    (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d) (hJd : Differentiable ℝ J)
+    (hA : ContDiff ℝ ∞ A) (J : LorentzCurrentDensity d)
     (hJ : ContDiff ℝ ∞ J) (h : IsExtrema 𝓕 A J)
     (t : Time) (x : Space d) (i j : Fin d) :
     ∂ₜ (∂ₜ (A.magneticFieldMatrix 𝓕.c · x (i, j))) t =
@@ -318,7 +321,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply Space.deriv_differentiable
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl)))
           ((LorentzCurrentDensity.currentDensity_apply_differentiable_space
-          hJd _ _).const_mul _).differentiableAt,
+          (hJ.differentiable (ENat.LEInfty.out)) _ _).const_mul _).differentiableAt,
     fderiv_const_mul (by
         apply Differentiable.fun_sum
         intro i _
@@ -326,7 +329,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl))),
     fderiv_const_mul (by
         apply (LorentzCurrentDensity.currentDensity_apply_differentiable_space
-        hJd _ _).differentiableAt),
+        (hJ.differentiable (ENat.LEInfty.out)) _ _).differentiableAt),
     fderiv_fun_sum fun i _ => by
         apply Differentiable.differentiableAt
         apply Space.deriv_differentiable
@@ -341,7 +344,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply Space.deriv_differentiable
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl)))
           ((LorentzCurrentDensity.currentDensity_apply_differentiable_space
-          hJd _ _).const_mul _).differentiableAt,
+          (hJ.differentiable (ENat.LEInfty.out)) _ _).const_mul _).differentiableAt,
     fderiv_const_mul (by
         apply Differentiable.fun_sum
         intro i _
@@ -349,7 +352,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl))),
     fderiv_const_mul (by
         apply (LorentzCurrentDensity.currentDensity_apply_differentiable_space
-        hJd _ _).differentiableAt),
+        (hJ.differentiable (ENat.LEInfty.out)) _ _).differentiableAt),
     fderiv_fun_sum fun i _ => by
         apply Differentiable.differentiableAt
         apply Space.deriv_differentiable
@@ -683,6 +686,10 @@ lemma isExtrema_iff_vectorPotential {𝓕 : FreeSpace}
 
 ### E.3. The exterma condition in terms of tensors
 
+We show that `A` is an extrema of the lagrangian if and only if the equation
+$$(\frac{1}{\mu_0} \partial_\kappa F^{\kappa \nu'} - J^{\nu'}) = 0,$$
+holds.
+
 -/
 open SpaceTime minkowskiMatrix
 lemma isExterma_iff_tensor {𝓕 : FreeSpace}
@@ -716,6 +723,12 @@ lemma isExterma_iff_tensor {𝓕 : FreeSpace}
 /-!
 
 ### E.4. The invariance of the exterma condition under Lorentz transformations
+
+We show that the Exterma condition is invariant under Lorentz transformations.
+This implies that if an electromagnetic potential is an extrema in one inertial frame,
+it is also an extrema in any other inertial frame.
+In otherwords that the Maxwell's equations are Lorentz invariant.
+A natural consequence of this is that the speed of light is the same in all inertial frames.
 
 -/
 
