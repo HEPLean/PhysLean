@@ -78,13 +78,14 @@ We show some basic equalities for the Minkowski matrix.
 In particular, we show it can be expressed as a block matrix.
 
 -/
+/-- The Minkowski matrix as a diagonal matrix. -/
 lemma as_diagonal : @minkowskiMatrix d = diagonal (Sum.elim 1 (-1)) := by
   simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
 
 /-- The Minkowski matrix as a block matrix. -/
 lemma as_block : minkowskiMatrix =
     Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) ℝ) 0 0 (-1 : Matrix (Fin d) (Fin d) ℝ) := by
-  simp [as_diagonal, ← fromBlocks_diagonal, ←diagonal_one]
+  simp [as_diagonal, ← fromBlocks_diagonal, ← diagonal_one]
 
 /-!
 
@@ -173,7 +174,7 @@ We show the determinant of the Minkowski matrix is equal to `(-1)^d` where
   of the number of spatial dimensions. -/
 @[simp]
 lemma det_eq_neg_one_pow_d : (@minkowskiMatrix d).det = (- 1) ^ d := by
-  simp [minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
+  simp [as_diagonal]
 
 /-!
 
@@ -186,9 +187,9 @@ This is a useful part of the API but is not used often.
 -/
 
 lemma mul_η_diag_eq_iff {μ : Fin 1 ⊕ Fin d} {x y : ℝ} :
-    η μ μ * x = η μ μ * y ↔ x = y := by
-  refine mul_right_inj' ?_
-  exact η_diag_ne_zero
+    η μ μ * x = η μ μ * y ↔ x = y :=
+  mul_right_inj' η_diag_ne_zero
+
 
 /-!
 
@@ -202,15 +203,13 @@ We show properties of the action of the Minkowski matrix on vectors.
 @[simp]
 lemma mulVec_inl_0 (v : (Fin 1 ⊕ Fin d) → ℝ) :
     (η *ᵥ v) (Sum.inl 0) = v (Sum.inl 0) := by
-  simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  simp only [Fin.isValue, diagonal_dotProduct, Sum.elim_inl, one_mul]
+  simp [as_diagonal, mulVec_diagonal]
 
 /-- The space components of a vector acted on by the Minkowski matrix swaps sign. -/
 @[simp]
 lemma mulVec_inr_i (v : (Fin 1 ⊕ Fin d) → ℝ) (i : Fin d) :
     (η *ᵥ v) (Sum.inr i) = - v (Sum.inr i) := by
-  simp only [mulVec, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal]
-  simp only [diagonal_dotProduct, Sum.elim_inr, neg_mul, one_mul]
+  simp [as_diagonal, mulVec_diagonal]
 
 /-!
 
