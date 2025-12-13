@@ -257,7 +257,7 @@ We show that the dual swaps multiplication, i.e. `dual (Λ * Λ') = dual Λ' * d
 /-- The Minkowski dual swaps multiplications (acts contravariantly). -/
 @[simp]
 lemma dual_mul : dual (Λ * Λ') = dual Λ' * dual Λ := by
-  simp only [dual, transpose_mul, ←mul_assoc]
+  simp only [dual, transpose_mul, ← mul_assoc]
   noncomm_ring [minkowskiMatrix.sq]
 
 /-!
