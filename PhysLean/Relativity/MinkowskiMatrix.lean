@@ -257,10 +257,8 @@ We show that the dual swaps multiplication, i.e. `dual (Λ * Λ') = dual Λ' * d
 /-- The Minkowski dual swaps multiplications (acts contravariantly). -/
 @[simp]
 lemma dual_mul : dual (Λ * Λ') = dual Λ' * dual Λ := by
-  simp only [dual, transpose_mul]
-  trans η * Λ'ᵀ * (η * η) * Λᵀ * η
-  · noncomm_ring [minkowskiMatrix.sq]
-  · noncomm_ring
+  simp only [dual, transpose_mul, ←mul_assoc]
+  noncomm_ring [minkowskiMatrix.sq]
 
 /-!
 
@@ -273,10 +271,8 @@ We show that the dual is an involution, i.e. `dual (dual Λ) = Λ`.
 @[simp]
 lemma dual_dual : Function.Involutive (@dual d) := by
   intro Λ
-  simp only [dual, transpose_mul, transpose_transpose, eq_transpose]
-  trans (η * η) * Λ * (η * η)
-  · noncomm_ring
-  · noncomm_ring [minkowskiMatrix.sq]
+  simp only [dual, transpose_mul, eq_transpose, transpose_transpose, ← mul_assoc]
+  noncomm_ring [minkowskiMatrix.sq]
 
 /-!
 
@@ -287,8 +283,7 @@ lemma dual_dual : Function.Involutive (@dual d) := by
 /-- The Minkowski dual commutes with the transpose. -/
 @[simp]
 lemma dual_transpose : dual Λᵀ = (dual Λ)ᵀ := by
-  simp only [dual, transpose_transpose, transpose_mul, eq_transpose]
-  noncomm_ring
+  simp [dual, mul_assoc]
 
 /-!
 
@@ -299,8 +294,7 @@ lemma dual_transpose : dual Λᵀ = (dual Λ)ᵀ := by
 /-- The Minkowski dual preserves the Minkowski matrix. -/
 @[simp]
 lemma dual_eta : @dual d η = η := by
-  simp only [dual, eq_transpose]
-  noncomm_ring [minkowskiMatrix.sq]
+  simp [dual]
 
 /-!
 
@@ -328,14 +322,12 @@ We show a number of properties related to the components of the duals.
   of the original matrix. -/
 lemma dual_apply (μ ν : Fin 1 ⊕ Fin d) :
     dual Λ μ ν = η μ μ * Λ ν μ * η ν ν := by
-  simp only [dual, minkowskiMatrix, LieAlgebra.Orthogonal.indefiniteDiagonal, mul_diagonal,
-    diagonal_mul, transpose_apply, diagonal_apply_eq]
+  simp [dual, as_diagonal]
 
 /-- The components of the Minkowski dual of a matrix multiplied by the Minkowski matrix
   in terms of the original matrix. -/
 lemma dual_apply_minkowskiMatrix (μ ν : Fin 1 ⊕ Fin d) :
     dual Λ μ ν * η ν ν = η μ μ * Λ ν μ := by
-  rw [dual_apply, mul_assoc]
-  simp
+  simp [dual_apply, mul_assoc]
 
 end minkowskiMatrix
