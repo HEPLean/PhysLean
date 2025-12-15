@@ -190,7 +190,6 @@ lemma mul_η_diag_eq_iff {μ : Fin 1 ⊕ Fin d} {x y : ℝ} :
     η μ μ * x = η μ μ * y ↔ x = y :=
   mul_right_inj' η_diag_ne_zero
 
-
 /-!
 
 ### A.8. Action of the Minkowski matrix on vectors
