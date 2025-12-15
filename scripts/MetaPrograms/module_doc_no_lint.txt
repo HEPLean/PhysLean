@@ -91,6 +91,7 @@ PhysLean/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/QuadSol
 PhysLean/Particles/BeyondTheStandardModel/Spin10/Basic.lean
 PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean
 PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GaugeOrbits.lean
+PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
 PhysLean/Particles/FlavorPhysics/CKMMatrix/Basic.lean
 PhysLean/Particles/FlavorPhysics/CKMMatrix/Invariants.lean
 PhysLean/Particles/FlavorPhysics/CKMMatrix/PhaseFreedom.lean

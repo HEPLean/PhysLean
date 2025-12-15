@@ -107,6 +107,7 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.
 import PhysLean.Particles.BeyondTheStandardModel.Spin10.Basic
 import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
 import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GaugeOrbits
+import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Potential
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.Basic
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.Invariants
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.PhaseFreedom
