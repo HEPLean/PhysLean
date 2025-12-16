@@ -334,7 +334,7 @@ lemma timeOrderF_eq_maxTimeField_mul_finset (φ : 𝓕.FieldOp) (φs : List 𝓕
   rw [timeOrderF_eq_maxTimeField_mul]
   congr 3
   apply FieldStatistic.ofList_perm
-  nth_rewrite 1 [← List.finRange_map_get (φ :: φs)]
+  nth_rewrite 1 [← List.map_get_finRange (φ :: φs)]
   simp only [List.length_cons, eraseMaxTimeField, insertionSortDropMinPos]
   rw [eraseIdx_get, ← List.map_take, ← List.map_map]
   refine List.Perm.map (φ :: φs).get ?_

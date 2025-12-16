@@ -315,7 +315,7 @@ lemma IsDistBounded.normPowerSeries_zpow {d : ℕ} {n : ℕ} (m : ℤ) :
     IsDistBounded (d := d) (fun x => (normPowerSeries n x) ^ m) := by
   match m with
   | .ofNat m =>
-    simp only [Int.ofNat_eq_coe, zpow_natCast]
+    simp only [Int.ofNat_eq_natCast, zpow_natCast]
     apply IsDistBounded.mono (f := fun (x : Space d) => (‖x‖ + 1) ^ m)
     · fun_prop
     · fun_prop
