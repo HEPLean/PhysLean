@@ -132,7 +132,7 @@ lemma isExtrema_iff_tensors {𝓕 : FreeSpace}
     {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') + - (J x | ν')}ᵀ = 0 := by
   apply Iff.intro
   · intro h
-    simp [IsExtrema] at h
+    simp only [IsExtrema] at h
     intro x
     have h1 : ((Tensorial.toTensor (M := Lorentz.Vector d)).symm
         (permT id (PermCond.auto) {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
@@ -140,20 +140,24 @@ lemma isExtrema_iff_tensors {𝓕 : FreeSpace}
       funext ν
       have h2 : gradLagrangian 𝓕 A J x ν = 0 := by simp [h]
       rw [gradLagrangian_eq_tensor A hA J hJ] at h2
-      simp at h2
+      simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, one_div, map_smul, map_neg, map_add,
+        permT_permT, CompTriple.comp_eq, apply_add, apply_smul, Lorentz.Vector.neg_apply,
+        mul_eq_zero] at h2
       have hn : η ν ν ≠ 0 := η_diag_ne_zero
-      simp_all
+      simp_all only [Fin.isValue, false_or, ne_eq, Nat.reduceSucc, Nat.reduceAdd, one_div, map_smul,
+        map_neg, map_add, permT_permT, CompTriple.comp_eq, apply_add, apply_smul,
+        Lorentz.Vector.neg_apply, Lorentz.Vector.zero_apply]
     generalize {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
         - (J x | ν')}ᵀ = V at *
-    simp at h1
+    simp only [Nat.reduceSucc, Nat.reduceAdd, Fin.isValue, EmbeddingLike.map_eq_zero_iff] at h1
     rw [permT_eq_zero_iff] at h1
     exact h1
   · intro h
-    simp [IsExtrema]
+    simp only [IsExtrema]
     funext x
     funext ν
     rw [gradLagrangian_eq_tensor A hA J hJ, h]
-    simp
+    simp only [map_zero, Lorentz.Vector.zero_apply, mul_zero, Pi.zero_apply]
 
 /-!
 
