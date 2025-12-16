@@ -77,7 +77,7 @@ lemma superCommuteF_ofFieldOpListF_ofFieldOpFsList (φ : List 𝓕.FieldOp) (φs
     [ofFieldOpListF φ, ofFieldOpListF φs]ₛF = ofFieldOpListF φ * ofFieldOpListF φs -
     𝓢(𝓕 |>ₛ φ, 𝓕 |>ₛ φs) • ofFieldOpListF φs * ofFieldOpListF φ := by
   conv_lhs => rw [ofFieldOpListF_sum]
-  simp only [map_sum, LinearMap.coeFn_sum, Finset.sum_apply, instCommGroup.eq_1,
+  simp only [map_sum, LinearMap.coe_sum, Finset.sum_apply, instCommGroup.eq_1,
     Algebra.smul_mul_assoc]
   conv_lhs =>
     enter [2, x]

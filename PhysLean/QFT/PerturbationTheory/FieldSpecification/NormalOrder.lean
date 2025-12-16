@@ -255,7 +255,7 @@ lemma orderedInsert_create (φ : 𝓕.CrAnFieldOp)
 lemma normalOrderList_cons_create (φ : 𝓕.CrAnFieldOp)
     (hφ : 𝓕 |>ᶜ φ = CreateAnnihilate.create) (φs : List 𝓕.CrAnFieldOp) :
     normalOrderList (φ :: φs) = φ :: normalOrderList φs := by
-  simp only [normalOrderList, List.insertionSort]
+  simp only [normalOrderList, List.insertionSort_cons]
   rw [orderedInsert_create φ hφ]
 
 lemma orderedInsert_append_annihilate (φ' φ : 𝓕.CrAnFieldOp)
@@ -278,10 +278,10 @@ lemma normalOrderList_append_annihilate (φ : 𝓕.CrAnFieldOp)
     normalOrderList (φs ++ [φ]) = normalOrderList φs ++ [φ]
   | [] => by simp [normalOrderList]
   | φ' :: φs => by
-    simp only [normalOrderList, List.insertionSort]
+    simp only [normalOrderList, List.insertionSort_cons]
     have hi := normalOrderList_append_annihilate φ hφ φs
     dsimp only [normalOrderList] at hi
-    simp only [List.cons_append, List.insertionSort]
+    simp only [List.cons_append, List.insertionSort_cons]
     rw [hi, orderedInsert_append_annihilate φ' φ hφ]
 
 lemma normalOrder_swap_create_annihilate_fst (φc φa : 𝓕.CrAnFieldOp)
@@ -291,7 +291,7 @@ lemma normalOrder_swap_create_annihilate_fst (φc φa : 𝓕.CrAnFieldOp)
     normalOrderList (φc :: φa :: φs) = normalOrderList (φa :: φc :: φs) := by
   rw [normalOrderList_cons_create φc hφc (φa :: φs)]
   conv_rhs =>
-    rw [normalOrderList, List.insertionSort]
+    rw [normalOrderList, List.insertionSort_cons]
   have hi := normalOrderList_cons_create φc hφc φs
   rw [normalOrderList] at hi
   rw [hi]
@@ -309,7 +309,7 @@ lemma normalOrderList_swap_create_annihilate (φc φa : 𝓕.CrAnFieldOp)
     normalOrderList (φs ++ φc :: φa :: φs') = normalOrderList (φs ++ φa :: φc :: φs')
   | [], φs' => normalOrder_swap_create_annihilate_fst φc φa hφc hφa φs'
   | φ :: φs, φs' => by
-    dsimp only [List.cons_append, normalOrderList, List.insertionSort]
+    simp only [List.cons_append, normalOrderList, List.insertionSort_cons]
     have hi := normalOrderList_swap_create_annihilate φc φa hφc hφa φs φs'
     dsimp only [normalOrderList] at hi
     rw [hi]
@@ -412,7 +412,7 @@ lemma normalOrderList_eq_createFilter_append_annihilateFilter : (φs : List 𝓕
       simp only [hφ, reduceCtorEq, decide_false, Bool.false_eq_true, not_false_eq_true]
       rw [normalOrderList_eq_createFilter_append_annihilateFilter φs]
       rfl
-    · dsimp only [normalOrderList, List.insertionSort]
+    · simp only [normalOrderList, List.insertionSort_cons]
       rw [← normalOrderList]
       have hφ' : 𝓕 |>ᶜ φ = CreateAnnihilate.annihilate := by
         have hx := CreateAnnihilate.eq_create_or_annihilate (𝓕 |>ᶜ φ)

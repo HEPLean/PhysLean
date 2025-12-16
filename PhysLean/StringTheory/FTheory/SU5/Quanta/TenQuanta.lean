@@ -886,7 +886,6 @@ lemma toCharge_toFinset_of_mem_liftCharge (c : Finset 𝓩)
       simpa using Multiset.mem_of_le h' hr
     · intro hr
       simp at hr
-      simp only [SProd.sprod, Multiset.mem_product] at h
       rcases hr with rfl | rfl | rfl
       · exact h.1
       · exact h.2.1
@@ -985,9 +984,8 @@ lemma mem_liftCharge_of_exists_toCharges_toFluxesTen (c : Finset 𝓩) {x : TenQ
     obtain ⟨p3, hp3, hp3_2⟩ := h2
     apply And.intro
     · use p1.1, p2.1, p3.1
-      simp only [SProd.sprod, Multiset.mem_product]
       subst h
-      simp only [Multiset.toFinset_val, Multiset.mem_dedup, Int.reduceNeg]
+      simp only [Multiset.toFinset_val, Multiset.mem_product, Multiset.mem_dedup, Int.reduceNeg]
       refine ⟨⟨?_, ?_, ?_⟩, ?_⟩
       · simp [toCharges]
         use p1.2

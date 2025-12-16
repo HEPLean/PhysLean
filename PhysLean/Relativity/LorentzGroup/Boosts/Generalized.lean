@@ -402,7 +402,7 @@ lemma generalizedBoost_inv (u v : Velocity d) :
   apply LorentzGroup.eq_of_action_vector_eq
   intro p
   apply (smul_right_inj (Velocity.one_add_minkowskiProduct_neq_zero v u)).mp
-  rw [MulAction.mul_smul]
+  rw [SemigroupAction.mul_smul]
   rw [generalizedBoost_apply_mul_one_plus_contr]
   conv_lhs =>
     enter [1, 1]

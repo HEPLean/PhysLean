@@ -237,13 +237,13 @@ lemma integrable_space_mul {d : ℕ} {f : Space d → ℝ} (hf : IsDistBounded f
 lemma integrable_space_fderiv {d : ℕ} {f : Space d → F} (hf : IsDistBounded f)
     (η : 𝓢(Space d, ℝ)) (y : Space d) :
     Integrable (fun x : Space d => fderiv ℝ η x y • f x) volume := by
-  exact hf.integrable_space (SchwartzMap.pderivCLM ℝ y η)
+  exact hf.integrable_space (LineDeriv.lineDerivOpCLM ℝ _ y η)
 
 @[fun_prop]
 lemma integrable_space_fderiv_mul {d : ℕ} {f : Space d → ℝ} (hf : IsDistBounded f)
     (η : 𝓢(Space d, ℝ)) (y : Space d) :
     Integrable (fun x : Space d => fderiv ℝ η x y * f x) volume := by
-  exact hf.integrable_space (SchwartzMap.pderivCLM ℝ y η)
+  exact hf.integrable_space (LineDeriv.lineDerivOpCLM ℝ _ y η)
 
 /-!
 
@@ -500,7 +500,7 @@ lemma integrable_mul_inv_pow {d : ℕ}
       · apply norm_le_norm_add_norm_sub'
       · positivity
       · positivity
-      simp only [ne_eq, Nat.add_eq_zero, not_and]
+      simp only [ne_eq, Nat.add_eq_zero_iff, not_and]
       intro hq
       omega
     apply (add_pow_le _ _ _).trans
@@ -1141,7 +1141,7 @@ lemma norm_smul_zpow {d} (p : ℤ) (c : Space d) (hn : - (d - 1 : ℕ) ≤ p) :
     ring
     simp at hx
     subst hx
-    simp only [norm_zero, ne_eq, Nat.add_eq_zero, one_ne_zero, and_false, not_false_eq_true,
+    simp only [norm_zero, ne_eq, Nat.add_eq_zero_iff, one_ne_zero, and_false, not_false_eq_true,
       zero_pow, inv_zero, mul_zero, zero_eq_inv]
     rw [@zero_pow_eq]
     simp [hp]
