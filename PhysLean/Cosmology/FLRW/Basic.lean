@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Luis Gabriel C. Bariuan, Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 /-!
 
 # The Friedmann-Lemaître-Robertson-Walker metric

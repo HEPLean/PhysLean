@@ -111,8 +111,8 @@ lemma planeWaveFunctional_generalized_eigenvector_momentumOperatorUnbounded (k :
     rfl
   conv_lhs =>
     simp only [SchwartzMap.fourierTransformCLM_apply, smul_eq_mul]
-  change -(Complex.I * ↑↑ℏ * (FourierTransform.fourierTransform ((deriv ψ)) k)) = _
-  rw [Real.fourierIntegral_deriv (SchwartzMap.integrable ψ)
+  change -(Complex.I * ↑↑ℏ * (FourierTransform.fourier ((deriv ψ)) k)) = _
+  rw [Real.fourier_deriv (SchwartzMap.integrable ψ)
       (SchwartzMap.differentiable (ψ)) (SchwartzMap.integrable ((SchwartzMap.derivCLM ℂ) ψ))]
   simp [planewaveFunctional]
   ring_nf

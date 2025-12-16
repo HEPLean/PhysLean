@@ -555,9 +555,7 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
       convert h using 1
       rw [neg_add_eq_zero, eq_comm]
     | none => simp at h
-  · simp only [SProd.sprod, Multiset.mem_product] at h ⊢
-    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
-    simp at h1 h2
+  · obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
     rcases h1 with h1 | h1
     · subst h1
       left
@@ -574,24 +572,18 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
         simp_all
       · right
         use a1, a2, a3
-        simp_all
-  · simp only [SProd.sprod, Multiset.mem_product] at h ⊢
-    obtain ⟨a1, a2, a3, a4, ⟨h1, h2, h3, h4⟩, hsum⟩ := h
-    simp at h1
+  · obtain ⟨a1, a2, a3, a4, ⟨h1, h2, h3, h4⟩, hsum⟩ := h
     rcases h1 with h1 | h1
     · left
       use a2, a3, a4
       simp_all
     · right
       use a1, a2, a3, a4
-      simp_all
   · simp_all
   · match qHu with
     | some qHu =>
       simp at h
-      simp only [SProd.sprod, Multiset.mem_product] at h ⊢
       obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
-      simp at h1 h2
       rcases h1 with h1 | h1
       · subst h1
         left
@@ -628,25 +620,20 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
         abel
     | none, _ => simp at h
     | some x, none => simp at h
-  · simp only [SProd.sprod, Multiset.mem_product] at h ⊢
-    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
-    simp at h1
+  · obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
     rcases h1 with h1 | h1
     · left
       use a2, a3
       simp_all
     · right
       use a1, a2, a3
-      simp_all
   · simp_all
   · simp_all
   · match qHd with
     | none => simp at h
     | some qHd =>
       simp_all
-      simp only [SProd.sprod, Multiset.mem_product] at h ⊢
       obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
-      simp at h1
       rcases h1 with h1 | h1
       · subst h1
         left
@@ -656,7 +643,6 @@ lemma allowsTermQ5_or_allowsTerm_of_allowsTerm_insertQ5 {qHd qHu : Option 𝓩}
         abel
       · right
         use a1, a2
-        simp_all
 
 /-!
 
@@ -676,7 +662,6 @@ lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
     simp [AllowsTermQ5] at h
   all_goals
     simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm']
-    try simp only [SProd.sprod, Multiset.mem_product] at h ⊢
   · match qHu with
     | some qHu =>
       simp at h
@@ -684,7 +669,6 @@ lemma allowsTerm_insertQ5_of_allowsTermQ5 {qHd qHu : Option 𝓩}
       simp
     | none => simp at h
   · obtain ⟨q1, q2, ⟨h1, h2⟩, hsum⟩ := h
-    simp at h1
     use q1, q5, q2
     simp_all
   · obtain ⟨q1, q2, q3, h3, hsum⟩ := h
@@ -873,19 +857,14 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
     simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm', AllowsTermQ10] at h ⊢
   · simp_all
   · simp_all
-  · simp only [SProd.sprod, Multiset.mem_product] at h ⊢
-    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
-    simp at h3
+  · obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
     rcases h3 with h3 | h3
     · subst h3
       left
       use a1, a2
     · right
       use a1, a2, a3
-      simp_all
-  · simp only [SProd.sprod, Multiset.mem_product] at h ⊢
-    obtain ⟨a1, a2, a3, a4, ⟨h1, h2, h3, h4⟩, hsum⟩ := h
-    simp at h2
+  · obtain ⟨a1, a2, a3, a4, ⟨h1, h2, h3, h4⟩, hsum⟩ := h
     rcases h2 with h2 | h2
     · subst h2
       left
@@ -893,7 +872,6 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       simp_all
       rw [← hsum]
       abel
-    simp at h3
     rcases h3 with h3 | h3
     · subst h3
       left
@@ -901,7 +879,6 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       simp_all
       rw [← hsum]
       abel
-    simp at h4
     rcases h4 with h4 | h4
     · subst h4
       left
@@ -909,14 +886,11 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       simp_all
     right
     use a1, a2, a3, a4
-    simp_all
   · match qHd with
     | none => simp at h
     | some qHd =>
     simp_all
-    simp only [SProd.sprod, Multiset.mem_product] at h ⊢
     obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
-    simp at h1
     rcases h1 with h1 | h1
     · subst h1
       left
@@ -924,7 +898,6 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       simp_all
       rw [← hsum]
       abel
-    simp at h2
     rcases h2 with h2 | h2
     · subst h2
       left
@@ -932,7 +905,6 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       simp_all
       rw [← hsum]
       abel
-    simp at h3
     rcases h3 with h3 | h3
     · subst h3
       left
@@ -940,7 +912,6 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       simp_all
     right
     use a1, a2, a3
-    simp_all
   · match qHu with
     | none => simp at h
     | some qHu => simp_all
@@ -948,23 +919,19 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
     | none, _ => simp at h
     | some x, none => simp at h
     | some qHd, some qHu => simp_all
-  · simp only [SProd.sprod, Multiset.mem_product] at h ⊢
-    obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
-    simp at h2
+  · obtain ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩ := h
     rcases h2 with h2 | h2
     · left
       use a1, a3
       simp_all
       rw [← hsum]
       abel
-    simp at h3
     rcases h3 with h3 | h3
     · left
       use a1, a2
       simp_all
     right
     use a1, a2, a3
-    simp_all
   · match qHd, qHu with
     | none, _ => simp at h
     | some x, none => simp at h
@@ -973,13 +940,10 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
     | none => simp at h
     | some qHu =>
     simp at h
-    simp only [SProd.sprod, Multiset.mem_product] at h ⊢
     obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
-    simp at h1
     rcases h1 with h1 | h1
     · subst h1
       left
-      simp at h2
       rcases h2 with h2 | h2
       · subst h2
         left
@@ -990,7 +954,6 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
         simp_all
         rw [← hsum]
         abel
-    simp at h2
     rcases h2 with h2 | h2
     · subst h2
       left; right
@@ -1005,9 +968,7 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
     | none => simp at h
     | some qHd =>
     simp_all
-    simp only [SProd.sprod, Multiset.mem_product] at h ⊢
     obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
-    simp at h2
     rcases h2 with h2 | h2
     · subst h2
       left
@@ -1017,7 +978,6 @@ lemma allowsTermQ10_or_allowsTerm_of_allowsTerm_insertQ10 {qHd qHu : Option 𝓩
       abel
     right
     use a1, a2
-    simp_all
 
 /-!
 
@@ -1038,7 +998,6 @@ lemma allowsTerm_insertQ10_of_allowsTermQ10 {qHd qHu : Option 𝓩}
     simp [AllowsTermQ10] at h
   all_goals
     simp [allowsTerm_iff_zero_mem_ofPotentialTerm', ofPotentialTerm']
-    try simp only [SProd.sprod, Multiset.mem_product] at h ⊢
   · obtain ⟨a1, a2, ⟨h1, h2⟩, hsum⟩ := h
     use a1, a2, q10
     simp_all

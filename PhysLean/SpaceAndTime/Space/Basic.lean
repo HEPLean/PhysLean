@@ -735,7 +735,7 @@ lemma volume_closedBall_neq_zero {d : ℕ} (x : Space d.succ) (r : ℝ) (hr : 0 
   obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
   rcases hk with hk | hk
   · rw [InnerProductSpace.volume_closedBall_of_dim_even (k := k)]
-    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero,
+    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero_iff,
       one_ne_zero, and_false, not_false_eq_true, pow_eq_zero_iff, ENNReal.ofReal_eq_zero, not_or,
       not_le]
     apply And.intro
@@ -743,7 +743,7 @@ lemma volume_closedBall_neq_zero {d : ℕ} (x : Space d.succ) (r : ℝ) (hr : 0 
     · positivity
     · simpa using hk
   · rw [InnerProductSpace.volume_closedBall_of_dim_odd (k := k)]
-    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero,
+    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero_iff,
       one_ne_zero, and_false, not_false_eq_true, pow_eq_zero_iff, ENNReal.ofReal_eq_zero, not_or,
       not_le]
     apply And.intro

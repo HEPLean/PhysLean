@@ -674,8 +674,8 @@ lemma insertionSort_of_eq_list {α : Type} (r : α → α → Prop) [DecidableRe
     simp_all
   rw [hl]
   simp only [List.nil_append]
-  exact List.sorted_insertionSort r (l1 ++ (l ++ l2))
-  exact List.sorted_insertionSort r (l1 ++ (l ++ l2))
+  exact List.pairwise_insertionSort r (l1 ++ (l ++ l2))
+  exact List.pairwise_insertionSort r (l1 ++ (l ++ l2))
 
 lemma insertionSort_of_takeWhile_filter {α : Type} (r : α → α → Prop) [DecidableRel r]
     [IsTotal α r] [IsTrans α r] (a : α) (l1 l2 : List α) :

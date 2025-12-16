@@ -221,16 +221,6 @@ attribute [local instance] Matrix.linftyOpNormedAlgebra
 attribute [local instance] Matrix.linftyOpNormedRing
 attribute [local instance] Matrix.instCompleteSpace
 
-lemma map_pow {α β m : Type*}
-    [Fintype m] [DecidableEq m] [Semiring α] [Semiring β]
-    (f : α →+* β) (A : Matrix m m α) (k : ℕ) :
-    (A ^ k).map f = (A.map f) ^ k := by
-  induction k with
-  | zero =>
-    rw [pow_zero, pow_zero, Matrix.map_one]; all_goals aesop
-  | succ k ih =>
-    rw [pow_succ, pow_succ, Matrix.map_mul, ih]
-
 end Matrix
 
 namespace NormedSpace

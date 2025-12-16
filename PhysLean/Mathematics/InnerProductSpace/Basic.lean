@@ -215,7 +215,6 @@ def fromL2 : WithLp 2 E →L[𝕜] E where
         simp only [WithLp.equiv_apply]
         ring
 
-
 lemma fromL2_inner_left (x : WithLp 2 E) (y : E) : ⟪fromL2 𝕜 x, y⟫ = ⟪x, toL2 𝕜 y⟫ := rfl
 
 lemma ofLp_inner_left (x : E) (y : WithLp 2 E) : ⟪WithLp.ofLp y, x⟫ = ⟪y, WithLp.toLp 2 x⟫ := by

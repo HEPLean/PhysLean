@@ -847,6 +847,11 @@ def forgetLiftAppV (c : C) : ((lift.obj F).obj (OverColor.mk (fun (_ : Fin 1) =>
 @[simp]
 lemma forgetLiftAppV_symm_apply (c : C) (x : (F.obj (Discrete.mk c)).V) :
     (forgetLiftAppV F c).symm x = PiTensorProduct.tprod k (fun _ => x) := by
+  simp [forgetLiftAppV]
+  erw [PiTensorProduct.subsingletonEquiv_symm_apply]
+  congr
+  funext i
+  fin_cases i
   rfl
 
 /-- The `forgetLiftAppV` function takes an object `c` of type `C` and returns a isomorphism

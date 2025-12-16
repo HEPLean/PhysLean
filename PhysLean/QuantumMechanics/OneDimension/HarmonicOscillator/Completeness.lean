@@ -431,7 +431,7 @@ lemma fourierIntegral_zero_of_mem_orthogonal (f : ℝ → ℂ) (hf : MemHS f)
     (hOrth : ∀ n : ℕ, ⟪HilbertSpace.mk (Q.eigenfunction_memHS n), HilbertSpace.mk hf⟫_ℂ = 0) :
     𝓕 (fun x => f x * Real.exp (- x^2 / (2 * Q.ξ^2))) = 0 := by
   funext c
-  rw [Real.fourierIntegral_eq]
+  rw [Real.fourier_eq]
   simp only [RCLike.inner_apply, conj_trivial, ofReal_exp, ofReal_div, ofReal_neg,
     ofReal_mul, ofReal_pow, ofReal_ofNat, Pi.zero_apply]
   rw [← Q.orthogonal_exp_of_mem_orthogonal f hf hOrth (- 2 * Real.pi * c)]

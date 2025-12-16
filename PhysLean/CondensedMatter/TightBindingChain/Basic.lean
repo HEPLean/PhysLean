@@ -227,7 +227,7 @@ lemma hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
   `T.E0 • |n⟩ - T.t • (|n + 1⟩ + |n - 1⟩)`. -/
 lemma hamiltonian_apply_localizedState (n : Fin T.N) :
     T.hamiltonian |n⟩ = (T.E0 : ℂ) • |n⟩ - (T.t : ℂ) • (|n + 1⟩ + |n - 1⟩) := by
-  simp only [hamiltonian, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.coeFn_sum,
+  simp only [hamiltonian, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.coe_sum,
     Finset.sum_apply, LinearMap.add_apply, smul_add]
   congr
   · /- The `|n⟩` term -/
