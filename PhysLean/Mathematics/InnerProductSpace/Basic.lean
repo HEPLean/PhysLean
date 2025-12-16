@@ -211,7 +211,10 @@ def fromL2 : WithLp 2 E →L[𝕜] E where
         have h := Real.sqrt_le_sqrt (h ((WithLp.equiv 2 E) x)).1
         simp [smul_eq_mul] at h
         apply (le_inv_mul_iff₀' hc).2
-        exact h
+        convert h using 1
+        simp only [WithLp.equiv_apply]
+        ring
+
 
 lemma fromL2_inner_left (x : WithLp 2 E) (y : E) : ⟪fromL2 𝕜 x, y⟫ = ⟪x, toL2 𝕜 y⟫ := rfl
 

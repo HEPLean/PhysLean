@@ -68,7 +68,7 @@ This is slow to compute in practice.
 /-- Given a charges `x : Charges` associated to the representations, and a potential
   term `T`, the charges associated with instances of that potential term. -/
 def ofPotentialTerm (x : ChargeSpectrum 𝓩) (T : PotentialTerm) : Multiset 𝓩 :=
-  let add : Multiset 𝓩 → Multiset 𝓩 → Multiset 𝓩 := fun a b => (a.product b).map
+  let add : Multiset 𝓩 → Multiset 𝓩 → Multiset 𝓩 := fun a b => (a ×ˢ b).map
       fun (x, y) => x + y
   (T.toFieldLabel.map fun F => (ofFieldLabel x F).val).foldl add {0}
 
@@ -83,8 +83,9 @@ That is if `x ⊆ y` then `ofPotentialTerm x T ⊆ ofPotentialTerm y T`.
 lemma ofPotentialTerm_mono {x y : ChargeSpectrum 𝓩} (h : x ⊆ y) (T : PotentialTerm) :
     x.ofPotentialTerm T ⊆ y.ofPotentialTerm T := by
   have h1 {S1 S2 T1 T2 : Multiset 𝓩} (h1 : S1 ⊆ S2) (h2 : T1 ⊆ T2) :
-      (S1.product T1) ⊆ S2.product T2 :=
-    Multiset.subset_iff.mpr (fun x => by simpa using fun h1' h2' => ⟨h1 h1', h2 h2'⟩)
+      (S1 ×ˢ T1) ⊆ S2 ×ˢ T2 :=
+    Multiset.subset_iff.mpr (fun x => by simpa only [Multiset.mem_product, and_imp] using
+      fun h1' h2' => ⟨h1 h1', h2 h2'⟩)
   rw [subset_def] at h
   cases T
   all_goals
@@ -318,7 +319,6 @@ lemma ofPotentialTerm_subset_ofPotentialTerm' {x : ChargeSpectrum 𝓩} (T : Pot
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset]
     try simp [ofPotentialTerm', -existsAndEq]
-    simp only [SProd.sprod, Multiset.mem_product]
     simp_all [ofFieldLabel, -existsAndEq]
   case' W1 => use f2, f4, f6, f8
   case' W2 => use f2, f4, f6, f8
@@ -355,7 +355,6 @@ lemma ofPotentialTerm'_subset_ofPotentialTerm [DecidableEq 𝓩]
       ofPotentialTerm'_W4_finset, ofPotentialTerm'_K2_finset,
       ofPotentialTerm'_topYukawa_finset, ofPotentialTerm'_bottomYukawa_finset] at h
     try simp [ofPotentialTerm', -existsAndEq] at h
-    simp only [SProd.sprod, Multiset.mem_product] at h
   case' μ | β =>
     obtain ⟨q1, q2, ⟨q1_mem, q2_mem⟩, q_sum⟩ := h
   case' Λ | W3 | W4 | K1 | K2 | topYukawa | bottomYukawa =>

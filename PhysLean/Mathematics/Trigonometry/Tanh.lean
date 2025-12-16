@@ -6,6 +6,7 @@ Authors: Afiq Hatta
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Distribution.SchwartzSpace
 import Mathlib.Topology.Algebra.Polynomial
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 /-!
 # Properties of Tanh
 We want to prove that the reflectionless potential is a Schwartz map.

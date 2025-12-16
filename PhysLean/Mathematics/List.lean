@@ -278,12 +278,12 @@ lemma lt_orderedInsertPos_rel_fin {I : Type} (le1 : I → I → Prop) [Decidable
   simpa using List.mem_takeWhile_imp htake
 
 lemma gt_orderedInsertPos_rel {I : Type} (le1 : I → I → Prop) [DecidableRel le1]
-    [IsTotal I le1] [IsTrans I le1] (r0 : I) (r : List I) (hs : List.Sorted le1 r)
+    [IsTotal I le1] [IsTrans I le1] (r0 : I) (r : List I) (hs : List.Pairwise le1 r)
     (n : Fin r.length)
     (hn : ¬ n.val < (orderedInsertPos le1 r r0).val) : le1 r0 (r.get n) := by
-  have hrsSorted : List.Sorted le1 (List.orderedInsert le1 r0 r) :=
-    List.Sorted.orderedInsert r0 r hs
-  apply List.Sorted.rel_of_mem_take_of_mem_drop (k := (orderedInsertPos le1 r r0).succ) hrsSorted
+  have hrsSorted : List.Pairwise le1 (List.orderedInsert le1 r0 r) :=
+    List.Pairwise.orderedInsert r0 r hs
+  apply List.Pairwise.rel_of_mem_take_of_mem_drop (i := (orderedInsertPos le1 r r0).succ) hrsSorted
   · rw [orderedInsertPos_succ_take_orderedInsert]
     simp
   · rw [← orderedInsertPos_drop_eq_orderedInsert]
@@ -367,7 +367,7 @@ lemma orderedInsertEquiv_succ {I : Type} (le1 : I → I → Prop) [DecidableRel 
   simp only [List.length_cons, orderedInsertEquiv, Nat.succ_eq_add_one, Equiv.trans_apply]
   match r with
   | [] =>
-    simp
+    simp [List.orderedInsert.eq_1]
   | r1 :: r =>
     simp only [List.orderedInsert.eq_2, List.length_cons]
     rw [finExtractOne_apply_neq]
@@ -384,7 +384,7 @@ lemma orderedInsertEquiv_fin_succ {I : Type} (le1 : I → I → Prop) [Decidable
   simp only [orderedInsertEquiv, Equiv.trans_apply]
   match r with
   | [] =>
-    simp
+    simp [List.orderedInsert.eq_1]
   | r1 :: r =>
     simp only [List.orderedInsert.eq_2, List.length_cons, Fin.eta]
     rw [finExtractOne_apply_neq]
@@ -595,6 +595,15 @@ lemma insertionSortEquiv_congr {α : Type} {r : α → α → Prop} [DecidableRe
       ((insertionSortEquiv r l').trans (Fin.castOrderIso (by simp [h])).toEquiv) := by
   subst h
   rfl
+
+lemma insertionSortEquiv_congr_apply {α : Type} {r : α → α → Prop} [DecidableRel r] (l l' : List α)
+    (h : l = l') (i : Fin l.length) :
+    insertionSortEquiv r l i =
+    Fin.cast (by simp [h])
+    ((insertionSortEquiv r l') (Fin.cast (by simp [h]) i)) := by
+  rw [insertionSortEquiv_congr l l' h]
+  simp
+
 lemma insertionSort_get_comp_insertionSortEquiv {α : Type} {r : α → α → Prop} [DecidableRel r]
     (l : List α) : (List.insertionSort r l).get ∘ (insertionSortEquiv r l) = l.get := by
   rw [← insertionSortEquiv_get]
@@ -615,24 +624,17 @@ lemma insertionSortEquiv_order {α : Type} {r : α → α → Prop} [DecidableRe
     simp only [List.length_cons, Fin.zero_eta, Fin.getElem_fin, Fin.val_zero,
       List.getElem_cons_zero, List.getElem_cons_succ]
     nth_rewrite 2 [insertionSortEquiv] at hij'
-    simp only [List.insertionSort.eq_2, List.length_cons, Nat.succ_eq_add_one, Fin.zero_eta,
+    simp only [List.length_cons, Nat.succ_eq_add_one, Fin.zero_eta,
       Equiv.trans_apply, equivCons_zero] at hij'
     have hx := orderedInsertEquiv_zero r (List.insertionSort r as) a
     simp only at hx
-    rw [hx] at hij'
-    have h1 := lt_orderedInsertPos_rel_fin r a (List.insertionSort r as) _ hij'
-    rw [insertionSortEquiv] at h1
-    simp only [Nat.succ_eq_add_one, List.insertionSort.eq_2, Equiv.trans_apply,
-      equivCons_succ] at h1
-    rw [← orderedInsertEquiv_get] at h1
-    simp only [List.length_cons, Function.comp_apply, Equiv.symm_apply_apply, List.get_eq_getElem,
-      Fin.val_succ, List.getElem_cons_succ] at h1
-    rw [← List.get_eq_getElem] at h1
-    rw [← insertionSortEquiv_get] at h1
-    simpa using h1
+    convert lt_orderedInsertPos_rel_fin r a (List.insertionSort r as) _ hij'
+    change _ = ((List.insertionSort r (a :: as))).get ((insertionSortEquiv r (a :: as)) ⟨j + 1, hj⟩)
+    rw [← insertionSortEquiv_get]
+    simp
   | a :: as, ⟨i + 1, hi⟩, ⟨j + 1, hj⟩, hij, hij' => by
-    simp only [List.insertionSort.eq_2, List.length_cons, insertionSortEquiv, Nat.succ_eq_add_one,
-      Equiv.trans_apply, equivCons_succ] at hij'
+    simp only [List.length_cons, insertionSortEquiv, Nat.succ_eq_add_one, Equiv.trans_apply,
+      equivCons_succ] at hij'
     have h1 := orderedInsertEquiv_monotone_fin_succ _ _ _ _ _ hij'
     have h2 := insertionSortEquiv_order as ⟨i, Nat.succ_lt_succ_iff.mp hi⟩
       ⟨j, Nat.succ_lt_succ_iff.mp hj⟩ (by simpa using hij) h1
@@ -690,11 +692,9 @@ lemma eraseIdx_insertionSort {I : Type} (le1 : I → I → Prop) [DecidableRel l
     = List.insertionSort le1 (r.eraseIdx n)
   | 0, [], _ => by rfl
   | 0, (r0 :: r), hn => by
-    simp only [List.insertionSort, List.insertionSort.eq_2, List.length_cons, insertionSortEquiv,
-      Nat.succ_eq_add_one, Fin.zero_eta, Equiv.trans_apply, equivCons_zero, List.eraseIdx_zero,
-      List.tail_cons]
-    erw [orderedInsertEquiv_zero]
-    simp
+    simp only [List.insertionSort, List.foldr_cons, List.length_cons, insertionSortEquiv,
+      Nat.succ_eq_add_one, Fin.zero_eta, Equiv.trans_apply, equivCons_zero, orderedInsertEquiv_zero,
+      orderedInsert_eraseIdx_orderedInsertPos, List.eraseIdx_zero, List.tail_cons]
   | Nat.succ n, [], hn => by rfl
   | Nat.succ n, (r0 :: r), hn => by
     simp only [List.insertionSort, List.length_cons, insertionSortEquiv, Nat.succ_eq_add_one,
@@ -705,8 +705,8 @@ lemma eraseIdx_insertionSort {I : Type} (le1 : I → I → Prop) [DecidableRel l
     congr
     refine eraseIdx_insertionSort le1 n r _
     intro i j hij hn
-    have hx := List.Sorted.rel_get_of_lt (r := le1) (l := (List.insertionSort le1 r))
-      (List.sorted_insertionSort le1 r) hij
+    have hx := List.Pairwise.rel_get_of_lt (R := le1) (l := (List.insertionSort le1 r))
+      (List.pairwise_insertionSort le1 r) hij
     have ht (i j k : I) (hij : le1 i j) (hjk : ¬ le1 k j) : ¬ le1 k i := by
       intro hik
       have ht := IsTrans.trans (r := le1) k i j hik hij

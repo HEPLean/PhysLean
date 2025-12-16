@@ -169,7 +169,7 @@ lemma koszulSignInsert_eq_exchangeSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] 
   rw [hx]
   congr
   simp only [List.filter_filter, Bool.and_self]
-  rw [List.insertionSort]
+  rw [List.insertionSort_cons]
   nth_rewrite 1 [List.orderedInsert_eq_take_drop]
   rw [List.filter_append]
   have h1 : List.filter (fun a => decide ¬le φ a)
@@ -191,15 +191,15 @@ lemma koszulSignInsert_eq_exchangeSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] 
   simp only [decide_not, List.append_right_eq_self, List.filter_eq_nil_iff, Bool.not_eq_eq_eq_not,
     Bool.not_true, decide_eq_false_iff_not, Decidable.not_not]
   intro a ha
-  refine List.Sorted.rel_of_mem_take_of_mem_drop
-    (k := (orderedInsertPos le (List.insertionSort le φs) φ).1 + 1)
-    (List.sorted_insertionSort le (φ :: φs)) ?_ ?_
-  · simp only [List.insertionSort, List.orderedInsert_eq_take_drop, decide_not]
+  refine List.Pairwise.rel_of_mem_take_of_mem_drop
+    (i := (orderedInsertPos le (List.insertionSort le φs) φ).1 + 1)
+    (List.pairwise_insertionSort le (φ :: φs)) ?_ ?_
+  · simp only [List.insertionSort, List.foldr_cons, List.orderedInsert_eq_take_drop, decide_not]
     rw [List.take_append]
     rw [List.take_of_length_le]
     · simp [orderedInsertPos]
     · simp [orderedInsertPos]
-  · simp only [List.insertionSort, List.orderedInsert_eq_take_drop, decide_not]
+  · simp only [List.insertionSort_cons, List.orderedInsert_eq_take_drop, decide_not]
     rw [List.drop_append, List.drop_of_length_le]
     · simpa [orderedInsertPos] using ha
     · simp [orderedInsertPos]

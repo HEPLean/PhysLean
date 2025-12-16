@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import Mathlib.Lean.Expr.Basic
 import Lean.Elab.PreDefinition.Structural.BRecOn
+import ImportGraph.RequiredModules
 /-!
 
 ## Basic Lean meta programming commands
