@@ -140,12 +140,6 @@ lemma grad_neg (f : Space d → ℝ) :
 
 -/
 
-/-- A lemma from Mathlib, which will be removed once in latest version of Mathlib. -/
-@[simp]
-lemma _root_.WithLp.ofLp_sum (p : ENNReal) (V : Type) [AddCommGroup V] [Module ℝ V] {ι : Type}
-    (s : Finset ι) (f : ι → WithLp p V) : (∑ i ∈ s, f i).ofLp = ∑ i ∈ s, (f i).ofLp := by
-  change WithLp.linearEquiv p ℝ V (∑ i ∈ s, f i) = ∑ i ∈ s, WithLp.equiv p V (f i)
-  simp
 lemma grad_eq_sum {d} (f : Space d → ℝ) (x : Space d) :
     ∇ f x = ∑ i, deriv i f x • EuclideanSpace.single i 1 := by
   ext i

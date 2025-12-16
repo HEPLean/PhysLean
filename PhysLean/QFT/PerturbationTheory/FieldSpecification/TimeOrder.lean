@@ -161,14 +161,14 @@ def timeOrderList (φs : List 𝓕.FieldOp) : List 𝓕.FieldOp :=
 
 lemma timeOrderList_pair_ordered {φ ψ : 𝓕.FieldOp} (h : timeOrderRel φ ψ) :
     timeOrderList [φ, ψ] = [φ, ψ] := by
-  simp only [timeOrderList, List.insertionSort, List.orderedInsert, ite_eq_left_iff,
-    List.cons.injEq, and_true]
+  simp only [timeOrderList, List.insertionSort_cons, List.insertionSort_nil, List.orderedInsert,
+    ite_eq_left_iff, List.cons.injEq, and_true]
   exact fun h' => False.elim (h' h)
 
 lemma timeOrderList_pair_not_ordered {φ ψ : 𝓕.FieldOp} (h : ¬ timeOrderRel φ ψ) :
     timeOrderList [φ, ψ] = [ψ, φ] := by
-  simp only [timeOrderList, List.insertionSort, List.orderedInsert, ite_eq_right_iff,
-    List.cons.injEq, and_true]
+  simp only [timeOrderList, List.insertionSort_cons, List.insertionSort_nil, List.orderedInsert,
+    ite_eq_right_iff, List.cons.injEq, and_true]
   exact fun h' => False.elim (h h')
 
 @[simp]
@@ -263,14 +263,14 @@ lemma crAnTimeOrderList_nil : crAnTimeOrderList (𝓕 := 𝓕) [] = [] := by
 
 lemma crAnTimeOrderList_pair_ordered {φ ψ : 𝓕.CrAnFieldOp} (h : crAnTimeOrderRel φ ψ) :
     crAnTimeOrderList [φ, ψ] = [φ, ψ] := by
-  simp only [crAnTimeOrderList, List.insertionSort, List.orderedInsert, ite_eq_left_iff,
-    List.cons.injEq, and_true]
+  simp only [crAnTimeOrderList, List.insertionSort_cons, List.insertionSort_nil, List.orderedInsert,
+    ite_eq_left_iff, List.cons.injEq, and_true]
   exact fun h' => False.elim (h' h)
 
 lemma crAnTimeOrderList_pair_not_ordered {φ ψ : 𝓕.CrAnFieldOp} (h : ¬ crAnTimeOrderRel φ ψ) :
     crAnTimeOrderList [φ, ψ] = [ψ, φ] := by
-  simp only [crAnTimeOrderList, List.insertionSort, List.orderedInsert, ite_eq_right_iff,
-    List.cons.injEq, and_true]
+  simp only [crAnTimeOrderList, List.insertionSort_cons, List.insertionSort_nil, List.orderedInsert,
+    ite_eq_right_iff, List.cons.injEq, and_true]
   exact fun h' => False.elim (h h')
 
 lemma orderedInsert_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
@@ -344,7 +344,7 @@ lemma crAnTimeOrderList_swap_eq_time {φ ψ : 𝓕.CrAnFieldOp}
       simpa using orderedInsert_swap_eq_time h2 h1 _
   | φ'' :: φs, φs' => by
     rw [crAnTimeOrderList, crAnTimeOrderList]
-    simp only [List.cons_append, List.insertionSort]
+    simp only [List.cons_append, List.insertionSort_cons]
     obtain ⟨l1, l2, hl⟩ := crAnTimeOrderList_swap_eq_time h1 h2 φs φs'
     simp only [crAnTimeOrderList] at hl
     rw [hl.1, hl.2]
@@ -460,7 +460,7 @@ lemma orderedInsert_crAnTimeOrderRel_injective {ψ ψ' : 𝓕.CrAnFieldOp} (h : 
         simp_all only [and_self, implies_true, not_false_eq_true, true_and]
         apply Subtype.ext
         simp only [List.cons.injEq, true_and]
-        rw [Subtype.eq_iff] at ih'
+        rw [Subtype.ext_iff] at ih'
         exact ih'.2
 
 lemma crAnSectionTimeOrder_injective : {φs : List 𝓕.FieldOp} →
@@ -472,7 +472,7 @@ lemma crAnSectionTimeOrder_injective : {φs : List 𝓕.FieldOp} →
     apply Subtype.ext
     simp only [List.cons.injEq]
     simp only [crAnSectionTimeOrder] at h1
-    rw [Subtype.eq_iff] at h1
+    rw [Subtype.ext_iff] at h1
     simp only [crAnTimeOrderList, List.insertionSort] at h1
     simp only [List.map_cons, List.cons.injEq] at h h'
     rw [crAnFieldOpToFieldOp] at h h'

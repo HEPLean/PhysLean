@@ -220,7 +220,8 @@ lemma schwartzMap_fderiv_left_integrable_slice_symm {d : ℕ} (η : 𝓢(Space d
       (by fun_prop)]
     simp only [Nat.succ_eq_add_one, ContinuousLinearMap.coe_comp', Function.comp_apply,
       fderiv_slice_symm_left_apply]
-    change SchwartzMap.pderivCLM ℝ _ η _
+    change  (SchwartzMap.evalCLM (𝕜 := ℝ) _).comp (SchwartzMap.fderivCLM _) η (((slice i).symm (r, x)))
+    rw [← SchwartzMap.lineDerivOpCLM_eq]
   exact schwartzMap_integrable_slice_symm _ _ _
 
 @[fun_prop]
@@ -394,15 +395,16 @@ lemma schwartzMap_slice_integral_contDiff {d : ℕ} (n : ℕ) (η : 𝓢(Space d
         exact schwartzMap_fderiv_integrable_slice_symm η x i
       rw [hl]
       have hl2 : (fun x => ∫ (r : ℝ), (fderiv ℝ (fun x => η (((slice i).symm (r, x)))) x) y)=
-          fun x => ∫ (r : ℝ), SchwartzMap.pderivCLM ℝ ((slice i).symm (0, y)) η
+          fun x => ∫ (r : ℝ), LineDeriv.lineDerivOpCLM ℝ _ ((slice i).symm (0, y)) η
             (((slice i).symm (r, x))) := by
         funext x
         congr
         funext t
-        simp only [Nat.succ_eq_add_one, pderivCLM_apply]
+        simp only [Nat.succ_eq_add_one, LineDeriv.lineDerivOpCLM_apply]
         rw [fderiv_comp']
         simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
           fderiv_slice_symm_right_apply, Nat.succ_eq_add_one]
+        rw [SchwartzMap.lineDerivOp_apply_eq_fderiv]
         · apply Differentiable.differentiableAt
           exact η.smooth'.differentiable (by simp)
         fun_prop
@@ -439,21 +441,21 @@ lemma schwartzMap_slice_integral_iteratedFDeriv_apply {d : ℕ} (n : ℕ) (η : 
         conv_lhs =>
           enter [1, 2, x]
           rw [ih]
-      _ = (fderiv ℝ (fun x => ∫ (r : ℝ), (η.iteratedPDeriv ℝ
-          (fun j => (slice i).symm (0, Fin.tail y j)) (((slice i).symm (r, x)))))) x (y 0) := by
+      _ = (fderiv ℝ (fun x => ∫ (r : ℝ), (LineDeriv.iteratedLineDerivOpCLM ℝ 𝓢(Space d.succ, ℝ)
+          (fun j => (slice i).symm (0, Fin.tail y j)) η (((slice i).symm (r, x)))))) x (y 0) := by
         congr
         funext x
         congr
         funext t
-        rw [iteratedPDeriv_eq_iteratedFDeriv]
-      _ = ∫ (r : ℝ), (fderiv ℝ (fun x => ((iteratedPDeriv ℝ fun j =>
+        erw [SchwartzMap.iteratedLineDerivOp_eq_iteratedFDeriv]
+      _ = ∫ (r : ℝ), (fderiv ℝ (fun x => ((LineDeriv.iteratedLineDerivOpCLM ℝ _ fun j =>
           (slice i).symm (0, Fin.tail y j)) η)
           ((slice i).symm (r, x))) x) (y 0) := by
         rw [(schwartzMap_slice_integral_hasFDerivAt _ i x).fderiv]
         rw [ContinuousLinearMap.integral_apply]
         exact
           schwartzMap_fderiv_integrable_slice_symm
-            ((iteratedPDeriv ℝ fun j => (slice i).symm (0, Fin.tail y j)) η) x i
+            ((LineDeriv.iteratedLineDerivOpCLM ℝ _ fun j => (slice i).symm (0, Fin.tail y j)) η) x i
     congr
     funext r
     calc _
@@ -461,7 +463,7 @@ lemma schwartzMap_slice_integral_iteratedFDeriv_apply {d : ℕ} (n : ℕ) (η : 
             (fun j => (slice i).symm (0, Fin.tail y j)))) x) (y 0) := by
           congr
           funext x
-          rw [iteratedPDeriv_eq_iteratedFDeriv]
+          erw [SchwartzMap.iteratedLineDerivOp_eq_iteratedFDeriv]
     rw [iteratedFDeriv_succ_apply_left]
     simp only [Nat.succ_eq_add_one]
     rw [← fderiv_continuousMultilinear_apply_const_apply]

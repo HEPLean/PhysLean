@@ -400,7 +400,7 @@ look at.
   `minimallyAllowsTermsOfFinset S5 S10 .topYukawa`. -/
 def completionsTopYukawa (S5 : Finset 𝓩) (x : ChargeSpectrum 𝓩) :
     Multiset (ChargeSpectrum 𝓩) :=
-  (S5.val.product S5.val).map fun (qHd, q5) => ⟨qHd, x.qHu, {q5}, x.Q10⟩
+  (S5.val ×ˢ S5.val).map fun (qHd, q5) => ⟨qHd, x.qHu, {q5}, x.Q10⟩
 
 /-!
 

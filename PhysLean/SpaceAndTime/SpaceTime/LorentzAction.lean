@@ -76,7 +76,7 @@ def schwartzAction {d} : LorentzGroup d →* 𝓢(SpaceTime d, ℝ) →L[ℝ] �
     ext η x
     simp only [_root_.mul_inv_rev, compCLM_apply, Function.comp_apply,
       Lorentz.Vector.actionCLM_apply, ContinuousLinearMap.coe_mul]
-    rw [MulAction.mul_smul]
+    rw [SemigroupAction.mul_smul]
 
 /-!
 
@@ -159,7 +159,7 @@ instance : DistribMulAction (LorentzGroup d) ((SpaceTime d) →d[ℝ] M) where
     simp [lorentzGroup_smul_dist_apply]
   mul_smul Λ₁ Λ₂ f := by
     ext η
-    simp [lorentzGroup_smul_dist_apply, MulAction.mul_smul]
+    simp [lorentzGroup_smul_dist_apply, SemigroupAction.mul_smul]
   smul_zero Λ := by
     ext η
     rw [lorentzGroup_smul_dist_apply]
