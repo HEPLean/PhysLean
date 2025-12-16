@@ -56,8 +56,8 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
           (φsΛ.uncontracted.sort (fun x1 x2 => x1 ≤ x2))).Nodup := by
         exact List.Nodup.filter _ (φsΛ.uncontracted.sort_nodup (fun x1 x2 => x1 ≤ x2))
       have hsort : (List.filter (fun x => decide (x.1 < i.1))
-          (φsΛ.uncontracted.sort (fun x1 x2 => x1 ≤ x2))).Sorted (· ≤ ·) := by
-        exact List.Sorted.filter _ (φsΛ.uncontracted.sort_sorted (fun x1 x2 => x1 ≤ x2))
+          (φsΛ.uncontracted.sort (fun x1 x2 => x1 ≤ x2))).Pairwise (· ≤ ·) := by
+        exact List.Pairwise.filter _ (φsΛ.uncontracted.pairwise_sort (fun x1 x2 => x1 ≤ x2))
       rw [← (List.toFinset_sort (· ≤ ·) hdup).mpr hsort]
       congr
       ext a

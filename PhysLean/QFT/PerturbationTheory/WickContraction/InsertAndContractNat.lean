@@ -466,7 +466,7 @@ lemma insertAndContractNat_some_getDual?_of_neq (c : WickContraction n) (i : Fin
 @[simp]
 lemma insertAndContractNat_erase (c : WickContraction n) (i : Fin n.succ)
     (j : Option c.uncontracted) : erase (insertAndContractNat c i j) i = c := by
-  refine Subtype.eq ?_
+  refine Subtype.ext ?_
   simp only [erase, Nat.succ_eq_add_one, insertAndContractNat, Finset.le_eq_subset]
   conv_rhs => rw [c.eq_filter_mem_self]
   refine Finset.filter_inj'.mpr ?_
@@ -533,7 +533,7 @@ lemma erase_insert (c : WickContraction n.succ) (i : Fin n.succ) :
     insertAndContractNat (erase c i) i (getDualErase c i) = c := by
   match n with
   | 0 =>
-    apply Subtype.eq
+    apply Subtype.ext
     simp only [Nat.succ_eq_add_one, Nat.reduceAdd, insertAndContractNat, getDualErase,
       Finset.le_eq_subset]
     ext a
@@ -556,7 +556,7 @@ lemma erase_insert (c : WickContraction n.succ) (i : Fin n.succ) :
         }
         · simp_all only
   | Nat.succ n =>
-  apply Subtype.eq
+  apply Subtype.ext
   by_cases hi : (c.getDual? i).isSome
   · rw [insertAndContractNat_of_isSome]
     simp only [Nat.succ_eq_add_one, getDualErase, hi, ↓reduceDIte, Option.get_some,
@@ -629,7 +629,7 @@ lemma insertLift_injective {c : WickContraction n} (i : Fin n.succ) (j : Option 
     Function.Injective (insertLift i j) := by
   intro a b hab
   simp only [Nat.succ_eq_add_one, insertLift, Subtype.mk.injEq, Finset.map_inj] at hab
-  exact Subtype.eq hab
+  exact Subtype.ext hab
 
 lemma insertLift_none_surjective {c : WickContraction n} (i : Fin n.succ) :
     Function.Surjective (c.insertLift i none) := by
@@ -639,7 +639,7 @@ lemma insertLift_none_surjective {c : WickContraction n} (i : Fin n.succ) :
     RelEmbedding.coe_toEmbedding] at ha
   obtain ⟨a', ha', ha''⟩ := ha
   use ⟨a', ha'⟩
-  exact Subtype.eq ha''
+  exact Subtype.ext ha''
 
 lemma insertLift_none_bijective {c : WickContraction n} (i : Fin n.succ) :
     Function.Bijective (c.insertLift i none) := by
@@ -728,11 +728,11 @@ lemma insertLiftSome_surjective {c : WickContraction n} (i : Fin n.succ) (j : c.
     Finset.mem_map, RelEmbedding.coe_toEmbedding] at ha
   rcases ha with ha | ha
   · use Sum.inl ()
-    exact Subtype.eq ha.symm
+    exact Subtype.ext ha.symm
   · obtain ⟨a', ha', ha''⟩ := ha
     use Sum.inr ⟨a', ha'⟩
     simp only [Nat.succ_eq_add_one, insertLiftSome, insertLift]
-    exact Subtype.eq ha''
+    exact Subtype.ext ha''
 
 lemma insertLiftSome_bijective {c : WickContraction n} (i : Fin n.succ) (j : c.uncontracted) :
     Function.Bijective (insertLiftSome i j) :=
@@ -749,13 +749,13 @@ lemma insertAndContractNat_injective (i : Fin n.succ) :
   intro c1 c2 hc1c2
   rw [Subtype.ext_iff] at hc1c2
   simp [insertAndContractNat] at hc1c2
-  exact Subtype.eq hc1c2
+  exact Subtype.ext hc1c2
 
 lemma insertAndContractNat_surjective_on_nodual (i : Fin n.succ)
     (c : WickContraction n.succ) (hc : c.getDual? i = none) :
     ∃ c', insertAndContractNat c' i none = c := by
   use c.erase i
-  apply Subtype.eq
+  apply Subtype.ext
   ext a
   simp [insertAndContractNat, erase]
   apply Iff.intro

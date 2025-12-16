@@ -342,12 +342,12 @@ lemma stat_ofFinset_of_insertAndContractLiftFinset (φ : 𝓕.FieldOp) (φs : Li
   rw [get_eq_insertIdx_succAbove φ _ i, ← List.map_map, ← List.map_map]
   congr
   have h1 : (List.map (⇑(finCongr (insertIdx_length_fin φ φs i).symm))
-      (List.map i.succAbove (a.sort (fun x1 x2 => x1 ≤ x2)))).Sorted (· ≤ ·) := by
+      (List.map i.succAbove (a.sort (fun x1 x2 => x1 ≤ x2)))).Pairwise (· ≤ ·) := by
     simp only [Nat.succ_eq_add_one, List.map_map]
     refine
       fin_list_sorted_monotone_sorted (a.sort (fun x1 x2 => x1 ≤ x2)) ?hl
         (⇑(finCongr (Eq.symm (insertIdx_length_fin φ φs i))) ∘ i.succAbove) ?hf
-    exact a.sort_sorted (fun x1 x2 => x1 ≤ x2)
+    exact a.pairwise_sort (fun x1 x2 => x1 ≤ x2)
     refine StrictMono.comp (fun ⦃a b⦄ a => a) ?hf.hf
     exact Fin.strictMono_succAbove i
   have h2 : (List.map (⇑(finCongr (insertIdx_length_fin φ φs i).symm))

@@ -205,6 +205,7 @@ lemma timeOrder_timeContract_mul_of_eqTimeOnly_left {φs : List 𝓕.FieldOp}
   rw [timeOrder_timeContract_mul_of_eqTimeOnly_mid φsΛ hl]
   simp
 
+set_option maxHeartbeats 400000 in
 lemma exists_join_singleton_of_not_eqTimeOnly {φs : List 𝓕.FieldOp}
     (φsΛ : WickContraction φs.length) (h1 : ¬ φsΛ.EqTimeOnly) :
     ∃ (i j : Fin φs.length) (h : i < j) (φsucΛ : WickContraction [singleton h]ᵘᶜ.length),
@@ -446,7 +447,7 @@ lemma subContraction_eqTimeContractSet_not_empty_of_haveEqTime
     {φs : List 𝓕.FieldOp} (φsΛ : WickContraction φs.length) (h : HaveEqTime φsΛ) :
     φsΛ.subContraction (eqTimeContractSet φsΛ) (eqTimeContractSet_subset φsΛ) ≠ empty := by
   simp only [ne_eq]
-  erw [Subtype.eq_iff]
+  erw [Subtype.ext_iff]
   simp only [subContraction, empty]
   rw [Finset.eq_empty_iff_forall_notMem]
   simp only [HaveEqTime, Fin.getElem_fin, exists_and_left, exists_prop] at h
@@ -495,12 +496,12 @@ lemma hasEqTimeEquiv_ext_sigma {φs : List 𝓕.FieldOp} {x1 x2 :
     Σ (φsΛ : {φsΛ : WickContraction φs.length // φsΛ.EqTimeOnly ∧ φsΛ ≠ empty}),
     {φssucΛ : WickContraction [φsΛ.1]ᵘᶜ.length // ¬ HaveEqTime φssucΛ}}
     (h1 : x1.1.1 = x2.1.1) (h2 : x1.2.1 = congr (by simp [h1]) x2.2.1) : x1 = x2 := by
-  match x1, x2 with
-  | ⟨⟨a1, b1⟩, ⟨c1, d1⟩⟩, ⟨⟨a2, b2⟩, ⟨c2, d2⟩⟩ =>
-    simp only at h1
-    subst h1
-    simp only [ne_eq, congr_refl] at h2
-    simp [h2]
+  rcases x1 with ⟨⟨a1, b1⟩, ⟨c1, d1⟩⟩
+  rcases x2 with ⟨b2, h2⟩
+  simp only at h1
+  subst h1
+  simp only [ne_eq, congr_refl] at h2
+  simp [h2]
 
 /-- The equivalence which separates a Wick contraction which has an equal time contraction
 into a non-empty contraction only between equal-time fields and a Wick contraction which

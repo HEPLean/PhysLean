@@ -195,7 +195,7 @@ lemma timeContract_of_not_gradingCompliant (φs : List 𝓕.FieldOp)
   obtain ⟨ha, ha2⟩ := ha
   apply Finset.prod_eq_zero (i := ⟨a, ha⟩)
   simp only [Finset.univ_eq_attach, Finset.mem_attach]
-  apply Subtype.eq
+  apply Subtype.ext
   simp only [List.get_eq_getElem, ZeroMemClass.coe_zero]
   rw [timeContract_zero_of_diff_grade]
   simp [ha2]
