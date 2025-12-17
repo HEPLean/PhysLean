@@ -4,10 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina, Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
-import Mathlib.Geometry.Manifold.IsManifold.Basic
 import PhysLean.Relativity.Tensors.Elab
 import Mathlib.Analysis.Distribution.SchwartzSpace
-import Mathlib.Analysis.Calculus.ContDiff.WithLp
 /-!
 
 # Lorentz Vectors
