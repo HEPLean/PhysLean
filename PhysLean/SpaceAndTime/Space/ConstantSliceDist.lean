@@ -220,7 +220,8 @@ lemma schwartzMap_fderiv_left_integrable_slice_symm {d : ℕ} (η : 𝓢(Space d
       (by fun_prop)]
     simp only [Nat.succ_eq_add_one, ContinuousLinearMap.coe_comp', Function.comp_apply,
       fderiv_slice_symm_left_apply]
-    change  (SchwartzMap.evalCLM (𝕜 := ℝ) _).comp (SchwartzMap.fderivCLM _) η (((slice i).symm (r, x)))
+    change (SchwartzMap.evalCLM (𝕜 := ℝ) _).comp (SchwartzMap.fderivCLM _) η
+      (((slice i).symm (r, x)))
     rw [← SchwartzMap.lineDerivOpCLM_eq]
   exact schwartzMap_integrable_slice_symm _ _ _
 

@@ -387,7 +387,7 @@ lemma insertionSortEquiv_insertionSort_append {α : Type} (r : α → α → Pro
   | b :: l1, l2 => by
     simp only [List.insertionSort, List.length_cons, List.cons_append, finCongr_apply]
     have hl := insertionSortEquiv_orderedInsert_append r b a (List.insertionSort r l1) l2
-    simp only [List.length_insertionSort, List.cons_append,  List.length_cons,
+    simp only [List.length_insertionSort, List.cons_append, List.length_cons,
       finCongr_apply] at hl
     erw [hl]
     have ih := insertionSortEquiv_insertionSort_append r a l1 l2

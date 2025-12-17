@@ -161,7 +161,7 @@ lemma getDual?_eq_some_iff_mem (i j : Fin n) :
   rw [Fin.find?_eq_some_iff]
   apply Iff.intro <;> intro h
   · simpa using h.1
-  · simp  [h, true_and]
+  · simp [h, true_and]
     intro k hkj hk
     have hc := c.2.2 _ h _ hk
     simp only [Finset.disjoint_insert_right, Finset.mem_insert, Finset.mem_singleton, true_or,

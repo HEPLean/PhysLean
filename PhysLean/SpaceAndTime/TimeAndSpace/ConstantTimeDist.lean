@@ -461,7 +461,8 @@ lemma time_integral_contDiff {d : ℕ} (n : ℕ) (η : 𝓢(Time × Space d, ℝ
         exact integrable_fderiv_space η x
       rw [hl]
       have hl2 : (fun x => ∫ (t : Time), (fderiv ℝ (fun x => η (t, x)) x) y)=
-          fun x => ∫ (t : Time), (LineDeriv.lineDerivOpCLM ℝ 𝓢(Time × Space d, ℝ) ((0, y) : Time × Space d) η) (t, x) := by
+          fun x => ∫ (t : Time), (LineDeriv.lineDerivOpCLM ℝ 𝓢(Time × Space d, ℝ) ((0, y) :
+            Time × Space d) η) (t, x) := by
         funext x
         congr
         funext t
@@ -752,7 +753,8 @@ lemma time_integral_iteratedFDeriv_apply {d : ℕ} (n : ℕ) (η : 𝓢(Time × 
           · fun_prop
           fun_prop
     trans (fderiv ℝ (fun x => ∫ (t : Time),
-        (LineDeriv.iteratedLineDerivOpCLM ℝ _ (fun i => ((0, Fin.tail y i) : Time × Space d)) η (t, x)))) x (y 0)
+        (LineDeriv.iteratedLineDerivOpCLM ℝ _ (fun i => ((0, Fin.tail y i) : Time × Space d))
+          η (t, x)))) x (y 0)
     · congr
       funext x
       congr

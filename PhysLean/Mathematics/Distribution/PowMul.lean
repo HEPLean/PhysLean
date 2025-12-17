@@ -50,8 +50,8 @@ private lemma norm_iteratedFDeriv_ofRealCLM {x} (i : ℕ) :
     | succ i ih =>
       rw [iteratedFDeriv_succ_eq_comp_right]
       simp only [Nat.succ_eq_add_one, ContinuousLinearMap.fderiv, Function.comp_apply,
-        LinearIsometryEquiv.norm_map, Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self, ↓reduceIte,
-        Nat.add_eq_right]
+        LinearIsometryEquiv.norm_map, Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self,
+        ↓reduceIte, Nat.add_eq_right]
       rw [iteratedFDeriv_succ_eq_comp_right]
       conv_lhs =>
         enter [1, 2, 3, y]
