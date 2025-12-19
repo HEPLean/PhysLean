@@ -301,6 +301,11 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
 
 We show that the magnetic field matrix $B_{ij}$ satisfies the following wave-like equation
 
+$$\frac{\partial^2 B_{ij}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 B_{ij}}{\partial x_k^2}
+  + \frac{1}{\epsilon_0} \left( \frac{\partial J_i}{\partial x_j} -
+  \frac{\partial J_j}{\partial x_i} \right).$$
+
+When the free current density is zero, this reduces to the wave equation.
 -/
 
 lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : ElectromagneticPotential d}
@@ -388,6 +393,14 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
 /-!
 
 ### D.2. Second time derivatives of the electric field from the extrema condition
+
+We show that the electric field $E_i$ satisfies the following wave-like equation:
+
+$$\frac{\partial^2 E_{i}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 E_{i}}{\partial x_k^2}
+  - \frac{c ^ 2}{\epsilon_0} \frac{\partial \rho}{\partial x_i}
+  - c ^ 2 μ_0 \frac{\partial J_i}{\partial t}.$$
+
+When the free current density and charge density are zero, this reduces to the wave equation.
 
 -/
 
@@ -547,6 +560,9 @@ end ElectromagneticPotential
 /-!
 
 ## E. Is Extema condition in the distributional case
+
+The above results looked at the extrema condition for electromagnetic potentials that are
+functions. We now look at the case where the electromagnetic potential is a distribution.
 
 -/
 
