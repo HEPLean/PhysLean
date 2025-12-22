@@ -301,10 +301,9 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
 
 We show that the magnetic field matrix $B_{ij}$ satisfies the following wave-like equation
 
-$$\frac{\partial^2 B_{ij}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 B_{ij}}{\partial x_k^2}
-  + \frac{1}{\epsilon_0} \left( \frac{\partial J_i}{\partial x_j} -
+$$\frac{\partial^2 B_{ij}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 B_{ij}}{\partial x_k^2} +
+  \frac{1}{\epsilon_0} \left( \frac{\partial J_i}{\partial x_j} -
   \frac{\partial J_j}{\partial x_i} \right).$$
-
 When the free current density is zero, this reduces to the wave equation.
 -/
 
@@ -396,9 +395,9 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
 
 We show that the electric field $E_i$ satisfies the following wave-like equation:
 
-$$\frac{\partial^2 E_{i}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 E_{i}}{\partial x_k^2}
-  - \frac{c ^ 2}{\epsilon_0} \frac{\partial \rho}{\partial x_i}
-  - c ^ 2 μ_0 \frac{\partial J_i}{\partial t}.$$
+$$\frac{\partial^2 E_{i}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 E_{i}}{\partial x_k^2} -
+  \frac{c ^ 2}{\epsilon_0} \frac{\partial \rho}{\partial x_i} -
+  c ^ 2 μ_0 \frac{\partial J_i}{\partial t}.$$
 
 When the free current density and charge density are zero, this reduces to the wave equation.
 
@@ -605,7 +604,7 @@ In other words,
 $$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$$
 and
 $$\mu_0 \varepsilon_0 \frac{\partial \mathbf{E}_i}{\partial t} -
-  ∑ j, \partial_j \mathbf{B}_{j i} + \mu_0 \mathbf{J}_i = 0.$$
+  \sum_j \partial_j \mathbf{B}_{j i} + \mu_0 \mathbf{J}_i = 0.$$
 Here $\mathbf{B}$ is the magnetic field matrix.
 
 -/
@@ -676,8 +675,8 @@ In other words,
 $$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$$
 and
 $$\mu_0 \varepsilon_0 \frac{\partial \mathbf{E}_i}{\partial t} -
-  ∑ j, -(\partial_j \partial_j \vec A_i - \partial_j \partial_i \vec A_j)
-  + \mu_0 \mathbf{J}_i = 0.$$
+  \sum_j -(\partial_j \partial_j \vec A_i - \partial_j \partial_i \vec A_j) +
+  \mu_0 \mathbf{J}_i = 0.$$
 
 -/
 
@@ -708,7 +707,7 @@ lemma isExtrema_iff_vectorPotential {𝓕 : FreeSpace}
 ### E.3. The exterma condition in terms of tensors
 
 We show that `A` is an extrema of the lagrangian if and only if the equation
-$$(\frac{1}{\mu_0} \partial_\kappa F^{\kappa \nu'} - J^{\nu'}) = 0,$$
+$$\frac{1}{\mu_0} \partial_\kappa F^{\kappa \nu'} - J^{\nu'} = 0,$$
 holds.
 
 -/
