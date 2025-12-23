@@ -127,15 +127,6 @@ lemma divergence_const_smul {f : E → E} {x : E} {c : 𝕜}
   unfold divergence
   simp [fderiv_fun_const_smul hf]
 
-@[simp]
-lemma ContinuousLinearMap.smulRight_toLinearMap {M₁ : Type*} [TopologicalSpace M₁]
-    [AddCommMonoid M₁] {M₂ : Type*} [TopologicalSpace M₂] [AddCommMonoid M₂] {R : Type*} {S : Type*}
-    [Semiring R] [Semiring S] [Module R M₁] [Module R M₂] [Module R S] [Module S M₂]
-    [IsScalarTower R S M₂] [TopologicalSpace S] [ContinuousSMul S M₂] (c : M₁ →L[R] S) (f : M₂) :
-    (↑(ContinuousLinearMap.smulRight c f) : M₁ →ₗ[R] M₂) =
-      LinearMap.smulRight (↑c : M₁ →ₗ[R] S) f :=
-  rfl
-
 open InnerProductSpace' in
 lemma divergence_smul [InnerProductSpace' 𝕜 E] {f : E → 𝕜} {g : E → E} {x : E}
     (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x)
