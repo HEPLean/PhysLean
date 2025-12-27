@@ -3,6 +3,8 @@ Copyright (c) 2025 Shlok Vaibhav Singh. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Shlok Vaibhav Singh
 -/
+import PhysLean.Meta.Informal.Basic
+import PhysLean.Meta.Sorry
 /-!
 # Coplanar Double Pendulum
 ### Tag: LnL_1.5.1
@@ -62,4 +64,11 @@ $$
 
 namespace ClassicalMechanics
 
+namespace CoplanarDoublePendulum
+
+/-- The configuration space of the coplaner double pendulum. -/
+@[sorryful]
+def ConfigurationSpace : Type := sorry
+
+end CoplanarDoublePendulum
 end ClassicalMechanics
