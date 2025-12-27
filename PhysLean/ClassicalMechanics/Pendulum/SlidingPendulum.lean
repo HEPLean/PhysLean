@@ -3,6 +3,7 @@ Copyright (c) 2025 Shlok Vaibhav Singh. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Shlok Vaibhav Singh
 -/
+import PhysLean.Meta.Sorry
 /-!
 # Sliding Pendulum
 ### Tag: LnL_1.5.2
@@ -55,5 +56,13 @@ $$
 -/
 
 namespace ClassicalMechanics
+
+namespace SlidingPendulum
+
+/-- The configuration space of the sliding pendulum system. -/
+@[sorryful]
+def ConfigurationSpace : Type := sorry
+
+end SlidingPendulum
 
 end ClassicalMechanics

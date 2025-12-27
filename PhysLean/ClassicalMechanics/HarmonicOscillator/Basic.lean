@@ -109,6 +109,9 @@ structure HarmonicOscillator where
 
 namespace HarmonicOscillator
 
+TODO "U7UG2" "Refactor the Harmonic oscillator API to be configuration space of the
+  harmonic oscillator."
+
 variable (S : HarmonicOscillator)
 
 @[simp]
