@@ -599,22 +599,20 @@ def basis! (j : Fin n) : (PureU1 (2 * n + 1)).LinSols :=
   basis!AsCharges j. -/
 lemma swap!_as_add {S S' : (PureU1 (2 * n + 1)).LinSols} (j : Fin n)
     (hS : ((FamilyPermutations (2 * n + 1)).linSolRep
-    (pairSwap (oddShiftFst j) (oddShiftSnd j))) S = S') :
+    (Equiv.swap (oddShiftFst j) (oddShiftSnd j))) S = S') :
     S'.val = S.val + (S.val (oddShiftSnd j) - S.val (oddShiftFst j)) • basis!AsCharges j := by
   funext i
   rw [← hS, FamilyPermutations_anomalyFreeLinear_apply]
   by_cases hi : i = oddShiftFst j
   · subst hi
-    simp [HSMul.hSMul, basis!_on_oddShiftFst_self, pairSwap_inv_fst]
+    simp [HSMul.hSMul, basis!_on_oddShiftFst_self, Equiv.swap_apply_left]
   · by_cases hi2 : i = oddShiftSnd j
     · subst hi2
-      simp [HSMul.hSMul,basis!_on_oddShiftSnd_self, pairSwap_inv_snd]
+      simp [HSMul.hSMul,basis!_on_oddShiftSnd_self, Equiv.swap_apply_right]
     · simp only [Equiv.invFun_as_coe, HSMul.hSMul, ACCSystemCharges.chargesAddCommMonoid_add,
       ACCSystemCharges.chargesModule_smul]
       rw [basis!_on_other hi hi2]
-      change S.val ((pairSwap (oddShiftFst j) (oddShiftSnd j)).invFun i) =_
-      erw [pairSwap_inv_other (Ne.symm hi) (Ne.symm hi2)]
-      simp
+      aesop
 
 /-!
 
@@ -970,7 +968,7 @@ lemma span_basis (S : (PureU1 (2 * n.succ + 1)).LinSols) :
 
 lemma span_basis_swap! {S : (PureU1 (2 * n.succ + 1)).LinSols} (j : Fin n.succ)
     (hS : ((FamilyPermutations (2 * n.succ + 1)).linSolRep
-    (pairSwap (oddShiftFst j) (oddShiftSnd j))) S = S') (g f : Fin n.succ → ℚ)
+    (Equiv.swap (oddShiftFst j) (oddShiftSnd j))) S = S') (g f : Fin n.succ → ℚ)
     (hS1 : S.val = P g + P! f) : ∃ (g' f' : Fin n.succ → ℚ),
     S'.val = P g' + P! f' ∧ P! f' = P! f +
     (S.val (oddShiftSnd j) - S.val (oddShiftFst j)) • basis!AsCharges j ∧ g' = g := by

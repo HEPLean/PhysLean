@@ -754,21 +754,19 @@ lemma smul_basis!AsCharges_in_span (S : (PureU1 (2 * n.succ)).LinSols) (j : Fin 
   adding a vector basis!AsCharges j. -/
 lemma swap!_as_add {S S' : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
     (hS : ((FamilyPermutations (2 * n.succ)).linSolRep
-    (pairSwap (evenShiftFst j) (evenShiftSnd j))) S = S') :
+    (Equiv.swap (evenShiftFst j) (evenShiftSnd j))) S = S') :
     S'.val = S.val + (S.val (evenShiftSnd j) - S.val (evenShiftFst j)) • basis!AsCharges j := by
   funext i
   rw [← hS, FamilyPermutations_anomalyFreeLinear_apply]
   by_cases hi : i = evenShiftFst j
   · subst hi
-    simp [HSMul.hSMul, basis!_on_evenShiftFst_self, pairSwap_inv_fst]
+    simp [HSMul.hSMul, basis!_on_evenShiftFst_self, Equiv.swap_apply_left]
   · by_cases hi2 : i = evenShiftSnd j
-    · simp [HSMul.hSMul, hi2, basis!_on_evenShiftSnd_self, pairSwap_inv_snd]
+    · simp [HSMul.hSMul, hi2, basis!_on_evenShiftSnd_self, Equiv.swap_apply_right]
     · simp only [succ_eq_add_one, Equiv.invFun_as_coe, HSMul.hSMul,
       ACCSystemCharges.chargesAddCommMonoid_add, ACCSystemCharges.chargesModule_smul]
       rw [basis!_on_other hi hi2]
-      change S.val ((pairSwap (evenShiftFst j) (evenShiftSnd j)).invFun i) =_
-      erw [pairSwap_inv_other (Ne.symm hi) (Ne.symm hi2)]
-      simp
+      aesop
 /-!
 
 ## D. Mixed cubic ACCs involing points from both planes
@@ -1024,7 +1022,7 @@ lemma span_basis (S : (PureU1 (2 * n.succ)).LinSols) :
 -/
 lemma span_basis_swap! {S : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
     (hS : ((FamilyPermutations (2 * n.succ)).linSolRep
-    (pairSwap (evenShiftFst j) (evenShiftSnd j))) S = S') (g : Fin n.succ → ℚ) (f : Fin n → ℚ)
+    (Equiv.swap (evenShiftFst j) (evenShiftSnd j))) S = S') (g : Fin n.succ → ℚ) (f : Fin n → ℚ)
     (h : S.val = P g + P! f) : ∃ (g' : Fin n.succ → ℚ) (f' : Fin n → ℚ),
       S'.val = P g' + P! f' ∧ P! f' = P! f +
       (S.val (evenShiftSnd j) - S.val (evenShiftFst j)) • basis!AsCharges j ∧ g' = g := by
