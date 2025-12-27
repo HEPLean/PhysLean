@@ -439,16 +439,14 @@ lemma deriv' (u : ℝ → U) (hu : ContDiff ℝ ∞ u) :
           enter [2, x]
           rw [← fderiv_deriv]
         apply fderiv_uncurry_differentiable_fst_comp_snd_apply
-        apply ContDiff.of_le hφ
-        exact ENat.LEInfty.out)]
+        exact hφ.of_le ENat.LEInfty.out)]
       rw [deriv_fun_const_smul _ (by
         conv =>
           enter [2, x]
           rw [← fderiv_deriv]
-        refine Differentiable.differentiableAt ?_
+        apply Differentiable.differentiableAt
         apply fderiv_uncurry_differentiable_fst_comp_snd_apply
-        apply ContDiff.of_le hφ
-        exact ENat.LEInfty.out)]
+        exact hφ.of_le ENat.LEInfty.out)]
     simp only [differentiableAt_const, differentiableAt_fun_id, DifferentiableAt.fun_smul,
       deriv_fun_add, deriv_const', zero_add]
     rw [deriv_smul_const]
@@ -830,15 +828,13 @@ protected lemma gradient {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     · simp [Space.deriv]
       apply Differentiable.differentiableAt
       apply fderiv_uncurry_differentiable_snd_comp_fst_apply
-      apply ContDiff.of_le hφ
-      exact ENat.LEInfty.out
+      exact hφ.of_le ENat.LEInfty.out
     · intro i _
       apply Differentiable.differentiableAt
       apply Differentiable.smul_const
       simp [Space.deriv]
       apply fderiv_uncurry_differentiable_snd_comp_fst_apply
-      apply ContDiff.of_le hφ
-      exact ENat.LEInfty.out
+      exact hφ.of_le ENat.LEInfty.out
   · exact hu
   · exact HasVarAdjoint.gradient
 
@@ -879,15 +875,13 @@ protected lemma grad {d} (u : Space d → ℝ) (hu : ContDiff ℝ ∞ u) :
     · simp [Space.deriv]
       apply Differentiable.differentiableAt
       apply fderiv_uncurry_differentiable_snd_comp_fst_apply
-      apply ContDiff.of_le hφ
-      exact ENat.LEInfty.out
+      exact hφ.of_le ENat.LEInfty.out
     · intro i _
       apply Differentiable.differentiableAt
       apply Differentiable.smul_const
       simp [Space.deriv]
       apply fderiv_uncurry_differentiable_snd_comp_fst_apply
-      apply ContDiff.of_le hφ
-      exact ENat.LEInfty.out
+      exact hφ.of_le ENat.LEInfty.out
   · exact hu
   · exact HasVarAdjoint.grad
 lemma div {d} (u : Space d → EuclideanSpace ℝ (Fin d)) (hu : ContDiff ℝ ∞ u) :
@@ -952,7 +946,6 @@ lemma div {d} (u : Space d → EuclideanSpace ℝ (Fin d)) (hu : ContDiff ℝ �
       apply Differentiable.comp
       · fun_prop
       apply fderiv_uncurry_differentiable_snd_comp_fst_apply
-      apply ContDiff.of_le hφ
-      exact ENat.LEInfty.out
+      exact hφ.of_le ENat.LEInfty.out
   · exact hu
   · exact HasVarAdjoint.div
