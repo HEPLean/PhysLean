@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzAlgebra.Basic
+import PhysLean.Meta.TODO.Basic
 /-!
 # Generators of the Lorentz Algebra
 
@@ -139,5 +140,21 @@ lemma rotationGenerator_mem (i : Fin 3) : rotationGenerator i ∈ lorentzAlgebra
   · -- (space, space) case: need explicit computation
     simp only [Sum.elim_inr]
     fin_cases i <;> fin_cases μ <;> fin_cases ν <;> simp [rotationGenerator] <;> norm_num
+
+/-!
+## TODO: Properties of Generators
+
+The following properties are documented in the docstrings but not yet formally proven.
+These should be established in future PRs to complete the characterization of the generators.
+-/
+
+TODO "BOOST_SYM" "Prove that boost generators are symmetric: (boostGenerator i)ᵀ = boostGenerator i"
+
+TODO "BOOST_TRACE" "Prove that boost generators are traceless: Matrix.trace (boostGenerator i) = 0"
+
+TODO "ROT_ANTISYM" "Prove that rotation generators are antisymmetric: \
+  (rotationGenerator i)ᵀ = -(rotationGenerator i)"
+
+TODO "ROT_TRACE" "Prove that rotation generators are traceless: Matrix.trace (rotationGenerator i) = 0"
 
 end lorentzAlgebra
