@@ -32,8 +32,8 @@ in general dimensions.
 - A. The property of being a plane wave
   - A.1. The electric and magnetic functions from a plane wave
     - A.1.1. Electric function and magnetic function in terms of E and B fields
-    - A.1.2. Uniquness of the electric function
-    - A.1.3. Uniquness of the magnetic function
+    - A.1.2. Uniqueness of the electric function
+    - A.1.3. Uniqueness of the magnetic function
   - A.2. Differentiability conditions
   - A.3. Time derivative of electric and magnetic fields of a plane wave
   - A.4. Space derivative of electric and magnetic fields of a plane wave
@@ -138,7 +138,7 @@ lemma magneticFunction_eq_magneticFieldMatrix {d : ℕ}
 
 /-!
 
-#### A.1.2. Uniquness of the electric function
+#### A.1.2. Uniqueness of the electric function
 
 -/
 
@@ -156,7 +156,7 @@ lemma electricFunction_unique {d : ℕ} {𝓕 : FreeSpace}
 
 /-!
 
-#### A.1.3. Uniquness of the magnetic function
+#### A.1.3. Uniqueness of the magnetic function
 
 -/
 

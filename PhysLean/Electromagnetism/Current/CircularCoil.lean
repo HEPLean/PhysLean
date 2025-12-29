@@ -14,7 +14,7 @@ import PhysLean.SpaceAndTime.TimeAndSpace.ConstantTimeDist
 ## i. Overview
 
 This module is currently a stub, but will eventually contain the electrostatics of a
-cirular coil carrying a steady current. The references below have in them statements of the
+circular coil carrying a steady current. The references below have in them statements of the
 electromagnetic potentials and fields around a circular coil.
 
 ## ii. Key results

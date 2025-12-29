@@ -112,7 +112,7 @@ and is a TODO.
 
 -/
 
-TODO "6VZME" "Implement other initial condtions. For example:
+TODO "6VZME" "Implement other initial conditions. For example:
 - initial conditions at a given time.
 - Two positions at different times.
 - Two velocities at different times.

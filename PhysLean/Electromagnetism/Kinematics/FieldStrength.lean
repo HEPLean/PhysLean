@@ -484,9 +484,9 @@ attribute [-simp] Nat.succ_eq_add_one
 
 -/
 
-/-- An auxillary definition for the field strength of an electromagnetic potential
+/-- An auxiliary definition for the field strength of an electromagnetic potential
   based on a distribution. On Schwartz maps this has the same value as the field strength
-  tensor, but no linearity or continous properties built in. -/
+  tensor, but no linearity or continuous properties built in. -/
 noncomputable def fieldStrengthAux {d} (A : DistElectromagneticPotential d)
     (ε : 𝓢(SpaceTime d, ℝ)) : Lorentz.Vector d ⊗[ℝ] Lorentz.Vector d :=
   Tensorial.toTensor.symm
