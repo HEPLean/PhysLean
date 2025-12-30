@@ -10,7 +10,7 @@ import PhysLean.SpaceAndTime.Space.Slice
 
 ## i. Overview
 
-In this moudule we define the lift of distributions on `Space d` to distributions
+In this module we define the lift of distributions on `Space d` to distributions
 on `Space d.succ` which are constant between slices in the `i`th direction.
 
 This is used, for example, to define distributions which are translationally invariant

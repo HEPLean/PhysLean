@@ -267,7 +267,7 @@ def toRealGroupElem (φ : HiggsVec) : GaugeGroupI :=
       field_simp
       rw [h0']
       ring
-  /- Determinant equals zeor. -/
+  /- Determinant equals zero. -/
   · have h1 : (‖φ‖ : ℂ) ≠ 0 := ofReal_inj.mp.mt (norm_ne_zero_iff.mpr hφ)
     simp [det_fin_two]
     field_simp

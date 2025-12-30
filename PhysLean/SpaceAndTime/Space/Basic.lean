@@ -572,7 +572,7 @@ lemma eval_contDiff {d n} (i : Fin d) :
   convert (coordCLM i).contDiff
   simp [coordCLM_apply, coord]
 
-/-- The continous linear equivalence between `Space d` and the corresponding `Pi` type. -/
+/-- The continuous linear equivalence between `Space d` and the corresponding `Pi` type. -/
 def equivPi (d : ℕ) :
     Space d ≃L[ℝ] Π (_ : Fin d), ℝ := LinearEquiv.toContinuousLinearEquiv <|
   {

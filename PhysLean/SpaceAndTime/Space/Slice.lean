@@ -16,7 +16,7 @@ extracts the `i`th coordinate on `Space d.succ`.
 
 ## ii. Key results
 
-- `slice` : The continous linear equivalence between `Space d.succ` and `ℝ × Space d` extracting
+- `slice` : The continuous linear equivalence between `Space d.succ` and `ℝ × Space d` extracting
   the `i`th coordinate.
 
 ## iii. Table of contents

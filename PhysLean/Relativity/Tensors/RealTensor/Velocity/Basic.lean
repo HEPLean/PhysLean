@@ -106,7 +106,7 @@ lemma minkowskiProduct_continuous_fst (u : Vector d) :
 
 -/
 
-/-- The `Velcoity d` which has all space components zero. -/
+/-- The `Velocity d` which has all space components zero. -/
 noncomputable def zero : Velocity d := ⟨Vector.basis (Sum.inl 0),
   by simp [mem_iff, minkowskiMatrix.inl_0_inl_0]⟩
 

@@ -59,7 +59,7 @@ attribute [-simp] Fintype.sum_sum_type
 -/
 
 /-- The Lorentz group action on Schwartz functions taking the Lorentz group to
-  continous linear maps. -/
+  continuous linear maps. -/
 def schwartzAction {d} : LorentzGroup d →* 𝓢(SpaceTime d, ℝ) →L[ℝ] 𝓢(SpaceTime d, ℝ) where
   toFun Λ := SchwartzMap.compCLM (𝕜 := ℝ)
     (Lorentz.Vector.actionCLM Λ⁻¹).hasTemperateGrowth <| by

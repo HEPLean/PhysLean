@@ -37,7 +37,7 @@ conditions.
   - B.5. The inclusion of the first plane into charges
   - B.6. Components of the first plane
   - B.7. Points on the first plane satisfies the ACCs
-  - B.8. Kernal of the inclusion into charges
+  - B.8. Kernel of the inclusion into charges
   - B.9. The basis vectors are linearly independent
 - C. The second plane
   - C.1. The basis vectors of the second plane as charges
@@ -48,7 +48,7 @@ conditions.
   - C.6. The inclusion of the second plane into charges
   - C.7. Components of the second plane
   - C.8. Points on the second plane satisfies the ACCs
-  - C.9. Kernal of the inclusion into charges
+  - C.9. Kernel of the inclusion into charges
   - C.10. The inclusion of the second plane into LinSols
   - C.11. The basis vectors are linearly independent
 - D. The mixed cubic ACC from points in both planes
@@ -56,7 +56,7 @@ conditions.
   - E.1. The combined basis as `LinSols`
   - E.2. The inclusion of the span of the combined basis into charges
   - E.3. Components of the inclusion
-  - E.4. Kernal of the inclusion into charges
+  - E.4. Kernel of the inclusion into charges
   - E.5. The inclusion of the span of the combined basis into LinSols
   - E.6. The combined basis vectors are linearly independent
   - E.7. Injectivity of the inclusion into linear solutions
@@ -430,7 +430,7 @@ lemma P_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P f) = 0 := by
 
 /-!
 
-### B.8. Kernal of the inclusion into charges
+### B.8. Kernel of the inclusion into charges
 
 -/
 
@@ -677,7 +677,7 @@ lemma P!_accCube (f : Fin n → ℚ) : accCube (2 * n +1) (P! f) = 0 := by
 
 /-!
 
-### C.9. Kernal of the inclusion into charges
+### C.9. Kernel of the inclusion into charges
 
 -/
 
@@ -807,7 +807,7 @@ lemma Pa_oddShiftShiftSnd (f g : Fin n.succ → ℚ) (j : Fin n.succ) :
 
 /-!
 
-### E.4. Kernal of the inclusion into charges
+### E.4. Kernel of the inclusion into charges
 
 -/
 

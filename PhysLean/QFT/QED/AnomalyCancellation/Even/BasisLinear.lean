@@ -56,7 +56,7 @@ conditions.
   - C.13. The basis vectors are linearly independent
   - C.14. Properties of the basis vectors relating to the span
   - C.15. Permutations as additions of basis vectors
-- D. Mixed cubic ACCs involing points from both planes
+- D. Mixed cubic ACCs involving points from both planes
 - E. The combined basis
   - E.1. As a map into linear solutions
   - E.2. Inclusion of the span of the basis into charges
@@ -769,7 +769,7 @@ lemma swap!_as_add {S S' : (PureU1 (2 * n.succ)).LinSols} (j : Fin n)
       aesop
 /-!
 
-## D. Mixed cubic ACCs involing points from both planes
+## D. Mixed cubic ACCs involving points from both planes
 
 -/
 

@@ -11,9 +11,9 @@ import Mathlib.Analysis.Normed.Ring.Lemmas
 
 ## i. Overview
 
-In this module we deine a type for the speed of light in a vacuum,
+In this module we define a type for the speed of light in a vacuum,
 along with some basic properties. An element of this type is a positive real number,
-and should be thought of as the speed of light in some chosen but arbitary system of units.
+and should be thought of as the speed of light in some chosen but arbitrary system of units.
 
 ## ii. Key results
 
@@ -38,7 +38,7 @@ open Matrix
 -/
 
 /-- The speed of light in a vacuum. An element of this type should be thought of as
-  the speed of light in some chosen but arbitary system of units. -/
+  the speed of light in some chosen but arbitrary system of units. -/
 structure SpeedOfLight where
   /-- The underlying value of the speed of light. -/
   val : ℝ

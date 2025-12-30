@@ -188,7 +188,7 @@ def checkHeadings (f : FilePath) : IO (List DocLintError) := do
     errors := Function.update errors .tableOfContentsCorrect (true, tocCorrectError)
 
   /-
-  ## Formating the error
+  ## Formatting the error
   -/
   if Steps.anyTrue errors then
     let mut errormsg := "\n"

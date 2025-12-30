@@ -186,11 +186,11 @@ lemma coord_differentiableAt {d : ℕ} (i : Fin 1 ⊕ Fin d) (v : Vector d) :
     DifferentiableAt ℝ (fun v : Vector d => v i) v :=
   (coordCLM i).differentiableAt
 
-/-- The continous linear equivalence between `Vector d` and Euclidean space. -/
+/-- The continuous linear equivalence between `Vector d` and Euclidean space. -/
 def euclidCLE (d : ℕ) : Vector d ≃L[ℝ] EuclideanSpace ℝ (Fin 1 ⊕ Fin d) :=
   LinearEquiv.toContinuousLinearEquiv (equivEuclid d)
 
-/-- The continous linear equivalence between `Vector d` and the corresponding `Pi` type. -/
+/-- The continuous linear equivalence between `Vector d` and the corresponding `Pi` type. -/
 def equivPi (d : ℕ) :
     Vector d ≃L[ℝ] Π (_ : Fin 1 ⊕ Fin d), ℝ :=
   LinearEquiv.toContinuousLinearEquiv (LinearEquiv.refl _ _)
@@ -559,7 +559,7 @@ lemma spatialPart_basis_sum_inr {d : ℕ} (i : Fin d) (j : Fin d) :
 lemma spatialPart_basis_sum_inl {d : ℕ} (i : Fin d) :
     spatialPart (basis (Sum.inl 0)) i = 0 := by simp
 
-/-- The spatial part of a Lorentz vector as a continous linear map. -/
+/-- The spatial part of a Lorentz vector as a continuous linear map. -/
 def spatialCLM (d : ℕ) : Vector d →L[ℝ] EuclideanSpace ℝ (Fin d) where
   toFun v := WithLp.toLp 2 fun i => v (Sum.inr i)
   map_add' v1 v2 := by rfl

@@ -142,7 +142,7 @@ lemma energyMass_isDimensionallyCorrect :
     IsDimensionallyCorrect EnergyMass := by
   /- Scale such that the unit u1 is taken to u2. -/
   intro u1 u2
-  /- Let `m` be the mass, `E` be the energy and `u` be the acutal units we start with. -/
+  /- Let `m` be the mass, `E` be the energy and `u` be the actual units we start with. -/
   funext m E u
   calc _
     _ = ((scaleUnit u2 u1 E).1 =
