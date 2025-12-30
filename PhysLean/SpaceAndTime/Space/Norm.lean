@@ -28,7 +28,7 @@ We use properties of this power series to prove various results about distributi
 - `distGrad_distOfFunction_log_norm` : The gradient of the distribution defined by the logarithm
   of the norm.
 - `distDiv_inv_pow_eq_dim` : The divergence of the distribution defined by the
-  inverse power of the norm propotional to the Dirac delta distribution.
+  inverse power of the norm proportional to the Dirac delta distribution.
 
 ## iii. Table of contents
 

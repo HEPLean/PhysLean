@@ -38,7 +38,7 @@ unsafe def runLinterOnModule  (module : Name): IO Unit := do
     let linters ← getChecks (slow := true) (runAlways := none) (runOnly := none)
     println! "Results been linted with the following linters:"
     println! linters.map (·.name)
-    println! "Starting parallel running on linters on all declerations. Results if any are
+    println! "Starting parallel running on linters on all declarations. Results if any are
       shown below."
     let results ← lintCore decls linters
     let results := results.map fun (linter, decls) =>

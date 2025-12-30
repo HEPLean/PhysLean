@@ -253,7 +253,7 @@ namespace DistLorentzCurrentDensity
 
 -/
 
-/-- The charge desnity underlying a Lorentz current density which is a distribution. -/
+/-- The charge density underlying a Lorentz current density which is a distribution. -/
 noncomputable def chargeDensity {d : ℕ} (c : SpeedOfLight) :
     (DistLorentzCurrentDensity d) →ₗ[ℝ] (Time × Space d) →d[ℝ] ℝ where
   toFun J := (1 / (c : ℝ)) • (Lorentz.Vector.temporalCLM d ∘L distTimeSlice c J)
