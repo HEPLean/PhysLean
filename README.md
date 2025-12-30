@@ -45,7 +45,7 @@ See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. 
 
 📣 tackle a [TODO item](https://physlean.com/TODOList),
 
-📣 or, start formalizing an area that you find intresting.
+📣 or, start formalizing an area that you find interesting.
 
 Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
 
