@@ -26,7 +26,10 @@ which is essential for analyzing symmetries like Galilean invariance.
 
 A general function δL(r, v, t) is a total time derivative if there exists a function
 F(r, t) (independent of velocity) such that:
-  δL(r, v, t) = d/dt F(r, t) = ∂F/∂t + ⟨∇ᵣF, v⟩
+  δL(r, v, t) = d/dt F(r, t) = fderiv ℝ F (r, t) (v, 1)
+
+By the chain rule, this expands to:
+  δL(r, v, t) = ∂F/∂t + ⟨∇ᵣF, v⟩
 
 For the special case where δL depends only on velocity v (not position or time),
 this implies a strong constraint:
@@ -61,23 +64,25 @@ namespace Lagrangian
 ## A. General Total Time Derivative
 
 A function δL(r, v, t) is a total time derivative if there exists F(r, t) such that
-δL(r, v, t) = ∂F/∂t(r, t) + ⟨∇ᵣF(r, t), v⟩.
+δL(r, v, t) = fderiv ℝ F (r, t) (v, 1).
+
+By the chain rule, this equals ∂F/∂t(r, t) + ⟨∇ᵣF(r, t), v⟩.
 
 -/
 
 /-- A function δL(r, v, t) is a total time derivative if it can be written as d/dt F(r, t)
     for some function F that depends on position and time but not velocity.
 
-    Mathematically: δL(r, v, t) = ∂F/∂t(r, t) + ⟨∇ᵣF(r, t), v⟩
+    Mathematically: δL(r, v, t) = fderiv ℝ F (r, t) (v, 1)
+
+    By the chain rule, this equals ∂F/∂t(r, t) + ⟨∇ᵣF(r, t), v⟩.
 
     This is the most general form of gauge equivalence for Lagrangian perturbations.
     The key point is that F must be independent of velocity. -/
 def IsTotalTimeDerivative {n : ℕ}
     (δL : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) → ℝ → ℝ) : Prop :=
-  ∃ (F : EuclideanSpace ℝ (Fin n) → ℝ → ℝ)
-    (_ : ∀ r, Differentiable ℝ (F r))
-    (_ : ∀ t, Differentiable ℝ (fun r => F r t)),
-    ∀ r v t, δL r v t = deriv (F r) t + ⟪gradient (fun r' => F r' t) r, v⟫_ℝ
+  ∃ (F : EuclideanSpace ℝ (Fin n) × ℝ → ℝ) (_ : Differentiable ℝ F),
+    ∀ r v t, δL r v t = fderiv ℝ F (r, t) (v, 1)
 
 /-!
 
