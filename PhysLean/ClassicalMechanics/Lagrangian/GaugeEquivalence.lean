@@ -63,11 +63,6 @@ namespace Lagrangian
 
 ## A. General Total Time Derivative
 
-A function δL(r, v, t) is a total time derivative if there exists F(r, t) such that
-δL(r, v, t) = fderiv ℝ F (r, t) (v, 1).
-
-By the chain rule, this equals ∂F/∂t(r, t) + ⟨∇ᵣF(r, t), v⟩.
-
 -/
 
 /-- A function δL(r, v, t) is a total time derivative if it can be written as d/dt F(r, t)
