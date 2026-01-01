@@ -90,15 +90,24 @@ When δL depends only on velocity (the free particle case), the condition simpli
 
 -/
 
-/-- A velocity-dependent function δL is a total time derivative (of a position-time function)
-    iff it has the form δL(v) = ⟨g, v⟩ for some constant vector g.
+/-- A velocity-only function that is a total time derivative must be linear in velocity.
+
+    If δL depends only on velocity and equals d/dt F(r, t) for some F,
+    then δL(v) = ⟨g, v⟩ for some constant vector g.
 
     This characterization comes from the requirement that:
     - d/dt F(r, t) = ∂F/∂t + ⟨∇F, ṙ⟩ = ∂F/∂t + ⟨∇F, v⟩
     - For the result to be independent of r and t, we need ∇F = g (constant) and ∂F/∂t = 0
-    - Thus δL(v) = ⟨g, v⟩ -/
-def IsTotalTimeDerivativeVelocity {n : ℕ} (δL : EuclideanSpace ℝ (Fin n) → ℝ) : Prop :=
-  ∃ g : EuclideanSpace ℝ (Fin n), ∀ v, δL v = ⟪g, v⟫_ℝ
+    - Thus δL(v) = ⟨g, v⟩
+
+    WLOG, we assume `δL 0 = 0` since constants are total derivatives (c = d/dt(c·t))
+    and can be absorbed without affecting the equations of motion. -/
+theorem isTotalTimeDerivativeVelocity {n : ℕ}
+    (δL : EuclideanSpace ℝ (Fin n) → ℝ)
+    (hδL0 : δL 0 = 0)
+    (h : IsTotalTimeDerivative (fun _ v _ => δL v)) :
+    ∃ g : EuclideanSpace ℝ (Fin n), ∀ v, δL v = ⟪g, v⟫_ℝ := by
+  sorry
 
 end Lagrangian
 
