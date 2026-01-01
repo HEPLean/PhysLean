@@ -3,7 +3,7 @@ import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
-import PhysLean.ClassicalMechanics.Lagrangian.GaugeEquivalence
+import PhysLean.ClassicalMechanics.Lagrangian.TotalDerivativeEquivalence
 import PhysLean.ClassicalMechanics.Mass.MassUnit
 import PhysLean.ClassicalMechanics.Pendulum.CoplanarDoublePendulum
 import PhysLean.ClassicalMechanics.Pendulum.MiscellaneousPendulumPivotMotions

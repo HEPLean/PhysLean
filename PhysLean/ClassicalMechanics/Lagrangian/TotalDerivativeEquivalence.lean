@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2025 Rein Zustand. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Rein Zustand, Joseph Tooby-Smith
+Authors: Rein Zustand
 -/
 import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 import Mathlib.Analysis.InnerProductSpace.PiL2
@@ -11,7 +11,7 @@ import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
 
 /-!
 
-# Gauge Equivalence of Lagrangians
+# Equivalent Lagrangians under Total Derivatives
 
 ## i. Overview
 
@@ -21,6 +21,9 @@ the action integral, and total derivatives don't affect which paths are extremal
 
 This module defines the key concept of a function being a total time derivative,
 which is essential for analyzing symmetries like Galilean invariance.
+
+Note: Some authors call this "gauge equivalence" by analogy with gauge transformations
+in field theory, but we avoid that terminology here since no gauge fields are involved.
 
 ## ii. Key insight
 
@@ -72,7 +75,7 @@ namespace Lagrangian
 
     By the chain rule, this equals ∂F/∂t(r, t) + ⟨∇ᵣF(r, t), v⟩.
 
-    This is the most general form of gauge equivalence for Lagrangian perturbations.
+    This is the most general form of Lagrangian equivalence under total derivatives.
     The key point is that F must be independent of velocity. -/
 def IsTotalTimeDerivative {n : ℕ}
     (δL : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) → ℝ → ℝ) : Prop :=
