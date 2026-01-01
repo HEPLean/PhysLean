@@ -102,7 +102,8 @@ When δL depends only on velocity (the free particle case), the condition simpli
 
     WLOG, we assume `δL 0 = 0` since constants are total derivatives (c = d/dt(c·t))
     and can be absorbed without affecting the equations of motion. -/
-theorem isTotalTimeDerivativeVelocity {n : ℕ}
+@[sorryful]
+lemma isTotalTimeDerivativeVelocity {n : ℕ}
     (δL : EuclideanSpace ℝ (Fin n) → ℝ)
     (hδL0 : δL 0 = 0)
     (h : IsTotalTimeDerivative (fun _ v _ => δL v)) :
