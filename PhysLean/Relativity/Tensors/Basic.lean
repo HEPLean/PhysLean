@@ -565,9 +565,7 @@ lemma PermCond.preserve_color {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
   simp only [Function.comp_apply]
   rw [h.2]
 
-TODO "7ESNL" "We want to add `inv_perserve_color` to Simp database, however this fires the linter
-    simpVarHead. This should be investigated."
-
+@[simp, nolint simpVarHead]
 lemma PermCond.inv_perserve_color {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ) (x : Fin n) :
     c1 (h.inv σ x) = c x := by
