@@ -85,8 +85,6 @@ open Real
 open Space
 open InnerProductSpace
 
-TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
-
 /-!
 
 ## A. The input data
