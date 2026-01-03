@@ -107,17 +107,115 @@ lemma InitialConditions.ext {IC₁ IC₂ : InitialConditions} (h1 : IC₁.x₀ =
 ### A.2. Relation to other types of initial conditions
 
 We relate the initial condition given by an initial position and an initial velocity
-to other specifications of initial conditions. This is currently not implemented,
-and is a TODO.
+to other specifications of initial conditions.
+
+In this section, we implement alternative ways to specify initial conditions for the harmonic
+oscillator. The standard `InitialConditions` type specifies position and velocity at time `t=0`,
+but in practice it is often useful to specify initial conditions at other times or in other forms.
+
+Currently implemented:
+- **Initial conditions at arbitrary time**: Specify position and velocity at any time `t₀`,
+  not necessarily at `t=0`. This is useful for problems where the natural reference time is not zero.
+
+Future work (to be added in separate PRs):
+- Initial conditions from two positions at different times
+- Initial conditions from two velocities at different times
+- Amplitude-phase parametrization
+
+All alternative forms can be converted to the standard `InitialConditions` type via conversion
+functions, and we prove that the converted initial conditions produce trajectories that satisfy
+the original specifications.
 
 -/
 
-TODO "6VZME" "Implement other initial conditions. For example:
-- initial conditions at a given time.
+/-!
+
+#### A.2.1. Initial conditions at arbitrary time
+
+We define a type for initial conditions specified at an arbitrary time `t₀`, rather than at `t=0`.
+This is useful when the natural reference point for a problem is not at time zero.
+
+-/
+
+/-- Initial conditions for the harmonic oscillator specified at an arbitrary time `t₀`.
+
+  This structure allows specifying the position and velocity at any time `t₀`, not necessarily
+  at `t=0`. This is useful for problems where the natural reference time is not zero.
+
+  The conditions can be converted to the standard `InitialConditions` format (at `t=0`)
+  using the `toInitialConditions` function. -/
+structure InitialConditionsAtTime where
+  /-- The time at which the initial conditions are specified. -/
+  t₀ : Time
+  /-- The position at time t₀. -/
+  x_t₀ : EuclideanSpace ℝ (Fin 1)
+  /-- The velocity at time t₀. -/
+  v_t₀ : EuclideanSpace ℝ (Fin 1)
+
+/-!
+
+##### A.2.1.1. Extensionality lemma
+
+We prove an extensionality lemma for `InitialConditionsAtTime`.
+
+-/
+
+@[ext]
+lemma InitialConditionsAtTime.ext {IC₁ IC₂ : InitialConditionsAtTime}
+    (h1 : IC₁.t₀ = IC₂.t₀) (h2 : IC₁.x_t₀ = IC₂.x_t₀) (h3 : IC₁.v_t₀ = IC₂.v_t₀) :
+    IC₁ = IC₂ := by
+  cases IC₁
+  cases IC₂
+  simp_all
+
+/-!
+
+##### A.2.1.2. Conversion to standard initial conditions
+
+We now define the conversion from `InitialConditionsAtTime` to the standard `InitialConditions`.
+
+The conversion works by "running the trajectory backward in time" from `t₀` to `0`.
+Given that we know `x(t₀)` and `v(t₀)`, we use the harmonic oscillator solution formula
+with time-reversal to determine what `x(0)` and `v(0)` must have been.
+
+Mathematically, if `x(t) = cos(ωt)·x₀ + (sin(ωt)/ω)·v₀`, then setting `t = t₀`:
+  `x(t₀) = cos(ωt₀)·x₀ + (sin(ωt₀)/ω)·v₀`
+  `v(t₀) = -ω·sin(ωt₀)·x₀ + cos(ωt₀)·v₀`
+
+Solving this linear system for `x₀` and `v₀` gives the formulas below.
+
+-/
+
+namespace InitialConditionsAtTime
+
+/-- Convert initial conditions at time `t₀` to standard initial conditions at `t=0`.
+
+  This conversion uses the harmonic oscillator solution formula with time-reversal.
+  The resulting `InitialConditions` will produce a trajectory that passes through
+  `x_t₀` with velocity `v_t₀` at time `t₀`.
+
+  See `toInitialConditions_trajectory_at_t₀` and `toInitialConditions_velocity_at_t₀` for
+  the correctness proofs. -/
+noncomputable def toInitialConditions (S : HarmonicOscillator)
+    (IC : InitialConditionsAtTime) : InitialConditions where
+  x₀ := cos (S.ω * IC.t₀) • IC.x_t₀ + (sin (S.ω * IC.t₀) / S.ω) • IC.v_t₀
+  v₀ := - S.ω • sin (S.ω * IC.t₀) • IC.x_t₀ + cos (S.ω * IC.t₀) • IC.v_t₀
+
+/-!
+
+##### A.2.1.3. Correctness proofs
+
+The correctness proofs showing that the conversion produces the expected trajectory
+are given later in section B.7, after the trajectory machinery has been defined.
+
+-/
+
+TODO "6VZME" "Implement other initial conditions (deferred to future PRs). For example:
 - Two positions at different times.
 - Two velocities at different times.
-And convert them into the type `InitialConditions` above (which may need generalzing a bit
-to make this possible)."
+And convert them into the type `InitialConditions` above."
+
+end InitialConditionsAtTime
 
 /-!
 
@@ -358,6 +456,70 @@ lemma trajectory_energy (IC : InitialConditions) : S.energy (IC.trajectory S) =
   rw [energy_conservation_of_equationOfMotion' _ _ (by fun_prop) (trajectory_equationOfMotion S IC)]
   simp [energy, kineticEnergy, potentialEnergy]
   ring
+
+end InitialConditions
+
+/-!
+
+## D.1. Correctness of InitialConditionsAtTime conversion
+
+We now prove the correctness lemmas for the `InitialConditionsAtTime.toInitialConditions`
+conversion function. These show that the conversion produces a trajectory that passes through
+the specified position and velocity at the specified time.
+
+-/
+
+namespace InitialConditionsAtTime
+
+/-- The trajectory resulting from `toInitialConditions` passes through the specified
+  position `x_t₀` at time `t₀`. -/
+@[simp]
+lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
+    (IC : InitialConditionsAtTime) :
+    (IC.toInitialConditions S).trajectory S IC.t₀ = IC.x_t₀ := by
+  rw [InitialConditions.trajectory_eq, toInitialConditions]
+  ext i
+  simp only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul]
+  have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
+    cos_sq_add_sin_sq (S.ω * IC.t₀.val)
+  field_simp [S.ω_neq_zero]
+  have hcos := sq (cos (S.ω * IC.t₀.val))
+  have hsin := sq (sin (S.ω * IC.t₀.val))
+  rw [hcos, hsin] at h1
+  linarith
+
+/-- The trajectory resulting from `toInitialConditions` has the specified
+  velocity `v_t₀` at time `t₀`. -/
+@[simp]
+lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
+    (IC : InitialConditionsAtTime) :
+    ∂ₜ ((IC.toInitialConditions S).trajectory S) IC.t₀ = IC.v_t₀ := by
+  rw [InitialConditions.trajectory_velocity, toInitialConditions]
+  ext i
+  simp only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, neg_mul]
+  have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
+    cos_sq_add_sin_sq (S.ω * IC.t₀.val)
+  field_simp [S.ω_neq_zero]
+  have hcos := sq (cos (S.ω * IC.t₀.val))
+  have hsin := sq (sin (S.ω * IC.t₀.val))
+  rw [hcos, hsin] at h1
+  linarith
+
+/-- The energy of the trajectory at time `t₀` equals the energy computed from the
+  initial conditions at `t₀`. -/
+lemma toInitialConditions_energy_at_t₀ (S : HarmonicOscillator)
+    (IC : InitialConditionsAtTime) :
+    S.energy ((IC.toInitialConditions S).trajectory S) IC.t₀ =
+    1/2 * (S.m * ‖IC.v_t₀‖^2 + S.k * ‖IC.x_t₀‖^2) := by
+  unfold energy kineticEnergy potentialEnergy
+  simp only [toInitialConditions_trajectory_at_t₀, toInitialConditions_velocity_at_t₀]
+  rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
+  simp only [smul_eq_mul]
+  ring
+
+end InitialConditionsAtTime
+
+namespace InitialConditions
 
 /-!
 
