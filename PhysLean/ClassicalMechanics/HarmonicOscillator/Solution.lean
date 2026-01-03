@@ -115,7 +115,8 @@ but in practice it is often useful to specify initial conditions at other times 
 
 Currently implemented:
 - **Initial conditions at arbitrary time**: Specify position and velocity at any time `t₀`,
-  not necessarily at `t=0`. This is useful for problems where the natural reference time is not zero.
+  not necessarily at `t=0`.
+  This is useful for problems where the natural reference time is not zero.
 
 Future work (to be added in separate PRs):
 - Initial conditions from two positions at different times
