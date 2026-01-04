@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
+Copyright (c) 2025 Nicola Bernini. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Joseph Tooby-Smith
+Authors: Nicola Bernini
 -/
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.ClassicalMechanics.EulerLagrange
