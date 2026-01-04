@@ -151,13 +151,13 @@ The three damping regimes will be defined based on the discriminant γ² - 4mk.
 noncomputable def discriminant : ℝ := S.γ^2 - 4 * S.m * S.k
 
 /-- The system is underdamped when γ² < 4mk. -/
-def isUnderdamped : Prop := S.discriminant < 0
+def IsUnderdamped : Prop := S.discriminant < 0
 
 /-- The system is critically damped when γ² = 4mk. -/
-def isCriticallyDamped : Prop := S.discriminant = 0
+def IsCriticallyDamped : Prop := S.discriminant = 0
 
 /-- The system is overdamped when γ² > 4mk. -/
-def isOverdamped : Prop := S.discriminant > 0
+def IsOverdamped : Prop := S.discriminant > 0
 
 end DampedHarmonicOscillator
 
