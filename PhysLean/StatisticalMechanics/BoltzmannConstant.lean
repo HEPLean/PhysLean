@@ -20,7 +20,7 @@ namespace Constants
 
 /-- The Boltzmann constant in units of `m ^ 2 kg s ^ (-2) K ^ (-1)`.
   As long as one does not use the underlying value of this quantity,
-  then it can be used as Boltzmann's constant in an arbitary set of units. -/
+  then it can be used as Boltzmann's constant in an arbitrary set of units. -/
 def kBAx : {p : ℝ | 0 < p} := ⟨1.380649e-23, by norm_num⟩
 
 /-- The Boltzmann constant in a given but arbitrary set of units.
