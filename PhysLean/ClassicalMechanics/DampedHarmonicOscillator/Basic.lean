@@ -167,6 +167,46 @@ noncomputable def EquationOfMotion (x : Time → ℝ) : Prop :=
     S.γ * (Time.deriv x t) +
     S.k * x t = 0
 
+/-!
+## D. The energies and energy dissipation (Tag: DHO04)
+
+For the damped harmonic oscillator, the mechanical energy is
+
+  E(t) = ½ S.m (ẋ(t))^2 + ½ S.k (x(t))^2,
+
+where `x : Time → ℝ` is the position as a function of time.
+
+If `x` satisfies the equation of motion
+
+  S.m * x¨ + S.γ * ẋ + S.k * x = 0,
+
+then differentiating `E` with respect to time and substituting the
+equation of motion yields
+
+  dE/dt = - S.γ * (ẋ(t))^2 ≤ 0
+
+Thus the energy is non-increasing in time, and it is strictly decreasing
+whenever `S.γ > 0` and `ẋ(t) ≠ 0`. In particular, for `S.γ > 0`
+the energy is not conserved, and the energy dissipation rate is
+proportional to the squared velocity.
+-/
+
+/-- Mechanical energy of the damped harmonic oscillator. -/
+noncomputable def energy (x : Time → ℝ) : Time → ℝ :=
+  fun t =>
+    (1 / 2 : ℝ) * S.m * (Time.deriv x t)^2 +
+    (1 / 2 : ℝ) * S.k * (x t)^2
+
+/-- Energy dissipation rate along a trajectory `x : Time → ℝ`.
+
+ if `x` satisfies `S.equationOfMotion x`, then
+
+  Time.deriv (S.energy x) t = - S.γ * (Time.deriv x t)^2,
+
+so the energy is non-increasing and not conserved when `S.γ > 0`. -/
+noncomputable def energyDissipationRate (x : Time → ℝ) : Time → ℝ :=
+  fun t => - S.γ * (Time.deriv x t)^2
+
 ## C. Damping regimes (placeholder)
 
 The three damping regimes will be defined based on the discriminant γ² - 4mk.
