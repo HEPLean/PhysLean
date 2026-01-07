@@ -6,6 +6,8 @@ Authors: Nicola Bernini
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
+import PhysLean.Meta.Time
+
 /-!
 
 # The Damped Harmonic Oscillator
@@ -144,25 +146,25 @@ lemma ω₀_sq : S.ω₀^2 = S.k / S.m := by
 /-!
 ## C. Equation of motion (Tag: DHO03)
 
-The equation of motion for a damped harmonic oscillator with mass `m`, spring
-constant `k`, and damping coefficient `γ` is
+The damped harmonic oscillator with mass `m`, spring
+constant `k`, and damping coefficient `γ` satisfies
 
-    m ẍ + γ ẋ + k x = 0
+    m ẍ + γ ẋ + k x = 0,
 
-where `x : ℝ → ℝ` is the position as a function of time.
+where `x : Time → ℝ` is the position as a function of time.
 -/
 
 /-- The equation of motion for the damped harmonic oscillator.
 
-A function `x : ℝ → ℝ` is a solution if it satisfies
+A function `x : Time → ℝ` is a solution if it satisfies
 
     S.m * x¨ + S.γ * ẋ + S.k * x = 0
 
 for all times `t`. -/
-noncomputable def equationOfMotion (x : ℝ → ℝ) : Prop :=
-  ∀ t : ℝ,
-    S.m * (deriv (deriv x) t) +
-    S.γ * (deriv x t) +
+noncomputable def equationOfMotion (x : Time → ℝ) : Prop :=
+  ∀ t : Time,
+    S.m * (Time.deriv (Time.deriv x) t) +
+    S.γ * (Time.deriv x t) +
     S.k * x t = 0
 
 ## C. Damping regimes (placeholder)
