@@ -6,7 +6,7 @@ Authors: Nicola Bernini
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
-import PhysLean.Meta.Time
+import PhysLean.SpaceAndTime.Time.Derivatives
 
 /-!
 
@@ -161,7 +161,7 @@ A function `x : Time → ℝ` is a solution if it satisfies
     S.m * x¨ + S.γ * ẋ + S.k * x = 0
 
 for all times `t`. -/
-noncomputable def equationOfMotion (x : Time → ℝ) : Prop :=
+noncomputable def EquationOfMotion (x : Time → ℝ) : Prop :=
   ∀ t : Time,
     S.m * (Time.deriv (Time.deriv x) t) +
     S.γ * (Time.deriv x t) +
