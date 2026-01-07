@@ -141,6 +141,30 @@ lemma ω₀_sq : S.ω₀^2 = S.k / S.m := by
 
 /-!
 
+/-!
+## C. Equation of motion (Tag: DHO03)
+
+The equation of motion for a damped harmonic oscillator with mass `m`, spring
+constant `k`, and damping coefficient `γ` is
+
+    m ẍ + γ ẋ + k x = 0
+
+where `x : ℝ → ℝ` is the position as a function of time.
+-/
+
+/-- The equation of motion for the damped harmonic oscillator.
+
+A function `x : ℝ → ℝ` is a solution if it satisfies
+
+    S.m * x¨ + S.γ * ẋ + S.k * x = 0
+
+for all times `t`. -/
+noncomputable def equationOfMotion (x : ℝ → ℝ) : Prop :=
+  ∀ t : ℝ,
+    S.m * (deriv (deriv x) t) +
+    S.γ * (deriv x t) +
+    S.k * x t = 0
+
 ## C. Damping regimes (placeholder)
 
 The three damping regimes will be defined based on the discriminant γ² - 4mk.
@@ -158,6 +182,7 @@ def IsCriticallyDamped : Prop := S.discriminant = 0
 
 /-- The system is overdamped when γ² > 4mk. -/
 def IsOverdamped : Prop := S.discriminant > 0
+
 
 end DampedHarmonicOscillator
 
