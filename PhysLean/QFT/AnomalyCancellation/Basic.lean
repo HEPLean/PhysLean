@@ -518,7 +518,11 @@ def solsIncl (χ : ACCSystem) : χ.Sols →[ℚ] χ.Charges :=
 @[sorryful]
 lemma solsIncl_injective (χ : ACCSystem) :
     Function.Injective χ.solsIncl := by
-  sorry
+  intro S T h
+  have h' : χ.solsInclQuadSols S = χ.solsInclQuadSols T := by
+    apply ACCSystemQuad.quadSolsIncl_injective (χ := χ.toACCSystemQuad)
+    simpa [ACCSystem.solsIncl, MulActionHom.comp_apply] using h
+  exact (solsInclQuadSols_injective χ) h'
 
 /-!
 
