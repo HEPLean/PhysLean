@@ -199,8 +199,8 @@ namespace InitialConditionsAtTime
   the correctness proofs. -/
 noncomputable def toInitialConditions (S : HarmonicOscillator)
     (IC : InitialConditionsAtTime) : InitialConditions where
-  x₀ := cos (S.ω * IC.t₀) • IC.x_t₀ + (sin (S.ω * IC.t₀) / S.ω) • IC.v_t₀
-  v₀ := - S.ω • sin (S.ω * IC.t₀) • IC.x_t₀ + cos (S.ω * IC.t₀) • IC.v_t₀
+  x₀ := cos (S.ω * IC.t₀) • IC.x_t₀ - (sin (S.ω * IC.t₀) / S.ω) • IC.v_t₀
+  v₀ := S.ω • sin (S.ω * IC.t₀) • IC.x_t₀ + cos (S.ω * IC.t₀) • IC.v_t₀
 
 /-!
 
@@ -480,14 +480,13 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
     (IC.toInitialConditions S).trajectory S IC.t₀ = IC.x_t₀ := by
   rw [InitialConditions.trajectory_eq, toInitialConditions]
   ext i
-  simp only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul]
+  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
-  have hcos := sq (cos (S.ω * IC.t₀.val))
-  have hsin := sq (sin (S.ω * IC.t₀.val))
-  rw [hcos, hsin] at h1
-  linarith
+  ring_nf
+  rw [← h1]
+  ring
 
 /-- The trajectory resulting from `toInitialConditions` has the specified
   velocity `v_t₀` at time `t₀`. -/
@@ -497,14 +496,13 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
     ∂ₜ ((IC.toInitialConditions S).trajectory S) IC.t₀ = IC.v_t₀ := by
   rw [InitialConditions.trajectory_velocity, toInitialConditions]
   ext i
-  simp only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, neg_mul]
+  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, neg_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
-  have hcos := sq (cos (S.ω * IC.t₀.val))
-  have hsin := sq (sin (S.ω * IC.t₀.val))
-  rw [hcos, hsin] at h1
-  linarith
+  ring_nf
+  rw [← h1]
+  ring
 
 /-- The energy of the trajectory at time `t₀` equals the energy computed from the
   initial conditions at `t₀`. -/
