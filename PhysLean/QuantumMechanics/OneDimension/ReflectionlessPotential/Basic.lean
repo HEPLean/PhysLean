@@ -135,7 +135,7 @@ noncomputable def creationOperatorSchwartz (Q : ReflectionlessPotential) : 𝓢(
 noncomputable def annihilationOperatorSchwartz (Q : ReflectionlessPotential) :
   𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) :=
 (1 / Real.sqrt (2 * Q.m)) • momentumOperatorSchwartz +
-    ((Complex.I * Q.ℏ * Q.κ) / Real.sqrt (2 * Q.m)) • Q.tanhOperatorSchwartz
+    ((-Complex.I * Q.ℏ * Q.κ) / Real.sqrt (2 * Q.m)) • Q.tanhOperatorSchwartz
 
 end ReflectionlessPotential
 end OneDimension
