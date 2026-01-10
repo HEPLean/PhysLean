@@ -203,12 +203,8 @@ noncomputable def toInitialConditions (S : HarmonicOscillator)
   v₀ := S.ω • sin (S.ω * IC.t₀) • IC.x_t₀ + cos (S.ω * IC.t₀) • IC.v_t₀
 
 /-!
-
-##### A.2.1.3. Correctness proofs
-
 The correctness proofs showing that the conversion produces the expected trajectory
-are given later in section B.7, after the trajectory machinery has been defined.
-
+are given later in section D.1, after the trajectory machinery has been defined.
 -/
 
 TODO "6VZME" "Implement other initial conditions (deferred to future PRs). For example:
