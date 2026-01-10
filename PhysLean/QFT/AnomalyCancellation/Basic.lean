@@ -394,10 +394,13 @@ the module of all charges `Charges`.
 def quadSolsIncl (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.Charges :=
   MulActionHom.comp χ.linSolsIncl.toMulActionHom χ.quadSolsInclLinSols
 
-@[sorryful]
 lemma quadSolsIncl_injective (χ : ACCSystemQuad) :
     Function.Injective χ.quadSolsIncl := by
-  sorry
+  intro S T h
+  have h' : χ.quadSolsInclLinSols S = χ.quadSolsInclLinSols T := by
+    apply ACCSystemLinear.linSolsIncl_injective (χ := χ.toACCSystemLinear)
+    simpa [ACCSystemQuad.quadSolsIncl, MulActionHom.comp_apply] using h
+  exact quadSolsInclLinSols_injective χ h'
 
 end ACCSystemQuad
 
