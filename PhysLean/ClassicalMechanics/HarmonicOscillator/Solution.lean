@@ -485,7 +485,7 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
   conv_lhs => ring_nf
-  rw [h1]
+  simp [h1]
   ring
 
 /-- The trajectory resulting from `toInitialConditions` has the specified
@@ -501,7 +501,7 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
   conv_lhs => ring_nf
-  rw [h1]
+  simp [h1]
   ring
 
 /-- The energy of the trajectory at time `t₀` equals the energy computed from the
