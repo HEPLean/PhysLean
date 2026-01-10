@@ -486,10 +486,13 @@ def solsInclQuadSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.QuadSols where
   toFun := Sols.toQuadSols
   map_smul' _ _ := rfl
 
-@[sorryful]
 lemma solsInclQuadSols_injective (χ : ACCSystem) :
     Function.Injective χ.solsInclQuadSols := by
-  sorry
+  intro S T h
+  apply Sols.ext
+  have hv : (χ.solsInclQuadSols S).val = (χ.solsInclQuadSols T).val :=
+    congrArg (fun X => X.val) h
+  simpa [ACCSystem.solsInclQuadSols] using hv
 
 /-!
 
