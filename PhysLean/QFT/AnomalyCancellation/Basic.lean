@@ -360,10 +360,12 @@ def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols w
   toFun := QuadSols.toLinSols
   map_smul' _ _ := rfl
 
-@[sorryful]
 lemma quadSolsInclLinSols_injective (χ : ACCSystemQuad) :
     Function.Injective χ.quadSolsInclLinSols := by
-  sorry
+  intro S T h
+  ext
+  simpa [ACCSystemQuad.quadSolsInclLinSols] using
+    congrArg (fun X => X.val) h
 
 /-!
 
