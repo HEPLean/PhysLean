@@ -483,9 +483,7 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
   simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
-  field_simp [S.ω_neq_zero]
-  conv_lhs => ring_nf
-  simp [h1]
+  field_simp [S.ω_neq_zero, h1]
   ring
 
 /-- The trajectory resulting from `toInitialConditions` has the specified
@@ -499,9 +497,7 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
   simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, neg_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
-  field_simp [S.ω_neq_zero]
-  conv_lhs => ring_nf
-  simp [h1]
+  field_simp [S.ω_neq_zero, h1]
   ring
 
 /-- The energy of the trajectory at time `t₀` equals the energy computed from the
