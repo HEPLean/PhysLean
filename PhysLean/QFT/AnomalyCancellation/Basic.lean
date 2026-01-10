@@ -66,7 +66,8 @@ Related to these are the different types of spaces of charges:
   - H.6. Embeddings of solutions to the ACCs into charges
 - I. Morphisms between ACC systems
   - I.1. Composition of morphisms between ACC systems
-- J. Open TODO items
+- J. Deriving anomaly cancellation conditions
+- K. Open TODO items
 
 ## iv. References
 
@@ -570,21 +571,72 @@ def Hom.comp {χ η ε : ACCSystem} (g : Hom η ε) (f : Hom χ η) : Hom χ ε 
   commute := by rw [LinearMap.coe_comp, Function.comp_assoc, f.commute,
     ← Function.comp_assoc, g.commute, Function.comp_assoc]
 
+/-!
+
+## J. Deriving anomaly cancellation conditions
+
+Anomaly cancellation conditions can be derived formally from the gauge group and the
+fermionic representations. They arise from triangle Feynman diagrams, and can also be
+obtained using index-theoretic or characteristic-class constructions.
+
+In this file, we do not formalize the full topological input. Instead, we record the
+output of such a derivation as linear, quadratic and cubic homogeneous forms on the
+space of charges. This is sufficient to build an `ACCSystem`.
+
+-/
+
+/--
+A package of anomaly cancellation conditions as they could arise from a formal derivation
+(e.g. from a gauge group and fermionic representations).
+
+This structure records the resulting homogeneous forms on the charge space.
+-/
+structure TopologicalDerivation extends ACCSystemCharges where
+  /-- The number of linear anomaly cancellation conditions. -/
+  numberLinear : ℕ
+  /-- The linear anomaly cancellation conditions. -/
+  linearACCs : Fin numberLinear → (toACCSystemCharges.Charges →ₗ[ℚ] ℚ)
+  /-- The number of quadratic anomaly cancellation conditions. -/
+  numberQuadratic : ℕ
+  /-- The quadratic anomaly cancellation conditions. -/
+  quadraticACCs :
+    Fin numberQuadratic → HomogeneousQuadratic toACCSystemCharges.Charges
+  /-- The cubic anomaly cancellation condition. -/
+  cubicACC : HomogeneousCubic toACCSystemCharges.Charges
+
+namespace TopologicalDerivation
+
+/-- Construct an `ACCSystem` from a `TopologicalDerivation`. -/
+def toACCSystem (D : TopologicalDerivation) : ACCSystem where
+  numberCharges := D.numberCharges
+  numberLinear := D.numberLinear
+  linearACCs := D.linearACCs
+  numberQuadratic := D.numberQuadratic
+  quadraticACCs := D.quadraticACCs
+  cubicACC := D.cubicACC
+
+@[simp] lemma toACCSystem_numberCharges (D : TopologicalDerivation) :
+    (D.toACCSystem).numberCharges = D.numberCharges := rfl
+
+@[simp] lemma toACCSystem_numberLinear (D : TopologicalDerivation) :
+    (D.toACCSystem).numberLinear = D.numberLinear := rfl
+
+@[simp] lemma toACCSystem_numberQuadratic (D : TopologicalDerivation) :
+    (D.toACCSystem).numberQuadratic = D.numberQuadratic := rfl
+
+end TopologicalDerivation
+
 end ACCSystem
 
 /-!
 
-## J. Open TODO items
+## K. Open TODO items
 
 We give some open TODO items for future work.
 
 (To view these you may need to go to the GitHub source code for the file.)
 
 -/
-
-TODO "6VZMW" "Anomaly cancellation conditions can be derived formally from the gauge group
-  and fermionic representations using e.g. topological invariants. Include such a
-  definition."
 
 TODO "6VZM3" "Anomaly cancellation conditions can be defined using algebraic varieties.
   Link such an approach to the approach here."
