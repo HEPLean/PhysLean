@@ -579,50 +579,23 @@ Anomaly cancellation conditions can be derived formally from the gauge group and
 fermionic representations. They arise from triangle Feynman diagrams, and can also be
 obtained using index-theoretic or characteristic-class constructions.
 
-In this file, we do not formalize the full topological input. Instead, we record the
-output of such a derivation as linear, quadratic and cubic homogeneous forms on the
-space of charges. This is sufficient to build an `ACCSystem`.
+In this file, we do not formalize the full topological input. Instead, we define
+`TopologicalDerivation` as an abbreviation for `ACCSystem`, used to record the intended
+origin of the anomaly cancellation conditions.
 
 -/
 
 /--
-A package of anomaly cancellation conditions as they could arise from a formal derivation
-(e.g. from a gauge group and fermionic representations).
-
-This structure records the resulting homogeneous forms on the charge space.
+An abbreviation for `ACCSystem`, used to record the intended origin that the anomaly
+cancellation conditions arise from a formal derivation (e.g. from a gauge group and
+fermionic representations via triangle diagrams or index-theoretic methods).
 -/
-structure TopologicalDerivation extends ACCSystemCharges where
-  /-- The number of linear anomaly cancellation conditions. -/
-  numberLinear : ℕ
-  /-- The linear anomaly cancellation conditions. -/
-  linearACCs : Fin numberLinear → (toACCSystemCharges.Charges →ₗ[ℚ] ℚ)
-  /-- The number of quadratic anomaly cancellation conditions. -/
-  numberQuadratic : ℕ
-  /-- The quadratic anomaly cancellation conditions. -/
-  quadraticACCs :
-    Fin numberQuadratic → HomogeneousQuadratic toACCSystemCharges.Charges
-  /-- The cubic anomaly cancellation condition. -/
-  cubicACC : HomogeneousCubic toACCSystemCharges.Charges
+abbrev TopologicalDerivation := ACCSystem
 
 namespace TopologicalDerivation
 
-/-- Construct an `ACCSystem` from a `TopologicalDerivation`. -/
-def toACCSystem (D : TopologicalDerivation) : ACCSystem where
-  numberCharges := D.numberCharges
-  numberLinear := D.numberLinear
-  linearACCs := D.linearACCs
-  numberQuadratic := D.numberQuadratic
-  quadraticACCs := D.quadraticACCs
-  cubicACC := D.cubicACC
-
-@[simp] lemma toACCSystem_numberCharges (D : TopologicalDerivation) :
-    (D.toACCSystem).numberCharges = D.numberCharges := rfl
-
-@[simp] lemma toACCSystem_numberLinear (D : TopologicalDerivation) :
-    (D.toACCSystem).numberLinear = D.numberLinear := rfl
-
-@[simp] lemma toACCSystem_numberQuadratic (D : TopologicalDerivation) :
-    (D.toACCSystem).numberQuadratic = D.numberQuadratic := rfl
+/-- View a `TopologicalDerivation` as an `ACCSystem`. -/
+@[simp] abbrev toACCSystem (D : TopologicalDerivation) : ACCSystem := D
 
 end TopologicalDerivation
 
