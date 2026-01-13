@@ -102,13 +102,68 @@ When δL depends only on velocity (the free particle case), the condition simpli
 
     WLOG, we assume `δL 0 = 0` since constants are total derivatives (c = d/dt(c·t))
     and can be absorbed without affecting the equations of motion. -/
-@[sorryful]
 lemma isTotalTimeDerivativeVelocity {n : ℕ}
     (δL : EuclideanSpace ℝ (Fin n) → ℝ)
     (hδL0 : δL 0 = 0)
     (h : IsTotalTimeDerivative (fun _ v _ => δL v)) :
     ∃ g : EuclideanSpace ℝ (Fin n), ∀ v, δL v = ⟪g, v⟫_ℝ := by
-  sorry
+  classical
+  rcases h with ⟨F, hFdiff, hEq⟩
+
+  -- Derivative of F at (0,0)
+  let dF : (EuclideanSpace ℝ (Fin n) × ℝ) →L[ℝ] ℝ :=
+    fderiv ℝ F ((0 : EuclideanSpace ℝ (Fin n)), (0 : ℝ))
+
+  -- The "time-direction" derivative must vanish because δL 0 = 0.
+  have h_time : dF ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) = 0 := by
+    have h0 :
+        δL (0 : EuclideanSpace ℝ (Fin n)) =
+          fderiv ℝ F ((0 : EuclideanSpace ℝ (Fin n)), (0 : ℝ))
+            ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) := by
+      simpa using (hEq (0 : EuclideanSpace ℝ (Fin n))
+        (0 : EuclideanSpace ℝ (Fin n)) (0 : ℝ))
+    have : dF ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) =
+        δL (0 : EuclideanSpace ℝ (Fin n)) := by
+      simpa [dF] using h0.symm
+    simpa [hδL0] using this
+
+  -- Induced continuous linear functional on velocity: v ↦ dF (v,0).
+  let φ : (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ :=
+    dF.comp (ContinuousLinearMap.inl ℝ (EuclideanSpace ℝ (Fin n)) ℝ)
+
+  -- Show δL v = φ v for all v.
+  have hφ : ∀ v : EuclideanSpace ℝ (Fin n), δL v = φ v := by
+    intro v
+    have hv :
+        δL v =
+          fderiv ℝ F ((0 : EuclideanSpace ℝ (Fin n)), (0 : ℝ))
+            (v, (1 : ℝ)) := by
+      simpa using (hEq (0 : EuclideanSpace ℝ (Fin n)) v (0 : ℝ))
+    have hv' : δL v = dF (v, (1 : ℝ)) := by
+      simpa [dF] using hv
+    calc
+      δL v = dF (v, (1 : ℝ)) := hv'
+      _ = dF ((v, (0 : ℝ)) + ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ))) := by
+        simp
+      _ = dF (v, (0 : ℝ)) + dF ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) := by
+        simpa using
+          (dF.map_add (v, (0 : ℝ)) ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)))
+      _ = dF (v, (0 : ℝ)) := by
+        simp [h_time]
+      _ = φ v := by
+        simp [φ]
+
+  -- Frechet–Riesz: represent φ as inner product with some g.
+  refine ⟨(InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm φ, ?_⟩
+  intro v
+  have hinner :
+      ⟪(InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm φ, v⟫_ℝ = φ v := by
+    rw [InnerProductSpace.toDual_symm_apply (𝕜 := ℝ)
+        (E := EuclideanSpace ℝ (Fin n)) (x := v) (y := φ)]
+  calc
+    δL v = φ v := hφ v
+    _ = ⟪(InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm φ, v⟫_ℝ := by
+      rw [hinner.symm]
 
 end Lagrangian
 
