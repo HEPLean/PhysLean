@@ -66,8 +66,7 @@ Related to these are the different types of spaces of charges:
   - H.6. Embeddings of solutions to the ACCs into charges
 - I. Morphisms between ACC systems
   - I.1. Composition of morphisms between ACC systems
-- J. Deriving anomaly cancellation conditions
-- K. Open TODO items
+- J. Open TODO items
 
 ## iv. References
 
@@ -417,7 +416,16 @@ in the rational charges. This corresponds to the `u(1)^3` anomaly.
 
 -/
 
-/-- The type of charges plus the anomaly cancellation conditions. -/
+/--
+The type of charges plus the anomaly cancellation conditions.
+
+In many physical settings these conditions are derived formally from the gauge group and the
+fermionic representations. They arise from triangle Feynman diagrams, and can also be obtained
+using index-theoretic or characteristic-class constructions.
+
+In this file, we take the resulting conditions as input data: linear, quadratic and cubic
+homogeneous forms on the space of rational charges.
+-/
 structure ACCSystem extends ACCSystemQuad where
   /-- The cubic ACC. -/
   cubicACC : HomogeneousCubic toACCSystemCharges.Charges
@@ -570,45 +578,27 @@ def Hom.comp {χ η ε : ACCSystem} (g : Hom η ε) (f : Hom χ η) : Hom χ ε 
   commute := by rw [LinearMap.coe_comp, Function.comp_assoc, f.commute,
     ← Function.comp_assoc, g.commute, Function.comp_assoc]
 
-/-!
-
-## J. Deriving anomaly cancellation conditions
-
-Anomaly cancellation conditions can be derived formally from the gauge group and the
-fermionic representations. They arise from triangle Feynman diagrams, and can also be
-obtained using index-theoretic or characteristic-class constructions.
-
-In this file, we do not formalize the full topological input. Instead, we define
-`TopologicalDerivation` as an abbreviation for `ACCSystem`, used to record the intended
-origin of the anomaly cancellation conditions.
-
--/
-
-/--
-An abbreviation for `ACCSystem`, used to record the intended origin that the anomaly
-cancellation conditions arise from a formal derivation (e.g. from a gauge group and
-fermionic representations via triangle diagrams or index-theoretic methods).
--/
-abbrev TopologicalDerivation := ACCSystem
-
-namespace TopologicalDerivation
-
-/-- View a `TopologicalDerivation` as an `ACCSystem`. -/
-@[simp] abbrev toACCSystem (D : TopologicalDerivation) : ACCSystem := D
-
-end TopologicalDerivation
-
 end ACCSystem
 
 /-!
 
-## K. Open TODO items
+## J. Open TODO items
 
 We give some open TODO items for future work.
+
+One natural direction is to formalize how the anomaly cancellation conditions defining an
+`ACCSystem` arise from gauge-theoretic data (a gauge group together with fermionic representations).
+Physically these arise from triangle Feynman diagrams, and can also be described via index-theoretic
+or characteristic-class constructions (e.g. through an anomaly polynomial). At present we do not
+formalize this derivation in Lean, and instead take the resulting homogeneous forms as data.
 
 (To view these you may need to go to the GitHub source code for the file.)
 
 -/
+
+TODO "6VZMW" "Anomaly cancellation conditions can be derived formally from the gauge group
+  and fermionic representations using e.g. topological invariants. Include such a
+  definition."
 
 TODO "6VZM3" "Anomaly cancellation conditions can be defined using algebraic varieties.
   Link such an approach to the approach here."
