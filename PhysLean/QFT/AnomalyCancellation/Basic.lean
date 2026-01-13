@@ -510,7 +510,6 @@ lemma solsInclQuadSols_injective (χ : ACCSystem) :
 def solsInclLinSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.LinSols :=
   MulActionHom.comp χ.quadSolsInclLinSols χ.solsInclQuadSols
 
-@[sorryful]
 lemma solsInclLinSols_injective (χ : ACCSystem) :
     Function.Injective χ.solsInclLinSols := by
   intro S T h
