@@ -27,15 +27,19 @@
 </div>
 
 
-## Aims of this project
+## Requirements of the project
 
-🎯 __Digitalize__ results (meaning calculations, definitions, and theorems) from physics
-into Lean 4.
+🎯 The project shall contain results (definitions, theorems, lemmas and calculations) from **physics** formalized (or **digitalized**) into the interactive theorem prover **Lean 4**. 
+🎯 The project shall be **organized** by **physics**. 
+🎯 Each definition in the project shall carry a physics-based **documentation**.
+🎯 Each module (file) in the project shall carry a physics-based **documentation**.
+🎯 The project shall contain Physics Lean **tactics**, **notation** and **syntax** for physicists.
+🎯 The project shall *not* be tied to physics axiomizations (e.g. axiomatic QFT), but rather lexiable enough to accomdate different approaches and starting points.
+🎯 The content of the project shall be carefully **reviewed** and curated, to ensure reusability, readability and fit. 
+🎯 The project shall be completely open-source, community run and independent from any company or organization. 
+🎯 The project shall not be tied to any specfic AI model or tool. 
+🎯 The project shall be for **main-stream** physics only.
 
-🎯 Develop structures to aid the __creation__ of new results in physics using Lean,
-  with the potential future use of AI.
-
-🎯 Create good documentation so that the project can be used for __pedagogical__ purposes.
 
 ## How to get involved
 
