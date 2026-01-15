@@ -30,14 +30,23 @@
 ## Requirements of the project
 
 🎯 The project shall contain results (definitions, theorems, lemmas and calculations) from **physics** formalized (or **digitalized**) into the interactive theorem prover **Lean 4**.
+
 🎯 The project shall be **organized** by **physics**.
+
 🎯 Each definition in the project shall carry a physics-based **documentation**.
+
 🎯 Each module (file) in the project shall carry a physics-based **documentation**.
+
 🎯 The project shall contain Physics Lean **tactics**, **notation** and **syntax** for physicists.
+
 🎯 The project shall *not* be tied to physics axiomizations (e.g. axiomatic QFT), but rather lexiable enough to accommodate different approaches and starting points.
+
 🎯 The content of the project shall be carefully **reviewed** and curated, to ensure reusability, readability and fit.
+
 🎯 The project shall be completely open-source, community run and independent from any company or organization.
+
 🎯 The project shall not be tied to any specific AI model or tool.
+
 🎯 The project shall be for **main-stream** physics only.
 
 
