@@ -390,3 +390,8 @@ import PhysLean.Units.WithDim.Momentum
 import PhysLean.Units.WithDim.Pressure
 import PhysLean.Units.WithDim.Speed
 import PhysLean.Units.WithDim.Velocity
+-- G2 geometry (GIFT migration)
+import PhysLean.G2.CrossProduct
+import PhysLean.G2.E8Lattice
+import PhysLean.G2.RootSystems
+import PhysLean.G2.Geometry.Exterior

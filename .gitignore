@@ -3,3 +3,6 @@
 .lake/packages/*
 .lake/build
 .DS_Store
+
+# Local GIFT migration staging (not for PR)
+/physlean-gift/
