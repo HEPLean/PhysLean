@@ -142,8 +142,6 @@ lemma ω₀_sq : S.ω₀^2 = S.k / S.m := by
   exact div_nonneg (le_of_lt S.k_pos) (le_of_lt S.m_pos)
 
 /-!
-
-/-!
 ## C. Equation of motion (Tag: DHO03)
 
 The damped harmonic oscillator with mass `m`, spring
@@ -191,11 +189,17 @@ the energy is not conserved, and the energy dissipation rate is
 proportional to the squared velocity.
 -/
 
+/-- The kinetic energy of the damped harmonic oscillator. -/
+noncomputable def kineticEnergy (x : Time → ℝ) : Time → ℝ :=
+  fun t => (1 / 2 : ℝ) * S.m * (Time.deriv x t)^2
+
+/-- The potential energy of the damped harmonic oscillator. -/
+noncomputable def potentialEnergy (x : Time → ℝ) : Time → ℝ :=
+  fun t => (1 / 2 : ℝ) * S.k * (x t)^2
+
 /-- Mechanical energy of the damped harmonic oscillator. -/
 noncomputable def energy (x : Time → ℝ) : Time → ℝ :=
-  fun t =>
-    (1 / 2 : ℝ) * S.m * (Time.deriv x t)^2 +
-    (1 / 2 : ℝ) * S.k * (x t)^2
+  S.kineticEnergy x + S.potentialEnergy x
 
 /-- Energy dissipation rate along a trajectory `x : Time → ℝ`.
 
@@ -207,7 +211,9 @@ so the energy is non-increasing and not conserved when `S.γ > 0`. -/
 noncomputable def energyDissipationRate (x : Time → ℝ) : Time → ℝ :=
   fun t => - S.γ * (Time.deriv x t)^2
 
-## C. Damping regimes (placeholder)
+/-!
+
+## E. Damping regimes (placeholder)
 
 The three damping regimes will be defined based on the discriminant γ² - 4mk.
 
