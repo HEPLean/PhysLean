@@ -69,10 +69,6 @@ open InnerProductSpace
 TODO "DHO01" "Define the DampedHarmonicOscillator structure with mass m, spring constant k,
   and damping coefficient γ."
 
-TODO "DHO02" "Define the three damping regimes: underdamped, critically damped, and overdamped."
-
-TODO "DHO03" "Define the equation of motion for the damped harmonic oscillator."
-
 TODO "DHO04" "Prove that energy is not conserved and derive the energy dissipation rate."
 
 TODO "DHO05" "Derive solutions for the underdamped case (oscillatory with exponential decay)."
