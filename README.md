@@ -23,7 +23,7 @@
 [![](https://img.shields.io/badge/Lean-v4.26.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.26.0)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HEPLean/PhysLean)
-[![api_docs](https://img.shields.io/badge/doc-API_Docs)](https://physlean.com/docs/)
+[![api_docs](https://img.shields.io/badge/doc-API_docs-blue)](https://physlean.com/docs/)
 
 </div>
 
