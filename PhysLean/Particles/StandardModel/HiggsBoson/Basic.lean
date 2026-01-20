@@ -376,11 +376,11 @@ informal_lemma stability_group where
 
 lemma ofU1Subgroup_smul_eq_smul (g : unitary ℂ) (φ : HiggsVec) :
     (StandardModel.GaugeGroupI.ofU1Subgroup g) • φ =
-    (WithLp.toLp 2 <| !![1, 0; 0, g.1 ^ 6] *ᵥ φ.ofLp)  := by
+    (WithLp.toLp 2 <| !![1, 0; 0, g.1 ^ 6] *ᵥ φ.ofLp) := by
   rw [gaugeGroupI_smul_eq_U1_smul_SU2]
   simp
   apply And.intro
-  · have h0 : g ^ 3 • (starRingEnd ℂ) ↑g ^ 3  = 1 := by
+  · have h0 : g ^ 3 • (starRingEnd ℂ) ↑g ^ 3 = 1 := by
       trans (normSq (g ^ 3).1 : ℂ)
       · rw [← mul_conj]
         simp
@@ -394,11 +394,11 @@ lemma ofU1Subgroup_smul_eq_smul (g : unitary ℂ) (φ : HiggsVec) :
     simp
     ring
 
-lemma gaugeGroupI_smul_phase_snd (φ : HiggsVec)  :
+lemma gaugeGroupI_smul_phase_snd (φ : HiggsVec) :
     ∃ g : StandardModel.GaugeGroupI,
-      (g • φ).ofLp 1 = ‖(φ.ofLp 1)‖  ∧
-      (∀ φ1 : HiggsVec,  (g • φ1).ofLp 0 = φ1.ofLp 0) ∧
-      (∀ a : ℝ , g • (!₂[a, 0] : HiggsVec) = (!₂[a, 0] : HiggsVec)) := by
+      (g • φ).ofLp 1 = ‖(φ.ofLp 1)‖ ∧
+      (∀ φ1 : HiggsVec, (g • φ1).ofLp 0 = φ1.ofLp 0) ∧
+      (∀ a : ℝ, g • (!₂[a, 0] : HiggsVec) = (!₂[a, 0] : HiggsVec)) := by
   let θ := arg (φ 1)
   use StandardModel.GaugeGroupI.ofU1Subgroup ⟨Complex.exp (-I * θ / 6), by
     rw [Unitary.mem_iff]

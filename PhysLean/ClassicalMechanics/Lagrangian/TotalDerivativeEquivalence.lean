@@ -3,12 +3,7 @@ Copyright (c) 2025 Rein Zustand. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Rein Zustand
 -/
-import Mathlib.Analysis.InnerProductSpace.EuclideanDist
-import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.Topology.MetricSpace.Basic
-import Mathlib.Analysis.Calculus.Deriv.Basic
 import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
-
 /-!
 
 # Equivalent Lagrangians under Total Derivatives

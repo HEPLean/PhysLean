@@ -83,8 +83,7 @@ def ofU1Subgroup (u1 : unitary ℂ) : GaugeGroupI :=
     fin_cases i <;> fin_cases j <;> simp [conj_mul'], by
     simp only [RCLike.star_def, SetLike.mem_coe, MonoidHom.mem_mker, coe_detMonoidHom,
       det_fin_two_of, conj_mul', mul_zero, sub_zero]
-    simp
-    ⟩, u1)
+    simp⟩, u1)
 
 @[simp]
 lemma ofU1Subgroup_toSU3 (u1 : unitary ℂ) :
@@ -100,8 +99,7 @@ lemma ofU1Subgroup_toSU2 (u1 : unitary ℂ) :
     fin_cases i <;> fin_cases j <;> simp [conj_mul'], by
     simp only [RCLike.star_def, SetLike.mem_coe, MonoidHom.mem_mker, coe_detMonoidHom,
       det_fin_two_of, conj_mul', mul_zero, sub_zero]
-    simp
-    ⟩ := rfl
+    simp⟩ := rfl
 
 @[simp]
 lemma ofU1Subgroup_toU1 (u1 : unitary ℂ) :

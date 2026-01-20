@@ -6,8 +6,6 @@ Authors: Nicola Bernini
 import PhysLean.Meta.Informal.SemiFormal
 import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
-import PhysLean.SpaceAndTime.Time.Derivatives
-
 /-!
 
 # The Damped Harmonic Oscillator
@@ -25,9 +23,9 @@ m ẍ + γ ẋ + k x = 0
 
 Depending on the relationship between the damping coefficient and the natural frequency,
 the system exhibits three different behaviors:
-- **Underdamped** (γ² < 4mk): Oscillatory motion with exponentially decaying amplitude
-- **Critically damped** (γ² = 4mk): Fastest return to equilibrium without oscillation
-- **Overdamped** (γ² > 4mk): Slow return to equilibrium without oscillation
+- **Underdamped** (γ² < 4mk) : Oscillatory motion with exponentially decaying amplitude
+- **Critically damped** (γ² = 4mk) : Fastest return to equilibrium without oscillation
+- **Overdamped** (γ² > 4mk) : Slow return to equilibrium without oscillation
 
 ## ii. Key results
 
@@ -199,7 +197,7 @@ noncomputable def energy (x : Time → ℝ) : Time → ℝ :=
 
 /-- Energy dissipation rate along a trajectory `x : Time → ℝ`.
 
- if `x` satisfies `S.equationOfMotion x`, then
+  if `x` satisfies `S.equationOfMotion x`, then
 
   Time.deriv (S.energy x) t = - S.γ * (Time.deriv x t)^2,
 
@@ -226,7 +224,6 @@ def IsCriticallyDamped : Prop := S.discriminant = 0
 
 /-- The system is overdamped when γ² > 4mk. -/
 def IsOverdamped : Prop := S.discriminant > 0
-
 
 end DampedHarmonicOscillator
 

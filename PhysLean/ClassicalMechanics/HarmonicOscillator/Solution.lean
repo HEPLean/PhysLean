@@ -118,7 +118,7 @@ Currently implemented:
   not necessarily at `t=0`.
   This is useful for problems where the natural reference time is not zero.
 
-Future work (to be added in separate PRs):
+Future work (to be added in separate PRs) :
 - Initial conditions from two positions at different times
 - Initial conditions from two velocities at different times
 - Amplitude-phase parametrization
@@ -512,11 +512,11 @@ lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace 
       S.m • ∂ₜ (∂ₜ y) t
           = S.m • (∂ₜ (∂ₜ x) t - ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
               simp [hy2t]
-      _   = (S.m • ∂ₜ (∂ₜ x) t) - (S.m • ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
+      _ = (S.m • ∂ₜ (∂ₜ x) t) - (S.m • ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
               simp [smul_sub]
-      _   = force S (x t) - force S ((IC.trajectory S) t) := by
+      _ = force S (x t) - force S ((IC.trajectory S) t) := by
               simp [hNewt_x t, hNewt_traj t]
-      _   = force S (y t) := by
+      _ = force S (y t) := by
               -- force = -k•x, so it is linear: force(x) - force(traj) = force(x-traj)
               -- and y t = x t - traj t by definition
               simp [hydef, force_eq_linear, smul_sub]

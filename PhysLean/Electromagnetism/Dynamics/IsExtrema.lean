@@ -302,7 +302,7 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
 We show that the magnetic field matrix $B_{ij}$ satisfies the following wave-like equation
 
 $$\frac{\partial^2 B_{ij}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 B_{ij}}{\partial x_k^2} +
-  \frac{1}{\epsilon_0} \left( \frac{\partial J_i}{\partial x_j} -
+  \frac{1}{\epsilon_0} \left(\frac{\partial J_i}{\partial x_j} -
   \frac{\partial J_j}{\partial x_i} \right).$$
 When the free current density is zero, this reduces to the wave equation.
 -/
