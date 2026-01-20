@@ -378,7 +378,10 @@ lemma ofU1Subgroup_smul_eq_smul (g : unitary ℂ) (φ : HiggsVec) :
     (StandardModel.GaugeGroupI.ofU1Subgroup g) • φ =
     (WithLp.toLp 2 <| !![1, 0; 0, g.1 ^ 6] *ᵥ φ.ofLp) := by
   rw [gaugeGroupI_smul_eq_U1_smul_SU2]
-  simp
+  simp only [GaugeGroupI.ofU1Subgroup_toU1, GaugeGroupI.ofU1Subgroup_toSU2, SubmonoidClass.coe_pow,
+    star_pow, RCLike.star_def, smul_of, smul_cons, smul_zero, smul_empty, cons_mulVec,
+    cons_dotProduct, zero_mul, dotProduct_of_isEmpty, add_zero, zero_add, empty_mulVec, one_mul,
+    WithLp.toLp.injEq, vecCons_inj, mul_eq_mul_right_iff, and_true]
   apply And.intro
   · have h0 : g ^ 3 • (starRingEnd ℂ) ↑g ^ 3 = 1 := by
       trans (normSq (g ^ 3).1 : ℂ)
@@ -391,7 +394,7 @@ lemma ofU1Subgroup_smul_eq_smul (g : unitary ℂ) (φ : HiggsVec) :
   · left
     trans (g ^ 3 : ℂ) • (g ^ 3 : ℂ)
     · rfl
-    simp
+    simp only [smul_eq_mul]
     ring
 
 lemma gaugeGroupI_smul_phase_snd (φ : HiggsVec) :
@@ -407,7 +410,8 @@ lemma gaugeGroupI_smul_phase_snd (φ : HiggsVec) :
     simp⟩
   apply And.intro
   · rw [ofU1Subgroup_smul_eq_smul]
-    simp
+    simp only [Fin.isValue, neg_mul, cons_mulVec, cons_dotProduct, one_mul, zero_mul,
+      dotProduct_of_isEmpty, add_zero, zero_add, empty_mulVec, cons_val_one, cons_val_fin_one]
     trans Complex.exp (-I * θ / 6) ^ 6 * φ.ofLp 1
     · congr
       simp

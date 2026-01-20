@@ -100,7 +100,9 @@ lemma gramMatrix_det_nonneg (H : TwoHiggsDoublet) :
 lemma gramMatrix_tr_nonneg (H : TwoHiggsDoublet) :
     0 ≤ H.gramMatrix.trace.re := by
   rw [gramMatrix, Matrix.trace_fin_two]
-  simp
+  simp only [inner_self_eq_norm_sq_to_K, Complex.coe_algebraMap, Fin.isValue, Matrix.of_apply,
+    Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_fin_one, Matrix.cons_val_one,
+    Complex.add_re]
   apply add_nonneg
   · rw [← Complex.ofReal_pow, Complex.ofReal_re]
     exact sq_nonneg ‖H.Φ1‖
@@ -111,8 +113,7 @@ lemma gaugeGroupI_exists_fst_eq {H : TwoHiggsDoublet} (h1 : H.Φ1 ≠ 0) :
     ∃ g : StandardModel.GaugeGroupI,
       g • H.Φ1 = (!₂[‖H.Φ1‖, 0] : HiggsVec) ∧
       (g • H.Φ2) 0 = ⟪H.Φ1, H.Φ2⟫_ℂ / ‖H.Φ1‖ ∧
-      ‖(g • H.Φ2) 1‖ = Real.sqrt (H.gramMatrix.det.re) / ‖H.Φ1‖
-      := by
+      ‖(g • H.Φ2) 1‖ = Real.sqrt (H.gramMatrix.det.re) / ‖H.Φ1‖ := by
   rw [gramMatrix_det_eq_real]
   obtain ⟨g, h⟩ := (HiggsVec.mem_orbit_gaugeGroupI_iff (H.Φ1) (!₂[‖H.Φ1‖, 0] : HiggsVec)).mpr
     (by simp [@PiLp.norm_eq_of_L2])
@@ -140,7 +141,7 @@ lemma gaugeGroupI_exists_fst_eq {H : TwoHiggsDoublet} (h1 : H.Φ1 ≠ 0) :
   have h0 : ‖(g • H.Φ2) 1‖ ^ 2 = (‖H.Φ1‖ ^ 2 * ‖H.Φ2‖ ^ 2 - ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2) / ‖H.Φ1‖ ^ 2 := by
     field_simp
     rw [hx0, h_fst]
-    simp
+    simp only [Fin.isValue, Complex.norm_div, Complex.norm_real, norm_norm]
     ring_nf
     field_simp
   have habc (a b c : ℝ) (ha : 0 ≤ a) (hx : a ^ 2 = b / c ^2) (hc : c ≠ 0) (hc : 0 < c) :
@@ -194,7 +195,7 @@ lemma mem_orbit_gaugeGroupI_iff_gramMatrix (H1 H2 : TwoHiggsDoublet) :
     obtain ⟨g2, hg2⟩ := (HiggsVec.mem_orbit_gaugeGroupI_iff (H2.Φ2) (!₂[‖H2.Φ2‖, 0] : HiggsVec)).mpr
       (by simp [@PiLp.norm_eq_of_L2])
     use g1⁻¹ * g2
-    simp
+    simp only
     ext:1
     · simp [Φ1_zero]
       have hnorm : ‖H2.Φ1‖ = ‖H1.Φ1‖ := by
@@ -217,7 +218,7 @@ lemma mem_orbit_gaugeGroupI_iff_gramMatrix (H1 H2 : TwoHiggsDoublet) :
       simp [hnorm] at Φ1_zero
     obtain ⟨g2, H2_Φ1, H2_Φ2⟩ := gaugeGroupI_exists_fst_eq_snd_eq (H := H2) Φ2_nezero
     use g1⁻¹ * g2
-    simp
+    simp only
     ext:1
     · simp [mul_smul]
       refine inv_smul_eq_iff.mpr ?_

@@ -122,7 +122,7 @@ lemma quarticTerm_𝓵₄_expand (P : PotentialParameters) (H : TwoHiggsDoublet)
   rw [Complex.sq_norm]
   rw [← Complex.mul_re]
   rw [← inner_conj_symm, ← Complex.normSq_eq_conj_mul_self]
-  simp
+  simp only [inner_conj_symm, Complex.ofReal_re]
   rw [← inner_conj_symm]
   exact Complex.normSq_conj ⟪H.Φ2, H.Φ1⟫_ℂ
 
