@@ -180,7 +180,7 @@ lemma potentialIsBounded_iff_forall_gramVector (P : PotentialParameters) :
     obtain ⟨c, hc⟩ := h
     use c
     intro H
-    apply (hc H.gramVector (gramVector_inl_nonneg H) ( gramVector_inr_sum_sq_le_inl H)).trans
+    apply (hc H.gramVector (gramVector_inl_nonneg H) (gramVector_inr_sum_sq_le_inl H)).trans
     apply le_of_eq
     rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
 

@@ -237,7 +237,6 @@ lemma mem_orbit_gaugeGroupI_iff_gramMatrix (H1 H2 : TwoHiggsDoublet) :
         · simp [h]
         · exact eq_fst_norm_of_eq_gramMatrix (id (Eq.symm h))
 
-
 /-!
 
 ### A.1. Gram matrix is surjective
@@ -295,7 +294,7 @@ lemma gramMatrix_surjective_det_tr (K : Matrix (Fin 2) (Fin 2) ℂ)
   /- The case when a ≠ 0. -/
   have h1 : (√a : ℂ) ≠ 0 := by
       simp_all
-  use ⟨(!₂[√a, 0] : HiggsVec) , !₂[conj c/ √a, √(a * b - ‖c‖ ^ 2) / √a] ⟩
+  use ⟨(!₂[√a, 0] : HiggsVec), !₂[conj c/ √a, √(a * b - ‖c‖ ^ 2) / √a]⟩
   ext i j
   fin_cases i <;> fin_cases j <;> simp [gramMatrix, PiLp.norm_eq_of_L2, ← Complex.ofReal_pow]
   · exact Real.sq_sqrt ha_nonneg
@@ -370,7 +369,6 @@ lemma gramVector_inl_nonneg (H : TwoHiggsDoublet) :
     0 ≤ H.gramVector (Sum.inl 0) := by
   rw [gramVector_inl_eq_trace_gramMatrix]
   exact gramMatrix_tr_nonneg H
-
 
 lemma normSq_Φ1_eq_gramVector (H : TwoHiggsDoublet) :
     ‖H.Φ1‖ ^ 2 = (1/2 : ℝ) * (H.gramVector (Sum.inl 0) + H.gramVector (Sum.inr 2)) := by
