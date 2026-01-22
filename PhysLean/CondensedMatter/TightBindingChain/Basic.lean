@@ -193,6 +193,13 @@ lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
   rw [localizedComp, LinearMap.coe_mk, AddHom.coe_mk,
     orthonormal_iff_ite.mp T.localizedState_orthonormal n p, ite_smul, one_smul, zero_smul]
 
+/-- The adjoint of localizedComp |m⟩⟨n| is |n⟩⟨m|. -/
+lemma localizedComp_adjoint (m n : Fin T.N) (ψ φ : T.HilbertSpace) :
+    ⟪|m⟩⟨n| ψ, φ⟫_ℂ = ⟪ψ, |n⟩⟨m| φ⟫_ℂ := by
+  simp only [localizedComp, LinearMap.coe_mk, AddHom.coe_mk]
+  rw [inner_smul_left, inner_smul_right, inner_conj_symm]
+  ring
+
 /-!
 
 ## D. The Hamiltonian of the tight binding chain
@@ -212,19 +219,6 @@ noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
 
 -/
 
-/-- The adjoint of localizedComp |m⟩⟨n| is |n⟩⟨m|. -/
-lemma localizedComp_adjoint (m n : Fin T.N) (ψ φ : T.HilbertSpace) :
-    ⟪|m⟩⟨n| ψ, φ⟫_ℂ = ⟪ψ, |n⟩⟨m| φ⟫_ℂ := by
-  simp only [localizedComp, LinearMap.coe_mk, AddHom.coe_mk]
-  rw [inner_smul_left, inner_smul_right]
-  rw [inner_conj_symm]
-  ring
-
-/-- The diagonal term |n⟩⟨n| is self-adjoint. -/
-lemma localizedComp_self_adjoint (n : Fin T.N) (ψ φ : T.HilbertSpace) :
-    ⟪|n⟩⟨n| ψ, φ⟫_ℂ = ⟪ψ, |n⟩⟨n| φ⟫_ℂ :=
-  localizedComp_adjoint T n n ψ φ
-
 /-- The hamiltonian of the tight binding chain is hermitian. -/
 lemma hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
     ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ := by
@@ -238,7 +232,7 @@ lemma hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
     apply Finset.sum_congr rfl
     intro n _
     simp only [inner_smul_left_eq_smul, inner_smul_right_eq_smul]
-    rw [localizedComp_self_adjoint]
+    rw [localizedComp_adjoint]
   · -- t term
     simp only [Finset.smul_sum, smul_add]
     rw [sum_inner, inner_sum]
@@ -521,77 +515,46 @@ N-th roots of unity exp(i(k₂-k₁)a), and the sum of all N-th roots of unity e
 lemma energyEigenstate_orthogonal :
     Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by
   intro k1 k2 hne
-  simp only [energyEigenstate]
-  -- The inner product of energy eigenstates reduces to a geometric sum
-  -- ⟨ψ_k1|ψ_k2⟩ = ∑_n exp(-i k1 n a) exp(i k2 n a) = ∑_n exp(i(k2-k1)n a) = ∑_n ω^n
-  -- where ω = exp(i(k2-k1)a) is an N-th root of unity (from periodic BCs)
-  rw [sum_inner]
+  simp only [energyEigenstate, sum_inner]
   simp_rw [inner_sum, inner_smul_left, inner_smul_right,
     orthonormal_iff_ite.mp T.localizedState_orthonormal]
-  -- Collapse double sum using orthonormality of localized states
   simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
-  -- Define the phase factor ω = exp(I*(k2-k1)*a)
   set ω := Complex.exp (Complex.I * (k2 - k1) * T.a) with hω_def
-  -- Convert to geometric sum: ∑_n conj(exp(I*k1*n*a)) * exp(I*k2*n*a) = ∑_n ω^n
   have hsum_eq : ∑ n : Fin T.N, (starRingEnd ℂ) (Complex.exp (Complex.I * k1 * n * T.a)) *
       Complex.exp (Complex.I * k2 * n * T.a) = ∑ i ∈ Finset.range T.N, ω ^ i := by
     rw [Fin.sum_univ_eq_sum_range (fun n =>
       (starRingEnd ℂ) (Complex.exp (Complex.I * k1 * n * T.a)) *
       Complex.exp (Complex.I * k2 * n * T.a))]
-    apply Finset.sum_congr rfl
-    intro i _
-    -- conj(exp(I*k1*i*a)) * exp(I*k2*i*a) = exp(-I*k1*i*a) * exp(I*k2*i*a)
-    -- = exp(I*(k2-k1)*i*a) = ω^i
+    refine Finset.sum_congr rfl fun i _ => ?_
     rw [starRingEnd_apply, Complex.star_def, ← Complex.exp_conj]
-    simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
-    -- star of a natural number (which is real) is itself
-    have hstar_nat : (starRingEnd ℂ) (i : ℂ) = i := Complex.conj_natCast i
+    simp only [map_mul, Complex.conj_I, Complex.conj_ofReal, Complex.conj_natCast]
     rw [← Complex.exp_add, hω_def, ← Complex.exp_nat_mul]
-    congr 1
-    simp only [hstar_nat]
-    ring
+    ring_nf
   rw [hsum_eq]
-  -- Physics: ω^N = 1 because exp(i*k*N*a) = 1 for quantized wavenumbers (periodic BCs)
   have hω_pow : ω ^ T.N = 1 := by
-    rw [hω_def, ← Complex.exp_nat_mul]
+    simp only [hω_def, ← Complex.exp_nat_mul]
     have h2 := quantaWaveNumber_exp_N T 1 k2
     have h1 := quantaWaveNumber_exp_N T 1 k1
     simp only [Nat.cast_one] at h2 h1
-    have heq : (T.N : ℂ) * (Complex.I * (↑↑k2 - ↑↑k1) * ↑T.a) =
-               Complex.I * ↑↑k2 * 1 * ↑T.N * ↑T.a - Complex.I * ↑↑k1 * 1 * ↑T.N * ↑T.a := by ring
-    rw [heq, Complex.exp_sub, h2, h1, div_one]
-  -- Physics: ω ≠ 1 because k1 ≠ k2 (different wavenumbers give different phase factors)
+    calc _ = Complex.exp (Complex.I * k2 * 1 * T.N * T.a - Complex.I * k1 * 1 * T.N * T.a) := by
+             ring_nf
+         _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
   have hω_ne_one : ω ≠ 1 := by
     intro hω_eq_one
     apply hne
-    rw [hω_def] at hω_eq_one
-    have hexp := Complex.exp_eq_one_iff.mp hω_eq_one
-    obtain ⟨m, hm⟩ := hexp
-    -- exp(I*(k2-k1)*a) = 1 implies (k2-k1)*a = 2πm for some integer m
-    -- Since k1, k2 are quantized: k = 2π(n - N/2)/(Na), we get n2 - n1 = Nm
-    -- Since 0 ≤ n1, n2 < N, we have |n2 - n1| < N, forcing m = 0 and thus n1 = n2
-    match k1, k2 with
-    | ⟨_, hk1⟩, ⟨_, hk2⟩ =>
+    obtain ⟨_, ⟨n1, rfl⟩⟩ := k1
+    obtain ⟨_, ⟨n2, rfl⟩⟩ := k2
     simp only [Subtype.mk.injEq]
-    obtain ⟨n1, rfl⟩ := hk1
-    obtain ⟨n2, rfl⟩ := hk2
-    simp only [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_ofNat,
-      Complex.ofReal_natCast, Complex.ofReal_sub] at hm
+    have hexp := Complex.exp_eq_one_iff.mp (hω_def ▸ hω_eq_one)
+    obtain ⟨m, hm⟩ := hexp
     have ha : (T.a : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos T.a_pos
     have hN : (T.N : ℂ) ≠ 0 := by simp [Ne.symm (NeZero.ne' T.N)]
+    simp only [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_ofNat,
+      Complex.ofReal_natCast, Complex.ofReal_sub] at hm
     field_simp at hm
-    -- Extract the real part to get n2 - n1 = N * m
-    -- The equation simplifies to: n2 - N/2 - (n1 - N/2) = N * m, i.e., n2 - n1 = N * m
-    have hm_eq : (n2 : ℂ) - n1 = (T.N : ℂ) * m := by
-      have := hm
-      ring_nf at this ⊢
-      exact this
     have hm_int : (n2 : ℤ) - n1 = T.N * m := by
-      have hre := congrArg Complex.re hm_eq
-      simp only [Complex.sub_re, Complex.natCast_re, Complex.mul_re,
-        Complex.intCast_re, Complex.natCast_im, Complex.intCast_im, mul_zero, sub_zero] at hre
-      exact_mod_cast hre
-    -- Since 0 ≤ n1, n2 < N, we have -N < n2 - n1 < N, so m must be 0
+      have hm_eq : (n2 : ℂ) - n1 = (T.N : ℂ) * m := by ring_nf at hm ⊢; exact hm
+      exact_mod_cast congrArg Complex.re hm_eq
     have hn1_lt : (n1 : ℤ) < T.N := by exact_mod_cast n1.isLt
     have hn2_lt : (n2 : ℤ) < T.N := by exact_mod_cast n2.isLt
     have hN_pos : (0 : ℤ) < T.N := by exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne T.N)
