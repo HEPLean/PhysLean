@@ -117,10 +117,24 @@ lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.Color}
 
 -/
 
+/-- The `PermCond` condition is preserved under `colorToComplex`. -/
+@[simp] lemma PermCond_colorToComplex {n m : ℕ}
+    {c : Fin n → realLorentzTensor.Color} {c1 : Fin m → realLorentzTensor.Color}
+    {σ : Fin m → Fin n} (h : PermCond c c1 σ) :
+    PermCond (colorToComplex ∘ c) (colorToComplex ∘ c1) σ := by
+  refine And.intro h.1 ?_
+  intro i
+  simpa [Function.comp_apply] using congrArg colorToComplex (h.2 i)
+
 /-- The map `toComplex` commutes with permT. -/
-informal_lemma permT_toComplex where
-  deps := [``permT]
-  tag := "7RKA6"
+@[sorryful]
+lemma permT_toComplex {n m : ℕ} {c : Fin n → realLorentzTensor.Color} {c1 : Fin m → realLorentzTensor.Color}
+    {σ : Fin m → Fin n} (h : PermCond c c1 σ) (t : ℝT(3, c)) :
+    toComplex (permT (S := realLorentzTensor) σ h t)
+      =
+    permT (S := complexLorentzTensor) σ (PermCond_colorToComplex (c := c) (c1 := c1) h)
+      (toComplex (c := c) t) := by
+  sorry
 
 /-- The map `toComplex` commutes with prodT. -/
 informal_lemma prodT_toComplex where
