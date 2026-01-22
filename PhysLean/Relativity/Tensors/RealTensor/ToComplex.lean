@@ -129,8 +129,8 @@ lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.Color}
 /-- The map `toComplex` commutes with permT. -/
 @[sorryful]
 lemma permT_toComplex {n m : ℕ}
-{c : Fin n → realLorentzTensor.Color}
-{c1 : Fin m → realLorentzTensor.Color}
+    {c : Fin n → realLorentzTensor.Color}
+    {c1 : Fin m → realLorentzTensor.Color}
     {σ : Fin m → Fin n} (h : PermCond c c1 σ) (t : ℝT(3, c)) :
     toComplex (permT (S := realLorentzTensor) σ h t)
       =
