@@ -146,10 +146,42 @@ lemma gaugeGroupI_smul_quarticTerm (g : StandardModel.GaugeGroupI) (P : Potentia
 noncomputable def potential (P : PotentialParameters) (H : TwoHiggsDoublet) : ℝ :=
   massTerm P H + quarticTerm P H
 
+@[simp]
 lemma gaugeGroupI_smul_potential (g : StandardModel.GaugeGroupI)
     (P : PotentialParameters) (H : TwoHiggsDoublet) :
     potential P (g • H) = potential P H := by
   rw [potential, potential]
   simp
+/-!
+
+## Boundedness of the potential
+
+-/
+
+/-- The condition that the potential is bounded from below. -/
+def PotentialIsBounded (P : PotentialParameters) : Prop :=
+  ∃ c : ℝ, ∀ H : TwoHiggsDoublet, c ≤ potential P H
+
+lemma potentialIsBounded_iff_forall_gramVector (P : PotentialParameters) :
+    PotentialIsBounded P ↔ ∃ c : ℝ, ∀ K : Fin 1 ⊕ Fin 3 → ℝ, 0 ≤ K (Sum.inl 0) →
+      ∑ μ : Fin 3, K (Sum.inr μ) ^ 2 ≤ K (Sum.inl 0) ^ 2 →
+      c ≤ ∑ μ, P.ξ μ * K μ + ∑ a, ∑ b, K a * K b * P.η a b := by
+  apply Iff.intro
+  · intro h
+    obtain ⟨c, hc⟩ := h
+    use c
+    intro v hv₀ hv_sum
+    obtain ⟨H, hH⟩ := gramVector_surjective v hv₀ hv_sum
+    apply (hc H).trans
+    apply le_of_eq
+    rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
+    simp [hH]
+  · intro h
+    obtain ⟨c, hc⟩ := h
+    use c
+    intro H
+    apply (hc H.gramVector (gramVector_inl_nonneg H) ( gramVector_inr_sum_sq_le_inl H)).trans
+    apply le_of_eq
+    rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
 
 end TwoHiggsDoublet
