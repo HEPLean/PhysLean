@@ -193,69 +193,44 @@ lemma temp (a b : ℝ) : (∃ c ≤ 0, ∀ x, 0 < x → c ≤ a * x + b * x ^ 2)
     · subst ha
       simp only [zero_mul, add_zero, le_refl, imp_self, and_self, iff_true]
       use 0
-      simp
-    · simp
+      grind only
+    · simp only [zero_mul, add_zero, le_refl, forall_const, true_and]
       apply Iff.intro
       · rintro ⟨c, hc, hx⟩
         by_contra h2
         simp_all
         refine not_lt_of_ge (hx (c/a + 1) ?_) ?_
-        · refine add_pos_of_nonneg_of_pos ?_ Real.zero_lt_one
-          refine div_nonneg_of_nonpos hc (Std.le_of_lt h2)
+        · exact add_pos_of_nonneg_of_pos (div_nonneg_of_nonpos hc (Std.le_of_lt h2))
+            Real.zero_lt_one
         · field_simp
-          linarith
+          grind
       · rintro ha
         use 0
-        simp
+        simp only [le_refl, true_and]
         intro x hx
         positivity
   /- The case of b ≠ 0. -/
-  have h1 (x : ℝ) : a * x + b * x ^ 2 = b * (x + a / (2 * b)) ^ 2 - a ^ 2 / (4 * b) := by
-    field_simp
-    ring
-  simp [hb]
+  have h1 (x : ℝ) : a * x + b * x ^ 2 = b * (x + a / (2 * b)) ^ 2 - a ^ 2 / (4 * b) := by grind
   generalize a ^ 2 / (4 * b) = c1 at h1
   generalize a / (2 * b) = d at h1
-  have hlt (c : ℝ) (x : ℝ) : (c ≤ a * x + b * x ^ 2) ↔ c + c1 ≤ b * (x + d) ^ 2 := by
-    rw [h1]
-    grind
-  conv_lhs =>
-    enter [1, c, 2, x]
-    rw [hlt c]
+  simp only [hb, IsEmpty.forall_iff, and_true]
+  have hlt (c : ℝ) (x : ℝ) : (c ≤ a * x + b * x ^ 2) ↔ c + c1 ≤ b * (x + d) ^ 2 := by grind
+  conv_lhs => enter [1, c, 2, x]; rw [hlt c]
   trans ∃ c, ∀ x, 0 < x → c ≤ b * (x + d) ^ 2
   · apply Iff.intro
     · rintro ⟨c, hc, hx⟩
       use c + c1
     · rintro ⟨c, hc⟩
       use min (c - c1) 0
-      apply And.intro
-      · exact min_le_right (c - c1) 0
-      · exact fun x hx => le_trans (le_sub_iff_add_le.mp (min_le_left (c - c1) 0)) (hc x hx)
+      grind
   refine Iff.symm <| (Ne.ge_iff_gt hb).trans <|
     Iff.intro (fun hb => ⟨0, fun x hx => by positivity⟩) <| fun ⟨c, h⟩ => ?_
   by_contra hn
-  simp at hn
-  suffices hs : ∀ x, x ^ 2 ≤ c/b by
-    apply not_lt_of_ge (hs √(|c/b| + 1))
-    rw [Real.sq_sqrt (by grind)]
-    grind
-  suffices hs : ∀ x, 0 < x → (x + d) ^ 2 ≤ c/b by
-    refine fun x => le_trans ((Real.sqrt_le_left ?_).mp ?_) (hs (|x| + |d| + 1) (by positivity))
-    · ring_nf
-      rw [add_assoc, abs_add_eq_two_nsmul_posPart]
-      positivity
-    · rw [Real.sqrt_sq_eq_abs, add_assoc, add_assoc]
-      simp only [le_add_iff_nonneg_right]
-      ring_nf
-      rw [add_assoc, abs_add_eq_two_nsmul_posPart]
-      positivity
-  intro x hx
-  specialize h x hx
-  refine (le_div_iff_of_neg (by grind)).mpr ?_
-  ring_nf at h ⊢
-  exact h
-
-
+  suffices hs : ∀ x, x ^ 2 ≤ c/b from not_lt_of_ge (hs √(|c/b| + 1)) (by grind)
+  suffices hs : ∀ x, 0 < x → (x + d) ^ 2 ≤ c/b from
+    fun x => le_trans ((Real.sqrt_le_left (by grind)).mp
+      (by grind [Real.sqrt_sq_eq_abs])) (hs (|x| + |d| + 1) (by positivity))
+  exact fun x hx => (le_div_iff_of_neg (by grind)).mpr (by grind)
 
 
 end TwoHiggsDoublet
