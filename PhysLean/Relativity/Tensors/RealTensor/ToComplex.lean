@@ -177,9 +177,51 @@ informal_lemma contrT_toComplex where
   deps := [``contrT]
   tag := "7RKFR"
 
-/-- The map `toComplex` commutes with evalT. -/
-informal_lemma evalT_toComplex where
-  deps := [``evalT]
-  tag := "7RKGK"
+@[simp]
+lemma complex_repDim_up :
+    (complexLorentzTensor).repDim complexLorentzTensor.Color.up = 4 := rfl
+
+@[simp]
+lemma complex_repDim_down :
+    (complexLorentzTensor).repDim complexLorentzTensor.Color.down = 4 := rfl
+
+/-- Convert an evaluation index from the real repDim to the complex repDim. -/
+def evalIdxToComplex {n : ℕ}
+    {c : Fin (n + 1) → realLorentzTensor.Color} (i : Fin (n + 1))
+    (b : Fin ((realLorentzTensor).repDim (c i))) :
+    Fin ((complexLorentzTensor).repDim ((colorToComplex ∘ c) i)) :=
+  Fin.cast (by
+    cases hci : c i with
+    | up =>
+        simp [hci, colorToComplex, Function.comp_apply, complex_repDim_up]
+    | down =>
+        simp [hci, colorToComplex, Function.comp_apply, complex_repDim_down]
+  ) b
+
+/-- `evalT` on the complex side, but with output colors as `colorToComplex ∘ (c ∘ i.succAbove)`.
+Implemented via `permT (σ := id) (by simp)` as a transport. -/
+noncomputable def evalTColorToComplex {n : ℕ}
+    {c : Fin (n + 1) → realLorentzTensor.Color} (i : Fin (n + 1))
+    (b : Fin ((realLorentzTensor).repDim (c i))) :
+    ℂT(colorToComplex ∘ c) → ℂT(colorToComplex ∘ (c ∘ i.succAbove)) :=
+  fun t =>
+    permT (S := complexLorentzTensor) (σ := (id : Fin n → Fin n))
+      (by
+        -- transport ((colorToComplex ∘ c) ∘ i.succAbove) and (colorToComplex ∘ (c ∘ i.succAbove))
+        simp [Function.comp_apply]
+      )
+      ((TensorSpecies.Tensor.evalT (S := complexLorentzTensor) (c := (colorToComplex ∘ c))
+          i (evalIdxToComplex (c := c) i b)) t)
+
+/-- The map `toComplex` commutes with `evalT`. -/
+@[sorryful]
+lemma evalT_toComplex {n : ℕ}
+    {c : Fin (n + 1) → realLorentzTensor.Color}
+    (i : Fin (n + 1)) (b : Fin ((realLorentzTensor).repDim (c i))) (t : ℝT(3, c)) :
+    toComplex (c := c ∘ i.succAbove)
+        ((TensorSpecies.Tensor.evalT (S := realLorentzTensor) (c := c) i b) t)
+      =
+    evalTColorToComplex (c := c) i b (toComplex (c := c) t) := by
+  sorry
 
 end realLorentzTensor
