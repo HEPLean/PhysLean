@@ -149,24 +149,6 @@ lemma tau_colorToComplex (x : realLorentzTensor.Color) :
     (complexLorentzTensor).τ (colorToComplex x) = colorToComplex ((realLorentzTensor).τ x) := by
   cases x <;> rfl
 
-/-- The contraction condition is preserved under `colorToComplex`. -/
-@[simp]
-lemma contrCond_colorToComplex {n : ℕ}
-    {c : Fin (n + 1 + 1) → realLorentzTensor.Color} {i j : Fin (n + 1 + 1)}
-    (h : i ≠ j ∧ (realLorentzTensor).τ (c i) = c j) :
-    i ≠ j ∧ (complexLorentzTensor).τ ((colorToComplex ∘ c) i) = (colorToComplex ∘ c) j := by
-  refine And.intro h.1 ?_
-  have h2 : colorToComplex ((realLorentzTensor).τ (c i)) = colorToComplex (c j) :=
-    congrArg colorToComplex h.2
-  calc
-    (complexLorentzTensor).τ ((colorToComplex ∘ c) i)
-        = (complexLorentzTensor).τ (colorToComplex (c i)) := rfl
-    _ = colorToComplex ((realLorentzTensor).τ (c i)) := by
-          simp [tau_colorToComplex]
-    _ = (colorToComplex ∘ c) j := by
-          change colorToComplex ((realLorentzTensor).τ (c i)) = colorToComplex (c j)
-          exact h2
-
 /-- The map `toComplex` commutes with contrT. -/
 @[sorryful]
 lemma contrT_toComplex {n : ℕ}
@@ -174,8 +156,14 @@ lemma contrT_toComplex {n : ℕ}
     (h : i ≠ j ∧ (realLorentzTensor).τ (c i) = c j) (t : ℝT(3, c)) :
     toComplex (c := c ∘ Pure.dropPairEmb i j) (contrT (S := realLorentzTensor) n i j h t)
       =
-    contrT (S := complexLorentzTensor) n i j
-      (contrCond_colorToComplex (c := c) (i := i) (j := j) h)
+    contrT (S := complexLorentzTensor) n i j (by
+        -- если у simp достаточно информации, то это закрывается:
+        simpa [Function.comp_apply] using
+          And.intro h.1 (by
+            -- τ-совместимость
+            simpa [tau_colorToComplex] using congrArg colorToComplex h.2
+          )
+      )
       (toComplex (c := c) t) := by
   sorry
 
