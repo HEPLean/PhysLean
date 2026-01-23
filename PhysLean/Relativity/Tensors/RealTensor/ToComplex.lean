@@ -138,18 +138,11 @@ lemma colorToComplex_append {n m : ℕ}
 
 /-- `prodT` on the complex side, with colors written as `colorToComplex ∘ Fin.append ...`.
 This is `prodT` followed by a cast using `colorToComplex_append`. -/
-noncomputable def prodT_colorToComplex {n m : ℕ}
+noncomputable def prodTColorToComplex {n m : ℕ}
     {c : Fin n → realLorentzTensor.Color} {c1 : Fin m → realLorentzTensor.Color} :
     ℂT(colorToComplex ∘ c) → ℂT(colorToComplex ∘ c1) → ℂT(colorToComplex ∘ Fin.append c c1) :=
-  fun x y =>
-    cast
-      (by
-        -- `colorToComplex_append c c1` : colorToComplex ∘ Fin.append c c1 = Fin.append ...
-        -- we need equality of types of tensors, so `congrArg (fun col => ℂT(col))`
-        exact congrArg (fun col => (complexLorentzTensor.Tensor col))
-          ((colorToComplex_append (c := c) (c1 := c1)).symm)
-      )
-      (prodT (S := complexLorentzTensor) x y)
+    fun x y => permT (S := complexLorentzTensor) id (by simp) <|
+      prodT (S := complexLorentzTensor) x y
 
 /-- The map `toComplex` commutes with prodT. -/
 @[sorryful]
@@ -159,7 +152,7 @@ lemma prodT_toComplex {n m : ℕ}
     (t : ℝT(3, c)) (t1 : ℝT(3, c1)) :
     toComplex (c := Fin.append c c1) (prodT (S := realLorentzTensor) t t1)
       =
-    prodT_colorToComplex (c := c) (c1 := c1)
+    prodTColorToComplex (c := c) (c1 := c1)
       (toComplex (c := c) t) (toComplex (c := c1) t1) := by
   sorry
 
