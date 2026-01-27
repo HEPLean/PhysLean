@@ -260,7 +260,7 @@ noncomputable def massTermReduced (P : PotentialParameters) (k : EuclideanSpace 
 lemma massTermReduced_lower_bound (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3))
     (hk : ‖k‖ ^ 2 ≤ 1) : P.ξ (Sum.inl 0) - √(∑ a, |P.ξ (Sum.inr a)| ^ 2) ≤ massTermReduced P k := by
   simp only [Fin.isValue, massTermReduced]
-  have h1 (a b c : ℝ) (h :  - b ≤ c) : a - b ≤ a + c:= by grind
+  have h1 (a b c : ℝ) (h : - b ≤ c) : a - b ≤ a + c:= by grind
   apply h1
   let ξEuclid : EuclideanSpace ℝ (Fin 3) := WithLp.toLp 2 (fun a => P.ξ (Sum.inr a))
   trans - ‖ξEuclid‖
@@ -280,7 +280,6 @@ lemma massTermReduced_lower_bound (P : PotentialParameters) (k : EuclideanSpace 
   · simp
     grind
   simp [PiLp.inner_apply, ξEuclid]
-
 
 /-!
 
@@ -371,15 +370,16 @@ lemma potentialIsBounded_iff_exists_forall_reduced (P : PotentialParameters) :
     PotentialIsBounded P ↔ ∃ c, 0 ≤ c ∧ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
       0 ≤ quarticTermReduced P k ∧
       (massTermReduced P k < 0 →
-      massTermReduced P k ^ 2 ≤ 4 * quarticTermReduced P k * c)  := by
+      massTermReduced P k ^ 2 ≤ 4 * quarticTermReduced P k * c) := by
   rw [potentialIsBounded_iff_exists_forall_forall_reduced]
-  refine Iff.intro (fun ⟨c, hc, h⟩ => ⟨-c, by grind,  fun k hk => ?_⟩)
-    (fun ⟨c, hc, h⟩ => ⟨-c, by grind,  fun K0 k hk0 hk => ?_⟩)
+  refine Iff.intro (fun ⟨c, hc, h⟩ => ⟨-c, by grind, fun k hk => ?_⟩)
+    (fun ⟨c, hc, h⟩ => ⟨-c, by grind, fun K0 k hk0 hk => ?_⟩)
   · have hJ4_nonneg : 0 ≤ quarticTermReduced P k := by
       refine quarticTermReduced_nonneg_of_potentialIsBounded P ?_ k hk
       rw [potentialIsBounded_iff_exists_forall_forall_reduced]
       exact ⟨c, hc, h⟩
-    have h0 : ∀ K0, 0 < K0 →  c ≤ K0 * massTermReduced P k + K0 ^ 2 * quarticTermReduced P k :=  fun K0 a =>  h K0 k a hk
+    have h0 : ∀ K0, 0 < K0 → c ≤ K0 * massTermReduced P k + K0 ^ 2 * quarticTermReduced P k :=
+      fun K0 a => h K0 k a hk
     clear h
     generalize massTermReduced P k = j2 at *
     generalize quarticTermReduced P k = j4 at *
@@ -401,7 +401,7 @@ lemma potentialIsBounded_iff_exists_forall_reduced (P : PotentialParameters) :
       · grind
       · intro j2_neg
         conv at h0 => enter [2]; rw [hsq]
-        specialize h0 ( - j2 / (2 * j4)) <| by
+        specialize h0 (- j2 / (2 * j4)) <| by
           field_simp
           grind
         ring_nf at h0
@@ -435,7 +435,7 @@ lemma potentialIsBounded_iff_exists_forall_reduced (P : PotentialParameters) :
 @[sorryful]
 lemma potentialIsBounded_iff_forall_reduced (P : PotentialParameters) :
     PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
-      0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k)  := by
+      0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k) := by
   sorry
 
 end TwoHiggsDoublet
