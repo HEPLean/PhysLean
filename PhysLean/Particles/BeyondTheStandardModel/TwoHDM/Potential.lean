@@ -245,12 +245,21 @@ lemma potentialIsBounded_iff_forall_euclid_lt (P : PotentialParameters) :
     · refine hc K0 K ?_ hle
       grind
 
-noncomputable def J2 (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
+/-!
+
+## Mass term reduced
+
+-/
+
+/-- A function related to the mass term of the potential, used in the boundedness
+  condition and equivalent to the term `J2` in
+  https://arxiv.org/abs/hep-ph/0605184. -/
+noncomputable def massTermReduced (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
   P.ξ (Sum.inl 0) + ∑ μ, P.ξ (Sum.inr μ) * k μ
 
-lemma J2_lower_bound (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3))
-    (hk : ‖k‖ ^ 2 ≤ 1) : P.ξ (Sum.inl 0) - √(∑ a, |P.ξ (Sum.inr a)| ^ 2) ≤ J2 P k := by
-  simp only [Fin.isValue, J2]
+lemma massTermReduced_lower_bound (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3))
+    (hk : ‖k‖ ^ 2 ≤ 1) : P.ξ (Sum.inl 0) - √(∑ a, |P.ξ (Sum.inr a)| ^ 2) ≤ massTermReduced P k := by
+  simp only [Fin.isValue, massTermReduced]
   have h1 (a b c : ℝ) (h :  - b ≤ c) : a - b ≤ a + c:= by grind
   apply h1
   let ξEuclid : EuclideanSpace ℝ (Fin 3) := WithLp.toLp 2 (fun a => P.ξ (Sum.inr a))
@@ -272,15 +281,23 @@ lemma J2_lower_bound (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3))
     grind
   simp [PiLp.inner_apply, ξEuclid]
 
-noncomputable def J4 (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
-  P.η (Sum.inl 0) (Sum.inl 0)
-  + 2 * ∑ b, k b * P.η (Sum.inl 0) (Sum.inr b) +
+
+/-!
+
+## Quartic term reduced
+
+-/
+
+/-- A function related to the quartic term of the potential, used in the boundedness
+  condition and equivalent to the term `J4` in
+  https://arxiv.org/abs/hep-ph/0605184. -/
+noncomputable def quarticTermReduced (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
+  P.η (Sum.inl 0) (Sum.inl 0) + 2 * ∑ b, k b * P.η (Sum.inl 0) (Sum.inr b) +
   ∑ a, ∑ b, k a * k b * P.η (Sum.inr a) (Sum.inr b)
 
-
-lemma potentialIsBounded_iff_forall_scalar_euclid_bound_one (P : PotentialParameters) :
+lemma potentialIsBounded_iff_exists_forall_forall_reduced (P : PotentialParameters) :
     PotentialIsBounded P ↔ ∃ c ≤ 0, ∀ K0 : ℝ, ∀ k : EuclideanSpace ℝ (Fin 3), 0 < K0 →
-      ‖k‖ ^ 2 ≤ 1 → c ≤ K0 * J2 P k + K0 ^ 2 * J4 P k := by
+      ‖k‖ ^ 2 ≤ 1 → c ≤ K0 * massTermReduced P k + K0 ^ 2 * quarticTermReduced P k := by
   rw [potentialIsBounded_iff_forall_euclid_lt]
   refine exists_congr <| fun c => and_congr_right <| fun hc => forall_congr' <| fun K0 => ?_
   apply Iff.intro
@@ -288,7 +305,7 @@ lemma potentialIsBounded_iff_forall_scalar_euclid_bound_one (P : PotentialParame
     · simp [norm_smul]
       rw [abs_of_nonneg (by positivity), mul_pow]
       nlinarith
-    · simp [add_assoc, J2, J4]
+    · simp [add_assoc, massTermReduced, quarticTermReduced]
       ring_nf
       simp [add_assoc, mul_assoc, ← Finset.mul_sum, sq]
       ring
@@ -298,7 +315,7 @@ lemma potentialIsBounded_iff_forall_scalar_euclid_bound_one (P : PotentialParame
       field_simp
       rw [sq_le_sq] at hle
       simpa using hle
-    · simp [add_assoc, J2, J4]
+    · simp [add_assoc, massTermReduced, quarticTermReduced]
       ring_nf
       simp [add_assoc, mul_assoc, ← Finset.mul_sum, sq]
       field_simp
@@ -307,15 +324,14 @@ lemma potentialIsBounded_iff_forall_scalar_euclid_bound_one (P : PotentialParame
       field_simp
       ring
 
-
-lemma J4_nonneg_of_potentialIsBounded (P : PotentialParameters)
+lemma quarticTermReduced_nonneg_of_potentialIsBounded (P : PotentialParameters)
     (hP : PotentialIsBounded P) (k : EuclideanSpace ℝ (Fin 3))
-    (hk : ‖k‖ ^ 2 ≤ 1) : 0 ≤ J4 P k := by
-  rw [potentialIsBounded_iff_forall_scalar_euclid_bound_one] at hP
+    (hk : ‖k‖ ^ 2 ≤ 1) : 0 ≤ quarticTermReduced P k := by
+  rw [potentialIsBounded_iff_exists_forall_forall_reduced] at hP
   suffices hp : ∀ (a b : ℝ), (∃ c ≤ 0, ∀ x, 0 < x → c ≤ a * x + b * x ^ 2) →
       0 ≤ b ∧ (b = 0 → 0 ≤ a) by
     obtain ⟨c, hc, h⟩ := hP
-    refine (hp (J2 P k) (J4 P k) ⟨c, hc, ?_⟩).1
+    refine (hp (massTermReduced P k) (quarticTermReduced P k) ⟨c, hc, ?_⟩).1
     grind
   intro a b
   by_cases hb : b = 0
@@ -351,20 +367,22 @@ lemma J4_nonneg_of_potentialIsBounded (P : PotentialParameters)
       (by grind [Real.sqrt_sq_eq_abs])) (hs (|x| + |d| + 1) (by positivity))
   exact fun x hx => (le_div_iff_of_neg (by grind)).mpr (by grind)
 
-lemma potentialIsBounded_iff_exists_J2_J4 (P : PotentialParameters) :
+lemma potentialIsBounded_iff_exists_forall_reduced (P : PotentialParameters) :
     PotentialIsBounded P ↔ ∃ c, 0 ≤ c ∧ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
-      0 ≤ J4 P k ∧ (J2 P k < 0 → J2 P k ^ 2 ≤ 4 * J4 P k * c)  := by
-  rw [potentialIsBounded_iff_forall_scalar_euclid_bound_one]
+      0 ≤ quarticTermReduced P k ∧
+      (massTermReduced P k < 0 →
+      massTermReduced P k ^ 2 ≤ 4 * quarticTermReduced P k * c)  := by
+  rw [potentialIsBounded_iff_exists_forall_forall_reduced]
   refine Iff.intro (fun ⟨c, hc, h⟩ => ⟨-c, by grind,  fun k hk => ?_⟩)
     (fun ⟨c, hc, h⟩ => ⟨-c, by grind,  fun K0 k hk0 hk => ?_⟩)
-  · have hJ4_nonneg : 0 ≤ J4 P k := by
-      refine J4_nonneg_of_potentialIsBounded P ?_ k hk
-      rw [potentialIsBounded_iff_forall_scalar_euclid_bound_one]
+  · have hJ4_nonneg : 0 ≤ quarticTermReduced P k := by
+      refine quarticTermReduced_nonneg_of_potentialIsBounded P ?_ k hk
+      rw [potentialIsBounded_iff_exists_forall_forall_reduced]
       exact ⟨c, hc, h⟩
-    have h0 : ∀ K0, 0 < K0 →  c ≤ K0 * J2 P k + K0 ^ 2 * J4 P k :=  fun K0 a =>  h K0 k a hk
+    have h0 : ∀ K0, 0 < K0 →  c ≤ K0 * massTermReduced P k + K0 ^ 2 * quarticTermReduced P k :=  fun K0 a =>  h K0 k a hk
     clear h
-    generalize J2 P k = j2 at *
-    generalize J4 P k = j4 at *
+    generalize massTermReduced P k = j2 at *
+    generalize quarticTermReduced P k = j4 at *
     by_cases j4_zero : j4 = 0
     · subst j4_zero
       simp_all
@@ -375,10 +393,9 @@ lemma potentialIsBounded_iff_exists_J2_J4 (P : PotentialParameters) :
         grind
       field_simp at h0
       linarith
-    · have hsq (K0 : ℝ) : K0 * j2 + K0 ^ 2 * j4 = j4 * (K0 + j2 / (2 * j4)) ^ 2 - j2 ^ 2 / (4 * j4) := by
-          ring_nf
-          field_simp
-          ring
+    · have hsq (K0 : ℝ) : K0 * j2 + K0 ^ 2 * j4 =
+            j4 * (K0 + j2 / (2 * j4)) ^ 2 - j2 ^ 2 / (4 * j4) := by
+        grind
       have hj_pos : 0 < j4 := by grind
       apply And.intro
       · grind
@@ -391,8 +408,8 @@ lemma potentialIsBounded_iff_exists_J2_J4 (P : PotentialParameters) :
         field_simp at h0
         grind
   · specialize h k hk
-    generalize J2 P k = j2 at *
-    generalize J4 P k = j4 at *
+    generalize massTermReduced P k = j2 at *
+    generalize quarticTermReduced P k = j4 at *
     by_cases hJ4 : j4 = 0
     · subst j4
       simp_all
@@ -403,103 +420,22 @@ lemma potentialIsBounded_iff_exists_J2_J4 (P : PotentialParameters) :
         · simp_all
     · have hJ4_pos : 0 < j4 := by grind
       have h0 : K0 * j2 + K0 ^ 2 * j4 = j4 * (K0 + j2 / (2 * j4)) ^ 2 - j2 ^ 2 / (4 * j4) := by
-          ring_nf
-          field_simp
-          ring
+          grind
       rw [h0]
       by_cases hJ2_neg : j2 < 0
       · trans j4 * (K0 + j2 / (2 * j4)) ^ 2 - c
         · nlinarith
         · field_simp
-          ring_nf
           grind
       · refine neg_le_sub_iff_le_add.mpr ?_
         trans j4 * (K0 + j2 / (2 * j4)) ^ 2
         · nlinarith
-        · linarith
-
-lemma potentialIsBounded_iff_J2_J4 (P : PotentialParameters) :
-    PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
-      0 ≤ J4 P k ∧ (J4 P k = 0 → 0 ≤ J2 P k)  := by
-  rw [potentialIsBounded_iff_exists_J2_J4]
-  apply Iff.intro
-  · sorry
-  · intro h
-    let f : EuclideanSpace ℝ (Fin 3) → ℝ := fun k => J2 P k ^ 2 / (4 * J4 P k)
-    let s : Set (EuclideanSpace ℝ (Fin 3)) := Metric.closedBall 0 1 ∩ {k | J2 P k ≤ 0}
-    have hs : IsCompact s := by
-      refine IsCompact.inter ?_ ?_
-      exact isCompact_closedBall 0 1
-      refine isCompact_of_totallyBounded_isClosed ?_ ?_
-      · sorry
-      · refine isClosed_le ?_ ?_
-        · change Continuous (fun k => J2 P k)
-          simp [J2]
-          fun_prop
-        · fun_prop
-    have ne_s : s.Nonempty := ⟨0, by simp [s]⟩
-    have hf_cont : ContinuousOn f s := by
-      simp [f, s]
-      refine continuousOn_of_forall_continuousAt ?_
-      intro x hx
-      by_cases hJ4_zero : J4 P x ≠ 0
-      · refine ContinuousAt.div₀ ?_ ?_ ?_
-        · simp [J2]
-          fun_prop
-        · simp [J4]
-          fun_prop
         · grind
-      simp at hJ4_zero
-      have hJ2_zero : 0 ≤ J2 P x := by
-        specialize h x
-        rw [hJ4_zero] at h
-        simp at h
-        simp at hx
 
-        simp at h
-        exact (h.2 hJ4_zero).le
-      suffices h_line : ∀ v,  ContinuousAt (fun (t : ℝ) => J2 P (x + t • v) ^ 2 / (4 * J4 P (x + t • v))) 0 by
-        sorry
-      intro v
-      have J2_expand (t : ℝ) : J2 P (x + t • v) = (P.ξ (Sum.inl 0)
-          + ∑ a, P.ξ (Sum.inr a) * x a)  + t * ∑ a, P.ξ (Sum.inr a) * v a := by
-        simp [J2, mul_add, Finset.sum_add_distrib, Finset.mul_sum, add_assoc]
-        ring_nf
-        congr
-        funext x
-        ring
-      generalize (P.ξ (Sum.inl 0) + ∑ a, P.ξ (Sum.inr a) * x a) = r1 at J2_expand
-      generalize (∑ a, P.ξ (Sum.inr a) * v a) = r2 at J2_expand
-      have J4_expand' (t : ℝ) : J4 P (x + t • v) = P.η (Sum.inl 0) (Sum.inl 0) +
-         ∑ i, 2 * (x.ofLp i * P.η (Sum.inl 0) (Sum.inr i)) +
-         t * ∑ i, 2 * ( v.ofLp i * P.η (Sum.inl 0) (Sum.inr i)) +
-          ∑ x_1, ∑ x_2, x.ofLp x_1 * x.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2) +
-         t * ∑ x_1, ∑ x_2,  v.ofLp x_1 * x.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2) +
-          (t * ∑ x_1, ∑ x_2,  x.ofLp x_1 * v.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2) +
-           t ^ 2 * ∑ x, ∑ x_1, v.ofLp x * v.ofLp x_1 * P.η (Sum.inr x) (Sum.inr x_1))
-           := by
-        simp [J4, mul_add, Finset.sum_add_distrib, mul_add, add_mul, Finset.mul_sum, add_assoc]
-        ring_nf
-      have J4_expand (t : ℝ) : J4 P (x + t • v) = (P.η (Sum.inl 0) (Sum.inl 0) +
-         ∑ i, 2 * (x.ofLp i * P.η (Sum.inl 0) (Sum.inr i))
-         + ∑ x_1, ∑ x_2, x.ofLp x_1 * x.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2) ) +
-         t * (∑ i, 2 * ( v.ofLp i * P.η (Sum.inl 0) (Sum.inr i)) +
-         ∑ x_1, ∑ x_2,  v.ofLp x_1 * x.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2) +
-           ∑ x_1, ∑ x_2,  x.ofLp x_1 * v.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2)) +
-           t ^ 2 * ∑ x, ∑ x_1, v.ofLp x * v.ofLp x_1 * P.η (Sum.inr x) (Sum.inr x_1)
-           := by rw [J4_expand']; ring
-      generalize (P.η (Sum.inl 0) (Sum.inl 0) +
-         ∑ i, 2 * (x.ofLp i * P.η (Sum.inl 0) (Sum.inr i))
-         + ∑ x_1, ∑ x_2, x.ofLp x_1 * x.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2) ) = s1 at J4_expand
-      generalize  (∑ i, 2 * (v.ofLp i * P.η (Sum.inl 0) (Sum.inr i)) +
-              ∑ x_1, ∑ x_2, v.ofLp x_1 * x.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2) +
-            ∑ x_1, ∑ x_2, x.ofLp x_1 * v.ofLp x_2 * P.η (Sum.inr x_1) (Sum.inr x_2)) = s2 at J4_expand
-      generalize (∑ x, ∑ x_1, v.ofLp x * v.ofLp x_1 * P.η (Sum.inr x) (Sum.inr x_1)) = s3 at J4_expand
-      clear J4_expand'
-
-
-      sorry
-
-
+@[sorryful]
+lemma potentialIsBounded_iff_forall_reduced (P : PotentialParameters) :
+    PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
+      0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k)  := by
+  sorry
 
 end TwoHiggsDoublet
