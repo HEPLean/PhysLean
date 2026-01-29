@@ -227,8 +227,7 @@ noncomputable def evalTColorToComplex {n : ℕ}
     permT (S := complexLorentzTensor) (σ := (id : Fin n → Fin n))
       (by
         -- transport ((colorToComplex ∘ c) ∘ i.succAbove) and (colorToComplex ∘ (c ∘ i.succAbove))
-        simp [Function.comp_apply]
-      )
+        simp [Function.comp_apply])
       ((TensorSpecies.Tensor.evalT (S := complexLorentzTensor) (c := (colorToComplex ∘ c))
           i (evalIdxToComplex (c := c) i b)) t)
 

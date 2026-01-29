@@ -432,6 +432,17 @@ lemma potentialIsBounded_iff_exists_forall_reduced (P : PotentialParameters) :
         · nlinarith
         · grind
 
+lemma massTermReduced_pos_of_quarticTermReduced_zero_potentialIsBounded (P : PotentialParameters)
+    (hP : PotentialIsBounded P) (k : EuclideanSpace ℝ (Fin 3))
+    (hk : ‖k‖ ^ 2 ≤ 1) (hq : quarticTermReduced P k = 0) : 0 ≤ massTermReduced P k := by
+  rw [potentialIsBounded_iff_exists_forall_reduced] at hP
+  obtain ⟨c, hc₀, hc⟩ := hP
+  specialize hc k hk
+  rw [hq] at hc
+  simp only [le_refl, mul_zero, zero_mul, sq_nonpos_iff, true_and] at hc
+  generalize massTermReduced P k = j2 at *
+  grind
+
 @[sorryful]
 lemma potentialIsBounded_iff_forall_reduced (P : PotentialParameters) :
     PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →

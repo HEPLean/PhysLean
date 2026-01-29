@@ -538,7 +538,7 @@ lemma energyEigenstate_orthogonal :
     simp only [Nat.cast_one] at h2 h1
     calc _ = Complex.exp (Complex.I * k2 * 1 * T.N * T.a - Complex.I * k1 * 1 * T.N * T.a) := by
              ring_nf
-         _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
+        _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
   have hω_ne_one : ω ≠ 1 := by
     intro hω_eq_one
     apply hne
