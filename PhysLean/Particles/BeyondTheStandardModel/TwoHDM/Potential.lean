@@ -447,6 +447,103 @@ lemma massTermReduced_pos_of_quarticTermReduced_zero_potentialIsBounded (P : Pot
 lemma potentialIsBounded_iff_forall_reduced (P : PotentialParameters) :
     PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
       0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k) := by
-  sorry
+  apply Iff.intro
+  · sorry
+  intro h
+  rw [potentialIsBounded_iff_exists_forall_reduced]
+  by_contra hn
+  simp at hn
+  simp_all
+  have h2 := fun k hk => (h k hk).2
+  /- The set S. -/
+  let S := Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1 ∩
+    {k | massTermReduced P k ≤ 0}
+  have S_compact : IsCompact S := by
+    refine IsCompact.inter_right ?_ ?_
+    · exact isCompact_closedBall 0 1
+    · refine isClosed_le ?_ ?_
+      · unfold massTermReduced
+        fun_prop
+      · fun_prop
+
+  have hc : ∀ c, 0 ≤ c → ∃ k ∈ S, c * quarticTermReduced P k < (massTermReduced P k) ^ 2 := by
+    intro c hc0
+    specialize hn (c/4) (by positivity)
+    obtain ⟨k, hkS, hck⟩ := hn
+    use k
+    simp_all [S]
+    apply And.intro
+    · grind
+    · convert hck.2 using 1
+      ring
+  have S_nonempty : S.Nonempty := by
+    obtain ⟨k, hk⟩ := hc 0 (by positivity)
+    exact ⟨k, hk.1⟩
+  clear hn
+  suffices hk : ∃ k ∈ S, quarticTermReduced P k = 0 ∧ massTermReduced P k ≠ 0 by
+    obtain ⟨k, hk_S, hk_quartic, hk_mass⟩ := hk
+    simp_all [S]
+    grind
+  clear h2
+  by_contra h_zero
+  simp at h_zero
+  /- The set which contains zero. -/
+  let Z := Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1 ∩
+      {k | quarticTermReduced P k = 0}
+  have Z_compact : IsCompact Z := by
+    refine IsCompact.inter_right ?_ ?_
+    · exact isCompact_closedBall 0 1
+    · refine isClosed_eq ?_ ?_
+      · unfold quarticTermReduced
+        fun_prop
+      · fun_prop
+  have Z_nonempty : Z.Nonempty := by
+    obtain ⟨v, hv1, hv2⟩ := IsCompact.exists_isMinOn (f := quarticTermReduced P) S_compact S_nonempty
+      (by unfold quarticTermReduced; fun_prop)
+    use v
+    simp_all [Z, S]
+    sorry
+  have exists_Z (ε : ℝ) (h : 0 < ε) : ∃ z ∈ Z, ∀ c, 0 ≤ c →
+      ∃ k ∈ S, ‖k - z‖ ≤ ε ∧ c * quarticTermReduced P k < (massTermReduced P k) ^ 2 := by
+    have : ∀ n : ℕ, ∃ k ∈ S, (n : ℝ) * quarticTermReduced P k < (massTermReduced P k)^2 :=
+       fun n => hc n (Nat.cast_nonneg n)
+    choose k_seq hk_seq_S hk_seq_ineq using this
+    obtain ⟨z, hz_S, h_cluster⟩ := S_compact.tendsto_subseq hk_seq_S
+    have hz_Z : quarticTermReduced P z = 0 := by sorry
+    use z
+    constructor
+    · sorry
+    intro c hc_pos
+    obtain ⟨φ, φ_montonic, φ_tendsTo⟩ :=  h_cluster
+    have h_nhd : Metric.closedBall z ε ∈ nhds z := Metric.closedBall_mem_nhds z h
+    have h_o := φ_tendsTo h_nhd
+    simp at h_o
+    obtain ⟨N, hN⟩ := h_o
+    use k_seq (φ (max N (Nat.ceil c)))
+    apply And.intro
+    · exact hk_seq_S (φ (max N ⌈c⌉₊))
+    apply And.intro
+    · refine hN (max N (Nat.ceil c)) ?_
+      simp
+    · refine lt_of_le_of_lt ?_ (hk_seq_ineq _)
+      refine mul_le_mul_of_nonneg ?_ ?_ hc_pos ?_
+      · trans (max (α := ℕ) (N : ℕ) (Nat.ceil c) : ℝ)
+        · trans  (Nat.ceil c : ℝ)
+          · exact Nat.le_ceil c
+          · simp
+        have hn  : ∀ n : ℕ, n ≤ φ n := by
+          exact fun n => StrictMono.le_apply φ_montonic
+        specialize hn (max N (Nat.ceil c))
+        exact Nat.cast_le.mpr hn
+      · simp
+      · sorry
+  have h_exists : ∀ c, 0 ≤ c → ∃ v ∈ S, quarticTermReduced P v = 0 ∧ ∀ ε, 0 < ε →
+      ∃ k ∈ S, ‖k - v‖ ≤ ε ∧
+      c * quarticTermReduced P k < (massTermReduced P k) ^ 2 := by
+
+    sorry
+
+
+
 
 end TwoHiggsDoublet
