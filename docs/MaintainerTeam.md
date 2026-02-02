@@ -17,7 +17,7 @@ Maintainers have research-level knowledge of physics or mathematics, and have
 experience with either the PhysLean or Mathlib review process.
 
 To become a maintainer, you either need an invitation for current maintainers, or
-need to nominate yourself to a current maitnainer.
+need to nominate yourself to a current maintainer.
 
 ## Term of a maintainer
 
