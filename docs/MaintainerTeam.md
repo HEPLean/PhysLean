@@ -7,7 +7,7 @@ or diagreement arises these are the fall-back.
 
 The role of the maintainer team is to:
 
-1. Give finial reviews of pull-requests.
+1. Give final reviews of pull-requests.
 2. Help structure and guide the project.
 3. Help foster a pleasant and active community around the project.
 
@@ -16,7 +16,7 @@ The role of the maintainer team is to:
 Maintainers have research-level knowledge of physics or mathematics, and have
 experience with either the PhysLean or Mathlib review process.
 
-To become a maintainer, you either need an inviation for current maintainers, or
+To become a maintainer, you either need an invitation for current maintainers, or
 need to nominate yourself to a current maitnainer.
 
 ## Term of a maintainer
