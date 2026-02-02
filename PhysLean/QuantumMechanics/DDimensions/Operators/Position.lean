@@ -13,13 +13,10 @@ In this module we define:
 
 -/
 
-
 namespace QuantumMechanics
 noncomputable section
 open Space
 open ContDiff SchwartzMap
-
-
 
 /-- Component `i` of the position operator is the continuous linear map
 from `𝓢(Space d, ℂ)` to itself which maps `ψ` to `xᵢψ`. -/
@@ -61,7 +58,6 @@ def positionOperator {d : ℕ} (i : Fin d) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(S
         · fun_prop
       apply norm_iteratedFDeriv_mul_le (N := ∞) hcd (SchwartzMap.smooth ψ ⊤) x ENat.LEInfty.out
 
-
     -- h0, h1 and hj are the analogues of `norm_iteratedFDeriv_ofRealCLM ℂ j`
     -- but including a projection to the i-th component of x
     have h0 : ‖iteratedFDeriv ℝ 0 (fun x ↦ (x i : ℂ)) x‖ = ‖x i‖ := by
@@ -80,9 +76,9 @@ def positionOperator {d : ℕ} (i : Fin d) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(S
         if j = 0 then ‖x i‖ else if j = 1 then 1 else 0 := by
       intro j
       match j with
-        | 0   => rw [h0]; simp
-        | 1   => rw [h1]; simp
-        | k+2 => rw [hj]; simp
+        | 0 => rw [h0]; simp
+        | 1 => rw [h1]; simp
+        | k + 2 => rw [hj]; simp
 
     conv_lhs =>
       enter [2, 2, j, 1, 2]
@@ -146,19 +142,14 @@ def positionOperator {d : ℕ} (i : Fin d) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(S
           apply le_of_eq
           ring
 
-
 @[inherit_doc positionOperator]
 macro "𝐱[" i:term "]" : term => `(positionOperator $i)
-
 
 lemma positionOperator_apply_fun {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ)) :
   𝐱[i] ψ = (fun x ↦ x i * ψ x) := rfl
 
-
 lemma positionOperator_apply {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
   𝐱[i] ψ x = x i * ψ x := rfl
-
-
 
 end
 end QuantumMechanics

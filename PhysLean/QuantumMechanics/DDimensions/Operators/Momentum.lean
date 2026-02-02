@@ -15,14 +15,11 @@ In this module we define:
 
 -/
 
-
 namespace QuantumMechanics
 noncomputable section
 open Constants
 open Space
 open ContDiff SchwartzMap
-
-
 
 /-- Component `i` of the momentum operator is the continuous linear map
 from `𝓢(Space d, ℂ)` to itself which maps `ψ` to `-iℏ ∂ᵢψ`. -/
@@ -38,8 +35,6 @@ lemma momentumOperator_apply_fun {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ))
 lemma momentumOperator_apply {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
     𝐩[i] ψ x = - Complex.I * ℏ * ∂[i] ψ x := rfl
 
-
-
 /-- The square of the momentum operator, `𝐩² ≔ ∑ᵢ 𝐩ᵢ∘𝐩ᵢ`. -/
 def momentumOperatorSqr {d : ℕ} : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) := ∑ i, 𝐩[i] ∘L 𝐩[i]
 
@@ -52,8 +47,6 @@ lemma momentumOperatorSqr_apply {d : ℕ} (ψ : 𝓢(Space d, ℂ)) (x : Space d
   rw [← SchwartzMap.coe_coeHom]
   simp only [ContinuousLinearMap.coe_sum', ContinuousLinearMap.coe_comp', Finset.sum_apply,
     Function.comp_apply, map_sum]
-
-
 
 end
 end QuantumMechanics
