@@ -11,7 +11,7 @@ The role of the maintainer team is to:
 2. Help structure and guide the project.
 3. Help foster a pleasant and active community around the project.
 
-## Becoming a Maintainer
+## Becoming a maintainer
 
 Maintainers have research-level knowledge of physics or mathematics, and have
 experience with either the PhysLean or Mathlib review process.
