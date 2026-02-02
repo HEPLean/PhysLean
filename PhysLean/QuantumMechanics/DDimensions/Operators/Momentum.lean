@@ -32,6 +32,9 @@ def momentumOperator {d : ℕ} (i : Fin d) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(S
 @[inherit_doc momentumOperator]
 macro "𝐩[" i:term "]" : term => `(momentumOperator $i)
 
+lemma momentumOperator_apply_fun {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ)) :
+    𝐩[i] ψ = (- Complex.I * ℏ) • ∂[i] ψ := rfl
+
 lemma momentumOperator_apply {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
     𝐩[i] ψ x = - Complex.I * ℏ * ∂[i] ψ x := rfl
 
