@@ -488,7 +488,15 @@ lemma massTermReduced_pos_of_quarticTermReduced_zero_potentialIsBounded (P : Pot
 lemma forall_reduced_exists_not_potentialIsBounded :
     ∃ P, ¬ PotentialIsBounded P ∧ (∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
     0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k)) := by
-  /- Construction of the explicit counter example. -/
+  /- Construction of the explicit counter example.
+    The reason that this counter example works is that:
+    - There is a zero of the quartic term `z` on the boundary.
+    - The quartic term is equal to `((k - z) · z)²`, as `k - z` approaches orthogonal to `z`,
+      this becomes small on two accounts: the abs of `k - z` has to become small as `z` is on
+      the boundary, and the angle between `k - z` and `z` also becomes small.
+    - The mass term is of the form `-(k - z) · w` for some `w` orthogonal to `z`, so as `k - z`
+      approaches orthogonal to `z`, the mass term becomes small only on the account that the abs of
+      `k - z` becomes small. -/
   let P : PotentialParameters := {(0 : PotentialParameters) with
     m₁₂2 := Complex.I
     𝓵₁ := 2
@@ -513,8 +521,7 @@ lemma forall_reduced_exists_not_potentialIsBounded :
   /- The condition that P is not bounded. -/
   · /- Changing the goal to an existence. -/
     rw [potentialIsBounded_iff_exists_forall_reduced]
-    by_contra hc
-    obtain ⟨c, c_pos, hc⟩ := hc
+    by_contra ⟨c, c_pos, hc⟩
     suffices h_exists : ∃ k, ‖k‖ ^ 2 ≤ 1 ∧
         0 ≤ quarticTermReduced P k ∧ massTermReduced P k < 0 ∧
         4 * c * quarticTermReduced P k < (massTermReduced P k) ^ 2 by
@@ -584,17 +591,11 @@ lemma forall_reduced_exists_not_potentialIsBounded :
         field_simp
         grind
   /- The condition on the reduced terms. -/
-  · intro k hk
-    apply And.intro
-    · exact P_quarticTermReduced_nonneg k
-    intro hq
-    rw [P_quarticTermReduced] at hq
-    simp at hq
-    have hk0 : k 0 = 1 := by linarith
-    have hk1 : k 1 = 0 := by
-      simp only [PiLp.norm_sq_eq_of_L2, Real.norm_eq_abs, sq_abs, Fin.sum_univ_three,
-        Fin.isValue] at hk
-      nlinarith
+  · refine fun k hk =>  And.intro (P_quarticTermReduced_nonneg k) (fun hq => ?_)
+    simp [P_quarticTermReduced] at hq
+    simp only [PiLp.norm_sq_eq_of_L2, Real.norm_eq_abs, sq_abs, Fin.sum_univ_three,
+      Fin.isValue] at hk
+    have hk1 : k 1 = 0 := by nlinarith
     rw [P_massTermReduced, hk1]
 
 end TwoHiggsDoublet
