@@ -145,9 +145,11 @@ def positionOperator {d : ℕ} (i : Fin d) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(S
 @[inherit_doc positionOperator]
 macro "𝐱[" i:term "]" : term => `(positionOperator $i)
 
+@[sorryful]
 lemma positionOperator_apply_fun {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ)) :
     𝐱[i] ψ = (fun x ↦ x i * ψ x) := rfl
 
+@[sorryful]
 lemma positionOperator_apply {d : ℕ} (i : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
     𝐱[i] ψ x = x i * ψ x := rfl
 

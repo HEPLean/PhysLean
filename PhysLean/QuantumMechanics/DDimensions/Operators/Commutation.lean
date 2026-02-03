@@ -20,6 +20,7 @@ open SchwartzMap
 -/
 
 /-- `[xᵢ, xⱼ] = 0` -/
+@[sorryful]
 lemma position_commutation_position {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐱[j]⁆ = 0 := by
   dsimp only [Bracket.bracket]
   ext ψ x
@@ -36,11 +37,13 @@ lemma position_commutation_position {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐱[j
 lemma momentum_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐩[i], 𝐩[j]⁆ = 0 := by
   sorry
 
+@[sorryful]
 lemma momentum_momentum_eq {d : ℕ} (i j : Fin d) : 𝐩[i] ∘L 𝐩[j] = 𝐩[j] ∘L 𝐩[i] := by
   rw [← sub_eq_zero]
   exact momentum_commutation_momentum i j
 
 /-- `[𝐩², 𝐩ᵢ] = 0` -/
+@[sorryful]
 lemma momentumSqr_commutation_momentum {d : ℕ} (i : Fin d) : 𝐩² ∘L 𝐩[i] - 𝐩[i] ∘L 𝐩² = 0 := by
   dsimp only [momentumOperatorSqr]
   simp only [ContinuousLinearMap.finset_sum_comp, ContinuousLinearMap.comp_finset_sum]
