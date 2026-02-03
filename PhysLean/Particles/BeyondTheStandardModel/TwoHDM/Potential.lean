@@ -44,6 +44,45 @@ structure PotentialParameters where
 
 namespace PotentialParameters
 
+/-!
+
+## The zero potential parameters
+
+-/
+
+instance : Zero PotentialParameters where
+  zero :=
+    { m₁₁2 := 0
+      m₂₂2 := 0
+      m₁₂2 := 0
+      𝓵₁ := 0
+      𝓵₂ := 0
+      𝓵₃ := 0
+      𝓵₄ := 0
+      𝓵₅ := 0
+      𝓵₆ := 0
+      𝓵₇ := 0 }
+
+@[simp] lemma zero_m₁₁2 : (0 : PotentialParameters).m₁₁2 = 0 := rfl
+
+@[simp] lemma zero_m₂₂2 : (0 : PotentialParameters).m₂₂2 = 0 := rfl
+
+@[simp] lemma zero_m₁₂2 : (0 : PotentialParameters).m₁₂2 = 0 := rfl
+
+@[simp] lemma zero_𝓵₁ : (0 : PotentialParameters).𝓵₁ = 0 := rfl
+
+@[simp] lemma zero_𝓵₂ : (0 : PotentialParameters).𝓵₂ = 0 := rfl
+
+@[simp] lemma zero_𝓵₃ : (0 : PotentialParameters).𝓵₃ = 0 := rfl
+
+@[simp] lemma zero_𝓵₄ : (0 : PotentialParameters).𝓵₄ = 0 := rfl
+
+@[simp] lemma zero_𝓵₅ : (0 : PotentialParameters).𝓵₅ = 0 := rfl
+
+@[simp] lemma zero_𝓵₆ : (0 : PotentialParameters).𝓵₆ = 0 := rfl
+
+@[simp] lemma zero_𝓵₇ : (0 : PotentialParameters).𝓵₇ = 0 := rfl
+
 /-- A reparameterization of the parameters of the quadratic terms of the
   potential for use with the gramVector. -/
 noncomputable def ξ (P : PotentialParameters) : Fin 1 ⊕ Fin 3 → ℝ := fun μ =>
@@ -443,107 +482,119 @@ lemma massTermReduced_pos_of_quarticTermReduced_zero_potentialIsBounded (P : Pot
   generalize massTermReduced P k = j2 at *
   grind
 
-@[sorryful]
-lemma potentialIsBounded_iff_forall_reduced (P : PotentialParameters) :
-    PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
-      0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k) := by
-  apply Iff.intro
-  · sorry
-  intro h
-  rw [potentialIsBounded_iff_exists_forall_reduced]
-  by_contra hn
-  simp at hn
-  simp_all
-  have h2 := fun k hk => (h k hk).2
-  /- The set S. -/
-  let S := Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1 ∩
-    {k | massTermReduced P k ≤ 0}
-  have S_compact : IsCompact S := by
-    refine IsCompact.inter_right ?_ ?_
-    · exact isCompact_closedBall 0 1
-    · refine isClosed_le ?_ ?_
-      · unfold massTermReduced
-        fun_prop
-      · fun_prop
 
-  have hc : ∀ c, 0 ≤ c → ∃ k ∈ S, c * quarticTermReduced P k < (massTermReduced P k) ^ 2 := by
-    intro c hc0
-    specialize hn (c/4) (by positivity)
-    obtain ⟨k, hkS, hck⟩ := hn
-    use k
-    simp_all [S]
-    apply And.intro
-    · grind
-    · convert hck.2 using 1
+/-- A lemma invalidating the step in https://arxiv.org/pdf/hep-ph/0605184 leading to
+  equation (4.4). -/
+lemma forall_reduced_exists_not_potentialIsBounded :
+    ∃ P, ¬ PotentialIsBounded P ∧ (∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
+    0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k)) := by
+  /- Construction of the explicit counter example. -/
+  let P : PotentialParameters := {(0 : PotentialParameters) with
+    m₁₂2 := Complex.I
+    𝓵₁ := 2
+    𝓵₂ := 2
+    𝓵₃ := 2
+    𝓵₄ := 2
+    𝓵₅ := 2
+    𝓵₆ := -2
+    𝓵₇ := -2}
+  have P_massTermReduced (k : EuclideanSpace ℝ (Fin 3)) : massTermReduced P k = k 1 := by
+    simp [massTermReduced, PotentialParameters.ξ, Fin.isValue, P, Fin.sum_univ_three]
+  have P_quarticTermReduced (k : EuclideanSpace ℝ (Fin 3)) :
+      quarticTermReduced P k = (1 - k 0) ^ 2 := by
+    simp [quarticTermReduced, PotentialParameters.η, Fin.isValue, P, Fin.sum_univ_three]
+    ring
+  have P_quarticTermReduced_nonneg (k : EuclideanSpace ℝ (Fin 3)) :
+      0 ≤ quarticTermReduced P k := by
+    rw [P_quarticTermReduced]
+    exact sq_nonneg (1 - k 0)
+  use P
+  apply And.intro
+  /- The condition that P is not bounded. -/
+  · /- Changing the goal to an existence. -/
+    rw [potentialIsBounded_iff_exists_forall_reduced]
+    by_contra hc
+    obtain ⟨c, c_pos, hc⟩ := hc
+    suffices h_exists : ∃ k, ‖k‖ ^ 2 ≤ 1 ∧
+        0 ≤ quarticTermReduced P k ∧ massTermReduced P k < 0 ∧
+        4 * c * quarticTermReduced P k < (massTermReduced P k) ^ 2 by
+      obtain ⟨k, hk_norm, hk_quartic, hk_mass_neg, hk_mass⟩ := h_exists
+      specialize hc k hk_norm
+      have := hc.2 hk_mass_neg
+      linarith
+    /- A general sequence of points. -/
+    let kt (t : ℝ) : EuclideanSpace ℝ (Fin 3) :=
+      !₂[(1 : ℝ), 0, 0] - t • !₂[Real.sin t, Real.cos t, 0]
+    have kt_normSq (t : ℝ) : ‖kt t‖ ^ 2 = 1 + t ^ 2 - 2 * t * Real.sin t := by
+      simp [kt, PiLp.norm_sq_eq_of_L2, Fin.sum_univ_three]
+      trans 1 - t * Real.sin t * 2 + t ^ 2 * (Real.sin t ^ 2 +Real.cos t ^ 2)
+      · ring
+      rw [Real.sin_sq_add_cos_sq]
       ring
-  have S_nonempty : S.Nonempty := by
-    obtain ⟨k, hk⟩ := hc 0 (by positivity)
-    exact ⟨k, hk.1⟩
-  clear hn
-  suffices hk : ∃ k ∈ S, quarticTermReduced P k = 0 ∧ massTermReduced P k ≠ 0 by
-    obtain ⟨k, hk_S, hk_quartic, hk_mass⟩ := hk
-    simp_all [S]
-    grind
-  clear h2
-  by_contra h_zero
-  simp at h_zero
-  /- The set which contains zero. -/
-  let Z := Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1 ∩
-      {k | quarticTermReduced P k = 0}
-  have Z_compact : IsCompact Z := by
-    refine IsCompact.inter_right ?_ ?_
-    · exact isCompact_closedBall 0 1
-    · refine isClosed_eq ?_ ?_
-      · unfold quarticTermReduced
-        fun_prop
-      · fun_prop
-  have Z_nonempty : Z.Nonempty := by
-    obtain ⟨v, hv1, hv2⟩ := IsCompact.exists_isMinOn (f := quarticTermReduced P) S_compact S_nonempty
-      (by unfold quarticTermReduced; fun_prop)
-    use v
-    simp_all [Z, S]
-    sorry
-  have exists_Z (ε : ℝ) (h : 0 < ε) : ∃ z ∈ Z, ∀ c, 0 ≤ c →
-      ∃ k ∈ S, ‖k - z‖ ≤ ε ∧ c * quarticTermReduced P k < (massTermReduced P k) ^ 2 := by
-    have : ∀ n : ℕ, ∃ k ∈ S, (n : ℝ) * quarticTermReduced P k < (massTermReduced P k)^2 :=
-       fun n => hc n (Nat.cast_nonneg n)
-    choose k_seq hk_seq_S hk_seq_ineq using this
-    obtain ⟨z, hz_S, h_cluster⟩ := S_compact.tendsto_subseq hk_seq_S
-    have hz_Z : quarticTermReduced P z = 0 := by sorry
-    use z
-    constructor
-    · sorry
-    intro c hc_pos
-    obtain ⟨φ, φ_montonic, φ_tendsTo⟩ :=  h_cluster
-    have h_nhd : Metric.closedBall z ε ∈ nhds z := Metric.closedBall_mem_nhds z h
-    have h_o := φ_tendsTo h_nhd
-    simp at h_o
-    obtain ⟨N, hN⟩ := h_o
-    use k_seq (φ (max N (Nat.ceil c)))
-    apply And.intro
-    · exact hk_seq_S (φ (max N ⌈c⌉₊))
-    apply And.intro
-    · refine hN (max N (Nat.ceil c)) ?_
-      simp
-    · refine lt_of_le_of_lt ?_ (hk_seq_ineq _)
-      refine mul_le_mul_of_nonneg ?_ ?_ hc_pos ?_
-      · trans (max (α := ℕ) (N : ℕ) (Nat.ceil c) : ℝ)
-        · trans  (Nat.ceil c : ℝ)
-          · exact Nat.le_ceil c
-          · simp
-        have hn  : ∀ n : ℕ, n ≤ φ n := by
-          exact fun n => StrictMono.le_apply φ_montonic
-        specialize hn (max N (Nat.ceil c))
-        exact Nat.cast_le.mpr hn
+    have kt_normSq_le_one (t : ℝ) (ht : 0 ≤ t) (htu : t ≤ Real.pi / 2) : ‖kt t‖ ^ 2 ≤ 1 := by
+      rw [kt_normSq, tsub_le_iff_right, add_le_add_iff_left]
+      trans 2 * t * (2 / Real.pi * t)
+      · ring_nf
+        rw [mul_assoc]
+        apply le_mul_of_one_le_right
+        · positivity
+        · field_simp
+          exact Real.pi_le_four
+      · nlinarith [Real.mul_le_sin ht htu]
+    have kt_quarticTermReduced (t : ℝ) :
+        quarticTermReduced P (kt t) = t ^ 2 * Real.sin t ^ 2 := by
+      simp only [P_quarticTermReduced, Fin.isValue, PiLp.sub_apply, Matrix.cons_val_zero,
+        PiLp.smul_apply, smul_eq_mul, sub_sub_cancel, kt]
+      ring
+    have kt_massTermReduced (t : ℝ) : massTermReduced P (kt t) = - t * Real.cos t := by
+      simp [P_massTermReduced, kt]
+    have kt_massTermReduced_neg (t : ℝ) (ht : 0 < t) (htu : t < Real.pi / 2) :
+        massTermReduced P (kt t) < 0 := by
+      rw [kt_massTermReduced, neg_mul, Left.neg_neg_iff]
+      refine (mul_pos_iff_of_pos_right (Real.cos_pos_of_mem_Ioo <| Set.mem_Ioo.mp ⟨?_, htu⟩)).mpr ht
+      linarith
+    /- A specific point invalidating the boundedness. -/
+    use kt (Real.arctan (2 * Real.sqrt (c + 1))⁻¹)
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · /- Norm le 1. -/
+      apply kt_normSq_le_one
       · simp
-      · sorry
-  have h_exists : ∀ c, 0 ≤ c → ∃ v ∈ S, quarticTermReduced P v = 0 ∧ ∀ ε, 0 < ε →
-      ∃ k ∈ S, ‖k - v‖ ≤ ε ∧
-      c * quarticTermReduced P k < (massTermReduced P k) ^ 2 := by
-
-    sorry
-
-
-
+      · exact le_of_lt <| Real.arctan_lt_pi_div_two _
+    · /- Quadratic term non negative. -/
+      exact P_quarticTermReduced_nonneg (kt (Real.arctan _))
+    · /- Mass term negative. -/
+      apply kt_massTermReduced_neg
+      · simp only [mul_inv_rev, Real.arctan_pos, inv_pos, Nat.ofNat_pos, mul_pos_iff_of_pos_right,
+        Real.sqrt_pos]
+        linarith
+      · apply Real.arctan_lt_pi_div_two
+    · /- The inequality -/
+      rw [kt_quarticTermReduced, kt_massTermReduced]
+      simp [mul_pow]
+      refine (mul_inv_lt_iff₀ ?_).mp ?_
+      · refine pow_two_pos_of_ne_zero (ne_of_gt ?_)
+        exact Real.cos_pos_of_mem_Ioo (Real.arctan_mem_Ioo ((√(c + 1))⁻¹ * 2⁻¹))
+      apply lt_of_eq_of_lt (b :=  4 * c * (Real.arctan ((√(c + 1))⁻¹ * 2⁻¹) ^ 2 *
+          Real.tan (Real.arctan ((√(c + 1))⁻¹ * 2⁻¹)) ^ 2))
+      · rw [Real.tan_eq_sin_div_cos]
+        field_simp
+      · rw [Real.tan_arctan]
+        simp [mul_pow]
+        rw [Real.sq_sqrt (by positivity)]
+        field_simp
+        grind
+  /- The condition on the reduced terms. -/
+  · intro k hk
+    apply And.intro
+    · exact P_quarticTermReduced_nonneg k
+    intro hq
+    rw [P_quarticTermReduced] at hq
+    simp at hq
+    have hk0 : k 0 = 1 := by linarith
+    have hk1 : k 1 = 0 := by
+      simp only [PiLp.norm_sq_eq_of_L2, Real.norm_eq_abs, sq_abs, Fin.sum_univ_three,
+        Fin.isValue] at hk
+      nlinarith
+    rw [P_massTermReduced, hk1]
 
 end TwoHiggsDoublet
