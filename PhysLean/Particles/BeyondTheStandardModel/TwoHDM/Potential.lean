@@ -482,7 +482,6 @@ lemma massTermReduced_pos_of_quarticTermReduced_zero_potentialIsBounded (P : Pot
   generalize massTermReduced P k = j2 at *
   grind
 
-
 /-- A lemma invalidating the step in https://arxiv.org/pdf/hep-ph/0605184 leading to
   equation (4.4). -/
 lemma forall_reduced_exists_not_potentialIsBounded :
@@ -597,5 +596,41 @@ lemma forall_reduced_exists_not_potentialIsBounded :
       Fin.isValue] at hk
     have hk1 : k 1 = 0 := by nlinarith
     rw [P_massTermReduced, hk1]
+
+/-- The potential is bounded if it is strongly bounded. -/
+lemma potentialIsBounded_of_strong (P : PotentialParameters)
+    (h : ∀ k, ‖k‖ ^ 2 ≤ 1 → 0 < quarticTermReduced P k) :
+    PotentialIsBounded P := by
+  rw [potentialIsBounded_iff_exists_forall_reduced]
+  let S := Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1
+  have S_isCompact : IsCompact S :=  isCompact_closedBall 0 1
+  have S_nonEmpty : S.Nonempty := ⟨0, by simp [S]⟩
+  obtain ⟨kmax, kmax_S, kmax_isMax⟩ := IsCompact.exists_isMaxOn (isCompact_closedBall 0 1) S_nonEmpty
+    (f := fun k => (massTermReduced P k ^ 2) / (4 * quarticTermReduced P k)) <| by
+    apply ContinuousOn.div₀
+    · apply Continuous.continuousOn
+      simp only [massTermReduced, Fin.isValue]
+      fun_prop
+    · apply Continuous.continuousOn
+      simp only [quarticTermReduced, Fin.isValue]
+      fun_prop
+    · intro x hx
+      specialize h x (by simpa using hx)
+      linarith
+  use (massTermReduced P kmax) ^ 2 / (4 * quarticTermReduced P kmax)
+  apply And.intro
+  · refine (le_div_iff₀ ?_).mpr ?_
+    · specialize h kmax (by simpa using kmax_S)
+      linarith
+    · simp only [zero_mul]
+      exact sq_nonneg (massTermReduced P kmax)
+  · intro k hk
+    apply And.intro
+    · specialize h k hk
+      linarith
+    · intro hq
+      rw [isMaxOn_iff] at kmax_isMax
+      refine (div_le_iff₀' ?_).mp (kmax_isMax k (by simpa using hk))
+      grind
 
 end TwoHiggsDoublet
