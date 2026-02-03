@@ -5,7 +5,7 @@ Authors: Gregory J. Loges
 -/
 import PhysLean.SpaceAndTime.Space.Derivatives.Basic
 import PhysLean.QuantumMechanics.PlanckConstant
-/-
+/-!
 
 # Momentum vector operator
 

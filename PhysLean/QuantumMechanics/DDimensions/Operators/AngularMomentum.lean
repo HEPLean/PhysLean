@@ -5,7 +5,7 @@ Authors: Gregory J. Loges
 -/
 import PhysLean.QuantumMechanics.DDimensions.Operators.Position
 import PhysLean.QuantumMechanics.DDimensions.Operators.Momentum
-/-
+/-!
 
 # Angular momentum operator
 
@@ -36,10 +36,10 @@ def angularMomentumOperator {d : ℕ} (i j : Fin d) : 𝓢(Space d, ℂ) →L[�
 macro "𝐋[" i:term "," j:term "]" : term => `(angularMomentumOperator $i $j)
 
 lemma angularMomentumOperator_apply_fun {d : ℕ} (i j : Fin d) (ψ : 𝓢(Space d, ℂ)) :
-  𝐋[i,j] ψ = 𝐱[i] (𝐩[j] ψ) - 𝐱[j] (𝐩[i] ψ) := rfl
+    𝐋[i,j] ψ = 𝐱[i] (𝐩[j] ψ) - 𝐱[j] (𝐩[i] ψ) := rfl
 
 lemma angularMomentumOperator_apply {d : ℕ} (i j : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
-  𝐋[i,j] ψ x = 𝐱[i] (𝐩[j] ψ) x - 𝐱[j] (𝐩[i] ψ) x := rfl
+    𝐋[i,j] ψ x = 𝐱[i] (𝐩[j] ψ) x - 𝐱[j] (𝐩[i] ψ) x := rfl
 
 /-- The square of the angular momentum operator, `𝐋² ≔ ½ ∑ᵢⱼ 𝐋ᵢⱼ∘𝐋ᵢⱼ`. -/
 def angularMomentumOperatorSqr {d : ℕ} : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
@@ -95,10 +95,10 @@ lemma angularMomentumOperator1D_trivial : ∀ (i j : Fin 1), 𝐋[i,j] = 0 := by
   fin_cases i, j
   exact angularMomentumOperator_eq_zero 0
 
-/-- The angular momentum (psuedo)scalar operator in two dimensions, `𝐋 ≔ 𝐋₀₁`. -/
+/-- The angular momentum (pseudo)scalar operator in two dimensions, `𝐋 ≔ 𝐋₀₁`. -/
 def angularMomentumOperator2D : 𝓢(Space 2, ℂ) →L[ℂ] 𝓢(Space 2, ℂ) := 𝐋[0,1]
 
-/-- The angular momentum (psuedo)vector operator in three dimension, `𝐋ᵢ ≔ ½ ∑ⱼₖ εᵢⱼₖ 𝐋ⱼₖ`. -/
+/-- The angular momentum (pseudo)vector operator in three dimension, `𝐋ᵢ ≔ ½ ∑ⱼₖ εᵢⱼₖ 𝐋ⱼₖ`. -/
 def angularMomentumOperator3D (i : Fin 3) : 𝓢(Space 3, ℂ) →L[ℂ] 𝓢(Space 3, ℂ) :=
   match i with
     | 0 => 𝐋[1,2]
