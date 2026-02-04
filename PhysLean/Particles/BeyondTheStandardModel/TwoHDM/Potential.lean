@@ -273,8 +273,9 @@ lemma quarticTerm_zero : quarticTerm 0 = 0 := by
   ext H
   simp [quarticTerm]
 
+
 lemma quarticTerm_stabilityCounterExample (H : TwoHiggsDoublet) :
-    quarticTerm .stabilityCounterExample H = ‖H.Φ1 - H.Φ2‖ ^ 4 := by
+    quarticTerm .stabilityCounterExample H = (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2 - 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).re) ^ 2:= by
   /- Proof by calculation. -/
   calc _ = (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2) ^ 2
     + 2 * ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2
@@ -306,6 +307,13 @@ lemma quarticTerm_stabilityCounterExample (H : TwoHiggsDoublet) :
         rw [show ⟪H.Φ2, H.Φ1⟫_ℂ = conj ⟪H.Φ1, H.Φ2⟫_ℂ from Eq.symm (conj_inner_symm H.Φ2 H.Φ1)]
         rw [Complex.conj_re]
         ring
+
+lemma quarticTerm_stabilityCounterExample_eq_norm_pow_four (H : TwoHiggsDoublet) :
+    quarticTerm .stabilityCounterExample H = ‖H.Φ1 - H.Φ2‖ ^ 4 := by
+  /- Proof by calculation. -/
+  calc _
+      _ = (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2 - 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).re) ^ 2 := by
+        rw [quarticTerm_stabilityCounterExample]
       _ = (‖H.Φ1 - H.Φ2‖ ^ 2) ^ 2 := by
         congr
         have h1 (v : HiggsVec): ‖v‖ ^ 2 =  (⟪v, v⟫_ℂ).re := by
@@ -323,12 +331,11 @@ lemma quarticTerm_stabilityCounterExample (H : TwoHiggsDoublet) :
 lemma massTerm_zero_of_quarticTerm_zero_stabilityCounterExample (H : TwoHiggsDoublet)
     (h : quarticTerm .stabilityCounterExample H = 0) :
     massTerm .stabilityCounterExample H = 0 := by
-  rw [quarticTerm_stabilityCounterExample] at h
+  rw [quarticTerm_stabilityCounterExample_eq_norm_pow_four] at h
   rw [massTerm_stabilityCounterExample]
   simp at h
   have h1 : H.Φ1 = H.Φ2 := by grind
   simp [← Complex.ofReal_pow, h1]
-
 
 /-!
 
@@ -357,7 +364,7 @@ lemma potential_zero : potential 0 = 0 := by
 
 lemma potential_stabilityCounterExample (H : TwoHiggsDoublet) :
     potential .stabilityCounterExample H = 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).im + ‖H.Φ1 - H.Φ2‖ ^ 4 := by
-  simp [potential, massTerm_stabilityCounterExample, quarticTerm_stabilityCounterExample]
+  simp [potential, massTerm_stabilityCounterExample, quarticTerm_stabilityCounterExample_eq_norm_pow_four]
 
 /-!
 
@@ -376,6 +383,122 @@ We define the condition that the potential is stable, that is, bounded from belo
 /-- The condition that the potential is stable. -/
 def PotentialIsStable (P : PotentialParameters) : Prop :=
   ∃ c : ℝ, ∀ H : TwoHiggsDoublet, c ≤ potential P H
+
+
+/-!
+
+## E.2. Instability of the stabilityCounterExample potential
+
+
+-/
+
+open Real
+
+/-- The potential `stabilityCounterExample` is not stable.-/
+lemma stabilityCounterExample_not_potentialIsStable :
+    ¬ PotentialIsStable .stabilityCounterExample := by
+  simp [PotentialIsStable]
+  intro c
+  /- The angle t and properties thereof. -/
+  let t := Real.arctan (2 * Real.sqrt (|c| + 1))⁻¹
+  have t_pos : 0 < t := by
+    simp [t]
+    grind
+  have t_le_pi_div_2 : t ≤ Real.pi / 2 := by
+    simp [t]
+    apply le_of_lt
+    exact arctan_lt_pi_div_two ((√(|c| + 1))⁻¹ * 2⁻¹)
+  have t_ne_zero : t ≠ 0 := by
+    simp [t]
+    grind
+  have sin_t_pos : 0 < sin t := by
+    simp [t]
+    grind
+  have cos_t_pos : 0 < cos t := by
+    simp [t]
+    exact cos_arctan_pos ((√(|c| + 1))⁻¹ * 2⁻¹)
+  have sin_t_ne_zero : sin t ≠ 0 := by grind
+  have cos_t_ne_zero : cos t ≠ 0 := by grind
+  have t_mul_sin_t_nonneg : 0 ≤ 2 * t * sin t - t ^ 2 := by
+    simp
+    trans 2 * t *  (2 / Real.pi * t)
+    · ring_nf
+      rw [mul_assoc]
+      apply le_mul_of_one_le_right
+      · positivity
+      · field_simp
+        exact Real.pi_le_four
+    · have := Real.mul_le_sin (le_of_lt t_pos) t_le_pi_div_2
+      nlinarith
+  /- The Two Higgs doublet violating stability.
+    The two Higgs doublet is constructed so that for the gram vector
+    `v` we have:
+    - `v₀ = cos t/(2 * t * (sin t)^2)`
+    - `v₁/v₀ = (1 - t * sin t)`
+    - `v₂/v₀ = - t * cos t`
+    - `v₃ = 0` -/
+  let H : TwoHiggsDoublet := {
+    Φ1 := !₂[√(cos t/(4 * t * (sin t)^2)), 0]
+    Φ2 := √(cos t/(4 * t * (sin t)^2)) • !₂[1 - t * sin t - Complex.I * t * cos t,
+      √(2 * t * sin t - t ^ 2)] }
+  have Φ1_norm_sq : ‖H.Φ1‖ ^ 2 = cos t/(4 * t * (sin t)^2) := by
+    simp [H, PiLp.norm_sq_eq_of_L2]
+    rw [sq_sqrt]
+    positivity
+  have Φ2_norm_sq : ‖H.Φ2‖ ^ 2 = cos t/(4 * t * (sin t)^2) := by
+    simp [H, norm_smul, mul_pow]
+    rw [sq_sqrt (by positivity)]
+    simp [PiLp.norm_sq_eq_of_L2]
+    rw [sq_sqrt (by positivity)]
+    have h0 : ‖1 - ↑t * Complex.sin ↑t - Complex.I * ↑t * Complex.cos ↑t‖ ^ 2 =
+        1 + t ^ 2 - 2 * t * sin t := by
+      rw [← Complex.normSq_eq_norm_sq]
+      trans Complex.normSq (Complex.ofReal (1 - t * sin t) + Complex.ofReal (-t * cos t)* Complex.I )
+      · simp
+        ring_nf
+      rw [Complex.normSq_add_mul_I]
+      trans 1 + t ^2 * (sin t ^2 + cos t ^2) - 2 *(t * sin t)
+      · ring
+      rw [sin_sq_add_cos_sq]
+      ring
+    rw [h0]
+    field_simp
+    ring
+  have Φ1_inner_Φ2 : ⟪H.Φ1, H.Φ2⟫_ℂ = Complex.ofReal (cos t/(4 * t * (sin t)^2) *
+      (1 - t * sin t)) + Complex.I *
+       Complex.ofReal (cos t/(4 * t * (sin t)^2) *  (- t * cos t)) := by
+    simp [H, PiLp.inner_apply]
+    trans Complex.ofReal ((√(cos t / (4 * t * sin t ^ 2))) ^ 2) * (1 - ↑t * Complex.sin ↑t - Complex.I * ↑t * Complex.cos ↑t)
+    · simp
+      ring
+    rw [sq_sqrt (by positivity)]
+    simp
+    ring
+  have Φ1_inner_Φ2_re : (⟪H.Φ1, H.Φ2⟫_ℂ).re = cos t/(4 * t * (sin t)^2) * (1 - t * sin t) := by
+    rw [Φ1_inner_Φ2, Complex.add_re, Complex.ofReal_re, Complex.re_mul_ofReal]
+    simp
+  have Φ1_inner_Φ2_im : (⟪H.Φ1, H.Φ2⟫_ℂ).im = cos t/(4 * t * (sin t)^2) *  (- t * cos t) := by
+    rw [Φ1_inner_Φ2, Complex.add_im, Complex.im_mul_ofReal, Complex.ofReal_im]
+    simp
+  have potential_H_cos_sin : potential .stabilityCounterExample H =
+       - (cos t)^2/ (4 * (sin t)^2) := by
+    rw [potential, massTerm_stabilityCounterExample, quarticTerm_stabilityCounterExample]
+    rw [Φ1_norm_sq, Φ2_norm_sq, Φ1_inner_Φ2_re, Φ1_inner_Φ2_im]
+    field
+  have potential_H_tan : potential .stabilityCounterExample H =
+       - 1/(4 * tan t ^ 2) := by
+    rw [potential_H_cos_sin, tan_eq_sin_div_cos]
+    field
+  have potential_eq_c : potential .stabilityCounterExample H = - (|c| + 1) := by
+    rw [potential_H_tan, tan_arctan]
+    field_simp
+    rw [sq_sqrt (by positivity)]
+    ring
+  /- Proving potential is unbounded. -/
+  use H
+  rw [potential_eq_c]
+  grind
+
 
 /-!
 
@@ -750,89 +873,6 @@ lemma potentialIsStable_of_strong (P : PotentialParameters)
       rw [isMaxOn_iff] at kmax_isMax
       refine (div_le_iff₀' ?_).mp (kmax_isMax k (by simpa using hk))
       grind
-
-/-!
-
-### E.5. Properties of `stabilityCounterExample`
-
--/
-
-/-- The potential `stabilityCounterExample` is not stable.-/
-lemma stabilityCounterExample_not_potentialIsStable :
-    ¬ PotentialIsStable .stabilityCounterExample := by
-  /- Changing the goal to an existence. -/
-    rw [potentialIsStable_iff_massTermReduced_sq_le_quarticTermReduced]
-    by_contra ⟨c, c_pos, hc⟩
-    suffices h_exists : ∃ k, ‖k‖ ^ 2 ≤ 1 ∧
-        0 ≤ quarticTermReduced .stabilityCounterExample k ∧
-        massTermReduced .stabilityCounterExample k < 0 ∧
-        4 * c * quarticTermReduced .stabilityCounterExample k <
-        (massTermReduced .stabilityCounterExample k) ^ 2 by
-      obtain ⟨k, hk_norm, hk_quartic, hk_mass_neg, hk_mass⟩ := h_exists
-      specialize hc k hk_norm
-      have := hc.2 hk_mass_neg
-      linarith
-    /- A general sequence of points. -/
-    let kt (t : ℝ) : EuclideanSpace ℝ (Fin 3) :=
-      !₂[(1 : ℝ), 0, 0] - t • !₂[Real.sin t, Real.cos t, 0]
-    have kt_normSq (t : ℝ) : ‖kt t‖ ^ 2 = 1 + t ^ 2 - 2 * t * Real.sin t := by
-      simp [kt, PiLp.norm_sq_eq_of_L2, Fin.sum_univ_three]
-      trans 1 - t * Real.sin t * 2 + t ^ 2 * (Real.sin t ^ 2 +Real.cos t ^ 2)
-      · ring
-      rw [Real.sin_sq_add_cos_sq]
-      ring
-    have kt_normSq_le_one (t : ℝ) (ht : 0 ≤ t) (htu : t ≤ Real.pi / 2) : ‖kt t‖ ^ 2 ≤ 1 := by
-      rw [kt_normSq, tsub_le_iff_right, add_le_add_iff_left]
-      trans 2 * t * (2 / Real.pi * t)
-      · ring_nf
-        rw [mul_assoc]
-        apply le_mul_of_one_le_right
-        · positivity
-        · field_simp
-          exact Real.pi_le_four
-      · nlinarith [Real.mul_le_sin ht htu]
-    have kt_quarticTermReduced (t : ℝ) :
-        quarticTermReduced .stabilityCounterExample (kt t) = t ^ 2 * Real.sin t ^ 2 := by
-      simp only [quarticTermReduced_stabilityCounterExample, Fin.isValue, PiLp.sub_apply, Matrix.cons_val_zero,
-        PiLp.smul_apply, smul_eq_mul, sub_sub_cancel, kt]
-      ring
-    have kt_massTermReduced (t : ℝ) : massTermReduced .stabilityCounterExample (kt t) = - t * Real.cos t := by
-      simp [massTermReduced_stabilityCounterExample, kt]
-    have kt_massTermReduced_neg (t : ℝ) (ht : 0 < t) (htu : t < Real.pi / 2) :
-        massTermReduced .stabilityCounterExample (kt t) < 0 := by
-      rw [kt_massTermReduced, neg_mul, Left.neg_neg_iff]
-      refine (mul_pos_iff_of_pos_right (Real.cos_pos_of_mem_Ioo <| Set.mem_Ioo.mp ⟨?_, htu⟩)).mpr ht
-      linarith
-    /- A specific point invalidating the boundedness. -/
-    use kt (Real.arctan (2 * Real.sqrt (c + 1))⁻¹)
-    refine ⟨?_, ?_, ?_, ?_⟩
-    · /- Norm le 1. -/
-      apply kt_normSq_le_one
-      · simp
-      · exact le_of_lt <| Real.arctan_lt_pi_div_two _
-    · /- Quadratic term non negative. -/
-      exact quarticTermReduced_stabilityCounterExample_nonneg (kt (Real.arctan (2 * √(c + 1))⁻¹))
-    · /- Mass term negative. -/
-      apply kt_massTermReduced_neg
-      · simp only [mul_inv_rev, Real.arctan_pos, inv_pos, Nat.ofNat_pos, mul_pos_iff_of_pos_right,
-        Real.sqrt_pos]
-        linarith
-      · apply Real.arctan_lt_pi_div_two
-    · /- The inequality -/
-      rw [kt_quarticTermReduced, kt_massTermReduced]
-      simp [mul_pow]
-      refine (mul_inv_lt_iff₀ ?_).mp ?_
-      · refine pow_two_pos_of_ne_zero (ne_of_gt ?_)
-        exact Real.cos_pos_of_mem_Ioo (Real.arctan_mem_Ioo ((√(c + 1))⁻¹ * 2⁻¹))
-      apply lt_of_eq_of_lt (b :=  4 * c * (Real.arctan ((√(c + 1))⁻¹ * 2⁻¹) ^ 2 *
-          Real.tan (Real.arctan ((√(c + 1))⁻¹ * 2⁻¹)) ^ 2))
-      · rw [Real.tan_eq_sin_div_cos]
-        field_simp
-      · rw [Real.tan_arctan]
-        simp [mul_pow]
-        rw [Real.sq_sqrt (by positivity)]
-        field_simp
-        grind
 
 /-!
 
