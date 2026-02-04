@@ -159,7 +159,17 @@ lemma η_zero : (0 : PotentialParameters).η = 0 := by
 -/
 
 /-- An example of potential parameters that serve as a counterexample to the stability
-  condition given in arXiv:hep-ph/0605184. -/
+  condition given in arXiv:hep-ph/0605184.
+  This corresponds to the potential:
+  `2 * (⟪H.Φ1, H.Φ2⟫_ℂ).im + ‖H.Φ1 - H.Φ2‖ ^ 4`
+  which has the property that the quartic term is non-negative and only zero if
+  the mass term is also zero, but the potential is not stable.
+  In the proof that `stabilityCounterExample_not_potentialIsStable`, we give
+  explicit vectors `H.Φ1` and `H.Φ2` that show this potential is not stable.
+
+  This is the first occurance of such a counterexample in the literature to the best of
+  the author's knowledge.
+-/
 def stabilityCounterExample : PotentialParameters := {(0 : PotentialParameters) with
     m₁₂2 := Complex.I
     𝓵₁ := 2
