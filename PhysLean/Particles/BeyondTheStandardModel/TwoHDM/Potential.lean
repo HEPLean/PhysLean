@@ -59,7 +59,7 @@ open StandardModel
 
 We define a type for the parameters of the Higgs potential in the 2HDM.
 
-We follow the convetion of `1605.03237`, which is highlighted in the explicit construction
+We follow the convention of `1605.03237`, which is highlighted in the explicit construction
 of the potential itself.
 
 We relate these parameters to the `ξ` and `η` parameters used in the gram vector formalism
@@ -203,7 +203,7 @@ lemma η_zero : (0 : PotentialParameters).η = 0 := by
   In the proof that `stabilityCounterExample_not_potentialIsStable`, we give
   explicit vectors `H.Φ1` and `H.Φ2` that show this potential is not stable.
 
-  This is the first occurance of such a counterexample in the literature to the best of
+  This is the first occurrence of such a counterexample in the literature to the best of
   the author's knowledge.
 -/
 def stabilityCounterExample : PotentialParameters := {(0 : PotentialParameters) with
@@ -510,7 +510,8 @@ lemma stabilityCounterExample_not_potentialIsStable :
     · simp
       ring
     rw [sq_sqrt (by positivity)]
-    simp
+    simp only [Complex.ofReal_div, Complex.ofReal_cos, Complex.ofReal_mul, Complex.ofReal_ofNat,
+      Complex.ofReal_pow, Complex.ofReal_sin]
     ring
   have Φ1_inner_Φ2_re : (⟪H.Φ1, H.Φ2⟫_ℂ).re = cos t/(4 * t * (sin t)^2) * (1 - t * sin t) := by
     rw [Φ1_inner_Φ2, Complex.add_re, Complex.ofReal_re, Complex.re_mul_ofReal]
@@ -622,7 +623,7 @@ lemma quarticTermReduced_stabilityCounterExample_nonneg (k : EuclideanSpace ℝ 
 
 ### E.5. Stability in terms of the gram vectors
 
-We give some necessary and sufficent conditions for the potential to be stable
+We give some necessary and sufficient conditions for the potential to be stable
 in terms of the gram vectors.
 
 This follows the analysis in https://arxiv.org/abs/hep-ph/0605184.
