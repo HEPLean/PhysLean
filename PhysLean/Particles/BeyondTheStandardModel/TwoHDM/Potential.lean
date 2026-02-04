@@ -10,7 +10,43 @@ import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GramMatrix
 
 ## i. Overview
 
-In this module we give the define the parameters of the 2HDM potential.
+In this module we give the define the parameters of the 2HDM potential, and
+give stability properties of the potential.
+
+## ii. Key results
+
+- `PotentialParameters` : The parameters of the 2HDM potential.
+- `massTerm` : The mass term of the 2HDM potential.
+- `quarticTerm` : The quartic term of the 2HDM potential.
+- `potential` : The full potential of the 2HDM.
+- `PotentialIsStable` : The condition that the potential is stable.
+
+## iii. Table of contents
+
+- A. The parameters of the potential
+  - A.1. The potential parameters corresponding to zero
+  - A.2. Gram parameters
+  - A.3. Specific cases
+- B. The mass term
+- C. The quartic term
+- D. The full potential
+- E. Stability of the potential
+  - E.1. The stability condition
+  - E.2. Instability of the stabilityCounterExample potential
+  - E.3. The reduced mass term
+  - E.4. The reduced quartic term
+  - E.5. Stability in terms of the gram vectors
+  - E.6. Strong stability implies stability
+  - E.7. Showing step in hep-ph/0605184 is invalid
+
+## iv. References
+
+For the parameterization of the potential we follow the convention of
+- https://arxiv.org/pdf/1605.03237
+
+Stability arguments of the potential follow, in part, those from
+- https://arxiv.org/abs/hep-ph/0605184
+Although we note that we explicitly prove that one of the steps in this paper is not valid.
 
 -/
 namespace TwoHiggsDoublet
@@ -380,7 +416,7 @@ lemma potential_stabilityCounterExample (H : TwoHiggsDoublet) :
 
 /-!
 
-## E.1. The stability condition
+### E.1. The stability condition
 
 We define the condition that the potential is stable, that is, bounded from below.
 
@@ -392,7 +428,7 @@ def PotentialIsStable (P : PotentialParameters) : Prop :=
 
 /-!
 
-## E.2. Instability of the stabilityCounterExample potential
+### E.2. Instability of the stabilityCounterExample potential
 
 -/
 
@@ -503,7 +539,7 @@ lemma stabilityCounterExample_not_potentialIsStable :
 
 /-!
 
-## E.2. The reduced mass term
+### E.3. The reduced mass term
 
 The reduced mass term is a function that helps express the stability condition.
 It is the function `J2` in https://arxiv.org/abs/hep-ph/0605184.
@@ -552,7 +588,7 @@ lemma massTermReduced_stabilityCounterExample (k : EuclideanSpace ℝ (Fin 3)) :
 
 /-!
 
-## E.2. The reduced quartic term
+### E.4. The reduced quartic term
 
 The reduced quartic term is a function that helps express the stability condition.
 It is the function `J4` in https://arxiv.org/abs/hep-ph/0605184.
@@ -584,7 +620,7 @@ lemma quarticTermReduced_stabilityCounterExample_nonneg (k : EuclideanSpace ℝ 
 
 /-!
 
-## E.3. Stability in terms of the gram vectors
+### E.5. Stability in terms of the gram vectors
 
 We give some necessary and sufficent conditions for the potential to be stable
 in terms of the gram vectors.
@@ -829,7 +865,7 @@ lemma massTermReduced_pos_of_quarticTermReduced_zero_potentialIsStable (P : Pote
 
 /-!
 
-### E.4. Strong stability implies stability
+### E.6. Strong stability implies stability
 
 Stability in terms of the positivity of the quartic term, implies that the whole
 potential is stable.
@@ -877,7 +913,7 @@ lemma potentialIsStable_of_strong (P : PotentialParameters)
 
 /-!
 
-### E.6. Showing step in hep-ph/0605184 is invalid
+### E.7. Showing step in hep-ph/0605184 is invalid
 
 -/
 
