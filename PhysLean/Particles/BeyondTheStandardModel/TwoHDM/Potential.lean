@@ -12,7 +12,6 @@ import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GramMatrix
 
 In this module we give the define the parameters of the 2HDM potential.
 
-
 -/
 namespace TwoHiggsDoublet
 open InnerProductSpace
@@ -100,7 +99,6 @@ instance : Zero PotentialParameters where
 
 @[simp] lemma zero_𝓵₇ : (0 : PotentialParameters).𝓵₇ = 0 := rfl
 
-
 /-!
 
 ### A.2. Gram parameters
@@ -157,7 +155,6 @@ lemma η_zero : (0 : PotentialParameters).η = 0 := by
 /-!
 
 ### A.3. Specific cases
-
 
 -/
 
@@ -273,25 +270,25 @@ lemma quarticTerm_zero : quarticTerm 0 = 0 := by
   ext H
   simp [quarticTerm]
 
-
 lemma quarticTerm_stabilityCounterExample (H : TwoHiggsDoublet) :
-    quarticTerm .stabilityCounterExample H = (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2 - 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).re) ^ 2:= by
+    quarticTerm .stabilityCounterExample H =
+    (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2 - 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).re) ^ 2:= by
   /- Proof by calculation. -/
   calc _ = (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2) ^ 2
     + 2 * ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2
     + (⟪H.Φ1, H.Φ2⟫_ℂ ^ 2 + ⟪H.Φ2, H.Φ1⟫_ℂ ^ 2).re
-     - 2 * (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2) * ((⟪H.Φ1, H.Φ2⟫_ℂ).re + (⟪H.Φ2, H.Φ1⟫_ℂ).re) := by
+    - 2 * (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2) * ((⟪H.Φ1, H.Φ2⟫_ℂ).re + (⟪H.Φ2, H.Φ1⟫_ℂ).re) := by
         simp [quarticTerm, PotentialParameters.stabilityCounterExample, Complex.add_re,
           ← Complex.ofReal_pow]
         ring
       _ = (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2) ^ 2
       + 4 * (⟪H.Φ1, H.Φ2⟫_ℂ).re ^ 2
-      - 2 * (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2) * ((⟪H.Φ1, H.Φ2⟫_ℂ).re + (⟪H.Φ2, H.Φ1⟫_ℂ).re):= by
+      - 2 * (‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2) * ((⟪H.Φ1, H.Φ2⟫_ℂ).re + (⟪H.Φ2, H.Φ1⟫_ℂ).re) := by
         have h1 : 2 * ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2
             + (⟪H.Φ1, H.Φ2⟫_ℂ ^ 2 + ⟪H.Φ2, H.Φ1⟫_ℂ ^ 2).re = 4 * (⟪H.Φ1, H.Φ2⟫_ℂ).re ^ 2 := by
           rw [show ⟪H.Φ2, H.Φ1⟫_ℂ = conj ⟪H.Φ1, H.Φ2⟫_ℂ from Eq.symm (conj_inner_symm H.Φ2 H.Φ1)]
           generalize ⟪H.Φ1, H.Φ2⟫_ℂ = z
-          have hz : z = z.re + z.im  * Complex.I := by exact Eq.symm (Complex.re_add_im z)
+          have hz : z = z.re + z.im * Complex.I := by exact Eq.symm (Complex.re_add_im z)
           generalize z.re = x at hz
           generalize z.im = y at hz
           subst hz
@@ -316,7 +313,7 @@ lemma quarticTerm_stabilityCounterExample_eq_norm_pow_four (H : TwoHiggsDoublet)
         rw [quarticTerm_stabilityCounterExample]
       _ = (‖H.Φ1 - H.Φ2‖ ^ 2) ^ 2 := by
         congr
-        have h1 (v : HiggsVec): ‖v‖ ^ 2 =  (⟪v, v⟫_ℂ).re := by
+        have h1 (v : HiggsVec) : ‖v‖ ^ 2 = (⟪v, v⟫_ℂ).re := by
           rw [inner_self_eq_norm_sq_to_K]
           simp [← Complex.ofReal_pow]
         rw [h1, h1, h1]
@@ -325,8 +322,6 @@ lemma quarticTerm_stabilityCounterExample_eq_norm_pow_four (H : TwoHiggsDoublet)
         rw [Complex.conj_re]
         ring
       _ = ‖H.Φ1 - H.Φ2‖ ^ 4 := by ring
-
-
 
 lemma massTerm_zero_of_quarticTerm_zero_stabilityCounterExample (H : TwoHiggsDoublet)
     (h : quarticTerm .stabilityCounterExample H = 0) :
@@ -364,7 +359,8 @@ lemma potential_zero : potential 0 = 0 := by
 
 lemma potential_stabilityCounterExample (H : TwoHiggsDoublet) :
     potential .stabilityCounterExample H = 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).im + ‖H.Φ1 - H.Φ2‖ ^ 4 := by
-  simp [potential, massTerm_stabilityCounterExample, quarticTerm_stabilityCounterExample_eq_norm_pow_four]
+  simp [potential, massTerm_stabilityCounterExample,
+    quarticTerm_stabilityCounterExample_eq_norm_pow_four]
 
 /-!
 
@@ -384,17 +380,15 @@ We define the condition that the potential is stable, that is, bounded from belo
 def PotentialIsStable (P : PotentialParameters) : Prop :=
   ∃ c : ℝ, ∀ H : TwoHiggsDoublet, c ≤ potential P H
 
-
 /-!
 
 ## E.2. Instability of the stabilityCounterExample potential
-
 
 -/
 
 open Real
 
-/-- The potential `stabilityCounterExample` is not stable.-/
+/-- The potential `stabilityCounterExample` is not stable. -/
 lemma stabilityCounterExample_not_potentialIsStable :
     ¬ PotentialIsStable .stabilityCounterExample := by
   simp [PotentialIsStable]
@@ -405,9 +399,7 @@ lemma stabilityCounterExample_not_potentialIsStable :
     simp [t]
     grind
   have t_le_pi_div_2 : t ≤ Real.pi / 2 := by
-    simp [t]
-    apply le_of_lt
-    exact arctan_lt_pi_div_two ((√(|c| + 1))⁻¹ * 2⁻¹)
+    simpa [t] using le_of_lt <| arctan_lt_pi_div_two ((√(|c| + 1))⁻¹ * 2⁻¹)
   have t_ne_zero : t ≠ 0 := by
     simp [t]
     grind
@@ -417,11 +409,9 @@ lemma stabilityCounterExample_not_potentialIsStable :
   have cos_t_pos : 0 < cos t := by
     simp [t]
     exact cos_arctan_pos ((√(|c| + 1))⁻¹ * 2⁻¹)
-  have sin_t_ne_zero : sin t ≠ 0 := by grind
-  have cos_t_ne_zero : cos t ≠ 0 := by grind
   have t_mul_sin_t_nonneg : 0 ≤ 2 * t * sin t - t ^ 2 := by
-    simp
-    trans 2 * t *  (2 / Real.pi * t)
+    rw [sub_nonneg]
+    trans 2 * t * (2 / Real.pi * t)
     · ring_nf
       rw [mul_assoc]
       apply le_mul_of_one_le_right
@@ -453,7 +443,8 @@ lemma stabilityCounterExample_not_potentialIsStable :
     have h0 : ‖1 - ↑t * Complex.sin ↑t - Complex.I * ↑t * Complex.cos ↑t‖ ^ 2 =
         1 + t ^ 2 - 2 * t * sin t := by
       rw [← Complex.normSq_eq_norm_sq]
-      trans Complex.normSq (Complex.ofReal (1 - t * sin t) + Complex.ofReal (-t * cos t)* Complex.I )
+      trans Complex.normSq (Complex.ofReal (1 - t * sin t) +
+        Complex.ofReal (-t * cos t) * Complex.I)
       · simp
         ring_nf
       rw [Complex.normSq_add_mul_I]
@@ -466,9 +457,10 @@ lemma stabilityCounterExample_not_potentialIsStable :
     ring
   have Φ1_inner_Φ2 : ⟪H.Φ1, H.Φ2⟫_ℂ = Complex.ofReal (cos t/(4 * t * (sin t)^2) *
       (1 - t * sin t)) + Complex.I *
-       Complex.ofReal (cos t/(4 * t * (sin t)^2) *  (- t * cos t)) := by
+      Complex.ofReal (cos t/(4 * t * (sin t)^2) * (- t * cos t)) := by
     simp [H, PiLp.inner_apply]
-    trans Complex.ofReal ((√(cos t / (4 * t * sin t ^ 2))) ^ 2) * (1 - ↑t * Complex.sin ↑t - Complex.I * ↑t * Complex.cos ↑t)
+    trans Complex.ofReal ((√(cos t / (4 * t * sin t ^ 2))) ^ 2) *
+        (1 - ↑t * Complex.sin ↑t - Complex.I * ↑t * Complex.cos ↑t)
     · simp
       ring
     rw [sq_sqrt (by positivity)]
@@ -477,16 +469,16 @@ lemma stabilityCounterExample_not_potentialIsStable :
   have Φ1_inner_Φ2_re : (⟪H.Φ1, H.Φ2⟫_ℂ).re = cos t/(4 * t * (sin t)^2) * (1 - t * sin t) := by
     rw [Φ1_inner_Φ2, Complex.add_re, Complex.ofReal_re, Complex.re_mul_ofReal]
     simp
-  have Φ1_inner_Φ2_im : (⟪H.Φ1, H.Φ2⟫_ℂ).im = cos t/(4 * t * (sin t)^2) *  (- t * cos t) := by
+  have Φ1_inner_Φ2_im : (⟪H.Φ1, H.Φ2⟫_ℂ).im = cos t/(4 * t * (sin t)^2) * (- t * cos t) := by
     rw [Φ1_inner_Φ2, Complex.add_im, Complex.im_mul_ofReal, Complex.ofReal_im]
     simp
   have potential_H_cos_sin : potential .stabilityCounterExample H =
-       - (cos t)^2/ (4 * (sin t)^2) := by
+      - (cos t) ^ 2/ (4 * (sin t)^2) := by
     rw [potential, massTerm_stabilityCounterExample, quarticTerm_stabilityCounterExample]
     rw [Φ1_norm_sq, Φ2_norm_sq, Φ1_inner_Φ2_re, Φ1_inner_Φ2_im]
     field
   have potential_H_tan : potential .stabilityCounterExample H =
-       - 1/(4 * tan t ^ 2) := by
+      - 1/(4 * tan t ^ 2) := by
     rw [potential_H_cos_sin, tan_eq_sin_div_cos]
     field
   have potential_eq_c : potential .stabilityCounterExample H = - (|c| + 1) := by
@@ -498,7 +490,6 @@ lemma stabilityCounterExample_not_potentialIsStable :
   use H
   rw [potential_eq_c]
   grind
-
 
 /-!
 
@@ -546,8 +537,8 @@ lemma massTermReduced_zero : massTermReduced 0 = 0 := by
 
 lemma massTermReduced_stabilityCounterExample (k : EuclideanSpace ℝ (Fin 3)) :
     massTermReduced .stabilityCounterExample k = k 1 := by
- simp [massTermReduced, PotentialParameters.ξ, Fin.isValue,
-  PotentialParameters.stabilityCounterExample, Fin.sum_univ_three]
+  simp [massTermReduced, PotentialParameters.ξ, Fin.isValue,
+    PotentialParameters.stabilityCounterExample, Fin.sum_univ_three]
 
 /-!
 
@@ -843,7 +834,7 @@ lemma potentialIsStable_of_strong (P : PotentialParameters)
     PotentialIsStable P := by
   rw [potentialIsStable_iff_massTermReduced_sq_le_quarticTermReduced]
   let S := Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1
-  have S_isCompact : IsCompact S :=  isCompact_closedBall 0 1
+  have S_isCompact : IsCompact S := isCompact_closedBall 0 1
   have S_nonEmpty : S.Nonempty := ⟨0, by simp [S]⟩
   obtain ⟨kmax, kmax_S, kmax_isMax⟩ := IsCompact.exists_isMaxOn
     (isCompact_closedBall 0 1) S_nonEmpty
@@ -899,7 +890,8 @@ lemma forall_reduced_exists_not_potentialIsStable :
   /- The condition that P is not stable. -/
   · exact stabilityCounterExample_not_potentialIsStable
   /- The condition on the reduced terms. -/
-  · refine fun k hk =>  And.intro (quarticTermReduced_stabilityCounterExample_nonneg k) (fun hq => ?_)
+  · refine fun k hk => And.intro (quarticTermReduced_stabilityCounterExample_nonneg k)
+      (fun hq => ?_)
     simp [quarticTermReduced_stabilityCounterExample] at hq
     simp only [PiLp.norm_sq_eq_of_L2, Real.norm_eq_abs, sq_abs, Fin.sum_univ_three,
       Fin.isValue] at hk
