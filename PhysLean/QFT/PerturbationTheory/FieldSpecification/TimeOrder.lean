@@ -45,7 +45,7 @@ noncomputable instance : (φ φ' : 𝓕.FieldOp) → Decidable (timeOrderRel φ 
   | FieldOp.inAsymp _, FieldOp.inAsymp _ => isTrue True.intro
 
 /-- Time ordering is total. -/
-instance : IsTotal 𝓕.FieldOp 𝓕.timeOrderRel where
+instance : Std.Total 𝓕.timeOrderRel where
   total a b := by
     cases a <;> cases b <;>
       simp only [or_self, or_false, or_true, timeOrderRel, Fin.isValue]
@@ -73,7 +73,8 @@ def maxTimeFieldPos (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) : ℕ :=
 
 lemma maxTimeFieldPos_lt_length (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp) :
     maxTimeFieldPos φ φs < (φ :: φs).length := by
-  simp [maxTimeFieldPos]
+  simp only [maxTimeFieldPos, List.length_cons, Order.lt_add_one_iff]
+  exact Fin.is_le (insertionSortMinPos timeOrderRel φ φs)
 
 /-- Given a list `φ :: φs` of states, the left-most state of maximum time, if there are more.
   As an example:
@@ -212,8 +213,8 @@ noncomputable instance (φ φ' : 𝓕.CrAnFieldOp) : Decidable (crAnTimeOrderRel
   inferInstanceAs (Decidable (𝓕.timeOrderRel φ.1 φ'.1))
 
 /-- Time ordering of `CrAnFieldOp` is total. -/
-instance : IsTotal 𝓕.CrAnFieldOp 𝓕.crAnTimeOrderRel where
-  total a b := IsTotal.total (r := 𝓕.timeOrderRel) a.1 b.1
+instance : Std.Total 𝓕.crAnTimeOrderRel where
+  total a b := Std.Total.total (r := 𝓕.timeOrderRel) a.1 b.1
 
 /-- Time ordering of `CrAnFieldOp` is transitive. -/
 instance : IsTrans 𝓕.CrAnFieldOp 𝓕.crAnTimeOrderRel where
@@ -221,7 +222,7 @@ instance : IsTrans 𝓕.CrAnFieldOp 𝓕.crAnTimeOrderRel where
 
 @[simp]
 lemma crAnTimeOrderRel_refl (φ : 𝓕.CrAnFieldOp) : crAnTimeOrderRel φ φ := by
-  exact (IsTotal.to_isRefl (r := 𝓕.crAnTimeOrderRel)).refl φ
+  exact (Std.Total.to_refl (r := 𝓕.crAnTimeOrderRel)).refl φ
 
 /-- For a field specification `𝓕`, and a list `φs` of `𝓕.CrAnFieldOp`,
   `𝓕.crAnTimeOrderSign φs` is the sign corresponding to the number of `ferimionic`-`fermionic`
@@ -513,11 +514,11 @@ noncomputable instance (φ φ' : 𝓕.CrAnFieldOp) : Decidable (normTimeOrderRel
   instDecidableAnd
 
 /-- Norm-Time ordering of `CrAnFieldOp` is total. -/
-instance : IsTotal 𝓕.CrAnFieldOp 𝓕.normTimeOrderRel where
+instance : Std.Total 𝓕.normTimeOrderRel where
   total a b := by
     simp only [normTimeOrderRel]
-    match IsTotal.total (r := 𝓕.crAnTimeOrderRel) a b,
-      IsTotal.total (r := 𝓕.normalOrderRel) a b with
+    match Std.Total.total (r := 𝓕.crAnTimeOrderRel) a b,
+      Std.Total.total (r := 𝓕.normalOrderRel) a b with
     | Or.inl h1, Or.inl h2 => simp [h1, h2]
     | Or.inr h1, Or.inl h2 =>
       simp only [h1, h2, imp_self, and_true, true_and]

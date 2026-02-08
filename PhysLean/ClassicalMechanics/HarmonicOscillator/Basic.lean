@@ -391,7 +391,6 @@ lemma gradient_lagrangian_position_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1)
     simp
   rw [hx]
   simp [smul_smul]
-  congr 1
   field_simp
 
 lemma gradient_lagrangian_velocity_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1))
@@ -412,7 +411,6 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : EuclideanSpace ℝ (Fin 1)
     simp
   rw [hx]
   simp [smul_smul]
-  congr 1
   field_simp
 
 /-!
@@ -545,7 +543,6 @@ lemma gradLagrangian_eq_force (xₜ : Time → EuclideanSpace ℝ (Fin 1)) (hx :
       simp
     rw [hx]
     simp [smul_smul, inner_smul_left]
-    congr 1
     field_simp
   · rw [← Time.deriv_smul _ _ (by fun_prop)]
     congr

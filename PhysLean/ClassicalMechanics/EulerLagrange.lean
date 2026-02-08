@@ -66,11 +66,11 @@ theorem euler_lagrange_varGradient
     simp[sub_eq_add_neg]
     congr
     rw [gradient_eq_adjFDeriv, adjFDeriv_uncurry]
-    apply ContDiff.differentiable (n := ∞) (by fun_prop) ENat.LEInfty.out
-    apply ContDiff.differentiable (n := ∞) (by fun_prop) ENat.LEInfty.out
+    apply ContDiff.differentiable (n := ∞) (by fun_prop) (by simp)
+    apply ContDiff.differentiable (n := ∞) (by fun_prop) (by simp)
     funext t
     rw [gradient_eq_adjFDeriv, adjFDeriv_uncurry]
-    apply ContDiff.differentiable (n := ∞) (by fun_prop) ENat.LEInfty.out
-    apply ContDiff.differentiable (n := ∞) (by fun_prop) ENat.LEInfty.out
+    apply ContDiff.differentiable (n := ∞) (by fun_prop) (by simp)
+    apply ContDiff.differentiable (n := ∞) (by fun_prop) (by simp)
 
 end ClassicalMechanics

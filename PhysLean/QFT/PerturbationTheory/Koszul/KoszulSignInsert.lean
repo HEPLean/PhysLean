@@ -96,11 +96,11 @@ lemma koszulSignInsert_eq_filter (φ : 𝓕) : (φs : List 𝓕) →
       · simp only [decide_not]
       · simp
 
-lemma koszulSignInsert_eq_cons [IsTotal 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
+lemma koszulSignInsert_eq_cons [Std.Total le] (φ : 𝓕) (φs : List 𝓕) :
     koszulSignInsert q le φ φs = koszulSignInsert q le φ (φ :: φs) := by
   simp only [koszulSignInsert, and_self]
   have h1 : le φ φ := by
-    simpa only [or_self] using IsTotal.total (r := le) φ φ
+    simpa only [or_self] using Std.Total.total (r := le) φ φ
   simp [h1]
 
 lemma koszulSignInsert_eq_grade (φ : 𝓕) (φs : List 𝓕) :
@@ -154,7 +154,7 @@ lemma koszulSignInsert_eq_sort (φs : List 𝓕) (φ : 𝓕) :
   apply koszulSignInsert_eq_perm
   exact List.Perm.symm (List.perm_insertionSort le φs)
 
-lemma koszulSignInsert_eq_exchangeSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
+lemma koszulSignInsert_eq_exchangeSign_take [Std.Total le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
     koszulSignInsert q le φ φs = 𝓢(q φ, ofList q
     ((List.insertionSort le φs).take (orderedInsertPos le (List.insertionSort le φs) φ))) := by
   rw [koszulSignInsert_eq_cons, koszulSignInsert_eq_sort, koszulSignInsert_eq_filter,
@@ -185,7 +185,7 @@ lemma koszulSignInsert_eq_exchangeSign_take [IsTotal 𝓕 le] [IsTrans 𝓕 le] 
       simp_all
   rw [h1]
   rw [List.filter_cons]
-  simp only [decide_not, (IsTotal.to_isRefl le).refl φ, not_true_eq_false, decide_false,
+  simp only [decide_not, (Std.Total.to_refl le).refl φ, not_true_eq_false, decide_false,
     Bool.false_eq_true, ↓reduceIte]
   rw [orderedInsertPos_take]
   simp only [decide_not, List.append_right_eq_self, List.filter_eq_nil_iff, Bool.not_eq_eq_eq_not,

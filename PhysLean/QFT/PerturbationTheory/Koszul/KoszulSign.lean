@@ -83,7 +83,7 @@ lemma koszulSign_erase_boson {𝓕 : Type} (q : 𝓕 → FieldStatistic) (le : �
     congr 1
     rw [koszulSignInsert_erase_boson q le φ φs ⟨n, Nat.succ_lt_succ_iff.mp h⟩ h']
 
-lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
+lemma koszulSign_insertIdx [Std.Total le] [IsTrans 𝓕 le] (φ : 𝓕) :
     (φs : List 𝓕) → (n : ℕ) → (hn : n ≤ φs.length) →
     koszulSign q le (List.insertIdx φs n φ) = 𝓢(q φ, ofList q (φs.take n)) * koszulSign q le φs *
       𝓢(q φ, ofList q ((List.insertionSort le (List.insertIdx φs n φ)).take
@@ -124,7 +124,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       simp only [List.insertionSort_cons, List.length_cons, insertionSortEquiv, Nat.succ_eq_add_one,
         Equiv.trans_apply, PhysLean.Fin.equivCons_succ]
       erw [orderedInsertEquiv_fin_succ]
-      simp only [Fin.eta, Fin.coe_cast]
+      simp only [Fin.eta, Fin.val_cast]
       rhs
       simp [orderedInsert_eq_insertIdx_orderedInsertPos]
     conv_rhs =>
@@ -173,7 +173,7 @@ lemma koszulSign_insertIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) :
       refine gt_orderedInsertPos_rel le φ1 rs ?_ ni hninro
       exact List.pairwise_insertionSort le (List.insertIdx φs n φ)
     by_cases hn : ni.castSucc < nro
-    · simp only [hn, ↓reduceIte, Fin.coe_castSucc]
+    · simp only [hn, ↓reduceIte, Fin.val_castSucc]
       rw [ofList_take_insertIdx_gt]
       swap
       · exact hn
@@ -200,7 +200,7 @@ lemma insertIdx_eraseIdx {I : Type} : (n : ℕ) → (r : List I) → (hn : n < r
       List.eraseIdx_cons_succ, List.insertIdx_succ_cons, List.cons.injEq, true_and]
     exact insertIdx_eraseIdx n r _
 
-lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) (n : Fin φs.length) :
+lemma koszulSign_eraseIdx [Std.Total le] [IsTrans 𝓕 le] (φs : List 𝓕) (n : Fin φs.length) :
     koszulSign q le (φs.eraseIdx n) = koszulSign q le φs * 𝓢(q (φs.get n), ofList q (φs.take n)) *
     𝓢(q (φs.get n), ofList q (List.take (↑(insertionSortEquiv le φs n))
     (List.insertionSort le φs))) := by
@@ -230,7 +230,7 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
   · simp only [Fin.getElem_fin]
     rw [Equiv.trans_apply, Equiv.trans_apply]
     simp only [instCommGroup.eq_1, Fin.castOrderIso,
-      Equiv.coe_fn_mk, Fin.cast_mk, Fin.eta, Fin.coe_cast]
+      Equiv.coe_fn_mk, Fin.cast_mk, Fin.eta, Fin.val_cast]
     ring
   conv_rhs =>
     rhs
@@ -241,7 +241,7 @@ lemma koszulSign_eraseIdx [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) 
     rw [ofList_take_eraseIdx, exchangeSign_mul_self]
   simp
 
-lemma koszulSign_eraseIdx_insertionSortMinPos [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
+lemma koszulSign_eraseIdx_insertionSortMinPos [Std.Total le] [IsTrans 𝓕 le] (φ : 𝓕) (φs : List 𝓕) :
     koszulSign q le ((φ :: φs).eraseIdx (insertionSortMinPos le φ φs)) = koszulSign q le (φ :: φs)
     * 𝓢(q (insertionSortMin le φ φs), ofList q ((φ :: φs).take (insertionSortMinPos le φ φs))) := by
   rw [koszulSign_eraseIdx]
@@ -318,12 +318,12 @@ lemma koszulSign_of_sorted : (φs : List 𝓕)
     exact koszulSignInsert_of_le_mem _ _ _ _ h.1
 
 @[simp]
-lemma koszulSign_of_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le] (φs : List 𝓕) :
+lemma koszulSign_of_insertionSort [Std.Total le] [IsTrans 𝓕 le] (φs : List 𝓕) :
     koszulSign q le (List.insertionSort le φs) = 1 := by
   apply koszulSign_of_sorted
   exact List.pairwise_insertionSort le φs
 
-lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕 le] :
+lemma koszulSign_of_append_eq_insertionSort_left [Std.Total le] [IsTrans 𝓕 le] :
     (φs φs' : List 𝓕) → koszulSign q le (φs ++ φs') =
     koszulSign q le (List.insertionSort le φs ++ φs') * koszulSign q le φs
   | φs, [] => by
@@ -353,9 +353,9 @@ lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕
         simp
       rw [insertionSortEquiv_congr _ _ h2.symm]
       simp only [Equiv.trans_apply, RelIso.coe_fn_toEquiv, Fin.castOrderIso_apply, Fin.cast_mk,
-        Fin.coe_cast]
+        Fin.val_cast]
       rw [insertionSortEquiv_insertionSort_append]
-      simp only [finCongr_apply, Fin.coe_cast]
+      simp only [finCongr_apply, Fin.val_cast]
       rw [insertionSortEquiv_congr _ _ h1.symm]
       simp
     · rw [insertIdx_length_fst_append]
@@ -364,7 +364,7 @@ lemma koszulSign_of_append_eq_insertionSort_left [IsTotal 𝓕 le] [IsTrans 𝓕
       symm
       apply insertionSort_insertionSort_append
 
-lemma koszulSign_of_append_eq_insertionSort [IsTotal 𝓕 le] [IsTrans 𝓕 le] : (φs'' φs φs' : List 𝓕) →
+lemma koszulSign_of_append_eq_insertionSort [Std.Total le] [IsTrans 𝓕 le] : (φs'' φs φs' : List 𝓕) →
     koszulSign q le (φs'' ++ φs ++ φs') =
     koszulSign q le (φs'' ++ List.insertionSort le φs ++ φs') * koszulSign q le φs
   | [], φs, φs'=> by

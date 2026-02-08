@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.StandardModel.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
+import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 /-!
 
 # The Higgs field

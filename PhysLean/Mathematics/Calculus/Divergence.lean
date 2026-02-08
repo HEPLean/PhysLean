@@ -37,7 +37,8 @@ lemma divergence_eq_sum_fderiv {s : Finset E} (b : Basis s 𝕜 E) {f : E → E}
   funext x
   unfold divergence
   rw[LinearMap.trace_eq_matrix_trace_of_finset (s:=s) _ b]
-  simp[Matrix.trace,Matrix.diag,LinearMap.toMatrix]
+  simp only [Matrix.trace, Matrix.diag, LinearMap.toMatrix_apply]
+  rfl
 
 lemma divergence_eq_sum_fderiv' {ι} [Fintype ι] (b : Basis ι 𝕜 E) {f : E → E} :
     divergence 𝕜 f = fun x => ∑ i, b.repr (fderiv 𝕜 f x (b i)) i := by

@@ -127,7 +127,7 @@ lemma ext_even (S T : Fin (2 * n.succ) → ℚ) (h1 : ∀ i, S (evenFst i) = T (
   · let j : Fin n.succ := ⟨i - n.succ, by omega⟩
     have h2 := h2 j
     have h3 : evenSnd j = i := by
-      simp only [succ_eq_add_one, evenSnd, Fin.ext_iff, Fin.coe_cast, Fin.coe_natAdd, j]
+      simp only [succ_eq_add_one, evenSnd, Fin.ext_iff, Fin.val_cast, Fin.val_natAdd, j]
       omega
     rw [h3] at h2
     exact h2
@@ -198,18 +198,18 @@ lemma evenShiftZero_eq_evenFst_zero : @evenShiftZero n = evenFst 0 := rfl
 
 lemma evenShiftLast_eq_evenSnd_last: @evenShiftLast n = evenSnd (Fin.last n) := by
   rw [Fin.ext_iff]
-  simp only [succ_eq_add_one, evenShiftLast, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd,
+  simp only [succ_eq_add_one, evenShiftLast, Fin.isValue, Fin.val_cast, Fin.val_natAdd,
     Fin.val_eq_zero, add_zero, evenSnd, Fin.natAdd_last, Fin.val_last]
   omega
 
 lemma evenShiftFst_eq_evenFst_succ (j : Fin n) : evenShiftFst j = evenFst j.succ := by
   rw [Fin.ext_iff, evenFst, evenShiftFst]
-  simp only [Fin.coe_cast, Fin.coe_natAdd, Fin.coe_castAdd, Fin.val_succ]
+  simp only [Fin.val_cast, Fin.val_natAdd, Fin.val_castAdd, Fin.val_succ]
   ring
 
 lemma evenShiftSnd_eq_evenSnd_castSucc (j : Fin n) : evenShiftSnd j = evenSnd j.castSucc := by
   rw [Fin.ext_iff, evenSnd, evenShiftSnd]
-  simp only [Fin.coe_cast, Fin.coe_natAdd, Fin.coe_castAdd, Fin.coe_castSucc]
+  simp only [Fin.val_cast, Fin.val_natAdd, Fin.val_castAdd, Fin.val_castSucc]
   ring_nf
   rw [Nat.succ_eq_add_one]
   ring
@@ -260,7 +260,7 @@ lemma basis_on_evenFst_other {k j : Fin n.succ} (h : k ≠ j) :
       simp_all only [succ_eq_add_one, ne_eq, Fin.natAdd_eq_addNat, Fin.cast_inj, neg_eq_zero,
         one_ne_zero]
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_castAdd, Fin.coe_addNat] at h2
+      simp only [Fin.val_castAdd, Fin.val_addNat] at h2
       omega
     · rfl
 
@@ -512,7 +512,7 @@ lemma basis!_on_evenShiftFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_castAdd, Fin.coe_addNat] at h2
+      simp only [Fin.val_castAdd, Fin.val_addNat] at h2
       omega
     · rfl
 
@@ -526,14 +526,14 @@ lemma basis!_evenShftSnd_eq_neg_evenShiftFst (j i : Fin n) :
   all_goals
     rename_i h1 h2
     rw [Fin.ext_iff] at h1 h2
-    simp_all only [Fin.natAdd_eq_addNat, Fin.cast_inj, Fin.coe_cast, Fin.coe_natAdd,
-      Fin.coe_castAdd, add_right_inj, Fin.coe_addNat, add_eq_left]
+    simp_all only [Fin.natAdd_eq_addNat, Fin.cast_inj, Fin.val_cast, Fin.val_natAdd,
+      Fin.val_castAdd, add_right_inj, Fin.val_addNat, add_eq_left]
   · subst h1
     exact Fin.elim0 i
   all_goals
     rename_i h3
     rw [Fin.ext_iff] at h3
-    simp_all only [Fin.coe_natAdd, Fin.coe_castAdd, Fin.coe_addNat, not_true_eq_false]
+    simp_all only [Fin.val_natAdd, Fin.val_castAdd, Fin.val_addNat, not_true_eq_false]
   all_goals
     omega
 
@@ -549,11 +549,11 @@ lemma basis!_on_evenShiftZero (j : Fin n) : basis!AsCharges j evenShiftZero = 0 
   simp only [basis!AsCharges, succ_eq_add_one, PureU1_numberCharges]
   split<;> rename_i h
   · simp only [evenShiftZero, succ_eq_add_one, Fin.isValue, evenShiftFst, Fin.ext_iff,
-    Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, Fin.coe_natAdd] at h
+    Fin.val_cast, Fin.val_castAdd, Fin.val_eq_zero, Fin.val_natAdd] at h
     omega
   · split <;> rename_i h2
     · simp only [evenShiftZero, succ_eq_add_one, Fin.isValue, evenShiftSnd, Fin.ext_iff,
-      Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero, Fin.coe_natAdd] at h2
+      Fin.val_cast, Fin.val_castAdd, Fin.val_eq_zero, Fin.val_natAdd] at h2
       omega
     · rfl
 
@@ -561,13 +561,13 @@ lemma basis!_on_evenShiftLast (j : Fin n) : basis!AsCharges j evenShiftLast = 0 
   simp only [basis!AsCharges, succ_eq_add_one, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [succ_eq_add_one, evenShiftLast, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd,
-      Fin.val_eq_zero, add_zero, evenShiftFst, Fin.coe_castAdd, add_right_inj] at h
+    simp only [succ_eq_add_one, evenShiftLast, Fin.isValue, Fin.val_cast, Fin.val_natAdd,
+      Fin.val_eq_zero, add_zero, evenShiftFst, Fin.val_castAdd, add_right_inj] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [succ_eq_add_one, evenShiftLast, Fin.isValue, Fin.coe_cast, Fin.coe_natAdd,
-        Fin.val_eq_zero, add_zero, evenShiftSnd, Fin.coe_castAdd, add_right_inj] at h2
+      simp only [succ_eq_add_one, evenShiftLast, Fin.isValue, Fin.val_cast, Fin.val_natAdd,
+        Fin.val_eq_zero, add_zero, evenShiftSnd, Fin.val_castAdd, add_right_inj] at h2
       omega
     · rfl
 

@@ -46,7 +46,7 @@ lemma IsTestFunction.integrable [MeasurableSpace X] [OpensMeasurableSpace X]
 
 @[fun_prop]
 lemma IsTestFunction.differentiable {f : X → U} (hf : IsTestFunction f) :
-    Differentiable ℝ f := hf.1.differentiable ENat.LEInfty.out
+    Differentiable ℝ f := hf.1.differentiable (by simp)
 
 @[fun_prop]
 lemma IsTestFunction.contDiff {f : X → U} (hf : IsTestFunction f) :
