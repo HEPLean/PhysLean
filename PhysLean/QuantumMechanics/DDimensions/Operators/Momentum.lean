@@ -24,7 +24,8 @@ open ContDiff SchwartzMap
 /-- Component `i` of the momentum operator is the continuous linear map
 from `𝓢(Space d, ℂ)` to itself which maps `ψ` to `-iℏ ∂ᵢψ`. -/
 def momentumOperator {d : ℕ} (i : Fin d) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
-  (- Complex.I * ℏ) • (SchwartzMap.evalCLM (basis i)) ∘L (SchwartzMap.fderivCLM ℂ)
+  (- Complex.I * ℏ) • (SchwartzMap.evalCLM ℂ (Space d) ℂ (basis i)) ∘L
+    (SchwartzMap.fderivCLM ℂ (Space d) ℂ)
 
 @[inherit_doc momentumOperator]
 macro "𝐩[" i:term "]" : term => `(momentumOperator $i)

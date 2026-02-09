@@ -671,7 +671,7 @@ lemma gradKineticTerm_eq_sum_sum {d} {𝓕 : FreeSpace}
     rw [Lorentz.Vector.differentiable_apply]
     refine Differentiable.clm_apply ?_ ?_
     · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
-        (Preorder.le_refl 1)
+        (by simp)
       exact ContDiff.of_le ha (right_eq_inf.mp rfl)
     · fun_prop
   rw [gradKineticTerm_eq_sum_fderiv A ha]
@@ -762,7 +762,7 @@ lemma gradKineticTerm_eq_fieldStrength {d} {𝓕 : FreeSpace} (A : Electromagnet
     rw [Lorentz.Vector.differentiable_apply]
     refine Differentiable.clm_apply ?_ ?_
     · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
-        (Preorder.le_refl 1)
+        (by simp)
       exact ContDiff.of_le ha (right_eq_inf.mp rfl)
     · fun_prop
   calc _
@@ -848,7 +848,7 @@ lemma gradKineticTerm_eq_electric_magnetic {𝓕 : FreeSpace} (A : Electromagnet
     rw [Lorentz.Vector.differentiable_apply]
     refine Differentiable.clm_apply ?_ ?_
     · refine ((contDiff_succ_iff_fderiv (n := 1)).mp ?_).2.2.differentiable
-        (Preorder.le_refl 1)
+        (by simp)
       exact ContDiff.of_le ha (right_eq_inf.mp rfl)
     · fun_prop
   have hdiff (μ ν) : Differentiable ℝ fun x => (A.fieldStrengthMatrix x) (μ, ν) := by

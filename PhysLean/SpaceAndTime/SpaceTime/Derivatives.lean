@@ -293,12 +293,14 @@ lemma distDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 lemma distDeriv_apply' {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (μ : Fin 1 ⊕ Fin d) (f : (SpaceTime d) →d[ℝ] M) (ε : 𝓢(SpaceTime d, ℝ)) :
     distDeriv μ f ε =
-    - f ((SchwartzMap.evalCLM (𝕜 := ℝ) (Lorentz.Vector.basis μ)) ((fderivCLM ℝ) ε)) := by
+    - f ((SchwartzMap.evalCLM ℝ (SpaceTime d) ℝ (Lorentz.Vector.basis μ))
+    ((fderivCLM ℝ (SpaceTime d) ℝ) ε)) := by
   simp [distDeriv_apply, Distribution.fderivD]
 
 lemma apply_fderiv_eq_distDeriv {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
     (μ : Fin 1 ⊕ Fin d) (f : (SpaceTime d) →d[ℝ] M) (ε : 𝓢(SpaceTime d, ℝ)) :
-    f ((SchwartzMap.evalCLM (𝕜 := ℝ) (Lorentz.Vector.basis μ)) ((fderivCLM ℝ) ε)) =
+    f ((SchwartzMap.evalCLM ℝ (SpaceTime d) ℝ (Lorentz.Vector.basis μ))
+    ((fderivCLM ℝ (SpaceTime d) ℝ) ε)) =
     - distDeriv μ f ε := by
   rw [distDeriv_apply']
   simp
@@ -344,23 +346,6 @@ lemma distDeriv_commute {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 We now show how the Lorentz group action on distributions interacts with derivatives.
 
 -/
-
-lemma _root_.SchwartzMap.sum_apply {α : Type} [NormedAddCommGroup α]
-    [NormedSpace ℝ α]
-    {ι : Type} [Fintype ι]
-    (f : ι → 𝓢(α, ℝ)) (x : α) :
-    (∑ i, f i) x = ∑ i, f i x := by
-  let P (ι : Type) [Fintype ι] := ∀ (f : ι → 𝓢(α, ℝ)),
-    (∑ i, f i) x = ∑ i, f i x
-  revert f
-  change P ι
-  apply Fintype.induction_empty_option
-  · intro ι1 ι2 _ e h1 f
-    rw [← @e.sum_comp, ← @e.sum_comp, h1]
-  · simp [P]
-  · intro a _ ih f
-    simp [Fintype.sum_option]
-    rw [ih]
 
 lemma distDeriv_comp_lorentz_action {μ : Fin 1 ⊕ Fin d} (Λ : LorentzGroup d)
     (f : (SpaceTime d) →d[ℝ] M) :

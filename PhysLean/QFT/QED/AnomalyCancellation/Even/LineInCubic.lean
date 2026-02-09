@@ -158,7 +158,7 @@ lemma lineInCubicPerm_last_perm {S : (PureU1 (2 * n.succ.succ)).LinSols}
   · simp [Fin.ext_iff, evenShiftSnd, evenShiftFst]
   · simp [Fin.ext_iff, evenShiftSnd, evenShiftLast]
   · simp only [Nat.succ_eq_add_one, evenShiftFst, evenShiftLast, Fin.isValue, ne_eq, Fin.ext_iff,
-    Fin.coe_cast, Fin.coe_natAdd, Fin.coe_castAdd, Fin.val_last, Fin.val_eq_zero, add_zero,
+    Fin.val_cast, Fin.val_natAdd, Fin.val_castAdd, Fin.val_last, Fin.val_eq_zero, add_zero,
     add_right_inj]
     omega
   · exact fun M => lineInCubicPerm_last_cond (lineInCubicPerm_permute LIC M)

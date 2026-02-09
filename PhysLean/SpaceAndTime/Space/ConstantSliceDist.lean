@@ -220,8 +220,8 @@ lemma schwartzMap_fderiv_left_integrable_slice_symm {d : ℕ} (η : 𝓢(Space d
       (by fun_prop)]
     simp only [Nat.succ_eq_add_one, ContinuousLinearMap.coe_comp', Function.comp_apply,
       fderiv_slice_symm_left_apply]
-    change (SchwartzMap.evalCLM (𝕜 := ℝ) _).comp (SchwartzMap.fderivCLM _) η
-      (((slice i).symm (r, x)))
+    change (SchwartzMap.evalCLM ℝ (Space d.succ) ℝ (((slice i).symm (1, 0)))).comp
+      (SchwartzMap.fderivCLM ℝ (Space d.succ) ℝ) η (((slice i).symm (r, x)))
     rw [← SchwartzMap.lineDerivOpCLM_eq]
   exact schwartzMap_integrable_slice_symm _ _ _
 
@@ -297,8 +297,8 @@ lemma schwartzMap_slice_integral_hasFDerivAt {d : ℕ} (η : 𝓢(Space d.succ, 
   apply hasFDerivAt_integral_of_dominated_of_fderiv_le
     (bound := fun t => (k * ‖(slice i).symm.toContinuousLinearMap.comp
           (ContinuousLinearMap.prod (0 : Space d →L[ℝ] ℝ) (ContinuousLinearMap.id ℝ (Space d)))‖)
-          * ‖(1 + ‖t‖) ^ (rt)‖⁻¹) (ε := 1)
-  · simp
+          * ‖(1 + ‖t‖) ^ (rt)‖⁻¹)
+  · exact Filter.univ_mem' (hF (F x₀ 0))
   · filter_upwards with x
     fun_prop
   · simp [F]

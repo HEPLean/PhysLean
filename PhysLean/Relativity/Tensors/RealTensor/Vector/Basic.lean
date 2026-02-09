@@ -5,7 +5,7 @@ Authors: Matteo Cipollina, Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Metrics.Basic
 import PhysLean.Relativity.Tensors.Elab
-import Mathlib.Analysis.Distribution.SchwartzSpace
+import Mathlib.Geometry.Manifold.IsManifold.Basic
 /-!
 
 # Lorentz Vectors

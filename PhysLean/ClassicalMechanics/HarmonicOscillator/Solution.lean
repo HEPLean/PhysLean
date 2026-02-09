@@ -307,15 +307,17 @@ lemma trajectory_contDiff (S : HarmonicOscillator) (IC : InitialConditions) {n :
     ContDiff ℝ n (IC.trajectory S) := by
   rw [trajectory_eq]
   apply ContDiff.add
-  apply ContDiff.smul _ contDiff_const
-  · change ContDiff ℝ _ (((fun x => cos x) ∘ (fun y => S.ω * y))∘ Time.toRealCLM)
-    refine ContDiff.comp_continuousLinearMap (ContDiff.comp contDiff_cos ?_)
-    fun_prop
-  apply ContDiff.smul _ contDiff_const
-  · have hx := contDiff_sin (n := n)
-    change ContDiff ℝ _ (((fun x => sin x / S.ω) ∘ (fun y => S.ω * y))∘ Time.toRealCLM)
-    refine ContDiff.comp_continuousLinearMap (ContDiff.comp ?_ ?_)
+  · apply fun_smul
+    · change ContDiff ℝ _ (((fun x => cos x) ∘ (fun y => S.ω * y))∘ Time.toRealCLM)
+      refine ContDiff.comp_continuousLinearMap (ContDiff.comp contDiff_cos ?_)
+      fun_prop
     · fun_prop
+  · have hx := contDiff_sin (n := n)
+    apply fun_smul
+    · change ContDiff ℝ _ (((fun x => sin x / S.ω) ∘ (fun y => S.ω * y))∘ Time.toRealCLM)
+      refine ContDiff.comp_continuousLinearMap (ContDiff.comp ?_ ?_)
+      · fun_prop
+      · fun_prop
     · fun_prop
 
 /-!
@@ -472,9 +474,9 @@ lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace 
     have hx_contDiffAt : ContDiffAt ℝ ∞ x t := hx.contDiffAt
     have htraj_contDiffAt : ContDiffAt ℝ ∞ (IC.trajectory S) t := hTrajContDiff.contDiffAt
     have hx_diff : DifferentiableAt ℝ x t :=
-      ContDiffAt.differentiableAt hx_contDiffAt (by norm_num : (1 : ℕ∞) ≤ ∞)
+      ContDiffAt.differentiableAt hx_contDiffAt (by simp)
     have htraj_diff : DifferentiableAt ℝ (IC.trajectory S) t :=
-      ContDiffAt.differentiableAt htraj_contDiffAt (by norm_num : (1 : ℕ∞) ≤ ∞)
+      ContDiffAt.differentiableAt htraj_contDiffAt (by simp)
     rw [fderiv_fun_sub hx_diff htraj_diff]
     simp only [ContinuousLinearMap.sub_apply, Time.deriv]
 
