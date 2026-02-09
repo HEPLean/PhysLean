@@ -186,10 +186,8 @@ lemma contrT_toComplex {n : ℕ}
     toComplex (c := c ∘ Pure.dropPairEmb i j) (contrT (S := realLorentzTensor) n i j h t)
       =
     contrT (S := complexLorentzTensor) n i j (by
-        -- если у simp достаточно информации, то это закрывается:
         simpa [Function.comp_apply] using
           And.intro h.1 (by
-            -- τ-совместимость
             simpa [tau_colorToComplex] using congrArg colorToComplex h.2))
       (toComplex (c := c) t) := by
   sorry
