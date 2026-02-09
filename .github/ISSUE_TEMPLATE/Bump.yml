@@ -62,10 +62,11 @@ body:
 - type: textarea
   id: examples_of_previous_bumps
   attributes:
-    label: Previous bump
+    label: Example past bumps
     description: Please do not modify this text.
     value: |
       [v4.20.0](https://github.com/HEPLean/PhysLean/pull/591),
       [v4.20.0-rc5](https://github.com/HEPLean/PhysLean/pull/566)
+      [v4.27.0](https://github.com/lean-phys-community/PhysLean/pull/929)
   validations:
     required: true
