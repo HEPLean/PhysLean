@@ -41,7 +41,8 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
     𝓝(ofFieldOpList (φ :: [φsΛ]ᵘᶜ)) := by
   simp only [Nat.succ_eq_add_one, instCommGroup.eq_1]
   rw [ofFieldOpList_normalOrder_insert φ [φsΛ]ᵘᶜ
-    ⟨(φsΛ.uncontractedListOrderPos i), by simp [uncontractedListGet]⟩, smul_smul]
+    ⟨(φsΛ.uncontractedListOrderPos i), by simp [uncontractedListGet]⟩,
+    smul_smul]
   trans (1 : ℂ) • (𝓝(ofFieldOpList [φsΛ ↩Λ φ i none]ᵘᶜ))
   · simp
   congr 1
@@ -77,7 +78,7 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
       · intro h
         rename_i h
         rw [Fin.lt_def] at h
-        simp only [Fin.coe_castSucc] at h
+        simp only [Fin.val_castSucc] at h
         omega
     · apply Iff.intro
       · intro h
@@ -85,7 +86,7 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
         rw [Fin.lt_def]
         simp only [Fin.val_succ]
         rw [Fin.lt_def] at h'
-        simp only [Fin.coe_castSucc, not_lt] at h'
+        simp only [Fin.val_castSucc, not_lt] at h'
         omega
       · intro h
         rename_i h
@@ -112,7 +113,7 @@ lemma normalOrder_uncontracted_some (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
     = 𝓝(ofFieldOpList (optionEraseZ [φsΛ]ᵘᶜ φ ((uncontractedFieldOpEquiv φs φsΛ) k))) := by
   simp only [Nat.succ_eq_add_one, insertAndContract, optionEraseZ, uncontractedFieldOpEquiv,
     Equiv.optionCongr_apply, Equiv.coe_trans, Option.map_some, Function.comp_apply, finCongr_apply,
-    Fin.coe_cast, uncontractedListGet]
+    Fin.val_cast, uncontractedListGet]
   congr
   rw [congr_uncontractedList]
   erw [uncontractedList_extractEquiv_symm_some]

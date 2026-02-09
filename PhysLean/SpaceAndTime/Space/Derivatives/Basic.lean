@@ -453,12 +453,14 @@ lemma distDeriv_apply {M d} [NormedAddCommGroup M] [NormedSpace ℝ M]
 
 -/
 
-lemma schwartMap_fderiv_comm { d}
+lemma schwartMap_fderiv_comm {d}
     (μ ν : Fin d) (x : Space d) (η : 𝓢(Space d, ℝ)) :
-    ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis μ))
-      ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis ν)) ((fderivCLM ℝ) η)))) x =
-    ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis ν))
-      ((fderivCLM ℝ) ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis μ)) ((fderivCLM ℝ) η)))) x := by
+    ((SchwartzMap.evalCLM ℝ (Space d) ℝ (basis μ))
+      ((fderivCLM ℝ (Space d) ℝ) ((SchwartzMap.evalCLM ℝ (Space d) ℝ (basis ν))
+      ((fderivCLM ℝ (Space d) ℝ) η)))) x =
+    ((SchwartzMap.evalCLM ℝ (Space d) ℝ (basis ν))
+      ((fderivCLM ℝ (Space d) ℝ) ((SchwartzMap.evalCLM ℝ (Space d) ℝ (basis μ))
+      ((fderivCLM ℝ (Space d) ℝ) η)))) x := by
   have h1 := η.smooth
   have h2 := h1 2
   change fderiv ℝ (fun x => fderiv ℝ η x (basis ν)) x (basis μ) =

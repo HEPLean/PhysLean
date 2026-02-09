@@ -354,8 +354,8 @@ lemma integrable_isDistBounded_inner_grad_schwartzMap {dm1 : ℕ}
   intro i _
   simp [inner_smul_right]
   have integrable_lemma (i j : Fin (dm1 + 1)) :
-      Integrable (fun x => (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j)
-        volume := by
+      Integrable (fun x => (((SchwartzMap.evalCLM ℝ (Space dm1.succ) ℝ (basis i))
+        ((fderivCLM ℝ (Space dm1.succ) ℝ) η)) x • f x) j) volume := by
     simp only [PiLp.smul_apply]
     exact (hf.pi_comp j).integrable_space _
   convert integrable_lemma i i using 2
@@ -442,10 +442,11 @@ lemma distGrad_eq_of_inner {d} (f : (Space d) →d[ℝ] ℝ)
 -/
 
 lemma distGrad_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d, ℝ)) :
-    distGrad f η = ∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
+    distGrad f η =
+      ∑ i, - f (SchwartzMap.evalCLM ℝ (Space d) ℝ (basis i) (fderivCLM ℝ (Space d) ℝ η)) •
       EuclideanSpace.single i 1 := by
   have h1 (y : EuclideanSpace ℝ (Fin d)) :
-      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
+      ⟪∑ i, - f (SchwartzMap.evalCLM ℝ (Space d) ℝ (basis i) (fderivCLM ℝ (Space d) ℝ η)) •
         EuclideanSpace.single i 1, y⟫_ℝ =
       fderivD ℝ f η (basis.repr.symm y) := by
     have hy : y = ∑ i, y i • EuclideanSpace.single i 1 := by
@@ -455,17 +456,18 @@ lemma distGrad_eq_sum_basis {d} (f : (Space d) →d[ℝ] ℝ) (η : 𝓢(Space d
     simp [PiLp.inner_apply, RCLike.inner_apply, conj_trivial, map_sum, map_smul, smul_eq_mul,
       Pi.single_apply, fderivD_apply]
   have hx (y : EuclideanSpace ℝ (Fin d)) : ⟪distGrad f η, y⟫_ℝ =
-      ⟪∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
+      ⟪∑ i, - f (SchwartzMap.evalCLM ℝ (Space d) ℝ (basis i) (fderivCLM ℝ (Space d) ℝ η)) •
         EuclideanSpace.single i 1, y⟫_ℝ := by
     rw [distGrad_inner_eq, h1]
   have h1 : ∀ y, ⟪distGrad f η -
-    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) •
+    (∑ i, - f (SchwartzMap.evalCLM ℝ (Space d) ℝ (basis i) (fderivCLM ℝ (Space d) ℝ η)) •
       EuclideanSpace.single i 1), y⟫_ℝ = 0 := by
     intro y
     rw [inner_sub_left, hx y]
     simp
   have h2 := h1 (distGrad f η -
-    (∑ i, - f (SchwartzMap.evalCLM (𝕜 := ℝ) (basis i) (fderivCLM ℝ η)) • EuclideanSpace.single i 1))
+    (∑ i, - f (SchwartzMap.evalCLM ℝ (Space d) ℝ (basis i) (fderivCLM ℝ (Space d) ℝ η)) •
+    EuclideanSpace.single i 1))
   rw [inner_self_eq_zero, sub_eq_zero] at h2
   rw [h2]
 

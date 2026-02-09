@@ -437,7 +437,7 @@ lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
 lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
     Complex.exp (Complex.I * k * (n - 1).val * T.a) =
     Complex.exp (Complex.I * k * n * T.a) * Complex.exp (- Complex.I * k * T.a) := by
-  rw [Fin.coe_sub]
+  rw [Fin.val_sub]
   trans Complex.exp (Complex.I * ↑↑k * ↑(((T.N - 1 + n)/T.N) * T.N + (n - 1).val) * ↑T.a)
   · simp only [Nat.cast_add, Nat.cast_mul]
     have h0 : (Complex.I * ↑↑k * (↑((T.N - 1 + ↑n) / T.N) * ↑T.N + (n - 1).val) * ↑T.a)
@@ -458,7 +458,7 @@ lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
         have h0 : n = 0 := by omega
         subst h0
         simpa using hn
-      · rw [@Fin.coe_sub]
+      · rw [@Fin.val_sub]
         congr
         simp [Nat.one_mod_eq_one.mpr hn]
     rw [hx]
@@ -536,8 +536,9 @@ lemma energyEigenstate_orthogonal :
     have h2 := quantaWaveNumber_exp_N T 1 k2
     have h1 := quantaWaveNumber_exp_N T 1 k1
     simp only [Nat.cast_one] at h2 h1
-    calc _ = Complex.exp (Complex.I * k2 * 1 * T.N * T.a - Complex.I * k1 * 1 * T.N * T.a) := by
-             ring_nf
+    calc
+        _ = Complex.exp (Complex.I * k2 * 1 * T.N * T.a - Complex.I * k1 * 1 * T.N * T.a) := by
+              ring_nf
         _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
   have hω_ne_one : ω ≠ 1 := by
     intro hω_eq_one

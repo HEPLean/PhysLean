@@ -26,7 +26,7 @@ def normalOrderRel : 𝓕.CrAnFieldOp → 𝓕.CrAnFieldOp → Prop :=
   fun a b => CreateAnnihilate.normalOrder (𝓕 |>ᶜ a) (𝓕 |>ᶜ b)
 
 /-- Normal ordering is total. -/
-instance : IsTotal 𝓕.CrAnFieldOp 𝓕.normalOrderRel where
+instance : Std.Total 𝓕.normalOrderRel where
   total _ _ := total_of CreateAnnihilate.normalOrder _ _
 
 /-- Normal ordering is transitive. -/

@@ -113,8 +113,8 @@ lemma ofFinset_filter_mul_neg (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a
     ofFinset q φs.get (Finset.filter (fun i => ¬ p i) a) = ofFinset q φs.get a := by
   rw [ofFinset_union_disjoint]
   congr
-  exact Finset.filter_union_filter_neg_eq p a
-  exact Finset.disjoint_filter_filter_neg a a p
+  exact Finset.filter_union_filter_not_eq p a
+  exact Finset.disjoint_filter_filter_not a a p
 
 lemma ofFinset_filter (q : 𝓕 → FieldStatistic) (φs : List 𝓕) (a : Finset (Fin φs.length))
     (p : Fin φs.length → Prop) [DecidablePred p] :

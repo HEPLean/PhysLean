@@ -218,7 +218,8 @@ lemma distDiv_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ 
   /- The following lemma could probably be moved out of this result. -/
   have integrable_lemma (i j : Fin (dm1 + 1)) :
       Integrable (fun x =>
-        (((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)) x • f x) j) volume := by
+        (((SchwartzMap.evalCLM ℝ (Space dm1.succ) ℝ (basis i))
+        ((fderivCLM ℝ (Space dm1.succ) ℝ) η)) x • f x) j) volume := by
     simp only [PiLp.smul_apply]
     exact (hf.pi_comp j).integrable_space _
   rw [MeasureTheory.integral_finset_sum]
@@ -231,7 +232,6 @@ lemma distDiv_ofFunction {dm1 : ℕ} {f : Space dm1.succ → EuclideanSpace ℝ 
       simp [inner_smul_right, EuclideanSpace.inner_single_right]
       left
       rw [deriv_eq_fderiv_basis]
-      rfl
     · intro j
       exact integrable_lemma i j
   · intro i hi

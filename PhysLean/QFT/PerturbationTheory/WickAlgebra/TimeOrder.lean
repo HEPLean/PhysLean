@@ -363,8 +363,7 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
 lemma ι_timeOrderF_eq_of_equiv (a b : 𝓕.FieldOpFreeAlgebra) (h : a ≈ b) :
     ι 𝓣ᶠ(a) = ι 𝓣ᶠ(b) := by
   rw [equiv_iff_sub_mem_ideal] at h
-  rw [LinearMap.sub_mem_ker_iff.mp]
-  simp only [LinearMap.mem_ker, ← map_sub]
+  rw [← sub_eq_zero, ← map_sub, ← LinearMap.map_sub]
   exact ι_timeOrderF_zero_of_mem_ideal (a - b) h
 
 /-- For a field specification `𝓕`, `timeOrder` is the linear map

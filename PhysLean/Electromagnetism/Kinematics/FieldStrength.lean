@@ -245,7 +245,7 @@ lemma fieldStrengthMatrix_differentiable {d} {A : ElectromagneticPotential d}
     rw [SpaceTime.differentiable_vector]
     refine Differentiable.clm_apply ?_ ?_
     · exact ((contDiff_succ_iff_fderiv (n := 1)).mp hA).2.2.differentiable
-        (Preorder.le_refl 1)
+        (by simp)
     · fun_prop
   conv => enter [2, x]; rw [toFieldStrength_basis_repr_apply_eq_single,
     SpaceTime.deriv_eq, SpaceTime.deriv_eq]

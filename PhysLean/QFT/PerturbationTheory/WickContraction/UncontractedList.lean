@@ -383,7 +383,7 @@ lemma uncontractedListEmd_strictMono {φs : List 𝓕.FieldOp} {φsΛ : WickCont
     {i j : Fin [φsΛ]ᵘᶜ.length} (h : i < j) : uncontractedListEmd i < uncontractedListEmd j := by
   simp only [uncontractedListEmd, uncontractedIndexEquiv, List.get_eq_getElem,
     Equiv.trans_toEmbedding, Function.Embedding.trans_apply, Equiv.coe_toEmbedding, finCongr_apply,
-    Equiv.coe_fn_mk, Fin.coe_cast, Function.Embedding.coe_subtype]
+    Equiv.coe_fn_mk, Fin.val_cast, Function.Embedding.coe_subtype]
   apply List.SortedLT.strictMono_get
   exact φsΛ.uncontractedList_sorted_lt.sortedLT
   exact h
@@ -593,8 +593,8 @@ def uncontractedListOrderPos (c : WickContraction n) (i : Fin n.succ) : ℕ :=
   (List.filter (fun x => x.1 < i.1) c.uncontractedList).length
 
 @[simp]
-lemma uncontractedListOrderPos_lt_length_add_one (c : WickContraction n) (i : Fin n.succ) :
-    c.uncontractedListOrderPos i < c.uncontractedList.length + 1 := by
+lemma uncontractedListOrderPos_le_length (c : WickContraction n) (i : Fin n.succ) :
+    c.uncontractedListOrderPos i ≤ c.uncontractedList.length := by
   simp only [uncontractedListOrderPos, Nat.succ_eq_add_one]
   have h1 := c.uncontractedList.length_filter_le (fun x => x.1 < i.1)
   omega
@@ -636,9 +636,9 @@ lemma orderedInsert_succAboveEmb_uncontractedList_eq_insertIdx (c : WickContract
     funext x
     simp only [Function.comp_apply, Fin.succAbove, decide_eq_decide]
     split
-    · simp only [Fin.lt_def, Fin.coe_castSucc]
+    · simp only [Fin.lt_def, Fin.val_castSucc]
     · rename_i h
-      simp_all only [Fin.lt_def, Fin.coe_castSucc, not_lt, Fin.val_succ]
+      simp_all only [Fin.lt_def, Fin.val_castSucc, not_lt, Fin.val_succ]
       omega
   · exact uncontractedList_succAboveEmb_sorted c i
 

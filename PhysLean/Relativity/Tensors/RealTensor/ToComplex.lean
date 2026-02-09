@@ -190,9 +190,7 @@ lemma contrT_toComplex {n : ℕ}
         simpa [Function.comp_apply] using
           And.intro h.1 (by
             -- τ-совместимость
-            simpa [tau_colorToComplex] using congrArg colorToComplex h.2
-          )
-      )
+            simpa [tau_colorToComplex] using congrArg colorToComplex h.2))
       (toComplex (c := c) t) := by
   sorry
 
@@ -214,8 +212,7 @@ def evalIdxToComplex {n : ℕ}
     | up =>
         simp [hci, colorToComplex, Function.comp_apply, complex_repDim_up]
     | down =>
-        simp [hci, colorToComplex, Function.comp_apply, complex_repDim_down]
-  ) b
+        simp [hci, colorToComplex, Function.comp_apply, complex_repDim_down]) b
 
 /-- `evalT` on the complex side, but with output colors as `colorToComplex ∘ (c ∘ i.succAbove)`.
 Implemented via `permT (σ := id) (by simp)` as a transport. -/
