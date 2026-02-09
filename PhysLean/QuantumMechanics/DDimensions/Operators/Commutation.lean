@@ -226,7 +226,8 @@ lemma angularMomentumSqr_commutation_angularMomentum {d : ℕ} (i j : Fin d) :
     neg_comp, comp_neg, neg_neg, smul_neg, sub_neg_eq_add]
   simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.add_apply,
     ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.neg_apply, ContinuousLinearMap.zero_apply, SchwartzMap.add_apply, SchwartzMap.sum_apply, SchwartzMap.sub_apply, SchwartzMap.smul_apply, SchwartzMap.neg_apply,
+    ContinuousLinearMap.neg_apply, ContinuousLinearMap.zero_apply, SchwartzMap.add_apply,
+    SchwartzMap.sum_apply, SchwartzMap.sub_apply, SchwartzMap.smul_apply, SchwartzMap.neg_apply,
     SchwartzMap.zero_apply]
   ring_nf
   exact Fintype.sum_eq_zero _ (congrFun rfl)
