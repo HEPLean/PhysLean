@@ -20,7 +20,8 @@ body:
     options:
       - label: Update mathlib rev in lakefile.toml.
       - label: Update doc-gen4 rev in lakefile.toml.
-      - label: Run `rm -rf .lake; lake update`.
+      - label: Remove the `.lake` file, e.g. on unix run `rm -rf .lake`.
+      - label: Run `lake update`.
       - label: Check `lean-toolchain` updates correctly.
       - label: Update the Lean version badge in the `README.md` file.
   validations:
@@ -55,6 +56,7 @@ body:
     description: Please check off these items as you complete them
     options:
       - label: Create a tag for the new version.
+      - label: Put a bump notice on this [thread](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/topic/Bumps.20of.20PhysLean.2E/with/572707099).
   validations:
     required: false
 - type: textarea
