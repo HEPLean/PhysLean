@@ -3,6 +3,7 @@ Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gregory J. Loges
 -/
+import PhysLean.Mathematics.KroneckerDelta
 import PhysLean.QuantumMechanics.DDimensions.Operators.AngularMomentum
 /-!
 
@@ -13,14 +14,12 @@ import PhysLean.QuantumMechanics.DDimensions.Operators.AngularMomentum
 namespace QuantumMechanics
 noncomputable section
 open Constants
+open KroneckerDelta
 open SchwartzMap ContinuousLinearMap
 
-/-- Kronecker delta, `δ[i,j] = if i = j then 1 else 0`. -/
-local macro "δ[" i:term "," j:term "]" : term => `(if $i = $j then 1 else 0)
-
-private lemma delta_symm (i j : Fin d) :
+private lemma ite_cond_symm (i j : Fin d) :
     (if i = j then A else B) = (if j = i then A else B) :=
-  ite_cond_congr (Eq.propIntro (fun a ↦ Eq.symm a) (fun a ↦ Eq.symm a))
+  ite_cond_congr (Eq.propIntro Eq.symm Eq.symm)
 
 lemma lie_leibniz_left {d : ℕ} (A B C : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) :
     ⁅A ∘L B, C⁆ = A ∘L ⁅B, C⁆ + ⁅A, C⁆ ∘L B := by
@@ -83,7 +82,7 @@ lemma momentumSqr_commutation_momentum {d : ℕ} (i : Fin d) :
 /-- The canonical commutation relations: `[xᵢ, pⱼ] = iℏ δᵢⱼ𝟙`. -/
 lemma position_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐩[j]⁆ =
     (Complex.I * ℏ * δ[i,j]) • ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
-  dsimp only [Bracket.bracket]
+  dsimp only [Bracket.bracket, kronecker_delta]
   ext ψ x
   simp only [ContinuousLinearMap.smul_apply, SchwartzMap.smul_apply, coe_id', id_eq, smul_eq_mul,
     coe_sub', coe_mul, Pi.sub_apply, Function.comp_apply, SchwartzMap.sub_apply]
@@ -94,7 +93,7 @@ lemma position_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐩[j
   have h : (fun x ↦ ↑(x i) * ψ x) = (fun (x : Space d) ↦ x i) • ψ := rfl
   rw [h]
   rw [Space.deriv_smul (by fun_prop) (SchwartzMap.differentiableAt ψ)]
-  rw [Space.deriv_component, delta_symm j i]
+  rw [Space.deriv_component, ite_cond_symm j i]
   simp only [mul_add, Complex.real_smul, ite_smul, one_smul, zero_smul, mul_ite, mul_one, mul_zero,
     ite_mul, zero_mul]
   ring
@@ -119,6 +118,7 @@ lemma position_commutation_momentumSqr {d : ℕ} (i : Fin d) : ⁅𝐱[i], 𝐩�
   unfold momentumOperatorSqr
   rw [lie_sum]
   simp only [position_commutation_momentum_momentum]
+  dsimp only [kronecker_delta]
   simp only [mul_ite, mul_one, mul_zero, ite_smul, zero_smul, Finset.sum_add_distrib,
     Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
   ext ψ x
@@ -138,7 +138,8 @@ lemma angularMomentum_commutation_position {d : ℕ} (i j k : Fin d) : ⁅𝐋[i
   rw [position_commutation_position, position_commutation_position]
   rw [← lie_skew, position_commutation_momentum]
   rw [← lie_skew, position_commutation_momentum]
-  rw [delta_symm k i, delta_symm k j]
+  dsimp only [kronecker_delta]
+  rw [ite_cond_symm k i, ite_cond_symm k j]
   simp only [ContinuousLinearMap.comp_neg, ContinuousLinearMap.comp_smul, comp_id, zero_comp,
     add_zero, add_comm, sub_neg_eq_add, ← sub_eq_add_neg]
 
@@ -165,6 +166,7 @@ lemma angularMomentum_commutation_momentumSqr {d : ℕ} (i j : Fin d) :
     rw [angularMomentum_commutation_momentum]
     simp only [comp_sub, comp_smulₛₗ, RingHom.id_apply, sub_comp, smul_comp]
     rw [momentum_momentum_eq _ i, momentum_momentum_eq j _]
+  dsimp only [kronecker_delta]
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, mul_ite, mul_zero, ite_smul,
     zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, sub_self, add_zero]
 
@@ -193,7 +195,7 @@ lemma angularMomentum_commutation_angularMomentum {d : ℕ} (i j k l : Fin d) : 
   rw [lie_leibniz_right, lie_leibniz_right]
   rw [angularMomentum_commutation_momentum, angularMomentum_commutation_position]
   rw [angularMomentum_commutation_momentum, angularMomentum_commutation_position]
-  unfold angularMomentumOperator
+  dsimp only [angularMomentumOperator, kronecker_delta]
   simp only [ContinuousLinearMap.comp_sub, ContinuousLinearMap.sub_comp,
     ContinuousLinearMap.comp_smul, ContinuousLinearMap.smul_comp]
   ext ψ x
@@ -212,6 +214,7 @@ lemma angularMomentumSqr_commutation_angularMomentum {d : ℕ} (i j : Fin d) :
     simp only [smul_lie]
     rw [lie_leibniz_left]
     rw [angularMomentum_commutation_angularMomentum]
+  dsimp only [kronecker_delta]
   simp only [comp_add, comp_sub, add_comp, sub_comp, comp_smul, smul_comp, smul_add, smul_sub,
     smul_smul, mul_ite, mul_zero, mul_one, ← mul_assoc]
   simp only [ite_smul, zero_smul]
