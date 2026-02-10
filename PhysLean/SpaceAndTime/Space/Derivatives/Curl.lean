@@ -129,7 +129,6 @@ lemma curl_smul (f : Space → EuclideanSpace ℝ (Fin 3)) (k : ℝ)
   fin_cases i <;>
   · simp only [Fin.isValue, Pi.smul_apply, PiLp.smul_apply, smul_eq_mul, Fin.zero_eta]
     rw [deriv_coord_smul, deriv_coord_smul, mul_sub]
-    simp only [Fin.isValue, Pi.smul_apply, smul_eq_mul]
     repeat fun_prop
 
 /-!

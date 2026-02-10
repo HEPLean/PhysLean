@@ -132,20 +132,29 @@ lemma deriv_coord_add (f1 f2 : Space d → EuclideanSpace ℝ (Fin d))
 
 -/
 
-/-- Scalar multiplication on space derivatives. -/
-lemma deriv_smul [NormedAddCommGroup M] [NormedSpace ℝ M]
-    (f : Space d → M) (k : ℝ) (hf : Differentiable ℝ f) :
-    ∂[u] (k • f) = (k • ∂[u] f) := by
+/-- Space derivatives on scalar product of functions. -/
+lemma deriv_smul [NormedAddCommGroup M] [NormedSpace ℝ M] [NontriviallyNormedField 𝕜]
+    [NormedAlgebra ℝ 𝕜] [NormedSpace 𝕜 M] {c : Space d → 𝕜} {f : Space d → M}
+    (hc : DifferentiableAt ℝ c x) (hf : DifferentiableAt ℝ f x) :
+    ∂[u] (c • f) x = c x • ∂[u] f x + ∂[u] c x • f x := by
+  unfold deriv
+  rw [fderiv_smul hc hf]
+  rfl
+
+/-- Space derivatives on scalar times function. -/
+lemma deriv_const_smul [NormedAddCommGroup M] [NormedSpace ℝ M] [Semiring R]
+    [Module R M] [SMulCommClass ℝ R M] [ContinuousConstSMul R M] {f : Space d → M} (c : R)
+    (h : Differentiable ℝ f) : ∂[u] (c • f) = c • ∂[u] f := by
   unfold deriv
   ext x
   rw [fderiv_const_smul]
-  rfl
+  rw [ContinuousLinearMap.coe_smul', Pi.smul_apply, Pi.smul_apply]
   fun_prop
 
 /-- Coordinate-wise scalar multiplication on space derivatives. -/
 lemma deriv_coord_smul (f : Space d → EuclideanSpace ℝ (Fin d)) (k : ℝ)
     (hf : Differentiable ℝ f) :
-    ∂[u] (fun x => k * f x i) x= (k • ∂[u] (fun x => f x i)) x:= by
+    ∂[u] (fun x => k * f x i) x = k * ∂[u] (fun x => f x i) x := by
   unfold deriv
   rw [fderiv_const_mul]
   simp only [ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]

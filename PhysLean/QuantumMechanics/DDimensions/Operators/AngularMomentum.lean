@@ -29,37 +29,31 @@ open ContDiff SchwartzMap
 
 /-- Component `i j` of the angular momentum operator is the continuous linear map
 from `𝓢(Space d, ℂ)` to itself defined by `𝐋ᵢⱼ ≔ 𝐱ᵢ∘𝐩ⱼ - 𝐱ⱼ∘𝐩ᵢ`. -/
-@[sorryful]
 def angularMomentumOperator {d : ℕ} (i j : Fin d) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
   𝐱[i] ∘L 𝐩[j] - 𝐱[j] ∘L 𝐩[i]
 
 @[inherit_doc angularMomentumOperator]
 macro "𝐋[" i:term "," j:term "]" : term => `(angularMomentumOperator $i $j)
 
-@[sorryful]
 lemma angularMomentumOperator_apply_fun {d : ℕ} (i j : Fin d) (ψ : 𝓢(Space d, ℂ)) :
     𝐋[i,j] ψ = 𝐱[i] (𝐩[j] ψ) - 𝐱[j] (𝐩[i] ψ) := rfl
 
-@[sorryful]
 lemma angularMomentumOperator_apply {d : ℕ} (i j : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
     𝐋[i,j] ψ x = 𝐱[i] (𝐩[j] ψ) x - 𝐱[j] (𝐩[i] ψ) x := rfl
 
 /-- The square of the angular momentum operator, `𝐋² ≔ ½ ∑ᵢⱼ 𝐋ᵢⱼ∘𝐋ᵢⱼ`. -/
-@[sorryful]
 def angularMomentumOperatorSqr {d : ℕ} : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
   ∑ i, ∑ j, (2 : ℂ)⁻¹ • 𝐋[i,j] ∘L 𝐋[i,j]
 
 @[inherit_doc angularMomentumOperatorSqr]
 notation "𝐋²" => angularMomentumOperatorSqr
 
-@[sorryful]
 lemma angularMomentumOperatorSqr_apply_fun {d : ℕ} (ψ : 𝓢(Space d, ℂ)) :
     𝐋² ψ = ∑ i, ∑ j, (2 : ℂ)⁻¹ • 𝐋[i,j] (𝐋[i,j] ψ) := by
   dsimp only [angularMomentumOperatorSqr]
   simp only [ContinuousLinearMap.coe_sum', ContinuousLinearMap.coe_smul',
     ContinuousLinearMap.coe_comp', Finset.sum_apply, Pi.smul_apply, Function.comp_apply]
 
-@[sorryful]
 lemma angularMomentumOperatorSqr_apply {d : ℕ} (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
     𝐋² ψ x = ∑ i, ∑ j, (2 : ℂ)⁻¹ * 𝐋[i,j] (𝐋[i,j] ψ) x := by
   rw [angularMomentumOperatorSqr_apply_fun]
@@ -74,12 +68,10 @@ lemma angularMomentumOperatorSqr_apply {d : ℕ} (ψ : 𝓢(Space d, ℂ)) (x : 
 -/
 
 /-- The angular momentum operator is antisymmetric, `𝐋ᵢⱼ = -𝐋ⱼᵢ` -/
-@[sorryful]
 lemma angularMomentumOperator_antisymm {d : ℕ} (i j : Fin d) : 𝐋[i,j] = - 𝐋[j,i] :=
   Eq.symm (neg_sub _ _)
 
 /-- Angular momentum operator components with repeated index vanish, `𝐋ᵢᵢ = 0`. -/
-@[sorryful]
 lemma angularMomentumOperator_eq_zero {d : ℕ} (i : Fin d) : 𝐋[i,i] = 0 := sub_self _
 
 /-
@@ -98,18 +90,15 @@ lemma angularMomentumOperator_eq_zero {d : ℕ} (i : Fin d) : 𝐋[i,i] = 0 := s
 -/
 
 /-- In one dimension the angular momentum operator is trivial. -/
-@[sorryful]
 lemma angularMomentumOperator1D_trivial : ∀ (i j : Fin 1), 𝐋[i,j] = 0 := by
   intro i j
   fin_cases i, j
   exact angularMomentumOperator_eq_zero 0
 
 /-- The angular momentum (pseudo)scalar operator in two dimensions, `𝐋 ≔ 𝐋₀₁`. -/
-@[sorryful]
 def angularMomentumOperator2D : 𝓢(Space 2, ℂ) →L[ℂ] 𝓢(Space 2, ℂ) := 𝐋[0,1]
 
 /-- The angular momentum (pseudo)vector operator in three dimension, `𝐋ᵢ ≔ ½ ∑ⱼₖ εᵢⱼₖ 𝐋ⱼₖ`. -/
-@[sorryful]
 def angularMomentumOperator3D (i : Fin 3) : 𝓢(Space 3, ℂ) →L[ℂ] 𝓢(Space 3, ℂ) :=
   match i with
     | 0 => 𝐋[1,2]
