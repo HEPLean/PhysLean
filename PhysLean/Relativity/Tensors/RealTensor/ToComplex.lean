@@ -7,9 +7,53 @@ import PhysLean.Meta.Linters.Sorry
 import PhysLean.Relativity.Tensors.ComplexTensor.Basic
 /-!
 
-## Complex Lorentz tensors from Real Lorentz tensors
+# Complex Lorentz tensors from real Lorentz tensors
 
-In this module we define the equivariant semi-linear map from real Lorentz tensors to
+## i. Overview
+
+In this module we describe how to pass from real Lorentz tensors to complex Lorentz tensors
+in a functorial way.
+Specifically, we construct a canonical equivariant semilinear map
+
+* `toComplex : ℝT(3, c) →ₛₗ[Complex.ofRealHom] ℂT(colorToComplex ∘ c)`
+
+which is compatible with the natural operations on tensors (permutations of
+indices, tensor products, contractions and evaluations).
+
+## ii. Key results
+
+The main definitions and statements are:
+
+* `colorToComplex` upgrades the colour of a real Lorentz tensor to the
+  corresponding complex Lorentz colour.
+* `TensorSpecies.Tensor.ComponentIdx.complexify` transports component indices
+  along `colorToComplex`.
+* `toComplex` is the basic semilinear map from real to complex Lorentz tensors.
+* `toComplex_basis` and `toComplex_pure_basisVector` show that `toComplex`
+  sends basis tensors to basis tensors.
+* `toComplex_eq_zero_iff` and `toComplex_injective` show that `toComplex` is
+  injective.
+* `toComplex_equivariant` states that `toComplex` is equivariant for the action
+  of the complexified Lorentz group.
+* `permT_toComplex`, `prodT_toComplex`, `contrT_toComplex` and `evalT_toComplex`
+  express that `toComplex` commutes with the basic tensor operations.
+
+## iii. Table of contents
+
+* A. Colours and component indices
+* B. The semilinear map `toComplex`
+  * B.1. Expression in the tensor basis
+  * B.2. Behaviour on basis vectors and injectivity
+  * B.3. Equivariance under the Lorentz action
+* C. Compatibility with permutations: `permT`
+* D. Compatibility with tensor products: `prodT`
+* E. Compatibility with contraction: `contrT`
+* F. Compatibility with evaluation: `evalT`
+
+## iv. References
+
+The general formalism of Lorentz tensors and their operations is developed in
+other parts of the library; here we only specialise to the passage from real to
 complex Lorentz tensors.
 
 -/
@@ -19,6 +63,15 @@ namespace realLorentzTensor
 open Module TensorSpecies
 open Tensor
 open complexLorentzTensor
+
+/-!
+
+## A. Colours and component indices
+
+We first explain how the Lorentz colour data and component indices for real
+tensors are transported to the complex setting.
+
+-/
 
 /-- The map from colors of real Lorentz tensors to complex Lorentz tensors. -/
 def colorToComplex (c : realLorentzTensor.Color) : complexLorentzTensor.Color :=
@@ -64,6 +117,17 @@ lemma ComponentIdx.complexify_toFun_apply {n} {c : Fin n → realLorentzTensor.C
     (f : ComponentIdx (S := realLorentzTensor) c) (j : Fin n) :
     (ComponentIdx.complexify.toFun f) j = (ComponentIdx.complexify f) j :=
   rfl
+
+/-!
+
+## B. The semilinear map `toComplex`
+
+We now define the basic semilinear map from real Lorentz tensors to complex
+Lorentz tensors.  It is characterised by sending the standard tensor basis on
+the real side to the corresponding basis on the complex side, and is therefore
+determined by the behaviour on components.
+
+-/
 
 /-- The semilinear map from real Lorentz tensors to complex Lorentz tensors,
   defined through basis. -/
@@ -152,6 +216,16 @@ open Matrix
 open MatrixGroups
 open complexLorentzTensor
 open Lorentz.SL2C in
+
+/-!
+
+### B.3. Equivariance under the Lorentz action
+
+Finally we record that `toComplex` is equivariant for the natural action of
+`SL(2, ℂ)` (and hence the induced Lorentz action) on tensors.
+
+-/
+
 /-- The map `toComplex` is equivariant. -/
 @[sorryful]
 lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.Color}
@@ -161,7 +235,11 @@ lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.Color}
 
 /-!
 
-## Relation to tensor operations
+## C. Compatibility with permutations: `permT`
+
+We first show that complexification is compatible with permutation of tensor
+slots.  On colours this is encoded in the `PermCond` predicate, and on tensors
+by the operator `permT`.
 
 -/
 
@@ -240,6 +318,12 @@ lemma permT_toComplex {n m : ℕ}
     dsimp [P] at h1 h2 ⊢
     refine (by
       simp [map_add, h1, h2])
+
+/-!
+
+### prodT commutes with toComplex
+
+-/
 
 /-- `colorToComplex` commutes with `Fin.append` (as functions). -/
 @[simp]
@@ -427,6 +511,12 @@ lemma prodT_toComplex {n m : ℕ}
   -- Apply the resulting property to `t1`.
   exact hP t1
 
+/-!
+
+### contrT commutes with toComplex
+
+-/
+
 /-- `τ` commutes with `colorToComplex` on the Lorentz `up/down` colors. -/
 @[simp]
 lemma tau_colorToComplex (x : realLorentzTensor.Color) :
@@ -446,6 +536,12 @@ lemma contrT_toComplex {n : ℕ}
             simpa [tau_colorToComplex] using congrArg colorToComplex h.2))
       (toComplex (c := c) t) := by
   sorry
+
+/-!
+
+### evalT commutes with toComplex
+
+-/
 
 @[simp]
 lemma complex_repDim_up :
