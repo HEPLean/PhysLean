@@ -216,6 +216,38 @@ def stabilityCounterExample : PotentialParameters := {(0 : PotentialParameters) 
     𝓵₆ := -2
     𝓵₇ := -2}
 
+lemma stabilityCounterExample_ξ  :
+    stabilityCounterExample.ξ = fun
+      | Sum.inl 0 => 0
+      | Sum.inr 0 => 0
+      | Sum.inr 1 => 1
+      | Sum.inr 2 => 0 := by
+  funext μ
+  simp [stabilityCounterExample, ξ]
+
+lemma stabilityCounterExample_η :
+  stabilityCounterExample.η = fun μ => fun ν =>
+    match μ, ν with
+    | Sum.inl 0, Sum.inl 0 => 1
+    | Sum.inl 0, Sum.inr 0 => -1
+    | Sum.inl 0, Sum.inr 1 => 0
+    | Sum.inl 0, Sum.inr 2 => 0
+    | Sum.inr 0, Sum.inl 0 => -1
+    | Sum.inr 1, Sum.inl 0 => 0
+    | Sum.inr 2, Sum.inl 0 => 0
+    | Sum.inr 0, Sum.inr 0 => 1
+    | Sum.inr 1, Sum.inr 1 => 0
+    | Sum.inr 2, Sum.inr 2 => 0
+    | Sum.inr 0, Sum.inr 1 => 0
+    | Sum.inr 2, Sum.inr 0 => 0
+    | Sum.inr 2, Sum.inr 1 => 0
+    | Sum.inr 1, Sum.inr 0 => 0
+    | Sum.inr 0, Sum.inr 2 => 0
+    | Sum.inr 1, Sum.inr 2 => 0 := by
+  funext μ ν
+  simp [stabilityCounterExample, η]
+  ring_nf
+
 end PotentialParameters
 
 open ComplexConjugate
