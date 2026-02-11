@@ -321,7 +321,7 @@ lemma permT_toComplex {n m : ℕ}
 
 /-!
 
-### prodT commutes with toComplex
+### D. Compatibility with tensor products: `prodT`
 
 -/
 
@@ -513,7 +513,7 @@ lemma prodT_toComplex {n m : ℕ}
 
 /-!
 
-### contrT commutes with toComplex
+### E. Compatibility with contraction: `contrT`
 
 -/
 
@@ -539,7 +539,7 @@ lemma contrT_toComplex {n : ℕ}
 
 /-!
 
-### evalT commutes with toComplex
+### F. Compatibility with evaluation: `evalT`
 
 -/
 
