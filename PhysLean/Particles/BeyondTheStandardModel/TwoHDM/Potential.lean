@@ -226,7 +226,7 @@ lemma stabilityCounterExample_ξ  :
   simp [stabilityCounterExample, ξ]
 
 lemma stabilityCounterExample_η :
-  stabilityCounterExample.η = fun μ => fun ν =>
+    stabilityCounterExample.η = fun μ => fun ν =>
     match μ, ν with
     | Sum.inl 0, Sum.inl 0 => 1
     | Sum.inl 0, Sum.inr 0 => -1
