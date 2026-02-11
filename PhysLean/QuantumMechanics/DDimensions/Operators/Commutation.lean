@@ -43,6 +43,24 @@ lemma position_commutation_position {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐱[j
     ContinuousLinearMap.zero_apply, SchwartzMap.zero_apply, positionOperator_apply]
   ring
 
+lemma position_position_eq {d : ℕ} (i j : Fin d) : 𝐱[i] ∘L 𝐱[j] = 𝐱[j] ∘L 𝐱[i] := by
+  rw [← sub_eq_zero]
+  exact position_commutation_position i j
+
+lemma position_commutation_radiusRegPow (hε : 0 < ε) (i : Fin d) :
+    ⁅𝐱[i], 𝐫[d,ε,p]⁆ = 0 := by
+  dsimp only [Bracket.bracket]
+  ext ψ x
+  simp only [coe_sub', coe_mul, Pi.sub_apply, Function.comp_apply, SchwartzMap.sub_apply]
+  simp only [positionOperator_apply, radiusRegPowOperator_apply hε]
+  simp only [Complex.real_smul, ContinuousLinearMap.zero_apply, SchwartzMap.zero_apply]
+  ring
+
+lemma position_radiusRegPow_eq (hε : 0 < ε) (i : Fin d) :
+    𝐱[i] ∘L 𝐫[ε,p] = 𝐫[ε,p] ∘L 𝐱[i] := by
+  rw [← sub_eq_zero]
+  exact position_commutation_radiusRegPow hε _
+
 /-
 ## Momentum / momentum commutators
 -/
@@ -87,7 +105,7 @@ lemma position_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐩[j
   simp only [ContinuousLinearMap.smul_apply, SchwartzMap.smul_apply, coe_id', id_eq, smul_eq_mul,
     coe_sub', coe_mul, Pi.sub_apply, Function.comp_apply, SchwartzMap.sub_apply]
   rw [positionOperator_apply, momentumOperator_apply_fun]
-  rw [momentumOperator_apply, positionOperator_apply]
+  rw [momentumOperator_apply, positionOperator_apply_fun]
   simp only [neg_mul, Pi.smul_apply, smul_eq_mul, mul_neg, sub_neg_eq_add]
 
   have h : (fun x ↦ ↑(x i) * ψ x) = (fun (x : Space d) ↦ x i) • ψ := rfl
@@ -97,6 +115,12 @@ lemma position_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐩[j
   simp only [mul_add, Complex.real_smul, ite_smul, one_smul, zero_smul, mul_ite, mul_one, mul_zero,
     ite_mul, zero_mul]
   ring
+
+lemma momentum_position_eq (i j : Fin d) : 𝐩[j] ∘L 𝐱[i] =
+    𝐱[i] ∘L 𝐩[j] - (Complex.I * ℏ * δ[i,j]) • ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
+  rw [← position_commutation_momentum]
+  dsimp only [Bracket.bracket]
+  simp only [ContinuousLinearMap.mul_def, sub_sub_cancel]
 
 lemma position_position_commutation_momentum {d : ℕ} (i j k : Fin d) : ⁅𝐱[i] ∘L 𝐱[j], 𝐩[k]⁆ =
     (Complex.I * ℏ * δ[i,k]) • 𝐱[j] + (Complex.I * ℏ * δ[j,k]) • 𝐱[i] := by
@@ -126,6 +150,80 @@ lemma position_commutation_momentumSqr {d : ℕ} (i : Fin d) : ⁅𝐱[i], 𝐩�
     SchwartzMap.smul_apply, smul_eq_mul]
   ring
 
+lemma radiusRegPow_commutation_momentum (hε : 0 < ε) (i : Fin d) :
+    ⁅𝐫[d,ε,p], 𝐩[i]⁆ = (p * Complex.I * ℏ) • 𝐫[ε,p-2] ∘L 𝐱[i] := by
+  dsimp only [Bracket.bracket]
+  ext ψ x
+  simp only [coe_sub', coe_mul, Pi.sub_apply, Function.comp_apply, SchwartzMap.sub_apply, coe_smul',
+    coe_comp', Pi.smul_apply, SchwartzMap.smul_apply, smul_eq_mul]
+  simp only [momentumOperator_apply, positionOperator_apply, radiusRegPowOperator_apply_fun hε]
+
+  have hne : ∀ x : Space d, ‖x‖ ^ 2 + ε ^ 2 ≠ 0 := by
+    intro x
+    apply ne_of_gt
+    exact add_pos_of_nonneg_of_pos (sq_nonneg _) (sq_pos_of_pos hε)
+
+  have h : (fun x ↦ (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2) • ψ x) =
+    (fun (x : Space d) ↦ (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2)) • ψ := rfl
+  have h' : ∂[i] (fun x ↦ (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2)) =
+      fun x ↦ p * (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2 - 1) * x i := by
+    trans ∂[i] ((fun x ↦ x ^ (p / 2)) ∘ (fun x ↦ ‖x‖ ^ 2 + ε ^ 2))
+    · congr
+    ext x
+    rw [Space.deriv_eq, fderiv_comp]
+    · simp only [fderiv_add_const, fderiv_norm_sq_apply, comp_smul, coe_smul', coe_comp',
+        coe_innerSL_apply, Pi.smul_apply, Function.comp_apply, Space.inner_basis,
+        fderiv_eq_smul_deriv, smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat]
+      rw [deriv_rpow_const]
+      · simp only [deriv_id'', one_mul]
+        ring
+      · fun_prop
+      · left
+        exact hne _
+    · exact Real.differentiableAt_rpow_const_of_ne (p / 2) (hne x)
+    · exact Differentiable.differentiableAt (by fun_prop)
+
+  rw [h, Space.deriv_smul]
+  · rw [h']
+    simp only [neg_mul, smul_neg, Complex.real_smul, Complex.ofReal_mul, sub_neg_eq_add]
+    ring_nf
+  · refine DifferentiableAt.rpow ?_ (by fun_prop) (hne _)
+    exact Differentiable.differentiableAt (by fun_prop)
+  · fun_prop
+
+lemma momentum_radiusRegPow_eq (hε : 0 < ε) (i : Fin d) :
+    𝐩[i] ∘L 𝐫[ε,p] = 𝐫[ε,p] ∘L 𝐩[i] - (p * Complex.I * ℏ) • 𝐫[ε,p-2] ∘L 𝐱[i] := by
+  rw [← radiusRegPow_commutation_momentum hε]
+  dsimp only [Bracket.bracket]
+  simp only [ContinuousLinearMap.mul_def, sub_sub_cancel]
+
+lemma radiusRegPow_commutation_momentumSqr (hε : 0 < ε) :
+    ⁅𝐫[d,ε,p], momentumOperatorSqr (d := d)⁆ =
+    (2 * p * Complex.I * ℏ) • 𝐫[ε,p-2] ∘L ∑ i, 𝐱[i] ∘L 𝐩[i]
+    + (p * ℏ ^ 2) • ((d + p - 2) • 𝐫[ε,p-2] - (ε ^ 2 * (p - 2)) • 𝐫[ε,p-4]) := by
+  unfold momentumOperatorSqr
+  rw [lie_sum]
+  conv_lhs =>
+    enter [2, i]
+    rw [lie_leibniz_right, radiusRegPow_commutation_momentum hε]
+    rw [comp_smul, ← comp_assoc, momentum_radiusRegPow_eq hε]
+    rw [sub_comp, comp_assoc, momentum_position_eq]
+    simp only [kronecker_delta, ↓reduceIte, mul_one]
+  simp only [smul_comp, comp_sub, comp_smul, comp_id, smul_sub, comp_assoc,
+    Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.smul_sum, Finset.sum_const,
+    Finset.card_univ, Fintype.card_fin, ← ContinuousLinearMap.comp_finset_sum]
+  rw [positionOperatorSqr_eq hε, comp_sub, radiusRegPowOperator_comp_eq hε, comp_smul, comp_id]
+  rw [← Nat.cast_smul_eq_nsmul ℂ]
+  ext ψ x
+  simp only [Complex.ofReal_sub, Complex.ofReal_ofNat, sub_add_cancel, coe_sub', Pi.sub_apply,
+    ContinuousLinearMap.add_apply, coe_smul', coe_comp', coe_sum', Pi.smul_apply,
+    Function.comp_apply, Finset.sum_apply, map_sum, SchwartzMap.sub_apply, SchwartzMap.add_apply,
+    SchwartzMap.smul_apply, SchwartzMap.sum_apply, smul_eq_mul, Complex.real_smul,
+    Complex.ofReal_pow, Complex.ofReal_add, Complex.ofReal_natCast, Complex.ofReal_mul]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
+
 /-
 ## Angular momentum / position commutators
 -/
@@ -143,6 +241,25 @@ lemma angularMomentum_commutation_position {d : ℕ} (i j k : Fin d) : ⁅𝐋[i
   simp only [ContinuousLinearMap.comp_neg, ContinuousLinearMap.comp_smul, comp_id, zero_comp,
     add_zero, add_comm, sub_neg_eq_add, ← sub_eq_add_neg]
 
+lemma angularMomentum_commutation_radiusRegPow (hε : 0 < ε) (i j : Fin d) :
+    ⁅𝐋[i,j], 𝐫[d,ε,p]⁆ = 0 := by
+  dsimp only [Bracket.bracket]
+  unfold angularMomentumOperator
+  simp only [sub_mul, ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc]
+  repeat rw [momentum_radiusRegPow_eq hε]
+
+  simp only [comp_sub, comp_smulₛₗ, RingHom.id_apply, ← ContinuousLinearMap.comp_assoc]
+  repeat rw [position_radiusRegPow_eq hε]
+  simp only [ContinuousLinearMap.comp_assoc]
+  rw [position_position_eq]
+  simp only [sub_sub_sub_cancel_right, sub_self]
+
+lemma angularMomentumSqr_commutation_radiusRegPow (hε : 0 < ε) :
+    ⁅angularMomentumOperatorSqr (d := d), 𝐫[d,ε,p]⁆ = 0 := by
+  unfold angularMomentumOperatorSqr
+  simp only [sum_lie, smul_lie, lie_leibniz_left, angularMomentum_commutation_radiusRegPow hε,
+    comp_zero, zero_comp, add_zero, smul_zero, Finset.sum_const_zero]
+
 /-
 ## Angular momentum / momentum commutators
 -/
@@ -155,6 +272,13 @@ lemma angularMomentum_commutation_momentum {d : ℕ} (i j k : Fin d) : ⁅𝐋[i
   rw [momentum_commutation_momentum, momentum_commutation_momentum]
   rw [position_commutation_momentum, position_commutation_momentum]
   simp only [ContinuousLinearMap.smul_comp, id_comp, comp_zero, zero_add]
+
+lemma momentum_angularMomentum_eq {d : ℕ} (i j k : Fin d) : 𝐩[k] ∘L 𝐋[i,j] =
+    𝐋[i,j] ∘L 𝐩[k] - (Complex.I * ℏ * δ[i,k]) • 𝐩[j] + (Complex.I * ℏ * δ[j,k]) • 𝐩[i] := by
+  rw [← sub_eq_zero, sub_add]
+  rw [← angularMomentum_commutation_momentum]
+  dsimp only [Bracket.bracket]
+  simp only [ContinuousLinearMap.mul_def, sub_sub_cancel, sub_eq_zero]
 
 lemma angularMomentum_commutation_momentumSqr {d : ℕ} (i j : Fin d) :
     ⁅𝐋[i,j], momentumOperatorSqr (d := d)⁆ = 0 := by

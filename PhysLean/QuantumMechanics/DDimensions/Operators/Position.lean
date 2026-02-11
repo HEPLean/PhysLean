@@ -48,18 +48,18 @@ lemma positionOperator_apply (i : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d)
 -/
 
 /-- Power of regularized norm, `(‖x‖ ^ 2 + ε ^ 2) ^ (p / 2)` -/
-private def normRegularizedPow (p : ℝ) (ε : ℝ) : Space d → ℝ :=
+private def normRegularizedPow (ε p : ℝ) : Space d → ℝ :=
   fun x ↦ (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2)
 
 private lemma normRegularizedPow_hasTemperateGrowth (hε : 0 < ε) :
-    HasTemperateGrowth (normRegularizedPow (d := d) p ε) := by
+    HasTemperateGrowth (normRegularizedPow (d := d) ε p) := by
   -- Write `normRegularizedPow` as the composition of three simple functions
   -- to take advantage of `hasTemperateGrowth_one_add_norm_sq_rpow`
   let f1 := fun (x : ℝ) ↦ (ε ^ 2) ^ (p / 2) * x
   let f2 := fun (x : Space d) ↦ (1 + ‖x‖ ^ 2) ^ (p / 2)
   let f3 := fun (x : Space d) ↦ ε⁻¹ • x
 
-  have h123 : normRegularizedPow (d := d) p ε = f1 ∘ f2 ∘ f3 := by
+  have h123 : normRegularizedPow (d := d) ε p = f1 ∘ f2 ∘ f3 := by
     unfold normRegularizedPow f1 f2 f3
     ext x
     simp only [Function.comp_apply, norm_smul, norm_inv, Real.norm_eq_abs]
@@ -76,15 +76,15 @@ private lemma normRegularizedPow_hasTemperateGrowth (hε : 0 < ε) :
 
 /-- The (regularized) radius operator to power `p` is the continuous linear map
 from `𝓢(Space d, ℂ)` to itself which maps `ψ` to `(‖x‖²+ε²)^(p/2)•ψ`. -/
-def radiusRegPowOperator (p : ℝ) (ε : ℝ) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
-  SchwartzMap.smulLeftCLM ℂ (Complex.ofReal ∘ normRegularizedPow p ε)
+def radiusRegPowOperator (ε p : ℝ) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
+  SchwartzMap.smulLeftCLM ℂ (Complex.ofReal ∘ normRegularizedPow ε p)
 
 @[inherit_doc radiusRegPowOperator]
-macro "𝐫[" p:term "," ε:term "]" : term => `(radiusRegPowOperator $p $ε)
-macro "𝐫[" d:term ";" p:term "," ε:term "]" : term => `(radiusRegPowOperator (d := $d) $p $ε)
+macro "𝐫[" ε:term "," p:term "]" : term => `(radiusRegPowOperator $ε $p)
+macro "𝐫[" d:term "," ε:term "," p:term "]" : term => `(radiusRegPowOperator (d := $d) $ε $p)
 
 lemma radiusRegPowOperator_apply_fun (hε : 0 < ε) :
-    𝐫[p,ε] ψ = fun x ↦ (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2) • ψ x := by
+    𝐫[ε,p] ψ = fun x ↦ (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2) • ψ x := by
   unfold radiusRegPowOperator
   ext x
   rw [smulLeftCLM_apply_apply]
@@ -93,11 +93,11 @@ lemma radiusRegPowOperator_apply_fun (hε : 0 < ε) :
   · exact HasTemperateGrowth.comp (by fun_prop) (normRegularizedPow_hasTemperateGrowth hε)
 
 lemma radiusRegPowOperator_apply (hε : 0 < ε) :
-    𝐫[p,ε] ψ x = (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2) • ψ x := by
+    𝐫[ε,p] ψ x = (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2) • ψ x := by
   rw [radiusRegPowOperator_apply_fun hε]
 
-lemma radiusPowOperator_comp_eq (p q : ℝ) (hε : 0 < ε) :
-    𝐫[d;p,ε] ∘L 𝐫[q,ε] = 𝐫[p+q,ε] := by
+lemma radiusRegPowOperator_comp_eq (hε : 0 < ε) (p q : ℝ) :
+    𝐫[d,ε,p] ∘L 𝐫[ε,q] = 𝐫[ε,p+q] := by
   unfold radiusRegPowOperator
   ext ψ x
   simp only [ContinuousLinearMap.coe_comp', comp_apply]
@@ -112,11 +112,22 @@ lemma radiusPowOperator_comp_eq (p q : ℝ) (hε : 0 < ε) :
   repeat exact HasTemperateGrowth.comp (by fun_prop) (normRegularizedPow_hasTemperateGrowth hε)
 
 lemma radiusRegPowOperator_zero (hε : 0 < ε) :
-    𝐫[0,ε] = ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
+    𝐫[ε,0] = ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
   ext ψ x
-  rw [radiusRegPowOperator_apply, zero_div, Real.rpow_zero, one_smul]
-  rfl
-  exact hε
+  rw [radiusRegPowOperator_apply hε, zero_div, Real.rpow_zero, one_smul,
+    ContinuousLinearMap.coe_id', id_eq]
+
+lemma positionOperatorSqr_eq {ε d} (hε : 0 < ε): ∑ i, 𝐱[i] ∘L 𝐱[i] =
+    𝐫[ε,2] - ε ^ 2 • ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
+  ext ψ x
+  simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, SchwartzMap.sum_apply,
+    ContinuousLinearMap.comp_apply, ContinuousLinearMap.sub_apply, SchwartzMap.sub_apply,
+    ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, SchwartzMap.smul_apply]
+  simp only [positionOperator_apply_fun, radiusRegPowOperator_apply_fun hε]
+  simp only [← mul_assoc, ← Finset.sum_mul, ← Complex.ofReal_mul]
+  rw [div_self (by norm_num), Real.rpow_one, ← sub_smul, add_sub_cancel_right]
+  rw [Space.norm_sq_eq, Complex.real_smul, Complex.ofReal_sum]
+  simp only [pow_two]
 
 end
 end QuantumMechanics
