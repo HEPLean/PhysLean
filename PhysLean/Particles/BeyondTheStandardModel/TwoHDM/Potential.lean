@@ -439,6 +439,11 @@ lemma potential_stabilityCounterExample (H : TwoHiggsDoublet) :
   simp [potential, massTerm_stabilityCounterExample,
     quarticTerm_stabilityCounterExample_eq_norm_pow_four]
 
+lemma potential_eq_gramVector (P : PotentialParameters) (H : TwoHiggsDoublet) :
+    potential P H = ∑ μ, P.ξ μ * H.gramVector μ +
+    ∑ a, ∑ b, H.gramVector a * H.gramVector b * P.η a b := by
+  rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
+
 /-!
 
 ## E. Stability of the potential
