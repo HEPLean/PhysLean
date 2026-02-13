@@ -400,6 +400,11 @@ lemma quarticTerm_stabilityCounterExample_eq_norm_pow_four (H : TwoHiggsDoublet)
         ring
       _ = ‖H.Φ1 - H.Φ2‖ ^ 4 := by ring
 
+lemma quarticTerm_stabilityCounterExample_nonneg (H : TwoHiggsDoublet) :
+    0 ≤ quarticTerm .stabilityCounterExample H := by
+  rw [quarticTerm_stabilityCounterExample_eq_norm_pow_four]
+  positivity
+
 lemma massTerm_zero_of_quarticTerm_zero_stabilityCounterExample (H : TwoHiggsDoublet)
     (h : quarticTerm .stabilityCounterExample H = 0) :
     massTerm .stabilityCounterExample H = 0 := by
