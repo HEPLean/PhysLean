@@ -81,7 +81,6 @@ def radiusRegPowOperator (ε p : ℝ) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space 
 
 @[inherit_doc radiusRegPowOperator]
 macro "𝐫[" ε:term "," p:term "]" : term => `(radiusRegPowOperator $ε $p)
-macro "𝐫[" d:term "," ε:term "," p:term "]" : term => `(radiusRegPowOperator (d := $d) $ε $p)
 
 lemma radiusRegPowOperator_apply_fun (hε : 0 < ε) :
     𝐫[ε,p] ψ = fun x ↦ (‖x‖ ^ 2 + ε ^ 2) ^ (p / 2) • ψ x := by
@@ -97,7 +96,7 @@ lemma radiusRegPowOperator_apply (hε : 0 < ε) :
   rw [radiusRegPowOperator_apply_fun hε]
 
 lemma radiusRegPowOperator_comp_eq (hε : 0 < ε) (p q : ℝ) :
-    𝐫[d,ε,p] ∘L 𝐫[ε,q] = 𝐫[ε,p+q] := by
+    (radiusRegPowOperator (d := d) ε p) ∘L 𝐫[ε,q] = 𝐫[ε,p+q] := by
   unfold radiusRegPowOperator
   ext ψ x
   simp only [ContinuousLinearMap.coe_comp', comp_apply]
@@ -117,7 +116,7 @@ lemma radiusRegPowOperator_zero (hε : 0 < ε) :
   rw [radiusRegPowOperator_apply hε, zero_div, Real.rpow_zero, one_smul,
     ContinuousLinearMap.coe_id', id_eq]
 
-lemma positionOperatorSqr_eq {ε d} (hε : 0 < ε): ∑ i, 𝐱[i] ∘L 𝐱[i] =
+lemma positionOperatorSqr_eq (hε : 0 < ε) : ∑ i, 𝐱[i] ∘L 𝐱[i] =
     𝐫[ε,2] - ε ^ 2 • ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
   ext ψ x
   simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, SchwartzMap.sum_apply,
