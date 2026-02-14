@@ -3,6 +3,7 @@ import PhysLean.ClassicalMechanics.DampedHarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
+import PhysLean.ClassicalMechanics.HarmonicOscillator.ConfigurationSpace
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Lagrangian.TotalDerivativeEquivalence
 import PhysLean.ClassicalMechanics.Mass.MassUnit
