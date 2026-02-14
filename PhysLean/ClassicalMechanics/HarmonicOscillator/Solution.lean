@@ -722,10 +722,9 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   trans (sin (S.ω * t.val) * (S.ω * IC.x₀ 0)) +
     (-(S.ω • sin (S.ω * t.val) • IC.x₀) + cos (S.ω * t.val) • IC.v₀) 0
   · rw [h]
-    simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.neg_apply, smul_eq_mul,
-      PiLp.zero_apply, mul_zero, zero_add]
+    simp only [add_val, smul_val, neg_val, apply_zero, zero_val, mul_zero, zero_add]
     ring
-  · simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.neg_apply, smul_eq_mul, neg_mul]
+  · simp only [add_val, smul_val, neg_val, apply_zero, neg_mul]
     ring
   simp at h2
   rw [h2] at h ⊢
