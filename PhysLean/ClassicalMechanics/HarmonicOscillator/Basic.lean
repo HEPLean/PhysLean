@@ -387,9 +387,11 @@ lemma gradient_inner_self (x : ConfigurationSpace) :
   refine ext_inner_right (𝕜 := ℝ) fun y => ?_
   unfold gradient
   rw [InnerProductSpace.toDual_symm_apply]
-  rw [fderiv_inner_apply (differentiableAt_id) (differentiableAt_id)]
-  simp only [fderiv_id', ContinuousLinearMap.coe_id', id_eq]
-  simp only [inner_def, smul_val]
+  have hid : DifferentiableAt ℝ (fun y : ConfigurationSpace => y) x := differentiableAt_id
+  rw [show (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) =
+      fun y => ⟪(fun y => y) y, (fun y => y) y⟫_ℝ from rfl]
+  rw [fderiv_inner_apply (𝕜 := ℝ) hid hid]
+  simp only [fderiv_id', ContinuousLinearMap.coe_id', id_eq, inner_def, smul_val]
   ring
 
 lemma gradient_const_mul_inner_self (c : ℝ) (x : ConfigurationSpace) :
