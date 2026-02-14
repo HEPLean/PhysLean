@@ -226,6 +226,8 @@ import PhysLean.QFT.QED.AnomalyCancellation.Odd.Parameterization
 import PhysLean.QFT.QED.AnomalyCancellation.Permutations
 import PhysLean.QFT.QED.AnomalyCancellation.Sorts
 import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
+import PhysLean.QuantumMechanics.DDimensions.Hydrogen.Basic
+import PhysLean.QuantumMechanics.DDimensions.Hydrogen.LaplaceRungeLenzVector
 import PhysLean.QuantumMechanics.DDimensions.Operators.AngularMomentum
 import PhysLean.QuantumMechanics.DDimensions.Operators.Commutation
 import PhysLean.QuantumMechanics.DDimensions.Operators.Momentum
