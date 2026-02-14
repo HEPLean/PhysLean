@@ -392,7 +392,7 @@ lemma gradient_inner_self (x : ConfigurationSpace) :
       fun y => ⟪(fun y => y) y, (fun y => y) y⟫_ℝ from rfl]
   rw [fderiv_inner_apply (𝕜 := ℝ) hid hid]
   simp only [fderiv_id', ContinuousLinearMap.coe_id', id_eq, inner_def, smul_val]
-  ring
+  ring_nf
 
 lemma gradient_const_mul_inner_self (c : ℝ) (x : ConfigurationSpace) :
     gradient (fun y : ConfigurationSpace => c * ⟪y, y⟫_ℝ) x = (2 * c) • x := by
@@ -404,7 +404,7 @@ lemma gradient_const_mul_inner_self (c : ℝ) (x : ConfigurationSpace) :
             (c • fderiv ℝ (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) x) := by
           rw [fderiv_const_mul (ConfigurationSpace.differentiableAt_inner_self x)]
     _ = c • gradient (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) x := by
-          rfl
+          simp only [gradient, map_smul]
     _ = c • ((2 : ℝ) • x) := by
           rw [gradient_inner_self]
     _ = (2 * c) • x := by
@@ -430,7 +430,7 @@ lemma gradient_lagrangian_position_eq (t : Time) (x : ConfigurationSpace)
     gradient (fun x => lagrangian S t x v) x = - S.k • x := by
   have h_eq : (fun y : ConfigurationSpace => lagrangian S t y v) =
       fun y => (-(1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ + (1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ) := by
-    funext y; unfold lagrangian potentialEnergy; simp only [inner_def, smul_val]; ring
+    funext y; unfold lagrangian potentialEnergy; simp only [smul_eq_mul]; ring
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
   ext; simp only [smul_val, ConfigurationSpace.neg_val]; ring
 
@@ -439,7 +439,7 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : ConfigurationSpace)
     gradient (lagrangian S t x) v = S.m • v := by
   have h_eq : (fun y : ConfigurationSpace => lagrangian S t x y) =
       fun y => ((1 / (2 : ℝ)) * S.m) * ⟪y, y⟫_ℝ + (-(1 / (2 : ℝ)) * S.k * ⟪x, x⟫_ℝ) := by
-    funext y; unfold lagrangian potentialEnergy; simp only [inner_def, smul_val]; ring
+    funext y; unfold lagrangian potentialEnergy; simp only [smul_eq_mul]; ring
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
   ext; simp only [smul_val]; ring
 
@@ -766,7 +766,10 @@ lemma gradient_hamiltonian_position_eq (t : Time) (x : ConfigurationSpace)
       fun y => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ +
         ((1 / (2 : ℝ)) * (1 / S.m) * ⟪p, p⟫_ℝ) := by
     funext y; unfold hamiltonian; simp only [toCanonicalMomentum, lagrangian,
-      potentialEnergy, LinearEquiv.coe_symm_mk', inner_def, smul_val]; ring
+      potentialEnergy, LinearEquiv.coe_symm_mk', inner_def, smul_val, smul_eq_mul]
+    have hm : S.m ≠ 0 := S.m_neq_zero
+    field_simp
+    ring
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
   ext; simp only [smul_val]; ring
 
@@ -777,7 +780,10 @@ lemma gradient_hamiltonian_momentum_eq (t : Time) (x : ConfigurationSpace)
       fun y => ((1 / (2 : ℝ)) * (1 / S.m)) * ⟪y, y⟫_ℝ +
         ((1 / (2 : ℝ)) * S.k * ⟪x, x⟫_ℝ) := by
     funext y; unfold hamiltonian; simp only [toCanonicalMomentum, lagrangian,
-      potentialEnergy, LinearEquiv.coe_symm_mk', inner_def, smul_val]; ring
+      potentialEnergy, LinearEquiv.coe_symm_mk', inner_def, smul_val, smul_eq_mul]
+    have hm : S.m ≠ 0 := S.m_neq_zero
+    field_simp
+    ring
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
   ext; simp only [smul_val]; ring
 
@@ -796,6 +802,8 @@ lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
   unfold hamiltonian lagrangian energy kineticEnergy potentialEnergy
   simp only [toCanonicalMomentum, LinearEquiv.coe_symm_mk',
     inner_def, smul_val, one_div, smul_eq_mul]
+  have hm : S.m ≠ 0 := S.m_neq_zero
+  field_simp
   ring
 
 /-!
