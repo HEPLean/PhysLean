@@ -455,7 +455,7 @@ lemma trajectories_unique (IC : InitialConditions) (x : Time → ConfigurationSp
       (trajectory_equationOfMotion S IC)
 
   -- Define the difference y = x - traj
-  set y : Time → EuclideanSpace ℝ (Fin 1) := fun t => x t - IC.trajectory S t with hydef
+  set y : Time → ConfigurationSpace := fun t => x t - IC.trajectory S t with hydef
 
   have hyContDiff : ContDiff ℝ ∞ y := by
     -- ContDiff closed under subtraction

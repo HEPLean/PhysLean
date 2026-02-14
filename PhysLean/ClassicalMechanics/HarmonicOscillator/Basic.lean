@@ -387,17 +387,17 @@ lemma gradient_inner_self (x : ConfigurationSpace) :
   have h_inner : (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) =
       fun y : ConfigurationSpace => ‖y‖ ^ 2 := by
     funext y
-    simp [real_inner_self_eq_norm_sq]
+    rw [real_inner_self_eq_norm_sq]
   calc
     gradient (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) x
         = (InnerProductSpace.toDual ℝ ConfigurationSpace).symm
             (fderiv ℝ (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) x) := rfl
     _ = (InnerProductSpace.toDual ℝ ConfigurationSpace).symm (2 • innerSL ℝ x) := by
-          simp [h_inner, fderiv_norm_sq_apply]
+          rw [h_inner, fderiv_norm_sq_apply]
     _ = (2 : ℝ) • (InnerProductSpace.toDual ℝ ConfigurationSpace).symm (innerSL ℝ x) := by
-          simp [map_smul]
+          simp only [nsmul_eq_smul_cast ℝ, map_smul]
     _ = (2 : ℝ) • x := by
-          simp [toDual_symm_innerSL]
+          rw [toDual_symm_innerSL]
 
 lemma gradient_const_mul_inner_self (c : ℝ) (x : ConfigurationSpace) :
     gradient (fun y : ConfigurationSpace => c * ⟪y, y⟫_ℝ) x = (2 * c) • x := by
@@ -409,11 +409,11 @@ lemma gradient_const_mul_inner_self (c : ℝ) (x : ConfigurationSpace) :
             (c • fderiv ℝ (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) x) := by
           rw [fderiv_const_mul (by fun_prop)]
     _ = c • gradient (fun y : ConfigurationSpace => ⟪y, y⟫_ℝ) x := by
-          simp [gradient, map_smul]
+          rfl
     _ = c • ((2 : ℝ) • x) := by
-          simp [gradient_inner_self]
+          rw [gradient_inner_self]
     _ = (2 * c) • x := by
-          simp only [smul_smul, mul_comm]
+          rw [smul_smul, mul_comm]
 
 /-!
 
@@ -424,33 +424,29 @@ position and velocity.
 
 -/
 
+private lemma gradient_add_const' {f : ConfigurationSpace → ℝ} {c : ℝ}
+    (x : ConfigurationSpace) :
+    gradient (fun y => f y + c) x = gradient f x := by
+  unfold gradient
+  rw [fderiv_add_const]
+
 lemma gradient_lagrangian_position_eq (t : Time) (x : ConfigurationSpace)
     (v : ConfigurationSpace) :
     gradient (fun x => lagrangian S t x v) x = - S.k • x := by
-  have h_grad :
-      gradient (fun y : ConfigurationSpace => (-(1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ) x =
-        (2 * (-(1 / (2 : ℝ)) * S.k)) • x := by
-    simpa using (gradient_const_mul_inner_self (c := (-(1 / (2 : ℝ)) * S.k)) x)
-  have h_lag :
-      (fun y : ConfigurationSpace => lagrangian S t y v) =
-        fun y : ConfigurationSpace => (-(1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ := by
-    funext y
-    simp [lagrangian_eq]
-  simpa [h_lag, smul_smul, mul_comm, mul_left_comm, mul_assoc] using h_grad
+  have h_eq : (fun y : ConfigurationSpace => lagrangian S t y v) =
+      fun y => (-(1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ + (1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ) := by
+    funext y; unfold lagrangian potentialEnergy; simp only [inner_def, smul_val]; ring
+  rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
+  ext; simp only [smul_val, neg_val]; ring
 
 lemma gradient_lagrangian_velocity_eq (t : Time) (x : ConfigurationSpace)
     (v : ConfigurationSpace) :
     gradient (lagrangian S t x) v = S.m • v := by
-  have h_grad :
-      gradient (fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * S.m) * ⟪y, y⟫_ℝ) v =
-        (2 * ((1 / (2 : ℝ)) * S.m)) • v := by
-    simpa using (gradient_const_mul_inner_self (c := ((1 / (2 : ℝ)) * S.m)) v)
-  have h_lag :
-      (fun y : ConfigurationSpace => lagrangian S t x y) =
-        fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * S.m) * ⟪y, y⟫_ℝ := by
-    funext y
-    simp [lagrangian_eq]
-  simpa [h_lag, smul_smul, mul_comm, mul_left_comm, mul_assoc] using h_grad
+  have h_eq : (fun y : ConfigurationSpace => lagrangian S t x y) =
+      fun y => ((1 / (2 : ℝ)) * S.m) * ⟪y, y⟫_ℝ + (-(1 / (2 : ℝ)) * S.k * ⟪x, x⟫_ℝ) := by
+    funext y; unfold lagrangian potentialEnergy; simp only [inner_def, smul_val]; ring
+  rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
+  ext; simp only [smul_val]; ring
 
 /-!
 
@@ -569,10 +565,16 @@ lemma gradLagrangian_eq_force (xₜ : Time → ConfigurationSpace) (hx : ContDif
   simp only
   congr
   · simp [gradient_lagrangian_position_eq, force_eq_linear]
-  · rw [← Time.deriv_smul _ _ (by fun_prop)]
-    congr
-    funext t
-    rw [gradient_lagrangian_velocity_eq]
+  · conv_lhs =>
+      arg 1
+      ext t'
+      rw [gradient_lagrangian_velocity_eq]
+    show ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t = S.m • ∂ₜ (∂ₜ xₜ) t
+    rw [Time.deriv, Time.deriv]
+    have hd : DifferentiableAt ℝ (fun t' => fderiv ℝ xₜ t' 1) t :=
+      (deriv_differentiable_of_contDiff xₜ hx).differentiableAt
+    rw [fderiv_const_smul hd]
+    rfl
 
 /-!
 
@@ -765,30 +767,24 @@ We now write down the gradients of the Hamiltonian with respect to the momentum 
 lemma gradient_hamiltonian_position_eq (t : Time) (x : ConfigurationSpace)
     (p : ConfigurationSpace) :
     gradient (hamiltonian S t p) x = S.k • x := by
-  have h_grad :
-      gradient (fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ) x =
-        (2 * ((1 / (2 : ℝ)) * S.k)) • x := by
-    simpa using (gradient_const_mul_inner_self (c := ((1 / (2 : ℝ)) * S.k)) x)
-  have h_ham :
-      (fun y : ConfigurationSpace => hamiltonian S t p y) =
-        fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ := by
-    funext y
-    simp [hamiltonian_eq]
-  simpa [h_ham, smul_smul, mul_comm, mul_left_comm, mul_assoc] using h_grad
+  have h_eq : (fun y : ConfigurationSpace => hamiltonian S t p y) =
+      fun y => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ +
+        ((1 / (2 : ℝ)) * (1 / S.m) * ⟪p, p⟫_ℝ) := by
+    funext y; unfold hamiltonian; simp only [toCanonicalMomentum, lagrangian,
+      potentialEnergy, LinearEquiv.coe_symm_mk', inner_def, smul_val]; ring
+  rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
+  ext; simp only [smul_val]; ring
 
 lemma gradient_hamiltonian_momentum_eq (t : Time) (x : ConfigurationSpace)
     (p : ConfigurationSpace) :
     gradient (hamiltonian S t · x) p = (1 / S.m) • p := by
-  have h_grad :
-      gradient (fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * (1 / S.m)) * ⟪y, y⟫_ℝ) p =
-        (2 * ((1 / (2 : ℝ)) * (1 / S.m))) • p := by
-    simpa using (gradient_const_mul_inner_self (c := ((1 / (2 : ℝ)) * (1 / S.m))) p)
-  have h_ham :
-      (fun y : ConfigurationSpace => hamiltonian S t y x) =
-        fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * (1 / S.m)) * ⟪y, y⟫_ℝ := by
-    funext y
-    simp [hamiltonian_eq]
-  simpa [h_ham, smul_smul, mul_comm, mul_left_comm, mul_assoc] using h_grad
+  have h_eq : (fun y : ConfigurationSpace => hamiltonian S t y x) =
+      fun y => ((1 / (2 : ℝ)) * (1 / S.m)) * ⟪y, y⟫_ℝ +
+        ((1 / (2 : ℝ)) * S.k * ⟪x, x⟫_ℝ) := by
+    funext y; unfold hamiltonian; simp only [toCanonicalMomentum, lagrangian,
+      potentialEnergy, LinearEquiv.coe_symm_mk', inner_def, smul_val]; ring
+  rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
+  ext; simp only [smul_val]; ring
 
 /-!
 
@@ -802,10 +798,10 @@ This is independent of whether the trajectory satisfies the equations of motion 
 lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
     (fun t => hamiltonian S t (toCanonicalMomentum S t (xₜ t) (∂ₜ xₜ t)) (xₜ t)) = energy S xₜ := by
   funext t
-  rw [hamiltonian]
-  simp only [toCanonicalMomentum_eq, lagrangian, energy, kineticEnergy, potentialEnergy,
-    toCanonicalMomentum, inner_smul_left, inner_def, smul_val, one_div, smul_eq_mul]
-  ring_nf
+  unfold hamiltonian lagrangian energy kineticEnergy potentialEnergy
+  simp only [toCanonicalMomentum, LinearEquiv.coe_symm_mk', inner_smul_left,
+    inner_def, smul_val, one_div, smul_eq_mul]
+  ring
 
 /-!
 
@@ -837,7 +833,14 @@ lemma equationOfMotion_iff_hamiltonEqOp_eq_zero (xₜ : Time → ConfigurationSp
   rw [hamiltonEqOp, hamiltonEqOp_eq_zero_iff_hamiltons_equations]
   simp [toCanonicalMomentum_eq, gradient_hamiltonian_momentum_eq, gradient_hamiltonian_position_eq]
   rw [equationOfMotion_iff_newtons_2nd_law _ _ hx]
-  conv_rhs => enter[t]; rw [Time.deriv_smul _ _ (by fun_prop)]
+  have hderiv_smul : ∀ t, ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t = S.m • ∂ₜ (∂ₜ xₜ) t := by
+    intro t
+    rw [Time.deriv, Time.deriv]
+    have hd : DifferentiableAt ℝ (fun t' => fderiv ℝ xₜ t' 1) t :=
+      (deriv_differentiable_of_contDiff xₜ hx).differentiableAt
+    rw [fderiv_const_smul hd]
+    rfl
+  conv_rhs => enter [t]; rw [← hderiv_smul]
   simp [force_eq_linear]
 
 /-!
