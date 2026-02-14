@@ -362,7 +362,19 @@ The lagrangian is smooth in all its arguments.
 @[fun_prop]
 lemma contDiff_lagrangian (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.lagrangian := by
   rw [lagrangian_eq]
-  fun_prop
+  apply ContDiff.sub
+  · apply ContDiff.mul
+    · apply ContDiff.mul
+      · exact contDiff_const
+      · exact contDiff_const
+    · exact ContDiff.inner (𝕜 := ℝ) (contDiff_snd.comp contDiff_snd)
+        (contDiff_snd.comp contDiff_snd)
+  · apply ContDiff.mul
+    · apply ContDiff.mul
+      · exact contDiff_const
+      · exact contDiff_const
+    · exact ContDiff.inner (𝕜 := ℝ) (contDiff_fst.comp contDiff_snd)
+        (contDiff_fst.comp contDiff_snd)
 
 lemma toDual_symm_innerSL (x : ConfigurationSpace) :
     (InnerProductSpace.toDual ℝ ConfigurationSpace).symm (innerSL ℝ x) = x := by
@@ -401,7 +413,7 @@ lemma gradient_const_mul_inner_self (c : ℝ) (x : ConfigurationSpace) :
     _ = c • ((2 : ℝ) • x) := by
           simp [gradient_inner_self]
     _ = (2 * c) • x := by
-          simp [smul_smul, mul_comm, mul_left_comm, mul_assoc]
+          simp only [smul_smul, mul_comm]
 
 /-!
 
@@ -728,7 +740,19 @@ We show that the Hamiltonian is smooth in all its arguments.
 @[fun_prop]
 lemma hamiltonian_contDiff (n : WithTop ℕ∞) : ContDiff ℝ n ↿S.hamiltonian := by
   rw [hamiltonian_eq]
-  fun_prop
+  apply ContDiff.add
+  · apply ContDiff.mul
+    · apply ContDiff.mul
+      · exact contDiff_const
+      · exact contDiff_const
+    · exact ContDiff.inner (𝕜 := ℝ) (contDiff_fst.comp contDiff_snd)
+        (contDiff_fst.comp contDiff_snd)
+  · apply ContDiff.mul
+    · apply ContDiff.mul
+      · exact contDiff_const
+      · exact contDiff_const
+    · exact ContDiff.inner (𝕜 := ℝ) (contDiff_snd.comp contDiff_snd)
+        (contDiff_snd.comp contDiff_snd)
 
 /-!
 
@@ -779,9 +803,9 @@ lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
     (fun t => hamiltonian S t (toCanonicalMomentum S t (xₜ t) (∂ₜ xₜ t)) (xₜ t)) = energy S xₜ := by
   funext t
   rw [hamiltonian]
-  simp [toCanonicalMomentum_eq, lagrangian, energy, kineticEnergy]
-  simp [toCanonicalMomentum, inner_smul_left]
-  ring
+  simp only [toCanonicalMomentum_eq, lagrangian, energy, kineticEnergy, potentialEnergy,
+    toCanonicalMomentum, inner_smul_left, inner_def, smul_val, one_div, smul_eq_mul]
+  ring_nf
 
 /-!
 
