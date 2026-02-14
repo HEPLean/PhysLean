@@ -93,7 +93,7 @@ lemma insertAndContract_fstFieldOfContract_some_incl (φ : 𝓕.FieldOp) (φs : 
     · simp [congrLift]
     · simp [congrLift]
     · rw [Fin.lt_def] at h ⊢
-      simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.coe_cast]
+      simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.val_cast]
       have hi : i.succAbove j ≠ i := Fin.succAbove_ne i j
       omega
 
@@ -208,7 +208,7 @@ lemma insertAndContract_sndFieldOfContract_some_incl (φ : 𝓕.FieldOp) (φs : 
     · simp [congrLift]
     · simp [congrLift]
     · rw [Fin.lt_def] at h ⊢
-      simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.coe_cast]
+      simp_all only [Nat.succ_eq_add_one, Fin.val_fin_lt, not_lt, finCongr_apply, Fin.val_cast]
       have hi : i.succAbove j ≠ i := Fin.succAbove_ne i j
       omega
 
@@ -369,7 +369,7 @@ lemma stat_ofFinset_of_insertAndContractLiftFinset (φ : 𝓕.FieldOp) (φs : Li
         not_exists, not_and]
       intro x hx
       refine Fin.ne_of_val_ne ?h.inl.h
-      simp only [Fin.coe_cast, ne_eq]
+      simp only [Fin.val_cast, ne_eq]
       rw [Fin.val_eq_val]
       exact Fin.succAbove_ne i x
     · obtain ⟨k, hk⟩ := hk
@@ -379,7 +379,7 @@ lemma stat_ofFinset_of_insertAndContractLiftFinset (φ : 𝓕.FieldOp) (φs : Li
       apply Iff.intro
       · intro h
         obtain ⟨x, hx⟩ := h
-        simp only [Fin.ext_iff, Fin.coe_cast] at hx
+        simp only [Fin.ext_iff, Fin.val_cast] at hx
         rw [Fin.val_eq_val] at hx
         rw [Function.Injective.eq_iff] at hx
         rw [← hx.2]

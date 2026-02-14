@@ -193,6 +193,13 @@ lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
   rw [localizedComp, LinearMap.coe_mk, AddHom.coe_mk,
     orthonormal_iff_ite.mp T.localizedState_orthonormal n p, ite_smul, one_smul, zero_smul]
 
+/-- The adjoint of localizedComp |m⟩⟨n| is |n⟩⟨m|. -/
+lemma localizedComp_adjoint (m n : Fin T.N) (ψ φ : T.HilbertSpace) :
+    ⟪|m⟩⟨n| ψ, φ⟫_ℂ = ⟪ψ, |n⟩⟨m| φ⟫_ℂ := by
+  simp only [localizedComp, LinearMap.coe_mk, AddHom.coe_mk]
+  rw [inner_smul_left, inner_smul_right, inner_conj_symm]
+  ring
+
 /-!
 
 ## D. The Hamiltonian of the tight binding chain
@@ -213,9 +220,28 @@ noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
 -/
 
 /-- The hamiltonian of the tight binding chain is hermitian. -/
-@[sorryful]
 lemma hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
-    ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ := by sorry
+    ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ := by
+  simp only [hamiltonian, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.coe_sum,
+    Finset.sum_apply, LinearMap.add_apply]
+  rw [inner_sub_left, inner_sub_right]
+  congr 1
+  · -- E0 term
+    simp only [Finset.smul_sum]
+    rw [sum_inner, inner_sum]
+    apply Finset.sum_congr rfl
+    intro n _
+    simp only [inner_smul_left_eq_smul, inner_smul_right_eq_smul]
+    rw [localizedComp_adjoint]
+  · -- t term
+    simp only [Finset.smul_sum, smul_add]
+    rw [sum_inner, inner_sum]
+    apply Finset.sum_congr rfl
+    intro n _
+    rw [inner_add_left, inner_add_right]
+    simp only [inner_smul_left_eq_smul, inner_smul_right_eq_smul]
+    rw [localizedComp_adjoint, localizedComp_adjoint]
+    ring
 
 /-!
 
@@ -411,7 +437,7 @@ lemma quantaWaveNumber_exp_N (n : ℕ) (k : T.QuantaWaveNumber) :
 lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
     Complex.exp (Complex.I * k * (n - 1).val * T.a) =
     Complex.exp (Complex.I * k * n * T.a) * Complex.exp (- Complex.I * k * T.a) := by
-  rw [Fin.coe_sub]
+  rw [Fin.val_sub]
   trans Complex.exp (Complex.I * ↑↑k * ↑(((T.N - 1 + n)/T.N) * T.N + (n - 1).val) * ↑T.a)
   · simp only [Nat.cast_add, Nat.cast_mul]
     have h0 : (Complex.I * ↑↑k * (↑((T.N - 1 + ↑n) / T.N) * ↑T.N + (n - 1).val) * ↑T.a)
@@ -432,7 +458,7 @@ lemma quantaWaveNumber_exp_sub_one (n : Fin T.N) (k : T.QuantaWaveNumber) :
         have h0 : n = 0 := by omega
         subst h0
         simpa using hn
-      · rw [@Fin.coe_sub]
+      · rw [@Fin.val_sub]
         congr
         simp [Nat.one_mod_eq_one.mpr hn]
     rw [hx]
@@ -478,10 +504,74 @@ noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
 
 -/
 
-/-- The energy eigenstates of the tight binding chain are orthogonal. -/
-@[sorryful]
+/-- The energy eigenstates of the tight binding chain are orthogonal.
+
+This is a fundamental quantum mechanical result: eigenstates of a Hermitian operator
+(the Hamiltonian) with distinct eigenvalues are orthogonal. Here we prove it directly
+using the periodic boundary conditions which quantize the wavenumbers.
+
+The key physical insight is that different wavenumbers k₁ ≠ k₂ give rise to different
+N-th roots of unity exp(i(k₂-k₁)a), and the sum of all N-th roots of unity equals zero. -/
 lemma energyEigenstate_orthogonal :
-    Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by sorry
+    Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by
+  intro k1 k2 hne
+  simp only [energyEigenstate, sum_inner]
+  simp_rw [inner_sum, inner_smul_left, inner_smul_right,
+    orthonormal_iff_ite.mp T.localizedState_orthonormal]
+  simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
+  set ω := Complex.exp (Complex.I * (k2 - k1) * T.a) with hω_def
+  have hsum_eq : ∑ n : Fin T.N, (starRingEnd ℂ) (Complex.exp (Complex.I * k1 * n * T.a)) *
+      Complex.exp (Complex.I * k2 * n * T.a) = ∑ i ∈ Finset.range T.N, ω ^ i := by
+    rw [Fin.sum_univ_eq_sum_range (fun n =>
+      (starRingEnd ℂ) (Complex.exp (Complex.I * k1 * n * T.a)) *
+      Complex.exp (Complex.I * k2 * n * T.a))]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [starRingEnd_apply, Complex.star_def, ← Complex.exp_conj]
+    simp only [map_mul, Complex.conj_I, Complex.conj_ofReal, Complex.conj_natCast]
+    rw [← Complex.exp_add, hω_def, ← Complex.exp_nat_mul]
+    ring_nf
+  rw [hsum_eq]
+  have hω_pow : ω ^ T.N = 1 := by
+    simp only [hω_def, ← Complex.exp_nat_mul]
+    have h2 := quantaWaveNumber_exp_N T 1 k2
+    have h1 := quantaWaveNumber_exp_N T 1 k1
+    simp only [Nat.cast_one] at h2 h1
+    calc
+        _ = Complex.exp (Complex.I * k2 * 1 * T.N * T.a - Complex.I * k1 * 1 * T.N * T.a) := by
+              ring_nf
+        _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
+  have hω_ne_one : ω ≠ 1 := by
+    intro hω_eq_one
+    apply hne
+    obtain ⟨_, ⟨n1, rfl⟩⟩ := k1
+    obtain ⟨_, ⟨n2, rfl⟩⟩ := k2
+    simp only [Subtype.mk.injEq]
+    have hexp := Complex.exp_eq_one_iff.mp (hω_def ▸ hω_eq_one)
+    obtain ⟨m, hm⟩ := hexp
+    have ha : (T.a : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos T.a_pos
+    have hN : (T.N : ℂ) ≠ 0 := by simp [Ne.symm (NeZero.ne' T.N)]
+    simp only [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_ofNat,
+      Complex.ofReal_natCast, Complex.ofReal_sub] at hm
+    field_simp at hm
+    have hm_int : (n2 : ℤ) - n1 = T.N * m := by
+      have hm_eq : (n2 : ℂ) - n1 = (T.N : ℂ) * m := by ring_nf at hm ⊢; exact hm
+      exact_mod_cast congrArg Complex.re hm_eq
+    have hn1_lt : (n1 : ℤ) < T.N := by exact_mod_cast n1.isLt
+    have hn2_lt : (n2 : ℤ) < T.N := by exact_mod_cast n2.isLt
+    have hN_pos : (0 : ℤ) < T.N := by exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne T.N)
+    have hm_bound : m = 0 := by
+      have h1 : -(T.N : ℤ) < (n2 : ℤ) - n1 := by omega
+      have h2 : (n2 : ℤ) - n1 < T.N := by omega
+      rw [hm_int] at h1 h2
+      nlinarith
+    simp only [hm_bound, mul_zero] at hm_int
+    have heq : n1.val = n2.val := by omega
+    simp only [heq]
+  -- Use the geometric series formula: (ω - 1) * ∑ω^i = ω^N - 1
+  -- Since ω^N = 1 and ω ≠ 1, the sum must be zero
+  have hgeom := mul_geom_sum ω T.N
+  rw [hω_pow, sub_self] at hgeom
+  exact mul_eq_zero.mp hgeom |>.resolve_left (sub_ne_zero.mpr hω_ne_one)
 
 /-!
 

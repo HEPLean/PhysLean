@@ -305,6 +305,8 @@ lemma self_subset_mem_completions (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum �
     · simp_all
     · simp_all
 
+/-- If `x` is a subset of `y` and `y` is complete, then there is a completion of `x` which is also
+  a subset of `y`. -/
 lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 𝓩)
     (hsubset : x ⊆ y) (hy : y ∈ ofFinset S5 S10) (hycomplete : IsComplete y) :
     ∃ z ∈ completions S5 S10 x, z ⊆ y := by

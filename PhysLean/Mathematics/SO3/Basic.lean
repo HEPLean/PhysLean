@@ -32,8 +32,8 @@ instance SO3Group : Group SO3 where
   one_mul A := Subtype.ext (Matrix.one_mul A.1)
   mul_one A := Subtype.ext (Matrix.mul_one A.1)
   inv A := ⟨A.1ᵀ, by simp only [det_transpose, A.2],
-    by simp only [transpose_transpose, Matrix.mul_eq_one_comm.mpr A.2.2]⟩
-  inv_mul_cancel A := Subtype.ext (Matrix.mul_eq_one_comm.mpr A.2.2)
+    by simp only [transpose_transpose, mul_eq_one_comm.mpr A.2.2]⟩
+  inv_mul_cancel A := Subtype.ext (mul_eq_one_comm.mpr A.2.2)
 
 /-- Notation for the group `SO3`. -/
 scoped[GroupTheory] notation (name := SO3_notation) "SO(3)" => SO3
@@ -44,11 +44,11 @@ instance : TopologicalSpace SO3 := instTopologicalSpaceSubtype
 namespace SO3
 
 lemma coe_inv (A : SO3) : (A⁻¹).1 = A.1⁻¹:=
-  (inv_eq_left_inv (Matrix.mul_eq_one_comm.mpr A.2.2)).symm
+  (inv_eq_left_inv (mul_eq_one_comm.mpr A.2.2)).symm
 
 /-- The inclusion of `SO(3)` into `GL (Fin 3) ℝ`. -/
 def toGL : SO(3) →* GL (Fin 3) ℝ where
-  toFun A := ⟨A.1, (A⁻¹).1, A.2.2, Matrix.mul_eq_one_comm.mpr A.2.2⟩
+  toFun A := ⟨A.1, (A⁻¹).1, A.2.2, mul_eq_one_comm.mpr A.2.2⟩
   map_one' := (GeneralLinearGroup.ext_iff _ 1).mpr fun _=> congrFun rfl
   map_mul' _ _ := (GeneralLinearGroup.ext_iff _ _).mpr fun _ => congrFun rfl
 

@@ -534,7 +534,7 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo_distGrad_norm {d : ℕ} (m : �
     Filter.atTop
     (𝓝 (⟪distGrad (distOfFunction (fun x : Space d.succ => ‖x‖ ^ m)
     (IsDistBounded.pow m hm)) η, y⟫_ℝ)) := by
-  simp [distGrad_inner_eq, Distribution.fderivD_apply, distOfFunction_apply]
+  simp only [distGrad_inner_eq, Distribution.fderivD_apply, distOfFunction_apply]
   change Filter.Tendsto (fun n => - ∫ (x : Space d.succ),
       fderiv ℝ η x (basis.repr.symm y) * normPowerSeries n x ^ m)
     Filter.atTop (𝓝 (- ∫ (x : Space d.succ), fderiv ℝ η x (basis.repr.symm y) * ‖x‖ ^ m))
@@ -639,7 +639,6 @@ lemma gradient_dist_normPowerSeries_zpow_tendsTo {d : ℕ} (m : ℤ) (hm : - (d.
           · apply IsDistBounded.add
             · apply IsDistBounded.pow (m - 1)
               simp_all
-              grind
             · fun_prop
           · apply AEMeasurable.aestronglyMeasurable
             fun_prop
@@ -759,7 +758,7 @@ lemma gradient_dist_normPowerSeries_log_tendsTo_distGrad_norm {d : ℕ}
     Filter.atTop
     (𝓝 (⟪distGrad (distOfFunction (fun x : Space d.succ.succ => Real.log ‖x‖)
     (IsDistBounded.log_norm)) η, y⟫_ℝ)) := by
-  simp [distGrad_inner_eq, Distribution.fderivD_apply, distOfFunction_apply]
+  simp only [distGrad_inner_eq, Distribution.fderivD_apply, distOfFunction_apply]
   change Filter.Tendsto (fun n => -
     ∫ (x : Space d.succ.succ), fderiv ℝ η x (basis.repr.symm y) * Real.log (normPowerSeries n x))
     Filter.atTop (𝓝 (- ∫ (x : Space d.succ.succ), fderiv ℝ η x (basis.repr.symm y) * Real.log ‖x‖))
@@ -1078,7 +1077,7 @@ lemma distDiv_inv_pow_eq_dim {d : ℕ} :
           refine DifferentiableAt.hasDerivAt ?_
           have := η.differentiable
           fun_prop
-        · exact (integrable ((derivCLM ℝ) (η' n))).integrableOn
+        · exact (integrable ((derivCLM ℝ ℝ) (η' n))).integrableOn
         · exact Filter.Tendsto.mono_left (η' n).toZeroAtInfty.zero_at_infty' atTop_le_cocompact
       _ = η 0 * (d.succ * (volume (α := Space d.succ)).real (Metric.ball 0 1)) := by
         simp only [Nat.succ_eq_add_one, integral_const, Measure.toSphere_real_apply_univ,

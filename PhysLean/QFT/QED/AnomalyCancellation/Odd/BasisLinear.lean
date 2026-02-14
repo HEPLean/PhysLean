@@ -210,7 +210,7 @@ lemma oddShiftShiftZero_eq_oddShiftZero : @oddShiftShiftZero n = oddShiftZero :=
 lemma oddShiftShiftFst_eq_oddFst_succ (j : Fin n) :
     oddShiftShiftFst j = oddFst j.succ := by
   rw [Fin.ext_iff]
-  simp only [succ_eq_add_one, oddShiftShiftFst, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd,
+  simp only [succ_eq_add_one, oddShiftShiftFst, Fin.val_cast, Fin.val_castAdd, Fin.val_natAdd,
     oddFst, Fin.val_succ]
   exact Nat.add_comm 1 ↑j
 
@@ -220,8 +220,8 @@ lemma oddShiftShiftFst_eq_oddShiftFst_castSucc (j : Fin n) :
 
 lemma oddShiftShiftMid_eq_oddMid : @oddShiftShiftMid n = oddMid := by
   rw [Fin.ext_iff]
-  simp only [succ_eq_add_one, oddShiftShiftMid, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd,
-    Fin.coe_natAdd, Fin.val_eq_zero, add_zero, oddMid]
+  simp only [succ_eq_add_one, oddShiftShiftMid, Fin.isValue, Fin.val_cast, Fin.val_castAdd,
+    Fin.val_natAdd, Fin.val_eq_zero, add_zero, oddMid]
   exact Nat.add_comm 1 n
 
 lemma oddShiftShiftMid_eq_oddShiftFst_last : oddShiftShiftMid = oddShiftFst (Fin.last n) := by
@@ -229,7 +229,7 @@ lemma oddShiftShiftMid_eq_oddShiftFst_last : oddShiftShiftMid = oddShiftFst (Fin
 
 lemma oddShiftShiftSnd_eq_oddSnd (j : Fin n.succ) : oddShiftShiftSnd j = oddSnd j := by
   rw [Fin.ext_iff]
-  simp only [succ_eq_add_one, oddShiftShiftSnd, Fin.coe_cast, Fin.coe_natAdd, oddSnd, add_left_inj]
+  simp only [succ_eq_add_one, oddShiftShiftSnd, Fin.val_cast, Fin.val_natAdd, oddSnd, add_left_inj]
   exact Nat.add_comm 1 n
 
 lemma oddShiftShiftSnd_eq_oddShiftSnd (j : Fin n.succ) : oddShiftShiftSnd j = oddShiftSnd j := by
@@ -238,7 +238,7 @@ lemma oddShiftShiftSnd_eq_oddShiftSnd (j : Fin n.succ) : oddShiftShiftSnd j = od
 
 lemma oddSnd_eq_oddShiftSnd (j : Fin n) : oddSnd j = oddShiftSnd j := by
   rw [Fin.ext_iff]
-  simp only [oddSnd, Fin.coe_cast, Fin.coe_natAdd, oddShiftSnd, add_left_inj]
+  simp only [oddSnd, Fin.val_cast, Fin.val_natAdd, oddShiftSnd, add_left_inj]
   exact Nat.add_comm n 1
 
 end theDeltas
@@ -289,7 +289,7 @@ lemma basis_on_oddFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.val_castAdd, Fin.val_natAdd] at h2
       omega
     · rfl
 
@@ -308,12 +308,12 @@ lemma basis_oddSnd_eq_minus_oddFst (j i : Fin n) :
   all_goals
     rename_i h1 h2
     rw [Fin.ext_iff] at h1 h2
-    simp_all only [Fin.cast_inj, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, neg_neg,
+    simp_all only [Fin.cast_inj, Fin.val_cast, Fin.val_castAdd, Fin.val_natAdd, neg_neg,
       add_eq_right, AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, not_false_eq_true]
   all_goals
     rename_i h3
     rw [Fin.ext_iff] at h3
-    simp_all only [Fin.coe_natAdd, Fin.coe_castAdd, add_eq_right,
+    simp_all only [Fin.val_natAdd, Fin.val_castAdd, add_eq_right,
       AddLeftCancelMonoid.add_eq_zero, one_ne_zero, and_false, not_false_eq_true]
   all_goals
     omega
@@ -329,12 +329,12 @@ lemma basis_on_oddMid (j : Fin n) : basisAsCharges j oddMid = 0 := by
   simp only [basisAsCharges, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [oddMid, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd, Fin.val_eq_zero,
+    simp only [oddMid, Fin.isValue, Fin.val_cast, Fin.val_castAdd, Fin.val_natAdd, Fin.val_eq_zero,
       add_zero, oddFst] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [oddMid, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd,
+      simp only [oddMid, Fin.isValue, Fin.val_cast, Fin.val_castAdd, Fin.val_natAdd,
         Fin.val_eq_zero, add_zero, oddSnd] at h2
       omega
     · rfl
@@ -512,7 +512,7 @@ lemma basis!_on_oddShiftFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.val_castAdd, Fin.val_natAdd] at h2
       omega
     rfl
 
@@ -551,13 +551,13 @@ lemma basis!_on_oddShiftZero (j : Fin n) : basis!AsCharges j oddShiftZero = 0 :=
   simp only [basis!AsCharges, PureU1_numberCharges]
   split <;> rename_i h
   · rw [Fin.ext_iff] at h
-    simp only [oddShiftZero, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero,
-      oddShiftFst, Fin.coe_natAdd] at h
+    simp only [oddShiftZero, Fin.isValue, Fin.val_cast, Fin.val_castAdd, Fin.val_eq_zero,
+      oddShiftFst, Fin.val_natAdd] at h
     omega
   · split <;> rename_i h2
     · rw [Fin.ext_iff] at h2
-      simp only [oddShiftZero, Fin.isValue, Fin.coe_cast, Fin.coe_castAdd, Fin.val_eq_zero,
-        oddShiftSnd, Fin.coe_natAdd] at h2
+      simp only [oddShiftZero, Fin.isValue, Fin.val_cast, Fin.val_castAdd, Fin.val_eq_zero,
+        oddShiftSnd, Fin.val_natAdd] at h2
       omega
     · rfl
 

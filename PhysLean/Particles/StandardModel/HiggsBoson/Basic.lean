@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Particles.StandardModel.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
+import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 /-!
 
 # The Higgs field
@@ -173,6 +174,11 @@ lemma gaugeGroupI_smul_eq_U1_mul_SU2 (g : StandardModel.GaugeGroupI) (φ : Higgs
     g • φ = (WithLp.toLp 2 <| g.toSU2.1 *ᵥ (g.toU1 ^ 3 • φ.ofLp)) := by
   rw [gaugeGroupI_smul_eq, ← mulVec_smul]
 
+lemma gaugeGroupI_smul_eq_U1_smul_SU2 (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
+    g • φ = (WithLp.toLp 2 <| (g.toU1 ^ 3 • g.toSU2.1) *ᵥ φ.ofLp) := by
+  rw [gaugeGroupI_smul_eq]
+  rw [Matrix.smul_mulVec]
+
 instance : MulAction StandardModel.GaugeGroupI HiggsVec where
   one_smul φ := by simp [gaugeGroupI_smul_eq]
   mul_smul g₁ g₂ φ := by
@@ -181,6 +187,14 @@ instance : MulAction StandardModel.GaugeGroupI HiggsVec where
     congr
     simp [mul_pow]
 
+instance : DistribMulAction StandardModel.GaugeGroupI HiggsVec where
+  smul_zero g := by
+    rw [gaugeGroupI_smul_eq_U1_smul_SU2]
+    simp
+  smul_add g φ ψ := by
+    rw [gaugeGroupI_smul_eq_U1_smul_SU2]
+    simp [mulVec_add]
+    simp [← gaugeGroupI_smul_eq_U1_smul_SU2]
 /-!
 
 #### A.5.2. Unitary nature of the action
@@ -354,6 +368,71 @@ action of `StandardModel.HiggsVec.rep` is given by `SU(3) × ℤ₆` where `ℤ�
 informal_lemma stability_group where
   deps := [``HiggsVec]
   tag := "6V2MO"
+
+/-!
+
+## A.8. Gauge action removing phase from second component
+
+-/
+
+lemma ofU1Subgroup_smul_eq_smul (g : unitary ℂ) (φ : HiggsVec) :
+    (StandardModel.GaugeGroupI.ofU1Subgroup g) • φ =
+    (WithLp.toLp 2 <| !![1, 0; 0, g.1 ^ 6] *ᵥ φ.ofLp) := by
+  rw [gaugeGroupI_smul_eq_U1_smul_SU2]
+  simp only [GaugeGroupI.ofU1Subgroup_toU1, GaugeGroupI.ofU1Subgroup_toSU2, SubmonoidClass.coe_pow,
+    star_pow, RCLike.star_def, smul_of, smul_cons, smul_zero, smul_empty, cons_mulVec,
+    cons_dotProduct, zero_mul, dotProduct_of_isEmpty, add_zero, zero_add, empty_mulVec, one_mul,
+    WithLp.toLp.injEq, vecCons_inj, mul_eq_mul_right_iff, and_true]
+  apply And.intro
+  · have h0 : g ^ 3 • (starRingEnd ℂ) ↑g ^ 3 = 1 := by
+      trans (normSq (g ^ 3).1 : ℂ)
+      · rw [← mul_conj]
+        simp
+        rfl
+      · rw [normSq_eq_norm_sq]
+        simp
+    simp [h0]
+  · left
+    trans (g ^ 3 : ℂ) • (g ^ 3 : ℂ)
+    · rfl
+    simp only [smul_eq_mul]
+    ring
+
+lemma gaugeGroupI_smul_phase_snd (φ : HiggsVec) :
+    ∃ g : StandardModel.GaugeGroupI,
+      (g • φ).ofLp 1 = ‖(φ.ofLp 1)‖ ∧
+      (∀ φ1 : HiggsVec, (g • φ1).ofLp 0 = φ1.ofLp 0) ∧
+      (∀ a : ℝ, g • (!₂[a, 0] : HiggsVec) = (!₂[a, 0] : HiggsVec)) := by
+  let θ := arg (φ 1)
+  use StandardModel.GaugeGroupI.ofU1Subgroup ⟨Complex.exp (-I * θ / 6), by
+    rw [Unitary.mem_iff]
+    simp [← Complex.exp_conj, ← Complex.exp_add, Complex.conj_ofNat]
+    ring_nf
+    simp⟩
+  apply And.intro
+  · rw [ofU1Subgroup_smul_eq_smul]
+    simp only [Fin.isValue, neg_mul, cons_mulVec, cons_dotProduct, one_mul, zero_mul,
+      dotProduct_of_isEmpty, add_zero, zero_add, empty_mulVec, cons_val_one, cons_val_fin_one]
+    trans Complex.exp (-I * θ / 6) ^ 6 * φ.ofLp 1
+    · congr
+      simp
+    have habs : φ.ofLp 1 = cexp (I * arg (φ.ofLp 1)) * ‖φ.ofLp 1‖ := by
+      conv_lhs => rw [← Complex.norm_mul_exp_arg_mul_I (φ.ofLp 1)]
+      ring_nf
+    conv_lhs => rw [habs]
+    rw [← mul_assoc, ← Complex.exp_nat_mul, ← Complex.exp_add]
+    simp [θ]
+    ring_nf
+    simp
+  apply And.intro
+  · intro φ
+    rw [ofU1Subgroup_smul_eq_smul]
+    simp
+    rfl
+  · intro a
+    simp [ofU1Subgroup_smul_eq_smul]
+    ext i
+    fin_cases i <;> simp
 
 end HiggsVec
 

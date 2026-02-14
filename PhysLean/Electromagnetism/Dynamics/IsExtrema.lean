@@ -302,7 +302,7 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
 We show that the magnetic field matrix $B_{ij}$ satisfies the following wave-like equation
 
 $$\frac{\partial^2 B_{ij}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 B_{ij}}{\partial x_k^2} +
-  \frac{1}{\epsilon_0} \left( \frac{\partial J_i}{\partial x_j} -
+  \frac{1}{\epsilon_0} \left(\frac{\partial J_i}{\partial x_j} -
   \frac{\partial J_j}{\partial x_i} \right).$$
 When the free current density is zero, this reduces to the wave equation.
 -/
@@ -330,7 +330,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply Space.deriv_differentiable
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl)))
           ((LorentzCurrentDensity.currentDensity_apply_differentiable_space
-          (hJ.differentiable (ENat.LEInfty.out)) _ _).const_mul _).differentiableAt,
+          (hJ.differentiable (by simp)) _ _).const_mul _).differentiableAt,
     fderiv_const_mul (by
         apply Differentiable.fun_sum
         intro i _
@@ -338,7 +338,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl))),
     fderiv_const_mul (by
         apply (LorentzCurrentDensity.currentDensity_apply_differentiable_space
-        (hJ.differentiable (ENat.LEInfty.out)) _ _).differentiableAt),
+        (hJ.differentiable (by simp)) _ _).differentiableAt),
     fderiv_fun_sum fun i _ => by
         apply Differentiable.differentiableAt
         apply Space.deriv_differentiable
@@ -353,7 +353,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply Space.deriv_differentiable
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl)))
           ((LorentzCurrentDensity.currentDensity_apply_differentiable_space
-          (hJ.differentiable (ENat.LEInfty.out)) _ _).const_mul _).differentiableAt,
+          (hJ.differentiable (by simp)) _ _).const_mul _).differentiableAt,
     fderiv_const_mul (by
         apply Differentiable.fun_sum
         intro i _
@@ -361,7 +361,7 @@ lemma time_deriv_time_deriv_magneticFieldMatrix_of_isExtrema {A : Electromagneti
         apply magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl))),
     fderiv_const_mul (by
         apply (LorentzCurrentDensity.currentDensity_apply_differentiable_space
-        (hJ.differentiable (ENat.LEInfty.out)) _ _).differentiableAt),
+        (hJ.differentiable (by simp)) _ _).differentiableAt),
     fderiv_fun_sum fun i _ => by
         apply Differentiable.differentiableAt
         apply Space.deriv_differentiable

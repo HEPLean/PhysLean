@@ -116,7 +116,8 @@ lemma distTranslate_distGrad {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
   rw [fderivD_apply, fderivD_apply, distTranslate_apply]
   congr 2
   ext x
-  simp only [translateSchwartz_apply, map_neg, sub_neg_eq_add, LinearIsometryEquiv.symm_apply_apply]
+  simp only [translateSchwartz_apply, map_neg, sub_neg_eq_add,
+    LinearIsometryEquiv.symm_apply_apply]
   change fderiv ℝ η (x + basis.repr.symm a) y = fderiv ℝ _ x y
   rw [translateSchwartz_coe_eq]
   simp only [map_neg, sub_neg_eq_add]
@@ -151,9 +152,10 @@ lemma distDiv_distTranslate {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
   funext i
   rw [fderivD_apply, fderivD_apply, distTranslate_apply]
   simp only [PiLp.neg_apply, neg_inj]
-  have h1 : ((translateSchwartz (-a)) ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i)) ((fderivCLM ℝ) η)))
-      = ((SchwartzMap.evalCLM (𝕜 := ℝ) (basis i))
-        ((fderivCLM ℝ) ((translateSchwartz (-a)) η))) := by
+  have h1 : ((translateSchwartz (-a)) ((SchwartzMap.evalCLM ℝ (Space d) ℝ (basis i))
+      ((fderivCLM ℝ (Space d) ℝ) η))) =
+      ((SchwartzMap.evalCLM ℝ (Space d) ℝ (basis i))
+        ((fderivCLM ℝ (Space d) ℝ) ((translateSchwartz (-a)) η))) := by
     ext x
     rw [translateSchwartz_apply]
     simp only [map_neg, sub_neg_eq_add]

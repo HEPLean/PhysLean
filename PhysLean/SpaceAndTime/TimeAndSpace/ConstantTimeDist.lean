@@ -193,14 +193,15 @@ lemma time_integral_hasFDerivAt {d : ℕ} (η : 𝓢(Time × Space d, ℝ)) (x�
       positivity
     convert h0' using 1
     rw [mul_comm]
-    congr
-    simp only [Prod.norm_mk, norm_pow, Real.norm_eq_abs]
+    simp only [Prod.norm_mk, norm_pow, Real.norm_eq_abs, norm_iteratedFDeriv_one,
+      mul_eq_mul_right_iff, norm_eq_zero]
+    left
     rw [abs_of_nonneg (by positivity)]
   have h1 : HasFDerivAt (fun x => ∫ (a : Time), F x a) (∫ (a : Time), F' x₀ a) x₀ := by
     apply hasFDerivAt_integral_of_dominated_of_fderiv_le
       (bound := fun t => (k * ‖(ContinuousLinearMap.prod (0 : Space d →L[ℝ] Time)
-      (ContinuousLinearMap.id ℝ (Space d)))‖) * ‖(1 + ‖t‖) ^ (rt)‖⁻¹) (ε := 1)
-    · simp
+      (ContinuousLinearMap.id ℝ (Space d)))‖) * ‖(1 + ‖t‖) ^ (rt)‖⁻¹)
+    · exact Filter.univ_mem' (hF (F x₀ 0))
     · filter_upwards with x
       fun_prop
     · simp [F]
@@ -351,8 +352,10 @@ lemma integrable_fderiv_space {d : ℕ} (η : 𝓢(Time × Space d, ℝ)) (x : S
       positivity
     convert h0' using 1
     rw [mul_comm]
+    simp only [Prod.norm_mk, norm_pow, Real.norm_eq_abs, norm_iteratedFDeriv_one,
+      mul_eq_mul_right_iff, norm_eq_zero]
+    left
     congr
-    simp only [Prod.norm_mk, norm_pow, Real.norm_eq_abs]
     rw [abs_of_nonneg (by positivity)]
   have hx : ∀ x : Space d, ∀ t : Time, ‖iteratedFDeriv ℝ 1 ⇑η (t, x)‖ * ‖ContinuousLinearMap.prod
       (0 : Space d →L[ℝ] Time) (ContinuousLinearMap.id ℝ (Space d))‖ ≤
@@ -983,7 +986,6 @@ lemma constantTime_distSpaceDeriv {M : Type} {d : ℕ} [NormedAddCommGroup M] [N
   simp only [fderiv_fun_const, Pi.zero_apply, fderiv_id', ContinuousLinearMap.coe_comp',
     Function.comp_apply, ContinuousLinearMap.prod_apply, ContinuousLinearMap.zero_apply,
     ContinuousLinearMap.coe_id', id_eq]
-  rfl
   · fun_prop
   · fun_prop
   · apply Differentiable.differentiableAt
@@ -1047,7 +1049,8 @@ lemma constantTime_distTimeDeriv {M : Type} [NormedAddCommGroup M] [NormedSpace 
     Space.distTimeDeriv (constantTime f) = 0 := by
   ext η
   simp [Space.distTimeDeriv_apply, fderivD_apply, constantTime_apply]
-  suffices h : (timeIntegralSchwartz ((SchwartzMap.evalCLM (1, 0)) ((fderivCLM ℝ) η))) = 0 by
+  suffices h : (timeIntegralSchwartz ((SchwartzMap.evalCLM ℝ (Time × Space d) ℝ (1, 0))
+      ((fderivCLM ℝ (Time × Space d) ℝ) η))) = 0 by
     rw [h]
     simp
   ext x

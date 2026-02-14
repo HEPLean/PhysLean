@@ -1,7 +1,9 @@
 import PhysLean.ClassicalMechanics.Basic
+import PhysLean.ClassicalMechanics.DampedHarmonicOscillator.Basic
 import PhysLean.ClassicalMechanics.EulerLagrange
 import PhysLean.ClassicalMechanics.HamiltonsEquations
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
+import PhysLean.ClassicalMechanics.HarmonicOscillator.ConfigurationSpace
 import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
 import PhysLean.ClassicalMechanics.Lagrangian.TotalDerivativeEquivalence
 import PhysLean.ClassicalMechanics.Mass.MassUnit
@@ -55,6 +57,7 @@ import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
 import PhysLean.Mathematics.InnerProductSpace.Adjoint
 import PhysLean.Mathematics.InnerProductSpace.Basic
 import PhysLean.Mathematics.InnerProductSpace.Calculus
+import PhysLean.Mathematics.KroneckerDelta
 import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
@@ -107,7 +110,7 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.
 import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.QuadSolToSol
 import PhysLean.Particles.BeyondTheStandardModel.Spin10.Basic
 import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
-import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GaugeOrbits
+import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GramMatrix
 import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Potential
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.Basic
 import PhysLean.Particles.FlavorPhysics.CKMMatrix.Invariants
@@ -224,6 +227,10 @@ import PhysLean.QFT.QED.AnomalyCancellation.Odd.Parameterization
 import PhysLean.QFT.QED.AnomalyCancellation.Permutations
 import PhysLean.QFT.QED.AnomalyCancellation.Sorts
 import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
+import PhysLean.QuantumMechanics.DDimensions.Operators.AngularMomentum
+import PhysLean.QuantumMechanics.DDimensions.Operators.Commutation
+import PhysLean.QuantumMechanics.DDimensions.Operators.Momentum
+import PhysLean.QuantumMechanics.DDimensions.Operators.Position
 import PhysLean.QuantumMechanics.FiniteTarget.Basic
 import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
 import PhysLean.QuantumMechanics.OneDimension.GeneralPotential.Basic

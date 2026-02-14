@@ -8,7 +8,7 @@ import PhysLean.Meta.TODO.Basic
 /-!
 # Generators of the Lorentz Algebra
 
-This file defines the 6 standard generators of the Lorentz algebra so(1,3):
+This file defines the 6 standard generators of the Lorentz algebra so(1,3) :
 - **Boost generators** K₀, K₁, K₂: Generate Lorentz transformations (velocity changes)
 - **Rotation generators** J₀, J₁, J₂: Generate spatial rotations
 
@@ -77,9 +77,9 @@ angular momentum generators.
 - Satisfies Lorentz algebra condition: J_iᵀ η = -η J_i
 
 ## Structure
-- J_0 (rotation about x-axis): Acts on (y,z) components
-- J_1 (rotation about y-axis): Acts on (z,x) components
-- J_2 (rotation about z-axis): Acts on (x,y) components
+- J_0 (rotation about x-axis) : Acts on (y,z) components
+- J_1 (rotation about y-axis) : Acts on (z,x) components
+- J_2 (rotation about z-axis) : Acts on (x,y) components
 
 ## Physical Meaning
 Exponentiating θ·J_i produces a finite rotation by angle θ about axis i.
@@ -88,14 +88,14 @@ def rotationGenerator (i : Fin 3) : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) �
   fun μ ν =>
     match i with
     | 0 => if μ = Sum.inr 1 ∧ ν = Sum.inr 2 then -1
-           else if μ = Sum.inr 2 ∧ ν = Sum.inr 1 then 1
-           else 0
-    | 1 => if μ = Sum.inr 0 ∧ ν = Sum.inr 2 then 1
-           else if μ = Sum.inr 2 ∧ ν = Sum.inr 0 then -1
-           else 0
-    | 2 => if μ = Sum.inr 0 ∧ ν = Sum.inr 1 then -1
-           else if μ = Sum.inr 1 ∧ ν = Sum.inr 0 then 1
-           else 0
+            else if μ = Sum.inr 2 ∧ ν = Sum.inr 1 then 1
+            else 0
+      | 1 => if μ = Sum.inr 0 ∧ ν = Sum.inr 2 then 1
+            else if μ = Sum.inr 2 ∧ ν = Sum.inr 0 then -1
+            else 0
+      | 2 => if μ = Sum.inr 0 ∧ ν = Sum.inr 1 then -1
+            else if μ = Sum.inr 1 ∧ ν = Sum.inr 0 then 1
+            else 0
 
 /-- The boost generator K_i is in the Lorentz algebra. -/
 lemma boostGenerator_mem (i : Fin 3) : boostGenerator i ∈ lorentzAlgebra := by
