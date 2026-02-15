@@ -82,7 +82,7 @@ lemma zero_le_minkowskiProduct (u v : Velocity d) :
   · simp
   · exact real_inner_le_norm u.1.spatialPart v.1.spatialPart
 
-lemma one_add_minkowskiProduct_neq_zero (u v : Velocity d) :
+lemma one_add_minkowskiProduct_ne_zero (u v : Velocity d) :
     1 + ⟪u.1, v.1⟫ₘ ≠ 0 := by
   linarith [zero_le_minkowskiProduct u v]
 

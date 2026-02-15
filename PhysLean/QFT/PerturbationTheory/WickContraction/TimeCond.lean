@@ -239,7 +239,7 @@ lemma timeOrder_timeContract_of_not_eqTimeOnly {φs : List 𝓕.FieldOp}
   rw [singleton_timeContract]
   simp only [Fin.getElem_fin, MulMemClass.coe_mul]
   rw [timeOrder_timeOrder_left]
-  rw [timeOrder_timeContract_neq_time]
+  rw [timeOrder_timeContract_ne_time]
   simp only [zero_mul, map_zero]
   simp_all only [Fin.getElem_fin, not_and]
   intro h
@@ -255,7 +255,7 @@ lemma timeOrder_staticContract_of_not_mem {φs : List 𝓕.FieldOp} (φsΛ : Wic
   simp only [MulMemClass.coe_mul]
   rw [singleton_staticContract]
   rw [timeOrder_timeOrder_left]
-  rw [timeOrder_superCommute_anPart_ofFieldOp_neq_time]
+  rw [timeOrder_superCommute_anPart_ofFieldOp_ne_time]
   simp only [zero_mul, map_zero]
   intro h
   simp_all

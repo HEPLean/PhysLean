@@ -112,10 +112,10 @@ namespace DampedHarmonicOscillator
 variable (S : DampedHarmonicOscillator)
 
 @[simp]
-lemma k_neq_zero : S.k ≠ 0 := Ne.symm (ne_of_lt S.k_pos)
+lemma k_ne_zero : S.k ≠ 0 := Ne.symm (ne_of_lt S.k_pos)
 
 @[simp]
-lemma m_neq_zero : S.m ≠ 0 := Ne.symm (ne_of_lt S.m_pos)
+lemma m_ne_zero : S.m ≠ 0 := Ne.symm (ne_of_lt S.m_pos)
 
 /-!
 

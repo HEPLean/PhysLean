@@ -149,7 +149,7 @@ lemma timeOrder_timeContract_eq_time_left {φ ψ : 𝓕.FieldOp}
   rw [timeOrder_timeContract_eq_time_mid h1 h2]
   simp
 
-lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
+lemma timeOrder_timeContract_ne_time {φ ψ : 𝓕.FieldOp}
     (h1 : ¬ (timeOrderRel φ ψ ∧ timeOrderRel ψ φ)) :
     𝓣(timeContract φ ψ) = 0 := by
   by_cases h2 : timeOrderRel φ ψ
@@ -165,11 +165,11 @@ lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
       simp
     | .position φ =>
       simp only [anPart_position]
-      apply timeOrder_superCommute_neq_time
+      apply timeOrder_superCommute_ne_time
       simp_all [crAnTimeOrderRel]
     | .outAsymp φ =>
       simp only [anPart_outAsymp]
-      apply timeOrder_superCommute_neq_time
+      apply timeOrder_superCommute_ne_time
       simp_all [crAnTimeOrderRel]
   · rw [timeContract_of_not_timeOrderRel_expand _ _ h2]
     simp only [instCommGroup.eq_1, map_smul, smul_eq_zero]
@@ -183,11 +183,11 @@ lemma timeOrder_timeContract_neq_time {φ ψ : 𝓕.FieldOp}
       simp
     | .position ψ =>
       simp only [anPart_position]
-      apply timeOrder_superCommute_neq_time
+      apply timeOrder_superCommute_ne_time
       simp_all [crAnTimeOrderRel]
     | .outAsymp ψ =>
       simp only [anPart_outAsymp]
-      apply timeOrder_superCommute_neq_time
+      apply timeOrder_superCommute_ne_time
       simp_all [crAnTimeOrderRel]
 
 /-- The time contraction of an incoming asymptotic field with
