@@ -149,9 +149,9 @@ structure InitialConditionsAtTime where
   /-- The time at which the initial conditions are specified. -/
   t₀ : Time
   /-- The position at time t₀. -/
-  x_t₀ : EuclideanSpace ℝ (Fin 1)
+  x_t₀ : ConfigurationSpace
   /-- The velocity at time t₀. -/
-  v_t₀ : EuclideanSpace ℝ (Fin 1)
+  v_t₀ : ConfigurationSpace
 
 /-!
 
@@ -409,13 +409,12 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]
   ext
-  simp [trajectory_eq, smul_add, add_smul, smul_smul, ω_sq, mul_comm, mul_left_comm, mul_assoc]
+  simp [trajectory_eq, smul_add, smul_smul, ω_sq, mul_comm, mul_left_comm]
   have h : S.ω ≠ 0 := by exact ω_neq_zero S
   field_simp [h]
   ring_nf
   rw [ω_sq]
   field_simp
-  simp only [smul_eq_mul]
   fun_prop
 
 /-!
@@ -644,11 +643,12 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
     (IC.toInitialConditions S).trajectory S IC.t₀ = IC.x_t₀ := by
   rw [InitialConditions.trajectory_eq, toInitialConditions]
   ext i
-  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
+  simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val,
+    ConfigurationSpace.apply_eq_val, smul_eq_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
-  linear_combination S.ω * IC.x_t₀.ofLp i * h1
+  linear_combination S.ω * IC.x_t₀ i * h1
 
 /-- The trajectory resulting from `toInitialConditions` has the specified
   velocity `v_t₀` at time `t₀`. -/
@@ -658,11 +658,12 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
     ∂ₜ ((IC.toInitialConditions S).trajectory S) IC.t₀ = IC.v_t₀ := by
   rw [InitialConditions.trajectory_velocity, toInitialConditions]
   ext i
-  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, neg_mul]
+  simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val,
+    ConfigurationSpace.apply_eq_val, smul_eq_mul, neg_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
-  linear_combination IC.v_t₀.ofLp i * h1
+  linear_combination IC.v_t₀ i * h1
 
 /-- The energy of the trajectory at time `t₀` equals the energy computed from the
   initial conditions at `t₀`. -/
@@ -722,10 +723,12 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   trans (sin (S.ω * t.val) * (S.ω * IC.x₀ 0)) +
     (-(S.ω • sin (S.ω * t.val) • IC.x₀) + cos (S.ω * t.val) • IC.v₀) 0
   · rw [h]
-    simp only [add_val, smul_val, neg_val, apply_zero, zero_val, mul_zero, zero_add]
-    ring
-  · simp only [add_val, smul_val, neg_val, apply_zero, neg_mul]
-    ring
+    simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.neg_val,
+      ConfigurationSpace.apply_zero, ConfigurationSpace.zero_val, mul_zero, zero_add]
+    ring_nf
+  · simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.neg_val,
+      ConfigurationSpace.apply_zero, neg_mul]
+    ring_nf
   simp at h2
   rw [h2] at h ⊢
   simp_all
@@ -752,7 +755,7 @@ lemma trajectory_velocity_eq_zero_at_arctan (IC : InitialConditions) (hx : IC.x�
   field_simp
   rw [Real.sin_arctan, Real.cos_arctan]
   ext
-  simp [one_div, smul_eq_mul]
+  simp [one_div]
   trans (-(S.ω * (IC.v₀ 0 / (S.ω * IC.x₀ 0) * IC.x₀ 0)) + IC.v₀ 0) *
     (√(1 + (IC.v₀ 0 / (S.ω * IC.x₀ 0)) ^ 2))⁻¹
   · ring
