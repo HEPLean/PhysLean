@@ -812,9 +812,14 @@ This is independent of whether the trajectory satisfies the equations of motion 
 lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
     (fun t => hamiltonian S t (toCanonicalMomentum S t (xₜ t) (∂ₜ xₜ t)) (xₜ t)) = energy S xₜ := by
   funext t
+  have hsymm :
+      (toCanonicalMomentum S t (xₜ t)).symm (S.m • ∂ₜ xₜ t) = ∂ₜ xₜ t := by
+    rw [← toCanonicalMomentum_eq (S := S) (t := t) (x := xₜ t) (v := ∂ₜ xₜ t)]
+    exact LinearEquiv.symm_apply_apply (toCanonicalMomentum S t (xₜ t)) (∂ₜ xₜ t)
   unfold hamiltonian lagrangian energy kineticEnergy potentialEnergy
-  simp only [toCanonicalMomentum_eq, LinearEquiv.symm_apply_apply,
+  simp only [toCanonicalMomentum_eq,
     ConfigurationSpace.inner_def, ConfigurationSpace.smul_val, one_div, smul_eq_mul]
+  rw [hsymm]
   ring_nf
 
 /-!
