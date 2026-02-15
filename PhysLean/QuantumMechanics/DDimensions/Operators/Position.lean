@@ -10,7 +10,7 @@ import PhysLean.SpaceAndTime.Space.Derivatives.Basic
 
 In this module we define:
 - The position operator on Schwartz maps, component-wise.
-- The (regularized) radius operator on Schwartz maps.
+- The (regularized) radius operator (to any real power) on Schwartz maps.
 
 -/
 
@@ -74,8 +74,8 @@ private lemma normRegularizedPow_hasTemperateGrowth (hε : 0 < ε) :
   rw [h123]
   fun_prop
 
-/-- The (regularized) radius operator to power `p` is the continuous linear map
-from `𝓢(Space d, ℂ)` to itself which maps `ψ` to `(‖x‖²+ε²)^(p/2)•ψ`. -/
+/-- The radius operator to power `p`, regularized by `ε ≠ 0`, is the continuous linear map
+  from `𝓢(Space d, ℂ)` to itself which maps `ψ` to `(‖x‖²+ε²)^(p/2)•ψ`. -/
 def radiusRegPowOperator (ε p : ℝ) : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
   SchwartzMap.smulLeftCLM ℂ (Complex.ofReal ∘ normRegularizedPow ε p)
 

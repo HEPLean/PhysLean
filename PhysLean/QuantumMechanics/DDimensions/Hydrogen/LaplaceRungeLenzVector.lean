@@ -9,6 +9,17 @@ import PhysLean.QuantumMechanics.DDimensions.Operators.Commutation
 
 # Laplace-Runge-Lenz vector
 
+In this file we define
+- The (regularized) LRL vector operator for the quantum mechanical hydrogen atom,
+  `𝐀(ε)ᵢ ≔ ½(𝐩ⱼ𝐋ᵢⱼ + 𝐋ᵢⱼ𝐩ⱼ) - mk·𝐫(ε)⁻¹𝐱ᵢ`.
+- The square of the LRL vector operator, `𝐀(ε)² ≔ 𝐀(ε)ᵢ𝐀(ε)ᵢ`.
+
+The main results are
+- The commutators `⁅𝐋ᵢⱼ, 𝐀(ε)ₖ⁆ = iℏ(δᵢₖ𝐀(ε)ⱼ - δⱼₖ𝐀(ε)ᵢ)` in `angularMomentum_commutation_lrl`
+- The commutators `⁅𝐀(ε)ᵢ, 𝐀(ε)ⱼ⁆ = -iℏ 2m 𝐇(ε)𝐋ᵢⱼ` in `lrl_commutation_lrl`
+- The commutators `⁅𝐇(ε), 𝐀(ε)ᵢ⁆ = iℏε²(⋯)` in `hamiltonianReg_commutation_lrl`
+- The relation `𝐀(ε)² = 2m 𝐇(ε)(𝐋² + ¼ℏ²(d-1)²) + m²k² + ε²(⋯)` in `lrlOperatorSqr_eq`
+
 -/
 
 namespace QuantumMechanics
@@ -20,12 +31,12 @@ open ContinuousLinearMap SchwartzMap
 
 variable (H : HydrogenAtom)
 
-/-- The Laplace-Runge-Lenz vector operator for the `d`-dimensional hydrogen atom,
-  `𝐀ᵢ ≔ ½(𝐩ⱼ𝐋ᵢⱼ + 𝐋ᵢⱼ𝐩ⱼ) - mk 𝐫⁻¹𝐱ᵢ`, with inverse radius regularized by `ε`. -/
+/-- The (regularized) Laplace-Runge-Lenz vector operator for the `d`-dimensional hydrogen atom,
+  `𝐀ᵢ(ε) ≔ ½(𝐩ⱼ𝐋ᵢⱼ + 𝐋ᵢⱼ𝐩ⱼ) - mk·𝐫(ε)⁻¹𝐱ᵢ`. -/
 def lrlOperator (ε : ℝ) (i : Fin H.d) : 𝓢(Space H.d, ℂ) →L[ℂ] 𝓢(Space H.d, ℂ) :=
   (2 : ℝ)⁻¹ • ∑ j, (𝐩[j] ∘L 𝐋[i,j] + 𝐋[i,j] ∘L 𝐩[j]) - (H.m * H.k) • 𝐫[ε,-1] ∘L 𝐱[i]
 
-/-- Square of the LRL vector operator, `𝐀² ≔ 𝐀ᵢ𝐀ᵢ`. -/
+/-- The square of the LRL vector operator, `𝐀² ≔ 𝐀ᵢ𝐀ᵢ`. -/
 def lrlOperatorSqr (ε : ℝ) : 𝓢(Space H.d, ℂ) →L[ℂ] 𝓢(Space H.d, ℂ) :=
   ∑ i, (H.lrlOperator ε i) ∘L (H.lrlOperator ε i)
 
@@ -33,6 +44,7 @@ def lrlOperatorSqr (ε : ℝ) : 𝓢(Space H.d, ℂ) →L[ℂ] 𝓢(Space H.d, �
 ## Angular momentum / LRL vector commutators
 -/
 
+/-- `⁅𝐋ᵢⱼ, 𝐀(ε)ₖ⁆ = iℏ(δᵢₖ𝐀(ε)ⱼ - δⱼₖ𝐀(ε)ᵢ)` -/
 lemma angularMomentum_commutation_lrl (hε : 0 < ε) (i j k : Fin H.d) :
     ⁅𝐋[i,j], H.lrlOperator ε k⁆ = (Complex.I * ℏ * δ[i,k]) • H.lrlOperator ε j
     - (Complex.I * ℏ * δ[j,k]) • H.lrlOperator ε i := by
@@ -70,6 +82,7 @@ lemma angularMomentum_commutation_lrl (hε : 0 < ε) (i j k : Fin H.d) :
       repeat rw [ite_cond_eq_false _ _ (eq_false hjk)]
       ring
 
+/-- `⁅𝐋ᵢⱼ, 𝐀(ε)²⁆ = 0` -/
 lemma angularMomentum_commutation_lrlSqr (hε : 0 < ε) (i j : Fin H.d) :
     ⁅𝐋[i,j], H.lrlOperatorSqr ε⁆ = 0 := by
   unfold lrlOperatorSqr
@@ -78,6 +91,7 @@ lemma angularMomentum_commutation_lrlSqr (hε : 0 < ε) (i j : Fin H.d) :
   dsimp only [kronecker_delta]
   simp [Finset.sum_add_distrib, Finset.sum_sub_distrib]
 
+/-- `⁅𝐋², 𝐀(ε)²⁆ = 0` -/
 lemma angularMomentumSqr_commutation_lrlSqr (hε : 0 < ε) :
     ⁅angularMomentumOperatorSqr (d := H.d), H.lrlOperatorSqr ε⁆ = 0 := by
   unfold angularMomentumOperatorSqr
@@ -87,18 +101,14 @@ lemma angularMomentumSqr_commutation_lrlSqr (hε : 0 < ε) :
 
 ## LRL / LRL commutators
 
-We take the following approach to compute the commutator `⁅𝐀ᵢ,𝐀ⱼ⁆`:
-
-- Write `𝐀ᵢ = 𝐱ᵢ𝐩² - (𝐱ⱼ𝐩ⱼ)𝐩ᵢ + ½iℏ(d-1)𝐩ᵢ - mk 𝐫⁻¹𝐱ᵢ =: f1ᵢ - f2ᵢ + f3ᵢ - f4ᵢ`
-
+To compute the commutator `⁅𝐀ᵢ(ε), 𝐀ⱼ(ε)⁆` we take the following approach:
+- Write `𝐀(ε)ᵢ = 𝐱ᵢ𝐩² - (𝐱ⱼ𝐩ⱼ)𝐩ᵢ + ½iℏ(d-1)𝐩ᵢ - mk·𝐫(ε)⁻¹𝐱ᵢ ≕ f1ᵢ - f2ᵢ + f3ᵢ - f4ᵢ`
 - Organize the sixteen terms which result from exapanding `⁅f1ᵢ-f2ᵢ+f3ᵢ-f4ᵢ, f1ⱼ-f2ⱼ+f3ⱼ-f4ⱼ⁆`
   into four diagonal terms such as `⁅f1ᵢ, f1ⱼ⁆` and six off-diagonal pairs such as
   `⁅f1ᵢ, f3ⱼ⁆ + ⁅f3ᵢ, f1ⱼ⁆ = ⁅f1ᵢ, f3ⱼ⁆ - ⁅f1ⱼ, f3ᵢ⁆`.
-
 - Compute the diagonal commutators and off-diagonal pairs individually. Many vanish, and those
   that don't are all of the form `iℏ (⋯) 𝐋ᵢⱼ` (as they must to be antisymmetric in `i,j`).
-
-- Collect terms to arive at the final result, `⁅𝐀ᵢ,𝐀ⱼ⁆ = -iℏ 2m H 𝐋ᵢⱼ`.
+- Collect terms.
 
 -/
 
@@ -296,6 +306,7 @@ private lemma lrlOperator_decomposition (i : Fin H.d) :
   simp
   ring
 
+/-- `⁅𝐀(ε)ᵢ, 𝐀(ε)ⱼ⁆ = -iℏ 2m 𝐇(ε)𝐋ᵢⱼ` -/
 lemma lrl_commutation_lrl (hε : 0 < ε) (i j : Fin H.d) : ⁅H.lrlOperator ε i, H.lrlOperator ε j⁆
     = (-2 * Complex.I * ℏ * H.m) • (H.hamiltonianReg ε) ∘L 𝐋[i,j] := by
   repeat rw [lrlOperator_decomposition]
@@ -324,10 +335,32 @@ lemma lrl_commutation_lrl (hε : 0 < ε) (i j : Fin H.d) : ⁅H.lrlOperator ε i
   simp
 
 /-
-## LRL vector squared
+## Hamiltonian / LRL vector commutators
 -/
 
-private lemma lrlOperator_eq' (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐋[i,j] ∘L 𝐩[j]
+@[sorryful]
+lemma hamiltonianReg_commutation_lrl (hε : 0 < ε) (i : Fin H.d) :
+    ⁅H.hamiltonianReg ε, H.lrlOperator ε i⁆ = (2⁻¹ * Complex.I * ℏ * H.k) •
+    ((- ε ^ 2) • 𝐫[ε,-3] ∘L 𝐩[i]
+      + (3 * ε ^ 2) • 𝐫[ε,-5] ∘L (∑ j, 𝐱[j] ∘L 𝐩[j]) ∘L 𝐱[i]
+      + (3 * ε ^ 4) • 𝐫[ε,-5] ∘L 𝐩[i]
+      - (3 * 2⁻¹ * Complex.I * ℏ * (H.d - 5)) • 𝐫[ε,-5] ∘L 𝐱[i]) := by
+  sorry
+
+/-
+
+## LRL vector squared
+
+To compute `𝐀(ε)²` we take the following approach:
+- Write `𝐀(ε)ᵢ = 𝐋ᵢⱼ𝐩ⱼ + ½iℏ(d-1)𝐩ᵢ - mk·𝐫(ε)⁻¹𝐱ᵢ` for the first term and
+  `𝐀(ε)ᵢ = 𝐩ⱼ𝐋ᵢⱼ - ½iℏ(d-1)𝐩ᵢ - mk·𝐫(ε)⁻¹𝐱ᵢ` for the second.
+- Expand out to nine terms: one is a triple sum, two are double sums and the rest are single sums.
+- Compute each term, symmetrizing the sums (see `sum_symmetrize` and `sum_symmetrize'`).
+- Collect terms.
+
+-/
+
+private lemma lrlOperator_eq (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐋[i,j] ∘L 𝐩[j]
       + (2⁻¹ * Complex.I * ℏ * (H.d - 1)) • 𝐩[i] - (H.m * H.k) • 𝐫[ε,-1] ∘L 𝐱[i] := by
     unfold lrlOperator
     congr
@@ -343,7 +376,7 @@ private lemma lrlOperator_eq' (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐋[i
     simp
     ring
 
-private lemma lrlOperator_eq'' (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐩[j] ∘L 𝐋[i,j]
+private lemma lrlOperator_eq' (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐩[j] ∘L 𝐋[i,j]
       - (2⁻¹ * Complex.I * ℏ * (H.d - 1)) • 𝐩[i] - (H.m * H.k) • 𝐫[ε,-1] ∘L 𝐱[i] := by
     unfold lrlOperator
     congr
@@ -385,14 +418,14 @@ private lemma sum_symmetrize'
     SchwartzMap.add_apply, smul_eq_mul]
   ring
 
-private lemma Lpp_zero : ∑ i : Fin H.d, ∑ j, 𝐋[i,j] ∘L 𝐩[j] ∘L 𝐩[i] = 0 := by
+private lemma sum_Lpp_zero : ∑ i : Fin H.d, ∑ j, 𝐋[i,j] ∘L 𝐩[j] ∘L 𝐩[i] = 0 := by
   rw [sum_symmetrize]
   conv_lhs =>
     enter [2, 2, i, 2, j]
     rw [angularMomentumOperator_antisymm j i, momentum_momentum_eq j i, neg_comp, add_neg_cancel]
   simp
 
-private lemma ppL_zero : ∑ i : Fin H.d, ∑ j, 𝐩[i] ∘L 𝐩[j] ∘L 𝐋[i,j] = 0 := by
+private lemma sum_ppL_zero : ∑ i : Fin H.d, ∑ j, 𝐩[i] ∘L 𝐩[j] ∘L 𝐋[i,j] = 0 := by
   rw [sum_symmetrize]
   conv_lhs =>
     enter [2, 2, i, 2, j]
@@ -503,9 +536,9 @@ private lemma sum_rxrx (hε : 0 < ε) : ∑ i, 𝐫[ε,-1] ∘L 𝐱[i] ∘L �
   rw [← comp_finset_sum, positionOperatorSqr_eq hε, comp_sub, comp_smul, comp_id,
     radiusRegPowOperator_comp_eq hε, neg_add_cancel, radiusRegPowOperator_zero hε]
 
-/-- The square of the (regularized) LRL vector operator is related to the (regularized) hydrogen
-  Hamiltonian `𝐇`, square of the angular momentum `𝐋²` and (regularized) powers of `𝐫` as
-  `𝐀² = 2m 𝐇(𝐋² + ¼ℏ²(d-1)²) + m²k² - m²k²ε²𝐫⁻² + mkε²𝐫⁻³(𝐋² + ¼ℏ²(d-1)(d-3))`. -/
+/-- The square of the (regularized) LRL vector operator is related to the (regularized) Hamiltonian
+  `𝐇(ε)` of the hydrogen atom, square of the angular momentum `𝐋²` and powers of `𝐫(ε)` as
+  `𝐀(ε)² = 2m 𝐇(ε)(𝐋² + ¼ℏ²(d-1)²) + m²k² - m²k²ε²𝐫(ε)⁻² + mkε²𝐫(ε)⁻³(𝐋² + ¼ℏ²(d-1)(d-3))`. -/
 lemma lrlOperatorSqr_eq (hε : 0 < ε) : H.lrlOperatorSqr ε =
     (2 * H.m) • (H.hamiltonianReg ε) ∘L
       (𝐋² + (4⁻¹ * ℏ ^ 2 * (H.d - 1) ^ 2 : ℝ) • ContinuousLinearMap.id ℂ 𝓢(Space H.d, ℂ))
@@ -518,13 +551,13 @@ lemma lrlOperatorSqr_eq (hε : 0 < ε) : H.lrlOperatorSqr ε =
 
   let a := (2⁻¹ * Complex.I * ℏ * (H.d - 1))
 
-  -- Replace the two copies of A in different ways and expand to nine terms
+  -- Replace the two copies of `𝐀(ε)` in different ways and expand to nine terms
   conv_lhs =>
     enter [2, i, 1]
-    rw [lrlOperator_eq']
+    rw [lrlOperator_eq]
   conv_lhs =>
     enter [2, i]
-    rw [lrlOperator_eq'']
+    rw [lrlOperator_eq']
     calc
       _ = (∑ j, 𝐋[i,j] ∘L 𝐩[j]) ∘L (∑ k, 𝐩[k] ∘L 𝐋[i,k])
           - a • (∑ j, 𝐋[i,j] ∘L 𝐩[j]) ∘L 𝐩[i]
@@ -562,8 +595,8 @@ lemma lrlOperatorSqr_eq (hε : 0 < ε) : H.lrlOperatorSqr ε =
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.smul_sum]
 
   rw [sum_LppL] -- ∑∑∑ LppL = p²L²
-  rw [Lpp_zero, smul_zero] -- ∑∑ Lpp = 0
-  rw [ppL_zero, smul_zero] -- ∑∑ ppL = 0
+  rw [sum_Lpp_zero, smul_zero] -- ∑∑ Lpp = 0
+  rw [sum_ppL_zero, smul_zero] -- ∑∑ ppL = 0
   rw [← momentumOperatorSqr] -- ∑ pp = p²
   rw [sum_Lprx H hε] -- ∑∑ Lpr⁻¹x = r⁻¹L²
   rw [sum_rxpL] -- ∑∑ r⁻¹xpL = r⁻¹L²
