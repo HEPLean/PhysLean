@@ -538,11 +538,17 @@ We now show that the force is equal to `- k x`.
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 lemma force_eq_linear (x : ConfigurationSpace) : force S x = - S.k • x := by
   unfold force potentialEnergy
-  have hgrad :
-      gradient (fun y : ConfigurationSpace => (1 / (2 : ℝ)) • S.k • ⟪y, y⟫_ℝ) x = S.k • x := by
-    simpa [smul_eq_mul] using
+  have hpot : (fun y : ConfigurationSpace => (1 / (2 : ℝ)) • S.k • ⟪y, y⟫_ℝ) =
+      fun y => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ := by
+    funext y
+    simp [smul_eq_mul, mul_assoc]
+  rw [hpot]
+  have hgrad : gradient (fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ) x
+      = S.k • x := by
+    simpa [smul_eq_mul, mul_assoc] using
       (gradient_const_mul_inner_self (c := (1 / (2 : ℝ)) * S.k) x)
   rw [hgrad]
+  simp [neg_smul]
 
 /-!
 
@@ -806,13 +812,8 @@ This is independent of whether the trajectory satisfies the equations of motion 
 lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
     (fun t => hamiltonian S t (toCanonicalMomentum S t (xₜ t) (∂ₜ xₜ t)) (xₜ t)) = energy S xₜ := by
   funext t
-  have hsymm :
-      (toCanonicalMomentum S t (xₜ t)).symm (S.m • ∂ₜ xₜ t) = ∂ₜ xₜ t := by
-    rw [← toCanonicalMomentum_eq (S := S) (t := t) (x := xₜ t) (v := ∂ₜ xₜ t)]
-    exact LinearEquiv.symm_apply_apply (toCanonicalMomentum S t (xₜ t)) (∂ₜ xₜ t)
   unfold hamiltonian lagrangian energy kineticEnergy potentialEnergy
-  rw [hsymm]
-  simp only [
+  simp only [toCanonicalMomentum_eq, LinearEquiv.symm_apply_apply,
     ConfigurationSpace.inner_def, ConfigurationSpace.smul_val, one_div, smul_eq_mul]
   ring_nf
 
