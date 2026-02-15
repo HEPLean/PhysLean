@@ -566,8 +566,15 @@ lemma gradLagrangian_eq_force (xₜ : Time → ConfigurationSpace) (hx : ContDif
       ext t'
       rw [gradient_lagrangian_velocity_eq]
     show ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t = S.m • ∂ₜ (∂ₜ xₜ) t
-    have hd : Differentiable ℝ (∂ₜ xₜ) := deriv_differentiable_of_contDiff xₜ hx
-    simpa using (Time.deriv_smul (f := ∂ₜ xₜ) (k := S.m) (t := t) hd)
+    have hd : DifferentiableAt ℝ (∂ₜ xₜ) t :=
+      (deriv_differentiable_of_contDiff xₜ hx).differentiableAt
+    calc
+      ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t
+          = fderiv ℝ (fun t' => S.m • ∂ₜ xₜ t') t 1 := rfl
+      _ = S.m • (fderiv ℝ (∂ₜ xₜ) t 1) := by
+          rw [fderiv_const_smul hd]
+          rfl
+      _ = S.m • ∂ₜ (∂ₜ xₜ) t := rfl
 
 /-!
 
@@ -838,10 +845,17 @@ lemma equationOfMotion_iff_hamiltonEqOp_eq_zero (xₜ : Time → ConfigurationSp
   rw [hamiltonEqOp, hamiltonEqOp_eq_zero_iff_hamiltons_equations]
   simp [toCanonicalMomentum_eq, gradient_hamiltonian_momentum_eq, gradient_hamiltonian_position_eq]
   rw [equationOfMotion_iff_newtons_2nd_law _ _ hx]
-  have hd : Differentiable ℝ (∂ₜ xₜ) := deriv_differentiable_of_contDiff xₜ hx
   have hderiv_smul : ∀ t, ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t = S.m • ∂ₜ (∂ₜ xₜ) t := by
     intro t
-    simpa using (Time.deriv_smul (f := ∂ₜ xₜ) (k := S.m) (t := t) hd)
+    have hd : DifferentiableAt ℝ (∂ₜ xₜ) t :=
+      (deriv_differentiable_of_contDiff xₜ hx).differentiableAt
+    calc
+      ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t
+          = fderiv ℝ (fun t' => S.m • ∂ₜ xₜ t') t 1 := rfl
+      _ = S.m • (fderiv ℝ (∂ₜ xₜ) t 1) := by
+          rw [fderiv_const_smul hd]
+          rfl
+      _ = S.m • ∂ₜ (∂ₜ xₜ) t := rfl
   simpa [hderiv_smul, force_eq_linear]
 
 /-!
