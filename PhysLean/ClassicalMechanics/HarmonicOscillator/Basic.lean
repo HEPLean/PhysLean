@@ -441,6 +441,7 @@ lemma gradient_lagrangian_velocity_eq (t : Time) (x : ConfigurationSpace)
   have h_eq : (fun y : ConfigurationSpace => lagrangian S t x y) =
       fun y => ((1 / (2 : ℝ)) * S.m) * ⟪y, y⟫_ℝ + (-(1 / (2 : ℝ)) * S.k * ⟪x, x⟫_ℝ) := by
     funext y; unfold lagrangian potentialEnergy; simp only [smul_eq_mul]; ring
+  change gradient (fun y : ConfigurationSpace => lagrangian S t x y) v = S.m • v
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
   ext; simp only [ConfigurationSpace.smul_val]; ring
 
@@ -558,7 +559,6 @@ lemma gradLagrangian_eq_force (xₜ : Time → ConfigurationSpace) (hx : ContDif
     S.gradLagrangian xₜ = fun t => force S (xₜ t) - S.m • ∂ₜ (∂ₜ xₜ) t := by
   funext t
   rw [gradLagrangian_eq_eulerLagrangeOp S xₜ hx, eulerLagrangeOp]
-  simp only
   congr
   · simp [gradient_lagrangian_position_eq, force_eq_linear]
   · conv_lhs =>
@@ -772,6 +772,7 @@ lemma gradient_hamiltonian_position_eq (t : Time) (x : ConfigurationSpace)
     have hm : S.m ≠ 0 := S.m_neq_zero
     field_simp
     ring
+  change gradient (fun y : ConfigurationSpace => hamiltonian S t p y) x = S.k • x
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
   ext; simp only [ConfigurationSpace.smul_val]; ring
 
@@ -787,6 +788,7 @@ lemma gradient_hamiltonian_momentum_eq (t : Time) (x : ConfigurationSpace)
     have hm : S.m ≠ 0 := S.m_neq_zero
     field_simp
     ring
+  change gradient (fun y : ConfigurationSpace => hamiltonian S t y x) p = (1 / S.m) • p
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
   ext; simp only [ConfigurationSpace.smul_val]; ring
 
@@ -807,7 +809,7 @@ lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
     ConfigurationSpace.inner_def, ConfigurationSpace.smul_val, one_div, smul_eq_mul]
   have hm : S.m ≠ 0 := S.m_neq_zero
   field_simp
-  ring
+  ring_nf
 
 /-!
 
@@ -841,13 +843,11 @@ lemma equationOfMotion_iff_hamiltonEqOp_eq_zero (xₜ : Time → ConfigurationSp
   rw [equationOfMotion_iff_newtons_2nd_law _ _ hx]
   have hderiv_smul : ∀ t, ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t = S.m • ∂ₜ (∂ₜ xₜ) t := by
     intro t
-    rw [Time.deriv, Time.deriv]
-    have hd : DifferentiableAt ℝ (fun t' => fderiv ℝ xₜ t' 1) t :=
+    have hd : DifferentiableAt ℝ (∂ₜ xₜ) t :=
       (deriv_differentiable_of_contDiff xₜ hx).differentiableAt
-    rw [fderiv_const_smul hd]
+    rw [Time.deriv_eq, fderiv_const_smul hd, Time.deriv_eq]
     rfl
-  conv_rhs => enter [t]; rw [← hderiv_smul]
-  simp [force_eq_linear]
+  simpa [hderiv_smul, force_eq_linear]
 
 /-!
 
