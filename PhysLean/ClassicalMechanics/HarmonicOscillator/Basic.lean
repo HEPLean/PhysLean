@@ -433,7 +433,7 @@ lemma gradient_lagrangian_position_eq (t : Time) (x : ConfigurationSpace)
       fun y => (-(1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ + (1 / (2 : ℝ) * S.m * ⟪v, v⟫_ℝ) := by
     funext y; unfold lagrangian potentialEnergy; simp only [smul_eq_mul]; ring
   rw [h_eq, gradient_add_const', gradient_const_mul_inner_self]
-  ext; simp only [ConfigurationSpace.smul_val, ConfigurationSpace.neg_val]; ring
+  ext; simp only [ConfigurationSpace.smul_val]; ring
 
 lemma gradient_lagrangian_velocity_eq (t : Time) (x : ConfigurationSpace)
     (v : ConfigurationSpace) :
@@ -542,7 +542,7 @@ lemma force_eq_linear (x : ConfigurationSpace) : force S x = - S.k • x := by
   simp [gradient]
   change fderiv ℝ ((1 / (2 : ℝ)) • S.k • (fun (x : ConfigurationSpace) => ⟪x, x⟫_ℝ)) x y = _
   rw [fderiv_const_smul (by fun_prop), fderiv_const_smul (by fun_prop)]
-  simp [inner_smul_left]
+  simp
   ring
 
 /-!
@@ -856,7 +856,7 @@ lemma equationOfMotion_iff_hamiltonEqOp_eq_zero (xₜ : Time → ConfigurationSp
           rw [fderiv_const_smul hd]
           rfl
       _ = S.m • ∂ₜ (∂ₜ xₜ) t := rfl
-  simpa [hderiv_smul, force_eq_linear]
+  simp [hderiv_smul, force_eq_linear]
 
 /-!
 
