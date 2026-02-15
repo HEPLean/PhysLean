@@ -714,8 +714,8 @@ lemma lrlOperatorSqr_eq (hε : 0 < ε) : H.lrlOperatorSqr ε =
     + (H.m * H.k) ^ 2 • ContinuousLinearMap.id ℂ 𝓢(Space H.d, ℂ)
     - ((H.m * H.k) ^ 2 * ε ^ 2) • 𝐫[ε,-2]
     + (H.m * H.k * ε ^ 2) • 𝐫[ε,-3] ∘L
-      (𝐋² + (4⁻¹ * ℏ^2 * (H.d - 1) * (H.d - 3) : ℝ) • ContinuousLinearMap.id ℂ 𝓢(Space H.d, ℂ)) :=
-    by
+      (𝐋² + (4⁻¹ * ℏ^2 * (H.d - 1) * (H.d - 3) : ℝ) •
+      ContinuousLinearMap.id ℂ 𝓢(Space H.d, ℂ)) := by
   unfold lrlOperatorSqr
 
   let a := (2⁻¹ * Complex.I * ℏ * (H.d - 1))
