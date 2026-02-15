@@ -538,11 +538,11 @@ We now show that the force is equal to `- k x`.
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 lemma force_eq_linear (x : ConfigurationSpace) : force S x = - S.k • x := by
   unfold force potentialEnergy
-  change -gradient (fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ) x = -S.k • x
-  rw [gradient_const_mul_inner_self]
-  ext
-  simp only [ConfigurationSpace.smul_val, ConfigurationSpace.neg_val]
-  ring
+  have hgrad :
+      gradient (fun y : ConfigurationSpace => (1 / (2 : ℝ)) • S.k • ⟪y, y⟫_ℝ) x = S.k • x := by
+    simpa [smul_eq_mul] using
+      (gradient_const_mul_inner_self (c := (1 / (2 : ℝ)) * S.k) x)
+  rw [hgrad]
 
 /-!
 
@@ -806,11 +806,14 @@ This is independent of whether the trajectory satisfies the equations of motion 
 lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
     (fun t => hamiltonian S t (toCanonicalMomentum S t (xₜ t) (∂ₜ xₜ t)) (xₜ t)) = energy S xₜ := by
   funext t
+  have hsymm :
+      (toCanonicalMomentum S t (xₜ t)).symm (S.m • ∂ₜ xₜ t) = ∂ₜ xₜ t := by
+    rw [← toCanonicalMomentum_eq (S := S) (t := t) (x := xₜ t) (v := ∂ₜ xₜ t)]
+    exact LinearEquiv.symm_apply_apply (toCanonicalMomentum S t (xₜ t)) (∂ₜ xₜ t)
   unfold hamiltonian lagrangian energy kineticEnergy potentialEnergy
-  simp only [toCanonicalMomentum_eq, LinearEquiv.coe_symm_mk',
+  rw [hsymm]
+  simp only [
     ConfigurationSpace.inner_def, ConfigurationSpace.smul_val, one_div, smul_eq_mul]
-  have hm : S.m ≠ 0 := S.m_neq_zero
-  field_simp
   ring_nf
 
 /-!
