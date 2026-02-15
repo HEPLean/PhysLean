@@ -415,7 +415,6 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   ring_nf
   rw [ω_sq]
   field_simp
-  fun_prop
 
 /-!
 
@@ -642,13 +641,13 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
     (IC : InitialConditionsAtTime) :
     (IC.toInitialConditions S).trajectory S IC.t₀ = IC.x_t₀ := by
   rw [InitialConditions.trajectory_eq, toInitialConditions]
-  ext i
+  ext
   simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val,
-    ConfigurationSpace.apply_eq_val, smul_eq_mul]
+    smul_eq_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
-  linear_combination S.ω * IC.x_t₀ i * h1
+  linear_combination S.ω * IC.x_t₀.val * h1
 
 /-- The trajectory resulting from `toInitialConditions` has the specified
   velocity `v_t₀` at time `t₀`. -/
@@ -657,13 +656,13 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
     (IC : InitialConditionsAtTime) :
     ∂ₜ ((IC.toInitialConditions S).trajectory S) IC.t₀ = IC.v_t₀ := by
   rw [InitialConditions.trajectory_velocity, toInitialConditions]
-  ext i
+  ext
   simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val,
-    ConfigurationSpace.apply_eq_val, smul_eq_mul, neg_mul]
+    smul_eq_mul, neg_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
-  linear_combination IC.v_t₀ i * h1
+  linear_combination IC.v_t₀.val * h1
 
 /-- The energy of the trajectory at time `t₀` equals the energy computed from the
   initial conditions at `t₀`. -/
@@ -723,8 +722,7 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   trans (sin (S.ω * t.val) * (S.ω * IC.x₀ 0)) +
     (-(S.ω • sin (S.ω * t.val) • IC.x₀) + cos (S.ω * t.val) • IC.v₀) 0
   · rw [h]
-    simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.neg_val,
-      ConfigurationSpace.apply_zero, ConfigurationSpace.zero_val, mul_zero, zero_add]
+    simp only [ConfigurationSpace.apply_zero, ConfigurationSpace.zero_val]
     ring_nf
   · simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.neg_val,
       ConfigurationSpace.apply_zero, neg_mul]
