@@ -36,7 +36,7 @@ variable (H : HydrogenAtom)
 def lrlOperator (ε : ℝ) (i : Fin H.d) : 𝓢(Space H.d, ℂ) →L[ℂ] 𝓢(Space H.d, ℂ) :=
   (2 : ℝ)⁻¹ • ∑ j, (𝐩[j] ∘L 𝐋[i,j] + 𝐋[i,j] ∘L 𝐩[j]) - (H.m * H.k) • 𝐫[ε,-1] ∘L 𝐱[i]
 
-/-- The square of the LRL vector operator, `𝐀² ≔ 𝐀ᵢ𝐀ᵢ`. -/
+/-- The square of the LRL vector operator, `𝐀(ε)² ≔ 𝐀(ε)ᵢ𝐀(ε)ᵢ`. -/
 def lrlOperatorSqr (ε : ℝ) : 𝓢(Space H.d, ℂ) →L[ℂ] 𝓢(Space H.d, ℂ) :=
   ∑ i, (H.lrlOperator ε i) ∘L (H.lrlOperator ε i)
 
@@ -149,8 +149,8 @@ private lemma xp_commutation_momentumSqr :
   ring
 
 private lemma xp_commutation_radiusRegPow (hε : 0 < ε) :
-    ⁅H.xp, radiusRegPowOperator (d := H.d) ε p⁆ =
-    (-p * Complex.I * ℏ) • (𝐫[ε,p] - ε ^ 2 • 𝐫[ε,p-2]) := by
+    ⁅H.xp, radiusRegPowOperator (d := H.d) ε s⁆ =
+    (-s * Complex.I * ℏ) • (𝐫[ε,s] - ε ^ 2 • 𝐫[ε,s-2]) := by
   unfold xp
   rw [sum_lie]
   conv_lhs =>
@@ -231,8 +231,8 @@ private lemma cf14 (hε : 0 < ε) (i j : Fin H.d) : ⁅H.f1 i, H.f4 ε j⁆ - �
     smul_neg, neg_comp, add_comp, smul_comp, comp_assoc, sub_comp, comp_sub]
   repeat rw [commute H.xp 𝐱[_], xp_commutation_position]
 
-  have hxr : ∀ i : Fin H.d, ∀ p, ∀ (A : 𝓢(Space H.d, ℂ) →L[ℂ] 𝓢(Space H.d, ℂ)),
-      𝐱[i] ∘L 𝐫[ε,p] ∘L A = 𝐫[ε,p] ∘L 𝐱[i] ∘L A := by
+  have hxr : ∀ i : Fin H.d, ∀ s, ∀ (A : 𝓢(Space H.d, ℂ) →L[ℂ] 𝓢(Space H.d, ℂ)),
+      𝐱[i] ∘L 𝐫[ε,s] ∘L A = 𝐫[ε,s] ∘L 𝐱[i] ∘L A := by
     intro i p A
     rw [← comp_assoc, position_radiusRegPow_eq hε, comp_assoc]
   repeat rw [hxr]
@@ -284,7 +284,7 @@ private lemma cf44 (hε : 0 < ε) (i j : Fin H.d) : ⁅H.f4 ε i, H.f4 ε j⁆ =
     repeat rw [position_commutation_radiusRegPow hε]
     simp only [comp_zero, zero_comp, add_zero, neg_zero, smul_zero]
 
-private lemma lrlOperator_decomposition (i : Fin H.d) :
+private lemma lrlOperator_eq (i : Fin H.d) :
     H.lrlOperator ε i = H.f1 i - H.f2 i + H.f3 i - H.f4 ε i := by
   unfold lrlOperator f1 f2 f3 f4 xp angularMomentumOperator
   congr
@@ -309,7 +309,7 @@ private lemma lrlOperator_decomposition (i : Fin H.d) :
 /-- `⁅𝐀(ε)ᵢ, 𝐀(ε)ⱼ⁆ = -iℏ 2m 𝐇(ε)𝐋ᵢⱼ` -/
 lemma lrl_commutation_lrl (hε : 0 < ε) (i j : Fin H.d) : ⁅H.lrlOperator ε i, H.lrlOperator ε j⁆
     = (-2 * Complex.I * ℏ * H.m) • (H.hamiltonianReg ε) ∘L 𝐋[i,j] := by
-  repeat rw [lrlOperator_decomposition]
+  repeat rw [lrlOperator_eq]
   trans ⁅H.f1 i, H.f1 j⁆ + ⁅H.f2 i, H.f2 j⁆ + ⁅H.f3 i, H.f3 j⁆ + ⁅H.f4 ε i, H.f4 ε j⁆
       - (⁅H.f1 i, H.f2 j⁆ - ⁅H.f1 j, H.f2 i⁆) + (⁅H.f1 i, H.f3 j⁆ - ⁅H.f1 j, H.f3 i⁆)
       - (⁅H.f1 i, H.f4 ε j⁆ - ⁅H.f1 j, H.f4 ε i⁆) - (⁅H.f2 i, H.f3 j⁆ - ⁅H.f2 j, H.f3 i⁆)
@@ -431,6 +431,7 @@ private lemma xL_Lx_eq (hε : 0 < ε) (i : Fin H.d) : ∑ j, (𝐱[j] ∘L 𝐋[
   simp
   ring
 
+/-- `⁅𝐇(ε), 𝐀(ε)ᵢ⁆ = iℏkε²(¾𝐫(ε)⁻⁵(𝐱ⱼ𝐋ᵢⱼ + 𝐋ᵢⱼ𝐱ⱼ) + 3iℏ/2 𝐫(ε)⁻⁵𝐱ᵢ + 𝐫(ε)⁻³𝐩ᵢ)` -/
 lemma hamiltonianReg_commutation_lrl (hε : 0 < ε) (i : Fin H.d) :
     ⁅H.hamiltonianReg ε, H.lrlOperator ε i⁆ = (Complex.I * ℏ * H.k * ε ^ 2) •
     ((3 * 4⁻¹ : ℝ) • 𝐫[ε,-5] ∘L ∑ j, (𝐱[j] ∘L 𝐋[i,j] + 𝐋[i,j] ∘L 𝐱[j])
@@ -471,7 +472,7 @@ To compute `𝐀(ε)²` we take the following approach:
 
 -/
 
-private lemma lrlOperator_eq (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐋[i,j] ∘L 𝐩[j]
+private lemma lrlOperator_eq' (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐋[i,j] ∘L 𝐩[j]
       + (2⁻¹ * Complex.I * ℏ * (H.d - 1)) • 𝐩[i] - (H.m * H.k) • 𝐫[ε,-1] ∘L 𝐱[i] := by
     unfold lrlOperator
     congr
@@ -487,7 +488,7 @@ private lemma lrlOperator_eq (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐋[i,
     simp
     ring
 
-private lemma lrlOperator_eq' (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐩[j] ∘L 𝐋[i,j]
+private lemma lrlOperator_eq'' (i : Fin H.d) : H.lrlOperator ε i = ∑ j, 𝐩[j] ∘L 𝐋[i,j]
       - (2⁻¹ * Complex.I * ℏ * (H.d - 1)) • 𝐩[i] - (H.m * H.k) • 𝐫[ε,-1] ∘L 𝐱[i] := by
     unfold lrlOperator
     congr
@@ -665,10 +666,10 @@ lemma lrlOperatorSqr_eq (hε : 0 < ε) : H.lrlOperatorSqr ε =
   -- Replace the two copies of `𝐀(ε)` in different ways and expand to nine terms
   conv_lhs =>
     enter [2, i, 1]
-    rw [lrlOperator_eq]
+    rw [lrlOperator_eq']
   conv_lhs =>
     enter [2, i]
-    rw [lrlOperator_eq']
+    rw [lrlOperator_eq'']
     calc
       _ = (∑ j, 𝐋[i,j] ∘L 𝐩[j]) ∘L (∑ k, 𝐩[k] ∘L 𝐋[i,k])
           - a • (∑ j, 𝐋[i,j] ∘L 𝐩[j]) ∘L 𝐩[i]
