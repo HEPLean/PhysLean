@@ -542,7 +542,7 @@ lemma force_eq_linear (x : ConfigurationSpace) : force S x = - S.k • x := by
   simp [gradient]
   change fderiv ℝ ((1 / (2 : ℝ)) • S.k • (fun (x : ConfigurationSpace) => ⟪x, x⟫_ℝ)) x y = _
   rw [fderiv_const_smul (by fun_prop), fderiv_const_smul (by fun_prop)]
-  simp
+  simp only [ConfigurationSpace.inner_def, ConfigurationSpace.smul_val, smul_eq_mul]
   ring
 
 /-!
