@@ -537,12 +537,11 @@ We now show that the force is equal to `- k x`.
 
 /-- The force on the classical harmonic oscillator is `- k x`. -/
 lemma force_eq_linear (x : ConfigurationSpace) : force S x = - S.k • x := by
-  simp [force]
-  refine ext_inner_right (𝕜 := ℝ) fun y => ?_
-  simp [gradient]
-  change fderiv ℝ ((1 / (2 : ℝ)) • S.k • (fun (x : ConfigurationSpace) => ⟪x, x⟫_ℝ)) x y = _
-  rw [fderiv_const_smul (by fun_prop), fderiv_const_smul (by fun_prop)]
-  simp only [ConfigurationSpace.inner_def, ConfigurationSpace.smul_val, smul_eq_mul]
+  unfold force potentialEnergy
+  change -gradient (fun y : ConfigurationSpace => ((1 / (2 : ℝ)) * S.k) * ⟪y, y⟫_ℝ) x = -S.k • x
+  rw [gradient_const_mul_inner_self]
+  ext
+  simp only [ConfigurationSpace.smul_val, ConfigurationSpace.neg_val]
   ring
 
 /-!
@@ -572,8 +571,7 @@ lemma gradLagrangian_eq_force (xₜ : Time → ConfigurationSpace) (hx : ContDif
       ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t
           = fderiv ℝ (fun t' => S.m • ∂ₜ xₜ t') t 1 := rfl
       _ = S.m • (fderiv ℝ (∂ₜ xₜ) t 1) := by
-          rw [fderiv_const_smul hd]
-          rfl
+          simpa using congrArg (fun L => L 1) (fderiv_const_smul (c := S.m) (f := ∂ₜ xₜ) hd)
       _ = S.m • ∂ₜ (∂ₜ xₜ) t := rfl
 
 /-!
@@ -809,7 +807,7 @@ lemma hamiltonian_eq_energy (xₜ : Time → ConfigurationSpace) :
     (fun t => hamiltonian S t (toCanonicalMomentum S t (xₜ t) (∂ₜ xₜ t)) (xₜ t)) = energy S xₜ := by
   funext t
   unfold hamiltonian lagrangian energy kineticEnergy potentialEnergy
-  simp only [toCanonicalMomentum, LinearEquiv.coe_symm_mk',
+  simp only [toCanonicalMomentum_eq, LinearEquiv.coe_symm_mk',
     ConfigurationSpace.inner_def, ConfigurationSpace.smul_val, one_div, smul_eq_mul]
   have hm : S.m ≠ 0 := S.m_neq_zero
   field_simp
@@ -853,8 +851,7 @@ lemma equationOfMotion_iff_hamiltonEqOp_eq_zero (xₜ : Time → ConfigurationSp
       ∂ₜ (fun t' => S.m • ∂ₜ xₜ t') t
           = fderiv ℝ (fun t' => S.m • ∂ₜ xₜ t') t 1 := rfl
       _ = S.m • (fderiv ℝ (∂ₜ xₜ) t 1) := by
-          rw [fderiv_const_smul hd]
-          rfl
+          simpa using congrArg (fun L => L 1) (fderiv_const_smul (c := S.m) (f := ∂ₜ xₜ) hd)
       _ = S.m • ∂ₜ (∂ₜ xₜ) t := rfl
   simp [hderiv_smul, force_eq_linear]
 
