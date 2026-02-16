@@ -410,11 +410,10 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]
   ext
-  rw [ω_sq]
-  simp [trajectory_eq, smul_add, smul_smul, mul_comm, mul_left_comm]
-  have h : S.ω ≠ 0 := by exact ω_ne_zero S
-  field_simp [h]
-  ring_nf
+  have hωm : S.ω ^ 2 * S.m = S.k := by
+    rw [ω_sq]
+    field_simp [m_ne_zero S]
+  simp [trajectory_eq, smul_add, smul_smul, mul_comm, mul_left_comm, hωm]
 
 /-!
 
