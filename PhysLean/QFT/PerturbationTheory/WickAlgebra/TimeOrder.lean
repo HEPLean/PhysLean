@@ -278,7 +278,7 @@ lemma ι_timeOrderF_superCommuteF_eq_time {φ ψ : 𝓕.CrAnFieldOp}
   · intro x hx hpx
     simp_all [pb]
 
-lemma ι_timeOrderF_superCommuteF_neq_time {φ ψ : 𝓕.CrAnFieldOp}
+lemma ι_timeOrderF_superCommuteF_ne_time {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) (a b : 𝓕.FieldOpFreeAlgebra) :
     ι 𝓣ᶠ(a * [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF * b) = 0 := by
   rw [timeOrderF_timeOrderF_mid]
@@ -328,7 +328,7 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
         · exact hφb
         · exact heqt.1
         · exact heqt.2
-      · rw [ι_timeOrderF_superCommuteF_neq_time heqt]
+      · rw [ι_timeOrderF_superCommuteF_ne_time heqt]
     | Or.inr (Or.inr (Or.inl hc)) =>
       obtain ⟨φa, hφa, φb, hφb, rfl⟩ := hc
       by_cases heqt : (crAnTimeOrderRel φa φb ∧ crAnTimeOrderRel φb φa)
@@ -340,7 +340,7 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
         · exact hφb
         · exact heqt.1
         · exact heqt.2
-      · rw [ι_timeOrderF_superCommuteF_neq_time heqt]
+      · rw [ι_timeOrderF_superCommuteF_ne_time heqt]
     | Or.inr (Or.inr (Or.inr hc)) =>
       obtain ⟨φa, φb, hdiff, rfl⟩ := hc
       by_cases heqt : (crAnTimeOrderRel φa φb ∧ crAnTimeOrderRel φb φa)
@@ -351,7 +351,7 @@ lemma ι_timeOrderF_zero_of_mem_ideal (a : 𝓕.FieldOpFreeAlgebra)
         · exact hdiff
         · exact heqt.1
         · exact heqt.2
-      · rw [ι_timeOrderF_superCommuteF_neq_time heqt]
+      · rw [ι_timeOrderF_superCommuteF_ne_time heqt]
   · simp [p]
   · intro x y hx hy
     simp only [map_add, p]
@@ -467,7 +467,7 @@ lemma timeOrder_superCommute_eq_time_left {φ ψ : 𝓕.CrAnFieldOp}
   rw [timeOrder_superCommute_eq_time_mid hφψ hψφ]
   simp
 
-lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnFieldOp}
+lemma timeOrder_superCommute_ne_time {φ ψ : 𝓕.CrAnFieldOp}
     (hφψ : ¬ (crAnTimeOrderRel φ ψ ∧ crAnTimeOrderRel ψ φ)) :
     𝓣([ofCrAnOp φ, ofCrAnOp ψ]ₛ) = 0 := by
   rw [ofCrAnOp, ofCrAnOp]
@@ -475,10 +475,10 @@ lemma timeOrder_superCommute_neq_time {φ ψ : 𝓕.CrAnFieldOp}
   rw [timeOrder_eq_ι_timeOrderF]
   trans ι (timeOrderF (1 * (superCommuteF (ofCrAnOpF φ)) (ofCrAnOpF ψ) * 1))
   simp only [one_mul, mul_one]
-  rw [ι_timeOrderF_superCommuteF_neq_time]
+  rw [ι_timeOrderF_superCommuteF_ne_time]
   exact hφψ
 
-lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.FieldOp}
+lemma timeOrder_superCommute_anPart_ofFieldOp_ne_time {φ ψ : 𝓕.FieldOp}
     (hφψ : ¬ (timeOrderRel φ ψ ∧ timeOrderRel ψ φ)) :
     𝓣([anPart φ,ofFieldOp ψ]ₛ) = 0 := by
   rw [ofFieldOp_eq_sum]
@@ -490,11 +490,11 @@ lemma timeOrder_superCommute_anPart_ofFieldOp_neq_time {φ ψ : 𝓕.FieldOp}
     simp
   | .position φ =>
     simp only [anPart_position]
-    apply timeOrder_superCommute_neq_time
+    apply timeOrder_superCommute_ne_time
     simp_all [crAnTimeOrderRel]
   | .outAsymp φ =>
     simp only [anPart_outAsymp]
-    apply timeOrder_superCommute_neq_time
+    apply timeOrder_superCommute_ne_time
     simp_all [crAnTimeOrderRel]
 
 /-- For a field specification `𝓕`, and `a`, `b`, `c` in `𝓕.WickAlgebra`, then

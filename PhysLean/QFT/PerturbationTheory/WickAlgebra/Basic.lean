@@ -120,7 +120,7 @@ lemma ι_superCommuteF_zero_of_fermionic (φ ψ : 𝓕.CrAnFieldOp)
     (h : [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF ∈ statisticSubmodule fermionic) :
     ι [ofCrAnOpF φ, ofCrAnOpF ψ]ₛF = 0 := by
   rw [← ofCrAnListF_singleton, ← ofCrAnListF_singleton] at h ⊢
-  rcases statistic_neq_of_superCommuteF_fermionic h with h | h
+  rcases statistic_ne_of_superCommuteF_fermionic h with h | h
   · simp only [ofCrAnListF_singleton]
     apply ι_superCommuteF_of_diff_statistic
     simpa using h

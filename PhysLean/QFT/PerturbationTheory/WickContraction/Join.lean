@@ -112,7 +112,7 @@ lemma jointLiftLeft_disjoint_joinLiftRight {φs : List 𝓕.FieldOp} {φsΛ : Wi
   apply uncontractedListEmd_finset_disjoint_left
   exact a.2
 
-lemma jointLiftLeft_neq_joinLiftRight {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
+lemma jointLiftLeft_ne_joinLiftRight {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
     {φsucΛ : WickContraction [φsΛ]ᵘᶜ.length} (a : φsΛ.1) (b : φsucΛ.1) :
     joinLiftLeft a ≠ joinLiftRight b := by
   by_contra hn
@@ -143,11 +143,11 @@ lemma joinLift_injective {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.
     exact joinLiftRight_injective h
   | Sum.inl a, Sum.inr b =>
     simp only [joinLift] at h
-    have h1 := jointLiftLeft_neq_joinLiftRight a b
+    have h1 := jointLiftLeft_ne_joinLiftRight a b
     simp_all
   | Sum.inr a, Sum.inl b =>
     simp only [joinLift] at h
-    have h1 := jointLiftLeft_neq_joinLiftRight b a
+    have h1 := jointLiftLeft_ne_joinLiftRight b a
     simp_all
 
 lemma joinLift_surjective {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
