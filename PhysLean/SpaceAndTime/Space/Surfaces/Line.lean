@@ -18,6 +18,12 @@ namespace Space
 
 open MeasureTheory Real
 
+/-!
+
+## A. The definition of the line surface
+
+-/
+
 /-- The linear isometry corresponding the inclusion of the x-axis line into
   `Space d.succ`. -/
 def line (d : ℕ) : Space 1 →ₗᵢ[ℝ] Space d.succ where
@@ -81,6 +87,12 @@ lemma line_measurableEmbedding (d : ℕ) : MeasurableEmbedding (line d) := by
   · exact LinearIsometry.continuous (line d)
   · exact line_injective d
 
+/-!
+
+## B. The measure associated with the line
+
+-/
+
 /-- The measure on `Space d.succ` corresponding to integration along the `x`-axis. -/
 def lineMeasure (d : ℕ) : Measure (Space d.succ) := MeasureTheory.Measure.map (line d) (volume)
 
@@ -93,7 +105,15 @@ instance lineMeasure_hasTemperateGrowth (d : ℕ) : (lineMeasure d).HasTemperate
   rw [MeasurableEmbedding.integrable_map_iff (line_measurableEmbedding d)]
   change Integrable ((fun x => (1 + ‖⇑(line d) x‖) ^ (- (n : ℝ)))) volume
   simpa using hn
+/-!
 
+## C. The distribution associated with the line
+
+-/
+
+/-- The distribution corresponding to integrating over a line.
+  Physically, this is the distribution associated with, for example, lines of charges,
+  or infinitely thin wires. -/
 def lineDist (d : ℕ) : (Space d.succ) →d[ℝ] ℝ :=
   SchwartzMap.integralCLM ℝ (lineMeasure d)
 

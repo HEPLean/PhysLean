@@ -18,6 +18,12 @@ namespace Space
 
 open MeasureTheory Real
 
+/-!
+
+## A. The definition of the spherical shell surface
+
+-/
+
 /-- The map embedding the unit sphere in `Space d.succ` into `Space d.succ`. -/
 def sphericalShell (d : ℕ) : Metric.sphere (0 : Space d.succ) 1 → Space d.succ := fun x => x.1
 
@@ -33,6 +39,12 @@ lemma sphericalShell_measurableEmbedding (d : ℕ) : MeasurableEmbedding (spheri
   · exact sphericalShell_continuous d
   · exact sphericalShell_injective d
 
+/-!
+
+## B. The measure associated with the spherical shell
+
+-/
+
 /-- The measure on `Space d.succ` corresponding to integration around a spherical shell. -/
 def sphericalShellMeasure (d : ℕ) : Measure (Space d.succ) :=
   MeasureTheory.Measure.map (sphericalShell d) (MeasureTheory.Measure.toSphere volume)
@@ -43,6 +55,12 @@ instance sphericalShellMeasure_hasTemperateGrowth (d : ℕ) :
   refine { exists_integrable := ?_ }
   use 0
   simp
+
+/-!
+
+## C. The distribution associated with the spherical shell
+
+-/
 
 def sphericalShellDist (d : ℕ) : (Space d.succ) →d[ℝ] ℝ  :=
   SchwartzMap.integralCLM ℝ (sphericalShellMeasure d)
