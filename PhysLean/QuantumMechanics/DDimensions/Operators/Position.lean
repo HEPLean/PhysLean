@@ -48,6 +48,7 @@ lemma positionOperator_apply (i : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d)
 ## Radius operator
 
 -/
+TODO "ZGCNP" "Incorporate normRegularizedPow into Space.Norm"
 
 /-- Power of regularized norm, `(‖x‖² + ε²)^(s/2)` -/
 private def normRegularizedPow (ε s : ℝ) : Space d → ℝ :=
