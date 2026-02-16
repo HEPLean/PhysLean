@@ -415,7 +415,7 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
     field_simp [m_ne_zero S]
   simp [trajectory_eq, smul_add, smul_smul, mul_comm, mul_left_comm]
   rw [← hωm]
-  ring
+  ring_nf
 
 /-!
 
