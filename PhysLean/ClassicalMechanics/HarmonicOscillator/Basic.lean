@@ -777,7 +777,7 @@ lemma gradient_hamiltonian_position_eq (t : Time) (x : ConfigurationSpace)
     funext y; unfold hamiltonian; simp only [toCanonicalMomentum, lagrangian,
       potentialEnergy, LinearEquiv.coe_symm_mk', ConfigurationSpace.inner_def,
       ConfigurationSpace.smul_val, smul_eq_mul]
-    have hm : S.m ≠ 0 := m_neq_zero S
+    have hm : S.m ≠ 0 := m_ne_zero S
     field_simp
     ring
   change gradient (fun y : ConfigurationSpace => hamiltonian S t p y) x = S.k • x
@@ -793,7 +793,7 @@ lemma gradient_hamiltonian_momentum_eq (t : Time) (x : ConfigurationSpace)
     funext y; unfold hamiltonian; simp only [toCanonicalMomentum, lagrangian,
       potentialEnergy, LinearEquiv.coe_symm_mk', ConfigurationSpace.inner_def,
       ConfigurationSpace.smul_val, smul_eq_mul]
-    have hm : S.m ≠ 0 := m_neq_zero S
+    have hm : S.m ≠ 0 := m_ne_zero S
     field_simp
     ring
   change gradient (fun y : ConfigurationSpace => hamiltonian S t y x) p = (1 / S.m) • p
