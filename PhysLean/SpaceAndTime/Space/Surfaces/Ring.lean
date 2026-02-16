@@ -40,10 +40,8 @@ lemma ring_continuous : Continuous ring := by
   · fun_prop
   · fun_prop
 
-lemma ring_measurableEmbedding : MeasurableEmbedding ring := by
-  apply Continuous.measurableEmbedding
-  · exact ring_continuous
-  · exact ring_injective
+lemma ring_measurableEmbedding : MeasurableEmbedding ring :=
+  Continuous.measurableEmbedding ring_continuous ring_injective
 
 /-!
 
