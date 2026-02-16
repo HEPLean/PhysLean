@@ -404,7 +404,8 @@ The trajectories satisfy the equation of motion for the harmonic oscillator.
 
 lemma trajectory_equationOfMotion (IC : InitialConditions) :
     EquationOfMotion S (IC.trajectory S) := by
-  rw [EquationOfMotion, gradLagrangian_eq_force]
+  have hcont : ContDiff ℝ ∞ (IC.trajectory S) := trajectory_contDiff S IC
+  rw [EquationOfMotion, gradLagrangian_eq_force (S := S) (xₜ := IC.trajectory S) hcont]
   funext t
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]
@@ -415,6 +416,7 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   ring_nf
   rw [ω_sq]
   field_simp
+  ring_nf
 
 /-!
 
@@ -642,8 +644,7 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
     (IC.toInitialConditions S).trajectory S IC.t₀ = IC.x_t₀ := by
   rw [InitialConditions.trajectory_eq, toInitialConditions]
   ext
-  simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val,
-    smul_eq_mul]
+  simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
@@ -658,7 +659,7 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
   rw [InitialConditions.trajectory_velocity, toInitialConditions]
   ext
   simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val,
-    smul_eq_mul, neg_mul]
+    neg_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_neq_zero]
@@ -722,10 +723,9 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   trans (sin (S.ω * t.val) * (S.ω * IC.x₀ 0)) +
     (-(S.ω • sin (S.ω * t.val) • IC.x₀) + cos (S.ω * t.val) • IC.v₀) 0
   · rw [h]
-    simp only [ConfigurationSpace.apply_zero, ConfigurationSpace.zero_val]
+    simp only [ConfigurationSpace.zero_val]
     ring_nf
-  · simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.neg_val,
-      ConfigurationSpace.apply_zero, neg_mul]
+  · simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.neg_val]
     ring_nf
   simp at h2
   rw [h2] at h ⊢
