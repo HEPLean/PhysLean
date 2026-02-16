@@ -17,16 +17,16 @@ TODO "YVABB" "Build functionality for working with sums involving Kronecker delt
 namespace KroneckerDelta
 
 /-- The Kronecker delta function, `ite (i = j) 1 0`. -/
-def kronecker_delta [Ring R] (i j : Fin d) : R := if (i = j) then 1 else 0
+def kroneckerDelta [Ring R] (i j : Fin d) : R := if (i = j) then 1 else 0
 
-@[inherit_doc kronecker_delta]
-macro "δ[" i:term "," j:term "]" : term => `(kronecker_delta $i $j)
+@[inherit_doc kroneckerDelta]
+macro "δ[" i:term "," j:term "]" : term => `(kroneckerDelta $i $j)
 
-lemma kronecker_delta_symm [Ring R] (i j : Fin d) :
-    kronecker_delta (R := R) i j = kronecker_delta j i :=
+lemma kroneckerDelta_symm [Ring R] (i j : Fin d) :
+    kroneckerDelta (R := R) i j = kroneckerDelta j i :=
   ite_cond_congr (Eq.propIntro Eq.symm Eq.symm)
 
-lemma kronecker_delta_self [Ring R] : ∀ i : Fin d, kronecker_delta (R := R) i i = 1 := by
+lemma kroneckerDelta_self [Ring R] : ∀ i : Fin d, kroneckerDelta (R := R) i i = 1 := by
   intro i
   exact if_pos rfl
 

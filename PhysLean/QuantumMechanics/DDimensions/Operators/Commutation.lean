@@ -21,21 +21,23 @@ private lemma ite_cond_symm (i j : Fin d) :
     (if i = j then A else B) = (if j = i then A else B) :=
   ite_cond_congr (Eq.propIntro Eq.symm Eq.symm)
 
-lemma lie_leibniz_left {d : ℕ} (A B C : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) :
+lemma leibniz_lie {d : ℕ} (A B C : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) :
     ⁅A ∘L B, C⁆ = A ∘L ⁅B, C⁆ + ⁅A, C⁆ ∘L B := by
   dsimp only [Bracket.bracket]
   simp only [ContinuousLinearMap.mul_def, comp_assoc, comp_sub, sub_comp, sub_add_sub_cancel]
 
-lemma lie_leibniz_right {d : ℕ} (A B C : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) :
+lemma lie_leibniz {d : ℕ} (A B C : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) :
     ⁅A, B ∘L C⁆ = B ∘L ⁅A, C⁆ + ⁅A, B⁆ ∘L C := by
   dsimp only [Bracket.bracket]
   simp only [ContinuousLinearMap.mul_def, comp_assoc, comp_sub, sub_comp, sub_add_sub_cancel']
 
-lemma commute (A B : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) : A ∘L B = B ∘L A + ⁅A, B⁆ := by
+lemma comp_eq_comp_add_commute (A B : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) :
+    A ∘L B = B ∘L A + ⁅A, B⁆ := by
   dsimp only [Bracket.bracket]
   simp only [ContinuousLinearMap.mul_def, add_sub_cancel]
 
-lemma commute' (A B : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) : A ∘L B = B ∘L A - ⁅B, A⁆ := by
+lemma comp_eq_comp_sub_commute (A B : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ)) :
+    A ∘L B = B ∘L A - ⁅B, A⁆ := by
   dsimp only [Bracket.bracket]
   simp only [ContinuousLinearMap.mul_def, sub_sub_cancel]
 
@@ -51,7 +53,7 @@ lemma position_commutation_position {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐱[j
     ContinuousLinearMap.zero_apply, SchwartzMap.zero_apply, positionOperator_apply]
   ring
 
-lemma position_position_eq {d : ℕ} (i j : Fin d) : 𝐱[i] ∘L 𝐱[j] = 𝐱[j] ∘L 𝐱[i] := by
+lemma position_comp_commute {d : ℕ} (i j : Fin d) : 𝐱[i] ∘L 𝐱[j] = 𝐱[j] ∘L 𝐱[i] := by
   rw [← sub_eq_zero]
   exact position_commutation_position i j
 
@@ -64,7 +66,7 @@ lemma position_commutation_radiusRegPow (hε : 0 < ε) (i : Fin d) :
   simp only [Complex.real_smul, ContinuousLinearMap.zero_apply, SchwartzMap.zero_apply]
   ring
 
-lemma position_radiusRegPow_eq (hε : 0 < ε) (i : Fin d) :
+lemma position_comp_radiusRegPow_commute (hε : 0 < ε) (i : Fin d) :
     𝐱[i] ∘L 𝐫[ε,s] = 𝐫[ε,s] ∘L 𝐱[i] := by
   rw [← sub_eq_zero]
   exact position_commutation_radiusRegPow hε _
@@ -89,7 +91,7 @@ lemma momentum_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐩[i], 𝐩[j
   · exact Space.deriv_differentiable (ψ.smooth _) i
   · exact Space.deriv_differentiable (ψ.smooth _) j
 
-lemma momentum_momentum_eq {d : ℕ} (i j : Fin d) : 𝐩[i] ∘L 𝐩[j] = 𝐩[j] ∘L 𝐩[i] := by
+lemma momentum_comp_commute {d : ℕ} (i j : Fin d) : 𝐩[i] ∘L 𝐩[j] = 𝐩[j] ∘L 𝐩[i] := by
   rw [← sub_eq_zero]
   exact momentum_commutation_momentum i j
 
@@ -101,12 +103,12 @@ lemma momentumSqr_commutation_momentum {d : ℕ} (i : Fin d) :
     enter [2, j]
     simp only [ContinuousLinearMap.mul_def]
     rw [comp_assoc]
-    rw [momentum_momentum_eq j i, ← comp_assoc]
-    rw [momentum_momentum_eq j i, comp_assoc]
+    rw [momentum_comp_commute j i, ← comp_assoc]
+    rw [momentum_comp_commute j i, comp_assoc]
     rw [sub_self]
   rw [Finset.sum_const_zero]
 
-lemma momentumSqr_momentum_eq {d : ℕ} (i : Fin d) : 𝐩² ∘L 𝐩[i] = 𝐩[i] ∘L 𝐩² := by
+lemma momentumSqr_comp_momentum_commute {d : ℕ} (i : Fin d) : 𝐩² ∘L 𝐩[i] = 𝐩[i] ∘L 𝐩² := by
   rw [← sub_eq_zero]
   exact momentumSqr_commutation_momentum i
 
@@ -117,7 +119,7 @@ lemma momentumSqr_momentum_eq {d : ℕ} (i : Fin d) : 𝐩² ∘L 𝐩[i] = 𝐩
 /-- The canonical commutation relations: `[xᵢ, pⱼ] = iℏ δᵢⱼ𝟙`. -/
 lemma position_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐩[j]⁆ =
     (Complex.I * ℏ * δ[i,j]) • ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
-  dsimp only [Bracket.bracket, kronecker_delta]
+  dsimp only [Bracket.bracket, kroneckerDelta]
   ext ψ x
   simp only [ContinuousLinearMap.smul_apply, SchwartzMap.smul_apply, coe_id', id_eq, smul_eq_mul,
     coe_sub', coe_mul, Pi.sub_apply, Function.comp_apply, SchwartzMap.sub_apply]
@@ -133,7 +135,7 @@ lemma position_commutation_momentum {d : ℕ} (i j : Fin d) : ⁅𝐱[i], 𝐩[j
     ite_mul, zero_mul]
   ring
 
-lemma momentum_position_eq (i j : Fin d) : 𝐩[j] ∘L 𝐱[i] =
+lemma momentum_comp_position_eq (i j : Fin d) : 𝐩[j] ∘L 𝐱[i] =
     𝐱[i] ∘L 𝐩[j] - (Complex.I * ℏ * δ[i,j]) • ContinuousLinearMap.id ℂ 𝓢(Space d, ℂ) := by
   rw [← position_commutation_momentum]
   dsimp only [Bracket.bracket]
@@ -141,7 +143,7 @@ lemma momentum_position_eq (i j : Fin d) : 𝐩[j] ∘L 𝐱[i] =
 
 lemma position_position_commutation_momentum {d : ℕ} (i j k : Fin d) : ⁅𝐱[i] ∘L 𝐱[j], 𝐩[k]⁆ =
     (Complex.I * ℏ * δ[i,k]) • 𝐱[j] + (Complex.I * ℏ * δ[j,k]) • 𝐱[i] := by
-  rw [lie_leibniz_left]
+  rw [leibniz_lie]
   rw [position_commutation_momentum, position_commutation_momentum]
   rw [ContinuousLinearMap.comp_smul, ContinuousLinearMap.smul_comp]
   rw [id_comp, comp_id]
@@ -149,7 +151,7 @@ lemma position_position_commutation_momentum {d : ℕ} (i j k : Fin d) : ⁅𝐱
 
 lemma position_commutation_momentum_momentum {d : ℕ} (i j k : Fin d) : ⁅𝐱[i], 𝐩[j] ∘L 𝐩[k]⁆ =
     (Complex.I * ℏ * δ[i,k]) • 𝐩[j] + (Complex.I * ℏ * δ[i,j]) • 𝐩[k] := by
-  rw [lie_leibniz_right]
+  rw [lie_leibniz]
   rw [position_commutation_momentum, position_commutation_momentum]
   rw [ContinuousLinearMap.comp_smul, ContinuousLinearMap.smul_comp]
   rw [id_comp, comp_id]
@@ -159,7 +161,7 @@ lemma position_commutation_momentumSqr {d : ℕ} (i : Fin d) : ⁅𝐱[i], 𝐩�
   unfold momentumOperatorSqr
   rw [lie_sum]
   simp only [position_commutation_momentum_momentum]
-  dsimp only [kronecker_delta]
+  dsimp only [kroneckerDelta]
   simp only [mul_ite_zero, ite_zero_smul, Finset.sum_add_distrib, Finset.sum_ite_eq,
     Finset.mem_univ, ↓reduceIte]
   ext ψ x
@@ -208,7 +210,7 @@ lemma radiusRegPow_commutation_momentum (hε : 0 < ε) (i : Fin d) :
     exact Differentiable.differentiableAt (by fun_prop)
   · fun_prop
 
-lemma momentum_radiusRegPow_eq (hε : 0 < ε) (i : Fin d) :
+lemma momentum_comp_radiusRegPow_eq (hε : 0 < ε) (i : Fin d) :
     𝐩[i] ∘L 𝐫[ε,s] = 𝐫[ε,s] ∘L 𝐩[i] - (s * Complex.I * ℏ) • 𝐫[ε,s-2] ∘L 𝐱[i] := by
   rw [← radiusRegPow_commutation_momentum hε]
   dsimp only [Bracket.bracket]
@@ -222,10 +224,10 @@ lemma radiusRegPow_commutation_momentumSqr (hε : 0 < ε) :
   rw [lie_sum]
   conv_lhs =>
     enter [2, i]
-    rw [lie_leibniz_right, radiusRegPow_commutation_momentum hε]
-    rw [comp_smul, ← comp_assoc, momentum_radiusRegPow_eq hε]
-    rw [sub_comp, comp_assoc, momentum_position_eq]
-    simp only [kronecker_delta, ↓reduceIte, mul_one]
+    rw [lie_leibniz, radiusRegPow_commutation_momentum hε]
+    rw [comp_smul, ← comp_assoc, momentum_comp_radiusRegPow_eq hε]
+    rw [sub_comp, comp_assoc, momentum_comp_position_eq]
+    simp only [kroneckerDelta, ↓reduceIte, mul_one]
   simp only [smul_comp, comp_sub, comp_smul, comp_id, smul_sub, comp_assoc,
     Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.smul_sum, Finset.sum_const,
     Finset.card_univ, Fintype.card_fin, ← ContinuousLinearMap.comp_finset_sum]
@@ -249,11 +251,11 @@ lemma angularMomentum_commutation_position {d : ℕ} (i j k : Fin d) : ⁅𝐋[i
     (Complex.I * ℏ * δ[i,k]) • 𝐱[j] - (Complex.I * ℏ * δ[j,k]) • 𝐱[i] := by
   unfold angularMomentumOperator
   rw [sub_lie]
-  rw [lie_leibniz_left, lie_leibniz_left]
+  rw [leibniz_lie, leibniz_lie]
   rw [position_commutation_position, position_commutation_position]
   rw [← lie_skew, position_commutation_momentum]
   rw [← lie_skew, position_commutation_momentum]
-  rw [kronecker_delta_symm k i, kronecker_delta_symm k j]
+  rw [kroneckerDelta_symm k i, kroneckerDelta_symm k j]
   simp only [ContinuousLinearMap.comp_neg, ContinuousLinearMap.comp_smul, comp_id, zero_comp,
     add_zero, add_comm, sub_neg_eq_add, ← sub_eq_add_neg]
 
@@ -262,17 +264,17 @@ lemma angularMomentum_commutation_radiusRegPow (hε : 0 < ε) (i j : Fin d) :
   dsimp only [Bracket.bracket]
   unfold angularMomentumOperator
   simp only [sub_mul, ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc]
-  repeat rw [momentum_radiusRegPow_eq hε]
+  repeat rw [momentum_comp_radiusRegPow_eq hε]
   simp only [comp_sub, comp_smulₛₗ, RingHom.id_apply, ← ContinuousLinearMap.comp_assoc]
-  repeat rw [position_radiusRegPow_eq hε]
+  repeat rw [position_comp_radiusRegPow_commute hε]
   simp only [ContinuousLinearMap.comp_assoc]
-  rw [position_position_eq]
+  rw [position_comp_commute]
   simp only [sub_sub_sub_cancel_right, sub_self]
 
 lemma angularMomentumSqr_commutation_radiusRegPow (hε : 0 < ε) :
     ⁅angularMomentumOperatorSqr (d := d), radiusRegPowOperator (d := d) ε s⁆ = 0 := by
   unfold angularMomentumOperatorSqr
-  simp only [sum_lie, smul_lie, lie_leibniz_left, angularMomentum_commutation_radiusRegPow hε,
+  simp only [sum_lie, smul_lie, leibniz_lie, angularMomentum_commutation_radiusRegPow hε,
     comp_zero, zero_comp, add_zero, smul_zero, Finset.sum_const_zero]
 
 /-
@@ -283,12 +285,12 @@ lemma angularMomentum_commutation_momentum {d : ℕ} (i j k : Fin d) : ⁅𝐋[i
     (Complex.I * ℏ * δ[i,k]) • 𝐩[j] - (Complex.I * ℏ * δ[j,k]) • 𝐩[i] := by
   unfold angularMomentumOperator
   rw [sub_lie]
-  rw [lie_leibniz_left, lie_leibniz_left]
+  rw [leibniz_lie, leibniz_lie]
   rw [momentum_commutation_momentum, momentum_commutation_momentum]
   rw [position_commutation_momentum, position_commutation_momentum]
   simp only [ContinuousLinearMap.smul_comp, id_comp, comp_zero, zero_add]
 
-lemma momentum_angularMomentum_eq {d : ℕ} (i j k : Fin d) : 𝐩[k] ∘L 𝐋[i,j] =
+lemma momentum_comp_angularMomentum_eq {d : ℕ} (i j k : Fin d) : 𝐩[k] ∘L 𝐋[i,j] =
     𝐋[i,j] ∘L 𝐩[k] - (Complex.I * ℏ * δ[i,k]) • 𝐩[j] + (Complex.I * ℏ * δ[j,k]) • 𝐩[i] := by
   rw [← sub_eq_zero, sub_add]
   rw [← angularMomentum_commutation_momentum]
@@ -301,14 +303,15 @@ lemma angularMomentum_commutation_momentumSqr {d : ℕ} (i j : Fin d) :
   conv_lhs =>
     rw [lie_sum]
     enter [2, k]
-    rw [lie_leibniz_right, angularMomentum_commutation_momentum]
+    rw [lie_leibniz, angularMomentum_commutation_momentum]
     simp only [comp_sub, comp_smulₛₗ, RingHom.id_apply, sub_comp, smul_comp]
-    rw [momentum_momentum_eq _ i, momentum_momentum_eq j _]
-  dsimp only [kronecker_delta]
+    rw [momentum_comp_commute _ i, momentum_comp_commute j _]
+  dsimp only [kroneckerDelta]
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, mul_ite, mul_zero, ite_smul,
     zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, sub_self, add_zero]
 
-lemma momentumSqr_angularMomentum_eq {d : ℕ} (i j : Fin d) : 𝐩² ∘L 𝐋[i,j] = 𝐋[i,j] ∘L 𝐩² := by
+lemma momentumSqr_comp_angularMomentum_commute {d : ℕ} (i j : Fin d) :
+    𝐩² ∘L 𝐋[i,j] = 𝐋[i,j] ∘L 𝐩² := by
   apply Eq.symm
   rw [← sub_eq_zero]
   exact angularMomentum_commutation_momentumSqr i j
@@ -316,7 +319,7 @@ lemma momentumSqr_angularMomentum_eq {d : ℕ} (i j : Fin d) : 𝐩² ∘L 𝐋[
 lemma angularMomentumSqr_commutation_momentumSqr {d : ℕ} :
     ⁅angularMomentumOperatorSqr (d := d), momentumOperatorSqr (d := d)⁆ = 0 := by
   unfold angularMomentumOperatorSqr
-  simp only [smul_lie, sum_lie, lie_leibniz_left]
+  simp only [smul_lie, sum_lie, leibniz_lie]
   simp [angularMomentum_commutation_momentumSqr]
 
 /-
@@ -328,10 +331,10 @@ lemma angularMomentum_commutation_angularMomentum {d : ℕ} (i j k l : Fin d) : 
     - (Complex.I * ℏ * δ[j,k]) • 𝐋[i,l] + (Complex.I * ℏ * δ[j,l]) • 𝐋[i,k] := by
   nth_rw 2 [angularMomentumOperator]
   rw [lie_sub]
-  rw [lie_leibniz_right, lie_leibniz_right]
+  rw [lie_leibniz, lie_leibniz]
   rw [angularMomentum_commutation_momentum, angularMomentum_commutation_position]
   rw [angularMomentum_commutation_momentum, angularMomentum_commutation_position]
-  dsimp only [angularMomentumOperator, kronecker_delta]
+  dsimp only [angularMomentumOperator, kroneckerDelta]
   simp only [ContinuousLinearMap.comp_sub, ContinuousLinearMap.sub_comp,
     ContinuousLinearMap.comp_smul, ContinuousLinearMap.smul_comp]
   ext ψ x
@@ -343,8 +346,8 @@ lemma angularMomentumSqr_commutation_angularMomentum {d : ℕ} (i j : Fin d) :
     ⁅angularMomentumOperatorSqr (d := d), 𝐋[i,j]⁆ = 0 := by
   unfold angularMomentumOperatorSqr
   conv_lhs =>
-    simp only [smul_lie, sum_lie, lie_leibniz_left, angularMomentum_commutation_angularMomentum]
-  dsimp only [kronecker_delta]
+    simp only [smul_lie, sum_lie, leibniz_lie, angularMomentum_commutation_angularMomentum]
+  dsimp only [kroneckerDelta]
   simp only [comp_add, comp_sub, add_comp, sub_comp, comp_smul, smul_comp, mul_ite, mul_zero,
     mul_one]
   simp only [ite_smul, zero_smul]

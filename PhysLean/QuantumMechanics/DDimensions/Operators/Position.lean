@@ -47,8 +47,6 @@ lemma positionOperator_apply (i : Fin d) (ψ : 𝓢(Space d, ℂ)) (x : Space d)
 
 ## Radius operator
 
-
-
 -/
 
 /-- Power of regularized norm, `(‖x‖² + ε²)^(s/2)` -/
