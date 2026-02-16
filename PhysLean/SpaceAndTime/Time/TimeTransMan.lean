@@ -226,7 +226,7 @@ lemma diff_eq_val (x : TimeUnit) (t1 t2 : TimeTransMan) :
   · simp [diff, dist, h]
     simp [le_def] at h
     rw [abs_of_neg]
-    have hx : x.val ≠ 0 := x.val_neq_zero
+    have hx : x.val ≠ 0 := x.val_ne_zero
     field_simp
     linarith
 
@@ -268,7 +268,7 @@ lemma diff_fst_surjective (x : TimeUnit) (t : TimeTransMan) :
   use x.1 * r +ᵥ t
   simp [abs_mul]
   rw [abs_of_nonneg (le_of_lt x.val_pos)]
-  simp only [ne_eq, TimeUnit.val_neq_zero, not_false_eq_true, inv_mul_cancel_left₀]
+  simp only [ne_eq, TimeUnit.val_ne_zero, not_false_eq_true, inv_mul_cancel_left₀]
   by_cases h : 0 ≤ r
   · rw [if_pos]
     exact abs_of_nonneg h

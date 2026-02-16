@@ -114,10 +114,10 @@ namespace HarmonicOscillator
 variable (S : HarmonicOscillator)
 
 @[simp]
-lemma k_neq_zero : S.k ≠ 0 := Ne.symm (ne_of_lt S.k_pos)
+lemma k_ne_zero : S.k ≠ 0 := Ne.symm (ne_of_lt S.k_pos)
 
 @[simp]
-lemma m_neq_zero : S.m ≠ 0 := Ne.symm (ne_of_lt S.m_pos)
+lemma m_ne_zero : S.m ≠ 0 := Ne.symm (ne_of_lt S.m_pos)
 
 /-!
 
@@ -147,7 +147,7 @@ lemma ω_sq : S.ω^2 = S.k / S.m := by
   exact div_nonneg (le_of_lt S.k_pos) (le_of_lt S.m_pos)
 
 /-- The angular frequency of the classical harmonic oscillator is not equal to zero. -/
-lemma ω_neq_zero : S.ω ≠ 0 := Ne.symm (ne_of_lt S.ω_pos)
+lemma ω_ne_zero : S.ω ≠ 0 := Ne.symm (ne_of_lt S.ω_pos)
 
 /-- The inverse of the square of the angular frequency of the classical harmonic oscillator
   is `m/k`. -/
@@ -731,7 +731,7 @@ lemma hamiltonian_eq :
   funext t x p
   simp only [hamiltonian, toCanonicalMomentum, lagrangian_eq, one_div, LinearEquiv.coe_symm_mk',
     inner_smul_right, inner_smul_left, map_inv₀, ringHom_apply]
-  have hm : S.m ≠ 0 := by exact m_neq_zero S
+  have hm : S.m ≠ 0 := by exact m_ne_zero S
   field_simp
   ring
 

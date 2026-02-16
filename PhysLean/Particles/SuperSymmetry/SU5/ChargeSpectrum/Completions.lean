@@ -446,11 +446,11 @@ lemma completions_eq_completionsTopYukawa_of_mem_minimallyAllowsTermsOfFinset [A
   simp [minimallyAllowsTermsOfFinset] at hx
   obtain ⟨qHu, Q10, ⟨⟨h1, ⟨h2, hcard⟩⟩, h3⟩, rfl⟩ := hx
   simp [completions, completionsTopYukawa]
-  have Q10_neq_zero : Q10 ≠ 0 := by
+  have Q10_ne_zero : Q10 ≠ 0 := by
     by_contra hn
     subst hn
     simp at hcard
-  simp [Q10_neq_zero]
+  simp [Q10_ne_zero]
   match a with
   | ⟨xqHd, xqHu, xQ5, xQ10⟩ =>
   simp [eq_iff]

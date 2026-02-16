@@ -172,7 +172,7 @@ lemma energyMass_isDimensionallyCorrect :
           (m.1 * ((speedOfLight.1 u).1) ^ 2)) := by
       rfl
   simp only [map_mul, NNReal.val_eq_coe, NNReal.coe_mul, smul_eq_mul, mul_eq_mul_left_iff,
-    mul_eq_zero, NNReal.coe_eq_zero, dimScale_neq_zero, or_self, or_false, eq_iff_iff]
+    mul_eq_zero, NNReal.coe_eq_zero, dimScale_ne_zero, or_self, or_false, eq_iff_iff]
   rfl
 
 /-!

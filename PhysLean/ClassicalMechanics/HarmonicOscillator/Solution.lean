@@ -349,7 +349,7 @@ lemma trajectory_velocity (IC : InitialConditions) : ∂ₜ (IC.trajectory S) =
   field_simp
   ring_nf
   rw [← mul_smul, mul_rotate, NonUnitalRing.mul_assoc]
-  field_simp [mul_div_assoc, div_self, mul_one, S.ω_neq_zero]
+  field_simp [mul_div_assoc, div_self, mul_one, S.ω_ne_zero]
 
 /-!
 
@@ -410,12 +410,10 @@ lemma trajectory_equationOfMotion (IC : InitialConditions) :
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]
   ext
-  simp [trajectory_eq, smul_add, smul_smul, ω_sq, mul_comm, mul_left_comm]
-  have h : S.ω ≠ 0 := by exact ω_neq_zero S
-  field_simp [h]
-  ring_nf
   rw [ω_sq]
-  field_simp
+  simp [trajectory_eq, smul_add, smul_smul, mul_comm, mul_left_comm]
+  have h : S.ω ≠ 0 := by exact ω_ne_zero S
+  field_simp [h]
   ring_nf
 
 /-!
@@ -593,7 +591,7 @@ lemma trajectories_unique (IC : InitialConditions) (x : Time → ConfigurationSp
       have hmul : ((1 / (2 : ℝ)) * S.k) * inner ℝ (y t) (y t) = 0 := by
         simpa [HarmonicOscillator.potentialEnergy, one_div, smul_eq_mul, mul_assoc] using hp0
       have hcoeff : ((1 / (2 : ℝ)) * S.k) ≠ 0 := by
-        exact mul_ne_zero (by norm_num) (S.k_neq_zero)
+        exact mul_ne_zero (by norm_num) (S.k_ne_zero)
       rcases mul_eq_zero.mp hmul with hcoeff0 | hinner
       · exact (False.elim (hcoeff hcoeff0))
       · exact hinner
@@ -647,7 +645,7 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
   simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
-  field_simp [S.ω_neq_zero]
+  field_simp [S.ω_ne_zero]
   linear_combination S.ω * IC.x_t₀.val * h1
 
 /-- The trajectory resulting from `toInitialConditions` has the specified
@@ -662,7 +660,7 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
     neg_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
-  field_simp [S.ω_neq_zero]
+  field_simp [S.ω_ne_zero]
   linear_combination IC.v_t₀.val * h1
 
 /-- The energy of the trajectory at time `t₀` equals the energy computed from the
@@ -705,7 +703,7 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
     tan (S.ω * t) = IC.v₀ 0 / (S.ω * IC.x₀ 0) := by
   rw [trajectory_velocity] at h
   simp at h
-  have hx : S.ω ≠ 0 := by exact ω_neq_zero S
+  have hx : S.ω ≠ 0 := by exact ω_ne_zero S
   by_cases h1 : IC.x₀ ≠ 0
   by_cases h2 : IC.v₀ ≠ 0
   have h1' : IC.x₀ 0 ≠ 0 := by
@@ -749,7 +747,7 @@ lemma trajectory_velocity_eq_zero_at_arctan (IC : InitialConditions) (hx : IC.x�
     (∂ₜ (IC.trajectory S)) (arctan (IC.v₀ 0 / (S.ω * IC.x₀ 0)) / S.ω) = 0 := by
   rw [trajectory_velocity]
   simp [neg_smul]
-  have hx' : S.ω ≠ 0 := by exact ω_neq_zero S
+  have hx' : S.ω ≠ 0 := by exact ω_ne_zero S
   field_simp
   rw [Real.sin_arctan, Real.cos_arctan]
   ext
@@ -805,7 +803,7 @@ lemma trajectory_velocity_eq_zero_iff (IC : InitialConditions) (t : Time) :
     · rw [mul_one, inv_eq_one_div S.k, mul_assoc]
       rw [mul_one_div S.m S.k, ← inverse_ω_sq]
       ring
-    · exact k_neq_zero S
+    · exact k_ne_zero S
   · intro h_norm
     apply norm_eq_zero.mp
     rw [real_inner_self_eq_norm_sq (∂ₜ (trajectory S IC) t)] at h_energy_t
@@ -847,7 +845,7 @@ lemma trajectory_velocity_eq_zero_iff (IC : InitialConditions) (t : Time) :
         _ = (1 / S.m) * (S.m * ‖IC.v₀‖ ^ 2) - (1 / S.m) * (S.k * (‖IC.v₀‖ / S.ω) ^ 2) := by
           rw [mul_sub (1 / S.m) (S.m * ‖IC.v₀‖ ^ 2) (S.k * (‖IC.v₀‖ / S.ω) ^ 2)]
         _ = ‖IC.v₀‖ ^ 2 - (S.k / S.m) * (‖IC.v₀‖ / S.ω) ^ 2 := by
-          simp only [one_div, ne_eq, m_neq_zero, not_false_eq_true, inv_mul_cancel_left₀,
+          simp only [one_div, ne_eq, m_ne_zero, not_false_eq_true, inv_mul_cancel_left₀,
             sub_right_inj]
           rw [← mul_assoc, inv_mul_eq_div S.m S.k]
     rw [← ω_sq, div_pow ‖IC.v₀‖ S.ω 2] at h₃
@@ -856,7 +854,7 @@ lemma trajectory_velocity_eq_zero_iff (IC : InitialConditions) (t : Time) :
     rw [sq_eq_zero_iff] at h₃
     exact h₃
     rw [pow_ne_zero_iff ?_]
-    apply ω_neq_zero
+    apply ω_ne_zero
     exact Ne.symm (Nat.zero_ne_add_one 1)
 /-!
 

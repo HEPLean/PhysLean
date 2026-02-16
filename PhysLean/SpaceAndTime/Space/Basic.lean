@@ -730,7 +730,7 @@ instance : Subsingleton (Space 0) := by
   ext i
   fin_cases i
 
-lemma volume_closedBall_neq_zero {d : ℕ} (x : Space d.succ) (r : ℝ) (hr : 0 < r) :
+lemma volume_closedBall_ne_zero {d : ℕ} (x : Space d.succ) (r : ℝ) (hr : 0 < r) :
     volume (Metric.closedBall x r) ≠ 0 := by
   obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
   rcases hk with hk | hk
@@ -751,7 +751,7 @@ lemma volume_closedBall_neq_zero {d : ℕ} (x : Space d.succ) (r : ℝ) (hr : 0 
     · positivity
     · simpa using hk
 
-lemma volume_closedBall_neq_top {d : ℕ} (x : Space d.succ) (r : ℝ) :
+lemma volume_closedBall_ne_top {d : ℕ} (x : Space d.succ) (r : ℝ) :
     volume (Metric.closedBall x r) ≠ ⊤ := by
   obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
   rcases hk with hk | hk

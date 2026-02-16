@@ -861,7 +861,7 @@ lemma superCommuteF_fermionic_ofCrAnListF_eq_sum (a : 𝓕.FieldOpFreeAlgebra)
     simp [smul_smul, mul_comm]
   · exact ha
 
-lemma statistic_neq_of_superCommuteF_fermionic {φs φs' : List 𝓕.CrAnFieldOp}
+lemma statistic_ne_of_superCommuteF_fermionic {φs φs' : List 𝓕.CrAnFieldOp}
     (h : [ofCrAnListF φs, ofCrAnListF φs']ₛF ∈ statisticSubmodule fermionic) :
     (𝓕 |>ₛ φs) ≠ (𝓕 |>ₛ φs') ∨ [ofCrAnListF φs, ofCrAnListF φs']ₛF = 0 := by
   by_cases h0 : [ofCrAnListF φs, ofCrAnListF φs']ₛF = 0
