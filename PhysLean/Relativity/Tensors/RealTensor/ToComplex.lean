@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Meta.Linters.Sorry
 import PhysLean.Relativity.Tensors.ComplexTensor.Basic
+import PhysLean.Relativity.Tensors.Evaluation
 /-!
 
 # Complex Lorentz tensors from real Lorentz tensors
@@ -682,6 +683,15 @@ lemma contrT_toComplex {n : ℕ}
 
 -/
 
+/-- `complexify` commutes with precomposition by `succAbove`. -/
+@[simp]
+lemma ComponentIdx.complexify_comp_succAbove
+    {n : ℕ} {c : Fin (n + 1) → realLorentzTensor.Color} (i : Fin (n + 1))
+    (b : ComponentIdx (S := realLorentzTensor) c) (m : Fin n) :
+    (ComponentIdx.complexify (c := c ∘ i.succAbove) (fun k => b (i.succAbove k))) m =
+    (ComponentIdx.complexify (c := c) b) (i.succAbove m) := by
+  simp only [ComponentIdx.complexify_apply, Function.comp_apply]
+
 @[simp]
 lemma complex_repDim_up :
     (complexLorentzTensor).repDim complexLorentzTensor.Color.up = 4 := rfl
@@ -716,8 +726,42 @@ noncomputable def evalTColorToComplex {n : ℕ}
       ((TensorSpecies.Tensor.evalT (S := complexLorentzTensor) (c := (colorToComplex ∘ c))
           i (evalIdxToComplex (c := c) i b)) t)
 
+/-- For a real basis vector, `toComplex(evalP(basisVector c b))` equals
+  `evalP(basisVector (colorToComplex ∘ c) (complexify b))` (complex species). -/
+lemma toComplex_evalP_basisVector {n : ℕ} {c : Fin (n + 1) → realLorentzTensor.Color}
+    (i : Fin (n + 1)) (b : Fin ((realLorentzTensor).repDim (c i)))
+    (b' : ComponentIdx (S := realLorentzTensor) c) :
+    toComplex (c := c ∘ i.succAbove)
+      (Pure.evalP (S := realLorentzTensor) i b (Pure.basisVector c b'))
+      =
+    permT (S := complexLorentzTensor) (σ := (id : Fin n → Fin n))
+      (by simp [Function.comp_apply])
+      (Pure.evalP (S := complexLorentzTensor) i (evalIdxToComplex (c := c) i b)
+        (Pure.basisVector (colorToComplex ∘ c) (ComponentIdx.complexify b'))) := by
+  simp only [Pure.evalP]
+  have hdrop : (Pure.basisVector c b').drop i =
+    Pure.basisVector (c ∘ i.succAbove) (fun k => b' (i.succAbove k)) := by
+    ext j; simp only [Pure.drop, Pure.basisVector, Function.comp_apply]
+  rw [hdrop, toComplex_map_smul (c ∘ i.succAbove) (Pure.evalPCoeff i b (Pure.basisVector c b'))
+    ((Pure.basisVector (c ∘ i.succAbove)) (fun k => b' (i.succAbove k)) |>.toTensor)]
+  · -- evalPCoeff: real and complex match; then tensor equality
+    simp only [Pure.evalPCoeff, Pure.basisVector, Basis.repr_self, Finsupp.single_apply,
+      ComponentIdx.complexify_apply, evalIdxToComplex]
+    · by_cases h : b' i = b
+      · simp [h]
+        have hdrop' : (Pure.basisVector (colorToComplex ∘ c) (ComponentIdx.complexify b')).drop i =
+          Pure.basisVector (colorToComplex ∘ (c ∘ i.succAbove))
+            (ComponentIdx.complexify (c := c ∘ i.succAbove) (fun k => b' (i.succAbove k))) := by
+          ext j; simp only [Pure.drop, Pure.basisVector, ComponentIdx.complexify_apply,
+            Function.comp_apply]
+        rw [hdrop']
+        exact (permT_id_self (S := complexLorentzTensor) (c := colorToComplex ∘ (c ∘ i.succAbove))
+          (t := (Pure.basisVector (colorToComplex ∘ (c ∘ i.succAbove))
+            (ComponentIdx.complexify (c := c ∘ i.succAbove) (fun k => b'
+              (i.succAbove k)))).toTensor)).symm
+      · simp [h]
+
 /-- The map `toComplex` commutes with `evalT`. -/
-@[sorryful]
 lemma evalT_toComplex {n : ℕ}
     {c : Fin (n + 1) → realLorentzTensor.Color}
     (i : Fin (n + 1)) (b : Fin ((realLorentzTensor).repDim (c i))) (t : ℝT(3, c)) :
@@ -725,6 +769,35 @@ lemma evalT_toComplex {n : ℕ}
         ((TensorSpecies.Tensor.evalT (S := realLorentzTensor) (c := c) i b) t)
       =
     evalTColorToComplex (c := c) i b (toComplex (c := c) t) := by
-  sorry
+  classical
+  let c' := c ∘ i.succAbove
+  let P : ℝT(3, c) → Prop := fun t =>
+    toComplex (c := c')
+      ((TensorSpecies.Tensor.evalT (S := realLorentzTensor) (c := c) i b) t) =
+    evalTColorToComplex (c := c) i b (toComplex (c := c) t)
+  have hP : ∀ t, P t := by
+    intro t
+    apply induction_on_basis (c := c) (P := P) (t := t)
+    · intro b'
+      rw [Tensor.basis_apply (S := realLorentzTensor) c b']
+      simp only [evalTColorToComplex, P]
+      rw [evalT_pure (S := realLorentzTensor) (p := Pure.basisVector c b'),
+        toComplex_pure_basisVector (c := c) b',
+        evalT_pure (S := complexLorentzTensor)
+          (p := Pure.basisVector (colorToComplex ∘ c) (ComponentIdx.complexify b'))]
+      exact toComplex_evalP_basisVector i b b'
+    · dsimp [P]
+      simp only [evalTColorToComplex, map_zero]
+    · intro r t' ht'
+      dsimp [P] at ht' ⊢
+      rw [LinearMap.map_smul, toComplex_map_smul (c ∘ i.succAbove) r
+        ((evalT (S := realLorentzTensor) i b) t'),
+        ht', toComplex_map_smul (c := c) r t']
+      simp only [evalTColorToComplex, LinearMap.map_smul]
+    · intro t1 t2 h1 h2
+      dsimp [P] at h1 h2 ⊢
+      rw [LinearMap.map_add, map_add, h1, h2]
+      simp only [evalTColorToComplex, LinearMap.map_add]
+  exact hP t
 
 end realLorentzTensor
