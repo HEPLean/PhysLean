@@ -171,11 +171,13 @@ lemma contDiff_inner_self (n : WithTop ℕ∞) :
   simpa using (ContDiff.inner (𝕜:=ℝ) (f:=fun x : ConfigurationSpace => x)
     (g:=fun x : ConfigurationSpace => x) h_id h_id)
 
+/-- Linear map sending a configuration space element to its underlying real value. -/
 noncomputable def toRealLM : ConfigurationSpace →ₗ[ℝ] ℝ :=
   { toFun := ConfigurationSpace.val
     map_add' := by simp
     map_smul' := by simp }
 
+/-- Linear map embedding a real value into the configuration space. -/
 noncomputable def fromRealLM : ℝ →ₗ[ℝ] ConfigurationSpace :=
   { toFun := fun x => ⟨x⟩
     map_add' := by
@@ -187,16 +189,19 @@ noncomputable def fromRealLM : ℝ →ₗ[ℝ] ConfigurationSpace :=
       ext
       simp }
 
+/-- Continuous linear map sending a configuration space element to its underlying real value. -/
 noncomputable def toRealCLM : ConfigurationSpace →L[ℝ] ℝ :=
   toRealLM.mkContinuous 1 (by
     intro x
     simp [toRealLM, norm, mul_comm, mul_left_comm, mul_assoc])
 
+/-- Continuous linear map embedding a real value into the configuration space. -/
 noncomputable def fromRealCLM : ℝ →L[ℝ] ConfigurationSpace :=
   fromRealLM.mkContinuous 1 (by
     intro x
     simp [fromRealLM, norm, mul_comm, mul_left_comm, mul_assoc])
 
+/-- Homeomorphism between configuration space and `ℝ` given by `ConfigurationSpace.val`. -/
 noncomputable def valHomeomorphism : ConfigurationSpace ≃ₜ ℝ where
   toFun := ConfigurationSpace.val
   invFun := fun t => ⟨t⟩
