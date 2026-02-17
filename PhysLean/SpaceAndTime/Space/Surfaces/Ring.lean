@@ -47,9 +47,25 @@ lemma ring_continuous : Continuous ring := by
 lemma ring_measurableEmbedding : MeasurableEmbedding ring :=
   Continuous.measurableEmbedding ring_continuous ring_injective
 
+@[simp]
 lemma volume_range_ring : volume (Set.range ring) = 0 := by
-
-  sorry
+  rw [ring_eq, Set.range_comp]
+  trans (MeasureTheory.Measure.map (slice 2)  volume) (Set.range (fun x => ((0 : ℝ), sphericalShell 1 x)))
+  · rw [MeasureTheory.Measure.map_apply_of_aemeasurable]
+    congr
+    rw [@ContinuousLinearEquiv.image_symm_eq_preimage]
+    · fun_prop
+    · refine measurableSet_range_of_continuous_injective ?_ ?_
+      · fun_prop
+      · intro x y h
+        simp at h
+        exact SetCoe.ext h
+  rw [volume_map_slice_eq_prod]
+  trans (volume.prod volume) ({(0 : ℝ)} ×ˢ Set.range (sphericalShell 1))
+  · congr
+    ext a
+    grind
+  simp
 
 /-!
 
