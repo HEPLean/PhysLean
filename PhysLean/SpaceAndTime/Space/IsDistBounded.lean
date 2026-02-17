@@ -975,6 +975,7 @@ lemma norm_add_pos_nat_zpow {d : ℕ} (n : ℤ) (a : ℝ) (ha : 0 < a) :
       rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
       simp
 
+
 @[fun_prop]
 lemma nat_pow_shift {d : ℕ} (n : ℕ)
     (g : Space d) :

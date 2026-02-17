@@ -177,17 +177,11 @@ lemma sphericalShellDist_apply_eq_volumeIoiPow_prod (d : ℕ) (f : 𝓢(Space d.
       _root_.deriv (fun a => f (a • r.1)) r.2.1
       ∂(volume (α := Space d.succ).toSphere.prod
         (Measure.volumeIoiPow (Module.finrank ℝ (Space d.succ) - 1))) := by
-  rw [MeasureTheory.integral_prod]
-  rw [sphericalShellDist_apply_eq_volumeIoiPow]
-  rw [MeasureTheory.integral_neg]
+  rw [MeasureTheory.integral_prod, sphericalShellDist_apply_eq_volumeIoiPow,
+    MeasureTheory.integral_neg]
   /- Integrability condition -/
   convert integrable_isDistBounded_inner_grad_schwartzMap_spherical
-    (f := fun (x : Space d.succ) =>
-      (if 1 < ‖x‖ then 1 else 0) • ‖x‖⁻¹ ^ d.succ • basis.repr x)
-      (by
-      have h1 := (IsDistBounded.inv_pow_smul_repr_self (d := d.succ) (d.succ) (by omega))
-      simpa using h1.if_norm_gt_one_const_smul 1
-      ) f
+      ((IsDistBounded.inv_pow_smul_repr_self (d.succ) (by omega)).if_norm_gt_one_const_smul 1) f
   rename_i r
   simp [norm_smul]
   rw [abs_of_nonneg (le_of_lt r.2.2)]
@@ -242,8 +236,8 @@ lemma sphericalShellDist_apply_eq_volume_deriv_radius (d : ℕ) (f : 𝓢(Space 
 open InnerProductSpace
 
 lemma sphericalShellDist_apply_eq_integral_grad  (d : ℕ) (f : 𝓢(Space d.succ, ℝ)) :
-    sphericalShellDist d f = -
-      ∫ x, ⟪(if 1 < ‖x‖ then 1 else 0) • ‖x‖⁻¹ ^ d.succ • basis.repr x, Space.grad f x⟫_ℝ := by
+    sphericalShellDist d f =
+      - ∫ x, ⟪(if 1 < ‖x‖ then 1 else 0) • ‖x‖⁻¹ ^ d.succ • basis.repr x, Space.grad f x⟫_ℝ := by
   rw [sphericalShellDist_apply_eq_volume_deriv_radius]
   congr
   funext r

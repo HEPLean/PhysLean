@@ -795,4 +795,13 @@ lemma volume_metricBall_two_real :
   simp only [ENNReal.toReal_ofReal_eq_iff]
   exact Real.pi_nonneg
 
+@[simp]
+lemma volume_metricBall_three_real :
+    (volume.real (Metric.ball (0 : Space 3) 1)) = 4 / 3 * Real.pi := by
+  trans (volume (Metric.ball (0 : Space 3) 1)).toReal
+  · rfl
+  rw [volume_metricBall_three]
+  simp only [ENNReal.toReal_ofReal_eq_iff]
+  positivity
+
 end Space

@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.SpaceAndTime.Space.Surfaces.SphericalShell
+import PhysLean.SpaceAndTime.Space.Translations
+import Mathlib.MeasureTheory.Integral.BoundedContinuousFunction
 /-!
 
 ## Ring surface in `Space 3`
@@ -29,6 +31,8 @@ open MeasureTheory Real
 def ring : Metric.sphere (0 : Space 2) 1 → Space 3 := fun x =>
   (slice 2).symm (0, sphericalShell 1 x)
 
+lemma ring_eq : ring = (slice 2).symm ∘ (fun x => (0, sphericalShell 1 x)) := rfl
+
 lemma ring_injective : Function.Injective ring := by
   intro x y h
   simp [ring] at h
@@ -42,6 +46,10 @@ lemma ring_continuous : Continuous ring := by
 
 lemma ring_measurableEmbedding : MeasurableEmbedding ring :=
   Continuous.measurableEmbedding ring_continuous ring_injective
+
+lemma volume_range_ring : volume (Set.range ring) = 0 := by
+
+  sorry
 
 /-!
 
@@ -60,6 +68,13 @@ instance ringMeasure_hasTemperateGrowth :
   use 0
   simp
 
+instance ringMeasure_sFinite: SFinite ringMeasure := by
+  rw [ringMeasure]
+  exact Measure.instSFiniteMap volume.toSphere ring
+
+instance ringMeasure_finite: IsFiniteMeasure ringMeasure := by
+  rw [ringMeasure]
+  exact Measure.isFiniteMeasure_map volume.toSphere ring
 
 /-!
 
@@ -74,5 +89,73 @@ def ringDist : (Space 3) →d[ℝ] ℝ  :=
 lemma ringDist_apply_eq_integral_ringMeasure (f : 𝓢(Space 3, ℝ)) :
     ringDist f = ∫ x, f x ∂ringMeasure := by
   rw [ringDist, SchwartzMap.integralCLM_apply]
+
+
+lemma ringDist_eq_integral_delta (f : 𝓢(Space 3, ℝ)) :
+    ringDist f = ∫ z, diracDelta ℝ z f ∂ringMeasure := by
+  rw [ringDist_apply_eq_integral_ringMeasure]
+  simp
+
+open InnerProductSpace
+open Real
+lemma ringDist_eq_integral_ring_integral_inner (f : 𝓢(Space 3, ℝ)) :
+    ringDist f = - ∫ z, (∫ r, ⟪(1/ (4 * π )) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z),
+      Space.grad f r⟫_ℝ)
+      ∂ringMeasure := by
+  rw [ringDist_eq_integral_delta]
+  rw [← MeasureTheory.integral_neg]
+  apply integral_congr_ae
+  filter_upwards with a
+  have h1 := Space.distDiv_inv_pow_eq_dim (d := 2)
+  trans (1/(3 * volume (α := Space).real (Metric.ball 0 1))) * (distDiv <|distTranslate (basis.repr a) <|
+    (distOfFunction (fun x => ‖x‖ ^ (-3 : ℤ) • basis.repr x)
+      (IsDistBounded.zpow_smul_repr_self (- 3 : ℤ) (by omega)))) f
+  · rw [distDiv_distTranslate,]
+    erw [h1]
+    simp [distTranslate_apply]
+    field_simp
+  rw [distTranslate_ofFunction, distDiv_ofFunction]
+  simp [inner_smul_left]
+  rw [integral_const_mul]
+  ring
+
+
+lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
+    ringDist f = - ∫ r, (∫ z,  ⟪(1/ (4 * π)) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z), Space.grad f r⟫_ℝ
+      ∂ringMeasure) := by
+  rw [ringDist_eq_integral_ring_integral_inner]
+  rw [MeasureTheory.integral_integral_swap]
+  /- Integrability condition -/
+  refine (integrable_prod_iff' ?_).mpr ⟨?_, ?_⟩
+  · simp
+    apply MeasureTheory.AEStronglyMeasurable.inner
+    · apply AEMeasurable.aestronglyMeasurable
+      fun_prop
+    · refine AEStronglyMeasurable.comp_snd ?_
+      sorry -- Prove that grad of schwartz map is aestrongly measurable
+  · /- We take `r` everywhere except for on the ring itself. -/
+    have h_ne : ∀ᵐ r ∂volume, r ∉ Set.range ring := by
+      apply?
+      sorry
+    filter_upwards [h_ne] with r hr
+    sorry
+  · simp
+    apply MeasureTheory.Integrable.mono (g := fun r =>
+      (∫ z, ‖(1/ (4 * π)) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z)‖ ∂ringMeasure) * ‖Space.grad f r‖)
+    · sorry
+    · sorry
+    · /- Monotonicity condition -/
+      filter_upwards with r
+      simp
+      rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity), ← integral_mul_const]
+      refine integral_mono ?_ ?_ ?_
+      · sorry
+      · sorry
+      · refine Pi.le_def.mpr <| fun x => ?_
+        exact abs_real_inner_le_norm _ _
+
+
+
+
 
 end Space
