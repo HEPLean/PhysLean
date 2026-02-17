@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 Nicola Bernini. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Nicola Bernini, Lode Vermeulen
+Authors: Nicola Bernini
 -/
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Geometry.Manifold.Diffeomorph
