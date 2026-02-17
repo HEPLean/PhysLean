@@ -43,23 +43,21 @@ lemma angularMomentumOperator_apply {d : ℕ} (i j : Fin d) (ψ : 𝓢(Space d, 
 
 /-- The square of the angular momentum operator, `𝐋² ≔ ½ ∑ᵢⱼ 𝐋ᵢⱼ∘𝐋ᵢⱼ`. -/
 def angularMomentumOperatorSqr {d : ℕ} : 𝓢(Space d, ℂ) →L[ℂ] 𝓢(Space d, ℂ) :=
-  ∑ i, ∑ j, (2 : ℂ)⁻¹ • 𝐋[i,j] ∘L 𝐋[i,j]
+  (2 : ℂ)⁻¹ • ∑ i, ∑ j, 𝐋[i,j] ∘L 𝐋[i,j]
 
 @[inherit_doc angularMomentumOperatorSqr]
 notation "𝐋²" => angularMomentumOperatorSqr
 
 lemma angularMomentumOperatorSqr_apply_fun {d : ℕ} (ψ : 𝓢(Space d, ℂ)) :
-    𝐋² ψ = ∑ i, ∑ j, (2 : ℂ)⁻¹ • 𝐋[i,j] (𝐋[i,j] ψ) := by
+    𝐋² ψ = (2 : ℂ)⁻¹ • ∑ i, ∑ j, 𝐋[i,j] (𝐋[i,j] ψ) := by
   dsimp only [angularMomentumOperatorSqr]
   simp only [ContinuousLinearMap.coe_sum', ContinuousLinearMap.coe_smul',
     ContinuousLinearMap.coe_comp', Finset.sum_apply, Pi.smul_apply, Function.comp_apply]
 
 lemma angularMomentumOperatorSqr_apply {d : ℕ} (ψ : 𝓢(Space d, ℂ)) (x : Space d) :
-    𝐋² ψ x = ∑ i, ∑ j, (2 : ℂ)⁻¹ * 𝐋[i,j] (𝐋[i,j] ψ) x := by
+    𝐋² ψ x = (2 : ℂ)⁻¹ * ∑ i, ∑ j, 𝐋[i,j] (𝐋[i,j] ψ) x := by
   rw [angularMomentumOperatorSqr_apply_fun]
-  rw [← SchwartzMap.coe_coeHom]
-  simp only [map_sum, Finset.sum_apply]
-  rfl
+  simp only [smul_apply, sum_apply, smul_eq_mul]
 
 /-
 
