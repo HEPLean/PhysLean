@@ -517,7 +517,7 @@ lemma gramVector_surjective (v : Fin 1 ⊕ Fin 3 → ℝ)
 lemma mem_orbit_gaugeGroupI_iff_gramVector (H1 H2 : TwoHiggsDoublet) :
     H1 ∈ MulAction.orbit GaugeGroupI H2 ↔ H1.gramVector = H2.gramVector := by
   rw [mem_orbit_gaugeGroupI_iff_gramMatrix]
-  apply Iff.intro
+  constructor
   · intro h
     rw [gramVector_eq, gramVector_eq]
     funext μ

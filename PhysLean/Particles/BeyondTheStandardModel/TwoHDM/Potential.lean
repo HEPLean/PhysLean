@@ -146,7 +146,7 @@ arXiv:hep-ph/0605184.
 
 /-- A reparameterization of the parameters of the quadratic terms of the
   potential for use with the gramVector. -/
-noncomputable def ξ (P : PotentialParameters) : Fin 1 ⊕ Fin 3 → ℝ := fun μ =>
+noncomputable def ξ (P : PotentialParameters) (μ : Fin 1 ⊕ Fin 3) : ℝ :=
   match μ with
   | .inl 0 => (P.m₁₁2 + P.m₂₂2) / 2
   | .inr 0 => -Complex.re P.m₁₂2
