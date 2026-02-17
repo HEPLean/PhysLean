@@ -92,6 +92,15 @@ instance ringMeasure_finite: IsFiniteMeasure ringMeasure := by
   rw [ringMeasure]
   exact Measure.isFiniteMeasure_map volume.toSphere ring
 
+lemma integrable_ringMeasure_of_continuous (f : Space → ℝ) (hf : Continuous (f ∘ ring)) :
+    Integrable f ringMeasure := by
+  rw [ringMeasure]
+  rw [MeasurableEmbedding.integrable_map_iff]
+  · let f' : BoundedContinuousFunction (Metric.sphere (0 : Space 2) 1) ℝ :=
+      BoundedContinuousFunction.mkOfCompact ⟨f ∘ ring, hf⟩
+    exact BoundedContinuousFunction.integrable _ f'
+  · exact ring_measurableEmbedding
+
 /-!
 
 ## C. The distribution associated with the ring
@@ -151,15 +160,35 @@ lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
       sorry -- Prove that grad of schwartz map is aestrongly measurable
   · /- We take `r` everywhere except for on the ring itself. -/
     have h_ne : ∀ᵐ r ∂volume, r ∉ Set.range ring := by
-      apply?
-      sorry
+      rw [← MeasureTheory.measure_eq_zero_iff_ae_notMem]
+      simp
     filter_upwards [h_ne] with r hr
-    sorry
+    simp
+    apply integrable_ringMeasure_of_continuous
+    change  Continuous ((fun x => ⟪(π⁻¹ * 4⁻¹) • (‖r - ring x‖ ^ 3)⁻¹ • (basis.repr r - basis.repr (ring x)), ∇ (⇑f) r⟫_ℝ))
+    apply Continuous.inner
+    . apply Continuous.const_smul
+      apply Continuous.smul
+      · refine Continuous.inv₀ ?_ ?_
+        · refine Continuous.zpow₀ ?_ 3 ?_
+          · fun_prop
+          · intro a
+            simp
+        · intro x
+          by_contra h
+          have h' : ‖r - ring x‖ = 0 := by exact eq_zero_of_pow_eq_zero h
+          simp at h'
+          have h'' : r = ring x := by exact eq_of_sub_eq_zero h'
+          subst h''
+          simp at hr
+      · fun_prop
+    · fun_prop
   · simp
     apply MeasureTheory.Integrable.mono (g := fun r =>
       (∫ z, ‖(1/ (4 * π)) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z)‖ ∂ringMeasure) * ‖Space.grad f r‖)
     · sorry
-    · sorry
+    ·
+      sorry
     · /- Monotonicity condition -/
       filter_upwards with r
       simp
