@@ -84,6 +84,10 @@ instance ringMeasure_hasTemperateGrowth :
   use 0
   simp
 
+instance ringMeasure_prod_volume_hasTemperateGrowth :
+    (ringMeasure.prod (volume (α := Space))).HasTemperateGrowth := by
+  exact IsDistBounded.instHasTemperateGrowthProdProdOfOpensMeasurableSpace ringMeasure volume
+
 instance ringMeasure_sFinite: SFinite ringMeasure := by
   rw [ringMeasure]
   exact Measure.instSFiniteMap volume.toSphere ring
@@ -100,6 +104,59 @@ lemma integrable_ringMeasure_of_continuous (f : Space → ℝ) (hf : Continuous 
       BoundedContinuousFunction.mkOfCompact ⟨f ∘ ring, hf⟩
     exact BoundedContinuousFunction.integrable _ f'
   · exact ring_measurableEmbedding
+
+
+lemma ringMeasure_prod_volume_map :
+    (ringMeasure.prod (volume (α := Space))).map (fun x : Space × Space => (x.1, x.2 + x.1))
+     = (ringMeasure.prod (volume (α := Space))) := by
+  refine (MeasureTheory.MeasurePreserving.skew_product (f := id) (g := fun x => fun y => y + x)
+    ?_ ?_ ?_).map_eq
+  · exact MeasurePreserving.id ringMeasure
+  · fun_prop
+  · filter_upwards with x
+    exact Measure.IsAddRightInvariant.map_add_right_eq_self (x)
+
+instance ringMeasure_prod_volume_weight_hasTemperateGrowth :
+     ((ringMeasure.prod (volume (α := Space))).withDensity
+      (fun (x : Space × Space) => ENNReal.ofReal (1 / ‖x.2 - x.1‖ ^ 2))).HasTemperateGrowth
+      := by
+  rw [← ringMeasure_prod_volume_map]
+  have h1 : ((Measure.map (fun x => (x.1, x.2 + x.1)) (ringMeasure.prod volume)).withDensity fun x =>
+    ENNReal.ofReal (1 / ‖x.2 - x.1‖ ^ 2)) =
+    ((((ringMeasure.prod volume)).withDensity fun x =>
+    ENNReal.ofReal (1 / ‖x.2‖ ^ 2))).map (fun x => (x.1, x.2 + x.1)) := by
+    ext s hs
+    rw [withDensity_apply]
+    let f' : (Space × Space) ≃ᵐ (Space × Space) :=
+      { toFun := fun x => (x.1, x.2 + x.1)
+        invFun := fun x => (x.1, x.2 - x.1)
+        left_inv x := by simp
+        right_inv x := by simp
+        measurable_toFun := by fun_prop
+        measurable_invFun := by fun_prop}
+    change _ = Measure.map f' _ _
+    rw [MeasurableEmbedding.map_apply, withDensity_apply, MeasureTheory.setLIntegral_map]
+    simp
+    rfl
+    · exact hs
+    · fun_prop
+    · fun_prop
+    · exact (MeasurableEquiv.measurableSet_preimage f').mpr hs
+    · exact MeasurableEquiv.measurableEmbedding f'
+  rw [h1]
+  have h2 :
+      ((ringMeasure.prod volume).withDensity fun x => ENNReal.ofReal (1 / ‖x.2‖ ^ 2))
+      = ringMeasure.prod (radialAngularMeasure (d := 3)) := by
+    rw [radialAngularMeasure, MeasureTheory.prod_withDensity_right]
+    simp
+    fun_prop
+  rw [h2]
+  refine { exists_integrable := ?_ }
+  obtain ⟨C, hC⟩ := Measure.HasTemperateGrowth.exists_integrable (μ := ringMeasure.prod (ringMeasure.prod (radialAngularMeasure (d := 3))))
+  use C
+  rw [MeasurableEmbedding.integrable_map_iff]
+  have h1 (x : Space × Space) : ‖x‖ = max ‖x.1‖ ‖x.2‖ := by rfl
+  sorry
 
 /-!
 
@@ -183,10 +240,12 @@ lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
           simp at hr
       · fun_prop
     · fun_prop
-  · simp
+  ·
+    simp
     apply MeasureTheory.Integrable.mono (g := fun r =>
       (∫ z, ‖(1/ (4 * π)) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z)‖ ∂ringMeasure) * ‖Space.grad f r‖)
-    · sorry
+    ·
+      sorry
     ·
       sorry
     · /- Monotonicity condition -/
