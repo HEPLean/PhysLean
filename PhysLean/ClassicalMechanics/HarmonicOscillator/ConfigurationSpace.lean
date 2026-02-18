@@ -193,13 +193,13 @@ noncomputable def fromRealLM : ℝ →ₗ[ℝ] ConfigurationSpace :=
 noncomputable def toRealCLM : ConfigurationSpace →L[ℝ] ℝ :=
   toRealLM.mkContinuous 1 (by
     intro x
-    simp [toRealLM, norm, mul_comm, mul_left_comm, mul_assoc])
+    simp [toRealLM, norm, mul_comm])
 
 /-- Continuous linear map embedding a real value into the configuration space. -/
 noncomputable def fromRealCLM : ℝ →L[ℝ] ConfigurationSpace :=
   fromRealLM.mkContinuous 1 (by
     intro x
-    simp [fromRealLM, norm, mul_comm, mul_left_comm, mul_assoc])
+    simp [fromRealLM, norm, mul_comm])
 
 /-- Homeomorphism between configuration space and `ℝ` given by `ConfigurationSpace.val`. -/
 noncomputable def valHomeomorphism : ConfigurationSpace ≃ₜ ℝ where
