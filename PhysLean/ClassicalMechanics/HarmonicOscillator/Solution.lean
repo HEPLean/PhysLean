@@ -81,9 +81,9 @@ We start by defining the type of initial conditions for the harmonic oscillator.
   and an initial velocity. -/
 structure InitialConditions where
   /-- The initial position of the harmonic oscillator. -/
-  x₀ : EuclideanSpace ℝ (Fin 1)
+  x₀ : ConfigurationSpace
   /-- The initial velocity of the harmonic oscillator. -/
-  v₀ : EuclideanSpace ℝ (Fin 1)
+  v₀ : ConfigurationSpace
 
 /-!
 
@@ -149,9 +149,9 @@ structure InitialConditionsAtTime where
   /-- The time at which the initial conditions are specified. -/
   t₀ : Time
   /-- The position at time t₀. -/
-  x_t₀ : EuclideanSpace ℝ (Fin 1)
+  x_t₀ : ConfigurationSpace
   /-- The velocity at time t₀. -/
-  v_t₀ : EuclideanSpace ℝ (Fin 1)
+  v_t₀ : ConfigurationSpace
 
 /-!
 
@@ -268,7 +268,7 @@ namespace InitialConditions
 -/
 
 /-- Given initial conditions, the solution to the classical harmonic oscillator. -/
-noncomputable def trajectory (IC : InitialConditions) : Time → EuclideanSpace ℝ (Fin 1) := fun t =>
+noncomputable def trajectory (IC : InitialConditions) : Time → ConfigurationSpace := fun t =>
   cos (S.ω * t) • IC.x₀ + (sin (S.ω * t)/S.ω) • IC.v₀
 
 /-!
@@ -404,22 +404,20 @@ The trajectories satisfy the equation of motion for the harmonic oscillator.
 
 lemma trajectory_equationOfMotion (IC : InitialConditions) :
     EquationOfMotion S (IC.trajectory S) := by
-  rw [EquationOfMotion, gradLagrangian_eq_force]
+  have hcont : ContDiff ℝ ∞ (IC.trajectory S) := trajectory_contDiff S IC
+  rw [EquationOfMotion, gradLagrangian_eq_force (S := S) (xₜ := IC.trajectory S) hcont]
   funext t
   simp only [Pi.zero_apply]
   rw [trajectory_acceleration, force_eq_linear]
-  simp [trajectory_eq]
-  ext i
-  simp only [PiLp.sub_apply, PiLp.add_apply, PiLp.neg_apply, PiLp.smul_apply, smul_eq_mul,
-    PiLp.zero_apply]
-  rw [ω_sq]
-  have h : S.ω ≠ 0 := by exact ω_ne_zero S
-  field_simp
-  ring_nf
-  rw [ω_sq]
-  field_simp
-  simp only [neg_add_cancel, mul_zero]
-  fun_prop
+  ext
+  have hω : S.ω ≠ 0 := ω_ne_zero S
+  have hωm : S.ω ^ 2 * S.m = S.k := by
+    rw [ω_sq]
+    field_simp [m_ne_zero S]
+  simp [trajectory_eq, smul_add, smul_smul, mul_comm, mul_left_comm]
+  rw [← hωm]
+  field_simp [hω]
+  ring
 
 /-!
 
@@ -435,7 +433,7 @@ for the given initial conditions. This is currently a TODO.
   Semiformal implementation:
   - One may needed the added condition of smoothness on `x` here.
   - `EquationOfMotion` needs defining before this can be proved. -/
-lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace ℝ (Fin 1))
+lemma trajectories_unique (IC : InitialConditions) (x : Time → ConfigurationSpace)
     (hx : ContDiff ℝ ∞ x) :
     S.EquationOfMotion x ∧ x 0 = IC.x₀ ∧ ∂ₜ x 0 = IC.v₀ →
     x = IC.trajectory S := by
@@ -458,7 +456,7 @@ lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace 
       (trajectory_equationOfMotion S IC)
 
   -- Define the difference y = x - traj
-  set y : Time → EuclideanSpace ℝ (Fin 1) := fun t => x t - IC.trajectory S t with hydef
+  set y : Time → ConfigurationSpace := fun t => x t - IC.trajectory S t with hydef
 
   have hyContDiff : ContDiff ℝ ∞ y := by
     -- ContDiff closed under subtraction
@@ -646,12 +644,12 @@ lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
     (IC : InitialConditionsAtTime) :
     (IC.toInitialConditions S).trajectory S IC.t₀ = IC.x_t₀ := by
   rw [InitialConditions.trajectory_eq, toInitialConditions]
-  ext i
-  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
+  ext
+  simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_ne_zero]
-  linear_combination S.ω * IC.x_t₀.ofLp i * h1
+  linear_combination S.ω * IC.x_t₀.val * h1
 
 /-- The trajectory resulting from `toInitialConditions` has the specified
   velocity `v_t₀` at time `t₀`. -/
@@ -660,12 +658,13 @@ lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
     (IC : InitialConditionsAtTime) :
     ∂ₜ ((IC.toInitialConditions S).trajectory S) IC.t₀ = IC.v_t₀ := by
   rw [InitialConditions.trajectory_velocity, toInitialConditions]
-  ext i
-  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, neg_mul]
+  ext
+  simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.sub_val,
+    neg_mul]
   have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
     cos_sq_add_sin_sq (S.ω * IC.t₀.val)
   field_simp [S.ω_ne_zero]
-  linear_combination IC.v_t₀.ofLp i * h1
+  linear_combination IC.v_t₀.val * h1
 
 /-- The energy of the trajectory at time `t₀` equals the energy computed from the
   initial conditions at `t₀`. -/
@@ -713,8 +712,7 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   have h1' : IC.x₀ 0 ≠ 0 := by
     intro hn
     apply h1
-    ext i
-    fin_cases i
+    ext
     simp [hn]
   have hcos : cos (S.ω * t.val) ≠ 0 := by
     by_contra hn
@@ -726,10 +724,10 @@ lemma tan_time_eq_of_trajectory_velocity_eq_zero (IC : InitialConditions) (t : T
   trans (sin (S.ω * t.val) * (S.ω * IC.x₀ 0)) +
     (-(S.ω • sin (S.ω * t.val) • IC.x₀) + cos (S.ω * t.val) • IC.v₀) 0
   · rw [h]
-    simp only [Fin.isValue, PiLp.zero_apply, add_zero]
-    ring
-  · simp
-    ring
+    simp only [ConfigurationSpace.zero_val]
+    ring_nf
+  · simp only [ConfigurationSpace.add_val, ConfigurationSpace.smul_val, ConfigurationSpace.neg_val]
+    ring_nf
   simp at h2
   rw [h2] at h ⊢
   simp_all
@@ -751,25 +749,22 @@ the time `arctan (IC.v₀ 0 / (S.ω * IC.x₀ 0)) / S.ω` the velocity is zero.
 lemma trajectory_velocity_eq_zero_at_arctan (IC : InitialConditions) (hx : IC.x₀ ≠ 0) :
     (∂ₜ (IC.trajectory S)) (arctan (IC.v₀ 0 / (S.ω * IC.x₀ 0)) / S.ω) = 0 := by
   rw [trajectory_velocity]
-  simp only [Fin.isValue, neg_smul]
+  simp [neg_smul]
   have hx' : S.ω ≠ 0 := by exact ω_ne_zero S
   field_simp
   rw [Real.sin_arctan, Real.cos_arctan]
-  ext i
-  fin_cases i
-  simp only [Fin.isValue, one_div, Fin.zero_eta, PiLp.add_apply, PiLp.neg_apply, PiLp.smul_apply,
-    smul_eq_mul, PiLp.zero_apply]
+  ext
+  simp [one_div]
   trans (-(S.ω * (IC.v₀ 0 / (S.ω * IC.x₀ 0) * IC.x₀ 0)) + IC.v₀ 0) *
     (√(1 + (IC.v₀ 0 / (S.ω * IC.x₀ 0)) ^ 2))⁻¹
   · ring
-  simp only [Fin.isValue, mul_eq_zero, inv_eq_zero]
+  simp [mul_eq_zero, inv_eq_zero]
   left
   field_simp
   have hx : IC.x₀ 0 ≠ 0 := by
     intro hn
     apply hx
-    ext i
-    fin_cases i
+    ext
     simp [hn]
   field_simp
   ring
