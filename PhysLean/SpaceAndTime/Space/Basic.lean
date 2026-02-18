@@ -484,6 +484,10 @@ lemma basis_inner {d} (i : Fin d) (p : Space d) :
     inner ℝ (basis i) p = p i := by
   simp [inner_eq_sum, basis_apply]
 
+lemma norm_basis_repr_apply {d} (p : Space d)  :
+    ‖basis.repr p‖ = ‖p‖ := by
+  simp [basis, norm_eq, PiLp.norm_eq_of_L2]
+
 open InnerProductSpace
 
 lemma basis_repr_inner_eq {d} (p : Space d) (v : EuclideanSpace ℝ (Fin d)) :

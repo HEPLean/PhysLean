@@ -143,6 +143,7 @@ instance ringMeasure_prod_volume_weight_hasTemperateGrowth :
     · fun_prop
     · exact (MeasurableEquiv.measurableSet_preimage f').mpr hs
     · exact MeasurableEquiv.measurableEmbedding f'
+    · exact hs
   rw [h1]
   have h2 :
       ((ringMeasure.prod volume).withDensity fun x => ENNReal.ofReal (1 / ‖x.2‖ ^ 2))
@@ -155,8 +156,31 @@ instance ringMeasure_prod_volume_weight_hasTemperateGrowth :
   obtain ⟨C, hC⟩ := Measure.HasTemperateGrowth.exists_integrable (μ := ringMeasure.prod (ringMeasure.prod (radialAngularMeasure (d := 3))))
   use C
   rw [MeasurableEmbedding.integrable_map_iff]
-  have h1 (x : Space × Space) : ‖x‖ = max ‖x.1‖ ‖x.2‖ := by rfl
-  sorry
+  have h2' (x : Space × Space): (1/2 : ℝ) • ‖x.2‖ ≤ max ‖x.1‖ ‖x.2 + x.1‖ := by
+    simp
+    by_cases h : 2⁻¹ * ‖x.2‖ ≤ ‖x.1‖
+    · simp [h]
+    simp at h
+    right
+    trans ‖x.2‖ - ‖x.1‖
+    · grind
+    · exact norm_sub_le_norm_add x.2 x.1
+  apply Integrable.mono (g := fun x => (1 + (1/2 : ℝ) • ‖x.2‖) ^ (- ↑C :ℝ ))
+  ·
+    sorry
+  · apply AEMeasurable.aestronglyMeasurable
+    fun_prop
+  · filter_upwards with x
+    simp
+    refine inv_anti₀ ?_ ?_
+    · positivity
+    refine pow_le_pow_left₀ ?_ ?_ C
+    · positivity
+    rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
+    specialize h2' x
+    simp at h2'
+    grind
+
 
 /-!
 
@@ -202,61 +226,89 @@ lemma ringDist_eq_integral_ring_integral_inner (f : 𝓢(Space 3, ℝ)) :
   ring
 
 
+set_option synthInstance.maxHeartbeats 0 in
 lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
     ringDist f = - ∫ r, (∫ z,  ⟪(1/ (4 * π)) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z), Space.grad f r⟫_ℝ
       ∂ringMeasure) := by
-  rw [ringDist_eq_integral_ring_integral_inner]
-  rw [MeasureTheory.integral_integral_swap]
+  rw [ringDist_eq_integral_ring_integral_inner, MeasureTheory.integral_integral_swap]
   /- Integrability condition -/
-  refine (integrable_prod_iff' ?_).mpr ⟨?_, ?_⟩
+  /- Generalizing the grad of the schwartz map. -/
+  conv_lhs =>
+    enter [1, x, r]
+    rw [← gradSchwartz_apply_eq_grad]
+  generalize (gradSchwartz f)  = η
+  /- Turning the integral into an integral of the norms -/
+  apply MeasureTheory.Integrable.mono (g := fun r =>
+    (‖(1/ (4 * π)) • ‖r.2 - r.1‖ ^ (- 3 : ℤ) • basis.repr (r.2 - r.1)‖) * ‖η r.2‖)
+  rotate_left
   · simp
     apply MeasureTheory.AEStronglyMeasurable.inner
     · apply AEMeasurable.aestronglyMeasurable
       fun_prop
     · refine AEStronglyMeasurable.comp_snd ?_
-      sorry -- Prove that grad of schwartz map is aestrongly measurable
-  · /- We take `r` everywhere except for on the ring itself. -/
-    have h_ne : ∀ᵐ r ∂volume, r ∉ Set.range ring := by
-      rw [← MeasureTheory.measure_eq_zero_iff_ae_notMem]
-      simp
-    filter_upwards [h_ne] with r hr
+      fun_prop
+  · filter_upwards with r
     simp
-    apply integrable_ringMeasure_of_continuous
-    change  Continuous ((fun x => ⟪(π⁻¹ * 4⁻¹) • (‖r - ring x‖ ^ 3)⁻¹ • (basis.repr r - basis.repr (ring x)), ∇ (⇑f) r⟫_ℝ))
-    apply Continuous.inner
-    . apply Continuous.const_smul
-      apply Continuous.smul
-      · refine Continuous.inv₀ ?_ ?_
-        · refine Continuous.zpow₀ ?_ 3 ?_
-          · fun_prop
-          · intro a
-            simp
-        · intro x
-          by_contra h
-          have h' : ‖r - ring x‖ = 0 := by exact eq_zero_of_pow_eq_zero h
-          simp at h'
-          have h'' : r = ring x := by exact eq_of_sub_eq_zero h'
-          subst h''
-          simp at hr
+    change  ‖⟪_, η r.2⟫_ℝ‖  ≤ _
+    exact norm_inner_le_norm ((π⁻¹ * 4⁻¹) • (‖r.2 - r.1‖ ^ 3)⁻¹ • (basis.repr r.2 - basis.repr r.1))
+        (η r.2)
+  /- Removing the `(1/ (4 * π))` from the intergable condition. -/
+  generalize  (1/ (4 * π)) = C
+  simp [norm_smul, mul_assoc]
+  apply Integrable.const_mul
+  simp [← mul_assoc]
+  /- Simplifying the norms -/
+  apply Integrable.congr (f := fun (x : Space × Space) => (‖x.2 - x.1‖ ^ 2)⁻¹ * ‖η x.2‖)
+  rotate_left
+  · filter_upwards with r
+    simp [← map_sub]
+    left
+    by_cases h : ‖r.2 - r.1‖  = 0
+    · simp [h]
+    field_simp
+  /- Introducng a bump function. -/
+  let κ : 𝓢(Space, ℝ)
+  /- Turn the condition into a statement about temperate growth -/
+  suffices h : ∃ (n : ℕ), Integrable (fun x : Space × Space => (‖x.2 - x.1‖ ^ 2)⁻¹ *
+      (1 + ‖x.2‖) ^ (- n : ℝ)) (ringMeasure.prod volume) by
+    obtain ⟨n, hn⟩ := h
+    let μ := (ringMeasure.prod (volume (α := Space)))
+    have h1 {f : Space → EuclideanSpace ℝ (Fin 3)} -- based on integrable_of_le_of_pow_mul_le
+        {C₁ C₂ : ℝ} {k : ℕ} (hf : ∀ x, ‖f x‖ ≤ C₁)
+        (h'f : ∀ x, ‖x‖ ^ (k + n) * ‖f x‖ ≤ C₂) (h''f : AEStronglyMeasurable (fun x => f x.2) μ) :
+        Integrable (fun x : Space × Space ↦ (‖x.2 - x.1‖ ^ 2)⁻¹ * ‖x.2‖ ^ k * ‖f x.2‖) μ := by
+      apply (hn.const_mul (2 ^ n * (C₁ + C₂))).mono'
+      · apply AEStronglyMeasurable.mul
+        · fun_prop
+        · exact h''f.norm
+      · filter_upwards with v
+        simp only [norm_mul, norm_pow, norm_norm, mul_assoc]
+        trans ‖(‖v.2 - v.1‖ ^ 2)⁻¹‖ * (2 ^ n * (C₁ + C₂) * (1 + ‖v.2‖) ^ (-n : ℝ))
+        · apply mul_le_mul
+          · rfl
+          · exact pow_mul_le_of_le_of_pow_mul_le (norm_nonneg _) (norm_nonneg _) (hf v.2) (h'f v.2)
+          · positivity
+          · positivity
+        apply le_of_eq
+        simp
+        ring
+    have h2 (f : 𝓢(Space, EuclideanSpace ℝ (Fin 3))) -- based on integrable_pow_mul_iteratedFDeriv
+        (k : ℕ) : Integrable (fun x : Space × Space ↦ (‖x.2 - x.1‖ ^ 2)⁻¹ * ‖x.2‖ ^ k * ‖f x.2‖)
+        μ := by
+      apply h1 (C₁ := (SchwartzMap.seminorm ℝ 0 0) f)
+        (C₂ := (SchwartzMap.seminorm ℝ (k + n)  0) f)
       · fun_prop
-    · fun_prop
-  ·
-    simp
-    apply MeasureTheory.Integrable.mono (g := fun r =>
-      (∫ z, ‖(1/ (4 * π)) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z)‖ ∂ringMeasure) * ‖Space.grad f r‖)
-    ·
-      sorry
-    ·
-      sorry
-    · /- Monotonicity condition -/
-      filter_upwards with r
-      simp
-      rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity), ← integral_mul_const]
-      refine integral_mono ?_ ?_ ?_
-      · sorry
-      · sorry
-      · refine Pi.le_def.mpr <| fun x => ?_
-        exact abs_real_inner_le_norm _ _
+      · intro x
+        simpa using norm_iteratedFDeriv_le_seminorm ℝ f 0 x
+      · intro x
+        simpa using le_seminorm ℝ (k + n) 0 f x
+    simpa using h2 η 0
+
+
+
+
+
+  sorry
 
 
 
