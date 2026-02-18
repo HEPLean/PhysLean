@@ -116,70 +116,11 @@ lemma ringMeasure_prod_volume_map :
   · filter_upwards with x
     exact Measure.IsAddRightInvariant.map_add_right_eq_self (x)
 
-instance ringMeasure_prod_volume_weight_hasTemperateGrowth :
-     ((ringMeasure.prod (volume (α := Space))).withDensity
-      (fun (x : Space × Space) => ENNReal.ofReal (1 / ‖x.2 - x.1‖ ^ 2))).HasTemperateGrowth
-      := by
-  rw [← ringMeasure_prod_volume_map]
-  have h1 : ((Measure.map (fun x => (x.1, x.2 + x.1)) (ringMeasure.prod volume)).withDensity fun x =>
-    ENNReal.ofReal (1 / ‖x.2 - x.1‖ ^ 2)) =
-    ((((ringMeasure.prod volume)).withDensity fun x =>
-    ENNReal.ofReal (1 / ‖x.2‖ ^ 2))).map (fun x => (x.1, x.2 + x.1)) := by
-    ext s hs
-    rw [withDensity_apply]
-    let f' : (Space × Space) ≃ᵐ (Space × Space) :=
-      { toFun := fun x => (x.1, x.2 + x.1)
-        invFun := fun x => (x.1, x.2 - x.1)
-        left_inv x := by simp
-        right_inv x := by simp
-        measurable_toFun := by fun_prop
-        measurable_invFun := by fun_prop}
-    change _ = Measure.map f' _ _
-    rw [MeasurableEmbedding.map_apply, withDensity_apply, MeasureTheory.setLIntegral_map]
-    simp
-    rfl
-    · exact hs
-    · fun_prop
-    · fun_prop
-    · exact (MeasurableEquiv.measurableSet_preimage f').mpr hs
-    · exact MeasurableEquiv.measurableEmbedding f'
-    · exact hs
-  rw [h1]
-  have h2 :
-      ((ringMeasure.prod volume).withDensity fun x => ENNReal.ofReal (1 / ‖x.2‖ ^ 2))
-      = ringMeasure.prod (radialAngularMeasure (d := 3)) := by
-    rw [radialAngularMeasure, MeasureTheory.prod_withDensity_right]
-    simp
-    fun_prop
-  rw [h2]
-  refine { exists_integrable := ?_ }
-  obtain ⟨C, hC⟩ := Measure.HasTemperateGrowth.exists_integrable (μ := ringMeasure.prod (ringMeasure.prod (radialAngularMeasure (d := 3))))
-  use C
-  rw [MeasurableEmbedding.integrable_map_iff]
-  have h2' (x : Space × Space): (1/2 : ℝ) • ‖x.2‖ ≤ max ‖x.1‖ ‖x.2 + x.1‖ := by
-    simp
-    by_cases h : 2⁻¹ * ‖x.2‖ ≤ ‖x.1‖
-    · simp [h]
-    simp at h
-    right
-    trans ‖x.2‖ - ‖x.1‖
-    · grind
-    · exact norm_sub_le_norm_add x.2 x.1
-  apply Integrable.mono (g := fun x => (1 + (1/2 : ℝ) • ‖x.2‖) ^ (- ↑C :ℝ ))
-  ·
-    sorry
-  · apply AEMeasurable.aestronglyMeasurable
-    fun_prop
-  · filter_upwards with x
-    simp
-    refine inv_anti₀ ?_ ?_
-    · positivity
-    refine pow_le_pow_left₀ ?_ ?_ C
-    · positivity
-    rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
-    specialize h2' x
-    simp at h2'
-    grind
+lemma ringMeasure_univ : ringMeasure Set.univ = ENNReal.ofReal ((2 : ℝ) * π) := by
+  rw [ringMeasure, Measure.map_apply]
+  simp
+  · fun_prop
+  · exact MeasurableSet.univ
 
 
 /-!
@@ -187,6 +128,9 @@ instance ringMeasure_prod_volume_weight_hasTemperateGrowth :
 ## C. The distribution associated with the ring
 
 -/
+
+
+
 
 /-- The distribution on `Space 3` corresponding to integration around a ring. -/
 def ringDist : (Space 3) →d[ℝ] ℝ  :=
@@ -267,7 +211,6 @@ lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
     · simp [h]
     field_simp
   /- Introducng a bump function. -/
-  let κ : 𝓢(Space, ℝ)
   /- Turn the condition into a statement about temperate growth -/
   suffices h : ∃ (n : ℕ), Integrable (fun x : Space × Space => (‖x.2 - x.1‖ ^ 2)⁻¹ *
       (1 + ‖x.2‖) ^ (- n : ℝ)) (ringMeasure.prod volume) by
@@ -304,11 +247,103 @@ lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
         simpa using le_seminorm ℝ (k + n) 0 f x
     simpa using h2 η 0
 
+  obtain ⟨n, hn⟩ := Measure.HasTemperateGrowth.exists_integrable (μ := volume (α := Space))
+  use n
 
+  let f : Space × Space → ℝ := (fun x => (‖x.2 - x.1‖ ^ 2)⁻¹ * (1 + ‖x.2‖) ^ (- n : ℝ))
+  let S : Set (Space × Space) := {x | ‖x.2 - x.1‖ ≤ 1}
+  have f_split : f = Set.indicator S f + Set.indicator (Sᶜ) f := by
+    exact Eq.symm (Set.indicator_self_add_compl S f)
+  change Integrable f (ringMeasure.prod volume)
+  rw [f_split]
+  apply Integrable.add
+  · rw [MeasureTheory.integrable_indicator_iff]
+    rotate_left
+    · simp [S]
+      fun_prop
+    apply Integrable.mono (g := fun x => (‖x.2 - x.1‖ ^ 2)⁻¹ )
+    rotate_left
+    · fun_prop
+    · filter_upwards with x
+      simp [f]
+      field_simp
+      generalize h : ‖x.2 - x.1‖ ^ 2 = a
 
+      by_cases a_zero : a = 0
+      · subst a_zero
+        simp
+      refine (div_le_div_iff_of_pos_right ?_).mpr ?_
+      · subst h
+        positivity
+      · refine one_le_pow₀ ?_
+        rw [abs_of_nonneg (by positivity)]
+        simp
 
+    change IntegrableOn (fun x => (‖x.2 - x.1‖ ^ 2)⁻¹) S (ringMeasure.prod volume)
+    let em : (Space × Space) ≃ᵐ (Space × Space) :=
+      { toFun := fun x => (x.1, x.2 + x.1)
+        invFun := fun x => (x.1, x.2 - x.1)
+        left_inv x := by simp
+        right_inv x := by simp
+        measurable_toFun := by fun_prop
+        measurable_invFun := by fun_prop}
+    rw [← ringMeasure_prod_volume_map]
+    change  IntegrableOn (fun x => (‖x.2 - x.1‖ ^ 2)⁻¹) S (Measure.map em (ringMeasure.prod volume))
+    rw [MeasurableEmbedding.integrableOn_map_iff]
+    rotate_left
+    · exact MeasurableEquiv.measurableEmbedding em
+    have hl : (⇑em ⁻¹' S) = Set.univ ×ˢ Metric.closedBall (0 : Space) 1 := by
+      ext x
+      simp [em, S]
+    rw [hl]
+    have fun_em : ((fun x => (‖x.2 - x.1‖ ^ 2)⁻¹) ∘ ⇑em) = fun x => (‖x.2‖ ^ 2)⁻¹ := by
+      ext x
+      simp [em]
+    rw [fun_em]
+    suffices h : IntegrableOn (fun x => (1 : ℝ)) (Set.univ ×ˢ Metric.closedBall 0 1) (ringMeasure.prod (radialAngularMeasure (d := 3))) by
+      rw [radialAngularMeasure] at h
+      rw [MeasureTheory.prod_withDensity_right] at h
+      rw [MeasureTheory.IntegrableOn] at h
+      rw [MeasureTheory.restrict_withDensity] at h
+      rw [MeasureTheory.integrable_withDensity_iff ] at h
+      rotate_left
+      · fun_prop
+      · simp
+      · refine MeasurableSet.prod ?_ ?_
+        · exact MeasurableSet.univ
+        · exact measurableSet_closedBall
+      · fun_prop
+      simpa using h
+    simp
+    rw [Measure.prod_prod]
 
-  sorry
+    sorry
+  · rw [MeasureTheory.integrable_indicator_iff]
+    rotate_left
+    · simp [S]
+      fun_prop
+    apply Integrable.mono (g := fun x => (1 + ‖x.2‖) ^ (- n : ℝ))
+    rotate_left
+    · fun_prop
+    · have hs : MeasurableSet Sᶜ := by
+        simp [S]
+        fun_prop
+      filter_upwards [MeasureTheory.ae_restrict_mem hs] with x hx
+      simp [S] at hx
+      simp [f]
+      trans 1 * (|1 + ‖x.2‖|) ^ (- n : ℝ)
+      · apply mul_le_mul
+        · refine inv_le_one_iff₀.mpr ?_
+          right
+          nlinarith
+        · simp
+        · positivity
+        · positivity
+      simp
+    apply MeasureTheory.Integrable.integrableOn
+    simpa using  MeasureTheory.Integrable.mul_prod (f := fun (x : Space)  => 1)
+      (by simp) hn
+
 
 
 

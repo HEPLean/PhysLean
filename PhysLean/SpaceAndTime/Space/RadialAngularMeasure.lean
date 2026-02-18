@@ -56,6 +56,10 @@ open MeasureTheory
 def radialAngularMeasure {d : ℕ} : Measure (Space d) :=
   volume.withDensity (fun x : Space d => ENNReal.ofReal (1 / ‖x‖ ^ (d - 1)))
 
+instance (d : ℕ) : SFinite (radialAngularMeasure (d := d)):= by
+  dsimp [radialAngularMeasure]
+  infer_instance
+
 /-!
 
 ### A.1. Basic equalities
@@ -83,6 +87,7 @@ lemma integrable_radialAngularMeasure_iff {d : ℕ} {f : Space d → F} :
   simp only [inv_nonneg, norm_nonneg, pow_nonneg, coe_mk]
   positivity
 
+
 /-!
 
 ## B. Integrals with respect to radialAngularMeasure
@@ -98,6 +103,31 @@ lemma integral_radialAngularMeasure {d : ℕ} (f : Space d → F) :
   simp only [one_div]
   refine Eq.symm (Mathlib.Tactic.LinearCombination.smul_eq_const ?_ (f x))
   simp
+
+lemma lintegral_radialMeasure {d : ℕ} (f : Space d → ENNReal) (hf : Measurable f) :
+    ∫⁻ x, f x ∂radialAngularMeasure = ∫⁻ x, ENNReal.ofReal (1 / ‖x‖ ^ (d - 1)) * f x := by
+  dsimp [radialAngularMeasure]
+  rw [lintegral_withDensity_eq_lintegral_mul]
+  simp
+  · fun_prop
+  · fun_prop
+
+lemma homeomorphUnitSphereProd_radialAngularMeasure (d : ℕ) :
+    MeasurePreserving (⇑(homeomorphUnitSphereProd (Space d))) (Measure.comap Subtype.val μ)
+    ((volume (α := Space d)).toSphere.prod (Measure.volumeIoiPow 0)) := by
+  sorry
+
+open Real
+lemma radialAngularMeasure_closedBall :
+    radialAngularMeasure (Metric.closedBall (0 : Space 3) 1) = ENNReal.ofReal (4 * π) := by
+  rw [radialAngularMeasure]
+  rw [MeasureTheory.withDensity_apply]
+  let f := fun x : Space 3 => ENNReal.ofReal (1 / ‖x‖ ^ 2)
+  change ∫⁻ x in Metric.closedBall (0 : Space 3) 1, f x ∂volume = _
+  rw [lintegral_volume_eq_spherical_mul]
+  simp
+
+
 
 /-!
 
