@@ -104,7 +104,7 @@ lemma lintegral_radialMeasure {d : ℕ} (f : Space d → ENNReal) (hf : Measurab
     ∫⁻ x, f x ∂radialAngularMeasure = ∫⁻ x, ENNReal.ofReal (1 / ‖x‖ ^ (d - 1)) * f x := by
   dsimp [radialAngularMeasure]
   rw [lintegral_withDensity_eq_lintegral_mul]
-  simp
+  simp only [one_div, Pi.mul_apply]
   · fun_prop
   · fun_prop
 
@@ -128,7 +128,7 @@ lemma lintegral_radialMeasure_eq_spherical_mul (d : ℕ) (f : Space d.succ → E
   trans ENNReal.ofReal 1 * f (x.2.1 • ↑x.1.1)
   · congr
     field_simp
-  simp
+  simp only [ENNReal.ofReal_one, Nat.succ_eq_add_one, one_mul]
   fun_prop
   fun_prop
 
@@ -173,14 +173,15 @@ lemma radialAngularMeasure_closedBall (r : ℝ) :
   trans  3 * ENNReal.ofReal (4 / 3 * π) * volume (α := ℝ) (Set.Ioc 0 r)
   · congr
     ext x
-    simp
+    simp only [Set.mem_image, Set.mem_setOf_eq, Subtype.exists, Set.mem_Ioi, exists_and_left,
+      exists_prop, exists_eq_right_right, Set.mem_Ioc]
     grind
-  simp
+  simp only [volume_Ioc, sub_zero]
   trans ENNReal.ofReal (3 *  ((4 / 3 * π) )) * ENNReal.ofReal r
   · simp [ENNReal.ofReal_mul]
   field_simp
   rw [← ENNReal.ofReal_mul]
-  simp
+  simp only [Nat.ofNat_pos, mul_nonneg_iff_of_pos_left]
   positivity
 
 lemma radialAngularMeasure_real_closedBall (r : ℝ) (hr : 0 < r) :
@@ -209,9 +210,9 @@ lemma integrable_radialAngularMeasure_iff {d : ℕ} {f : Space d → F} :
 
 omit [NormedSpace ℝ F] in
 lemma integrable_radialAngularMeasure_of_spherical {d : ℕ} (f : Space d.succ → F)
-  (fae : AEStronglyMeasurable f radialAngularMeasure)
-  (ht : StronglyMeasurable f)
-  (hf : Integrable (fun x => f (x.2.1 • x.1.1))
+    (fae : AEStronglyMeasurable f radialAngularMeasure)
+    (ht : StronglyMeasurable f)
+    (hf : Integrable (fun x => f (x.2.1 • x.1.1))
     (volume (α := Space d.succ).toSphere.prod (Measure.volumeIoiPow 0))) :
     Integrable f radialAngularMeasure := by
   have h1 := hf.1
