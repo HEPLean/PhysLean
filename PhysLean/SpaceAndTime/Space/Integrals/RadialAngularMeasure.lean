@@ -209,20 +209,18 @@ lemma integrable_radialAngularMeasure_iff {d : ℕ} {f : Space d → F} :
 
 omit [NormedSpace ℝ F] in
 lemma integrable_radialAngularMeasure_of_spherical {d : ℕ} (f : Space d.succ → F)
-    (fae : AEStronglyMeasurable f radialAngularMeasure)
-    (ht : StronglyMeasurable f)
+    (hae : StronglyMeasurable f)
     (hf : Integrable (fun x => f (x.2.1 • x.1.1))
     (volume (α := Space d.succ).toSphere.prod (Measure.volumeIoiPow 0))) :
     Integrable f radialAngularMeasure := by
   have h1 := hf.1
   have h2 := hf.2
-  refine ⟨fae, ?_⟩
-  · rw [hasFiniteIntegral_iff_norm]
-    rw [lintegral_radialMeasure_eq_spherical_mul]
-    rw [← hasFiniteIntegral_iff_norm]
-    exact h2
-    · simp
-      refine StronglyMeasurable.enorm ht
+  refine ⟨StronglyMeasurable.aestronglyMeasurable hae, ?_⟩
+  rw [hasFiniteIntegral_iff_norm]
+  rw [lintegral_radialMeasure_eq_spherical_mul]
+  rw [← hasFiniteIntegral_iff_norm]
+  exact h2
+  · simpa using StronglyMeasurable.enorm hae
 
 /-!
 
@@ -241,16 +239,13 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
   rw [← MeasureTheory.integrable_smul_measure (c := n + 1)]
   apply MeasureTheory.integrable_of_integral_eq_one
   trans (n + 1) * ∫ (x : ℝ) in Set.Ioi 0, ((1 + x) ^ (- (n + 2) : ℝ)) ∂volume
-  · rw [← MeasureTheory.integral_subtype_comap]
+  · rw [← MeasureTheory.integral_subtype_comap measurableSet_Ioi]
     simp only [neg_add_rev, Function.comp_apply, integral_smul_measure, smul_eq_mul]
     congr
     funext x
     simp only [abs_eq_self]
     apply Real.rpow_nonneg
-    apply add_nonneg
-    · exact zero_le_one' ℝ
-    · exact le_of_lt x.2
-    exact measurableSet_Ioi
+    grind
   have h0 (x : ℝ) (hx : x ∈ Set.Ioi 0) : ((1 : ℝ) + ↑x) ^ (- (n + 2) : ℝ) =
       ((1 + x) ^ ((n + 2)))⁻¹ := by
     rw [← Real.rpow_natCast]
@@ -260,9 +255,7 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
     simp only [neg_add_rev, Nat.cast_add, Nat.cast_ofNat]
     have hx : 0 < x := hx
     positivity
-    apply add_nonneg
-    · exact zero_le_one' ℝ
-    · exact le_of_lt hx
+    grind
   trans (n + 1) * ∫ (x : ℝ) in Set.Ioi 0, ((1 + x) ^ (n + 2))⁻¹ ∂volume
   · congr 1
     refine setIntegral_congr_ae₀ ?_ ?_
@@ -298,14 +291,11 @@ private lemma integrable_neg_pow_on_ioi (n : ℕ) :
     field_simp
     have h0 : (-2 + -(n : ℝ) + 1) ≠ 0 := by
       by_contra h
-      have h1 : (1 : ℝ) - 0 = 2 + n := by
-        rw [← h]
-        ring
+      have h1 : (1 : ℝ) - 0 = 2 + n := by grind
       simp at h1
       linarith
     simp only [neg_add_rev, Real.one_rpow, mul_one]
-    field_simp
-    ring
+    grind
     linarith
     linarith
   · simp
@@ -319,8 +309,6 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
   | 0 => simp
   | dm1 + 1 =>
   apply integrable_radialAngularMeasure_of_spherical
-  · apply AEMeasurable.aestronglyMeasurable
-    fun_prop
   · fun_prop
   simp [norm_smul]
   rw [MeasureTheory.integrable_prod_iff]
