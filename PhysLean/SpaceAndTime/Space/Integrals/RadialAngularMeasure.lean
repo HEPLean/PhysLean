@@ -73,14 +73,13 @@ lemma radialAngularMeasure_zero_eq_volume :
     radialAngularMeasure (d := 0) = volume := by
   simp [radialAngularMeasure]
 
-
 /-!
 
-### A.2.  SFinite property
+### A.2. SFinite property
 
 -/
 
-instance (d : ℕ) : SFinite (radialAngularMeasure (d := d)):= by
+instance (d : ℕ) : SFinite (radialAngularMeasure (d := d)) := by
   dsimp [radialAngularMeasure]
   infer_instance
 
@@ -116,10 +115,10 @@ lemma lintegral_radialMeasure_eq_spherical_mul (d : ℕ) (f : Space d.succ → E
   apply lintegral_congr_ae
   filter_upwards with x
   have hx := x.2.2
-  simp  [Nat.succ_eq_add_one, -Subtype.coe_prop] at hx
+  simp [Nat.succ_eq_add_one, -Subtype.coe_prop] at hx
   simp [norm_smul]
   rw [abs_of_nonneg (le_of_lt x.2.2)]
-  trans  ENNReal.ofReal (↑x.2 ^ d * (x.2.1 ^ d)⁻¹) * f (x.2.1 • ↑x.1.1)
+  trans ENNReal.ofReal (↑x.2 ^ d * (x.2.1 ^ d)⁻¹) * f (x.2.1 • ↑x.1.1)
   · rw [ENNReal.ofReal_mul]
     ring
     have h2 := x.2.2
@@ -148,8 +147,8 @@ lemma radialAngularMeasure_closedBall (r : ℝ) :
     exact measurableSet_closedBall
   · exact measurableSet_closedBall
   have h1 (x : (Metric.sphere (0 : Space) 1) × ↑(Set.Ioi (0 : ℝ))) :
-       (Metric.closedBall (0 : Space) r).indicator (fun x => (1 : ENNReal)) (x.2.1 • x.1.1) =
-       (Set.univ ×ˢ {a | a.1 ≤ r}).indicator (fun x => 1) x := by
+      (Metric.closedBall (0 : Space) r).indicator (fun x => (1 : ENNReal)) (x.2.1 • x.1.1) =
+      (Set.univ ×ˢ {a | a.1 ≤ r}).indicator (fun x => 1) x := by
     refine Set.indicator_const_eq_indicator_const ?_
     simp [norm_smul]
     rw [abs_of_nonneg (le_of_lt x.2.2)]
@@ -170,14 +169,14 @@ lemma radialAngularMeasure_closedBall (r : ℝ) :
     exact measurableSet_Ioi
   · simp
     fun_prop
-  trans  3 * ENNReal.ofReal (4 / 3 * π) * volume (α := ℝ) (Set.Ioc 0 r)
+  trans 3 * ENNReal.ofReal (4 / 3 * π) * volume (α := ℝ) (Set.Ioc 0 r)
   · congr
     ext x
     simp only [Set.mem_image, Set.mem_setOf_eq, Subtype.exists, Set.mem_Ioi, exists_and_left,
       exists_prop, exists_eq_right_right, Set.mem_Ioc]
     grind
   simp only [volume_Ioc, sub_zero]
-  trans ENNReal.ofReal (3 *  ((4 / 3 * π) )) * ENNReal.ofReal r
+  trans ENNReal.ofReal (3 * ((4 / 3 * π))) * ENNReal.ofReal r
   · simp [ENNReal.ofReal_mul]
   field_simp
   rw [← ENNReal.ofReal_mul]
@@ -339,7 +338,7 @@ lemma radialAngularMeasure_integrable_pow_neg_two {d : ℕ} :
     simp at hx
     simp [f]
     ring_nf
-    rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity) ]
+    rw [abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
   rw [h0]
   change Integrable (f ∘ Subtype.val) _
   rw [← MeasureTheory.integrableOn_iff_comap_subtypeVal measurableSet_Ioi]

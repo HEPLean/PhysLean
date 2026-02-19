@@ -25,7 +25,6 @@ We focus here on the volume measure, which is the usual measure on `Space d`, i.
   with respect to the volume measure can be expressed as a lower Lebesgue integral over the unit
   sphere and the positive reals.
 
-
 -/
 
 namespace Space
@@ -117,7 +116,7 @@ lemma volume_metricBall_three_real :
 
 -/
 
-lemma integral_one_dim_eq_integral_real {f : Space 1 → ℝ}  :
+lemma integral_one_dim_eq_integral_real {f : Space 1 → ℝ} :
     ∫ x, f x ∂volume = ∫ x, f (oneEquiv.symm x) ∂volume := by rw [integral_comp]
 
 /-!
@@ -128,7 +127,7 @@ lemma integral_one_dim_eq_integral_real {f : Space 1 → ℝ}  :
 
 lemma integral_volume_eq_spherical (d : ℕ) (f : Space d.succ → F)
     [NormedAddCommGroup F] [NormedSpace ℝ F] :
-    ∫ x, f x ∂volume = ∫ x, f (x.2.1 • x.1.1)  ∂(volume (α := Space d.succ).toSphere.prod
+    ∫ x, f x ∂volume = ∫ x, f (x.2.1 • x.1.1) ∂(volume (α := Space d.succ).toSphere.prod
         (Measure.volumeIoiPow (Module.finrank ℝ (Space d.succ) - 1))) := by
   rw [← MeasureTheory.MeasurePreserving.integral_comp (f := homeomorphUnitSphereProd _)
     (MeasureTheory.Measure.measurePreserving_homeomorphUnitSphereProd
@@ -155,7 +154,7 @@ lemma integral_volume_eq_spherical (d : ℕ) (f : Space d.succ → F)
 
 /- An instance of `sfinite` on the spherical integral measure on `Space d`.
   This is needed in many of the calculations related to spherical integrals,
-  but cannot be infered by Lean without this. -/
+  but cannot be inferred by Lean without this. -/
 instance : SFinite (@Measure.comap ↑(Set.Ioi 0) ℝ Subtype.instMeasurableSpace
         Real.measureSpace.toMeasurableSpace Subtype.val volume) := by
       refine { out' := ?_ }
@@ -184,7 +183,6 @@ instance : SFinite (@Measure.comap ↑(Set.Ioi 0) ℝ Subtype.instMeasurableSpac
         apply MeasurableEmbedding.subtype_coe
         simp
 
-
 /-!
 
 ## D. Lower Lebesgue integral over volume to spherical
@@ -192,7 +190,7 @@ instance : SFinite (@Measure.comap ↑(Set.Ioi 0) ℝ Subtype.instMeasurableSpac
 -/
 
 lemma lintegral_volume_eq_spherical (d : ℕ) (f : Space d.succ → ENNReal) (hf : Measurable f) :
-    ∫⁻ x, f x ∂volume = ∫⁻ x, f (x.2.1 • x.1.1)  ∂(volume (α := Space d.succ).toSphere.prod
+    ∫⁻ x, f x ∂volume = ∫⁻ x, f (x.2.1 • x.1.1) ∂(volume (α := Space d.succ).toSphere.prod
         (Measure.volumeIoiPow (Module.finrank ℝ (Space d.succ) - 1))) := by
   have h0 := MeasureTheory.MeasurePreserving.lintegral_comp
     (f := fun x => f (x.2.1 • x.1.1)) (g := homeomorphUnitSphereProd _)
@@ -223,9 +221,9 @@ lemma lintegral_volume_eq_spherical_mul (d : ℕ) (f : Space d.succ → ENNReal)
       ∂(volume (α := Space d.succ).toSphere.prod (Measure.volumeIoiPow 0)) := by
   rw [lintegral_volume_eq_spherical]
   rw [Measure.volumeIoiPow, MeasureTheory.prod_withDensity_right,
-    MeasureTheory.lintegral_withDensity_eq_lintegral_mul ]
+    MeasureTheory.lintegral_withDensity_eq_lintegral_mul]
   rw [Measure.volumeIoiPow, MeasureTheory.prod_withDensity_right,
-    MeasureTheory.lintegral_withDensity_eq_lintegral_mul ]
+    MeasureTheory.lintegral_withDensity_eq_lintegral_mul]
   · refine lintegral_congr_ae ?_
     simp only [Nat.succ_eq_add_one, finrank_eq_dim, add_tsub_cancel_right, pow_zero,
       ENNReal.ofReal_one]
@@ -234,6 +232,5 @@ lemma lintegral_volume_eq_spherical_mul (d : ℕ) (f : Space d.succ → ENNReal)
     ring
   all_goals
   · fun_prop
-
 
 end Space

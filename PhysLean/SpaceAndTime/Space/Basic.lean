@@ -712,7 +712,6 @@ lemma oneEquiv_measurePreserving : MeasurePreserving oneEquiv volume volume :=
 lemma oneEquiv_symm_measurePreserving : MeasurePreserving oneEquiv.symm volume volume := by
   exact LinearIsometryEquiv.measurePreserving oneEquiv.symm
 
-
 instance {d : ℕ} : Nontrivial (Space d.succ) := by
   refine { exists_pair_ne := ?_ }
   use 0, basis 0
