@@ -344,10 +344,11 @@ import PhysLean.SpaceAndTime.Space.Derivatives.Grad
 import PhysLean.SpaceAndTime.Space.Derivatives.Laplacian
 import PhysLean.SpaceAndTime.Space.DistConst
 import PhysLean.SpaceAndTime.Space.DistOfFunction
+import PhysLean.SpaceAndTime.Space.Integrals.Basic
+import PhysLean.SpaceAndTime.Space.Integrals.RadialAngularMeasure
 import PhysLean.SpaceAndTime.Space.IsDistBounded
 import PhysLean.SpaceAndTime.Space.LengthUnit
 import PhysLean.SpaceAndTime.Space.Norm
-import PhysLean.SpaceAndTime.Space.RadialAngularMeasure
 import PhysLean.SpaceAndTime.Space.Slice
 import PhysLean.SpaceAndTime.Space.Translations
 import PhysLean.SpaceAndTime.SpaceTime.Basic
