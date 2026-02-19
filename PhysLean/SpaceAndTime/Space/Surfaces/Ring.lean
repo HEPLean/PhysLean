@@ -106,6 +106,15 @@ lemma integrable_ringMeasure_of_continuous (f : Space → ℝ) (hf : Continuous 
   · exact ring_measurableEmbedding
 
 
+
+lemma integrable_ringMeasure_of_continuous_euclid (f : Space → EuclideanSpace ℝ (Fin n)) (hf : Continuous (f ∘ ring)) :
+    Integrable f ringMeasure := by
+  rw [ringMeasure]
+  rw [MeasurableEmbedding.integrable_map_iff]
+  · exact BoundedContinuousFunction.integrable _
+      (BoundedContinuousFunction.mkOfCompact ⟨f ∘ ring, hf⟩)
+  · exact ring_measurableEmbedding
+
 lemma ringMeasure_prod_volume_map :
     (ringMeasure.prod (volume (α := Space))).map (fun x : Space × Space => (x.1, x.2 + x.1))
      = (ringMeasure.prod (volume (α := Space))) := by
@@ -116,6 +125,7 @@ lemma ringMeasure_prod_volume_map :
   · filter_upwards with x
     exact Measure.IsAddRightInvariant.map_add_right_eq_self (x)
 
+@[simp]
 lemma ringMeasure_univ : ringMeasure Set.univ = ENNReal.ofReal ((2 : ℝ) * π) := by
   rw [ringMeasure, Measure.map_apply]
   simp
@@ -210,7 +220,6 @@ lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
     by_cases h : ‖r.2 - r.1‖  = 0
     · simp [h]
     field_simp
-  /- Introducng a bump function. -/
   /- Turn the condition into a statement about temperate growth -/
   suffices h : ∃ (n : ℕ), Integrable (fun x : Space × Space => (‖x.2 - x.1‖ ^ 2)⁻¹ *
       (1 + ‖x.2‖) ^ (- n : ℝ)) (ringMeasure.prod volume) by
@@ -314,10 +323,12 @@ lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
         · exact measurableSet_closedBall
       · fun_prop
       simpa using h
+    simp only [enorm_one, ne_eq, ENNReal.one_ne_top, not_false_eq_true, integrableOn_const_iff,
+      one_ne_zero, Measure.prod_prod, ringMeasure_univ, radialAngularMeasure_closedBall, mul_one,
+      false_or]
+    rw [← ENNReal.ofReal_mul]
     simp
-    rw [Measure.prod_prod]
-
-    sorry
+    positivity
   · rw [MeasureTheory.integrable_indicator_iff]
     rotate_left
     · simp [S]
@@ -345,8 +356,32 @@ lemma ringDist_eq_integral_integral_ring_inner (f : 𝓢(Space 3, ℝ)) :
       (by simp) hn
 
 
-
-
-
+lemma ringDist_eq_integral (f : 𝓢(Space 3, ℝ)) :
+    ringDist f = - ∫ r, (⟪∫ z, (1/ (4 * π)) • ‖r-z‖ ^ (- 3 : ℤ) • basis.repr (r-z)
+      ∂ringMeasure, Space.grad f r⟫_ℝ) := by
+  rw [ringDist_eq_integral_integral_ring_inner]
+  congr 1
+  apply integral_congr_ae
+  have hs :  (Set.range ring)ᶜ  ∈ ae volume := by
+    refine compl_mem_ae_iff.mpr ?_
+    simp
+  filter_upwards [hs] with x hx
+  rw [real_inner_comm, ← integral_inner]
+  simp [real_inner_comm]
+  · apply integrable_ringMeasure_of_continuous_euclid
+    apply Continuous.smul
+    · fun_prop
+    apply Continuous.smul
+    · simp
+      refine Continuous.inv₀ ?_ ?_
+      · refine Continuous.zpow₀ ?_ 3 ?_
+        · fun_prop
+        · simp
+      · intro z hz
+        simp [zpow_eq_zero_iff] at hz
+        have hl : x = ring z := by grind
+        subst hl
+        simp at hx
+    · fun_prop
 
 end Space
