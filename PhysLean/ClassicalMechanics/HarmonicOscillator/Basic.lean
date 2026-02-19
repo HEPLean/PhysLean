@@ -110,7 +110,6 @@ structure HarmonicOscillator where
 
 namespace HarmonicOscillator
 
-
 variable (S : HarmonicOscillator)
 
 @[simp]
