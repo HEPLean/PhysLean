@@ -357,7 +357,8 @@ noncomputable def toTime (zero : TimeTransMan) (x : TimeUnit) : TimeTransMan ≃
     · apply Continuous.add
       · apply Continuous.fun_mul
         · fun_prop
-        · exact Isometry.continuous fun x1 => congrFun rfl
+        · apply Differentiable.continuous (𝕜 := ℝ)
+          fun_prop
       · fun_prop
 
   continuous_toFun := by
