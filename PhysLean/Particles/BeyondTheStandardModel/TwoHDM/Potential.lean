@@ -216,7 +216,7 @@ def stabilityCounterExample : PotentialParameters := {(0 : PotentialParameters) 
     𝓵₆ := -2
     𝓵₇ := -2}
 
-lemma stabilityCounterExample_ξ  :
+lemma stabilityCounterExample_ξ :
     stabilityCounterExample.ξ = fun
       | Sum.inl 0 => 0
       | Sum.inr 0 => 0
