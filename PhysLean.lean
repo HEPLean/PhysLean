@@ -233,6 +233,9 @@ import PhysLean.QuantumMechanics.DDimensions.Operators.AngularMomentum
 import PhysLean.QuantumMechanics.DDimensions.Operators.Commutation
 import PhysLean.QuantumMechanics.DDimensions.Operators.Momentum
 import PhysLean.QuantumMechanics.DDimensions.Operators.Position
+import PhysLean.QuantumMechanics.DDimensions.Operators.Unbounded
+import PhysLean.QuantumMechanics.DDimensions.SpaceDHilbertSpace.Basic
+import PhysLean.QuantumMechanics.DDimensions.SpaceDHilbertSpace.SchwartzSubmodule
 import PhysLean.QuantumMechanics.FiniteTarget.Basic
 import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
 import PhysLean.QuantumMechanics.OneDimension.GeneralPotential.Basic
