@@ -146,12 +146,12 @@ arXiv:hep-ph/0605184.
 
 /-- A reparameterization of the parameters of the quadratic terms of the
   potential for use with the gramVector. -/
-noncomputable def ξ (P : PotentialParameters) : Fin 1 ⊕ Fin 3 → ℝ := fun μ =>
+noncomputable def ξ (P : PotentialParameters) (μ : Fin 1 ⊕ Fin 3) : ℝ :=
   match μ with
-  | Sum.inl 0 => (P.m₁₁2 + P.m₂₂2) / 2
-  | Sum.inr 0 => -Complex.re P.m₁₂2
-  | Sum.inr 1 => Complex.im P.m₁₂2
-  | Sum.inr 2 => (P.m₁₁2 - P.m₂₂2) / 2
+  | .inl 0 => (P.m₁₁2 + P.m₂₂2) / 2
+  | .inr 0 => -Complex.re P.m₁₂2
+  | .inr 1 => Complex.im P.m₁₂2
+  | .inr 2 => (P.m₁₁2 - P.m₂₂2) / 2
 
 @[simp]
 lemma ξ_zero : (0 : PotentialParameters).ξ = 0 := by
@@ -161,23 +161,22 @@ lemma ξ_zero : (0 : PotentialParameters).ξ = 0 := by
 /-- A reparameterization of the parameters of the quartic terms of the
   potential for use with the gramVector. -/
 noncomputable def η (P : PotentialParameters) : Fin 1 ⊕ Fin 3 → Fin 1 ⊕ Fin 3 → ℝ
-  | Sum.inl 0, Sum.inl 0 => (P.𝓵₁ + P.𝓵₂ + 2 * P.𝓵₃) / 8
-  | Sum.inl 0, Sum.inr 0 => (P.𝓵₆.re + P.𝓵₇.re) * (1 / 4)
-  | Sum.inl 0, Sum.inr 1 => (P.𝓵₆.im + P.𝓵₇.im) * (-1 / 4)
-  | Sum.inl 0, Sum.inr 2 => (P.𝓵₁ - P.𝓵₂) * (1 / 8)
-  | Sum.inr 0, Sum.inl 0 => (P.𝓵₆.re + P.𝓵₇.re) * (1 / 4)
-  | Sum.inr 1, Sum.inl 0 => (P.𝓵₆.im + P.𝓵₇.im) * (-1 / 4)
-  | Sum.inr 2, Sum.inl 0 => (P.𝓵₁ - P.𝓵₂) * (1 / 8)
-  /-η_a_a-/
-  | Sum.inr 0, Sum.inr 0 => (P.𝓵₅.re + P.𝓵₄) * (1 / 4)
-  | Sum.inr 1, Sum.inr 1 => (-P.𝓵₅.re + P.𝓵₄) * (1 / 4)
-  | Sum.inr 2, Sum.inr 2 => (P.𝓵₁ + P.𝓵₂ - 2 * P.𝓵₃) * (1 / 8)
-  | Sum.inr 0, Sum.inr 1 => P.𝓵₅.im * (-1 / 4)
-  | Sum.inr 2, Sum.inr 0 => (P.𝓵₆.re - P.𝓵₇.re) * (1 / 4)
-  | Sum.inr 2, Sum.inr 1 => (P.𝓵₇.im - P.𝓵₆.im) * (1 / 4)
-  | Sum.inr 1, Sum.inr 0 => P.𝓵₅.im * (-1 / 4)
-  | Sum.inr 0, Sum.inr 2 => (P.𝓵₆.re - P.𝓵₇.re) * (1 / 4)
-  | Sum.inr 1, Sum.inr 2 => (P.𝓵₇.im - P.𝓵₆.im) * (1 / 4)
+  | .inl 0, .inl 0 => (P.𝓵₁ + P.𝓵₂ + 2 * P.𝓵₃) / 8
+  | .inl 0, .inr 0 => (P.𝓵₆.re + P.𝓵₇.re) / 4
+  | .inl 0, .inr 1 => - (P.𝓵₆.im + P.𝓵₇.im) / 4
+  | .inl 0, .inr 2 => (P.𝓵₁ - P.𝓵₂) / 8
+  | .inr 0, .inl 0 => (P.𝓵₆.re + P.𝓵₇.re) / 4
+  | .inr 1, .inl 0 => -(P.𝓵₆.im + P.𝓵₇.im) / 4
+  | .inr 2, .inl 0 => (P.𝓵₁ - P.𝓵₂) / 8
+  | .inr 0, .inr 0 => (P.𝓵₅.re + P.𝓵₄) / 4
+  | .inr 1, .inr 1 => (P.𝓵₄ - P.𝓵₅.re) / 4
+  | .inr 2, .inr 2 => (P.𝓵₁ + P.𝓵₂ - 2 * P.𝓵₃) / 8
+  | .inr 0, .inr 1 => - P.𝓵₅.im / 4
+  | .inr 2, .inr 0 => (P.𝓵₆.re - P.𝓵₇.re) / 4
+  | .inr 2, .inr 1 => (P.𝓵₇.im - P.𝓵₆.im) / 4
+  | .inr 1, .inr 0 => - P.𝓵₅.im / 4
+  | .inr 0, .inr 2 => (P.𝓵₆.re - P.𝓵₇.re) / 4
+  | .inr 1, .inr 2 => (P.𝓵₇.im - P.𝓵₆.im) / 4
 
 lemma η_symm (P : PotentialParameters) (μ ν : Fin 1 ⊕ Fin 3) :
     P.η μ ν = P.η ν μ := by
@@ -218,32 +217,32 @@ def stabilityCounterExample : PotentialParameters := {(0 : PotentialParameters) 
 
 lemma stabilityCounterExample_ξ  :
     stabilityCounterExample.ξ = fun
-      | Sum.inl 0 => 0
-      | Sum.inr 0 => 0
-      | Sum.inr 1 => 1
-      | Sum.inr 2 => 0 := by
+      | .inl 0 => 0
+      | .inr 0 => 0
+      | .inr 1 => 1
+      | .inr 2 => 0 := by
   funext μ
   simp [stabilityCounterExample, ξ]
 
 lemma stabilityCounterExample_η :
     stabilityCounterExample.η = fun μ => fun ν =>
     match μ, ν with
-    | Sum.inl 0, Sum.inl 0 => 1
-    | Sum.inl 0, Sum.inr 0 => -1
-    | Sum.inl 0, Sum.inr 1 => 0
-    | Sum.inl 0, Sum.inr 2 => 0
-    | Sum.inr 0, Sum.inl 0 => -1
-    | Sum.inr 1, Sum.inl 0 => 0
-    | Sum.inr 2, Sum.inl 0 => 0
-    | Sum.inr 0, Sum.inr 0 => 1
-    | Sum.inr 1, Sum.inr 1 => 0
-    | Sum.inr 2, Sum.inr 2 => 0
-    | Sum.inr 0, Sum.inr 1 => 0
-    | Sum.inr 2, Sum.inr 0 => 0
-    | Sum.inr 2, Sum.inr 1 => 0
-    | Sum.inr 1, Sum.inr 0 => 0
-    | Sum.inr 0, Sum.inr 2 => 0
-    | Sum.inr 1, Sum.inr 2 => 0 := by
+    | .inl 0, .inl 0 => 1
+    | .inl 0, .inr 0 => -1
+    | .inl 0, .inr 1 => 0
+    | .inl 0, .inr 2 => 0
+    | .inr 0, .inl 0 => -1
+    | .inr 1, .inl 0 => 0
+    | .inr 2, .inl 0 => 0
+    | .inr 0, .inr 0 => 1
+    | .inr 1, .inr 1 => 0
+    | .inr 2, .inr 2 => 0
+    | .inr 0, .inr 1 => 0
+    | .inr 2, .inr 0 => 0
+    | .inr 2, .inr 1 => 0
+    | .inr 1, .inr 0 => 0
+    | .inr 0, .inr 2 => 0
+    | .inr 1, .inr 2 => 0 := by
   funext μ ν
   simp [stabilityCounterExample, η]
   ring_nf
@@ -401,6 +400,11 @@ lemma quarticTerm_stabilityCounterExample_eq_norm_pow_four (H : TwoHiggsDoublet)
         ring
       _ = ‖H.Φ1 - H.Φ2‖ ^ 4 := by ring
 
+lemma quarticTerm_stabilityCounterExample_nonneg (H : TwoHiggsDoublet) :
+    0 ≤ quarticTerm .stabilityCounterExample H := by
+  rw [quarticTerm_stabilityCounterExample_eq_norm_pow_four]
+  positivity
+
 lemma massTerm_zero_of_quarticTerm_zero_stabilityCounterExample (H : TwoHiggsDoublet)
     (h : quarticTerm .stabilityCounterExample H = 0) :
     massTerm .stabilityCounterExample H = 0 := by
@@ -439,6 +443,11 @@ lemma potential_stabilityCounterExample (H : TwoHiggsDoublet) :
     potential .stabilityCounterExample H = 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).im + ‖H.Φ1 - H.Φ2‖ ^ 4 := by
   simp [potential, massTerm_stabilityCounterExample,
     quarticTerm_stabilityCounterExample_eq_norm_pow_four]
+
+lemma potential_eq_gramVector (P : PotentialParameters) (H : TwoHiggsDoublet) :
+    potential P H = ∑ μ, P.ξ μ * H.gramVector μ +
+    ∑ a, ∑ b, H.gramVector a * H.gramVector b * P.η a b := by
+  rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
 
 /-!
 
