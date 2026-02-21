@@ -712,9 +712,6 @@ lemma oneEquiv_measurePreserving : MeasurePreserving oneEquiv volume volume :=
 lemma oneEquiv_symm_measurePreserving : MeasurePreserving oneEquiv.symm volume volume := by
   exact LinearIsometryEquiv.measurePreserving oneEquiv.symm
 
-lemma volume_eq_addHaar {d} : (volume (α := Space d)) = Space.basis.toBasis.addHaar := by
-  exact (OrthonormalBasis.addHaar_eq_volume _).symm
-
 instance {d : ℕ} : Nontrivial (Space d.succ) := by
   refine { exists_pair_ne := ?_ }
   use 0, basis 0
@@ -729,66 +726,4 @@ instance : Subsingleton (Space 0) := by
   intro x y
   ext i
   fin_cases i
-
-lemma volume_closedBall_ne_zero {d : ℕ} (x : Space d.succ) (r : ℝ) (hr : 0 < r) :
-    volume (Metric.closedBall x r) ≠ 0 := by
-  obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
-  rcases hk with hk | hk
-  · rw [InnerProductSpace.volume_closedBall_of_dim_even (k := k)]
-    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero_iff,
-      one_ne_zero, and_false, not_false_eq_true, pow_eq_zero_iff, ENNReal.ofReal_eq_zero, not_or,
-      not_le]
-    apply And.intro
-    · simp_all
-    · positivity
-    · simpa using hk
-  · rw [InnerProductSpace.volume_closedBall_of_dim_odd (k := k)]
-    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq, mul_eq_zero, Nat.add_eq_zero_iff,
-      one_ne_zero, and_false, not_false_eq_true, pow_eq_zero_iff, ENNReal.ofReal_eq_zero, not_or,
-      not_le]
-    apply And.intro
-    · simp_all
-    · positivity
-    · simpa using hk
-
-lemma volume_closedBall_ne_top {d : ℕ} (x : Space d.succ) (r : ℝ) :
-    volume (Metric.closedBall x r) ≠ ⊤ := by
-  obtain ⟨k,hk⟩ := Nat.even_or_odd' d.succ
-  rcases hk with hk | hk
-  · rw [InnerProductSpace.volume_closedBall_of_dim_even (k := k)]
-    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq]
-    apply not_eq_of_beq_eq_false
-    rfl
-    simpa using hk
-  · rw [InnerProductSpace.volume_closedBall_of_dim_odd (k := k)]
-    simp only [Nat.succ_eq_add_one, finrank_eq_dim, ne_eq]
-    apply not_eq_of_beq_eq_false
-    rfl
-    simpa using hk
-
-@[simp]
-lemma volume_metricBall_three :
-    volume (Metric.ball (0 : Space 3) 1) = ENNReal.ofReal (4 / 3 * Real.pi) := by
-  rw [InnerProductSpace.volume_ball_of_dim_odd (k := 1)]
-  simp only [ENNReal.ofReal_one, finrank_eq_dim, one_pow, pow_one, Nat.reduceAdd,
-    Nat.doubleFactorial.eq_3, Nat.doubleFactorial, mul_one, Nat.cast_ofNat, one_mul]
-  ring_nf
-  simp
-
-@[simp]
-lemma volume_metricBall_two :
-    volume (Metric.ball (0 : Space 2) 1) = ENNReal.ofReal Real.pi := by
-  rw [InnerProductSpace.volume_ball_of_dim_even (k := 1)]
-  simp [finrank_eq_dim]
-  simp [finrank_eq_dim]
-
-@[simp]
-lemma volume_metricBall_two_real :
-    (volume.real (Metric.ball (0 : Space 2) 1)) = Real.pi := by
-  trans (volume (Metric.ball (0 : Space 2) 1)).toReal
-  · rfl
-  rw [volume_metricBall_two]
-  simp only [ENNReal.toReal_ofReal_eq_iff]
-  exact Real.pi_nonneg
-
 end Space

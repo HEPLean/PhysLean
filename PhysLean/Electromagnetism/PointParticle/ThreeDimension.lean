@@ -288,16 +288,12 @@ lemma threeDimPointParticle_div_electricField {𝓕} (q : ℝ) (r₀ : Space 3) 
   simp only [Int.reduceNeg, zpow_neg, one_div]
   rw [constantTime_distSpaceDiv, distDiv_distTranslate, h1]
   simp only [map_smul]
-  suffices h : volume.real (Metric.ball (0 : Space 3) 1) = (4/3 * Real.pi) by
-    rw [h]
-    simp [smul_smul]
-    ext η
-    simp [constantTime_apply, diracDelta_apply, distTranslate_apply]
-    left
-    ring_nf
-    field_simp
-  simp [MeasureTheory.Measure.real]
-  exact pi_nonneg
+  simp [smul_smul]
+  ext η
+  simp [constantTime_apply, diracDelta_apply, distTranslate_apply]
+  left
+  ring_nf
+  field_simp
 
 lemma threeDimPointParticle_isExterma (𝓕 : FreeSpace) (q : ℝ) (r₀ : Space 3) :
     (threeDimPointParticle 𝓕 q r₀).IsExtrema 𝓕 (threeDimPointParticleCurrentDensity 𝓕.c q r₀) := by
